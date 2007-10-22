@@ -10,17 +10,17 @@
 
 *******************************************************************************/
 
-module tango.io.compress.Zlib;
+module tango.io.compress.ZlibStream;
 
-import tango.io.compress.c.zlib;
+private import tango.io.compress.c.zlib;
 
-import tango.stdc.stringz : fromUtf8z;
+private import tango.stdc.stringz : fromUtf8z;
 
-import tango.core.Exception : TracedException;
+private import tango.core.Exception : IOException;
 
-import tango.io.Conduit : InputFilter, OutputFilter;
+private import tango.io.Conduit : InputFilter, OutputFilter;
 
-import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
+private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
 
 /* This constant controls the size of the input/output buffers we use
@@ -41,7 +41,7 @@ private const CHUNKSIZE = 256 * 1024;
 
 *******************************************************************************/
 
-class ZlibDecompressionFilter : InputFilter
+class ZlibInput : InputFilter
 {
     private
     {
@@ -60,7 +60,7 @@ class ZlibDecompressionFilter : InputFilter
         this filter with a conduit, the idiom to use is:
 
         ---
-        auto input = new ZlibDecompressionFilter(myConduit.input));
+        auto input = new ZlibInput(myConduit.input));
         input.read(myContent);
         ---
 
@@ -177,7 +177,7 @@ class ZlibDecompressionFilter : InputFilter
     private void check_valid()
     {
         if( !zs_valid )
-            throw new ZlibStreamClosedException;
+            throw new ZlibClosedException;
     }
 }
 
@@ -188,7 +188,7 @@ class ZlibDecompressionFilter : InputFilter
 
 *******************************************************************************/
 
-class ZlibCompressionFilter : OutputFilter
+class ZlibOutput : OutputFilter
 {
     /***************************************************************************
 
@@ -232,7 +232,7 @@ class ZlibCompressionFilter : OutputFilter
         this filter with a conduit, the idiom to use is:
 
         ---
-        auto output = new ZlibCompressionFilter(myConduit.output);
+        auto output = new ZlibOutput(myConduit.output);
         output.write(myContent);
         ---
 
@@ -378,7 +378,7 @@ class ZlibCompressionFilter : OutputFilter
     private void check_valid()
     {
         if( !zs_valid )
-            throw new ZlibStreamClosedException;
+            throw new ZlibClosedException;
     }
 }
 
@@ -390,7 +390,7 @@ class ZlibCompressionFilter : OutputFilter
 
 *******************************************************************************/
 
-class ZlibStreamClosedException : TracedException
+class ZlibClosedException : IOException
 {
     this()
     {
@@ -406,7 +406,7 @@ class ZlibStreamClosedException : TracedException
 
 *******************************************************************************/
 
-class ZlibException : TracedException
+class ZlibException : IOException
 {
     this(int code)
     {
@@ -449,7 +449,7 @@ class ZlibException : TracedException
 
 debug(UnitTest) {
 
-import tango.io.MemoryConduit : MemoryConduit;
+import tango.io.Buffer : Buffer;
 
 unittest
 {
@@ -472,14 +472,14 @@ unittest
         0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
         0x01,0x00,0x1f,0xe3,0x22,0x99];
 
-    scope cond_z = new MemoryConduit;
-    scope comp = new ZlibCompressionFilter(cond_z);
+    scope cond_z = new Buffer;
+    scope comp = new ZlibOutput(cond_z);
     comp.write (message);
-    comp.commit;
+    comp.close;
 
     assert( message_z == cast(ubyte[])(cond_z.slice) );
 
-    scope decomp = new ZlibDecompressionFilter(cond_z);
+    scope decomp = new ZlibInput(cond_z);
     auto buffer = new ubyte[256];
     buffer = buffer[0 .. decomp.read(buffer)];
 

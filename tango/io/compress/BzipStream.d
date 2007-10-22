@@ -10,15 +10,15 @@
 
 *******************************************************************************/
 
-module tango.io.compress.Bzip2;
+module tango.io.compress.BzipStream;
 
-import tango.io.compress.c.bzlib;
+private import tango.io.compress.c.bzlib;
 
-import tango.core.Exception : TracedException;
+private import tango.core.Exception : IOException;
 
-import tango.io.Conduit : InputFilter, OutputFilter;
+private import tango.io.Conduit : InputFilter, OutputFilter;
 
-import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
+private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
 private
 {
@@ -39,13 +39,13 @@ private
 
 *******************************************************************************/
 
-class Bzip2CompressionFilter : OutputFilter
+class BzipOutput : OutputFilter
 {
     /***************************************************************************
 
         This enumeration represents several pre-defined compression block
         sizes, measured in hundreds of kilobytes.  See the documentation for
-        the Bzip2CompressionFilter class' constructor for more details.
+        the BzipOutput class' constructor for more details.
 
     ***************************************************************************/
 
@@ -70,7 +70,7 @@ class Bzip2CompressionFilter : OutputFilter
         this filter with a conduit, the idiom to use is:
 
         ---
-        auto output = new Bzip2CompressionFilter(myConduit.output);
+        auto output = new BzipOutput(myConduit.output);
         output.write(myContent);
         ---
 
@@ -90,7 +90,7 @@ class Bzip2CompressionFilter : OutputFilter
     this(OutputStream stream, int blockSize = BlockSize.Normal)
     {
         if( blockSize < 1 || blockSize > 9 )
-            throw new Bzip2Exception("bzip2 block size must be between"
+            throw new BzipException("bzip2 block size must be between"
                     " 1 and 9");
 
         super(stream);
@@ -98,7 +98,7 @@ class Bzip2CompressionFilter : OutputFilter
         
         auto ret = BZ2_bzCompressInit(&bzs, blockSize, 0, DEFAULT_WORKFACTOR);
         if( ret != BZ_OK )
-            throw new Bzip2Exception(ret);
+            throw new BzipException(ret);
 
         bzs_valid = true;
     }
@@ -133,7 +133,7 @@ class Bzip2CompressionFilter : OutputFilter
 
             auto ret = BZ2_bzCompress(&bzs, BZ_RUN);
             if( ret != BZ_RUN_OK )
-                throw new Bzip2Exception(ret);
+                throw new BzipException(ret);
 
             auto have = out_chunk.length-bzs.avail_out;
             host.write(out_chunk[0..have]);
@@ -193,7 +193,7 @@ class Bzip2CompressionFilter : OutputFilter
                     break;
 
                 default:
-                    throw new Bzip2Exception(ret);
+                    throw new BzipException(ret);
             }
 
             auto have = out_chunk.length - bzs.avail_out;
@@ -220,7 +220,7 @@ class Bzip2CompressionFilter : OutputFilter
     private void check_valid()
     {
         if( !bzs_valid )
-            throw new Bzip2StreamClosedException;
+            throw new BzipClosedException;
     }
 }
 
@@ -230,7 +230,7 @@ class Bzip2CompressionFilter : OutputFilter
 
 *******************************************************************************/
 
-class Bzip2DecompressionFilter : InputFilter
+class BzipInput : InputFilter
 {
     private
     {
@@ -246,7 +246,7 @@ class Bzip2DecompressionFilter : InputFilter
         this filter with a conduit, the idiom to use is:
 
         ---
-        auto input = new Bzip2DecompressionFilter(myConduit.input);
+        auto input = new BzipInput(myConduit.input);
         input.read(myContent);
         ---
 
@@ -263,7 +263,7 @@ class Bzip2DecompressionFilter : InputFilter
 
         auto ret = BZ2_bzDecompressInit(&bzs, 0, small?1:0);
         if( ret != BZ_OK )
-            throw new Bzip2Exception(ret);
+            throw new BzipException(ret);
 
         bzs_valid = true;
     }
@@ -308,7 +308,7 @@ class Bzip2DecompressionFilter : InputFilter
                 finished = true;
             }
             else if( ret != BZ_OK )
-                throw new Bzip2Exception(ret);
+                throw new BzipException(ret);
         }
         while( !finished && bzs.avail_out > 0 );
 
@@ -348,7 +348,7 @@ class Bzip2DecompressionFilter : InputFilter
     private void check_valid()
     {
         if( !bzs_valid )
-            throw new Bzip2StreamClosedException;
+            throw new BzipClosedException;
     }
 }
 
@@ -359,7 +359,7 @@ class Bzip2DecompressionFilter : InputFilter
 
 *******************************************************************************/
 
-class Bzip2Exception : TracedException
+class BzipException : IOException
 {
     this(in int code)
     {
@@ -405,7 +405,7 @@ class Bzip2Exception : TracedException
 
 *******************************************************************************/
 
-class Bzip2StreamClosedException : TracedException
+class BzipClosedException : IOException
 {
     this()
     {
@@ -422,7 +422,7 @@ class Bzip2StreamClosedException : TracedException
 
 debug(UnitTest):
 
-import tango.io.MemoryConduit : MemoryConduit;
+import tango.io.Buffer : Buffer;
 
 unittest
 {
@@ -459,14 +459,14 @@ unittest
         0xdc, 0x91, 0x4e, 0x14, 0x24, 0x10, 0x26, 0x2f,
         0xaa, 0x80];
 
-    scope cond = new MemoryConduit;
-    scope comp = new Bzip2CompressionFilter(cond);
+    scope cond = new Buffer;
+    scope comp = new BzipOutput(cond);
     comp.write(message);
-    comp.commit;
+    comp.close;
 
     assert( message_z == cast(ubyte[])(cond.slice) );
 
-    scope decomp = new Bzip2DecompressionFilter(cond);
+    scope decomp = new BzipInput(cond);
     auto buffer = new ubyte[256];
     buffer = buffer[0 .. decomp.read(buffer)];
 
