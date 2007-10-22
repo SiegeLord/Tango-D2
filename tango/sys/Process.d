@@ -154,9 +154,9 @@ class Process
     private char[][]        _args;
     private char[][char[]]  _env;
     private char[]          _workDir;
-    private PipeConduit     _stdin;
-    private PipeConduit     _stdout;
-    private PipeConduit     _stderr;
+    private OutputStream    _stdin;
+    private InputStream     _stdout;
+    private InputStream     _stderr;
     private bool            _running = false;
 
     version (Windows)
@@ -429,7 +429,7 @@ class Process
      * Remarks:
      * The process must be running before calling this method.
      */
-    public PipeConduit stdin()
+    public OutputStream stdin()
     in
     {
         assert(_running);
@@ -448,7 +448,7 @@ class Process
      * Remarks:
      * The process must be running before calling this method.
      */
-    public PipeConduit stdout()
+    public InputStream stdout()
     in
     {
         assert(_running);
@@ -467,7 +467,7 @@ class Process
      * Remarks:
      * The process must be running before calling this method.
      */
-    public PipeConduit stderr()
+    public InputStream stderr()
     in
     {
         assert(_running);
@@ -1442,6 +1442,8 @@ private char[] format (char[] msg, int value)
 
 debug (UnitTest)
 {
+    void main(){}
+
     private import tango.text.stream.LineIterator;
 
     unittest
