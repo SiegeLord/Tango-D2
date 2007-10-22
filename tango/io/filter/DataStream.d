@@ -282,7 +282,8 @@ class DataOutput : OutputFilter, Buffered
 }
 
 
-
+version (DataStream)
+{
 import tango.io.Stdout;
 import tango.io.Console;
 import tango.io.FileConduit;
@@ -304,4 +305,4 @@ void main()
 
         input.close;
 }
-
+}
