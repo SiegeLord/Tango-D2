@@ -45,7 +45,6 @@ version (Win32)
         
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
-
         ---
         // open a file for reading
         auto from = new FileConduit ("test.txt");
@@ -55,7 +54,6 @@ version (Win32)
         ---
 
         And here we copy one file to another:
-
         ---
         // open another for writing
         auto to = new FileConduit ("copy.txt", FileConduit.WriteCreate);
@@ -65,7 +63,6 @@ version (Win32)
         ---
         
         To load a file directly into memory one might do this:
-
         ---
         // open file for reading
         auto fc = new FileConduit ("test.txt");
@@ -78,7 +75,6 @@ version (Win32)
         ---
 
         Conversely, one may write directly to a FileConduit, like so:
-
         ---
         // open file for writing
         auto to = new FileConduit ("text.txt", FileConduit.WriteCreate);
@@ -87,11 +83,9 @@ version (Win32)
         auto bytesWritten = to.output.write (content);
         ---
 
-
         FileConduit can just as easily handle random IO. Here we use seek()
         to relocate the file pointer and, for variation, apply a protocol to
         perform simple input and output:
-
         ---
         // open a file for reading
         auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
@@ -113,7 +107,6 @@ version (Win32)
 
         fc.close();
         ---
-
 
         See File, FilePath, FileConst, FileScan, and FileSystem for 
         additional functionality related to file manipulation. 
