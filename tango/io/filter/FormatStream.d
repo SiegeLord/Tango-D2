@@ -24,7 +24,7 @@ private import tango.text.convert.Layout;
 
 *******************************************************************************/
 
-class FormatStream(T) : OutputFilter
+class FormatOutput(T) : OutputFilter
 {
         private Print!(T) output;
 
