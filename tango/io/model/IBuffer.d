@@ -675,6 +675,36 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
         ***********************************************************************/
 
         abstract void error (char[] msg);
+
+        /***********************************************************************
+        
+                Close the stream
+
+                Remarks:
+                Propagate request to an attached OutputStream (this is a
+                requirement for the OutputStream interface)
+
+        ***********************************************************************/
+
+        abstract void close ();
+
+        /***********************************************************************
+        
+                Access configured conduit
+
+                Returns:
+                Returns the conduit associated with this buffer. Returns 
+                null if the buffer is purely memory based; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external conduit to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill() & drain() use it to import/export content as necessary.
+
+        ***********************************************************************/
+
+        abstract IConduit conduit ();
 }
 
 

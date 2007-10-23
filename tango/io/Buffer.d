@@ -1110,22 +1110,6 @@ class Buffer : IBuffer
                 return data;
         }
 
-
-        /**********************************************************************/
-        /*********************** Buffered Interface ***************************/
-        /**********************************************************************/
-
-        IBuffer buffer ()
-        {
-                return this;
-        }
-
-
-        /**********************************************************************/
-        /************************ Stream Interfaces ***************************/
-        /**********************************************************************/
-
-
         /***********************************************************************
         
                 Copy content into buffer
@@ -1152,6 +1136,22 @@ class Buffer : IBuffer
                    }
         }
 
+
+        /**********************************************************************/
+        /*********************** Buffered Interface ***************************/
+        /**********************************************************************/
+
+        IBuffer buffer ()
+        {
+                return this;
+        }
+
+
+        /**********************************************************************/
+        /************************ Stream Interfaces ***************************/
+        /**********************************************************************/
+
+
         /***********************************************************************
         
                 Flush all buffer content to the specific conduit
@@ -1168,7 +1168,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        OutputStream flush ()
+        override OutputStream flush ()
         {
                 if (sink)
                    {
@@ -1191,7 +1191,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        InputStream clear ()
+        override InputStream clear ()
         {
                 index = extent = 0;
 
@@ -1207,11 +1207,11 @@ class Buffer : IBuffer
 
                 Remarks:
                 Propagate request to an attached OutputStream (this is a
-                requirment for the OutputStream interface)
+                requirement for the OutputStream interface)
 
         ***********************************************************************/
 
-        void close () 
+        override void close () 
         {
                 if (sink)
                     sink.close;
@@ -1235,7 +1235,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        OutputStream copy (InputStream src)
+        override OutputStream copy (InputStream src)
         {
                 assert (sink && src);
 
@@ -1266,7 +1266,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint read (void[] dst)
+        override uint read (void[] dst)
         {   
                 uint content = readable();
                 if (content)
@@ -1312,7 +1312,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint write (void[] src)
+        override uint write (void[] src)
         {   
                 append (src.ptr, src.length);
                 return src.length;
@@ -1334,7 +1334,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final IConduit conduit ()
+        final override IConduit conduit ()
         {
                 if (sink)
                     return sink.conduit;
