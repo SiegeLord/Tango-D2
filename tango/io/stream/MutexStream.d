@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.MutexStream;
+module tango.io.stream.MutexStream;
 
 private import tango.io.Conduit;
 

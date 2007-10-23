@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.SnoopStream;
+module tango.io.stream.SnoopStream;
 
 private import  tango.io.Console,
                 tango.io.Conduit;

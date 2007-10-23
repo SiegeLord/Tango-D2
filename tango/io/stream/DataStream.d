@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.DataStream;
+module tango.io.stream.DataStream;
 
 private import tango.io.Buffer;
 

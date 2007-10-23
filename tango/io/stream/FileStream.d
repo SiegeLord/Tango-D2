@@ -10,51 +10,48 @@
 
 *******************************************************************************/
 
-module tango.io.filter.FormatStream;
+module tango.io.stream.FileStream;
 
-private import  tango.io.Print,
-                tango.io.Conduit;
-
-private import  tango.text.convert.Layout;
+private import tango.io.FileConduit;
 
 /*******************************************************************************
 
-        Simple way to hook up a utf8 formatter to an arbitrary OutputStream,
-        such as a file conduit:
-        ---
-        auto output = new FormatOutput (new FileOutput("path"));
-        output.print.formatln ("{} green bottles", 10);
-        output.close;
-        ---
+        Trivial wrapper around a FileConduit
 
 *******************************************************************************/
 
-class FormatOutput : OutputFilter
+class FileInput : FileConduit
 {
-        private Print!(char) output;
-
         /***********************************************************************
 
-                Create a Print instance and attach it to the given stream
+                Open a file for reading. Don't forget to use close()
 
         ***********************************************************************/
 
-        this (OutputStream stream)
+        this (char[] path, FileConduit.Style style = FileConduit.ReadExisting)
         {
-                super (stream);
-                output = new Print!(char) (new Layout!(char), stream);
-        }
-
-        /***********************************************************************
-
-                Return the Print instance
-
-        ***********************************************************************/
-
-        final Print!(char) print ()
-        {
-                return output;
+                super (path, style);
         }
 }
 
+
+/*******************************************************************************
+
+        Trivial wrapper around a FileConduit
+
+*******************************************************************************/
+
+class FileOutput : FileConduit
+{
+        /***********************************************************************
+
+                Open a file for writing. Don't forget to use close()
+
+        ***********************************************************************/
+
+        this (char[] path, FileConduit.Style style = FileConduit.WriteCreate)
+        {
+                super (path, style);
+        }
+}
 

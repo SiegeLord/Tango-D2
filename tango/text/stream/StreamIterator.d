@@ -16,6 +16,8 @@ public  import tango.io.Buffer;
 
 private import Text = tango.text.Util;
 
+private import tango.io.model.IConduit;
+
 /*******************************************************************************
 
         The base class for a set of stream iterators. These operate
@@ -50,7 +52,7 @@ private import Text = tango.text.Util;
 
 *******************************************************************************/
 
-class StreamIterator(T)
+class StreamIterator(T) : InputStream, Buffered
 {
         protected T[]           slice,
                                 pushed;
@@ -74,17 +76,6 @@ class StreamIterator(T)
         {
                 if (stream)
                     set (stream);
-        }
-
-        /***********************************************************************
-
-                Return the associated buffer
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return buffer_;
         }
 
         /***********************************************************************
@@ -285,6 +276,76 @@ class StreamIterator(T)
                 slice = convert (buffer_.slice (buffer.readable));
                 return false;
         }
+
+
+        /**********************************************************************/
+        /************************ Buffered Interface **************************/
+        /**********************************************************************/
+
+
+        /***********************************************************************
+
+                Return the associated buffer
+
+        ***********************************************************************/
+
+        final IBuffer buffer ()
+        {
+                return buffer_;
+        }
+
+        /**********************************************************************/
+        /********************** InputStream Interface *************************/
+        /**********************************************************************/
+
+
+        /***********************************************************************
+        
+                Return the host conduit
+
+        ***********************************************************************/
+
+        final IConduit conduit ()
+        {
+                return buffer_.conduit;
+        }
+
+        /***********************************************************************
+        
+                Read from conduit into a target array. The provided dst 
+                will be populated with content from the conduit. 
+
+                Returns the number of bytes read, which may be less than
+                requested in dst
+
+        ***********************************************************************/
+
+        final uint read (void[] dst)
+        {
+                return buffer_.read (dst);
+        }               
+                        
+        /***********************************************************************
+        
+                Clear any buffered content
+
+        ***********************************************************************/
+
+        final InputStream clear ()               
+        {
+                return buffer_.clear;
+        }
+                                  
+        /***********************************************************************
+        
+                Close the input
+
+        ***********************************************************************/
+
+        final void close ()
+        {
+                buffer_.close;
+        }               
 }
 
 

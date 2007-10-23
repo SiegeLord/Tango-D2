@@ -10,48 +10,51 @@
 
 *******************************************************************************/
 
-module tango.io.filter.FileStream;
+module tango.io.stream.FormatStream;
 
-private import tango.io.FileConduit;
+private import  tango.io.Print,
+                tango.io.Conduit;
 
-/*******************************************************************************
-
-        Trivial wrapper around a FileConduit
-
-*******************************************************************************/
-
-class FileInput : FileConduit
-{
-        /***********************************************************************
-
-                Open a file for reading. Don't forget to use close()
-
-        ***********************************************************************/
-
-        this (char[] path, FileConduit.Style style = FileConduit.ReadExisting)
-        {
-                super (path, style);
-        }
-}
-
+private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 
-        Trivial wrapper around a FileConduit
+        Simple way to hook up a utf8 formatter to an arbitrary OutputStream,
+        such as a file conduit:
+        ---
+        auto output = new FormatOutput (new FileOutput("path"));
+        output.print.formatln ("{} green bottles", 10);
+        output.close;
+        ---
 
 *******************************************************************************/
 
-class FileOutput : FileConduit
+class FormatOutput : OutputFilter
 {
+        private Print!(char) output;
+
         /***********************************************************************
 
-                Open a file for writing. Don't forget to use close()
+                Create a Print instance and attach it to the given stream
 
         ***********************************************************************/
 
-        this (char[] path, FileConduit.Style style = FileConduit.WriteCreate)
+        this (OutputStream stream)
         {
-                super (path, style);
+                super (stream);
+                output = new Print!(char) (new Layout!(char), stream);
+        }
+
+        /***********************************************************************
+
+                Return the Print instance
+
+        ***********************************************************************/
+
+        final Print!(char) print ()
+        {
+                return output;
         }
 }
+
 

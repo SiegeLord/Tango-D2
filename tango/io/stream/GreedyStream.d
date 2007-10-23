@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.GreedyStream;
+module tango.io.stream.GreedyStream;
 
 private import tango.io.Conduit;
 

@@ -586,24 +586,6 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
 
         /***********************************************************************
         
-                Deprecated: use input() or output() instead, and access
-                            the conduit from there
-
-                Returns the conduit associated with this buffer. Returns 
-                null if the buffer is purely memory based; that is, it's
-                not backed by some external conduit.
-
-                Buffers do not require a conduit to operate, but it can
-                be convenient to associate one. For example, the IReader
-                and IWriter classes use this to import/export content as
-                necessary.
-
-        ***********************************************************************/
-
-        deprecated abstract IConduit conduit ();               
-
-        /***********************************************************************
-        
                 Sets the external conduit associated with this buffer.
 
                 Buffers do not require an external conduit to operate, but 

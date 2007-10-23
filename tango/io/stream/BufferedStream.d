@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.filter.BufferedStream;
+module tango.io.stream.BufferedStream;
 
 private import tango.io.Buffer;
 
