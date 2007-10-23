@@ -197,7 +197,6 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        protected IConduit      host;           // optional conduit
         protected OutputStream  sink;           // optional data sink
         protected InputStream   source;         // optional data source
         protected void[]        data;           // the raw data buffer
@@ -303,17 +302,6 @@ class Buffer : IBuffer
         this (void[] data, uint readable)
         {
                 setContent (data, readable);
-        }
-
-        /***********************************************************************
-                
-                implements Buffered interface
-
-        ***********************************************************************/
-
-        IBuffer buffer ()
-        {
-                return this;
         }
 
         /***********************************************************************
@@ -476,78 +464,6 @@ class Buffer : IBuffer
                       len += i;
                       }
                 return len;
-        }
-
-        /***********************************************************************
-
-                Transfer content into the provided dst
-
-                Params: 
-                dst = destination of the content
-
-                Returns:
-                return the number of bytes read, which may be less than
-                dst.length. Eof is returned when no further content is
-                available.
-
-                Remarks:
-                Populates the provided array with content. We try to 
-                satisfy the request from the buffer content, and read 
-                directly from an attached conduit when the buffer is 
-                empty.
-
-        ***********************************************************************/
-
-        uint read (void[] dst)
-        {   
-                uint content = readable();
-                if (content)
-                   {
-                   if (content >= dst.length)
-                       content = dst.length;
-
-                   // transfer buffer content
-                   dst [0 .. content] = data [index .. index + content];
-                   index += content;
-                   }
-                else
-                   if (source) 
-                      {
-                      // pathological cases read directly from conduit
-                      if (dst.length > dimension) 
-                          content = source.read (dst);
-                      else
-                         // keep buffer partially populated
-                         if ((content = fill(source)) != IConduit.Eof && content > 0)
-                              content = read (dst);
-                      }
-                   else
-                      content = IConduit.Eof;
-                return content;
-        }
-
-        /***********************************************************************
-
-                Emulate OutputStream.write()
-
-                Params: 
-                src = the content to write
-
-                Returns:
-                return the number of bytes written, which may be less than
-                provided (conceptually).
-
-                Remarks:
-                Appends src content to the buffer, flushing to an attached
-                conduit as necessary. An IOException is thrown upon write 
-                failure.
-
-        ***********************************************************************/
-
-        uint write (void[] src)
-        {   
-                append (src.ptr, src.length);
-                return src.length;
         }
 
         /***********************************************************************
@@ -992,100 +908,6 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Flush all buffer content to the specific conduit
-
-                Remarks:
-                Flush the contents of this buffer. This will block until 
-                all content is actually flushed via the associated conduit, 
-                whereas drain() will not.
-
-                Do nothing where a conduit is not attached, enabling memory
-                buffers to treat flush as a noop.
-
-                Throws an IOException on premature Eof.
-
-        ***********************************************************************/
-
-        OutputStream flush ()
-        {
-                if (sink)
-                   {
-                   while (readable() > 0)
-                          drain ();
-
-                   // flush the filter chain also
-                   sink.flush;
-                   }
-                return this;
-        } 
-
-        /***********************************************************************
-        
-                Clear buffer content
-
-                Remarks:
-                Reset 'position' and 'limit' to zero. This effectively 
-                clears all content from the buffer.
-
-        ***********************************************************************/
-
-        InputStream clear ()
-        {
-                index = extent = 0;
-
-                // clear the filter chain also
-                if (source)
-                    source.clear;
-                return this;
-        }               
-
-        /***********************************************************************
-        
-                Close the stream
-
-                Remarks:
-                Propagate request to an attached OutputStream (this is a
-                requirment for the OutputStream interface)
-
-        ***********************************************************************/
-
-        void close () 
-        {
-                if (sink)
-                    sink.close;
-                else
-                   if (source)
-                       source.close;
-        }
-
-        /***********************************************************************
-        
-                Copy content via this buffer from the provided src
-                conduit.
-
-                Remarks:
-                The src conduit has its content transferred through 
-                this buffer via a series of fill & drain operations, 
-                until there is no more content available. The buffer
-                content should be explicitly flushed by the caller.
-
-                Throws an IOException on premature eof
-
-        ***********************************************************************/
-
-        OutputStream copy (InputStream src)
-        {
-                assert (sink && src);
-
-                while (fill(src) != IConduit.Eof)
-                       // don't drain until we actually need to
-                       if (writable is 0)
-                           drain ();
-                return this;
-        } 
-
-        /***********************************************************************
-        
                 Truncate buffer content
 
                 Remarks:
@@ -1166,30 +988,6 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Deprecated: use input() or output() instead, and access
-                            the conduit from there
-
-                Access configured conduit
-
-                Returns:
-                Returns the conduit associated with this buffer. Returns 
-                null if the buffer is purely memory based; that is, it's
-                not backed by some external medium.
-
-                Remarks:
-                Buffers do not require an external conduit to operate, but 
-                it can be convenient to associate one. For example, methods
-                fill() & drain() use it to import/export content as necessary.
-
-        ***********************************************************************/
-
-        deprecated IConduit conduit ()
-        {
-                return host;
-        }
-
-        /***********************************************************************
-        
                 Set external conduit
 
                 Params:
@@ -1206,7 +1004,6 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-                host = conduit;
                 sink = conduit.output;
                 source = conduit.input;
                 return this;
@@ -1313,6 +1110,22 @@ class Buffer : IBuffer
                 return data;
         }
 
+
+        /**********************************************************************/
+        /*********************** Buffered Interface ***************************/
+        /**********************************************************************/
+
+        IBuffer buffer ()
+        {
+                return this;
+        }
+
+
+        /**********************************************************************/
+        /************************ Stream Interfaces ***************************/
+        /**********************************************************************/
+
+
         /***********************************************************************
         
                 Copy content into buffer
@@ -1337,5 +1150,197 @@ class Buffer : IBuffer
                    memcpy (&data[extent], src, size);
                    extent += size;
                    }
+        }
+
+        /***********************************************************************
+        
+                Flush all buffer content to the specific conduit
+
+                Remarks:
+                Flush the contents of this buffer. This will block until 
+                all content is actually flushed via the associated conduit, 
+                whereas drain() will not.
+
+                Do nothing where a conduit is not attached, enabling memory
+                buffers to treat flush as a noop.
+
+                Throws an IOException on premature Eof.
+
+        ***********************************************************************/
+
+        OutputStream flush ()
+        {
+                if (sink)
+                   {
+                   while (readable() > 0)
+                          drain ();
+
+                   // flush the filter chain also
+                   sink.flush;
+                   }
+                return this;
+        } 
+
+        /***********************************************************************
+        
+                Clear buffer content
+
+                Remarks:
+                Reset 'position' and 'limit' to zero. This effectively 
+                clears all content from the buffer.
+
+        ***********************************************************************/
+
+        InputStream clear ()
+        {
+                index = extent = 0;
+
+                // clear the filter chain also
+                if (source)
+                    source.clear;
+                return this;
+        }               
+
+        /***********************************************************************
+        
+                Close the stream
+
+                Remarks:
+                Propagate request to an attached OutputStream (this is a
+                requirment for the OutputStream interface)
+
+        ***********************************************************************/
+
+        void close () 
+        {
+                if (sink)
+                    sink.close;
+                else
+                   if (source)
+                       source.close;
+        }
+
+        /***********************************************************************
+        
+                Copy content via this buffer from the provided src
+                conduit.
+
+                Remarks:
+                The src conduit has its content transferred through 
+                this buffer via a series of fill & drain operations, 
+                until there is no more content available. The buffer
+                content should be explicitly flushed by the caller.
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        OutputStream copy (InputStream src)
+        {
+                assert (sink && src);
+
+                while (fill(src) != IConduit.Eof)
+                       // don't drain until we actually need to
+                       if (writable is 0)
+                           drain ();
+                return this;
+        } 
+
+        /***********************************************************************
+
+                Transfer content into the provided dst
+
+                Params: 
+                dst = destination of the content
+
+                Returns:
+                return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.
+
+                Remarks:
+                Populates the provided array with content. We try to 
+                satisfy the request from the buffer content, and read 
+                directly from an attached conduit when the buffer is 
+                empty.
+
+        ***********************************************************************/
+
+        uint read (void[] dst)
+        {   
+                uint content = readable();
+                if (content)
+                   {
+                   if (content >= dst.length)
+                       content = dst.length;
+
+                   // transfer buffer content
+                   dst [0 .. content] = data [index .. index + content];
+                   index += content;
+                   }
+                else
+                   if (source) 
+                      {
+                      // pathological cases read directly from conduit
+                      if (dst.length > dimension) 
+                          content = source.read (dst);
+                      else
+                         // keep buffer partially populated
+                         if ((content = fill(source)) != IConduit.Eof && content > 0)
+                              content = read (dst);
+                      }
+                   else
+                      content = IConduit.Eof;
+                return content;
+        }
+
+        /***********************************************************************
+
+                Emulate OutputStream.write()
+
+                Params: 
+                src = the content to write
+
+                Returns:
+                return the number of bytes written, which may be less than
+                provided (conceptually).
+
+                Remarks:
+                Appends src content to the buffer, flushing to an attached
+                conduit as necessary. An IOException is thrown upon write 
+                failure.
+
+        ***********************************************************************/
+
+        uint write (void[] src)
+        {   
+                append (src.ptr, src.length);
+                return src.length;
+        }
+
+        /***********************************************************************
+        
+                Access configured conduit
+
+                Returns:
+                Returns the conduit associated with this buffer. Returns 
+                null if the buffer is purely memory based; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external conduit to operate, but 
+                it can be convenient to associate one. For example, methods
+                fill() & drain() use it to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final IConduit conduit ()
+        {
+                if (sink)
+                    return sink.conduit;
+                else
+                   if (source)
+                       return source.conduit;
+                return null;
         }
 }
