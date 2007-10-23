@@ -50,7 +50,7 @@ version (Win32)
         auto from = new FileConduit ("test.txt");
 
         // stream directly to console
-        Stdout.stream.copy (from);
+        Stdout.copy (from);
         ---
 
         And here we copy one file to another:

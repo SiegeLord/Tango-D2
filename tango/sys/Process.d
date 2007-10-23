@@ -66,7 +66,7 @@ debug (Process)
  *     p.execute;
  *
  *     Stdout.formatln ("Output from {}:", p.programName);
- *     Stdout.stream.copy (p.stdout).flush;
+ *     Stdout.copy (p.stdout).flush;
  *     auto result = p.wait;
  *
  *     Stdout.formatln ("Process '{}' ({}) exited with reason {}, status {}",

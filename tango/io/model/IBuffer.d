@@ -140,7 +140,7 @@ private import tango.io.model.IConduit;
         representing the console. However, all conduit operations are
         legitimate on Stdout and Stderr. For example:
         ---
-        Stdout.stream.copy (new FileConduit ("readme.txt"));
+        Stdout.copy (new FileConduit ("readme.txt"));
         ---
 
         Stdout also has support for both text conversions and formatted 

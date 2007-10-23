@@ -74,7 +74,7 @@
         global instances ~ this can be leveraged, for instance, to copy a
         file to the standard output:
         ---
-        Stdout.stream.copy (new FileConduit ("myfile"));
+        Stdout.copy (new FileConduit ("myfile"));
         ---
 
 *******************************************************************************/

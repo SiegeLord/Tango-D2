@@ -148,10 +148,10 @@ extern (C)
         Reader and Writer for examples of formatted IO.
 
         Stdout is a more specialized converter, attached to a conduit
-        representing the console. However, all conduit operations are
-        legitimate on Stdout and Stderr. For example:
+        representing the console. However, all OutputStream operations 
+        are legitimate on Stdout and Stderr. For example:
         ---
-        Stdout.stream.copy (new FileConduit ("readme.txt"));
+        Stdout.copy (new FileConduit ("readme.txt"));
         ---
 
         Stdout also has support for text conversions and formatted 
