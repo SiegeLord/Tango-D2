@@ -16,8 +16,12 @@ private import tango.io.Buffer;
 
 /*******************************************************************************
 
-        Buffers the flow of data from a downstream input. An upstream 
-        neighbour can locate and use this instead of creating another.
+        Buffers the flow of data from a upstream input. A downstream 
+        neighbour can locate and use this buffer instead of creating 
+        another instance of their own. 
+
+        (note that upstream is closer to the source, and downstream is
+        further away)
 
 *******************************************************************************/
 
@@ -39,8 +43,12 @@ class BufferedInput : Buffer
 
 /*******************************************************************************
         
-        Buffers the flow of data to a downstream output. An upstream 
-        neighbour can locate and use this instead of creating another.
+        Buffers the flow of data from a upstream output. A downstream 
+        neighbour can locate and use this buffer instead of creating 
+        another instance of their own.
+
+        (note that upstream is closer to the source, and downstream is
+        further away)
 
         Don't forget to flush() buffered content before closing.
 

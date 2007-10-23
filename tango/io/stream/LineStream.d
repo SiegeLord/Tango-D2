@@ -12,7 +12,7 @@
 
 module tango.io.stream.LineStream;
 
-private import tango.io.Conduit;
+private import tango.io.model.IConduit;
 
 private import tango.text.stream.LineIterator;
 
@@ -29,7 +29,11 @@ private import tango.text.stream.LineIterator;
 
         Note that this is just a simple wrapper around LineIterator, and
         supports utf8 lines only. Use LineIterator directly for utf16/32
-        support.
+        support, or use the other tanog.text.stream classes directly for 
+        other tokenizing needs.
+
+        Note that this class is a true instance of InputStream, by way of
+        inheritance via the Iterator superclass.
 
 *******************************************************************************/
 
