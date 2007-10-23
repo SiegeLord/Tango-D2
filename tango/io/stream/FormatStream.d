@@ -12,48 +12,42 @@
 
 module tango.io.stream.FormatStream;
 
-private import  tango.io.Print,
-                tango.io.Conduit;
+private import  tango.io.Print;
+
+private import  tango.io.model.IConduit;
 
 private import  tango.text.convert.Layout;
 
 /*******************************************************************************
 
         Simple way to hook up a utf8 formatter to an arbitrary OutputStream,
-        such as a file conduit:
+        such as a file:
         ---
         auto output = new FormatOutput (new FileOutput("path"));
-        output.print.formatln ("{} green bottles", 10);
+        output.formatln ("{} green bottles", 10);
         output.close;
         ---
 
+        This is a trivial wrapper around the Print class, and is limited
+        to emitting utf8 output. Use the Print class directly in order to
+        generate utf16/32 output instead.
+
+        Note that this class is a true instance of OutputStream, by way of
+        inheritance via the Print superclass.
+
 *******************************************************************************/
 
-class FormatOutput : OutputFilter
+class FormatOutput : Print!(char)
 {
-        private Print!(char) output;
-
         /***********************************************************************
 
-                Create a Print instance and attach it to the given stream
+                Create a Layout instance and bind it to the given stream
 
         ***********************************************************************/
 
         this (OutputStream stream)
         {
-                super (stream);
-                output = new Print!(char) (new Layout!(char), stream);
-        }
-
-        /***********************************************************************
-
-                Return the Print instance
-
-        ***********************************************************************/
-
-        final Print!(char) print ()
-        {
-                return output;
+                super (new Layout!(char), stream);
         }
 }
 

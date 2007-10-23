@@ -82,7 +82,7 @@ private import  tango.text.convert.Layout;
         
 *******************************************************************************/
 
-class Print(T)
+class Print(T) : OutputStream
 {
         private T[]             eol;
         private OutputStream    output;
@@ -184,18 +184,6 @@ class Print(T)
 
         /**********************************************************************
 
-               Flush the output stream
-
-        **********************************************************************/
-
-        final Print flush ()
-        {
-                output.flush;
-                return this;
-        }
-
-        /**********************************************************************
-
                 Control implicit flushing of newline(), where true enables
                 flushing. An explicit flush() will always flush the output.
 
@@ -262,6 +250,73 @@ class Print(T)
         private final uint sink (T[] s)
         {
                 return output.write (s);
+        }
+
+        /**********************************************************************/
+        /********************* OutputStream Interface *************************/
+        /**********************************************************************/
+
+
+        /***********************************************************************
+        
+                Return the host conduit
+
+        ***********************************************************************/
+
+        IConduit conduit ()
+        {
+                return output.conduit;
+        }
+
+        /***********************************************************************
+        
+                Write to conduit from a source array. The provided src
+                content will be written to the conduit.
+
+                Returns the number of bytes written from src, which may
+                be less than the quantity provided
+
+        ***********************************************************************/
+
+        uint write (void[] src)
+        {
+                return output.write (src);
+        }              
+                             
+        /**********************************************************************
+
+               Flush the output stream
+
+        **********************************************************************/
+
+        final OutputStream flush ()
+        {
+                output.flush;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                a reference to this class, and throws IOException on failure.
+
+        ***********************************************************************/
+
+        OutputStream copy (InputStream src)
+        {               
+                output.copy (src);
+                return this;
+        }
+                          
+        /***********************************************************************
+        
+                Close the output
+
+        ***********************************************************************/
+
+        void close ()
+        {       
+                output.close;
         }
 }
 
