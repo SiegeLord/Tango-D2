@@ -1706,7 +1706,7 @@ unittest
 }
 
 package {
-real rationalPoly(real x, real [] numerator, real [] denominator)
+T rationalPoly(T)(T x, T [] numerator, T [] denominator)
 {
     return poly(x, numerator)/poly(x, denominator);
 }

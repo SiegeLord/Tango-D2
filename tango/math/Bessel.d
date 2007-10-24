@@ -13,7 +13,7 @@ import tango.math.Math;
 private import tango.math.IEEE;
 
 
-private {
+private {   // Rational polynomial approximations to j0, y0, j1, y1.
 
 // sqrt(j0^2(1/x^2) + y0^2(1/x^2)) = z P(z**2)/Q(z**2), z(x) = 1/sqrt(x)
 // Peak error =  1.80e-20
@@ -38,6 +38,46 @@ const real j0phasen[] = [ -0x1.ccbaf3865bb0985ep-22, -0x1.3a6b175e64bdb82ep-14,
 const real j0phased[] = [ 0x1.ccbaf3865bb09918p-19, 0x1.3b5b0e12900d58b8p-11,
    0x1.0897373ff9906f7ep-5, 0x1.450a5b8c552ade4ap-1, 0x1.123e263e7f0e96d2p+2,
    0x1.d82ecca5654be7d2p+2, 1.0
+];
+
+
+// j1(x) = (x^2-r0^2)(x^2-r1^2)(x^2-r2^2) x P(x**2)/Q(x**2), 0 <= x <= 9
+// Peak error =  2e-21
+const real j1n[] = [ -0x1.2f494fa4e623b1bp+58, 0x1.8289f0a5f1e1a784p+52,
+  -0x1.9d773ee29a52c6d8p+45, 0x1.e9394ff57a46071cp+37, -0x1.616c7939904a359p+29,
+   0x1.424414b9ee5671eap+20, -0x1.6db34a9892d653e6p+10, 0x1.dcd7412d90a0db86p-1,
+   -0x1.1444a1643199ee5ep-12
+];
+
+const real j1d[] = [ 0x1.5a1e0a45eb67bacep+75, 0x1.35ee485d62f0ccbap+68,
+   0x1.11ee7aad4e4bcd8p+60, 0x1.3adde5dead800244p+51, 0x1.041c413dfbab693p+42,
+   0x1.4066d12193fcc082p+32, 0x1.24309d0dc2c4d42ep+22, 0x1.7115bea028dd75f2p+11,
+   1.0
+];
+
+// sqrt(j1^2(1/x^2) + y1^2(1/x^2)) = z P(z**2)/Q(z**2), z(x) = 1/sqrt(x)
+// Peak error =  1.35e=20, Relative error spread =  9.9e0
+const real [] j1modulusn = [ 0x1.059262020bf7520ap-6, 0x1.012ffc4d1f5cdbc8p-3,
+   0x1.03c17ce18cae596p+0, 0x1.6e0414a7114ae3ccp+1, 0x1.cb047410d229cbc4p+2,
+   0x1.4385d04bb718faaap+1, 0x1.914074c30c746222p-2, -0x1.42abe77f6b307aa6p+2
+];
+
+const real [] j1modulusd = [ 0x1.47d4e6ad98d8246ep-6, 0x1.42562f48058ff904p-3,
+   0x1.44985e2af35c6f9cp+0, 0x1.c6f4a03469c4ef6cp+1, 0x1.1829a060e8d604cp+3,
+   0x1.44111c892f9cc84p+1, -0x1.d7c36d7f1e5aef6ap-1, -0x1.8eeafb1ac81c4c06p+2,
+   1.0
+];
+
+// atan(y1(x)/j1(x))  =  x - 3pi/4 + z P(z**2)/Q(z**2), z(x) = 1/x
+// Peak error =  4.83e-21. Relative error spread =  1.9e0
+const real [] j1phasen = [ 0x1.ca9f612d83aaa818p-20, 0x1.2e82fcfb7d0fee9ep-12,
+   0x1.e28858c1e947506p-7, 0x1.12b8f96e5173d20ep-2, 0x1.965e6a013154c0ap+0,
+   0x1.0156a25eaa0dd78p+1
+];
+
+const real [] j1phased = [ 0x1.31bf961e57c71ae4p-18, 0x1.9464d8f2abf750a6p-11,
+   0x1.446a786bac2131fp-5, 0x1.76caa8513919873cp-1, 0x1.2130b56bc1a563e4p+2,
+   0x1.b3cc1a865259dfc6p+2, 0x1p+0
 ];
 
 }
@@ -170,49 +210,6 @@ const real y059d[] = [ 0x1.17af71a3d4167676p+30, 0x1.a36abbb668c79d6cp+31,
     return y;
 }
 
-private {
-
-// j1(x) = (x^2-r0^2)(x^2-r1^2)(x^2-r2^2) x P(x**2)/Q(x**2), 0 <= x <= 9
-// Peak error =  2e-21
-const real j1n[] = [ -0x1.2f494fa4e623b1bp+58, 0x1.8289f0a5f1e1a784p+52,
-  -0x1.9d773ee29a52c6d8p+45, 0x1.e9394ff57a46071cp+37, -0x1.616c7939904a359p+29,
-   0x1.424414b9ee5671eap+20, -0x1.6db34a9892d653e6p+10, 0x1.dcd7412d90a0db86p-1,
-   -0x1.1444a1643199ee5ep-12
-];
-
-const real j1d[] = [ 0x1.5a1e0a45eb67bacep+75, 0x1.35ee485d62f0ccbap+68,
-   0x1.11ee7aad4e4bcd8p+60, 0x1.3adde5dead800244p+51, 0x1.041c413dfbab693p+42,
-   0x1.4066d12193fcc082p+32, 0x1.24309d0dc2c4d42ep+22, 0x1.7115bea028dd75f2p+11,
-   1.0
-];
-
-// sqrt(j1^2(1/x^2) + y1^2(1/x^2)) = z P(z**2)/Q(z**2), z(x) = 1/sqrt(x)
-// Peak error =  1.35e=20, Relative error spread =  9.9e0
-const real [] j1modulusn = [ 0x1.059262020bf7520ap-6, 0x1.012ffc4d1f5cdbc8p-3,
-   0x1.03c17ce18cae596p+0, 0x1.6e0414a7114ae3ccp+1, 0x1.cb047410d229cbc4p+2,
-   0x1.4385d04bb718faaap+1, 0x1.914074c30c746222p-2, -0x1.42abe77f6b307aa6p+2
-];
-
-const real [] j1modulusd = [ 0x1.47d4e6ad98d8246ep-6, 0x1.42562f48058ff904p-3,
-   0x1.44985e2af35c6f9cp+0, 0x1.c6f4a03469c4ef6cp+1, 0x1.1829a060e8d604cp+3,
-   0x1.44111c892f9cc84p+1, -0x1.d7c36d7f1e5aef6ap-1, -0x1.8eeafb1ac81c4c06p+2,
-   1.0
-];
-
-// atan(y1(x)/j1(x))  =  x - 3pi/4 + z P(z**2)/Q(z**2), z(x) = 1/x
-// Peak error =  4.83e-21. Relative error spread =  1.9e0
-const real [] j1phasen = [ 0x1.ca9f612d83aaa818p-20, 0x1.2e82fcfb7d0fee9ep-12,
-   0x1.e28858c1e947506p-7, 0x1.12b8f96e5173d20ep-2, 0x1.965e6a013154c0ap+0,
-   0x1.0156a25eaa0dd78p+1
-];
-
-const real [] j1phased = [ 0x1.31bf961e57c71ae4p-18, 0x1.9464d8f2abf750a6p-11,
-   0x1.446a786bac2131fp-5, 0x1.76caa8513919873cp-1, 0x1.2130b56bc1a563e4p+2,
-   0x1.b3cc1a865259dfc6p+2, 0x1p+0
-];
-
-}
-
 /**
  *  Bessel function of order one
  *
@@ -254,9 +251,38 @@ real cylBessel_j1(real x)
     return y;
 }
 
-
-private {
-
+/**
+ *  Bessel function of the second kind, order zero
+ *
+ * Returns Bessel function of the second kind, of order
+ * zero, of the argument.
+ */
+real cylBessel_y1(real x)
+in {
+    assert(x>=0.0);
+    // TODO: should it return -infinity for x<0 ?
+}
+body {
+/* The domain is divided into the intervals [0, 4.5>, [4.5,9> and
+ * [9, infinity). In the first interval a rational approximation
+ * R(x) is employed to compute y0(x)  = R(x) + 2/pi * log(x) * j0(x).
+ *
+ * In the second interval, the approximation is
+ *     (x - p)(x - q)(x - r)(x - s)P9(x)/Q10(x)
+ * where p, q, r, s are zeros of y1(x).
+ *
+ * The third interval uses the same approximations to modulus
+ * and phase as j1(x), whence y1(x) = modulus * sin(phase).
+ *
+ * ACCURACY:
+ *
+ *  Absolute error, when y0(x) < 1; else relative error:
+ *
+ * arithmetic   domain     # trials      peak         rms
+ *    IEEE      0, 30       36000       2.7e-19     5.3e-20
+ *
+ */
+    
 // y1(x) = 2/pi * (log(x) * j1(x) - 1/x) + R(x^2) z P(z**2)/Q(z**2)
 // 0 <= x <= 4.5, z(x) = x
 // Peak error =  7.25e-22. Relative error spread =  4.5e-2
@@ -285,40 +311,7 @@ const real y159d[] = [ 0x1.9b64f2a4d5614462p+26, -0x1.17501e0e38db675ap+30,
    -0x1.694110c682e5cbcap+23, 0x1.c20f7005b88c789ep+19, -0x1.983a5b4275ab7da8p+15,
    0x1.17c60380490fa1fcp+11, -0x1.ee84c254392634d8p+5, 1.0
 ];
-
-}
-
-/**
- *  Bessel function of the second kind, order zero
- *
- * Returns Bessel function of the second kind, of order
- * zero, of the argument.
- */
-/* The domain is divided into the intervals [0, 4.5>, [4.5,9> and
- * [9, infinity). In the first interval a rational approximation
- * R(x) is employed to compute y0(x)  = R(x) + 2/pi * log(x) * j0(x).
- *
- * In the second interval, the approximation is
- *     (x - p)(x - q)(x - r)(x - s)P9(x)/Q10(x)
- * where p, q, r, s are zeros of y1(x).
- *
- * The third interval uses the same approximations to modulus
- * and phase as j1(x), whence y1(x) = modulus * sin(phase).
- *
- * ACCURACY:
- *
- *  Absolute error, when y0(x) < 1; else relative error:
- *
- * arithmetic   domain     # trials      peak         rms
- *    IEEE      0, 30       36000       2.7e-19     5.3e-20
- *
- */
-real cylBessel_y1(real x)
-in {
-    assert(x>=0.0);
-    // TODO: should it return -infinity for x<0 ?
-}
-body {
+    
     real xx, y, z, modulus, phase;
 
     z = 1.0/x;
