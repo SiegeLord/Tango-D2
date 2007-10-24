@@ -20,6 +20,16 @@ private import tango.core.ByteSwap;
 
 /*******************************************************************************
 
+        A simple way to read binary data from an arbitrary InputStream,
+        such as a file:
+        ---
+        auto input = new DataInput (new FileInput("path"));
+        auto x = input.readInt;
+        auto y = input.readDouble;
+        input.read (new char[10]);
+        input.close;
+        ---
+
 *******************************************************************************/
 
 class DataInput : InputFilter, Buffered
@@ -158,6 +168,16 @@ class DataInput : InputFilter, Buffered
 
 
 /*******************************************************************************
+
+        A simple way to write binary data to an arbitrary OutputStream,
+        such as a file:
+        ---
+        auto output = new DataOutput (new FileOutput("path"));
+        output.writeInt (1024);
+        output.writeDouble (3.14159);
+        output.write ("hello world");
+        output.flush.close;
+        ---
 
 *******************************************************************************/
 
