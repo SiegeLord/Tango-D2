@@ -29,7 +29,7 @@ private import tango.text.stream.LineIterator;
 
         Note that this is just a simple wrapper around LineIterator, and
         supports utf8 lines only. Use LineIterator directly for utf16/32
-        support, or use the other tanog.text.stream classes directly for 
+        support, or use the other tango.text.stream classes directly for 
         other tokenizing needs.
 
         Note that this class is a true instance of InputStream, by way of

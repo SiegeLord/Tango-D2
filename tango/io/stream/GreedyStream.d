@@ -16,8 +16,7 @@ private import tango.io.Conduit;
 
 /*******************************************************************************
 
-        A conduit filter that ensures its output is written in full. Note
-        that the filter attaches itself to the associated conduit    
+        A conduit filter that ensures its output is written in full  
 
 *******************************************************************************/
 
@@ -61,8 +60,7 @@ class GreedyOutput : OutputFilter
 
 /*******************************************************************************
 
-        A conduit filter that ensures its input is read in full. Note
-        that the filter attaches itself to the associated conduit          
+        A conduit filter that ensures its input is read in full         
 
 *******************************************************************************/
 
