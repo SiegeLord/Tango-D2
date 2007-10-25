@@ -192,37 +192,25 @@ class Conduit : IConduit
         /***********************************************************************
 
                 Transfer the content of another conduit to this one. Returns
-                a reference to this class, and throws IOException on failure.
+                the dst OutputStream, or throws IOException on failure.
 
         ***********************************************************************/
 
         final OutputStream copy (InputStream src)
         {
-                return copy (src, this);
-        }
-
-        /***********************************************************************
-
-                Transfer the content of another conduit to this one. Returns
-                the dst OutputStream, or throws IOException on failure.
-
-        ***********************************************************************/
-
-        final OutputStream copy (InputStream src, OutputStream dst)
-        {
                 uint i;
-                auto tmp = new byte [dst.conduit.bufferSize];
+                auto tmp = new byte [this.bufferSize];
 
                 while ((i = src.read(tmp)) != IConduit.Eof)
                       {
                       auto p = tmp.ptr;
                       for (uint j; i > 0; i -= j, p += j)
-                           if ((j = dst.write (p[0..i])) is IConduit.Eof)
+                           if ((j = this.write (p[0..i])) is IConduit.Eof)
                                 exception ("OutputStream.copy :: Eof while copying");
                       }
                 
                 delete tmp;
-                return dst;
+                return this;
         }
 }
 
