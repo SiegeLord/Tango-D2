@@ -177,7 +177,7 @@ struct Console
 
                 /**************************************************************
 
-                        Returns the configured Conduit
+                        Returns the configured source
 
                         Remarks:
                         Provides access to the underlying mechanism for 
@@ -186,20 +186,20 @@ struct Console
                         
                 **************************************************************/
 
-                final IConduit conduit ()
+                final InputStream source ()
                 {
-                        return stream.conduit;
+                        return buffer.input;
                 }           
 
                 /**************************************************************
 
-                        Divert input to an alternate conduit
+                        Divert input to an alternate source
                         
                 **************************************************************/
 
-                final Input conduit (IConduit conduit)
+                final Input source (InputStream source)
                 {
-                        buffer.input = conduit;
+                        buffer.input = source;
                         return this;
                 }           
         }
@@ -361,29 +361,29 @@ struct Console
 
                 /**************************************************************
 
-                        Returns the configured Conduit
+                        Returns the configured output sink
 
                         Remarks:
                         Provides access to the underlying mechanism for 
-                        console input. Use this to retain prior state
+                        console output. Use this to retain prior state
                         when temporarily switching outputs 
                         
                 **************************************************************/
 
-                final IConduit conduit ()
+                final OutputStream sink ()
                 {
-                        return stream.conduit;
+                        return buffer.output;
                 }           
 
                 /**************************************************************
 
-                        Divert output to an alternate conduit
+                        Divert output to an alternate sink
 
                 **************************************************************/
 
-                final Output conduit (IConduit conduit)
+                final Output sink (OutputStream sink)
                 {
-                        buffer.output = conduit;
+                        buffer.output = sink;
                         return this;
                 }           
         }
