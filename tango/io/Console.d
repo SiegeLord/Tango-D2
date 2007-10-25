@@ -186,7 +186,7 @@ struct Console
                         
                 **************************************************************/
 
-                final InputStream source ()
+                final InputStream input ()
                 {
                         return buffer.input;
                 }           
@@ -197,7 +197,7 @@ struct Console
                         
                 **************************************************************/
 
-                final Input source (InputStream source)
+                final Input input (InputStream source)
                 {
                         buffer.input = source;
                         return this;
@@ -370,7 +370,7 @@ struct Console
                         
                 **************************************************************/
 
-                final OutputStream sink ()
+                final OutputStream output ()
                 {
                         return buffer.output;
                 }           
@@ -381,7 +381,7 @@ struct Console
 
                 **************************************************************/
 
-                final Output sink (OutputStream sink)
+                final Output output (OutputStream sink)
                 {
                         buffer.output = sink;
                         return this;
