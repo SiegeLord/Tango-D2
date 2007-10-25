@@ -38,9 +38,6 @@ public  import  tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
-        private OutputStream    sink;
-        private InputStream     source;
-
         /***********************************************************************
 
                 Return a preferred size for buffering conduit I/O
@@ -91,18 +88,6 @@ class Conduit : IConduit
         ***********************************************************************/
 
         abstract void detach ();
-
-        /***********************************************************************
-        
-                Constructor to initialize the default sink & source
-
-        ***********************************************************************/
-
-        this ()
-        {
-                sink = this;
-                source = this;
-        }
 
         /***********************************************************************
 
@@ -164,7 +149,7 @@ class Conduit : IConduit
         
         final InputStream input ()
         {
-                return source;
+                return this;
         }
 
         /***********************************************************************
@@ -175,7 +160,7 @@ class Conduit : IConduit
         
         final OutputStream output ()
         {
-                return sink;
+                return this;
         }
 
         /***********************************************************************
