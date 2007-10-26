@@ -85,6 +85,15 @@ interface IConduit : InputStream, OutputStream, ISelectable
 
         /***********************************************************************
 
+                Transfer the content of another conduit to this one. Returns
+                the dst OutputStream, or throws IOException on failure.
+
+        ***********************************************************************/
+
+        abstract OutputStream copy (InputStream src, OutputStream dst);
+
+        /***********************************************************************
+
                 Throw a generic IO exception with the provided msg
 
         ***********************************************************************/

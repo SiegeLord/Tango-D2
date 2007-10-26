@@ -222,7 +222,7 @@ class SnoopOutput : OutputStream
 
         final OutputStream copy (InputStream src)
         {
-                host.copy (src);
+                host.conduit.copy (src, this);
 
                 char[256] tmp = void;
                 snoop (layout.sprint (tmp, "{}: copied from {}", host.conduit, src.conduit));

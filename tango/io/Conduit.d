@@ -183,6 +183,18 @@ class Conduit : IConduit
 
         final OutputStream copy (InputStream src)
         {
+                return copy (src, this);
+        }
+
+        /***********************************************************************
+
+                Transfer the content of another conduit to this one. Returns
+                the dst OutputStream, or throws IOException on failure.
+
+        ***********************************************************************/
+
+        final OutputStream copy (InputStream src, OutputStream dst)
+        {
                 uint i;
                 auto tmp = new byte [this.bufferSize];
 
@@ -190,12 +202,12 @@ class Conduit : IConduit
                       {
                       auto p = tmp.ptr;
                       for (uint j; i > 0; i -= j, p += j)
-                           if ((j = this.write (p[0..i])) is IConduit.Eof)
+                           if ((j = dst.write (p[0..i])) is IConduit.Eof)
                                 exception ("OutputStream.copy :: Eof while copying");
                       }
                 
                 delete tmp;
-                return this;
+                return dst;
         }
 }
 
@@ -352,8 +364,7 @@ class OutputFilter : OutputStream
 
         OutputStream copy (InputStream src)
         {
-                host.copy (src);
-                return this;
+                return conduit.copy (src, this);
         }
 }
 

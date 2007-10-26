@@ -304,8 +304,7 @@ class Print(T) : OutputStream
 
         OutputStream copy (InputStream src)
         {               
-                output.copy (src);
-                return this;
+                return conduit.copy (src, this);
         }
                           
         /***********************************************************************
