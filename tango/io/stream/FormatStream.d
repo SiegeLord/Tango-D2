@@ -54,13 +54,17 @@ class FormatOutput : Print!(char)
 
         /***********************************************************************
 
-                Create a Layout instance and bind it to the given stream
+                Create a Layout instance and bind it to the given stream.
+                The optional second argument controls implicit flushing of 
+                newline(), where true enables flushing. An explicit flush() 
+                will always flush the output.
 
         ***********************************************************************/
 
-        this (OutputStream stream)
+        this (OutputStream stream, bool flush=false)
         {
                 super (layout, stream);
+                super.flush = flush;
         }
 }
 
