@@ -13,74 +13,34 @@
 
         Trace exposes this style of usage:
         ---
-        Trace ("hello");                        => hello
-        Trace (1);                              => 1
-        Trace (3.14);                           => 3.14
-        Trace ('b');                            => b
-        Trace (1, 2, 3);                        => 1, 2, 3         
-        Trace ("abc", 1, 2, 3);                 => abc, 1, 2, 3        
-        Trace ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
-        Trace ("abc") ("def") (3.14);           => abcdef3.14
-
         Trace.format ("abc {}", 1);             => abc 1
         Trace.format ("abc {}:{}", 1, 2);       => abc 1:2
         Trace.format ("abc {1}:{0}", 1, 2);     => abc 2:1
         ---
 
-        Flushing the output is achieved through the flush() method, or
-        via an empty pair of parens: 
-        ---
-        Trace ("hello world") ();
-        Trace ("hello world").flush;
-
-        Trace.format ("hello {}", "world") ();
-        Trace.format ("hello {}", "world").flush;
-        ---
-        
         Special character sequences, such as "\n", are written directly to
         the output without any translation (though an output-filter could
         be inserted to perform translation as required). Platform-specific 
-        newlines are generated instead via the newline() method, which also 
+        newlines are generated instead via the formatln() method, which also 
         flushes the output when configured to do so:
         ---
-        Trace ("hello world").newline;
-        Trace.format ("hello {}", "world").newline;
         Trace.formatln ("hello {}", "world");
         ---
 
-        The format() method of Trace supports the range
-        of formatting options provided by tango.text.convert.Layout and
-        extensions thereof; including the full I18N extensions where it
-        has been configured in that manner. To enable a French Trace, 
-        do the following:
+        Explicitly flushing the output is achieved via a flush() method
         ---
-        import tango.text.locale.Locale;
-
-        Trace.layout = new Locale (Culture.getCulture ("fr-FR"));
+        Trace.format ("hello {}", "world").flush;
         ---
         
-        Note that Trace is a shared entity, so every usage of it will
-        be affected by the above example. For applications supporting 
-        multiple regions, create multiple Locale instances instead and 
-        cache them in an appropriate manner
-
-        Note also that the output stream in use is exposed by this global 
-        instance ~ this can be leveraged, for instance, to copy a file to 
-        the traced output:
-        ---
-        Trace.stream.copy (new FileConduit ("myfile"));
-        ---
-
 *******************************************************************************/
 
 module tango.util.log.Trace;
 
-private import  tango.io.Print,
-                tango.io.Console;
+private import tango.io.Console;
 
-private import  tango.text.convert.Layout;
+private import tango.io.model.IConduit;
 
-private import  tango.io.stream.MutexStream;
+private import tango.text.convert.Layout;
 
 /*******************************************************************************
 
@@ -88,11 +48,98 @@ private import  tango.io.stream.MutexStream;
 
 *******************************************************************************/
 
+/// global trace instance
+public static SyncPrint Trace;
+
 static this()
 {
-        Trace = new Print!(char) (new Layout!(char), new MutexOutput(Cerr.stream, Cerr));
-        Trace.flush = !Cerr.redirected;
+        Trace = new SyncPrint (Cerr.stream, Cerr, !Cerr.redirected);
 }
 
-/// global trace instance
-public static Print!(char) Trace;
+/*******************************************************************************
+        
+        Intended for internal use only
+        
+*******************************************************************************/
+
+private class SyncPrint
+{
+        private Object          mutex;
+        private OutputStream    output;
+        private Layout!(char)   convert;
+        private bool            flushLines;
+
+        version (Win32)
+                 private const char[] Eol = "\r\n";
+             else
+                private const char[] Eol = "\n";
+
+        /**********************************************************************
+
+                Construct a Print instance, tying the provided stream
+                to a layout formatter
+
+        **********************************************************************/
+
+        this (OutputStream output, Object mutex, bool flush=false)
+        {
+                this.mutex = mutex;
+                this.output = output;
+                this.flushLines = flush;
+                this.convert = new Layout!(char);
+        }
+
+        /**********************************************************************
+
+                Layout using the provided formatting specification
+
+        **********************************************************************/
+
+        final SyncPrint format (char[] fmt, ...)
+        {
+                synchronized (mutex)
+                              convert (&sink, _arguments, _argptr, fmt);
+                return this;
+        }
+
+        /**********************************************************************
+
+                Layout using the provided formatting specification
+
+        **********************************************************************/
+
+        final SyncPrint formatln (char[] fmt, ...)
+        {
+                synchronized (mutex)
+                             {
+                             convert (&sink, _arguments, _argptr, fmt);
+                             output.write (Eol);
+                             if (flushLines)
+                                 output.flush;
+                             }
+                return this;
+        }
+
+        /**********************************************************************
+
+               Flush the output stream
+
+        **********************************************************************/
+
+        final void flush ()
+        {
+                synchronized (mutex)
+                              output.flush;
+        }
+
+        /**********************************************************************
+
+                Sink for passing to the formatter
+
+        **********************************************************************/
+
+        private final uint sink (char[] s)
+        {
+                return output.write (s);
+        }
+}
