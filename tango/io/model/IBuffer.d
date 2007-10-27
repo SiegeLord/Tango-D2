@@ -17,82 +17,39 @@ private import tango.io.model.IConduit;
 
 /*******************************************************************************
 
-        The premise behind this IO package is as follows:
-
-        A central concept is that of a buffer. Each buffer acts
+        Buffer is central concept in Tango I/O. Each buffer acts
         as a queue (line) where items are removed from the front
         and new items are added to the back. Buffers are modeled 
         by tango.io.model.IBuffer, and a concrete implementation 
         is provided by this class.
         
-        Buffers can be read and written directly, but Readers, 
-        Iterators, and/or Writers are often leveraged to apply 
-        structure to what might otherwise be simple raw data. 
+        Buffer can be read from and written to directly, though 
+        various data-converters and filters are often leveraged 
+        to apply structure to what might otherwise be simple raw 
+        data. 
 
-        Readers & writers are bound to a buffer; often the same 
-        buffer. It's also perfectly legitimate to bind multiple 
-        readers to the same buffer; they will access buffer 
-        content serially as one would expect. This also applies to
-        multiple writers on the same buffer. Readers and writers
-        support three styles of IO: put/get, the C++ style << &
-        >> operators, and the () whisper style. All operations 
-        can be chained.
-        
-        Any class can be made compatable with the reader/writer
-        framework by implementing the IReadable and/or IWritable 
-        interfaces. Each of these specify just a single method.
-        Once compatable, the class can simply be passed to the 
-        reader/writer as if it were native data. Structs can be
-        made compatible in a similar manner by exposing an
-        appropriate function signature.
-        
         Buffers may also be tokenized by applying an Iterator. 
         This can be handy when one is dealing with text input, 
         and/or the content suits a more fluid format than most 
-        typical readers & writers support. Iterator tokens
-        are mapped directly onto buffer content (sliced), making 
-        them quite efficient in practice. Like Readers, multiple
-        iterators can be mapped onto a common buffer; access is
-        serialized in a similar fashion.
-
-        Conduits provide virtualized access to external content,
-        and represent things like files or Internet connections.
-        They host both an input and output stream. Conduits are
-        modelled by tango.io.model.IConduit, and implemented via
-        classes FileConduit, SocketConduit, ConsoleConduit, and 
-        so on. Additional conduit varieties are easy to construct: 
-        one either subclasses tango.io.Conduit, or implements 
-        tango.io.model.IConduit ~ depending upon which is the most 
-        convenient to use. Each conduit reads and writes from/to 
-        a buffer in big chunks (typically the entire buffer).
-
-        Conduits may have one or more filters attached. These 
-        will process content as it flows back and forth across
-        the conduit. Examples of filters include compression, utf
-        transcoding, and endian transformation. These filters
-        apply to the entire scope of the conduit, rather than
-        being specific to one data-type or another. Specific 
-        data-type transformations are applied by readers and 
-        writers instead, and include operations such as 
-        endian-conversion.
+        typical converters support. Iterator tokens are mapped 
+        directly onto buffer content (sliced), making them quite 
+        efficient in practice. Like other types of buffer client, 
+        multiple iterators can be mapped onto one common buffer
+        and access will be serialized.
 
         Buffers are sometimes memory-only, in which case there
-        is nothing left to do when a reader (or iterator) hits
-        end of buffer conditions. Other buffers are themselves 
-        bound to a Conduit. When this is the case, a reader will 
-        eventually cause the buffer to reload via its associated 
-        conduit. Previous buffer content will thus be lost. The
-        same approach is applied to writers, whereby they flush 
-        the content of a full buffer to a bound conduit before 
-        continuing. Another variation is that of a memory-mapped
-        buffer, whereby the buffer content is mapped directly to
-        virtual memory exposed via the OS. This can be used to 
-        address large files as an array of content.
-
-        Readers & writers may have a protocol attached. The role
-        of a protocol is to format (and parse) data according to
-        the specific protocol, and there are both binary and text
-        oriented protocol to select from. 
+        is nothing left to do when a client has consumed all the 
+        content. Other buffers are themselves bound to an external
+        device called a conduit. When this is the case, a consumer 
+        will eventually cause a buffer to reload via its associated 
+        conduit and previous buffer content will be lost. 
+        
+        A similar approach is applied to clients which populate a
+        buffer, whereby the content of a full buffer will be flushed
+        to a bound conduit before continuing. Another variation is 
+        that of a memory-mapped buffer, whereby the buffer content 
+        is mapped directly to virtual memory exposed via the OS. This 
+        can be used to address large files as an array of content.
 
         Direct buffer manipulation typically involves appending, 
         as in the following example:
@@ -103,19 +60,18 @@ private import tango.io.model.IConduit;
         auto foo = "to write some D";
 
         // append some text directly to it
-        buf.append("now is the time for all good men ").append(foo);
+        buf ("now is the time for all good men ") (foo);
         ---
 
-        Alternatively, one might use a Writer to append the buffer. 
-        This is an example of the 'whisper' style supported by the
-        IO package:
+        Alternatively, one might use a formatter to append the buffer:
         ---
-        auto write = new Writer (new Buffer(256));
-        write ("now is the time for all good men "c) (foo);
+        auto output = new FormatOutput (new Buffer(256));
+        output.format ("now is the time for {} good men {}", 3, foo);
         ---
 
-        One might use a GrowBuffer instead, where one wishes to append
-        beyond the specified size. 
+        A slice() method will return all valid content within a buffer.
+        GrowBuffer can be used instead, where one wishes to append beyond 
+        a specified limit. 
         
         A common usage of a buffer is in conjunction with a conduit, 
         such as FileConduit. Each conduit exposes a preferred-size for 
@@ -126,62 +82,30 @@ private import tango.io.model.IConduit;
         ---
 
         However, this is typically hidden by higher level constructors 
-        such as those of Reader and Writer derivitives. For example:
+        such as those exposed via the stream wrappers. For example:
         ---
-        auto file = new FileConduit ("file.name");
-        auto read = new Reader (file);
-        ---
-
-        There is indeed a buffer between the Reader and Conduit, but 
-        explicit construction is unecessary in common cases. See both 
-        Reader and Writer for examples of formatted IO.
-
-        Stdout is a more specialized converter, attached to a conduit
-        representing the console. However, all conduit operations are
-        legitimate on Stdout and Stderr. For example:
-        ---
-        Stdout.copy (new FileConduit ("readme.txt"));
+        auto input = new DataInput (new FileInput("file.name"));
         ---
 
-        Stdout also has support for both text conversions and formatted 
-        output:
-        ---
-        Stdout ("now is the time for ") (3) (" good men ") (foo);
+        There is indeed a buffer between the resultant stream and the 
+        file source, but explicit buffer construction is unecessary in 
+        common cases. 
 
-        Stdout.format ("now is the time for {} good men {}", 3, foo);
+        An Iterator is constructed in a similar manner, where you provide 
+        it an input stream to operate upon. There's a variety of iterators 
+        available in the tango.text.stream package, and they are templated 
+        for each of utf8, utf16, and utf32. This example uses a line iterator 
+        to sweep a text file:
         ---
-
-        Stdout is attached to a specific buffer, which in turn is attached 
-        to a specific conduit. This buffer is known as Cout, and is attached 
-        to a conduit representing the console. Cout can be used directly, 
-        bypassing the Stdout formatting layer if so desired (it is lightweight)
-        
-        Cout has relatives named Cerr and Cin, which are attached to 
-        the corresponding console conduits. Writer Stderr, and reader 
-        Stdin are mapped onto Cerr and Cin respectively, ensuring 
-        console IO is buffered in one common area. 
-        ---
-        Cout ("what is your name?") ();
-        Cout ("hello ")(Cin.get).newline;
-        ---
-
-        An Iterator is constructed in a similar manner to a Reader; you
-        provide it with a buffer or a conduit. There's a variety of 
-        iterators available in the tango.text package, and they are each
-        templated for utf8, utf16, and utf32 ~ this example uses a line 
-        iterator to sweep a text file:
-        ---
-        auto file = new FileConduit ("file.name");
-        foreach (line; new LineIterator (file))
+        auto lines = new LineInput (new FileInput("file.name"));
+        foreach (line; lines)
                  Cout(line).newline;
         ---                 
 
         Buffers are useful for many purposes within Tango, but there
         are times when it may be more appropriate to sidestep them. For 
-        such cases, conduit derivatives (such as FileConduit) support 
+        such cases, all conduit derivatives (such as FileConduit) support 
         direct array-based IO via a pair of read() and write() methods. 
-        These alternate methods are accessed via the conduit input and 
-        output streams, and will also invoke any attached filters.
 
 *******************************************************************************/
 
