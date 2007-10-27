@@ -100,32 +100,23 @@ class Properties(T)
 
         /***********************************************************************
 
-                Write properties to the provided conduit
+                Write properties to the provided stream
 
         ***********************************************************************/
 
-        static void save (IConduit conduit, T[][T[]] properties)
+        static void save (OutputStream stream, T[][T[]] properties)
         {
-                save (new Buffer(conduit), properties).flush;
-        }
-
-        /***********************************************************************
-
-                Write properties to the provided buffer
-
-        ***********************************************************************/
-
-        static IBuffer save (IBuffer emit, T[][T[]] properties)
-        {
-                const T[] equals = " = ";
+               const T[] equals = " = ";
                 version (Win32)
                          const T[] NL = "\r\n";
                 version (Posix)
                          const T[] NL = "\n";
 
+                auto b = cast(Buffered) stream;
+                auto emit = b ? b.buffer : new Buffer (stream.conduit);
                 foreach (key, value; properties)
                          emit (key) (equals) (value) (NL);
-                return emit;
+                emit.flush;
         }
 }
 
