@@ -305,23 +305,6 @@ class Buffer : IBuffer
         }
 
         /***********************************************************************
-        
-                Generic IOException thrower
-                
-                Params: 
-                msg = a text message describing the exception reason
-
-                Remarks:
-                Throw an IOException with the provided message
-
-        ***********************************************************************/
-
-        final void error (char[] msg)
-        {
-                throw new IOException (msg);
-        }
-
-        /***********************************************************************
 
                 Reset the buffer content
 
@@ -895,7 +878,11 @@ class Buffer : IBuffer
 
         final uint drain ()
         {
-                auto dst = sink;
+                return drain (sink);
+        }
+
+        final uint drain (OutputStream dst)
+        {
                 assert (dst);
 
                 uint ret = read (&dst.write);
@@ -1054,48 +1041,6 @@ class Buffer : IBuffer
         }
 
         /***********************************************************************
-        
-                Exposes configured output stream
-
-                Returns:
-                Returns the OutputStream associated with this buffer. Returns 
-                null if the buffer is not attached to an output; that is, it's
-                not backed by some external medium.
-
-                Remarks:
-                Buffers do not require an external stream to operate, but 
-                it can be convenient to associate them. For example, methods
-                fill & drain use them to import/export content as necessary.
-
-        ***********************************************************************/
-
-        final OutputStream output ()
-        {
-                return sink;
-        }
-
-        /***********************************************************************
-        
-                Exposes configured input stream
-
-                Returns:
-                Returns the InputStream associated with this buffer. Returns 
-                null if the buffer is not attached to an input; that is, it's
-                not backed by some external medium.
-
-                Remarks:
-                Buffers do not require an external stream to operate, but 
-                it can be convenient to associate them. For example, methods
-                fill & drain use them to import/export content as necessary.
-
-        ***********************************************************************/
-
-        final InputStream input ()
-        {
-                return source;
-        }
-
-        /***********************************************************************
                 
                 Access buffer content
 
@@ -1148,9 +1093,37 @@ class Buffer : IBuffer
 
 
         /**********************************************************************/
-        /************************ Stream Interfaces ***************************/
+        /******************** Stream & Conduit Interfaces *********************/
         /**********************************************************************/
 
+
+        /***********************************************************************
+        
+                Return the name of this conduit
+
+        ***********************************************************************/
+
+        override char[] toUtf8 ()
+        {
+                return "<buffer>";
+        }
+                     
+        /***********************************************************************
+        
+                Generic IOException thrower
+                
+                Params: 
+                msg = a text message describing the exception reason
+
+                Remarks:
+                Throw an IOException with the provided message
+
+        ***********************************************************************/
+
+        final void error (char[] msg)
+        {
+                throw new IOException (msg);
+        }
 
         /***********************************************************************
         
@@ -1173,7 +1146,7 @@ class Buffer : IBuffer
                 if (sink)
                    {
                    while (readable() > 0)
-                          drain ();
+                          drain (sink);
 
                    // flush the filter chain also
                    sink.flush;
@@ -1203,25 +1176,6 @@ class Buffer : IBuffer
 
         /***********************************************************************
         
-                Close the stream
-
-                Remarks:
-                Propagate request to an attached OutputStream (this is a
-                requirement for the OutputStream interface)
-
-        ***********************************************************************/
-
-        override void close () 
-        {
-                if (sink)
-                    sink.close;
-                else
-                   if (source)
-                       source.close;
-        }
-
-        /***********************************************************************
-        
                 Copy content via this buffer from the provided src
                 conduit.
 
@@ -1242,7 +1196,7 @@ class Buffer : IBuffer
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to
                        if (writable is 0)
-                           drain ();
+                           drain (sink);
                 return this;
         } 
 
@@ -1341,6 +1295,99 @@ class Buffer : IBuffer
                 else
                    if (source)
                        return source.conduit;
-                return null;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        final override uint bufferSize ()
+        {
+                return 32 * 1024;
+        }
+                     
+        /***********************************************************************
+
+                Is the conduit alive?
+
+        ***********************************************************************/
+
+        final override bool isAlive ()
+        {       
+                return true;
+        }
+
+        /***********************************************************************
+        
+                Exposes configured output stream
+
+                Returns:
+                Returns the OutputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an output; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final OutputStream output ()
+        {
+                return sink;
+        }
+
+        /***********************************************************************
+        
+                Exposes configured input stream
+
+                Returns:
+                Returns the InputStream associated with this buffer. Returns 
+                null if the buffer is not attached to an input; that is, it's
+                not backed by some external medium.
+
+                Remarks:
+                Buffers do not require an external stream to operate, but 
+                it can be convenient to associate them. For example, methods
+                fill & drain use them to import/export content as necessary.
+
+        ***********************************************************************/
+
+        final InputStream input ()
+        {
+                return source;
+        }
+
+        /***********************************************************************
+                
+                Release external resources
+
+        ***********************************************************************/
+
+        final override void detach ()
+        {
+        }
+
+        /***********************************************************************
+        
+                Close the stream
+
+                Remarks:
+                Propagate request to an attached OutputStream (this is a
+                requirement for the OutputStream interface)
+
+        ***********************************************************************/
+
+        override void close () 
+        {
+                if (sink)
+                    sink.close;
+                else
+                   if (source)
+                       source.close;
         }
 }

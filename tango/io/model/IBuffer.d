@@ -185,7 +185,7 @@ private import tango.io.model.IConduit;
 
 *******************************************************************************/
 
-abstract class IBuffer : InputStream, OutputStream, Buffered
+abstract class IBuffer : IConduit, Buffered
 {
         alias append opCall;
         alias flush  opCall;
@@ -323,28 +323,6 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
 
         /***********************************************************************
 
-                Transfer content into the provided dst
-
-                Params: 
-                dst = destination of the content
-
-                Returns:
-                return the number of bytes read, which may be less than
-                dst.length. Eof is returned when no further content is
-                available.
-
-                Remarks:
-                Populates the provided array with content. We try to 
-                satisfy the request from the buffer content, and read 
-                directly from an attached conduit when the buffer is 
-                empty.
-
-        ***********************************************************************/
-
-        abstract uint read (void[] dst);
-
-        /***********************************************************************
-
                 Access buffer content
 
                 Params: 
@@ -363,25 +341,6 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
 
         abstract void[] readExact (void* dst, uint bytes);
         
-        /***********************************************************************
-
-                Emulate OutputStream.write()
-
-                Params: 
-                src = the content to write
-
-                Returns:
-                return the number of bytes written, which will be Eof when
-                the content cannot be written.
-
-                Remarks:
-                Appends all of dst to the buffer, flushing to an attached
-                conduit as necessary.
-
-        ***********************************************************************/
-
-        abstract uint write (void[] src);
-
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes
@@ -501,40 +460,6 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
 
         /***********************************************************************
         
-                flush the contents of this buffer to the related conduit.
-                Throws an IOException on premature eof.
-
-        ***********************************************************************/
-
-        abstract OutputStream flush ();
-
-        /***********************************************************************
-        
-                Reset position and limit to zero.
-
-        ***********************************************************************/
-
-        abstract InputStream clear ();               
-
-        /***********************************************************************
-        
-                Copy content via this buffer from the provided src
-                conduit.
-
-                Remarks:
-                The src conduit has its content transferred through 
-                this buffer via a series of fill & drain operations, 
-                until there is no more content available. The buffer
-                content should be explicitly flushed by the caller.
-
-                Throws an IOException on premature eof
-
-        ***********************************************************************/
-
-        abstract OutputStream copy (InputStream src);
-
-        /***********************************************************************
-        
                 Truncate the buffer within its extend. Returns true if
                 the new 'extent' is valid, false otherwise.
 
@@ -633,6 +558,47 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
         abstract IBuffer input (InputStream source);
 
         /***********************************************************************
+
+                Transfer content into the provided dst
+
+                Params: 
+                dst = destination of the content
+
+                Returns:
+                return the number of bytes read, which may be less than
+                dst.length. Eof is returned when no further content is
+                available.
+
+                Remarks:
+                Populates the provided array with content. We try to 
+                satisfy the request from the buffer content, and read 
+                directly from an attached conduit when the buffer is 
+                empty.
+
+        ***********************************************************************/
+
+        abstract uint read (void[] dst);
+
+        /***********************************************************************
+
+                Emulate OutputStream.write()
+
+                Params: 
+                src = the content to write
+
+                Returns:
+                return the number of bytes written, which will be Eof when
+                the content cannot be written.
+
+                Remarks:
+                Appends all of dst to the buffer, flushing to an attached
+                conduit as necessary.
+
+        ***********************************************************************/
+
+        abstract uint write (void[] src);
+
+        /***********************************************************************
         
                 Exposes configured output stream
 
@@ -678,18 +644,6 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
 
         /***********************************************************************
         
-                Close the stream
-
-                Remarks:
-                Propagate request to an attached OutputStream (this is a
-                requirement for the OutputStream interface)
-
-        ***********************************************************************/
-
-        abstract void close ();
-
-        /***********************************************************************
-        
                 Access configured conduit
 
                 Returns:
@@ -705,6 +659,84 @@ abstract class IBuffer : InputStream, OutputStream, Buffered
         ***********************************************************************/
 
         abstract IConduit conduit ();
+
+        /***********************************************************************
+        
+                Return a preferred size for buffering conduit I/O
+
+        ***********************************************************************/
+
+        abstract uint bufferSize (); 
+                     
+        /***********************************************************************
+        
+                Return the name of this conduit
+
+        ***********************************************************************/
+
+        abstract char[] toUtf8 (); 
+                     
+        /***********************************************************************
+
+                Is the conduit alive?
+
+        ***********************************************************************/
+
+        abstract bool isAlive ();
+
+        /***********************************************************************
+        
+                flush the contents of this buffer to the related conduit.
+                Throws an IOException on premature eof.
+
+        ***********************************************************************/
+
+        abstract OutputStream flush ();
+
+        /***********************************************************************
+        
+                Reset position and limit to zero.
+
+        ***********************************************************************/
+
+        abstract InputStream clear ();               
+
+        /***********************************************************************
+        
+                Copy content via this buffer from the provided src
+                conduit.
+
+                Remarks:
+                The src conduit has its content transferred through 
+                this buffer via a series of fill & drain operations, 
+                until there is no more content available. The buffer
+                content should be explicitly flushed by the caller.
+
+                Throws an IOException on premature eof
+
+        ***********************************************************************/
+
+        abstract OutputStream copy (InputStream src);
+
+        /***********************************************************************
+                
+                Release external resources
+
+        ***********************************************************************/
+
+        abstract void detach ();
+
+        /***********************************************************************
+        
+                Close the stream
+
+                Remarks:
+                Propagate request to an attached OutputStream (this is a
+                requirement for the OutputStream interface)
+
+        ***********************************************************************/
+
+        abstract void close ();
 }
 
 

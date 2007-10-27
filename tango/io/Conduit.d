@@ -36,8 +36,16 @@ public  import  tango.io.model.IConduit;
 
 *******************************************************************************/
 
-class Conduit : IConduit
+class Conduit : IConduit, ISelectable
 {
+        /***********************************************************************
+        
+                Return the name of this conduit
+
+        ***********************************************************************/
+
+        abstract char[] toUtf8 (); 
+                     
         /***********************************************************************
 
                 Return a preferred size for buffering conduit I/O
@@ -169,7 +177,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void exception (char[] msg)
+        final void error (char[] msg)
         {
                 throw new IOException (msg);
         }
@@ -183,29 +191,35 @@ class Conduit : IConduit
 
         final OutputStream copy (InputStream src)
         {
-                return copy (src, this);
+                return transfer (src, this);
         }
 
         /***********************************************************************
 
-                Transfer the content of another conduit to this one. Returns
-                the dst OutputStream, or throws IOException on failure.
+                Transfer the content of one stream to another. Returns
+                the dst OutputStream, and throws IOException on failure.
+
+                This is a strange oddity, since we want only one instance
+                of it, but don't need the overhead of a separate or distinct 
+                module. It's not part of the interface itself, and shouldn't
+                be instantiated unless requested, so instead it is an enclosed 
+                IFTI function. Could also be a free-function, but then there's 
+                potential name-space issues ... weird
 
         ***********************************************************************/
 
-        final OutputStream copy (InputStream src, OutputStream dst)
+        static OutputStream transfer (InputStream src, OutputStream dst)
         {
-                uint i;
-                auto tmp = new byte [this.bufferSize];
-
-                while ((i = src.read(tmp)) != IConduit.Eof)
+                uint len = 0;
+                auto con = dst.conduit;
+                auto tmp = new byte [con.bufferSize];
+                while ((len = src.read(tmp)) != IConduit.Eof)
                       {
                       auto p = tmp.ptr;
-                      for (uint j; i > 0; i -= j, p += j)
-                           if ((j = dst.write (p[0..i])) is IConduit.Eof)
-                                exception ("OutputStream.copy :: Eof while copying");
+                      for (uint j; len > 0; len -= j, p += j)
+                           if ((j = dst.write (p[0..len])) is IConduit.Eof)
+                                con.error ("Conduit.copy :: Eof while writing to: "~con.toUtf8);
                       }
-                
                 delete tmp;
                 return dst;
         }
@@ -231,6 +245,7 @@ class InputFilter : InputStream
 
         this (InputStream host)
         {
+                assert (host, "input stream host cannot be null");
                 this.host = host;
         }
 
@@ -303,6 +318,7 @@ class OutputFilter : OutputStream
 
         this (OutputStream host)
         {
+                assert (host, "output stream host cannot be null");
                 this.host = host;
         }
 
@@ -364,7 +380,8 @@ class OutputFilter : OutputStream
 
         OutputStream copy (InputStream src)
         {
-                return conduit.copy (src, this);
+                return Conduit.transfer (src, this);
         }
 }
+
 
