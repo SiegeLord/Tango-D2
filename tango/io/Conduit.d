@@ -198,13 +198,7 @@ class Conduit : IConduit, ISelectable
 
                 Transfer the content of one stream to another. Returns
                 the dst OutputStream, and throws IOException on failure.
-
-                This is a strange oddity, since we want only one instance
-                of it, but don't need the overhead of a separate or distinct 
-                module. It's not part of the interface itself, and shouldn't
-                be instantiated unless requested, so instead it is an enclosed 
-                IFTI function. Could also be a free-function, but then there's 
-                potential name-space issues ... weird
+                Queries dst to identify what size of buffer to utilize.
 
         ***********************************************************************/
 
@@ -224,7 +218,6 @@ class Conduit : IConduit, ISelectable
                 return dst;
         }
 }
-
 
 
 /*******************************************************************************
