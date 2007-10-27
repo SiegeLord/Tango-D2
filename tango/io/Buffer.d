@@ -72,7 +72,7 @@ extern (C)
         auto foo = "to write some D";
 
         // append some text directly to it
-        buf ("now is the time for all good men ") (foo);
+        buf.append ("now is the time for all good men ").append(foo);
         ---
 
         Alternatively, one might use a formatter to append the buffer:
