@@ -105,9 +105,12 @@ class Print(T) : OutputStream
 
         this (Layout!(T) convert, OutputStream output, T[] eol = Eol)
         {
-                this.convert = convert;
-                this.output = output;
+                assert (convert);
+                assert (output);
+
                 this.eol = eol;
+                this.output = output;
+                this.convert = convert;
         }
 
         /**********************************************************************
@@ -205,7 +208,7 @@ class Print(T) : OutputStream
         {
                 return output;
         }
-
+/+
         /**********************************************************************
 
                 Set the associated output stream
@@ -217,7 +220,7 @@ class Print(T) : OutputStream
                 this.output = output;
                 return this;
         }
-
++/
         /**********************************************************************
 
                 Return the associated Layout
@@ -304,7 +307,7 @@ class Print(T) : OutputStream
 
         OutputStream copy (InputStream src)
         {               
-                return conduit.copy (src, this);
+                return output.copy (src);
         }
                           
         /***********************************************************************

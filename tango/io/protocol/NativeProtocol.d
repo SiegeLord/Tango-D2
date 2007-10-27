@@ -29,19 +29,12 @@ class NativeProtocol : IProtocol
 
         ***********************************************************************/
 
-        this (IBuffer buffer, bool prefix=true)
-        {
-                this.prefix_ = prefix;
-                this.buffer_ = buffer;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
         this (IConduit conduit, bool prefix=true)
         {
-                this (new Buffer(conduit), prefix);
+                this.prefix_ = prefix;
+
+                auto b = cast(Buffered) conduit;
+                buffer_ = b ? b.buffer : new Buffer(conduit);
         }
 
         /***********************************************************************

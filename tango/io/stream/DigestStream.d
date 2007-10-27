@@ -18,29 +18,25 @@ private import tango.io.digest.Digest;
 
 /*******************************************************************************
 
-        Buffers the flow of data from a upstream input. A downstream 
-        neighbour can locate and use this buffer instead of creating 
-        another instance of their own. 
-
-        (note that upstream is closer to the source, and downstream is
-        further away)
+        Inject a digest filter into an input stream, updating the digest
+        as information flows through it
 
 *******************************************************************************/
 
 class DigestInput : InputFilter
 {
-        private Digest digest;
+        private Digest filter;
 
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Accepts any input stream, and any digest derivation
 
         ***********************************************************************/
 
         this (InputStream stream, Digest digest)
         {
                 super (stream);
-                this.digest = digest;
+                filter = digest;
         }
 
         /***********************************************************************
@@ -49,7 +45,7 @@ class DigestInput : InputFilter
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst
+                requested in dst (or IConduit.Eof for end-of-flow)
 
         ***********************************************************************/
 
@@ -57,82 +53,52 @@ class DigestInput : InputFilter
         {
                 auto len = host.read (dst);
                 if (len != IConduit.Eof)
-                    digest.update (dst [0..len]);
+                    filter.update (dst [0 .. len]);
                 return len;
         }
 
         /********************************************************************
+             
+                Return the Digest instance we were created with. Use this
+                to access the resultant binary or hex digest value
 
-               Computes the digest and resets the state
-
-               Params:
-                   buffer = a buffer can be supplied for the digest to be
-                            written to
-
-               Remarks:
-                   If the buffer is not large enough to hold the
-                   digest, a new buffer is allocated and returned.
-                   The algorithm state is always reset after a call to
-                   binaryDigest. Use the digestSize method to find out how
-                   large the buffer has to be.
-                   
         *********************************************************************/
     
-        ubyte[] binaryDigest (ubyte[] buffer = null)
+        Digest digest()
         {
-                return digest.binaryDigest(buffer);
-        }
-
-        /*********************************************************************
-               
-               Computes the digest as a hex string and resets the state
-               
-               Params:
-                   buffer = a buffer can be supplied in which the digest
-                            will be written. It needs to be able to hold
-                            2 * digestSize chars
-            
-               Remarks:
-                    If the buffer is not large enough to hold the hex digest,
-                    a new buffer is allocated and returned. The algorithm
-                    state is always reset after a call to hexDigest.
-                    
-        *********************************************************************/
-        
-        char[] hexDigest (char[] buffer = null) 
-        {
-                return digest.hexDigest(buffer);
+                return filter;
         }
 }
 
 
 /*******************************************************************************
         
-        Buffers the flow of data from a upstream output. A downstream 
-        neighbour can locate and use this buffer instead of creating 
-        another instance of their own.
+        Inject a digest filter into an output stream, updating the digest
+        as information flows through it. Here's an example where we calculate
+        an MD5 digest as a side-effect of copying a file:
+        ---
+        auto output = new DigestOutput(new FileOutput("output"), new Md5);
+        output.copy (new FileInput("input"));
 
-        (note that upstream is closer to the source, and downstream is
-        further away)
-
-        Don't forget to flush() buffered content before closing.
+        Stdout.formatln ("hex digest: {}", output.digest.hexDigest);
+        ---
 
 *******************************************************************************/
 
 class DigestOutput : OutputFilter
 {
-        private Digest digest;
+        private Digest filter;
 
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Accepts any output stream, and any digest derivation
 
         ***********************************************************************/
 
         this (OutputStream stream, Digest digest)
         {
                 super (stream);
-                this.digest = digest;
+                filter = digest;
         }
 
         /***********************************************************************
@@ -149,65 +115,40 @@ class DigestOutput : OutputFilter
         {
                 auto len = host.write (src);
                 if (len != IConduit.Eof)
-                    digest.update (src[0..len]);
+                    filter.update (src[0 .. len]);
                 return len;
         }
 
         /********************************************************************
+             
+                Return the Digest instance we were created with. Use this
+                to access the resultant binary or hex digest value
 
-               Computes the digest and resets the state
-
-               Params:
-                   buffer = a buffer can be supplied for the digest to be
-                            written to
-
-               Remarks:
-                   If the buffer is not large enough to hold the
-                   digest, a new buffer is allocated and returned.
-                   The algorithm state is always reset after a call to
-                   binaryDigest. Use the digestSize method to find out how
-                   large the buffer has to be.
-                   
         *********************************************************************/
     
-        ubyte[] binaryDigest (ubyte[] buffer = null)
+        Digest digest()
         {
-                return digest.binaryDigest(buffer);
-        }
-
-        /*********************************************************************
-               
-               Computes the digest as a hex string and resets the state
-               
-               Params:
-                   buffer = a buffer can be supplied in which the digest
-                            will be written. It needs to be able to hold
-                            2 * digestSize chars
-            
-               Remarks:
-                    If the buffer is not large enough to hold the hex digest,
-                    a new buffer is allocated and returned. The algorithm
-                    state is always reset after a call to hexDigest.
-                    
-        *********************************************************************/
-        
-        char[] hexDigest (char[] buffer = null) 
-        {
-                return digest.hexDigest(buffer);
+                return filter;
         }
 }
 
 
+/*******************************************************************************
+        
+*******************************************************************************/
+        
 debug (DigestStream)
 {
         import tango.io.Stdout;
+        import tango.io.GrowBuffer;
         import tango.io.digest.Md5;
         import tango.io.stream.FileStream;
 
         void main()
         {
-                auto output = new DigestOutput(new FileOutput("foo.d"), new Md5);
+                auto output = new DigestOutput(new GrowBuffer, new Md5);
                 output.copy (new FileInput("digeststream.d"));
-                Stdout.formatln ("hex digest:{}", output.hexDigest);
+
+                Stdout.formatln ("hex digest:{}", output.digest.hexDigest);
         }
 }

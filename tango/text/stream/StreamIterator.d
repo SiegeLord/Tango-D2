@@ -86,6 +86,8 @@ class StreamIterator(T) : InputStream, Buffered
 
         final StreamIterator set (InputStream stream)
         {
+                assert (stream);
+
                 auto b = cast(Buffered) stream;
                 buffer_ = (b ? b.buffer : new Buffer (stream.conduit));
                 return this;

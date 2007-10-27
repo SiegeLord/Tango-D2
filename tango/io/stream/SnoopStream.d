@@ -40,6 +40,8 @@ class SnoopInput : InputStream
 
         this (InputStream host, Snoop snoop = null)
         {
+                assert (host);
+
                 this.host = host;
                 this.snoop = snoop ? snoop : &snooper;
                 this.layout = new Layout!(char);
@@ -138,6 +140,8 @@ class SnoopOutput : OutputStream
 
         this (OutputStream host, Snoop snoop = null)
         {
+                assert (host);
+
                 this.host = host;
                 this.snoop = snoop ? snoop : &snooper;
                 this.layout = new Layout!(char);
@@ -222,7 +226,7 @@ class SnoopOutput : OutputStream
 
         final OutputStream copy (InputStream src)
         {
-                host.conduit.copy (src, this);
+                Conduit.transfer (src, this);
 
                 char[256] tmp = void;
                 snoop (layout.sprint (tmp, "{}: copied from {}", host.conduit, src.conduit));

@@ -29,15 +29,6 @@ class EndianProtocol : NativeProtocol
 
         ***********************************************************************/
 
-        this (IBuffer buffer, bool prefix=true)
-        {
-                super (buffer, prefix);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
         this (IConduit conduit, bool prefix=true)
         {
                 super (conduit, prefix);
