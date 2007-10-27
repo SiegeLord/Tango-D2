@@ -195,7 +195,7 @@ class QueueFile
                 //assert (insert is conduit.position);
 
                 if (data.length is 0)
-                    conduit.exception ("invalid zero length content");
+                    conduit.error ("invalid zero length content");
 
                 // check for overflow
                 if (insert > limit)
@@ -258,7 +258,7 @@ class QueueFile
                       }
                    else
                       if (current.prior)
-                          conduit.exception ("queue file is corrupt");
+                          conduit.error ("queue file is corrupt");
                       else
                          current = zero;
 
@@ -266,7 +266,7 @@ class QueueFile
                    conduit.seek (point);
                    insert = point;
                    if (--depth is 0 && insert > 0)
-                       conduit.exception ("queue file is corrupt");
+                       conduit.error ("queue file is corrupt");
                    return content;
                    }
                 return null;
@@ -298,7 +298,7 @@ class QueueFile
 
                 for (uint i; len > 0; len -= i, data += i)
                      if ((i = input.read (data[0..len])) is conduit.Eof)
-                          conduit.exception ("QueueFile.read :: Eof while reading");
+                          conduit.error ("QueueFile.read :: Eof while reading");
         }
 
         /**********************************************************************
@@ -311,7 +311,7 @@ class QueueFile
 
                 for (uint i; len > 0; len -= i, data += i)
                      if ((i = output.write (data[0..len])) is conduit.Eof)
-                          conduit.exception ("QueueFile.write :: Eof while writing");
+                          conduit.error ("QueueFile.write :: Eof while writing");
         }
 
         /**********************************************************************

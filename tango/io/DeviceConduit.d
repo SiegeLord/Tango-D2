@@ -28,6 +28,9 @@ private import  tango.core.Exception;
 
 class DeviceConduit : Conduit
 {
+        // expose in superclass definition also
+        public alias Conduit.error error;
+
         /***********************************************************************
 
                 Throw an IOException noting the last error
@@ -36,7 +39,7 @@ class DeviceConduit : Conduit
 
         final void error ()
         {
-                super.exception (toUtf8() ~ " :: " ~ SysError.lastMsg);
+                super.error (toUtf8() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************

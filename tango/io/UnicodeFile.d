@@ -190,7 +190,7 @@ class UnicodeFile(T)
 
                 //read the content
                 if (conduit.read (content) != content.length)
-                    conduit.exception ("unexpected eof");
+                    conduit.error ("unexpected eof");
 
                 return bom.decode (content);
         }

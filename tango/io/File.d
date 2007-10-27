@@ -101,7 +101,7 @@ class File
 
                 //read the content
                 if (conduit.input.read (content) != content.length)
-                    conduit.exception ("unexpected eof");
+                    conduit.error ("unexpected eof");
 
                 return content;
         }
