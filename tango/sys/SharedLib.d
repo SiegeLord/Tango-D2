@@ -52,7 +52,7 @@ private {
         if (auto lib = SharedLib.load("c:\windows\system32\opengl32.dll")) {
             Trace.formatln("Library successfully loaded");
 
-            void* ptr = lib.getSymbol("glClear".ptr);
+            void* ptr = lib.getSymbol("glClear");
             if (ptr) {
                 Trace.formatln("Symbol glClear found. Address = 0x{:x}", ptr);
             } else {
@@ -187,21 +187,6 @@ final class SharedLib {
         return this.path_;
     }
     
-
-    /**
-        Obtains the address of a symbol within the shared library
-
-        Params:
-            name = Name of the symbol; doesn't have to be null-terminated
-
-        Returns:
-            A pointer to the symbol or null if it's not present in the library
-      */
-    void* getSymbol(char[] name) {
-        assert (loaded);
-        return this.getSymbol((name ~ \0).ptr);
-    }
-
 
     /**
         Obtains the address of a symbol within the shared library
