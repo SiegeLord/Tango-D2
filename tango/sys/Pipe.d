@@ -55,7 +55,7 @@ class PipeConduit: DeviceConduit
      * style        = access flags for the pipe (readable, writable, etc.).
      * bufferSize   = buffer size.
      */
-    private this(IConduit.Handle handle,
+    private this(ISelectable.Handle handle,
                  uint bufferSize = DefaultBufferSize)
     {
         version (Win32)
@@ -160,8 +160,8 @@ class Pipe
 
             if (pipe(fd) == 0)
             {
-                _source = new PipeConduit(cast(IConduit.Handle) fd[0], bufferSize);
-                _sink = new PipeConduit(cast(IConduit.Handle) fd[1], bufferSize);
+                _source = new PipeConduit(cast(ISelectable.Handle) fd[0], bufferSize);
+                _sink = new PipeConduit(cast(ISelectable.Handle) fd[1], bufferSize);
             }
             else
             {
@@ -187,8 +187,8 @@ class Pipe
 
             if (CreatePipe(&sourceHandle, &sinkHandle, sa, cast(DWORD) bufferSize))
             {
-                _source = new PipeConduit(cast(IConduit.Handle) sourceHandle);
-                _sink = new PipeConduit(cast(IConduit.Handle) sinkHandle);
+                _source = new PipeConduit(cast(ISelectable.Handle) sourceHandle);
+                _sink = new PipeConduit(cast(ISelectable.Handle) sinkHandle);
             }
             else
             {
