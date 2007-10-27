@@ -19,14 +19,16 @@ private import  tango.net.ftp.Telnet;
 private import  tango.util.time.Date,
                 tango.util.time.Clock;
 
-private import  tango.io.FileConduit,
-                tango.io.MemoryConduit;
+private import  tango.io.GrowBuffer,
+                tango.io.FileConduit;
 
-private import Text = tango.text.Util;
-private import Ascii = tango.text.Ascii;
-private import Regex = tango.text.Regex;
-private import Integer = tango.text.convert.Integer;
-private import Timestamp = tango.text.convert.TimeStamp;
+private import  tango.io.model.IConduit;
+
+private import  Text = tango.text.Util;
+private import  Ascii = tango.text.Ascii;
+private import  Regex = tango.text.Regex;
+private import  Integer = tango.text.convert.Integer;
+private import  Timestamp = tango.text.convert.TimeStamp;
 
 
 /// An FTP progress delegate.
@@ -781,7 +783,7 @@ class FTPConnection : Telnet
     ///    stream =          data to store, or null for a blank file
     ///    progress =        a delegate to call with progress information
     ///    format =          what format to send the data in
-    public void put(char[] path, Conduit stream = null, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
+    public void put(char[] path, InputStream stream = null, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
     {
         assert (path.length > 0);
@@ -810,7 +812,7 @@ class FTPConnection : Telnet
     ///    stream =          data to append to the file
     ///    progress =        a delegate to call with progress information
     ///    format =          what format to send the data in
-    public void append(char[] path, Conduit stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
+    public void append(char[] path, InputStream stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
     {
         assert (path.length > 0);
@@ -916,7 +918,7 @@ class FTPConnection : Telnet
     ///    stream =          stream to write the data to
     ///    progress =        a delegate to call with progress information
     ///    format =          what format to read the data in
-    public void get(char[] path, Conduit stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
+    public void get(char[] path, OutputStream stream, FtpProgress progress = null, FtpFormat format = FtpFormat.image)
         in
     {
         assert (path.length > 0);
@@ -1048,7 +1050,7 @@ class FTPConnection : Telnet
         // If it passed, parse away!
         if (mlsd_success)
             {
-                auto listing = new MemoryConduit;
+                auto listing = new GrowBuffer;
                 this.readStream(data, listing);
                 this.finishDataCommand(data);
 
@@ -1092,7 +1094,7 @@ class FTPConnection : Telnet
             data = this.processDataCommand("LIST");
 
         // Read in the stupid non-standardized response.
-        auto listing = new MemoryConduit;
+        auto listing = new GrowBuffer;
         this.readStream(data, listing);
         this.finishDataCommand(data);
 
@@ -1527,7 +1529,7 @@ class FTPConnection : Telnet
     ///    stream =          the stream to read from
     ///    progress =        a delegate to call with progress information
 
-    protected void sendStream(Socket data, Conduit stream, FtpProgress progress = null)
+    protected void sendStream(Socket data, InputStream stream, FtpProgress progress = null)
         in
     {
         assert (data !is null);
@@ -1562,7 +1564,7 @@ class FTPConnection : Telnet
 
                 if (buf_size - buf_pos <= 0)
                     {
-                        if ((buf_size = stream.input.read(buf)) is Conduit.Eof)
+                        if ((buf_size = stream.read(buf)) is IConduit.Eof)
                             buf_size = 0, completed = true;
                         buf_pos = 0;
                     }
@@ -1594,7 +1596,7 @@ class FTPConnection : Telnet
     ///    data =            the socket to read from
     ///    stream =          the stream to write to
     ///    progress =        a delegate to call with progress information
-    protected void readStream(Socket data, Conduit stream, FtpProgress progress = null)
+    protected void readStream(Socket data, OutputStream stream, FtpProgress progress = null)
         in
     {
         assert (data !is null);
@@ -1636,7 +1638,7 @@ class FTPConnection : Telnet
                         break;
                     }
 
-                stream.output.write(buf[0 .. buf_size]);
+                stream.write(buf[0 .. buf_size]);
 
                 pos += buf_size;
                 if (progress !is null)
