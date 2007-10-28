@@ -56,9 +56,12 @@
         ---
         trim (source)                               // trim whitespace
         strip (source, match)                       // trim elements
+        stripl (source, match)                      // trim left elements
+        stripr (source, match)                      // trim right elements
         delimit (src, set)                          // split on delims
         split (source, pattern)                     // split on pattern
         splitLines (source);                        // split on lines
+        head (source, pattern, tail)                // split to head & tail
         join (source, postfix, output)              // join text segments
         repeat (source, count, output)              // repeat source 
         replace (source, match, replacement)        // replace chars
@@ -83,14 +86,6 @@
 *******************************************************************************/
 
 module tango.text.Util;
-
-///  use split() instead
-deprecated T[][] demarcate (T) (T[] src, T[] pattern)
-{return split!(T) (src, pattern);}
-
-deprecated T[][] delineate (T) (T[] src)
-{return splitLines!(T) (src);}
-
 
 /******************************************************************************
 
@@ -127,6 +122,42 @@ T[] strip(T) (T[] source, T match)
 
         while (head < tail && *head is match)
                ++head;
+
+        while (tail > head && *(tail-1) is match)
+               --tail;
+
+        return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
+        Trim the given array by stripping the provided match from
+        the left hand side. Returns a slice of the original content
+
+******************************************************************************/
+
+T[] stripl(T) (T[] source, T match)
+{
+        T*   head = source.ptr,
+             tail = head + source.length;
+
+        while (head < tail && *head is match)
+               ++head;
+
+        return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
+        Trim the given array by stripping the provided match from
+        the right hand side. Returns a slice of the original content
+
+******************************************************************************/
+
+T[] stripr(T) (T[] source, T match)
+{
+        T*   head = source.ptr,
+             tail = head + source.length;
 
         while (tail > head && *(tail-1) is match)
                --tail;
@@ -334,6 +365,30 @@ T[][] split(T) (T[] src, T[] pattern)
         foreach (segment; patterns (src, pattern))
                  result ~= segment;
         return result;
+}
+
+/******************************************************************************
+
+        Split the provided array on the first pattern instance, and 
+        return the resultant head and tail. The pattern is excluded 
+        from each of the segments. 
+
+        Where a segment is not found, tail will be null and the return
+        value will be the original array.
+        
+******************************************************************************/
+
+T[] head(T) (T[] src, T[] pattern, out T[] tail)
+{
+        T[][] result;
+
+        foreach (segment; patterns (src, pattern))
+                {
+                if (segment.length < src.length)
+                    tail = src [segment.length+pattern.length .. $];
+                return segment;
+                }
+        return src;
 }
 
 /******************************************************************************
@@ -1153,6 +1208,12 @@ debug (UnitTest)
         assert (strip ("", '%') == "");
         assert (strip ("%abc%%%", '%') == "abc");
         assert (strip ("#####", '#') == "");
+        assert (stripl ("#####", '#') == "");
+        assert (stripl (" ###", ' ') == "###");
+        assert (stripl ("#####", 's') == "#####");
+        assert (stripr ("#####", '#') == "");
+        assert (stripr ("### ", ' ') == "###");
+        assert (stripr ("#####", 's') == "#####");
 
         assert (replace ("abc".dup, 'b', ':') == "a:c");
         assert (substitute ("abc".dup, "bc", "x") == "ax");
@@ -1220,6 +1281,14 @@ debug (UnitTest)
         assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
         x = split ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
+
+        char[] h, t;
+        h =  head ("one:two:three", ":", t);
+        assert (h == "one" && t == "two:three");
+        h = head ("one:::two:three", ":::", t);
+        assert (h == "one" && t == "two:three");
+        h = head ("one:two:three", "*", t);
+        assert (h == "one:two:three" && t is null);
 
         char[][] foo = ["one", "two", "three"];
         auto j = join (foo);
