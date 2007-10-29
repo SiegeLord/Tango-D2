@@ -233,9 +233,11 @@ class String(T) : StringView!(T)
                 Create an empty String with the specified available
                 space
 
+                deprecated: Use Text class instead
+
         ***********************************************************************/
 
-        this (uint space = 0)
+        deprecated this (uint space = 0)
         {
                 content.length = space;
                 this.comparator_ = &simpleComparator;
@@ -250,9 +252,11 @@ class String(T) : StringView!(T)
                 modified via String methods. This can be useful when
                 wrapping an array "temporarily" with a stack-based String
 
+                deprecated: Use Text class instead
+
         ***********************************************************************/
 
-        this (T[] content, bool copy = true)
+        deprecated this (T[] content, bool copy = true)
         {
                 set (content, copy);
                 this.comparator_ = &simpleComparator;
@@ -267,9 +271,11 @@ class String(T) : StringView!(T)
                 via String methods. This can be useful when wrapping an array
                 temporarily with a stack-based String
 
+                deprecated: Use Text class instead
+
         ***********************************************************************/
 
-        this (StringViewT other, bool copy = true)
+        deprecated this (StringViewT other, bool copy = true)
         {
                 this (other.slice, copy);
         }
