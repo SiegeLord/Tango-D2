@@ -28,7 +28,7 @@ private import  tango.core.Exception;
 
 class DeviceConduit : Conduit
 {
-        // expose in superclass definition also
+        /// expose in superclass definition also
         public alias Conduit.error error;
 
         /***********************************************************************
@@ -196,10 +196,10 @@ class DeviceConduit : Conduit
 
                 override void detach ()
                 {
-                        if (handle)
-                            if (posix.close (handle) == -1)
+                        if (handle >= 0)
+                            if (posix.close (handle) is -1)
                                 error ();
-                        handle = 0;
+                        handle = -1;
                 }
 
                 /***************************************************************
@@ -215,7 +215,7 @@ class DeviceConduit : Conduit
                         if (read == -1)
                             error ();
                         else
-                           if (read == 0 && dst.length > 0)
+                           if (read is 0 && dst.length > 0)
                                return Eof;
                         return read;
                 }
@@ -230,7 +230,7 @@ class DeviceConduit : Conduit
                 override uint write (void[] src)
                 {
                         int written = posix.write (handle, src.ptr, src.length);
-                        if (written == -1)
+                        if (written is -1)
                             error ();
                         return written;
                 }
