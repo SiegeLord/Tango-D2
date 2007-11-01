@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.stream.BufferedStream;
+module tango.io.stream.BufferStream;
 
 private import tango.io.Buffer;
 
@@ -25,7 +25,7 @@ private import tango.io.Buffer;
 
 *******************************************************************************/
 
-class BufferedInput : Buffer
+class BufferInput : Buffer
 {
         /***********************************************************************
 
@@ -54,7 +54,7 @@ class BufferedInput : Buffer
 
 *******************************************************************************/
 
-class BufferedOutput : Buffer
+class BufferOutput : Buffer
 {
         /***********************************************************************
 
