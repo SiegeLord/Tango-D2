@@ -491,9 +491,9 @@ T[] repeat(T) (T[] src, uint count, T[] dst=null)
 bool isSpace(T) (T c)
 {
         static if (T.sizeof is 1)
-                   return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f'));
+                   return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f' | c is '\v'));
         else
-           return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f')) || (c is '\u2028' | c is '\u2029');
+           return (c <= 32 && (c is ' ' | c is '\t' | c is '\r' | c is '\n' | c is '\f' | c is '\v')) || (c is '\u2028' | c is '\u2029');
 }
 
 /******************************************************************************
