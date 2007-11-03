@@ -16,7 +16,7 @@ private import  tango.io.Print;
 
 private import  tango.io.model.IConduit;
 
-private import  tango.text.convert.Layout;
+private import  tango.text.convert.Format;
 
 /*******************************************************************************
 
@@ -39,19 +39,6 @@ private import  tango.text.convert.Layout;
 
 class FormatOutput : Print!(char)
 {
-        private static Layout!(char) layout;
-
-        /***********************************************************************
-
-                A shared Layout instance
-
-        ***********************************************************************/
-
-        static this()
-        {
-                layout = new Layout!(char);
-        }
-
         /***********************************************************************
 
                 Create a Layout instance and bind it to the given stream.
@@ -63,7 +50,7 @@ class FormatOutput : Print!(char)
 
         this (OutputStream stream, bool flush=false)
         {
-                super (layout, stream);
+                super (Format, stream);
                 super.flush = flush;
         }
 }
