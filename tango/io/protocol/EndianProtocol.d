@@ -99,7 +99,7 @@ class EndianProtocol : NativeProtocol
                         while (bytes)
                                if (bytes -= buffer_.write (&writer))
                                    // flush if we used all buffer space
-                                   buffer_.drain;
+                                   buffer_.drain (buffer.output);
                 }
 
 
