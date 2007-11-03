@@ -15,7 +15,7 @@ module tango.io.stream.SnoopStream;
 private import  tango.io.Console,
                 tango.io.Conduit;
 
-private import  tango.text.convert.Layout;
+private import  tango.text.convert.Format;
 
 private alias void delegate(char[]) Snoop;
 
@@ -30,7 +30,7 @@ class SnoopInput : InputStream
 {
         private InputStream     host;
         private Snoop           snoop;
-        private Layout!(char)   layout;
+        private typeof(Format)  layout;
 
         /***********************************************************************
 
@@ -43,8 +43,8 @@ class SnoopInput : InputStream
                 assert (host);
 
                 this.host = host;
+                this.layout = Format;
                 this.snoop = snoop ? snoop : &snooper;
-                this.layout = new Layout!(char);
         }
 
         /***********************************************************************
@@ -130,7 +130,7 @@ class SnoopOutput : OutputStream
 {
         private OutputStream    host;
         private Snoop           snoop;
-        private Layout!(char)   layout;
+        private typeof(Format)  layout;
 
         /***********************************************************************
 
@@ -143,8 +143,8 @@ class SnoopOutput : OutputStream
                 assert (host);
 
                 this.host = host;
+                this.layout = Format;
                 this.snoop = snoop ? snoop : &snooper;
-                this.layout = new Layout!(char);
         }
 
         /***********************************************************************
