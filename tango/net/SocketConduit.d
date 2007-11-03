@@ -269,7 +269,8 @@ class SocketConduit : Conduit
                    ss.add (socket_);
 
                    // wait until data is available, or a timeout occurs
-                   int i = socket_.select (ss, null, null, &tv);
+                   auto copy = tv;
+                   int i = socket_.select (ss, null, null, &copy);
                        
                    if (i <= 0)
                       {
