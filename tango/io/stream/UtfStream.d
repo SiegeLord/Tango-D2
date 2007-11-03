@@ -40,8 +40,7 @@ class UtfInput(T, S) : InputFilter
 
         this (InputStream stream)
         {
-                auto b = cast(Buffered) stream;
-                super (buffer = b ? b.buffer : new Buffer (stream.conduit));
+                super (buffer = Buffer.share (stream));
         }
         
         /***********************************************************************
@@ -110,8 +109,7 @@ class UtfOutput (T, S) : OutputFilter
 
         this (OutputStream stream)
         {
-                auto b = cast(Buffered) stream;
-                super (buffer = b ? b.buffer : new Buffer(stream.conduit));
+                super (buffer = Buffer.share (stream));
                 assert (buffer.capacity > 3, "UtfOutput :: output buffer is too small");
         }
 

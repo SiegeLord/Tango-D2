@@ -174,6 +174,44 @@ class Buffer : IBuffer
                 Construct a buffer
 
                 Params: 
+                stream = an input stream
+                capacity = desired buffer capacity
+
+                Remarks:
+                Construct a Buffer upon the provided input stream.
+
+        ***********************************************************************/
+
+        this (InputStream stream, uint capacity)
+        {
+                this (capacity);
+                input = stream;
+        }
+
+        /***********************************************************************
+        
+                Construct a buffer
+
+                Params: 
+                stream = an output stream
+                capacity = desired buffer capacity
+
+                Remarks:
+                Construct a Buffer upon the provided output stream.
+
+        ***********************************************************************/
+
+        this (OutputStream stream, uint capacity)
+        {
+                this (capacity);
+                output = stream;
+        }
+
+        /***********************************************************************
+        
+                Construct a buffer
+
+                Params: 
                 capacity = the number of bytes to make available
 
                 Remarks:
@@ -228,6 +266,48 @@ class Buffer : IBuffer
         this (void[] data, uint readable)
         {
                 setContent (data, readable);
+        }
+
+        /***********************************************************************
+        
+                Attempt to share an upstream Buffer, and create an instance
+                where there not one available.
+
+                Params: 
+                stream = an input stream
+
+                Remarks:
+                If an upstream Buffer instances is visible, it will be shared.
+                Otherwise, a new instance is created based upon the bufferSize
+                exposed by the stream endpoint (conduit).
+
+        ***********************************************************************/
+
+        static IBuffer share (InputStream stream)
+        {
+                auto b = cast(Buffered) stream;
+                return b ? b.buffer : new Buffer (stream, stream.conduit.bufferSize);
+        }
+
+        /***********************************************************************
+        
+                Attempt to share an upstream Buffer, and create an instance
+                where there not one available.
+
+                Params: 
+                stream = an output stream
+
+                Remarks:
+                If an upstream Buffer instances is visible, it will be shared.
+                Otherwise, a new instance is created based upon the bufferSize
+                exposed by the stream endpoint (conduit).
+
+        ***********************************************************************/
+
+        static IBuffer share (OutputStream stream)
+        {
+                auto b = cast(Buffered) stream;
+                return b ? b.buffer : new Buffer (stream, stream.conduit.bufferSize);
         }
 
         /***********************************************************************

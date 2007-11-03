@@ -127,8 +127,7 @@ class MapOutput(T) : OutputFilter, Buffered
 
         this (OutputStream stream, T[] newline = NL)
         {
-                auto b = cast(Buffered) stream;
-                super (output = (b ? b.buffer : new Buffer (stream.conduit)));
+                super (output = Buffer.share (stream));
         }
 
         /***********************************************************************

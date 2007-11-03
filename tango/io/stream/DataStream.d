@@ -46,8 +46,7 @@ class DataInput : InputFilter, Buffered
         this (InputStream stream, bool flip = false)
         {
                 this.flip = flip;
-                auto b = cast(Buffered) stream;
-                super (input = (b ? b.buffer : new Buffer (stream.conduit)));
+                super (input = Buffer.share (stream));
         }
 
         /***********************************************************************
@@ -194,8 +193,7 @@ class DataOutput : OutputFilter, Buffered
         this (OutputStream stream, bool flip = false)
         {
                 this.flip = flip;
-                auto b = cast(Buffered) stream;
-                super (output = (b ? b.buffer : new Buffer (stream.conduit)));
+                super (output = Buffer.share (stream));
         }
 
         /***********************************************************************
