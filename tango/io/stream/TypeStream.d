@@ -66,7 +66,7 @@ class TypeInput(T) : InputFilter, Buffered
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref T x) dg)
+        final int opApply (int delegate(ref T x) dg)
         {
                 T x;
                 int ret;

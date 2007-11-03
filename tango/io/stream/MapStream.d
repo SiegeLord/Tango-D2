@@ -59,7 +59,7 @@ class MapInput(T) : LineIterator!(T)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref T[] name, ref T[] value) dg)
+        final int opApply (int delegate(ref T[] name, ref T[] value) dg)
         {
                 int ret;
 
@@ -92,7 +92,7 @@ class MapInput(T) : LineIterator!(T)
 
         ***********************************************************************/
 
-        MapInput load (ref T[][T[]] properties)
+        final MapInput load (ref T[][T[]] properties)
         {
                 foreach (name, value; this)
                          properties[name] = value;  
@@ -136,7 +136,7 @@ class MapOutput(T) : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        IBuffer buffer ()
+        final IBuffer buffer ()
         {
                 return output;
         }
@@ -147,7 +147,7 @@ class MapOutput(T) : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        MapOutput append (T[] name, T[] value)
+        final MapOutput append (T[] name, T[] value)
         {
                 output (name) (equals) (value) (NL);
                 return this;
@@ -159,7 +159,7 @@ class MapOutput(T) : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        MapOutput append (T[][T[]] properties)
+        final MapOutput append (T[][T[]] properties)
         {
                 foreach (key, value; properties)
                          append (key, value);

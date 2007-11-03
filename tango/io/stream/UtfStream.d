@@ -47,7 +47,7 @@ class UtfInput(T, S) : InputFilter
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        final override uint read (void[] dst)
         {
                 static if (is (S == T))
                            return super.read (dst);
@@ -125,7 +125,7 @@ class UtfOutput (T, S) : OutputFilter
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        final override uint write (void[] src)
         {
                 static if (is (S == T))
                            return super.write (src);

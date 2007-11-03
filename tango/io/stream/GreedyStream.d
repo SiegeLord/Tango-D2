@@ -42,7 +42,7 @@ class GreedyOutput : OutputFilter
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        final override uint write (void[] src)
         {
                 uint len = 0;
 
@@ -85,7 +85,7 @@ class GreedyInput : InputFilter
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        final override uint read (void[] dst)
         {
                 uint len = 0;
 

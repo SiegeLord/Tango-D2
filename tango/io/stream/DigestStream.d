@@ -49,7 +49,7 @@ class DigestInput : InputFilter
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        final override uint read (void[] dst)
         {
                 auto len = host.read (dst);
                 if (len != IConduit.Eof)
@@ -64,7 +64,7 @@ class DigestInput : InputFilter
 
         *********************************************************************/
     
-        Digest digest()
+        final Digest digest()
         {
                 return filter;
         }
@@ -111,7 +111,7 @@ class DigestOutput : OutputFilter
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        final override uint write (void[] src)
         {
                 auto len = host.write (src);
                 if (len != IConduit.Eof)
@@ -126,7 +126,7 @@ class DigestOutput : OutputFilter
 
         *********************************************************************/
     
-        Digest digest()
+        final Digest digest()
         {
                 return filter;
         }
