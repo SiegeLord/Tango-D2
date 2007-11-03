@@ -52,3 +52,21 @@ class LineInput : LineIterator!(char)
 }
 
 
+/*******************************************************************************
+
+
+*******************************************************************************/
+
+debug (LineStream)
+{
+        import tango.io.Stdout;
+        import tango.io.stream.FileStream;
+
+        void main()
+        {
+                auto input = new LineInput (new FileInput("LineStream.d"));
+                foreach (line; input)
+                         Stdout(line).newline;
+                input.close;
+        }
+}
