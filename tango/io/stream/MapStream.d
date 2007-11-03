@@ -178,7 +178,7 @@ debug (UnitTest)
         import tango.io.Stdout;
         import tango.io.GrowBuffer;
 
-        void main()
+        unittest
         {
                 auto buf = new GrowBuffer;
                 auto input = new MapInput!(char)(buf);
