@@ -98,7 +98,7 @@ class QuoteIterator(T) : StreamIterator!(T)
 
         protected uint scan (void[] data)
         {
-                T[] content = convert (data);
+                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 
                 foreach (int i, T c; content)
                          if (has (delim, c))

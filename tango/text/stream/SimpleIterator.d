@@ -84,7 +84,7 @@ class SimpleIterator(T) : StreamIterator!(T)
 
         protected uint scan (void[] data)
         {
-                T[] content = convert (data);
+                auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 
                 if (delim.length is 1)
                    {

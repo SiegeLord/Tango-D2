@@ -213,17 +213,6 @@ class StreamIterator(T) : InputStream, Buffered
 
         /***********************************************************************
 
-                Convert void[] from buffer into an appropriate array
-
-        ***********************************************************************/
-
-        protected final T[] convert (void[] data)
-        {
-                return cast(T[]) data [0 .. data.length & ~(T.sizeof-1)];
-        }
-
-        /***********************************************************************
-
                 Called when a scanner fails to find a matching pattern.
                 This may cause more content to be loaded, and a rescan
                 initiated
@@ -275,7 +264,8 @@ class StreamIterator(T) : InputStream, Buffered
                 if (buffer_.next (&scan))
                     return true;
 
-                slice = convert (buffer_.slice (buffer.readable));
+                auto tmp = buffer_.slice (buffer.readable);
+                slice = (cast(T*) tmp.ptr) [0 .. tmp.length/T.sizeof];
                 return false;
         }
 
