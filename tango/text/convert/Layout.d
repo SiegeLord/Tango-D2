@@ -492,7 +492,9 @@ class Layout(T)
                             return fromUtf8 (o.toUtf8, result);
                             
                        case TypeCode.CLASS:
-                            return fromUtf8 ((*cast(Object*) p).toUtf8, result);
+                            static T[] Null = "{null}";
+                            auto c = *cast(Object*) p;
+                            return c ? fromUtf8 (c.toUtf8, result) : Null;
 
                        case TypeCode.ENUM:
                             return munge (result, format, (cast(TypeInfo_Enum) type).base, p);
