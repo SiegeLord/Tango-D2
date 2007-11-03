@@ -369,7 +369,7 @@ abstract class IBuffer : IConduit, Buffered
         
         ***********************************************************************/
 
-        abstract uint fill (InputStream src = null);
+        abstract uint fill (InputStream src);
 
         /***********************************************************************
 
