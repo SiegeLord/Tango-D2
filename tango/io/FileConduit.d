@@ -186,6 +186,14 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
         
+                Write on an existing file. Do not create
+
+        ***********************************************************************/
+
+        const Style WriteExisting = {Access.Write, Open.Exists};
+
+        /***********************************************************************
+        
                 Write on a clean file. Create if necessary
 
         ***********************************************************************/
