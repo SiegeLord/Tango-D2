@@ -1003,6 +1003,20 @@ class Buffer : IBuffer
                    }
         }
 
+        /***********************************************************************
+
+                Cast to a target type without invoking the wrath of the 
+                runtime checks for misalignment. Instead, we truncate the 
+                array length
+
+        ***********************************************************************/
+
+        static T[] convert(T)(void[] x)
+        {
+                return (cast(T*) x.ptr) [0 .. (x.length / T.sizeof)];
+        }
+
+
 
         /**********************************************************************/
         /*********************** Buffered Interface ***************************/

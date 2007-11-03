@@ -60,8 +60,8 @@ class UtfInput(T, S) : InputFilter
 
                    uint produced,
                         consumed;
-                   auto output = Utf.fromVoidArray!(T)(dst);
-                   auto input  = Utf.fromVoidArray!(S)(buffer.slice);
+                   auto output = Buffer.convert!(T)(dst);
+                   auto input  = Buffer.convert!(S)(buffer.slice);
 
                    static if (is (T == char))
                               produced = Utf.toUtf8(input, output, &consumed).length;
@@ -138,8 +138,8 @@ class UtfOutput (T, S) : OutputFilter
 
                    uint writer (void[] dst)
                    {
-                        auto input = Utf.fromVoidArray!(S)(src);
-                        auto output = Utf.fromVoidArray!(T)(dst);
+                        auto input = Buffer.convert!(S)(src);
+                        auto output = Buffer.convert!(T)(dst);
 
                         static if (is (T == char))
                                    produced = Utf.toUtf8(input, output, &consumed).length;
@@ -178,9 +178,9 @@ class UtfOutput (T, S) : OutputFilter
         
 *******************************************************************************/
         
-debug (UnitTest)
+debug (UtfStream)
 {
-        unittest
+        void main()
         {
                 auto inp = new UtfInput!(dchar, char)(new Buffer("hello world"));
                 auto oot = new UtfOutput!(char, dchar)(new Buffer(20));
