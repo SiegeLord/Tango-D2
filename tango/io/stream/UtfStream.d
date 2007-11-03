@@ -1,0 +1,190 @@
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2007 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Initial release: Nov 2007
+
+        author:         Kris
+
+*******************************************************************************/
+
+module tango.io.stream.UtfStream;
+
+private import  tango.io.Buffer,
+                tango.io.Conduit;
+
+private import Utf = tango.text.convert.Utf;
+
+/*******************************************************************************
+
+        Streaming UTF converter. Type T is the target or destination type, 
+        while S is the source type. Both types are either char/wchar/dchar.
+
+*******************************************************************************/
+
+class UtfInput(T, S) : InputFilter
+{       
+        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
+                    pragma (msg, "Source type must be char, wchar, or dchar");
+
+        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
+                    pragma (msg, "Target type must be char, wchar, or dchar");
+
+        private IBuffer buffer;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (InputStream stream)
+        {
+                auto b = cast(Buffered) stream;
+                super (buffer = b ? b.buffer : new Buffer (stream.conduit));
+        }
+        
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        override uint read (void[] dst)
+        {
+                static if (is (S == T))
+                           return super.read (dst);
+                else
+                   {
+                   // must have some space available for converting
+                   if (dst.length < T.sizeof)
+                       conduit.error ("UtfStream.read :: target array is too small");
+
+                   uint produced,
+                        consumed;
+                   auto output = Utf.fromVoidArray!(T)(dst);
+                   auto input  = Utf.fromVoidArray!(S)(buffer.slice);
+
+                   static if (is (T == char))
+                              produced = Utf.toUtf8(input, output, &consumed).length;
+
+                   static if (is (T == wchar))
+                              produced = Utf.toUtf16(input, output, &consumed).length;
+
+                   static if (is (T == dchar))
+                              produced = Utf.toUtf32(input, output, &consumed).length;
+
+                   // consume buffer content
+                   buffer.skip (consumed * S.sizeof);
+
+                   // fill buffer when nothing produced ...
+                   if (produced is 0)
+                       if (buffer.compress.fill(buffer.input) is IConduit.Eof)
+                           return IConduit.Eof;
+
+                   return produced * T.sizeof;
+                   }
+        }
+}
+
+
+/*******************************************************************************
+        
+        Streaming UTF converter. Type T is the target or destination type, 
+        while S is the source type. Both types are either char/wchar/dchar.
+
+*******************************************************************************/
+
+class UtfOutput (T, S) : OutputFilter
+{       
+        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
+                    pragma (msg, "Source type must be char, wchar, or dchar");
+
+        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
+                    pragma (msg, "Target type must be char, wchar, or dchar");
+
+
+        private IBuffer buffer;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (OutputStream stream)
+        {
+                auto b = cast(Buffered) stream;
+                super (buffer = b ? b.buffer : new Buffer(stream.conduit));
+                assert (buffer.capacity > 3, "UtfOutput :: output buffer is too small");
+        }
+
+        /***********************************************************************
+        
+                Write to the output stream from a source array. The provided 
+                src content is converted as necessary. Note that an attached
+                output buffer must be at least four bytes wide to accommodate
+                a conversion.
+
+                Returns the number of bytes consumed from src, which may be
+                less than the quantity provided
+
+        ***********************************************************************/
+
+        override uint write (void[] src)
+        {
+                static if (is (S == T))
+                           return super.write (src);
+                else
+                   {
+                   uint consumed,
+                        produced;
+
+                   uint writer (void[] dst)
+                   {
+                        auto input = Utf.fromVoidArray!(S)(src);
+                        auto output = Utf.fromVoidArray!(T)(dst);
+
+                        static if (is (T == char))
+                                   produced = Utf.toUtf8(input, output, &consumed).length;
+
+                        static if (is (T == wchar))
+                                   produced = Utf.toUtf16(input, output, &consumed).length;
+
+                        static if (is (T == dchar))
+                                   produced = Utf.toUtf32(input, output, &consumed).length;
+
+                        return produced * T.sizeof;
+                   }
+                    
+                   // write directly into the buffered content. A tad
+                   // tricky to flush the output in an optimal manner.
+                   // We could do this trivially via an internal work
+                   // space conversion, but that would incur an extra
+                   // memory copy
+                   if (buffer.write(&writer) is 0)
+                       // empty a connected buffer
+                       if (buffer.output)
+                           buffer.drain (buffer.output);
+                       else
+                          // buffer must be at least 4 bytes wide 
+                          // to contain a generic conversion
+                          if (buffer.writable < 4)
+                              return IConduit.Eof;
+                    
+                   return consumed * S.sizeof;
+                   }
+        }
+}
+
+
+/*******************************************************************************
+        
+*******************************************************************************/
+        
+debug (UnitTest)
+{
+        unittest
+        {
+                auto inp = new UtfInput!(dchar, char)(new Buffer("hello world"));
+                auto oot = new UtfOutput!(char, dchar)(new Buffer(20));
+                oot.copy(inp);
+                assert (oot.buffer.slice == "hello world");
+        }
+}
