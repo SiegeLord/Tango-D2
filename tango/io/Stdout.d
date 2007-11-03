@@ -77,6 +77,10 @@
         Stdout.copy (new FileConduit ("myfile"));
         ---
 
+        Note that Stdout is *not* intended to be thread-safe. Use either
+        tango.util.log.Trace or the standard logging facilities in order 
+        to enable atomic console I/O
+        
 *******************************************************************************/
 
 module tango.io.Stdout;
@@ -122,6 +126,7 @@ debug (Stdout)
         Stdout ("abc") ("def") (3.14).newline;  
         Stdout ("abc", 1, 2, 3).newline;        
         Stdout (1, 2, 3).newline;        
+        Stdout (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).newline;
 
         Stdout ("abc {}{}{}", 1, 2, 3).newline; 
         Stdout.format ("abc {}{}{}", 1, 2, 3).newline;
