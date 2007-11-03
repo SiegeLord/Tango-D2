@@ -79,6 +79,10 @@ private import  tango.text.convert.Layout;
         auto locale = new Locale (Culture.getCulture ("fr-FR"));
         auto print = new Print!(char) (locale, ...);
         ---
+
+        Note that Print is *not* intended to be thread-safe. Use either
+        tango.util.log.Trace or the standard logging facilities in order 
+        to enable atomic console I/O
         
 *******************************************************************************/
 
@@ -139,34 +143,23 @@ class Print(T) : OutputStream
 
         /**********************************************************************
 
-                Unformatted layout, with commas inserted between args
+                Unformatted layout, with commas inserted between args. 
+                Currently supports a maximum of 24 arguments
 
         **********************************************************************/
 
         final Print print (...)
         {
-                static  T[][] fmt =
-                        [
-                        "{}",
-                        "{}, {}",
-                        "{}, {}, {}",
-                        "{}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}",
-                        ];
-               
-                assert (_arguments.length <= fmt.length);
+                static  T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                     "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                     "{}, {}, {}, {}, {}, {}, {}, {}, ";
+
+                assert (_arguments.length <= slice.length/4, "Print :: too many arguments");
 
                 if (_arguments.length is 0)
                     output.flush;
                 else
-                   convert (&sink, _arguments, _argptr, fmt[_arguments.length - 1]);
+                   convert (&sink, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
                          
                 return this;
         }
