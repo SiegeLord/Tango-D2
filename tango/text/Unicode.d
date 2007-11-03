@@ -47,9 +47,9 @@ char[] blockToUpper(char[] input, char[] output = null, dchar[] working = null) 
     if (working is null)
         working.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
-    size_t oprod = 0;
+    uint produced = 0;
+    uint ate;
+    uint oprod = 0;
     foreach(dchar ch; input) {
     	// TODO Conditional Case Mapping
 		UnicodeData **d = (ch in unicodeData);
@@ -97,8 +97,8 @@ char[] toUpper(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
     	// TODO Conditional Case Mapping
 		UnicodeData **d = (ch in unicodeData);
@@ -153,8 +153,8 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
    		// TODO Conditional Case Mapping
 		UnicodeData **d = (ch in unicodeData);
@@ -206,7 +206,7 @@ dchar[] toUpper(dchar[] input, dchar[] output = null) {
     if (input.length > output.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    uint produced = 0;
     if (input.length)
     	foreach(dchar orig; input) {
     		// TODO Conditional Case Mapping
@@ -249,8 +249,8 @@ char[] toLower(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
     	// TODO Conditional Case Mapping
 		UnicodeData **d = (ch in unicodeData);
@@ -305,8 +305,8 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
    		// TODO Conditional Case Mapping
 		UnicodeData **d = (ch in unicodeData);
@@ -359,7 +359,7 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
     if (input.length > output.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    uint produced = 0;
     if (input.length)
     	foreach(dchar orig; input) {
     		// TODO Conditional Case Mapping
@@ -402,8 +402,8 @@ char[] toFold(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
     	FoldingCaseData **s = (ch in foldingCaseData);
     	if(s !is null) {
@@ -451,8 +451,8 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
-    size_t ate;
+    uint produced = 0;
+    uint ate;
     foreach(dchar ch; input) {
     	FoldingCaseData **s = (ch in foldingCaseData);
 		if(s !is null) {
@@ -498,7 +498,7 @@ dchar[] toFold(dchar[] input, dchar[] output = null) {
     if (input.length > output.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    uint produced = 0;
     if (input.length)
     	foreach(dchar orig; input) {
 			FoldingCaseData **d = (orig in foldingCaseData);
