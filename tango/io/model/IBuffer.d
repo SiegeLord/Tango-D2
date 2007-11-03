@@ -380,7 +380,7 @@ abstract class IBuffer : IConduit, Buffered
         
         ***********************************************************************/
 
-        abstract uint drain ();
+        abstract uint drain (OutputStream dst);
 
         /***********************************************************************
         
