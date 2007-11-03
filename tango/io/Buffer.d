@@ -802,14 +802,10 @@ class Buffer : IBuffer
         
         ***********************************************************************/
 
-        final uint drain ()
-        {
-                return drain (sink);
-        }
-
         final uint drain (OutputStream dst)
         {
-                assert (dst);
+                if (dst is null)
+                    return IConduit.Eof;
 
                 uint ret = read (&dst.write);
                 if (ret is IConduit.Eof)
@@ -1117,12 +1113,13 @@ class Buffer : IBuffer
 
         override OutputStream copy (InputStream src)
         {
-                assert (sink && src);
-
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to
                        if (writable is 0)
-                           drain (sink);
+                           if (sink)
+                               drain (sink);
+                           else
+                              error (overflow);
                 return this;
         } 
 
