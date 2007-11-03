@@ -16,7 +16,7 @@ module tango.core.Type;
 
 /******************************************************************************
 
-        Represents UTC time relative to Jan 1st, 0 AD. These values are
+        Represents UTC time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
         than 10,000 years. These Time values are the foundation of most 
         time & date functionality in Tango.
@@ -25,7 +25,9 @@ module tango.core.Type;
 
 public enum Time : long 
 {
-        Zero = 0L,                                 /* workaround for GDC bug */
+        epoch = 0,
+        min = long.min,
+        max = long.max,
 
         TicksPerMillisecond = 10000,
         TicksPerSecond = TicksPerMillisecond * 1000,
