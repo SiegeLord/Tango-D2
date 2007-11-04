@@ -8,7 +8,7 @@
  * Authors:     Daniel Keep
  */
 
-module tango.text.convert.Convert;
+module tango.util.Convert;
 
 private import tango.core.Traits;
 private import tango.core.Tuple : Tuple;
