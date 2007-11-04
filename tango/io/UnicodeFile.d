@@ -163,9 +163,9 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        Encoding getEncoding ()
+        Encoding encoding ()
         {
-                return bom.getEncoding();
+                return bom.encoding();
         }
         
         /***********************************************************************
@@ -241,7 +241,7 @@ class UnicodeFile(T)
                        conduit.close;
 
                 if (writeBom)
-                    conduit.write (bom.getSignature);
+                    conduit.write (bom.signature);
 
                 // and write
                 conduit.write (converted);

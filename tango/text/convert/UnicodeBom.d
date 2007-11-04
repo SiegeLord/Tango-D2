@@ -102,41 +102,10 @@ enum Encoding {
 
 *******************************************************************************/
 
-class UnicodeBom(T) 
+class UnicodeBom(T) : BomSniffer
 {
         static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
                     pragma (msg, "Template type must be char, wchar, or dchar");
-
-
-        private Encoding encoding;      // the current encoding
-        private Info*    settings;      // pointer to encoding configuration
-
-        private struct  Info
-                {
-                int      type;          // type of element (char/wchar/dchar)
-                Encoding encoding;      // Encoding.xx encoding
-                char[]   bom;           // pattern to match for signature
-                bool     test,          // should we test for this encoding?
-                         endian,        // this encoding have endian concerns?
-                         bigEndian;     // is this a big-endian encoding?
-                Encoding fallback;      // can this encoding be defaulted?
-                };
-
-        enum {Utf8, Utf16, Utf32};
-        
-        private const Info[] lookup =
-        [
-        {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
-        {Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
-        {Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
-        {Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
-        {Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
-        {Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
-        {Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
-        {Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
-        {Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
-        ];
-
 
         /***********************************************************************
         
@@ -150,31 +119,6 @@ class UnicodeBom(T)
                 setup (encoding);
         }
         
-        /***********************************************************************
-
-                Return the current encoding. This is either the originally
-                specified encoding, or a derived one obtained by inspecting
-                the content for a BOM. The latter is performed as part of 
-                the decode() method
-
-        ***********************************************************************/
-
-        final Encoding getEncoding ()
-        {
-                return encoding;
-        }
-        
-        /***********************************************************************
-
-                Return the signature (BOM) of the current encoding
-
-        ***********************************************************************/
-
-        final void[] getSignature ()
-        {
-                return settings.bom;
-        }
-
         /***********************************************************************
 
                 Convert the provided content. The content is inspected 
@@ -234,26 +178,6 @@ class UnicodeBom(T)
 
         /***********************************************************************
 
-                Scan the BOM signatures looking for a match. We scan in 
-                reverse order to get the longest match first
-
-        ***********************************************************************/
-
-        private final Info* test (void[] content)
-        {
-                for (Info* info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
-                     if (info.bom)
-                        {
-                        int len = info.bom.length;
-                        if (len <= content.length)
-                            if (content[0..len] == info.bom[0..len])
-                                return info;
-                        }
-                return null;
-        }
-        
-        /***********************************************************************
-
                 Swap bytes around, as required by the encoding
 
         ***********************************************************************/
@@ -276,18 +200,6 @@ class UnicodeBom(T)
                 return content;
         }
 
-        /***********************************************************************
-
-                Configure this instance with unicode converters
-
-        ***********************************************************************/
-
-        public final void setup (Encoding encoding)
-        {
-                this.settings = &lookup[encoding];
-                this.encoding = encoding;
-        }
-        
         /***********************************************************************
       
 
@@ -382,6 +294,101 @@ class UnicodeBom(T)
                           }
 
                 return ret;
+        }
+}
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+class BomSniffer 
+{
+        private Encoding encoder;      // the current encoding
+        private Info*    settings;      // pointer to encoding configuration
+
+        private struct  Info
+                {
+                int      type;          // type of element (char/wchar/dchar)
+                Encoding encoding;      // Encoding.xx encoding
+                char[]   bom;           // pattern to match for signature
+                bool     test,          // should we test for this encoding?
+                         endian,        // this encoding have endian concerns?
+                         bigEndian;     // is this a big-endian encoding?
+                Encoding fallback;      // can this encoding be defaulted?
+                };
+
+        private enum {Utf8, Utf16, Utf32};
+        
+        private const Info[] lookup =
+        [
+        {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
+        {Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
+        {Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
+        {Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
+        {Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
+        {Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
+        {Utf32, Encoding.UTF_32,   null,        true,  false, false, Encoding.UTF_32BE},
+        {Utf32, Encoding.UTF_32BE, x"0000feff", false, true, true},
+        {Utf32, Encoding.UTF_32LE, x"fffe0000", false, true},
+        ];
+
+        /***********************************************************************
+
+                Return the current encoding. This is either the originally
+                specified encoding, or a derived one obtained by inspecting
+                the content for a BOM. The latter is performed as part of 
+                the decode() method
+
+        ***********************************************************************/
+
+        final Encoding encoding ()
+        {
+                return encoder;
+        }
+        
+        /***********************************************************************
+
+                Return the signature (BOM) of the current encoding
+
+        ***********************************************************************/
+
+        final void[] signature ()
+        {
+                return settings.bom;
+        }
+
+        /***********************************************************************
+
+                Configure this instance with unicode converters
+
+        ***********************************************************************/
+
+        final void setup (Encoding encoding)
+        {
+                this.settings = &lookup[encoding];
+                this.encoder = encoding;
+        }
+        
+        /***********************************************************************
+
+                Scan the BOM signatures looking for a match. We scan in 
+                reverse order to get the longest match first
+
+        ***********************************************************************/
+
+        static final Info* test (void[] content)
+        {
+                for (Info* info=lookup.ptr+lookup.length; --info >= lookup.ptr;)
+                     if (info.bom)
+                        {
+                        int len = info.bom.length;
+                        if (len <= content.length)
+                            if (content[0..len] == info.bom[0..len])
+                                return info;
+                        }
+                return null;
         }
 }
 
