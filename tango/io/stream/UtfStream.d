@@ -90,9 +90,11 @@ class UtfInput(T, S) : InputFilter
         Streaming UTF converter. Type T is the target or destination type, 
         while S is the source type. Both types are either char/wchar/dchar.
 
+        Note that the arguments are reversed from those of UtfInput
+
 *******************************************************************************/
 
-class UtfOutput (T, S) : OutputFilter
+class UtfOutput (S, T) : OutputFilter
 {       
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
                     pragma (msg, "Source type must be char, wchar, or dchar");
@@ -181,7 +183,7 @@ debug (UtfStream)
         void main()
         {
                 auto inp = new UtfInput!(dchar, char)(new Buffer("hello world"));
-                auto oot = new UtfOutput!(char, dchar)(new Buffer(20));
+                auto oot = new UtfOutput!(dchar, char)(new Buffer(20));
                 oot.copy(inp);
                 assert (oot.buffer.slice == "hello world");
         }
