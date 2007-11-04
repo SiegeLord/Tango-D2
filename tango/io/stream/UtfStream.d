@@ -8,6 +8,10 @@
 
         author:         Kris
 
+        UTF conversion streams, supporting cross-translation of char, wchar 
+        and dchar variants. For supporting endian variations, configure the
+        appropriate EndianStream upstream of this one (closer to the source)
+
 *******************************************************************************/
 
 module tango.io.stream.UtfStream;
