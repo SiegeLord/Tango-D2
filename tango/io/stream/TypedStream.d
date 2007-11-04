@@ -13,7 +13,7 @@
 
 *******************************************************************************/
 
-module tango.io.stream.TypeStream;
+module tango.io.stream.TypedStream;
 
 private import  tango.io.Buffer,
                 tango.io.Conduit;
@@ -24,7 +24,7 @@ private import  tango.io.Buffer,
 
 *******************************************************************************/
 
-class TypeInput(T) : InputFilter, Buffered
+class TypedInput(T) : InputFilter, Buffered
 {       
         private IBuffer input;
 
@@ -86,7 +86,7 @@ class TypeInput(T) : InputFilter, Buffered
 
 *******************************************************************************/
 
-class TypeOutput (T) : OutputFilter, Buffered
+class TypedOutput (T) : OutputFilter, Buffered
 {       
         private IBuffer output;
 
@@ -134,13 +134,13 @@ debug (UnitTest)
 
         unittest
         {
-                auto inp = new TypeInput!(char)(new Buffer("hello world"));
-                auto oot = new TypeOutput!(char)(new Buffer(20));
+                auto inp = new TypedInput!(char)(new Buffer("hello world"));
+                auto oot = new TypedOutput!(char)(new Buffer(20));
                 foreach (x; inp)
                          oot.write (x);
                 assert (oot.buffer.slice == "hello world");
 
-                auto xx = new TypeInput!(char)(new UtfInput!(char, dchar)(new Buffer("hello world"d)));
+                auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Buffer("hello world"d)));
                 char[] yy;
                 foreach (x; xx)
                          yy ~= x;
