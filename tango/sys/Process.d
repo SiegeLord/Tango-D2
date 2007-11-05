@@ -1438,16 +1438,15 @@ debug (UnitTest)
     {
         char[][] params;
         char[] command = "echo ";
-        uint i;
 
         params ~= "one";
         params ~= "two";
         params ~= "three";
 
         command ~= '"';
-        for (i = 0; i < params.length; ++i)
+        foreach (i, param; params)
         {
-            command ~= params[i];
+            command ~= param;
             if (i != params.length - 1)
             {
                 command ~= '\n';
@@ -1461,10 +1460,11 @@ debug (UnitTest)
 
             p.execute();
 
-            i = 0;
-            foreach (line; new LineIterator!(char)(p.stdout))
+            foreach (i, line; new LineIterator!(char)(p.stdout))
             {
-                assert(line == params[i++]);
+                if (i == params.length) // echo can add ending new line confusing this test
+                    break;
+                assert(line == params[i]);
             }
 
             auto result = p.wait();
