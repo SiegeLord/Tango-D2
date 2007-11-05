@@ -663,10 +663,11 @@ bool isPrintable(dchar ch) {
     		| UnicodeData.GeneralCategory.Cs));
 }
 
+debug ( UnicodeTest ):
+    void main() {}
 
 debug (UnitTest) {       
 
-void main() {}
 unittest {
 	
 	

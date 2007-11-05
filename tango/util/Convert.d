@@ -288,7 +288,11 @@ template isArrayType(T)
 
 template isPointerType(T)
 {
-    static if( is( T : void* ) )
+    static if( is( T : Object ) ) {
+        pragma (msg, "T is Object");
+        const isPointerType = false;
+    }
+    else static if( is( T : void* ) )
         const isPointerType = true;
     else
         const isPointerType = false;
@@ -1025,9 +1029,11 @@ D toImpl(D,S)(S value)
         mixin unsupported;
 }
 
+debug ( ConvertTest):
+    void main() {}
+
 debug( UnitTest ):
 
-void main() {}
 
 bool ex(T)(lazy T v)
 {
