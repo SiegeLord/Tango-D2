@@ -61,6 +61,7 @@ class BzipOutput : OutputFilter
         bool bzs_valid = false;
         bz_stream bzs;
         ubyte[] out_chunk;
+        size_t _written = 0;
     }
 
     /***************************************************************************
@@ -135,8 +136,20 @@ class BzipOutput : OutputFilter
             if( ret != BZ_RUN_OK )
                 throw new BzipException(ret);
 
+            // Push the compressed bytes out to the stream, until it's either
+            // written them all, or choked.
             auto have = out_chunk.length-bzs.avail_out;
-            host.write(out_chunk[0..have]);
+            auto out_buffer = out_chunk[0..have];
+            do
+            {
+                auto w = host.write(out_buffer);
+                if( w == IConduit.Eof )
+                    return w;
+
+                out_buffer = out_buffer[w..$];
+                _written += w;
+            }
+            while( out_buffer.length > 0 );
         }
         // Loop while we are still using up the whole output buffer
         while( bzs.avail_out == 0 );
@@ -148,13 +161,27 @@ class BzipOutput : OutputFilter
 
     /***************************************************************************
 
+        This read-only property returns the number of compressed bytes that
+        have been written to the underlying stream.  Following a call to
+        either close or commit, this will contain the total compressed size of
+        the input data stream.
+
+    ***************************************************************************/
+
+    size_t written()
+    {
+        return _written;
+    }
+
+    /***************************************************************************
+
         commit the output
 
     ***************************************************************************/
 
     void close()
     {
-        commit;
+        if( bzs_valid ) commit;
         super.close;
     }
 
@@ -197,8 +224,20 @@ class BzipOutput : OutputFilter
             }
 
             auto have = out_chunk.length - bzs.avail_out;
+            auto out_buffer = out_chunk[0..have];
             if( have > 0 )
-                host.write(out_chunk[0..have]);
+            {
+                do
+                {
+                    auto w = host.write(out_buffer);
+                    if( w == IConduit.Eof )
+                        return w;
+
+                    out_buffer = out_buffer[w..$];
+                    _written += w;
+                }
+                while( out_buffer.length > 0 );
+            }
         }
         while( !finished );
 
@@ -297,7 +336,11 @@ class BzipInput : InputFilter
         {
             if( bzs.avail_in == 0 )
             {
-                bzs.avail_in = host.read(in_chunk);
+                auto len = host.read(in_chunk);
+                if( len == IConduit.Eof )
+                    return IConduit.Eof;
+
+                bzs.avail_in = len;
                 bzs.next_in = in_chunk.ptr;
             }
 
@@ -422,7 +465,7 @@ class BzipClosedException : IOException
 
 debug(UnitTest):
 
-import tango.io.Buffer : Buffer;
+import tango.io.GrowBuffer : GrowBuffer;
 
 unittest
 {
@@ -459,10 +502,12 @@ unittest
         0xdc, 0x91, 0x4e, 0x14, 0x24, 0x10, 0x26, 0x2f,
         0xaa, 0x80];
 
-    scope cond = new Buffer;
+    scope cond = new GrowBuffer;
     scope comp = new BzipOutput(cond);
     comp.write(message);
     comp.close;
+
+    assert( comp.written == message_z.length );
 
     assert( message_z == cast(ubyte[])(cond.slice) );
 

@@ -112,6 +112,9 @@ class ZlibInput : InputFilter
         if( zs.avail_in == 0 )
         {
             auto len = host.read(in_chunk);
+            if( len == IConduit.Eof )
+                return IConduit.Eof;
+
             zs.avail_in = len;
             zs.next_in = in_chunk.ptr;
         }
@@ -223,6 +226,7 @@ class ZlibOutput : OutputFilter
         bool zs_valid = false;
         z_stream zs;
         ubyte[] out_chunk;
+        size_t _written = 0;
     }
 
     /***************************************************************************
@@ -291,8 +295,20 @@ class ZlibOutput : OutputFilter
             if( ret == Z_STREAM_ERROR )
                 throw new ZlibException(ret);
 
+            // Push the compressed bytes out to the stream, until it's either
+            // written them all, or choked.
             auto have = out_chunk.length-zs.avail_out;
-            host.write(out_chunk[0..have]);
+            auto out_buffer = out_chunk[0..have];
+            do
+            {
+                auto w = host.write(out_buffer);
+                if( w == IConduit.Eof )
+                    return w;
+
+                out_buffer = out_buffer[w..$];
+                _written += w;
+            }
+            while( out_buffer.length > 0 );
         }
         // Loop while we are still using up the whole output buffer
         while( zs.avail_out == 0 );
@@ -304,13 +320,29 @@ class ZlibOutput : OutputFilter
 
     /***************************************************************************
 
+        This read-only property returns the number of compressed bytes that
+        have been written to the underlying stream.  Following a call to
+        either close or commit, this will contain the total compressed size of
+        the input data stream.
+
+    ***************************************************************************/
+
+    size_t written()
+    {
+        return _written;
+    }
+
+    /***************************************************************************
+
         commit the output
 
     ***************************************************************************/
 
     void close()
     {
-        commit;
+        // Only commit if the stream is still open.
+        if( zs_valid ) commit;
+
         super.close;
     }
 
@@ -355,8 +387,20 @@ class ZlibOutput : OutputFilter
             }
 
             auto have = out_chunk.length - zs.avail_out;
+            auto out_buffer = out_chunk[0..have];
             if( have > 0 )
-                host.write(out_chunk[0..have]);
+            {
+                do
+                {
+                    auto w = host.write(out_buffer);
+                    if( w == IConduit.Eof )
+                        return w;
+
+                    out_buffer = out_buffer[w..$];
+                    _written += w;
+                }
+                while( out_buffer.length > 0 );
+            }
         }
         while( !finished );
 
@@ -449,7 +493,7 @@ class ZlibException : IOException
 
 debug(UnitTest) {
 
-import tango.io.Buffer : Buffer;
+import tango.io.GrowBuffer : GrowBuffer;
 
 unittest
 {
@@ -472,10 +516,12 @@ unittest
         0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
         0x01,0x00,0x1f,0xe3,0x22,0x99];
 
-    scope cond_z = new Buffer;
+    scope cond_z = new GrowBuffer;
     scope comp = new ZlibOutput(cond_z);
     comp.write (message);
     comp.close;
+
+    assert( comp.written == message_z.length );
 
     assert( message_z == cast(ubyte[])(cond_z.slice) );
 
