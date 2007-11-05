@@ -32,11 +32,14 @@ INLINE="-inline"
 DMDVERSION=
 
 # Various functions to workaround bugs in the compilers
+
+# Sets the variable DMDVERSION
 dmdversion() {
     DMDVERSION=`$DC | head -1 | cut -c 26-`
     echo ">> Using $DMDVERSION"
 }
 
+# Checks if this DMD version has known bugs that can be worked around build time
 dmdbugs() {
     dmdversion
     if [ "$DMDVERSION" = "1.020" -o "$DMDVERSION" = "1.021" ]
@@ -46,8 +49,10 @@ dmdbugs() {
     fi
 }
 
+# Checks for known compiler bugs
 compilerbugs() {
     echo ">> Checking compiler version $DC" 
+    #`$DCbugs`
     if [ "$DC" = "dmd" ]
     then
         dmdbugs
@@ -85,6 +90,7 @@ filter() {
     return 0
 }
 
+# Compile the object files
 compile() {
     FILENAME=$1
     OBJNAME=`echo $1 | sed -e 's/\.d//' | sed -e 's/\//\./g'`
@@ -92,12 +98,13 @@ compile() {
 
     if filter $OBJNAME
     then
-        $DC -c -v1 $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
 }
 
+# Build the libraries
 build() {
 
     DC=$1
