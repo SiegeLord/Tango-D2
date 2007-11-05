@@ -76,7 +76,7 @@ then
     fi
     if [ -e "$PREFIX/bin/dmd.conf.phobos" ]
     then
-        mv   $PREFIX/bin/dmd.conf $PFEFIX/bin/dmd.conf.tango
+        mv   $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.tango
         mv   $PREFIX/bin/dmd.conf.phobos $PREFIX/bin/dmd.conf
     fi
     # Tango 0.97 installed to this dir
