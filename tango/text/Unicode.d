@@ -41,7 +41,7 @@ private import tango.text.convert.Utf;
  *     output = this output buffer will be used unless too small
  * Returns: the case mapped string
  */
-char[] blockToUpper(char[] input, char[] output = null, dchar[] working = null) {
+deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] working = null) {
 
 	// ?? How much preallocation ?? This is worst case allocation
     if (working is null)
