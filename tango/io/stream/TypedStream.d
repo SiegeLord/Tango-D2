@@ -50,6 +50,18 @@ class TypedInput(T) : InputFilter, Buffered
 
         /***********************************************************************
 
+                Override this to give back a useful chaining reference
+
+        ***********************************************************************/
+
+        final override TypedInput clear ()
+        {
+                host.clear;
+                return this;
+        }
+
+        /***********************************************************************
+
                 Read a value from the stream. Returns false when all 
                 content has been consumed
 
@@ -136,6 +148,7 @@ debug (UnitTest)
         {
                 auto inp = new TypedInput!(char)(new Buffer("hello world"));
                 auto oot = new TypedOutput!(char)(new Buffer(20));
+
                 foreach (x; inp)
                          oot.write (x);
                 assert (oot.buffer.slice == "hello world");
