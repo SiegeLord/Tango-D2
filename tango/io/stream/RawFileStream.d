@@ -36,9 +36,9 @@ class RawFileInput : DataInput
 
         ***********************************************************************/
 
-        this (char[] path, FileConduit.Style style = FileConduit.ReadExisting, uint size=0)
+        this (char[] path, uint buffer=uint.max, FileConduit.Style style = FileConduit.ReadExisting)
         {
-                super (conduit = new FileInput (path, style), size);
+                super (conduit = new FileInput (path, style), buffer);
         }
 
         /***********************************************************************
@@ -86,9 +86,9 @@ class RawFileOutput : DataOutput
 
         ***********************************************************************/
 
-        this (char[] path, FileConduit.Style style = FileConduit.WriteCreate, uint size=0)
+        this (char[] path, uint buffer=uint.max, FileConduit.Style style = FileConduit.WriteCreate)
         {
-                super (conduit = new FileOutput (path, style), size);
+                super (conduit = new FileOutput (path, style), buffer);
         }
 
         /***********************************************************************

@@ -43,10 +43,10 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        this (InputStream stream, uint size=0, bool flip=false)
+        this (InputStream stream, uint buffer=uint.max, bool flip=false)
         {
                 this.flip = flip;
-                super (input = Buffer.share (stream, size));
+                super (input = Buffer.share (stream, buffer));
         }
 
         /***********************************************************************
@@ -208,10 +208,10 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        this (OutputStream stream, uint size=0, bool flip = false)
+        this (OutputStream stream, uint buffer=uint.max, bool flip = false)
         {
                 this.flip = flip;
-                super (output = Buffer.share (stream, size));
+                super (output = Buffer.share (stream, buffer));
         }
 
         /***********************************************************************
