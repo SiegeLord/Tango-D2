@@ -14,8 +14,7 @@ module tango.io.stream.RawFileStream;
 
 public  import tango.io.FileConduit;
 
-private import tango.io.stream.FileStream,
-               tango.io.stream.DataStream;
+private import tango.io.stream.DataStream;
 
 /*******************************************************************************
 
@@ -32,13 +31,13 @@ class RawFileInput : DataInput
 
         /***********************************************************************
 
-                compose a FileStream              
+                Wrap a Fileconduit instance
 
         ***********************************************************************/
 
-        this (char[] path, uint buffer=uint.max, FileConduit.Style style = FileConduit.ReadExisting)
+        this (FileConduit file, uint buffer=uint.max)
         {
-                super (conduit = new FileInput (path, style), buffer);
+                super (conduit = file, buffer);
         }
 
         /***********************************************************************
@@ -82,13 +81,13 @@ class RawFileOutput : DataOutput
 
         /***********************************************************************
 
-                compose a FileStream              
+                Wrap a Fileconduit instance
 
         ***********************************************************************/
 
-        this (char[] path, uint buffer=uint.max, FileConduit.Style style = FileConduit.WriteCreate)
+        this (FileConduit file, uint buffer=uint.max)
         {
-                super (conduit = new FileOutput (path, style), buffer);
+                super (conduit = file, buffer);
         }
 
         /***********************************************************************
