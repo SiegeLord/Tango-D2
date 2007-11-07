@@ -29,7 +29,7 @@ class RawFileInput : DataInput
 
         /***********************************************************************
 
-                Wrap a Fileconduit instance
+                Wrap a FileConduit instance
 
         ***********************************************************************/
 
@@ -53,7 +53,7 @@ class RawFileInput : DataInput
 
         /***********************************************************************
 
-                Return the underling conduit
+                Return the underlying conduit
 
         ***********************************************************************/
 
@@ -77,7 +77,7 @@ class RawFileOutput : DataOutput
 
         /***********************************************************************
 
-                Wrap a Fileconduit instance
+                Wrap a FileConduit instance
 
         ***********************************************************************/
 
@@ -101,7 +101,7 @@ class RawFileOutput : DataOutput
 
         /***********************************************************************
 
-                Return the underling conduit
+                Return the underlying conduit
 
         ***********************************************************************/
 
