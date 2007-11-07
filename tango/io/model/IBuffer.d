@@ -207,8 +207,8 @@ abstract class IBuffer : IConduit, Buffered
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes
-                actually read, which will be less that dst.length when
-                Eof has been reached and IConduit.Eof thereafter
+                actually read, which will be less than dst.length when
+                Eof has been reached and IConduit.Eof thereafter.
 
         **********************************************************************/
 
