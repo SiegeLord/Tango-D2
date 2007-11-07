@@ -595,13 +595,7 @@ class Buffer : IBuffer
                 The content to consume. This is consumed verbatim, and in
                 raw binary format ~ no implicit conversions are performed.
 
-                Returns:
-                Returns a chaining reference if all content was written. 
-                Throws an IOException indicating eof or eob if not.
-
                 Remarks:
-                Invokes the provided 
-
                 This is often used in lieu of a Writer, and enables simple
                 classes, such as FilePath and Uri, to emit content directly
                 into a buffer (thus avoiding potential heap activity)

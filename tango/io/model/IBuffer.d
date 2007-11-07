@@ -20,8 +20,7 @@ private import tango.io.model.IConduit;
         Buffer is central concept in Tango I/O. Each buffer acts
         as a queue (line) where items are removed from the front
         and new items are added to the back. Buffers are modeled 
-        by tango.io.model.IBuffer, and a concrete implementation 
-        is provided by this class.
+        by this interface and implemented in various ways.
         
         Buffer can be read from and written to directly, though 
         various data-converters and filters are often leveraged 
@@ -51,61 +50,7 @@ private import tango.io.model.IConduit;
         is mapped directly to virtual memory exposed via the OS. This 
         can be used to address large files as an array of content.
 
-        Direct buffer manipulation typically involves appending, 
-        as in the following example:
-        ---
-        // create a small buffer
-        auto buf = new Buffer (256);
-
-        auto foo = "to write some D";
-
-        // append some text directly to it
-        buf.append ("now is the time for all good men ").append(foo);
-        ---
-
-        Alternatively, one might use a formatter to append the buffer:
-        ---
-        auto output = new FormatOutput (new Buffer(256));
-        output.format ("now is the time for {} good men {}", 3, foo);
-        ---
-
-        A slice() method will return all valid content within a buffer.
-        GrowBuffer can be used instead, where one wishes to append beyond 
-        a specified limit. 
-        
-        A common usage of a buffer is in conjunction with a conduit, 
-        such as FileConduit. Each conduit exposes a preferred-size for 
-        its associated buffers, utilized during buffer construction:
-        ---
-        auto file = new FileConduit ("file.name");
-        auto buf = new Buffer (file);
-        ---
-
-        However, this is typically hidden by higher level constructors 
-        such as those exposed via the stream wrappers. For example:
-        ---
-        auto input = new DataInput (new FileInput("file.name"));
-        ---
-
-        There is indeed a buffer between the resultant stream and the 
-        file source, but explicit buffer construction is unecessary in 
-        common cases. 
-
-        An Iterator is constructed in a similar manner, where you provide 
-        it an input stream to operate upon. There's a variety of iterators 
-        available in the tango.text.stream package, and they are templated 
-        for each of utf8, utf16, and utf32. This example uses a line iterator 
-        to sweep a text file:
-        ---
-        auto lines = new LineInput (new FileInput("file.name"));
-        foreach (line; lines)
-                 Cout(line).newline;
-        ---                 
-
-        Buffers are useful for many purposes within Tango, but there
-        are times when it may be more appropriate to sidestep them. For 
-        such cases, all conduit derivatives (such as FileConduit) support 
-        direct array-based IO via a pair of read() and write() methods. 
+        See tango.io.Buffer for more info.
 
 *******************************************************************************/
 
@@ -205,25 +150,19 @@ abstract class IBuffer : IConduit, Buffered
                 Consume content from a producer
 
                 Params:
-                dg = the producing delegate, which should itself accept
-                a callback for consuming char[] content
-
-                Returns:
-                Returns a chaining reference if all content was written. 
-                Throws an IOException indicating eof or eob if not.
+                The content to consume. This is consumed verbatim, and in
+                raw binary format ~ no implicit conversions are performed.
 
                 Remarks:
-                Invokes the provided 
-
                 This is often used in lieu of a Writer, and enables simple
                 classes, such as FilePath and Uri, to emit content directly
-                into a buffer (thus avoiding potential for heap activity)
+                into a buffer (thus avoiding potential heap activity)
 
                 Examples:
                 ---
-                auto uri = new Uri (someuri);
+                auto path = new FilePath (somepath);
 
-                uri.produce (&buffer.consume);
+                path.produce (&buffer.consume);
                 ---
 
         ***********************************************************************/
