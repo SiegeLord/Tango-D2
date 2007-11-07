@@ -280,7 +280,7 @@ abstract class IBuffer : IConduit, Buffered
                 Upon success, the delegate should return the byte-based 
                 index of the consumed pattern (tail end of it). Failure
                 to match a pattern should be indicated by returning an
-                IConduit.Eof
+                IConduit.Eof.
 
                 Each pattern is expected to be stripped of the delimiter.
                 An end-of-file condition causes trailing content to be 
@@ -304,7 +304,7 @@ abstract class IBuffer : IConduit, Buffered
                 eaten. If there is no space available, nothing will be 
                 read.
 
-                Returns the number of bytes read, or Conduit.Eof
+                Returns the number of bytes read, or Conduit.Eof.
         
         ***********************************************************************/
 
@@ -315,7 +315,7 @@ abstract class IBuffer : IConduit, Buffered
                 Write as much of the buffer that the associated conduit
                 can consume.
 
-                Returns the number of bytes written, or Conduit.Eof
+                Returns the number of bytes written, or Conduit.Eof.
         
         ***********************************************************************/
 
@@ -323,7 +323,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                Truncate the buffer within its extend. Returns true if
+                Truncate the buffer within its extent. Returns true if
                 the new 'extent' is valid, false otherwise.
 
         ***********************************************************************/
@@ -332,8 +332,8 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                return count of readable bytes remaining in buffer. This is 
-                calculated simply as limit() - position()
+                Return count of readable bytes remaining in buffer. This is 
+                calculated simply as limit() - position().
 
         ***********************************************************************/
 
@@ -342,7 +342,7 @@ abstract class IBuffer : IConduit, Buffered
         /***********************************************************************
         
                 Return count of writable bytes available in buffer. This is 
-                calculated simply as capacity() - limit()
+                calculated simply as capacity() - limit().
 
         ***********************************************************************/
 
@@ -350,7 +350,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                returns the limit of readable content within this buffer
+                Returns the limit of readable content within this buffer.
 
         ***********************************************************************/
 
@@ -358,7 +358,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                returns the total capacity of this buffer
+                Returns the total capacity of this buffer.
 
         ***********************************************************************/
 
@@ -366,7 +366,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                returns the current position within this buffer
+                Returns the current position within this buffer.
 
         ***********************************************************************/
 
@@ -422,13 +422,13 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
 
-                Transfer content into the provided dst
+                Transfer content into the provided dst.
 
                 Params: 
                 dst = destination of the content
 
                 Returns:
-                return the number of bytes read, which may be less than
+                Return the number of bytes read, which may be less than
                 dst.length. Eof is returned when no further content is
                 available.
 
@@ -450,7 +450,7 @@ abstract class IBuffer : IConduit, Buffered
                 src = the content to write
 
                 Returns:
-                return the number of bytes written, which will be Eof when
+                Return the number of bytes written, which will be Eof when
                 the content cannot be written.
 
                 Remarks:
@@ -525,7 +525,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                Return a preferred size for buffering conduit I/O
+                Return a preferred size for buffering conduit I/O.
 
         ***********************************************************************/
 
@@ -533,7 +533,7 @@ abstract class IBuffer : IConduit, Buffered
                      
         /***********************************************************************
         
-                Return the name of this conduit
+                Return the name of this conduit.
 
         ***********************************************************************/
 
@@ -549,7 +549,7 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                flush the contents of this buffer to the related conduit.
+                Flush the contents of this buffer to the related conduit.
                 Throws an IOException on premature eof.
 
         ***********************************************************************/
@@ -575,7 +575,7 @@ abstract class IBuffer : IConduit, Buffered
                 until there is no more content available. The buffer
                 content should be explicitly flushed by the caller.
 
-                Throws an IOException on premature eof
+                Throws an IOException on premature Eof.
 
         ***********************************************************************/
 
