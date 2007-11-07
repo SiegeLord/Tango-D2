@@ -62,17 +62,35 @@ class DataInput : InputFilter, Buffered
 
         /***********************************************************************
 
-                Write to conduit from a source array. The provided src
-                content will be written to the conduit.
-
-                Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                Override this to give back a useful chaining reference
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        final override DataInput clear ()
         {
-                return input.read (dst);
+                host.clear;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Read an array back into a user-provided workspace. The
+                space must be sufficiently large enough to house all of
+                the array, and the actual number of bytes is returned.
+
+                Note that the size of the array is written as an integer
+                prefixing the array content itself.  Use read(void[]) to 
+                eschew this prefix.
+
+        ***********************************************************************/
+
+        final override uint readArray (void[] dst)
+        {
+                auto len = readInt;
+                if (len > dst.length)
+                    conduit.error ("DataInput.readArray :: dst array is too small");
+                input.readExact (dst.ptr, len);
+                return len;
         }
 
         /***********************************************************************
@@ -209,18 +227,18 @@ class DataOutput : OutputFilter, Buffered
 
         /***********************************************************************
 
-                Write to conduit from a source array. The provided src
-                content will be written to the conduit.
-
-                Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                Write an array to the target stream. Note that the size 
+                of the array is written as an integer prefixing the array 
+                content itself. Use write(void[]) to eschew this prefix.
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        final uint writeArray (void[] src)
         {
-                output.append (src);
-                return src.length;
+                auto len = src.length;
+                writeInt (len);
+                output.append (src.ptr, len);
+                return len;
         }
 
         /***********************************************************************
