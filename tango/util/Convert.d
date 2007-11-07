@@ -303,7 +303,7 @@ static assert( !isPointerType!(void[]) );
 static assert( !isPointerType!(typeof("abc")) );
 static assert( !isPointerType!(Object) );
 
-/**
+/*
  * Determines which signed integer type of T and U is larger.
  */
 template sintSuperType(T,U)
@@ -318,7 +318,7 @@ template sintSuperType(T,U)
         alias byte sintSuperType;
 }
 
-/**
+/*
  * Determines which unsigned integer type of T and U is larger.
  */
 template uintSuperType(T,U)
@@ -343,7 +343,7 @@ template uintOfSize(uint bytes)
         alias uint uintOfSize;
 }
 
-/**
+/*
  * Safely performs a comparison between two integer values, taking into
  * account different sizes and signages.
  */
@@ -432,7 +432,7 @@ template unsupported_backwards(char[] desc="")
             ~" from "~ctfe_trim(S.stringof)~".");
 }
 
-/// TN works out the c_case name of the given type.
+// TN works out the c_case name of the given type.
 template TN(T:T[])
 {
     static if( is( T == char ) )
@@ -445,13 +445,13 @@ template TN(T:T[])
         const TN = TN!(T)~"_array";
 }
 
-/// ditto
+// ditto
 template TN(T:T*)
 {
     const TN = TN!(T)~"_pointer";
 }
 
-/// ditto
+// ditto
 template TN(T)
 {
     static if( isAssocArrayType!(T) )
@@ -461,7 +461,7 @@ template TN(T)
         const TN = ctfe_trim(T.stringof);
 }
 
-/// Picks an appropriate toUtf* method from t.text.convert.Utf.
+// Picks an appropriate toUtf* method from t.text.convert.Utf.
 template toUtf(T)
 {
     static if( is( T == char[] ) )
@@ -480,7 +480,7 @@ template UtfNum(T)
             is(typeof(T[0])==wchar) ? "16" : "32");
 }
 
-/// This mixin defines a general function for converting to a UDT.
+// This mixin defines a general function for converting to a UDT.
 template toUDT()
 {
     D toDfromS()
@@ -537,7 +537,7 @@ template toUDT()
     }
 }
 
-/// This mixin defines a general function for converting from a UDT.
+// This mixin defines a general function for converting from a UDT.
 template fromUDT(char[] fallthrough="")
 {
     D toDfromS()
