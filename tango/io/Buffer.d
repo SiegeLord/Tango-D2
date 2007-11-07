@@ -283,10 +283,12 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        static IBuffer share (InputStream stream)
+        static IBuffer share (InputStream stream, uint size=0)
         {
                 auto b = cast(Buffered) stream;
-                return b ? b.buffer : new Buffer (stream, stream.conduit.bufferSize);
+                if (size is 0)
+                    size = stream.conduit.bufferSize;
+                return b ? b.buffer : new Buffer (stream, size);
         }
 
         /***********************************************************************
@@ -296,6 +298,8 @@ class Buffer : IBuffer
 
                 Params: 
                 stream = an output stream
+                size = a hint of the desired buffer size. Defaults to the
+                conduit-defined size
 
                 Remarks:
                 If an upstream Buffer instances is visible, it will be shared.
@@ -304,10 +308,12 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        static IBuffer share (OutputStream stream)
+        static IBuffer share (OutputStream stream, uint size=0)
         {
                 auto b = cast(Buffered) stream;
-                return b ? b.buffer : new Buffer (stream, stream.conduit.bufferSize);
+                if (size is 0)
+                    size = stream.conduit.bufferSize;
+                return b ? b.buffer : new Buffer (stream, size);
         }
 
         /***********************************************************************
