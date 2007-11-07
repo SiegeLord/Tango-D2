@@ -12,7 +12,7 @@
 
 module tango.io.stream.FileStream;
 
-private import tango.io.FileConduit;
+public import tango.io.FileConduit;
 
 /*******************************************************************************
 
