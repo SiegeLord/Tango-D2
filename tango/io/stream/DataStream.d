@@ -137,7 +137,7 @@ class DataInput : InputFilter, Buffered
                 int x;
                 input.readExact (&x, x.sizeof);
                 if (flip)
-                    ByteSwap.swap16(&x, x.sizeof);
+                    ByteSwap.swap32(&x, x.sizeof);
                 return x;
         }
 
@@ -150,7 +150,7 @@ class DataInput : InputFilter, Buffered
                 long x;
                 input.readExact (&x, x.sizeof);
                 if (flip)
-                    ByteSwap.swap16(&x, x.sizeof);
+                    ByteSwap.swap64(&x, x.sizeof);
                 return x;
         }
 
@@ -163,7 +163,7 @@ class DataInput : InputFilter, Buffered
                 float x;
                 input.readExact (&x, x.sizeof);
                 if (flip)
-                    ByteSwap.swap16(&x, x.sizeof);
+                    ByteSwap.swap32(&x, x.sizeof);
                 return x;
         }
 
@@ -176,7 +176,7 @@ class DataInput : InputFilter, Buffered
                 double x;
                 input.readExact (&x, x.sizeof);
                 if (flip)
-                    ByteSwap.swap16(&x, x.sizeof);
+                    ByteSwap.swap64(&x, x.sizeof);
                 return x;
         }
 
