@@ -12,7 +12,7 @@
 
 module tango.io.stream.RawFileStream;
 
-public  import tango.io.FileConduit;
+private import tango.io.FileConduit;
 
 private import tango.io.stream.DataStream;
 
@@ -27,8 +27,6 @@ class RawFileInput : DataInput
 {
         private FileConduit conduit;
 
-        public alias FileConduit.Seek.Anchor Anchor;
-
         /***********************************************************************
 
                 Wrap a Fileconduit instance
@@ -42,15 +40,15 @@ class RawFileInput : DataInput
 
         /***********************************************************************
 
-                Set the file seek position to the specified offset from 
-                the given anchor, and clear the input buffer
+                Set the file seek position to the specified offset, and 
+                clear the input buffer
         
         ***********************************************************************/
 
-        final long seek (long offset, Anchor anchor = Anchor.Begin)
+        final long seek (long offset)
         {
                 host.clear;
-                return conduit.seek (offset, anchor);
+                return conduit.seek (offset);
         }
 
         /***********************************************************************
@@ -77,8 +75,6 @@ class RawFileOutput : DataOutput
 {
         private FileConduit conduit;
 
-        public alias FileConduit.Seek.Anchor Anchor;
-
         /***********************************************************************
 
                 Wrap a Fileconduit instance
@@ -92,15 +88,15 @@ class RawFileOutput : DataOutput
 
         /***********************************************************************
 
-                Set the file seek position to the specified offset from 
-                the given anchor, after flushing the output buffer
+                Set the file seek position to the specified offset, after 
+                flushing the output buffer
         
         ***********************************************************************/
 
-        final long seek (long offset, Anchor anchor = Anchor.Begin)
+        final long seek (long offset)
         {
                 host.flush;
-                return conduit.seek (offset, anchor);
+                return conduit.seek (offset);
         }
 
         /***********************************************************************
