@@ -487,14 +487,20 @@ class Layout(T)
                             return fromUtf32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.INTERFACE:
-                            Interface* pi = **cast(Interface ***)*cast(void**) p;
-                            Object o = cast(Object)(*cast(void**)p - pi.offset);
-                            return fromUtf8 (o.toUtf8, result);
+                            auto x = *cast(void**) p;
+                            if (x)
+                               {
+                               auto pi = **cast(Interface ***) x;
+                               auto o = cast(Object)(*cast(void**)p - pi.offset);
+                               return fromUtf8 (o.toUtf8, result);
+                               }
+                            break;
                             
                        case TypeCode.CLASS:
-                            static T[] Null = "{null}";
                             auto c = *cast(Object*) p;
-                            return c ? fromUtf8 (c.toUtf8, result) : Null;
+                            if (c)
+                                return fromUtf8 (c.toUtf8, result);
+                            break;
 
                        case TypeCode.ENUM:
                             return munge (result, format, (cast(TypeInfo_Enum) type).base, p);
@@ -506,7 +512,8 @@ class Layout(T)
                             return unknown (result, format, type, p);
                        }
 
-                return null;
+                static T[] Null = "{null}";
+                return Null;
         }
 
         /**********************************************************************
