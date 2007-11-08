@@ -38,6 +38,33 @@ alias void delegate (char[] value,uint ordinal) DefaultArgParserCallback;
 */
 alias void delegate () ArgParserSimpleCallback;
 
+
+/**
+    A struct that represents a "{Prefix}{Identifier}" string.
+*/
+struct Argument {
+    char[] prefix;
+    char[] identifier;
+
+    /**
+        Creates a new Argument instance with given prefix and identifier.
+    */
+    static Argument opCall ( char[] prefix, char[] identifier ) {
+        Argument result;
+
+        result.prefix = prefix;
+        result.identifier = identifier;
+
+        return result;
+    }
+}
+
+/**
+    Alias for for the lazy people.
+*/
+alias Argument Arg;
+
+
 /**
     A utility class to parse and handle your command line arguments.
 */
@@ -153,8 +180,58 @@ class ArgParser{
     }
 
     /**
-        Parses the arguments provided by the parameter. The bound
-        callbacks are called as arguments are recognized.
+        Binds a delegate callback to an argument.
+
+        Params:
+            argument = argument to respond to
+            callback = the delegate that should be called when the argument is found
+    */
+    public void bind (Argument argument, ArgParserCallback callback) {
+        bind(argument.prefix, argument.identifier, callback);
+    }
+
+    /**
+        Binds a delegate callback to any number of arguments.
+
+        Params:
+            arguments = an array of Argument struct instances
+            callback = the delegate that should be called when one of the arguments is found
+    */
+    public void bind ( Argument[] arguments, void delegate(char[]) callback ) {
+        foreach (argument; arguments) { bind(argument, callback); }
+    }
+
+    /**
+        Binds a delegate callback to an identifier with Posix-like prefixes. This means,
+        it binds for both prefixes "-" and "--", as well as identifier with, and
+        without a delimiting "=" between identifier and value.
+
+        Params:
+            identifier = argument identifier
+            callback = the delegate that should be called when one of the arguments is found
+    */
+    public void bindPosix ( char[] identifier, ArgParserCallback callback ) {
+        bind([ Argument("-", identifier ~ "="), Argument("-", identifier),
+               Argument("--", identifier ~ "="), Argument("--", identifier) ], callback);
+    }
+
+    /**
+        Binds a delegate callback to any number of identifiers with Posix-like prefixes.
+        See bindPosix(identifier, callback).
+
+        Params:
+            arguments = an array of argument identifiers
+            callback = the delegate that should be called when one of the arguments is found
+    */
+    public void bindPosix ( char[][] identifiers, ArgParserCallback callback ) {
+        foreach (identifier; identifiers) { bindPosix(identifier, callback); }
+    }
+
+    /**
+        Parses the arguments provided by the parameter. The bound callbacks are called as
+        arguments are recognized. If two arguments have the same prefix, and start with 
+        the same characters (e.g.: --open, --opened), the longest matching bound callback
+        is called.
 
         Params:
             arguments = the command line arguments from the application
@@ -162,6 +239,7 @@ class ArgParser{
     */
     public void parse(char[][] arguments, bool resetOrdinals = false){
         if (bindings.length == 0) return;
+
         if (resetOrdinals) {
             defaultOrdinal = 0;
             foreach (key; prefixOrdinals.keys) {
@@ -171,26 +249,43 @@ class ArgParser{
 
         foreach (char[] arg; arguments) {
             char[] argData = arg;
-            bool found = false;
             char[] argOrig = argData;
+            bool found = false;
+
             foreach (char[] prefix; prefixSearchOrder) {
                 if(argData.length < prefix.length) continue; 
-                if(argData[0..prefix.length] != prefix) {
-                    continue;
-                }
-                else {
-                    argData = argData[prefix.length..$];
-                } 
+
+                if(argData[0..prefix.length] != prefix) continue;
+                else argData = argData[prefix.length..$];
+
                 if (prefix in bindings) {
+                    PrefixCallback[] candidates;
+
                     foreach (PrefixCallback cb; bindings[prefix]) {
                         if (argData.length < cb.id.length) continue;
+                        
                         uint cbil = cb.id.length;
+
                         if (cb.id == argData[0..cbil]) {
                             found = true;
-                            argData = argData[cbil..$];
-                            cb.cb(argData);
-                            break;
+                            candidates ~= cb;
                         }
+                    }
+
+                    if (found) {
+                        // Find the longest matching callback identifier from the candidates.
+                        uint indexLongestMatch = 0;
+
+						if (candidates.length > 1) {
+							foreach (i, candidate; candidates) {
+								if (candidate.id.length > candidates[indexLongestMatch].id.length) {
+									indexLongestMatch = i;
+								}
+							}
+						}
+
+                        // Call the best matching callback.
+                        with(candidates[indexLongestMatch]) { cb(argData[id.length..$]); }
                     }
                 }
                 if (found) {
