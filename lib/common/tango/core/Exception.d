@@ -2,9 +2,9 @@
  * The exception module defines all system-level exceptions and provides a
  * mechanism to alter system-level error handling.
  *
- * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly, Kris Bell.  All rights reserved.
  * License:   BSD style: $(LICENSE)
- * Authors:   Sean Kelly
+ * Authors:   Sean Kelly, Kris Bell
  */
 module tango.core.Exception;
 
@@ -46,6 +46,7 @@ interface TracedExceptionInfo
           - SocketAcceptException
         - AddressException
         - HostException
+        - VfsException
 
     - NoSuchElementException
       - CorruptedIteratorException
@@ -274,6 +275,16 @@ class IOException : PlatformException
     }
 }
 
+/**
+ * The basic exception thrown by the tango.io.vfs package. 
+ */
+private class VfsException : IOException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
 
 /**
  * Base class for socket exceptions.
