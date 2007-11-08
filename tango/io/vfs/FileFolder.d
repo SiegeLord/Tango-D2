@@ -291,6 +291,72 @@ class FileFolder : VfsFolder
         }
 }
 
+/*******************************************************************************
+
+        Represents a group of files (need this declared here to avoid
+        a bunch of bizarre compiler warnings)
+
+*******************************************************************************/
+
+class FileGroup : VfsFiles
+{
+        private FilePath[]      group;
+        private VfsStats        stats;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (FolderGroup host, VfsFilter filter)
+        {
+                foreach (folder; host.members)
+                         group ~= folder.files (stats, filter);
+        }
+
+        /***********************************************************************
+
+                Iterate over the set of contained VfsFile instances
+
+        ***********************************************************************/
+
+        final int opApply (int delegate(inout VfsFile) dg)
+        {
+                int  result;
+                auto host = new FileHost;
+
+                foreach (file; group)    
+                        {    
+                        host.path = file;
+                        VfsFile x = host;
+                        if ((result = dg(x)) != 0)
+                             break;
+                        } 
+                return result;
+        }
+
+        /***********************************************************************
+
+                Return the total number of entries 
+
+        ***********************************************************************/
+
+        final uint files ()
+        {
+                return group.length;
+        }
+
+        /***********************************************************************
+
+                Return the total size of all files 
+
+        ***********************************************************************/
+
+        final ulong bytes ()
+        {
+                return stats.bytes;
+        }
+}
+
 
 /*******************************************************************************
 
@@ -488,72 +554,6 @@ private class FolderHost : VfsFolderEntry
         final VfsFolder open ()
         {
                 return new FileFolder (parent, name, false);
-        }
-}
-
-
-/*******************************************************************************
-
-        Represents a group of files
-
-*******************************************************************************/
-
-private class FileGroup : VfsFiles
-{
-        private FilePath[]      group;
-        private VfsStats        stats;
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private this (FolderGroup host, VfsFilter filter)
-        {
-                foreach (folder; host.members)
-                         group ~= folder.files (stats, filter);
-        }
-
-        /***********************************************************************
-
-                Iterate over the set of contained VfsFile instances
-
-        ***********************************************************************/
-
-        final int opApply (int delegate(inout VfsFile) dg)
-        {
-                int  result;
-                auto host = new FileHost;
-
-                foreach (file; group)    
-                        {    
-                        host.path = file;
-                        VfsFile x = host;
-                        if ((result = dg(x)) != 0)
-                             break;
-                        } 
-                return result;
-        }
-
-        /***********************************************************************
-
-                Return the total number of entries 
-
-        ***********************************************************************/
-
-        final uint files ()
-        {
-                return group.length;
-        }
-
-        /***********************************************************************
-
-                Return the total size of all files 
-
-        ***********************************************************************/
-
-        final ulong bytes ()
-        {
-                return stats.bytes;
         }
 }
 

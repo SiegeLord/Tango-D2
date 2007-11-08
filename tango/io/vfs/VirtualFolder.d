@@ -194,14 +194,11 @@ class VirtualFolder : VfsHost
                 auto child = text in mounts;
                 if (child)
                     return child.folder (tail);
-                else
-                   {
-                   auto sym = text in folders;
-                   if (sym)
-                       return *sym;
-                   }
 
-                error ("'"~text~"' is not a recognized member of '"~name~"'");
+                auto sym = text in folders;
+                if (sym is null)
+                    error ("'"~text~"' is not a recognized member of '"~name~"'");
+                return *sym;
         }
 
         /***********************************************************************
@@ -219,9 +216,9 @@ class VirtualFolder : VfsHost
                     return folder(path[0..tail]).open.file(path[tail..$]);
 
                 auto sym = path in files;
-                if (sym)
-                    return *sym;
-                error ("'"~path~"' is not a recognized member of '"~name~"'");
+                if (sym is null)
+                    error ("'"~path~"' is not a recognized member of '"~name~"'");
+                return *sym;
         }
 
         /***********************************************************************
@@ -536,7 +533,7 @@ private class VirtualFiles : VfsFiles
 }
 
 
-debug (Root)
+debug (VirtualFolder)
 {
 /*******************************************************************************
 
