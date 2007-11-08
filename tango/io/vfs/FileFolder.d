@@ -291,6 +291,7 @@ class FileFolder : VfsFolder
         }
 }
 
+
 /*******************************************************************************
 
         Represents a group of files (need this declared here to avoid

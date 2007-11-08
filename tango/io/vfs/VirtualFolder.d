@@ -86,7 +86,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost mount (VfsFolder folder)
+        VfsHost mount (VfsFolder folder)
         {
                 assert (folder);
 
@@ -118,7 +118,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost dismount (VfsFolder folder)
+        VfsHost dismount (VfsFolder folder)
         {
                 assert (folder);
 
@@ -209,7 +209,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsFile file (char[] path)
+        VfsFile file (char[] path)
         {
                 auto tail = locatePrior (path, FileConst.PathSeparatorChar);
                 if (tail < path.length)
@@ -294,7 +294,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        private final char[] error (char[] msg)
+        package final char[] error (char[] msg)
         {
                 throw new VfsException (msg);
         }
