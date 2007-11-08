@@ -88,7 +88,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 *******************************************************************************/
 
 class FilePath : PathView
-{
+{       
         private char[]  fp;                     // filepath with trailing 0
 
         private bool    dir_;                   // this represents a dir?
@@ -109,6 +109,32 @@ class FilePath : PathView
 
         public alias bool delegate (FilePath, bool) Filter;
 
+        /***********************************************************************
+
+                Passed around during file-scanning
+
+        ***********************************************************************/
+
+        struct FileInfo
+        {
+                char[]  path,
+                        name;
+                ulong   bytes;
+                bool    folder;
+        }
+
+        /***********************************************************************
+
+                Call-site shortcut to create a FilePath instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
+
+        ***********************************************************************/
+
+        static FilePath opCall (char[] filepath, bool native=false)
+        {
+                return new FilePath (filepath, native);
+        }
 
         /***********************************************************************
 
@@ -153,19 +179,6 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Call-site shortcut to create a FilePath instance. This 
-                enables the same syntax as struct usage, so may expose
-                a migration path
-
-        ***********************************************************************/
-
-        static FilePath opCall (char[] filepath, bool native=false)
-        {
-                return new FilePath (filepath, native);
-        }
-
-        /***********************************************************************
-
                 Return the complete text of this filepath
 
         ***********************************************************************/
@@ -188,7 +201,13 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Return the complete text of this filepath
+                Return the complete text of this filepath as a null
+                terminated string for use with a C api. Use toUtf8
+                instead for any D api.
+
+                Note that the nul is always embedded within the string
+                maintained by FilePath, so there's no heap overhead when 
+                making a C call
 
         ***********************************************************************/
 
@@ -360,13 +379,6 @@ class FilePath : PathView
         final bool isChild ()
         {
                 return folder.length > 0;
-/+
-                auto s = folder ();
-                for (int i=s.length; --i > 0;)
-                     if (s[i] is FileConst.PathSeparatorChar)
-                         return true;
-                return false;
-+/
         }
 
         /***********************************************************************
@@ -663,9 +675,99 @@ class FilePath : PathView
                         replace (path, '\\', '/');
         }
 
+        /***********************************************************************
+
+                Parse the path spec
+
+        ***********************************************************************/
+
+        private final FilePath parse ()
+        {
+                folder_ = 0;
+                name_ = suffix_ = -1;
+
+                for (int i=end_; --i >= 0;)
+                     switch (fp[i])
+                            {
+                            case FileConst.FileSeparatorChar:
+                                 if (name_ < 0)
+                                     if (suffix_ < 0 && i && fp[i-1] != '.')
+                                         suffix_ = i;
+                                 break;
+
+                            case FileConst.PathSeparatorChar:
+                                 if (name_ < 0)
+                                     name_ = i + 1;
+                                 break;
+
+                            version (Win32)
+                            {
+                            case FileConst.RootSeparatorChar:
+                                 folder_ = i + 1;
+                                 break;
+                            }
+
+                            default:
+                                 break;
+                            }
+
+                if (name_ < 0)
+                    name_ = folder_;
+
+                if (suffix_ < 0 || suffix_ is name_)
+                    suffix_ = end_;
+
+                return this;
+        }
+
+        /***********************************************************************
+
+                Potentially make room for more content
+
+        ***********************************************************************/
+
+        private final void expand (uint size)
+        {
+                ++size;
+                if (fp.length < size)
+                    fp.length = (size + 63) & ~63;
+        }
+
+        /***********************************************************************
+
+                Insert/delete internal content 
+
+        ***********************************************************************/
+
+        private final int adjust (int head, int tail, int len, char[] sub)
+        {
+                len = sub.length - len;
+
+                // don't destroy self-references!
+                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
+                   {
+                   char[512] tmp = void;
+                   assert (sub.length < tmp.length);
+                   sub = tmp[0..sub.length] = sub;
+                   }
+
+                // make some room if necessary
+                expand  (len + end_);
+
+                // slide tail around to insert or remove space
+                memmove (fp.ptr+tail+len, fp.ptr+tail, end_ +1 - tail);
+
+                // copy replacement
+                memmove (fp.ptr + head, sub.ptr, sub.length);
+
+                // adjust length
+                end_ += len;
+                return len;
+        }
+
 
         /**********************************************************************/
-        /**************************  proxy methods ****************************/
+        /**************************** Proxy methods ***************************/
         /**********************************************************************/
 
 
@@ -760,40 +862,7 @@ class FilePath : PathView
                    }
                 return this;
         }
-/+
-        /***********************************************************************
 
-                List the set of filenames within this folder. All
-                filenames are null terminated, though the null itself
-                is hidden at the end of each name (not exposed by the
-                length property)
-
-                Each filename optionally includes the path prefix,
-                dictated by whether argument prefixed is enabled or
-                not; default behaviour is to eschew the prefix
-
-                Deprecated: use toList(Filter) instead
-
-        ***********************************************************************/
-
-        deprecated final char[][] toList (bool prefixed = false)
-        {
-                int      i;
-                char[][] list;
-
-                void add (char[] path, char[] name, bool dir)
-                {
-                        if (i >= list.length)
-                            list.length = list.length * 2;
-
-                        list[i++] = prefixed ? (path~name) : name.dup;
-                }
-
-                list = new char[][512];
-                toList (&add);
-                return list [0 .. i];
-        }
-+/
         /***********************************************************************
 
                 List the set of filenames within this folder, using
@@ -814,33 +883,38 @@ class FilePath : PathView
         {
                 FilePath[] paths;
 
-                void add (char[] prefix, char[] name, bool folder)
-                { 
-                        // skip dirs composed only of '.'
-                        if (name.length > 3 || name != "..."[0 .. name.length])
-                           {
-                           char[512] tmp = void;
+                foreach (info; this)
+                        {
+                        auto p = from (info);
 
-                           int len = prefix.length + name.length;
-                           assert (len < tmp.length);
+                        // test this entry for inclusion
+                        if (filter is null || filter (p, info.folder))
+                            paths ~= p;                                                   
+                        else
+                           delete p;
+                        }
 
-                           // construct full pathname
-                           tmp[0..prefix.length] = prefix;
-                           tmp[prefix.length..len] = name;
-                        
-                           auto p = new FilePath (tmp[0 .. len]);
-                           p.isFolder = folder;
-
-                           // test this entry for inclusion
-                           if (filter is null || filter (p, folder))
-                               paths ~= p;                                                   
-                           else
-                              delete p;
-                           }
-                }
-                
-                toList (&add);
                 return paths;
+        }
+
+        /***********************************************************************
+
+                Construct a FilePath from the given FileInfo
+
+        ***********************************************************************/
+
+        static FilePath from (ref FileInfo info)
+        {
+                char[512] tmp = void;
+
+                auto len = info.path.length + info.name.length;
+                assert (len < tmp.length);
+
+                // construct full pathname
+                tmp [0 .. info.path.length] = info.path;
+                tmp [info.path.length .. len] = info.name;
+        
+                return FilePath(tmp[0 .. len]).isFolder(info.folder);
         }
 
         /***********************************************************************
@@ -853,96 +927,6 @@ class FilePath : PathView
         final FilePath rename (FilePath dst)
         {
                 return rename (dst.toUtf8);
-        }
-
-        /***********************************************************************
-
-                Parse the path spec
-
-        ***********************************************************************/
-
-        private final FilePath parse ()
-        {
-                folder_ = 0;
-                name_ = suffix_ = -1;
-
-                for (int i=end_; --i >= 0;)
-                     switch (fp[i])
-                            {
-                            case FileConst.FileSeparatorChar:
-                                 if (name_ < 0)
-                                     if (suffix_ < 0 && i && fp[i-1] != '.')
-                                         suffix_ = i;
-                                 break;
-
-                            case FileConst.PathSeparatorChar:
-                                 if (name_ < 0)
-                                     name_ = i + 1;
-                                 break;
-
-                            version (Win32)
-                            {
-                            case FileConst.RootSeparatorChar:
-                                 folder_ = i + 1;
-                                 break;
-                            }
-
-                            default:
-                                 break;
-                            }
-
-                if (name_ < 0)
-                    name_ = folder_;
-
-                if (suffix_ < 0 || suffix_ is name_)
-                    suffix_ = end_;
-
-                return this;
-        }
-
-        /***********************************************************************
-
-                Potentially make room for more content
-
-        ***********************************************************************/
-
-        private final void expand (uint size)
-        {
-                ++size;
-                if (fp.length < size)
-                    fp.length = (size + 63) & ~63;
-        }
-
-        /***********************************************************************
-
-                Insert/delete internal content 
-
-        ***********************************************************************/
-
-        private final int adjust (int head, int tail, int len, char[] sub)
-        {
-                len = sub.length - len;
-
-                // don't destroy self-references!
-                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
-                   {
-                   char[512] tmp = void;
-                   assert (sub.length < tmp.length);
-                   sub = tmp[0..sub.length] = sub;
-                   }
-
-                // make some room if necessary
-                expand  (len + end_);
-
-                // slide tail around to insert or remove space
-                memmove (fp.ptr+tail+len, fp.ptr+tail, end_ +1 - tail);
-
-                // copy replacement
-                memmove (fp.ptr + head, sub.ptr, sub.length);
-
-                // adjust length
-                end_ += len;
-                return len;
         }
 
         /***********************************************************************
@@ -1275,10 +1259,10 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final uint toList (void delegate (char[] path, char[] file, bool dir) dg)
+                final int opApply (int delegate(ref FileInfo) dg)
                 {
                         HANDLE                  h;
-                        uint                    count;
+                        int                     ret;
                         char[]                  prefix;
                         char[MAX_PATH+1]        tmp = void;
                         FIND_DATA               fileinfo = void;
@@ -1328,13 +1312,20 @@ class FilePath : PathView
                            // skip hidden/system files
                            if ((fileinfo.dwFileAttributes & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) is 0)
                               {
-                              dg (prefix, str, (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-                              ++count;
-                              }
+                              FileInfo info = void;
+                              info.name   = str;
+                              info.path   = prefix;
+                              info.bytes  = (cast(ulong) fileinfo.nFileSizeHigh << 32) + fileinfo.nFileSizeLow;
+                              info.folder = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 
+                              // skip "..." names
+                              if (str.length > 3 || str != "..."[0 .. str.length])
+                                  if ((ret = dg(info)) != 0)
+                                       break;
+                              }
                            } while (next);
 
-                        return count;
+                        return ret;
                 }
         }
 
@@ -1564,14 +1555,14 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                final uint toList (void delegate (char[] path, char[] file, bool dir) dg)
+                final int opApply (int delegate(ref FileInfo) dg)
                 {
+                        int             ret;
                         DIR*            dir;
                         dirent*         entry;
                         stat_t          sbuf;
                         char[]          prefix;
                         char[]          sfnbuf;
-                        uint            count;
 
                         dir = tango.stdc.posix.dirent.opendir (this.cString.ptr);
                         if (! dir)
@@ -1599,14 +1590,23 @@ class FilePath : PathView
                               sfnbuf [prefix.length .. prefix.length + len]
                                       = entry.d_name.ptr [0 .. len];
 
-                              bool isDir = stat (sfnbuf.ptr, &sbuf)
-                                                 ? false
-                                                 : (sbuf.st_mode & S_IFDIR) != 0;
-                              dg (prefix, str, isDir);
-                              ++count;
-                              }
+                              // skip "..." names
+                              if (str.length > 3 || str != "..."[0 .. str.length])
+                                 {
+                                 if (stat (sfnbuf.ptr, &sbuf))
+                                     exception;
+ 
+                                 FileInfo info = void;
+                                 info.name   = str;
+                                 info.path   = prefix;
+                                 info.folder = (sbuf.st_mode & S_IFDIR) != 0;
+                                 info.bytes  = (sbuf.st_mode & S_IFREG) != 0 ? sbuf.st_size : 0;
 
-                        return count;
+                                 if ((ret = dg(&info)) != 0)
+                                      break;
+                                 }
+                              }
+                        return ret;
                 }
         }
 }
@@ -1806,6 +1806,8 @@ interface PathView
 
         abstract Stamps timeStamps ();
 }
+
+
 
 
 
