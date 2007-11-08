@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=libdtango-gc-stub.a
+LIB_MASK=libdtango-gc-stub*.a
+
 CP=cp -f
 RM=rm -f
 MD=mkdir -p
@@ -73,9 +76,9 @@ ALL_DOCS=
 
 ######################################################
 
-stub.lib : libstub.a
+stub.lib : $(LIB_TARGET)
 
-libstub.a : $(ALL_OBJS)
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
@@ -88,8 +91,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) libstub*.a
+	$(RM) $(LIB_MASK)
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libstub*.a $(LIB_DEST)/.
+	$(CP) $(LIB_MASK) $(LIB_DEST)/.

@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=libdtango-rt-dmd.a
+LIB_MASK=libdtango-rt-dmd*.a
+
 CP=cp -f
 RM=rm -f
 MD=mkdir -p
@@ -147,9 +150,9 @@ ALL_DOCS=
 
 ######################################################
 
-dmd.lib : libdmd.a
+dmd.lib : $(LIB_TARGET)
 
-libdmd.a : $(ALL_OBJS)
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
@@ -162,8 +165,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) libdmd*.a
+	$(RM) $(LIB_MASK)
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libdmd*.a $(LIB_DEST)/.
+	$(CP) $(LIB_MASK) $(LIB_DEST)/.

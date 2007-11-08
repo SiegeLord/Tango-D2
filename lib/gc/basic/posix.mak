@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=libdtango-gc-basic.a
+LIB_MASK=libdtango-gc-basic*.a
+
 CP=cp -f
 RM=rm -f
 MD=mkdir -p
@@ -77,9 +80,9 @@ ALL_DOCS=
 
 ######################################################
 
-basic.lib : libbasic.a
+basic.lib : $(LIB_TARGET)
 
-libbasic.a : $(ALL_OBJS)
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
@@ -92,8 +95,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) libbasic*.a
+	$(RM) $(LIB_MASK)
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) libbasic*.a $(LIB_DEST)/.
+	$(CP) $(LIB_MASK) $(LIB_DEST)/.

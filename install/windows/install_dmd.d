@@ -51,10 +51,10 @@ void main( char[][] args )
 
     if( uninst )
     {
-        restoreFile( libPath.file( "phobos.lib" ) );
         restoreFile( binPath.file( "sc.ini" ) );
-        removeFile( libPath.file( "tango.lib" ) );
-        removeFile( libPath.file( "usergdi32.lib" ) );
+        removeFile( libPath.file( "dtango-user-tango.lib" ) );
+        removeFile( libPath.file( "dtango-arch-win32.lib" ) );
+        removeFile( libPath.file( "dtango-base-dmd.lib" ) );
 
         removeFile( impPath.file( "object.di" ) );
         removeTree( impPath.file( "tango" ) );
@@ -69,16 +69,9 @@ void main( char[][] args )
         copyTree( impPath.file( "tango" ), "..\\" );
         copyFile( impPath.file( "object.di" ), "..\\" );
 
-        if( !prefix )
-            backupFile( libPath.file( "phobos.lib" ) );
-        scope(failure)
-        {
-            if( !prefix )
-                restoreFile( libPath.file( "phobos.lib" ) );
-        }
-        copyFile( libPath.file( "phobos.lib" ), ".\\" );
-        copyFile( libPath.file( "tango.lib" ), ".\\" );
-        copyFile( libPath.file( "usergdi32.lib" ), ".\\" );
+        copyFile( libPath.file( "dtango-user-tango.lib" ), ".\\" );
+        copyFile( libPath.file( "dtango-arch-win32.lib" ), ".\\" );
+        copyFile( libPath.file( "dtango-base-dmd.lib" ), ".\\" );
 
         backupFile( binPath.file( "sc.ini" ) );
         scope(failure) restoreFile( libPath.file( "sc.ini" ) );
@@ -221,6 +214,6 @@ char[] iniFile( char[] impPath, char[] libPath )
            "\n"
            "[Environment]\n"
            "LIB=\"" ~ libPath ~ "\"\n"
-           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -L+tango.lib\n"
+           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -defaultlib=dtango-base-dmd.lib -L+dtango-user-tango.lib\n"
            "LINKCMD=%@P%\\..\\..\\dm\\bin\\link.exe\n";
 }

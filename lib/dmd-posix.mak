@@ -1,14 +1,21 @@
-# Makefile to build D runtime library libphobos.a for Linux
+# Makefile to build D runtime library libdtango-base-dmd.a for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build libphobos.a
+#		Build libdtango-base-dmd.a
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
+
+LIB_TARGET=libdtango-base-dmd.a
+LIB_MASK=libdtango-base-dmd*.a
+
+DIR_CC=./common/tango
+DIR_RT=./compiler/dmd
+DIR_GC=./gc/basic
 
 CP=cp -f
 RM=rm -f
@@ -35,18 +42,18 @@ ALL_DOCS=
 ######################################################
 
 lib : $(ALL_OBJS)
-	make -C compiler/dmd -fposix.mak lib
-	make -C gc/basic -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
-	make -C common/tango -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -C $(DIR_CC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -C $(DIR_RT) -fposix.mak lib
+	make -C $(DIR_GC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libphobos*.a" | xargs $(RM)
-	$(LC) libphobos.a `find ./compiler/dmd -name "*.o" | xargs echo`
-	$(LC) libphobos.a `find ./gc/basic -name "*.o" | xargs echo`
-	$(LC) libphobos.a `find ./common/tango -name "*.o" | xargs echo`
+	$(LC) $(LIB_TARGET) `find $(DIR_CC) -name "*.o" | xargs echo`
+	$(LC) $(LIB_TARGET) `find $(DIR_RT) -name "*.o" | xargs echo`
+	$(LC) $(LIB_TARGET) `find $(DIR_GC) -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
-	make -C compiler/dmd -fposix.mak doc
-	make -C gc/basic -fposix.mak doc
-	make -C common/tango -fposix.mak doc
+	make -C $(DIR_CC) -fposix.mak doc
+	make -C $(DIR_RT) -fposix.mak doc
+	make -C $(DIR_GC) -fposix.mak doc
 
 ######################################################
 
@@ -54,13 +61,13 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	make -C compiler/dmd -fposix.mak clean
-	make -C gc/basic -fposix.mak clean
-	make -C common/tango -fposix.mak clean
-#	$(RM) libphobos*.a
+	make -C $(DIR_CC) -fposix.mak clean
+	make -C $(DIR_RT) -fposix.mak clean
+	make -C $(DIR_GC) -fposix.mak clean
+#	$(RM) $(LIB_MASK)
 
 install :
-	make -C compiler/dmd -fposix.mak install
-	make -C gc/basic -fposix.mak install
-	make -C common/tango -fposix.mak install
-#	$(CP) libphobos*.a $(LIB_DEST)/.
+	make -C $(DIR_CC) -fposix.mak install
+	make -C $(DIR_RT) -fposix.mak install
+	make -C $(DIR_GC) -fposix.mak install
+#	$(CP) $(LIB_MASK) $(LIB_DEST)/.

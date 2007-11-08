@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=dtango-gc-basic.lib
+LIB_MASK=dtango-gc-basic*.lib
+
 CP=xcopy /y
 RM=del /f
 MD=mkdir
@@ -74,7 +77,9 @@ ALL_DOCS=
 
 ######################################################
 
-basic.lib : $(ALL_OBJS)
+basic.lib : $(LIB_TARGET)
+
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS)
 
@@ -87,8 +92,8 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) basic*.lib
+	$(RM) $(LIB_MASK)
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) basic*.lib $(LIB_DEST)\.
+	$(CP) $(LIB_MASK) $(LIB_DEST)\.

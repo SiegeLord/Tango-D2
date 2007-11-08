@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=libdtango-cc-tango.a
+LIB_MASK=libdtango-cc-tango*.a
+
 CP=cp -f
 RM=rm -f
 MD=mkdir -p
@@ -98,9 +101,9 @@ ALL_DOCS=
 
 ######################################################
 
-tango.lib : libtango.a
+tango.lib : $(LIB_TARGET)
 
-libtango.a : $(ALL_OBJS)
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
@@ -120,7 +123,7 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	find . -name "libtango*.a" | xargs $(RM)
+	find . -name "$(LIB_MASK)" | xargs $(RM)
 
 install :
 	$(MD) $(INC_DEST)
@@ -128,4 +131,4 @@ install :
 	$(MD) $(DOC_DEST)
 	find . -name "*.html" -exec cp -f {} $(DOC_DEST)/{} \;
 	$(MD) $(LIB_DEST)
-	find . -name "libtango*.a" -exec cp -f {} $(LIB_DEST)/{} \;
+	find . -name "$(LIB_MASK)" -exec cp -f {} $(LIB_DEST)/{} \;

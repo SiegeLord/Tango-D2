@@ -10,6 +10,9 @@
 #	make clean
 #		Delete unneeded files created by build process
 
+LIB_TARGET=dtango-rt-dmd.lib
+LIB_MASK=dtango-rt-dmd*.lib
+
 CP=xcopy /y
 RM=del /f
 MD=mkdir
@@ -137,7 +140,9 @@ ALL_DOCS=
 
 ######################################################
 
-dmd.lib : $(ALL_OBJS)
+dmd.lib : $(LIB_TARGET)
+
+$(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) -c -n $@ $(ALL_OBJS) minit.obj
 
@@ -150,8 +155,8 @@ clean :
 	$(RM) /s *.di
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
-	$(RM) dmd*.lib
+	$(RM) $(LIB_MASK)
 
 install :
 	$(MD) $(LIB_DEST)
-	$(CP) dmd*.lib $(LIB_DEST)\.
+	$(CP) $(LIB_MASK) $(LIB_DEST)\.
