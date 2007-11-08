@@ -76,10 +76,10 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         Note that patterns of adjacent '.' separators are treated specially
         in that they will be assigned to the name instead of the suffix. In
         addition, a '.' at the start of a name signifies it does not belong
-        to the suffix i.e. ".file" is a name rather than a suffix. 
+        to the suffix i.e. ".file" is a name rather than a suffix.
 
         Note also that normalization of path-separators is supported by the
-        set() method and via a constructor. Enabling normalization initiates 
+        set() method and via a constructor. Enabling normalization initiates
         replacement of '/' for '\' (or vice versa) for the relevant platform.
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
@@ -88,7 +88,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 *******************************************************************************/
 
 class FilePath : PathView
-{       
+{
         private char[]  fp;                     // filepath with trailing 0
 
         private bool    dir_;                   // this represents a dir?
@@ -125,7 +125,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Call-site shortcut to create a FilePath instance. This 
+                Call-site shortcut to create a FilePath instance. This
                 enables the same syntax as struct usage, so may expose
                 a migration path
 
@@ -167,7 +167,7 @@ class FilePath : PathView
                 C-oriented OS calls, implying the postfix of a null terminator.
                 Thus, FilePath combines both as a single operation.
 
-                When enabled, option 'native' will normalize path separators 
+                When enabled, option 'native' will normalize path separators
                 to those of the native OS
 
         ***********************************************************************/
@@ -206,7 +206,7 @@ class FilePath : PathView
                 instead for any D api.
 
                 Note that the nul is always embedded within the string
-                maintained by FilePath, so there's no heap overhead when 
+                maintained by FilePath, so there's no heap overhead when
                 making a C call
 
         ***********************************************************************/
@@ -289,7 +289,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Suffix is like ext, but includes the separator e.g. path 
+                Suffix is like ext, but includes the separator e.g. path
                 "foo.bar" has suffix ".bar"
 
         ***********************************************************************/
@@ -369,9 +369,9 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath has a parent. Note that a 
+                Returns true if this FilePath has a parent. Note that a
                 parent is defined by the presence of a path-separator in
-                the path. This means 'foo' within "\foo" is considered a 
+                the path. This means 'foo' within "\foo" is considered a
                 child of the root
 
         ***********************************************************************/
@@ -429,7 +429,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Prepend a folder to this path. A trailing separator is added 
+                Prepend a folder to this path. A trailing separator is added
                 if needed
 
         ***********************************************************************/
@@ -454,7 +454,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Reset the content of this path, and reparse. When enabled, 
+                Reset the content of this path, and reparse. When enabled,
                 option 'native' will normalize path separators to those of
                 the native OS
 
@@ -478,8 +478,8 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Sidestep the normal lookup for paths that are known to 
-                be folders. Where folder is true, file-system lookups 
+                Sidestep the normal lookup for paths that are known to
+                be folders. Where folder is true, file-system lookups
                 will be skipped.
 
         ***********************************************************************/
@@ -507,7 +507,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the folder portion of this path. The folder will be 
+                Replace the folder portion of this path. The folder will be
                 padded with a path-separator as required
 
         ***********************************************************************/
@@ -535,7 +535,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the suffix portion of this path. The suffix will be 
+                Replace the suffix portion of this path. The suffix will be
                 prefixed with a file-separator as required
 
         ***********************************************************************/
@@ -548,10 +548,10 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the root and folder portions of this path and 
+                Replace the root and folder portions of this path and
                 reparse. The replacement will be padded with a path
                 separator as required
-        
+
         ***********************************************************************/
 
         final FilePath path (char[] other)
@@ -562,10 +562,10 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the file and suffix portions of this path and 
+                Replace the file and suffix portions of this path and
                 reparse. The replacement will be prefixed with a suffix
                 separator as required
-        
+
         ***********************************************************************/
 
         final FilePath file (char[] other)
@@ -576,7 +576,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Pop to the parent of the current filepath (in situ) 
+                Pop to the parent of the current filepath (in situ)
 
         ***********************************************************************/
 
@@ -735,7 +735,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Insert/delete internal content 
+                Insert/delete internal content
 
         ***********************************************************************/
 
@@ -829,7 +829,7 @@ class FilePath : PathView
                 segments. Related methods include PathUtil.normalize() and
                 FileSystem.toAbsolute()
 
-                Note that each segment is created as a folder, including the 
+                Note that each segment is created as a folder, including the
                 trailing segment.
 
                 Returns: a chaining reference (this)
@@ -871,7 +871,7 @@ class FilePath : PathView
                 bool delegate (FilePath path, bool isFolder) Filter
                 ---
 
-                Returning true from the filter includes the given path, 
+                Returning true from the filter includes the given path,
                 whilst returning false excludes it. Parameter 'isFolder'
                 indicates whether the path is a file or folder.
 
@@ -889,7 +889,7 @@ class FilePath : PathView
 
                         // test this entry for inclusion
                         if (filter is null || filter (p, info.folder))
-                            paths ~= p;                                                   
+                            paths ~= p;
                         else
                            delete p;
                         }
@@ -913,7 +913,7 @@ class FilePath : PathView
                 // construct full pathname
                 tmp [0 .. info.path.length] = info.path;
                 tmp [info.path.length .. len] = info.name;
-        
+
                 return FilePath(tmp[0 .. len]).isFolder(info.folder);
         }
 
@@ -965,8 +965,8 @@ class FilePath : PathView
 
                 private wchar[] toUtf16 (wchar[] tmp, char[] path)
                 {
-                        auto i = MultiByteToWideChar (CP_UTF8, 0, 
-                                                      path.ptr, path.length, 
+                        auto i = MultiByteToWideChar (CP_UTF8, 0,
+                                                      path.ptr, path.length,
                                                       tmp.ptr, tmp.length);
                         return tmp [0..i];
                 }
@@ -979,7 +979,7 @@ class FilePath : PathView
 
                 private char[] toUtf8 (char[] tmp, wchar[] path)
                 {
-                        auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length, 
+                        auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length,
                                                       tmp.ptr, tmp.length, null, null);
                         return tmp [0..i];
                 }
@@ -1060,7 +1060,7 @@ class FilePath : PathView
 
                 /***************************************************************
 
-                        Is this file actually a folder/directory? 
+                        Is this file actually a folder/directory?
 
                 ***************************************************************/
 
@@ -1177,7 +1177,7 @@ class FilePath : PathView
 
                         int     result;
                         char[]  cstr = dst ~ '\0';
-                        
+
                         version (Win32SansUnicode)
                                  result = MoveFileExA (this.cString.ptr, cstr.ptr, Typical);
                              else
@@ -1251,8 +1251,8 @@ class FilePath : PathView
 
                         List the set of filenames within this folder.
 
-                        Each path and filename is passed to the provided 
-                        delegate, along with the path prefix and whether 
+                        Each path and filename is passed to the provided
+                        delegate, along with the path prefix and whether
                         the entry is a folder or not.
 
                         Returns the number of files scanned.
@@ -1400,7 +1400,7 @@ class FilePath : PathView
                 {
                         static Time convert (timeval* tv)
                         {
-                                return cast(Time) (Time.TicksTo1970 + (1_000_000L * 
+                                return cast(Time) (Time.TicksTo1970 + (1_000_000L *
                                                    tv.tv_sec + tv.tv_usec) * 10);
                         }
 
@@ -1547,8 +1547,8 @@ class FilePath : PathView
 
                         List the set of filenames within this folder.
 
-                        Each path and filename is passed to the provided 
-                        delegate, along with the path prefix and whether 
+                        Each path and filename is passed to the provided
+                        delegate, along with the path prefix and whether
                         the entry is a folder or not.
 
                         Returns the number of files scanned.
@@ -1595,14 +1595,14 @@ class FilePath : PathView
                                  {
                                  if (stat (sfnbuf.ptr, &sbuf))
                                      exception;
- 
+
                                  FileInfo info = void;
                                  info.name   = str;
                                  info.path   = prefix;
                                  info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                  info.bytes  = (sbuf.st_mode & S_IFREG) != 0 ? sbuf.st_size : 0;
 
-                                 if ((ret = dg(&info)) != 0)
+                                 if ((ret = dg(info)) != 0)
                                       break;
                                  }
                               }
@@ -1691,7 +1691,7 @@ interface PathView
 
         /***********************************************************************
 
-                Suffix is like ext, but includes the separator e.g. path 
+                Suffix is like ext, but includes the separator e.g. path
                 "foo.bar" has suffix ".bar"
 
         ***********************************************************************/
