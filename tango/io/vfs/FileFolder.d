@@ -39,7 +39,11 @@ class FileFolder : VfsFolder
         /***********************************************************************
 
                 Create a file folder with the given name and path. The
-                name should not include '.' or '/' characters
+                name itself should not include '.' or '/' characters, 
+                though the path can point at whatever it pleases. 
+
+                Option 'create' will create the folder when set true, 
+                and open an existing folder otherwise
 
         ***********************************************************************/
 
