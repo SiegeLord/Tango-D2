@@ -1560,7 +1560,7 @@ class FilePath : PathView
                         int             ret;
                         DIR*            dir;
                         dirent          entry;
-												dirent*         pentry;
+                        dirent*         pentry;
                         stat_t          sbuf;
                         char[]          prefix;
                         char[]          sfnbuf;
