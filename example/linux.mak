@@ -53,7 +53,6 @@ SIMPLE_EXAMPLES =\
 	networking/httpget	\
 	networking/sockethello	\
 	networking/socketserver	\
-	networking/vfs 		\
 	system/argparser	\
 	system/localtime	\
 	system/normpath		\
