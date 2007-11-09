@@ -143,7 +143,7 @@ fi
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d -defaultlib=dtango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d -defaultlib=dtango-base-dmd -debuglib=dtango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 }
 
@@ -167,7 +167,7 @@ else
         if [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
         then
             echo 'Appending -defaultlib switch to DFLAGS'
-            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=dtango-base-dmd/' $PREFIX/bin/dmd.conf
+            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=dtango-base-dmd -debuglib=dtango-base-dmd/' $PREFIX/bin/dmd.conf
         else
             echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
         fi
