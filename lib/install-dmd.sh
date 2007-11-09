@@ -108,7 +108,7 @@ fi
 
 
 # Sanity check
-if [ ! -e libphobos.a ]
+if [ ! -e libdtango-base-dmd.a ]
 then
     die "You must run build-dmd.sh before running install-dmd.sh" 4
 fi
@@ -130,7 +130,7 @@ fi
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d -defaultlib=dtango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 }
 
@@ -139,7 +139,7 @@ echo 'Copying files...'
 mkdir -p $PREFIX/include/d || die "Failed to create include/d (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/bin/ || die "Failed to create $PREFIX/bin" 5
-cp -pRvf libphobos.a $PREFIX/lib/ || die "Failed to copy libraries" 7
+cp -pRvf libdtango-base-dmd.a $PREFIX/lib/ || die "Failed to copy libraries" 7
 cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/bin/dmd.conf" ]
 then
