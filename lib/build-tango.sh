@@ -22,7 +22,7 @@ Options:
                 libgtango.a or universal Mac binaries respectively
                 
   The script must be called from within lib/ and the resulting
-  binaries will be found there. The build requires that libphobos.a/
+  binaries will be found there. The build requires that libdtango-base-dmd.a/
   libgphobos.a already was built.'
     exit 0
 }
@@ -147,7 +147,7 @@ then
     usage
 elif [ "$1" = "dmd" ]
 then
-    build dmd libtango.a libphobos.a
+    build dmd libdtango-user-tango.a libdtango-base-dmd.a
 elif [ "$1" = "gdc" ]
 then
     build gdmd libgtango.a libgphobos.a
