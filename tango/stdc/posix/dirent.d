@@ -112,10 +112,7 @@ void    rewinddir(DIR*);
 int readdir_r(DIR*, dirent*, dirent**);
 */
 
-version( linux )
-{
-    int readdir_r(DIR*, dirent*, dirent**);
-}
+int readdir_r(DIR*, dirent*, dirent**);
 
 //
 // XOpen (XSI)
