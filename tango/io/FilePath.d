@@ -1578,7 +1578,7 @@ class FilePath : PathView
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
 
-                        while (tango.stdc.posix.dirent.readdir(dir, &entry, &pentry) == 0)
+                        while (tango.stdc.posix.dirent.readdir_r(dir, &entry, &pentry) == 0)
                               {
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
