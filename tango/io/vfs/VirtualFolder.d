@@ -114,6 +114,21 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
+                Add a set of child folders. The children cannot 'overlap' 
+                with others in the tree of the same type. Circular references 
+                are detected and trapped.
+
+        ***********************************************************************/
+
+        VfsHost mount (VfsFolders group)
+        {
+                foreach (folder; group)
+                         mount (folder);
+                return this;
+        }
+
+        /***********************************************************************
+
                 Unhook a child folder 
 
         ***********************************************************************/

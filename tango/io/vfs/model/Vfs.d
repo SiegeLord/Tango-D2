@@ -55,26 +55,47 @@ interface VfsHost : VfsFolder
 {
         /**********************************************************************
 
-                Mounting same folder multiple times is allowed.
+                Add a child folder. The child cannot 'overlap' with others
+                in the tree of the same type. Circular references across a
+                tree of virtual folders are detected and trapped.
 
         **********************************************************************/
 
-        VfsHost mount(VfsFolder folder);
+        VfsHost mount (VfsFolder folder);
+
+        /***********************************************************************
+
+                Add a set of child folders. The children cannot 'overlap' 
+                with others in the tree of the same type. Circular references 
+                are detected and trapped.
+
+        ***********************************************************************/
+
+        VfsHost mount (VfsFolders group);
 
         /**********************************************************************
+
+                Unhook a child folder 
 
         **********************************************************************/
 
-        VfsHost dismount(VfsFolder folder);
+        VfsHost dismount (VfsFolder folder);
 
         /**********************************************************************
 
-                For symlinking. Note that there isn't really any difference 
-                between mounting and symlinking if the source is a VfsFolder.
+                Add a symbolic link to another file. These are referenced
+                by file() alone, and do not show up in tree traversals
 
         **********************************************************************/
 
         VfsHost map (char[] name, VfsFile target);
+
+        /***********************************************************************
+
+                Add a symbolic link to another folder. These are referenced
+                by folder() alone, and do not show up in tree traversals
+
+        ***********************************************************************/
 
         VfsHost map (char[] name, VfsFolderEntry target);
 }
