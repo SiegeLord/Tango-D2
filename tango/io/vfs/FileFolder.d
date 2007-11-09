@@ -103,23 +103,25 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                A new folder is being added to the hierarchy. Use this to
-                test for overlap (or whatever) and throw an exception as
-                necessary.
+                A folder is being added or removed from the hierarchy. Use 
+                this to test for validity (or whatever) and throw exceptions 
+                as necessary
 
                 Here we test for folder overlap, and bail-out when found.
 
         ***********************************************************************/
 
-        final void mount (VfsFolder folder, bool yes)
+        final void verify (VfsFolder folder, bool mounting)
         {       
-                if (yes && cast(FileFolder) folder)
+                if (mounting && cast(FileFolder) folder)
                    {
                    auto src = FilePath.padded(this.toUtf8);
                    auto dst = FilePath.padded(folder.toUtf8);
+
                    auto len = src.length;
                    if (len > dst.length)
                        len = dst.length;
+
                    if (src[0..len] == dst[0..len])
                        error ("folders '"~dst~"' and '"~src~"' overlap");
                    }
@@ -149,11 +151,11 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Remove folder
+                Remove the folder subtree
 
         ***********************************************************************/
 
-        final VfsFolder remove ()
+        final VfsFolder clear ()
         {
                 path.remove;
                 return this;

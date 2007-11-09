@@ -193,13 +193,13 @@ interface VfsFolder
 
         /***********************************************************************
 
-                A new folder is being added to the hierarchy. Use this to
-                test for overlap (or whatever) and throw an exception as
-                necessary
+                A folder is being added or removed from the hierarchy. Use 
+                this to test for validity (or whatever) and throw exceptions 
+                as necessary
 
         ***********************************************************************/
 
-        void mount (VfsFolder folder, bool yes);
+        void verify (VfsFolder folder, bool mounting);
 
         /***********************************************************************
 
@@ -246,11 +246,11 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Remove this folder
+                Clear all content from this folder and subordinates
 
         ***********************************************************************/
 
-        VfsFolder remove();
+        VfsFolder clear();
 
         /***********************************************************************
 

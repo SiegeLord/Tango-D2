@@ -105,7 +105,7 @@ class VirtualFolder : VfsHost
                            error ("circular reference detected while mounting '"~folder.name~"'");
                        else
                           root = root.parent;
-                root.mount (folder, true);
+                root.verify (folder, true);
 
                 // all clear, so add the new folder
                 mounts [folder.name] = folder;
@@ -126,9 +126,9 @@ class VirtualFolder : VfsHost
                 auto root = this;
                 while (root.parent)
                        root = root.parent;
-                root.mount (folder, false);
+                root.verify (folder, false);
 
-                mounts[folder.name].remove;
+                mounts.remove (folder.name);
                 return this;
         }
 
@@ -223,14 +223,14 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Remove the entire subtree. Use with caution
+                Clear the entire subtree. Use with caution
 
         ***********************************************************************/
 
-        final VfsFolder remove ()
+        final VfsFolder clear ()
         {
                 foreach (name, child; mounts)
-                         child.remove;
+                         child.clear;
                 return this;
         }
 
@@ -282,10 +282,10 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final void mount (VfsFolder folder, bool yes)
+        final void verify (VfsFolder folder, bool mounting)
         {
                 foreach (name, child; mounts)
-                         child.mount (folder, yes);
+                         child.verify (folder, mounting);
         }
 
         /***********************************************************************
