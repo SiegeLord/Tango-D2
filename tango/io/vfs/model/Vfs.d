@@ -258,7 +258,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        bool isWritable();
+        bool writable();
 
         //VfsFolder copy(VfsFolder from, char[] to);
         //VfsFolder move(Entry from, VfsFolder toFolder, char[] toName);

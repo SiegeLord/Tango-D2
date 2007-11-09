@@ -167,7 +167,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final bool isWritable ()
+        final bool writable ()
         {
                 return path.isWritable;
         }

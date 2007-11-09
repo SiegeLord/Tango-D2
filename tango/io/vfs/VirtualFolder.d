@@ -240,10 +240,10 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final bool isWritable ()
+        final bool writable ()
         {
                 foreach (name, child; mounts)
-                         if (! child.isWritable)
+                         if (! child.writable)
                                return false;
                 return true;
         }
