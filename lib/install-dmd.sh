@@ -17,7 +17,8 @@ usage() {
     echo 'Usage: install-dmd.sh [--inplace] [--prefix <install prefix>]
 Options:
   --prefix: Install to the specified prefix (absolute path).
-  --uninstall: Uninstall tango, switch back to standard phobos.'
+  --uninstall: Uninstall Tango, switch back to standard Phobos.
+  --verify: Will verify installation.'
     exit 0
 }
 
@@ -25,7 +26,7 @@ cd "`dirname $0`"
 
 # 0) Parse arguments
 UNINSTALL=0
-REPLACE_PHOBOS=0
+VERIFY=0
 
 while [ "$#" != "0" ]
 do
@@ -37,7 +38,10 @@ do
     elif [ "$1" = "--uninstall" ]
     then
         UNINSTALL=1
-    else
+    elif [ "$1" = "--verify" ]
+    then
+        VERIFY=1
+     else
         usage
     fi
     shift
@@ -50,25 +54,28 @@ fi
 
 echo "$PREFIX"
 
+# Verify that PREFIX is absolute
 if [ "${PREFIX:0:1}" != "/" ]
 then
     die "The PREFIX needs to be an absolute path" 1
 fi
 
+# Verify presence of DMD
 dmd --help >& /dev/null || die "dmd not found on your \$PATH!" 1
-
-if [ -e "$PREFIX/lib/libphobos.a" ]
-then
-    REPLACE_PHOBOS=1
-fi
 
 # If uninstalling, do that now
 if [ "$UNINSTALL" = "1" ]
 then
-    # revert to phobos if earlier evidence of existense is found
+    # Revert to Phobos if earlier evidence of existense is found
+    # Only relevant for pre 0.99.3 installations
     if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
     then
         mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
+    else
+        if [ -e "$PREFIX/lib/libphobos.a" ]
+        then
+            rm -f $PREFIX/lib/libphobos.a
+        fi
     fi
     if [ -e "$PREFIX/include/d/object.d.phobos" ]
     then
@@ -91,7 +98,7 @@ then
         rm -rf $PREFIX/include/d/tango/std
         rm -f  $PREFIX/include/d/tango/object.di
     fi
-    # Since tango 0.99
+    # Since Tango 0.99
     if [ -e "$PREFIX/include/d/object.di" ]
     then
         rm -rf $PREFIX/include/d/tango
@@ -99,34 +106,40 @@ then
         rm -f  $PREFIX/include/d/object.di
     fi
 
+    # Prior to Tango 0.99.3
     if [ -e "$PREFIX/lib/libtango.a" ]
     then
 		rm -f $PREFIX/lib/libtango.a
     fi
+
+    # Since Tango 0.99.3
+    if [ -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+    then
+        rm -f $PREFIX/lib/libdtango-base-dmd.a
+    fi
+
+    if [ -e "$PREFIX/lib/libdtango-user-tango.a" ]
+    then
+        rm -f $PREFIX/lib/libdtango-user-tango.a
+    fi
+
     die "Done!" 0
 fi
 
 
-# Sanity check
+# Verify that runtime was built
 if [ ! -e libdtango-base-dmd.a ]
 then
     die "You must run build-dmd.sh before running install-dmd.sh" 4
 fi
 
 # Back up the original files
-if [ "$REPLACE_PHOBOS" = "1" ]
+if [ -e "$PREFIX/include/d/object.d" ]
 then
-	if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
-	then
-		die "You must uninstall your old copy of Tango before installing a new one." 4
-	fi
-	mv -f $PREFIX/lib/libphobos.a $PREFIX/lib/libphobos.a.phobos
-    if [ -e "$PREFIX/include/d/object.d" ]
-    then
-	    mv -f $PREFIX/include/d/object.d $PREFIX/include/d/object.d.phobos
-    fi
+    mv -f $PREFIX/include/d/object.d $PREFIX/include/d/object.d.phobos
 fi
 
+# Create dmd.conf
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
@@ -151,8 +164,39 @@ else
         mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos 
         create_dmd_conf
     else
-        echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
+        if [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+        then
+            echo 'Appending -defaultlib switch to DFLAGS'
+            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=dtango-base-dmd/' $PREFIX/bin/dmd.conf
+        else
+            echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
+        fi
     fi
+fi
+
+# Verify installation
+if [ "$VERIFY" = "1" ]
+then
+    echo 'Verifying installation.'
+    if [ ! -e "$PREFIX/include/d/object.di" ]
+    then
+        die "object.di not properly installed to $PREFIX/include/d" 9
+    fi
+    if [ ! -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+    then
+        die "libdtango-base-dmd.a not properly installed to $PREFIX/lib" 10 
+    fi
+    if [ ! -e "$PREFIX/bin/dmd.conf" ]
+    then
+        die "dmd.conf not present in $PREFIX/bin" 11 
+    elif [ ! "`grep '\-version=Tango' $PREFIX/bin/dmd.conf`" ]
+    then
+        die "dmd.conf not Tango enabled" 12
+    elif [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+    then
+        die "dmd.conf don't have -defaultlib switch" 13
+    fi
+    echo 'Installation OK.'
 fi
 
 die "Done!" 0
