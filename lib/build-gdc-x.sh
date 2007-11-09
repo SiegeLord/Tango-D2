@@ -1,4 +1,10 @@
 #!/bin/bash
+
+die() {
+    echo "$1"
+    exit $2
+}
+
 cd "`dirname $0`"
 
 if [ ! "$1" ]
@@ -13,6 +19,9 @@ if [ "$2" ]
 then
     CONFIGURE_FLAGS="--enable-phobos-config-dir=$2"
 fi
+
+$HOST-gdc --help >& /dev/null || die "$HOST-gdc not found on your \$PATH!" 1
+
 HOST_ARCH="`echo $HOST | sed 's/-.*//'`"
 ADD_CFLAGS=
 if [ "$HOST_ARCH" = "powerpc" -a ! "`echo $HOST | grep darwin`" ]

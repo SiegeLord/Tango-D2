@@ -1,5 +1,6 @@
 #!/bin/sh
 
+FAILED=0
 # Written by Anders F. Björklund
 cd "`dirname \"$0\"`"
 
@@ -37,12 +38,28 @@ LIBS="common/libtango.a gc/libbasic.a libgphobos.a"
 
 for lib in $LIBS; do test -r $lib && rm $lib; done
 
-./build-gdc-x.sh powerpc-apple-darwin8
-for lib in $LIBS; do mv $lib $lib.ppc; done
+if [ "`./build-gdc-x.sh powerpc-apple-darwin8 1>&2`" = "0" ]
+then
+    for lib in $LIBS; do mv $lib $lib.ppc; done
+else
+    FAILED=1
+fi
 
-./build-gdc-x.sh i686-apple-darwin8
-for lib in $LIBS; do mv $lib $lib.i386; done
+if [ "$FAILED" = "0" ]
+then
+    if [ "`./build-gdc-x.sh i686-apple-darwin8 1>&2`" = "0" ]
+    then
+        for lib in $LIBS; do mv $lib $lib.i386; done
+    else
+        FAILED=1
+    fi
+fi
 
-for lib in $LIBS; do \
-lipo -create -output $lib $lib.ppc $lib.i386; done
-
+if [ "$FAILED" = "1" ]
+then
+    echo 'Failed to build universal binaries. Trying GDC.'
+    ./build-gdc.sh
+else
+    for lib in $LIBS; do \
+    lipo -create -output $lib $lib.ppc $lib.i386; done
+fi
