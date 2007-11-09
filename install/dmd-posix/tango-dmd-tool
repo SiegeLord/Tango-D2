@@ -38,10 +38,15 @@ fi
 
 cd "`dirname $0`"
 
-# revert to phobos if earlier evidence of existense is found
+# Revert to Phobos if earlier evidence of existense is found
 if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
 then
     mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
+else
+    if [ -e "$PREFIX/lib/libphobos.a" ]
+    then
+        rm -f $PREFIX/lib/libphobos.a
+    fi
 fi
 if [ -e "$PREFIX/include/d/object.d.phobos" ]
 then
@@ -49,7 +54,7 @@ then
 fi
 if [ -e "$PREFIX/bin/dmd.conf.phobos" ]
 then
-    mv   $PREFIX/bin/dmd.conf $PFEFIX/bin/dmd.conf.tango
+    mv   $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.tango
     mv   $PREFIX/bin/dmd.conf.phobos $PREFIX/bin/dmd.conf
 fi
 # Tango 0.97 installed to this dir
@@ -72,9 +77,21 @@ then
     rm -f  $PREFIX/include/d/object.di
 fi
 
+# Prior to Tango 0.99.3
 if [ -e "$PREFIX/lib/libtango.a" ]
 then
     rm -f $PREFIX/lib/libtango.a
 fi
-die "Done!" 0
 
+# Since Tango 0.99.3
+if [ -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+then
+    rm -f $PREFIX/lib/libdtango-base-dmd.a
+fi
+
+if [ -e "$PREFIX/lib/libdtango-user-tango.a" ]
+then
+    rm -f $PREFIX/lib/libdtango-user-tango.a
+fi
+
+die "Done!" 0

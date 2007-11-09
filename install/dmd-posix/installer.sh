@@ -122,7 +122,7 @@ tail -n+$LINES $FULLNAME | tar Oxf - core.tar.gz | gunzip -c | tar xf - ||
 cd lib || die 1 "Tango core improperly archived"
 # Just in case it's already installed, uninstall it
 ./install-dmd.sh --uninstall > /dev/null 2> /dev/null
-./install-dmd.sh --prefix $DMDDIR > /dev/null 2> /dev/null || die 1 "Failed to install Tango core"
+./install-dmd.sh --prefix $DMDDIR --verify > /dev/null 2> /dev/null || die 1 "Failed to install Tango core"
 
 if [ ! -e "$DMDDIR/bin/dmd.conf" ]
 then
@@ -130,7 +130,7 @@ then
 else
     if [ ! "`grep '\-L\-ltango' $DMDDIR/bin/dmd.conf`" ]
     then
-        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango/' $DMDDIR/bin/dmd.conf
+        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ldtango-user-tango/' $DMDDIR/bin/dmd.conf
     fi
 fi
 
