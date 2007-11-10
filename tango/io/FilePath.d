@@ -1560,8 +1560,8 @@ class FilePath : PathView
                 {
                         int             ret;
                         DIR*            dir;
-                        dirent         entry;
-                        dirent*       pentry;
+                        dirent          entry;
+                        dirent*         pentry;
                         stat_t          sbuf;
                         char[]          prefix;
                         char[]          sfnbuf;
@@ -1578,10 +1578,10 @@ class FilePath : PathView
 
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
-
-	  		while(readdir_r(dir, &entry, &pentry), pentry != null)
+                        
+                        // pentry is null at end of listing, or on an error 
+	  		while (readdir_r (dir, &entry, &pentry), pentry != null)
                               {
-
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
                               ++len;  // include the null
