@@ -23,6 +23,7 @@ private import  tango.core.Exception;
 
 private import  tango.core.Type : Time;
 
+import tango.io.Stdout;
 /*******************************************************************************
 
 *******************************************************************************/
@@ -1559,8 +1560,8 @@ class FilePath : PathView
                 {
                         int             ret;
                         DIR*            dir;
-                        dirent*         entry;
-                        //dirent*       pentry;
+                        dirent         entry;
+                        dirent*       pentry;
                         stat_t          sbuf;
                         char[]          prefix;
                         char[]          sfnbuf;
@@ -1578,9 +1579,9 @@ class FilePath : PathView
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
 
-                        while ((entry = tango.stdc.posix.dirent.readdir(dir)) != null)
-//                      while (tango.stdc.posix.dirent.readdir_r(dir, &entry, &pentry) == 0)
+	  		while(readdir_r(dir, &entry, &pentry), pentry != null)
                               {
+
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
                               ++len;  // include the null
