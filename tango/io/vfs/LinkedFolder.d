@@ -75,9 +75,13 @@ class LinkedFolder : VirtualFolder
                 We add the new child at the end of an ordered list, which
                 we subsequently traverse when looking up a file
 
+                The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by 
+                the provided folder (it is not an alias).
+
         ***********************************************************************/
 
-        final VfsHost mount (VfsFolder folder)
+        final VfsHost mount (VfsFolder folder, char[] name=null)
         {
                 // traverse to the end of the list
                 auto link = &head;
@@ -88,7 +92,7 @@ class LinkedFolder : VirtualFolder
                 *link = Link (folder);
 
                 // and let superclass deal with it 
-                return super.mount (folder);
+                return super.mount (folder, name);
         }
 
         /***********************************************************************

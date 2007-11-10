@@ -59,9 +59,13 @@ interface VfsHost : VfsFolder
                 in the tree of the same type. Circular references across a
                 tree of virtual folders are detected and trapped.
 
+                The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by 
+                the provided folder (it is not an alias).
+
         **********************************************************************/
 
-        VfsHost mount (VfsFolder folder);
+        VfsHost mount (VfsFolder folder, char[] name=null);
 
         /***********************************************************************
 

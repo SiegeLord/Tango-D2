@@ -84,17 +84,23 @@ class VirtualFolder : VfsHost
                 in the tree of the same type. Circular references across a
                 tree of virtual folders are detected and trapped.
 
+                The second argument represents an optional name that the
+                mount should be known as, instead of the name exposed by 
+                the provided folder (it is not an alias).
+
         ***********************************************************************/
 
-        VfsHost mount (VfsFolder folder)
+        VfsHost mount (VfsFolder folder, char[] name = null)
         {
                 assert (folder);
+                if (name.length is 0)
+                    name = folder.name;
 
                 // link virtual children to us
                 auto child = cast(VirtualFolder) folder;
                 if (child)
                     if (child.parent)
-                        error ("folder '"~folder.name~"' belongs to another host"); 
+                        error ("folder '"~name~"' belongs to another host"); 
                     else
                        child.parent = this;
 
@@ -102,13 +108,13 @@ class VirtualFolder : VfsHost
                 auto root = this;
                 while (root.parent)
                        if (root is this)
-                           error ("circular reference detected while mounting '"~folder.name~"'");
+                           error ("circular reference detected at '"~this.name~"' while mounting '"~name~"'");
                        else
                           root = root.parent;
                 root.verify (folder, true);
 
                 // all clear, so add the new folder
-                mounts [folder.name] = folder;
+                mounts [name] = folder;
                 return this;
         }
 
@@ -562,11 +568,11 @@ void main()
 {
         auto root = new VirtualFolder ("root");
         auto sub  = new VirtualFolder ("sub");
-        sub.mount (new FileFolder ("tango", r"d:\d\import\tango"));
-        
+        sub.mount (new FileFolder (r"d:\d\import\tango"));
+
         root.mount (sub)
-            .mount (new FileFolder ("windows", r"c:\"))
-            .mount (new FileFolder ("temp", r"d:\d\import\temp"));
+            .mount (new FileFolder (r"c:\"), "windows")
+            .mount (new FileFolder (r"d:\d\import\temp"));
 
         auto folder = root.folder (r"temp\bar");
         Stdout.formatln ("folder = {}", folder);

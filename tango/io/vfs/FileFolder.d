@@ -34,7 +34,6 @@ class FileFolder : VfsFolder
 {
         private FilePath        path;
         private VfsStats        stats;
-        private char[]          name_;
 
         /***********************************************************************
 
@@ -47,10 +46,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        this (char[] name, char[] path, bool create=false)
+        this (char[] path, bool create=false)
         {
                 this.path = open (FilePath(path), create);
-                name_ = name;
         }
 
         /***********************************************************************
@@ -84,10 +82,7 @@ class FileFolder : VfsFolder
 
         final char[] name ()
         {
-                auto name = name_;
-                if (name.ptr is null)
-                    name = path.name;
-                return name;
+                return path.name;
         }
 
         /***********************************************************************
