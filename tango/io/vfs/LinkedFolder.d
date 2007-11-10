@@ -152,11 +152,11 @@ void main()
 {
         auto root = new LinkedFolder ("root");
         auto sub  = new VirtualFolder ("sub");
-        sub.mount (new FileFolder ("temp", r"d:\d\import\temp"));
-        sub.map ("wumpus", sub.file(r"temp\subtree\test.txt"));
+        sub.mount (new FileFolder (r"d:\d\import\temp"));
+        sub.map (sub.file(r"temp\subtree\test.txt"), "wumpus");
         
-        root.mount (new FileFolder ("tango", r"d:\d\import\tango"))
-            .mount (new FileFolder ("windows", r"c:\"));
+        root.mount (new FileFolder (r"d:\d\import\tango"))
+            .mount (new FileFolder (r"c:\"), "windows");
         root.mount (sub);
 
         auto file = root.file (r"wumpus");

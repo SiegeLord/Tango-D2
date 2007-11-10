@@ -520,23 +520,23 @@ private class FolderGroup : VfsFolders
 
 /*******************************************************************************
 
-        A host for folders, vurrently used to harbor create() and open() 
+        A host for folders, currently used to harbor create() and open() 
         methods only
 
 *******************************************************************************/
 
 private class FolderHost : VfsFolderEntry
 {       
-        private char[]          name;
+        private char[]          path;
         private FileFolder      parent;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private this (FileFolder parent, char[] name)
+        private this (FileFolder parent, char[] path)
         {
-                this.name = name;
+                this.path = path;
                 this.parent = parent;
         }
 
@@ -546,7 +546,7 @@ private class FolderHost : VfsFolderEntry
 
         final VfsFolder create ()
         {
-                return new FileFolder (parent, name, true);
+                return new FileFolder (parent, path, true);
         }
 
         /***********************************************************************
@@ -555,7 +555,7 @@ private class FolderHost : VfsFolderEntry
 
         final VfsFolder open ()
         {
-                return new FileFolder (parent, name, false);
+                return new FileFolder (parent, path, false);
         }
 }
 

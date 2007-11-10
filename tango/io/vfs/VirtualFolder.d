@@ -141,15 +141,22 @@ class VirtualFolder : VfsHost
 
         VfsHost dismount (VfsFolder folder)
         {
-                assert (folder);
+                char[] name = null;
+
+                // check this is a child, and locate the mapped name
+                foreach (key, value; mounts)
+                         if (folder is value)
+                             name = key; 
+                assert (name.ptr);
 
                 // reach up to the root, and initiate tree sweep
                 auto root = this;
                 while (root.parent)
                        root = root.parent;
                 root.verify (folder, false);
-
-                mounts.remove (folder.name);
+        
+                // all clear, so remove it
+                mounts.remove (name);
                 return this;
         }
 
@@ -160,8 +167,9 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (char[] name, VfsFile file)
+        final VfsHost map (VfsFile file, char[] name)
         {       
+                assert (name);
                 files[name] = file;
                 return this;
         }
@@ -173,8 +181,9 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final VfsHost map (char[] name, VfsFolderEntry folder)
+        final VfsHost map (VfsFolderEntry folder, char[] name)
         {       
+                assert (name);
                 folders[name] = folder;
                 return this;
         }
@@ -577,8 +586,8 @@ void main()
         auto folder = root.folder (r"temp\bar");
         Stdout.formatln ("folder = {}", folder);
 
-        root.map ("fsym", root.folder(r"temp\subtree"))
-            .map ("wumpus", root.file(r"temp\subtree\test.txt"));
+        root.map (root.folder(r"temp\subtree"), "fsym")
+            .map (root.file(r"temp\subtree\test.txt"), "wumpus");
         auto file = root.file (r"wumpus");
         Stdout.formatln ("file = {}", file);
         Stdout.formatln ("fsym = {}", root.folder(r"fsym").open.file("test.txt"));

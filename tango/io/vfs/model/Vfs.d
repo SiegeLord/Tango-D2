@@ -92,7 +92,7 @@ interface VfsHost : VfsFolder
 
         **********************************************************************/
 
-        VfsHost map (char[] name, VfsFile target);
+        VfsHost map (VfsFile target, char[] name);
 
         /***********************************************************************
 
@@ -101,7 +101,7 @@ interface VfsHost : VfsFolder
 
         ***********************************************************************/
 
-        VfsHost map (char[] name, VfsFolderEntry target);
+        VfsHost map (VfsFolderEntry target, char[] name);
 }
 
 
