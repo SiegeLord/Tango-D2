@@ -77,6 +77,19 @@ class LineIterator(T) : StreamIterator!(T)
         }
 
         /***********************************************************************
+
+                Read a line of text, and return false when there's no
+                further content available.
+
+        ***********************************************************************/
+
+        final bool readln (inout T[] content)
+        {
+                content = super.next;
+                return content.ptr !is null;
+        }
+
+        /***********************************************************************
         
                 Scanner implementation for this iterator. Find a '\n',
                 and eat any immediately preceeding '\r'
