@@ -181,7 +181,7 @@ T[] replace(T) (T[] source, T match, T replacement)
 
 /******************************************************************************
 
-        Replace all instances of one array with another (in place)
+        Replace all instances of one array with another 
 
 ******************************************************************************/
 
