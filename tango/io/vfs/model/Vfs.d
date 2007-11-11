@@ -218,16 +218,6 @@ interface VfsFolder
 
         /***********************************************************************
 
-                A folder is being added or removed from the hierarchy. Use 
-                this to test for validity (or whatever) and throw exceptions 
-                as necessary
-
-        ***********************************************************************/
-
-        void verify (VfsFolder folder, bool mounting);
-
-        /***********************************************************************
-
                 Return a contained file representation 
 
         ***********************************************************************/
@@ -284,6 +274,27 @@ interface VfsFolder
         ***********************************************************************/
 
         bool writable();
+
+        /***********************************************************************
+
+                Commit and/or synchronize changes made to this folder. Each
+                driver should take advantage of this as appropriate, perhaps
+                combining multiple files together, or possibly copying to a 
+                remote location
+
+        ***********************************************************************/
+
+        VfsFolder commit();
+
+        /***********************************************************************
+
+                A folder is being added or removed from the hierarchy. Use 
+                this to test for validity (or whatever) and throw exceptions 
+                as necessary
+
+        ***********************************************************************/
+
+        void verify (VfsFolder folder, bool mounting);
 
         //VfsFolder copy(VfsFolder from, char[] to);
         //VfsFolder move(Entry from, VfsFolder toFolder, char[] toName);
