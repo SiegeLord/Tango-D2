@@ -14,7 +14,7 @@
 
 *******************************************************************************/
 
-module tango.io.stream.ChunkStream;
+module tango.net.http.ChunkStream;
 
 private import  tango.io.Buffer,
                 tango.io.Conduit;
