@@ -56,7 +56,7 @@ class StreamIterator(T) : InputStream, Buffered
 {
         protected T[]           slice,
                                 pushed;
-        private IBuffer         buffer_;
+        private IBuffer         input;
 
         /***********************************************************************
 
@@ -87,9 +87,7 @@ class StreamIterator(T) : InputStream, Buffered
         final StreamIterator set (InputStream stream)
         {
                 assert (stream);
-
-                auto b = cast(Buffered) stream;
-                buffer_ = (b ? b.buffer : new Buffer (stream.conduit));
+                input = Buffer.share (stream);
                 return this;
         }
 
@@ -261,10 +259,10 @@ class StreamIterator(T) : InputStream, Buffered
 
         private bool consume ()
         {
-                if (buffer_.next (&scan))
+                if (input.next (&scan))
                     return true;
 
-                auto tmp = buffer_.slice (buffer.readable);
+                auto tmp = input.slice (buffer.readable);
                 slice = (cast(T*) tmp.ptr) [0 .. tmp.length/T.sizeof];
                 return false;
         }
@@ -283,7 +281,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         final IBuffer buffer ()
         {
-                return buffer_;
+                return input;
         }
 
         /**********************************************************************/
@@ -299,7 +297,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         final IConduit conduit ()
         {
-                return buffer_.conduit;
+                return input.conduit;
         }
 
         /***********************************************************************
@@ -312,9 +310,9 @@ class StreamIterator(T) : InputStream, Buffered
 
         ***********************************************************************/
 
-        final uint read (void[] dst)
+        uint read (void[] dst)
         {
-                return buffer_.read (dst);
+                return input.read (dst);
         }               
                         
         /***********************************************************************
@@ -325,7 +323,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         final InputStream clear ()               
         {
-                return buffer_.clear;
+                return input.clear;
         }
                                   
         /***********************************************************************
@@ -336,7 +334,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         final void close ()
         {
-                buffer_.close;
+                input.close;
         }               
 }
 
