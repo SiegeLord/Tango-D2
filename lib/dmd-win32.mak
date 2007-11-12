@@ -1,25 +1,25 @@
-# Makefile to build D runtime library dtango-base-dmd.lib for Win32
+# Makefile to build the composite D runtime library for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build dtango-base-dmd.lib
+#		Build the runtime library
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=dtango-base-dmd.lib
-LIB_MASK=dtango-base-dmd*.lib
+LIB_TARGET=tango-base-dmd.lib
+LIB_MASK=tango-base-dmd*.lib
 
 DIR_CC=common\tango
 DIR_RT=compiler\dmd
 DIR_GC=gc\basic
 
-LIB_CC=$(DIR_CC)\dtango-cc-tango.lib
-LIB_RT=$(DIR_RT)\dtango-rt-dmd.lib
-LIB_GC=$(DIR_GC)\dtango-gc-basic.lib
+LIB_CC=$(DIR_CC)\tango-cc-tango.lib
+LIB_RT=$(DIR_RT)\tango-rt-dmd.lib
+LIB_GC=$(DIR_GC)\tango-gc-basic.lib
 
 CP=xcopy /y
 RM=del /f

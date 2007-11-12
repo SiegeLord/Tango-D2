@@ -1,17 +1,17 @@
-# Makefile to build D garbage collector library for Win32
+# Makefile to build the garbage collector D library for Win32
 # Designed to work with DigitalMars make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build library
+#		Build the garbage collector library
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=dtango-gc-basic.lib
-LIB_MASK=dtango-gc-basic*.lib
+LIB_TARGET=tango-gc-basic.lib
+LIB_MASK=tango-gc-basic*.lib
 
 CP=xcopy /y
 RM=del /f

@@ -18,7 +18,7 @@ void main( char[][] args )
     if( args.length > 1 )
         path = args[1] ~ "\\tango";
 
-    outf.write ("-c -n -p256\ndtango-user-tango.lib\n");
+    outf.write ("-c -n -p256\ntango-user-tango.lib\n");
     foreach(file; scan( path, ".d" ).files )
     {
         if( filter( file ) )
@@ -33,7 +33,8 @@ void main( char[][] args )
     }
     outf.close;
     exec( "lib @tango.lsp" );
-    exec( "cmd /q /c del tango.lsp" ~ list );
+    //exec( "cmd /q /c del tango.lsp" ~ list );
+    exec( "cmd /q /c del tango.lsp *.obj" );
 }
 
 

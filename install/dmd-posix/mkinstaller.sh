@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 # Copyright (C) 2007  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
@@ -45,7 +45,7 @@ tar zcf core.tar.gz object.di lib/libphobos.a \
 
 
 # 2) The rest
-if [ ! -e libdtango-user-tango.a ]
+if [ ! -e libtango-user-tango.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
     ./build-tango.sh dmd || die 1 "Failed to build Tango"
@@ -66,7 +66,7 @@ cp -pR ../tango include/d || die 1 "Failed to copy in the tango .d files"
 cp -pR ../std include/d || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
-cp ../lib/libdtango-user-tango.a lib || die 1 "Failed to copy in the tango .a file"
+cp ../lib/libtango-user-tango.a lib || die 1 "Failed to copy in the tango .a file"
 
 find include/d -name .svn | xargs rm -rf
 tar zcf ../tango.tar.gz include lib bin || die 1 "Failed to create tango.tar.gz"
@@ -81,7 +81,7 @@ rm -rf tmp || exit 1
 ) > tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix.sh || die 1 "Failed to create the installer"
 chmod 0755 tango-$TANGO_VERSION-dmd.$DMD_VERSION-posix.sh
 
-# 4) DMD 
+# 4) DMD
 if [ -e dmd ]
 then
 	cd dmd || die 1 "Failed to cd to dmd"

@@ -15,14 +15,14 @@ DC=
 LIB=
 
 usage() {
-    echo 'Usage: build-tango.sh [--help] identifier 
+    echo 'Usage: build-tango.sh [--help] identifier
 Options:
   --help: Will print this help text
   <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
                 libgtango.a or universal Mac binaries respectively
-                
+
   The script must be called from within lib/ and the resulting
-  binaries will be found there. The build requires that libdtango-base-dmd.a/
+  binaries will be found there. The build requires that libtango-base-dmd.a/
   libgphobos.a already was built.'
     exit 0
 }
@@ -44,14 +44,14 @@ dmdbugs() {
     dmdversion
     if [ "$DMDVERSION" = "1.020" -o "$DMDVERSION" = "1.021" ]
     then
-        INLINE=""    
+        INLINE=""
         echo ">> Removing -inline due to bugzilla 668"
     fi
 }
 
 # Checks for known compiler bugs
 compilerbugs() {
-    echo ">> Checking compiler version $DC" 
+    echo ">> Checking compiler version $DC"
     #`$DCbugs`
     if [ "$DC" = "dmd" ]
     then
@@ -147,16 +147,16 @@ then
     usage
 elif [ "$1" = "dmd" ]
 then
-    build dmd libdtango-user-tango.a libdtango-base-dmd.a
+    build dmd libtango-user-tango.a libtango-base-dmd.a
 elif [ "$1" = "gdc" ]
 then
     build gdmd libgtango.a libgphobos.a
 elif [ "$1" = "mac" ]
 then
     # build Universal Binary version of the Tango library
-    build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc 
-    build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386 
-    lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 
+    build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc
+    build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386
+    lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386
 else
     usage
 fi

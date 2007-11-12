@@ -1,17 +1,17 @@
-# Makefile to build D compiler runtime library for Linux
+# Makefile to build the compiler runtime D library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build library
+#		Build the compiler runtime library
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=libdtango-rt-dmd.a
-LIB_MASK=libdtango-rt-dmd*.a
+LIB_TARGET=libtango-rt-dmd.a
+LIB_MASK=libtango-rt-dmd*.a
 
 CP=cp -f
 RM=rm -f

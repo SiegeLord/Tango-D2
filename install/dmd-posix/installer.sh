@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 # Copyright (C) 2007  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
@@ -130,7 +130,7 @@ then
 else
     if [ ! "`grep '\-L\-ltango' $DMDDIR/bin/dmd.conf`" ]
     then
-        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ldtango-user-tango/' $DMDDIR/bin/dmd.conf
+        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango-user-tango/' $DMDDIR/bin/dmd.conf
     fi
 fi
 

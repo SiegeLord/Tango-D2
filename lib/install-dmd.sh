@@ -113,14 +113,14 @@ then
     fi
 
     # Since Tango 0.99.3
-    if [ -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+    if [ -e "$PREFIX/lib/libtango-base-dmd.a" ]
     then
-        rm -f $PREFIX/lib/libdtango-base-dmd.a
+        rm -f $PREFIX/lib/libtango-base-dmd.a
     fi
 
-    if [ -e "$PREFIX/lib/libdtango-user-tango.a" ]
+    if [ -e "$PREFIX/lib/libtango-user-tango.a" ]
     then
-        rm -f $PREFIX/lib/libdtango-user-tango.a
+        rm -f $PREFIX/lib/libtango-user-tango.a
     fi
 
     die "Done!" 0
@@ -128,7 +128,7 @@ fi
 
 
 # Verify that runtime was built
-if [ ! -e libdtango-base-dmd.a ]
+if [ ! -e libtango-base-dmd.a ]
 then
     die "You must run build-dmd.sh before running install-dmd.sh" 4
 fi
@@ -143,7 +143,7 @@ fi
 create_dmd_conf() {
     cat > $PREFIX/bin/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d -defaultlib=dtango-base-dmd -debuglib=dtango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
 EOF
 }
 
@@ -152,7 +152,7 @@ echo 'Copying files...'
 mkdir -p $PREFIX/include/d || die "Failed to create include/d (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/bin/ || die "Failed to create $PREFIX/bin" 5
-cp -pRvf libdtango-base-dmd.a $PREFIX/lib/ || die "Failed to copy libraries" 7
+cp -pRvf libtango-base-dmd.a $PREFIX/lib/ || die "Failed to copy libraries" 7
 cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/bin/dmd.conf" ]
 then
@@ -161,13 +161,13 @@ else
     # Is it a phobos conf ?
     if [ ! "`grep '\-version=Tango' $PREFIX/bin/dmd.conf`" ]
     then
-        mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos 
+        mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos
         create_dmd_conf
     else
         if [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
         then
             echo 'Appending -defaultlib switch to DFLAGS'
-            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=dtango-base-dmd -debuglib=dtango-base-dmd/' $PREFIX/bin/dmd.conf
+            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd -debuglib=tango-base-dmd/' $PREFIX/bin/dmd.conf
         else
             echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
         fi
@@ -182,13 +182,13 @@ then
     then
         die "object.di not properly installed to $PREFIX/include/d" 9
     fi
-    if [ ! -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+    if [ ! -e "$PREFIX/lib/libtango-base-dmd.a" ]
     then
-        die "libdtango-base-dmd.a not properly installed to $PREFIX/lib" 10 
+        die "libtango-base-dmd.a not properly installed to $PREFIX/lib" 10
     fi
     if [ ! -e "$PREFIX/bin/dmd.conf" ]
     then
-        die "dmd.conf not present in $PREFIX/bin" 11 
+        die "dmd.conf not present in $PREFIX/bin" 11
     elif [ ! "`grep '\-version=Tango' $PREFIX/bin/dmd.conf`" ]
     then
         die "dmd.conf not Tango enabled" 12

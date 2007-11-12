@@ -1,17 +1,17 @@
-# Makefile to build D runtime library libdtango-base-dmd.a for Linux
+# Makefile to build the composite D runtime library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build libdtango-base-dmd.a
+#		Build the runtime library
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=libdtango-base-dmd.a
-LIB_MASK=libdtango-base-dmd*.a
+LIB_TARGET=libtango-base-dmd.a
+LIB_MASK=libtango-base-dmd*.a
 
 DIR_CC=./common/tango
 DIR_RT=./compiler/dmd

@@ -84,14 +84,14 @@ then
 fi
 
 # Since Tango 0.99.3
-if [ -e "$PREFIX/lib/libdtango-base-dmd.a" ]
+if [ -e "$PREFIX/lib/libtango-base-dmd.a" ]
 then
-    rm -f $PREFIX/lib/libdtango-base-dmd.a
+    rm -f $PREFIX/lib/libtango-base-dmd.a
 fi
 
-if [ -e "$PREFIX/lib/libdtango-user-tango.a" ]
+if [ -e "$PREFIX/lib/libtango-user-tango.a" ]
 then
-    rm -f $PREFIX/lib/libdtango-user-tango.a
+    rm -f $PREFIX/lib/libtango-user-tango.a
 fi
 
 die "Done!" 0

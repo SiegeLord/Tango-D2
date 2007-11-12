@@ -1,17 +1,17 @@
-# Makefile to build D common runtime library for Linux
+# Makefile to build the common D runtime library for Linux
 # Designed to work with GNU make
 # Targets:
 #	make
 #		Same as make all
 #	make lib
-#		Build library
+#		Build the common library
 #   make doc
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=libdtango-cc-tango.a
-LIB_MASK=libdtango-cc-tango*.a
+LIB_TARGET=libtango-cc-tango.a
+LIB_MASK=libtango-cc-tango*.a
 
 CP=cp -f
 RM=rm -f
