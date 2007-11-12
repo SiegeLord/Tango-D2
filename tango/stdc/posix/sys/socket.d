@@ -282,6 +282,10 @@ version( linux )
     int     sockatmark(int);
     int     socketpair(int, int, int, int[2]);
 }
+else version( darwin )
+{
+    alias uint   socklen_t;
+}
 
 //
 // IPV6 (IP6)
