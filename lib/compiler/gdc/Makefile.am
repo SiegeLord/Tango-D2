@@ -219,7 +219,7 @@ clean-local:
 	rm -f config/gen_config1.o config/gen_unix.o config/gen_math.o
 	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)
 	rm -f frag-gen frag-math frag-unix
-	rm -f $(config_d_src) $(configunix_d_src)
+	rm -f $(config_d_src)
 	rm -f libgphobos.a
 	rm -f libgphobos_t.a
 
