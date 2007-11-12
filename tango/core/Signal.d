@@ -54,6 +54,8 @@ struct Signal( Args... )
     alias void delegate(Args) SlotDg; ///
     alias void function(Args) SlotFn; ///
 
+    alias opCall call; /// Alias to simplify chained calling.
+
 
     /**
      * The signal procedure.  When called, each of the attached slots will be
