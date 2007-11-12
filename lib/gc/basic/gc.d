@@ -66,9 +66,12 @@ extern (C) void gc_term()
     //       much since the app is supposed to be shutting down anyway, but
     //       I'm disabling cleanup for now until I can think about it some
     //       more.
-    //_gc.fullCollectNoStack(); // not really a 'collect all' -- still scans
-                                // static data area, roots, and ranges.
-    //_gc.Dtor();
+    //
+    // NOTE: Due to popular demand, this has been re-enabled.  It still has
+    //       the problems mentioned above though, so I guess we'll see.
+    _gc.fullCollectNoStack(); // not really a 'collect all' -- still scans
+                              // static data area, roots, and ranges.
+    _gc.Dtor();
 }
 
 extern (C) void gc_enable()
