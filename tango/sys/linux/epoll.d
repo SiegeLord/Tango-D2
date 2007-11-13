@@ -26,7 +26,7 @@ version (linux)
 		public const int EPOLL_CTL_DEL = 2;	// Remove a file descriptor from the interface.
 		public const int EPOLL_CTL_MOD = 3;	// Change file descriptor epoll_event structure.
 
-		union epoll_data
+		align(1) union epoll_data
 		{
 			void* ptr;
 			int fd;
@@ -36,7 +36,7 @@ version (linux)
 
 		alias epoll_data epoll_data_t;
 
-		struct epoll_event
+		align(1) struct epoll_event
 		{
 			uint events;		// Epoll events
 			epoll_data_t data;	// User data variable
