@@ -250,15 +250,6 @@ class Process
     }
 
     /**
-     * Destructor
-     */
-    public ~this()
-    {
-        _running = false;
-        cleanPipes();
-    }
-
-    /**
      * Indicate whether the process is running or not.
      */
     public bool isRunning()
