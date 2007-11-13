@@ -45,7 +45,7 @@ tar zcf core.tar.gz object.di lib/libphobos.a \
 
 
 # 2) The rest
-if [ ! -e libtango-user-tango.a ]
+if [ ! -e libtango-user-dmd.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
     ./build-tango.sh dmd || die 1 "Failed to build Tango"
@@ -66,7 +66,7 @@ cp -pR ../tango include/d || die 1 "Failed to copy in the tango .d files"
 cp -pR ../std include/d || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
-cp ../lib/libtango-user-tango.a lib || die 1 "Failed to copy in the tango .a file"
+cp ../lib/libtango-user-dmd.a lib || die 1 "Failed to copy in the tango .a file"
 
 find include/d -name .svn | xargs rm -rf
 tar zcf ../tango.tar.gz include lib bin || die 1 "Failed to create tango.tar.gz"

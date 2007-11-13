@@ -118,9 +118,9 @@ then
         rm -f $PREFIX/lib/libtango-base-dmd.a
     fi
 
-    if [ -e "$PREFIX/lib/libtango-user-tango.a" ]
+    if [ -e "$PREFIX/lib/libtango-user-dmd.a" ]
     then
-        rm -f $PREFIX/lib/libtango-user-tango.a
+        rm -f $PREFIX/lib/libtango-user-dmd.a
     fi
 
     die "Done!" 0

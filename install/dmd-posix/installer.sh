@@ -130,7 +130,7 @@ then
 else
     if [ ! "`grep '\-L\-ltango' $DMDDIR/bin/dmd.conf`" ]
     then
-        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango-user-tango/' $DMDDIR/bin/dmd.conf
+        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango-user-dmd/' $DMDDIR/bin/dmd.conf
     fi
 fi
 

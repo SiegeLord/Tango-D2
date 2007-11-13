@@ -147,7 +147,7 @@ then
     usage
 elif [ "$1" = "dmd" ]
 then
-    build dmd libtango-user-tango.a libtango-base-dmd.a
+    build dmd libtango-user-dmd.a libtango-base-dmd.a
 elif [ "$1" = "gdc" ]
 then
     build gdmd libgtango.a libgphobos.a

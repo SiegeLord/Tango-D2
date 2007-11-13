@@ -18,7 +18,7 @@ void main( char[][] args )
     if( args.length > 1 )
         path = args[1] ~ "\\tango";
 
-    outf.write ("-c -n -p256\ntango-user-tango.lib\n");
+    outf.write ("-c -n -p256\ntango-user-dmd.lib\n");
     foreach(file; scan( path, ".d" ).files )
     {
         if( filter( file ) )
