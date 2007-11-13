@@ -71,7 +71,7 @@ debug (Process)
  *
  *     Stdout.formatln ("Process '{}' ({}) exited with reason {}, status {}",
  *                      p.programName, p.pid, cast(int) result.reason, result.status);
- * } 
+ * }
  * catch (ProcessException e)
  *        Stdout.formatln ("Process execution failed: {}", e);
  * ---
@@ -863,6 +863,13 @@ class Process
 
                 assert(_info !is null);
 
+                // We clean up once we're done waiting for the process to finish.
+                scope(exit)
+                {
+                    CloseHandle(_info.hProcess);
+                    clean();
+                }
+
                 rc = WaitForSingleObject(_info.hProcess, INFINITE);
                 if (rc == WAIT_OBJECT_0)
                 {
@@ -885,7 +892,6 @@ class Process
                                         "with unknown exit status {2}\n",
                                         _args[0], _pid, result.status);
                 }
-                clean();
             }
             else
             {
