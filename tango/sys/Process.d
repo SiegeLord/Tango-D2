@@ -254,7 +254,8 @@ class Process
      */
     public ~this()
     {
-        clean();
+        _running = false;
+        cleanPipes();
     }
 
     /**
@@ -417,14 +418,9 @@ class Process
      *          process' stdin.
      *
      * Remarks:
-     * The process must be running before calling this method.
+     * The stream will be null if no child process has been executed.
      */
     public OutputStream stdin()
-    in
-    {
-        assert(_running);
-    }
-    body
     {
         return _stdin;
     }
@@ -436,14 +432,9 @@ class Process
      *          process' stdout.
      *
      * Remarks:
-     * The process must be running before calling this method.
+     * The stream will be null if no child process has been executed.
      */
     public InputStream stdout()
-    in
-    {
-        assert(_running);
-    }
-    body
     {
         return _stdout;
     }
@@ -455,14 +446,9 @@ class Process
      *          process' stderr.
      *
      * Remarks:
-     * The process must be running before calling this method.
+     * The stream will be null if no child process has been executed.
      */
     public InputStream stderr()
-    in
-    {
-        assert(_running);
-    }
-    body
     {
         return _stderr;
     }
@@ -616,6 +602,10 @@ class Process
             SECURITY_ATTRIBUTES sa;
             STARTUPINFO         startup;
 
+            // We close and delete the pipes that could have been left open
+            // from a previous execution.
+            cleanPipes();
+
             // Set up the security attributes struct.
             sa.nLength = SECURITY_ATTRIBUTES.sizeof;
             sa.lpSecurityDescriptor = null;
@@ -678,6 +668,10 @@ class Process
         }
         else version (Posix)
         {
+            // We close and delete the pipes that could have been left open
+            // from a previous execution.
+            cleanPipes();
+
             Pipe pin = new Pipe(DefaultStdinBufferSize);
             Pipe pout = new Pipe(DefaultStdoutBufferSize);
             Pipe perr = new Pipe(DefaultStderrBufferSize);
@@ -863,11 +857,17 @@ class Process
 
                 assert(_info !is null);
 
-                // We clean up once we're done waiting for the process to finish.
+                // We clean up the process related data and set the _running
+                // flag to false once we're done waiting for the process to
+                // finish.
+                //
+                // IMPORTANT: we don't delete the open pipes so that the parent
+                //            process can get whatever the child process left on
+                //            these pipes before dying.
                 scope(exit)
                 {
                     CloseHandle(_info.hProcess);
-                    clean();
+                    _running = false;
                 }
 
                 rc = WaitForSingleObject(_info.hProcess, INFINITE);
@@ -910,6 +910,18 @@ class Process
             if (_running)
             {
                 int rc;
+
+                // We clean up the process related data and set the _running
+                // flag to false once we're done waiting for the process to
+                // finish.
+                //
+                // IMPORTANT: we don't delete the open pipes so that the parent
+                //            process can get whatever the child process left on
+                //            these pipes before dying.
+                scope(exit)
+                {
+                    _running = false;
+                }
 
                 // Wait for child process to end.
                 if (waitpid(_pid, &rc, 0) != -1)
@@ -978,7 +990,6 @@ class Process
                         Stdout.formatln("Could not wait on child process '{0}' ({1}): ({2}) {3}",
                                         _args[0], _pid, result.status, SysError.lastMsg);
                 }
-                clean();
             }
             else
             {
@@ -1021,10 +1032,17 @@ class Process
                 {
                     assert(_info !is null);
 
+                    // We clean up the process related data and set the _running
+                    // flag to false once we're done waiting for the process to
+                    // finish.
+                    //
+                    // IMPORTANT: we don't delete the open pipes so that the parent
+                    //            process can get whatever the child process left on
+                    //            these pipes before dying.
                     scope(exit)
                     {
                         CloseHandle(_info.hProcess);
-                        clean();
+                        _running = false;
                     }
 
                     // FIXME: We should probably use a timeout here
@@ -1056,8 +1074,17 @@ class Process
 
                 if (.kill(_pid, SIGTERM) != -1)
                 {
+                    // We clean up the process related data and set the _running
+                    // flag to false once we're done waiting for the process to
+                    // finish.
+                    //
+                    // IMPORTANT: we don't delete the open pipes so that the parent
+                    //            process can get whatever the child process left on
+                    //            these pipes before dying.
                     scope(exit)
-                        clean();
+                    {
+                        _running = false;
+                    }
 
                     // FIXME: is this loop really needed?
                     for (uint i = 0; i < 100; i++)
@@ -1226,11 +1253,11 @@ class Process
     }
 
     /**
-     * Reset the object to its initial state.
+     * Close and delete any pipe that may have been left open in a previous
+     * execution of a child process.
      */
-    protected void clean()
+    protected void cleanPipes()
     {
-        _running = false;
         delete _stdin;
         delete _stdout;
         delete _stderr;
