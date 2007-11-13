@@ -27,4 +27,6 @@ export HOME=`pwd`
 make clean -fgdc-posix.mak || exit 1
 make lib doc install -fgdc-posix.mak ADD_CFLAGS="$ADD_CFLAGS" || exit 1
 make clean -fgdc-posix.mak || exit 1
+chmod 644 ../tango/core/*.di || exit 1
+
 export HOME=$OLDHOME
