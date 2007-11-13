@@ -655,22 +655,15 @@ version (Windows)
         }
         body
         {
-            if (_buffer[0] > 0)
+            if (!isSet(handle))
             {
-                uint i;
-
-                for (i = 1; i < _buffer.length; ++i)
+                // If we added too many sockets we increment the size of the buffer
+                if (++_buffer[0] >= _buffer.length)
                 {
-                    if (_buffer[i] == handle)
-                        return;
+                    _buffer.length = _buffer[0] + 1;
                 }
+                _buffer[_buffer[0]] = cast(uint) handle;
             }
-            // If we added too many sockets we increment the size of the buffer
-            if (++_buffer[0] >= _buffer.length)
-            {
-                _buffer.length = _buffer[0] + 1;
-            }
-            _buffer[_buffer[0]] = cast(uint) handle;
         }
 
         /**
@@ -678,26 +671,21 @@ version (Windows)
          */
         public void clear(ISelectable.Handle handle)
         {
-            if (_buffer[0] > 0)
+            for (uint i = 1; i <= _buffer[0]; ++i)
             {
-                uint i;
-
-                for (i = 1; i < _buffer.length; ++i)
+                if (_buffer[i] == cast(uint) handle)
                 {
-                    if (_buffer[i] == handle)
-                        goto found;
+                    // We don't need to keep the handles in the order in which
+                    // they were inserted, so we optimize the removal by
+                    // copying the last element to the position of the removed
+                    // element.
+                    if (i != _buffer[0])
+                    {
+                        _buffer[i] = _buffer[_buffer[0]];
+                    }
+                    _buffer[0]--;
+                    return;
                 }
-                return;
-
-            found:
-                // We don't need to keep the handles in the order in which
-                // they were inserted, so we optimize the removal by copying
-                // the last element to the position of the removed element.
-                if (i != _buffer.length - 1)
-                {
-                    _buffer[i] = _buffer[_buffer.length - 1];
-                }
-                _buffer[0]--;
             }
         }
 
