@@ -2228,6 +2228,8 @@ struct Gcx
             }
         }
 
+        thread_resumeAll();
+
         // Free up everything not marked
         debug(COLLECT_PRINTF) printf("\tfree'ing\n");
         size_t freedpages = 0;
@@ -2387,8 +2389,6 @@ struct Gcx
 
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
-
-        thread_resumeAll();
 
         return freedpages + recoveredpages;
     }
