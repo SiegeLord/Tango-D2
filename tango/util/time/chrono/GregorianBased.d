@@ -13,6 +13,8 @@
 
 module tango.util.time.chrono.GregorianBased;
 
+private import tango.core.Exception;
+
 private import tango.util.time.DateTime;
 
 private import tango.util.time.chrono.Gregorian;
@@ -43,7 +45,7 @@ private class GregorianBasedCalendar : GregorianCalendar {
       if (ticks >= eraRange.ticks)
         return year - eraRange.yearOffset;
     }
-    throw new Exception("Value was out of range.");
+    throw new IllegalArgumentException("Value was out of range.");
   }
 
   public override int getEra(DateTime time) {
@@ -52,7 +54,7 @@ private class GregorianBasedCalendar : GregorianCalendar {
       if (ticks >= eraRange.ticks)
         return eraRange.era;
     }
-    throw new Exception("Value was out of range.");
+    throw new IllegalArgumentException("Value was out of range.");
   }
 
   public override int[] eras() {
@@ -69,10 +71,10 @@ private class GregorianBasedCalendar : GregorianCalendar {
       if (era == eraRange.era) {
         if (year >= eraRange.minEraYear && year <= eraRange.maxEraYear)
           return eraRange.yearOffset + year;
-        throw new Exception("Value was out of range.");
+        throw new IllegalArgumentException("Value was out of range.");
       }
     }
-    throw new Exception("Era value was not valid.");
+    throw new IllegalArgumentException("Era value was not valid.");
   }
 
   protected int currentEra() {

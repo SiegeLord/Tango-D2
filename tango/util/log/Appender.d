@@ -12,8 +12,10 @@
 
 module tango.util.log.Appender;
 
-public import   tango.util.log.Event,
-                tango.util.log.EventLayout;
+public import  tango.core.Exception;
+
+public import  tango.util.log.Event,
+               tango.util.log.EventLayout;
 
 /*******************************************************************************
 
@@ -91,7 +93,7 @@ public class Appender
                    registry [tag] = mask;
 
                    if (mask < 0)
-                       throw new Exception ("too many unique registrations");
+                       throw new IllegalArgumentException ("too many unique registrations");
 
                    mask <<= 1;
                    return ret;

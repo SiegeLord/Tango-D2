@@ -8,8 +8,7 @@
 
         author:         Regan Heath, Oskar Linde
 
-        This module defines the Digest interface. In addition 
-        CryptoException is defined for exception handling
+        This module defines the Digest interface. 
 
 ******************************************************************************/
 
@@ -138,32 +137,4 @@ abstract class Digest
                 return buffer;
         }
 }
-
-
-/+ Commented out until its proper home is figured out
-
-/******************************************************************************
-
-       This is an exception class to be thrown by algorithms under
-       tango.io.digest where required.
-
-******************************************************************************/
-
-class CryptoException : Exception
-{
-        /***********************************************************************
-
-                Construct a CryptoException.
-
-                Params:
-                msg = the exception text
-
-                Remarks:
-                Constructs a CryptoException.
-
-        ***********************************************************************/
-
-        this(char[] msg) { super(msg); }
-}
-+/
 

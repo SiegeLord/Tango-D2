@@ -16,6 +16,7 @@ version (Posix)
 {
 alias tango.text.locale.Posix nativeMethods;
 
+private import tango.core.Exception;
 private import tango.text.locale.Data;
 private import tango.stdc.ctype;
 private import tango.stdc.posix.stdlib;
@@ -34,7 +35,7 @@ int getUserCulture() {
   if (!env || *env == '\0') {
     env = getenv("LANG");
     if (!env || *env == '\0')
-      throw new Exception("Neither LANG nor LC_ALL were found to be set. Please set for locale formatting to function.");
+      throw new LocaleException("Neither LANG nor LC_ALL were found to be set. Please set for locale formatting to function.");
   }
 
   // getenv returns a string of the form <language>_<region>.

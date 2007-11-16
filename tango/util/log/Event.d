@@ -17,6 +17,8 @@ version = UseEventFreeList;
 
 private import  tango.sys.Common;
 
+private import  tango.core.Exception;
+
 private import  tango.util.time.Clock;
 
 private import  tango.util.log.model.ILevel,
@@ -147,7 +149,7 @@ public class Event : ILevel
                         ulong freq;
 
                         if (! QueryPerformanceFrequency (&freq))
-                              throw new Exception ("high-resolution timer is not available");
+                              throw new PlatformException ("high-resolution timer is not available");
                         
                         QueryPerformanceCounter (&timerStart);
                         multiplier = 10_000_000.0 / freq;       

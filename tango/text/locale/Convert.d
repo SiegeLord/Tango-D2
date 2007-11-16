@@ -12,6 +12,8 @@
 
 module tango.text.locale.Convert;
 
+private import  tango.core.Exception;
+
 private import  tango.text.locale.Core;
 
 private import  tango.util.time.DateTime,
@@ -240,7 +242,7 @@ version (Full)
                             f = dtf.yearMonthPattern;
                             break;
                        default:
-                           throw new Exception("Invalid date format.");
+                           throw new IllegalArgumentException("Invalid date format.");
                        }
 
                 return f;

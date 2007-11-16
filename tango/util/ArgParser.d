@@ -13,6 +13,8 @@
 
 module tango.util.ArgParser;
 
+private import tango.core.Exception;
+
 /**
     An alias to a delegate taking a char[] as a parameter. The value 
     parameter will hold any chars immediately
@@ -305,8 +307,7 @@ class ArgParser{
                     defaultOrdinal++;
                 }
                 else {
-                    throw new Exception("Illegal argument "
-                              ~ argData);
+                    throw new IllegalArgumentException("Illegal argument "~ argData);
                 }
             }
         }

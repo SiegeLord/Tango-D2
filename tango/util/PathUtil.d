@@ -16,6 +16,8 @@ module tango.util.PathUtil;
 
 private import  tango.io.FileConst;
 
+private import  tango.core.Exception;
+
 /*******************************************************************************
 
     Normalizes a path component as specified in section 5.2 of RFC 2396.
@@ -124,13 +126,13 @@ char[] normalize(char[] path, bool normSlash = true)
             // found /.. sequence
 version (Win32) {
             if (start == 3 && path[1] == FileConst.PathSeparatorChar) { // absolute, X:\..
-                throw new Exception("PathUtil :: Invalid absolute path, root can not be followed by ..");
+                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root can not be followed by ..");
             }
 
 }
 else {
             if (start == 1) { // absolute
-                throw new Exception("PathUtil :: Invalid absolute path, root separator can not be followed by ..");
+                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can not be followed by ..");
             }
 }
             int idx = findSlash(path, start - 2);

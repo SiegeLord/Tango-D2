@@ -131,21 +131,6 @@ class NetworkClient
 
 /*******************************************************************************
 
-        This exception is thrown by the cluster subsystem when it runs
-        into something unexpected.
-
-*******************************************************************************/
-
-class ClusterException : IOException
-{
-        this (char[] msg)
-        {
-                super (msg);
-        }
-}
-
-/*******************************************************************************
-
         This exception is thrown by the cluster subsystem when an attempt
         is made to place additional content into a full queue
 

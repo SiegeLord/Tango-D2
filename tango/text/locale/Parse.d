@@ -12,6 +12,8 @@
 
 module tango.text.locale.Parse;
 
+private import  tango.core.Exception;
+
 private import  tango.text.locale.Core;
 
 private import  tango.util.time.DateTime;
@@ -37,14 +39,14 @@ private struct DateTimeParseResult {
 package DateTime parseDateTime(char[] s, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExactMultiple(s, dtf.getAllDateTimePatterns(), dtf, result))
-    throw new Exception("String was not a valid DateTime.");
+    throw new IllegalArgumentException("String was not a valid DateTime.");
   return result.parsedDate;
 }
 
 package DateTime parseDateTimeExact(char[] s, char[] format, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExact(s, format, dtf, result))
-    throw new Exception("String was not a valid DateTime.");
+    throw new IllegalArgumentException("String was not a valid DateTime.");
   return result.parsedDate;
 }
 

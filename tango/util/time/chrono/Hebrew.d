@@ -13,6 +13,8 @@
 
 module tango.util.time.chrono.Hebrew;
 
+private import tango.core.Exception;
+
 private import tango.util.time.chrono.Calendar;
 
 
@@ -223,7 +225,7 @@ public class HebrewCalendar : Calendar {
 
   private void checkYear(int year, int era) {
     if ((era != CURRENT_ERA && era != HEBREW_ERA) || (year > maxYear_ || year < minYear_))
-      throw new Exception("Value was out of range.");
+      throw new IllegalArgumentException("Value was out of range.");
   }
 
   private int getYearType(int year) {
@@ -253,7 +255,7 @@ public class HebrewCalendar : Calendar {
         break;
     }
     // Satisfies -w
-    throw new Exception("Value was not valid.");
+    throw new IllegalArgumentException("Value was not valid.");
   }
 
   private int getStartOfYear(int year) {

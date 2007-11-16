@@ -12,7 +12,9 @@
 
 module tango.util.time.StopWatch;
 
-public import tango.core.Type : Interval;
+private import tango.core.Exception;
+
+public  import tango.core.Type : Interval;
 
 /*******************************************************************************
 
@@ -137,7 +139,7 @@ public struct StopWatch
                 {
                         timeval tv;
                         if (gettimeofday (&tv, null))
-                            throw new Exception ("Timer :: linux timer is not available");
+                            throw new PlatformException ("Timer :: linux timer is not available");
 
                         return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
                 }
@@ -147,7 +149,7 @@ public struct StopWatch
                         ulong now;
 
                         if (! QueryPerformanceCounter (&now))
-                              throw new Exception ("high-resolution timer is not available");
+                              throw new PlatformException ("high-resolution timer is not available");
 
                         return now;
                 }

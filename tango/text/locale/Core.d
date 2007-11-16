@@ -104,6 +104,8 @@
 
 module tango.text.locale.Core;
 
+private import  tango.core.Exception;
+
 private import  tango.text.locale.Data;
 
 private import  tango.util.time.DateTime;
@@ -293,7 +295,7 @@ version (Clone)
   public static Culture getCulture(int cultureID) {
     Culture culture = getCultureInternal(cultureID, null);
     if (culture is null)
-      throw new Exception("Culture is not supported.");
+      error("Culture is not supported.");
     return culture;
   }
 
@@ -305,10 +307,10 @@ version (Clone)
    */
   public static Culture getCulture(char[] cultureName) {
     if (cultureName == null)
-      throw new Exception("Value cannot be null.");
+       error("Value cannot be null.");
     Culture culture = getCultureInternal(0, cultureName);
     if (culture is null)
-      throw new Exception("Culture name " ~ cultureName ~ " is not supported.");
+      error("Culture name " ~ cultureName ~ " is not supported.");
     return culture;
   }
 
@@ -319,10 +321,10 @@ version (Clone)
     */
   public static Culture getCultureFromIetfLanguageTag(char[] name) {
     if (name == null)
-      throw new Exception("Value cannot be null.");
+      error("Value cannot be null.");
     Culture culture = getCultureInternal(-1, name);
     if (culture is null)
-      throw new Exception("Culture IETF name " ~ name ~ " is not a known IETF name.");
+      error("Culture IETF name " ~ name ~ " is not a known IETF name.");
     return culture;
   }
 
@@ -360,7 +362,7 @@ version (Clone)
       else
         culture = new Culture(cultureID);
     }
-    catch (Exception) {
+    catch (LocaleException) {
       return null;
     }
 
@@ -668,12 +670,12 @@ version (Clone)
 
   private static void checkNeutral(Culture culture) {
     if (culture.isNeutral)
-      throw new Exception("Culture '" ~ culture.name ~ "' is a neutral culture. It cannot be used in formatting and therefore cannot be set as the current culture.");
+      error("Culture '" ~ culture.name ~ "' is a neutral culture. It cannot be used in formatting and therefore cannot be set as the current culture.");
   }
 
   private void checkReadOnly() {
     if (isReadOnly_)
-      throw new Exception("Instance is read-only.");
+      error("Instance is read-only.");
   }
 
   private static Calendar getCalendarInstance(int calendarType, bool readOnly=false) {
@@ -744,7 +746,7 @@ public class Region {
   public this(int cultureID) {
     cultureData_ = CultureData.getDataFromCultureID(cultureID);
     if (cultureData_.isNeutral)
-      throw new Exception("Cannot use a neutral culture to create a region.");
+        error ("Cannot use a neutral culture to create a region.");
     name_ = cultureData_.regionName;
   }
 
@@ -757,7 +759,7 @@ public class Region {
     cultureData_ = CultureData.getDataFromRegionName(name);
     name_ = name;
     if (cultureData_.isNeutral)
-      throw new Exception("The region name " ~ name ~ " corresponds to a neutral culture and cannot be used to create a region.");
+        error ("The region name " ~ name ~ " corresponds to a neutral culture and cannot be used to create a region.");
   }
 
   package this(CultureData* cultureData) {
@@ -1411,7 +1413,7 @@ version (Clone)
 
   private void checkReadOnly() {
     if (isReadOnly_)
-      throw new Exception("NumberFormat instance is read-only.");
+        error("NumberFormat instance is read-only.");
   }
 
 }
@@ -1609,7 +1611,7 @@ version(Clone)
         result ~= yearMonthPatterns;
         break;
       default:
-        throw new Exception("The specified format was not valid.");
+        error("The specified format was not valid.");
     }
     return result;
   }
@@ -1752,7 +1754,7 @@ version(Clone)
           return;
         }
       }
-      throw new Exception("Not a valid calendar for the culture.");
+      error("Not a valid calendar for the culture.");
     }
   }
 
@@ -2132,7 +2134,7 @@ version(Clone)
 
   private void checkReadOnly() {
     if (isReadOnly_)
-      throw new Exception("DateTimeFormat instance is read-only.");
+        error("DateTimeFormat instance is read-only.");
   }
 
   private void initialize() {
@@ -2158,6 +2160,10 @@ version(Clone)
     if (optionalCalendars_ is null)
       optionalCalendars_ = cultureData_.optionalCalendars;
     return optionalCalendars_;
+  }
+
+  private void error(char[] msg) {
+     throw new LocaleException (msg);
   }
 
 }

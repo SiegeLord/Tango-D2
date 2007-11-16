@@ -13,6 +13,8 @@
 
 module tango.util.log.Hierarchy;
 
+private import  tango.core.Exception;
+
 private import  tango.util.log.Logger,
                 tango.util.log.Appender;
 
@@ -599,7 +601,7 @@ class Hierarchy : IHierarchy
                       // insert here if the new name is shorter
                       if (l.name.length < curr.name.length)
                           if (prev is null)
-                              throw new Exception ("invalid hierarchy");
+                              throw new IllegalElementException ("invalid hierarchy");
                           else                                 
                              {
                              l.next = prev.next;

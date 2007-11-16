@@ -1,5 +1,11 @@
 module tango.text.locale.Data;
 
+private import tango.core.Exception;
+
+package void error(char[] msg) {
+     throw new LocaleException (msg);
+}
+
 package int compareString(char[] strA, char[] strB) {
   // Comparison ignores case
   int strALength = strA.length;
@@ -345,7 +351,8 @@ package struct CultureData {
       }
     }
 
-    throw new Exception("Culture name '" ~ name ~ "' is not supported.");
+    error ("Culture name '" ~ name ~ "' is not supported.");
+    return null;
   }
 
   package static CultureData* getDataFromCultureID(int lcid) {
@@ -359,7 +366,8 @@ package struct CultureData {
       }
     }
 
-    throw new Exception("Culture is not supported.");
+    error ("Culture is not supported.");
+    return null;
   }
 
   package static CultureData* getDataFromRegionName(inout char[] name) {
@@ -385,7 +393,8 @@ package struct CultureData {
       }
     }
 
-    throw new Exception("Region name '" ~ name ~ "' is not supported.");
+    error ("Region name '" ~ name ~ "' is not supported.");
+    return null;
   }
 
   package static char[] getCultureNameFromIetfName(char[] name) {

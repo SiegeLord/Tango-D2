@@ -12,7 +12,9 @@
 
 module tango.net.cluster.NetworkMessage;
 
-public import tango.net.cluster.model.ICluster;        
+private import tango.core.Exception;
+
+public  import tango.net.cluster.model.ICluster;        
 
 /*******************************************************************************
 
@@ -175,7 +177,7 @@ class NetworkMessage : IMessage
 
                 auto clone = ci.create;
                 if (! clone)
-                      throw new Exception ("cannot clone msg with no default ctor: "~ci.name);
+                      throw new ClusterException ("cannot clone msg with no default ctor: "~ci.name);
 
                 (cast(void*)clone)[start .. end] = (cast(void*)this)[start .. end];
                 return cast(IMessage) clone;

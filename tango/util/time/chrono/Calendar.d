@@ -13,9 +13,12 @@
 
 module tango.util.time.chrono.Calendar;
 
-public import tango.util.time.DateTime;
+private import tango.core.Exception;
 
-public import tango.core.Type : Time;
+public  import tango.core.Type : Time;
+
+public  import tango.util.time.DateTime;
+
 
 
 /**
@@ -244,7 +247,7 @@ public abstract class Calendar
                        default:
                             break;
                        }
-                throw new Exception("Value was out of range.");
+                throw new IllegalArgumentException("Value was out of range.");
         }
 
         /**

@@ -12,6 +12,8 @@
 
 module tango.net.cluster.tina.ClusterCache;
 
+private import  tango.core.Exception;
+
 private import  tango.net.cluster.QueuedCache;
                 
 private import  tango.net.cluster.tina.Cluster,
@@ -48,7 +50,7 @@ class ClusterCache
         {
                 this.size = size;
                 if (size < 1 || size > 32 * 1024)
-                    throw new Exception ("cache size should be between 1 and 32K entries");
+                    throw new IllegalArgumentException ("cache size should be between 1 and 32K entries");
         }
 
         /**********************************************************************

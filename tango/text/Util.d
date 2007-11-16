@@ -817,10 +817,8 @@ QuoteFreach!(T) quotes(T) (T[] src, T[] set)
 
 T[] layout(T) (T[] output, T[][] layout ...)
 {
-        static void error (char[] msg) {throw new Exception (msg);}
-
-        static char[] badarg   = "Util.layout :: index out of range";
-        static char[] toosmall = "Util.layout :: output buffer too small";
+        static T[] badarg   = "{index out of range}";
+        static T[] toosmall = "{output buffer too small}";
         
         int     pos,
                 args;
@@ -847,10 +845,10 @@ T[] layout(T) (T[] output, T[][] layout ...)
                             continue;
                             } 
                          else
-                            error (toosmall);
+                            return toosmall;
                          }
                       else
-                         error (badarg);
+                         return badarg;
                       }
                    }
                 else
@@ -866,7 +864,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                    ++pos;
                    }
                 else     
-                   error (toosmall);
+                   return toosmall;
                 }
 
         return output [0..pos];

@@ -47,6 +47,7 @@ interface TracedExceptionInfo
         - AddressException
         - HostException
         - VfsException
+        - ClusterException
 
     - NoSuchElementException
       - CorruptedIteratorException
@@ -56,9 +57,9 @@ interface TracedExceptionInfo
 
     - TextException
       - RegexException
+      - LocaleException
       - UnicodeException
 
-    - CipherException
     - PayloadException
 */
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,8 +253,7 @@ class FiberException : ThreadException
 /**
  * Base class for synchronization exceptions.
  */
-class SyncException :
-    PlatformException
+class SyncException : PlatformException
 {
     this( char[] msg )
     {
@@ -279,6 +279,17 @@ class IOException : PlatformException
  * The basic exception thrown by the tango.io.vfs package. 
  */
 private class VfsException : IOException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+/**
+ * The basic exception thrown by the tango.io.cluster package. 
+ */
+private class ClusterException : IOException
 {
     this( char[] msg )
     {
@@ -359,6 +370,18 @@ class RegexException : TextException
 
 
 /**
+ * Base class for locale exceptions.
+ */
+class LocaleException : TextException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
  * RegistryException is thrown when the NetworkRegistry encounters a
  * problem during proxy registration, or when it sees an unregistered
  * guid.
@@ -370,19 +393,6 @@ class RegistryException : TracedException
         super( msg );
     }
 }
-
-
-/**
- * Base class for cipher exceptions.
- */
-class CipherException : TracedException
-{
-    this( char[] msg )
-    {
-        super( msg );
-    }
-}
-
 
 
 /**
