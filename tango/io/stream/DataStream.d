@@ -84,9 +84,9 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final override uint readArray (void[] dst)
+        final override uint get (void[] dst)
         {
-                auto len = readInt;
+                auto len = getInt;
                 if (len > dst.length)
                     conduit.error ("DataInput.readArray :: dst array is too small");
                 input.readExact (dst.ptr, len);
@@ -97,7 +97,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final bool readBool ()
+        final bool getBool ()
         {
                 bool x;
                 input.readExact (&x, x.sizeof);
@@ -108,7 +108,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final byte readByte ()
+        final byte getByte ()
         {
                 byte x;
                 input.readExact (&x, x.sizeof);
@@ -119,7 +119,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final short readShort ()
+        final short getShort ()
         {
                 short x;
                 input.readExact (&x, x.sizeof);
@@ -132,7 +132,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final int readInt ()
+        final int getInt ()
         {
                 int x;
                 input.readExact (&x, x.sizeof);
@@ -145,7 +145,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final long readLong ()
+        final long getLong ()
         {
                 long x;
                 input.readExact (&x, x.sizeof);
@@ -158,7 +158,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final float readFloat ()
+        final float getFloat ()
         {
                 float x;
                 input.readExact (&x, x.sizeof);
@@ -171,7 +171,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final double readDouble ()
+        final double getDouble ()
         {
                 double x;
                 input.readExact (&x, x.sizeof);
@@ -233,10 +233,10 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final uint writeArray (void[] src)
+        final uint put (void[] src)
         {
                 auto len = src.length;
-                writeInt (len);
+                putInt (len);
                 output.append (src.ptr, len);
                 return len;
         }
@@ -245,7 +245,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeBool (bool x)
+        final void putBool (bool x)
         {
                 output.append (&x, x.sizeof);
         }
@@ -254,7 +254,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeByte (byte x)
+        final void putByte (byte x)
         {
                 output.append (&x, x.sizeof);
         }
@@ -263,7 +263,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeShort (short x)
+        final void putShort (short x)
         {
                 if (flip)
                     ByteSwap.swap16 (&x, x.sizeof);
@@ -274,7 +274,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeInt (int x)
+        final void putInt (int x)
         {
                 if (flip)
                     ByteSwap.swap32 (&x, x.sizeof);
@@ -285,7 +285,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeLong (long x)
+        final void putLong (long x)
         {
                 if (flip)
                     ByteSwap.swap64 (&x, x.sizeof);
@@ -296,7 +296,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeFloat (float x)
+        final void putFloat (float x)
         {
                 if (flip)
                     ByteSwap.swap32 (&x, x.sizeof);
@@ -307,7 +307,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void writeDouble (double x)
+        final void putDouble (double x)
         {
                 if (flip)
                     ByteSwap.swap64 (&x, x.sizeof);
@@ -323,16 +323,16 @@ debug (UnitTest)
 {
         import tango.io.Buffer;
 
-        unittest
+        void main()
         {
                 auto buf = new Buffer(32);
 
                 auto output = new DataOutput (buf);
-                output.write ("blah blah");
-                output.writeInt (1024);
+                output.put ("blah blah");
+                output.putInt (1024);
 
                 auto input = new DataInput (buf);
-                assert (input.read(new char[9]) is 9);
-                assert (input.readInt is 1024);
+                assert (input.get(new char[9]) is 9);
+                assert (input.getInt is 1024);
         }
 }
