@@ -201,7 +201,7 @@ class Print(T) : OutputStream
         {
                 return output;
         }
-/+
+
         /**********************************************************************
 
                 Set the associated output stream
@@ -213,7 +213,7 @@ class Print(T) : OutputStream
                 this.output = output;
                 return this;
         }
-+/
+
         /**********************************************************************
 
                 Return the associated Layout
