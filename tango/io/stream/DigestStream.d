@@ -45,14 +45,14 @@ class DigestInput : InputFilter
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst (or IConduit.Eof for end-of-flow)
+                requested in dst (or IOStream.Eof for end-of-flow)
 
         ***********************************************************************/
 
         final override uint read (void[] dst)
         {
                 auto len = host.read (dst);
-                if (len != IConduit.Eof)
+                if (len != Eof)
                     filter.update (dst [0 .. len]);
                 return len;
         }
@@ -114,7 +114,7 @@ class DigestOutput : OutputFilter
         final override uint write (void[] src)
         {
                 auto len = host.write (src);
-                if (len != IConduit.Eof)
+                if (len != Eof)
                     filter.update (src[0 .. len]);
                 return len;
         }

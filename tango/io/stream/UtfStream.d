@@ -80,8 +80,8 @@ class UtfInput(T, S) : InputFilter
 
                    // fill buffer when nothing produced ...
                    if (produced is 0)
-                       if (buffer.compress.fill(buffer.input) is IConduit.Eof)
-                           return IConduit.Eof;
+                       if (buffer.compress.fill(buffer.input) is Eof)
+                           return Eof;
 
                    return produced * T.sizeof;
                    }
@@ -170,7 +170,7 @@ class UtfOutput (S, T) : OutputFilter
                           // buffer must be at least 4 bytes wide 
                           // to contain a generic conversion
                           if (buffer.writable < 4)
-                              return IConduit.Eof;
+                              return Eof;
                     
                    return consumed * S.sizeof;
                    }

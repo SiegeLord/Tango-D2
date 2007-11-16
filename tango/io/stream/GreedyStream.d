@@ -37,8 +37,8 @@ class GreedyOutput : OutputFilter
 
                 Consume everything we were given. Returns the number of
                 bytes written which will be less than src.length only
-                when an Eof condition is reached, and IConduit.Eof from
-                that point forward
+                when an Eof condition is reached, and Eof from that point 
+                forward
 
         ***********************************************************************/
 
@@ -49,7 +49,7 @@ class GreedyOutput : OutputFilter
                 while (len < src.length)
                       {
                       auto i = host.write (src [len .. $]);
-                      if (i is IConduit.Eof)
+                      if (i is Eof)
                           return (len ? len : i);
                       len += i;
                       } 
@@ -81,7 +81,7 @@ class GreedyInput : InputFilter
 
                 Fill the provided array. Returns the number of bytes
                 actually read, which will be less that dst.length when
-                Eof has been reached and IConduit.Eof thereafter
+                Eof has been reached, and then Eof thereafter
 
         ***********************************************************************/
 

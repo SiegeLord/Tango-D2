@@ -60,7 +60,7 @@ class EndianInput(T) : InputFilter
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst (or IConduit.Eof for end-of-flow). Note
+                requested in dst (or IOStream.Eof for end-of-flow). Note
                 that a trailing partial element will be placed into dst,
                 but the returned length will effectively ignore it
 
@@ -69,7 +69,7 @@ class EndianInput(T) : InputFilter
         final override uint read (void[] dst)
         {
                 uint len = input.fill (dst[0 .. dst.length & ~(T.sizeof-1)]);
-                if (len != IConduit.Eof)
+                if (len != Eof)
                    {
                    // the final read may be misaligned ...
                    len &= ~(T.sizeof - 1);
@@ -152,7 +152,7 @@ class EndianOutput (T) : OutputFilter
                      if (output.output)
                          output.drain (output.output);
                      else
-                        return IConduit.Eof;
+                        return Eof;
                 return src.length - bytes;
         }
 }

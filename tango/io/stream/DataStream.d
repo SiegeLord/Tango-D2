@@ -323,7 +323,7 @@ debug (UnitTest)
 {
         import tango.io.Buffer;
 
-        void main()
+        unittest
         {
                 auto buf = new Buffer(32);
 
