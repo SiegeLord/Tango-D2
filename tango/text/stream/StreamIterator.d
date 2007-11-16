@@ -80,7 +80,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         /***********************************************************************
 
-                Set the provided conduit as the scanning source
+                Set the provided stream as the scanning source
 
         ***********************************************************************/
 
