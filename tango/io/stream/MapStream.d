@@ -95,7 +95,7 @@ class MapInput(T) : LineIterator!(T)
         final MapInput load (ref T[][T[]] properties)
         {
                 foreach (name, value; this)
-                         properties[name] = value;  
+                         properties[name.dup] = value.dup;  
                 return this;
         }
 }
