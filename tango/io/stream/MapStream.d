@@ -57,6 +57,10 @@ class MapInput(T) : LineIterator!(T)
                 # this is a comment line
                 ---
 
+                Note that the provided name and value are actually slices
+                and should be copied if you intend to retain them (using
+                name.dup and value.dup where appropriate)
+
         ***********************************************************************/
 
         final int opApply (int delegate(ref T[] name, ref T[] value) dg)
