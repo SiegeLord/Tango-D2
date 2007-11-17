@@ -2672,6 +2672,7 @@ else
                 else
                     ++posA, ++posB;
             }
+            setM ~= setA[posA .. $];
             return setM;
         }
     }
@@ -2705,6 +2706,7 @@ else
         assert( missingFrom( "abc", "abc" ) == "" );
         assert( missingFrom( "abc", "def" ) == "abc" );
         assert( missingFrom( "abbbcd", "abd" ) == "bbc" );
+        assert( missingFrom( "abcdef", "bc" ) == "adef" );
       }
     }
 }
