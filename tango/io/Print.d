@@ -300,7 +300,8 @@ class Print(T) : OutputStream
 
         OutputStream copy (InputStream src)
         {               
-                return output.copy (src);
+                output.copy (src);
+                return this;
         }
                           
         /***********************************************************************
@@ -318,19 +319,14 @@ class Print(T) : OutputStream
 
 debug (Print)
 {
-        import tango.io.Buffer;
-        import tango.io.FileConduit;
+        import tango.io.GrowBuffer;
         import tango.text.convert.Layout;
 
         void main()
         {
-                auto conduit = new FileConduit ("test.txt", FileConduit.ReadWriteCreate);
-                auto print = new Print!(char) (new Layout!(char), new Buffer(conduit));
+                auto print = new Print!(char) (new Layout!(char), new GrowBuffer);
 
-                for(int i=0;i < 1000; i++)
-                    print(i).newline;
-                
-                print.flush;
-                conduit.close;
+                for (int i=0;i < 1000; i++)
+                     print(i).newline;
         }
 }
