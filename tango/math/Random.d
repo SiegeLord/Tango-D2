@@ -45,6 +45,14 @@ version (Posix)
 
 class Random
 {
+        /**********************************************************************
+
+                Shared instance:
+                ---
+                auto random = Random.shared.next;
+                ---
+
+        **********************************************************************/
         public static Random shared;
 
         private uint kiss_k;
