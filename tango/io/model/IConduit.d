@@ -159,15 +159,9 @@ interface ISelectable
 
 interface IOStream 
 {
-        /***********************************************************************
-        
-                Declare the End-of-Flow identifer
-
-        ***********************************************************************/
-
         enum : uint 
         {
-                Eof = uint.max
+                Eof = uint.max /// the End-of-Flow identifer
         }
 
         /***********************************************************************
