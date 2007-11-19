@@ -50,7 +50,7 @@ version (Posix)
 
 *******************************************************************************/
 
-class MappedBuffer : Buffer
+class MappedBuffer : Buffer, IConduit.Seek
 {
         private FileConduit     host;                   // the hosting file
 
