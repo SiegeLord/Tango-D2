@@ -6,6 +6,7 @@
  * Copyright:   Copyright &copy; 2007 Daniel Keep.
  * License:     BSD style: $(LICENSE)
  * Authors:     Daniel Keep
+ * Credits:     Inspired in part by Andrei Alexandrescu's work on std.conv.
  */
 
 module tango.util.Convert;
