@@ -405,7 +405,7 @@ version (Clone)
     return cultureData_.name;
   }
 
-  public override int opEquals(Object obj) {
+  public override bool opEquals(Object obj) {
     if (obj is this)
       return true;
     Culture other = cast(Culture)obj;

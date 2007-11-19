@@ -477,7 +477,7 @@ struct Variant
     final Variant opCatAssign(T)( T value )  { return (*this = get!(T) ~ value); }
 
 
-    final int opEquals(T)( T rhs )
+    final bool opEquals(T)( T rhs )
     {
         static if( is( T == Variant ) )
             return opEqualsVariant(rhs);
