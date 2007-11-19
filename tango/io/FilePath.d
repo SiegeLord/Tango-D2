@@ -8,6 +8,7 @@
         version:        Nov 2006: Australian version
         version:        Feb 2007: Mutating version
         version:        Mar 2007: Folded FileProxy in
+        version:        Nov 2007: VFS dictates '/' always be used
 
         author:         Kris
 
@@ -23,7 +24,6 @@ private import  tango.core.Exception;
 
 private import  tango.core.Type : Time;
 
-import tango.io.Stdout;
 /*******************************************************************************
 
 *******************************************************************************/
@@ -79,9 +79,11 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         addition, a '.' at the start of a name signifies it does not belong
         to the suffix i.e. ".file" is a name rather than a suffix.
 
-        Note also that normalization of path-separators is supported by the
-        set() method and via a constructor. Enabling normalization initiates
-        replacement of '/' for '\' (or vice versa) for the relevant platform.
+        Note also that normalization of path-separators occurs by default. 
+        This means that the use of '\' characters with be converted into
+        '/' instead while parsing. To mutate the path into an O/S native
+        version, use the toNative() method. To obtain an O/S native copy
+        instead, use the path.dup.native pattern
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
@@ -132,21 +134,9 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static FilePath opCall (char[] filepath, bool native=false)
+        static FilePath opCall (char[] filepath)
         {
-                return new FilePath (filepath, native);
-        }
-
-        /***********************************************************************
-
-                As below, but with no initial content. Use set() or its
-                opAssign() alias to populate the path.
-
-        ***********************************************************************/
-
-        this ()
-        {
-                set (null, false);
+                return new FilePath (filepath);
         }
 
         /***********************************************************************
@@ -168,14 +158,17 @@ class FilePath : PathView
                 C-oriented OS calls, implying the postfix of a null terminator.
                 Thus, FilePath combines both as a single operation.
 
-                When enabled, option 'native' will normalize path separators
-                to those of the native OS
-
         ***********************************************************************/
 
-        this (char[] filepath, bool native=false)
+        this (char[] filepath = null)
         {
-                set (filepath, native);
+                set (filepath);
+        }
+        
+        // now converts to '/' always. Use toNative to get Win32 paths
+        deprecated this (char[] filepath, bool native)
+        {
+                set (filepath);
         }
 
         /***********************************************************************
@@ -390,8 +383,46 @@ class FilePath : PathView
 
         final FilePath replace (char from, char to)
         {
-                replace (fp [0..end_], from, to);
+                foreach (inout char c; path)
+                         if (c is from)
+                             c = to;
                 return this;
+        }
+
+        /***********************************************************************
+
+                Convert path separators to a standard format, using '/' as
+                the path separator. This is compatible with URI and all of 
+                the contemporary O/S which Tango supports. Known exceptions
+                include the Windows command-line processor, which considers
+                '/' characters to be switches instead. Use the native()
+                method to support that.
+
+                Note: mutates the current path.
+
+        ***********************************************************************/
+
+        final FilePath standard ()
+        {
+                return replace ('\\', '/');
+        }
+
+        /***********************************************************************
+
+                Convert to native O/S path separators where that is required,
+                such as when dealing with the Windows command-line. 
+                
+                Note: mutates the current path. Use this pattern to obtain a 
+                copy instead: path.dup.native
+
+        ***********************************************************************/
+
+        final FilePath native ()
+        {
+                version (Win32)
+                         return replace ('/', '\\');
+                     else
+                        return this;
         }
 
         /***********************************************************************
@@ -450,28 +481,22 @@ class FilePath : PathView
 
         FilePath set (FilePath path)
         {
-                return set (path.toUtf8, path.dir_);
+                return set (path.toUtf8);
         }
 
         /***********************************************************************
 
-                Reset the content of this path, and reparse. When enabled,
-                option 'native' will normalize path separators to those of
-                the native OS
+                Reset the content of this path, and reparse. 
 
         ***********************************************************************/
 
-        final FilePath set (char[] path, bool native = false)
+        final FilePath set (char[] path)
         {
                 end_ = path.length;
 
                 expand (end_);
                 if (end_)
-                   {
-                   fp[0 .. end_] = path;
-                   if (native)
-                       normalize (fp [0 .. end_]);
-                   }
+                    fp[0 .. end_] = path;
 
                 fp[end_] = '\0';
                 return parse;
@@ -577,7 +602,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Pop to the parent of the current filepath (in situ)
+                Pop to the parent of the current filepath (in place)
 
         ***********************************************************************/
 
@@ -650,34 +675,6 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace all 'from' instances in the provided path with 'to'
-
-        ***********************************************************************/
-
-        static void replace (char[] path, char from, char to)
-        {
-                foreach (inout char c; path)
-                         if (c is from)
-                             c = to;
-        }
-
-        /***********************************************************************
-
-                Convert path separators to the correct format according to
-                the current platform
-
-        ***********************************************************************/
-
-        static void normalize (char[] path)
-        {
-                version (Win32)
-                         replace (path, '/', '\\');
-                     else
-                        replace (path, '\\', '/');
-        }
-
-        /***********************************************************************
-
                 Parse the path spec
 
         ***********************************************************************/
@@ -696,6 +693,11 @@ class FilePath : PathView
                                          suffix_ = i;
                                  break;
 
+                            version (Win32)
+                            {
+                            case '\\':
+                                 fp[i] = '/';
+                            }
                             case FileConst.PathSeparatorChar:
                                  if (name_ < 0)
                                      name_ = i + 1;
@@ -731,7 +733,7 @@ class FilePath : PathView
         {
                 ++size;
                 if (fp.length < size)
-                    fp.length = (size + 63) & ~63;
+                    fp.length = (size + 127) & ~127;
         }
 
         /***********************************************************************
@@ -768,7 +770,7 @@ class FilePath : PathView
 
 
         /**********************************************************************/
-        /**************************** Proxy methods ***************************/
+        /********************** file-system methods ***************************/
         /**********************************************************************/
 
 
@@ -1824,48 +1826,48 @@ debug (UnitTest)
 
         unittest
         {
-        version (Win32)
+                version(Win32)
                 {
-                auto fp = new FilePath(r"C:\home\foo\bar");
+                auto fp = new FilePath(r"C:/home/foo/bar");
                 fp ~= "john";
-                assert (fp == r"C:\home\foo\bar\john");
-                fp = r"C:\";
+                assert (fp == r"C:/home/foo/bar/john");
+                fp = r"C:/";
                 fp ~= "john";
-                assert (fp == r"C:\john");
+                assert (fp == r"C:/john");
                 fp = "foo.bar";
                 fp ~= "john";
-                assert (fp == r"foo.bar\john");
+                assert (fp == r"foo.bar/john");
                 fp = "";
                 fp ~= "john";
                 assert (fp == r"john");
 
-                fp = r"C:\home\foo\bar\john\foo.d";
-                assert (fp.pop == r"C:\home\foo\bar\john");
-                assert (fp.pop == r"C:\home\foo\bar");
-                assert (fp.pop == r"C:\home\foo");
-                assert (fp.pop == r"C:\home");
+                fp = r"C:/home/foo/bar/john/foo.d";
+                assert (fp.pop == r"C:/home/foo/bar/john");
+                assert (fp.pop == r"C:/home/foo/bar");
+                assert (fp.pop == r"C:/home/foo");
+                assert (fp.pop == r"C:/home");
                 assert (fp.pop == r"C:");
                 assert (fp.pop == r"C:");
 
                 fp = new FilePath;
-                fp = r"C:\home\foo\bar\john\";
+                fp = r"C:/home/foo/bar/john/";
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
-                assert (fp.folder == r"\home\foo\bar\john\");
-                assert (fp == r"C:\home\foo\bar\john\");
-                assert (fp.path == r"C:\home\foo\bar\john\");
+                assert (fp.folder == r"/home/foo/bar/john/");
+                assert (fp == r"C:/home/foo/bar/john/");
+                assert (fp.path == r"C:/home/foo/bar/john/");
                 assert (fp.file == r"");
                 assert (fp.suffix == r"");
                 assert (fp.root == r"C:");
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:\home\foo\bar\john");
+                fp = new FilePath(r"C:/home/foo/bar/john");
                 assert (fp.isAbsolute);
                 assert (fp.name == "john");
-                assert (fp.folder == r"\home\foo\bar\");
-                assert (fp == r"C:\home\foo\bar\john");
-                assert (fp.path == r"C:\home\foo\bar\");
+                assert (fp.folder == r"/home/foo/bar/");
+                assert (fp == r"C:/home/foo/bar/john");
+                assert (fp.path == r"C:/home/foo/bar/");
                 assert (fp.file == r"john");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
@@ -1874,9 +1876,9 @@ debug (UnitTest)
                 fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "bar");
-                assert (fp.folder == r"\home\foo\");
-                assert (fp == r"C:\home\foo\bar");
-                assert (fp.path == r"C:\home\foo\");
+                assert (fp.folder == r"/home/foo/");
+                assert (fp == r"C:/home/foo/bar");
+                assert (fp.path == r"C:/home/foo/");
                 assert (fp.file == r"bar");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
@@ -1885,9 +1887,9 @@ debug (UnitTest)
                 fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "foo");
-                assert (fp.folder == r"\home\");
-                assert (fp == r"C:\home\foo");
-                assert (fp.path == r"C:\home\");
+                assert (fp.folder == r"/home/");
+                assert (fp == r"C:/home/foo");
+                assert (fp.path == r"C:/home/");
                 assert (fp.file == r"foo");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
@@ -1896,21 +1898,21 @@ debug (UnitTest)
                 fp.pop;
                 assert (fp.isAbsolute);
                 assert (fp.name == "home");
-                assert (fp.folder == r"\");
-                assert (fp == r"C:\home");
-                assert (fp.path == r"C:\");
+                assert (fp.folder == r"/");
+                assert (fp == r"C:/home");
+                assert (fp.path == r"C:/");
                 assert (fp.file == r"home");
                 assert (fp.suffix == r"");
                 assert (fp.ext == "");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"foo\bar\john.doe");
+                fp = new FilePath(r"foo/bar/john.doe");
                 assert (!fp.isAbsolute);
                 assert (fp.name == "john");
-                assert (fp.folder == r"foo\bar\");
+                assert (fp.folder == r"foo/bar/");
                 assert (fp.suffix == r".doe");
                 assert (fp.file == r"john.doe");
-                assert (fp == r"foo\bar\john.doe");
+                assert (fp == r"foo/bar/john.doe");
                 assert (fp.ext == "doe");
                 assert (fp.isChild);
 
@@ -1924,12 +1926,12 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"\doe");
+                fp = new FilePath(r"/doe");
                 assert (fp.isAbsolute);
                 assert (fp.suffix == r"");
-                assert (fp == r"\doe");
+                assert (fp == r"/doe");
                 assert (fp.name == "doe");
-                assert (fp.folder == r"\");
+                assert (fp.folder == r"/");
                 assert (fp.file == r"doe");
                 assert (fp.ext == "");
                 assert (fp.isChild);
@@ -1984,32 +1986,32 @@ debug (UnitTest)
                 assert (fp.ext == "");
                 assert (!fp.isChild);
 
-                fp = new FilePath(r"c:\a\b\c\d\e\foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
                 assert (fp.isAbsolute);
-                fp.folder (r"\a\b\c\");
+                fp.folder (r"/a/b/c/");
                 assert (fp.suffix == r".bar");
-                assert (fp == r"c:\a\b\c\foo.bar");
+                assert (fp == r"c:/a/b/c/foo.bar");
                 assert (fp.name == "foo");
-                assert (fp.folder == r"\a\b\c\");
+                assert (fp.folder == r"/a/b/c/");
                 assert (fp.file == r"foo.bar");
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"c:\a\b\c\d\e\foo.bar");
+                fp = new FilePath(r"c:/a/b/c/d/e/foo.bar");
                 assert (fp.isAbsolute);
-                fp.folder (r"\a\b\c\d\e\f\g\");
+                fp.folder (r"/a/b/c/d/e/f/g/");
                 assert (fp.suffix == r".bar");
-                assert (fp == r"c:\a\b\c\d\e\f\g\foo.bar");
+                assert (fp == r"c:/a/b/c/d/e/f/g/foo.bar");
                 assert (fp.name == "foo");
-                assert (fp.folder == r"\a\b\c\d\e\f\g\");
+                assert (fp.folder == r"/a/b/c/d/e/f/g/");
                 assert (fp.file == r"foo.bar");
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
+                fp = new FilePath(r"C:\foo\bar\test.bar");
+                assert (fp.path == "C:/foo/bar/");
                 fp = new FilePath(r"C:/foo/bar/test.bar");
-                assert (fp.path == "C:");
-                fp = new FilePath(r"C:/foo/bar/test.bar", true);
-                assert (fp.path == r"C:\foo\bar\");
+                assert (fp.path == r"C:/foo/bar/");
 
                 fp = new FilePath("");
                 assert (fp.isEmpty);
@@ -2022,11 +2024,11 @@ debug (UnitTest)
                 assert (fp.file == r"");
                 assert (fp.ext == "");
 /+
-                fp = new FilePath(r"C:\foo\bar\test.bar");
+                fp = new FilePath(r"C:/foo/bar/test.bar");
                 fp = new FilePath(fp.asPath ("foo"));
                 assert (fp.name == r"test");
-                assert (fp.folder == r"foo\");
-                assert (fp.path == r"C:foo\");
+                assert (fp.folder == r"foo/");
+                assert (fp.path == r"C:foo/");
                 assert (fp.ext == ".bar");
 
                 fp = new FilePath(fp.asPath (""));
@@ -2035,21 +2037,16 @@ debug (UnitTest)
                 assert (fp.path == r"C:");
                 assert (fp.ext == ".bar");
 
-                fp = new FilePath(r"c:\joe\bar");
-                assert(fp.cat(r"foo\bar\") == r"c:\joe\bar\foo\bar\");
-                assert(fp.cat(new FilePath(r"foo\bar")).toUtf8 == r"c:\joe\bar\foo\bar");
+                fp = new FilePath(r"c:/joe/bar");
+                assert(fp.cat(r"foo/bar/") == r"c:/joe/bar/foo/bar/");
+                assert(fp.cat(new FilePath(r"foo/bar")).toUtf8 == r"c:/joe/bar/foo/bar");
 
-                assert (FilePath.join (r"a\b\c\d", r"e\f\" r"g") == r"a\b\c\d\e\f\g");
+                assert (FilePath.join (r"a/b/c/d", r"e/f/" r"g") == r"a/b/c/d/e/f/g");
 
-                fp = new FilePath(r"C:\foo\bar\test.bar");
-                assert (fp.asExt(null) == r"C:\foo\bar\test");
-                assert (fp.asExt("foo") == r"C:\foo\bar\test.foo");
-+/
-                }
-
-
-        version (Posix)
-                {
+                fp = new FilePath(r"C:/foo/bar/test.bar");
+                assert (fp.asExt(null) == r"C:/foo/bar/test");
+                assert (fp.asExt("foo") == r"C:/foo/bar/test.foo");
++/      
                 }
         }
 }

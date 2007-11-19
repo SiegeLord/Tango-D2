@@ -756,12 +756,12 @@ import tango.io.Buffer;
 
 void main()
 {
-        auto root = new FileFolder ("temp", r"d:\d\import\temp", true);
+        auto root = new FileFolder ("d:/d/import/temp", true);
         root.folder("test").create;
         root.file("test.txt").create(new Buffer("hello"));
         Stdout.formatln ("test.txt.length = {}", root.file("test.txt").size);
         
-        //root = new FileFolder ("c:", r"c:\");
+        root = new FileFolder ("c:/");
 
         auto set = root.self;
 
@@ -776,13 +776,13 @@ void main()
         Stdout.formatln ("tree.folders = {}", set.folders);
         Stdout.formatln ("tree.entries = {}", set.entries);
 
-        foreach (folder; set)
-                 Stdout.formatln ("tree.folder '{}' has {} files", folder.name, folder.self.files);
+        //foreach (folder; set)
+        //         Stdout.formatln ("tree.folder '{}' has {} files", folder.name, folder.self.files);
 
         auto cat = set.catalog ("s*");
         Stdout.formatln ("cat.files = {}", cat.files);
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
-        foreach (file; cat)
-                 Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toUtf8);
+        //foreach (file; cat)
+        //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toUtf8);
 }
 }

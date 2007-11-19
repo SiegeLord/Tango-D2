@@ -593,22 +593,22 @@ void main()
 {
         auto root = new VirtualFolder ("root");
         auto sub  = new VirtualFolder ("sub");
-        sub.mount (new FileFolder (r"d:\d\import\tango"));
+        sub.mount (new FileFolder (r"d:/d/import/tango"));
 
         root.mount (sub)
-            .mount (new FileFolder (r"c:\"), "windows")
-            .mount (new FileFolder (r"d:\d\import\temp"));
+            .mount (new FileFolder (r"c:/"), "windows")
+            .mount (new FileFolder (r"d:/d/import/temp"));
 
-        auto folder = root.folder (r"temp\bar");
+        auto folder = root.folder (r"temp/bar");
         Stdout.formatln ("folder = {}", folder);
 
-        root.map (root.folder(r"temp\subtree"), "fsym")
-            .map (root.file(r"temp\subtree\test.txt"), "wumpus");
+        root.map (root.folder(r"temp/subtree"), "fsym")
+            .map (root.file(r"temp/subtree/test.txt"), "wumpus");
         auto file = root.file (r"wumpus");
         Stdout.formatln ("file = {}", file);
         Stdout.formatln ("fsym = {}", root.folder(r"fsym").open.file("test.txt"));
 
-        foreach (folder; root.folder(r"temp\subtree").open)
+        foreach (folder; root.folder(r"temp/subtree").open)
                  Stdout.formatln ("folder.child '{}'", folder.name);
 
         auto set = root.self;

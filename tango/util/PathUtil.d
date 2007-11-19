@@ -40,14 +40,7 @@ private import  tango.core.Exception;
 
     Examples:
     -----
-    version(Win32)
-    {
-     normalize(r"home\foo\bar\..\john\..\doe"); // => "home\foo\doe"
-    }
-    version(Posix)
-    {
      normalize("/home/foo/./bar/../../john/doe"); // => "/home/john/doe"
-    }
     -----
 
 *******************************************************************************/
@@ -59,9 +52,9 @@ char[] normalize(char[] path, bool normSlash = true)
     */
     char[] normalizeSlashes(char[] path)
     {
-        version (Win32)
-            char from = '/', to = '\\';
-        else
+//        version (Win32)
+//            char from = '/', to = '\\';
+//        else
            char to = '/', from = '\\';
 
         foreach (inout c; path)
@@ -195,7 +188,7 @@ debug (UnitTest)
 
     unittest
     {
-    version (Posix)
+    //version (Posix)
             {
             assert (normalize ("/foo/../john") == "/john");
             assert (normalize ("foo/../john") == "john");
@@ -211,7 +204,7 @@ debug (UnitTest)
             assert (normalize ("../../../foo/bar") == "../../../foo/bar");
             assert (normalize ("d/") == "d/");
             }
-
+/+
     version (Win32)
             {
             assert (normalize ("\\foo\\..\\john") == "\\john");
@@ -227,6 +220,7 @@ debug (UnitTest)
             assert (normalize ("..\\..\\foo\\bar") == "..\\..\\foo\\bar");
             assert (normalize ("..\\..\\..\\foo\\bar") == "..\\..\\..\\foo\\bar");
             }
++/
     }
 }
 
