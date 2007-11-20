@@ -719,8 +719,6 @@ class Layout(T)
         }
 }
 
-// keinfarbton, local workaround, shall not be committed
-alias Layout!(char) dummyAlias;
 
 /*******************************************************************************
 
