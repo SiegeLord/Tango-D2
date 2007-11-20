@@ -109,14 +109,6 @@ interface IConduit : InputStream, OutputStream
                                 };
 
                 /***************************************************************
-                        
-                        Return current conduit position (e.g. file position)
-                
-                ***************************************************************/
-
-                long position ();
-
-                /***************************************************************
                 
                         Move the file position to the given offset from the 
                         provided anchor point, and return adjusted position.

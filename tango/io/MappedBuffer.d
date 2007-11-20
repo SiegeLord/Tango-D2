@@ -216,17 +216,17 @@ class MappedBuffer : Buffer, IConduit.Seek
 
         ***********************************************************************/
 
-        uint seek (uint offset, IConduit.Seek.Anchor anchor)
+        long seek (long offset, Anchor anchor = Anchor.Begin)
         {
                 uint pos = dimension;
 
-                if (anchor is IConduit.Seek.Anchor.Begin)
-                    pos = offset;
+                if (anchor is Anchor.Begin)
+                    pos = cast(uint) offset;
                 else
-                   if (anchor is IConduit.Seek.Anchor.End)
-                       pos -= offset;
+                   if (anchor is Anchor.End)
+                       pos -= cast(uint) offset;
                    else
-                      pos = index + offset;
+                      pos = index + cast(uint) offset;
 
                 return index = pos;
         }
@@ -318,5 +318,14 @@ class MappedBuffer : Buffer, IConduit.Seek
         {
                 error ("cannot setConduit on memory-mapped buffer");
                 return null;
+        }
+}
+
+
+debug (MappedBuffer)
+{
+        void main()
+        {
+                auto x = new MappedBuffer(null);
         }
 }
