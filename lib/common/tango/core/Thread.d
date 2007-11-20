@@ -14,7 +14,7 @@ version = StackGrowsDown;
 
 public
 {
-    import tango.core.Type : Interval;
+    import tango.core.TimeSpan;
 }
 private
 {
@@ -762,31 +762,31 @@ class Thread
      *
      * -------------------------------------------------------------------------
      */
-    static void sleep( Interval period )
+    static void sleep( TimeSpan period )
     in
     {
-        assert( period * 1_000 < uint.max - 1 );
+        assert( period.milliseconds < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            Sleep( cast(uint)( period * 1_000 ) );
+            Sleep( cast(uint)( period.milliseconds ) );
         }
         else version( Posix )
         {
             timespec tin  = void;
             timespec tout = void;
 
-            if( tin.tv_sec.max < period )
+            if( tin.tv_sec.max < period.seconds )
             {
                 tin.tv_sec  = tin.tv_sec.max;
                 tin.tv_nsec = 0;
             }
             else
             {
-                tin.tv_sec  = cast(typeof(tin.tv_sec))  period;
-                tin.tv_nsec = cast(typeof(tin.tv_nsec)) ((period % 1.0) * 1_000_000_000);
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  period.seconds;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) period.nanoseconds % 1_000_000_000;
             }
 
             while( true )
@@ -798,6 +798,19 @@ class Thread
                 tin = tout;
             }
         }
+    }
+
+    /**
+     * Floating point version.  The period is in terms of seconds
+     *
+     * Note: The period is not always accurate, so it is possible that the
+     * function would return with a timeout before the specified period.  For
+     * more accuracy, use the TimeSpan version.
+     *
+     */
+    static void sleep( double period )
+    {
+      sleep(TimeSpan.interval(period));
     }
 
 

@@ -16,6 +16,8 @@ module tango.util.time.DateTime;
 private import  tango.util.time.Clock,
                 tango.util.time.WallClock;
 
+public import tango.core.TimeSpan;
+
 /******************************************************************************
 
         Represents time expressed as a date and time of day.
@@ -24,7 +26,7 @@ private import  tango.util.time.Clock,
         midnight on January 1, 0001 AD and 11:59:59 PM on December 31, 
         9999 AD.
 
-        Time values are measured in 100-nanosecond intervals, or ticks. 
+        DateTime values are measured in 100-nanosecond intervals, or ticks. 
         A date value is the number of ticks that have elapsed since 
         12:00:00 midnight on January 1, 0001 AD in the Gregorian 
         calendar.
@@ -55,8 +57,10 @@ struct DateTime
         }
 
         /// Represents the smallest and largest DateTime value.
-        public static final DateTime    min = {0},
-                                        max = {Time.DaysTo10000 * Time.TicksPerDay - 1};
+        public static const DateTime    min = {0},
+                                        max = {(TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1},
+                                        epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
+                                        epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
 
         private static final int[] DaysToMonthCommon = 
         [
@@ -104,24 +108,8 @@ struct DateTime
 
         static DateTime opCall (long ticks) 
         {
-                DateTime d;
-                d.ticks = ticks;
+                DateTime d = {ticks};
                 return d;
-        }
-
-        /**********************************************************************
-
-                $(I Constructor.) Initializes a new instance of the 
-                DateTime struct to the specified Time.
-
-                Params: time = A Tango time expressed in units of 100 
-                nanoseconds.
-
-        **********************************************************************/
-
-        static DateTime opCall (Time time) 
-        {
-                return opCall (cast(long) time);
         }
 
         /**********************************************************************
@@ -158,7 +146,7 @@ struct DateTime
 
         static DateTime now () 
         {
-                return DateTime (WallClock.now);
+                return  WallClock.now;
         }
 
         /**********************************************************************
@@ -173,7 +161,7 @@ struct DateTime
 
         static DateTime utc () 
         {
-                return DateTime (Clock.now);
+                return Clock.now;
         }
 
         /**********************************************************************
@@ -198,12 +186,7 @@ struct DateTime
 
         int opCmp (DateTime t) 
         {
-                if (ticks < t.ticks)
-                    return -1;
-                else 
-                   if (ticks > t.ticks)
-                       return 1;
-                return 0;
+                return cast(int)((ticks - t.ticks) >>> 32);
         }
 
         /**********************************************************************
@@ -211,12 +194,12 @@ struct DateTime
                 Adds the specified time span to the date and time, 
                 returning a new date and time.
                 
-                Params:  t = A DateTime value.
+                Params:  t = A TimeSpan value.
                 Returns: A DateTime that is the sum of this instance and t.
 
         **********************************************************************/
 
-        DateTime opAdd (DateTime t) 
+        DateTime opAdd (TimeSpan t) 
         {
                 return DateTime (ticks + t.ticks);
         }
@@ -226,13 +209,13 @@ struct DateTime
                 Adds the specified time span to the date and time, assigning 
                 the result to this instance.
 
-                Params:  t = A DateTime value.
+                Params:  t = A TimeSpan value.
                 Returns: The current DateTime instance, with t added to the 
                          date and time.
 
         **********************************************************************/
 
-        DateTime opAddAssign (DateTime t) 
+        DateTime opAddAssign (TimeSpan t) 
         {
                 ticks += t.ticks;
                 return *this;
@@ -243,15 +226,31 @@ struct DateTime
                 Subtracts the specified time span from the date and time, 
                 returning a new date and time.
 
-                Params:  t = A DateTime value.
+                Params:  t = A TimeSpan value.
                 Returns: A DateTime whose value is the value of this instance 
                          minus the value of t.
 
         **********************************************************************/
 
-        DateTime opSub (DateTime t) 
+        DateTime opSub (TimeSpan t) 
         {
                 return DateTime (ticks - t.ticks);
+        }
+
+        /**********************************************************************
+
+                Returns a time span which represents the difference in time
+                between this and the given DateTime.
+
+                Params:  t = A DateTime value.
+                Returns: A TimeSpan which represents the difference between
+                         this and t.
+
+        **********************************************************************/
+
+        TimeSpan opSub (DateTime t)
+        {
+                return TimeSpan(ticks - t.ticks);
         }
 
         /**********************************************************************
@@ -259,13 +258,13 @@ struct DateTime
                 Subtracts the specified time span from the date and time, 
                 assigning the result to this instance.
 
-                Params:  t = A DateTime value.
+                Params:  t = A TimeSpan value.
                 Returns: The current DateTime instance, with t subtracted 
                          from the date and time.
 
         **********************************************************************/
 
-        DateTime opSubAssign (DateTime t) 
+        DateTime opSubAssign (TimeSpan t) 
         {
                 ticks -= t.ticks;
                 return *this;
@@ -275,6 +274,8 @@ struct DateTime
 
                 Adds the specified number of ticks to the _value of this 
                 instance.
+                
+                Deprecated: use x + TimeSpan(value) instead.
 
                 Params:  value = The number of ticks to add.
                 Returns: A DateTime whose value is the sum of the date and 
@@ -282,7 +283,7 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addTicks (long value) 
+        deprecated DateTime addTicks (long value) 
         {
                 return DateTime (ticks + value);
         }
@@ -291,6 +292,8 @@ struct DateTime
                 Adds the specified number of hours to the _value of this 
                 instance.
 
+                Deprecated: use x + TimeSpan.hours(value) instead.
+
                 Params:  value = The number of hours to add.
                 Returns: A DateTime whose value is the sum of the date and 
                          time of this instance and the number of hours in 
@@ -298,15 +301,17 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addHours (int value) 
+        deprecated DateTime addHours (int value) 
         {
-                return addMilliseconds (value * Time.MillisPerHour);
+                return *this + TimeSpan.hours(value);
         }
 
         /**********************************************************************
 
                 Adds the specified number of minutes to the _value of this 
                 instance.
+
+                Deprecated: use x + TimeSpan.minutes(value);
 
                 Params:  value = The number of minutes to add.
                 Returns: A DateTime whose value is the sum of the date and 
@@ -315,15 +320,17 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addMinutes (int value) 
+        deprecated DateTime addMinutes (int value) 
         {
-                return addMilliseconds (value * Time.MillisPerMinute);
+                return *this + TimeSpan.minutes(value);
         }
 
         /**********************************************************************
 
                 Adds the specified number of seconds to the _value of this 
                 instance.
+
+                Deprecated: use x + TimeSpan.seconds(value) instead.
 
                 Params:  value = The number of seconds to add.
                 Returns: A DateTime whose value is the sum of the date and 
@@ -332,15 +339,17 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addSeconds (int value) 
+        deprecated DateTime addSeconds (int value) 
         {
-                return addMilliseconds (value * Time.MillisPerSecond);
+                return *this + TimeSpan.seconds(value);
         }
 
         /**********************************************************************
 
                 Adds the specified number of milliseconds to the _value of 
                 this instance.
+
+                Deprecated: use x + TimeSpan.milliseconds(value) instead.
 
                 Params:  value = The number of milliseconds to add.
                 Returns: A DateTime whose value is the sum of the date and 
@@ -349,15 +358,17 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addMilliseconds (long value) 
+        deprecated DateTime addMilliseconds (long value) 
         {
-                return addTicks (value * Time.TicksPerMillisecond);
+                return *this + TimeSpan.milliseconds(value);
         }
 
         /**********************************************************************
 
                 Adds the specified number of days to the _value of this 
                 instance.
+
+                Deprecated: use x + TimeSpan.days(value) instead.
 
                 Params:  value = The number of days to add.
                 Returns: A DateTime whose value is the sum of the date 
@@ -366,9 +377,9 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime addDays (int value) 
+        deprecated DateTime addDays (int value) 
         {
-                return addMilliseconds (value * Time.MillisPerDay);
+                return *this + TimeSpan.days(value);
         }
 
         /**********************************************************************
@@ -404,7 +415,7 @@ struct DateTime
                 if (day > maxDays)
                     day = maxDays;
 
-                return DateTime (getDateTicks(year, month, day) + (ticks % Time.TicksPerDay));
+                return DateTime (getDateTicks(year, month, day) + (ticks % TimeSpan.day.ticks));
         }
 
         /**********************************************************************
@@ -486,7 +497,7 @@ struct DateTime
 
         DayOfWeek dayOfWeek () 
         {
-                return cast(DayOfWeek) ((ticks / Time.TicksPerDay + 1) % 7);
+                return cast(DayOfWeek) ((ticks / TimeSpan.day.ticks + 1) % 7);
         }
 
         /**********************************************************************
@@ -499,7 +510,7 @@ struct DateTime
 
         int hour () 
         {
-                return cast(int) ((ticks / Time.TicksPerHour) % 24);
+                return cast(int) ((ticks / TimeSpan.hour.ticks) % 24);
         }
 
         /**********************************************************************
@@ -512,7 +523,7 @@ struct DateTime
 
         int minute () 
         {
-                return cast(int) ((ticks / Time.TicksPerMinute) % 60);
+                return cast(int) ((ticks / TimeSpan.minute.ticks) % 60);
         }
 
         /**********************************************************************
@@ -525,7 +536,7 @@ struct DateTime
 
         int second () 
         {
-                return cast(int) ((ticks / Time.TicksPerSecond) % 60);
+                return cast(int) ((ticks / TimeSpan.second.ticks) % 60);
         }
 
         /**********************************************************************
@@ -539,7 +550,7 @@ struct DateTime
 
         int millisecond () 
         {
-                return cast(int) ((ticks / Time.TicksPerMillisecond) % 1000);
+                return cast(int) ((ticks / TimeSpan.ms.ticks) % 1000);
         }
 
         /**********************************************************************
@@ -553,8 +564,7 @@ struct DateTime
 
         DateTime date () 
         {
-                auto ticks = this.ticks;
-                return DateTime (ticks - ticks % Time.TicksPerDay);
+                return *this - timeOfDay;
         }
 
         /**********************************************************************
@@ -565,24 +575,25 @@ struct DateTime
 
         **********************************************************************/
 
-        DateTime timeOfDay () 
+        TimeSpan timeOfDay () 
         {
-                return DateTime (ticks % Time.TicksPerDay);
+                return TimeSpan (ticks % TimeSpan.day.ticks);
         }
 
         /**********************************************************************
 
-                $(I Property.) Retrieves a Time value representing the 
-                date and time of this instance.
+                $(I Property.) Retrieves the number of ticks for this DateTime
 
-                Returns: A Time represented by the date and time of this 
+                Deprecated: access ticks directly
+
+                Returns: A long represented by the date and time of this 
                          instance.
 
         **********************************************************************/
 
-        Time time () 
+        deprecated long time () 
         {
-                return cast(Time) ticks;
+                return ticks;
         }
 
         /**********************************************************************
@@ -628,7 +639,7 @@ struct DateTime
                                                    : DaysToMonthCommon;
                 --year;
                 return (year * 365 + year / 4 - year / 100 + year / 400 + 
-                        monthDays[month - 1] + day - 1) * Time.TicksPerDay;
+                        monthDays[month - 1] + day - 1) * TimeSpan.day.ticks;
         }
 
         /**********************************************************************
@@ -637,22 +648,22 @@ struct DateTime
 
         private static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
-                int numDays = cast(int) (ticks / Time.TicksPerDay);
-                int whole400Years = numDays / cast(int) Time.DaysPer400Years;
-                numDays -= whole400Years * cast(int) Time.DaysPer400Years;
-                int whole100Years = numDays / cast(int) Time.DaysPer100Years;
+                int numDays = cast(int) (ticks / TimeSpan.day.ticks);
+                int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
+                numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
+                int whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
                 if (whole100Years == 4)
                     whole100Years = 3;
 
-                numDays -= whole100Years * cast(int) Time.DaysPer100Years;
-                int whole4Years = numDays / cast(int) Time.DaysPer4Years;
-                numDays -= whole4Years * cast(int) Time.DaysPer4Years;
-                int wholeYears = numDays / cast(int) Time.DaysPerYear;
+                numDays -= whole100Years * cast(int) TimeSpan.DaysPer100Years;
+                int whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
+                numDays -= whole4Years * cast(int) TimeSpan.DaysPer4Years;
+                int wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
                 if (wholeYears == 4)
                     wholeYears = 3;
 
                 year = whole400Years * 400 + whole100Years * 100 + whole4Years * 4 + wholeYears + 1;
-                numDays -= wholeYears * Time.DaysPerYear;
+                numDays -= wholeYears * TimeSpan.DaysPerYear;
                 dayOfYear = numDays + 1;
 
                 int[] monthDays = (wholeYears == 3 && (whole4Years != 24 || whole100Years == 3)) ? DaysToMonthLeap : DaysToMonthCommon;
@@ -699,7 +710,7 @@ debug (DateTime)
         DateTime foo() 
         {
                 auto d = DateTime(10);
-                auto e = DateTime(20);
+                auto e = TimeSpan(20);
 
                 return d + e;
         }

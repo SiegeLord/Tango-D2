@@ -66,7 +66,7 @@ private import  tango.sys.Common;
 
 private import  tango.core.Exception;
 
-private import  tango.core.Type : Interval;
+private import  tango.core.TimeSpan;
 
 
 /*******************************************************************************
@@ -1358,10 +1358,24 @@ class Socket
 
         ***********************************************************************/
 
-        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, Interval time)
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, TimeSpan time)
         {
                 auto tv = toTimeval (time);
                 return select (checkRead, checkWrite, checkError, &tv);
+        }
+
+        /***********************************************************************
+                select with specified timeout
+          
+                Note: The period is not always accurate, so it is possible
+                that the function will return with a timeout before the
+                specified period.  For more accuracy, use the TimeSpan
+                version.
+        ***********************************************************************/
+
+        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, double time)
+        {
+                return select(checkRead, checkWrite, checkError, TimeSpan.interval(time));
         }
 
 
@@ -1378,15 +1392,15 @@ class Socket
 
         /***********************************************************************
 
-                Handy utility for converting Time into timeval
+                Handy utility for converting TimeSpan into timeval
 
         ***********************************************************************/
 
-        static timeval toTimeval (Interval time)
+        static timeval toTimeval (TimeSpan time)
         {
                 timeval tv;
-                tv.tv_sec = cast(uint) time;
-                tv.tv_usec = cast(uint) ((time - tv.tv_sec) * 1_000_000.0);
+                tv.tv_sec = cast(uint) time.seconds;
+                tv.tv_usec = cast(uint) time.microseconds % 1_000_000;
                 return tv;
         }
 }

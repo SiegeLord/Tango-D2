@@ -64,7 +64,7 @@ ulong toTime(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (Time time)
+char[] toUtf8 (DateTime time)
 {
         char[32] tmp = void;
         
@@ -80,7 +80,7 @@ char[] toUtf8 (Time time)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (Time time)
+wchar[] toUtf16 (DateTime time)
 {
         wchar[32] tmp = void;
         
@@ -96,7 +96,7 @@ wchar[] toUtf16 (Time time)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (Time time)
+dchar[] toUtf32 (DateTime time)
 {
         dchar[32] tmp = void;
         
@@ -116,10 +116,10 @@ dchar[] toUtf32 (Time time)
 
 ******************************************************************************/
 
-T[] format(T, U=Time) (T[] output, U time)
-{return format!(T)(output, cast(Time) time);}
+T[] format(T, U=DateTime) (T[] output, U time)
+{return format!(T)(output, cast(DateTime) time);}
 
-T[] format(T) (T[] output, Time time)
+T[] format(T) (T[] output, DateTime time)
 {
         // these arrays also reside in Date, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -137,7 +137,7 @@ T[] format(T) (T[] output, Time time)
         assert (output.length >= 29);
 
         if (time is time.max)
-            throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
+            throw new IllegalArgumentException ("TimeStamp.format :: invalid DateTime argument");
 
         // convert time to field values
         auto date = Clock.toDate (time);
@@ -159,17 +159,17 @@ T[] format(T) (T[] output, Time time)
 /******************************************************************************
 
       Parse provided input and return a UTC epoch time. A return value 
-      of Time.max indicated a parse-failure.
+      of DateTime.max indicated a parse-failure.
 
       An option is provided to return the count of characters parsed - 
       an unchanged value here also indicates invalid input.
 
 ******************************************************************************/
 
-Time parse(T) (T[] src, uint* ate = null)
+DateTime parse(T) (T[] src, uint* ate = null)
 {
         int     len;
-        Time    value;
+        DateTime    value;
 
         if ((len = rfc1123 (src, value)) > 0 || 
             (len = rfc850  (src, value)) > 0 || 
@@ -180,7 +180,7 @@ Time parse(T) (T[] src, uint* ate = null)
            return value;
            }
 
-        return Time.max;
+        return DateTime.max;
 }
 
 
@@ -193,7 +193,7 @@ Time parse(T) (T[] src, uint* ate = null)
 
 ******************************************************************************/
 
-int rfc1123(T) (T[] src, inout Time value)
+int rfc1123(T) (T[] src, inout DateTime value)
 {
         Date    date;
         T*      p = src.ptr;
@@ -233,7 +233,7 @@ int rfc1123(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int rfc850(T) (T[] src, inout Time value)
+int rfc850(T) (T[] src, inout DateTime value)
 {
         Date    date;
         T*      p = src.ptr;
@@ -279,7 +279,7 @@ int rfc850(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int asctime(T) (T[] src, inout Time value)
+int asctime(T) (T[] src, inout DateTime value)
 {
         Date    date;
         T*      p = src.ptr;
@@ -317,7 +317,7 @@ int asctime(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int dostime(T) (T[] src, inout Time value)
+int dostime(T) (T[] src, inout DateTime value)
 {
         Date    date;
         T*      p = src.ptr;
@@ -363,7 +363,7 @@ int dostime(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int iso8601(T) (T[] src, inout Time value)
+int iso8601(T) (T[] src, inout DateTime value)
 {
         Date    date;
         T*      p = src.ptr;

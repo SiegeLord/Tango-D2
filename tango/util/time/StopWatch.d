@@ -14,8 +14,6 @@ module tango.util.time.StopWatch;
 
 private import tango.core.Exception;
 
-public  import tango.core.Type : Interval;
-
 /*******************************************************************************
 
 *******************************************************************************/
@@ -46,7 +44,7 @@ version (Posix)
         // do something
         // ...
 
-        Interval i = elapsed.stop;
+        double i = elapsed.stop;
         ---
 
         The measured interval is in units of seconds, using floating-
@@ -67,10 +65,10 @@ version (Posix)
 public struct StopWatch
 {
         private ulong  started;
-        private static Interval multiplier = 1.0 / 1_000_000.0;
+        private static double multiplier = 1.0 / 1_000_000.0;
 
         version (Win32)
-                 private static Interval microsecond;
+                 private static double microsecond;
 
         /***********************************************************************
                 
@@ -89,7 +87,7 @@ public struct StopWatch
 
         ***********************************************************************/
         
-        Interval stop ()
+        double stop ()
         {
                 return multiplier * (timer - started);
         }

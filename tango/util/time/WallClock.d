@@ -17,14 +17,16 @@ private import  tango.sys.Common;
 private import  tango.util.time.Date,
                 tango.util.time.Clock;
 
-public  import  tango.core.Type : Time;
+public import  tango.core.TimeSpan;
+
+public  import  tango.util.time.DateTime;
 
 /******************************************************************************
 
         Exposes wall-time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
-        than 10,000 years. Units of Time are the foundation of most time
-        and date functionality in Tango.
+        than 10,000 years. These Units of time are the foundation of most
+        time and date functionality in Tango.
 
         Please note that conversion between UTC and Wall time is performed
         in accordance with the OS facilities. In particular, Win32 systems
@@ -46,9 +48,9 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                static DateTime now ()
                 {
-                        return cast(Time) (Clock.now - localBias);
+                        return Clock.now - localBias;
                 }
 
                 /***************************************************************
@@ -58,12 +60,12 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time zone ()
+                static TimeSpan zone ()
                 {
                         TIME_ZONE_INFORMATION tz = void;
 
                         auto tmp = GetTimeZoneInformation (&tz);
-                        return cast(Time) (-Time.TicksPerMinute * tz.Bias);
+                        return TimeSpan.minutes(-tz.Bias);
                 }
 
                 /***************************************************************
@@ -87,9 +89,9 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (Time utc)
+                static Date toDate (DateTime utc)
                 {
-                        return Clock.toDate (cast(Time) (utc - localBias));
+                        return Clock.toDate (utc - localBias);
                 }
 
                 /***************************************************************
@@ -98,9 +100,9 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static DateTime fromDate (inout Date date)
                 {
-                        return cast(Time) (Clock.fromDate(date) + localBias);
+                        return (Clock.fromDate(date) + localBias);
                 }
 
                 /***************************************************************
@@ -130,7 +132,7 @@ struct WallClock
                                    break; 
                               } 
 
-                       return Time.TicksPerMinute * bias; 
+                       return TimeSpan.minutes(bias); 
                }
         }
 
@@ -142,7 +144,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time now ()
+                static DateTime now ()
                 {
                         tm t = void;
                         timeval tv = void;
@@ -159,16 +161,16 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time zone ()
+                static TimeSpan zone ()
                 {
                         version (darwin)
                                 {
                                 timezone_t tz = void;
                                 gettimeofday (null, &tz);
-                                return cast(Time) (-Time.TicksPerMinute * tz.tz_minuteswest);
+                                return TimeSpan.minutes(-tz.tz_minuteswest);
                                 }
                              else
-                                return cast(Time) (-Time.TicksPerSecond * timezone);
+                                return TimeSpan.seconds(-timezone);
                 }
 
                 /***************************************************************
@@ -192,7 +194,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (Time utc)
+                static Date toDate (DateTime utc)
                 {
                         Date date = void;
                         auto timeval = Clock.convert (utc);
@@ -217,7 +219,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static DateTime fromDate (inout Date date)
                 {
                         tm t = void;
 
@@ -229,9 +231,7 @@ struct WallClock
                         t.tm_sec  = date.sec;
 
                         auto seconds = mktime (&t);
-                        return cast(Time) (Time.TicksTo1970 +
-                                           Time.TicksPerSecond * seconds +
-                                           Time.TicksPerMillisecond * date.ms);
+                        return DateTime.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
                 }
         }
 
@@ -239,20 +239,20 @@ struct WallClock
 
         ***********************************************************************/
         
-        static Time toLocal (Time utc)
+        static DateTime toLocal (DateTime utc)
         {
-                auto mod = utc % Time.TicksPerMillisecond;
-                return cast(Time) (Clock.fromDate(toDate(utc)) + mod);
+                auto mod = utc.ticks % TimeSpan.ms.ticks;
+                return Clock.fromDate(toDate(utc)) + TimeSpan(mod);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
         
-        static Time toUtc (Time wall)
+        static DateTime toUtc (DateTime wall)
         {
-                auto mod = wall % Time.TicksPerMillisecond;
-                return cast(Time) (fromDate(Clock.toDate(wall)) + mod);
+                auto mod = wall.ticks % TimeSpan.ms.ticks;
+                return fromDate(Clock.toDate(wall)) + TimeSpan(mod);
         }
 }
 

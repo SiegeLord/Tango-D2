@@ -12,7 +12,7 @@
 
 module tango.net.http.model.HttpParamsView;
 
-private import  tango.core.Type : Time;
+private import  tango.util.time.DateTime;
 
 private import  tango.io.model.IBuffer;
 
@@ -58,7 +58,7 @@ interface HttpParamsView : IWritable
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time ret = Time.max);
+        DateTime getDate (char[] name, DateTime ret = DateTime.max);
 
         /**********************************************************************
 

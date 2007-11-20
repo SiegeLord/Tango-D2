@@ -9,7 +9,7 @@
 module tango.core.sync.Condition;
 
 
-public import tango.core.Type;
+public import tango.core.TimeSpan;
 public import tango.core.Exception : SyncException;
 public import tango.core.sync.Mutex;
 
@@ -134,6 +134,10 @@ class Condition
     /**
      * Wait up to period seconds for a notification.
      *
+     * Note: The period is not always accurate, so it is possible that the
+     * function would return with a timeout before the specified period.  For
+     * more accuracy, use the TimeSpan version.
+     *
      * Params:
      *  period = The number of seconds to wait.
      *
@@ -143,12 +147,29 @@ class Condition
      * Throws:
      *  SyncException on error.
      */
-    bool wait( Interval period )
+    bool wait( double period )
+    {
+        return wait(TimeSpan.interval(period));
+    }
+
+    /**
+     * Wait up to the specified time period for a notification.
+     *
+     * Params:
+     *  period = The time to wait.
+     *
+     * Returns:
+     *  true if notified before the timeout and false if not.
+     *
+     * Throws:
+     *  SyncException on error.
+     */
+    bool wait( TimeSpan period )
     {
         version( Win32 )
         {
-            return timedWait( period < INFINITE ?
-                                cast(uint)( period * 1_000 )  : INFINITE - 1 );
+            return timedWait( period.milliseconds < INFINITE ?
+                                cast(uint)( period.milliseconds )  : INFINITE - 1 );
         }
         else version( Posix )
         {
@@ -518,8 +539,8 @@ debug( UnitTest )
             synchronized( mutex )
             {
                 waiting    = true;
-                alertedOne = condReady.wait( 1.0 );
-                alertedTwo = condReady.wait( 1.0 );
+                alertedOne = condReady.wait( 1 );
+                alertedTwo = condReady.wait( 1 );
             }
         }
 

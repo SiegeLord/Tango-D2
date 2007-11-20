@@ -15,8 +15,6 @@ module tango.util.time.chrono.Calendar;
 
 private import tango.core.Exception;
 
-public  import tango.core.Type : Time;
-
 public  import tango.util.time.DateTime;
 
 
@@ -285,6 +283,6 @@ public abstract class Calendar
 
         package static long getTimeTicks (int hour, int minute, int second) 
         {
-                return (cast(long) hour * 3600 + cast(long) minute * 60 + cast(long) second) * Time.TicksPerSecond;
+                return (TimeSpan.hours(hour) + TimeSpan.minutes(minute) + TimeSpan.seconds(second)).ticks;
         }
 }

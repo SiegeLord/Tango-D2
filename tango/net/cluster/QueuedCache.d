@@ -12,7 +12,7 @@
 
 module tango.net.cluster.QueuedCache;
 
-private import tango.core.Type : Time;
+private import tango.util.time.DateTime;
 
 private import tango.net.cluster.model.ICache;
 
@@ -115,7 +115,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         **********************************************************************/
 
-        synchronized bool put (K key, V value, Time time = Time.init)
+        synchronized bool put (K key, V value, DateTime time = DateTime.init)
         {
                 assert (key !is key.init);
 
@@ -137,7 +137,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         **********************************************************************/
 
-        synchronized bool put (K peek, K delegate() key, V delegate() value, Time time = Time.init)
+        synchronized bool put (K peek, K delegate() key, V delegate() value, DateTime time = DateTime.init)
         {
                 assert (peek !is peek.init);
 
@@ -161,7 +161,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
         **********************************************************************/
 
-        synchronized V remove (K key, Time time = Time.max)
+        synchronized V remove (K key, DateTime time = DateTime.max)
         {
                 auto e = lookup (key);
                 if (e && (e.time < time))
@@ -170,7 +170,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                    // don't actually kill the list entry -- just place
                    // it at the list 'tail' ready for subsequent reuse
-                   deReference(e).set (K.init, V.init, Time.min);
+                   deReference(e).set (K.init, V.init, DateTime.min);
 
                    map.remove (key);
                    return value;
@@ -287,7 +287,7 @@ class QueuedCache (K, V) : ICache!(K, V)
                 K               key;
                 QueuedEntry*    prev,
                                 next;
-                Time            time;
+                DateTime        time;
                 V               value;
 
                 /**************************************************************
@@ -296,7 +296,7 @@ class QueuedCache (K, V) : ICache!(K, V)
 
                 **************************************************************/
 
-                QueuedEntry* set (K key, V value, Time time)
+                QueuedEntry* set (K key, V value, DateTime time)
                 {
                         this.value = value;
                         this.time = time;

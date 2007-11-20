@@ -18,14 +18,16 @@ private import  tango.util.time.Date;
 
 private import  tango.core.Exception;
 
-public  import  tango.core.Type : Time;
+public  import  tango.core.TimeSpan;
+
+public  import  tango.util.time.DateTime;
 
 /******************************************************************************
 
         Exposes UTC time relative to Jan 1st, 1 AD. These values are
         based upon a clock-tick of 100ns, giving them a span of greater
-        than 10,000 years. Units of Time are the foundation of most time
-        and date functionality in Tango.
+        than 10,000 years. These units of time are the foundation of most
+        time and date functionality in Tango.
 
         Interval is another type of time period, used for measuring a
         much shorter duration; typically used for timeout periods and
@@ -44,7 +46,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time now ()
+                static DateTime now ()
                 {
                         FILETIME fTime = void;
                         GetSystemTimeAsFileTime (&fTime);
@@ -66,15 +68,15 @@ struct Clock
 
                         Set fields to represent the provided UTC time. Note 
                         that the conversion is limited by the underlying OS,
-                        and will fail to operate correctly with Time values 
-                        beyond the domain. On Win32 the earliest representable 
-                        date is 1601. On linux it is 1970. Both systems have 
-                        limitations upon future dates also. Date is limited 
-                        to millisecond accuracy at best.
+                        and will fail to operate correctly with DateTime
+                        values beyond the domain. On Win32 the earliest
+                        representable date is 1601. On linux it is 1970. Both
+                        systems have limitations upon future dates also. Date
+                        is limited to millisecond accuracy at best.
 
                 ***************************************************************/
 
-                static Date toDate (Time time)
+                static Date toDate (DateTime time)
                 {
                         Date date = void;
                         SYSTEMTIME sTime = void;
@@ -95,18 +97,18 @@ struct Clock
 
                 /***************************************************************
 
-                        Convert Date fields to Time
+                        Convert Date fields to DateTime
 
                         Note that the conversion is limited by the underlying 
-                        OS, and will not operate correctly with Time values 
-                        beyond the domain. On Win32 the earliest representable 
-                        date is 1601. On linux it is 1970. Both systems have 
-                        limitations upon future dates also. Date is limited 
-                        to millisecond accuracy at best.
+                        OS, and will not operate correctly with DateTime
+                        values beyond the domain. On Win32 the earliest
+                        representable date is 1601. On linux it is 1970. Both
+                        systems have limitations upon future dates also. Date
+                        is limited to millisecond accuracy at best.
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static DateTime fromDate (inout Date date)
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
@@ -126,28 +128,30 @@ struct Clock
 
                 /***************************************************************
 
-                        Convert FILETIME to a Time
+                        Convert FILETIME to a DateTime
 
                 ***************************************************************/
 
-                package static Time convert (FILETIME time)
+                package static DateTime convert (FILETIME time)
                 {
-                        return cast(Time) (Time.TicksTo1601 + *cast(ulong*) &time);
+                        ulong t = *cast(ulong*)&time;
+                        t *= 100 / TimeSpan.NanosecondsPerTick;
+                        return DateTime.epoch1601 + TimeSpan(t);
                 }
 
                 /***************************************************************
 
-                        Convert Time to a FILETIME
+                        Convert DateTime to a FILETIME
 
                 ***************************************************************/
 
-                package static FILETIME convert (Time span)
+                package static FILETIME convert (DateTime dt)
                 {
                         FILETIME time = void;
 
-                        span -= span.TicksTo1601;
-                        assert (span >= 0);
-                        *cast(long*) &time.dwLowDateTime = span;
+                        TimeSpan span = dt - DateTime.epoch1601;
+                        assert (span >= TimeSpan.zero);
+                        *cast(long*) &time.dwLowDateTime = span.ticks;
                         return time;
                 }
         }
@@ -160,11 +164,11 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time now ()
+                static DateTime now ()
                 {
                         timeval tv = void;
                         if (gettimeofday (&tv, null))
-                            throw new PlatformException ("Time.utc :: Posix timer is not available");
+                            throw new PlatformException ("Clock.now :: Posix timer is not available");
 
                         return convert (tv);
                 }
@@ -184,15 +188,15 @@ struct Clock
 
                         Set fields to represent the provided UTC time. Note 
                         that the conversion is limited by the underlying OS,
-                        and will fail to operate correctly with Time values 
-                        beyond the domain. On Win32 the earliest representable 
-                        date is 1601. On linux it is 1970. Both systems have 
-                        limitations upon future dates also. Date is limited 
-                        to millisecond accuracy at best.
+                        and will fail to operate correctly with DateTime
+                        values beyond the domain. On Win32 the earliest
+                        representable date is 1601. On linux it is 1970. Both
+                        systems have limitations upon future dates also. Date
+                        is limited to millisecond accuracy at best.
 
                 **************************************************************/
 
-                static Date toDate (Time time)
+                static Date toDate (DateTime time)
                 {
                         Date date = void;
                         auto timeval = convert (time);
@@ -213,18 +217,18 @@ struct Clock
 
                 /***************************************************************
 
-                        Convert Date fields to Time
+                        Convert Date fields to DateTime
 
                         Note that the conversion is limited by the underlying 
-                        OS, and will not operate correctly with Time values 
-                        beyond the domain. On Win32 the earliest representable 
-                        date is 1601. On linux it is 1970. Both systems have 
-                        limitations upon future dates also. Date is limited 
-                        to millisecond accuracy at best.
+                        OS, and will not operate correctly with DateTime
+                        values beyond the domain. On Win32 the earliest
+                        representable date is 1601. On linux it is 1970. Both
+                        systems have limitations upon future dates also. Date
+                        is limited to millisecond accuracy at best.
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static DateTime fromDate (inout Date date)
                 {
                         tm t = void;
 
@@ -236,37 +240,34 @@ struct Clock
                         t.tm_sec  = date.sec;
 
                         auto seconds = timegm (&t);
-                        return cast(Time) (Time.TicksTo1970 +
-                                           Time.TicksPerSecond * seconds +
-                                           Time.TicksPerMillisecond * date.ms);
+                        return DateTime.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
                 }
 
                 /***************************************************************
 
-                        Convert timeval to a Time
+                        Convert timeval to a DateTime
 
                 ***************************************************************/
 
-                package static Time convert (inout timeval tv)
+                package static DateTime convert (inout timeval tv)
                 {
-                        return cast(Time) (Time.TicksTo1970 + (1_000_000L * tv.tv_sec + tv.tv_usec) * 10);
+                        return DateTime.epoch1970 + TimeSpan.seconds(tv.tv_sec) + TimeSpan.microseconds(tv.tv_usec);
                 }
 
                 /***************************************************************
 
-                        Convert Time to a timeval
+                        Convert DateTime to a timeval
 
                 ***************************************************************/
 
-                package static timeval convert (Time time)
+                package static timeval convert (DateTime time)
                 {
                         timeval tv = void;
 
-                        time -= time.TicksTo1970;
-                        assert (time >= 0);
-                        time /= 10L;
-                        tv.tv_sec  = cast (typeof(tv.tv_sec))  (time / 1_000_000L);
-                        tv.tv_usec = cast (typeof(tv.tv_usec)) (time - 1_000_000L * tv.tv_sec);
+                        TimeSpan span = time - time.epoch1970;
+                        assert (span >= TimeSpan.zero);
+                        tv.tv_sec  = span.seconds;
+                        tv.tv_usec = span.microseconds % 1_000_000L;
                         return tv;
                 }
         }
@@ -281,7 +282,7 @@ debug (UnitTest)
                 auto time = Clock.now;
                 assert (Clock.convert(Clock.convert(time)) is time);
 
-                time = cast(Time) ((time / Time.TicksPerSecond) * Time.TicksPerSecond);
+                time -= TimeSpan(time.ticks % TimeSpan.second.ticks);
                 auto date = Clock.toDate(time);
 
                 assert (time is Clock.fromDate(date));

@@ -63,7 +63,7 @@ class ClusterCache
 
         **********************************************************************/
 
-        bool put (char[] channel, char[] element, ClusterContent content, Time time)
+        bool put (char[] channel, char[] element, ClusterContent content, DateTime time)
         {       
                 return lookup(channel).put (element, {return element.dup;}, 
                                                      {return cast(ClusterContent) content.dup;}, time);
@@ -101,7 +101,7 @@ class ClusterCache
 
         **********************************************************************/
 
-        bool lock (char[] channel, char[] element, Time time)
+        bool lock (char[] channel, char[] element, DateTime time)
         {
                 return true;
         }

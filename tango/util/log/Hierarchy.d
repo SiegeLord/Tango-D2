@@ -22,6 +22,8 @@ private import  tango.text.convert.Layout;
 
 private import  tango.util.log.model.IHierarchy;
 
+private import  tango.util.time.Clock;
+
 /*******************************************************************************
 
         Pull in additional functions from the C library
@@ -343,13 +345,13 @@ private class LoggerInstance : Logger
 
         /***********************************************************************
         
-                Get number of milliseconds since this application started
+                Get time since this application started
 
         ***********************************************************************/
 
-        final Time runtime ()
+        final TimeSpan runtime ()
         {
-                return Event.startedAt;
+                return Clock.now - Event.startedAt;
         }
 
         /***********************************************************************

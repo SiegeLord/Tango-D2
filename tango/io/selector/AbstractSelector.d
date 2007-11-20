@@ -245,7 +245,12 @@ abstract class AbstractSelector: ISelector
      */
     public int select()
     {
-        return select(Interval.max);
+        return select(TimeSpan.max);
+    }
+
+    deprecated public int select(double timeout)
+    {
+            return select(timeout is timeout.max ? TimeSpan.max : TimeSpan.interval(timeout));
     }
 
     /**
@@ -264,7 +269,7 @@ abstract class AbstractSelector: ISelector
      * have received events within the specified timeout; and -1 if the
      * wakeup() method has been called from another thread.
      */
-    public abstract int select(Interval timeout);
+    public abstract int select(TimeSpan timeout);
 
     /**
      * Causes the first call to select() that has not yet returned to return
@@ -303,15 +308,15 @@ abstract class AbstractSelector: ISelector
     /**
      * Cast the time duration to a C timeval struct.
     */
-    public timeval* toTimeval(timeval* tv, Interval interval)
+    public timeval* toTimeval(timeval* tv, TimeSpan interval)
     in
     {
         assert(tv !is null);
     }
     body
     {
-        tv.tv_sec = cast(typeof(tv.tv_sec)) (interval);
-        tv.tv_usec = cast(typeof(tv.tv_usec)) ((interval - tv.tv_sec) * 1_000_000);
+        tv.tv_sec = cast(typeof(tv.tv_sec)) interval.seconds;
+        tv.tv_usec = cast(typeof(tv.tv_usec)) (interval.microseconds % 1_000_000);
         return tv;
     }
 

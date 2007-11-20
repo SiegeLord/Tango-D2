@@ -69,7 +69,7 @@ class GregorianCalendar : Calendar
         */
         override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) 
         {
-                return DateTime (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second) + (millisecond * Time.TicksPerMillisecond));
+                return DateTime (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
         }
 
         /**
@@ -79,7 +79,7 @@ class GregorianCalendar : Calendar
         */
         override DateTime.DayOfWeek getDayOfWeek(DateTime time) 
         {
-                return cast(DateTime.DayOfWeek)((time.ticks / Time.TicksPerDay + 1) % 7);
+                return cast(DateTime.DayOfWeek)((time.ticks / TimeSpan.day.ticks + 1) % 7);
         }
 
         /**
@@ -218,22 +218,22 @@ class GregorianCalendar : Calendar
 
         package static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
-                int numDays = cast(int)(ticks / Time.TicksPerDay);
-                int whole400Years = numDays / cast(int) Time.DaysPer400Years;
-                numDays -= whole400Years * cast(int) Time.DaysPer400Years;
-                int whole100Years = numDays / cast(int) Time.DaysPer100Years;
+                int numDays = cast(int)(ticks / TimeSpan.day.ticks);
+                int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
+                numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
+                int whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
                 if (whole100Years == 4)
                     whole100Years = 3;
 
-                numDays -= whole100Years * cast(int) Time.DaysPer100Years;
-                int whole4Years = numDays / cast(int) Time.DaysPer4Years;
-                numDays -= whole4Years * cast(int) Time.DaysPer4Years;
-                int wholeYears = numDays / cast(int) Time.DaysPerYear;
+                numDays -= whole100Years * cast(int) TimeSpan.DaysPer100Years;
+                int whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
+                numDays -= whole4Years * cast(int) TimeSpan.DaysPer4Years;
+                int wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
                 if (wholeYears == 4)
                     wholeYears = 3;
 
                 year = whole400Years * 400 + whole100Years * 100 + whole4Years * 4 + wholeYears + 1;
-                numDays -= wholeYears * Time.DaysPerYear;
+                numDays -= wholeYears * TimeSpan.DaysPerYear;
                 dayOfYear = numDays + 1;
 
                 int[] monthDays = (wholeYears == 3 && (whole4Years != 24 || whole100Years == 3)) ? DaysToMonthLeap : DaysToMonthCommon;
@@ -266,6 +266,6 @@ class GregorianCalendar : Calendar
         {
                 int[] monthDays = isLeapYear(year, AD_ERA) ? DaysToMonthLeap : DaysToMonthCommon;
                 year--;
-                return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * Time.TicksPerDay;
+                return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.day.ticks;
         }
 }

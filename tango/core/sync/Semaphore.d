@@ -8,7 +8,7 @@
 module tango.core.sync.Semaphore;
 
 
-public import tango.core.Type;
+public import tango.core.TimeSpan;
 public import tango.core.Exception : SyncException;
 
 version( Win32 )
@@ -125,6 +125,10 @@ class Semaphore
      * this occurs, then atomically decrement the count by one and return true.
      * Otherwise, return false.
      *
+     * Note: The period is not always accurate, so it is possible that the
+     * function would return with a timeout before the specified period.  For
+     * more accuracy, use the TimeSpan version.
+     *
      * Params:
      *  period = The number of seconds to wait.
      *
@@ -134,12 +138,31 @@ class Semaphore
      * Throws:
      *  SyncException on error.
      */
-    bool wait( Interval period )
+    bool wait( double period )
+    {
+        return wait(TimeSpan.interval(period));
+    }
+
+    /**
+     * Wait up to the specified time for the current count to be above zero.
+     * If this occurs, then atomically decrement the count by one and return
+     * true.  Otherwise, return false.
+     *
+     * Params:
+     *  period = The amount of time to wait.
+     *
+     * Returns:
+     *  true if notified before the timeout and false if not.
+     *
+     * Throws:
+     *  SyncException on error.
+     */
+    bool wait( TimeSpan period )
     {
         version( Win32 )
         {
-            DWORD t = period < INFINITE ?
-                        cast(uint)( period * 1_000 )  : INFINITE - 1;
+            DWORD t = period.milliseconds < INFINITE ?
+                        cast(uint)( period.milliseconds )  : INFINITE - 1;
             switch( WaitForSingleObject( m_hndl, t ) )
             {
             case WAIT_OBJECT_0:

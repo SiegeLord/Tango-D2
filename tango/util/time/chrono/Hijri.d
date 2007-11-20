@@ -43,7 +43,7 @@ public class HijriCalendar : Calendar {
    * Returns: A DateTime set to the specified date and time.
    */
   public override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
-    return DateTime((daysSinceJan1(year, month, day) - 1) * Time.TicksPerDay + getTimeTicks(hour, minute, second) + (millisecond * Time.TicksPerMillisecond));
+    return DateTime((daysSinceJan1(year, month, day) - 1) * TimeSpan.day.ticks + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
   }
 
   /**
@@ -52,7 +52,7 @@ public class HijriCalendar : Calendar {
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
   public override DateTime.DayOfWeek getDayOfWeek(DateTime time) {
-    return cast(DateTime.DayOfWeek) (cast(int) (time.ticks / Time.TicksPerDay + 1) % 7);
+    return cast(DateTime.DayOfWeek) (cast(int) (time.ticks / TimeSpan.day.ticks + 1) % 7);
   }
 
   /**
@@ -179,7 +179,7 @@ public class HijriCalendar : Calendar {
   }
 
   private int extractPart(long ticks, DatePart part) {
-    long days = (ticks / Time.TicksPerDay + 1);
+    long days = TimeSpan(ticks).days + 1;
     int year = cast(int)(((days - 227013) * 30) / 10631) + 1;
     long daysUpToYear = daysToYear(year);
     long daysInYear = getDaysInYear(year, CURRENT_ERA);

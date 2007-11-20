@@ -92,7 +92,7 @@ class NetworkClient
 
         ***********************************************************************/
         
-        Time time ()
+        DateTime time ()
         {
                 return Clock.now;
         }

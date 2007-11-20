@@ -21,6 +21,8 @@ private import  tango.io.model.IBuffer;
 private import  tango.util.log.Appender,
                 tango.util.log.FileAppender;
 
+private import  tango.util.time.DateTime;
+
 /*******************************************************************************
 
         Append log messages to a file set. 
@@ -55,7 +57,7 @@ public class RollingFileAppender : FileAppender
                 mask = register (path);
 
                 char[1] x;
-                Time mostRecent;
+                DateTime mostRecent;
 
                 for (int i=0; i < count; ++i)
                     {

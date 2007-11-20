@@ -17,6 +17,8 @@ private import tango.util.log.Appender;
 
 private import tango.util.log.model.ILevel;
 
+private import tango.core.TimeSpan;
+
 /*******************************************************************************
 
         Loggers are named entities, sometimes shared, sometimes specific to 
@@ -248,5 +250,5 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract Time runtime ();
+        abstract TimeSpan runtime ();
 }

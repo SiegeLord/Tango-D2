@@ -49,12 +49,12 @@ public class Event : ILevel
         // primary event attributes
         private char[]          msg,
                                 name;
-        private Time            time;
+        private DateTime        time;
         private Level           level;
         private IHierarchy      hierarchy;
 
         // timestamps
-        private static Time     beginTime;
+        private static DateTime beginTime;
 
         // scratch buffer for constructing output strings
         struct  Scratch
@@ -152,7 +152,7 @@ public class Event : ILevel
                               throw new PlatformException ("high-resolution timer is not available");
                         
                         QueryPerformanceCounter (&timerStart);
-                        multiplier = 10_000_000.0 / freq;       
+                        multiplier = cast(double)TimeSpan.second.ticks / freq;       
                         beginTime = Clock.now;
 
                 }
@@ -164,7 +164,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final static Time startedAt ()
+        final static DateTime startedAt ()
         {
                 return beginTime;
         }
@@ -175,7 +175,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final static Time timer ()
+        final static DateTime timer ()
         {
                 version (Posix)       
                 {
@@ -187,7 +187,7 @@ public class Event : ILevel
                         ulong now;
 
                         QueryPerformanceCounter (&now);
-                        return cast(Time) ((now - timerStart) * multiplier + beginTime);
+                        return beginTime + TimeSpan(cast(long)((now - timerStart) * multiplier));
                 }
         }
 
@@ -298,9 +298,9 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final Time getTime ()
+        final TimeSpan getTime ()
         {
-                return cast(Time) (time - beginTime);
+                return time - beginTime;
         }
 
         /***********************************************************************
@@ -309,7 +309,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final Time getEpochTime ()
+        final DateTime getEpochTime ()
         {
                 return time;
         }

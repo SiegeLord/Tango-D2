@@ -410,7 +410,7 @@ public class SelectSelector: AbstractSelector
      * amount of time.
      *
      * Params:
-     * timeout  = Interval with the maximum amount of time that the
+     * timeout  = TimeSpan with the maximum amount of time that the
      *            selector will wait for events from the conduits; the
      *            amount of time is relative to the current system time
      *            (i.e. just the number of milliseconds that the selector
@@ -427,17 +427,16 @@ public class SelectSelector: AbstractSelector
      * property was set to false; SelectorException if there were no
      * resources available to wait for events from the conduits.
      */
-    public int select(Interval timeout)
+    public int select(TimeSpan timeout)
     {
         fd_set *readfds;
         fd_set *writefds;
         fd_set *exceptfds;
         timeval tv;
 
-        int to = cast(int) (timeout != Interval.max ? cast(int) (timeout * 1000) : -1);
 
         debug (selector)
-            Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", to);
+            Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", timeout.milliseconds);
 
         if (_readSet !is null)
         {
@@ -471,7 +470,7 @@ public class SelectSelector: AbstractSelector
                 toTimeval(&tv, timeout);
 
                 // FIXME: add support for the wakeup() call.
-                _eventCount = .select(_maxfd + 1, readfds, writefds, exceptfds, to is -1 ? null : &tv);
+                _eventCount = .select(_maxfd + 1, readfds, writefds, exceptfds, timeout is TimeSpan.max ? null : &tv);
 
                 debug (selector)
                     Stdout.format("---   .select() returned {0} (maxfd={1})\n",
@@ -497,7 +496,7 @@ public class SelectSelector: AbstractSelector
             toTimeval(&tv, timeout);
 
             // FIXME: Can a system call be interrupted on Windows?
-            _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds, to is -1 ? null : &tv);
+            _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds, timeout is TimeSpan.max ? null : &tv);
 
             debug (selector)
                 Stdout.format("---   .select() returned {0}\n", _eventCount);

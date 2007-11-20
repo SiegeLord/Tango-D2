@@ -20,6 +20,8 @@ private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.stream.SimpleIterator;
 
+private import  tango.util.time.DateTime;
+
 public  import  tango.net.http.model.HttpParamsView;
 
 /******************************************************************************
@@ -114,7 +116,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addDate (char[] name, Time value)
+        void addDate (char[] name, DateTime value)
         {
                 super.addDate (name, value);
         }
@@ -150,7 +152,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time ret = Time.max)
+        DateTime getDate (char[] name, DateTime ret = DateTime.max)
         {
                 return super.getDate (name, ret);
         }

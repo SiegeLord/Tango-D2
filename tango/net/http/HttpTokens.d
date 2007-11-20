@@ -21,7 +21,7 @@ private import  tango.net.http.HttpStack,
 
 private import  Text = tango.text.Util;
 
-private import  tango.core.Type : Time;
+private import  tango.util.time.DateTime;
 
 private import  tango.io.protocol.model.IWriter;
 
@@ -216,7 +216,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time date = Time.max)
+        DateTime getDate (char[] name, DateTime date = DateTime.max)
         {
                 char[] value = get (name);
 
@@ -533,7 +533,7 @@ class HttpTokens : IWritable
                 
         **********************************************************************/
 
-        protected void addDate (char[] name, Time value)
+        protected void addDate (char[] name, DateTime value)
         {
                 char[40] tmp = void;
 

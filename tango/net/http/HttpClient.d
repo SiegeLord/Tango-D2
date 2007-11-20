@@ -24,7 +24,7 @@ private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
-private import  tango.core.Type : Interval;
+private import  tango.core.TimeSpan;
                 
 private import  tango.net.http.HttpConst,
                 tango.net.http.HttpParams,  
@@ -103,7 +103,7 @@ class HttpClient
         private ResponseLine            responseLine;
 
         // default to three second timeout on read operations ...
-        private Interval                timeout = 3;
+        private TimeSpan                timeout = TimeSpan.seconds(3);
 
         // should we perform internal redirection?
         private bool                    doRedirect = true;
@@ -304,9 +304,17 @@ class HttpClient
         
         ***********************************************************************/
 
-        void setTimeout (Interval interval)
+        void setTimeout (TimeSpan interval)
         {
                 timeout = interval;
+        }
+
+        /**
+         * Deprecated: use setTimeout(TimeSpan) instead
+         */
+        deprecated void setTimeout(double interval)
+        {
+                setTimeout(TimeSpan.interval(interval));
         }
 
         /***********************************************************************

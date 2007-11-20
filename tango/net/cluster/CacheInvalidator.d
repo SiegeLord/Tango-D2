@@ -63,7 +63,7 @@ class CacheInvalidator : NetworkClient
 
         ***********************************************************************/
         
-        void invalidate (char[] key, Time timeLimit = Time.max)
+        void invalidate (char[] key, DateTime timeLimit = DateTime.max)
         {
                 assert (key.length);
                 filter.key  (key);

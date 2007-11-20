@@ -42,9 +42,9 @@ public  import tango.net.cluster.model.ICluster;
 
 class NetworkMessage : IMessage
 {
-        private uint    id_;
-        private long    time_;
-        private char[]  reply_;
+        private uint      id_;
+        private DateTime  time_;
+        private char[]    reply_;
 
         /***********************************************************************
 
@@ -97,7 +97,7 @@ class NetworkMessage : IMessage
 
         ***********************************************************************/
 
-        void time (Time time)
+        void time (DateTime time)
         {
                 time_ = time;
         }
@@ -108,9 +108,9 @@ class NetworkMessage : IMessage
 
         ***********************************************************************/
 
-        Time time ()
+        DateTime time ()
         {
-                return cast(Time) time_;
+                return time_;
         }
 
         /***********************************************************************
@@ -139,7 +139,7 @@ class NetworkMessage : IMessage
 
         void read (IReader input)
         {       
-                input (id_) (time_) (reply_);
+                input (id_) (time_.ticks) (reply_);
         }
 
         /**********************************************************************
@@ -150,7 +150,7 @@ class NetworkMessage : IMessage
 
         void write (IWriter output)
         {
-                output (id_) (time_) (reply_);
+                output (id_) (time_.ticks) (reply_);
         }
 
         /***********************************************************************

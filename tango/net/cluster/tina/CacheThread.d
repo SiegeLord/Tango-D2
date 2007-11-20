@@ -72,7 +72,7 @@ class CacheThread : ClusterThread
                             logger.trace (sprint ("{} add cache entry '{}' on channel '{}'", client, element, channel)); 
                                 
                             // return the content if we can't put it in the cache
-                            if (cache.put (channel, element, content, cast(Time) time))
+                            if (cache.put (channel, element, content, DateTime(time)))
                                 writer.success ("success"); 
                             else
                                writer.reply (content); 

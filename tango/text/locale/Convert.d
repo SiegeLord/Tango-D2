@@ -413,7 +413,7 @@ version (Full)
 }
 else
 {
-                                  auto minutes = cast(int) (WallClock.zone / Time.TicksPerMinute);
+                                  auto minutes = cast(int) (WallClock.zone.minutes);
                                   if (minutes < 0)
                                       minutes = -minutes, result ~= '-';
                                   else

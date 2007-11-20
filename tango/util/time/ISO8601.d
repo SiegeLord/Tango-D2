@@ -16,10 +16,10 @@
         The ones they don't parse are intervals, durations, and recurring 
         intervals, because I got too lazy to implement them. The functions 
         (iso8601Time, iso8601Date, and iso8601) update a Date passed instead 
-        of a Time, as does the current iso8601, because that's too limited a 
-        format. One can always convert to a Time if necessary, keeping in mind 
-        that information loss might occur if the Date is outside the interval 
-        Time can represent.
+        of a DateTime, as does the current iso8601, because that's too limited
+        a format. One can always convert to a DateTime if necessary, keeping
+        in mind that information loss might occur if the Date is outside the
+        interval DateTime can represent.
 
         In addition, because its dayOfWeek function only works for 1900-3-1 to 
         2100-2-28, it would fail by a day or two on ISO week dates outside that 

@@ -18,7 +18,7 @@ public  import  tango.io.Conduit;
 
 private import  tango.net.Socket;
 
-private import  tango.core.Type : Interval;
+private import  tango.core.TimeSpan;
 
 /*******************************************************************************
 
@@ -120,10 +120,15 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        SocketConduit setTimeout (Interval interval)
+        SocketConduit setTimeout (TimeSpan interval)
         {
                 tv = socket_.toTimeval (interval);
                 return this;
+        }
+
+        deprecated SocketConduit setTimeout (double interval)
+        {
+                return setTimeout(TimeSpan.interval(interval));
         }
 
         /***********************************************************************

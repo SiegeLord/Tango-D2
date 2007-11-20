@@ -986,7 +986,7 @@ private class Connection
 {
         abstract bool reset();
 
-        abstract void done (Time time);
+        abstract void done (DateTime time);
 
         abstract SocketConduit conduit ();
 }
@@ -1008,7 +1008,7 @@ private class ConnectionPool
         private bool            noDelay;
         private InternetAddress address;
         private PoolConnection  freelist;
-        private Time            timeout = cast(Time) (60 * Time.TicksPerSecond);
+        private TimeSpan        timeout = TimeSpan.seconds(60);
 
         /***********************************************************************
         
@@ -1019,7 +1019,7 @@ private class ConnectionPool
 
         static class PoolConnection : Connection
         {
-                Time            time;
+                DateTime        time;
                 PoolConnection  next;   
                 ConnectionPool  parent;   
                 SocketConduit   conduit_;
@@ -1054,7 +1054,7 @@ private class ConnectionPool
                             conduit.socket.setNoDelay (parent.noDelay);
 
                             // set a 500ms timeout for read operations
-                            conduit_.setTimeout (0.500);
+                            conduit_.setTimeout (TimeSpan.milliseconds(500));
 
                             // open a connection to this server
                             // parent.log.trace ("connecting to server");
@@ -1099,7 +1099,7 @@ private class ConnectionPool
 
                 ***************************************************************/
 
-                final void done (Time time)
+                final void done (DateTime time)
                 {
                         synchronized (parent)
                                      {
@@ -1131,7 +1131,7 @@ private class ConnectionPool
 
         ***********************************************************************/
 
-        final synchronized Connection borrow (Time time)
+        final synchronized Connection borrow (DateTime time)
         {  
                 if (freelist)
                     do {
@@ -1292,7 +1292,7 @@ private class Node
         final bool request (Requestor dg, ProtocolReader reader, out bool message)
         {       
                 ProtocolWriter.Command  cmd;
-                Time                    time;
+                DateTime                time;
                 char[]                  channel;
                 char[]                  element;
 

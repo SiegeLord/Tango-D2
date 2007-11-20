@@ -102,7 +102,7 @@ void testSelector(ISelector selector)
     uint        failedSendCount     = 0;
     uint        closeCount          = 0;
     uint        errorCount          = 0;
-    Time        start               = Clock.now;
+    DateTime    start               = Clock.now;
     Thread      clientThread;
 
     selector.open(HANDLE_COUNT, EVENT_COUNT);
@@ -112,7 +112,7 @@ void testSelector(ISelector selector)
 
     try
     {
-        Interval            timeout         = 1.0; // 1 sec
+        TimeSpan            timeout         = TimeSpan.seconds(1);
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         ServerSocket        serverSocket    = new ServerSocket(addr, 5);
         SocketConduit       clientSocket;
@@ -293,7 +293,7 @@ void testSelector(ISelector selector)
     log.info(sprint("Failure: connect={0}, recv={1}; send={2}; error={3}", 
                     failedConnectCount, failedReceiveCount, failedSendCount, errorCount));
 
-    log.info(sprint("Total time: {0} ms", cast(uint) ((Clock.now - start) / start.TicksPerMillisecond)));
+    log.info(sprint("Total time: {0} ms", cast(uint) (Clock.now - start).milliseconds));
 
     clientThread.join();
 

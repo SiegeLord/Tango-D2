@@ -291,7 +291,7 @@ version (Posix)
          * amount of time.
          *
          * Params:
-         * timeout  = Interval with the maximum amount of time that the
+         * timeout  = Timespan with the maximum amount of time that the
          *            selector will wait for events from the conduits; the
          *            amount of time is relative to the current system time
          *            (i.e. just the number of milliseconds that the selector
@@ -308,9 +308,9 @@ version (Posix)
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */
-        public int select(Interval timeout)
+        public int select(TimeSpan timeout)
         {
-            int to = cast(int) (timeout != Interval.max ? cast(int) (timeout * 1000) : -1);
+            int to = (timeout != TimeSpan.max ? cast(int) timeout.milliseconds : -1);
 
             debug (selector)
                 Stdout.format("--- PollSelector.select({0} ms): waiting on {1} handles\n",

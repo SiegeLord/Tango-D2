@@ -12,7 +12,7 @@
 
 module tango.net.cluster.model.IMessage;
 
-public import tango.core.Type : Time;
+public import tango.util.time.DateTime;
 
 public import tango.io.protocol.model.IReader,
               tango.io.protocol.model.IWriter;
@@ -51,13 +51,13 @@ interface IMessage : IReadable, IWritable
 
         ***********************************************************************/
         
-        void time (Time value);
+        void time (DateTime value);
 
         /***********************************************************************
 
         ***********************************************************************/
         
-        Time time ();
+        DateTime time ();
 
         /***********************************************************************
 

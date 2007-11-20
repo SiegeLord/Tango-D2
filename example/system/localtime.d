@@ -21,7 +21,7 @@ void main ()
         auto date = WallClock.toDate;
 
         // get GMT difference in minutes
-        auto tz = cast(int) (WallClock.zone / Time.TicksPerMinute);
+        auto tz = cast(int) WallClock.zone.minutes;
         char sign = '+';
         if (tz < 0)
             tz = -tz, sign = '-';

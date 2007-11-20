@@ -9,7 +9,7 @@
 module tango.core.sync.Config;
 
 
-public import tango.core.Type;
+public import tango.core.TimeSpan;
 public import tango.core.Exception : SyncException;
 
 
@@ -37,28 +37,28 @@ version( Posix )
     }
 
 
-    void adjTimespec( inout timespec t, Interval i )
+    void adjTimespec( inout timespec t, TimeSpan i )
     {
         enum
         {
             SECS_TO_NANOS = 1_000_000_000
         }
 
-        if( t.tv_sec.max - t.tv_sec < i )
+        if( t.tv_sec.max - t.tv_sec < i.seconds )
         {
             t.tv_sec  = t.tv_sec.max;
             t.tv_nsec = 0;
         }
         else
         {
-            t.tv_sec  += i;
-            i = (i % 1.0) * SECS_TO_NANOS;
-            if( SECS_TO_NANOS - t.tv_nsec < i )
+            t.tv_sec  += i.seconds;
+            long ns = i.nanoseconds % SECS_TO_NANOS;
+            if( SECS_TO_NANOS - t.tv_nsec < ns )
             {
                 t.tv_sec += 1;
-                i -= SECS_TO_NANOS;
+                ns -= SECS_TO_NANOS;
             }
-            t.tv_nsec += cast(typeof(t.tv_sec)) i;
+            t.tv_nsec += cast(typeof(t.tv_sec)) ns;
         }
     }
 }

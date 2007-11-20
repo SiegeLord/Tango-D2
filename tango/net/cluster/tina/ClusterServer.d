@@ -118,7 +118,7 @@ abstract class ClusterServer : AbstractServer
                       {
                       getLogger.trace ("heartbeat");
                       channel.broadcast (rollcall);
-                      Thread.sleep (30.0);
+                      Thread.sleep (TimeSpan.seconds(30));
                       }
         }
 

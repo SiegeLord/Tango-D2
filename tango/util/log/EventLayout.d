@@ -14,7 +14,9 @@ module tango.util.log.EventLayout;
 
 private import tango.util.log.Event;
 
-private import tango.core.Type : Time;
+private import tango.core.TimeSpan;
+
+private import tango.util.time.DateTime;
 
 /*******************************************************************************
 
@@ -63,17 +65,22 @@ public class EventLayout
 
         ***********************************************************************/
 
-        final char[] toMilli (char[] s, Time time)
+        final char[] toMilli (char[] s, TimeSpan time)
         {
                 assert (s.length > 0);
-                time /= time.TicksPerMillisecond;
+                long ms = time.milliseconds;
 
                 int len = s.length;
                 do {
-                   s[--len] = time % 10 + '0';
-                   time /= 10;
-                   } while (time && len);
+                   s[--len] = ms % 10 + '0';
+                   ms /= 10;
+                   } while (ms && len);
                 return s[len..s.length];                
+        }
+
+        final char[] toMilli (char[] s, DateTime time)
+        {
+                return toMilli(s, TimeSpan(time.ticks));
         }
 }
 

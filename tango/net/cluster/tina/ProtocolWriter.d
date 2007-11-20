@@ -99,7 +99,7 @@ class ProtocolWriter
 
         ProtocolWriter put (Command cmd, char[] channel, char[] element = null, IMessage msg = null)
         {
-                auto time = (msg ? msg.time : Time.init);
+                auto time = (msg ? msg.time : DateTime.init);
         
                 // reset the buffer first!
                 buffer.clear;
@@ -108,7 +108,7 @@ class ProtocolWriter
                 emit (cast(ushort) 0)
                      (cast(ubyte) cmd)
                      (cast(ubyte) Version)
-                     (cast(ulong) time)
+                     (cast(ulong) time.ticks)
                      (channel)
                      (element);
 
@@ -140,7 +140,7 @@ class ProtocolWriter
                 emit (cast(ushort) (content.length + ushort.sizeof + ubyte.sizeof + ubyte.sizeof + ulong.sizeof))
                      (cast(ubyte) ProtocolWriter.Command.OK)
                      (cast(ubyte) Version)
-                     (cast(ulong) Time.init);
+                     (cast(ulong) ulong.init);
 
                 // and the payload (which includes both channel & element)
                 if (content.length)
