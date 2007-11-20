@@ -239,18 +239,34 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns a path representing the parent of this one.
+                Returns a path representing the parent of this one. This
+                will typically return the current path component, though
+                with a special case where the name component is empty. In 
+                such cases, the path is scanned for a prior segment:
+                ---
+                normal:  /x/y/z => /x/y
+                special: /x/y/  => /x
+                ---
 
                 Note that this returns a path suitable for splitting into
                 path and name components (there's no trailing separator).
 
-                See pop() also
+                See pop() also, which is generally more useful when working
+                with FilePath instances
 
         ***********************************************************************/
 
         final char[] parent ()
         {
-                return stripped (path);
+                auto p = path;
+                if (name.length is 0)
+                    for (int i=p.length-1; --i > 0;)
+                         if (p[i] is FileConst.PathSeparatorChar)
+                            {
+                            p = p[0 .. i];
+                            break;
+                            }
+                return stripped (p);
         }
 
         /***********************************************************************
@@ -1848,6 +1864,10 @@ debug (UnitTest)
                 assert (fp.pop == r"C:/home");
                 assert (fp.pop == r"C:");
                 assert (fp.pop == r"C:");
+        
+                // special case for popping empty names
+                fp = r"C:/home/foo/bar/john/";
+                assert (fp.pop == r"C:/home/foo/bar", fp.toUtf8);
 
                 fp = new FilePath;
                 fp = r"C:/home/foo/bar/john/";
