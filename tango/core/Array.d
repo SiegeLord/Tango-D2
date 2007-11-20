@@ -30,7 +30,11 @@ private
     {
         bool opCall( T p1, T p2 )
         {
-            return p1 == p2;
+            // TODO: Fix this if/when opEquals is changed to return a bool.
+            static if( is( T == class ) || is( T == struct ) )
+                return (p1 == p2) != 0;
+            else
+                return p1 == p2;
         }
     }
 

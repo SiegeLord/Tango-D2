@@ -355,7 +355,7 @@ struct BitArray
     /**
      * Support for operators == and != for bit arrays.
      */
-    bool opEquals(BitArray a2)
+    int opEquals(BitArray a2)
     {
         int i;
 

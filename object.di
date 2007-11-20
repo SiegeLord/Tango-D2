@@ -10,7 +10,7 @@ class Object
     char[] toUtf8();
     hash_t toHash();
     int    opCmp(Object o);
-    bool   opEquals(Object o);
+    int    opEquals(Object o);
 
     version( PhobosCompatibility )
     {

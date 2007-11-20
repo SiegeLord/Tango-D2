@@ -152,7 +152,7 @@
                 bool starts  (StringView other);
                 int compare  (T[] text);
                 int compare  (StringView other);
-                bool opEquals (Object other);
+                int opEquals (Object other);
                 int opCmp    (Object other);
 
                 // copy content
@@ -1036,7 +1036,7 @@ class String(T) : StringView!(T)
 
         ***********************************************************************/
 
-        override bool opEquals (Object o)
+        override int opEquals (Object o)
         {
                 auto other = cast (StringViewT) o;
 
@@ -1049,7 +1049,7 @@ class String(T) : StringView!(T)
         }
 
         /// ditto
-        final bool opEquals (T[] s)
+        final int opEquals (T[] s)
         {
                 return slice == s;
         }
@@ -1286,7 +1286,7 @@ class StringView(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool opEquals (Object other);
+        abstract int opEquals (Object other);
 
         /***********************************************************************
 
@@ -1294,7 +1294,7 @@ class StringView(T) : UniString
 
         ***********************************************************************/
 
-        abstract bool opEquals (T[] other);
+        abstract int opEquals (T[] other);
 
         /***********************************************************************
 

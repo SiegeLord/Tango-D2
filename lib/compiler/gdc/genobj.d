@@ -110,7 +110,7 @@ class Object
     /**
      * Returns !=0 if this object does have the same contents as obj.
      */
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {
         return cast(int)(this is o);
     }
@@ -228,7 +228,7 @@ class TypeInfo
         return stringCompare(this.toUtf8(), ti.toUtf8());
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {
         /* TypeInfo instances are singletons, but duplicates can exist
          * across DLL's. Therefore, comparing for a name match is
@@ -283,7 +283,7 @@ class TypeInfo_Typedef : TypeInfo
 {
     char[] toUtf8() { return name; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Typedef c;
 
         return cast(int)
@@ -316,7 +316,7 @@ class TypeInfo_Pointer : TypeInfo
 {
     char[] toUtf8() { return m_next.toUtf8() ~ "*"; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Pointer c;
 
         return this is o ||
@@ -366,7 +366,7 @@ class TypeInfo_Array : TypeInfo
 {
     char[] toUtf8() { return value.toUtf8() ~ "[]"; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Array c;
 
         return cast(int)
@@ -447,7 +447,7 @@ class TypeInfo_StaticArray : TypeInfo
         return value.toUtf8() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_StaticArray c;
 
         return cast(int)
@@ -531,7 +531,7 @@ class TypeInfo_AssociativeArray : TypeInfo
         return next.toUtf8() ~ "[" ~ key.toUtf8() ~ "]";
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_AssociativeArray c;
 
         return this is o ||
@@ -561,7 +561,7 @@ class TypeInfo_Function : TypeInfo
         return next.toUtf8() ~ "()";
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Function c;
 
         return this is o ||
@@ -586,7 +586,7 @@ class TypeInfo_Delegate : TypeInfo
         return next.toUtf8() ~ " delegate()";
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Delegate c;
 
         return this is o ||
@@ -610,7 +610,7 @@ class TypeInfo_Class : TypeInfo
 {
     char[] toUtf8() { return info.name; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Class c;
 
         return this is o ||
@@ -673,7 +673,7 @@ class TypeInfo_Interface : TypeInfo
 {
     char[] toUtf8() { return info.name; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Interface c;
 
         return this is o ||
@@ -736,7 +736,7 @@ class TypeInfo_Struct : TypeInfo
 {
     char[] toUtf8() { return name; }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {   TypeInfo_Struct s;
 
         return this is o ||
@@ -854,7 +854,7 @@ class TypeInfo_Tuple : TypeInfo
         return s;
     }
 
-    bool opEquals(Object o)
+    int opEquals(Object o)
     {
         if (this is o)
             return 1;

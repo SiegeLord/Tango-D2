@@ -185,7 +185,7 @@ struct DateTime
 
         **********************************************************************/
 
-        bool opEquals (DateTime t) 
+        int opEquals (DateTime t) 
         {
                 return ticks is t.ticks;
         }
