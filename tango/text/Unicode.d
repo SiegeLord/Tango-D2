@@ -11,15 +11,15 @@
 		Provides case mapping Functions for Unicode Strings. As of now it is
 		only 99 % complete, because it does not take into account Conditional
 		case mappings. This means the Greek Letter Sigma will not be correctly
-		case mapped at the end of a Word, and the Locales Lithuanian, Turkish 
+		case mapped at the end of a Word, and the Locales Lithuanian, Turkish
 		and Azeri are not taken into account during Case Mappings. This means
 		all in all around 12 Characters will not be mapped correctly under
 		some circumstances.
-		
+
 		ICU4j also does not handle these cases at the moment.
-		
+
 		Unittests are written against output from ICU4j
-		
+
 		This Module tries to minimize Memory allocation and usage. You can
 		always pass the output buffer that should be used to the case mapping
 		function, which will be resized if necessary.
@@ -35,7 +35,7 @@ private import tango.text.convert.Utf;
 
 /**
  * Converts an Utf8 String to Upper case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -70,8 +70,8 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
 				produced += len;
 				working[oprod..produced] = (*s).upperCaseMapping;
 				continue;
-			}			
-		} 
+			}
+		}
 		// Make sure no relocation is made in the toUtf8 Method
 		if(produced + 1 >= output.length)
 			working.length = working.length + working.length / 2 + 1;
@@ -84,7 +84,7 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
 
 /**
  * Converts an Utf8 String to Upper case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -121,8 +121,8 @@ char[] toUpper(char[] input, char[] output = null) {
 				}
 				produced += res.length;
 				continue;
-			}			
-		} 
+			}
+		}
 		// Make sure no relocation is made in the toUtf8 Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 4;
@@ -140,7 +140,7 @@ char[] toUpper(char[] input, char[] output = null) {
 
 /**
  * Converts an Utf16 String to Upper case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -194,7 +194,7 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
 
 /**
  * Converts an Utf32 String to Upper case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -236,7 +236,7 @@ dchar[] toUpper(dchar[] input, dchar[] output = null) {
 
 /**
  * Converts an Utf8 String to Lower case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -273,8 +273,8 @@ char[] toLower(char[] input, char[] output = null) {
 				}
 				produced += res.length;
 				continue;
-			}			
-		} 
+			}
+		}
 		// Make sure no relocation is made in the toUtf8 Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 4;
@@ -292,7 +292,7 @@ char[] toLower(char[] input, char[] output = null) {
 
 /**
  * Converts an Utf16 String to Lower case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -347,7 +347,7 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
 
 /**
  * Converts an Utf32 String to Lower case
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -389,7 +389,7 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
 /**
  * Converts an Utf8 String to Folding case
  * Folding case is used for case insensitive comparsions.
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -438,7 +438,7 @@ char[] toFold(char[] input, char[] output = null) {
 /**
  * Converts an Utf16 String to Folding case
  * Folding case is used for case insensitive comparsions.
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -486,7 +486,7 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
 /**
  * Converts an Utf32 String to Folding case
  * Folding case is used for case insensitive comparsions.
- * 
+ *
  * Params:
  *     input = String to be case mapped
  *     output = this output buffer will be used unless too small
@@ -522,7 +522,7 @@ dchar[] toFold(dchar[] input, dchar[] output = null) {
 /**
  * Determines if a character is a digit. It returns true for decimal
  * digits only.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
@@ -534,7 +534,7 @@ bool isDigit(dchar ch) {
 
 /**
  * Determines if a character is a letter.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
@@ -551,13 +551,13 @@ bool isLetter(int ch) {
 /**
  * Determines if a character is a letter or a
  * decimal digit.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
 bool isLetterOrDigit(int ch) {
 	UnicodeData **d = (ch in unicodeData);
-	return (d !is null) && ((*d).generalCategory & 
+	return (d !is null) && ((*d).generalCategory &
 		( UnicodeData.GeneralCategory.Lu
 		| UnicodeData.GeneralCategory.Ll
 		| UnicodeData.GeneralCategory.Lt
@@ -578,6 +578,9 @@ bool isLower(dchar ch) {
 
 /**
  * Determines if a character is a title case letter.
+ * In case of combined letters, only the first is upper and the second is lower.
+ * Some of these special characters can be found in the croatian and greek language.
+ * See_Also: http://en.wikipedia.org/wiki/Capitalization
  * Params:
  *     ch = the character to be inspected
  */
@@ -598,15 +601,15 @@ bool isUpper(dchar ch) {
 
 /**
  * Determines if a character is a Whitespace character.
- * Whitespace characters are characters in the 
+ * Whitespace characters are characters in the
  * General Catetories Zs, Zl, Zp without the No Break
  * spaces plus the control characters out of the ASCII
  * range, that are used as spaces:
  * TAB VT LF FF CR FS GS RS US NL
- * 
+ *
  * WARNING: look at isSpace, maybe that function does
  *          more what you expect.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
@@ -614,28 +617,28 @@ bool isWhitespace(dchar ch) {
 	if((ch >= 0x0009 && ch <= 0x000D) || (ch >= 0x001C && ch <= 0x001F))
 		return true;
 	UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & 
+    return (d !is null) && ((*d).generalCategory &
     		( UnicodeData.GeneralCategory.Zs
     		| UnicodeData.GeneralCategory.Zl
     		| UnicodeData.GeneralCategory.Zp))
     		&& ch != 0x00A0 // NBSP
     		&& ch != 0x202F // NARROW NBSP
-    		&& ch != 0xFEFF; // ZERO WIDTH NBSP 
+    		&& ch != 0xFEFF; // ZERO WIDTH NBSP
 }
 
 /**
  * Detemines if a character is a Space character as
  * specified in the Unicode Standart.
- * 
+ *
  * WARNING: look at isWhitepace, maybe that function does
  *          more what you expect.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
 bool isSpace(dchar ch) {
 	UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & 
+    return (d !is null) && ((*d).generalCategory &
     		( UnicodeData.GeneralCategory.Zs
     		| UnicodeData.GeneralCategory.Zl
     		| UnicodeData.GeneralCategory.Zp));
@@ -645,17 +648,17 @@ bool isSpace(dchar ch) {
 /**
  * Detemines if a character is a printable character as
  * specified in the Unicode Standart.
- * 
- * 
+ *
+ *
  * WARNING: look at isWhitepace, maybe that function does
  *          more what you expect.
- * 
+ *
  * Params:
  *     ch = the character to be inspected
  */
 bool isPrintable(dchar ch) {
 	UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & 
+    return (d !is null) && ((*d).generalCategory &
     		( UnicodeData.GeneralCategory.Cn
     		| UnicodeData.GeneralCategory.Cc
     		| UnicodeData.GeneralCategory.Cf
@@ -666,14 +669,14 @@ bool isPrintable(dchar ch) {
 debug ( UnicodeTest ):
     void main() {}
 
-debug (UnitTest) {       
+debug (UnitTest) {
 
 unittest {
-	
-	
+
+
 	// 1) No Buffer passed, no resize, no SpecialCase
-	
-	char[] testString1utf8 = "\u00E4\u00F6\u00FC";	
+
+	char[] testString1utf8 = "\u00E4\u00F6\u00FC";
 	wchar[] testString1utf16 = "\u00E4\u00F6\u00FC";
 	dchar[] testString1utf32 = "\u00E4\u00F6\u00FC";
 	char[] refString1utf8 = "\u00C4\u00D6\u00DC";
@@ -685,7 +688,7 @@ unittest {
 	assert(resultString1utf16 == refString1utf16);
 	dchar[] resultString1utf32 = toUpper(testString1utf32);
 	assert(resultString1utf32 == refString1utf32);
-	
+
 	// 2) Buffer passed, no resize, no SpecialCase
 	char[60] buffer1utf8;
 	wchar[30] buffer1utf16;
@@ -714,11 +717,11 @@ unittest {
 	resultString1utf32 = toUpper(testString1utf32,buffer2utf32);
 	assert(resultString1utf32.ptr != buffer2utf32.ptr);
 	assert(resultString1utf32 == refString1utf32);
-	
+
 	// 4) Buffer passed, resize necessary, extensive SpecialCase
-	
-	
-	char[] testString2utf8 = "\uFB03\uFB04\uFB05";	
+
+
+	char[] testString2utf8 = "\uFB03\uFB04\uFB05";
 	wchar[] testString2utf16 = "\uFB03\uFB04\uFB05";
 	dchar[] testString2utf32 = "\uFB03\uFB04\uFB05";
 	char[] refString2utf8 = "\u0046\u0046\u0049\u0046\u0046\u004C\u0053\u0054";
@@ -738,14 +741,14 @@ unittest {
 
 
 unittest {
-	
-	
+
+
 	// 1) No Buffer passed, no resize, no SpecialCase
-	
+
 	char[] testString1utf8 = "\u00C4\u00D6\u00DC";
 	wchar[] testString1utf16 = "\u00C4\u00D6\u00DC";
 	dchar[] testString1utf32 = "\u00C4\u00D6\u00DC";
-	char[] refString1utf8 = "\u00E4\u00F6\u00FC";	
+	char[] refString1utf8 = "\u00E4\u00F6\u00FC";
 	wchar[] refString1utf16 = "\u00E4\u00F6\u00FC";
 	dchar[] refString1utf32 = "\u00E4\u00F6\u00FC";
 	char[] resultString1utf8 = toLower(testString1utf8);
@@ -754,7 +757,7 @@ unittest {
 	assert(resultString1utf16 == refString1utf16);
 	dchar[] resultString1utf32 = toLower(testString1utf32);
 	assert(resultString1utf32 == refString1utf32);
-	
+
 	// 2) Buffer passed, no resize, no SpecialCase
 	char[60] buffer1utf8;
 	wchar[30] buffer1utf16;
@@ -783,10 +786,10 @@ unittest {
 	resultString1utf32 = toLower(testString1utf32,buffer2utf32);
 	assert(resultString1utf32.ptr != buffer2utf32.ptr);
 	assert(resultString1utf32 == refString1utf32);
-	
+
 	// 4) Buffer passed, resize necessary, extensive SpecialCase
-	
-	char[] testString2utf8 = "\u0130\u0130\u0130";	
+
+	char[] testString2utf8 = "\u0130\u0130\u0130";
 	wchar[] testString2utf16 = "\u0130\u0130\u0130";
 	dchar[] testString2utf32 = "\u0130\u0130\u0130";
 	char[] refString2utf8 = "\u0069\u0307\u0069\u0307\u0069\u0307";
