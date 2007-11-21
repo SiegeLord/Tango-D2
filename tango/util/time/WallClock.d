@@ -17,7 +17,7 @@ private import  tango.sys.Common;
 private import  tango.util.time.Date,
                 tango.util.time.Clock;
 
-public import  tango.core.TimeSpan;
+public  import  tango.core.TimeSpan;
 
 public  import  tango.util.time.DateTime;
 
@@ -114,7 +114,7 @@ struct WallClock
                          
                 ***************************************************************/
 
-                private static long localBias () 
+                private static TimeSpan localBias () 
                 { 
                        int bias; 
                        TIME_ZONE_INFORMATION tz = void; 
