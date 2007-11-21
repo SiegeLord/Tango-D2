@@ -527,7 +527,7 @@ body
                 size_t size = p.length * sizeelem;
                 auto   info = gc_query(p.data);
 
-                if (info.size <= newsize)
+                if (info.size <= newsize || info.base != p.data)
                 {
                     if (info.size >= PAGESIZE && info.base == p.data)
                     {   // Try to extend in-place
@@ -634,7 +634,7 @@ body
             {
                 auto info = gc_query(p.data);
 
-                if (info.size <= newsize)
+                if (info.size <= newsize || info.base != p.data)
                 {
                     if (info.size >= PAGESIZE && info.base == p.data)
                     {   // Try to extend in-place
@@ -699,7 +699,7 @@ extern (C) Array _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
     auto newlength = length + y.length;
     auto newsize = newlength * sizeelem;
 
-    if (info.size < newsize)
+    if (info.size < newsize || info.base != px.data)
     {   byte* newdata;
 
         if (info.size >= PAGESIZE && info.base == px.data)
@@ -808,7 +808,7 @@ extern (C) byte[] _d_arrayappendcTp(TypeInfo ti, inout byte[] x, void *argp)
 
     debug(PRINTF) printf("_d_arrayappendc(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, info.size);
 
-    if (info.size <= newsize)
+    if (info.size <= newsize || info.base != x.ptr)
     {   byte* newdata;
 
         if (info.size >= PAGESIZE && info.base == x.ptr)
