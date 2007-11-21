@@ -571,6 +571,21 @@ private class FolderHost : VfsFolderEntry
         {
                 return new FileFolder (parent, path, false);
         }
+
+        /***********************************************************************
+
+                Test to see if a folder exists
+
+        ***********************************************************************/
+
+        bool exists ()
+        {
+                try {
+                    open();
+                    return true;
+                    } catch (IOException x) {}
+                return false;
+        }
 }
 
 
