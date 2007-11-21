@@ -241,16 +241,35 @@ abstract class AbstractSelector: ISelector
      * wakeup() method has been called from another thread.
      *
      * Remarks:
-     * This method is the same as calling select(Interval.max).
+     * This method is the same as calling select(TimeSpan.max).
      */
     public int select()
     {
         return select(TimeSpan.max);
     }
 
-    deprecated public int select(double timeout)
+    /**
+     * Wait for I/O events from the registered conduits for a specified
+     * amount of time.
+     *
+     * Note: This representation of timeout is not always accurate, so it is
+     * possible that the function will return with a timeout before the
+     * specified period.  For more accuracy, use the TimeSpan version.
+     *
+     * Params:
+     * timeout  = the maximum amount of time in seconds that the
+     *            selector will wait for events from the conduits; the
+     *            amount of time is relative to the current system time
+     *            (i.e. just the number of milliseconds that the selector
+     *            has to wait for the events).
+     *
+     * Returns:
+     * The amount of conduits that have received events; 0 if no conduits
+     * have received events within the specified timeout.
+     */
+    public int select(double timeout)
     {
-            return select(timeout is timeout.max ? TimeSpan.max : TimeSpan.interval(timeout));
+            return select(TimeSpan.interval(timeout));
     }
 
     /**
@@ -258,7 +277,7 @@ abstract class AbstractSelector: ISelector
      * amount of time.
      *
      * Params:
-     * timeout  = Interval with the maximum amount of time that the
+     * timeout  = TimeSpan with the maximum amount of time that the
      *            selector will wait for events from the conduits; the
      *            amount of time is relative to the current system time
      *            (i.e. just the number of milliseconds that the selector

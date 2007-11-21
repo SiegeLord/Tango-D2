@@ -411,8 +411,18 @@ interface ISelector
      */
     public abstract int select(TimeSpan timeout);
 
-    /*
-     * Deprecated: use select(TimeSpan) instead
+    /**
+     * Wait for I/O events from the registered conduits for a specified
+     * amount of time.
+     *
+     * Note: This representation of timeout is not always accurate, so it is
+     * possible that the function will return with a timeout before the
+     * specified period.  For more accuracy, use the TimeSpan version.
+     *
+     * Note: Implementers should define this method as:
+     * -------
+     * select(TimeSpan.interval(timeout));
+     * -------
      *
      * Params:
      * timeout  = the maximum amount of time in seconds that the
@@ -425,7 +435,7 @@ interface ISelector
      * The amount of conduits that have received events; 0 if no conduits
      * have received events within the specified timeout.
      */
-    deprecated public abstract int select(double timeout);
+    public abstract int select(double timeout);
 
     /**
      * Return the selection set resulting from the call to any of the select()
