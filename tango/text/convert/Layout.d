@@ -392,7 +392,7 @@ class Layout(T)
                             if( _ti.classinfo.name.length == 20 && _ti.classinfo.name[9..$] == "StaticArray" )
                             {
                                 auto tiStat = cast(TypeInfo_StaticArray)_ti;
-                                void* p = _arg;
+                                auto p = _arg;
                                 length += sink ("[ ");
                                 for( int i = 0; i < tiStat.len; i++ ){
                                     if( p !is _arg ){
@@ -425,9 +425,9 @@ class Layout(T)
                                     }
 
                                     // the key is befor the value, so substrace with fixed key size from above
-                                    void* pk = &v - roundUp(AK.sizeof);
+                                    Arg pk = cast(Arg)( &v - roundUp(AK.sizeof));
                                     // now the real value pos is plus the real key size
-                                    void* pv = pk + roundUp(tiKey.tsize());
+                                    Arg pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
 
                                     if( !first )
                                     {
@@ -449,7 +449,7 @@ class Layout(T)
                                 // for all non string array types (including char[][])
                                 void[] arr = *cast(void[]*)_arg;
                                 int len = arr.length;
-                                void* ptr = arr.ptr;
+                                Arg ptr = cast(Arg) arr.ptr;
                                 TypeInfo elTi = _ti.next();
                                 int size = elTi.tsize();
                                 length += sink ("[ ");
