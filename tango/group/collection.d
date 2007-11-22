@@ -8,8 +8,6 @@
  * Convenience module to import all collection related modules
  */
 
-*******************************************************************************/
-
 module tango.group.collection;
 
 public import
