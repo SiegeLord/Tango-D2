@@ -1101,7 +1101,7 @@ class FilePath : PathView
                 {
                         static DateTime convert (FILETIME time)
                         {
-                                return DateTime.epoch1601 + TimeSpan(*cast(ulong*) &time);
+                                return DateTime.epoch1601 + TimeSpan(*cast(long*) &time);
                         }
 
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
