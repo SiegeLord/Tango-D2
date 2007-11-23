@@ -7,15 +7,10 @@ alias size_t hash_t;
 
 class Object
 {
-    char[] toUtf8();
+    char[] toString();
     hash_t toHash();
     int    opCmp(Object o);
     int    opEquals(Object o);
-
-    version( PhobosCompatibility )
-    {
-        alias toUtf8 toString;
-    }
 
     interface Monitor
     {
@@ -167,7 +162,7 @@ class Exception : Object
 
     this(char[] msg, Exception next = null);
     this(char[] msg, char[] file, size_t line, Exception next = null);
-    char[] toUtf8();
+    char[] toString();
 }
 
 

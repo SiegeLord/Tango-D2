@@ -139,12 +139,12 @@ void testSemaphore()
         catch (SyncException e)
         {
             Cerr("Sync exception caught in Semaphore test thread " ~ Thread.getThis().name ~
-                 ":\n" ~ e.toUtf8()).newline;
+                 ":\n" ~ e.toString()).newline;
         }
         catch (Exception e)
         {
             Cerr("Unexpected exception caught in Semaphore test thread " ~ Thread.getThis().name ~
-                 ":\n" ~ e.toUtf8()).newline;
+                 ":\n" ~ e.toString()).newline;
         }
     }
 
@@ -225,7 +225,7 @@ void testProcessSemaphore(char[] programName)
             log.trace("Acquired semaphore in main process");
 
         debug (semaphore)
-            log.trace("Executing child test process: " ~ proc.toUtf8());
+            log.trace("Executing child test process: " ~ proc.toString());
         proc.execute();
 
         debug (semaphore)
@@ -252,15 +252,15 @@ void testProcessSemaphore(char[] programName)
     }
     catch (SyncException e)
     {
-        Cerr("Sync exception caught in ProcessSemaphore main test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Sync exception caught in ProcessSemaphore main test process:\n" ~ e.toString()).newline;
     }
     catch (ProcessException e)
     {
-        Cerr("Process exception caught in ProcessSemaphore main test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Process exception caught in ProcessSemaphore main test process:\n" ~ e.toString()).newline;
     }
     catch (Exception e)
     {
-        Cerr("Unexpected exception caught in ProcessSemaphore main test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Unexpected exception caught in ProcessSemaphore main test process:\n" ~ e.toString()).newline;
     }
 
     if (success)
@@ -321,15 +321,15 @@ int testSecondProcessSemaphore()
     }
     catch (SyncException e)
     {
-        Cerr("Sync exception caught in ProcessSemaphore child test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Sync exception caught in ProcessSemaphore child test process:\n" ~ e.toString()).newline;
     }
     catch (ProcessException e)
     {
-        Cerr("Process exception caught in ProcessSemaphore child test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Process exception caught in ProcessSemaphore child test process:\n" ~ e.toString()).newline;
     }
     catch (Exception e)
     {
-        Cerr("Unexpected exception caught in ProcessSemaphore child test process:\n" ~ e.toUtf8()).newline;
+        Cerr("Unexpected exception caught in ProcessSemaphore child test process:\n" ~ e.toString()).newline;
     }
 
     debug (semaphore)

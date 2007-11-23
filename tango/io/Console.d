@@ -250,7 +250,7 @@ struct Console
                         Append content
 
                         Params:
-                        other = an object with a useful toUtf8() method
+                        other = an object with a useful toString() method
 
                         Returns:
                         Returns a chaining reference if all content was 
@@ -258,13 +258,13 @@ struct Console
                         eob if not.
 
                         Remarks:
-                        Append the result of other.toUtf8() to the console
+                        Append the result of other.toString() to the console
 
                 **************************************************************/
 
                 final Output append (Object other)        
                 {           
-                        return append (other.toUtf8);
+                        return append (other.toString);
                 }
 
                 /**************************************************************
@@ -415,7 +415,7 @@ struct Console
 
                 ***********************************************************************/
 
-                override char[] toUtf8()
+                override char[] toString()
                 {
                         return "<console>";
                 }

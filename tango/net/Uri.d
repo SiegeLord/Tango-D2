@@ -447,7 +447,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] toUtf8 ()
+        final char[] toString ()
         {
                 void[] s;
 

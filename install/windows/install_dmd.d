@@ -37,17 +37,17 @@ void main( char[][] args )
 
     usePath.set( prefix ? prefix : usePath.set( binPath.parent ).parent );
     require( usePath.exists, "Path specified by prefix does not exist." );
-    usePath.path( usePath.toUtf8 );
+    usePath.path( usePath.toString );
 
     impPath.set( usePath.path ~ "import" );
     if( !impPath.exists )
         impPath.create();
-    impPath.path = impPath.toUtf8;
+    impPath.path = impPath.toString;
 
     libPath.set( usePath.path ~ "lib" );
     if( !libPath.exists )
         libPath.create();
-    libPath.path = libPath.toUtf8;
+    libPath.path = libPath.toString;
 
     if( uninst )
     {
@@ -128,7 +128,7 @@ void removeFile( FilePath fp )
 
 void writeFile( FilePath fp, lazy char[] buf )
 {
-    scope fc = new FileConduit( fp.toUtf8, FileConduit.WriteCreate );
+    scope fc = new FileConduit( fp.toString, FileConduit.WriteCreate );
     scope(exit) fc.close();
     fc.output.write( buf );
 }
@@ -139,7 +139,7 @@ void copyFile( FilePath dstFile, char[] srcPath )
     scope srcFc = new FileConduit( FilePath.padded( srcPath ) ~ dstFile.file,
                                    FileConduit.ReadExisting );
     scope(exit) srcFc.close();
-    scope dstFc = new FileConduit( dstFile.toUtf8, FileConduit.WriteCreate );
+    scope dstFc = new FileConduit( dstFile.toString, FileConduit.WriteCreate );
     scope(exit) dstFc.close();
     dstFc.copy( srcFc );
 }
@@ -157,18 +157,18 @@ void copyTree( FilePath dstPath, char[] srcPath )
 
     srcPath = FilePath.padded( srcPath ) ~ dstPath.file;
     scan.sweep( srcPath, &matchAll );
-    dstFile.path = dstPath.toUtf8;
+    dstFile.path = dstPath.toString;
 
     foreach( f; scan.folders )
     {
-        dstFile.set( dstPath.toUtf8 ~ f.toUtf8[srcPath.length .. $] );
+        dstFile.set( dstPath.toString ~ f.toString[srcPath.length .. $] );
         if( !dstFile.exists )
             dstFile.create();
     }
 
     foreach( f; scan.files )
     {
-        dstFile.set( dstPath.toUtf8 ~ f.toUtf8[srcPath.length .. $] );
+        dstFile.set( dstPath.toString ~ f.toString[srcPath.length .. $] );
         copyFile( dstFile, f.path );
     }
 }
@@ -186,7 +186,7 @@ void removeTree( FilePath root )
 
     scope scan = new FileScan;
 
-    scan.sweep( root.toUtf8, &matchAll );
+    scan.sweep( root.toString, &matchAll );
 
     foreach( f; scan.files )
     {

@@ -81,11 +81,11 @@ void testNonRecursive()
         }
         catch (SyncException e)
         {
-            Stderr.formatln("Sync exception caught when testing non-recursive mutexes:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Sync exception caught when testing non-recursive mutexes:\n{0}\n", e.toString());
         }
         catch (Exception e)
         {
-            Stderr.formatln("Unexpected exception caught when testing non-recursive mutexes:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Unexpected exception caught when testing non-recursive mutexes:\n{0}\n", e.toString());
         }
 
         if (!couldLock)
@@ -140,11 +140,11 @@ void testLocking()
         }
         catch (SyncException e)
         {
-            Stderr.formatln("Sync exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Sync exception caught inside mutex testing thread:\n{0}\n", e.toString());
         }
         catch (Exception e)
         {
-            Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n", e.toString());
         }
     }
 
@@ -214,11 +214,11 @@ void testRecursive()
     }
     catch (SyncException e)
     {
-        Stderr.formatln("Sync exception caught in recursive mutex test:\n{0}\n", e.toUtf8());
+        Stderr.formatln("Sync exception caught in recursive mutex test:\n{0}\n", e.toString());
     }
     catch (Exception e)
     {
-        Stderr.formatln("Unexpected exception caught in recursive mutex test:\n{0}\n", e.toUtf8());
+        Stderr.formatln("Unexpected exception caught in recursive mutex test:\n{0}\n", e.toString());
     }
 
     for (uint i = 0; i < lockCount; i++)

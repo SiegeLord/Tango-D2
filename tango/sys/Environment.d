@@ -116,7 +116,7 @@ struct Environment
 
                 static char[] get (char[] variable, char[] def = null)
                 {
-                        wchar[] var = toUtf16(variable) ~ "\0";
+                        wchar[] var = toString16(variable) ~ "\0";
 
                         uint size = GetEnvironmentVariableW(var.ptr, cast(wchar*)null, 0);
                         if (size is 0)
@@ -132,7 +132,7 @@ struct Environment
                         if (size is 0)
                             throw new PlatformException (SysError.lastMsg);
 
-                        return toUtf8 (buffer[0 .. size]);
+                        return toString (buffer[0 .. size]);
                 }
 
                 /**************************************************************
@@ -145,10 +145,10 @@ struct Environment
                 {
                         wchar * var, val;
 
-                        var = (toUtf16 (variable) ~ "\0").ptr;
+                        var = (toString16 (variable) ~ "\0").ptr;
 
                         if (value.length > 0)
-                            val = (toUtf16 (value) ~ "\0").ptr;
+                            val = (toString16 (value) ~ "\0").ptr;
 
                         if (! SetEnvironmentVariableW(var, val))
                               throw new PlatformException (SysError.lastMsg);
@@ -191,7 +191,7 @@ struct Environment
                                       value.length = 2 * value.length;
                                   }
 
-                            arr [toUtf8(key[0 .. k])] = toUtf8(value[0 .. v]);
+                            arr [toString(key[0 .. k])] = toString(value[0 .. v]);
                             }
 
                         return arr;

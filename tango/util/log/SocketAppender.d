@@ -49,7 +49,7 @@ public class SocketAppender : Appender
                 this.buffer  = new Buffer (conduit);
 
                 // Get a unique fingerprint for this class
-                this.mask = register (address.toUtf8);
+                this.mask = register (address.toString);
         }
 
         /***********************************************************************
@@ -104,7 +104,7 @@ public class SocketAppender : Appender
                        } catch (Exception e)
                                {
                                connected = false;
-                               Cerr ("SocketAppender.append :: "~e.toUtf8).newline;
+                               Cerr ("SocketAppender.append :: "~e.toString).newline;
                                }
                    }
 

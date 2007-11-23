@@ -75,7 +75,7 @@ class Object
     /**
      * Convert Object to a human readable string.
      */
-    char[] toUtf8()
+    char[] toString()
     {
         return this.classinfo.name;
     }
@@ -213,7 +213,7 @@ class TypeInfo
     hash_t toHash()
     {   hash_t hash;
 
-        foreach (char c; this.toUtf8())
+        foreach (char c; this.toString())
             hash = hash * 9 + c;
         return hash;
     }
@@ -225,7 +225,7 @@ class TypeInfo
         TypeInfo ti = cast(TypeInfo)o;
         if (ti is null)
             return 1;
-        return stringCompare(this.toUtf8(), ti.toUtf8());
+        return stringCompare(this.toString(), ti.toString());
     }
 
     int opEquals(Object o)
@@ -237,7 +237,7 @@ class TypeInfo
         if (this is o)
             return 1;
         TypeInfo ti = cast(TypeInfo)o;
-        return cast(int)(ti && this.toUtf8() == ti.toUtf8());
+        return cast(int)(ti && this.toString() == ti.toString());
     }
 
     /// Returns a hash of the instance of a type.
@@ -281,7 +281,7 @@ class TypeInfo
 
 class TypeInfo_Typedef : TypeInfo
 {
-    char[] toUtf8() { return name; }
+    char[] toString() { return name; }
 
     int opEquals(Object o)
     {   TypeInfo_Typedef c;
@@ -314,7 +314,7 @@ class TypeInfo_Enum : TypeInfo_Typedef
 
 class TypeInfo_Pointer : TypeInfo
 {
-    char[] toUtf8() { return m_next.toUtf8() ~ "*"; }
+    char[] toString() { return m_next.toString() ~ "*"; }
 
     int opEquals(Object o)
     {   TypeInfo_Pointer c;
@@ -364,7 +364,7 @@ class TypeInfo_Pointer : TypeInfo
 
 class TypeInfo_Array : TypeInfo
 {
-    char[] toUtf8() { return value.toUtf8() ~ "[]"; }
+    char[] toString() { return value.toString() ~ "[]"; }
 
     int opEquals(Object o)
     {   TypeInfo_Array c;
@@ -441,10 +441,10 @@ class TypeInfo_Array : TypeInfo
 
 class TypeInfo_StaticArray : TypeInfo
 {
-    char[] toUtf8()
+    char[] toString()
     {
         char [10] tmp = void;
-        return value.toUtf8() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
+        return value.toString() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
     }
 
     int opEquals(Object o)
@@ -526,9 +526,9 @@ class TypeInfo_StaticArray : TypeInfo
 
 class TypeInfo_AssociativeArray : TypeInfo
 {
-    char[] toUtf8()
+    char[] toString()
     {
-        return next.toUtf8() ~ "[" ~ key.toUtf8() ~ "]";
+        return next.toString() ~ "[" ~ key.toString() ~ "]";
     }
 
     int opEquals(Object o)
@@ -556,9 +556,9 @@ class TypeInfo_AssociativeArray : TypeInfo
 
 class TypeInfo_Function : TypeInfo
 {
-    char[] toUtf8()
+    char[] toString()
     {
-        return next.toUtf8() ~ "()";
+        return next.toString() ~ "()";
     }
 
     int opEquals(Object o)
@@ -581,9 +581,9 @@ class TypeInfo_Function : TypeInfo
 
 class TypeInfo_Delegate : TypeInfo
 {
-    char[] toUtf8()
+    char[] toString()
     {
-        return next.toUtf8() ~ " delegate()";
+        return next.toString() ~ " delegate()";
     }
 
     int opEquals(Object o)
@@ -608,7 +608,7 @@ class TypeInfo_Delegate : TypeInfo
 
 class TypeInfo_Class : TypeInfo
 {
-    char[] toUtf8() { return info.name; }
+    char[] toString() { return info.name; }
 
     int opEquals(Object o)
     {   TypeInfo_Class c;
@@ -671,7 +671,7 @@ class TypeInfo_Class : TypeInfo
 
 class TypeInfo_Interface : TypeInfo
 {
-    char[] toUtf8() { return info.name; }
+    char[] toString() { return info.name; }
 
     int opEquals(Object o)
     {   TypeInfo_Interface c;
@@ -734,7 +734,7 @@ class TypeInfo_Interface : TypeInfo
 
 class TypeInfo_Struct : TypeInfo
 {
-    char[] toUtf8() { return name; }
+    char[] toString() { return name; }
 
     int opEquals(Object o)
     {   TypeInfo_Struct s;
@@ -828,7 +828,7 @@ class TypeInfo_Tuple : TypeInfo
 {
     TypeInfo[] elements;
 
-    char[] toUtf8()
+    char[] toString()
     {
         char[] s;
         s = "(";
@@ -836,7 +836,7 @@ class TypeInfo_Tuple : TypeInfo
         {
             if (i)
                 s ~= ',';
-            s ~= element.toUtf8();
+            s ~= element.toString();
         }
         s ~= ")";
         return s;
@@ -906,7 +906,7 @@ class Exception : Object
         this.line = line;
     }
 
-    char[] toUtf8()
+    char[] toString()
     {
         return msg;
     }

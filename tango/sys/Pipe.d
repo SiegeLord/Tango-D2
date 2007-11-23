@@ -84,7 +84,7 @@ class PipeConduit: DeviceConduit
     /**
      * Returns the name of the device.
      */
-    public override char[] toUtf8()
+    public override char[] toString()
     {
         return "<pipe>";
     }

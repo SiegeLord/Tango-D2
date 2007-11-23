@@ -64,7 +64,7 @@ ulong toTime(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (DateTime time)
+char[] toString (DateTime time)
 {
         char[32] tmp = void;
         
@@ -80,7 +80,7 @@ char[] toUtf8 (DateTime time)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (DateTime time)
+wchar[] toString16 (DateTime time)
 {
         wchar[32] tmp = void;
         
@@ -96,7 +96,7 @@ wchar[] toUtf16 (DateTime time)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (DateTime time)
+dchar[] toString32 (DateTime time)
 {
         dchar[32] tmp = void;
         

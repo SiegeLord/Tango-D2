@@ -177,7 +177,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] toUtf8 ()
+        final char[] toString ()
         {
                 return fp [0 .. end_];
         }
@@ -190,13 +190,13 @@ class FilePath : PathView
 
         final FilePath dup ()
         {
-                return FilePath (toUtf8);
+                return FilePath (toString);
         }
 
         /***********************************************************************
 
                 Return the complete text of this filepath as a null
-                terminated string for use with a C api. Use toUtf8
+                terminated string for use with a C api. Use toString
                 instead for any D api.
 
                 Note that the nul is always embedded within the string
@@ -339,7 +339,7 @@ class FilePath : PathView
 
         final override int opEquals (Object o)
         {
-                return (this is o) || (o && toUtf8 == o.toUtf8);
+                return (this is o) || (o && toString == o.toString);
         }
 
         /***********************************************************************
@@ -350,7 +350,7 @@ class FilePath : PathView
 
         final override int opEquals (char[] s)
         {
-                return toUtf8() == s;
+                return toString() == s;
         }
 
         /***********************************************************************
@@ -497,7 +497,7 @@ class FilePath : PathView
 
         FilePath set (FilePath path)
         {
-                return set (path.toUtf8);
+                return set (path.toString);
         }
 
         /***********************************************************************
@@ -945,7 +945,7 @@ class FilePath : PathView
 
         final FilePath rename (FilePath dst)
         {
-                return rename (dst.toUtf8);
+                return rename (dst.toString);
         }
 
         /***********************************************************************
@@ -956,7 +956,7 @@ class FilePath : PathView
 
         private void exception ()
         {
-                throw new IOException (toUtf8 ~ ": " ~ SysError.lastMsg);
+                throw new IOException (toString ~ ": " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -967,7 +967,7 @@ class FilePath : PathView
 
         private void badArg (char[] msg)
         {
-                throw new IllegalArgumentException (msg ~ toUtf8);
+                throw new IllegalArgumentException (msg ~ toString);
         }
 
         /***********************************************************************
@@ -982,7 +982,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                private wchar[] toUtf16 (wchar[] tmp, char[] path)
+                private wchar[] toString16 (wchar[] tmp, char[] path)
                 {
                         auto i = MultiByteToWideChar (CP_UTF8, 0,
                                                       path.ptr, path.length,
@@ -996,7 +996,7 @@ class FilePath : PathView
 
                 ***************************************************************/
 
-                private char[] toUtf8 (char[] tmp, wchar[] path)
+                private char[] toString (char[] tmp, wchar[] path)
                 {
                         auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length,
                                                       tmp.ptr, tmp.length, null, null);
@@ -1012,7 +1012,7 @@ class FilePath : PathView
                 private wchar[] name16 (wchar[] tmp, bool withNull=true)
                 {
                         int offset = withNull ? 0 : 1;
-                        return toUtf16 (tmp, this.cString[0 .. $-offset]);
+                        return toString16 (tmp, this.cString[0 .. $-offset]);
                 }
 
                 /***************************************************************
@@ -1136,7 +1136,7 @@ class FilePath : PathView
                                 wchar[MAX_PATH+1] tmp1 = void;
                                 wchar[MAX_PATH+1] tmp2 = void;
 
-                                if (! CopyFileW (toUtf16(tmp1, src.cString).ptr, name16(tmp2).ptr, false))
+                                if (! CopyFileW (toString16(tmp1, src.cString).ptr, name16(tmp2).ptr, false))
                                       exception;
                                 }
 
@@ -1203,7 +1203,7 @@ class FilePath : PathView
                                 {
                                 wchar[MAX_PATH] tmp1 = void;
                                 wchar[MAX_PATH] tmp2 = void;
-                                result = MoveFileExW (name16(tmp1).ptr, toUtf16(tmp2, cstr).ptr, Typical);
+                                result = MoveFileExW (name16(tmp1).ptr, toString16(tmp2, cstr).ptr, Typical);
                                 }
 
                         if (! result)
@@ -1302,7 +1302,7 @@ class FilePath : PathView
                         }
 
                         version (Win32SansUnicode)
-                                 h = FindFirstFileA (padded(this.toUtf8, "*\0").ptr, &fileinfo);
+                                 h = FindFirstFileA (padded(this.toString, "*\0").ptr, &fileinfo);
                              else
                                 {
                                 wchar[MAX_PATH] host = void;
@@ -1315,7 +1315,7 @@ class FilePath : PathView
                         scope (exit)
                                FindClose (h);
 
-                        prefix = FilePath.padded (this.toUtf8);
+                        prefix = FilePath.padded (this.toString);
                         do {
                            version (Win32SansUnicode)
                                    {
@@ -1325,7 +1325,7 @@ class FilePath : PathView
                                 else
                                    {
                                    auto len = wcslen (fileinfo.cFileName.ptr);
-                                   auto str = toUtf8 (tmp, fileinfo.cFileName [0 .. len]);
+                                   auto str = toString (tmp, fileinfo.cFileName [0 .. len]);
                                    }
 
                            // skip hidden/system files
@@ -1593,7 +1593,7 @@ class FilePath : PathView
                                tango.stdc.posix.dirent.closedir (dir);
 
                         // ensure a trailing '/' is present
-                        prefix = FilePath.padded (this.toUtf8);
+                        prefix = FilePath.padded (this.toString);
 
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
@@ -1660,7 +1660,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] toUtf8 ();
+        abstract char[] toString ();
 
         /***********************************************************************
 
@@ -1868,7 +1868,7 @@ debug (UnitTest)
         
                 // special case for popping empty names
                 fp = r"C:/home/foo/bar/john/";
-                assert (fp.pop == r"C:/home/foo/bar", fp.toUtf8);
+                assert (fp.pop == r"C:/home/foo/bar", fp.toString);
 
                 fp = new FilePath;
                 fp = r"C:/home/foo/bar/john/";
@@ -2060,7 +2060,7 @@ debug (UnitTest)
 
                 fp = new FilePath(r"c:/joe/bar");
                 assert(fp.cat(r"foo/bar/") == r"c:/joe/bar/foo/bar/");
-                assert(fp.cat(new FilePath(r"foo/bar")).toUtf8 == r"c:/joe/bar/foo/bar");
+                assert(fp.cat(new FilePath(r"foo/bar")).toString == r"c:/joe/bar/foo/bar");
 
                 assert (FilePath.join (r"a/b/c/d", r"e/f/" r"g") == r"a/b/c/d/e/f/g");
 

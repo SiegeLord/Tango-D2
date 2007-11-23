@@ -102,7 +102,7 @@ class Process
         /**
          * Returns a string with a description of the process execution result.
          */
-        public char[] toUtf8()
+        public char[] toString()
         {
             char[] str;
 
@@ -355,7 +355,7 @@ class Process
     /**
      * Return an UTF-8 string with the process' command line.
      */
-    public char[] toUtf8()
+    public char[] toString()
     {
         char[] command;
 
@@ -639,7 +639,7 @@ class Process
             // Set up members of the PROCESS_INFORMATION structure.
             memset(_info, '\0', PROCESS_INFORMATION.sizeof);
 
-            char[] command = toUtf8();
+            char[] command = toString();
             command ~= '\0';
 
             // Convert the working directory to a null-ended string if
@@ -647,7 +647,7 @@ class Process
             if (CreateProcessA(null, command.ptr, null, null, true,
                                DETACHED_PROCESS,
                                (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
-                               toUtf8z(_workDir), &startup, _info))
+                               toStringz(_workDir), &startup, _info))
             {
                 CloseHandle(_info.hThread);
                 _running = true;
@@ -754,7 +754,7 @@ class Process
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
                         {
-                            chdir(toUtf8z(_workDir));
+                            chdir(toStringz(_workDir));
                         }
 
                         // Replace the child fork with a new process. We always use the
@@ -1301,7 +1301,7 @@ class Process
                 while (--i >= 0)
                 {
                     // Add a terminating null character to each string
-                    dest[i] = toUtf8z(src[i]);
+                    dest[i] = toStringz(src[i]);
                 }
                 return dest;
             }
@@ -1497,7 +1497,7 @@ debug (UnitTest)
         }
         catch (ProcessException e)
         {
-            Cerr("Program execution failed: ")(e.toUtf8()).newline();
+            Cerr("Program execution failed: ")(e.toString()).newline();
         }
     }
 }

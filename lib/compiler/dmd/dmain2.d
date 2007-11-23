@@ -235,8 +235,8 @@ extern (C) int main(int argc, char **argv)
                     }
                     else
                     {
-                       // fprintf(stderr, "%.*s\n", e.toUtf8());
-                       console (e.classinfo.name)(": ")(e.toUtf8)("\n");
+                       // fprintf(stderr, "%.*s\n", e.toString());
+                       console (e.classinfo.name)(": ")(e.toString)("\n");
                     }
                     e = e.next;
                 }
@@ -244,8 +244,8 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Object o)
             {
-                // fprintf(stderr, "%.*s\n", o.toUtf8());
-                console (o.toUtf8)("\n");
+                // fprintf(stderr, "%.*s\n", o.toString());
+                console (o.toString)("\n");
                 result = EXIT_FAILURE;
             }
         }

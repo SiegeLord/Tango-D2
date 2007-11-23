@@ -70,7 +70,7 @@ public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
         ---
         char[] output;
 
-        char[] result = toUtf8 (input, output);
+        char[] result = toString (input, output);
 
         // reset output after a realloc
         if (result.length > output.length)
@@ -79,7 +79,7 @@ public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
 
 *******************************************************************************/
 
-char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
+char[] toString (wchar[] input, char[] output=null, uint* ate=null)
 {
         if (ate)
             *ate = input.length;
@@ -132,7 +132,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
                          }
                       else
                          // deal with surrogate-pairs
-                         return toUtf8 (toUtf32(input, null, ate), output);
+                         return toString (toString32(input, null, ate), output);
                 }
 
         // return the produced output
@@ -141,7 +141,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
 
 /*******************************************************************************
 
-        Decode Utf8 produced by the above toUtf8() method.
+        Decode Utf8 produced by the above toString() method.
 
         If the output is provided off the stack, it should be large
         enough to encompass the entire transcoding; failing to do
@@ -153,7 +153,7 @@ char[] toUtf8 (wchar[] input, char[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
+wchar[] toString16 (char[] input, wchar[] output=null, uint* ate=null)
 {
         int     produced;
         char*   pIn = input.ptr;
@@ -186,7 +186,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
                           }
                        else
                           // deal with surrogate-pairs
-                          return toUtf16 (toUtf32(input, null, ate), output);
+                          return toString16 (toString32(input, null, ate), output);
 
                 d = b;
                 ++produced;
@@ -202,7 +202,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toUtf16 : incomplete utf8 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString16 : incomplete utf8 input", pIn - input.ptr);
                        }
                     else
                        break;
@@ -214,7 +214,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toUtf16 : utf8 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];
@@ -237,7 +237,7 @@ wchar[] toUtf16 (char[] input, wchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
+char[] toString (dchar[] input, char[] output=null, uint* ate=null)
 {
         if (ate)
             *ate = input.length;
@@ -298,7 +298,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
                             pOut += 4;
                             }
                          else
-                            onUnicodeError ("Unicode.toUtf8 : invalid dchar", eaten);
+                            onUnicodeError ("Unicode.toString : invalid dchar", eaten);
                 }
 
         // return the produced output
@@ -308,7 +308,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
 
 /*******************************************************************************
 
-        Decode Utf8 produced by the above toUtf8() method.
+        Decode Utf8 produced by the above toString() method.
 
         If the output is provided off the stack, it should be large
         enough to encompass the entire transcoding; failing to do
@@ -320,7 +320,7 @@ char[] toUtf8 (dchar[] input, char[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
+dchar[] toString32 (char[] input, dchar[] output=null, uint* ate=null)
 {
         int     produced;
         char*   pIn = input.ptr;
@@ -359,7 +359,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
                           b = (b << 6) | (pIn[3] & 0x3f);
 
                           if (b >= 0x110000)
-                              onUnicodeError ("Unicode.toUtf32 : invalid utf8 input", pIn - input.ptr);
+                              onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
                           pIn += 3;
                           }
 
@@ -377,7 +377,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toUtf32 : incomplete utf8 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString32 : incomplete utf8 input", pIn - input.ptr);
                        }
                     else
                        break;
@@ -389,7 +389,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toUtf32 : utf8 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];
@@ -410,7 +410,7 @@ dchar[] toUtf32 (char[] input, dchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
+wchar[] toString16 (dchar[] input, wchar[] output=null, uint* ate=null)
 {
         if (ate)
             *ate = input.length;
@@ -453,7 +453,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
                       pOut += 2;
                       }
                    else
-                      onUnicodeError ("Unicode.toUtf16 : invalid dchar", eaten);
+                      onUnicodeError ("Unicode.toString16 : invalid dchar", eaten);
                 }
 
         // return the produced output
@@ -462,7 +462,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
 
 /*******************************************************************************
 
-        Decode Utf16 produced by the above toUtf16() method.
+        Decode Utf16 produced by the above toString16() method.
 
         If the output is provided off the stack, it should be large
         enough to encompass the entire transcoding; failing to do
@@ -474,7 +474,7 @@ wchar[] toUtf16 (dchar[] input, wchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
+dchar[] toString32 (wchar[] input, dchar[] output=null, uint* ate=null)
 {
         int     produced;
         wchar*  pIn = input.ptr;
@@ -496,7 +496,7 @@ dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
                     b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
 
                 if (b >= 0x110000)
-                    onUnicodeError ("Unicode.toUtf32 : invalid utf16 input", pIn - input.ptr);
+                    onUnicodeError ("Unicode.toString32 : invalid utf16 input", pIn - input.ptr);
 
                 d = b;
                 ++produced;
@@ -511,7 +511,7 @@ dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toUtf32 : incomplete utf16 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString32 : incomplete utf16 input", pIn - input.ptr);
                        }
                     else
                        break;
@@ -523,7 +523,7 @@ dchar[] toUtf32 (wchar[] input, dchar[] output=null, uint* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toUtf32 : utf16 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString32 : utf16 overflow", pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];

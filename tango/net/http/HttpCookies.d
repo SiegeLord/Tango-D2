@@ -615,7 +615,7 @@ class CookieParser : StreamIterator!(char)
 
                 Note that the buffer content is not duplicated. Instead, a
                 slice of the buffer is referenced by the token. You can use
-                Token.clone() or Token.toUtf8().dup() to copy content per
+                Token.clone() or Token.toString().dup() to copy content per
                 your application needs.
 
                 Note also that there may still be one token left in a buffer 

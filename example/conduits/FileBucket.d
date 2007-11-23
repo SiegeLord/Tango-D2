@@ -249,7 +249,7 @@ class FileBucket
 
                 private static void eof (FileBucket bucket)
                 {
-                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path.toUtf8()~"'");
+                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path.toString()~"'");
                 }
 
                 /**************************************************************

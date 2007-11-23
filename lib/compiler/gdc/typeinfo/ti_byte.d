@@ -5,7 +5,7 @@ module typeinfo.ti_byte;
 
 class TypeInfo_g : TypeInfo
 {
-    char[] toUtf8() { return "byte"; }
+    char[] toString() { return "byte"; }
 
     hash_t getHash(void *p)
     {

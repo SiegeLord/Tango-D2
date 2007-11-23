@@ -124,7 +124,7 @@ class LinkedFolder : VirtualFolder
                 auto link = head;
                 while (link)
                       {
-                      //Stdout.formatln ("looking in {}", link.folder.toUtf8);
+                      //Stdout.formatln ("looking in {}", link.folder.toString);
                       try {
                           auto file = link.folder.file (path);
                           if (file.exists)

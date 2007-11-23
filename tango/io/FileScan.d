@@ -167,7 +167,7 @@ class FileScan
                         folderSet ~= folder;
 
                     } catch (IOException e)
-                             errorSet ~= e.toUtf8;
+                             errorSet ~= e.toString;
                 return this;
         }
 }

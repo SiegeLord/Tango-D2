@@ -177,14 +177,14 @@ class POP3Connection : Telnet
     POP3Response dele(int messageNumber )
     {
 	POP3Response r;
-	r.resp = shortCmd("DELE " ~ Integer.toUtf8(messageNumber));
+	r.resp = shortCmd("DELE " ~ Integer.toString(messageNumber));
 	return r;
     }
 
     /// Retrieves the message, remeber its 1 based !
     POP3Response retr(uint messageNumber) 
     {
-	return pop3Cmd("RETR " ~ Integer.toUtf8(messageNumber));
+	return pop3Cmd("RETR " ~ Integer.toString(messageNumber));
     }
    
 
@@ -197,7 +197,7 @@ class POP3Connection : Telnet
 	    {
 		r = pop3Cmd("LIST");
 	    }
-	else r.resp = shortCmd("LIST " ~ Integer.toUtf8(messageNumber));
+	else r.resp = shortCmd("LIST " ~ Integer.toString(messageNumber));
 
 	return r;
     }
@@ -209,7 +209,7 @@ class POP3Connection : Telnet
 	    {
 		r = pop3Cmd("UIDL");
 	    }
-	else r.resp = shortCmd("UIDL " ~ Integer.toUtf8(messageNumber));
+	else r.resp = shortCmd("UIDL " ~ Integer.toString(messageNumber));
 
 	return r;
     }
@@ -218,7 +218,7 @@ class POP3Connection : Telnet
     /// Lists the header and numberOfLines of the body for a given messages.  Not all servers implement this
     POP3Response top(uint messageNumber, uint numberOfLines)
     {
-	return pop3Cmd("TOP " ~ Integer.toUtf8(messageNumber) ~ " " ~ Integer.toUtf8(numberOfLines) ); // TODO
+	return pop3Cmd("TOP " ~ Integer.toString(messageNumber) ~ " " ~ Integer.toString(numberOfLines) ); // TODO
     }
   
   /// Lists all messages on server and total size
@@ -387,7 +387,7 @@ unittest
 	    auto pop3 = new POP3Connection("mail.debug.com","debug","debug");
 
 	    int count = pop3.list().lines.length;
-	    Stdout("Message Count : " ~ toUtf8(count ) );
+	    Stdout("Message Count : " ~ toString(count ) );
 	    for ( int i = 0 ; i < count; i++ )
 		{
 		  POP3Response resp = pop3.retr(i+1);
@@ -404,6 +404,6 @@ unittest
 		}
 	    pop3.close();
 	}
-    catch ( POP3Exception e ) { Stdout("Exception Caught: ")(e.toUtf8)().newline; } 
+    catch ( POP3Exception e ) { Stdout("Exception Caught: ")(e.toString)().newline; } 
     }
 }

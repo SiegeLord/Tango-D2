@@ -61,7 +61,7 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
 			if((*s).upperCaseMapping !is null) {
 				// To speed up, use worst case for memory prealocation
 				// since the length of an UpperCaseMapping list is at most 4
-				// Make sure no relocation is made in the toUtf8 Method
+				// Make sure no relocation is made in the toString Method
 				// better allocation algorithm ?
 				int len = (*s).upperCaseMapping.length;
 				if(produced + len >= working.length)
@@ -72,12 +72,12 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
 				continue;
 			}
 		}
-		// Make sure no relocation is made in the toUtf8 Method
+		// Make sure no relocation is made in the toString Method
 		if(produced + 1 >= output.length)
 			working.length = working.length + working.length / 2 + 1;
 		working[produced++] =  d is null ? ch:(*d).simpleUpperCaseMapping;
 	}
-    return toUtf8(working[0..produced],output);
+    return toString(working[0..produced],output);
 }
 
 
@@ -110,11 +110,11 @@ char[] toUpper(char[] input, char[] output = null) {
 			if((*s).upperCaseMapping !is null) {
 				// To speed up, use worst case for memory prealocation
 				// since the length of an UpperCaseMapping list is at most 4
-				// Make sure no relocation is made in the toUtf8 Method
+				// Make sure no relocation is made in the toString Method
 				// better allocation algorithm ?
 				if(produced + (*s).upperCaseMapping.length * 4 >= output.length)
 						output.length = output.length + output.length / 2 +  (*s).upperCaseMapping.length * 4;
-				char[] res = toUtf8((*s).upperCaseMapping, output[produced..output.length], &ate);
+				char[] res = toString((*s).upperCaseMapping, output[produced..output.length], &ate);
 				debug {
 					assert(ate == (*s).upperCaseMapping.length);
 					assert(res.ptr == output[produced..output.length].ptr);
@@ -123,11 +123,11 @@ char[] toUpper(char[] input, char[] output = null) {
 				continue;
 			}
 		}
-		// Make sure no relocation is made in the toUtf8 Method
+		// Make sure no relocation is made in the toString Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 4;
 		buf[0] = d is null ? ch:(*d).simpleUpperCaseMapping;
-		char[] res = toUtf8(buf, output[produced..output.length], &ate);
+		char[] res = toString(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);
@@ -165,11 +165,11 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
 			}
 			if((*s).upperCaseMapping !is null) {
 				// To speed up, use worst case for memory prealocation
-				// Make sure no relocation is made in the toUtf16 Method
+				// Make sure no relocation is made in the toString16 Method
 				// better allocation algorithm ?
 				if(produced + (*s).upperCaseMapping.length * 2 >= output.length)
 					output.length = output.length + output.length / 2 +  (*s).upperCaseMapping.length * 3;
-				wchar[] res = toUtf16((*s).upperCaseMapping, output[produced..output.length], &ate);
+				wchar[] res = toString16((*s).upperCaseMapping, output[produced..output.length], &ate);
 				debug {
 					assert(ate == (*s).upperCaseMapping.length);
 					assert(res.ptr == output[produced..output.length].ptr);
@@ -178,11 +178,11 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
 				continue;
 			}
 		}
-		// Make sure no relocation is made in the toUtf16 Method
+		// Make sure no relocation is made in the toString16 Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 3;
 		buf[0] = d is null ? ch:(*d).simpleUpperCaseMapping;
-		wchar[] res = toUtf16(buf, output[produced..output.length], &ate);
+		wchar[] res = toString16(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);
@@ -262,11 +262,11 @@ char[] toLower(char[] input, char[] output = null) {
 			if((*s).lowerCaseMapping !is null) {
 				// To speed up, use worst case for memory prealocation
 				// since the length of an LowerCaseMapping list is at most 4
-				// Make sure no relocation is made in the toUtf8 Method
+				// Make sure no relocation is made in the toString Method
 				// better allocation algorithm ?
 				if(produced + (*s).lowerCaseMapping.length * 4 >= output.length)
 						output.length = output.length + output.length / 2 +  (*s).lowerCaseMapping.length * 4;
-				char[] res = toUtf8((*s).lowerCaseMapping, output[produced..output.length], &ate);
+				char[] res = toString((*s).lowerCaseMapping, output[produced..output.length], &ate);
 				debug {
 					assert(ate == (*s).lowerCaseMapping.length);
 					assert(res.ptr == output[produced..output.length].ptr);
@@ -275,11 +275,11 @@ char[] toLower(char[] input, char[] output = null) {
 				continue;
 			}
 		}
-		// Make sure no relocation is made in the toUtf8 Method
+		// Make sure no relocation is made in the toString Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 4;
 		buf[0] = d is null ? ch:(*d).simpleLowerCaseMapping;
-		char[] res = toUtf8(buf, output[produced..output.length], &ate);
+		char[] res = toString(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);
@@ -317,11 +317,11 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
 			}
 			if((*s).lowerCaseMapping !is null) {
 				// To speed up, use worst case for memory prealocation
-				// Make sure no relocation is made in the toUtf16 Method
+				// Make sure no relocation is made in the toString16 Method
 				// better allocation algorithm ?
 				if(produced + (*s).lowerCaseMapping.length * 2 >= output.length)
 					output.length = output.length + output.length / 2 +  (*s).lowerCaseMapping.length * 3;
-				wchar[] res = toUtf16((*s).lowerCaseMapping, output[produced..output.length], &ate);
+				wchar[] res = toString16((*s).lowerCaseMapping, output[produced..output.length], &ate);
 				debug {
 					assert(ate == (*s).lowerCaseMapping.length);
 					assert(res.ptr == output[produced..output.length].ptr);
@@ -330,11 +330,11 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
 				continue;
 			}
 		}
-		// Make sure no relocation is made in the toUtf16 Method
+		// Make sure no relocation is made in the toString16 Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 3;
 		buf[0] = d is null ? ch:(*d).simpleLowerCaseMapping;
-		wchar[] res = toUtf16(buf, output[produced..output.length], &ate);
+		wchar[] res = toString16(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);
@@ -409,11 +409,11 @@ char[] toFold(char[] input, char[] output = null) {
     	if(s !is null) {
     		// To speed up, use worst case for memory prealocation
     		// since the length of an UpperCaseMapping list is at most 4
-    		// Make sure no relocation is made in the toUtf8 Method
+    		// Make sure no relocation is made in the toString Method
     		// better allocation algorithm ?
     		if(produced + (*s).mapping.length * 4 >= output.length)
     			output.length = output.length + output.length / 2 +  (*s).mapping.length * 4;
-    		char[] res = toUtf8((*s).mapping, output[produced..output.length], &ate);
+    		char[] res = toString((*s).mapping, output[produced..output.length], &ate);
     		debug {
     			assert(ate == (*s).mapping.length);
     			assert(res.ptr == output[produced..output.length].ptr);
@@ -421,11 +421,11 @@ char[] toFold(char[] input, char[] output = null) {
     		produced += res.length;
     		continue;
     	}
-		// Make sure no relocation is made in the toUtf8 Method
+		// Make sure no relocation is made in the toString Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 4;
 		buf[0] = ch;
-		char[] res = toUtf8(buf, output[produced..output.length], &ate);
+		char[] res = toString(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);
@@ -457,11 +457,11 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
     	FoldingCaseData **s = (ch in foldingCaseData);
 		if(s !is null) {
 			// To speed up, use worst case for memory prealocation
-			// Make sure no relocation is made in the toUtf16 Method
+			// Make sure no relocation is made in the toString16 Method
 			// better allocation algorithm ?
 			if(produced + (*s).mapping.length * 2 >= output.length)
 				output.length = output.length + output.length / 2 +  (*s).mapping.length * 3;
-			wchar[] res = toUtf16((*s).mapping, output[produced..output.length], &ate);
+			wchar[] res = toString16((*s).mapping, output[produced..output.length], &ate);
 			debug {
 				assert(ate == (*s).mapping.length);
 				assert(res.ptr == output[produced..output.length].ptr);
@@ -469,11 +469,11 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
 			produced += res.length;
 			continue;
 		}
-		// Make sure no relocation is made in the toUtf16 Method
+		// Make sure no relocation is made in the toString16 Method
 		if(produced + 4 >= output.length)
 			output.length = output.length + output.length / 2 + 3;
 		buf[0] = ch;
-		wchar[] res = toUtf16(buf, output[produced..output.length], &ate);
+		wchar[] res = toString16(buf, output[produced..output.length], &ate);
 		debug {
 			assert(ate == 1);
 			assert(res.ptr == output[produced..output.length].ptr);

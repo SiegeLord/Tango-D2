@@ -330,10 +330,10 @@ private class Broadcaster
                 uint hash = jhash (channel.ptr, channel.length);
                 hash = (hash >> 24) ^ (hash & 0x00ffffff);
                   
-                auto address = Integer.toUtf8 (groupPrefix) ~ "." ~
-                               Integer.toUtf8 ((hash >> 16) & 0xff) ~ "." ~
-                               Integer.toUtf8 ((hash >> 8) & 0xff) ~ "." ~
-                               Integer.toUtf8 (hash & 0xff);
+                auto address = Integer.toString (groupPrefix) ~ "." ~
+                               Integer.toString ((hash >> 16) & 0xff) ~ "." ~
+                               Integer.toString ((hash >> 8) & 0xff) ~ "." ~
+                               Integer.toString (hash & 0xff);
 
                 // insert InternetAddress into hashmap
                 auto group = new InternetAddress (address, groupPort);
@@ -1064,7 +1064,7 @@ private class ConnectionPool
                             } catch (Object o)
                                     {
                                     if (! Runtime.isHalting)
-                                          parent.log.warn ("server is unavailable :: "~o.toUtf8);
+                                          parent.log.warn ("server is unavailable :: "~o.toString);
                                     }
                         return false;
                 }
@@ -1216,7 +1216,7 @@ private class Node
 
         ***********************************************************************/
         
-        override char[] toUtf8 ()
+        override char[] toString ()
         {
                 return name;
         }
@@ -1331,7 +1331,7 @@ private class Node
                                  }
                            catch (IOException x)
                                  {
-                                 log.trace ("IOException on server request :: "~x.toUtf8);
+                                 log.trace ("IOException on server request :: "~x.toString);
 
                                  // attempt to reconnect?
                                  if (attempts is 0 || !connect.reset)

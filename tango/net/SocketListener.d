@@ -170,7 +170,7 @@ class SocketListener : IListener
                                         break;
                                     else
                                        {
-                                       exception (x.toUtf8);
+                                       exception (x.toString);
                                        if (--lives is 0)
                                            exception ("listener thread aborting");
                                        }

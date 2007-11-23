@@ -75,9 +75,9 @@ class OutOfMemoryException : Exception
         super( "Memory allocation failed", file, line );
     }
 
-    char[] toUtf8()
+    char[] toString()
     {
-        return msg ? super.toUtf8() : "Memory allocation failed";
+        return msg ? super.toString() : "Memory allocation failed";
     }
 }
 
@@ -105,11 +105,11 @@ class TracedException : Exception
         m_info = traceContext();
     }
 
-    char[] toUtf8()
+    char[] toString()
     {
         if( m_info is null )
-            return super.toUtf8();
-        char[] buf = super.toUtf8();
+            return super.toString();
+        char[] buf = super.toString();
         buf ~= "\n----------------";
         foreach( line; m_info )
             buf ~= "\n" ~ line;
@@ -181,7 +181,7 @@ class FinalizeException : TracedException
         info = c;
     }
 
-    char[] toUtf8()
+    char[] toString()
     {
         return "An exception was thrown while finalizing an instance of class " ~ info.name;
     }

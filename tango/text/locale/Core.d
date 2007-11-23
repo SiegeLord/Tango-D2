@@ -401,7 +401,7 @@ version (Clone)
    * Returns the name of the Culture.
    * Returns: A string containing the name of the Culture in the format &lt;language&gt;"-"&lt;region&gt;.
    */
-  public override char[] toUtf8() {
+  public override char[] toString() {
     return cultureData_.name;
   }
 
@@ -870,7 +870,7 @@ public class Region {
    * Returns a string containing the ISO 3166 code, or the $(LINK2 #Region_name, name), of the current Region.
    * Returns: A string containing the ISO 3166 code, or the name, of the current Region.
    */
-  public override char[] toUtf8() {
+  public override char[] toString() {
     return name_;
   }
 

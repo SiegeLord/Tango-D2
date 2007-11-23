@@ -26,7 +26,7 @@ void main( char[][] args )
         char[] temp = objname( file );
         exec( "dmd -c -inline -release -O " ~
               "-of" ~ objname( file ) ~ " " ~
-              file.toUtf8 );
+              file.toString );
         outf.write(temp), outf.write("\n");
         list ~= " " ~ temp;
         delete temp;
@@ -94,5 +94,5 @@ void exec( char[][] cmd, char[][char[]] env, char[] workDir = null )
     Stdout.stream.copy( proc.stderr );
     auto result = proc.wait();
     if( result.reason != Process.Result.Exit )
-        throw new Exception( result.toUtf8() );
+        throw new Exception( result.toString() );
 }

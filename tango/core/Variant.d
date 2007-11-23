@@ -21,11 +21,11 @@ import tango.text.convert.Utf;
 
 private
 {
-    alias tango.text.convert.Float.toUtf8 toUtf8;
-    alias tango.text.convert.Integer.toUtf8 toUtf8;
-    alias tango.text.convert.Utf.toUtf8 toUtf8;
+    alias tango.text.convert.Float.toString toString;
+    alias tango.text.convert.Integer.toString toString;
+    alias tango.text.convert.Utf.toString toString;
 
-    char[] toUtf8( bool v )
+    char[] toString( bool v )
     {
         return v ? "true" : "false";
     }
@@ -245,7 +245,7 @@ class VariantTypeMismatchException : TracedException
      */
     this( TypeInfo expected, TypeInfo got )
     {
-        super( "cannot convert " ~ expected.toUtf8 ~ " value to a " ~ got.toUtf8 );
+        super( "cannot convert " ~ expected.toString ~ " value to a " ~ got.toString );
     }
 }
 
@@ -518,9 +518,9 @@ struct Variant
      * Returns:
      *  A string representing the currently contained value.
      */
-    char[] toUtf8()
+    char[] toString()
     {
-        return type.toUtf8;
+        return type.toString;
         /+
         // Special case: void type
         if( type is typeid(void) )
@@ -534,11 +534,11 @@ struct Variant
         }
         else if( type is typeid(wchar[]) )
         {
-            return .toUtf8( get!(wchar[]) );
+            return .toString( get!(wchar[]) );
         }
         else if( type is typeid(dchar[]) )
         {
-            return .toUtf8( get!(dchar[]) );
+            return .toString( get!(dchar[]) );
         }
         // Everything else
         else
@@ -589,33 +589,33 @@ debug( UnitTest )
     {
         Variant v;
 
-        assert( v.isA!(void), v.type.toUtf8 );
+        assert( v.isA!(void), v.type.toString );
         v = 42;
-        assert( v.isA!(int), v.type.toUtf8 );
-        assert( v.isImplicitly!(long), v.type.toUtf8 );
-        assert( v.isImplicitly!(ulong), v.type.toUtf8 );
-        assert( !v.isImplicitly!(uint), v.type.toUtf8 );
+        assert( v.isA!(int), v.type.toString );
+        assert( v.isImplicitly!(long), v.type.toString );
+        assert( v.isImplicitly!(ulong), v.type.toString );
+        assert( !v.isImplicitly!(uint), v.type.toString );
         assert( v.get!(int) == 42 );
         assert( v.get!(long) == 42L );
         assert( v.get!(ulong) == 42uL );
 
         v = "Hello, World!"c;
-        assert( v.isA!(char[]), v.type.toUtf8 );
-        assert( !v.isImplicitly!(wchar[]), v.type.toUtf8 );
+        assert( v.isA!(char[]), v.type.toString );
+        assert( !v.isImplicitly!(wchar[]), v.type.toString );
         assert( v.get!(char[]) == "Hello, World!" );
 
         v = [1,2,3,4,5];
-        assert( v.isA!(int[]), v.type.toUtf8 );
+        assert( v.isA!(int[]), v.type.toString );
         assert( v.get!(int[]) == [1,2,3,4,5] );
 
         v = 3.1413;
-        assert( v.isA!(double), v.type.toUtf8 );
-        assert( v.isImplicitly!(real), v.type.toUtf8 );
-        assert( !v.isImplicitly!(float), v.type.toUtf8 );
+        assert( v.isA!(double), v.type.toString );
+        assert( v.isImplicitly!(real), v.type.toString );
+        assert( !v.isImplicitly!(float), v.type.toString );
         assert( v.get!(double) == 3.1413 );
 
         auto u = Variant(v);
-        assert( u.isA!(double), u.type.toUtf8 );
+        assert( u.isA!(double), u.type.toString );
         assert( u.get!(double) == 3.1413 );
 
         v = 38;
@@ -656,15 +656,15 @@ debug( UnitTest )
 
         v = "abc"; v ~= "def"; assert( v == "abcdef" );
         /+
-        v = Variant.init;   assert( v.toUtf8 == "Variant.init", v.toUtf8 );
-        v = 42;             assert( v.toUtf8 == "42", v.toUtf8 );
-        v = "abc";          assert( v.toUtf8 == "abc", v.toUtf8 );
+        v = Variant.init;   assert( v.toString == "Variant.init", v.toString );
+        v = 42;             assert( v.toString == "42", v.toString );
+        v = "abc";          assert( v.toString == "abc", v.toString );
 
         v = [1,2,3];
-        printf( "v.toUtf8: %.*s\n", v.toUtf8 );
-        assert( v.toUtf8 == "[1,2,3]", v.toUtf8 );
+        printf( "v.toString: %.*s\n", v.toString );
+        assert( v.toString == "[1,2,3]", v.toString );
 
-        v = 1+2.0i;         assert( v.toUtf8 == "1+2i", v.toUtf8 );
+        v = 1+2.0i;         assert( v.toString == "1+2i", v.toString );
         +/
         assert( Variant(0) < Variant(42) );
         assert( Variant(42) > Variant(0) );

@@ -246,7 +246,7 @@ unittest
 	catch(Exception ex)
 	{
 		t0++;
-		printf("%.*s\n", ex.toUtf8);
+		printf("%.*s\n", ex.toString);
 	}
 
 	assert(t0 == 1);
@@ -306,7 +306,7 @@ unittest
     }
     catch(Exception e)
     {
-        printf("%.*s\n", e.toUtf8);
+        printf("%.*s\n", e.toString);
     }
     
     assert(a);
@@ -324,7 +324,7 @@ unittest
     }
     catch(Exception e)
     {
-        printf("%.*s\n", e.toUtf8);
+        printf("%.*s\n", e.toString);
     }
     
     printf("blah2\n");
@@ -360,7 +360,7 @@ unittest
 		{
 			q1++;
 			printf("!!!!!!!!GOT EXCEPTION!!!!!!!!\n");
-			printf("%.*s\n", ex.toUtf8);
+			printf("%.*s\n", ex.toString);
 		}
 	});
 
@@ -394,7 +394,7 @@ unittest
         }
         catch(Exception ex)
         {
-            printf("%.*s\n", ex.toUtf8);
+            printf("%.*s\n", ex.toString);
         }
     });
     
@@ -456,7 +456,7 @@ unittest
     }
     catch(Exception e)
     {
-        printf("%.*s\n", e.toUtf8);
+        printf("%.*s\n", e.toString);
     }
     
     assert(a);
@@ -739,7 +739,7 @@ unittest
     }
     catch(Exception e)
     {
-        printf("%.*s\n", e.toUtf8);
+        printf("%.*s\n", e.toString);
     }
     
     assert(q0 == 1);

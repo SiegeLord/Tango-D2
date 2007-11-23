@@ -69,7 +69,7 @@ class HttpTriplet : IWritable
 
         **********************************************************************/
 
-        override char[] toUtf8 ()
+        override char[] toString ()
         {
                 return line;
         }
@@ -82,7 +82,7 @@ class HttpTriplet : IWritable
 
         void write (IWriter writer)
         {
-               writer(toUtf8).newline();
+               writer(toString).newline();
         }
 
         /**********************************************************************

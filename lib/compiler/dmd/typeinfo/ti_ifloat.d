@@ -7,6 +7,6 @@ private import typeinfo.ti_float;
 
 class TypeInfo_o : TypeInfo_f
 {
-    char[] toUtf8() { return "ifloat"; }
+    char[] toString() { return "ifloat"; }
 }
 

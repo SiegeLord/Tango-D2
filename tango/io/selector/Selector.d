@@ -89,7 +89,7 @@ module tango.io.selector.Selector;
  * }
  * catch (SelectorException e)
  * {
- *     Stdout.format("Exception caught: {0}", e.toUtf8()).newline();
+ *     Stdout.format("Exception caught: {0}", e.toString()).newline();
  * }
  * ---
  *

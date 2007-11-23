@@ -72,7 +72,7 @@ class ClusterThread
                 buffer.setConduit (conduit);
 
                 // get client infomation
-                client = server.remoteAddress(conduit).toUtf8;
+                client = server.remoteAddress(conduit).toString;
 
                 // setup cluster protocol-transcoders
                 writer = new ProtocolWriter (buffer);
@@ -125,7 +125,7 @@ class ClusterThread
                               } catch (Object x)
                                       {
                                       logger.error (sprint ("{} cluster request error '{}'", client, x));
-                                      writer.exception (sprint ("cluster request error '{}'", x.toUtf8));
+                                      writer.exception (sprint ("cluster request error '{}'", x.toString));
                                       }
 
                           // send response back to client

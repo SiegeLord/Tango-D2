@@ -132,6 +132,6 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] toUtf8 ();
+        abstract char[] toString ();
 }
 

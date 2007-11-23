@@ -5,7 +5,7 @@ module typeinfo.ti_long;
 
 class TypeInfo_l : TypeInfo
 {
-    char[] toUtf8() { return "long"; }
+    char[] toString() { return "long"; }
 
     hash_t getHash(void *p)
     {

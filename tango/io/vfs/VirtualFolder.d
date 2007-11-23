@@ -73,7 +73,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        final char[] toUtf8()
+        final char[] toString()
         {
                 return name;
         }
@@ -628,6 +628,6 @@ void main()
         Stdout.formatln ("cat.files = {}", cat.files);
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
         foreach (file; cat)
-                 Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toUtf8);
+                 Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString);
 }
 }

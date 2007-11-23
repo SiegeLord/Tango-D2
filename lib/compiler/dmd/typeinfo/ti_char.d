@@ -3,7 +3,7 @@ module typeinfo.ti_char;
 
 class TypeInfo_a : TypeInfo
 {
-    char[] toUtf8() { return "char"; }
+    char[] toString() { return "char"; }
 
     hash_t getHash(void *p)
     {

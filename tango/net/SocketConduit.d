@@ -72,9 +72,9 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        override char[] toUtf8()
+        override char[] toString()
         {
-                return socket.toUtf8;
+                return socket.toString;
         }
 
         /***********************************************************************

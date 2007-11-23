@@ -215,10 +215,10 @@ class UnicodeBom(T) : BomSniffer
                               return cast(T[]) x;
 
                           if (type == Utf16)
-			      ret = Utf.toUtf8 (cast(wchar[]) x, dst, ate);
+			      ret = Utf.toString (cast(wchar[]) x, dst, ate);
                           else
                           if (type == Utf32)
-                              ret = Utf.toUtf8 (cast(dchar[]) x, dst, ate);
+                              ret = Utf.toString (cast(dchar[]) x, dst, ate);
                           }
 
                 static if (is (T == wchar))
@@ -227,10 +227,10 @@ class UnicodeBom(T) : BomSniffer
                               return cast(T[]) x;
 
                           if (type == Utf8)
-                              ret = Utf.toUtf16 (cast(char[]) x, dst, ate);
+                              ret = Utf.toString16 (cast(char[]) x, dst, ate);
                           else
                           if (type == Utf32)
-                              ret = Utf.toUtf16 (cast(dchar[]) x, dst, ate);
+                              ret = Utf.toString16 (cast(dchar[]) x, dst, ate);
                           }
 
                 static if (is (T == dchar))
@@ -239,10 +239,10 @@ class UnicodeBom(T) : BomSniffer
                               return cast(T[]) x;
 
                           if (type == Utf8)
-                              ret = Utf.toUtf32 (cast(char[]) x, dst, ate);
+                              ret = Utf.toString32 (cast(char[]) x, dst, ate);
                           else
                           if (type == Utf16)
-                              ret = Utf.toUtf32 (cast(wchar[]) x, dst, ate);
+                              ret = Utf.toString32 (cast(wchar[]) x, dst, ate);
                           }
 
                 return ret;
@@ -263,10 +263,10 @@ class UnicodeBom(T) : BomSniffer
                               return x;
 
                           if (type == Utf16)
-                              ret = Utf.toUtf16 (x, cast(wchar[]) dst, ate);
+                              ret = Utf.toString16 (x, cast(wchar[]) dst, ate);
                           else
                           if (type == Utf32)
-                              ret = Utf.toUtf32 (x, cast(dchar[]) dst, ate);
+                              ret = Utf.toString32 (x, cast(dchar[]) dst, ate);
                           }
 
                 static if (is (T == wchar))
@@ -275,10 +275,10 @@ class UnicodeBom(T) : BomSniffer
                               return x;
 
                           if (type == Utf8)
-                              ret = Utf.toUtf8 (x, cast(char[]) dst, ate);
+                              ret = Utf.toString (x, cast(char[]) dst, ate);
                           else
                           if (type == Utf32)
-                              ret = Utf.toUtf32 (x, cast(dchar[]) dst, ate);
+                              ret = Utf.toString32 (x, cast(dchar[]) dst, ate);
                           }
 
                 static if (is (T == dchar))
@@ -287,10 +287,10 @@ class UnicodeBom(T) : BomSniffer
                               return x;
 
                           if (type == Utf8)
-                              ret = Utf.toUtf8 (x, cast(char[]) dst, ate);
+                              ret = Utf.toString (x, cast(char[]) dst, ate);
                           else
                           if (type == Utf16)
-                              ret = Utf.toUtf16 (x, cast(wchar[]) dst, ate);
+                              ret = Utf.toString16 (x, cast(wchar[]) dst, ate);
                           }
 
                 return ret;

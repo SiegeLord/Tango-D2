@@ -108,9 +108,9 @@ version( DDoc )
      * be checked for:
      *
      * -----
-     * char[]  toUtf8();
-     * wchar[] toUtf16();
-     * dchar[] toUtf32();
+     * char[]  toString();
+     * wchar[] toString16();
+     * dchar[] toString32();
      * char[]  toString();
      * -----
      *
@@ -466,13 +466,13 @@ template TN(T)
 template toUtf(T)
 {
     static if( is( T == char[] ) )
-        alias tango.text.convert.Utf.toUtf8 toUtf;
+        alias tango.text.convert.Utf.toString toUtf;
 
     else static if( is( T == wchar[] ) )
-        alias tango.text.convert.Utf.toUtf16 toUtf;
+        alias tango.text.convert.Utf.toString16 toUtf;
 
     else
-        alias tango.text.convert.Utf.toUtf32 toUtf;
+        alias tango.text.convert.Utf.toString32 toUtf;
 }
 
 template UtfNum(T)
@@ -549,14 +549,14 @@ template fromUDT(char[] fallthrough="")
                                 ~UtfNum!(D)~"()")) == D ) )
                 return mixin("value.toUtf"~UtfNum!(D)~"()");
 
-            else static if( is( typeof(value.toUtf8()) == char[] ) )
-                return toUtf!(D)(value.toUtf8);
+            else static if( is( typeof(value.toString()) == char[] ) )
+                return toUtf!(D)(value.toString);
 
-            else static if( is( typeof(value.toUtf16()) == wchar[] ) )
-                return toUtf!(D)(value.toUtf16);
+            else static if( is( typeof(value.toString16()) == wchar[] ) )
+                return toUtf!(D)(value.toString16);
 
-            else static if( is( typeof(value.toUtf32()) == dchar[] ) )
-                return toUtf!(D)(value.toUtf32);
+            else static if( is( typeof(value.toString32()) == dchar[] ) )
+                return toUtf!(D)(value.toString32);
 
             else static if( is( typeof(value.toString()) == char[] ) )
             {
@@ -867,15 +867,15 @@ D toChar(D,S)(S value)
 D toStringFromString(D,S)(S value)
 {
     static if( is( typeof(D[0]) == char ) )
-        return tango.text.convert.Utf.toUtf8(value);
+        return tango.text.convert.Utf.toString(value);
 
     else static if( is( typeof(D[0]) == wchar ) )
-        return tango.text.convert.Utf.toUtf16(value);
+        return tango.text.convert.Utf.toString16(value);
 
     else
     {
         static assert( is( typeof(D[0]) == dchar ) );
-        return tango.text.convert.Utf.toUtf32(value);
+        return tango.text.convert.Utf.toString32(value);
     }
 }
 

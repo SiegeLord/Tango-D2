@@ -76,9 +76,9 @@ class ServerThread
                                   server.getLogger.error ("Socket.accept failed");
 
                            } catch (IOException x)
-                                    server.getLogger.error ("IOException: "~x.toUtf8);
+                                    server.getLogger.error ("IOException: "~x.toString);
 
                              catch (Object x)
-                                    server.getLogger.fatal ("Exception: "~x.toUtf8);
+                                    server.getLogger.fatal ("Exception: "~x.toString);
         }
 }

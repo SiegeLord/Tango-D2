@@ -171,9 +171,9 @@
         class UniText
         {
                 // convert content
-                abstract char[]  toUtf8  (char[]  dst = null);
-                abstract wchar[] toUtf16 (wchar[] dst = null);
-                abstract dchar[] toUtf32 (dchar[] dst = null);
+                abstract char[]  toString  (char[]  dst = null);
+                abstract wchar[] toString16 (wchar[] dst = null);
+                abstract dchar[] toString32 (dchar[] dst = null);
         }
         ---
 
@@ -570,10 +570,10 @@ class Text(T) : TextView!(T)
                            return append(s);
 
                 static if (is (T == wchar))
-                           return append (Utf.toUtf16(s, tmp));
+                           return append (Utf.toString16(s, tmp));
 
                 static if (is (T == dchar))
-                           return append (Utf.toUtf32(s, tmp));
+                           return append (Utf.toString32(s, tmp));
         }
 
         /// ditto
@@ -582,13 +582,13 @@ class Text(T) : TextView!(T)
                 T[1024] tmp = void;
 
                 static if (is (T == char))
-                           return append (Utf.toUtf8(s, tmp));
+                           return append (Utf.toString(s, tmp));
 
                 static if (is (T == wchar))
                            return append (s);
 
                 static if (is (T == dchar))
-                           return append (Utf.toUtf32(s, tmp));
+                           return append (Utf.toString32(s, tmp));
         }
 
         /// ditto
@@ -597,10 +597,10 @@ class Text(T) : TextView!(T)
                 T[1024] tmp = void;
 
                 static if (is (T == char))
-                           return append (Utf.toUtf8(s, tmp));
+                           return append (Utf.toString(s, tmp));
 
                 static if (is (T == wchar))
-                           return append (Utf.toUtf16(s, tmp));
+                           return append (Utf.toString16(s, tmp));
 
                 static if (is (T == dchar))
                            return append (s);
@@ -609,7 +609,7 @@ class Text(T) : TextView!(T)
         /// ditto
         final Text encode (Object o)
         {
-                return encode (o.toUtf8);
+                return encode (o.toString);
         }
 
         /***********************************************************************
@@ -969,39 +969,39 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final char[] toUtf8 (char[] dst = null)
+        final char[] toString (char[] dst = null)
         {
                 static if (is (T == char))
                            return slice();
 
                 static if (is (T == wchar))
-                           return Utf.toUtf8 (slice, dst);
+                           return Utf.toString (slice, dst);
 
                 static if (is (T == dchar))
-                           return Utf.toUtf8 (slice, dst);
+                           return Utf.toString (slice, dst);
         }
 
         /// ditto
-        final wchar[] toUtf16 (wchar[] dst = null)
+        final wchar[] toString16 (wchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toUtf16 (slice, dst);
+                           return Utf.toString16 (slice, dst);
 
                 static if (is (T == wchar))
                            return slice;
 
                 static if (is (T == dchar))
-                           return Utf.toUtf16 (slice, dst);
+                           return Utf.toString16 (slice, dst);
         }
 
         /// ditto
-        final dchar[] toUtf32 (dchar[] dst = null)
+        final dchar[] toString32 (dchar[] dst = null)
         {
                 static if (is (T == char))
-                           return Utf.toUtf32 (slice, dst);
+                           return Utf.toString32 (slice, dst);
 
                 static if (is (T == wchar))
-                           return Utf.toUtf32 (slice, dst);
+                           return Utf.toString32 (slice, dst);
 
                 static if (is (T == dchar))
                            return slice;
@@ -1039,7 +1039,7 @@ class Text(T) : TextView!(T)
 
                 // this can become expensive ...
                 char[1024] tmp = void;
-                return this.toUtf8(tmp) == o.toUtf8;
+                return this.toString(tmp) == o.toString;
         }
 
         /// ditto
@@ -1335,11 +1335,11 @@ class TextView(T) : UniText
 
 class UniText
 {
-        abstract char[]  toUtf8  (char[]  dst = null);
+        abstract char[]  toString  (char[]  dst = null);
 
-        abstract wchar[] toUtf16 (wchar[] dst = null);
+        abstract wchar[] toString16 (wchar[] dst = null);
 
-        abstract dchar[] toUtf32 (dchar[] dst = null);
+        abstract dchar[] toString32 (dchar[] dst = null);
 
         abstract TypeInfo encoding();
 }
@@ -1384,7 +1384,7 @@ debug (UnitTest)
 
         assert (s.clear.append(0xf0, Integer.Style.Binary) == "11110000");
 
-        assert (s.clear.encode("one"d).toUtf8 == "one");
+        assert (s.clear.encode("one"d).toString == "one");
 
         assert (Util.splitLines(s.clear.append("a\nb").slice).length is 2);
 

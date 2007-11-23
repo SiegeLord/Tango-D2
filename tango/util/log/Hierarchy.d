@@ -60,7 +60,7 @@ static this()
         auto log = Log.getLogger ("mail.send.writer");
 
         log.info  ("an informational message");
-        log.error ("an exception message: " ~ exception.toUtf8);
+        log.error ("an exception message: " ~ exception.toString);
 
         etc ...
         ---

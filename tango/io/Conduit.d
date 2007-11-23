@@ -44,7 +44,7 @@ class Conduit : IConduit, ISelectable
 
         ***********************************************************************/
 
-        abstract char[] toUtf8 (); 
+        char[] toString (); 
                      
         /***********************************************************************
 
@@ -212,7 +212,7 @@ class Conduit : IConduit, ISelectable
                       auto p = tmp.ptr;
                       for (uint j; len > 0; len -= j, p += j)
                            if ((j = dst.write (p[0..len])) is IConduit.Eof)
-                                con.error ("Conduit.copy :: Eof while writing to: "~con.toUtf8);
+                                con.error ("Conduit.copy :: Eof while writing to: "~con.toString);
                       }
                 delete tmp;
                 return dst;

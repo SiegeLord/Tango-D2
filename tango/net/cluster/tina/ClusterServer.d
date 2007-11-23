@@ -139,7 +139,7 @@ abstract class ClusterServer : AbstractServer
 
         **********************************************************************/
 
-        override char[] toUtf8 ()
+        override char[] toString ()
         {
                 return "cluster::" ~ name;
         }

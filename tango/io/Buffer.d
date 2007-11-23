@@ -1129,7 +1129,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override char[] toUtf8 ()
+        override char[] toString ()
         {
                 return "<buffer>";
         }

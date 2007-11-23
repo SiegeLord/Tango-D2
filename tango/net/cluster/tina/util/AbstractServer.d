@@ -77,7 +77,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        protected abstract char[] toUtf8();
+        protected abstract char[] toString();
 
         /**********************************************************************
 

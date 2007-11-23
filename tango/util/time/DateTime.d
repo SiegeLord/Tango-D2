@@ -59,7 +59,7 @@ struct DateTime
         /// Represents the smallest and largest DateTime value.
         public static const DateTime    epoch = {0},
                                         max = {(TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1},
-                                        min = {-max.ticks},
+                                        min = {-((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1)},
                                         epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
                                         epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
 

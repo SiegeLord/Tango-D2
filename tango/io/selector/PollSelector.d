@@ -279,7 +279,7 @@ version (Posix)
                 {
                     debug (selector)
                         Stdout.format("--- Exception inside PollSelector.unregister(handle={0}): {1}",
-                                      cast(int) conduit.fileHandle(), e.toUtf8());
+                                      cast(int) conduit.fileHandle(), e.toString());
 
                     throw new UnregisteredConduitException(__FILE__, __LINE__);
                 }

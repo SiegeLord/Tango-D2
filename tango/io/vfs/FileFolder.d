@@ -91,9 +91,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final char[] toUtf8 ()
+        final char[] toString ()
         {
-                return path.toUtf8;
+                return path.toString;
         }
 
         /***********************************************************************
@@ -110,8 +110,8 @@ class FileFolder : VfsFolder
         {       
                 if (mounting && cast(FileFolder) folder)
                    {
-                   auto src = FilePath.padded(this.toUtf8);
-                   auto dst = FilePath.padded(folder.toUtf8);
+                   auto src = FilePath.padded(this.toString);
+                   auto dst = FilePath.padded(folder.toString);
 
                    auto len = src.length;
                    if (len > dst.length)
@@ -130,7 +130,7 @@ class FileFolder : VfsFolder
 
         final VfsFile file (char[] name)
         {
-                return (new FileHost).set (path.toUtf8, name);
+                return (new FileHost).set (path.toString, name);
         }
 
         /***********************************************************************
@@ -295,13 +295,13 @@ class FileFolder : VfsFolder
                 if (path.exists)
                    {
                    if (path.isFolder is false)
-                       error ("FileFolder.open :: path exists but not as a folder: "~path.toUtf8);
+                       error ("FileFolder.open :: path exists but not as a folder: "~path.toString);
                    }
                 else
                    if (create)
                        path.create;
                    else
-                      error ("FileFolder.open :: path does not exist: "~path.toUtf8);
+                      error ("FileFolder.open :: path does not exist: "~path.toString);
                 return path;
         }
 }
@@ -625,9 +625,9 @@ private class FileHost : VfsFile
 
         ***********************************************************************/
 
-        final char[] toUtf8 ()
+        final char[] toString ()
         {
-                return path.toUtf8;
+                return path.toString;
         }
 
         /***********************************************************************
@@ -744,7 +744,7 @@ private class FileHost : VfsFile
 
         final VfsFile dup()
         {
-                return new FileHost (path.toUtf8);
+                return new FileHost (path.toString);
         }
 
         /***********************************************************************
@@ -798,6 +798,6 @@ void main()
         Stdout.formatln ("cat.files = {}", cat.files);
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
         //foreach (file; cat)
-        //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toUtf8);
+        //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString);
 }
 }

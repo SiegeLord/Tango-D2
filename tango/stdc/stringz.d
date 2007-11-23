@@ -16,7 +16,7 @@ module tango.stdc.stringz;
  * Convert array of chars s[] to a C-style 0 terminated string.
  */
 
-char* toUtf8z (char[] s)
+char* toStringz (char[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
@@ -37,7 +37,7 @@ char[] fromUtf8z (char* s)
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
 
-wchar* toUtf16z (wchar[] s)
+wchar* toString16z (wchar[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
@@ -78,14 +78,14 @@ debug (UnitTest)
         {
         debug(string) printf("stdc.stringz.unittest\n");
 
-        char* p = toUtf8z("foo");
+        char* p = toStringz("foo");
         assert(strlenz(p) == 3);
         char foo[] = "abbzxyzzy";
-        p = toUtf8z(foo[3..5]);
+        p = toStringz(foo[3..5]);
         assert(strlenz(p) == 2);
 
         char[] test = "\0";
-        p = toUtf8z(test);
+        p = toStringz(test);
         assert(*p == 0);
         assert(p == test.ptr);
         }

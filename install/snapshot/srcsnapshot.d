@@ -189,18 +189,18 @@ int main(char[][] args)
         dldir.createFolder();
 
     auto datetgz = new FilePath(packdirdate ~ ".tar.gz");
-    auto dltgz = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datetgz.toUtf8);
+    auto dltgz = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datetgz.toString);
     datetgz.rename(dltgz);
     
     auto datezip = new FilePath(packdirdate ~ ".zip");
-    auto dlzip = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datezip.toUtf8);
+    auto dlzip = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ datezip.toString);
     datezip.rename(dlzip);
  
     auto currenttgz = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ packdircurrent ~ ".tar.gz");
-    currenttgz.copy(datetgz.toUtf8);
+    currenttgz.copy(datetgz.toString);
  
     auto currentzip = new FilePath(dlpath ~ FileConst.PathSeparatorString ~ packdircurrent ~ ".zip");
-    currentzip.copy(datezip.toUtf8);
+    currentzip.copy(datezip.toString);
 
     return 0;
 }

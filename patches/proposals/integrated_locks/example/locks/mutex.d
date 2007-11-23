@@ -67,11 +67,11 @@ void testLocking()
         }
         catch (LockException e)
         {
-            Stderr.formatln("Lock exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Lock exception caught inside mutex testing thread:\n{0}\n", e.toString());
         }
         catch (Exception e)
         {
-            Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Unexpected exception caught inside mutex testing thread:\n{0}\n", e.toString());
         }
     }
 
@@ -159,11 +159,11 @@ void testObjectLocking()
         }
         catch (LockException e)
         {
-            Stderr.formatln("Lock exception caught inside ObjectMutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Lock exception caught inside ObjectMutex testing thread:\n{0}\n", e.toString());
         }
         catch (Exception e)
         {
-            Stderr.formatln("Unexpected exception caught inside ObjectMutex testing thread:\n{0}\n", e.toUtf8());
+            Stderr.formatln("Unexpected exception caught inside ObjectMutex testing thread:\n{0}\n", e.toString());
         }
     }
 
@@ -233,11 +233,11 @@ void testRecursive()
     }
     catch (LockException e)
     {
-        Stderr.formatln("Lock exception caught in recursive mutex test:\n{0}\n", e.toUtf8());
+        Stderr.formatln("Lock exception caught in recursive mutex test:\n{0}\n", e.toString());
     }
     catch (Exception e)
     {
-        Stderr.formatln("Unexpected exception caught in recursive mutex test:\n{0}\n", e.toUtf8());
+        Stderr.formatln("Unexpected exception caught in recursive mutex test:\n{0}\n", e.toString());
     }
 
     for (uint i = 0; i < lockCount; i++)

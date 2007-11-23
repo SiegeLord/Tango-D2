@@ -27,7 +27,7 @@ void main()
     {
         auto p = new Process(command, null);
 
-        Stdout.formatln("Executing {0}", p.toUtf8());
+        Stdout.formatln("Executing {0}", p.toString());
         p.execute();
 
         Stdout.formatln("Output from process: {0} (pid {1})\n---",
@@ -43,18 +43,18 @@ void main()
         auto result = p.wait();
 
         Stdout.formatln("Process '{0}' ({1}) finished: {2}",
-                        p.programName, p.pid, result.toUtf8());
+                        p.programName, p.pid, result.toString());
     }
     catch (ProcessException e)
     {
-        Stdout.formatln("Process execution failed: {0}", e.toUtf8());
+        Stdout.formatln("Process execution failed: {0}", e.toString());
     }
     catch (IOException e)
     {
-        Stdout.formatln("Input/output exception caught: {0}", e.toUtf8());
+        Stdout.formatln("Input/output exception caught: {0}", e.toString());
     }
     catch (Exception e)
     {
-        Stdout.formatln("Unexpected exception caught: {0}", e.toUtf8());
+        Stdout.formatln("Unexpected exception caught: {0}", e.toString());
     }
 }

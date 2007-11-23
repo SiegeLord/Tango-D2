@@ -1851,7 +1851,7 @@ class FTPException: Exception
     }
 
     /// A string representation of the error.
-    char[] toUtf8()
+    char[] toString()
     {
         char[] buffer = new char[this.msg.length + 4];
 

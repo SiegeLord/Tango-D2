@@ -7,6 +7,6 @@ private import typeinfo.ti_real;
 
 class TypeInfo_j : TypeInfo_e
 {
-    char[] toUtf8() { return "ireal"; }
+    char[] toString() { return "ireal"; }
 }
 

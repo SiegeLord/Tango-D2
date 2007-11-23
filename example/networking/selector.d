@@ -281,11 +281,11 @@ void testSelector(ISelector selector)
     }
     catch (SelectorException e)
     {
-        log.error(sprint("Selector exception caught:\n{0}", e.toUtf8()));
+        log.error(sprint("Selector exception caught:\n{0}", e.toString()));
     }
     catch (Exception e)
     {
-        log.error(sprint("Exception caught:\n{0}", e.toUtf8()));
+        log.error(sprint("Exception caught:\n{0}", e.toString()));
     }
 
     log.info(sprint("Success: connect={0}; recv={1}; send={2}; close={3}", 
@@ -390,7 +390,7 @@ void clientThreadFunc()
     }
     catch (Exception e)
     {
-        log.error(sprint("Exception caught:\n{0}", e.toUtf8()));
+        log.error(sprint("Exception caught:\n{0}", e.toString()));
     }
     debug (selector)
         log.trace("Leaving thread");

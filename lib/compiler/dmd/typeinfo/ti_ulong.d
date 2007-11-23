@@ -5,7 +5,7 @@ module typeinfo.ti_ulong;
 
 class TypeInfo_m : TypeInfo
 {
-    char[] toUtf8() { return "ulong"; }
+    char[] toString() { return "ulong"; }
 
     hash_t getHash(void *p)
     {

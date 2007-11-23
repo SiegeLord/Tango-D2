@@ -39,7 +39,7 @@ class DeviceConduit : Conduit
 
         final void error ()
         {
-                super.error (toUtf8() ~ " :: " ~ SysError.lastMsg);
+                super.error (toString() ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -48,7 +48,7 @@ class DeviceConduit : Conduit
 
         ***********************************************************************/
 
-        override char[] toUtf8()
+        override char[] toString()
         {
                 return "<device>";
         }

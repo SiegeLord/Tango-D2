@@ -29,7 +29,7 @@ private import typeinfo.ti_double;
 
 class TypeInfo_Ad : TypeInfo
 {
-    char[] toUtf8() { return "double[]"; }
+    char[] toString() { return "double[]"; }
 
     hash_t getHash(void *p)
     {   double[] s = *cast(double[]*)p;
@@ -107,7 +107,7 @@ class TypeInfo_Ad : TypeInfo
 
 class TypeInfo_Ap : TypeInfo_Ad
 {
-    char[] toUtf8() { return "idouble[]"; }
+    char[] toString() { return "idouble[]"; }
 
     TypeInfo next()
     {

@@ -24,7 +24,7 @@ void main(char[][] args) {
 
     scan(args[1], delegate bool (FilePath fp, bool isDir) {
          ++total;
-         return isDir || regex.test(fp.toUtf8);
+         return isDir || regex.test(fp.toString);
     });
 
 

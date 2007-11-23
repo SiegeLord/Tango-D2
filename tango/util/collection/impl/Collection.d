@@ -230,7 +230,7 @@ public abstract class Collection(T) : Dispenser!(T)
 
         /***********************************************************************
 
-                Default implementation of toUtf8 for Collections. Not
+                Default implementation of toString for Collections. Not
                 very pretty, but parenthesizing each element means that
                 for most kinds of elements, it's conceivable that the
                 strings could be parsed and used to build other tango.util.collection.
@@ -240,7 +240,7 @@ public abstract class Collection(T) : Dispenser!(T)
 
         ************************************************************************/
 
-        public override char[] toUtf8()
+        public override char[] toString()
         {
                 char[16] tmp;
                 

@@ -68,7 +68,7 @@ class NetCall(alias realFunc) : NetworkCall
         Params  params;
 
 
-        override char[] toUtf8() {
+        override char[] toString() {
                 return signatureOfFunc!(realFunc);
         }
 

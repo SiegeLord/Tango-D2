@@ -90,7 +90,7 @@ class NetworkRegistry
 
         final synchronized void enroll (IMessage target)
         {
-                auto guid = target.toUtf8;
+                auto guid = target.toString;
 
                 if (guid in registry)
                     error ("Registry.enroll :: attempt to re-register guid: ", guid);
@@ -109,7 +109,7 @@ class NetworkRegistry
 
         final void freeze (IWriter output, IMessage target)
         {
-                output (target.toUtf8);
+                output (target.toString);
                 target.write (output);
         }
 
@@ -134,7 +134,7 @@ class NetworkRegistry
                 if (host is null)
                     host = lookup (guid);
                 else
-                   if (guid != host.toUtf8)
+                   if (guid != host.toString)
                        error ("Registry.thaw :: attempt to reify into a mismatched host: ", guid);
 
                 host.read (input);

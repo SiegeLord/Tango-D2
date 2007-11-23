@@ -118,7 +118,7 @@ long toLong(T) (T[] digits, uint radix=0)
 
 ******************************************************************************/
 
-char[] toUtf8 (long i, Style t=Style.Signed, Flags f=Flags.None)
+char[] toString (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         char[66] tmp = void;
         
@@ -134,7 +134,7 @@ char[] toUtf8 (long i, Style t=Style.Signed, Flags f=Flags.None)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (long i, Style t=Style.Signed, Flags f=Flags.None)
+wchar[] toString16 (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         wchar[66] tmp = void;
         
@@ -150,7 +150,7 @@ wchar[] toUtf16 (long i, Style t=Style.Signed, Flags f=Flags.None)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (long i, Style t=Style.Signed, Flags f=Flags.None)
+dchar[] toString32 (long i, Style t=Style.Signed, Flags f=Flags.None)
 {
         dchar[66] tmp = void;
         

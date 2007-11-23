@@ -90,7 +90,7 @@ class ClusterQueue
                       try {
                           watchdog;
                           } catch (Object x)
-                                   log.error ("queue-publisher: "~x.toUtf8);
+                                   log.error ("queue-publisher: "~x.toString);
                       }
         }           
 }

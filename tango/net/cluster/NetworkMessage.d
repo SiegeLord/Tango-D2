@@ -56,9 +56,9 @@ class NetworkMessage : IMessage
 
         ***********************************************************************/
         
-        char[] toUtf8 ()
+        char[] toString ()
         {
-                return super.toUtf8;
+                return super.toString;
         }
 
         /***********************************************************************

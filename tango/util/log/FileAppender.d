@@ -52,7 +52,7 @@ public class FileAppender : Appender
         this (FilePath fp, EventLayout layout = null)
         {
                 // Get a unique fingerprint for this instance
-                mask = register (fp.toUtf8);
+                mask = register (fp.toString);
 
                 setConduit (new FileConduit (fp, FileConduit.WriteAppending));
                 setLayout (layout);

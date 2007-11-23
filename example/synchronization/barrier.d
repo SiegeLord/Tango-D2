@@ -90,12 +90,12 @@ void main(char[][] args)
         catch (SyncException e)
         {
             Stderr.formatln("Sync exception caught in Barrier test thread {0}:\n{1}\n",
-                            Thread.getThis().name, e.toUtf8());
+                            Thread.getThis().name, e.toString());
         }
         catch (Exception e)
         {
             Stderr.formatln("Unexpected exception caught in Barrier test thread {0}:\n{1}\n",
-                            Thread.getThis().name, e.toUtf8());
+                            Thread.getThis().name, e.toString());
         }
     }
 

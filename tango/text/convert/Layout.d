@@ -254,7 +254,7 @@ class Layout(T)
                                        arglist[i] = &voidargs[i];
                                        break;
                                   default:
-                                       assert (false, "Unknown size: " ~ Integer.toUtf8 (arg.tsize));
+                                       assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
                                   }
                            }
                         }
@@ -531,7 +531,7 @@ class Layout(T)
                                 return fromUtf32 (*cast(dchar[]*) p, result);
 
                             // Currently we only format d/w/char[] arrays.
-                            return fromUtf8 (type.toUtf8, result);
+                            return fromUtf8 (type.toString, result);
 
                        case TypeCode.BOOL:
                             static T[] t = "true";
@@ -585,14 +585,14 @@ class Layout(T)
                                {
                                auto pi = **cast(Interface ***) x;
                                auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return fromUtf8 (o.toUtf8, result);
+                               return fromUtf8 (o.toString, result);
                                }
                             break;
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
                             if (c)
-                                return fromUtf8 (c.toUtf8, result);
+                                return fromUtf8 (c.toString, result);
                             break;
 
                        case TypeCode.ENUM:
@@ -615,7 +615,7 @@ class Layout(T)
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
-                return "{unhandled argument type: " ~ fromUtf8 (type.toUtf8, result) ~ "}";
+                return "{unhandled argument type: " ~ fromUtf8 (type.toString, result) ~ "}";
         }
 
         /**********************************************************************
@@ -680,10 +680,10 @@ class Layout(T)
                            return s;
 
                 static if (is (T == wchar))
-                           return Unicode.toUtf16 (s, scratch);
+                           return Unicode.toString16 (s, scratch);
 
                 static if (is (T == dchar))
-                           return Unicode.toUtf32 (s, scratch);
+                           return Unicode.toString32 (s, scratch);
         }
 
         /***********************************************************************
@@ -696,10 +696,10 @@ class Layout(T)
                            return s;
 
                 static if (is (T == char))
-                           return Unicode.toUtf8 (s, scratch);
+                           return Unicode.toString (s, scratch);
 
                 static if (is (T == dchar))
-                           return Unicode.toUtf32 (s, scratch);
+                           return Unicode.toString32 (s, scratch);
         }
 
         /***********************************************************************
@@ -712,10 +712,10 @@ class Layout(T)
                            return s;
 
                 static if (is (T == char))
-                           return Unicode.toUtf8 (s, scratch);
+                           return Unicode.toString (s, scratch);
 
                 static if (is (T == wchar))
-                           return Unicode.toUtf16 (s, scratch);
+                           return Unicode.toString16 (s, scratch);
         }
 }
 
@@ -896,7 +896,7 @@ debug (Layout)
 
         interface foo {}
 
-        class X : foo {char[] toUtf8() {return "hello";}}
+        class X : foo {char[] toString() {return "hello";}}
 
         void main ()
         {

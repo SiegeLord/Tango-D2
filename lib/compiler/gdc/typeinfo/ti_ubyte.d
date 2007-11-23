@@ -5,7 +5,7 @@ module typeinfo.ti_ubyte;
 
 class TypeInfo_h : TypeInfo
 {
-    char[] toUtf8() { return "ubyte"; }
+    char[] toString() { return "ubyte"; }
 
     hash_t getHash(void *p)
     {
@@ -39,5 +39,5 @@ class TypeInfo_h : TypeInfo
 
 class TypeInfo_b : TypeInfo_h
 {
-    char[] toUtf8() { return "bool"; }
+    char[] toString() { return "bool"; }
 }

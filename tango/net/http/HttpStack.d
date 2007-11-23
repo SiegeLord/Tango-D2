@@ -50,7 +50,7 @@ class Token
                 return this;
         }
 
-        char[] toUtf8 ()
+        char[] toString ()
         {
                 return value;
         }
@@ -100,7 +100,7 @@ class HttpStack
 
                 // duplicate the content of each original token
                 for (int i=0; i < depth; ++i)
-                     clone.tokens[i].set (tokens[i].toUtf8().dup);
+                     clone.tokens[i].set (tokens[i].toString().dup);
 
                 return clone;
         }
@@ -204,7 +204,7 @@ class HttpStack
 
         final Token push (inout Token token)
         {
-                return push (token.toUtf8());  
+                return push (token.toString());  
         }
 
         /**********************************************************************
@@ -243,7 +243,7 @@ class HttpStack
 
         final static bool isMatch (inout Token token, char[] match)
         {
-                char[] target = token.toUtf8();
+                char[] target = token.toString();
 
                 int length = target.length;
                 if (length > match.length)

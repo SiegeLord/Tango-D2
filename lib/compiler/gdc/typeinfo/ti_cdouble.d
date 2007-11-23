@@ -5,7 +5,7 @@ module typeinfo.ti_cdouble;
 
 class TypeInfo_r : TypeInfo
 {
-    char[] toUtf8() { return "cdouble"; }
+    char[] toString() { return "cdouble"; }
 
     hash_t getHash(void *p)
     {

@@ -7,7 +7,7 @@ private import tango.stdc.string;
 
 class TypeInfo_As : TypeInfo
 {
-    char[] toUtf8() { return "short[]"; }
+    char[] toString() { return "short[]"; }
 
     hash_t getHash(void *p)
     {   short[] s = *cast(short[]*)p;
@@ -90,7 +90,7 @@ class TypeInfo_As : TypeInfo
 
 class TypeInfo_At : TypeInfo_As
 {
-    char[] toUtf8() { return "ushort[]"; }
+    char[] toString() { return "ushort[]"; }
 
     int compare(void *p1, void *p2)
     {
@@ -123,7 +123,7 @@ class TypeInfo_At : TypeInfo_As
 
 class TypeInfo_Au : TypeInfo_At
 {
-    char[] toUtf8() { return "wchar[]"; }
+    char[] toString() { return "wchar[]"; }
 
     TypeInfo next()
     {

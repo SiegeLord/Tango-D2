@@ -295,9 +295,9 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        override char[] toUtf8 ()
+        override char[] toString ()
         {
-                return path_.toUtf8;
+                return path_.toString;
         }               
 
         /***********************************************************************
@@ -399,7 +399,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                              else
                                 {
                                 wchar[256] tmp = void;
-                                auto name = Utf.toUtf16 (path.cString, tmp);
+                                auto name = Utf.toString16 (path.cString, tmp);
                                 handle = CreateFileW (name.ptr, access, share,
                                                       null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,

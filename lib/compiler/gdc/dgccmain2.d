@@ -238,8 +238,8 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
                     }
                     else
                     {
-                       // fprintf(stderr, "%.*s\n", e.toUtf8());
-                       console (e.classinfo.name)(": ")(e.toUtf8)("\n");
+                       // fprintf(stderr, "%.*s\n", e.toString());
+                       console (e.classinfo.name)(": ")(e.toString)("\n");
                     }
                     e = e.next;
                 }
@@ -247,8 +247,8 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
             }
             catch (Object o)
             {
-                // fprintf(stderr, "%.*s\n", o.toUtf8());
-                console (o.toUtf8)("\n");
+                // fprintf(stderr, "%.*s\n", o.toString());
+                console (o.toString)("\n");
                 result = EXIT_FAILURE;
             }
         }

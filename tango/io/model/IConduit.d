@@ -62,7 +62,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract char[] toUtf8 (); 
+        abstract char[] toString (); 
                      
         /***********************************************************************
 

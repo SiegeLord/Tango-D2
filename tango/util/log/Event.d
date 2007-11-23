@@ -229,7 +229,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final override char[] toUtf8 ()
+        final override char[] toString ()
         {
                 return msg;
         }

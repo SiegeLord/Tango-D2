@@ -56,7 +56,7 @@ public class EventLayout
 
         char[] content (Event event)
         {
-                return event.toUtf8;
+                return event.toString;
         }
 
         /***********************************************************************

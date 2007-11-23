@@ -8,7 +8,7 @@ private import util.string;
 
 class TypeInfo_Ag : TypeInfo
 {
-    char[] toUtf8() { return "byte[]"; }
+    char[] toString() { return "byte[]"; }
 
     hash_t getHash(void *p)
     {   byte[] s = *cast(byte[]*)p;
@@ -102,7 +102,7 @@ class TypeInfo_Ag : TypeInfo
 
 class TypeInfo_Ah : TypeInfo_Ag
 {
-    char[] toUtf8() { return "ubyte[]"; }
+    char[] toString() { return "ubyte[]"; }
 
     int compare(void *p1, void *p2)
     {
@@ -122,7 +122,7 @@ class TypeInfo_Ah : TypeInfo_Ag
 
 class TypeInfo_Av : TypeInfo_Ah
 {
-    char[] toUtf8() { return "void[]"; }
+    char[] toString() { return "void[]"; }
 
     TypeInfo next()
     {
@@ -134,7 +134,7 @@ class TypeInfo_Av : TypeInfo_Ah
 
 class TypeInfo_Ab : TypeInfo_Ah
 {
-    char[] toUtf8() { return "bool[]"; }
+    char[] toString() { return "bool[]"; }
 
     TypeInfo next()
     {
@@ -146,7 +146,7 @@ class TypeInfo_Ab : TypeInfo_Ah
 
 class TypeInfo_Aa : TypeInfo_Ag
 {
-    char[] toUtf8() { return "char[]"; }
+    char[] toString() { return "char[]"; }
 
     hash_t getHash(void *p)
     {   char[] s = *cast(char[]*)p;

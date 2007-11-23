@@ -67,13 +67,13 @@ class UtfInput(T, S) : InputFilter
                    auto input  = Buffer.convert!(S)(buffer.slice);
 
                    static if (is (T == char))
-                              produced = Utf.toUtf8(input, output, &consumed).length;
+                              produced = Utf.toString(input, output, &consumed).length;
 
                    static if (is (T == wchar))
-                              produced = Utf.toUtf16(input, output, &consumed).length;
+                              produced = Utf.toString16(input, output, &consumed).length;
 
                    static if (is (T == dchar))
-                              produced = Utf.toUtf32(input, output, &consumed).length;
+                              produced = Utf.toString32(input, output, &consumed).length;
 
                    // consume buffer content
                    buffer.skip (consumed * S.sizeof);
@@ -146,13 +146,13 @@ class UtfOutput (S, T) : OutputFilter
                         auto output = Buffer.convert!(T)(dst);
 
                         static if (is (T == char))
-                                   produced = Utf.toUtf8(input, output, &consumed).length;
+                                   produced = Utf.toString(input, output, &consumed).length;
 
                         static if (is (T == wchar))
-                                   produced = Utf.toUtf16(input, output, &consumed).length;
+                                   produced = Utf.toString16(input, output, &consumed).length;
 
                         static if (is (T == dchar))
-                                   produced = Utf.toUtf32(input, output, &consumed).length;
+                                   produced = Utf.toString32(input, output, &consumed).length;
 
                         return produced * T.sizeof;
                    }

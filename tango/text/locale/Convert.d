@@ -101,23 +101,23 @@ private struct Result
    *   Culture culture = Culture.current;
    *   DateTime now = DateTime.now;
    *
-   *   Println("Current date and time: %s", now.toUtf8());
+   *   Println("Current date and time: %s", now.toString());
    *   Println();
    *
    *   // Format the current date and time in a number of ways.
    *   Println("Culture: %s", culture.englishName);
    *   Println();
    *
-   *   Println("Short date:              %s", now.toUtf8("d"));
-   *   Println("Long date:               %s", now.toUtf8("D"));
-   *   Println("Short time:              %s", now.toUtf8("t"));
-   *   Println("Long time:               %s", now.toUtf8("T"));
-   *   Println("General date short time: %s", now.toUtf8("g"));
-   *   Println("General date long time:  %s", now.toUtf8("G"));
-   *   Println("Month:                   %s", now.toUtf8("M"));
-   *   Println("RFC1123:                 %s", now.toUtf8("R"));
-   *   Println("Sortable:                %s", now.toUtf8("s"));
-   *   Println("Year:                    %s", now.toUtf8("Y"));
+   *   Println("Short date:              %s", now.toString("d"));
+   *   Println("Long date:               %s", now.toString("D"));
+   *   Println("Short time:              %s", now.toString("t"));
+   *   Println("Long time:               %s", now.toString("T"));
+   *   Println("General date short time: %s", now.toString("g"));
+   *   Println("General date long time:  %s", now.toString("G"));
+   *   Println("Month:                   %s", now.toString("M"));
+   *   Println("RFC1123:                 %s", now.toString("R"));
+   *   Println("Sortable:                %s", now.toString("s"));
+   *   Println("Year:                    %s", now.toString("Y"));
    *   Println();
    *
    *   // Display the same values using a different culture.
@@ -125,16 +125,16 @@ private struct Result
    *   Println("Culture: %s", culture.englishName);
    *   Println();
    *
-   *   Println("Short date:              %s", now.toUtf8("d", culture));
-   *   Println("Long date:               %s", now.toUtf8("D", culture));
-   *   Println("Short time:              %s", now.toUtf8("t", culture));
-   *   Println("Long time:               %s", now.toUtf8("T", culture));
-   *   Println("General date short time: %s", now.toUtf8("g", culture));
-   *   Println("General date long time:  %s", now.toUtf8("G", culture));
-   *   Println("Month:                   %s", now.toUtf8("M", culture));
-   *   Println("RFC1123:                 %s", now.toUtf8("R", culture));
-   *   Println("Sortable:                %s", now.toUtf8("s", culture));
-   *   Println("Year:                    %s", now.toUtf8("Y", culture));
+   *   Println("Short date:              %s", now.toString("d", culture));
+   *   Println("Long date:               %s", now.toString("D", culture));
+   *   Println("Short time:              %s", now.toString("t", culture));
+   *   Println("Long time:               %s", now.toString("T", culture));
+   *   Println("General date short time: %s", now.toString("g", culture));
+   *   Println("General date long time:  %s", now.toString("G", culture));
+   *   Println("Month:                   %s", now.toString("M", culture));
+   *   Println("RFC1123:                 %s", now.toString("R", culture));
+   *   Println("Sortable:                %s", now.toString("s", culture));
+   *   Println("Year:                    %s", now.toString("Y", culture));
    *   Println();
    * }
    *
@@ -671,9 +671,9 @@ char[] formatInteger (char[] output, long value, char[] format, NumberFormat nf)
         Result result = Result (output);
         Number number = Number (value);
         if (specifier != char.init)
-            return toUtf8 (number, result, specifier, length, nf);
+            return toString (number, result, specifier, length, nf);
 
-        return number.toUtf8Format (result, format, nf);
+        return number.toStringFormat (result, format, nf);
 }
 
 /*******************************************************************************
@@ -709,10 +709,10 @@ char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf
                     double d;
                     number.toDouble(d);
                     if (d == value)
-                        return toUtf8 (number, result, 'G', 15, nf);
+                        return toString (number, result, 'G', 15, nf);
 
                     number = Number(value, 17);
-                    return toUtf8 (number, result, 'G', 17, nf);
+                    return toString (number, result, 'G', 17, nf);
 
                case 'g':
                case 'G':
@@ -734,9 +734,9 @@ char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf
                                : nf.positiveInfinitySymbol;
 
         if (specifier != char.init)
-            return toUtf8 (number, result, specifier, length, nf);
+            return toString (number, result, specifier, length, nf);
 
-        return number.toUtf8Format (result, format, nf);
+        return number.toStringFormat (result, format, nf);
 }
 
 /*******************************************************************************
@@ -939,7 +939,7 @@ void formatFixed (inout Number number, inout Result target, int length,
 
 ******************************************************************************/
 
-char[] toUtf8 (inout Number number, inout Result result, char format, int length, NumberFormat nf)
+char[] toString (inout Number number, inout Result result, char format, int length, NumberFormat nf)
 {
         switch (format)
                {
@@ -1292,7 +1292,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toUtf8Format (inout Result result, char[] format, NumberFormat nf)
+        private char[] toStringFormat (inout Result result, char[] format, NumberFormat nf)
         {
                 bool hasGroups;
                 int groupCount;

@@ -268,7 +268,7 @@ class HttpTokens : IWritable
         {
                 foreach (Token token; stack)
                         {
-                        auto content = token.toUtf8();
+                        auto content = token.toString();
                         if (content.length)
                             consume (content), consume (eol);
                         }                           
@@ -295,7 +295,7 @@ class HttpTokens : IWritable
 
         final private bool split (Token t, inout HttpToken element)
         {
-                auto s = t.toUtf8();
+                auto s = t.toString();
 
                 if (s.length)
                    {
@@ -458,7 +458,7 @@ class HttpTokens : IWritable
 
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toUtf8;
+                        char[] content = token.toString;
                         if (content.length)
                            {
                            dst.append(content).append(delim);

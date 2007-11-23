@@ -87,12 +87,12 @@ void testNotifyOne()
         catch (SyncException e)
         {
             Stderr.formatln("Sync exception caught in Condition test thread {0}:\n{1}",
-                            Thread.getThis().name(), e.toUtf8());
+                            Thread.getThis().name(), e.toString());
         }
         catch (Exception e)
         {
             Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
-                            Thread.getThis().name(), e.toUtf8());
+                            Thread.getThis().name(), e.toString());
         }
         debug (condition)
             log.trace("Exiting thread");
@@ -160,7 +160,7 @@ void testNotifyOne()
     }
     catch (SyncException e)
     {
-        Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toUtf8());
+        Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toString());
     }
 }
 
@@ -219,12 +219,12 @@ void testNotifyAll()
         catch (SyncException e)
         {
             Stderr.formatln("Sync exception caught in Condition test thread {0}:\n{1}",
-                            Thread.getThis().name(), e.toUtf8());
+                            Thread.getThis().name(), e.toString());
         }
         catch (Exception e)
         {
             Stderr.formatln("Unexpected exception caught in Condition test thread {0}:\n{1}",
-                            Thread.getThis().name(), e.toUtf8());
+                            Thread.getThis().name(), e.toString());
         }
         debug (condition)
             log.trace("Exiting thread");
@@ -302,6 +302,6 @@ void testNotifyAll()
     }
     catch (SyncException e)
     {
-        Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toUtf8());
+        Stderr.formatln("Sync exception caught in main thread:\n{0}", e.toString());
     }
 }

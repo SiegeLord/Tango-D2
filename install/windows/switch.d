@@ -12,7 +12,7 @@ void main (char[][] args)
 {
     if ( args.length == 1 )
     {
-        printf(toUtf8z("Tango switch utility v1.1
+        printf(toStringz("Tango switch utility v1.1
 Usage:   switch.exe 'phobos|tango'
 Example: switch.exe phobos
          ( will switch to Digital Mars phobos.lib )")) ;
@@ -25,9 +25,9 @@ Example: switch.exe phobos
     void showMessage(char[] msg)
     {
         if(useMessageBoxes)
-            MessageBoxA(null, toUtf8z(msg), "Tango Switch utility\0", 0);
+            MessageBoxA(null, toStringz(msg), "Tango Switch utility\0", 0);
         else
-            printf("%s\n", toUtf8z(msg));
+            printf("%s\n", toStringz(msg));
     }
     
     if ( args.length >= 3 )
@@ -83,7 +83,7 @@ Example: switch.exe phobos
 
     if ( target == "phobos" ) // switch to Phobos
     {
-        // CyberShadow 2007.02.18: FIXME: toUtf8z is used incorrectly here. 
+        // CyberShadow 2007.02.18: FIXME: toStringz is used incorrectly here. 
         // ANSI Windows APIs take Multi-byte character strings as parameters 
         // (see WideCharToMultiByte).
 
@@ -93,10 +93,10 @@ Example: switch.exe phobos
         	return;
         }
         
-        MoveFileA(toUtf8z(targetConf), toUtf8z(tangoConf));   // backup the Tango Build config
-        MoveFileA(toUtf8z(phobosConf), toUtf8z(targetConf));  // put Phobos's Build config in place
+        MoveFileA(toStringz(targetConf), toStringz(tangoConf));   // backup the Tango Build config
+        MoveFileA(toStringz(phobosConf), toStringz(targetConf));  // put Phobos's Build config in place
         
-        if (!CopyFileA(toUtf8z(phobosLib), toUtf8z(targetLib), false))
+        if (!CopyFileA(toStringz(phobosLib), toStringz(targetLib), false))
             showMessage("Error: Could not find " ~ phobosLib);
         else
             showMessage("Switched to Phobos");
@@ -110,10 +110,10 @@ Example: switch.exe phobos
         	return;
         }
         
-        MoveFileA(toUtf8z(targetConf), toUtf8z(phobosConf));  // backup the Phobos Build config
-        MoveFileA(toUtf8z(tangoConf), toUtf8z(targetConf));   // put Tango's Build config in place
+        MoveFileA(toStringz(targetConf), toStringz(phobosConf));  // backup the Phobos Build config
+        MoveFileA(toStringz(tangoConf), toStringz(targetConf));   // put Tango's Build config in place
         
-        if (!CopyFileA(toUtf8z(tangoLib), toUtf8z(targetLib), false))
+        if (!CopyFileA(toStringz(tangoLib), toStringz(targetLib), false))
             showMessage("Error: Could not find " ~ tangoLib);
         else
             showMessage("Switched to Tango");

@@ -58,7 +58,7 @@ NumType toFloat(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toUtf8 (NumType d, uint decimals=2, bool scientific=false)
+char[] toString (NumType d, uint decimals=2, bool scientific=false)
 {
         char[64] tmp = void;
         
@@ -74,7 +74,7 @@ char[] toUtf8 (NumType d, uint decimals=2, bool scientific=false)
 
 ******************************************************************************/
 
-wchar[] toUtf16 (NumType d, uint decimals=2, bool scientific=false)
+wchar[] toString16 (NumType d, uint decimals=2, bool scientific=false)
 {
         wchar[64] tmp = void;
         
@@ -90,7 +90,7 @@ wchar[] toUtf16 (NumType d, uint decimals=2, bool scientific=false)
 
 ******************************************************************************/
 
-dchar[] toUtf32 (NumType d, uint decimals=2, bool scientific=false)
+dchar[] toString32 (NumType d, uint decimals=2, bool scientific=false)
 {
         dchar[64] tmp = void;
         

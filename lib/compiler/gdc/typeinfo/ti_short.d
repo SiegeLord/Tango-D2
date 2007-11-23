@@ -5,7 +5,7 @@ module typeinfo.ti_short;
 
 class TypeInfo_s : TypeInfo
 {
-    char[] toUtf8() { return "short"; }
+    char[] toString() { return "short"; }
 
     hash_t getHash(void *p)
     {

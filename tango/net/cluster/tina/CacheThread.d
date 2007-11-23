@@ -150,7 +150,7 @@ class CacheThread : ClusterThread
                               }
                            }
                         else
-                           writer.exception (sprint ("invalid remote cache-loader '{}'", msg.toUtf8)).flush;
+                           writer.exception (sprint ("invalid remote cache-loader '{}'", msg.toString)).flush;
  
                         } finally 
                                 // ensure we unlock this one!
