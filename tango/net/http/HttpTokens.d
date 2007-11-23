@@ -216,7 +216,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        DateTime getDate (char[] name, DateTime date = DateTime.max)
+        DateTime getDate (char[] name, DateTime date = DateTime.epoch)
         {
                 char[] value = get (name);
 

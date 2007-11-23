@@ -134,7 +134,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        DateTime getDate (HttpHeaderName name, DateTime def = DateTime.max)
+        DateTime getDate (HttpHeaderName name, DateTime def = DateTime.epoch)
         {
                 return super.getDate (name.value, def);
         }
