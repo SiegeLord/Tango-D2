@@ -134,7 +134,7 @@ struct Clock
 
                 package static DateTime convert (FILETIME time)
                 {
-                        ulong t = *cast(ulong*)&time;
+                        auto t = *cast(long*)&time;
                         t *= 100 / TimeSpan.NanosecondsPerTick;
                         return DateTime.epoch1601 + TimeSpan(t);
                 }

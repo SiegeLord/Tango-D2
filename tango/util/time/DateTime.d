@@ -13,10 +13,10 @@
 
 module tango.util.time.DateTime;
 
+public  import  tango.core.TimeSpan;
+
 private import  tango.util.time.Clock,
                 tango.util.time.WallClock;
-
-public import tango.core.TimeSpan;
 
 /******************************************************************************
 
@@ -57,8 +57,9 @@ struct DateTime
         }
 
         /// Represents the smallest and largest DateTime value.
-        public static const DateTime    min = {0},
+        public static const DateTime    epoch = {0},
                                         max = {(TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1},
+                                        min = {-max.ticks},
                                         epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
                                         epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
 
