@@ -144,8 +144,9 @@ struct DateTime
                          and time.
 
         **********************************************************************/
-
-        static DateTime now () 
+        
+        // use WallClock directly instead
+        deprecated static DateTime now () 
         {
                 return  WallClock.now;
         }
@@ -160,7 +161,8 @@ struct DateTime
 
         **********************************************************************/
 
-        static DateTime utc () 
+        // use Clock directly instead
+        deprecated static DateTime utc () 
         {
                 return Clock.now;
         }
