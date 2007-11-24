@@ -21,6 +21,8 @@ Options:
                 set it to empty.
   --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
                 set it to empty.
+  --altincl: Use an alternate path component for import files, "include" is default, "-" will
+                set it to empty (will install at PREFIX!)
   --uninstall: Uninstall Tango, switch back to standard Phobos.
   --verify: Will verify installation.'
     exit 0
@@ -33,6 +35,7 @@ UNINSTALL=0
 VERIFY=0
 BIN="bin"
 LIB="lib"
+INCL="include"
 
 while [ "$#" != "0" ]
 do
@@ -60,6 +63,16 @@ do
             LIB=""
         else
             LIB="$1"
+        fi
+    elif [ "$1" = "--altincl" ]
+    then
+        shift
+
+        if [ "$1" = "-" ]
+        then
+            INCL=""
+        else
+            INCL="$1"
         fi
     elif [ "$1" = "--uninstall" ]
     then
@@ -103,9 +116,9 @@ then
             rm -f $PREFIX/$LIB/libphobos.a
         fi
     fi
-    if [ -e "$PREFIX/include/d/object.d.phobos" ]
+    if [ -e "$PREFIX/$INCL/d/object.d.phobos" ]
     then
-        mv     $PREFIX/include/d/object.d.phobos $PREFIX/include/d/object.d
+        mv     $PREFIX/$INCL/d/object.d.phobos $PREFIX/$INCL/d/object.d
     fi
     if [ -e "$PREFIX/$BIN/dmd.conf.phobos" ]
     then
@@ -118,18 +131,18 @@ then
         rm -rf $PREFIX/import/v1.012
     fi
     # Since Tango 0.98
-    if [ -e "$PREFIX/include/d/tango/object.di" ]
+    if [ -e "$PREFIX/$INCL/d/tango/object.di" ]
     then
-        rm -rf $PREFIX/include/d/tango/tango
-        rm -rf $PREFIX/include/d/tango/std
-        rm -f  $PREFIX/include/d/tango/object.di
+        rm -rf $PREFIX/$INCL/d/tango/tango
+        rm -rf $PREFIX/$INCL/d/tango/std
+        rm -f  $PREFIX/$INCL/d/tango/object.di
     fi
     # Since Tango 0.99
-    if [ -e "$PREFIX/include/d/object.di" ]
+    if [ -e "$PREFIX/$INCL/d/object.di" ]
     then
-        rm -rf $PREFIX/include/d/tango
-        rm -rf $PREFIX/include/d/std
-        rm -f  $PREFIX/include/d/object.di
+        rm -rf $PREFIX/$INCL/d/tango
+        rm -rf $PREFIX/$INCL/d/std
+        rm -f  $PREFIX/$INCL/d/object.di
     fi
 
     # Prior to Tango 0.99.3
@@ -160,26 +173,26 @@ then
 fi
 
 # Back up the original files
-if [ -e "$PREFIX/include/d/object.d" ]
+if [ -e "$PREFIX/$INCL/d/object.d" ]
 then
-    mv -f $PREFIX/include/d/object.d $PREFIX/include/d/object.d.phobos
+    mv -f $PREFIX/$INCL/d/object.d $PREFIX/$INCL/d/object.d.phobos
 fi
 
 # Create dmd.conf
 create_dmd_conf() {
     cat > $PREFIX/$BIN/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"$PREFIX/$LIB"
+DFLAGS=-I$PREFIX/$INCL/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"$PREFIX/$LIB"
 EOF
 }
 
 # Install ...
 echo 'Copying files...'
-mkdir -p $PREFIX/include/d || die "Failed to create include/d (maybe you need root privileges?)" 5
+mkdir -p $PREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/$LIB/ || die "Failed to create $PREFIX/$LIB (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/$BIN/ || die "Failed to create $PREFIX/$BIN" 5
 cp -pRvf libtango-base-dmd.a $PREFIX/$LIB/ || die "Failed to copy libraries" 7
-cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
+cp -pRvf ../object.di $PREFIX/$INCL/d/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/$BIN/dmd.conf" ]
 then
     create_dmd_conf
@@ -209,9 +222,9 @@ fi
 if [ "$VERIFY" = "1" ]
 then
     echo 'Verifying installation.'
-    if [ ! -e "$PREFIX/include/d/object.di" ]
+    if [ ! -e "$PREFIX/$INCL/d/object.di" ]
     then
-        die "object.di not properly installed to $PREFIX/include/d" 9
+        die "object.di not properly installed to $PREFIX/$INCL/d" 9
     fi
     if [ ! -e "$PREFIX/$LIB/libtango-base-dmd.a" ]
     then
