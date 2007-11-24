@@ -19,6 +19,8 @@ Options:
   --prefix: Install to the specified prefix (absolute path).
   --altbin: Use an alternate path component for the DMD binary, "bin" is default, "-" will
                 set it to empty.
+  --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
+                set it to empty.
   --uninstall: Uninstall Tango, switch back to standard Phobos.
   --verify: Will verify installation.'
     exit 0
@@ -30,6 +32,7 @@ cd "`dirname $0`"
 UNINSTALL=0
 VERIFY=0
 BIN="bin"
+LIB="lib"
 
 while [ "$#" != "0" ]
 do
@@ -47,6 +50,16 @@ do
             BIN=""
         else
             BIN="$1"
+        fi
+    elif [ "$1" = "--altlib" ]
+    then
+        shift
+
+        if [ "$1" = "-" ]
+        then
+            LIB=""
+        else
+            LIB="$1"
         fi
     elif [ "$1" = "--uninstall" ]
     then
@@ -81,13 +94,13 @@ if [ "$UNINSTALL" = "1" ]
 then
     # Revert to Phobos if earlier evidence of existense is found
     # Only relevant for pre 0.99.3 installations
-    if [ -e "$PREFIX/lib/libphobos.a.phobos" ]
+    if [ -e "$PREFIX/$LIB/libphobos.a.phobos" ]
     then
-        mv     $PREFIX/lib/libphobos.a.phobos $PREFIX/lib/libphobos.a
+        mv     $PREFIX/$LIB/libphobos.a.phobos $PREFIX/$LIB/libphobos.a
     else
-        if [ -e "$PREFIX/lib/libphobos.a" ]
+        if [ -e "$PREFIX/$LIB/libphobos.a" ]
         then
-            rm -f $PREFIX/lib/libphobos.a
+            rm -f $PREFIX/$LIB/libphobos.a
         fi
     fi
     if [ -e "$PREFIX/include/d/object.d.phobos" ]
@@ -120,20 +133,20 @@ then
     fi
 
     # Prior to Tango 0.99.3
-    if [ -e "$PREFIX/lib/libtango.a" ]
+    if [ -e "$PREFIX/$LIB/libtango.a" ]
     then
-		rm -f $PREFIX/lib/libtango.a
+		rm -f $PREFIX/$LIB/libtango.a
     fi
 
     # Since Tango 0.99.3
-    if [ -e "$PREFIX/lib/libtango-base-dmd.a" ]
+    if [ -e "$PREFIX/$LIB/libtango-base-dmd.a" ]
     then
-        rm -f $PREFIX/lib/libtango-base-dmd.a
+        rm -f $PREFIX/$LIB/libtango-base-dmd.a
     fi
 
-    if [ -e "$PREFIX/lib/libtango-user-dmd.a" ]
+    if [ -e "$PREFIX/$LIB/libtango-user-dmd.a" ]
     then
-        rm -f $PREFIX/lib/libtango-user-dmd.a
+        rm -f $PREFIX/$LIB/libtango-user-dmd.a
     fi
 
     die "Done!" 0
@@ -156,16 +169,16 @@ fi
 create_dmd_conf() {
     cat > $PREFIX/$BIN/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$PREFIX/include/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"%@P%/../lib"
+DFLAGS=-I$PREFIX/include/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"$PREFIX/$LIB"
 EOF
 }
 
 # Install ...
 echo 'Copying files...'
 mkdir -p $PREFIX/include/d || die "Failed to create include/d (maybe you need root privileges?)" 5
-mkdir -p $PREFIX/lib/ || die "Failed to create $PREFIX/lib (maybe you need root privileges?)" 5
+mkdir -p $PREFIX/$LIB/ || die "Failed to create $PREFIX/$LIB (maybe you need root privileges?)" 5
 mkdir -p $PREFIX/$BIN/ || die "Failed to create $PREFIX/$BIN" 5
-cp -pRvf libtango-base-dmd.a $PREFIX/lib/ || die "Failed to copy libraries" 7
+cp -pRvf libtango-base-dmd.a $PREFIX/$LIB/ || die "Failed to copy libraries" 7
 cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
 if [ ! -e "$PREFIX/$BIN/dmd.conf" ]
 then
@@ -200,9 +213,9 @@ then
     then
         die "object.di not properly installed to $PREFIX/include/d" 9
     fi
-    if [ ! -e "$PREFIX/lib/libtango-base-dmd.a" ]
+    if [ ! -e "$PREFIX/$LIB/libtango-base-dmd.a" ]
     then
-        die "libtango-base-dmd.a not properly installed to $PREFIX/lib" 10
+        die "libtango-base-dmd.a not properly installed to $PREFIX/$LIB" 10
     fi
     if [ ! -e "$PREFIX/$BIN/dmd.conf" ]
     then
