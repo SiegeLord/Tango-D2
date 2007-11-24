@@ -320,17 +320,17 @@ class VirtualFolder : VfsHost
 
         /***********************************************************************
 
-                Commit and/or synchronize changes made to this folder. Each
+                Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
                 combining multiple files together, or possibly copying to a 
                 remote location
 
         ***********************************************************************/
 
-        VfsFolder commit ()
+        VfsFolder commit (bool commit = true)
         {
                 foreach (name, child; mounts)
-                         child.commit;
+                         child.close (commit);
                 return this;
         }
 

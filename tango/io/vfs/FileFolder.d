@@ -211,14 +211,14 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Commit and/or synchronize changes made to this folder. Each
+                Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
                 combining multiple files together, or possibly copying to a 
                 remote location
 
         ***********************************************************************/
 
-        VfsFolder commit()
+        VfsFolder close (bool commit = true)
         {
                 return this;
         }
