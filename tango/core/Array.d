@@ -2702,7 +2702,7 @@ else
       {
         assert( missingFrom( "", "" ) == "" );
         assert( missingFrom( "", "abc" ) == "" );
-        assert( missingFrom( "abc", "" ) == "" );
+        assert( missingFrom( "abc", "" ) == "abc" );
         assert( missingFrom( "abc", "abc" ) == "" );
         assert( missingFrom( "abc", "def" ) == "abc" );
         assert( missingFrom( "abbbcd", "abd" ) == "bbc" );
