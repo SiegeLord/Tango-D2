@@ -164,10 +164,15 @@ else
         mv $PREFIX/bin/dmd.conf $PREFIX/bin/dmd.conf.phobos
         create_dmd_conf
     else
-        if [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+        if [ ! "`grep '\-defaultlib=tango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
         then
             echo 'Appending -defaultlib switch to DFLAGS'
-            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd -debuglib=tango-base-dmd/' $PREFIX/bin/dmd.conf
+            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $PREFIX/bin/dmd.conf
+            if [ ! "`grep '\-debuglib=tango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+            then
+                echo 'Appending -debuglib switch to DFLAGS'
+                sed -i.bak -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $PREFIX/bin/dmd.conf
+            fi
         else
             echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
         fi
