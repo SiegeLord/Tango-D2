@@ -58,7 +58,7 @@ interface HttpParamsView : IWritable
 
         **********************************************************************/
 
-        DateTime getDate (char[] name, DateTime ret = DateTime.max);
+        DateTime getDate (char[] name, DateTime ret = DateTime.epoch);
 
         /**********************************************************************
 
