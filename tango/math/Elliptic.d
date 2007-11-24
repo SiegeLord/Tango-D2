@@ -48,11 +48,6 @@ module tango.math.Elliptic;
 import tango.math.Math;
 import tango.math.IEEE;
 
-debug private import tango.stdc.stdio;
-
-unittest {
-    debug printf("--- UnitTest: " __FILE__ " ---");
-}
 /* These functions are based on code from:
 Cephes Math Library, Release 2.3:  October, 1995
 Copyright 1984, 1987, 1995 by Stephen L. Moshier
