@@ -197,9 +197,12 @@ then
     elif [ ! "`grep '\-version=Tango' $PREFIX/bin/dmd.conf`" ]
     then
         die "dmd.conf not Tango enabled" 12
-    elif [ ! "`grep '\-defaultlib=dtango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+    elif [ ! "`grep '\-defaultlib=tango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
     then
         die "dmd.conf don't have -defaultlib switch" 13
+    elif [ ! "`grep '\-debuglib=tango\-base\-dmd' $PREFIX/bin/dmd.conf`" ]
+    then
+        die "dmd.conf don't have -debuglib switch" 14
     fi
     echo 'Installation OK.'
 fi
