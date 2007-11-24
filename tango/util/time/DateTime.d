@@ -130,7 +130,7 @@ struct DateTime
 
         **********************************************************************/
 
-        static DateTime today () 
+        deprecated static DateTime today () 
         {
                 return now.date;
         }
