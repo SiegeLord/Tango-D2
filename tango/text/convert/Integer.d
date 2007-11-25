@@ -190,6 +190,13 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
 {
         T[]     prefix;
         auto    len = dst.length;
+        
+        static T[] error (T[] msg)
+        {
+                if (1 & Flags.Throw)
+                    throw new IllegalArgumentException ("Integer.format :: invalid arguments");
+                 return msg;
+        }
 
         // must have some buffer space to operate within! 
         if (len)
@@ -200,7 +207,6 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
            // pre-conversion setup
            switch (cast(byte) fmt)
                   {
-                  default:
                   case 'd':
                   case 'D':
                        if (i < 0)
@@ -246,6 +252,9 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
                        if (flags & Flags.Prefix)
                            prefix = "0X";
                        break;
+
+                  default:
+                        return error (cast(T[])"{unknown format '"~cast(T)fmt~"'}");
                   }
 
            // convert number to text
@@ -282,8 +291,7 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
            dst [len .. len + prefix.length] = prefix[];
            }
         else
-           if (flags & Flags.Throw)
-               throw new IllegalArgumentException ("Integer.format :: output truncated");
+           return error ("{output width too small}");
 
         // return slice of provided output buffer
         return dst [len .. $];                               
@@ -580,7 +588,7 @@ debug (UnitTest)
         assert (format (tmp, 101L, Style.Signed, Flags.Space) == " 101");
         assert (format (tmp[0..8], 0x5L, Style.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
 
-        assert (format (tmp[0..8], -1, Style.Binary, Flags.Prefix | Flags.Zero) == "11111111");
+        assert (format (tmp[0..8], -1, Style.Binary, Flags.Prefix | Flags.Zero) == "{output width too small}");
         assert (format (tmp[0..2], 0x3, Style.Binary, Flags.Throw) == "11");
         assert (format (tmp[0..4], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b11");
         assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b011");

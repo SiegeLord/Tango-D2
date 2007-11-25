@@ -372,117 +372,111 @@ class Layout(T)
                       // next char is start of following fragment
                       fragment = ++s;
 
-                      void process( T[] str ){
-                        int padding = width - str.length;
+                      // handle alignment
+                      void process (T[] str)
+                      {
+                                int padding = width - str.length;
 
-                        // if not left aligned, pad out with spaces
-                        if (! leftAlign && padding > 0)
-                                length += spaces (sink, padding);
+                                // if not left aligned, pad out with spaces
+                                if (! leftAlign && padding > 0)
+                                      length += spaces (sink, padding);
 
-                        // emit formatted argument
-                        length += sink (str);
+                                // emit formatted argument
+                                length += sink (str);
 
-                        // finally, pad out on right
-                        if (leftAlign && padding > 0)
-                            length += spaces (sink, padding);
-
+                                // finally, pad out on right
+                                if (leftAlign && padding > 0)
+                                    length += spaces (sink, padding);
                       }
 
-                      void processElement( TypeInfo _ti, Arg _arg ){
-                            if( _ti.classinfo.name.length == 20 && _ti.classinfo.name[9..$] == "StaticArray" )
-                            {
-                                auto tiStat = cast(TypeInfo_StaticArray)_ti;
-                                auto p = _arg;
-                                length += sink ("[ ");
-                                for( int i = 0; i < tiStat.len; i++ ){
-                                    if( p !is _arg ){
-                                        length += sink (", ");
-                                    }
-                                    processElement( tiStat.value, p );
+                      // an astonishing number of typehacks needed to handle arrays :(
+                      void processElement (TypeInfo _ti, Arg _arg)
+                      {
+                                if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
+                                   {
+                                   auto tiStat = cast(TypeInfo_StaticArray)_ti;
+                                   auto p = _arg;
+                                   length += sink ("[ ");
+                                   for (int i = 0; i < tiStat.len; i++)
+                                       {
+                                       if (p !is _arg )
+                                           length += sink (", ");
+                                       processElement (tiStat.value, p);
+                                       p += tiStat.tsize;
+                                       }
+                                   length += sink (" ]");
+                                   }
+                                else 
+                                if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
+                                   {
+                                   auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
+                                   auto tiKey = tiAsso.key;
+                                   auto tiVal = tiAsso.next();
+                                   // the knowledge of the internal k/v storage is used
+                                   // so this might break if, that internal storage changes
+                                   alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
+                                   alias ubyte AK;
+                                   auto aa = *cast(AV[AK]*) _arg;
 
-                                    p += tiStat.tsize;
-                                }
-                                length += sink (" ]");
-                            }
-                            else if( _ti.classinfo.name.length == 25 && _ti.classinfo.name[9..$] == "AssociativeArray" )
-                            {
-                                auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
-                                TypeInfo tiKey = tiAsso.key;
-                                TypeInfo tiVal = tiAsso.next();
-                                // the knowledge of the internal k/v storage is used
-                                // so this might break if, that internal storage changes
-                                alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
-                                alias ubyte AK;
-                                AV[AK] aa = *cast(AV[AK]*) _arg;
+                                   length += sink ("{ ");
+                                   bool first = true;
+                                  
+                                   int roundUp (int sz)
+                                   {
+                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
+                                   }
 
-                                length += sink ("{ ");
-                                bool first = true;
-                                foreach( inout v; aa )
-                                {
-                                    int roundUp (int sz)
-                                    {
-                                        return ( sz + (void*).sizeof -1 ) & ~((void*).sizeof - 1);
-                                    }
+                                   foreach (inout v; aa)
+                                           {
+                                           // the key is befor the value, so substrace with fixed key size from above
+                                           auto pk = cast(Arg)( &v - roundUp(AK.sizeof));
+                                           // now the real value pos is plus the real key size
+                                           auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
 
-                                    // the key is befor the value, so substrace with fixed key size from above
-                                    Arg pk = cast(Arg)( &v - roundUp(AK.sizeof));
-                                    // now the real value pos is plus the real key size
-                                    Arg pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
+                                           if (!first)
+                                                length += sink (", ");
+                                           processElement (tiKey, pk);
+                                           length += sink ("=>");
+                                           processElement (tiVal, pv);
+                                           first = false;
+                                           }
+                                   length += sink (" }");
+                                   }
+                                else 
+                                if (_ti.classinfo.name[9] is TypeCode.ARRAY &&
+                                   (_ti !is typeid(char[]))  &&
+                                   (_ti !is typeid(wchar[])) &&
+                                   (_ti !is typeid(dchar[])))
+                                   {
+                                   // for all non string array types (including char[][])
+                                   auto arr = *cast(void[]*)_arg;
+                                   auto len = arr.length;
+                                   auto ptr = cast(Arg) arr.ptr;
+                                   auto elTi = _ti.next();
+                                   auto size = elTi.tsize();
+                                   length += sink ("[ ");
+                                   while (len > 0)
+                                         {
+                                         if (ptr !is arr.ptr)
+                                             length += sink (", ");
+                                         processElement (elTi, ptr);
+                                         len -= 1;
+                                         ptr += size;
+                                         }
+                                   length += sink (" ]");
+                                   }
+                                else
+                                   // the standard processing
+                                   process (munge(result, format, _ti, _arg));
+                      }
 
-                                    if( !first )
-                                    {
-                                        length += sink (", ");
-                                    }
-
-                                    processElement (tiKey, pk);
-                                    length += sink ("=>");
-                                    processElement (tiVal, pv);
-                                    first = false;
-                                }
-                                length += sink (" }");
-                            }
-                            else if( _ti.classinfo.name[9] == TypeCode.ARRAY
-                                && (_ti !is typeid( char[]))
-                                && (_ti !is typeid(wchar[]))
-                                && (_ti !is typeid(dchar[])) )
-                            {
-                                // for all non string array types (including char[][])
-                                void[] arr = *cast(void[]*)_arg;
-                                int len = arr.length;
-                                Arg ptr = cast(Arg) arr.ptr;
-                                TypeInfo elTi = _ti.next();
-                                int size = elTi.tsize();
-                                length += sink ("[ ");
-                                while (len > 0)
-                                {
-                                    if (ptr !is arr.ptr)
-                                    {
-                                        length += sink (", ");
-                                    }
-                                    processElement (elTi, ptr);
-
-                                    len -= 1;
-                                    ptr += size;
-                                }
-                                length += sink (" ]");
-                           }
-                           else
-                           {
-                              // the standard processing
-                              process( munge (result, format, _ti, _arg ) );
-                           }
-                        }
-
-                        if( index >= ti.length )
-                        {
-                            process( "{invalid index}" );
-                        }
-                        else
-                        {
-                          processElement( ti[index], args[index] );
-                        }
-
-                }
+                      
+                      // process this argument
+                      if (index >= ti.length)
+                          process ("{invalid index}");
+                      else
+                         processElement (ti[index], args[index]);
+                      }
                 return length;
         }
 
@@ -530,7 +524,6 @@ class Layout(T)
                             if (type is typeid(dchar[]))
                                 return fromUtf32 (*cast(dchar[]*) p, result);
 
-                            // Currently we only format d/w/char[] arrays.
                             return fromUtf8 (type.toString, result);
 
                        case TypeCode.BOOL:
@@ -605,8 +598,7 @@ class Layout(T)
                             return unknown (result, format, type, p);
                        }
 
-                static T[] Null = "{null}";
-                return Null;
+                return cast(T[]) "{null}";
         }
 
         /**********************************************************************
@@ -622,19 +614,18 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] alt, T format = 'd')
+        protected T[] integer (T[] output, long v, T[] format, T style = 'd')
         {
-                uint width;
-                auto style = cast(Integer.Style) parse2 (alt, width, format);
-
                 Integer.Flags flags;
-                if (width)
-                   {
-                   output = output [0 .. width];
-                   flags = flags.Zero;
-                   }
+                uint          width = output.length;
 
-                return Integer.format (output, v, style, flags);
+                if (parseGeneric (format, width, style))
+                    if (width <= output.length)
+                       {
+                       output = output [0 .. width];
+                       flags |= flags.Zero;
+                       }
+                return Integer.format (output, v, cast(Integer.Style) style, flags);
         }
 
         /**********************************************************************
@@ -643,31 +634,38 @@ class Layout(T)
 
         protected T[] floater (T[] output, real v, T[] format)
         {
-                uint places;
-                bool scientific;
+                T    style = 'f';
+                uint places = 2;
 
-                if (parse2(format, places) is 'e')
-                    scientific = true;
-
-                if (places is 0)
-                    places = 2;
-
-                return Float.format (output, v, places, scientific);
+                parseGeneric (format, places, style);
+                return Float.format (output, v, places, (style is 'e' || style is 'E'));
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        private T parse2 (T[] format, inout uint width, T def=T.init)
+        private bool parseGeneric (T[] format, ref uint width, ref T style)
         {
-                uint number;
-                foreach (c; format)
-                         if (c >= '0' && c <= '9')
-                             number = number * 10 + c - '0';
+                if (format.length)
+                   {
+                   uint number;
+                   auto p = format.ptr;
+                   auto e = p + format.length;
+                   style = *p;
+                   while (++p < e)
+                          if (*p >= '0' && *p <= '9')
+                              number = number * 10 + *p - '0';
+                          else
+                             break;
 
-                width = number;
-                return format.length > 0 ? format[0] : def;
+                   if (p - format.ptr > 1)
+                      {
+                      width = number;
+                      return true;
+                      }
+                   }
+                return false;
         }
 
         /***********************************************************************
@@ -857,7 +855,8 @@ debug (UnitTest)
         assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" ,  Formatter( "{0:f}", 1.23f ));
-        assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
+        assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2345" );
+        assert( Formatter( "{0:e4}", 0.0001) == "", Formatter( "{0:e4}", 0.0001) );
 
         int[] a = [ 51, 52, 53, 54, 55 ];
         assert( Formatter( "{}", a ) == "[ 51, 52, 53, 54, 55 ]" );
@@ -873,7 +872,6 @@ debug (UnitTest)
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
-        Stdout.formatln( "{}", d );
         assert( Formatter( "{}", d ) == "{ 234=>2, 345=>3 }" );
 
         bool[char[]] e;
@@ -894,17 +892,14 @@ debug (Layout)
 {
         import tango.io.Console;
 
-        interface foo {}
-
-        class X : foo {char[] toString() {return "hello";}}
-
         void main ()
         {
-                int i = int.max;
-                auto Formatter = new Layout!(char);
+                auto layout = new Layout!(char);
 
-                auto x = new X;
-                foo f = x;
-                Cout (Formatter ("{:x8} {} {} bottles", -1, f, x));
+                Cout (layout ("{:d2}", 56)).newline;
+                Cout (layout ("{:f4}", 0.001)).newline;
+                Cout (layout ("{:f8}", 3.14159)).newline;
+                Cout (layout ("{:e20}", 0.001)).newline;
+                Cout (layout ("{:e4}", 0.0000001)).newline;
         }
 }

@@ -107,12 +107,14 @@ dchar[] toString32 (NumType d, uint decimals=2, bool scientific=false)
         pulls digits from the left side whilst emitting them (rightward)
         to the output.
 
+        TODO: this should be replaced, as it is not sufficiently accurate 
+
 ******************************************************************************/
 
-T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals = 2, bool scientific = false)
-{return format!(T)(dst, x, decimals, scientific);}
+T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals = 2, bool e = false)
+{return format!(T)(dst, x, decimals, e);}
 
-T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
+T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
 {
         static T[] inf = "-inf";
         static T[] nan = "-nan";
@@ -139,7 +141,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
 
                 // Don't exceed max digits storable in a real
                 // (-1 because the last digit is not always storable)
-                if (++count > NumType.dig-1)
+                if (--count <= 0)
                     digit = 0;
                 else
                    {
@@ -170,8 +172,9 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
         // don't scale if zero
         if (x > 0.0)
            {
-           // round up a bit (should do even/odd test?)
-           x += 0.5 / pow10 (decimals);
+           // round up a bit
+           if (e is false)
+               x += 0.5 / pow10 (decimals);
 
            // extract base10 exponent
            exp = cast(int) log10l (x);
@@ -185,22 +188,27 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
 
            // switch to short display if not enough space
            if (len + 32 > dst.length)
-               scientific = true;
+               e = true; 
            }
 
         T* p = dst.ptr;
-        int count = 0;
+        int count = NumType.dig;
 
         // emit sign
         if (sign)
             *p++ = '-';
 
         // are we doing +/-exp format?
-        if (scientific)
+        if (e)
            {
            // emit first digit, and decimal point
            *p++ = toDigit (x, count);
-           *p++ = '.';
+           if (decimals)
+              {
+              *p++ = '.';
+              if (exp < 0)
+                  count += exp;
+              }
 
            // emit rest of mantissa
            while (decimals-- > 0)
@@ -235,7 +243,8 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool scientific = false)
                      *p++ = toDigit (x, count);
 
            // emit point
-           *p++ = '.';
+           if (decimals)
+               *p++ = '.';
 
            // emit leading fractional zeros?
            for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
@@ -388,8 +397,6 @@ private NumType pow10 (uint exp)
 
 debug (UnitTest)
 {
-        // void main() {}
-
         unittest
         {
                 char[64] tmp;
@@ -411,3 +418,7 @@ debug (UnitTest)
 }
 
 
+debug (Float)
+{
+        void main() {}
+}
