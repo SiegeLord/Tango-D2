@@ -16,7 +16,8 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.DateTime;
+private import  tango.util.time.DateTime,
+                tango.util.time.WallClock;
 
 private import  tango.util.time.chrono.Calendar;
 
@@ -271,7 +272,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
 
     // If the input string didn't specify a date part, try to return something meaningful.
     if (result.year == -1 || result.month == -1 || result.day == -1) {
-      DateTime now = DateTime.now;
+      DateTime now = WallClock.now;
       if (result.month == -1 && result.day == -1) {
         if (result.year == -1) {
           result.year = result.calendar.getYear(now);
