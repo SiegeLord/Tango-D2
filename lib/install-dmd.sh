@@ -17,19 +17,23 @@ usage() {
     echo 'Usage: install-dmd.sh [option <argument>] ... 
 Options:
   --prefix: Install to the specified prefix (absolute path).
-  --altbin: Use an alternate path component for the DMD binary, "bin" is default, "-" will
-                set it to empty.
+  --altconf: Use an alternate path component for the DMD conf, "bin" is default, "-" will
+                set it to empty. See also --confprefix
   --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
                 set it to empty.
   --altincl: Use an alternate path component for import files, "include" is default, "-" will
                 set it to empty (will install at PREFIX!)
-  --binprefix: Use a specific prefix for where DMD binary resides, otherwise PREFIX is used
-                (absolute path).
+  --confprefix: Use a specific prefix for where DMD binary resides, otherwise PREFIX is used
+                (absolute path). Note that this combined with --altconf can be used to put
+                dmd.conf somewhere else than together with the binary, either your $HOME or
+                /etc. Note that together with the DMD binary seems most stable.
   --libprefix: Use a specific prefix for where libs should be installed, otherwise PREFIX is
                 used (absolute path).
   --inclprefix: Use a specific prefix for where imports should be installed, otherwise
                 PREFIX is used (absolute path).
   --uninstall: Uninstall Tango, switch back to standard Phobos.
+  --as-phobos: This will install libtango-base-dmd.a as libphobos.a as per old style. This is
+                default for older installations.
   --verify: Will verify installation.
   --help: Will print this help text.'
     exit 0
@@ -40,13 +44,15 @@ cd "`dirname $0`"
 # Default values
 UNINSTALL=0
 VERIFY=0
-BIN="bin"
+ASPHOBOS=0
+CONF="bin"
 LIB="lib"
 INCL="include"
 PREFIX="/usr/local"
-BINPREFIX="$PREFIX"
+CONFPREFIX="$PREFIX"
 LIBPREFIX="$PREFIX"
 INCLPREFIX="$PREFIX"
+BASELIB="libtango-base-dmd.a"
 
 # 0) Parse arguments
 if [ "$#" = "0" ]
@@ -65,7 +71,7 @@ do
         shift
 
         PREFIX="$1"
-        BINPREFIX="$PREFIX"
+        CONFPREFIX="$PREFIX"
         LIBPREFIX="$PREFIX"
         INCLPREFIX="$PREFIX"
     elif [ "$1" = "--altbin" ]
@@ -101,7 +107,7 @@ do
     elif [ "$1" = "--binprefix" ]
     then
         shift
-            BINPREFIX="$1"
+            CONFPREFIX="$1"
 
     elif [ "$1" = "--libprefix" ]
     then
@@ -116,6 +122,9 @@ do
     elif [ "$1" = "--uninstall" ]
     then
         UNINSTALL=1
+    elif [ "$1" = "--as-phobos" ]
+    then
+        ASPHOBOS=1
     elif [ "$1" = "--verify" ]
     then
         VERIFY=1
@@ -125,7 +134,25 @@ do
     shift
 done
 
-echo "Binary prefix: $BINPREFIX"
+# Check if installed DMD supports -defaultlib flag, otherwise set ASPHOBOS
+. dmdinclude
+
+if [ ! "$DMDVERSIONMAJ" -gt "1" ]
+then
+    if [ ! "$DMDVERSIONMIN" -gt "21" ]
+    then
+        echo 'Your version of DMD have no support for -defaultlib flag, using libphobos.a'
+        ASPHOBOS="1"
+    fi
+fi
+
+if [ "$ASPHOBOS" = "1" ]
+then
+    BASELIB="libphobos.a"
+    cp libtango-base-dmd.a libphobos.a
+fi
+
+echo "Binary prefix: $CONFPREFIX"
 echo "Library prefix: $LIBPREFIX"
 echo "Import prefix: $INCLPREFIX"
 
@@ -133,9 +160,9 @@ echo "Import prefix: $INCLPREFIX"
 if [ "${PREFIX:0:1}" != "/" ]
 then
     die "PREFIX needs to be an absolute path, not $PREFIX" 1
-elif [ "${BINPREFIX:0:1}" != "/" ]
+elif [ "${CONFPREFIX:0:1}" != "/" ]
 then
-    die "BINPREFIX needs to be an absolute path, not $BINPREFIX" 1
+    die "CONFPREFIX needs to be an absolute path, not $CONFPREFIX" 1
 elif [ "${LIBPREFIX:0:1}" != "/" ]
 then
     die "LIB needs to be an absolute path, not $LIBPREFIX" 1
@@ -153,11 +180,11 @@ then
     if [ "$VERIFY" = "1" ]
     then
         echo "Not veryfying uninstall."
-        VERIFY="0"
+        VERIFY=0
     fi
 
     # Revert to Phobos if earlier evidence of existense is found
-    # Only relevant for pre 0.99.3 installations
+    # Only relevant for pre 0.99.3 installations or --as-phobos installs
     if [ -e "$LIBPREFIX/$LIB/libphobos.a.phobos" ]
     then
         mv     $LIBPREFIX/$LIB/libphobos.a.phobos $LIBPREFIX/$LIB/libphobos.a
@@ -171,10 +198,10 @@ then
     then
         mv     $INCLPREFIX/$INCL/d/object.d.phobos $INCLPREFIX/$INCL/d/object.d
     fi
-    if [ -e "$BINPREFIX/$BIN/dmd.conf.phobos" ]
+    if [ -e "$CONFPREFIX/$CONF/dmd.conf.phobos" ]
     then
-        mv   $BINPREFIX/$BIN/dmd.conf $BINPREFIX/$BIN/dmd.conf.tango
-        mv   $BINPREFIX/$BIN/dmd.conf.phobos $BINPREFIX/$BIN/dmd.conf
+        mv   $CONFPREFIX/$CONF/dmd.conf $CONFPREFIX/$CONF/dmd.conf.tango
+        mv   $CONFPREFIX/$CONF/dmd.conf.phobos $CONFPREFIX/$CONF/dmd.conf
     fi
     # Tango 0.97 installed to this dir
     if [ -e "$PREFIX/import/v1.012" ]
@@ -228,39 +255,63 @@ then
     mv -f $INCLPREFIX/$INCL/d/object.d $INCLPREFIX/$INCL/d/object.d.phobos
 fi
 
+if [ "$ASPHOBOS" = "1" ]
+then
+    if [ -e "$LIBPREFIX/$LIB/libphobos.a" ]
+    then
+        mv -f $LIBPREFIX/$LIB/libphobos.a $LIBPREFIX/$LIB/libphobos.a.phobos
+    fi
+fi
+
 # Create dmd.conf
 create_dmd_conf() {
-    cat > $BINPREFIX/$BIN/dmd.conf <<EOF
+    if [ "$ASPHOBOS" = "0" ]
+    then
+        cat > $CONFPREFIX/$CONF/dmd.conf <<EOF
+[Environment]
+DFLAGS=-I$INCLPREFIX/$INCL/d -version=Tango -version=Posix -L-L"$LIBPREFIX/$LIB" 
+EOF
+    else
+        cat > $CONFPREFIX/$CONF/dmd.conf <<EOF
 [Environment]
 DFLAGS=-I$INCLPREFIX/$INCL/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"$LIBPREFIX/$LIB"
 EOF
+    fi
 }
 
 # Install ...
 echo 'Copying files...'
 mkdir -p $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
 mkdir -p $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
-mkdir -p $BINPREFIX/$BIN/ || die "Failed to create $BINPREFIX/$BIN" 5
-cp -pRvf libtango-base-dmd.a $LIBPREFIX/$LIB/ || die "Failed to copy libraries" 7
+mkdir -p $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
+
+cp -pRvf $BASELIB $LIBPREFIX/$LIB/ || die "Failed to copy libraries" 7
 cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source" 8
-if [ ! -e "$BINPREFIX/$BIN/dmd.conf" ]
+if [ ! -e "$CONFPREFIX/$CONF/dmd.conf" ]
 then
     create_dmd_conf
 else
     # Is it a phobos conf ?
-    if [ ! "`grep '\-version=Tango' $BINPREFIX/$BIN/dmd.conf`" ]
+    if [ ! "`grep '\-version=Tango' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
-        mv $BINPREFIX/$BIN/dmd.conf $BINPREFIX/$BIN/dmd.conf.phobos
+        mv $CONFPREFIX/$CONF/dmd.conf $CONFPREFIX/$CONF/dmd.conf.phobos
         create_dmd_conf
+    elif [ "$ASPHOBOS" = "1" ]
+    then
+        if [ "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
+        then
+            rm -rf $CONFPREFIX/$CONF/dmd.conf
+            create_dmd_conf
+        fi
     else
-        if [ ! "`grep '\-defaultlib=tango\-base\-dmd' $BINPREFIX/$BIN/dmd.conf`" ]
+        if [ ! "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
         then
             echo 'Appending -defaultlib switch to DFLAGS'
-            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $BINPREFIX/$BIN/dmd.conf
-            if [ ! "`grep '\-debuglib=tango\-base\-dmd' $BINPREFIX/$BIN/dmd.conf`" ]
+            sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
+            if [ ! "`grep '\-debuglib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
             then
                 echo 'Appending -debuglib switch to DFLAGS'
-                sed -i.bak -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $BINPREFIX/$BIN/dmd.conf
+                sed -i.bak -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
             fi
         else
             echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
@@ -276,20 +327,20 @@ then
     then
         die "object.di not properly installed to $INCLPREFIX/$INCL/d" 9
     fi
-    if [ ! -e "$LIBPREFIX/$LIB/libtango-base-dmd.a" ]
+    if [ ! -e "$LIBPREFIX/$LIB/$BASELIB" ]
     then
-        die "libtango-base-dmd.a not properly installed to $LIBPREFIX/$LIB" 10
+        die "$BASELIB not properly installed to $LIBPREFIX/$LIB" 10
     fi
-    if [ ! -e "$BINPREFIX/$BIN/dmd.conf" ]
+    if [ ! -e "$CONFPREFIX/$CONF/dmd.conf" ]
     then
-        die "dmd.conf not present in $BINPREFIX/$BIN" 11
-    elif [ ! "`grep '\-version=Tango' $BINPREFIX/$BIN/dmd.conf`" ]
+        die "dmd.conf not present in $CONFPREFIX/$CONF" 11
+    elif [ ! "`grep '\-version=Tango' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
         die "dmd.conf not Tango enabled" 12
-    elif [ ! "`grep '\-defaultlib=tango\-base\-dmd' $BINPREFIX/$BIN/dmd.conf`" ]
+    elif [ ! "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
         die "dmd.conf don't have -defaultlib switch" 13
-    elif [ ! "`grep '\-debuglib=tango\-base\-dmd' $BINPREFIX/$BIN/dmd.conf`" ]
+    elif [ ! "`grep '\-debuglib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
         die "dmd.conf don't have -debuglib switch" 14
     fi

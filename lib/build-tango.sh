@@ -29,30 +29,30 @@ Options:
 
 UNAME=`uname`
 INLINE="-inline"
-DMDVERSION=
 
 # Various functions to workaround bugs in the compilers
 
-# Sets the variable DMDVERSION
+# Sets the variables DMDVERSIONMAJ and DMDVERSIONMIN
 dmdversion() {
-    DMDVERSION=`$DC | head -1 | cut -c 26-`
-    echo ">> Using $DMDVERSION"
+    . dmdinclude
 }
 
 # Checks if this DMD version has known bugs that can be worked around build time
 dmdbugs() {
     dmdversion
-    if [ "$DMDVERSION" = "1.020" -o "$DMDVERSION" = "1.021" ]
+
+    if [ ! "$DMDVERSIONMAJ" -gt "1" ]
     then
-        INLINE=""
-        echo ">> Removing -inline due to bugzilla 668"
+        if [ ! "$DMDVERSIONMIN" -gt "21" ]
+        then
+            INLINE=""
+            echo ">> Removing -inline due to bugzilla 668"
+        fi
     fi
 }
 
 # Checks for known compiler bugs
 compilerbugs() {
-    echo ">> Checking compiler version $DC"
-    #`$DCbugs`
     if [ "$DC" = "dmd" ]
     then
         dmdbugs
