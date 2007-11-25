@@ -18,7 +18,7 @@ public  import  tango.io.Conduit;
 
 private import  tango.net.Socket;
 
-private import  tango.core.TimeSpan;
+private import  tango.util.time.TimeSpan;
 
 /*******************************************************************************
 

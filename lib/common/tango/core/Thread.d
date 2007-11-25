@@ -12,10 +12,6 @@ module tango.core.Thread;
 version = StackGrowsDown;
 
 
-public
-{
-    import tango.core.TimeSpan;
-}
 private
 {
     import tango.core.Exception;
@@ -762,31 +758,53 @@ class Thread
      *
      * -------------------------------------------------------------------------
      */
-    static void sleep( TimeSpan period )
+    static void sleep( double period )
+    {
+        yield (cast(ulong) (1_000_000_000L * period));
+    }
+
+
+    /**
+     * Forces a context switch to occur away from the calling thread 
+     * for the specified number of nanoseconds, up to a maximum of 
+     * (uint.max - 1) milliseconds - approximately 49 days
+     *
+     * Actual time yielded is O/S specific, and may not reflect implied 
+     * accuracy. For example, Win32 supports precision to the level of
+     * milliseconds only
+     */
+    static void yield( ulong nano )
     in
     {
-        assert( period.milliseconds < uint.max - 1 );
+        // uint.max milliseconds
+        assert( nano < 4294967295000000 );
     }
     body
     {
         version( Win32 )
         {
-            Sleep( cast(uint)( period.milliseconds ) );
+            auto milli = cast(uint) (nano /= 1_000_000);
+            if (milli)
+                Sleep( milli );
+            else
+               // see notes in yield()
+               yield;
         }
         else version( Posix )
         {
             timespec tin  = void;
             timespec tout = void;
 
-            if( tin.tv_sec.max < period.seconds )
+            auto seconds = cast(typeof(tin.tv_sec)) ( nano / 1_000_000_000 );
+            if( tin.tv_sec.max < seconds )
             {
                 tin.tv_sec  = tin.tv_sec.max;
                 tin.tv_nsec = 0;
             }
             else
             {
-                tin.tv_sec  = cast(typeof(tin.tv_sec))  period.seconds;
-                tin.tv_nsec = cast(typeof(tin.tv_nsec)) period.nanoseconds % 1_000_000_000;
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  seconds;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) (micro - (seconds * 1_000_000)) * 1_000;
             }
 
             while( true )
@@ -798,19 +816,6 @@ class Thread
                 tin = tout;
             }
         }
-    }
-
-    /**
-     * Floating point version.  The period is in terms of seconds
-     *
-     * Note: The period is not always accurate, so it is possible that the
-     * function would return with a timeout before the specified period.  For
-     * more accuracy, use the TimeSpan version.
-     *
-     */
-    static void sleep( double period )
-    {
-      sleep(TimeSpan.interval(period));
     }
 
 

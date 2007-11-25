@@ -71,8 +71,7 @@ OBJ_CORE= \
     core\Exception.obj \
     core\Memory.obj \
     core\Runtime.obj \
-    core\Thread.obj \
-    core\TimeSpan.obj
+    core\Thread.obj 
 
 OBJ_STDC= \
     stdc\wrap.obj
@@ -88,8 +87,7 @@ DOC_CORE= \
     core\Exception.html \
     core\Memory.html \
     core\Runtime.html \
-    core\Thread.html \
-    core\TimeSpan.html
+    core\Thread.html 
 
 ALL_DOCS=
 

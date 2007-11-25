@@ -8,7 +8,7 @@
 module tango.core.sync.Semaphore;
 
 
-public import tango.core.TimeSpan;
+public import tango.util.time.TimeSpan;
 public import tango.core.Exception : SyncException;
 
 version( Win32 )

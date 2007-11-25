@@ -9,7 +9,7 @@
 module tango.core.sync.Condition;
 
 
-public import tango.core.TimeSpan;
+public import tango.util.time.TimeSpan;
 public import tango.core.Exception : SyncException;
 public import tango.core.sync.Mutex;
 

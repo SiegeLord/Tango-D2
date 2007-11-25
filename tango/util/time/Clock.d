@@ -18,7 +18,7 @@ private import  tango.util.time.Date;
 
 private import  tango.core.Exception;
 
-public  import  tango.core.TimeSpan;
+public  import  tango.util.time.TimeSpan;
 
 public  import  tango.util.time.DateTime;
 

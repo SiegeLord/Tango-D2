@@ -20,7 +20,7 @@ private import tango.util.time.Clock;
 
 private import Integer = tango.text.convert.Integer;
 
-private import tango.core.TimeSpan;
+private import tango.util.time.TimeSpan;
 
 
 /// Utilities for telnet-based connections.

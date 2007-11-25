@@ -29,7 +29,7 @@ class ClusterQueue
         private Logger          log;
         private uint            used, 
                                 limit;
-        private TimeSpan        sleep;
+        private double          sleep;
         private Thread          thread;
         private Cluster         cluster;
 
@@ -55,7 +55,7 @@ class ClusterQueue
 
         **********************************************************************/
 
-        this (Cluster cluster, uint limit, TimeSpan sleep)
+        this (Cluster cluster, uint limit, double sleep)
         {
                 thread = new Thread (&run);
                 
@@ -111,7 +111,7 @@ class PersistQueue  : ClusterQueue
 
         **********************************************************************/
 
-        this (Cluster cluster, uint limit, TimeSpan sleep)
+        this (Cluster cluster, uint limit, double sleep)
         {
                 super (cluster, limit, sleep);
         }

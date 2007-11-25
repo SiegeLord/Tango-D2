@@ -8,7 +8,7 @@ module tango.io.selector.model.ISelector;
 
 public import tango.io.model.IConduit;
 
-public import tango.core.TimeSpan;
+public import tango.util.time.TimeSpan;
 
 /**
  * Events that are used to register a Conduit to a selector and are returned

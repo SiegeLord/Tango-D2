@@ -17,7 +17,7 @@ private import  tango.sys.Common;
 private import  tango.util.time.Date,
                 tango.util.time.Clock;
 
-public  import  tango.core.TimeSpan;
+public  import  tango.util.time.TimeSpan;
 
 public  import  tango.util.time.DateTime;
 

@@ -17,8 +17,6 @@ private import  tango.net.cluster.tina.RollCall,
                 tango.net.cluster.tina.ClusterQueue,  
                 tango.net.cluster.tina.ClusterServer;
 
-private import  tango.core.TimeSpan;
-
 /******************************************************************************
         
         Extends the ClusterServer to glue cluster-cache support together.
@@ -42,7 +40,7 @@ class QueueServer : ClusterServer
 
                 // create a queue instance
                 // queue = new MemoryQueue  (cluster, 64 * 1024 * 1024, 1.0);
-                queue = new PersistQueue (cluster, 64 * 1024 * 1024, TimeSpan.seconds(3));
+                queue = new PersistQueue (cluster, 64 * 1024 * 1024, 3.0);
 
         }
 

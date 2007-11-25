@@ -24,7 +24,7 @@ private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
-private import  tango.core.TimeSpan;
+private import  tango.util.time.TimeSpan;
                 
 private import  tango.net.http.HttpConst,
                 tango.net.http.HttpParams,  

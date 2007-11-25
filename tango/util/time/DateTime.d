@@ -13,7 +13,7 @@
 
 module tango.util.time.DateTime;
 
-public  import  tango.core.TimeSpan;
+public  import  tango.util.time.TimeSpan;
 
 private import  tango.util.time.Clock,
                 tango.util.time.WallClock;

@@ -30,7 +30,7 @@ private import  Regex = tango.text.Regex;
 private import  Integer = tango.text.convert.Integer;
 private import  Timestamp = tango.text.convert.TimeStamp;
 
-private import  tango.core.TimeSpan;
+private import  tango.util.time.TimeSpan;
 
 /// An FTP progress delegate.
 ///
