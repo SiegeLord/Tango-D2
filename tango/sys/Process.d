@@ -144,9 +144,9 @@ class Process
     private char[][]        _args;
     private char[][char[]]  _env;
     private char[]          _workDir;
-    private OutputStream    _stdin;
-    private InputStream     _stdout;
-    private InputStream     _stderr;
+    private PipeConduit     _stdin;
+    private PipeConduit     _stdout;
+    private PipeConduit     _stderr;
     private bool            _running = false;
 
     version (Windows)
@@ -411,7 +411,7 @@ class Process
      * Remarks:
      * The stream will be null if no child process has been executed.
      */
-    public OutputStream stdin()
+    public PipeConduit stdin()
     {
         return _stdin;
     }
@@ -425,7 +425,7 @@ class Process
      * Remarks:
      * The stream will be null if no child process has been executed.
      */
-    public InputStream stdout()
+    public PipeConduit stdout()
     {
         return _stdout;
     }
@@ -439,7 +439,7 @@ class Process
      * Remarks:
      * The stream will be null if no child process has been executed.
      */
-    public InputStream stderr()
+    public PipeConduit stderr()
     {
         return _stderr;
     }
@@ -1501,3 +1501,4 @@ debug (UnitTest)
         }
     }
 }
+
