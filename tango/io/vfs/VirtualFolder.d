@@ -327,7 +327,7 @@ class VirtualFolder : VfsHost
 
         ***********************************************************************/
 
-        VfsFolder commit (bool commit = true)
+        VfsFolder close (bool commit = true)
         {
                 foreach (name, child; mounts)
                          child.close (commit);
