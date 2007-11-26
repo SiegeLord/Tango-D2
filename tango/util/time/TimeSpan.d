@@ -123,7 +123,11 @@ struct TimeSpan
          */
         int opCmp(TimeSpan t)
         {
-                return cast(int)((ticks - t.ticks) >>> 32);
+                if(ticks < t.ticks)
+                        return -1;
+                if(ticks > t.ticks)
+                        return 1;
+                return 0;
         }
 
         /**
@@ -428,4 +432,20 @@ struct TimeSpan
                 return TimeSpan(cast(long)(sec * second.ticks));
         }
 
+}
+
+unittest
+{
+        assert(TimeSpan.ms > TimeSpan.us);
+        assert(TimeSpan.year > TimeSpan.us);
+        assert(TimeSpan.year > TimeSpan.day);
+        assert(TimeSpan.zero > TimeSpan.min);
+        assert(TimeSpan.max  > TimeSpan.zero);
+        assert(TimeSpan.max  > TimeSpan.min);
+        assert(TimeSpan.zero >= TimeSpan.zero);
+        assert(TimeSpan.zero <= TimeSpan.zero);
+        assert(TimeSpan.max >= TimeSpan.max);
+        assert(TimeSpan.max <= TimeSpan.max);
+        assert(TimeSpan.min >= TimeSpan.min);
+        assert(TimeSpan.min <= TimeSpan.min);
 }

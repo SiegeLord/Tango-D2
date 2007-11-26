@@ -189,7 +189,11 @@ struct DateTime
 
         int opCmp (DateTime t) 
         {
-                return cast(int)((ticks - t.ticks) >>> 32);
+                if(ticks < t.ticks)
+                        return -1;
+                if(ticks > t.ticks)
+                        return 1;
+                return 0;
         }
 
         /**********************************************************************
