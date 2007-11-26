@@ -796,6 +796,7 @@ class Thread
             timespec tout = void;
 
             auto seconds = cast(typeof(tin.tv_sec)) ( nano / 1_000_000_000 );
+            auto micro = cast(typeof(tin.tv_sec)) ( nano / 1_000 );
             if( tin.tv_sec.max < seconds )
             {
                 tin.tv_sec  = tin.tv_sec.max;
