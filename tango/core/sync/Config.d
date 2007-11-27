@@ -37,22 +37,22 @@ version( Posix )
     }
 
 
-    void adjTimespec( inout timespec t, TimeSpan i )
+    void adjTimespec( inout timespec t, TimeSpan u )
     {
         enum
         {
             SECS_TO_NANOS = 1_000_000_000
         }
 
-        if( t.tv_sec.max - t.tv_sec < i.seconds )
+        if( t.tv_sec.max - t.tv_sec < u.seconds )
         {
             t.tv_sec  = t.tv_sec.max;
             t.tv_nsec = 0;
         }
         else
         {
-            t.tv_sec  += i.seconds;
-            long ns = i.nanoseconds % SECS_TO_NANOS;
+            t.tv_sec  += u.seconds;
+            long ns = u.nanoseconds % SECS_TO_NANOS;
             if( SECS_TO_NANOS - t.tv_nsec < ns )
             {
                 t.tv_sec += 1;

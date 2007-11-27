@@ -12,6 +12,10 @@ module tango.core.Thread;
 version = StackGrowsDown;
 
 
+public
+{
+//    import tango.core.TimeSpan;
+}
 private
 {
     import tango.core.Exception;
@@ -759,53 +763,30 @@ class Thread
      * -------------------------------------------------------------------------
      */
     static void sleep( double period )
-    {
-        yield (cast(ulong) (1_000_000_000L * period));
-    }
-
-
-    /**
-     * Forces a context switch to occur away from the calling thread 
-     * for the specified number of nanoseconds, up to a maximum of 
-     * (uint.max - 1) milliseconds - approximately 49 days
-     *
-     * Actual time yielded is O/S specific, and may not reflect implied 
-     * accuracy. For example, Win32 supports precision to the level of
-     * milliseconds only
-     */
-    static void yield( ulong nano )
     in
     {
-        // uint.max milliseconds
-        assert( nano < 4294967295000000 );
+        assert( period * 1_000 < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            auto milli = cast(uint) (nano /= 1_000_000);
-            if (milli)
-                Sleep( milli );
-            else
-               // see notes in yield()
-               yield;
+            Sleep( cast(uint)( period * 1_000 ) );
         }
         else version( Posix )
         {
             timespec tin  = void;
             timespec tout = void;
 
-            auto seconds = cast(typeof(tin.tv_sec)) ( nano / 1_000_000_000 );
-            auto micro = cast(typeof(tin.tv_sec)) ( nano / 1_000 );
-            if( tin.tv_sec.max < seconds )
+            if( tin.tv_sec.max < period )
             {
                 tin.tv_sec  = tin.tv_sec.max;
                 tin.tv_nsec = 0;
             }
             else
             {
-                tin.tv_sec  = cast(typeof(tin.tv_sec))  seconds;
-                tin.tv_nsec = cast(typeof(tin.tv_nsec)) (micro - (seconds * 1_000_000)) * 1_000;
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  period;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) ((period % 1.0) * 1_000_000_000);
             }
 
             while( true )
@@ -818,6 +799,94 @@ class Thread
             }
         }
     }
+
+
+    /+
+    /**
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.
+     *
+     * Params:
+     *  period = The minimum duration the calling thread should be suspended.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     *
+     * Thread.sleep( TimeSpan.milliseconds( 50 ) ); // sleep for 50 milliseconds
+     * Thread.sleep( TimeSpan.seconds( 5 ) );       // sleep for 5 seconds
+     *
+     * -------------------------------------------------------------------------
+     */
+    static void sleep( TimeSpan period )
+    in
+    {
+        assert( period.milliseconds < uint.max - 1 );
+    }
+    body
+    {
+        version( Win32 )
+        {
+            Sleep( cast(uint)( period.milliseconds ) );
+        }
+        else version( Posix )
+        {
+            timespec tin  = void;
+            timespec tout = void;
+
+            if( tin.tv_sec.max < period.seconds )
+            {
+                tin.tv_sec  = tin.tv_sec.max;
+                tin.tv_nsec = 0;
+            }
+            else
+            {
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  period.seconds;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) period.nanoseconds % 1_000_000_000;
+            }
+
+            while( true )
+            {
+                if( !nanosleep( &tin, &tout ) )
+                    return;
+                if( getErrno() != EINTR )
+                    throw new ThreadException( "Unable to sleep for specified duration" );
+                tin = tout;
+            }
+        }
+    }
+
+
+    /**
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.
+     *
+     * Params:
+     *  period = The minimum duration the calling thread should be suspended,
+     *           in seconds.  Sub-second durations are specified as fractional
+     *           values.  Please note that because period is a floating-point
+     *           number, some accuracy may be lost for certain intervals.  For
+     *           this reason, the TimeSpan overload is preferred in instances
+     *           where an exact interval is required.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     *
+     * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
+     * Thread.sleep( 5 );    // sleep for 5 seconds
+     *
+     * -------------------------------------------------------------------------
+     */
+    static void sleep( double period )
+    {
+      sleep( TimeSpan.interval( period ) );
+    }
+    +/
 
 
     /**

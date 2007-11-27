@@ -121,35 +121,17 @@ class Semaphore
 
 
     /**
-     * Wait up to period seconds for the current count to be above zero.  If
-     * this occurs, then atomically decrement the count by one and return true.
-     * Otherwise, return false.
-     *
-     * Note: The period is not always accurate, so it is possible that the
-     * function would return with a timeout before the specified period.  For
-     * more accuracy, use the TimeSpan version.
-     *
-     * Params:
-     *  period = The number of seconds to wait.
-     *
-     * Returns:
-     *  true if notified before the timeout and false if not.
-     *
-     * Throws:
-     *  SyncException on error.
-     */
-    bool wait( double period )
-    {
-        return wait(TimeSpan.interval(period));
-    }
-
-    /**
-     * Wait up to the specified time for the current count to be above zero.
-     * If this occurs, then atomically decrement the count by one and return
-     * true.  Otherwise, return false.
+     * Suspends the calling thread until the current count moves above zero or
+     * until the supplied time period has elapsed.  If the count moves above
+     * zero in this interval, then atomically decrement the count by one and
+     * return true.  Otherwise, return false.  The supplied period may be up to
+     * a maximum of (uint.max - 1) milliseconds.
      *
      * Params:
      *  period = The amount of time to wait.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
      *
      * Returns:
      *  true if notified before the timeout and false if not.
@@ -158,11 +140,15 @@ class Semaphore
      *  SyncException on error.
      */
     bool wait( TimeSpan period )
+    in
+    {
+        assert( period.milliseconds < uint.max - 1 );
+    }
+    body
     {
         version( Win32 )
         {
-            DWORD t = period.milliseconds < INFINITE ?
-                        cast(uint)( period.milliseconds )  : INFINITE - 1;
+            DWORD t = period.milliseconds;
             switch( WaitForSingleObject( m_hndl, t ) )
             {
             case WAIT_OBJECT_0:
@@ -193,6 +179,35 @@ class Semaphore
 
         // -w trip
         return false;
+    }
+
+
+    /**
+     * Suspends the calling thread until the current count moves above zero or
+     * until the supplied time period has elapsed.  If the count moves above
+     * zero in this interval, then atomically decrement the count by one and
+     * return true.  Otherwise, return false.  The supplied period may be up to
+     * a maximum of (uint.max - 1) milliseconds.
+     *
+     * Params:
+     *  period = The number of seconds to wait.  Please note that because
+     *           period is a floating-point number, some accuracy may be lost
+     *           for certain intervals.  For this reason, the TimeSpan overload
+     *           is preferred in instances where an exact representation is
+     *           required.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Returns:
+     *  true if notified before the timeout and false if not.
+     *
+     * Throws:
+     *  SyncException on error.
+     */
+    bool wait( double period )
+    {
+        return wait( TimeSpan.interval( period ) );
     }
 
 

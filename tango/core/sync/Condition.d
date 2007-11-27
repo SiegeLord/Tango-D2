@@ -132,31 +132,15 @@ class Condition
 
 
     /**
-     * Wait up to period seconds for a notification.
-     *
-     * Note: The period is not always accurate, so it is possible that the
-     * function would return with a timeout before the specified period.  For
-     * more accuracy, use the TimeSpan version.
-     *
-     * Params:
-     *  period = The number of seconds to wait.
-     *
-     * Returns:
-     *  true if notified before the timeout and false if not.
-     *
-     * Throws:
-     *  SyncException on error.
-     */
-    bool wait( double period )
-    {
-        return wait(TimeSpan.interval(period));
-    }
-
-    /**
-     * Wait up to the specified time period for a notification.
+     * Suspends the calling thread until a notification occurs or until the
+     * supplied time period has elapsed.  The supplied period may be up to a
+     * maximum of (uint.max - 1) milliseconds.
      *
      * Params:
      *  period = The time to wait.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
      *
      * Returns:
      *  true if notified before the timeout and false if not.
@@ -165,11 +149,15 @@ class Condition
      *  SyncException on error.
      */
     bool wait( TimeSpan period )
+    in
+    {
+        assert( period.milliseconds < uint.max - 1 );
+    }
+    body
     {
         version( Win32 )
         {
-            return timedWait( period.milliseconds < INFINITE ?
-                                cast(uint)( period.milliseconds )  : INFINITE - 1 );
+            return timedWait( period.milliseconds );
         }
         else version( Posix )
         {
@@ -184,6 +172,33 @@ class Condition
                 return false;
             throw new SyncException( "Unable to wait for condition" );
         }
+    }
+
+
+    /**
+     * Suspends the calling thread until a notification occurs or until the
+     * supplied time period has elapsed.  The supplied period may be up to a
+     * maximum of (uint.max - 1) milliseconds.
+     *
+     * Params:
+     *  period = The time to wait, in seconds (fractional values are accepted).
+     *           Please note that because period is a floating-point number,
+     *           some accuracy may be lost for certain intervals.  For this
+     *           reason, the TimeSpan overload is preferred in instances where
+     *           an exact representation is required.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Returns:
+     *  true if notified before the timeout and false if not.
+     *
+     * Throws:
+     *  SyncException on error.
+     */
+    bool wait( double period )
+    {
+        return wait( TimeSpan.interval( period ) );
     }
 
 
