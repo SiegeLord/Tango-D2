@@ -16,7 +16,9 @@ die() {
 usage() {
     echo 'Usage: install-dmd.sh [option <argument>] ... 
 Options:
-  --prefix: Install to the specified prefix (absolute path).
+  --prefix: Install to the specified prefix (absolute path), default is /usr/local
+  --userlib: Installs libtango-user-dmd.a too. It will also be built if it is missing
+                or older than libtango-base-dmd.a.
   --altconf: Use an alternate path component for the DMD conf, "bin" is default, "-" will
                 set it to empty. See also --confprefix
   --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
@@ -62,75 +64,77 @@ fi
 
 while [ "$#" != "0" ]
 do
-    if [ "$1" = "--help" ]
-    then
-        usage
-    fi
-    if [ "$1" = "--prefix" ]
-    then
-        shift
 
-        PREFIX="$1"
-        CONFPREFIX="$PREFIX"
-        LIBPREFIX="$PREFIX"
-        INCLPREFIX="$PREFIX"
-    elif [ "$1" = "--altbin" ]
-    then
-        shift
+    case "$1" in
+        --help)
+            usage
+            ;;
+        --prefix)
+            shift
 
-        if [ "$1" = "-" ]
-        then
-            BIN=""
-        else
-            BIN="$1"
-        fi
-    elif [ "$1" = "--altlib" ]
-    then
-        shift
+            PREFIX="$1"
+            CONFPREFIX="$PREFIX"
+            LIBPREFIX="$PREFIX"
+            INCLPREFIX="$PREFIX"
+            ;;
+        --altbin)
+            shift
 
-        if [ "$1" = "-" ]
-        then
-            LIB=""
-        else
-            LIB="$1"
-        fi
-    elif [ "$1" = "--altincl" ]
-    then
-        shift
+            if [ "$1" = "-" ]
+            then
+                BIN=""
+            else
+                BIN="$1"
+            fi
+            ;;
+        --altlib)
+            shift
 
-        if [ "$1" = "-" ]
-        then
-            INCL=""
-        else
-            INCL="$1"
-        fi
-    elif [ "$1" = "--binprefix" ]
-    then
-        shift
-            CONFPREFIX="$1"
+            if [ "$1" = "-" ]
+            then
+                LIB=""
+            else
+                LIB="$1"
+            fi
+            ;;
+        --altincl)
+            shift
 
-    elif [ "$1" = "--libprefix" ]
-    then
-        shift
-            LIBPREFIX="$1"
-
-    elif [ "$1" = "--inclprefix" ]
-    then
-        shift
-            INCLPREFIX="$1"
-
-    elif [ "$1" = "--uninstall" ]
-    then
-        UNINSTALL=1
-    elif [ "$1" = "--as-phobos" ]
-    then
-        ASPHOBOS=1
-    elif [ "$1" = "--verify" ]
-    then
-        VERIFY=1
-    else
-        usage
-    fi
+            if [ "$1" = "-" ]
+            then
+                INCL=""
+            else
+                INCL="$1"
+            fi
+            ;;
+        --binprefix)
+            shift
+                CONFPREFIX="$1"
+            ;;
+        --libprefix)
+            shift
+                LIBPREFIX="$1"
+            ;;
+        --inclprefix)
+            shift
+                INCLPREFIX="$1"
+            ;;
+        --uninstall)
+            UNINSTALL=1
+            ;;
+        --as-phobos)
+            ASPHOBOS=1
+            ;;
+        --verify)
+            VERIFY=1
+            ;;
+        --userlib)
+            USERLIB=1
+            ;;
+        *)
+            usage
+            ;;
+    esac
     shift
 done
 
@@ -243,10 +247,23 @@ then
     die "Done!" 0
 fi
 
-# Verify that runtime was built
+# Build missing libs
 if [ ! -e libtango-base-dmd.a ]
 then
-    die "You must run build-dmd.sh before running install-dmd.sh" 4
+    echo 'libtango-base-dmd.a not found, trying to build it.'
+    ./build-dmd.sh || die "Failed to build libtango-base-dmd.a, try running build-dmd.sh 
+manually." 4
+fi
+
+if [ "$USERLIB" = "1" ]
+then
+    if [ "$BASELIB" -nt "libtango-user-dmd.a" ]
+    then
+        echo 'libtango-user-dmd.a not found or older than libtango-base-dmd.a, trying to 
+        build it.'
+        ./build-tango.sh dmd || die "Failed to build libtango-user-dmd.a, try running 
+        ./build-tango.sh dmd manually." 4
+    fi
 fi
 
 # Back up the original files
@@ -285,8 +302,14 @@ mkdir -p $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need ro
 mkdir -p $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
 mkdir -p $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
 
-cp -pRvf $BASELIB $LIBPREFIX/$LIB/ || die "Failed to copy libraries" 7
-cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source" 8
+cp -pRvf $BASELIB $LIBPREFIX/$LIB/ || die "Failed to copy base library." 7
+cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source." 8
+
+if [ "$USERLIB" = "1" ]
+then
+    cp -pRvf libtango-user-dmd.a $LIBPREFIX/$LIB/ || die "Failed to copy user library." 8
+fi
+
 if [ ! -e "$CONFPREFIX/$CONF/dmd.conf" ]
 then
     create_dmd_conf
@@ -319,6 +342,15 @@ else
     fi
 fi
 
+if [ "$USERLIB" = "1" ]
+then
+    if [ ! "`grep '\-L\-ltango\-user\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
+    then
+        echo 'Appending user library to dmd.conf'
+        sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango-user-dmd/' $CONFPREFIX/$CONF/dmd.conf
+    fi
+fi
+
 # Verify installation
 if [ "$VERIFY" = "1" ]
 then
@@ -343,6 +375,16 @@ then
     elif [ ! "`grep '\-debuglib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
         die "dmd.conf don't have -debuglib switch" 14
+    fi
+    if [ "$USERLIB" = "1" ]
+    then
+        if [ ! "`grep '\-L\-ltango\-user\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ] 
+        then
+            die "dmd.conf don't have reference to user library." 15
+        elif [ ! -e "$LIBPREFIX/$LIB/libtango-user-dmd.a" ]
+        then
+            die "libtango-user-dmd.a not properly installed to $LIBPREFIX/$LIB" 16
+        fi
     fi
     echo 'Installation OK.'
 fi
