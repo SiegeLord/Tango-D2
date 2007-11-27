@@ -14,8 +14,6 @@
 
 module tango.util.PathUtil;
 
-private import  tango.io.FileConst;
-
 private import  tango.core.Exception;
 
 /*******************************************************************************
@@ -52,10 +50,7 @@ char[] normalize(char[] path, bool normSlash = true)
     */
     char[] normalizeSlashes(char[] path)
     {
-//        version (Win32)
-//            char from = '/', to = '\\';
-//        else
-           char to = '/', from = '\\';
+        char to = '/', from = '\\';
 
         foreach (inout c; path)
                  if (c is from)
@@ -69,7 +64,7 @@ char[] normalize(char[] path, bool normSlash = true)
     int findSlashDot(char[] path, int start) {
         assert(start < path.length);
         foreach(i, c; path[start..$-1]) {
-            if (c == FileConst.PathSeparatorChar) {
+            if (c == '/') {
                 if (path[start+i+1] == '.') {
                     return i + start + 1;
                 }
@@ -87,8 +82,8 @@ char[] normalize(char[] path, bool normSlash = true)
         if (start < 0)
             return -1;
 
-        foreach_reverse (i, c; path[0..start]) {
-            if (c == FileConst.PathSeparatorChar) {
+        for (int i = start; i >= 0; i--) {
+            if (path[i] == '/') {
                 return i;
             }
         }
@@ -105,7 +100,7 @@ char[] normalize(char[] path, bool normSlash = true)
             // path ends with /., remove
             return path[0..start];
         }
-        else if (path[start+1] == FileConst.PathSeparatorChar) {
+        else if (path[start+1] == '/') {
             // path has /./, remove ./
             path = path[0..start] ~ path[start+2..$];
             int idx = findSlashDot(path, start);
@@ -118,7 +113,7 @@ char[] normalize(char[] path, bool normSlash = true)
         else if (path[start..start+2] == "..") {
             // found /.. sequence
 version (Win32) {
-            if (start == 3 && path[1] == FileConst.PathSeparatorChar) { // absolute, X:\..
+            if (start == 3 && path[1] == '/') { // absolute, X:/..
                 throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root can not be followed by ..");
             }
 
@@ -138,7 +133,7 @@ else {
                 // remove /.. and preceding segment and return
                 return path[0..idx];
             }
-            else if (path[start+2] == FileConst.PathSeparatorChar) {
+            else if (path[start+2] == '/') {
                 // found /../ sequence
                 // if no slashes before /../, set path to everything after
                 // if <segment>/../ is ../../, keep
@@ -171,7 +166,7 @@ else {
 
     // if path starts with ./, remove
     if (normpath.length > 1 && normpath[0] == '.' &&
-        normpath[1] == FileConst.PathSeparatorChar) {
+        normpath[1] == '/') {
         normpath = normpath[2..$];
     }
     int idx = findSlashDot(normpath, 0);
@@ -188,39 +183,32 @@ debug (UnitTest)
 
     unittest
     {
-    //version (Posix)
-            {
-            assert (normalize ("/foo/../john") == "/john");
-            assert (normalize ("foo/../john") == "john");
-            assert (normalize ("foo/bar/..") == "foo");
-            assert (normalize ("foo/bar/../john") == "foo/john");
-            assert (normalize ("foo/bar/doe/../../john") == "foo/john");
-            assert (normalize ("foo/bar/doe/../../john/../bar") == "foo/bar");
-            assert (normalize ("./foo/bar/doe") == "foo/bar/doe");
-            assert (normalize ("./foo/bar/doe/../../john/../bar") == "foo/bar");
-            assert (normalize ("./foo/bar/../../john/../bar") == "bar");
-            assert (normalize ("foo/bar/./doe/../../john") == "foo/john");
-            assert (normalize ("../../foo/bar") == "../../foo/bar");
-            assert (normalize ("../../../foo/bar") == "../../../foo/bar");
-            assert (normalize ("d/") == "d/");
-            }
-/+
-    version (Win32)
-            {
-            assert (normalize ("\\foo\\..\\john") == "\\john");
-            assert (normalize ("foo\\..\\john") == "john");
-            assert (normalize ("foo\\bar\\..") == "foo");
-            assert (normalize ("foo\\bar\\..\\john") == "foo\\john");
-            assert (normalize ("foo\\bar\\doe\\..\\..\\john") == "foo\\john");
-            assert (normalize ("foo\\bar\\doe\\..\\..\\john\\..\\bar") == "foo\\bar");
-            assert (normalize (".\\foo\\bar\\doe") == "foo\\bar\\doe");
-            assert (normalize (".\\foo\\bar\\doe\\..\\..\\john\\..\\bar") == "foo\\bar");
-            assert (normalize (".\\foo\\bar\\..\\..\\john\\..\\bar") == "bar");
-            assert (normalize ("foo\\bar\\.\\doe\\..\\..\\john") == "foo\\john");
-            assert (normalize ("..\\..\\foo\\bar") == "..\\..\\foo\\bar");
-            assert (normalize ("..\\..\\..\\foo\\bar") == "..\\..\\..\\foo\\bar");
-            }
-+/
+        assert (normalize ("/foo/../john") == "/john");
+        assert (normalize ("foo/../john") == "john");
+        assert (normalize ("foo/bar/..") == "foo");
+        assert (normalize ("foo/bar/../john") == "foo/john");
+        assert (normalize ("foo/bar/doe/../../john") == "foo/john");
+        assert (normalize ("foo/bar/doe/../../john/../bar") == "foo/bar");
+        assert (normalize ("./foo/bar/doe") == "foo/bar/doe");
+        assert (normalize ("./foo/bar/doe/../../john/../bar") == "foo/bar");
+        assert (normalize ("./foo/bar/../../john/../bar") == "bar");
+        assert (normalize ("foo/bar/./doe/../../john") == "foo/john");
+        assert (normalize ("../../foo/bar") == "../../foo/bar");
+        assert (normalize ("../../../foo/bar") == "../../../foo/bar");
+        assert (normalize ("d/") == "d/");
+
+        assert (normalize ("\\foo\\..\\john") == "/john");
+        assert (normalize ("foo\\..\\john") == "john");
+        assert (normalize ("foo\\bar\\..") == "foo");
+        assert (normalize ("foo\\bar\\..\\john") == "foo/john");
+        assert (normalize ("foo\\bar\\doe\\..\\..\\john") == "foo/john");
+        assert (normalize ("foo\\bar\\doe\\..\\..\\john\\..\\bar") == "foo/bar");
+        assert (normalize (".\\foo\\bar\\doe") == "foo/bar/doe");
+        assert (normalize (".\\foo\\bar\\doe\\..\\..\\john\\..\\bar") == "foo/bar");
+        assert (normalize (".\\foo\\bar\\..\\..\\john\\..\\bar") == "bar");
+        assert (normalize ("foo\\bar\\.\\doe\\..\\..\\john") == "foo/john");
+        assert (normalize ("..\\..\\foo\\bar") == "../../foo/bar");
+        assert (normalize ("..\\..\\..\\foo\\bar") == "../../../foo/bar");
     }
 }
 
@@ -406,6 +394,7 @@ debug (UnitTest)
     assert(!patternMatch("foo.bar", "[gh]???bar"));
     assert(!patternMatch("foo.bar", "[!fg]*bar"));
     assert(!patternMatch("foo.bar", "[fg]???baz"));
+
     }
 }
 
