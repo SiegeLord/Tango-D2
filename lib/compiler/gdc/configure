@@ -4008,6 +4008,7 @@ case "$target" in
 esac
 
 
+# For Tango
 #GDC=$CC
 GDC=`echo $CC | sed 's/gcc$/gdc/'`
 
@@ -5230,7 +5231,7 @@ esac
 case "$target_os" in
   darwin6*) DCFG_LONG_DOUBLE_FUNCS=config/noldfuncs ;;
   darwin*)  DCFG_LONG_DOUBLE_FUNCS=config/ldfuncs-darwin ;;
-  linux*)
+  linux*|k*bsd*-gnu)
     case "$target_cpu" in
 	powerpc*)
 	    DCFG_LONG_DOUBLE_FUNCS=config/ldfuncs-ppclinux
@@ -6236,16 +6237,14 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
     D_EXTRA_OBJS="$D_EXTRA_OBJS gcc/cbridge_math.o"
-else
-    case "$target_cpu" in
-	i*86 ) ;;
-	powerpc* ) ;;
-	ppc* ) ;;
-	x86_64 ) ;;
-	*) { { echo "$as_me:$LINENO: error: Missing fpclassify and signbit" >&5
-echo "$as_me: error: Missing fpclassify and signbit" >&2;}
-   { (exit 1); exit 1; }; } ;;
-    esac
+#else
+#    case "$target_cpu" in
+#	i*86 ) ;;
+#	powerpc* ) ;;
+#	ppc* ) ;;
+#	x86_64 ) ;;
+#	*) AC_MSG_ERROR([Missing fpclassify and signbit]) ;;
+#    esac
     # Removed internal dir for fpmath.o for Tango
     #D_EXTRA_OBJS="$D_EXTRA_OBJS internal/fpmath.o"
 fi
@@ -7452,7 +7451,7 @@ case "$d_target_os" in
 	     d_sem_impl="mach"
 	     d_have_loader=1
 	     ;;
-    freebsd*)
+    freebsd*|k*bsd*-gnu)
 	     d_have_loader=1
 	     D_EXTRA_OBJS="$D_EXTRA_OBJS gcc/cbridge_stdio.o"
 	     DCFG_CBRIDGE_STDIO=GNU_CBridge_Stdio
