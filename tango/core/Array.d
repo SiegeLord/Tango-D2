@@ -1611,19 +1611,18 @@ else
       {
         void test( char[] buf, bool delegate( char ) dg, size_t num )
         {
-            assert( buf.length - removeIf( buf, dg ) == num );
+            assert( removeIf( buf, dg ) == num );
             foreach( pos, cur; buf )
             {
-                assert( pos < (buf.length - num) ? !dg( cur ) : dg( cur ) );
+                assert( pos < num ? !dg( cur ) : dg( cur ) );
             }
         }
 
-        test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 0 );
-        test( "xabcdefghi".dup, ( char c ) { return c == 'x'; }, 1 );
-        test( "abcdefghix".dup, ( char c ) { return c == 'x'; }, 1 );
-        test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; }, 2 );
-        test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; }, 5 );
-      }
+        test( "abcdefghij".dup, ( char c ) { return c == 'x'; }, 10 );
+        test( "xabcdefghi".dup, ( char c ) { return c == 'x'; },  9 );
+        test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  9 );
+        test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  8 );
+        test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; },  5 );
     }
 }
 
@@ -1954,10 +1953,10 @@ else
         size_t pos = select( buf, num );
 
         assert( pos == num - 1 );
-        foreach( cur; buf[0 .. num - 1] )
-            assert( cur <= buf[num - 1] );
-        foreach( cur; buf[num - 1 .. $] )
-            assert( cur >= buf[num - 1] );
+        foreach( cur; buf[0 .. pos] )
+            assert( cur <= buf[pos] );
+        foreach( cur; buf[pos .. $] )
+            assert( cur >= buf[pos] );
       }
     }
 }
@@ -2132,12 +2131,12 @@ else
 version( DDoc )
 {
     /**
-     * Performs a binary search of buf, returning the index of the first index
-     * where pat may be inserted without disrupting sort order.  If the sort
-     * order of pat precedes all elements in buf then 0 will be returned.  If
-     * the sort order of pat succeeds the largest element in buf then
-     * buf.length will be returned.  Comparisons will be performed using the
-     * supplied predicate or '<' if none is supplied.
+     * Performs a binary search of buf, returning the index of the first
+     * location where pat may be inserted without disrupting sort order.  If
+     * the sort order of pat precedes all elements in buf then 0 will be
+     * returned.  If the sort order of pat succeeds the largest element in buf
+     * then buf.length will be returned.  Comparisons will be performed using
+     * the supplied predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
@@ -2216,12 +2215,12 @@ else
 version( DDoc )
 {
     /**
-     * Performs a binary search of buf, returning the index of the first index
-     * beyond where pat may be inserted without disrupting sort order.  If the
-     * sort order of pat precedes all elements in buf then 0 will be returned.
-     * If the sort order of pat succeeds the largest element in buf then
-     * buf.length will be returned.  Comparisons will be performed using the
-     * supplied predicate or '<' if none is supplied.
+     * Performs a binary search of buf, returning the index of the first
+     * location beyond where pat may be inserted without disrupting sort order.
+     * If the sort order of pat precedes all elements in buf then 0 will be
+     * returned.  If the sort order of pat succeeds the largest element in buf
+     * then buf.length will be returned.  Comparisons will be performed using
+     * the supplied predicate or '<' if none is supplied.
      *
      * Params:
      *  buf = The sorted array to search.
