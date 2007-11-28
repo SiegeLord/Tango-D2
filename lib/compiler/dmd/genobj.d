@@ -924,6 +924,7 @@ enum
     MIctordone   = 2,   // finished construction
     MIstandalone = 4,   // module ctor does not depend on other module
                         // ctors being done first
+    MIhasictor   = 8,   // has ictor member
 }
 
 
@@ -934,9 +935,13 @@ class ModuleInfo
     ClassInfo[]     localClasses;
     uint            flags;
 
-    void function() ctor;
-    void function() dtor;
-    void function() unitTest;
+    void function() ctor;       // module static constructor (order dependent)
+    void function() dtor;       // module static destructor
+    void function() unitTest;   // module unit tests
+
+    void* xgetMembers;          // module getMembers() function
+
+    void function() ictor;      // module static constructor (order independent)
 
     static int opApply( int delegate( inout ModuleInfo ) dg )
     {
@@ -1007,7 +1012,20 @@ extern (C) void _moduleCtor()
 
     _moduleinfo_dtors = new ModuleInfo[_moduleinfo_array.length];
     debug(PRINTF) printf("_moduleinfo_dtors = x%x\n", cast(void *)_moduleinfo_dtors);
+    _moduleIndependentCtors();
     _moduleCtor2(_moduleinfo_array, 0);
+}
+
+extern (C) void _moduleIndependentCtors()
+{
+    debug(PRINTF) printf("_moduleIndependentCtors()\n");
+    foreach (m; _moduleinfo_array)
+    {
+        if (m && m.flags & MIhasictor && m.ictor)
+        {
+            (*m.ictor)();
+        }
+    }
 }
 
 void _moduleCtor2(ModuleInfo[] mi, int skip)
