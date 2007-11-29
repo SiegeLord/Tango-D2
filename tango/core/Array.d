@@ -1623,6 +1623,7 @@ else
         test( "abcdefghix".dup, ( char c ) { return c == 'x'; },  9 );
         test( "abxxcdefgh".dup, ( char c ) { return c == 'x'; },  8 );
         test( "xaxbcdxxex".dup, ( char c ) { return c == 'x'; },  5 );
+      }
     }
 }
 
