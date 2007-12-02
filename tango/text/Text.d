@@ -138,7 +138,7 @@
         class TextView(T) : UniText
         {
                 // hash content
-                uint toHash ();
+                hash_t toHash ();
 
                 // return length of content
                 uint length ();
@@ -794,7 +794,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        override uint toHash ()
+        override hash_t toHash ()
         {
                 return Util.jhash (cast(ubyte*) content.ptr, contentLength * T.sizeof);
         }
@@ -1312,7 +1312,7 @@ class TextView(T) : UniText
 
         ***********************************************************************/
 
-        abstract uint toHash ();
+        abstract hash_t toHash ();
 
         /***********************************************************************
 
