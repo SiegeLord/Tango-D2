@@ -75,7 +75,7 @@ out {
 
 		T* p2 = p;
 
-		int i = parseInt(p, 3u);
+		int i = parseIntMax(p, 3u);
 
 		if (i) if (p - p2 == 2) {
 
@@ -101,7 +101,7 @@ out {
 
 	T* p2 = p;
 
-	int i = parseInt(p);
+	int i = parseIntMax(p);
 	if (!i)
 		return onlyYear;
 
@@ -123,7 +123,7 @@ out {
 			// (year)-MM-DD
 			if (!(
 				demand(p, '-') &&
-				(date.day = parseInt(p, 2u)) != 0 && date.day <= daysPerMonth(date.month, date.year)
+				(date.day = parseIntMax(p, 2u)) != 0 && date.day <= daysPerMonth(date.month, date.year)
 			)) {
 				date.day = 0;
 				return onlyMonth;
@@ -761,7 +761,7 @@ private int daysPerMonth(int month, int year) {
 
 // note: ISO 8601 code relies on these values always being positive, failing if *p == '-'
 
-private int parseInt(T) (inout T* p) {
+private int parseIntMax(T) (inout T* p) {
 	int value = 0;
 	while (*p >= '0' && *p <= '9')
 		value = value * 10 + *p++ - '0';
@@ -770,7 +770,7 @@ private int parseInt(T) (inout T* p) {
 
 // ... but accept no more than max digits
 
-private int parseInt(T)(inout T* p, size_t max) {
+private int parseIntMax(T)(inout T* p, uint max) {
 	size_t i = 0;
 	int value = 0;
 	while (p[i] >= '0' && p[i] <= '9' && i < max)
@@ -783,13 +783,13 @@ private int parseInt(T)(inout T* p, size_t max) {
 
 private size_t parseInt(T)(inout T* p, out int i) {
 	T* p2 = p;
-	i = parseInt(p);
+	i = parseIntMax(p);
 	return p - p2;
 }
 
-private size_t parseInt(T)(inout T* p, size_t max, out int i) {
+private size_t parseInt(T)(inout T* p, uint max, out int i) {
 	T* p2 = p;
-	i = parseInt(p, max);
+	i = parseIntMax(p, max);
 	return p - p2;
 }
 
@@ -798,7 +798,7 @@ private size_t parseInt(T)(inout T* p, size_t max, out int i) {
 debug (UnitTest) {
 	import tango.io.Stdout;
 
-	//void main() { }
+	void main() { }
 
 	unittest {
 		Date date;
