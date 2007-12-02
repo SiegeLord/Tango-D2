@@ -98,12 +98,14 @@ char[] normalize(char[] path, bool normSlash = true)
         assert (path[start] == '.');
         if (start + 1 == path.length) {
             // path ends with /., remove
-            return path[0..start];
+            return path[0..start - 1];
         }
         else if (path[start+1] == '/') {
-            // path has /./, remove ./
-            path = path[0..start] ~ path[start+2..$];
-            int idx = findSlashDot(path, start);
+            // remove all subsequent './'
+            do {
+                path = path[0..start] ~ path[start+2..$];
+            } while (start + 2 < path.length && path[start..start+2] == "./");
+            int idx = findSlashDot(path, start - 1);
             if (idx < 0) {
                 // no more /., return path
                 return path;
@@ -164,8 +166,8 @@ else {
         normpath = normalizeSlashes(normpath);
     }
 
-    // if path starts with ./, remove
-    if (normpath.length > 1 && normpath[0] == '.' &&
+    // if path starts with ./, remove all subsequent instances
+    while (normpath.length > 1 && normpath[0] == '.' &&
         normpath[1] == '/') {
         normpath = normpath[2..$];
     }
@@ -183,7 +185,9 @@ debug (UnitTest)
 
     unittest
     {
-        assert (normalize ("/foo/../john") == "/john");
+        assert (normalize ("foo/bar/././.") == "foo/bar", normalize ("foo/bar/././."));
+        assert (normalize ("././foo/././././bar") == "foo/bar", normalize ("././foo/././././bar"));
+        assert (normalize ("/foo/../john") == "/john", normalize("/foo/../john"));
         assert (normalize ("foo/../john") == "john");
         assert (normalize ("foo/bar/..") == "foo");
         assert (normalize ("foo/bar/../john") == "foo/john");
