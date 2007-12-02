@@ -82,8 +82,8 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         Note also that normalization of path-separators occurs by default. 
         This means that the use of '\' characters with be converted into
         '/' instead while parsing. To mutate the path into an O/S native
-        version, use the toNative() method. To obtain an O/S native copy
-        instead, use the path.dup.native pattern
+        version, use the native() method. To obtain a copy instead, use the 
+        path.dup.native sequence
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
