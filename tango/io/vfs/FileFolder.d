@@ -501,7 +501,12 @@ private class FolderGroup : VfsFolders
 
         final FileGroup catalog (char[] pattern)
         {
-                return catalog ((VfsInfo info){return patternMatch (info.name, pattern);});
+                bool foo (VfsInfo info)
+                {
+                        return patternMatch (info.name, pattern);
+                }
+
+                return catalog (&foo);
         }
 
         /***********************************************************************
