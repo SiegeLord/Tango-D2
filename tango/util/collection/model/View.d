@@ -37,6 +37,7 @@ public interface View(T)
         **/
 
         public Dispenser!(T) duplicate ();
+        public alias duplicate dup;
 
         /**
          * Report whether the View contains element.
@@ -53,6 +54,7 @@ public interface View(T)
          * Returns: number of elements
         **/
         public uint size ();
+        public alias size length;
 
         /**
          * Report whether this View has no elements.
