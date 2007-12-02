@@ -55,6 +55,8 @@
         Function templates:
         ---
         trim (source)                               // trim whitespace
+        triml (source)                              // trim whitespace
+        trimr (source)                              // trim whitespace
         strip (source, match)                       // trim elements
         stripl (source, match)                      // trim left elements
         stripr (source, match)                      // trim right elements
@@ -110,6 +112,42 @@ T[] trim(T) (T[] source)
 
 /******************************************************************************
 
+        Trim the provided array by stripping whitespace from the left.
+        Returns a slice of the original content
+
+******************************************************************************/
+
+T[] triml(T) (T[] source)
+{
+        T*   head = source.ptr,
+             tail = head + source.length;
+
+        while (head < tail && isSpace(*head))
+               ++head;
+
+        return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
+        Trim the provided array by stripping whitespace from the right.
+        Returns a slice of the original content
+
+******************************************************************************/
+
+T[] trimr(T) (T[] source)
+{
+        T*   head = source.ptr,
+             tail = head + source.length;
+
+        while (tail > head && isSpace(*(tail-1)))
+               --tail;
+
+        return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
         Trim the given array by stripping the provided match from
         both ends. Returns a slice of the original content
 
@@ -145,6 +183,38 @@ T[] stripl(T) (T[] source, T match)
                ++head;
 
         return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
+        Chop the given source by stripping the provided match from
+        the left hand side. Returns a slice of the original content
+
+******************************************************************************/
+
+T[] chopl(T) (T[] source, T[] match)
+{
+        if (match.length <= source.length)
+            if (source[0 .. match.length] == match)
+                source = source [match.length .. $];
+
+        return source;
+}
+
+/******************************************************************************
+
+        Chop the given source by stripping the provided match from
+        the right hand side. Returns a slice of the original content
+
+******************************************************************************/
+
+T[] chopr(T) (T[] source, T[] match)
+{
+        if (match.length <= source.length)
+            if (source[$-match.length .. $] == match)
+                source = source [0 .. $-match.length];
+
+        return source;
 }
 
 /******************************************************************************
@@ -331,6 +401,50 @@ uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
 
 /******************************************************************************
 
+        Split the provided array on the first pattern instance, and 
+        return the resultant head and tail. The pattern is excluded 
+        from the two segments. 
+
+        Where a segment is not found, tail will be null and the return
+        value will be the original array.
+        
+******************************************************************************/
+
+T[] head(T) (T[] src, T[] pattern, out T[] tail)
+{
+        auto i = locatePattern (src, pattern);
+        if (i != src.length)
+           {
+           tail = src [i + pattern.length .. $];
+           src = src [0 .. i];
+           }
+        return src;
+}
+
+/******************************************************************************
+
+        Split the provided array on the last pattern instance, and 
+        return the resultant head and tail. The pattern is excluded 
+        from the two segments. 
+
+        Where a segment is not found, head will be null and the return
+        value will be the original array.
+        
+******************************************************************************/
+
+T[] tail(T) (T[] src, T[] pattern, out T[] head)
+{
+        auto i = locatePatternPrior (src, pattern);
+        if (i != src.length)
+           {
+           head = src [0 .. i];
+           src = src [i + pattern.length .. $];
+           }
+        return src;
+}
+
+/******************************************************************************
+
         Split the provided array wherever a delimiter-set instance is
         found, and return the resultant segments. The delimiters are
         excluded from each of the segments. Note that delimiters are
@@ -365,30 +479,6 @@ T[][] split(T) (T[] src, T[] pattern)
         foreach (segment; patterns (src, pattern))
                  result ~= segment;
         return result;
-}
-
-/******************************************************************************
-
-        Split the provided array on the first pattern instance, and 
-        return the resultant head and tail. The pattern is excluded 
-        from each of the segments. 
-
-        Where a segment is not found, tail will be null and the return
-        value will be the original array.
-        
-******************************************************************************/
-
-T[] head(T) (T[] src, T[] pattern, out T[] tail)
-{
-        T[][] result;
-
-        foreach (segment; patterns (src, pattern))
-                {
-                if (segment.length < src.length)
-                    tail = src [segment.length+pattern.length .. $];
-                return segment;
-                }
-        return src;
 }
 
 /******************************************************************************
@@ -1287,6 +1377,23 @@ debug (UnitTest)
         assert (h == "one" && t == "two:three");
         h = head ("one:two:three", "*", t);
         assert (h == "one:two:three" && t is null);
+
+        t =  tail ("one:two:three", ":", h);
+        assert (h == "one:two" && t == "three");
+        t = tail ("one:::two:three", ":::", h);
+        assert (h == "one" && t == "two:three");
+        t = tail ("one:two:three", "*", h);
+        assert (t == "one:two:three" && h is null);
+
+        assert (chopl("hello world", "hello ") == "world");
+        assert (chopl("hello", "hello") == "");
+        assert (chopl("hello world", " ") == "hello world");
+        assert (chopl("hello world", "") == "hello world");
+
+        assert (chopr("hello world", " world") == "hello");
+        assert (chopr("hello", "hello") == "");
+        assert (chopr("hello world", " ") == "hello world");
+        assert (chopr("hello world", "") == "hello world");
 
         char[][] foo = ["one", "two", "three"];
         auto j = join (foo);
