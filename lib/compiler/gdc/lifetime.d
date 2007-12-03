@@ -88,7 +88,11 @@ extern (C) Object _d_newclass(ClassInfo ci)
 
     debug(PRINTF) printf("_d_newclass(ci = %p, %s)\n", ci, cast(char *)ci.name);
     if (ci.flags & 1) // if COM object
-    {
+    {   /* COM objects are not garbage collected, they are reference counted
+         * using AddRef() and Release().  They get free'd by C's free()
+         * function called by Release() when Release()'s reference count goes
+         * to zero.
+	 */
         p = tango.stdc.stdlib.malloc(ci.init.length);
         if (!p)
             onOutOfMemoryError();
@@ -222,7 +226,8 @@ extern (C) Array _d_newarrayiT(TypeInfo ti, size_t length)
     Array result;
     auto size = ti.next.tsize(); // array element size
 
-    debug(PRINTF) printf("_d_newarrayiT(length = %d, size = %d, isize = %d)\n", length, size, isize);
+    debug(PRINTF) printf("_d_newarrayiT(length = %d, size = %d)\n", length, size);
+
     if (length == 0 || size == 0)
         {}
     else
@@ -279,7 +284,7 @@ extern (C) void[] _d_newarraymTp(TypeInfo ti, int ndims, size_t* pdim)
 {
     void[] result = void;
 
-    debug(PRINTF) printf("_d_newarraymT(ndims = %d)\n", ndims);
+    debug(PRINTF) printf("_d_newarraymTp(ndims = %d)\n", ndims);
     if (ndims == 0)
         result = null;
     else
@@ -329,7 +334,7 @@ extern (C) void[] _d_newarraymiTp(TypeInfo ti, int ndims, size_t* pdim)
 {
     void[] result = void;
 
-    debug(PRINTF) printf("_d_newarraymi(size = %d, ndims = %d)\n", size, ndims);
+    debug(PRINTF) printf("_d_newarraymiTp(ndims = %d)\n", ndims);
     if (ndims == 0)
         result = null;
     else
@@ -379,6 +384,15 @@ struct Array
 {
     size_t length;
     byte*  data;
+}
+
+
+/**
+ *
+ */
+void* _d_allocmemory(size_t nbytes)
+{
+    return gc_malloc(nbytes);
 }
 
 
@@ -806,7 +820,7 @@ extern (C) byte[] _d_arrayappendcTp(TypeInfo ti, inout byte[] x, void *argp)
 
     assert(info.size == 0 || length * sizeelem <= info.size);
 
-    debug(PRINTF) printf("_d_arrayappendc(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, info.size);
+    debug(PRINTF) printf("_d_arrayappendcTp(sizeelem = %d, ptr = %p, length = %d, cap = %d)\n", sizeelem, x.ptr, x.length, info.size);
 
     if (info.size <= newsize || info.base != x.ptr)
     {   byte* newdata;
@@ -819,7 +833,7 @@ extern (C) byte[] _d_arrayappendcTp(TypeInfo ti, inout byte[] x, void *argp)
                 goto L1;
             }
         }
-        debug(PRINTF) printf("_d_arrayappendc(size = %d, newlength = %d, cap = %d)\n", size, newlength, info.size);
+        debug(PRINTF) printf("_d_arrayappendcTp(length = %d, newlength = %d, cap = %d)\n", length, newlength, info.size);
         auto newcap = newCapacity(newlength, sizeelem);
         assert(newcap >= newlength * sizeelem);
         newdata = cast(byte *)gc_malloc(newcap + 1, info.attr);
