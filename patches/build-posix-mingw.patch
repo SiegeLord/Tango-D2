@@ -1,0 +1,87 @@
+Index: lib/common/tango/posix.mak
+===================================================================
+--- lib/common/tango/posix.mak	(revision 2954)
++++ lib/common/tango/posix.mak	(working copy)
+@@ -23,17 +23,17 @@
+ CFLAGS=-O $(ADD_CFLAGS)
+ #CFLAGS=-g $(ADD_CFLAGS)
+ 
+-DFLAGS=-release -O -inline -version=Posix $(ADD_DFLAGS)
++DFLAGS=-release -O -inline $(ADD_DFLAGS)
+ #DFLAGS=-g -version=Posix $(ADD_DFLAGS)
+ 
+-TFLAGS=-O -inline -version=Posix $(ADD_DFLAGS)
++TFLAGS=-O -inline $(ADD_DFLAGS)
+ #TFLAGS=-g -version=Posix $(ADD_DFLAGS)
+ 
+-DOCFLAGS=-version=DDoc -version=Posix
++DOCFLAGS=-version=DDoc
+ 
+ CC=gcc
+-LC=$(AR) -qsv
+-DC=dmd
++LC=$(AR) -qsPv
++DC=gdmd
+ 
+ INC_DEST=../../../tango
+ LIB_DEST=..
+@@ -74,15 +74,11 @@
+     core/Exception.o \
+     core/Memory.o \
+     core/Runtime.o \
+-    core/Thread.o \
+-    core/ThreadASM.o 
++    core/Thread.o
+ 
+ OBJ_STDC= \
+     stdc/wrap.o
+ 
+-OBJ_STDC_POSIX= \
+-    stdc/posix/pthread_darwin.o
+-
+ ALL_OBJS= \
+     $(OBJ_CORE) \
+     $(OBJ_STDC) \
+@@ -104,6 +100,15 @@
+ 
+ tango.lib : $(LIB_TARGET)
+ 
++# HACK: Gdc/Mingw32 has problems compiling core/Thread.d.
++core/Thread.o: core/Thread.d
++	echo 'Using a HACK for Thread.d'
++	$(DC) -c -q,-S $(DFLAGS) -v1 -Hf$*.di $< -of$*.s
++	cp $*.s $*.s.orig
++	sed -e 's/%fs:$$/%fs:0/' < $*.s.orig > $*.s
++	rm $*.s.orig
++	$(CC) -c $(CFLAGS) $*.s -o$@
++
+ $(LIB_TARGET) : $(ALL_OBJS)
+ 	$(RM) $@
+ 	$(LC) $@ $(ALL_OBJS)
+@@ -113,13 +118,7 @@
+ 
+ ######################################################
+ 
+-### stdc/posix
+ 
+-stdc/posix/pthread_darwin.o : stdc/posix/pthread_darwin.d
+-	$(DC) -c $(DFLAGS) stdc/posix/pthread_darwin.d -of$@
+-
+-######################################################
+-
+ clean :
+ 	find . -name "*.di" | xargs $(RM)
+ 	$(RM) $(ALL_OBJS)
+Index: lib/gdc-posix.mak
+===================================================================
+--- lib/gdc-posix.mak	(revision 2954)
++++ lib/gdc-posix.mak	(working copy)
+@@ -15,7 +15,7 @@
+ MD=mkdir -p
+ 
+ CC=gcc
+-LC=$(AR) -qsv
++LC=$(AR) -qsPv
+ DC=gdmd
+ 
+ ADD_CFLAGS=
