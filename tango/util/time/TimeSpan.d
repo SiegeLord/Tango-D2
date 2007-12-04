@@ -16,7 +16,7 @@ module tango.util.time.TimeSpan;
  *
  * Notably missing from this is a representation of weeks, months and years.
  * This is because weeks, months, and years vary according to local calendars.
- * Use tango.util.time.* to deal with these concepts.
+ * Use tango.util.time.chrono.* to deal with these concepts.
  *
  * Note: nobody should change this struct without really good reason as it is
  * required to be a part of some interfaces.  It should be treated as a
@@ -25,12 +25,12 @@ module tango.util.time.TimeSpan;
  * Example:
  * -------------------
  *
- * DateTime start = DateTime.now;
- * Thread.sleep(TimeSpan.seconds(10));
+ * Time start = Clock.now;
+ * Thread.sleep(TimeSpan.milliseconds(150).interval);
  * Stdout.format("slept for {} ms",
- *    (start - * DateTime.now).milliseconds).newline;
+ *    (start - Clock.now).milliseconds).newline;
  * -------------------
- * See_Also: tango.core.Thread, tango.util.time.DateTime
+ * See_Also: tango.core.Thread, tango.util.time.Time, tango.util.time.Clock
  */
 struct TimeSpan
 {
@@ -356,7 +356,7 @@ struct TimeSpan
          */
         static TimeSpan microseconds(long value)
         {
-                return TimeSpan(us.ticks * value);
+                return TimeSpan(TicksPerMicrosecond * value);
         }
 
         /**
@@ -367,7 +367,7 @@ struct TimeSpan
          */
         static TimeSpan milliseconds(long value)
         {
-                return TimeSpan(ms.ticks * value);
+                return TimeSpan(TicksPerMillisecond * value);
         }
 
         /**
@@ -378,7 +378,7 @@ struct TimeSpan
          */
         static TimeSpan seconds(long value)
         {
-                return TimeSpan(value * second.ticks);
+                return TimeSpan(TicksPerSecond * value);
         }
 
         /**
@@ -389,7 +389,7 @@ struct TimeSpan
          */
         static TimeSpan minutes(long value)
         {
-                return TimeSpan(minute.ticks * value);
+                return TimeSpan(TicksPerMinute * value);
         }
 
         /**
@@ -400,7 +400,7 @@ struct TimeSpan
          */
         static TimeSpan hours(long value)
         {
-                return TimeSpan(hour.ticks * value);
+                return TimeSpan(TicksPerHour * value);
         }
 
         /**
@@ -411,7 +411,7 @@ struct TimeSpan
          */
         static TimeSpan days(long value)
         {
-                return TimeSpan(day.ticks * value);
+                return TimeSpan(TicksPerDay * value);
         }
 
         /**
@@ -419,17 +419,12 @@ struct TimeSpan
          * represents seconds as a double.  This allows both whole and
          * fractional seconds to be passed in.
          *
-         * Note: The result cause loss of data due to a TimeSpan not being
-         * able to represent all values a double can represent.  In addition,
-         * the result may not exactly represent the given input due to
-         * floating point error.
-         *
          * Params: value = The interval to convert in seconds.
          * Returns: A TimeSpan representing the given interval.
          */
         static TimeSpan interval(double sec)
         {
-                return TimeSpan(cast(long)(sec * second.ticks));
+                return TimeSpan(cast(long)(sec * TicksPerSecond + .1));
         }
 
 }
