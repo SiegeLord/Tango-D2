@@ -42,7 +42,7 @@ private import  tango.util.time.Clock,
 
 struct Time 
 {
-        public long ticks;
+        private long ticks_;
 
         // TODO: remove this when deprecated functions are removed
         private package enum 
@@ -124,7 +124,7 @@ struct Time
         static Time opCall (long ticks) 
         {
                 Time d;
-                d.ticks = ticks;
+                d.ticks_ = ticks;
                 return d;
         }
 
@@ -195,7 +195,7 @@ struct Time
 
         int opEquals (Time t) 
         {
-                return ticks is t.ticks;
+                return ticks_ is t.ticks;
         }
 
         /**********************************************************************
@@ -206,9 +206,9 @@ struct Time
 
         int opCmp (Time t) 
         {
-                if(ticks < t.ticks)
+                if(ticks_ < t.ticks)
                         return -1;
-                if(ticks > t.ticks)
+                if(ticks_ > t.ticks)
                         return 1;
                 return 0;
         }
@@ -225,7 +225,7 @@ struct Time
 
         Time opAdd (TimeSpan t) 
         {
-                return Time (ticks + t.ticks);
+                return Time (ticks_ + t.ticks);
         }
 
         /**********************************************************************
@@ -241,7 +241,7 @@ struct Time
 
         Time opAddAssign (TimeSpan t) 
         {
-                ticks += t.ticks;
+                ticks_ += t.ticks;
                 return *this;
         }
 
@@ -258,7 +258,7 @@ struct Time
 
         Time opSub (TimeSpan t) 
         {
-                return Time (ticks - t.ticks);
+                return Time (ticks_ - t.ticks);
         }
 
         /**********************************************************************
@@ -274,7 +274,7 @@ struct Time
 
         TimeSpan opSub (Time t)
         {
-                return TimeSpan(ticks - t.ticks);
+                return TimeSpan(ticks_ - t.ticks);
         }
 
         /**********************************************************************
@@ -290,7 +290,7 @@ struct Time
 
         Time opSubAssign (TimeSpan t) 
         {
-                ticks -= t.ticks;
+                ticks_ -= t.ticks;
                 return *this;
         }
 
@@ -309,7 +309,7 @@ struct Time
 
         deprecated Time addTicks (long value) 
         {
-                return Time (ticks + value);
+                return Time (ticks_ + value);
         }
 
         /**********************************************************************
@@ -441,7 +441,7 @@ struct Time
                 if (day > maxDays)
                     day = maxDays;
 
-                return Time (getDateTicks(year, month, day) + (ticks % TimeSpan.day.ticks));
+                return Time (getDateTicks(year, month, day) + (ticks_ % TimeSpan.day.ticks));
         }
 
         /**********************************************************************
@@ -473,7 +473,7 @@ struct Time
 
         deprecated int year () 
         {
-                return extractPart (ticks, Year);
+                return extractPart (ticks_, Year);
         }
 
         /**********************************************************************
@@ -487,7 +487,7 @@ struct Time
 
         deprecated int month () 
         {
-                return extractPart (ticks, Month);
+                return extractPart (ticks_, Month);
         }
 
         /**********************************************************************
@@ -501,7 +501,7 @@ struct Time
 
         deprecated int day () 
         {
-                return extractPart (ticks, Day);
+                return extractPart (ticks_, Day);
         }
 
         /**********************************************************************
@@ -515,7 +515,7 @@ struct Time
 
         deprecated int dayOfYear () 
         {
-                return extractPart (ticks, DayOfYear);
+                return extractPart (ticks_, DayOfYear);
         }
 
         /**********************************************************************
@@ -529,7 +529,7 @@ struct Time
 
         deprecated int dayOfWeek () 
         {
-                return cast(int) ((ticks / TimeSpan.day.ticks + 1) % 7);
+                return cast(int) ((ticks_ / TimeSpan.day.ticks + 1) % 7);
         }
 
         /**********************************************************************
@@ -542,7 +542,7 @@ struct Time
 
         int hour () 
         {
-                return cast(int) ((ticks / TimeSpan.hour.ticks) % 24);
+                return cast(int) ((ticks_ / TimeSpan.hour.ticks) % 24);
         }
 
         /**********************************************************************
@@ -555,7 +555,7 @@ struct Time
 
         int minute () 
         {
-                return cast(int) ((ticks / TimeSpan.minute.ticks) % 60);
+                return cast(int) ((ticks_ / TimeSpan.minute.ticks) % 60);
         }
 
         /**********************************************************************
@@ -568,7 +568,7 @@ struct Time
 
         int second () 
         {
-                return cast(int) ((ticks / TimeSpan.second.ticks) % 60);
+                return cast(int) ((ticks_ / TimeSpan.second.ticks) % 60);
         }
 
         /**********************************************************************
@@ -582,7 +582,7 @@ struct Time
 
         int millisecond () 
         {
-                return cast(int) ((ticks / TimeSpan.ms.ticks) % 1000);
+                return cast(int) ((ticks_ / TimeSpan.ms.ticks) % 1000);
         }
 
         /**********************************************************************
@@ -596,7 +596,7 @@ struct Time
 
         int microsecond () 
         {
-                return cast(int) ((ticks / TimeSpan.us.ticks) % 1000);
+                return cast(int) ((ticks_ / TimeSpan.us.ticks) % 1000);
         }
 
         /**********************************************************************
@@ -623,14 +623,28 @@ struct Time
 
         TimeSpan timeOfDay () 
         {
-                return TimeSpan (ticks % TimeSpan.day.ticks);
+                return TimeSpan (ticks_ % TimeSpan.day.ticks);
         }
 
         /**********************************************************************
 
                 $(I Property.) Retrieves the number of ticks for this Time
 
-                Deprecated: access ticks directly
+                Returns: A long represented by the time of this 
+                         instance.
+
+        **********************************************************************/
+
+        long ticks ()
+        {
+                return ticks_;
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the number of ticks for this Time
+
+                Deprecated: use ticks instead;
 
                 Returns: A long represented by the time of this 
                          instance.
@@ -639,7 +653,7 @@ struct Time
 
         deprecated long time () 
         {
-                return ticks;
+                return ticks_;
         }
 
         /**********************************************************************

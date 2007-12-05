@@ -34,11 +34,16 @@ module tango.util.time.TimeSpan;
  */
 struct TimeSpan
 {
+        // this is the only member of the struct.
+        private long ticks_;
+
         /**
-         * The internal representation.  This is the only member of the struct
-         * that is part of the instance.
+         * Get the number of ticks that this timespan represents.
          */
-        long ticks;
+        public long ticks()
+        {
+                return ticks_;
+        }
 
         //
         // useful constants.  Shouldn't be used in normal code, use the
@@ -115,7 +120,7 @@ struct TimeSpan
          */
         bool opEquals(TimeSpan t)
         {
-                return ticks is t.ticks;
+                return ticks_ is t.ticks;
         }
 
         /**
@@ -123,9 +128,9 @@ struct TimeSpan
          */
         int opCmp(TimeSpan t)
         {
-                if(ticks < t.ticks)
+                if(ticks_ < t.ticks)
                         return -1;
-                if(ticks > t.ticks)
+                if(ticks_ > t.ticks)
                         return 1;
                 return 0;
         }
@@ -138,7 +143,7 @@ struct TimeSpan
          */
         TimeSpan opAdd(TimeSpan t)
         {
-                return TimeSpan(ticks + t.ticks);
+                return TimeSpan(ticks_ + t.ticks);
         }
 
         /**
@@ -150,7 +155,7 @@ struct TimeSpan
          */
         TimeSpan opAddAssign(TimeSpan t)
         {
-                ticks += t.ticks;
+                ticks_ += t.ticks;
                 return *this;
         }
 
@@ -163,7 +168,7 @@ struct TimeSpan
          */
         TimeSpan opSub(TimeSpan t)
         {
-                return TimeSpan(ticks - t.ticks);
+                return TimeSpan(ticks_ - t.ticks);
         }
 
         /**
@@ -176,7 +181,7 @@ struct TimeSpan
          */
         TimeSpan opSubAssign(TimeSpan t)
         {
-                ticks -= t.ticks;
+                ticks_ -= t.ticks;
                 return *this;
         }
 
@@ -192,7 +197,7 @@ struct TimeSpan
          */
         TimeSpan opMul(long v)
         {
-                return TimeSpan(ticks * v);
+                return TimeSpan(ticks_ * v);
         }
 
         /**
@@ -203,7 +208,7 @@ struct TimeSpan
          */
         TimeSpan opMulAssign(long v)
         {
-                ticks *= v;
+                ticks_ *= v;
                 return *this;
         }
 
@@ -220,7 +225,7 @@ struct TimeSpan
          */
         TimeSpan opDiv(long v)
         {
-                return TimeSpan(ticks / v);
+                return TimeSpan(ticks_ / v);
         }
 
         /**
@@ -231,7 +236,7 @@ struct TimeSpan
          */
         TimeSpan opDivAssign(long v)
         {
-                ticks /= v;
+                ticks_ /= v;
                 return *this;
         }
 
@@ -244,7 +249,7 @@ struct TimeSpan
          */
         long opDiv(TimeSpan t)
         {
-                return ticks / t.ticks;
+                return ticks_ / t.ticks;
         }
 
         /**
@@ -254,7 +259,7 @@ struct TimeSpan
          */
         TimeSpan opNeg()
         {
-                return TimeSpan(-ticks);
+                return TimeSpan(-ticks_);
         }
 
         /**
@@ -267,7 +272,7 @@ struct TimeSpan
          */
         long nanoseconds()
         {
-                return ticks * NanosecondsPerTick;
+                return ticks_ * NanosecondsPerTick;
         }
 
         /**
@@ -277,7 +282,7 @@ struct TimeSpan
          */
         long microseconds()
         {
-                return ticks / us.ticks;
+                return ticks_ / us.ticks;
         }
 
         /**
@@ -287,7 +292,7 @@ struct TimeSpan
          */
         long milliseconds()
         {
-                return ticks / ms.ticks;
+                return ticks_ / ms.ticks;
         }
 
         /**
@@ -297,7 +302,7 @@ struct TimeSpan
          */
         long seconds()
         {
-                return ticks / second.ticks;
+                return ticks_ / second.ticks;
         }
 
         /**
@@ -307,7 +312,7 @@ struct TimeSpan
          */
         long minutes()
         {
-                return ticks / minute.ticks;
+                return ticks_ / minute.ticks;
         }
 
         /**
@@ -317,7 +322,7 @@ struct TimeSpan
          */
         long hours()
         {
-                return ticks / hour.ticks;
+                return ticks_ / hour.ticks;
         }
 
         /**
@@ -327,7 +332,7 @@ struct TimeSpan
          */
         long days()
         {
-                return ticks / day.ticks;
+                return ticks_ / day.ticks;
         }
 
         /**
@@ -341,7 +346,7 @@ struct TimeSpan
          */
         double interval()
         {
-                return (cast(double)ticks) / TicksPerSecond;
+                return (cast(double)ticks_) / TicksPerSecond;
         }
 
         /**
