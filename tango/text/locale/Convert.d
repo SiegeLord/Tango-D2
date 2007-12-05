@@ -16,7 +16,7 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.DateTime,
+private import  tango.util.time.Time,
                 tango.util.time.WallClock;
 
 private import  tango.util.time.chrono.Calendar;
@@ -92,14 +92,14 @@ private struct Result
    *   format = A _format string.
    *   formatService = An IFormatService that provides culture-specific formatting information.
    * Returns: A string representation of the value of this instance as specified by format and formatService.
-   * Remarks: See $(LINK2 datetimeformat.html, DateTime Formatting) for more information about date and time formatting.
+   * Remarks: See $(LINK2 datetimeformat.html, Time Formatting) for more information about date and time formatting.
    * Examples:
    * ---
-   * import tango.io.Print, tango.text.locale.Core;
+   * import tango.io.Print, tango.text.locale.Core, tango.util.time.WallClock;
    *
    * void main() {
    *   Culture culture = Culture.current;
-   *   DateTime now = DateTime.now;
+   *   Time now = WallClock.now;
    *
    *   Println("Current date and time: %s", now.toString());
    *   Println();
@@ -170,18 +170,18 @@ private struct Result
 
 ******************************************************************************/
 
-public char[] formatDateTime (char[] output, DateTime dateTime, char[] format, IFormatService formatService = null) 
+public char[] formatDateTime (char[] output, Time dateTime, char[] format, IFormatService formatService = null) 
 {
     return formatDateTime (output, dateTime, format, DateTimeFormat.getInstance(formatService));
 }
 
-char[] formatDateTime (char[] output, DateTime dateTime, char[] format, DateTimeFormat dtf)
+char[] formatDateTime (char[] output, Time dateTime, char[] format, DateTimeFormat dtf)
 {
         /**********************************************************************
 
         **********************************************************************/
 
-        char[] expandKnownFormat(char[] format, inout DateTime dateTime)
+        char[] expandKnownFormat(char[] format, inout Time dateTime)
         {
                 char[] f;
 
@@ -252,7 +252,7 @@ version (Full)
 
         **********************************************************************/
 
-        char[] formatCustom (inout Result result, DateTime dateTime, char[] format)
+        char[] formatCustom (inout Result result, Time dateTime, char[] format)
         {
 
                 int parseRepeat(char[] format, int pos, char c)
@@ -263,7 +263,7 @@ version (Full)
                         return n - pos;
                 }
 
-                char[] formatDayOfWeek(DateTime.DayOfWeek dayOfWeek, int rpt)
+                char[] formatDayOfWeek(Calendar.DayOfWeek dayOfWeek, int rpt)
                 {
                         if (rpt is 3)
                                 return dtf.getAbbreviatedDayName(dayOfWeek);
@@ -405,7 +405,7 @@ version (Full)
 version (Full)
 {
                                   TimeSpan offset = (justTime && dateTime.ticks < TICKS_PER_DAY)
-                                                     ? TimeZone.current.getUtcOffset(DateTime.now)
+                                                     ? TimeZone.current.getUtcOffset(WallClock.now)
                                                      : TimeZone.current.getUtcOffset(dateTime);
                                   int hours = offset.hours;
                                   int minutes = offset.minutes;

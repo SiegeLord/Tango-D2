@@ -22,7 +22,7 @@ private import  tango.io.FileConst;
 
 private import  tango.core.Exception;
 
-private import  tango.util.time.DateTime;
+private import  tango.util.time.Time;
 
 /*******************************************************************************
 
@@ -812,7 +812,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final DateTime modified ()
+        final Time modified ()
         {
                 return timeStamps.modified;
         }
@@ -824,7 +824,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final DateTime accessed ()
+        final Time accessed ()
         {
                 return timeStamps.accessed;
         }
@@ -836,7 +836,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final DateTime created ()
+        final Time created ()
         {
                 return timeStamps.created;
         }
@@ -1099,9 +1099,9 @@ class FilePath : PathView
 
                 final Stamps timeStamps ()
                 {
-                        static DateTime convert (FILETIME time)
+                        static Time convert (FILETIME time)
                         {
-                                return DateTime.epoch1601 + TimeSpan(*cast(long*) &time);
+                                return Time.epoch1601 + TimeSpan(*cast(long*) &time);
                         }
 
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
@@ -1417,9 +1417,9 @@ class FilePath : PathView
 
                 final Stamps timeStamps ()
                 {
-                        static DateTime convert (timeval* tv)
+                        static Time convert (timeval* tv)
                         {
-                                return DateTime.epoch1970 +
+                                return Time.epoch1970 +
                                     TimeSpan.seconds(tv.tv_sec) +
                                     TimeSpan.microseconds(tv.tv_usec);
                         }
@@ -1649,7 +1649,7 @@ interface PathView
 
         struct Stamps
         {
-                DateTime    created,        /// time created
+                Time    created,        /// time created
                             accessed,       /// last time accessed
                             modified;       /// last time modified
         }
@@ -1776,7 +1776,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract DateTime modified ();
+        abstract Time modified ();
 
         /***********************************************************************
 
@@ -1785,7 +1785,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract DateTime accessed ();
+        abstract Time accessed ();
 
         /***********************************************************************
 
@@ -1794,7 +1794,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract DateTime created ();
+        abstract Time created ();
 
         /***********************************************************************
 

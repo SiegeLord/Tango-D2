@@ -16,7 +16,7 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.DateTime,
+private import  tango.util.time.Time,
                 tango.util.time.WallClock;
 
 private import  tango.util.time.chrono.Calendar;
@@ -32,27 +32,27 @@ private struct DateTimeParseResult {
   double fraction;
   int timeMark;
   Calendar calendar;
-  long timeZoneOffset;
-  DateTime parsedDate;
+  TimeSpan timeZoneOffset;
+  Time parsedDate;
 
 }
 
-package DateTime parseDateTime(char[] s, DateTimeFormat dtf) {
+package Time parseTime(char[] s, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExactMultiple(s, dtf.getAllDateTimePatterns(), dtf, result))
-    throw new IllegalArgumentException("String was not a valid DateTime.");
+    throw new IllegalArgumentException("String was not a valid Time.");
   return result.parsedDate;
 }
 
-package DateTime parseDateTimeExact(char[] s, char[] format, DateTimeFormat dtf) {
+package Time parseTimeExact(char[] s, char[] format, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExact(s, format, dtf, result))
-    throw new IllegalArgumentException("String was not a valid DateTime.");
+    throw new IllegalArgumentException("String was not a valid Time.");
   return result.parsedDate;
 }
 
-package bool tryParseDateTime(char[] s, DateTimeFormat dtf, out DateTime result) {
-  result = DateTime.min;
+package bool tryParseTime(char[] s, DateTimeFormat dtf, out Time result) {
+  result = Time.min;
   DateTimeParseResult resultRecord;
   if (!tryParseExactMultiple(s, dtf.getAllDateTimePatterns(), dtf, resultRecord))
     return false;
@@ -60,8 +60,8 @@ package bool tryParseDateTime(char[] s, DateTimeFormat dtf, out DateTime result)
   return true;
 }
 
-package bool tryParseDateTimeExact(char[] s, char[] format, DateTimeFormat dtf, out DateTime result) {
-  result = DateTime.min;
+package bool tryParseTimeExact(char[] s, char[] format, DateTimeFormat dtf, out Time result) {
+  result = Time.min;
   DateTimeParseResult resultRecord;
   if (!tryParseExact(s, format, dtf, resultRecord))
     return false;
@@ -114,7 +114,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
       return result;
     }
 
-    long parseTimeZoneOffset(char[] s, inout int pos) {
+    TimeSpan parseTimeZoneOffset(char[] s, inout int pos) {
       bool sign;
       if (pos < s.length) {
         if (s[pos] == '-') {
@@ -130,7 +130,9 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
         pos++;
         minute = parseDigits(s, pos, 2);
       }
-      long result = DateTime(hour, minute, 0).ticks;
+      //Due to dmd bug, this doesn't compile
+      //TimeSpan result = TimeSpan.hours(hour) +  TimeSpan.minutes(minute);
+      TimeSpan result = TimeSpan(TimeSpan.hour.ticks * hour +  TimeSpan.minute.ticks * minute);
       if (sign)
         result = -result;
       return result;
@@ -272,7 +274,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
 
     // If the input string didn't specify a date part, try to return something meaningful.
     if (result.year == -1 || result.month == -1 || result.day == -1) {
-      DateTime now = WallClock.now;
+      Time now = WallClock.now;
       if (result.month == -1 && result.day == -1) {
         if (result.year == -1) {
           result.year = result.calendar.getYear(now);
@@ -295,7 +297,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
   }
 
   if (doParse()) {
-    result.parsedDate = result.calendar.getDateTime(result.year, result.month, result.day, result.hour, result.minute, result.second, 0);
+    result.parsedDate = result.calendar.getTime(result.year, result.month, result.day, result.hour, result.minute, result.second, 0);
     return true;
   }
   return false;

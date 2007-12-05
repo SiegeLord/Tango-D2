@@ -20,7 +20,7 @@ private import  tango.net.http.HttpTokens;
 
 private import  tango.text.stream.LineIterator;
 
-private import  tango.util.time.DateTime;
+private import  tango.util.time.Time;
 
 /******************************************************************************
 
@@ -129,12 +129,12 @@ class HttpHeadersView : HttpTokens
 
         /**********************************************************************
                 
-                Return the date value of the provided header, or DateTime.max 
+                Return the date value of the provided header, or Time.max 
                 if the header does not exist
 
         **********************************************************************/
 
-        DateTime getDate (HttpHeaderName name, DateTime def = DateTime.epoch)
+        Time getDate (HttpHeaderName name, Time def = Time.epoch)
         {
                 return super.getDate (name.value, def);
         }
@@ -310,7 +310,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void addDate (HttpHeaderName name, DateTime value)
+        void addDate (HttpHeaderName name, Time value)
         {
                 super.addDate (name.value, value);
         }

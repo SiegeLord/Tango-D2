@@ -248,6 +248,16 @@ struct TimeSpan
         }
 
         /**
+         * Negate a time span
+         *
+         * Returns: The negative equivalent to this time span
+         */
+        TimeSpan opNeg()
+        {
+                return TimeSpan(-ticks);
+        }
+
+        /**
          * Convert to nanoseconds
          *
          * Note: this may incur loss of data because nanoseconds cannot
@@ -331,7 +341,7 @@ struct TimeSpan
          */
         double interval()
         {
-                return cast(double)ticks * TicksPerSecond;
+                return (cast(double)ticks) / TicksPerSecond;
         }
 
         /**

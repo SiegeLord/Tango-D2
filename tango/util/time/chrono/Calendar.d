@@ -15,7 +15,7 @@ module tango.util.time.chrono.Calendar;
 
 private import tango.core.Exception;
 
-public  import tango.util.time.DateTime;
+public  import tango.util.time.Time;
 
 
 
@@ -66,8 +66,19 @@ public abstract class Calendar
                 DayOfYear
         }
 
+        public enum DayOfWeek 
+        {
+                Sunday,    /// Indicates _Sunday.
+                Monday,    /// Indicates _Monday.
+                Tuesday,   /// Indicates _Tuesday.
+                Wednesday, /// Indicates _Wednesday.
+                Thursday,  /// Indicates _Thursday.
+                Friday,    /// Indicates _Friday.
+                Saturday   /// Indicates _Saturday.
+        }
+
         /**
-        * Returns a DateTime value set to the specified date and time in the current era.
+        * Returns a Time value set to the specified date and time in the current era.
         * Params:
         *   year = An integer representing the _year.
         *   month = An integer representing the _month.
@@ -76,15 +87,15 @@ public abstract class Calendar
         *   minute = An integer representing the _minute.
         *   second = An integer representing the _second.
         *   millisecond = An integer representing the _millisecond.
-        * Returns: The DateTime set to the specified date and time.
+        * Returns: The Time set to the specified date and time.
         */
-        DateTime getDateTime (int year, int month, int day, int hour, int minute, int second, int millisecond) 
+        Time getTime (int year, int month, int day, int hour, int minute, int second, int millisecond) 
         {
-                return getDateTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
+                return getTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
         }
 
         /**
-        * When overridden, returns a DateTime value set to the specified date and time in the specified _era.
+        * When overridden, returns a Time value set to the specified date and time in the specified _era.
         * Params:
         *   year = An integer representing the _year.
         *   month = An integer representing the _month.
@@ -94,51 +105,51 @@ public abstract class Calendar
         *   second = An integer representing the _second.
         *   millisecond = An integer representing the _millisecond.
         *   era = An integer representing the _era.
-        * Returns: A DateTime set to the specified date and time.
+        * Returns: A Time set to the specified date and time.
         */
-        abstract DateTime getDateTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
+        abstract Time getTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
 
         /**
-        * When overridden, returns the day of the week in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the day of the week in the specified Time.
+        * Params: time = A Time value.
         * Returns: A DayOfWeek value representing the day of the week of time.
         */
-        abstract DateTime.DayOfWeek getDayOfWeek (DateTime time);
+        abstract DayOfWeek getDayOfWeek (Time time);
 
         /**
-        * When overridden, returns the day of the month in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the day of the month in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */
-        abstract int getDayOfMonth (DateTime time);
+        abstract int getDayOfMonth (Time time);
 
         /**
-        * When overridden, returns the day of the year in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the day of the year in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */
-        abstract int getDayOfYear (DateTime time);
+        abstract int getDayOfYear (Time time);
 
         /**
-        * When overridden, returns the month in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the month in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */
-        abstract int getMonth (DateTime time);
+        abstract int getMonth (Time time);
 
         /**
-        * When overridden, returns the year in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the year in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */
-        abstract int getYear (DateTime time);
+        abstract int getYear (Time time);
 
         /**
-        * When overridden, returns the era in the specified DateTime.
-        * Params: time = A DateTime value.
+        * When overridden, returns the era in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the ear in time.
         */
-        abstract int getEra (DateTime time);
+        abstract int getEra (Time time);
 
         /**
         * Returns the number of days in the specified _year and _month of the current era.
@@ -201,17 +212,17 @@ public abstract class Calendar
         abstract int getMonthsInYear (int year, int era);
 
         /**
-        * Returns the week of the year that includes the specified DateTime.
+        * Returns the week of the year that includes the specified Time.
         * Params:
-        *   time = A DateTime value.
+        *   time = A Time value.
         *   rule = A WeekRule value defining a calendar week.
         *   firstDayOfWeek = A DayOfWeek value representing the first day of the week.
         * Returns: An integer representing the week of the year that includes the date in time.
         */
-        int getWeekOfYear (DateTime time, WeekRule rule, DateTime.DayOfWeek firstDayOfWeek) 
+        int getWeekOfYear (Time time, WeekRule rule, DayOfWeek firstDayOfWeek) 
         {
                 int year = getYear (time);
-                int jan1 = cast(int) getDayOfWeek (getDateTime (year, 1, 1, 0, 0, 0, 0));
+                int jan1 = cast(int) getDayOfWeek (getTime (year, 1, 1, 0, 0, 0, 0));
 
                 switch (rule) 
                        {
@@ -240,7 +251,7 @@ public abstract class Calendar
                             year = getYear(time) - 1;
                             int month = getMonthsInYear (year);
                             day = getDaysInMonth (year, month);
-                            return getWeekOfYear(getDateTime(year, month, day, 0, 0, 0, 0), rule, firstDayOfWeek);
+                            return getWeekOfYear(getTime(year, month, day, 0, 0, 0, 0), rule, firstDayOfWeek);
 
                        default:
                             break;
@@ -279,6 +290,26 @@ public abstract class Calendar
         int id() 
         {
                 return -1;
+        }
+
+        /**
+         * Get the components of a Time structure using the rules of the
+         * calendar.  This is useful if you want more than one of the given
+         * components.  Note that this doesn't handle the time of day, as that
+         * is calculated directly from the Time struct.
+         *
+         * The default implemenation is to call all the other accessors
+         * directly, a derived class may override if it has a more efficient
+         * method.
+         */
+        void split(Time time, out int year, out int month, out int dayOfMonth, out int dayOfYear, out DayOfWeek dayOfWeek, out int era)
+        {
+            year = getYear(time);
+            month = getMonth(time);
+            dayOfMonth = getDayOfMonth(time);
+            dayOfYear = getDayOfYear(time);
+            dayOfWeek = getDayOfWeek(time);
+            era = getEra(time);
         }
 
         package static long getTimeTicks (int hour, int minute, int second) 

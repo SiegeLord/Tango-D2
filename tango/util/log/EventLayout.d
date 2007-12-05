@@ -16,7 +16,7 @@ private import tango.util.log.Event;
 
 private import tango.util.time.TimeSpan;
 
-private import tango.util.time.DateTime;
+private import tango.util.time.Time;
 
 /*******************************************************************************
 
@@ -78,7 +78,7 @@ public class EventLayout
                 return s[len..s.length];                
         }
 
-        final char[] toMilli (char[] s, DateTime time)
+        final char[] toMilli (char[] s, Time time)
         {
                 return toMilli(s, TimeSpan(time.ticks));
         }

@@ -99,7 +99,7 @@ class ProtocolWriter
 
         ProtocolWriter put (Command cmd, char[] channel, char[] element = null, IMessage msg = null)
         {
-                auto time = (msg ? msg.time : DateTime.init);
+                auto time = (msg ? msg.time : Time.init);
         
                 // reset the buffer first!
                 buffer.clear;

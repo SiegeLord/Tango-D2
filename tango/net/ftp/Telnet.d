@@ -63,7 +63,7 @@ class Telnet
         body
         {
                 // At end_time, we bail.
-                DateTime end_time = Clock.now + this.timeout;
+                Time end_time = Clock.now + this.timeout;
 
                 // Set up a SocketSet so we can use select() - it's pretty efficient.
                 SocketSet set = new SocketSet();
@@ -102,7 +102,7 @@ class Telnet
         char[] readLine()
         {
                 // Figure, first, how long we're allowed to take.
-                DateTime end_time = Clock.now + this.timeout;
+                Time end_time = Clock.now + this.timeout;
 
                 // An overall buffer and a one-char buffer.
                 char[] buffer;

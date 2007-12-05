@@ -55,7 +55,7 @@ public class HebrewCalendar : Calendar {
   public const int HEBREW_ERA = 1;
 
   /**
-   * Overridden. Returns a DateTime value set to the specified date and time in the specified _era.
+   * Overridden. Returns a Time value set to the specified date and time in the specified _era.
    * Params:
    *   year = An integer representing the _year.
    *   month = An integer representing the _month.
@@ -65,28 +65,28 @@ public class HebrewCalendar : Calendar {
    *   second = An integer representing the _second.
    *   millisecond = An integer representing the _millisecond.
    *   era = An integer representing the _era.
-   * Returns: A DateTime set to the specified date and time.
+   * Returns: A Time set to the specified date and time.
    */
-  public override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
     checkYear(year, era);
-    return getGregorianDateTime(year, month, day, hour, minute, second, millisecond);
+    return getGregorianTime(year, month, day, hour, minute, second, millisecond);
   }
 
   /**
-   * Overridden. Returns the day of the week in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the week in the specified Time.
+   * Params: time = A Time value.
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
-  public override DateTime.DayOfWeek getDayOfWeek(DateTime time) {
-    return cast(DateTime.DayOfWeek) cast(int) ((time.ticks / TimeSpan.day.ticks + 1) % 7);
+  public override DayOfWeek getDayOfWeek(Time time) {
+    return cast(DayOfWeek) cast(int) ((time.ticks / TimeSpan.day.ticks + 1) % 7);
   }
 
   /**
-   * Overridden. Returns the day of the month in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the month in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the day of the month of time.
    */
-  public override int getDayOfMonth(DateTime time) {
+  public override int getDayOfMonth(Time time) {
     int year = getYear(time);
     int yearType = getYearType(year);
     int days = getStartOfYear(year) - DaysToOneAD;
@@ -100,22 +100,22 @@ public class HebrewCalendar : Calendar {
   }
 
   /**
-   * Overridden. Returns the day of the year in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the year in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the day of the year of time.
    */
-  public override int getDayOfYear(DateTime time) {
+  public override int getDayOfYear(Time time) {
     int year = getYear(time);
     int days = getStartOfYear(year) - DaysToOneAD;
     return (cast(int)(time.ticks / TimeSpan.day.ticks) - days) + 1;
   }
 
   /**
-   * Overridden. Returns the month in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the month in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the month in time.
    */
-  public override int getMonth(DateTime time) {
+  public override int getMonth(Time time) {
     int year = getYear(time);
     int yearType = getYearType(year);
     int days = getStartOfYear(year) - DaysToOneAD;
@@ -129,11 +129,11 @@ public class HebrewCalendar : Calendar {
   }
 
   /**
-   * Overridden. Returns the year in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the year in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the year in time.
    */
-  public override int getYear(DateTime time) {
+  public override int getYear(Time time) {
     int day = cast(int)(time.ticks / TimeSpan.day.ticks) + DaysToOneAD;
     int low = minYear_, high = maxYear_;
     // Perform a binary search.
@@ -151,11 +151,11 @@ public class HebrewCalendar : Calendar {
   }
 
   /**
-   * Overridden. Returns the era in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the era in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the ear in time.
    */
-  public override int getEra(DateTime time) {
+  public override int getEra(Time time) {
     return HEBREW_ERA;
   }
 
@@ -276,12 +276,12 @@ public class HebrewCalendar : Calendar {
     return day;
   }
 
-  private DateTime getGregorianDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+  private Time getGregorianTime(int year, int month, int day, int hour, int minute, int second, int millisecond) {
     int yearType = getYearType(year);
     int days = getStartOfYear(year) - DaysToOneAD + day - 1;
     for (int i = 1; i <= month; i++)
       days += MonthDays[yearType][i - 1];
-    return DateTime((days * TimeSpan.day.ticks) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+    return Time((days * TimeSpan.day.ticks) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
   }
 
 }

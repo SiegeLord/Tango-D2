@@ -42,7 +42,7 @@
  * )
  * $(TR
  * $(TD $(LINK2 #DateTimeFormat, DateTimeFormat))
- * $(TD Determines how $(LINK2 #DateTime, DateTime) values are formatted, depending on the culture.)
+ * $(TD Determines how $(LINK2 #Time, Time) values are formatted, depending on the culture.)
  * )
  * $(TR
  * $(TD $(LINK2 #DaylightSavingTime, DaylightSavingTime))
@@ -92,7 +92,7 @@
  * $(TH Description)
  * )
  * $(TR
- * $(TD $(LINK2 #DateTime, DateTime))
+ * $(TD $(LINK2 #Time, Time))
  * $(TD Represents time expressed as a date and time of day.)
  * )
  * $(TR
@@ -108,7 +108,7 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Data;
 
-private import  tango.util.time.DateTime;
+private import  tango.util.time.Time;
 
 private import  tango.util.time.chrono.Hijri,
                 tango.util.time.chrono.Korean,
@@ -1420,7 +1420,7 @@ version (Clone)
 
 /**
  * $(ANCHOR _DateTimeFormat)
- * Determines how $(LINK2 #DateTime, DateTime) values are formatted, depending on the culture.
+ * Determines how $(LINK2 #Time, Time) values are formatted, depending on the culture.
  * Remarks: To create a DateTimeFormat for a specific culture, create a $(LINK2 #Culture, Culture) for that culture and
  * retrieve its $(LINK2 #Culture_dateTimeFormat, dateTimeFormat) property. To create a DateTimeFormat for the user's current 
  * culture, use the $(LINK2 #Culture_current, current) property.
@@ -1537,8 +1537,8 @@ version(Clone)
 
   /**
    * $(ANCHOR DateTimeFormat_getAllDateTimePatterns)
-   * Retrieves the standard patterns in which DateTime values can be formatted.
-   * Returns: An array of strings containing the standard patterns in which DateTime values can be formatted.
+   * Retrieves the standard patterns in which Time values can be formatted.
+   * Returns: An array of strings containing the standard patterns in which Time values can be formatted.
    */
   public final char[][] getAllDateTimePatterns() {
     char[][] result;
@@ -1549,8 +1549,8 @@ version(Clone)
 
   /**
    * $(ANCHOR DateTimeFormat_getAllDateTimePatterns_char)
-   * Retrieves the standard patterns in which DateTime values can be formatted using the specified format character.
-   * Returns: An array of strings containing the standard patterns in which DateTime values can be formatted using the specified format character.
+   * Retrieves the standard patterns in which Time values can be formatted using the specified format character.
+   * Returns: An array of strings containing the standard patterns in which Time values can be formatted using the specified format character.
    */
   public final char[][] getAllDateTimePatterns(char format) {
 
@@ -1622,7 +1622,7 @@ version(Clone)
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The abbreviated name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getAbbreviatedDayName(DateTime.DayOfWeek dayOfWeek) {
+  public final char[] getAbbreviatedDayName(Calendar.DayOfWeek dayOfWeek) {
     return abbreviatedDayNames[cast(int)dayOfWeek];
   }
 
@@ -1632,7 +1632,7 @@ version(Clone)
    * Params: dayOfWeek = A DayOfWeek value.
    * Returns: The full name of the day of the week represented by dayOfWeek.
    */
-  public final char[] getDayName(DateTime.DayOfWeek dayOfWeek) {
+  public final char[] getDayName(Calendar.DayOfWeek dayOfWeek) {
     return dayNames[cast(int)dayOfWeek];
   }
 
@@ -1763,14 +1763,14 @@ version(Clone)
    * $(I Property.) Retrieves the first day of the week.
    * Returns: A DayOfWeek value indicating the first day of the week.
    */
-  public final DateTime.DayOfWeek firstDayOfWeek() {
-    return cast(DateTime.DayOfWeek)firstDayOfWeek_;
+  public final Calendar.DayOfWeek firstDayOfWeek() {
+    return cast(Calendar.DayOfWeek)firstDayOfWeek_;
   }
   /**
    * $(I Property.) Assigns the first day of the week.
    * Params: valie = A DayOfWeek value indicating the first day of the week.
    */
-  public final void firstDayOfWeek(DateTime.DayOfWeek value) {
+  public final void firstDayOfWeek(Calendar.DayOfWeek value) {
     checkReadOnly();
     firstDayOfWeek_ = value;
   }

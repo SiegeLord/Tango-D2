@@ -40,7 +40,7 @@ module tango.text.locale.Locale;
 private import tango.text.locale.Core,
                tango.text.locale.Convert;
 
-private import tango.util.time.DateTime;
+private import tango.util.time.Time;
 
 private import tango.text.convert.Layout;
 
@@ -75,10 +75,10 @@ public class Locale : Layout!(char)
         {
                 switch (type.classinfo.name[9])
                        {
-                            // Special case for DateTime.
+                            // Special case for Time.
                        case TypeCode.STRUCT:
-                            if (type is typeid(DateTime))
-                                return formatDateTime (output, *cast(DateTime*) p, format, dateFormat);
+                            if (type is typeid(Time))
+                                return formatDateTime (output, *cast(Time*) p, format, dateFormat);
 
                        return type.toString;
 
@@ -116,11 +116,12 @@ public class Locale : Layout!(char)
 debug (Locale)
 {
         import tango.io.Console;
+        import tango.util.time.WallClock;
 
         void main ()
         {
                 auto layout = new Locale (Culture.getCulture ("fr-FR"));
 
-                Cout (layout ("{:D}", DateTime.now)) ();
+                Cout (layout ("{:D}", WallClock.now)) ();
         }
 }

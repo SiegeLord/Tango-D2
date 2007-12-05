@@ -21,7 +21,7 @@ private import  tango.io.model.IBuffer;
 private import  tango.util.log.Appender,
                 tango.util.log.FileAppender;
 
-private import  tango.util.time.DateTime;
+private import  tango.util.time.Time;
 
 /*******************************************************************************
 
@@ -57,7 +57,7 @@ public class RollingFileAppender : FileAppender
                 mask = register (path);
 
                 char[1] x;
-                DateTime mostRecent;
+                Time mostRecent;
 
                 for (int i=0; i < count; ++i)
                     {

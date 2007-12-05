@@ -30,7 +30,7 @@ public class HijriCalendar : Calendar {
   public const int HIJRI_ERA = 1;
 
   /**
-   * Overridden. Returns a DateTime value set to the specified date and time in the specified _era.
+   * Overridden. Returns a Time value set to the specified date and time in the specified _era.
    * Params:
    *   year = An integer representing the _year.
    *   month = An integer representing the _month.
@@ -40,63 +40,63 @@ public class HijriCalendar : Calendar {
    *   second = An integer representing the _second.
    *   millisecond = An integer representing the _millisecond.
    *   era = An integer representing the _era.
-   * Returns: A DateTime set to the specified date and time.
+   * Returns: A Time set to the specified date and time.
    */
-  public override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
-    return DateTime((daysSinceJan1(year, month, day) - 1) * TimeSpan.day.ticks + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+    return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.day.ticks + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
   }
 
   /**
-   * Overridden. Returns the day of the week in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the week in the specified Time.
+   * Params: time = A Time value.
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
-  public override DateTime.DayOfWeek getDayOfWeek(DateTime time) {
-    return cast(DateTime.DayOfWeek) (cast(int) (time.ticks / TimeSpan.day.ticks + 1) % 7);
+  public override DayOfWeek getDayOfWeek(Time time) {
+    return cast(DayOfWeek) (cast(int) (time.ticks / TimeSpan.day.ticks + 1) % 7);
   }
 
   /**
-   * Overridden. Returns the day of the month in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the month in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the day of the month of time.
    */
-  public override int getDayOfMonth(DateTime time) {
+  public override int getDayOfMonth(Time time) {
     return extractPart(time.ticks, DatePart.Day);
   }
 
   /**
-   * Overridden. Returns the day of the year in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the year in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the day of the year of time.
    */
-  public override int getDayOfYear(DateTime time) {
+  public override int getDayOfYear(Time time) {
     return extractPart(time.ticks, DatePart.DayOfYear);
   }
 
   /**
-   * Overridden. Returns the day of the year in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the day of the year in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the day of the year of time.
    */
-  public override int getMonth(DateTime time) {
+  public override int getMonth(Time time) {
     return extractPart(time.ticks, DatePart.Month);
   }
 
   /**
-   * Overridden. Returns the year in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the year in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the year in time.
    */
-  public override int getYear(DateTime time) {
+  public override int getYear(Time time) {
     return extractPart(time.ticks, DatePart.Year);
   }
 
   /**
-   * Overridden. Returns the era in the specified DateTime.
-   * Params: time = A DateTime value.
+   * Overridden. Returns the era in the specified Time.
+   * Params: time = A Time value.
    * Returns: An integer representing the ear in time.
    */
-  public override int getEra(DateTime time) {
+  public override int getEra(Time time) {
     return HIJRI_ERA;
   }
 

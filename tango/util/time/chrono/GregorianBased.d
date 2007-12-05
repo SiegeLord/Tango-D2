@@ -15,7 +15,7 @@ module tango.util.time.chrono.GregorianBased;
 
 private import tango.core.Exception;
 
-private import tango.util.time.DateTime;
+private import tango.util.time.Time;
 
 private import tango.util.time.chrono.Gregorian;
 
@@ -34,11 +34,11 @@ private class GregorianBasedCalendar : GregorianCalendar {
     minYear_ = eraRanges_[0].minEraYear;
   }
 
-  public override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
     year = getGregorianYear(year, era);
-    return super.getDateTime(year, month, day, hour, minute, second, millisecond, era);
+    return super.getTime(year, month, day, hour, minute, second, millisecond, era);
   }
-  public override int getYear(DateTime time) {
+  public override int getYear(Time time) {
     auto ticks = time.ticks;
     auto year = extractPart(time.ticks, DatePart.Year);
     foreach (EraRange eraRange; eraRanges_) {
@@ -48,7 +48,7 @@ private class GregorianBasedCalendar : GregorianCalendar {
     throw new IllegalArgumentException("Value was out of range.");
   }
 
-  public override int getEra(DateTime time) {
+  public override int getEra(Time time) {
     auto ticks = time.ticks;
     foreach (EraRange eraRange; eraRanges_) {
       if (ticks >= eraRange.ticks)
@@ -100,13 +100,17 @@ package struct EraRange {
 
   private static void initialize() {
     if (!initialized_) {
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(4, DateTime(1989, 1, 8).ticks, 1988, 1, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(3, DateTime(1926, 12, 25).ticks, 1925, 1, 1989);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(2, DateTime(1912, 7, 30).ticks, 1911, 1, 1926);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(1, DateTime(1868, 9, 8).ticks, 1867, 1, 1912);
-      eraRanges[GregorianCalendar.TAIWAN] ~= EraRange(1, DateTime(1912, 1, 1).ticks, 1911, 1, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.KOREA] ~= EraRange(1, DateTime(1, 1, 1).ticks, -2333, 2334, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.THAI] ~= EraRange(1, DateTime(1, 1, 1).ticks, -543, 544, GregorianCalendar.MAX_YEAR);
+      long getTicks(int year, int month, int day)
+      {
+        return GregorianCalendar.getDefaultInstance.getDateTicks(year, month, day);
+      }
+      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(4, getTicks(1989, 1, 8), 1988, 1, GregorianCalendar.MAX_YEAR);
+      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(3, getTicks(1926, 12, 25), 1925, 1, 1989);
+      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(2, getTicks(1912, 7, 30), 1911, 1, 1926);
+      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(1, getTicks(1868, 9, 8), 1867, 1, 1912);
+      eraRanges[GregorianCalendar.TAIWAN] ~= EraRange(1, getTicks(1912, 1, 1), 1911, 1, GregorianCalendar.MAX_YEAR);
+      eraRanges[GregorianCalendar.KOREA] ~= EraRange(1, getTicks(1, 1, 1), -2333, 2334, GregorianCalendar.MAX_YEAR);
+      eraRanges[GregorianCalendar.THAI] ~= EraRange(1, getTicks(1, 1, 1), -543, 544, GregorianCalendar.MAX_YEAR);
       currentEras[GregorianCalendar.JAPAN] = 4;
       currentEras[GregorianCalendar.TAIWAN] = 1;
       currentEras[GregorianCalendar.KOREA] = 1;

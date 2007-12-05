@@ -986,7 +986,7 @@ private class Connection
 {
         abstract bool reset();
 
-        abstract void done (DateTime time);
+        abstract void done (Time time);
 
         abstract SocketConduit conduit ();
 }
@@ -1019,7 +1019,7 @@ private class ConnectionPool
 
         static class PoolConnection : Connection
         {
-                DateTime        time;
+                Time            time;
                 PoolConnection  next;   
                 ConnectionPool  parent;   
                 SocketConduit   conduit_;
@@ -1099,7 +1099,7 @@ private class ConnectionPool
 
                 ***************************************************************/
 
-                final void done (DateTime time)
+                final void done (Time time)
                 {
                         synchronized (parent)
                                      {
@@ -1131,7 +1131,7 @@ private class ConnectionPool
 
         ***********************************************************************/
 
-        final synchronized Connection borrow (DateTime time)
+        final synchronized Connection borrow (Time time)
         {  
                 if (freelist)
                     do {
@@ -1292,7 +1292,7 @@ private class Node
         final bool request (Requestor dg, ProtocolReader reader, out bool message)
         {       
                 ProtocolWriter.Command  cmd;
-                DateTime                time;
+                Time                    time;
                 char[]                  channel;
                 char[]                  element;
 

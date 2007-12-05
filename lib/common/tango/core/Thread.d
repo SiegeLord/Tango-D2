@@ -765,16 +765,18 @@ class Thread
     static void sleep( double period )
     in
     {
-        assert( period * 1_000 < uint.max - 1 );
+        assert( period * 1_000 + .1 < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            Sleep( cast(uint)( period * 1_000 ) );
+            Sleep( cast(uint)( period * 1_000 + .1) );
         }
         else version( Posix )
         {
+            // fix fp error
+            period += .000_000_000_1;
             timespec tin  = void;
             timespec tout = void;
 

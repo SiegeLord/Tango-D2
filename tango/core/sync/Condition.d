@@ -9,7 +9,6 @@
 module tango.core.sync.Condition;
 
 
-public import tango.util.time.TimeSpan;
 public import tango.core.Exception : SyncException;
 public import tango.core.sync.Mutex;
 
@@ -137,7 +136,7 @@ class Condition
      * maximum of (uint.max - 1) milliseconds.
      *
      * Params:
-     *  period = The time to wait.
+     *  period = The time to wait, in seconds (fractional values are accepted).
      *
      * In:
      *  period must be less than (uint.max - 1) milliseconds.
@@ -148,16 +147,16 @@ class Condition
      * Throws:
      *  SyncException on error.
      */
-    bool wait( TimeSpan period )
+    bool wait( double period )
     in
     {
-        assert( period.milliseconds < uint.max - 1 );
+        assert( period * 1000 + .1 < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            return timedWait( period.milliseconds );
+            return timedWait( period * 1000 + .1);
         }
         else version( Posix )
         {
@@ -173,34 +172,6 @@ class Condition
             throw new SyncException( "Unable to wait for condition" );
         }
     }
-
-
-    /**
-     * Suspends the calling thread until a notification occurs or until the
-     * supplied time period has elapsed.  The supplied period may be up to a
-     * maximum of (uint.max - 1) milliseconds.
-     *
-     * Params:
-     *  period = The time to wait, in seconds (fractional values are accepted).
-     *           Please note that because period is a floating-point number,
-     *           some accuracy may be lost for certain intervals.  For this
-     *           reason, the TimeSpan overload is preferred in instances where
-     *           an exact representation is required.
-     *
-     * In:
-     *  period must be less than (uint.max - 1) milliseconds.
-     *
-     * Returns:
-     *  true if notified before the timeout and false if not.
-     *
-     * Throws:
-     *  SyncException on error.
-     */
-    bool wait( double period )
-    {
-        return wait( TimeSpan.interval( period ) );
-    }
-
 
     /**
      * Notifies one waiter.

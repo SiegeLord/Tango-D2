@@ -49,12 +49,12 @@ public class Event : ILevel
         // primary event attributes
         private char[]          msg,
                                 name;
-        private DateTime        time;
+        private Time            time;
         private Level           level;
         private IHierarchy      hierarchy;
 
         // timestamps
-        private static DateTime beginTime;
+        private static Time beginTime;
 
         // scratch buffer for constructing output strings
         struct  Scratch
@@ -164,7 +164,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final static DateTime startedAt ()
+        final static Time startedAt ()
         {
                 return beginTime;
         }
@@ -175,7 +175,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final static DateTime timer ()
+        final static Time timer ()
         {
                 version (Posix)       
                 {
@@ -309,7 +309,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final DateTime getEpochTime ()
+        final Time getEpochTime ()
         {
                 return time;
         }

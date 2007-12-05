@@ -8,7 +8,6 @@
 module tango.core.sync.Semaphore;
 
 
-public import tango.util.time.TimeSpan;
 public import tango.core.Exception : SyncException;
 
 version( Win32 )
@@ -128,7 +127,7 @@ class Semaphore
      * a maximum of (uint.max - 1) milliseconds.
      *
      * Params:
-     *  period = The amount of time to wait.
+     *  period = The number of seconds to wait.
      *
      * In:
      *  period must be less than (uint.max - 1) milliseconds.
@@ -139,16 +138,16 @@ class Semaphore
      * Throws:
      *  SyncException on error.
      */
-    bool wait( TimeSpan period )
+    bool wait( double period )
     in
     {
-        assert( period.milliseconds < uint.max - 1 );
+        assert( cast(uint)(period * 1000 + .1) < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            DWORD t = period.milliseconds;
+            DWORD t = cast(DWORD)(period * 1000 + .1);
             switch( WaitForSingleObject( m_hndl, t ) )
             {
             case WAIT_OBJECT_0:
@@ -179,35 +178,6 @@ class Semaphore
 
         // -w trip
         return false;
-    }
-
-
-    /**
-     * Suspends the calling thread until the current count moves above zero or
-     * until the supplied time period has elapsed.  If the count moves above
-     * zero in this interval, then atomically decrement the count by one and
-     * return true.  Otherwise, return false.  The supplied period may be up to
-     * a maximum of (uint.max - 1) milliseconds.
-     *
-     * Params:
-     *  period = The number of seconds to wait.  Please note that because
-     *           period is a floating-point number, some accuracy may be lost
-     *           for certain intervals.  For this reason, the TimeSpan overload
-     *           is preferred in instances where an exact representation is
-     *           required.
-     *
-     * In:
-     *  period must be less than (uint.max - 1) milliseconds.
-     *
-     * Returns:
-     *  true if notified before the timeout and false if not.
-     *
-     * Throws:
-     *  SyncException on error.
-     */
-    bool wait( double period )
-    {
-        return wait( TimeSpan.interval( period ) );
     }
 
 

@@ -1,109 +1,190 @@
-/**
- * copyright: Copyright (c) 2005 Steven Schveighoffer. All rights reserved
- * license:   BSD style: $(LICENSE)
- * version:   Dec 2007: Initial release
- * author:    schveiguy
- */
-
-module tango.util.time.DateTime;
-
-
-public  import  tango.util.time.TimeSpan;
-
-private import  tango.util.time.Clock,
-                tango.util.time.WallClock;
-
-private import  tango.util.time.chrono.Calendar,
-                tango.util.time.chrono.DefaultCalendar;
-
 /******************************************************************************
 
-        Represents time expressed as a date and time of day.
+        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
 
-        Remarks: This can represent dates and times as defined by a given
-        calendar.  The only limitation of DateTime is the representation of
-        years, which is currently an integer.
+        license:        BSD style: $(LICENSE)
 
-        The smallest resolution supported by DateTime is the nanosecond.
+        version:        mid 2005: Initial release
+                        Apr 2007: heavily reshaped
 
-        NOTE: do not use this class yet, it's not cooked :)  Use Time instead
-        (tango.util.time.Time) which is the same as what DateTime used to be.
+        author:         John Chapman, Kris
 
 ******************************************************************************/
 
-pragma(msg, "Don't use DateTime module yet, use Time instead");
+module tango.util.time.Time;
 
-void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis, out int micros, out int nanos)
-in
+public  import  tango.util.time.TimeSpan;
+
+// TODO: remove these when clock-like functionality is removed from Time
+private import  tango.util.time.Clock,
+                tango.util.time.WallClock;
+
+/******************************************************************************
+
+        Represents a point in time.
+
+        Remarks: Time represents dates and times between 12:00:00 
+        midnight on January 1, 10000 BC and 11:59:59 PM on December 31, 
+        9999 AD.
+
+        Time values are measured in 100-nanosecond intervals, or ticks. 
+        A date value is the number of ticks that have elapsed since 
+        12:00:00 midnight on January 1, 0001 AD in the Gregorian 
+        calendar.
+        
+        Negative Time values are offsets from that same reference point, but
+        backwards in history.  Time values are not specific to any calendar,
+        but for an example, the beginning of December 31, 1 B.C. in the
+        Gregorian calendar is Time.epoch - TimeSpan.day.
+
+
+******************************************************************************/
+
+struct Time 
 {
-    assert(t >= TimeSpan.zero && t < TimeSpan.day);
-}
-body
-{
-   hour = t.hours;
-   minute = t.minutes % 60;
-   second = t.seconds % 60;
-   millis = t.milliseconds % 60;
-   nanos = t.nanoseconds % 1_000_000_000;
-   nanos = t.nanoseconds % 1_000_000_000;
-}
+        public long ticks;
 
-void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis, out int micros)
-{
-    int n;
-    getTimeOfDay(t, hour, minute, second, millis, micros, n);
-}
+        // TODO: remove this when deprecated functions are removed
+        private package enum 
+        {
+                Year,
+                Month,
+                Day,
+                DayOfYear
+        }
 
-void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis)
-{
-    int u, n;
-    getTimeOfDay(t, hour, minute, second, millis, u, n);
-}
+        // TODO: remove this when deprecated functions are removed
+        /**
+         * Deprecated: use Calendar.DayOfWeek instead
+         */
+        public enum DayOfWeek 
+        {
+                Sunday,
+                Monday,
+                Tuesday,
+                Wednesday,
+                Thursday,
+                Friday,
+                Saturday
+        }
 
-void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second)
-{
-    int m, u, n;
-    getTimeOfDay(t, hour, minute, second, m, u, n);
-}
+        /// Represents the smallest and largest Time value.
+        public static const Time    epoch = {0},
+                                        max = {(TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1},
+                                        min = {-((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1)},
+                                        epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
+                                        epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
 
-class DateTime 
-{
-    private int year;
-    private int day;
-    private int month;
-    private TimeSpan timeOfDay;
-    private Calendar calendar;
-    private Calendar.DayOfWeek dow;
+        // TODO: remove this when deprecated functions are removed
+        private static final int[] DaysToMonthCommon = 
+        [
+                0, 
+                31, 
+                59, 
+                90, 
+                120, 
+                151, 
+                181, 
+                212, 
+                243, 
+                273, 
+                304, 
+                334, 
+                365
+        ];
 
-    // create a new instance with the default calendar
-    this(Time t)
-    {
-        this(t, DefaultCalendar);
-    }
+        // TODO: remove this when deprecated fucntions are removed
+        private static final int[] DaysToMonthLeap = 
+        [
+                0, 
+                31, 
+                60, 
+                91, 
+                121, 
+                152, 
+                182, 
+                213, 
+                244, 
+                274, 
+                305, 
+                335, 
+                366
+        ];
 
-    this(Time t, Calendar cal)
-    in
-    {
-        assert(cal !is null);
-    }
-    body
-    {
-        this.calendar = cal;
-        // TODO fill in other elements using calendar
-    }
+        /**********************************************************************
 
-    static DateTime now () 
-    {
-        return new DateTime(Clock.now);
-    }
+                $(I Constructor.) Initializes a new instance of the 
+                Time struct to the specified number of _ticks.         
+                
+                Params: ticks = A time expressed in units of 
+                100 nanoseconds.
 
-    static DateTime localTime () 
-    {
-        return new DateTime(WallClock.now);
-    }
+        **********************************************************************/
 
-    /+
-    /**********************************************************************
+        static Time opCall (long ticks) 
+        {
+                Time d;
+                d.ticks = ticks;
+                return d;
+        }
+
+        /**********************************************************************
+                Deprecated: use an appropriate calendar class instead.
+
+        **********************************************************************/
+
+        deprecated static Time opCall (int year, int month, int day) 
+        {
+                return opCall (getDateTicks (year, month, day));
+        }
+
+        /**********************************************************************
+                Deprecated: use WallClock.now.date instead
+
+                $(I Property.) Retrieves the current date.
+
+                Returns: A Time instance set to today's date.
+
+        **********************************************************************/
+
+        deprecated static Time today () 
+        {
+                return now.date;
+        }
+
+        /**********************************************************************
+                Deprecated: use WallClock.now instead.
+
+                $(I Property.) Retrieves a Time instance set to the 
+                current time in local time.
+
+                Returns: A Time whose value is the current local date 
+                         and time.
+
+        **********************************************************************/
+        
+        deprecated static Time now () 
+        {
+                return  WallClock.now;
+        }
+
+        /**********************************************************************
+                Deprecated: use Clock.now instead.
+
+                $(I Property.) Retrieves a Time instance set to the 
+                current time in UTC time.
+
+                Returns: A Time whose value is the current UTC date 
+                         and time.
+
+        **********************************************************************/
+
+        deprecated static Time utc () 
+        {
+                return Clock.now;
+        }
+
+        /**********************************************************************
 
                 Determines whether two Time values are equal.
 
@@ -112,9 +193,9 @@ class DateTime
 
         **********************************************************************/
 
-        int opEquals (DateTime t) 
+        int opEquals (Time t) 
         {
-            return 0;
+                return ticks is t.ticks;
         }
 
         /**********************************************************************
@@ -125,44 +206,49 @@ class DateTime
 
         int opCmp (Time t) 
         {
-            return -1;
+                if(ticks < t.ticks)
+                        return -1;
+                if(ticks > t.ticks)
+                        return 1;
+                return 0;
         }
 
         /**********************************************************************
 
-                Adds the specified time span to the date and time, 
-                returning a new date and time.
+                Adds the specified time span to the time, returning a new
+                time.
                 
                 Params:  t = A TimeSpan value.
                 Returns: A Time that is the sum of this instance and t.
 
         **********************************************************************/
 
-        DateTime opAdd (TimeSpan t) 
+        Time opAdd (TimeSpan t) 
         {
-            return null;
+                return Time (ticks + t.ticks);
         }
 
         /**********************************************************************
 
-                Adds the specified time span to the date and time, assigning 
+                Adds the specified time span to the time, assigning 
                 the result to this instance.
 
                 Params:  t = A TimeSpan value.
                 Returns: The current Time instance, with t added to the 
-                         date and time.
+                         time.
 
         **********************************************************************/
 
-        DateTime opAddAssign (TimeSpan t) 
+        Time opAddAssign (TimeSpan t) 
         {
-            return null;
+                ticks += t.ticks;
+                return *this;
         }
 
         /**********************************************************************
 
-                Subtracts the specified time span from the date and time, 
-                returning a new date and time.
+                Subtracts the specified time span from the time, 
+                returning a new time.
 
                 Params:  t = A TimeSpan value.
                 Returns: A Time whose value is the value of this instance 
@@ -170,9 +256,9 @@ class DateTime
 
         **********************************************************************/
 
-        DateTime opSub (TimeSpan t) 
+        Time opSub (TimeSpan t) 
         {
-            return null;
+                return Time (ticks - t.ticks);
         }
 
         /**********************************************************************
@@ -186,19 +272,19 @@ class DateTime
 
         **********************************************************************/
 
-        TimeSpan opSub (DateTime t)
+        TimeSpan opSub (Time t)
         {
                 return TimeSpan(ticks - t.ticks);
         }
 
         /**********************************************************************
 
-                Subtracts the specified time span from the date and time, 
+                Subtracts the specified time span from the time, 
                 assigning the result to this instance.
 
                 Params:  t = A TimeSpan value.
                 Returns: The current Time instance, with t subtracted 
-                         from the date and time.
+                         from the time.
 
         **********************************************************************/
 
@@ -321,6 +407,8 @@ class DateTime
         }
 
         /**********************************************************************
+                Deprecated: this is a Calendar function.  Currently there are
+                    no functions to do this in Calendar, but there will be
 
                 Adds the specified number of months to the _value of this 
                 instance.
@@ -332,7 +420,7 @@ class DateTime
 
         **********************************************************************/
 
-        Time addMonths (int value) 
+        deprecated Time addMonths (int value) 
         {
                 int year = this.year;
                 int month = this.month;
@@ -357,6 +445,7 @@ class DateTime
         }
 
         /**********************************************************************
+                Deprecated: this is a Calendar function.
 
                 Adds the specified number of years to the _value of this 
                 instance.
@@ -368,12 +457,13 @@ class DateTime
 
         **********************************************************************/
 
-        Time addYears (int value) 
+        deprecated Time addYears (int value) 
         {
                 return addMonths (value * 12);
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.year(Time) instead.
 
                 $(I Property.) Retrieves the _year component of the date.
 
@@ -381,12 +471,13 @@ class DateTime
 
         **********************************************************************/
 
-        int year () 
+        deprecated int year () 
         {
                 return extractPart (ticks, Year);
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.month(Time) instead.
 
                 $(I Property.) Retrieves the _month component of the date.
 
@@ -394,12 +485,13 @@ class DateTime
 
         **********************************************************************/
 
-        int month () 
+        deprecated int month () 
         {
                 return extractPart (ticks, Month);
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.day(Time) instead.
 
                 $(I Property.) Retrieves the _day component of the date.
 
@@ -407,12 +499,13 @@ class DateTime
 
         **********************************************************************/
 
-        int day () 
+        deprecated int day () 
         {
                 return extractPart (ticks, Day);
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.dayOfYear(Time) instead.
 
                 $(I Property.) Retrieves the day of the year.
 
@@ -420,12 +513,13 @@ class DateTime
 
         **********************************************************************/
 
-        int dayOfYear () 
+        deprecated int dayOfYear () 
         {
                 return extractPart (ticks, DayOfYear);
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.dayOfWeek(Time) instead.
 
                 $(I Property.) Retrieves the day of the week.
 
@@ -433,9 +527,9 @@ class DateTime
 
         **********************************************************************/
 
-        DayOfWeek dayOfWeek () 
+        deprecated int dayOfWeek () 
         {
-                return cast(DayOfWeek) ((ticks / TimeSpan.day.ticks + 1) % 7);
+                return cast(int) ((ticks / TimeSpan.day.ticks + 1) % 7);
         }
 
         /**********************************************************************
@@ -493,6 +587,20 @@ class DateTime
 
         /**********************************************************************
 
+                $(I Property.) Retrieves the _microsecond component of the 
+                date.
+
+                Returns: The _microsecond.
+
+        **********************************************************************/
+
+        int microsecond () 
+        {
+                return cast(int) ((ticks / TimeSpan.us.ticks) % 1000);
+        }
+
+        /**********************************************************************
+
                 $(I Property.) Retrieves the date component.
 
                 Returns: A new Time instance with the same date as 
@@ -524,7 +632,7 @@ class DateTime
 
                 Deprecated: access ticks directly
 
-                Returns: A long represented by the date and time of this 
+                Returns: A long represented by the time of this 
                          instance.
 
         **********************************************************************/
@@ -535,6 +643,7 @@ class DateTime
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.daysInMonth instead.
 
                 Returns the number of _days in the specified _month.
 
@@ -545,7 +654,7 @@ class DateTime
 
         **********************************************************************/
 
-        static int daysInMonth (int year, int month) 
+        deprecated static int daysInMonth (int year, int month) 
         {
                 int[] monthDays = isLeapYear(year) ? DaysToMonthLeap 
                                                    : DaysToMonthCommon;
@@ -553,6 +662,7 @@ class DateTime
         }
 
         /**********************************************************************
+                Deprecated: use Calendar.isLeapYear instead.
 
                 Returns a value indicating whether the specified _year is 
                 a leap _year.
@@ -562,7 +672,7 @@ class DateTime
 
         **********************************************************************/
 
-        static bool isLeapYear (int year) 
+        deprecated static bool isLeapYear (int year) 
         {
                 return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
         }
@@ -571,7 +681,7 @@ class DateTime
 
         **********************************************************************/
 
-        private static long getDateTicks (int year, int month, int day) 
+        deprecated private static long getDateTicks (int year, int month, int day) 
         {
                 int[] monthDays = isLeapYear(year) ? DaysToMonthLeap 
                                                    : DaysToMonthCommon;
@@ -584,7 +694,7 @@ class DateTime
 
         **********************************************************************/
 
-        private static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
+        deprecated private static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
                 int numDays = cast(int) (ticks / TimeSpan.day.ticks);
                 int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
@@ -616,7 +726,7 @@ class DateTime
 
         **********************************************************************/
 
-        private static int extractPart (long ticks, int part) 
+        deprecated private static int extractPart (long ticks, int part) 
         {
                 int year, month, day, dayOfYear;
 
@@ -633,5 +743,32 @@ class DateTime
 
                 return day;
         }
-        +/
 }
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (Time)
+{
+        import tango.io.Stdout;
+
+        Time foo() 
+        {
+                auto d = Time(10);
+                auto e = TimeSpan(20);
+
+                return d + e;
+        }
+
+        void main()
+        {
+                auto c = foo();
+                Stdout (c.time).newline;
+        }
+}
+
+
+

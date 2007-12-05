@@ -22,7 +22,9 @@ private import tango.util.time.chrono.Calendar;
 */
 class GregorianCalendar : Calendar 
 {
-        private static Calendar defaultInstance_;
+        // import parent overrides of getTime
+        alias Calendar.getTime getTime;
+        private static GregorianCalendar defaultInstance_;
 
         enum Type 
         {
@@ -55,7 +57,7 @@ class GregorianCalendar : Calendar
         }
 
         /**
-        * Overridden. Returns a DateTime value set to the specified date and time in the specified _era.
+        * Overridden. Returns a Time value set to the specified date and time in the specified _era.
         * Params:
         *   year = An integer representing the _year.
         *   month = An integer representing the _month.
@@ -65,69 +67,69 @@ class GregorianCalendar : Calendar
         *   second = An integer representing the _second.
         *   millisecond = An integer representing the _millisecond.
         *   era = An integer representing the _era.
-        * Returns: A DateTime set to the specified date and time.
+        * Returns: A Time set to the specified date and time.
         */
-        override DateTime getDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) 
+        override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
         {
-                return DateTime (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+                return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
         }
 
         /**
-        * Overridden. Returns the day of the week in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the day of the week in the specified Time.
+        * Params: time = A Time value.
         * Returns: A DayOfWeek value representing the day of the week of time.
         */
-        override DateTime.DayOfWeek getDayOfWeek(DateTime time) 
+        override DayOfWeek getDayOfWeek(Time time) 
         {
-                return cast(DateTime.DayOfWeek)((time.ticks / TimeSpan.day.ticks + 1) % 7);
+                return cast(DayOfWeek)((time.ticks / TimeSpan.day.ticks + 1) % 7);
         }
 
         /**
-        * Overridden. Returns the day of the month in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the day of the month in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */
-        override int getDayOfMonth(DateTime time) 
+        override int getDayOfMonth(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Day);
         }
 
         /**
-        * Overridden. Returns the day of the year in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the day of the year in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */
-        override int getDayOfYear(DateTime time) 
+        override int getDayOfYear(Time time) 
         {
                 return extractPart(time.ticks, DatePart.DayOfYear);
         }
 
         /**
-        * Overridden. Returns the month in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the month in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */
-        override int getMonth(DateTime time) 
+        override int getMonth(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Month);
         }
 
         /**
-        * Overridden. Returns the year in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the year in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */
-        override int getYear(DateTime time) 
+        override int getYear(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Year);
         }
 
         /**
-        * Overridden. Returns the era in the specified DateTime.
-        * Params: time = A DateTime value.
+        * Overridden. Returns the era in the specified Time.
+        * Params: time = A Time value.
         * Returns: An integer representing the ear in time.
         */
-        override int getEra(DateTime time) 
+        override int getEra(Time time) 
         {
                 return AD_ERA;
         }
@@ -209,7 +211,14 @@ class GregorianCalendar : Calendar
                 return cast(int) type_;
         }
 
-        static Calendar getDefaultInstance() 
+        override void split(Time time, out int year, out int month, out int day, out int dayOfYear, out DayOfWeek dayOfWeek, out int era)
+        {
+            splitDate(time.ticks, year, month, day, dayOfYear);
+            era = AD_ERA;
+            dayOfWeek = getDayOfWeek(time);
+        }
+
+        static GregorianCalendar getDefaultInstance() 
         {
                 if (defaultInstance_ is null)
                     defaultInstance_ = new GregorianCalendar;

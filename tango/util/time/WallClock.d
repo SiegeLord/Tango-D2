@@ -19,7 +19,7 @@ private import  tango.util.time.Date,
 
 public  import  tango.util.time.TimeSpan;
 
-public  import  tango.util.time.DateTime;
+public  import  tango.util.time.Time;
 
 /******************************************************************************
 
@@ -48,7 +48,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime now ()
+                static Time now ()
                 {
                         return Clock.now - localBias;
                 }
@@ -89,7 +89,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (DateTime utc)
+                static Date toDate (Time utc)
                 {
                         return Clock.toDate (utc - localBias);
                 }
@@ -100,7 +100,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime fromDate (inout Date date)
+                static Time fromDate (inout Date date)
                 {
                         return (Clock.fromDate(date) + localBias);
                 }
@@ -144,7 +144,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime now ()
+                static Time now ()
                 {
                         tm t = void;
                         timeval tv = void;
@@ -194,7 +194,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (DateTime utc)
+                static Date toDate (Time utc)
                 {
                         Date date = void;
                         auto timeval = Clock.convert (utc);
@@ -219,7 +219,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime fromDate (inout Date date)
+                static Time fromDate (inout Date date)
                 {
                         tm t = void;
 
@@ -231,7 +231,7 @@ struct WallClock
                         t.tm_sec  = date.sec;
 
                         auto seconds = mktime (&t);
-                        return DateTime.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
+                        return Time.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
                 }
         }
 
@@ -239,7 +239,7 @@ struct WallClock
 
         ***********************************************************************/
         
-        static DateTime toLocal (DateTime utc)
+        static Time toLocal (Time utc)
         {
                 auto mod = utc.ticks % TimeSpan.ms.ticks;
                 return Clock.fromDate(toDate(utc)) + TimeSpan(mod);
@@ -249,7 +249,7 @@ struct WallClock
 
         ***********************************************************************/
         
-        static DateTime toUtc (DateTime wall)
+        static Time toUtc (Time wall)
         {
                 auto mod = wall.ticks % TimeSpan.ms.ticks;
                 return fromDate(Clock.toDate(wall)) + TimeSpan(mod);

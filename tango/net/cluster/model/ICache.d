@@ -10,7 +10,7 @@
 
 module tango.net.cluster.model.ICache;
 
-private import tango.util.time.DateTime;
+private import tango.util.time.Time;
 
 /******************************************************************************
 
@@ -37,7 +37,7 @@ interface ICache (K, V)
 
         **********************************************************************/
 
-        bool put (K key, V entry, DateTime time = DateTime.init);
+        bool put (K key, V entry, Time time = Time.init);
 
         /**********************************************************************
 
@@ -49,6 +49,6 @@ interface ICache (K, V)
 
         **********************************************************************/
 
-        V remove (K key, DateTime time = DateTime.max);
+        V remove (K key, Time time = Time.max);
 }
 

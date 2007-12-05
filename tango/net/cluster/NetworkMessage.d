@@ -43,7 +43,7 @@ public  import tango.net.cluster.model.ICluster;
 class NetworkMessage : IMessage
 {
         private uint      id_;
-        private DateTime  time_;
+        private Time      time_;
         private char[]    reply_;
 
         /***********************************************************************
@@ -97,7 +97,7 @@ class NetworkMessage : IMessage
 
         ***********************************************************************/
 
-        void time (DateTime time)
+        void time (Time time)
         {
                 time_ = time;
         }
@@ -108,7 +108,7 @@ class NetworkMessage : IMessage
 
         ***********************************************************************/
 
-        DateTime time ()
+        Time time ()
         {
                 return time_;
         }
