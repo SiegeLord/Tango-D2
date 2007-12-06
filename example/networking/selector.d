@@ -102,7 +102,7 @@ void testSelector(ISelector selector)
     uint        failedSendCount     = 0;
     uint        closeCount          = 0;
     uint        errorCount          = 0;
-    DateTime    start               = Clock.now;
+    Time        start               = Clock.now;
     Thread      clientThread;
 
     selector.open(HANDLE_COUNT, EVENT_COUNT);
@@ -314,7 +314,7 @@ void clientThreadFunc()
 
     try
     {
-        InternetAddress     addr    = new InternetAddress(SERVER_ADDR, SERVER_PORT);
+        InternetAddress     addr = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         char[MAX_LENGTH]    buffer;
         uint count;
         int i;
