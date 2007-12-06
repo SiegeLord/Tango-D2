@@ -1,4 +1,4 @@
-/**
+?/**
  * This module provides a templated function that performs value-preserving
  * conversions between arbitrary types.  This function's behaviour can be
  * extended for user-defined types as needed.
@@ -114,9 +114,9 @@ version( DDoc )
      * char[]  toString();
      * -----
      *
-     * The "toUtf" method corresponding to the destination string type will be
+     * The "toString_" method corresponding to the destination string type will be
      * tried first.  If this method does not exist, then the function will
-     * look for another "toUtf" method from which it will convert the result.
+     * look for another "toString_" method from which it will convert the result.
      * Failing this, it will try "toString" and convert the result to the
      * appropriate encoding.
      *
@@ -162,7 +162,7 @@ private:
  *
  * The next contains a boat-load of templates.  Most of these are trait
  * templates (things like isPOD, isObject, etc.)  There are also a number of
- * mixins, and some switching templates (like toUtf(n).)
+ * mixins, and some switching templates (like toString_(n).)
  *
  * Another thing to mention is intCmp, which performs a safe comparison
  * between two integers of arbitrary size and signage.
@@ -463,21 +463,27 @@ template TN(T)
 }
 
 // Picks an appropriate toUtf* method from t.text.convert.Utf.
-template toUtf(T)
+template toString_(T)
 {
     static if( is( T == char[] ) )
-        alias tango.text.convert.Utf.toString toUtf;
+        alias tango.text.convert.Utf.toString toString_;
 
     else static if( is( T == wchar[] ) )
-        alias tango.text.convert.Utf.toString16 toUtf;
+        alias tango.text.convert.Utf.toString16 toString_;
 
     else
-        alias tango.text.convert.Utf.toString32 toUtf;
+        alias tango.text.convert.Utf.toString32 toString_;
 }
 
 template UtfNum(T)
 {
     const UtfNum = is(typeof(T[0])==char) ? "8" : (
+            is(typeof(T[0])==wchar) ? "16" : "32");
+}
+
+template StringNum(T)
+{
+    const StringNum = is(typeof(T[0])==char) ? "" : (
             is(typeof(T[0])==wchar) ? "16" : "32");
 }
 
@@ -493,13 +499,13 @@ template toUDT()
                 return mixin("D.fromUtf"~UtfNum!(S)~"(value)");
 
             else static if( is( typeof(D.fromUtf8(""c)) : D ) )
-                return D.fromUtf8(toUtf!(char[])(value));
+                return D.fromUtf8(toString_!(char[])(value));
 
             else static if( is( typeof(D.fromUtf16(""w)) : D ) )
-                return D.fromUtf16(toUtf!(wchar[])(value));
+                return D.fromUtf16(toString_!(wchar[])(value));
 
             else static if( is( typeof(D.fromUtf32(""d)) : D ) )
-                return D.fromUtf32(toUtf!(dchar[])(value));
+                return D.fromUtf32(toString_!(dchar[])(value));
 
             else static if( is( typeof(D.fromString(""c)) : D ) )
             {
@@ -507,7 +513,7 @@ template toUDT()
                     return D.fromString(value);
 
                 else
-                    return D.fromString(toUtf!(char[])(value));
+                    return D.fromString(toString_!(char[])(value));
             }
 
             // Default fallbacks
@@ -545,18 +551,18 @@ template fromUDT(char[] fallthrough="")
     {
         static if( isString!(D) )
         {
-            static if( is( typeof(mixin("value.toUtf"
-                                ~UtfNum!(D)~"()")) == D ) )
-                return mixin("value.toUtf"~UtfNum!(D)~"()");
+            static if( is( typeof(mixin("value.toString"
+                                ~StringNum!(D)~"()")) == D ) )
+                return mixin("value.toString"~StringNum!(D)~"()");
 
             else static if( is( typeof(value.toString()) == char[] ) )
-                return toUtf!(D)(value.toString);
+                return toString_!(D)(value.toString);
 
             else static if( is( typeof(value.toString16()) == wchar[] ) )
-                return toUtf!(D)(value.toString16);
+                return toString_!(D)(value.toString16);
 
             else static if( is( typeof(value.toString32()) == dchar[] ) )
-                return toUtf!(D)(value.toString32);
+                return toString_!(D)(value.toString32);
 
             else static if( is( typeof(value.toString()) == char[] ) )
             {
@@ -565,7 +571,7 @@ template fromUDT(char[] fallthrough="")
 
                 else
                 {
-                    return toUtf!(D)(value.toString);
+                    return toString_!(D)(value.toString);
                 }
             }
 
@@ -886,10 +892,10 @@ D toString(D,S)(S value)
 
     else static if( isIntegerType!(S) )
         // TODO: Make sure this works with ulongs.
-        return mixin("tango.text.convert.Integer.toUtf"~UtfNum!(D)~"(value)");
+        return mixin("tango.text.convert.Integer.toString"~StringNum!(D)~"(value)");
 
     else static if( isRealType!(S) )
-        return mixin("tango.text.convert.Float.toUtf"~UtfNum!(D)~"(value)");
+        return mixin("tango.text.convert.Float.toString"~StringNum!(D)~"(value)");
 
     else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
         mixin unsupported!("array type");
@@ -1255,4 +1261,5 @@ unittest
         assert( to!(real)(to!(Bar)(to!(Baz)(foo))) == 3.14159 );
     }
 }
+
 
