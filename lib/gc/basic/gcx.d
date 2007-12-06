@@ -485,7 +485,7 @@ class GC
                     gcx.newPool(1);         // allocate new pool to find a new page
                     result = gcx.allocPage(bin);
                     if (!result)
-                        return null;
+                        onOutOfMemoryError();
                 }
                 p = gcx.bucket[bin];
             }
@@ -501,7 +501,7 @@ class GC
         {
             p = gcx.bigAlloc(size);
             if (!p)
-                return null;
+                onOutOfMemoryError();
         }
         size -= SENTINEL_EXTRA;
         p = sentinel_add(p);
@@ -547,11 +547,9 @@ class GC
     {
         assert(size != 0);
 
+        //debug(PRINTF) printf("calloc: %x len %d\n", p, len);
         void *p = mallocNoSync(size, bits);
-        if (p)
-        {   //debug(PRINTF) printf("calloc: %x len %d\n", p, len);
-            cstring.memset(p, 0, size);
-        }
+        cstring.memset(p, 0, size);
         return p;
     }
 
@@ -1863,8 +1861,7 @@ struct Gcx
         return p;
 
       Lnomemory:
-        onOutOfMemoryError();
-        return null;
+        return null; // let mallocNoSync handle the error
     }
 
 
