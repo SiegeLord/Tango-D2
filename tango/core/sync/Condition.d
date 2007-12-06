@@ -150,13 +150,14 @@ class Condition
     bool wait( double period )
     in
     {
-        assert( period * 1000 + .1 < uint.max - 1 );
+        // NOTE: The fractional value added to period is to correct fp error.
+        assert( period * 1000 + 0.1 < uint.max - 1 );
     }
     body
     {
         version( Win32 )
         {
-            return timedWait( period * 1000 + .1);
+            return timedWait( cast(uint)(period * 1000 + 0.1) );
         }
         else version( Posix )
         {

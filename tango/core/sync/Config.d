@@ -36,29 +36,34 @@ version( Posix )
     }
 
 
-    void adjTimespec( inout timespec t, double u )
+    void adjTimespec( inout timespec t, double v )
     {
         enum
         {
             SECS_TO_NANOS = 1_000_000_000
         }
 
-        u += .000_000_000_1; // fix fp error
-        if( t.tv_sec.max - t.tv_sec < u )
+        // NOTE: The fractional value added to period is to correct fp error.
+        v += 0.000_000_000_1;
+
+        if( t.tv_sec.max - t.tv_sec < v )
         {
             t.tv_sec  = t.tv_sec.max;
             t.tv_nsec = 0;
         }
         else
         {
-            t.tv_sec  += cast(typeof(t.tv_sec))u;
-            int ns = cast(long)((u % 1.0) * SECS_TO_NANOS);
+            alias typeof(t.tv_sec)  Secs;
+            alias typeof(t.tv_nsec) Nanos;
+
+            t.tv_sec  += cast(Secs) v;
+            auto  ns   = cast(long)((v % 1.0) * SECS_TO_NANOS);
             if( SECS_TO_NANOS - t.tv_nsec < ns )
             {
                 t.tv_sec += 1;
                 ns -= SECS_TO_NANOS;
             }
-            t.tv_nsec += cast(typeof(t.tv_sec)) ns;
+            t.tv_nsec += cast(Nanos) ns;
         }
     }
 }

@@ -141,13 +141,13 @@ class Semaphore
     bool wait( double period )
     in
     {
-        assert( cast(uint)(period * 1000 + .1) < uint.max - 1 );
+        assert( period * 1000 + 0.1 < uint.max - 1);
     }
     body
     {
         version( Win32 )
         {
-            DWORD t = cast(DWORD)(period * 1000 + .1);
+            DWORD t = cast(DWORD)(period * 1000 + 0.1);
             switch( WaitForSingleObject( m_hndl, t ) )
             {
             case WAIT_OBJECT_0:
