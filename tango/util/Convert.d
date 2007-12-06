@@ -1,4 +1,4 @@
-?/**
+/**
  * This module provides a templated function that performs value-preserving
  * conversions between arbitrary types.  This function's behaviour can be
  * extended for user-defined types as needed.
@@ -592,7 +592,7 @@ template fromUDT(char[] fallthrough="")
 
             static if( is( typeof(mixin("value.to_"~TN!(D)~"()")) : D ) )
                 return mixin("value.to_"~TN!(D)~"()");
-            
+
             else static if( is( typeof(mixin("value.to"
                                 ~ctfe_camelCase(TN!(D))~"()")) : D ) )
                 return mixin("value.to"~ctfe_camelCase(TN!(D))~"()");
@@ -653,7 +653,7 @@ D toBool(D,S)(S value)
                 throwConvError;
         }
     }
- 
+
     else static if( isString!(S) )
     {
         // TODO: change input string to lower-case
@@ -670,7 +670,7 @@ D toBool(D,S)(S value)
                 throwConvError;
         }
     }
-    /+  
+    /+
     else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
     {
         mixin unsupported!("array type");
@@ -745,7 +745,7 @@ D toInteger(D,S)(S value)
 {
     static if( is( S == bool ) )
         return (value ? 1 : 0);
-    
+
     else static if( isIntegerType!(S) )
     {
         return toIntegerFromInteger!(D,S)(value);
@@ -854,7 +854,7 @@ D toChar(D,S)(S value)
     {
         if( value >= 0 && value <= 9 )
             return cast(D) value+'0';
-        
+
         else
         {
             mixin convError; // TODO: Overflow error
@@ -916,10 +916,10 @@ D fromString(D,S)(D value)
 {
     static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
         mixin unsupported_backwards!("array type");
-    
+
     else static if( isAssocArrayType!(S) )
         mixin unsupported_backwards!("associative array type");
-    
+
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin toUDT;
@@ -938,7 +938,7 @@ D toArrayFromArray(D,S)(S value)
 
     foreach( i,e ; value )
         result[i] = to!(De)(e);
-    
+
     return result;
 }
 
@@ -951,7 +951,7 @@ D toMapFromMap(D,S)(S value)
 
     foreach( k,v ; value )
         result[ to!(Dk)(k) ] = to!(Dv)(v);
-    
+
     return result;
 }
 
@@ -996,10 +996,10 @@ D toImpl(D,S)(S value)
 
     else static if( is( D == bool ) )
         return toBool!(D,S)(value);
-    
+
     else static if( isIntegerType!(D) )
         return toInteger!(D,S)(value);
-    
+
     else static if( isRealType!(D) )
         return toReal!(D,S)(value);
 
@@ -1128,7 +1128,7 @@ unittest
     assert( to!(bool)(0) == false );
     assert( to!(bool)(1) == true );
     assert( to!(bool)(-1) == true );
-    
+
     assert( to!(bool)('t') == true );
     assert( to!(bool)('T') == true );
     assert( to!(bool)('f') == false );
@@ -1201,7 +1201,7 @@ unittest
      */
     assert( to!(char)(true) == 't' );
     assert( to!(char)(false) == 'f' );
-    
+
     assert( to!(char)(0) == '0' );
     assert( to!(char)(9) == '9' );
 
@@ -1224,7 +1224,7 @@ unittest
      */
     assert( to!(char[])(true) == "true" );
     assert( to!(char[])(false) == "false" );
-    
+
     assert( to!(char[])(12345678) == "12345678" );
     assert( to!(char[])(1234.567800) == "1234.57");
 
