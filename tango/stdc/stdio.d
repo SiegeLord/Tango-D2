@@ -176,14 +176,34 @@ version( Win32 )
         _IOAPP   = 0x200,
     }
 
-    extern FILE[_NFILE] _iob;
-    extern void function() _fcloseallp;
+	extern void function() _fcloseallp;
 
-    const FILE* stdin  = &_iob[0];
-    const FILE* stdout = &_iob[1];
-    const FILE* stderr = &_iob[2];
-    const FILE* stdaux = &_iob[3];
-    const FILE* stdprn = &_iob[4];
+	version (GNU) {
+		extern FILE[_NFILE]* _imp___iob;
+
+		const FILE* stdin;
+		const FILE* stdout;
+		const FILE* stderr;
+		const FILE* stdaux;
+		const FILE* stdprn;
+		
+		static this() {
+			stdin  = &(*_imp___iob)[0];
+			stdout = &(*_imp___iob)[1];
+			stderr = &(*_imp___iob)[2];
+			stdaux = &(*_imp___iob)[3];
+			stdprn = &(*_imp___iob)[4];
+		}
+	} else {
+		extern FILE[_NFILE] _iob;
+		extern void function() _fcloseallp;
+
+		const FILE* stdin  = &_iob[0];
+		const FILE* stdout = &_iob[1];
+		const FILE* stderr = &_iob[2];
+		const FILE* stdaux = &_iob[3];
+		const FILE* stdprn = &_iob[4];
+	}
 }
 else version( linux )
 {
