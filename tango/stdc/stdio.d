@@ -196,7 +196,6 @@ version( Win32 )
 		}
 	} else {
 		extern FILE[_NFILE] _iob;
-		extern void function() _fcloseallp;
 
 		const FILE* stdin  = &_iob[0];
 		const FILE* stdout = &_iob[1];
