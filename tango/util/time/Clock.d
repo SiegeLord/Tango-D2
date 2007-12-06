@@ -18,9 +18,8 @@ private import  tango.util.time.Date;
 
 private import  tango.core.Exception;
 
-public  import  tango.util.time.TimeSpan;
-
-public  import  tango.util.time.Time;
+public  import  tango.util.time.Time,
+                tango.util.time.TimeSpan;
 
 /******************************************************************************
 
@@ -151,7 +150,7 @@ struct Clock
 
                         TimeSpan span = dt - Time.epoch1601;
                         assert (span >= TimeSpan.zero);
-                        *cast(long*) &time.dwLowTime = span.ticks;
+                        *cast(long*) &time.dwLowDateTime = span.ticks;
                         return time;
                 }
         }
@@ -240,7 +239,9 @@ struct Clock
                         t.tm_sec  = date.sec;
 
                         auto seconds = timegm (&t);
-                        return Time.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
+                        return Time.epoch1970 + 
+                               TimeSpan.seconds(seconds) + 
+                               TimeSpan.milliseconds(date.ms);
                 }
 
                 /***************************************************************
@@ -251,7 +252,9 @@ struct Clock
 
                 package static Time convert (inout timeval tv)
                 {
-                        return Time.epoch1970 + TimeSpan.seconds(tv.tv_sec) + TimeSpan.microseconds(tv.tv_usec);
+                        return Time.epoch1970 + 
+                               TimeSpan.seconds(tv.tv_sec) + 
+                               TimeSpan.microseconds(tv.tv_usec);
                 }
 
                 /***************************************************************
