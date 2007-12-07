@@ -590,6 +590,12 @@ class Layout(T)
                                 return fromUtf8 (c.toString, result);
                             break;
 
+                       case TypeCode.STRUCT:
+                            auto s = cast(TypeInfo_Struct) type;
+                            if (s.xtoString)
+                                return fromUtf8 (s.xtoString(p), result);
+                            break;
+
                        case TypeCode.ENUM:
                             return munge (result, format, (cast(TypeInfo_Enum) type).base, p);
 
@@ -903,5 +909,13 @@ debug (Layout)
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 0.001)).newline;
                 Cout (layout ("{:e4}", 0.0000001)).newline;
+
+                struct S
+                {
+                   char[] toString () {return "foo";}      
+                }
+
+                S s;
+                Cout (layout ("struct: {}", s)).newline;
         }
 }
