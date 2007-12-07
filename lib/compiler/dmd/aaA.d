@@ -267,7 +267,7 @@ body
     //printf("hash = %d\n", key_hash);
     i = key_hash % aa.a.b.length;
     auto pe = &aa.a.b[i];
-    while ((e = *pe) != null)
+    while ((e = *pe) !is null)
     {
         if (key_hash == e.hash)
         {
@@ -311,6 +311,7 @@ Lret:
 
 void* _aaGetRvalue(AA aa, TypeInfo keyti, size_t valuesize, ...)
 {
+    //printf("_aaGetRvalue(valuesize = %u)\n", valuesize);
     if (!aa.a)
         return null;
 
@@ -324,7 +325,7 @@ void* _aaGetRvalue(AA aa, TypeInfo keyti, size_t valuesize, ...)
         //printf("hash = %d\n", key_hash);
         size_t i = key_hash % len;
         auto e = aa.a.b[i];
-        while (e != null)
+        while (e !is null)
         {
             if (key_hash == e.hash)
             {
@@ -371,7 +372,7 @@ body
             //printf("hash = %d\n", key_hash);
             size_t i = key_hash % len;
             auto e = aa.a.b[i];
-            while (e != null)
+            while (e !is null)
             {
                 if (key_hash == e.hash)
                 {
@@ -406,7 +407,7 @@ void _aaDel(AA aa, TypeInfo keyti, ...)
         //printf("hash = %d\n", key_hash);
         size_t i = key_hash % aa.a.b.length;
         auto pe = &aa.a.b[i];
-        while ((e = *pe) != null)   // null means not found
+        while ((e = *pe) !is null) // null means not found
         {
             if (key_hash == e.hash)
             {
@@ -482,7 +483,7 @@ body
                 _aaValues_x(e.left);
             }
             e = e.right;
-        } while (e != null);
+        } while (e !is null);
     }
 
     if (aa.a)
@@ -535,7 +536,7 @@ body
             auto key_hash = olde.hash;
             size_t i = key_hash % newb.b.length;
             auto pe = &newb.b[i];
-            while ((e = *pe) != null)
+            while ((e = *pe) !is null)
             {
                 //printf("\te = %p, e.left = %p, e.right = %p\n", e, e.left, e.right);
                 assert(e.left != e);
@@ -619,7 +620,7 @@ ArrayRet_t _aaKeys(AA aa, size_t keysize)
                 _aaKeys_x(e.left);
             }
             e = e.right;
-        } while (e != null);
+        } while (e !is null);
     }
 
     auto len = _aaLen(aa);
@@ -768,7 +769,7 @@ BB* _d_assocarrayliteralT(TypeInfo_AssociativeArray ti, size_t length, ...)
     BB* result;
 
     //printf("_d_assocarrayliteralT(keysize = %d, valuesize = %d, length = %d)\n", keysize, valuesize, length);
-    //writefln("tivalue = %s", ti.next.classinfo.name);
+    //printf("tivalue = %.*s\n", ti.next.classinfo.name);
     if (length == 0 || valuesize == 0 || keysize == 0)
     {
         ;

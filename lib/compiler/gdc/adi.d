@@ -38,7 +38,6 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-// Dynamic array property support routines
 
 //debug=adi;            // uncomment to turn on debugging printf's
 
@@ -87,8 +86,10 @@ extern (C) Array _adReverseChar(char[] a)
         {   auto clo = *lo;
             auto chi = *hi;
 
+	    debug(adi) printf("lo = %d, hi = %d\n", lo, hi);
             if (clo <= 0x7F && chi <= 0x7F)
             {
+		debug(adi) printf("\tascii\n");
                 *lo = chi;
                 *hi = clo;
                 lo++;
@@ -108,6 +109,7 @@ extern (C) Array _adReverseChar(char[] a)
             if (lo == hi)
                 break;
 
+	    debug(adi) printf("\tstridelo = %d, stridehi = %d\n", stridelo, stridehi);
             if (stridelo == stridehi)
             {
 
@@ -136,10 +138,9 @@ extern (C) Array _adReverseChar(char[] a)
 
 unittest
 {
-    char[] a = "abcd";
-    char[] r;
+    auto a = "abcd"c;
 
-    r = a.dup.reverse;
+    auto r = a.dup.reverse;
     //writefln(r);
     assert(r == "dcba");
 
@@ -230,8 +231,8 @@ extern (C) Array _adReverseWchar(wchar[] a)
 
 unittest
 {
-    wchar[] a = "abcd";
-    wchar[] r;
+    wstring a = "abcd";
+    wstring r;
 
     r = a.dup.reverse;
     assert(r == "dcba");
@@ -365,7 +366,7 @@ else
     int len;
     int c;
 
-    //printf("adCmpChar()\n");
+    debug(adi) printf("adCmpChar()\n");
     len = a1.length;
     if (a2.length < len)
         len = a2.length;
@@ -380,7 +381,7 @@ unittest
 {
     debug(adi) printf("array.CmpChar unittest\n");
 
-    char[] a = "hello";
+    auto a = "hello"c;
 
     assert(a >  "hel");
     assert(a >= "hel");
@@ -488,12 +489,12 @@ extern (C) char[] _adSortChar(char[] a)
 {
     if (a.length > 1)
     {
-        dchar[] da = toUTF32(a);
+	dchar[] da = toUTF32(a);
         da.sort;
         size_t i = 0;
         foreach (dchar d; da)
         {   char[4] buf;
-            char[] t = toUTF8(buf, d);
+            auto t = toUTF8(buf, d);
             a[i .. i + t.length] = t[];
             i += t.length;
         }
@@ -510,12 +511,12 @@ extern (C) wchar[] _adSortWchar(wchar[] a)
 {
     if (a.length > 1)
     {
-        dchar[] da = toUTF32(a);
+	dchar[] da = toUTF32(a);
         da.sort;
         size_t i = 0;
         foreach (dchar d; da)
         {   wchar[2] buf;
-            wchar[] t = toUTF16(buf, d);
+	    auto t = toUTF16(buf, d);
             a[i .. i + t.length] = t[];
             i += t.length;
         }
@@ -560,7 +561,7 @@ unittest
 {
     debug(adi) printf("array.Eq unittest\n");
 
-    char[] a = "hello";
+    auto a = "hello"c;
 
     assert(a != "hel");
     assert(a != "helloo");
@@ -575,7 +576,7 @@ unittest
 
 extern (C) int _adCmp(Array a1, Array a2, TypeInfo ti)
 {
-    //printf("adCmp()\n");
+    debug(adi) printf("adCmp()\n");
     auto len = a1.length;
     if (a2.length < len)
         len = a2.length;
@@ -607,7 +608,7 @@ unittest
 {
     debug(adi) printf("array.Cmp unittest\n");
 
-    char[] a = "hello";
+    auto a = "hello"c;
 
     assert(a >  "hel");
     assert(a >= "hel");

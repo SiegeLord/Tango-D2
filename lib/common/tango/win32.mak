@@ -51,7 +51,7 @@ DOC_DEST=..\..\..\doc\tango
 	$(CC) -c $(CFLAGS) $< -o$@
 
 .d.obj:
-	$(DC) -c $(DFLAGS) -v1 -Hf$*.di $< -of$@
+	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
 #	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
@@ -71,7 +71,7 @@ OBJ_CORE= \
     core\Exception.obj \
     core\Memory.obj \
     core\Runtime.obj \
-    core\Thread.obj 
+    core\Thread.obj
 
 OBJ_STDC= \
     stdc\wrap.obj
@@ -87,7 +87,7 @@ DOC_CORE= \
     core\Exception.html \
     core\Memory.html \
     core\Runtime.html \
-    core\Thread.html 
+    core\Thread.html
 
 ALL_DOCS=
 

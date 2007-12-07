@@ -3841,8 +3841,10 @@ enum : DWORD {
     SEL_MULTICHAR = (4),
     SEL_MULTIOBJECT = (8),
 }
+const {
 char* CF_RTF = ("Rich Text Format");
 char* CF_RETEXTOBJ = ("RichEdit Text and Objects");
+}
 enum : DWORD {
     ODT_BUTTON = (4),
     ODT_COMBOBOX = (3),
@@ -3863,6 +3865,7 @@ enum : DWORD {
     ODS_GRAYED = (2),
     ODS_SELECTED = (1),
 }
+const {
 char* ANIMATE_CLASSW = ("SysAnimate32");
 char* HOTKEY_CLASSW = ("msctls_hotkey32");
 char* PROGRESS_CLASSW = ("msctls_progress32");
@@ -3875,6 +3878,7 @@ char* WC_HEADERW = ("SysHeader32");
 char* WC_LISTVIEWW = ("SysListView32");
 char* WC_TABCONTROLW = ("SysTabControl32");
 char* WC_TREEVIEWW = ("SysTreeView32");
+}
 enum : DWORD {
     CCS_ADJUSTABLE = (0x20),
     CCS_BOTTOM = (0x3),

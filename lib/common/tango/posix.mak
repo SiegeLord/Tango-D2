@@ -54,7 +54,7 @@ DOC_DEST=../../../doc/tango
 	g++ -c $(CFLAGS) $< -o$@
 
 .d.o:
-	$(DC) -c $(DFLAGS) -v1 -Hf$*.di $< -of$@
+	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
 #	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:
@@ -75,7 +75,7 @@ OBJ_CORE= \
     core/Memory.o \
     core/Runtime.o \
     core/Thread.o \
-    core/ThreadASM.o 
+    core/ThreadASM.o
 
 OBJ_STDC= \
     stdc/wrap.o
@@ -95,7 +95,7 @@ DOC_CORE= \
     core/Exception.html \
     core/Memory.html \
     core/Runtime.html \
-    core/Thread.html 
+    core/Thread.html
 
 
 ALL_DOCS=
