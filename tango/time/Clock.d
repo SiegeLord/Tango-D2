@@ -284,7 +284,7 @@ debug (UnitTest)
                 auto time = Clock.now;
                 assert (Clock.convert(Clock.convert(time)) is time);
 
-                time -= TimeSpan(time.ticks % TimeSpan.second.ticks);
+                time -= TimeSpan(time.ticks % TimeSpan.TicksPerSecond);
                 auto date = Clock.toDate(time);
 
                 assert (time is Clock.fromDate(date));
