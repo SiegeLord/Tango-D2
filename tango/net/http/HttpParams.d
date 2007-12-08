@@ -20,7 +20,7 @@ private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.stream.SimpleIterator;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 public  import  tango.net.http.model.HttpParamsView;
 

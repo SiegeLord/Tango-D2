@@ -66,7 +66,7 @@ private import  tango.sys.Common;
 
 private import  tango.core.Exception;
 
-private import  tango.util.time.TimeSpan;
+private import  tango.time.TimeSpan;
 
 
 /*******************************************************************************

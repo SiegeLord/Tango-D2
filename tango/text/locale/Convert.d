@@ -16,10 +16,10 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.Time,
-                tango.util.time.WallClock;
+private import  tango.time.Time,
+                tango.time.WallClock;
 
-private import  tango.util.time.chrono.Calendar;
+private import  tango.time.chrono.Calendar;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -95,7 +95,7 @@ private struct Result
    * Remarks: See $(LINK2 datetimeformat.html, Time Formatting) for more information about date and time formatting.
    * Examples:
    * ---
-   * import tango.io.Print, tango.text.locale.Core, tango.util.time.WallClock;
+   * import tango.io.Print, tango.text.locale.Core, tango.time.WallClock;
    *
    * void main() {
    *   Culture culture = Culture.current;

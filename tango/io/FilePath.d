@@ -22,7 +22,7 @@ private import  tango.io.FileConst;
 
 private import  tango.core.Exception;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 /*******************************************************************************
 

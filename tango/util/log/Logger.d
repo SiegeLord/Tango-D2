@@ -17,7 +17,7 @@ private import tango.util.log.Appender;
 
 private import tango.util.log.model.ILevel;
 
-private import tango.util.time.TimeSpan;
+private import tango.time.TimeSpan;
 
 /*******************************************************************************
 

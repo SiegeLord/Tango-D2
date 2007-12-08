@@ -16,10 +16,10 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
 
-private import  tango.util.time.Time,
-                tango.util.time.WallClock;
+private import  tango.time.Time,
+                tango.time.WallClock;
 
-private import  tango.util.time.chrono.Calendar;
+private import  tango.time.chrono.Calendar;
 
 private struct DateTimeParseResult {
 

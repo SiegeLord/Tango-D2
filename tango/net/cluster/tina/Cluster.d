@@ -21,7 +21,7 @@ private import  tango.core.Thread,
 private import  tango.util.log.Log,
                 tango.util.log.Logger;
 
-private import  tango.util.time.Clock;
+private import  tango.time.Clock;
 
 private import  tango.io.Buffer,
                 tango.io.GrowBuffer;

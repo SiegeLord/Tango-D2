@@ -19,7 +19,7 @@ private import  tango.sys.Common;
 
 private import  tango.core.Exception;
 
-private import  tango.util.time.Clock;
+private import  tango.time.Clock;
 
 private import  tango.util.log.model.ILevel,
                 tango.util.log.model.IHierarchy;

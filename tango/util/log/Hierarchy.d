@@ -22,7 +22,7 @@ private import  tango.text.convert.Layout;
 
 private import  tango.util.log.model.IHierarchy;
 
-private import  tango.util.time.Clock;
+private import  tango.time.Clock;
 
 /*******************************************************************************
 

@@ -24,7 +24,7 @@ private
     import tango.net.Socket;
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
-    import tango.util.time.Clock;
+    import tango.time.Clock;
     import tango.util.log.Log;
     import tango.util.log.ConsoleAppender;
     import tango.util.log.DateLayout;

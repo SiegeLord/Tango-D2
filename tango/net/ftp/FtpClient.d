@@ -16,8 +16,8 @@ private import  tango.net.Socket;
 
 private import  tango.net.ftp.Telnet;
 
-private import  tango.util.time.Date,
-                tango.util.time.Clock;
+private import  tango.time.Date,
+                tango.time.Clock;
 
 private import  tango.io.GrowBuffer,
                 tango.io.FileConduit;
@@ -30,7 +30,7 @@ private import  Regex = tango.text.Regex;
 private import  Integer = tango.text.convert.Integer;
 private import  Timestamp = tango.text.convert.TimeStamp;
 
-private import  tango.util.time.TimeSpan;
+private import  tango.time.TimeSpan;
 
 /// An FTP progress delegate.
 ///

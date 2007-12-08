@@ -12,7 +12,7 @@
 
 module tango.net.cluster.QueuedCache;
 
-private import tango.util.time.Time;
+private import tango.time.Time;
 
 private import tango.net.cluster.model.ICache;
 

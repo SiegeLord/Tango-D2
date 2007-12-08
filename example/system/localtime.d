@@ -6,7 +6,7 @@
 
 private import  tango.io.Stdout;
 
-private import  tango.util.time.WallClock;
+private import  tango.time.WallClock;
 
 /******************************************************************************
 

@@ -335,7 +335,7 @@ class QueueFile
 
 version (QueueFile)
 {
-        import  tango.util.time.StopWatch;
+        import  tango.time.StopWatch;
 
         import  tango.util.log.Log,
                 tango.util.log.Configurator;

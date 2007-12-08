@@ -12,7 +12,7 @@
 
 module tango.net.cluster.model.IMessage;
 
-public import tango.util.time.Time;
+public import tango.time.Time;
 
 public import tango.io.protocol.model.IReader,
               tango.io.protocol.model.IWriter;

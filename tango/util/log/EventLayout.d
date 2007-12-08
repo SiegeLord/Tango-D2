@@ -14,9 +14,9 @@ module tango.util.log.EventLayout;
 
 private import tango.util.log.Event;
 
-private import tango.util.time.TimeSpan;
+private import tango.time.TimeSpan;
 
-private import tango.util.time.Time;
+private import tango.time.Time;
 
 /*******************************************************************************
 

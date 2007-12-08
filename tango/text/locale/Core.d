@@ -108,16 +108,16 @@ private import  tango.core.Exception;
 
 private import  tango.text.locale.Data;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
-private import  tango.util.time.chrono.Hijri,
-                tango.util.time.chrono.Korean,
-                tango.util.time.chrono.Taiwan,
-                tango.util.time.chrono.Hebrew,
-                tango.util.time.chrono.Calendar,
-                tango.util.time.chrono.Japanese,
-                tango.util.time.chrono.Gregorian,
-                tango.util.time.chrono.ThaiBuddhist;
+private import  tango.time.chrono.Hijri,
+                tango.time.chrono.Korean,
+                tango.time.chrono.Taiwan,
+                tango.time.chrono.Hebrew,
+                tango.time.chrono.Calendar,
+                tango.time.chrono.Japanese,
+                tango.time.chrono.Gregorian,
+                tango.time.chrono.ThaiBuddhist;
         
 version (Windows)
          private import tango.text.locale.Win32;

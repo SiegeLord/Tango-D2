@@ -20,7 +20,7 @@ private import  tango.net.http.HttpTokens;
 
 private import  tango.text.stream.LineIterator;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 /******************************************************************************
 

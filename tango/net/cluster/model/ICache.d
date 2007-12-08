@@ -10,7 +10,7 @@
 
 module tango.net.cluster.model.ICache;
 
-private import tango.util.time.Time;
+private import tango.time.Time;
 
 /******************************************************************************
 

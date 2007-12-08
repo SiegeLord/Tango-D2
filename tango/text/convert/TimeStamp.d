@@ -31,8 +31,8 @@ module tango.text.convert.TimeStamp;
 
 private import tango.core.Exception;
 
-private import tango.util.time.Date,
-               tango.util.time.Clock;
+private import tango.time.Date,
+               tango.time.Clock;
 
 private import Util = tango.text.Util;
 

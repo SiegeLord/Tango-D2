@@ -21,7 +21,7 @@ private import  tango.io.model.IBuffer;
 private import  tango.util.log.Appender,
                 tango.util.log.FileAppender;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 /*******************************************************************************
 

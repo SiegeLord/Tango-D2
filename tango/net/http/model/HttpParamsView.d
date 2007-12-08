@@ -12,7 +12,7 @@
 
 module tango.net.http.model.HttpParamsView;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 private import  tango.io.model.IBuffer;
 

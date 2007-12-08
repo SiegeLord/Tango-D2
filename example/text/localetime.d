@@ -9,7 +9,7 @@
 
 private import tango.io.Console;
 
-private import tango.util.time.Time;
+private import tango.time.Clock;
 
 private import tango.text.locale.Locale;
 
@@ -17,5 +17,5 @@ void main ()
 {
         auto layout = new Locale;
 
-        Cout (layout ("{:ddd, dd MMMM yyyy HH:mm:ss z}", Time.now)).newline;
+        Cout (layout ("{:ddd, dd MMMM yyyy HH:mm:ss z}", Clock.now)).newline;
 }

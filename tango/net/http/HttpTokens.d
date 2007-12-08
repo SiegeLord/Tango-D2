@@ -21,7 +21,7 @@ private import  tango.net.http.HttpStack,
 
 private import  Text = tango.text.Util;
 
-private import  tango.util.time.Time;
+private import  tango.time.Time;
 
 private import  tango.io.protocol.model.IWriter;
 

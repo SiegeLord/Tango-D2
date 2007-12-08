@@ -5,7 +5,7 @@
 
 import tango.io.Stdout;
 
-import tango.util.time.StopWatch;
+import tango.time.StopWatch;
 
 import tango.util.log.Configurator;
 
