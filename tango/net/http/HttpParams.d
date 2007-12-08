@@ -152,7 +152,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time ret = Time.max)
+        Time getDate (char[] name, Time ret = Time.epoch)
         {
                 return super.getDate (name, ret);
         }

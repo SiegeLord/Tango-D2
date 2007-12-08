@@ -129,7 +129,7 @@ class HttpHeadersView : HttpTokens
 
         /**********************************************************************
                 
-                Return the date value of the provided header, or Time.max 
+                Return the date value of the provided header, or Time.epoch 
                 if the header does not exist
 
         **********************************************************************/
