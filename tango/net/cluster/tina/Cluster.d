@@ -1054,7 +1054,7 @@ private class ConnectionPool
                             conduit.socket.setNoDelay (parent.noDelay);
 
                             // set a 500ms timeout for read operations
-                            conduit_.setTimeout (TimeSpan.milliseconds(500));
+                            conduit_.setTimeout (TimeSpan.millis(500));
 
                             // open a connection to this server
                             // parent.log.trace ("connecting to server");

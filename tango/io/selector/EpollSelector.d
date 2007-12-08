@@ -357,7 +357,7 @@ version (linux)
          */
         public int select(TimeSpan timeout)
         {
-            int to = (timeout != TimeSpan.max ? cast(int) timeout.milliseconds : -1);
+            int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
             while (true)
             {

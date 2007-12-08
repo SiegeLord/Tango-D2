@@ -1400,7 +1400,7 @@ class Socket
         {
                 timeval tv;
                 tv.tv_sec = cast(uint) time.seconds;
-                tv.tv_usec = cast(uint) time.microseconds % 1_000_000;
+                tv.tv_usec = cast(uint) time.micros % 1_000_000;
                 return tv;
         }
 }

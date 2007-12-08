@@ -366,28 +366,28 @@ version (Full)
                                   break;
                              case 'h':  // hour (12-hour clock)
                                   len = parseRepeat(format, index, c);
-                                  int hour = time.hour % 12;
+                                  int hour = time.hours % 12;
                                   if (hour is 0)
                                       hour = 12;
                                   result ~= formatInt (tmp, hour, len);
                                   break;
                              case 'H':  // hour (24-hour clock)
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, time.hour, len);
+                                  result ~= formatInt (tmp, time.hours, len);
                                   break;
                              case 'm':  // minute
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, time.minute, len);
+                                  result ~= formatInt (tmp, time.minutes, len);
                                   break;
                              case 's':  // second
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, time.second, len);
+                                  result ~= formatInt (tmp, time.seconds, len);
                                   break;
                              case 't':  // AM/PM
                                   len = parseRepeat(format, index, c);
                                   if (len is 1)
                                      {
-                                     if (time.hour < 12)
+                                     if (time.hours < 12)
                                         {
                                         if (dtf.amDesignator.length != 0)
                                             result ~= dtf.amDesignator[0];
@@ -399,7 +399,7 @@ version (Full)
                                         }
                                      }
                                   else
-                                     result ~= (time.hour < 12) ? dtf.amDesignator : dtf.pmDesignator;
+                                     result ~= (time.hours < 12) ? dtf.amDesignator : dtf.pmDesignator;
                                   break;
                              case 'z':  // timezone offset
                                   len = parseRepeat(format, index, c);

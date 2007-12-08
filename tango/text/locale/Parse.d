@@ -132,7 +132,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
       }
       //Due to dmd bug, this doesn't compile
       //TimeSpan result = TimeSpan.hours(hour) +  TimeSpan.minutes(minute);
-      TimeSpan result = TimeSpan(TimeSpan.hour.ticks * hour +  TimeSpan.minute.ticks * minute);
+      TimeSpan result = TimeSpan(TimeSpan.TicksPerHour * hour +  TimeSpan.TicksPerMinute * minute);
       if (sign)
         result = -result;
       return result;

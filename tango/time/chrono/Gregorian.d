@@ -71,7 +71,7 @@ class GregorianCalendar : Calendar
         */
         override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
         {
-                return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+                return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
         }
 
         /**
@@ -81,7 +81,7 @@ class GregorianCalendar : Calendar
         */
         override DayOfWeek getDayOfWeek(Time time) 
         {
-                return cast(DayOfWeek)((time.ticks / TimeSpan.day.ticks + 1) % 7);
+                return cast(DayOfWeek)((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
         }
 
         /**
@@ -227,7 +227,7 @@ class GregorianCalendar : Calendar
 
         package static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
-                int numDays = cast(int)(ticks / TimeSpan.day.ticks);
+                int numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
                 int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
                 numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
                 int whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
@@ -275,6 +275,6 @@ class GregorianCalendar : Calendar
         {
                 int[] monthDays = isLeapYear(year, AD_ERA) ? DaysToMonthLeap : DaysToMonthCommon;
                 year--;
-                return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.day.ticks;
+                return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.TicksPerDay;
         }
 }

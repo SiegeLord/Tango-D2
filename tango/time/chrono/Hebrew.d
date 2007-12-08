@@ -78,7 +78,7 @@ public class HebrewCalendar : Calendar {
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
   public override DayOfWeek getDayOfWeek(Time time) {
-    return cast(DayOfWeek) cast(int) ((time.ticks / TimeSpan.day.ticks + 1) % 7);
+    return cast(DayOfWeek) cast(int) ((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
   }
 
   /**
@@ -90,7 +90,7 @@ public class HebrewCalendar : Calendar {
     int year = getYear(time);
     int yearType = getYearType(year);
     int days = getStartOfYear(year) - DaysToOneAD;
-    int day = cast(int)(time.ticks / TimeSpan.day.ticks) - days;
+    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
     int n;
     while (n < 12 && day >= MonthDays[yearType][n + 1]) {
       day -= MonthDays[yearType][n + 1];
@@ -107,7 +107,7 @@ public class HebrewCalendar : Calendar {
   public override int getDayOfYear(Time time) {
     int year = getYear(time);
     int days = getStartOfYear(year) - DaysToOneAD;
-    return (cast(int)(time.ticks / TimeSpan.day.ticks) - days) + 1;
+    return (cast(int)(time.ticks / TimeSpan.TicksPerDay) - days) + 1;
   }
 
   /**
@@ -119,7 +119,7 @@ public class HebrewCalendar : Calendar {
     int year = getYear(time);
     int yearType = getYearType(year);
     int days = getStartOfYear(year) - DaysToOneAD;
-    int day = cast(int)(time.ticks / TimeSpan.day.ticks) - days;
+    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
     int n;
     while (n < 12 && day >= MonthDays[yearType][n + 1]) {
       day -= MonthDays[yearType][n + 1];
@@ -134,7 +134,7 @@ public class HebrewCalendar : Calendar {
    * Returns: An integer representing the year in time.
    */
   public override int getYear(Time time) {
-    int day = cast(int)(time.ticks / TimeSpan.day.ticks) + DaysToOneAD;
+    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) + DaysToOneAD;
     int low = minYear_, high = maxYear_;
     // Perform a binary search.
     while (low <= high) {
@@ -281,7 +281,7 @@ public class HebrewCalendar : Calendar {
     int days = getStartOfYear(year) - DaysToOneAD + day - 1;
     for (int i = 1; i <= month; i++)
       days += MonthDays[yearType][i - 1];
-    return Time((days * TimeSpan.day.ticks) + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+    return Time((days * TimeSpan.TicksPerDay) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
   }
 
 }

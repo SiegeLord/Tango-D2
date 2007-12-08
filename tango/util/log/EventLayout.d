@@ -68,7 +68,7 @@ public class EventLayout
         final char[] toMilli (char[] s, TimeSpan time)
         {
                 assert (s.length > 0);
-                long ms = time.milliseconds;
+                long ms = time.millis;
 
                 int len = s.length;
                 do {

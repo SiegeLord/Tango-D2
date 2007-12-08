@@ -35,7 +35,7 @@ class Telnet
         protected Socket socket;
 
         /// The number of milliseconds to wait for socket communication or connection.
-        protected TimeSpan timeout = TimeSpan.milliseconds(5000);
+        protected TimeSpan timeout = TimeSpan.millis(5000);
 
         /// provided by host
         abstract void exception (char[] msg);
@@ -238,7 +238,7 @@ class Telnet
                 if (this.socket is null)
                    {
                    char[10] tmp;
-                   exception ("CLIENT: Unable to connect within the specified time limit (" ~ Integer.itoa(tmp, cast(uint) this.timeout.milliseconds) ~ " ms.)");
+                   exception ("CLIENT: Unable to connect within the specified time limit (" ~ Integer.itoa(tmp, cast(uint) this.timeout.millis) ~ " ms.)");
                    }
 
                 // Make it blocking again, because that's the norm.

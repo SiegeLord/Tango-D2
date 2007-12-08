@@ -310,7 +310,7 @@ version (Posix)
          */
         public int select(TimeSpan timeout)
         {
-            int to = (timeout != TimeSpan.max ? cast(int) timeout.milliseconds : -1);
+            int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
             debug (selector)
                 Stdout.format("--- PollSelector.select({0} ms): waiting on {1} handles\n",

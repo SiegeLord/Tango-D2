@@ -287,7 +287,7 @@ class QueuedCache (K, V) : ICache!(K, V)
                 K               key;
                 QueuedEntry*    prev,
                                 next;
-                Time        time;
+                Time            time;
                 V               value;
 
                 /**************************************************************

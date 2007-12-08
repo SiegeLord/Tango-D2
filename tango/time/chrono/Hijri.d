@@ -43,7 +43,7 @@ public class HijriCalendar : Calendar {
    * Returns: A Time set to the specified date and time.
    */
   public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
-    return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.day.ticks + getTimeTicks(hour, minute, second)) + TimeSpan.milliseconds(millisecond);
+    return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.TicksPerDay + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
   }
 
   /**
@@ -52,7 +52,7 @@ public class HijriCalendar : Calendar {
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
   public override DayOfWeek getDayOfWeek(Time time) {
-    return cast(DayOfWeek) (cast(int) (time.ticks / TimeSpan.day.ticks + 1) % 7);
+    return cast(DayOfWeek) (cast(int) (time.ticks / TimeSpan.TicksPerDay + 1) % 7);
   }
 
   /**

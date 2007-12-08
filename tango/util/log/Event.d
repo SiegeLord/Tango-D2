@@ -152,7 +152,7 @@ public class Event : ILevel
                               throw new PlatformException ("high-resolution timer is not available");
                         
                         QueryPerformanceCounter (&timerStart);
-                        multiplier = cast(double)TimeSpan.second.ticks / freq;       
+                        multiplier = cast(double) TimeSpan.TicksPerSecond / freq;       
                         beginTime = Clock.now;
 
                 }

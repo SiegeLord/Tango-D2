@@ -436,7 +436,7 @@ public class SelectSelector: AbstractSelector
 
 
         debug (selector)
-            Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", timeout.milliseconds);
+            Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", timeout.millis);
 
         if (_readSet !is null)
         {

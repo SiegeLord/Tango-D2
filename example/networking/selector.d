@@ -293,7 +293,7 @@ void testSelector(ISelector selector)
     log.info(sprint("Failure: connect={0}, recv={1}; send={2}; error={3}", 
                     failedConnectCount, failedReceiveCount, failedSendCount, errorCount));
 
-    log.info(sprint("Total time: {0} ms", cast(uint) (Clock.now - start).milliseconds));
+    log.info(sprint("Total time: {0} ms", cast(uint) (Clock.now - start).millis));
 
     clientThread.join();
 

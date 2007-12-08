@@ -40,12 +40,18 @@ struct Time
 {
         private long ticks_;
 
+        private enum : long
+        {
+                maximum  = (TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1,
+                minimum  = -((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1),
+        }
+
         /// Represents the smallest and largest Time value.
-        public static const Time epoch = {0},
-                                 max   = {(TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1},
-                                 min   = {-((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1)},
-                                 epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
-                                 epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
+        static const Time epoch     = {0},
+                          min       = {minimum},
+                          max       = {maximum},
+                          epoch1601 = {TimeSpan.Epoch1601},
+                          epoch1970 = {TimeSpan.Epoch1970};
 
         /**********************************************************************
 
@@ -85,8 +91,10 @@ struct Time
         {
                 if (ticks_ < t.ticks_)
                     return -1;
+
                 if (ticks_ > t.ticks_)
                     return 1;
+
                 return 0;
         }
 
@@ -182,20 +190,7 @@ struct Time
 
         Time date () 
         {
-                return Time (ticks_ - (ticks_ % TimeSpan.day.ticks));
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the equivalent TimeSpan.
-
-                Returns: A TimeSpan representing this Time.
-
-        **********************************************************************/
-
-        TimeSpan span () 
-        {
-                return TimeSpan (ticks_);
+                return Time (ticks_ - (ticks_ % TimeSpan.TicksPerDay));
         }
 
         /**********************************************************************
@@ -210,6 +205,19 @@ struct Time
         TimeOfDay time () 
         {
                 return TimeOfDay (ticks_);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the equivalent TimeSpan.
+
+                Returns: A TimeSpan representing this Time.
+
+        **********************************************************************/
+
+        TimeSpan span () 
+        {
+                return TimeSpan (ticks_);
         }
 }
 
@@ -234,7 +242,7 @@ debug (Time)
         void main()
         {
                 auto c = foo();
-                auto h = c.time.minute;
+                auto h = c.time.minutes;
                 Stdout (c.ticks).newline;
         }
 }

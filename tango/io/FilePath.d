@@ -1101,7 +1101,7 @@ class FilePath : PathView
                 {
                         static Time convert (FILETIME time)
                         {
-                                return Time.epoch1601 + TimeSpan(*cast(long*) &time);
+                                return Time (TimeSpan.Epoch1601 + *cast(long*) &time);
                         }
 
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
@@ -1420,8 +1420,8 @@ class FilePath : PathView
                         static Time convert (timeval* tv)
                         {
                                 return Time.epoch1970 +
-                                    TimeSpan.seconds(tv.tv_sec) +
-                                    TimeSpan.microseconds(tv.tv_usec);
+                                       TimeSpan.seconds(tv.tv_sec) +
+                                       TimeSpan.microseconds(tv.tv_usec);
                         }
 
                         stat_t stats = void;

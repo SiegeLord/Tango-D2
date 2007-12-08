@@ -230,7 +230,8 @@ struct WallClock
                         t.tm_sec  = date.sec;
 
                         auto seconds = mktime (&t);
-                        return Time.epoch1970 + TimeSpan.seconds(seconds) + TimeSpan.milliseconds(date.ms);
+                        return Time.epoch1970 + TimeSpan.seconds(seconds) 
+                                              + TimeSpan.millis(date.ms);
                 }
         }
 
@@ -240,7 +241,7 @@ struct WallClock
         
         static Time toLocal (Time utc)
         {
-                auto mod = utc.ticks % TimeSpan.ms.ticks;
+                auto mod = utc.ticks % TimeSpan.TicksPerMillisecond;
                 return Clock.fromDate(toDate(utc)) + TimeSpan(mod);
         }
 
@@ -250,7 +251,7 @@ struct WallClock
         
         static Time toUtc (Time wall)
         {
-                auto mod = wall.ticks % TimeSpan.ms.ticks;
+                auto mod = wall.ticks % TimeSpan.TicksPerMillisecond;
                 return fromDate(Clock.toDate(wall)) + TimeSpan(mod);
         }
 }

@@ -132,7 +132,7 @@ struct Clock
 
                 package static Time convert (FILETIME time)
                 {
-                        auto t = *cast(long*)&time;
+                        auto t = *cast(long*) &time;
                         t *= 100 / TimeSpan.NanosecondsPerTick;
                         return Time.epoch1601 + TimeSpan(t);
                 }
@@ -240,7 +240,7 @@ struct Clock
                         auto seconds = timegm (&t);
                         return Time.epoch1970 + 
                                TimeSpan.seconds(seconds) + 
-                               TimeSpan.milliseconds(date.ms);
+                               TimeSpan.millis(date.ms);
                 }
 
                 /***************************************************************
@@ -253,7 +253,7 @@ struct Clock
                 {
                         return Time.epoch1970 + 
                                TimeSpan.seconds(tv.tv_sec) + 
-                               TimeSpan.microseconds(tv.tv_usec);
+                               TimeSpan.micros(tv.tv_usec);
                 }
 
                 /***************************************************************
@@ -269,7 +269,7 @@ struct Clock
                         TimeSpan span = time - time.epoch1970;
                         assert (span >= TimeSpan.zero);
                         tv.tv_sec  = span.seconds;
-                        tv.tv_usec = span.microseconds % 1_000_000L;
+                        tv.tv_usec = span.micros % 1_000_000L;
                         return tv;
                 }
         }

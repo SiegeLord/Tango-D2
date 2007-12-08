@@ -335,7 +335,7 @@ abstract class AbstractSelector: ISelector
     body
     {
         tv.tv_sec = cast(typeof(tv.tv_sec)) interval.seconds;
-        tv.tv_usec = cast(typeof(tv.tv_usec)) (interval.microseconds % 1_000_000);
+        tv.tv_usec = cast(typeof(tv.tv_usec)) (interval.micros % 1_000_000);
         return tv;
     }
 
