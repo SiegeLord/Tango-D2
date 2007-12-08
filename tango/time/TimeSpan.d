@@ -487,13 +487,43 @@ struct TimeSpan
 
 /******************************************************************************
 
-        Represents a time of day.
+        Represents a time of day. This is different from TimeSpan in that 
+        each component is represented within the limits of everyday time, 
+        rather than from the start of time. Effectively, the TimeOfDay
+        epoch is the first second of each day.
+
+        This is handy for dealing strictly with a 24-hour clock instead of
+        potentially thousands of years. For example:
+        ---
+        auto time = Clock.now.time;
+        assert (time.millis < 1000);
+        assert (time.seconds < 60);
+        assert (time.minutes < 60);
+        assert (time.hours < 24);
+        ---
+
+        You can create a TimeOfDay from an existing Time or TimeSpan instance
+        via the respective time() method. To convert back to a TimeSpan, use
+        the span() method
 
 ******************************************************************************/
 
 struct TimeOfDay 
 {
         private long ticks;
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the equivalent TimeSpan.
+
+                Returns: A TimeSpan representing this TimeOfDay.
+
+        **********************************************************************/
+
+        TimeSpan span () 
+        {
+                return TimeSpan (ticks);
+        }
 
         /**********************************************************************
 
@@ -603,8 +633,13 @@ debug (UnitTest)
 
 debug (TimeSpan)
 {
+        import tango.time.Clock;
+
         void main()
         {
+                auto time = Clock.now.time;
+                assert (time.seconds < 60);
+
                 auto t = TimeSpan(1);
                 auto h = t.hours;
                 auto m = t.time.minutes;
