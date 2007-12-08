@@ -164,7 +164,11 @@ public class RollingFileAppender : FileAppender
                 // close any existing conduit
                 close;
 
-                auto conduit = new FileConduit (paths[index], FileConduit.WriteAppending);
+                // make it shareable for read
+                auto style = FileConduit.WriteAppending;
+                style.share = FileConduit.Share.Read;
+                auto conduit = new FileConduit (paths[index], style);
+
                 buffer = setConduit (conduit);
                 if (reset)
                     conduit.truncate;

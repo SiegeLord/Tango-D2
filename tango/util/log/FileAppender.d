@@ -53,8 +53,12 @@ public class FileAppender : Appender
         {
                 // Get a unique fingerprint for this instance
                 mask = register (fp.toString);
+        
+                // make it shareable for read
+                auto style = FileConduit.WriteAppending;
+                style.share = FileConduit.Share.Read;
+                setConduit (new FileConduit (fp, style));
 
-                setConduit (new FileConduit (fp, FileConduit.WriteAppending));
                 setLayout (layout);
         }
 
