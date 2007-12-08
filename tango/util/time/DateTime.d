@@ -8,13 +8,13 @@
 module tango.util.time.DateTime;
 
 
-public  import  tango.util.time.TimeSpan;
+public  import  tango.time.TimeSpan;
 
-private import  tango.util.time.Clock,
-                tango.util.time.WallClock;
+private import  tango.time.Clock,
+                tango.time.WallClock;
 
-private import  tango.util.time.chrono.Calendar,
-                tango.util.time.chrono.DefaultCalendar;
+private import  tango.time.chrono.Calendar,
+                tango.time.chrono.DefaultCalendar;
 
 /******************************************************************************
 
@@ -33,37 +33,27 @@ private import  tango.util.time.chrono.Calendar,
 
 pragma(msg, "Don't use DateTime module yet, use Time instead");
 
-void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis, out int micros, out int nanos)
-in
-{
-    assert(t >= TimeSpan.zero && t < TimeSpan.day);
-}
-body
-{
-   hour = t.hours;
-   minute = t.minutes % 60;
-   second = t.seconds % 60;
-   millis = t.milliseconds % 60;
-   nanos = t.nanoseconds % 1_000_000_000;
-   nanos = t.nanoseconds % 1_000_000_000;
-}
-
 void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis, out int micros)
 {
-    int n;
-    getTimeOfDay(t, hour, minute, second, millis, micros, n);
+        auto time = t.time;
+
+        hour = time.hours;
+        minute = time.minutes;
+        second = time.seconds;
+        millis = time.millis;
+        micros = time.micros;
 }
 
 void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second, out int millis)
 {
-    int u, n;
-    getTimeOfDay(t, hour, minute, second, millis, u, n);
+    int u;
+    getTimeOfDay(t, hour, minute, second, millis, u);
 }
 
 void getTimeOfDay(TimeSpan t, out int hour, out int minute, out int second)
 {
-    int m, u, n;
-    getTimeOfDay(t, hour, minute, second, m, u, n);
+    int m, u;
+    getTimeOfDay(t, hour, minute, second, m, u);
 }
 
 class DateTime 
@@ -296,9 +286,9 @@ class DateTime
 
         **********************************************************************/
 
-        deprecated Time addMilliseconds (long value) 
+        deprecated Time addMillis (long value) 
         {
-                return *this + TimeSpan.milliseconds(value);
+                return *this + TimeSpan.millis(value);
         }
 
         /**********************************************************************
@@ -353,7 +343,7 @@ class DateTime
                 if (day > maxDays)
                     day = maxDays;
 
-                return Time (getDateTicks(year, month, day) + (ticks % TimeSpan.day.ticks));
+                return Time (getDateTicks(year, month, day) + (ticks % TimeSpan.TicksPerDay));
         }
 
         /**********************************************************************
@@ -435,7 +425,7 @@ class DateTime
 
         DayOfWeek dayOfWeek () 
         {
-                return cast(DayOfWeek) ((ticks / TimeSpan.day.ticks + 1) % 7);
+                return cast(DayOfWeek) ((ticks / TimeSpan.TicksPerDay + 1) % 7);
         }
 
         /**********************************************************************
@@ -448,7 +438,7 @@ class DateTime
 
         int hour () 
         {
-                return cast(int) ((ticks / TimeSpan.hour.ticks) % 24);
+                return cast(int) ((ticks / TimeSpan.TicksPerHour) % 24);
         }
 
         /**********************************************************************
@@ -461,7 +451,7 @@ class DateTime
 
         int minute () 
         {
-                return cast(int) ((ticks / TimeSpan.minute.ticks) % 60);
+                return cast(int) ((ticks / TimeSpan.TicksPerMinute) % 60);
         }
 
         /**********************************************************************
@@ -474,7 +464,7 @@ class DateTime
 
         int second () 
         {
-                return cast(int) ((ticks / TimeSpan.second.ticks) % 60);
+                return cast(int) ((ticks / TimeSpan.TicksPerSecond) % 60);
         }
 
         /**********************************************************************
@@ -486,9 +476,9 @@ class DateTime
 
         **********************************************************************/
 
-        int millisecond () 
+        int millis () 
         {
-                return cast(int) ((ticks / TimeSpan.ms.ticks) % 1000);
+                return cast(int) ((ticks / TimeSpan.TicksPerMillisecond) % 1000);
         }
 
         /**********************************************************************
@@ -513,9 +503,9 @@ class DateTime
 
         **********************************************************************/
 
-        TimeSpan timeOfDay () 
+        TimeOfDay time () 
         {
-                return TimeSpan (ticks % TimeSpan.day.ticks);
+                return TimeOfDay (ticks);
         }
 
         /**********************************************************************
@@ -577,7 +567,7 @@ class DateTime
                                                    : DaysToMonthCommon;
                 --year;
                 return (year * 365 + year / 4 - year / 100 + year / 400 + 
-                        monthDays[month - 1] + day - 1) * TimeSpan.day.ticks;
+                        monthDays[month - 1] + day - 1) * TimeSpan.TicksPerDay;
         }
 
         /**********************************************************************
@@ -586,7 +576,7 @@ class DateTime
 
         private static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
         {
-                int numDays = cast(int) (ticks / TimeSpan.day.ticks);
+                int numDays = cast(int) (ticks / TimeSpan.TickPerDay);
                 int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
                 numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
                 int whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
