@@ -547,7 +547,6 @@ class Layout(T)
                             return integer (result, *cast(int*) p, format);
 
                        case TypeCode.UINT:
-                       case TypeCode.POINTER:
                             return integer (result, *cast(uint*) p, format, 'u');
 
                        case TypeCode.ULONG:
@@ -574,15 +573,8 @@ class Layout(T)
                        case TypeCode.DCHAR:
                             return fromUtf32 ((cast(dchar*) p)[0..1], result);
 
-                       case TypeCode.INTERFACE:
-                            auto x = *cast(void**) p;
-                            if (x)
-                               {
-                               auto pi = **cast(Interface ***) x;
-                               auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return fromUtf8 (o.toString, result);
-                               }
-                            break;
+                       case TypeCode.POINTER:
+                            return integer (result, *cast(size_t*) p, format, 'x');
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
@@ -594,6 +586,16 @@ class Layout(T)
                             auto s = cast(TypeInfo_Struct) type;
                             if (s.xtoString)
                                 return fromUtf8 (s.xtoString(p), result);
+                            break;
+
+                       case TypeCode.INTERFACE:
+                            auto x = *cast(void**) p;
+                            if (x)
+                               {
+                               auto pi = **cast(Interface ***) x;
+                               auto o = cast(Object)(*cast(void**)p - pi.offset);
+                               return fromUtf8 (o.toString, result);
+                               }
                             break;
 
                        case TypeCode.ENUM:
@@ -798,8 +800,8 @@ debug (UnitTest)
         assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
         assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
         // compiler error
-        //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
-        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
+        assert( Formatter( "{0}", -9223372036854775807L) == "-9223372036854775807" );
+        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "9223372036854775808" );
         assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
         // Error: prints -1
         // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
@@ -834,10 +836,6 @@ debug (UnitTest)
         assert( Formatter( "{0,8:d7}", -123 ) == " -000123" );
         assert( Formatter( "{0,5:d7}", -123 ) == "-000123" );
 
-        // compiler error
-        //assert( Formatter( "{0}", -9223372036854775808L) == "-9223372036854775808" );
-        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "-9223372036854775808" );
-        assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
         assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
         assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
         assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
@@ -909,6 +907,7 @@ debug (Layout)
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 0.001)).newline;
                 Cout (layout ("{:e4}", 0.0000001)).newline;
+                Cout (layout ("ptr:{}", &layout)).newline;
 
                 struct S
                 {
