@@ -516,13 +516,25 @@ class HttpClient
         
         ***********************************************************************/
 
-        void read (void delegate (void[]) sink, long length = long.max)
+        void read (void delegate (void[]) sink, long len = long.max)
         {
-                do {
-                   length -= input.readable;
-                   sink (input.slice);
-                   input.clear;
-                   } while (length > 0 && input.fill(input.input) != socket.Eof);
+                while (len > 0)
+                      {
+                      auto content = input.slice;
+                      if ((len -= content.length) < 0)
+                         {
+                         content = content [0 .. $ + cast(size_t) len];
+                         sink (content);
+                         input.skip (content.length);
+                         }
+                      else
+                         {
+                         sink (content);
+                         input.clear;
+                         if (input.fill(input.input) is socket.Eof)
+                             break;
+                         }
+                      }
         }
 
         /***********************************************************************
