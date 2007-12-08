@@ -8,7 +8,7 @@
  * Convenience module to import all collection related modules
  */
 
-module tango.group.collection;
+module tango.collection;
 
 public import
         tango.util.collection.model.View,
