@@ -514,6 +514,13 @@ class HttpClient
 
         /***********************************************************************
         
+                Read the content from the returning input stream, up to a
+                maximum length, and pass content to the given sink delegate
+                as it arrives. 
+
+                Exits when length bytes have been processed, or an Eof is
+                seen on the stream.
+
         ***********************************************************************/
 
         void read (void delegate (void[]) sink, long len = long.max)
