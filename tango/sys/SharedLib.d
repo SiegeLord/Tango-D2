@@ -46,7 +46,7 @@ private {
     ----
 
     void main() {
-        if (auto lib = SharedLib.load("c:\windows\system32\opengl32.dll")) {
+        if (auto lib = SharedLib.load(`c:\windows\system32\opengl32.dll`)) {
             Trace.formatln("Library successfully loaded");
 
             void* ptr = lib.getSymbol("glClear");
