@@ -42,14 +42,14 @@ struct Time
 
         private enum : long
         {
-                maximum  = (TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1,
-                minimum  = -((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1),
+                maximum = (TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1,
+                minimum = -((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1),
         }
 
         /// Represents the smallest and largest Time value.
-        static const Time epoch     = {0},
-                          min       = {minimum},
+        static const Time min       = {minimum},
                           max       = {maximum},
+                          epoch     = {0},
                           epoch1601 = {TimeSpan.Epoch1601},
                           epoch1970 = {TimeSpan.Epoch1970};
 
@@ -184,7 +184,7 @@ struct Time
                 $(I Property.) Retrieves the date component.
 
                 Returns: A new Time instance with the same date as 
-                         this instance.
+                         this instance, but with the time trucated.
 
         **********************************************************************/
 
