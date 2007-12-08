@@ -6,7 +6,7 @@ import tango.io.FileConst;
 
 import tango.io.Stdout;
 
-import tango.util.time.WallClock;
+import tango.time.WallClock;
 
 char[] workdir;
 char[] wcdir;
@@ -101,7 +101,7 @@ int main(char[][] args)
     char[] packdirdate = projname ~ "-src-SNAPSHOT-" ~ datestr;
     char[] packdircurrent = projname ~ "-src-SNAPSHOT-CURRENT"; 
 
-    auto pd = new FilePath(packdirdate, true);
+    auto pd = new FilePath(packdirdate);
     if (pd.exists) {
         Stdout("!! Packaging dir already exists, removing before recreating").newline;
         auto rmdir = new Process("rm -rf " ~ packdirdate, null);
@@ -184,7 +184,7 @@ int main(char[][] args)
         return 1;
     }
 
-    auto dldir = new FilePath(dlpath, true);
+    auto dldir = new FilePath(dlpath);
     if (!dldir.exists)
         dldir.createFolder();
 
