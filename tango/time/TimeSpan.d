@@ -35,40 +35,31 @@ module tango.time.TimeSpan;
 struct TimeSpan
 {
         // this is the only member of the struct.
-        private long ticks_;
+        package long ticks_;
 
-        /**
-         * Get the number of ticks that this timespan represents.
-         */
-        public long ticks()
-        {
-                return ticks_;
-        }
-
-        //
         // useful constants.  Shouldn't be used in normal code, use the
         // static TimeSpan members below instead.  i.e. instead of
         // TimeSpan.TicksPerSecond, use TimeSpan.second.ticks
         //
-        public enum : long 
+        enum : long 
         {
-                NanosecondsPerTick = 100,
+                NanosecondsPerTick  = 100,
                 TicksPerMicrosecond = 1000 / NanosecondsPerTick,
                 TicksPerMillisecond = 1000 * TicksPerMicrosecond,
-                TicksPerSecond = 1000 * TicksPerMillisecond,
-                TicksPerMinute = 60 * TicksPerSecond,
-                TicksPerHour = 60 * TicksPerMinute,
-                TicksPerDay = 24 * TicksPerHour,
+                TicksPerSecond      = 1000 * TicksPerMillisecond,
+                TicksPerMinute      = 60 * TicksPerSecond,
+                TicksPerHour        = 60 * TicksPerMinute,
+                TicksPerDay         = 24 * TicksPerHour,
 
-                MillisPerSecond = 1000,
-                MillisPerMinute = MillisPerSecond * 60,
-                MillisPerHour = MillisPerMinute * 60,
-                MillisPerDay = MillisPerHour * 24,
+                MillisPerSecond     = 1000,
+                MillisPerMinute     = MillisPerSecond * 60,
+                MillisPerHour       = MillisPerMinute * 60,
+                MillisPerDay        = MillisPerHour * 24,
 
-                DaysPerYear = 365,
-                DaysPer4Years = DaysPerYear * 4 + 1,
-                DaysPer100Years = DaysPer4Years * 25 - 1,
-                DaysPer400Years = DaysPer100Years * 4 + 1,
+                DaysPerYear         = 365,
+                DaysPer4Years       = DaysPerYear * 4 + 1,
+                DaysPer100Years     = DaysPer4Years * 25 - 1,
+                DaysPer400Years     = DaysPer100Years * 4 + 1,
         }
 
         /**
@@ -77,10 +68,20 @@ struct TimeSpan
          */
         static const TimeSpan microsecond = {TicksPerMicrosecond},
                               millisecond = {TicksPerMillisecond},
-                              second = {TicksPerSecond},
-                              minute = {TicksPerMinute},
-                              hour = {TicksPerHour},
-                              day = {TicksPerDay};
+                              second      = {TicksPerSecond},
+                              minute      = {TicksPerMinute},
+                              hour        = {TicksPerHour},
+                              day         = {TicksPerDay};
+
+        /**
+         * Alias for microsecond
+         */
+        alias microsecond us;
+
+        /**
+         * Alias for millisecond
+         */
+        alias millisecond ms;
 
         //
         // these shouldn't be used in normal code, but are here for
@@ -107,20 +108,19 @@ struct TimeSpan
         static const TimeSpan zero = {0};
 
         /**
-         * Alias for microsecond
+         * Get the number of ticks that this timespan represents.
          */
-        alias microsecond us;
-        /**
-         * Alias for millisecond
-         */
-        alias millisecond ms;
+        long ticks()
+        {
+                return ticks_;
+        }
 
         /**
          * Determines whether two TimeSpan values are equal
          */
         bool opEquals(TimeSpan t)
         {
-                return ticks_ is t.ticks;
+                return ticks_ is t.ticks_;
         }
 
         /**
@@ -128,10 +128,10 @@ struct TimeSpan
          */
         int opCmp(TimeSpan t)
         {
-                if(ticks_ < t.ticks)
-                        return -1;
-                if(ticks_ > t.ticks)
-                        return 1;
+                if (ticks_ < t.ticks_)
+                    return -1;
+                if (ticks_ > t.ticks_)
+                    return 1;
                 return 0;
         }
 
@@ -143,7 +143,7 @@ struct TimeSpan
          */
         TimeSpan opAdd(TimeSpan t)
         {
-                return TimeSpan(ticks_ + t.ticks);
+                return TimeSpan(ticks_ + t.ticks_);
         }
 
         /**
@@ -155,7 +155,7 @@ struct TimeSpan
          */
         TimeSpan opAddAssign(TimeSpan t)
         {
-                ticks_ += t.ticks;
+                ticks_ += t.ticks_;
                 return *this;
         }
 
@@ -168,7 +168,7 @@ struct TimeSpan
          */
         TimeSpan opSub(TimeSpan t)
         {
-                return TimeSpan(ticks_ - t.ticks);
+                return TimeSpan(ticks_ - t.ticks_);
         }
 
         /**
@@ -181,7 +181,7 @@ struct TimeSpan
          */
         TimeSpan opSubAssign(TimeSpan t)
         {
-                ticks_ -= t.ticks;
+                ticks_ -= t.ticks_;
                 return *this;
         }
 
@@ -282,7 +282,7 @@ struct TimeSpan
          */
         long microseconds()
         {
-                return ticks_ / us.ticks;
+                return ticks_ / TicksPerMicrosecond;
         }
 
         /**
@@ -292,7 +292,7 @@ struct TimeSpan
          */
         long milliseconds()
         {
-                return ticks_ / ms.ticks;
+                return ticks_ / TicksPerMillisecond;
         }
 
         /**
@@ -302,7 +302,7 @@ struct TimeSpan
          */
         long seconds()
         {
-                return ticks_ / second.ticks;
+                return ticks_ / TicksPerSecond;
         }
 
         /**
@@ -312,7 +312,7 @@ struct TimeSpan
          */
         long minutes()
         {
-                return ticks_ / minute.ticks;
+                return ticks_ / TicksPerMinute;
         }
 
         /**
@@ -322,7 +322,7 @@ struct TimeSpan
          */
         long hours()
         {
-                return ticks_ / hour.ticks;
+                return ticks_ /  TicksPerHour;
         }
 
         /**
@@ -332,7 +332,7 @@ struct TimeSpan
          */
         long days()
         {
-                return ticks_ / day.ticks;
+                return ticks_ /  TicksPerDay;
         }
 
         /**
@@ -347,6 +347,16 @@ struct TimeSpan
         double interval()
         {
                 return (cast(double)ticks_) / TicksPerSecond;
+        }
+
+        /**
+         * Convert to TimeOfDay
+         *
+         * Returns: the TimeOfDay this TimeSpan represents.
+         */
+        TimeOfDay time()
+        {
+                return TimeOfDay(ticks_);
         }
 
         /**
@@ -441,8 +451,98 @@ struct TimeSpan
         {
                 return TimeSpan(cast(long)(sec * TicksPerSecond + .1));
         }
-
 }
+
+
+
+/******************************************************************************
+
+        Represents a time of day.
+
+******************************************************************************/
+
+struct TimeOfDay 
+{
+        private long ticks;
+
+        /**
+         * Alias for microsecond
+         */
+        alias microsecond us;
+        /**
+         * Alias for millisecond
+         */
+        alias millisecond ms;
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the _hour component of the date.
+
+                Returns: The _hour.
+
+        **********************************************************************/
+
+        int hour () 
+        {
+                return cast(int) ((ticks / TimeSpan.TicksPerHour) % 24);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the _minute component of the date.
+
+                Returns: The _minute.
+
+        **********************************************************************/
+
+        int minute () 
+        {
+                return cast(int) ((ticks / TimeSpan.TicksPerMinute) % 60);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the _second component of the date.
+
+                Returns: The _second.
+
+        **********************************************************************/
+
+        int second () 
+        {
+                return cast(int) ((ticks / TimeSpan.TicksPerSecond) % 60);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the _millisecond component of the 
+                date.
+
+                Returns: The _millisecond.
+
+        **********************************************************************/
+
+        int millisecond () 
+        {
+                return cast(int) ((ticks / TimeSpan.TicksPerMillisecond) % 1000);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the _microsecond component of the 
+                date.
+
+                Returns: The _microsecond.
+
+        **********************************************************************/
+
+        int microsecond () 
+        {
+                return cast(int) ((ticks / TimeSpan.TicksPerMicrosecond) % 1000);
+        }
+}
+
+
 
 unittest
 {
@@ -458,4 +558,15 @@ unittest
         assert(TimeSpan.max <= TimeSpan.max);
         assert(TimeSpan.min >= TimeSpan.min);
         assert(TimeSpan.min <= TimeSpan.min);
+}
+
+
+debug (TimeSpan)
+{
+        void main()
+        {
+                auto t = TimeSpan(1);
+                auto h = t.hour;
+                auto m = t.time.minute;
+        }
 }

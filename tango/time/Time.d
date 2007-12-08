@@ -6,8 +6,9 @@
 
         version:        mid 2005: Initial release
                         Apr 2007: heavily reshaped
+                        Dec 2007: moved to tango.time
 
-        author:         John Chapman, Kris
+        author:         Chapman, Kris, scheivguy
 
 ******************************************************************************/
 
@@ -28,11 +29,10 @@ public import tango.time.TimeSpan;
         12:00:00 midnight on January 1, 0001 AD in the Gregorian 
         calendar.
         
-        Negative Time values are offsets from that same reference point, but
-        backwards in history.  Time values are not specific to any calendar,
-        but for an example, the beginning of December 31, 1 B.C. in the
-        Gregorian calendar is Time.epoch - TimeSpan.day.
-
+        Negative Time values are offsets from that same reference point, 
+        but backwards in history.  Time values are not specific to any 
+        calendar, but for an example, the beginning of December 31, 1 BC 
+        in the Gregorian calendar is Time.epoch - TimeSpan.day.
 
 ******************************************************************************/
 
@@ -46,23 +46,6 @@ struct Time
                                  min   = {-((TimeSpan.DaysPer400Years * 25 - 366) * TimeSpan.TicksPerDay - 1)},
                                  epoch1601 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay},
                                  epoch1970 = {TimeSpan.DaysPer400Years * 4 * TimeSpan.TicksPerDay + TimeSpan.TicksPerSecond * 11644473600L};
-
-        /**********************************************************************
-
-                $(I Constructor.) Initializes a new instance of the 
-                Time struct to the specified number of _ticks.         
-                
-                Params: ticks = A time expressed in units of 
-                100 nanoseconds.
-
-        **********************************************************************/
-
-        static Time opCall (long ticks) 
-        {
-                Time d;
-                d.ticks_ = ticks;
-                return d;
-        }
 
         /**********************************************************************
 
@@ -89,7 +72,7 @@ struct Time
 
         int opEquals (Time t) 
         {
-                return ticks_ is t.ticks;
+                return ticks_ is t.ticks_;
         }
 
         /**********************************************************************
@@ -100,9 +83,9 @@ struct Time
 
         int opCmp (Time t) 
         {
-                if (ticks_ < t.ticks)
+                if (ticks_ < t.ticks_)
                     return -1;
-                if (ticks_ > t.ticks)
+                if (ticks_ > t.ticks_)
                     return 1;
                 return 0;
         }
@@ -119,7 +102,7 @@ struct Time
 
         Time opAdd (TimeSpan t) 
         {
-                return Time (ticks_ + t.ticks);
+                return Time (ticks_ + t.ticks_);
         }
 
         /**********************************************************************
@@ -135,7 +118,7 @@ struct Time
 
         Time opAddAssign (TimeSpan t) 
         {
-                ticks_ += t.ticks;
+                ticks_ += t.ticks_;
                 return *this;
         }
 
@@ -152,7 +135,7 @@ struct Time
 
         Time opSub (TimeSpan t) 
         {
-                return Time (ticks_ - t.ticks);
+                return Time (ticks_ - t.ticks_);
         }
 
         /**********************************************************************
@@ -168,7 +151,7 @@ struct Time
 
         TimeSpan opSub (Time t)
         {
-                return TimeSpan(ticks_ - t.ticks);
+                return TimeSpan(ticks_ - t.ticks_);
         }
 
         /**********************************************************************
@@ -184,75 +167,8 @@ struct Time
 
         Time opSubAssign (TimeSpan t) 
         {
-                ticks_ -= t.ticks;
+                ticks_ -= t.ticks_;
                 return *this;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _hour component of the date.
-
-                Returns: The _hour.
-
-        **********************************************************************/
-
-        int hour () 
-        {
-                return cast(int) ((ticks_ / TimeSpan.hour.ticks) % 24);
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _minute component of the date.
-
-                Returns: The _minute.
-
-        **********************************************************************/
-
-        int minute () 
-        {
-                return cast(int) ((ticks_ / TimeSpan.minute.ticks) % 60);
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _second component of the date.
-
-                Returns: The _second.
-
-        **********************************************************************/
-
-        int second () 
-        {
-                return cast(int) ((ticks_ / TimeSpan.second.ticks) % 60);
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _millisecond component of the 
-                date.
-
-                Returns: The _millisecond.
-
-        **********************************************************************/
-
-        int millisecond () 
-        {
-                return cast(int) ((ticks_ / TimeSpan.ms.ticks) % 1000);
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _microsecond component of the 
-                date.
-
-                Returns: The _microsecond.
-
-        **********************************************************************/
-
-        int microsecond () 
-        {
-                return cast(int) ((ticks_ / TimeSpan.us.ticks) % 1000);
         }
 
         /**********************************************************************
@@ -266,20 +182,34 @@ struct Time
 
         Time date () 
         {
-                return *this - timeOfDay;
+                return Time (ticks_ - (ticks_ % TimeSpan.day.ticks));
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves the equivalent TimeSpan.
+
+                Returns: A TimeSpan representing this Time.
+
+        **********************************************************************/
+
+        TimeSpan span () 
+        {
+                return TimeSpan (ticks_);
         }
 
         /**********************************************************************
 
                 $(I Property.) Retrieves the time of day.
 
-                Returns: A Time representing the fraction of the day elapsed since midnight.
+                Returns: A TimeOfDay representing the fraction of the day 
+                         elapsed since midnight.
 
         **********************************************************************/
 
-        TimeSpan timeOfDay () 
+        TimeOfDay time () 
         {
-                return TimeSpan (ticks_ % TimeSpan.day.ticks);
+                return TimeOfDay (ticks_);
         }
 }
 
@@ -304,6 +234,7 @@ debug (Time)
         void main()
         {
                 auto c = foo();
+                auto h = c.time.minute;
                 Stdout (c.ticks).newline;
         }
 }

@@ -324,6 +324,7 @@ version (Full)
                 while (index < format.length)
                       {
                       char c = format[index];
+                      auto time = dateTime.time;
 
                       switch (c)
                              {
@@ -365,28 +366,28 @@ version (Full)
                                   break;
                              case 'h':  // hour (12-hour clock)
                                   len = parseRepeat(format, index, c);
-                                  int hour = dateTime.hour % 12;
+                                  int hour = time.hour % 12;
                                   if (hour is 0)
                                       hour = 12;
                                   result ~= formatInt (tmp, hour, len);
                                   break;
                              case 'H':  // hour (24-hour clock)
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, dateTime.hour, len);
+                                  result ~= formatInt (tmp, time.hour, len);
                                   break;
                              case 'm':  // minute
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, dateTime.minute, len);
+                                  result ~= formatInt (tmp, time.minute, len);
                                   break;
                              case 's':  // second
                                   len = parseRepeat(format, index, c);
-                                  result ~= formatInt (tmp, dateTime.second, len);
+                                  result ~= formatInt (tmp, time.second, len);
                                   break;
                              case 't':  // AM/PM
                                   len = parseRepeat(format, index, c);
                                   if (len is 1)
                                      {
-                                     if (dateTime.hour < 12)
+                                     if (time.hour < 12)
                                         {
                                         if (dtf.amDesignator.length != 0)
                                             result ~= dtf.amDesignator[0];
@@ -398,7 +399,7 @@ version (Full)
                                         }
                                      }
                                   else
-                                     result ~= (dateTime.hour < 12) ? dtf.amDesignator : dtf.pmDesignator;
+                                     result ~= (time.hour < 12) ? dtf.amDesignator : dtf.pmDesignator;
                                   break;
                              case 'z':  // timezone offset
                                   len = parseRepeat(format, index, c);
