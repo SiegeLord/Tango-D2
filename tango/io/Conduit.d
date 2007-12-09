@@ -71,7 +71,8 @@ class Conduit : IConduit, ISelectable
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst
+                requested in dst. Eof is returned whenever an end-of-flow 
+                condition arises.
 
         ***********************************************************************/
 
@@ -83,7 +84,8 @@ class Conduit : IConduit, ISelectable
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                be less than the quantity provided. Eof is returned when 
+                an end-of-flow condition arises.
 
         ***********************************************************************/
 
@@ -259,7 +261,8 @@ class InputFilter : InputStream
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst
+                requested in dst. Eof is returned whenever an end-of-flow 
+                condition arises.
 
         ***********************************************************************/
 
@@ -332,7 +335,8 @@ class OutputFilter : OutputStream
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                be less than the quantity provided. Eof is returned when 
+                an end-of-flow condition arises.
 
         ***********************************************************************/
 
