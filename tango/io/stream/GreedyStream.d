@@ -17,7 +17,8 @@ private import tango.io.Conduit;
 
 /*******************************************************************************
 
-        A conduit filter that ensures its input is read in full         
+        A conduit filter that ensures its input is read in full. There's
+        also an optional readExact() for more explicit requests         
 
 *******************************************************************************/
 
@@ -49,7 +50,7 @@ class GreedyInput : InputFilter
                 while (len < dst.length)
                       {
                       auto i = host.read (dst [len .. $]);
-                      if (i is IConduit.Eof)
+                      if (i is Eof)
                           return (len ? len : i);
                       len += i;
                       } 
@@ -83,7 +84,8 @@ class GreedyInput : InputFilter
 
 /*******************************************************************************
 
-        A conduit filter that ensures its output is written in full  
+        A conduit filter that ensures its output is written in full. There's
+        also an optional writeExact() for more explicit requests   
 
 *******************************************************************************/
 
