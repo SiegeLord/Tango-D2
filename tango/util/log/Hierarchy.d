@@ -530,15 +530,14 @@ class Hierarchy : IHierarchy
 
         /***********************************************************************
         
-                Return the instance of a Logger with the provided name. If
+                Return the instance of a Logger with the provided label. If
                 the instance does not exist, it is created at this time.
 
         ***********************************************************************/
 
-        final synchronized LoggerInstance getLogger (char[] name)
+        final synchronized LoggerInstance getLogger (char[] label)
         {
-                name ~= ".";
-
+                auto name = label ~ ".";
                 auto l = name in loggers;
 
                 if (l is null)

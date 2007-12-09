@@ -20,7 +20,7 @@ char* toStringz (char[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
-                   s ~= '\0';
+                   s = s ~ '\0';
         return s.ptr;
 }
 
@@ -41,7 +41,7 @@ wchar* toString16z (wchar[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
-                   s ~= "\0"w;
+                   s = s ~ "\0"w;
         return s.ptr;
 }
 
