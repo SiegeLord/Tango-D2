@@ -408,7 +408,7 @@ private class LoggerInstance : Logger
 
         final char[] format (char[] buffer, char[] formatStr, ...)
         {
-                return .format.sprint (buffer, formatStr, _arguments, _argptr);     
+                return .format.vprint (buffer, formatStr, _arguments, _argptr);     
         }
 
         /***********************************************************************
