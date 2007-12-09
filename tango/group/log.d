@@ -22,7 +22,7 @@ public import tango.log.EventLayout;
 public import tango.log.Log4JLayout;
 public import tango.log.FileAppender;
 public import tango.log.MailAppender;
-public import tango.log.SocketAppender
+public import tango.log.SocketAppender;
 public import tango.log.ConsoleAppender;
 public import tango.log.RollingFileAppender;
                 
