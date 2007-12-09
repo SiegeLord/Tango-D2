@@ -75,14 +75,14 @@ class Layout(T)
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
-                return sprint (result, formatStr, _arguments, _argptr);
+                return vprint (result, formatStr, _arguments, _argptr);
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
+        public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T* p = result.ptr;
 
@@ -95,7 +95,7 @@ class Layout(T)
                            p += len;
                            }
                         else
-                           error ("Layout.sprint :: output buffer is full");
+                           error ("Layout.vprint :: output buffer is full");
                         return len;
                 }
 
