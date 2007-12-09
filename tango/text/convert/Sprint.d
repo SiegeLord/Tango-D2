@@ -105,7 +105,7 @@ class Sprint(T)
 
         T[] format (T[] fmt, TypeInfo[] arguments, void* argptr)
         {
-                return layout.sprint (buffer, fmt, arguments, argptr);
+                return layout.vprint (buffer, fmt, arguments, argptr);
         }
 }
 
