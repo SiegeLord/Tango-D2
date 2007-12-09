@@ -14,16 +14,16 @@
 
 module tango.group.log;
 
-public import tango.log.Log;
-public import tango.log.Logger;
-public import tango.log.Hierarchy;
-public import tango.log.DateLayout;
-public import tango.log.EventLayout;
-public import tango.log.Log4JLayout;
-public import tango.log.FileAppender;
-public import tango.log.MailAppender;
-public import tango.log.SocketAppender;
-public import tango.log.ConsoleAppender;
-public import tango.log.RollingFileAppender;
+public import tango.util.log.Log;
+public import tango.util.log.Logger;
+public import tango.util.log.Hierarchy;
+public import tango.util.log.DateLayout;
+public import tango.util.log.Log4Layout;
+public import tango.util.log.EventLayout;
+public import tango.util.log.FileAppender;
+public import tango.util.log.MailAppender;
+public import tango.util.log.SocketAppender;
+public import tango.util.log.ConsoleAppender;
+public import tango.util.log.RollingFileAppender;
                 
 

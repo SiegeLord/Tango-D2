@@ -19,6 +19,6 @@ public import tango.math.IEEE;
 public import tango.math.Random;
 public import tango.math.Bessel;
 public import tango.math.Elliptic;
-public import tango.math.Probablility;
+public import tango.math.Probability;
 public import tango.math.ErrorFunction;
 public import tango.math.GammaFunction;
