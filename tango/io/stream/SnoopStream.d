@@ -30,7 +30,6 @@ class SnoopInput : InputStream
 {
         private InputStream     host;
         private Snoop           snoop;
-        private typeof(Format)  layout;
 
         /***********************************************************************
 
@@ -41,21 +40,8 @@ class SnoopInput : InputStream
         this (InputStream host, Snoop snoop = null)
         {
                 assert (host);
-
                 this.host = host;
-                this.layout = Format;
                 this.snoop = snoop ? snoop : &snooper;
-        }
-
-        /***********************************************************************
-
-                Internal trace handler
-
-        ***********************************************************************/
-
-        private void snooper (char[] x)
-        {
-                Cerr(x).newline;
         }
 
         /***********************************************************************
@@ -82,9 +68,7 @@ class SnoopInput : InputStream
         final uint read (void[] dst)
         {
                 auto x = host.read (dst);
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: read {} bytes", host.conduit, x is -1 ? 0 : x));
+                trace ("{}: read {} bytes", host.conduit, x is -1 ? 0 : x);
                 return x;
         }
 
@@ -97,9 +81,7 @@ class SnoopInput : InputStream
         final InputStream clear ()
         {
                 host.clear;
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: cleared", host.conduit));
+                trace ("{}: cleared", host.conduit);
                 return this;
         }
 
@@ -112,39 +94,7 @@ class SnoopInput : InputStream
         final void close ()
         {
                 host.close;
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: closed", host.conduit));
-        }
-}
-
-
-/*******************************************************************************
-
-        Stream to expose call behaviour. By default, activity trace is
-        sent to Cerr
-
-*******************************************************************************/
-
-class SnoopOutput : OutputStream
-{
-        private OutputStream    host;
-        private Snoop           snoop;
-        private typeof(Format)  layout;
-
-        /***********************************************************************
-
-                Attach to the provided stream
-
-        ***********************************************************************/
-
-        this (OutputStream host, Snoop snoop = null)
-        {
-                assert (host);
-
-                this.host = host;
-                this.layout = Format;
-                this.snoop = snoop ? snoop : &snooper;
+                trace ("{}: closed", host.conduit);
         }
 
         /***********************************************************************
@@ -160,6 +110,45 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
+                Internal trace handler
+
+        ***********************************************************************/
+
+        private void trace (char[] format, ...)
+        {
+                char[256] tmp = void;
+                snoop (Format.vprint (tmp, format, _arguments, _argptr));
+        }
+}
+
+
+/*******************************************************************************
+
+        Stream to expose call behaviour. By default, activity trace is
+        sent to Cerr
+
+*******************************************************************************/
+
+class SnoopOutput : OutputStream
+{
+        private OutputStream    host;
+        private Snoop           snoop;
+
+        /***********************************************************************
+
+                Attach to the provided stream
+
+        ***********************************************************************/
+
+        this (OutputStream host, Snoop snoop = null)
+        {
+                assert (host);
+                this.host = host;
+                this.snoop = snoop ? snoop : &snooper;
+        }
+
+        /***********************************************************************
+
                 Write to conduit from a source array. The provided src
                 content will be written to the conduit.
 
@@ -171,9 +160,7 @@ class SnoopOutput : OutputStream
         final uint write (void[] src)
         {
                 auto x = host.write (src);
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: wrote {} bytes", host.conduit, x is -1 ? 0 : x));
+                trace ("{}: wrote {} bytes", host.conduit, x is -1 ? 0 : x);
                 return x;
         }
 
@@ -197,9 +184,7 @@ class SnoopOutput : OutputStream
         final OutputStream flush ()
         {
                 host.flush;
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: flushed", host.conduit));
+                trace ("{}: flushed", host.conduit);
                 return this;
         }
 
@@ -212,9 +197,7 @@ class SnoopOutput : OutputStream
         final void close ()
         {
                 host.close;
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: closed", host.conduit));
+                trace ("{}: closed", host.conduit);
         }
 
         /***********************************************************************
@@ -226,11 +209,32 @@ class SnoopOutput : OutputStream
 
         final OutputStream copy (InputStream src)
         {
-                Conduit.transfer (src, this);
-
-                char[256] tmp = void;
-                snoop (layout.sprint (tmp, "{}: copied from {}", host.conduit, src.conduit));
+                host.copy (src);
+                trace("{}: copied from {}", host.conduit, src.conduit);
                 return this;
+        }
+
+        /***********************************************************************
+
+                Internal trace handler
+
+        ***********************************************************************/
+
+        private void snooper (char[] x)
+        {
+                Cerr(x).newline;
+        }
+
+        /***********************************************************************
+
+                Internal trace handler
+
+        ***********************************************************************/
+
+        private void trace (char[] format, ...)
+        {
+                char[256] tmp = void;
+                snoop (Format.vprint (tmp, format, _arguments, _argptr));
         }
 }
 
