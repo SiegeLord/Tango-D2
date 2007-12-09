@@ -189,7 +189,8 @@ interface InputStream : IOStream
                 will be populated with content from the conduit. 
 
                 Returns the number of bytes read, which may be less than
-                requested in dst
+                requested in dst. Eof is returned whenever an end-of-flow 
+                condition arises.
 
         ***********************************************************************/
 
@@ -219,12 +220,13 @@ interface OutputStream : IOStream
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                be less than the quantity provided. Eof is returned when 
+                an end-of-flow condition arises.
 
         ***********************************************************************/
 
-        uint write (void[] src);               
-                             
+        uint write (void[] src);     
+        
         /***********************************************************************
 
                 Transfer the content of another conduit to this one. Returns
