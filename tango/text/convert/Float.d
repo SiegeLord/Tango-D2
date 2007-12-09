@@ -33,6 +33,18 @@ private extern (C) NumType log10l(NumType x);
 
 /******************************************************************************
 
+        Constants
+                
+******************************************************************************/
+
+private enum 
+{
+        Dec = 2,                // default decimal places
+        Exp = 10,               // default switch to scientific notation
+}
+
+/******************************************************************************
+
         Convert a formatted string of digits to a floating-point
         number. Throws an exception where the input text is not
         parsable in its entirety.
@@ -58,11 +70,11 @@ NumType toFloat(T) (T[] src)
 
 ******************************************************************************/
 
-char[] toString (NumType d, uint decimals=2, bool scientific=false)
+char[] toString (NumType d, uint decimals=Dec, int e=Exp)
 {
         char[64] tmp = void;
         
-        return format (tmp, d, decimals, scientific).dup;
+        return format (tmp, d, decimals, e).dup;
 }
                
 /******************************************************************************
@@ -74,11 +86,11 @@ char[] toString (NumType d, uint decimals=2, bool scientific=false)
 
 ******************************************************************************/
 
-wchar[] toString16 (NumType d, uint decimals=2, bool scientific=false)
+wchar[] toString16 (NumType d, uint decimals=Dec, int e=Exp)
 {
         wchar[64] tmp = void;
         
-        return format (tmp, d, decimals, scientific).dup;
+        return format (tmp, d, decimals, e).dup;
 }
                
 /******************************************************************************
@@ -90,11 +102,11 @@ wchar[] toString16 (NumType d, uint decimals=2, bool scientific=false)
 
 ******************************************************************************/
 
-dchar[] toString32 (NumType d, uint decimals=2, bool scientific=false)
+dchar[] toString32 (NumType d, uint decimals=Dec, int e=Exp)
 {
         dchar[64] tmp = void;
         
-        return format (tmp, d, decimals, scientific).dup;
+        return format (tmp, d, decimals, e).dup;
 }
                
 /******************************************************************************
@@ -107,14 +119,21 @@ dchar[] toString32 (NumType d, uint decimals=2, bool scientific=false)
         pulls digits from the left side whilst emitting them (rightward)
         to the output.
 
+        The e parameter controls the number of exponent places emitted, 
+        and can thus control where the output switches to the scientific 
+        notation. For example, setting e=2 for 0.01 or 10.0 would result
+        in normal output. Whereas setting e=1 would result in both those
+        values being rendered in scientific notation instead. Setting e
+        to 0 forces that notation on for everything.
+
         TODO: this should be replaced, as it is not sufficiently accurate 
 
 ******************************************************************************/
 
-T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals = 2, bool e = false)
+T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp)
 {return format!(T)(dst, x, decimals, e);}
 
-T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
+T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
 {
         static T[] inf = "-inf";
         static T[] nan = "-nan";
@@ -152,9 +171,6 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
                 return digit + '0';
         }
 
-        // sanity check
-        assert (dst.length >= 32);
-
         // extract the sign
         bool sign = signed (x);
         if (sign)
@@ -172,9 +188,14 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
         // don't scale if zero
         if (x > 0.0)
            {
+           // extract base10 exponent
+           exp = cast(int) log10l (x);
+
            // round up a bit
-           if (e is false)
-               x += 0.5 / pow10 (decimals);
+           auto d = decimals;
+           if (exp < 0)
+               d -= exp;
+           x += 0.5 / pow10 (d);
 
            // extract base10 exponent
            exp = cast(int) log10l (x);
@@ -187,8 +208,8 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
               x /= pow10 (exp);
 
            // switch to short display if not enough space
-           if (len + 32 > dst.length)
-               e = true; 
+           if (len >= e)
+               e = 0; 
            }
 
         T* p = dst.ptr;
@@ -199,8 +220,10 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
             *p++ = '-';
 
         // are we doing +/-exp format?
-        if (e)
+        if (e is 0)
            {
+           assert (dst.length > decimals + 7);
+
            // emit first digit, and decimal point
            *p++ = toDigit (x, count);
            if (decimals)
@@ -234,6 +257,8 @@ T[] format(T) (T[] dst, NumType x, uint decimals = 2, bool e = false)
            }
         else
            {
+           assert (dst.length > (exp + decimals + 1));
+
            // if fraction only, emit a leading zero
            if (exp < 0)
                *p++ = '0';
@@ -353,6 +378,34 @@ NumType parse(T) (T[] src, uint* ate=null)
         return value;
 }
 
+/******************************************************************************
+
+        Truncate trailing '0' and '.' from a string, such that 200.000 
+        becomes 200, and 20.10 becomes 20.1
+
+        Returns a potentially shorter slice of what you give it.
+
+******************************************************************************/
+
+T[] truncate(T) (T[] s)
+{
+        auto tmp = s;
+        auto i = tmp.length;
+        foreach (idx, c; tmp)
+                 if (c is '.')
+                     while (--i >= idx)
+                            if (tmp[i] != '0')
+                               {  
+                               if (tmp[i] is '.')
+                                   --i;
+                               s = tmp [0 .. i+1];
+                               while (--i >= idx)
+                                      if (tmp[i] is 'e')
+                                          return tmp;
+                               break;
+                               }
+        return s;
+}
 
 /******************************************************************************
 
@@ -420,5 +473,44 @@ debug (UnitTest)
 
 debug (Float)
 {
-        void main() {}
+        import tango.io.Console;
+
+        void main() 
+        {
+                char[20] tmp;
+
+                Cout (format(tmp, 3.14159, 6, 0)).newline;
+                Cout (format(tmp, 3e100, 6, 3)).newline;
+                Cout (format(tmp, 314159, 6)).newline;
+                Cout (format(tmp, 314159123213, 6, 15)).newline;
+                Cout (format(tmp, 3.14159, 6, 2)).newline;
+                Cout (format(tmp, 3.14159, 6, 2)).newline;
+                Cout (format(tmp, 0.00003333, 6, 2)).newline;
+                Cout (format(tmp, 0.00333333, 6, 3)).newline;
+                Cout (format(tmp, 0.03333333, 6, 2)).newline;
+                Cout.newline;
+
+                Cout (format(tmp, -3.14159, 6, 0)).newline;
+                Cout (format(tmp, -3e100, 6, 3)).newline;
+                Cout (format(tmp, -314159, 6)).newline;
+                Cout (format(tmp, -314159123213, 6, 15)).newline;
+                Cout (format(tmp, -3.14159, 6, 2)).newline;
+                Cout (format(tmp, -3.14159, 6, 2)).newline;
+                Cout (format(tmp, -0.00003333, 6, 2)).newline;
+                Cout (format(tmp, -0.00333333, 6, 3)).newline;
+                Cout (format(tmp, -0.03333333, 6, 2)).newline;
+                Cout.newline;
+
+                Cout (truncate(format(tmp, 30, 6))).newline;
+                Cout (truncate(format(tmp, 3.14159, 6, 0))).newline;
+                Cout (truncate(format(tmp, 3e100, 6, 3))).newline;
+                Cout (truncate(format(tmp, 314159, 6))).newline;
+                Cout (truncate(format(tmp, 314159123213, 6, 15))).newline;
+                Cout (truncate(format(tmp, 3.14159, 6, 2))).newline;
+                Cout (truncate(format(tmp, 3.14159, 6, 2))).newline;
+                Cout (truncate(format(tmp, 0.00003333, 6, 2))).newline;
+                Cout (truncate(format(tmp, 0.00333333, 6, 3))).newline;
+                Cout (truncate(format(tmp, 0.03333333, 6, 2))).newline;
+
+        }
 }

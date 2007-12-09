@@ -648,7 +648,7 @@ class Layout(T)
                 uint places = 2;
 
                 parseGeneric (format, places, style);
-                return Float.format (output, v, places, (style is 'e' || style is 'E'));
+                return Float.format (output, v, places, (style is 'e' || style is 'E') ? 0 : 10);
         }
 
         /**********************************************************************
