@@ -2,6 +2,7 @@
  * copyright:  Copyright (c) 2007 Steven Schveighoffer . All rights reserved
  * license:        BSD style: $(LICENSE)
  * version:        Nov 2007: Initial release
+ *                 Dec 2007: Added TimeOfDay, moved to tango.time
  * author:         Steve Schveighoffer
  *
  * TimeSpan represents a length of time
@@ -510,7 +511,65 @@ struct TimeSpan
 
 struct TimeOfDay 
 {
-        private long ticks;
+        /*
+         * only member of the struct
+         */
+        private TimeSpan span_;
+
+        /*
+         * Ensures span_ is positive and a valid time of day for negative
+         * times
+         */
+        private void normalize()
+        {
+                span_.ticks_ %= TimeSpan.TicksPerDay;
+                if(span_.ticks_ < 0)
+                        span_.ticks_ += TimeSpan.TicksPerDay;
+        }
+
+        /**
+         * constructor.
+         * Params: ticks = ticks representing a Time value.  These are
+         * normalized so they represent a time of day.
+         *
+         * Returns: a TimeOfDay value that corresponds to the time of day of
+         * the given number of ticks.
+         */
+        static TimeOfDay opCall(long ticks)
+        {
+                TimeOfDay result;
+                result.span_ = TimeSpan(ticks);
+                result.normalize();
+                return result;
+        }
+
+        /**
+         * constructor.
+         * Params: hours = number of hours since midnight
+         *         minutes = number of minutes into the hour
+         *         seconds = number of seconds into the minute
+         *         millis = number of milliseconds into the second
+         *         micros = number of microseconds into the millisecond
+         *
+         * Returns: a TimeOfDay representing the given time.
+         *
+         * Note: that parameters are not checked against a valid range, so
+         * passing 60 for minutes is allowed, and will just add 1 to the hour
+         * component, and set the minute component to 0.  The result is
+         * normalized, so the hours wrap.  If you pass in 25 hours, the
+         * resulting TimeOfDay will have a hour component of 1.
+         */
+        static TimeOfDay opCall(uint hours, uint minutes, uint seconds, uint millis, uint micros)
+        {
+                TimeOfDay result;
+                result.span_ = TimeSpan.hours(hours) +
+                        TimeSpan.minutes(minutes) + 
+                        TimeSpan.seconds(seconds) + 
+                        TimeSpan.millis(millis) +
+                        TimeSpan.micros(micros);
+                result.normalize();
+                return result;
+        }
 
         /**********************************************************************
 
@@ -522,7 +581,7 @@ struct TimeOfDay
 
         TimeSpan span () 
         {
-                return TimeSpan (ticks);
+                return span_;
         }
 
         /**********************************************************************
@@ -533,9 +592,13 @@ struct TimeOfDay
 
         **********************************************************************/
 
-        int hours () 
+        uint hours () 
         {
-                return cast(int) ((ticks / TimeSpan.TicksPerHour) % 24);
+                //
+                // constructor has already normalized to within 24 hours, so
+                // no need to mod the result 
+                //
+                return cast(uint) span_.hours;
         }
 
         /**********************************************************************
@@ -546,9 +609,9 @@ struct TimeOfDay
 
         **********************************************************************/
 
-        int minutes () 
+        uint minutes () 
         {
-                return cast(int) ((ticks / TimeSpan.TicksPerMinute) % 60);
+                return cast(uint) span_.minutes % 60;
         }
 
         /**********************************************************************
@@ -559,9 +622,9 @@ struct TimeOfDay
 
         **********************************************************************/
 
-        int seconds () 
+        uint seconds () 
         {
-                return cast(int) ((ticks / TimeSpan.TicksPerSecond) % 60);
+                return cast(uint) span_.seconds % 60;
         }
 
         /**********************************************************************
@@ -573,9 +636,9 @@ struct TimeOfDay
 
         **********************************************************************/
 
-        int millis () 
+        uint millis () 
         {
-                return cast(int) ((ticks / TimeSpan.TicksPerMillisecond) % 1000);
+                return cast(uint) span_.millis % 1000;
         }
 
         /**********************************************************************
@@ -587,9 +650,9 @@ struct TimeOfDay
 
         **********************************************************************/
 
-        int micros () 
+        uint micros () 
         {
-                return cast(int) ((ticks / TimeSpan.TicksPerMicrosecond) % 1000);
+                return cast(uint) span_.micros % 1000;
         }
 }
 

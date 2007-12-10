@@ -32,7 +32,7 @@ public import tango.time.TimeSpan;
         Negative Time values are offsets from that same reference point, 
         but backwards in history.  Time values are not specific to any 
         calendar, but for an example, the beginning of December 31, 1 BC 
-        in the Gregorian calendar is Time.epoch - TimeSpan.day.
+        in the Gregorian calendar is Time.epoch - TimeSpan.days(1).
 
 ******************************************************************************/
 
@@ -190,7 +190,7 @@ struct Time
 
         Time date () 
         {
-                return Time (ticks_ - (ticks_ % TimeSpan.TicksPerDay));
+                return *this - time.span;
         }
 
         /**********************************************************************
