@@ -134,7 +134,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static FilePath opCall (char[] filepath)
+        static FilePath opCall (char[] filepath = null)
         {
                 return new FilePath (filepath);
         }
@@ -1421,7 +1421,7 @@ class FilePath : PathView
                         {
                                 return Time.epoch1970 +
                                        TimeSpan.seconds(tv.tv_sec) +
-                                       TimeSpan.microseconds(tv.tv_usec);
+                                       TimeSpan.micros(tv.tv_usec);
                         }
 
                         stat_t stats = void;
@@ -1839,8 +1839,6 @@ interface PathView
 
 debug (UnitTest)
 {
-        //void main() {}
-
         unittest
         {
                 version(Win32)
@@ -2070,4 +2068,16 @@ debug (UnitTest)
 +/      
                 }
         }
+}
+
+
+debug (FilePath)
+{       
+        import tango.io.Console;
+
+        void main() 
+        {
+                Cout (FilePath("c:/temp/").file("foo.bar")).newline;
+        }
+
 }
