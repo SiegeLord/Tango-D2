@@ -58,7 +58,7 @@ public class DateLayout : EventLayout
                 char[] level = event.getLevelName;
                 
                 // convert time to field values
-                auto time = event.getEpochTime;
+                auto time = event.getTime;
                 auto date = (localTime) ? WallClock.toDate(time) : Clock.toDate(time);
                                 
                 // format date according to ISO-8601 (lightweight formatter)

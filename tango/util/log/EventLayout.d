@@ -16,8 +16,6 @@ private import tango.util.log.Event;
 
 private import tango.time.TimeSpan;
 
-private import tango.time.Time;
-
 /*******************************************************************************
 
         Base class for all logging layout instances
@@ -77,11 +75,6 @@ public class EventLayout
                    } while (ms && len);
                 return s[len..s.length];                
         }
-
-        final char[] toMilli (char[] s, Time time)
-        {
-                return toMilli(s, TimeSpan(time.ticks));
-        }
 }
 
 
@@ -124,8 +117,8 @@ public class SimpleLayout : EventLayout
         char[] header (Event event)
         {
                 event.append (event.getLevelName)
-                     .append(event.getName)
-                     .append(" - ");
+                     .append (event.getName)
+                     .append (" - ");
                 return event.getContent;
         }
 }
@@ -149,7 +142,7 @@ public class SimpleTimerLayout : EventLayout
         {
                 char[20] tmp;
 
-                event.append (toMilli (tmp, event.getTime))
+                event.append (toMilli (tmp, event.getSpan))
                      .append (" ")
                      .append (event.getLevelName)
                      .append (event.getName)

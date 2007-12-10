@@ -298,7 +298,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final TimeSpan getTime ()
+        final TimeSpan getSpan ()
         {
                 return time - beginTime;
         }
@@ -309,7 +309,7 @@ public class Event : ILevel
 
         ***********************************************************************/
 
-        final Time getEpochTime ()
+        final Time getTime ()
         {
                 return time;
         }

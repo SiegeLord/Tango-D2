@@ -44,7 +44,7 @@ public class Log4Layout : EventLayout
                 event.append ("<log4j:event logger=\"")
                      .append (event.getName)
                      .append ("\" timestamp=\"")
-                     .append (toMilli (tmp, event.getEpochTime))
+                     .append (toMilli (tmp, event.getTime.span))
                      .append ("\" level=\"")
                      .append (event.getLevelName [0..length-1])
                      .append ("\" thread=\"").append(threadName).append("\">\r\n<log4j:message><![CDATA[");
