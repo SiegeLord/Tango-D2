@@ -513,10 +513,10 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (double v, uint decimals=6, bool scientific=false)
+        final Text append (double v, uint decimals=2, int e=10)
         {
                 T[64] tmp = void;
-                return append (Float.format(tmp, v, decimals, scientific));
+                return append (Float.format(tmp, v, decimals, e));
         }
 
         /***********************************************************************
