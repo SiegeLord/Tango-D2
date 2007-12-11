@@ -586,7 +586,7 @@ class Layout(T)
                             auto s = cast(TypeInfo_Struct) type;
                             if (s.xtoString)
                                 return fromUtf8 (s.xtoString(p), result);
-                            break;
+                            goto default;
 
                        case TypeCode.INTERFACE:
                             auto x = *cast(void**) p;
