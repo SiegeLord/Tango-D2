@@ -38,22 +38,27 @@
 
 module tango.time.ISO8601;
 
-public import tango.time.Date;
+private import tango.time.chrono.Gregorian;
+public import tango.time.chrono.Calendar;
+public import tango.time.TimeSpan;
 
 /// Returns the number of chars used to compose a valid date: 0 if no date can be composed.
 /// Fields in date will either be correct (e.g. months will be >= 1 and <= 12) or zero.
 
-size_t iso8601Date(T)(T[] src, inout Date date, size_t expanded = 0) {
+size_t iso8601Date(T)(T[] src, ref Calendar.Date date, size_t expanded = 0) {
 	ubyte dummy = void;
 	T* p = src.ptr;
 	return doIso8601Date(p, src, date, expanded, dummy);
 }
 
-private size_t doIso8601Date(T)(inout T* p, T[] src, inout Date date, size_t expanded, out ubyte separators)
+private size_t doIso8601Date(T)(ref T* p, T[] src, ref Calendar.Date date, size_t expanded, out ubyte separators)
 out {
 	assert (!date.month || (              date.month >= 1 && date.month <= 12));
 	assert (!date.day   || (date.month && date.day   >= 1 && date.day   <= daysPerMonth(date.month, date.year)));
 } body {
+
+        // always set era to AD
+        date.era = GregorianCalendar.AD_ERA;
 
 	size_t eaten() { return p - src.ptr; }
 	bool done(T[] s) { return .done(eaten(), src.length, *p, s); }
@@ -217,27 +222,26 @@ out {
 
 /// Returns the number of chars used to compose a valid date: 0 if no date can be composed.
 /// Fields in date will be zero if incorrect: since 00:00:00,000 is a valid time, the return value must be checked to be sure of the result.
-/// date.sec may be 60 if the hours and minutes are 23 and 59, as leap seconds are occasionally added to UTC time.
-/// date.hour may be 0 or 24: the latter marks the end of a day, the former the beginning.
+/// time.seconds may be 60 if the hours and minutes are 23 and 59, as leap seconds are occasionally added to UTC time.
+/// time.hours may be 0 or 24: the latter marks the end of a day, the former the beginning.
 
-size_t iso8601Time(T)(T[] src, inout Date date) {
+size_t iso8601Time(T)(T[] src, ref Calendar.Date date, ref TimeOfDay time) {
 	bool dummy = void;
 	T* p = src.ptr;
-	return doIso8601Time(p, src, date, WHATEVER, dummy);
+	return doIso8601Time(p, src, date, time, WHATEVER, dummy);
 }
 
 private enum : ubyte { NO = 0, YES = 1, WHATEVER }
 
 // bothValid is used only to get iso8601() to catch errors correctly
-private size_t doIso8601Time(T)(inout T* p, T[] src, inout Date date, ubyte separators, out bool bothValid)
+private size_t doIso8601Time(T)(ref T* p, T[] src, ref Calendar.Date date, ref TimeOfDay time, ubyte separators, out bool bothValid)
 out {
 	// yes, I could just write >= 0, but this emphasizes the difference between == 0 and != 0
-	assert (!date.hour || (date.hour > 0 && date.hour <=  24));
-	assert (!date.min  || (date.min  > 0 && date.min  <=  59));
-	assert (!date.sec  || (date.sec  > 0 && date.sec  <=  60));
-	assert (!date.ms   || (date.ms   > 0 && date.ms   <= 999));
+	assert (!time.hours   || (time.hours   > 0 && time.hours   <=  24));
+	assert (!time.minutes || (time.minutes > 0 && time.minutes <=  59));
+	assert (!time.seconds || (time.seconds > 0 && time.seconds <=  60));
+	assert (!time.millis  || (time.millis  > 0 && time.millis  <= 999));
 } body {
-
 	size_t eaten() { return p - src.ptr; }
 	bool done(T[] s) { return .done(eaten(), src.length, *p, s); }
 
@@ -251,7 +255,7 @@ out {
 		return true;
 	}
 
-	byte getTimeZone() { return .getTimeZone(p, date, separators, &done); }
+	byte getTimeZone() { return .getTimeZone(p, date, time, separators, &done); }
 
 	// TODO/BUG: need to convert from local time if got T
 	// however, Tango provides nothing like Phobos's std.date.getLocalTZA
@@ -262,8 +266,8 @@ out {
 	if (separators == WHATEVER)
 		accept(p, 'T');
 
-	if (parseInt(p, 2u, date.hour) != 2 || date.hour > 24)
-		return (date.hour = 0);
+	if (parseInt(p, 2u, time.hours) != 2 || time.hours > 24)
+		return (time.hours = 0);
 
 	auto onlyHour = eaten();
 
@@ -271,7 +275,7 @@ out {
 	if (done("+,-.012345:"))
 		return onlyHour;
 
-	switch (getDecimal(p, date, HOUR)) {
+	switch (getDecimal(p, time, HOUR)) {
 		case NOTFOUND: break;
 		case    FOUND:
 			auto onlyDecimal = eaten();
@@ -295,12 +299,12 @@ out {
 	if (
 		!checkColon() ||
 
-		parseInt(p, 2u, date.min) != 2 || date.min > 59 ||
+		parseInt(p, 2u, time.minutes) != 2 || time.minutes > 59 ||
 
 		// hour 24 is only for 24:00:00
-		(date.hour == 24 && date.min != 0)
+		(time.hours == 24 && time.minutes != 0)
 	) {
-		date.min = 0;
+		time.minutes = 0;
 		return onlyHour;
 	}
 
@@ -312,7 +316,7 @@ out {
 		return onlyMinute;
 	}
 
-	switch (getDecimal(p, date, MINUTE)) {
+	switch (getDecimal(p, time, MINUTE)) {
 		case NOTFOUND: break;
 		case    FOUND:
 			auto onlyDecimal = eaten();
@@ -337,12 +341,12 @@ out {
 	if (
 		!checkColon() ||
 
-		parseInt(p, 2u, date.sec) != 2 || date.sec > 60 ||
+		parseInt(p, 2u, time.seconds) != 2 || time.seconds > 60 ||
 
-		(date.hour == 24 && date.sec  != 0) ||
-		(date.sec  == 60 && date.hour != 23 && date.min != 59)
+		(time.hours == 24 && time.seconds  != 0) ||
+		(time.seconds  == 60 && time.hours != 23 && time.minutes != 59)
 	) {
-		date.sec = 0;
+		time.seconds = 0;
 		return onlyMinute;
 	}
 
@@ -354,7 +358,7 @@ out {
 		return onlySecond;
 	}
 
-	switch (getDecimal(p, date, SECOND)) {
+	switch (getDecimal(p, time, SECOND)) {
 		case NOTFOUND: break;
 		case    FOUND:
 			auto onlyDecimal = eaten();
@@ -385,7 +389,7 @@ out {
 /// This function is very strict: either a complete date and time can be extracted, or nothing can.
 /// If this function returns zero, the fields of date are undefined.
 
-size_t iso8601(T)(T[] src, inout Date date) {
+size_t iso8601(T)(T[] src, ref Calendar.Date date, ref TimeOfDay time) {
 	T* p = src.ptr;
 	ubyte sep;
 	bool bothValid = false;
@@ -398,7 +402,7 @@ size_t iso8601(T)(T[] src, inout Date date) {
 		// but this is just a convenience method for date+time anyway
 		demand(p, 'T') &&
 
-		doIso8601Time(p, src, date, sep, bothValid) &&
+		doIso8601Time(p, src, date, time, sep, bothValid) &&
 		bothValid
 	)
 		return p - src.ptr;
@@ -413,7 +417,7 @@ size_t iso8601(T)(T[] src, inout Date date) {
 \+ +++++++++++++++++++++++++++++++++++++++ +/
 
 // /([+-]Y{expanded})?(YYYY|YY)/
-private bool parseYear(T)(inout T* p, size_t expanded, out int year) {
+private bool parseYear(T)(ref T* p, size_t expanded, out int year) {
 
 	bool doParse() {
 		T* p2 = p;
@@ -448,7 +452,7 @@ private bool parseYear(T)(inout T* p, size_t expanded, out int year) {
 // uses date.year for leap year calculations
 // returns false if week and date.year are incompatible
 // based on the VBA function at http://www.probabilityof.com/ISO8601.shtml
-private bool getMonthAndDayFromWeek(inout Date date, int week, int day = 1) {
+private bool getMonthAndDayFromWeek(ref Calendar.Date date, int week, int day = 1) {
 	if (week < 1 || week > 53 || day < 1 || day > 7)
 		return false;
 
@@ -574,7 +578,7 @@ in {
 private enum : ubyte { HOUR, MINUTE, SECOND }
 private enum :  byte { BAD, FOUND, NOTFOUND }
 
-private byte getDecimal(T)(inout T* p, inout Date date, ubyte which) {
+private byte getDecimal(T)(ref T* p, ref TimeOfDay time, ubyte which) {
 	if (accept(p, ',') || accept(p, '.')) {
 
 		T* p2 = p;
@@ -603,15 +607,15 @@ private byte getDecimal(T)(inout T* p, inout Date date, ubyte which) {
 
 		switch (which) {
 			case HOUR:
-				date.min = 6 * i / pow;
-				date.sec = 6 * i % pow;
+				time.minutes = 6 * i / pow;
+				time.seconds = 6 * i % pow;
 				break;
 			case MINUTE:
-				date.sec = 6    * i / pow;
-				date.ms  = 6000 * i / pow % 1000;
+				time.seconds = 6    * i / pow;
+				time.millis  = 6000 * i / pow % 1000;
 				break;
 			case SECOND:
-				date.ms = 100 * i / pow;
+				time.millis = 100 * i / pow;
 				break;
 
 			default: assert (false);
@@ -626,7 +630,7 @@ private byte getDecimal(T)(inout T* p, inout Date date, ubyte which) {
 // the Date is always UTC, so this just adds the offset to the date fields
 // another option would be to add time zone fields to Date and have this fill them
 
-private byte getTimeZone(T)(inout T* p, inout Date date, ubyte separators, bool delegate(T[]) done) {
+private byte getTimeZone(T)(ref T* p, ref Calendar.Date date, ref TimeOfDay time, ubyte separators, bool delegate(T[]) done) {
 	if (accept(p, 'Z'))
 		return FOUND;
 
@@ -638,15 +642,17 @@ private byte getTimeZone(T)(inout T* p, inout Date date, ubyte separators, bool 
 	else if (!accept(p, '+'))
 		return NOTFOUND;
 
-	int hour;
+	int hour, realhour = time.hours, realminute = time.minutes;
+        scope(exit) time.hours = cast(uint)realhour;
+        scope(exit) time.minutes = cast(uint)realminute;
 	if (parseInt(p, 2u, hour) != 2 || hour > 12 || (hour == 0 && factor == 1))
 		return BAD;
 
-	date.hour += factor * hour;
+	realhour += factor * hour;
 
 	void hourCheck() {
-		if (date.hour > 24 || (date.hour == 24 && (date.min || date.sec))) {
-			date.hour -= 24;
+		if (realhour > 24 || (realhour == 24 && (realminute || time.seconds))) {
+			realhour -= 24;
 
 			// BUG? what should be done?
 			// if we get a time like 20:00-05:00
@@ -663,8 +669,8 @@ private byte getTimeZone(T)(inout T* p, inout Date date, ubyte separators, bool 
 					++date.year;
 				}
 			}
-		} else if (date.hour < 0) {
-			date.hour += 24;
+		} else if (realhour < 0) {
+			realhour += 24;
 
 			// ditto above BUG?
 
@@ -696,15 +702,15 @@ private byte getTimeZone(T)(inout T* p, inout Date date, ubyte separators, bool 
 
 	assert (minute <= 59);
 
-	date.min += factor * minute;
+	realminute += factor * minute;
 
-	if (date.min > 59) {
-		date.min -= 60;
-		++date.hour;
+	if (realminute > 59) {
+		realminute -= 60;
+		++realhour;
 
-	} else if (date.min < 0) {
-		date.min += 60;
-		--date.hour;
+	} else if (realminute < 0) {
+		realminute += 60;
+		--realhour;
 	}
 
 	hourCheck();
@@ -717,7 +723,7 @@ private byte getTimeZone(T)(inout T* p, inout Date date, ubyte separators, bool 
 
 \+ +++++++++++++++++++++++++++++++++++++++ +/
 
-private bool accept(T)(inout T* p, char c) {
+private bool accept(T)(ref T* p, char c) {
 	if (*p == c) {
 		++p;
 		return true;
@@ -725,7 +731,7 @@ private bool accept(T)(inout T* p, char c) {
 	return false;
 }
 
-private bool demand(T)(inout T* p, char c) {
+private bool demand(T)(ref T* p, char c) {
 	return (*p++ == c);
 }
 
@@ -761,8 +767,8 @@ private int daysPerMonth(int month, int year) {
 
 // note: ISO 8601 code relies on these values always being positive, failing if *p == '-'
 
-private int parseIntMax(T) (inout T* p) {
-	int value = 0;
+private uint parseIntMax(T) (ref T* p) {
+	uint value = 0;
 	while (*p >= '0' && *p <= '9')
 		value = value * 10 + *p++ - '0';
 	return value;
@@ -770,9 +776,9 @@ private int parseIntMax(T) (inout T* p) {
 
 // ... but accept no more than max digits
 
-private int parseIntMax(T)(inout T* p, uint max) {
+private uint parseIntMax(T)(ref T* p, uint max) {
 	size_t i = 0;
-	int value = 0;
+	uint value = 0;
 	while (p[i] >= '0' && p[i] <= '9' && i < max)
 		value = value * 10 + p[i++] - '0';
 	p += i;
@@ -781,15 +787,15 @@ private int parseIntMax(T)(inout T* p, uint max) {
 
 // ... and return the amount of digits processed
 
-private size_t parseInt(T)(inout T* p, out int i) {
+private size_t parseInt(T, U)(ref T* p, out U i) {
 	T* p2 = p;
-	i = parseIntMax(p);
+	i = cast(U)parseIntMax(p);
 	return p - p2;
 }
 
-private size_t parseInt(T)(inout T* p, uint max, out int i) {
+private size_t parseInt(T, U)(ref T* p, uint max, out U i) {
 	T* p2 = p;
-	i = parseIntMax(p, max);
+	i = cast(U)parseIntMax(p, max);
 	return p - p2;
 }
 
@@ -801,7 +807,8 @@ debug (UnitTest) {
 	//void main() { }
 
 	unittest {
-		Date date;
+		Calendar.Date date;
+		TimeOfDay time;
 
 		// date
 
@@ -1048,164 +1055,167 @@ debug (UnitTest) {
 		// time
 
 		size_t t(char[] s) {
+			time = time.init;
 			date = date.init;
-			return iso8601Time(s, date);
+
+			return iso8601Time(s, date, time);
 		}
 
 		assert (t("20") == 2);
-		assert (date.hour == 20);
-		assert (date.min  ==  0);
-		assert (date.sec  ==  0);
+		assert (time.hours == 20);
+		assert (time.minutes  ==  0);
+		assert (time.seconds  ==  0);
 
 		assert (t("30") == 0);
 
 		assert (t("2004") == 4);
-		assert (date.hour == 20);
-		assert (date.min  ==  4);
-		assert (date.sec  ==  0);
+		assert (time.hours == 20);
+		assert (time.minutes  ==  4);
+		assert (time.seconds  ==  0);
 
 		assert (t("200406") == 6);
-		assert (date.hour == 20);
-		assert (date.min  ==  4);
-		assert (date.sec  ==  6);
+		assert (time.hours == 20);
+		assert (time.minutes  ==  4);
+		assert (time.seconds  ==  6);
 
 		assert (t("24:00") == 5);
-		assert (date.hour == 24); // should compare equal with 0... can't just set to 0, loss of information
-		assert (date.min  ==  0);
-		assert (date.sec  ==  0);
+		assert (time.hours == 24); // should compare equal with 0... can't just set to 0, loss of information
+		assert (time.minutes  ==  0);
+		assert (time.seconds  ==  0);
 
 		assert (t("00:00") == 5);
-		assert (date.hour == 0);
-		assert (date.min  == 0);
-		assert (date.sec  == 0);
+		assert (time.hours == 0);
+		assert (time.minutes  == 0);
+		assert (time.seconds  == 0);
 
 		assert (t("23:59:60") == 8);
-		assert (date.hour == 23);
-		assert (date.min  == 59);
-		assert (date.sec  == 60); // leap second
+		assert (time.hours == 23);
+		assert (time.minutes  == 59);
+		assert (time.seconds  == 60); // leap second
 
 		assert (t("16:49:30,001") == 12);
-		assert (date.hour == 16);
-		assert (date.min  == 49);
-		assert (date.sec  == 30);
-		assert (date.ms   ==  1);
+		assert (time.hours == 16);
+		assert (time.minutes  == 49);
+		assert (time.seconds  == 30);
+		assert (time.millis   ==  1);
 
 		assert (t("15:48:29,1") == 10);
-		assert (date.hour ==  15);
-		assert (date.min  ==  48);
-		assert (date.sec  ==  29);
-		assert (date.ms   == 100);
+		assert (time.hours ==  15);
+		assert (time.minutes  ==  48);
+		assert (time.seconds  ==  29);
+		assert (time.millis   == 100);
 
 		assert (t("02:10:34,a") ==  8);
-		assert (date.hour ==  2);
-		assert (date.min  == 10);
-		assert (date.sec  == 34);
+		assert (time.hours ==  2);
+		assert (time.minutes  == 10);
+		assert (time.seconds  == 34);
 
 		assert (t("14:50,5") == 7);
-		assert (date.hour == 14);
-		assert (date.min  == 50);
-		assert (date.sec  == 30);
+		assert (time.hours == 14);
+		assert (time.minutes  == 50);
+		assert (time.seconds  == 30);
 
 		assert (t("1540,4") == 6);
-		assert (date.hour == 15);
-		assert (date.min  == 40);
-		assert (date.sec  == 24);
+		assert (time.hours == 15);
+		assert (time.minutes  == 40);
+		assert (time.seconds  == 24);
 
 		assert (t("1250,") == 4);
-		assert (date.hour == 12);
-		assert (date.min  == 50);
+		assert (time.hours == 12);
+		assert (time.minutes  == 50);
 
 		assert (t("14,5") == 4);
-		assert (date.hour == 14);
-		assert (date.min  == 30);
+		assert (time.hours == 14);
+		assert (time.minutes  == 30);
 
 		assert (t("12,") == 2);
-		assert (date.hour == 12);
-		assert (date.min  ==  0);
+		assert (time.hours == 12);
+		assert (time.minutes  ==  0);
 
 		assert (t("24:00:01") == 5);
-		assert (date.hour == 24);
-		assert (date.min  ==  0);
-		assert (date.sec  ==  0);
+		assert (time.hours == 24);
+		assert (time.minutes  ==  0);
+		assert (time.seconds  ==  0);
 
 		assert (t("12:34+:56") == 5);
-		assert (date.hour == 12);
-		assert (date.min  == 34);
-		assert (date.sec  ==  0);
+		assert (time.hours == 12);
+		assert (time.minutes  == 34);
+		assert (time.seconds  ==  0);
 
 		// just convert to UTC time for time zones?
 
 		assert (t("14:45:15Z") == 9);
-		assert (date.hour == 14);
-		assert (date.min  == 45);
-		assert (date.sec  == 15);
+		assert (time.hours == 14);
+		assert (time.minutes  == 45);
+		assert (time.seconds  == 15);
 
 		assert (t("23Z") == 3);
-		assert (date.hour == 23);
-		assert (date.min  ==  0);
-		assert (date.sec  ==  0);
+		assert (time.hours == 23);
+		assert (time.minutes  ==  0);
+		assert (time.seconds  ==  0);
 
 		assert (t("21:32:43-12:34") == 14);
-		assert (date.hour == 10);
-		assert (date.min  ==  6);
-		assert (date.sec  == 43);
+		assert (time.hours == 10);
+		assert (time.minutes  ==  6);
+		assert (time.seconds  == 43);
 
 		assert (t("12:34,5+0000") == 12);
-		assert (date.hour == 12);
-		assert (date.min  == 34);
-		assert (date.sec  == 30);
+		assert (time.hours == 12);
+		assert (time.minutes  == 34);
+		assert (time.seconds  == 30);
 
 		assert (t("03:04+07") == 8);
-		assert (date.hour == 20);
-		assert (date.min  ==  4);
-		assert (date.sec  ==  0);
+		assert (time.hours == 20);
+		assert (time.minutes  ==  4);
+		assert (time.seconds  ==  0);
 
 		assert (t("11,5+") == 4);
-		assert (date.hour == 11);
-		assert (date.min  == 30);
+		assert (time.hours == 11);
+		assert (time.minutes  == 30);
 
 		assert (t("07-") == 2);
-		assert (date.hour == 7);
+		assert (time.hours == 7);
 
 		assert (t("06:12,7-") == 7);
-		assert (date.hour ==  6);
-		assert (date.min  == 12);
-		assert (date.sec  == 42);
+		assert (time.hours ==  6);
+		assert (time.minutes  == 12);
+		assert (time.seconds  == 42);
 
 		assert (t("050403,2+") == 8);
-		assert (date.hour ==   5);
-		assert (date.min  ==   4);
-		assert (date.sec  ==   3);
-		assert (date.ms   == 200);
+		assert (time.hours ==   5);
+		assert (time.minutes  ==   4);
+		assert (time.seconds  ==   3);
+		assert (time.millis   == 200);
 
 		assert (t("061656-") == 6);
-		assert (date.hour ==   6);
-		assert (date.min  ==  16);
-		assert (date.sec  ==  56);
+		assert (time.hours ==   6);
+		assert (time.minutes  ==  16);
+		assert (time.seconds  ==  56);
 
 		// date and time together
 
 		size_t b(char[] s) {
 			date = date.init;
-			return iso8601(s, date);
+                        time = time.init;
+			return iso8601(s, date, time);
 		}
 
 		assert (b("2007-08-09T12:34:56") == 19);
 		assert (date.year  == 2007);
 		assert (date.month ==    8);
 		assert (date.day   ==    9);
-		assert (date.hour  ==   12);
-		assert (date.min   ==   34);
-		assert (date.sec   ==   56);
+		assert (time.hours  ==   12);
+		assert (time.minutes   ==   34);
+		assert (time.seconds   ==   56);
 
 		assert (b("1985W155T235030,768") == 19);
 		assert (date.year  == 1985);
 		assert (date.month ==    4);
 		assert (date.day   ==   12);
-		assert (date.hour  ==   23);
-		assert (date.min   ==   50);
-		assert (date.sec   ==   30);
-		assert (date.ms    ==  768);
+		assert (time.hours  ==   23);
+		assert (time.minutes   ==   50);
+		assert (time.seconds   ==   30);
+		assert (time.millis    ==  768);
 
 		// just convert to UTC time for time zones?
 
@@ -1213,49 +1223,49 @@ debug (UnitTest) {
 		assert (date.year  == 2009);
 		assert (date.month ==    8);
 		assert (date.day   ==    7);
-		assert (date.hour  ==    1);
-		assert (date.min   ==    2);
-		assert (date.sec   ==    3);
+		assert (time.hours  ==    1);
+		assert (time.minutes   ==    2);
+		assert (time.seconds   ==    3);
 
 		assert (b("2007-08-09T03:02,5+04:56") == 24);
 		assert (date.year  == 2007);
 		assert (date.month ==    8);
 		assert (date.day   ==    8);
-		assert (date.hour  ==   22);
-		assert (date.min   ==    6);
-		assert (date.sec   ==   30);
+		assert (time.hours  ==   22);
+		assert (time.minutes   ==    6);
+		assert (time.seconds   ==   30);
 
 		assert (b("20000228T2330-01") == 16);
 		assert (date.year  == 2000);
 		assert (date.month ==    2);
 		assert (date.day   ==   29);
-		assert (date.hour  ==    0);
-		assert (date.min   ==   30);
-		assert (date.sec   ==    0);
+		assert (time.hours  ==    0);
+		assert (time.minutes   ==   30);
+		assert (time.seconds   ==    0);
 		
 		assert (b("2007-01-01T00:00+01") == 19);
 		assert (date.year  == 2006);
 		assert (date.month ==   12);
 		assert (date.day   ==   31);
-		assert (date.hour  ==   23);
-		assert (date.min   ==    0);
-		assert (date.sec   ==    0);
+		assert (time.hours  ==   23);
+		assert (time.minutes   ==    0);
+		assert (time.seconds   ==    0);
 
 		assert (b("2007-12-31T23:00-01") == 19);
 		assert (date.year  == 2007);
 		assert (date.month ==   12);
 		assert (date.day   ==   31);
-		assert (date.hour  ==   24);
-		assert (date.min   ==    0);
-		assert (date.sec   ==    0);
+		assert (time.hours  ==   24);
+		assert (time.minutes   ==    0);
+		assert (time.seconds   ==    0);
 
 		assert (b("2007-12-31T23:01-01") == 19);
 		assert (date.year  == 2008);
 		assert (date.month ==    1);
 		assert (date.day   ==    1);
-		assert (date.hour  ==    0);
-		assert (date.min   ==    1);
-		assert (date.sec   ==    0);
+		assert (time.hours  ==    0);
+		assert (time.minutes   ==    1);
+		assert (time.seconds   ==    0);
 
 		assert (b("1902-03-04T1a") == 0);
 		assert (b("1902-03-04T10:aa") == 0);
