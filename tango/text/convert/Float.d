@@ -257,7 +257,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            }
         else
            {
-           assert (dst.length > (exp + decimals + 1));
+           assert (dst.length >= (((exp < 0) ? 0 : exp) + decimals + 1));
 
            // if fraction only, emit a leading zero
            if (exp < 0)
@@ -478,6 +478,10 @@ debug (Float)
         void main() 
         {
                 char[20] tmp;
+
+                Cout (format(tmp, 1)).newline;
+                Cout (format(tmp, 0)).newline;
+                Cout (format(tmp, 0.000001)).newline;
 
                 Cout (format(tmp, 3.14159, 6, 0)).newline;
                 Cout (format(tmp, 3e100, 6, 3)).newline;
