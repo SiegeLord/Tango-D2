@@ -22,8 +22,8 @@ private import tango.time.chrono.Calendar;
 */
 class GregorianCalendar : Calendar 
 {
-        // import parent overrides of getTime
-        alias Calendar.getTime getTime;
+        // import parent overrides of toTime
+        alias Calendar.toTime toTime;
         private static GregorianCalendar defaultInstance_;
 
         enum Type 
@@ -69,7 +69,7 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
+        override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
         {
                 return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
         }
@@ -211,7 +211,7 @@ class GregorianCalendar : Calendar
                 return cast(int) type_;
         }
 
-        override void split(Time time, out int year, out int month, out int day, out int dayOfYear, out DayOfWeek dayOfWeek, out int era)
+        override void split(Time time, ref int year, ref int month, ref int day, ref int dayOfYear, ref DayOfWeek dayOfWeek, ref int era)
         {
             splitDate(time.ticks, year, month, day, dayOfYear);
             era = AD_ERA;
@@ -225,7 +225,7 @@ class GregorianCalendar : Calendar
                 return defaultInstance_;
         }
 
-        package static void splitDate (long ticks, out int year, out int month, out int day, out int dayOfYear) 
+        package static void splitDate (long ticks, ref int year, ref int month, ref int day, ref int dayOfYear) 
         {
                 int numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
                 int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;

@@ -77,6 +77,54 @@ public abstract class Calendar
                 Saturday   /// Indicates _Saturday.
         }
 
+        struct Date
+        {
+                int             era,
+                                day,            /// 1 .. 31
+                                year,           /// -9999 to +9999
+                                month,          /// 1 .. 12
+                                dayOfYear;      /// 1 .. 365
+                DayOfWeek       dayOfWeek;      /// 0 .. 6
+        }
+
+ 
+        /**
+         * Get the components of a Time structure using the rules of the
+         * calendar.  This is useful if you want more than one of the given
+         * components.  Note that this doesn't handle the time of day, as that
+         * is calculated directly from the Time struct.
+         *
+         * The default implemenation is to call all the other accessors
+         * directly, a derived class may override if it has a more efficient
+         * method.
+         */
+        Date toDate (Time time)
+        {
+                Date d;
+                split (time, d.year, d.month, d.day, d.dayOfYear, d.dayOfWeek, d.era);
+                return d;
+        }
+
+        /**
+         * Get the components of a Time structure using the rules of the
+         * calendar.  This is useful if you want more than one of the given
+         * components.  Note that this doesn't handle the time of day, as that
+         * is calculated directly from the Time struct.
+         *
+         * The default implemenation is to call all the other accessors
+         * directly, a derived class may override if it has a more efficient
+         * method.
+         */
+        void split (Time time, ref int year, ref int month, ref int dayOfMonth, ref int dayOfYear, ref DayOfWeek dayOfWeek, ref int era)
+        {
+            year = getYear(time);
+            month = getMonth(time);
+            dayOfMonth = getDayOfMonth(time);
+            dayOfYear = getDayOfYear(time);
+            dayOfWeek = getDayOfWeek(time);
+            era = getEra(time);
+        }
+
         /**
         * Returns a Time value set to the specified date and time in the current era.
         * Params:
@@ -89,9 +137,19 @@ public abstract class Calendar
         *   millisecond = An integer representing the _millisecond.
         * Returns: The Time set to the specified date and time.
         */
-        Time getTime (int year, int month, int day, int hour, int minute, int second, int millisecond) 
+        Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond=0) 
         {
-                return getTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
+                return toTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
+        }
+
+        Time toTime (Date d) 
+        {
+                return toTime (d.year, d.month, d.day, 0, 0, 0, 0, CURRENT_ERA);
+        }
+
+        Time toTime (Date d, TimeOfDay t) 
+        {
+                return toTime (d.year, d.month, d.day, t.hours, t.minutes, t.seconds, t.millis, CURRENT_ERA);
         }
 
         /**
@@ -107,7 +165,7 @@ public abstract class Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        abstract Time getTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
+        abstract Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
 
         /**
         * When overridden, returns the day of the week in the specified Time.
@@ -222,7 +280,7 @@ public abstract class Calendar
         int getWeekOfYear (Time time, WeekRule rule, DayOfWeek firstDayOfWeek) 
         {
                 int year = getYear (time);
-                int jan1 = cast(int) getDayOfWeek (getTime (year, 1, 1, 0, 0, 0, 0));
+                int jan1 = cast(int) getDayOfWeek (toTime (year, 1, 1, 0, 0, 0, 0));
 
                 switch (rule) 
                        {
@@ -251,7 +309,7 @@ public abstract class Calendar
                             year = getYear(time) - 1;
                             int month = getMonthsInYear (year);
                             day = getDaysInMonth (year, month);
-                            return getWeekOfYear(getTime(year, month, day, 0, 0, 0, 0), rule, firstDayOfWeek);
+                            return getWeekOfYear(toTime(year, month, day, 0, 0, 0, 0), rule, firstDayOfWeek);
 
                        default:
                             break;
@@ -290,26 +348,6 @@ public abstract class Calendar
         int id() 
         {
                 return -1;
-        }
-
-        /**
-         * Get the components of a Time structure using the rules of the
-         * calendar.  This is useful if you want more than one of the given
-         * components.  Note that this doesn't handle the time of day, as that
-         * is calculated directly from the Time struct.
-         *
-         * The default implemenation is to call all the other accessors
-         * directly, a derived class may override if it has a more efficient
-         * method.
-         */
-        void split(Time time, out int year, out int month, out int dayOfMonth, out int dayOfYear, out DayOfWeek dayOfWeek, out int era)
-        {
-            year = getYear(time);
-            month = getMonth(time);
-            dayOfMonth = getDayOfMonth(time);
-            dayOfYear = getDayOfYear(time);
-            dayOfWeek = getDayOfWeek(time);
-            era = getEra(time);
         }
 
         package static long getTimeTicks (int hour, int minute, int second) 

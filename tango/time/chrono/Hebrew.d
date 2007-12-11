@@ -67,7 +67,7 @@ public class HebrewCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: A Time set to the specified date and time.
    */
-  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
     checkYear(year, era);
     return getGregorianTime(year, month, day, hour, minute, second, millisecond);
   }

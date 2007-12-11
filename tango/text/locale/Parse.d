@@ -297,7 +297,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
   }
 
   if (doParse()) {
-    result.parsedDate = result.calendar.getTime(result.year, result.month, result.day, result.hour, result.minute, result.second, 0);
+    result.parsedDate = result.calendar.toTime(result.year, result.month, result.day, result.hour, result.minute, result.second, 0);
     return true;
   }
   return false;

@@ -42,7 +42,7 @@ public class HijriCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: A Time set to the specified date and time.
    */
-  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
     return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.TicksPerDay + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
   }
 

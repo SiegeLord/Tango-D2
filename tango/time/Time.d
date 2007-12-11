@@ -190,7 +190,7 @@ struct Time
 
         Time date () 
         {
-                return *this - time.span;
+                return *this - TimeOfDay.modulo24(ticks_);
         }
 
         /**********************************************************************

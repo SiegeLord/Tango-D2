@@ -1,9 +1,9 @@
 /**
- * copyright:  Copyright (c) 2007 Steven Schveighoffer . All rights reserved
+ * copyright:      Copyright (c) 2007 Steven Schveighoffer, Kris Bell. All rights reserved
  * license:        BSD style: $(LICENSE)
  * version:        Nov 2007: Initial release
  *                 Dec 2007: Added TimeOfDay, moved to tango.time
- * author:         Steve Schveighoffer
+ * author:         Steve Schveighoffer, Kris
  *
  * TimeSpan represents a length of time
  */
@@ -21,15 +21,15 @@ module tango.time.TimeSpan;
  *
  * Note: nobody should change this struct without really good reason as it is
  * required to be a part of some interfaces.  It should be treated as a
- * builtin type.
+ * builtin type. Also note that there is deliberately no opCall constructor here, 
+ * since it tends to produce too much overhead. 
  *
  * Example:
  * -------------------
  *
  * Time start = Clock.now;
- * Thread.sleep(TimeSpan.millis(150).interval);
- * Stdout.format("slept for {} ms",
- *    (start - Clock.now).millis).newline;
+ * Thread.sleep(0.150);
+ * Stdout.formatln("slept for {} ms", (Clock.now-start).millis);
  * -------------------
  * See_Also: tango.core.Thread, tango.time.Time, tango.time.Clock
  */
@@ -69,57 +69,6 @@ struct TimeSpan
                 Epoch1601           = DaysPer400Years * 4 * TicksPerDay,
                 Epoch1970           = Epoch1601 + TicksPerSecond * 11644473600L,
         }
-/+
-        enum Tick : long 
-        {
-                Micro  = TicksPerMicrosecond,     
-                Milli  = TicksPerMillisecond,
-                Second = TicksPerSecond,
-                Minute = TicksPerMinute,
-                Hour   = TicksPerHour,
-                Day    = TicksPerDay
-        }
-
-        enum Milli : long 
-        {
-                Second = 1000,
-                Minute = Second * 60,
-                Hour   = Minute * 60,
-                Day    = Hour * 24
-        }
-
-        enum Day : long 
-        {
-                Year    = 365,
-                Year4   = Year * 4 + 1,
-                Year100 = Year4 * 25 - 1,
-                Year400 = Year100 * 4 + 1
-        }
-
-        /**
-         * Useful constant TimeSpans.  Provides a TimeSpan that represents the
-         * measurement of the same name.
-         */
-
-        // NOTE: const is not manifest-constant, so the use of these makes
-        // for less efficient codegen. I've removed them for now
-        static const TimeSpan microsecond = {TicksPerMicrosecond},
-                              millisecond = {TicksPerMillisecond},
-                              second      = {TicksPerSecond},
-                              minute      = {TicksPerMinute},
-                              hour        = {TicksPerHour},
-                              day         = {TicksPerDay};
-
-        //
-        // these shouldn't be used in normal code, but are here for
-        // convenience for other code to use.
-        //
-        static const TimeSpan year = {DaysPerYear * TicksPerDay},
-                              fourYears = {DaysPer4Years * TicksPerDay},
-                              hundredYears = {DaysPer100Years * TicksPerDay},
-                              fourHundredYears = {DaysPer400Years * TicksPerDay};
-
-+/
 
         /**
          * Minimum TimeSpan
@@ -490,7 +439,7 @@ struct TimeSpan
 
         Represents a time of day. This is different from TimeSpan in that 
         each component is represented within the limits of everyday time, 
-        rather than from the start of time. Effectively, the TimeOfDay
+        rather than from the start of the Epoch. Effectively, the TimeOfDay
         epoch is the first second of each day.
 
         This is handy for dealing strictly with a 24-hour clock instead of
@@ -511,37 +460,10 @@ struct TimeSpan
 
 struct TimeOfDay 
 {
-        /*
-         * only member of the struct
-         */
-        private TimeSpan span_;
-
-        /*
-         * Ensures span_ is positive and a valid time of day for negative
-         * times
-         */
-        private void normalize()
-        {
-                span_.ticks_ %= TimeSpan.TicksPerDay;
-                if(span_.ticks_ < 0)
-                        span_.ticks_ += TimeSpan.TicksPerDay;
-        }
-
-        /**
-         * constructor.
-         * Params: ticks = ticks representing a Time value.  These are
-         * normalized so they represent a time of day.
-         *
-         * Returns: a TimeOfDay value that corresponds to the time of day of
-         * the given number of ticks.
-         */
-        static TimeOfDay opCall(long ticks)
-        {
-                TimeOfDay result;
-                result.span_ = TimeSpan(ticks);
-                result.normalize();
-                return result;
-        }
+        public uint hours,
+                    minutes,
+                    seconds,
+                    millis;
 
         /**
          * constructor.
@@ -549,113 +471,75 @@ struct TimeOfDay
          *         minutes = number of minutes into the hour
          *         seconds = number of seconds into the minute
          *         millis = number of milliseconds into the second
-         *         micros = number of microseconds into the millisecond
          *
-         * Returns: a TimeOfDay representing the given time.
+         * Returns: a TimeOfDay representing the given time fields.
+         */
+        static TimeOfDay opCall(uint hours, uint minutes, uint seconds, uint millis=0)
+        {
+                TimeOfDay t = void;
+                t.hours   = hours;
+                t.minutes = minutes;
+                t.seconds = seconds;
+                t.millis  = millis;
+                return t;
+        }
+
+        /**
+         * constructor.
+         * Params: ticks = ticks representing a Time value.  This is normalized 
+         * so that it represent a time of day (modulo-24 etc)
          *
-         * Note: that parameters are not checked against a valid range, so
-         * passing 60 for minutes is allowed, and will just add 1 to the hour
+         * Returns: a TimeOfDay value that corresponds to the time of day of
+         * the given number of ticks.
+         */
+        static TimeOfDay opCall (long ticks)
+        {       
+                TimeOfDay t;
+                ticks = modulo24(ticks).ticks_;
+                t.millis  = cast(uint) (ticks / TimeSpan.TicksPerMillisecond); 
+                t.seconds = (t.millis / 1_000) % 60;
+                t.minutes = (t.millis / 60_000) % 60;
+                t.hours   = (t.millis / 3_600_000) % 24;
+                t.millis %= 1000;
+                return t;
+        }
+
+        /**
+         * construct a TimeSpan from the current fields
+         *
+         * Returns: a TimeOfDay representing the field values.
+         *
+         * Note: that fields are not checked against a valid range, so
+         * setting 60 for minutes is allowed, and will just add 1 to the hour
          * component, and set the minute component to 0.  The result is
          * normalized, so the hours wrap.  If you pass in 25 hours, the
          * resulting TimeOfDay will have a hour component of 1.
          */
-        static TimeOfDay opCall(uint hours, uint minutes, uint seconds, uint millis, uint micros)
+        TimeSpan span ()
         {
-                TimeOfDay result;
-                result.span_ = TimeSpan.hours(hours) +
-                        TimeSpan.minutes(minutes) + 
-                        TimeSpan.seconds(seconds) + 
-                        TimeSpan.millis(millis) +
-                        TimeSpan.micros(micros);
-                result.normalize();
-                return result;
+                return TimeSpan.hours(hours) +
+                       TimeSpan.minutes(minutes) + 
+                       TimeSpan.seconds(seconds) + 
+                       TimeSpan.millis(millis);
         }
 
-        /**********************************************************************
-
-                $(I Property.) Retrieves the equivalent TimeSpan.
-
-                Returns: A TimeSpan representing this TimeOfDay.
-
-        **********************************************************************/
-
-        TimeSpan span () 
+        /**
+         * internal routine to adjust ticks by one day. Also adjusts for
+         * offsets in the BC era
+         */
+        package static TimeSpan modulo24 (long ticks)
         {
-                return span_;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _hour component of the time.
-
-                Returns: The _hour.
-
-        **********************************************************************/
-
-        uint hours () 
-        {
-                //
-                // constructor has already normalized to within 24 hours, so
-                // no need to mod the result 
-                //
-                return cast(uint) span_.hours;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _minute component of the time.
-
-                Returns: The _minute.
-
-        **********************************************************************/
-
-        uint minutes () 
-        {
-                return cast(uint) span_.minutes % 60;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _second component of the time.
-
-                Returns: The _second.
-
-        **********************************************************************/
-
-        uint seconds () 
-        {
-                return cast(uint) span_.seconds % 60;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _millisecond component of the 
-                time.
-
-                Returns: The _milliseconds.
-
-        **********************************************************************/
-
-        uint millis () 
-        {
-                return cast(uint) span_.millis % 1000;
-        }
-
-        /**********************************************************************
-
-                $(I Property.) Retrieves the _microsecond component of the 
-                time.
-
-                Returns: The _microseconds.
-
-        **********************************************************************/
-
-        uint micros () 
-        {
-                return cast(uint) span_.micros % 1000;
+                ticks %= TimeSpan.TicksPerDay;
+                if (ticks < 0)
+                    ticks += TimeSpan.TicksPerDay;
+                return TimeSpan (ticks);
         }
 }
 
+
+/******************************************************************************
+
+******************************************************************************/
 
 debug (UnitTest)
 {
@@ -671,8 +555,8 @@ debug (UnitTest)
                 assert(TimeSpan.min >= TimeSpan.min);
                 assert(TimeSpan.min <= TimeSpan.min);
 
-                assert (TimeSpan.micros(999).micros is 999);
-                assert (TimeSpan.micros(1999).micros is 1999);
+                //assert (TimeSpan.micros(999).micros is 999);
+                //assert (TimeSpan.micros(1999).micros is 1999);
                 assert (TimeSpan.seconds(50).seconds is 50);
                 assert (TimeSpan.seconds(5000).seconds is 5000);
                 assert (TimeSpan.minutes(50).minutes is 50);
@@ -682,8 +566,8 @@ debug (UnitTest)
                 assert (TimeSpan.days(6).days is 6);
                 assert (TimeSpan.days(5000).days is 5000);
 
-                assert (TimeSpan.micros(999).time.micros is 999);
-                assert (TimeSpan.micros(1999).time.micros is 999);
+                //assert (TimeSpan.micros(999).time.micros is 999);
+                //assert (TimeSpan.micros(1999).time.micros is 999);
                 assert (TimeSpan.seconds(50).time.seconds is 50);
                 assert (TimeSpan.seconds(5000).time.seconds is 5000 % 60);
                 assert (TimeSpan.minutes(50).time.minutes is 50);
@@ -697,14 +581,25 @@ debug (UnitTest)
 debug (TimeSpan)
 {
         import tango.time.Clock;
+        import tango.io.Stdout;
+        import tango.time.chrono.DefaultCalendar;
 
         void main()
         {
-                auto time = Clock.now.time;
-                assert (time.seconds < 60);
+                auto tod = TimeOfDay (25, 2, 3, 4);
+                tod = tod.span.time;
+                assert (tod.hours is 1);
+                assert (tod.minutes is 2);
+                assert (tod.seconds is 3);
+                assert (tod.millis is 4);
 
                 auto t = TimeSpan(1);
                 auto h = t.hours;
                 auto m = t.time.minutes;
+
+                auto now = Clock.now;
+                auto time = now.time;
+                auto date = DefaultCalendar.toDate (now);
+                now = DefaultCalendar.toTime (date, time);
         }
 }

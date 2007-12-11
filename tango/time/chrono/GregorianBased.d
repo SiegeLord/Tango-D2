@@ -34,9 +34,9 @@ private class GregorianBasedCalendar : GregorianCalendar {
     minYear_ = eraRanges_[0].minEraYear;
   }
 
-  public override Time getTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
     year = getGregorianYear(year, era);
-    return super.getTime(year, month, day, hour, minute, second, millisecond, era);
+    return super.toTime(year, month, day, hour, minute, second, millisecond, era);
   }
   public override int getYear(Time time) {
     auto ticks = time.ticks;
