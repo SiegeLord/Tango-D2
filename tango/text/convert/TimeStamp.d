@@ -29,14 +29,23 @@
 
 module tango.text.convert.TimeStamp;
 
-private import tango.core.Exception;
+private import tango.time.Time;
 
-private import tango.time.Date,
-               tango.time.Clock;
+private import tango.core.Exception;
 
 private import Util = tango.text.Util;
 
+private import tango.time.chrono.Gregorian;
+
 private import Int = tango.text.convert.Integer;
+
+/******************************************************************************
+
+        We use a Gregorian calendar for all date calculations
+
+******************************************************************************/
+
+private alias GregorianCalendar Cal;
 
 /******************************************************************************
 
@@ -116,10 +125,10 @@ dchar[] toString32 (Time time)
 
 ******************************************************************************/
 
-T[] format(T, U=Time) (T[] output, U time)
-{return format!(T)(output, cast(Time) time);}
+T[] format(T, U=Time) (T[] output, U t)
+{return format!(T)(output, cast(Time) t);}
 
-T[] format(T) (T[] output, Time time)
+T[] format(T) (T[] output, Time t)
 {
         // these arrays also reside in Date, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -136,22 +145,23 @@ T[] format(T) (T[] output, Time time)
 
         assert (output.length >= 29);
 
-        if (time is time.max)
+        if (t is t.max)
             throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 
         // convert time to field values
-        auto date = Clock.toDate (time);
+        auto time = t.time;
+        auto date = Cal.generic.toDate (t);
 
         // use the featherweight formatter ...
         T[14] tmp = void;
         return Util.layout (output, "%0, %1 %2 %3 %4:%5:%6 GMT", 
-                            Days[date.dow],
+                            Days[date.dayOfWeek],
                             convert (tmp[0..2], date.day),
                             Months[date.month-1],
                             convert (tmp[2..6], date.year),
-                            convert (tmp[6..8], date.hour),
-                            convert (tmp[8..10], date.min),
-                            convert (tmp[10..12], date.sec)
+                            convert (tmp[6..8], time.hours),
+                            convert (tmp[8..10], time.minutes),
+                            convert (tmp[10..12], time.seconds)
                            );
 }
 
@@ -195,8 +205,9 @@ Time parse(T) (T[] src, uint* ate = null)
 
 int rfc1123(T) (T[] src, inout Time value)
 {
-        Date    date;
-        T*      p = src.ptr;
+        TimeOfDay       tod;
+        Cal.Date        date;
+        T*              p = src.ptr;
 
         bool dt (inout T* p)
         {
@@ -212,11 +223,11 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             dt (p)                &&
             *p++ == ' '           &&
-            time (date, p)        &&
+            time (tod, p)         &&
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = Clock.fromDate (date);
+            value = Cal.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -235,8 +246,9 @@ int rfc1123(T) (T[] src, inout Time value)
 
 int rfc850(T) (T[] src, inout Time value)
 {
-        Date    date;
-        T*      p = src.ptr;
+        TimeOfDay       tod;
+        Cal.Date        date;
+        T*              p = src.ptr;
 
         bool dt (inout T* p)
         {
@@ -252,7 +264,7 @@ int rfc850(T) (T[] src, inout Time value)
             *p++ == ' '          &&
             dt (p)               &&
             *p++ == ' '          &&
-            time (date, p)       &&
+            time (tod, p)        &&
             *p++ == ' '          &&
             p[0..3] == "GMT")
             {
@@ -262,7 +274,7 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = Clock.fromDate (date);
+            value = Cal.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -272,7 +284,7 @@ int rfc850(T) (T[] src, inout Time value)
 
 /******************************************************************************
 
-        ANSI C's asctime() format :: "Sun Nov  6 08:49:37 1994"
+        ANSI C's asctime() format :: "Sun Nov 6 08:49:37 1994"
 
         Returns the number of elements consumed by the parse; zero if
         the parse failed
@@ -281,8 +293,9 @@ int rfc850(T) (T[] src, inout Time value)
 
 int asctime(T) (T[] src, inout Time value)
 {
-        Date    date;
-        T*      p = src.ptr;
+        TimeOfDay       tod;
+        Cal.Date        date;
+        T*              p = src.ptr;
 
         bool dt (inout T* p)
         {
@@ -297,11 +310,11 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             dt (p)                &&
             *p++ == ' '           &&
-            time (date, p)        &&
+            time (tod, p)         &&
             *p++ == ' '           &&
             (date.year = parseInt (p)) > 0)
             {
-            value = Clock.fromDate (date);
+            value = Cal.generic.toTime (date, tod);
             return p - src.ptr;
             }
 
@@ -319,8 +332,9 @@ int asctime(T) (T[] src, inout Time value)
 
 int dostime(T) (T[] src, inout Time value)
 {
-        Date    date;
-        T*      p = src.ptr;
+        TimeOfDay       tod;
+        Cal.Date        date;
+        T*              p = src.ptr;
 
         bool dt (inout T* p)
         {
@@ -331,15 +345,15 @@ int dostime(T) (T[] src, inout Time value)
                         (date.year = parseInt(p)) > 0)));
         }
 
-        if (dt(p) >= 0                    &&
-            *p++ == ' '                   &&
-            (date.hour = parseInt(p)) > 0 &&
-            *p++ == ':'                   &&
-            (date.min = parseInt(p)) > 0  &&
+        if (dt(p) >= 0                       &&
+            *p++ == ' '                      &&
+            (tod.hours = parseInt(p)) > 0    &&
+            *p++ == ':'                      &&
+            (tod.minutes = parseInt(p)) > 0  &&
             (*p == 'A' || *p == 'P'))
             {
             if (*p is 'P')
-                date.hour += 12;
+                tod.hours += 12;
             
             if (date.year < 70)
                 date.year += 2000;
@@ -347,7 +361,7 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = Clock.fromDate (date);
+            value = Cal.generic.toTime (date, tod);
             return (p+2) - src.ptr;
             }
 
@@ -365,8 +379,9 @@ int dostime(T) (T[] src, inout Time value)
 
 int iso8601(T) (T[] src, inout Time value)
 {
-        Date    date;
-        T*      p = src.ptr;
+        TimeOfDay       tod;
+        Cal.Date        date;
+        T*              p = src.ptr;
 
         bool dt (inout T* p)
         {
@@ -379,16 +394,17 @@ int iso8601(T) (T[] src, inout Time value)
 
         if (dt(p) >= 0     &&
             *p++ == ' '    &&
-            time (date, p) &&
+            time (tod, p) &&
             *p++ == ',')
             {
             date.ms = parseInt (p);
-            value = Clock.fromDate (date);
+            value = Cal.generic.toTime (date, tod);
             return p - src.ptr;
             }
 
         return 0;
 }
+
 
 /******************************************************************************
 
@@ -396,13 +412,13 @@ int iso8601(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-private bool time(T) (inout Date date, inout T* p)
+private bool time(T) (inout TimeOfDay time, inout T* p)
 {
-        return ((date.hour = parseInt(p)) > 0 &&
-                 *p++ == ':'                  &&
-                (date.min = parseInt(p)) > 0  &&
-                 *p++ == ':'                  &&
-                (date.sec = parseInt(p)) > 0);
+        return ((time.hours = parseInt(p)) > 0   &&
+                 *p++ == ':'                     &&
+                (time.minutes = parseInt(p)) > 0 &&
+                 *p++ == ':'                     &&
+                (time.seconds = parseInt(p)) > 0);
 }
 
 
@@ -556,8 +572,6 @@ private static int parseInt(T) (inout T* p)
 
 debug (UnitTest)
 {
-        // void main() {}
-        
         unittest
         {
                 wchar[30] tmp;
@@ -566,5 +580,22 @@ debug (UnitTest)
                 auto time = parse (test);
                 auto text = format (tmp, time);
                 assert (text == test);
+        }
+}
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (TimeStamp)
+{
+        void main()
+        {
+                wchar[30] tmp;
+                wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+                
+                auto time = parse (test);
+                auto text = format (tmp, time);
+                assert (text == test);              
         }
 }

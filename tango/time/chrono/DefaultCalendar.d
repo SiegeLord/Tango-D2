@@ -15,5 +15,5 @@ public static Calendar DefaultCalendar;
 
 static this()
 {
-        DefaultCalendar = GregorianCalendar.getDefaultInstance();
+        DefaultCalendar = GregorianCalendar.generic;
 }

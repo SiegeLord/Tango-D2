@@ -233,7 +233,7 @@ version (Full)
                             dtf = cast(DateTimeFormat) dtf.clone();
                             dateTime = dateTime.toUniversalTime();
                             if (typeid(typeof(dtf.calendar)) !is typeid(GregorianCalendar))
-                                dtf.calendar = GregorianCalendar.getDefaultInstance();
+                                dtf.calendar = GregorianCalendar.generic;
                             f = dtf.fullDateTimePattern;
                             break;
 }

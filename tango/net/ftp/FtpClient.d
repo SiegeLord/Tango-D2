@@ -16,21 +16,24 @@ private import  tango.net.Socket;
 
 private import  tango.net.ftp.Telnet;
 
-private import  tango.time.Date,
-                tango.time.Clock;
+private import  tango.time.Clock;
 
-private import  tango.io.GrowBuffer,
+private import  tango.io.Conduit,
+                tango.io.GrowBuffer,
                 tango.io.FileConduit;
 
-private import  tango.io.model.IConduit;
+private import  tango.time.chrono.Gregorian;
 
 private import  Text = tango.text.Util;
+
 private import  Ascii = tango.text.Ascii;
+
 private import  Regex = tango.text.Regex;
+
 private import  Integer = tango.text.convert.Integer;
+
 private import  Timestamp = tango.text.convert.TimeStamp;
 
-private import  tango.time.TimeSpan;
 
 /// An FTP progress delegate.
 ///
@@ -181,12 +184,13 @@ class FTPConnection : Telnet
     /// This is only used when a local file is used for a RETR or STOR.
     protected size_t restart_pos = 0;
 
+    /// error handler
     protected void exception (char[] msg)
     {
-
         throw new FTPException ("Exception: " ~ msg);
     }
-
+      
+    /// ditto
     protected void exception (FtpResponse r)
     {
         throw new FTPException (r);
@@ -1344,20 +1348,18 @@ class FTPConnection : Telnet
     ///    timeval =         the YYYYMMDDHHMMSS date
     ///
     /// Returns:             a d_time representing the same date
+
     protected Time parseTimeval(char[] timeval)
     {
-        Date date;
-
         if (timeval.length < 14)
             throw new FTPException("CLIENT: Unable to parse timeval", "501");
 
-        date.year  = Integer.atoi (timeval[0..4]);
-        date.month = Integer.atoi (timeval[4..6]);
-        date.day   = Integer.atoi (timeval[6..8]);
-        date.hour  = Integer.atoi (timeval[8..10]);
-        date.min   = Integer.atoi (timeval[10..12]);
-        date.sec   = Integer.atoi (timeval[12..14]);
-        return Clock.fromDate (date);
+        return GregorianCalendar.generic.toTime (Integer.atoi (timeval[0..4]), 
+                                                 Integer.atoi (timeval[4..6]),
+                                                 Integer.atoi (timeval[6..8]),
+                                                 Integer.atoi (timeval[8..10]),
+                                                 Integer.atoi (timeval[10..12]),
+                                                 Integer.atoi (timeval[12..14]));
     }
 
     /// Get the modification time of a file.
@@ -1565,7 +1567,7 @@ class FTPConnection : Telnet
 
                 if (buf_size - buf_pos <= 0)
                     {
-                        if ((buf_size = stream.read(buf)) is IConduit.Eof)
+                        if ((buf_size = stream.read(buf)) is stream.Eof)
                             buf_size = 0, completed = true;
                         buf_pos = 0;
                     }

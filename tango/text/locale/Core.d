@@ -1473,7 +1473,7 @@ public class DateTimeFormat : IFormatService {
   public this() {
     // This ctor is used by invariantFormat so we can't set the calendar property.
     cultureData_ = Culture.invariantCulture.cultureData_;
-    calendar_ = GregorianCalendar.getDefaultInstance();
+    calendar_ = GregorianCalendar.generic;
     initialize();
   }
 

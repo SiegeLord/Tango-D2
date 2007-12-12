@@ -22,9 +22,11 @@ private import tango.time.chrono.Calendar;
 */
 class GregorianCalendar : Calendar 
 {
-        // import parent overrides of toTime
+        // import baseclass toTime()
         alias Calendar.toTime toTime;
-        private static GregorianCalendar defaultInstance_;
+
+        /// static shared instance
+        public static GregorianCalendar generic;
 
         enum Type 
         {
@@ -36,7 +38,7 @@ class GregorianCalendar : Calendar
                 TransliteratedFrench = 12    /// Refers to the transliterated French version of the Gregorian calendar.
         }
 
-        private Type type_;
+        private Type type_;                 
 
         /**
         * Represents the current era.
@@ -48,8 +50,16 @@ class GregorianCalendar : Calendar
         private static final int[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
         /**
-        * Initializes an instance of the GregorianCalendar class using the specified GregorianCalendarTypes value. If no value is 
-        * specified, the default is GregorianCalendar.Types.Localized.
+        * create a generic instance of this calendar
+        */
+        static this()
+        {       
+                generic = new GregorianCalendar;
+        }
+
+        /**
+        * Initializes an instance of the GregorianCalendar class using the specified GregorianTypes value. If no value is 
+        * specified, the default is Gregorian.Types.Localized.
         */
         this (Type type = Type.Localized) 
         {
@@ -69,7 +79,7 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
+        override Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
         {
                 return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
         }
@@ -184,8 +194,8 @@ class GregorianCalendar : Calendar
         }
 
         /**
-        * $(I Property.) Retrieves the GregorianCalendarTypes value indicating the language version of the GregorianCalendar.
-        * Returns: The GregorianCalendar.Type value indicating the language version of the GregorianCalendar.
+        * $(I Property.) Retrieves the GregorianTypes value indicating the language version of the GregorianCalendar.
+        * Returns: The Gregorian.Type value indicating the language version of the GregorianCalendar.
         */
         Type calendarType() 
         {
@@ -216,13 +226,6 @@ class GregorianCalendar : Calendar
             splitDate(time.ticks, year, month, day, dayOfYear);
             era = AD_ERA;
             dayOfWeek = getDayOfWeek(time);
-        }
-
-        static GregorianCalendar getDefaultInstance() 
-        {
-                if (defaultInstance_ is null)
-                    defaultInstance_ = new GregorianCalendar;
-                return defaultInstance_;
         }
 
         package static void splitDate (long ticks, ref int year, ref int month, ref int day, ref int dayOfYear) 
