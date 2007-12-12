@@ -164,14 +164,3 @@ class Exception : Object
     this(char[] msg, char[] file, size_t line, Exception next = null);
     char[] toString();
 }
-
-
-version( PhobosCompatibility )
-{
-    alias Exception Error;
-    alias bool      bit;
-
-    pragma( msg, "Phobos compatibility is currently enabled.  This is a time-"
-                 "limted feature intended for short-term convenience.  Please"
-                 " do not rely on its indefinite existence." );
-}
