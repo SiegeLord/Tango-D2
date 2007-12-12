@@ -12,6 +12,8 @@
 
 module tango.util.log.model.IHierarchy;
 
+public import tango.util.log.model.ILevel;
+
 /*******************************************************************************
 
         The Logger hierarchy Interface. We use this to break the
@@ -37,4 +39,35 @@ interface IHierarchy
         **********************************************************************/
 
         char[] getAddress ();
+
+        /***********************************************************************
+                
+                Configure a context
+
+        ***********************************************************************/
+
+        void setContext (Context context);
+
+        /***********************************************************************
+                
+                Return the configured context
+
+        ***********************************************************************/
+
+        Context getContext ();
+
+        /***********************************************************************
+                
+                Context for a hierarchy, used for customizing behaviour
+                of log hierarchies. You can use this to implement dynamic
+                log-levels, based upon filtering or some other mechanism
+
+        ***********************************************************************/
+
+        interface Context
+        {
+                char[] label ();
+                
+                bool enabled (ILevel.Level setting, ILevel.Level target);
+        }
 }

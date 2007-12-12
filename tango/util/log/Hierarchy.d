@@ -13,6 +13,8 @@
 
 module tango.util.log.Hierarchy;
 
+private import  tango.time.Clock;
+
 private import  tango.core.Exception;
 
 private import  tango.util.log.Logger,
@@ -21,8 +23,6 @@ private import  tango.util.log.Logger,
 private import  tango.text.convert.Layout;
 
 private import  tango.util.log.model.IHierarchy;
-
-private import  tango.time.Clock;
 
 /*******************************************************************************
 
@@ -124,6 +124,7 @@ private class LoggerInstance : Logger
         private bool            additive,
                                 breakpoint;
 
+
         /***********************************************************************
         
                 Construct a LoggerInstance with the specified name for the 
@@ -158,7 +159,7 @@ private class LoggerInstance : Logger
 
         final bool isEnabled (Level level = Level.Fatal)
         {
-                return level >= level_;
+                return hierarchy.context.enabled (level_, level);
         }
 
         /***********************************************************************
@@ -362,9 +363,9 @@ private class LoggerInstance : Logger
 
         final Logger append (Level level, lazy char[] exp)
         {
-                if (isEnabled (level))
+                if (hierarchy.context.enabled (level_, level))
                    {
-                   auto event = Event.allocate();
+                   auto event = Event.allocate;
                    scope (exit)
                           Event.deallocate (event);
 
@@ -380,7 +381,7 @@ private class LoggerInstance : Logger
                       // this level have an appender?
                       while (appender)
                             { 
-                            auto mask = appender.getMask ();
+                            auto mask = appender.getMask;
 
                             // have we used this appender already?
                             if ((masks & mask) is 0)
@@ -449,12 +450,13 @@ private class LoggerInstance : Logger
 
 *******************************************************************************/
 
-class Hierarchy : IHierarchy
+class Hierarchy : IHierarchy, IHierarchy.Context
 {
         private char[]                  name,
                                         address;      
         private LoggerInstance          root;
         private LoggerInstance[char[]]  loggers;
+        private Context                 context;
 
         /***********************************************************************
         
@@ -469,6 +471,26 @@ class Hierarchy : IHierarchy
 
                 // insert a root node; the root has an empty name
                 root = new LoggerInstance (this, "");
+                context = this;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        final char[] label ()
+        {
+                return "<label>";
+        }
+                
+        /**********************************************************************
+
+
+        **********************************************************************/
+
+        final bool enabled (ILevel.Level level, ILevel.Level test)
+        {
+                return test >= level;
         }
 
         /**********************************************************************
@@ -517,6 +539,31 @@ class Hierarchy : IHierarchy
                 this.address = address;
         }
 
+        /**********************************************************************
+
+                Set the diagnostic context.  Not usually necessary, as a 
+                default was created.  Useful when you need to provide a 
+                different implementation, such as a ThreadLocal variant.
+
+        **********************************************************************/
+        
+        final void setContext (Context context)
+        {
+        	this.context = context;
+        }
+        
+        /**********************************************************************
+
+                Return the diagnostic context.  Useful for setting an 
+                override logging level.
+
+        **********************************************************************/
+        
+        final Context getContext ()
+        {
+        	return context;
+        }
+        
         /***********************************************************************
         
                 Return the root node.
