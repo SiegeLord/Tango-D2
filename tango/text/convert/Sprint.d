@@ -103,7 +103,7 @@ class Sprint(T)
                 
         **********************************************************************/
 
-        T[] format (T[] fmt, TypeInfo[] arguments, void* argptr)
+        T[] format (T[] fmt, TypeInfo[] arguments, ArgList argptr)
         {
                 return layout.vprint (buffer, fmt, arguments, argptr);
         }
