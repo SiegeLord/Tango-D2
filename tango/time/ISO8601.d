@@ -38,9 +38,11 @@
 
 module tango.time.ISO8601;
 
-private import tango.time.chrono.Gregorian;
-public import tango.time.chrono.Calendar;
 public import tango.time.TimeSpan;
+
+public import tango.time.chrono.Calendar;
+
+private import tango.time.chrono.Gregorian;
 
 /// Returns the number of chars used to compose a valid date: 0 if no date can be composed.
 /// Fields in date will either be correct (e.g. months will be >= 1 and <= 12) or zero.
