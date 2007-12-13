@@ -29,7 +29,7 @@ private import  tango.util.log.model.ILevel;
 
 *******************************************************************************/
 
-class Log 
+class Log : ILevel
 {
         static private  Hierarchy base;
 

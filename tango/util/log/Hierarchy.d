@@ -159,7 +159,7 @@ private class LoggerInstance : Logger
 
         final bool isEnabled (Level level = Level.Fatal)
         {
-                return hierarchy.context.enabled (level_, level);
+                return hierarchy.context.isEnabled (level_, level);
         }
 
         /***********************************************************************
@@ -363,7 +363,7 @@ private class LoggerInstance : Logger
 
         final Logger append (Level level, lazy char[] exp)
         {
-                if (hierarchy.context.enabled (level_, level))
+                if (hierarchy.context.isEnabled (level_, level))
                    {
                    auto event = Event.allocate;
                    scope (exit)
@@ -456,7 +456,7 @@ class Hierarchy : IHierarchy, IHierarchy.Context
                                         address;      
         private LoggerInstance          root;
         private LoggerInstance[char[]]  loggers;
-        private Context                 context;
+        private Context                 context_;
 
         /***********************************************************************
         
@@ -480,7 +480,7 @@ class Hierarchy : IHierarchy, IHierarchy.Context
 
         final char[] label ()
         {
-                return "<label>";
+                return "";
         }
                 
         /**********************************************************************
@@ -488,7 +488,7 @@ class Hierarchy : IHierarchy, IHierarchy.Context
 
         **********************************************************************/
 
-        final bool enabled (ILevel.Level level, ILevel.Level test)
+        final bool isEnabled (ILevel.Level level, ILevel.Level test)
         {
                 return test >= level;
         }
@@ -547,9 +547,9 @@ class Hierarchy : IHierarchy, IHierarchy.Context
 
         **********************************************************************/
         
-        final void setContext (Context context)
+        final void context (Context context)
         {
-        	this.context = context;
+        	this.context_ = context;
         }
         
         /**********************************************************************
@@ -559,9 +559,9 @@ class Hierarchy : IHierarchy, IHierarchy.Context
 
         **********************************************************************/
         
-        final Context getContext ()
+        final Context context ()
         {
-        	return context;
+        	return context_;
         }
         
         /***********************************************************************

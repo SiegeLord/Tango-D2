@@ -46,7 +46,7 @@ interface IHierarchy
 
         ***********************************************************************/
 
-        void setContext (Context context);
+        void context (Context context);
 
         /***********************************************************************
                 
@@ -54,7 +54,7 @@ interface IHierarchy
 
         ***********************************************************************/
 
-        Context getContext ();
+        Context context ();
 
         /***********************************************************************
                 
@@ -66,8 +66,12 @@ interface IHierarchy
 
         interface Context
         {
+                /// return a label for this context
                 char[] label ();
                 
-                bool enabled (ILevel.Level setting, ILevel.Level target);
+                /// first arg is the setting of the logger itself, and
+                /// the second arg is what kind of message we're being
+                /// asked to produce
+                bool isEnabled (ILevel.Level setting, ILevel.Level target);
         }
 }

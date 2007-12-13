@@ -94,7 +94,7 @@ public class SpartanLayout : EventLayout
 
         char[] header (Event event)
         {
-                event.append(event.getName).append(" - ");
+                event.append(event.getName).append(event.getHierarchy.context.label).append(" - ");
                 return event.getContent;
         }
 }
@@ -118,6 +118,7 @@ public class SimpleLayout : EventLayout
         {
                 event.append (event.getLevelName)
                      .append (event.getName)
+                     .append(event.getHierarchy.context.label)
                      .append (" - ");
                 return event.getContent;
         }
@@ -146,36 +147,7 @@ public class SimpleTimerLayout : EventLayout
                      .append (" ")
                      .append (event.getLevelName)
                      .append (event.getName)
-                     .append (" - ");
-                return event.getContent;
-        }
-}
-
-
-/*******************************************************************************
-
-        A simple layout comprised only of time(ms), level, name, message, 
-        and label from the Context.
-
-*******************************************************************************/
-
-public class SimpleTimerContextLayout : EventLayout
-{
-        /***********************************************************************
-        
-                Format outgoing message
-
-        ***********************************************************************/
-
-        char[] header (Event event)
-        {
-                char[20] tmp;
-
-                event.append (toMilli (tmp, event.getSpan))
-                     .append (" ")
-                     .append (event.getLevelName)
-                     .append (event.getName)
-                     .append (event.getHierarchy.getContext.label)
+                     .append(event.getHierarchy.context.label)
                      .append (" - ");
                 return event.getContent;
         }
