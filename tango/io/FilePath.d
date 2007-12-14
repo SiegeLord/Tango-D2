@@ -1650,8 +1650,8 @@ interface PathView
         struct Stamps
         {
                 Time    created,        /// time created
-                            accessed,       /// last time accessed
-                            modified;       /// last time modified
+                        accessed,       /// last time accessed
+                        modified;       /// last time modified
         }
 
         /***********************************************************************
