@@ -18,8 +18,8 @@ void main( char[][] args )
     if( args.length > 1 )
         path = args[1] ~ "\\tango";
 
-    outf.write ("-c -n -p256\ntango-user-dmd.lib\n");
-    foreach(file; scan( path, ".d" ).files )
+    outf.write( "-c -n -p256\ntango-user-dmd.lib\n" );
+    foreach( file; scan( path, ".d" ).files )
     {
         if( filter( file ) )
             continue;
@@ -27,7 +27,7 @@ void main( char[][] args )
         exec( "dmd -c -inline -release -O " ~
               "-of" ~ objname( file ) ~ " " ~
               file.toString );
-        outf.write(temp), outf.write("\n");
+        outf.write( temp ~ "\n" );
         list ~= " " ~ temp;
         delete temp;
     }
