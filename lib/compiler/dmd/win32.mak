@@ -17,14 +17,14 @@ CP=xcopy /y
 RM=del /f
 MD=mkdir
 
-CFLAGS=-mn -6 -r
-#CFLAGS=-g -mn -6 -r
+CFLAGS=-mn -6 -r $(ADD_CFLAGS)
+#CFLAGS=-g -mn -6 -r $(ADD_CFLAGS)
 
-DFLAGS=-release -O -inline -w
-#DFLAGS=-g -release -w
+DFLAGS=-release -O -inline -w -nofloat $(ADD_DFLAGS)
+#DFLAGS=-g -w -nofloat $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -w
-#TFLAGS=-g -w
+TFLAGS=-O -inline -w  -nofloat $(ADD_DFLAGS)
+#TFLAGS=-g -w -nofloat $(ADD_DFLAGS)
 
 DOCFLAGS=-version=DDoc
 

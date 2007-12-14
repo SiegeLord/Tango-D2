@@ -17,19 +17,16 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-CFLAGS=-O -m32
-#CFLAGS=-g -m32
+CFLAGS=-O -m32 $(ADD_CFLAGS)
+#CFLAGS=-g -m32 $(ADD_CFLAGS)
 
-DFLAGS=-release -O -inline -version=Posix -w
-#DFLAGS=-release -O -inline -version=Posix -I.. -w
-#DFLAGS=-g -release -version=Posix -I.. -w
+DFLAGS=-release -O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+#DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -version=Posix -w
-#TFLAGS=-O -inline -version=Posix -I.. -w
-#TFLAGS=-g -version=Posix -I. -w
+TFLAGS=-O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+#TFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
 DOCFLAGS=-version=DDoc -version=Posix
-#DOCFLAGS=-version=DDoc -version=Posix -I..
 
 CC=gcc
 LC=$(AR) -qsv

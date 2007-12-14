@@ -23,13 +23,13 @@ ADD_DFLAGS=
 CFLAGS=-mn -6 -r $(ADD_CFLAGS)
 #CFLAGS=-g -mn -6 -r $(ADD_CFLAGS)
 
-DFLAGS=-release -O -inline -w $(ADD_DFLAGS)
-#DFLAGS=-g -release -w $(ADD_DFLAGS)
+DFLAGS=-release -O -inline -w -nofloat $(ADD_DFLAGS)
+#DFLAGS=-g -w -nofloat $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -w $(ADD_DFLAGS)
-#TFLAGS=-g -w $(ADD_DFLAGS)
+TFLAGS=-O -inline -w  -nofloat $(ADD_DFLAGS)
+#TFLAGS=-g -w -nofloat $(ADD_DFLAGS)
 
-DOCFLAGS=-version=DDoc ..\..\doc\html\candydoc\modules.ddoc ..\..\doc\html\candydoc\candy.ddoc
+DOCFLAGS=-version=DDoc
 
 CC=dmc
 LC=lib

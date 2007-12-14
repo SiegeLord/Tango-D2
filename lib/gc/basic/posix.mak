@@ -23,13 +23,11 @@ ADD_DFLAGS=
 CFLAGS=-O -m32 $(ADD_CFLAGS)
 #CFLAGS=-g -m32 $(ADD_CFLAGS)
 
-### warnings disabled because gcx has issues ###
+DFLAGS=-release -O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+#DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
-DFLAGS=-release -O -inline -version=Posix $(ADD_DFLAGS)
-#DFLAGS=-g -version=Posix $(ADD_DFLAGS)
-
-TFLAGS=-O -inline -version=Posix $(ADD_DFLAGS)
-#TFLAGS=-g -version=Posix $(ADD_DFLAGS)
+TFLAGS=-O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+#TFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
 DOCFLAGS=-version=DDoc -version=Posix
 

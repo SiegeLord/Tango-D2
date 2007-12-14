@@ -1815,38 +1815,38 @@ struct Gcx
             // Failed
             switch (state)
             {
-                case 0:
-                    if (disabled)
-                    {   state = 1;
-                        continue;
-                    }
-                    // Try collecting
-                    freedpages = fullcollectshell();
-                    if (freedpages >= npools * ((POOLSIZE / PAGESIZE) / 4))
-                    {   state = 1;
-                        continue;
-                    }
-                    // Allocate new pool
-                    pool = newPool(npages);
-                    if (!pool)
-                    {   state = 2;
-                        continue;
-                    }
-                    pn = pool.allocPages(npages);
-                    assert(pn != ~0u);
-                    goto L1;
-
-                case 1:
-                    // Allocate new pool
-                    pool = newPool(npages);
-                    if (!pool)
-                        goto Lnomemory;
-                    pn = pool.allocPages(npages);
-                    assert(pn != ~0u);
-                    goto L1;
-
-                case 2:
+            case 0:
+                if (disabled)
+                {   state = 1;
+                    continue;
+                }
+                // Try collecting
+                freedpages = fullcollectshell();
+                if (freedpages >= npools * ((POOLSIZE / PAGESIZE) / 4))
+                {   state = 1;
+                    continue;
+                }
+                // Allocate new pool
+                pool = newPool(npages);
+                if (!pool)
+                {   state = 2;
+                    continue;
+                }
+                pn = pool.allocPages(npages);
+                assert(pn != ~0u);
+                goto L1;
+            case 1:
+                // Allocate new pool
+                pool = newPool(npages);
+                if (!pool)
                     goto Lnomemory;
+                pn = pool.allocPages(npages);
+                assert(pn != ~0u);
+                goto L1;
+            case 2:
+                goto Lnomemory;
+            default:
+                assert(false);
             }
         }
 
