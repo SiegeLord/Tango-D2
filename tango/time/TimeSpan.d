@@ -460,10 +460,10 @@ struct TimeSpan
 
 struct TimeOfDay 
 {
-        public uint hours,
-                    minutes,
-                    seconds,
-                    millis;
+        public uint     hours,
+                        minutes,
+                        seconds,
+                        millis;
 
         /**
          * constructor.
@@ -536,6 +536,88 @@ struct TimeOfDay
         }
 }
 
+/******************************************************************************
+
+    Generic Date representation
+
+******************************************************************************/
+
+struct Date
+{
+        public int      era,            /// AD, BC
+                        day,            /// 1 .. 31
+                        year,           /// -9999 to +9999
+                        month,          /// 1 .. 12
+                        dow,            /// 0 .. 6
+                        doy;            /// 1 .. 365
+
+        /// list of english day names
+        private static char[][] Days =
+        [
+                        "Sun",
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+        ];
+
+        /// list of english month names
+        private static char[][] Months =
+        [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+        ];
+
+        /**********************************************************************
+
+                Get the english short month name
+
+        **********************************************************************/
+
+        char[] asMonth ()
+        {
+                assert (month > 0 && month < 12);
+                return Months [month-1];
+        }
+
+        /**********************************************************************
+
+                Get the english short day name
+
+        **********************************************************************/
+
+        char[] asDay ()
+        {
+                assert (dow >= 0 && dow <= 6);
+                return Days [dow];
+        }
+}
+
+
+/******************************************************************************
+
+    Combination of a Date and a TimeOfDay
+
+******************************************************************************/
+
+struct DateTime
+{
+        public Date         date;       /// date representation
+        public TimeOfDay    time;       /// time representation
+}
+
 
 /******************************************************************************
 
@@ -555,8 +637,6 @@ debug (UnitTest)
                 assert(TimeSpan.min >= TimeSpan.min);
                 assert(TimeSpan.min <= TimeSpan.min);
 
-                //assert (TimeSpan.micros(999).micros is 999);
-                //assert (TimeSpan.micros(1999).micros is 1999);
                 assert (TimeSpan.seconds(50).seconds is 50);
                 assert (TimeSpan.seconds(5000).seconds is 5000);
                 assert (TimeSpan.minutes(50).minutes is 50);
@@ -566,8 +646,6 @@ debug (UnitTest)
                 assert (TimeSpan.days(6).days is 6);
                 assert (TimeSpan.days(5000).days is 5000);
 
-                //assert (TimeSpan.micros(999).time.micros is 999);
-                //assert (TimeSpan.micros(1999).time.micros is 999);
                 assert (TimeSpan.seconds(50).time.seconds is 50);
                 assert (TimeSpan.seconds(5000).time.seconds is 5000 % 60);
                 assert (TimeSpan.minutes(50).time.minutes is 50);
@@ -580,8 +658,8 @@ debug (UnitTest)
 
 debug (TimeSpan)
 {
-        import tango.time.Clock;
         import tango.io.Stdout;
+        import tango.time.Clock;
         import tango.time.chrono.DefaultCalendar;
 
         void main()

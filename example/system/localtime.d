@@ -18,7 +18,7 @@ private import  tango.time.WallClock;
 void main ()
 {
         // retreive local time
-        auto date = WallClock.toDate;
+        auto dt = WallClock.toDate;
 
         // get GMT difference in minutes
         auto tz = cast(int) WallClock.zone.minutes;
@@ -28,15 +28,15 @@ void main ()
 
         // format date
         Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
-                          date.asDay,
-                          date.asMonth,
-                          date.day,
-                          date.hour, 
-                          date.min,
-                          date.sec,
+                          dt.date.asDay,
+                          dt.date.asMonth,
+                          dt.date.day,
+                          dt.time.hours, 
+                          dt.time.minutes,
+                          dt.time.seconds,
                           sign,
                           tz / 60,
                           tz % 60,
-                          date.year
+                          dt.date.year
                          );
 }

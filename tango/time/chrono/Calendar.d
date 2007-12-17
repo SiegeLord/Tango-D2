@@ -13,9 +13,9 @@
 
 module tango.time.chrono.Calendar;
 
-private import tango.core.Exception;
-
 public  import tango.time.Time;
+
+private import tango.core.Exception;
 
 
 
@@ -77,17 +77,7 @@ public abstract class Calendar
                 Saturday   /// Indicates _Saturday.
         }
 
-        struct Date
-        {
-                int             era,
-                                day,            /// 1 .. 31
-                                year,           /// -9999 to +9999
-                                month,          /// 1 .. 12
-                                dayOfYear;      /// 1 .. 365
-                DayOfWeek       dayOfWeek;      /// 0 .. 6
-        }
 
- 
         /**
          * Get the components of a Time structure using the rules of the
          * calendar.  This is useful if you want more than one of the given
@@ -101,7 +91,7 @@ public abstract class Calendar
         Date toDate (Time time)
         {
                 Date d;
-                split (time, d.year, d.month, d.day, d.dayOfYear, d.dayOfWeek, d.era);
+                split (time, d.year, d.month, d.day, d.doy, d.dow, d.era);
                 return d;
         }
 
@@ -115,13 +105,13 @@ public abstract class Calendar
          * directly, a derived class may override if it has a more efficient
          * method.
          */
-        void split (Time time, ref int year, ref int month, ref int dayOfMonth, ref int dayOfYear, ref DayOfWeek dayOfWeek, ref int era)
+        void split (Time time, ref int year, ref int month, ref int day, ref int doy, ref int dow, ref int era)
         {
             year = getYear(time);
             month = getMonth(time);
-            dayOfMonth = getDayOfMonth(time);
-            dayOfYear = getDayOfYear(time);
-            dayOfWeek = getDayOfWeek(time);
+            day = getDayOfMonth(time);
+            doy = getDayOfYear(time);
+            dow = getDayOfWeek(time);
             era = getEra(time);
         }
 
@@ -145,6 +135,11 @@ public abstract class Calendar
         Time toTime (Date d) 
         {
                 return toTime (d.year, d.month, d.day, 0, 0, 0, 0, CURRENT_ERA);
+        }
+
+        Time toTime (DateTime dt) 
+        {
+                return toTime (dt.date, dt.time);
         }
 
         Time toTime (Date d, TimeOfDay t) 

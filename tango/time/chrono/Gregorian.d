@@ -221,11 +221,11 @@ class GregorianCalendar : Calendar
                 return cast(int) type_;
         }
 
-        override void split(Time time, ref int year, ref int month, ref int day, ref int dayOfYear, ref DayOfWeek dayOfWeek, ref int era)
+        override void split(Time time, ref int year, ref int month, ref int day, ref int doy, ref int dow, ref int era)
         {
-            splitDate(time.ticks, year, month, day, dayOfYear);
+            splitDate(time.ticks, year, month, day, doy);
             era = AD_ERA;
-            dayOfWeek = getDayOfWeek(time);
+            dow = getDayOfWeek(time);
         }
 
         package static void splitDate (long ticks, ref int year, ref int month, ref int day, ref int dayOfYear) 

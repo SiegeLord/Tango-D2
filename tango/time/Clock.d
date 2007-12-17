@@ -12,13 +12,11 @@
 
 module tango.time.Clock;
 
+public  import  tango.time.Time;
+
 private import  tango.sys.Common;
 
-private import  tango.time.Date;
-
 private import  tango.core.Exception;
-
-public  import  tango.time.Time;
 
 /******************************************************************************
 
@@ -57,7 +55,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Date toDate ()
+                static DateTime toDate ()
                 {
                         return toDate (now);
                 }
@@ -74,23 +72,25 @@ struct Clock
 
                 ***************************************************************/
 
-                static Date toDate (Time time)
+                static DateTime toDate (Time time)
                 {
-                        Date date = void;
+                        DateTime dt = void;
                         SYSTEMTIME sTime = void;
 
                         auto fTime = convert (time);
                         FileTimeToSystemTime (&fTime, &sTime);
 
-                        date.year  = sTime.wYear;
-                        date.month = sTime.wMonth;
-                        date.day   = sTime.wDay;
-                        date.hour  = sTime.wHour;
-                        date.min   = sTime.wMinute;
-                        date.sec   = sTime.wSecond;
-                        date.ms    = sTime.wMilliseconds;
-                        date.dow   = sTime.wDayOfWeek;
-                        return date;
+                        dt.date.year    = sTime.wYear;
+                        dt.date.month   = sTime.wMonth;
+                        dt.date.day     = sTime.wDay;
+                        dt.date.dow     = sTime.wDayOfWeek;
+                        dt.date.doy     = 0;
+                        dt.date.era     = 0;
+                        dt.time.hours   = sTime.wHour;
+                        dt.time.minutes = sTime.wMinute;
+                        dt.time.seconds = sTime.wSecond;
+                        dt.time.millis  = sTime.wMilliseconds;
+                        return dt;
                 }
 
                 /***************************************************************
@@ -106,19 +106,19 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static Time fromDate (inout DateTime dt)
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
 
-                        sTime.wYear         = cast(ushort) date.year;
-                        sTime.wMonth        = cast(ushort) date.month;
+                        sTime.wYear         = cast(ushort) dt.date.year;
+                        sTime.wMonth        = cast(ushort) dt.date.month;
                         sTime.wDayOfWeek    = 0;
-                        sTime.wDay          = cast(ushort) date.day;
-                        sTime.wHour         = cast(ushort) date.hour;
-                        sTime.wMinute       = cast(ushort) date.min;
-                        sTime.wSecond       = cast(ushort) date.sec;
-                        sTime.wMilliseconds = cast(ushort) date.ms;
+                        sTime.wDay          = cast(ushort) dt.date.day;
+                        sTime.wHour         = cast(ushort) dt.time.hours;
+                        sTime.wMinute       = cast(ushort) dt.time.minutes;
+                        sTime.wSecond       = cast(ushort) dt.time.seconds;
+                        sTime.wMilliseconds = cast(ushort) dt.time.millis;
 
                         SystemTimeToFileTime (&sTime, &fTime);
                         return convert (fTime);
@@ -177,7 +177,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Date toDate ()
+                static DateTime toDate ()
                 {
                         return toDate (now);
                 }
@@ -194,23 +194,25 @@ struct Clock
 
                 **************************************************************/
 
-                static Date toDate (Time time)
+                static DateTime toDate (Time time)
                 {
-                        Date date = void;
+                        DateTime dt = void;
                         auto timeval = convert (time);
-                        date.ms = timeval.tv_usec / 1000;
+                        dt.time.millis = timeval.tv_usec / 1000;
 
                         tm t = void;
                         gmtime_r (&timeval.tv_sec, &t);
         
-                        date.year  = t.tm_year + 1900;
-                        date.month = t.tm_mon + 1;
-                        date.day   = t.tm_mday;
-                        date.hour  = t.tm_hour;
-                        date.min   = t.tm_min;
-                        date.sec   = t.tm_sec;
-                        date.dow   = t.tm_wday;
-                        return date;
+                        dt.date.year    = t.tm_year + 1900;
+                        dt.date.month   = t.tm_mon + 1;
+                        dt.date.day     = t.tm_mday;
+                        dt.date.dow     = t.tm_wday;
+                        dt.date.doy     = 0;
+                        dt.date.era     = 0;
+                        dt.time.hours   = t.tm_hour;
+                        dt.time.minutes = t.tm_min;
+                        dt.time.seconds = t.tm_sec;
+                        return dt;
                 }
 
                 /***************************************************************
@@ -226,21 +228,21 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static Time fromDate (inout DateTime dt)
                 {
                         tm t = void;
 
-                        t.tm_year = date.year - 1900;
-                        t.tm_mon  = date.month - 1;
-                        t.tm_mday = date.day;
-                        t.tm_hour = date.hour;
-                        t.tm_min  = date.min;
-                        t.tm_sec  = date.sec;
+                        t.tm_year = dt.date.year - 1900;
+                        t.tm_mon  = dt.date.month - 1;
+                        t.tm_mday = dt.date.day;
+                        t.tm_hour = dt.time.hours;
+                        t.tm_min  = dt.time.minutes;
+                        t.tm_sec  = dt.time.seconds;
 
                         auto seconds = timegm (&t);
                         return Time.epoch1970 + 
                                TimeSpan.seconds(seconds) + 
-                               TimeSpan.millis(date.ms);
+                               TimeSpan.millis(dt.time.millis);
                 }
 
                 /***************************************************************
@@ -293,5 +295,8 @@ debug (UnitTest)
 
 debug (Clock)
 {
-        void main() {}
+        void main() 
+        {
+                auto time = Clock.now;
+        }
 }

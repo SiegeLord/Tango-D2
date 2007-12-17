@@ -41,14 +41,6 @@ private import Int = tango.text.convert.Integer;
 
 /******************************************************************************
 
-        We use a Gregorian calendar for all date calculations
-
-******************************************************************************/
-
-private alias GregorianCalendar Cal;
-
-/******************************************************************************
-
         Parse provided input and return a UTC epoch time. An exception
         is raised where the provided string is not fully parsed.
 
@@ -150,12 +142,12 @@ T[] format(T) (T[] output, Time t)
 
         // convert time to field values
         auto time = t.time;
-        auto date = Cal.generic.toDate (t);
+        auto date = GregorianCalendar.generic.toDate (t);
 
         // use the featherweight formatter ...
         T[14] tmp = void;
         return Util.layout (output, "%0, %1 %2 %3 %4:%5:%6 GMT", 
-                            Days[date.dayOfWeek],
+                            Days[date.dow],
                             convert (tmp[0..2], date.day),
                             Months[date.month-1],
                             convert (tmp[2..6], date.year),
@@ -206,7 +198,7 @@ Time parse(T) (T[] src, uint* ate = null)
 int rfc1123(T) (T[] src, inout Time value)
 {
         TimeOfDay       tod;
-        Cal.Date        date;
+        Date            date;
         T*              p = src.ptr;
 
         bool dt (inout T* p)
@@ -227,7 +219,7 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = Cal.generic.toTime (date, tod);
+            value = GregorianCalendar.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -247,7 +239,7 @@ int rfc1123(T) (T[] src, inout Time value)
 int rfc850(T) (T[] src, inout Time value)
 {
         TimeOfDay       tod;
-        Cal.Date        date;
+        Date            date;
         T*              p = src.ptr;
 
         bool dt (inout T* p)
@@ -274,7 +266,7 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = Cal.generic.toTime (date, tod);
+            value = GregorianCalendar.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -294,7 +286,7 @@ int rfc850(T) (T[] src, inout Time value)
 int asctime(T) (T[] src, inout Time value)
 {
         TimeOfDay       tod;
-        Cal.Date        date;
+        Date            date;
         T*              p = src.ptr;
 
         bool dt (inout T* p)
@@ -314,7 +306,7 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             (date.year = parseInt (p)) > 0)
             {
-            value = Cal.generic.toTime (date, tod);
+            value = GregorianCalendar.generic.toTime (date, tod);
             return p - src.ptr;
             }
 
@@ -333,7 +325,7 @@ int asctime(T) (T[] src, inout Time value)
 int dostime(T) (T[] src, inout Time value)
 {
         TimeOfDay       tod;
-        Cal.Date        date;
+        Date            date;
         T*              p = src.ptr;
 
         bool dt (inout T* p)
@@ -361,7 +353,7 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = Cal.generic.toTime (date, tod);
+            value = GregorianCalendar.generic.toTime (date, tod);
             return (p+2) - src.ptr;
             }
 
@@ -380,7 +372,7 @@ int dostime(T) (T[] src, inout Time value)
 int iso8601(T) (T[] src, inout Time value)
 {
         TimeOfDay       tod;
-        Cal.Date        date;
+        Date            date;
         T*              p = src.ptr;
 
         bool dt (inout T* p)
@@ -398,7 +390,7 @@ int iso8601(T) (T[] src, inout Time value)
             *p++ == ',')
             {
             date.ms = parseInt (p);
-            value = Cal.generic.toTime (date, tod);
+            value = GregorianCalendar.generic.toTime (date, tod);
             return p - src.ptr;
             }
 

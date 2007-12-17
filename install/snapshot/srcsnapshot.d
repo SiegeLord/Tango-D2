@@ -95,9 +95,9 @@ int main(char[][] args)
     // export wc to dir to be packaged, will need to have the name of the package
 
     Stdout("!! Exporting from working copy for packaging").newline;
-    auto date = WallClock.toDate;
+    auto dt = WallClock.toDate;
     char[] datestr; 
-    datestr = Stdout.layout.sprint(new char[10], "{}{:2}{:2}", date.year, date.month, date.day);
+    datestr = Stdout.layout.sprint(new char[10], "{}{:2}{:2}", dt.date.year, dt.date.month, dt.date.day);
     char[] packdirdate = projname ~ "-src-SNAPSHOT-" ~ datestr;
     char[] packdircurrent = projname ~ "-src-SNAPSHOT-CURRENT"; 
 

@@ -14,8 +14,7 @@ module tango.time.WallClock;
 
 private import  tango.sys.Common;
 
-private import  tango.time.Date,
-                tango.time.Clock;
+private import  tango.time.Clock;
 
 public  import  tango.time.Time,
                 tango.time.TimeSpan;
@@ -75,7 +74,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate ()
+                static DateTime toDate ()
                 {
                         return toDate (Clock.now);
                 }
@@ -88,7 +87,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (Time utc)
+                static DateTime toDate (Time utc)
                 {
                         return Clock.toDate (utc - localBias);
                 }
@@ -99,7 +98,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static Time fromDate (inout DateTime date)
                 {
                         return (Clock.fromDate(date) + localBias);
                 }
@@ -180,7 +179,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate ()
+                static DateTime toDate ()
                 {
                         return toDate (Clock.now);
                 }
@@ -193,22 +192,24 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Date toDate (Time utc)
+                static DateTime toDate (Time utc)
                 {
-                        Date date = void;
+                        DateTime dt = void;
                         auto timeval = Clock.convert (utc);
-                        date.ms = timeval.tv_usec / 1000;
+                        dt.time.millis = timeval.tv_usec / 1000;
 
                         tm t = void;
                         localtime_r (&timeval.tv_sec, &t);
         
-                        date.year  = t.tm_year + 1900;
-                        date.month = t.tm_mon + 1;
-                        date.day   = t.tm_mday;
-                        date.hour  = t.tm_hour;
-                        date.min   = t.tm_min;
-                        date.sec   = t.tm_sec;
-                        date.dow   = t.tm_wday;
+                        dt.date.year    = t.tm_year + 1900;
+                        dt.date.month   = t.tm_mon + 1;
+                        dt.date.day     = t.tm_mday;
+                        dt.date.dow     = t.tm_wday;
+                        dt.date.doy     = 0;
+                        dt.date.era     = 0;
+                        dt.time.hours   = t.tm_hour;
+                        dt.time.minutes = t.tm_min;
+                        dt.time.seconds = t.tm_sec;
                         return date;
                 }
 
@@ -218,20 +219,20 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout Date date)
+                static Time fromDate (inout DateTime dt)
                 {
                         tm t = void;
 
-                        t.tm_year = date.year - 1900;
-                        t.tm_mon  = date.month - 1;
-                        t.tm_mday = date.day;
-                        t.tm_hour = date.hour;
-                        t.tm_min  = date.min;
-                        t.tm_sec  = date.sec;
+                        t.tm_year = dt.date.year - 1900;
+                        t.tm_mon  = dt.date.month - 1;
+                        t.tm_mday = dt.date.day;
+                        t.tm_hour = dt.time.hours;
+                        t.tm_min  = dt.time.minutes;
+                        t.tm_sec  = dt.time.seconds;
 
                         auto seconds = mktime (&t);
                         return Time.epoch1970 + TimeSpan.seconds(seconds) 
-                                              + TimeSpan.millis(date.ms);
+                                              + TimeSpan.millis(dt.time.millis);
                 }
         }
 
