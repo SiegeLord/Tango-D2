@@ -321,6 +321,18 @@ version (Full)
                 int index, len;
                 char[10] tmp;
 
+                if (format[0] is '%')
+                    {
+                    // specifiers for both standard format strings and custom ones
+                    const char[] commonSpecs = "dmMsty";
+                    foreach (c; commonSpecs)
+                        if (format[1] is c)
+                            {
+                            index += 1;
+                            break;
+                            }
+                    }
+
                 while (index < format.length)
                       {
                       char c = format[index];
