@@ -14,11 +14,11 @@
 
 module tango.net.SocketConduit;
 
+private import  tango.time.Time;
+
 public  import  tango.io.Conduit;
 
 private import  tango.net.Socket;
-
-private import  tango.time.TimeSpan;
 
 /*******************************************************************************
 

@@ -25,7 +25,7 @@ private import tango.time.chrono.Calendar;
  */
 public class HebrewCalendar : Calendar {
 
-  private const int[14][7] MonthDays = [
+  private const uint[14][7] MonthDays = [
     // month                                                    // year type
     [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  ], 
     [ 0, 30, 29, 29, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 1
@@ -36,23 +36,23 @@ public class HebrewCalendar : Calendar {
     [ 0, 30, 30, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ]   // 6
   ];
 
-  private const int YearOfOneAD = 3760;
-  private const int DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
+  private const uint YearOfOneAD = 3760;
+  private const uint DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
 
-  private const int PartsPerHour = 1080;
-  private const int PartsPerDay = 24 * PartsPerHour;
-  private const int DaysPerMonth = 29;
-  private const int DaysPerMonthFraction = 12 * PartsPerHour + 793;
-  private const int PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
-  private const int FirstNewMoon = 11 * PartsPerHour + 204;
+  private const uint PartsPerHour = 1080;
+  private const uint PartsPerDay = 24 * PartsPerHour;
+  private const uint DaysPerMonth = 29;
+  private const uint DaysPerMonthFraction = 12 * PartsPerHour + 793;
+  private const uint PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
+  private const uint FirstNewMoon = 11 * PartsPerHour + 204;
 
-  private int minYear_ = YearOfOneAD + 1583;
-  private int maxYear_ = YearOfOneAD + 2240;
+  private uint minYear_ = YearOfOneAD + 1583;
+  private uint maxYear_ = YearOfOneAD + 2240;
 
   /**
    * Represents the current era.
    */
-  public const int HEBREW_ERA = 1;
+  public const uint HEBREW_ERA = 1;
 
   /**
    * Overridden. Returns a Time value set to the specified date and time in the specified _era.
@@ -67,7 +67,7 @@ public class HebrewCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: A Time set to the specified date and time.
    */
-  public override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
     checkYear(year, era);
     return getGregorianTime(year, month, day, hour, minute, second, millisecond);
   }
@@ -78,7 +78,7 @@ public class HebrewCalendar : Calendar {
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
   public override DayOfWeek getDayOfWeek(Time time) {
-    return cast(DayOfWeek) cast(int) ((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
+    return cast(DayOfWeek) cast(uint) ((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
   }
 
   /**
@@ -86,12 +86,12 @@ public class HebrewCalendar : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the day of the month of time.
    */
-  public override int getDayOfMonth(Time time) {
-    int year = getYear(time);
-    int yearType = getYearType(year);
-    int days = getStartOfYear(year) - DaysToOneAD;
-    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
-    int n;
+  public override uint getDayOfMonth(Time time) {
+    auto year = getYear(time);
+    auto yearType = getYearType(year);
+    auto days = getStartOfYear(year) - DaysToOneAD;
+    auto day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
+    uint n;
     while (n < 12 && day >= MonthDays[yearType][n + 1]) {
       day -= MonthDays[yearType][n + 1];
       n++;
@@ -104,10 +104,10 @@ public class HebrewCalendar : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the day of the year of time.
    */
-  public override int getDayOfYear(Time time) {
-    int year = getYear(time);
-    int days = getStartOfYear(year) - DaysToOneAD;
-    return (cast(int)(time.ticks / TimeSpan.TicksPerDay) - days) + 1;
+  public override uint getDayOfYear(Time time) {
+    auto year = getYear(time);
+    auto days = getStartOfYear(year) - DaysToOneAD;
+    return (cast(uint)(time.ticks / TimeSpan.TicksPerDay) - days) + 1;
   }
 
   /**
@@ -115,12 +115,12 @@ public class HebrewCalendar : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the month in time.
    */
-  public override int getMonth(Time time) {
-    int year = getYear(time);
-    int yearType = getYearType(year);
-    int days = getStartOfYear(year) - DaysToOneAD;
-    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
-    int n;
+  public override uint getMonth(Time time) {
+    auto year = getYear(time);
+    auto yearType = getYearType(year);
+    auto days = getStartOfYear(year) - DaysToOneAD;
+    auto day = cast(int)(time.ticks / TimeSpan.TicksPerDay) - days;
+    uint n;
     while (n < 12 && day >= MonthDays[yearType][n + 1]) {
       day -= MonthDays[yearType][n + 1];
       n++;
@@ -133,13 +133,13 @@ public class HebrewCalendar : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the year in time.
    */
-  public override int getYear(Time time) {
-    int day = cast(int)(time.ticks / TimeSpan.TicksPerDay) + DaysToOneAD;
-    int low = minYear_, high = maxYear_;
+  public override uint getYear(Time time) {
+    auto day = cast(uint)(time.ticks / TimeSpan.TicksPerDay) + DaysToOneAD;
+    auto low = minYear_, high = maxYear_;
     // Perform a binary search.
     while (low <= high) {
-      int mid = low + (high - low) / 2;
-      int startDay = getStartOfYear(mid);
+      auto mid = low + (high - low) / 2;
+      auto startDay = getStartOfYear(mid);
       if (day < startDay)
         high = mid - 1;
       else if (day >= startDay && day < getStartOfYear(mid + 1))
@@ -155,7 +155,7 @@ public class HebrewCalendar : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the ear in time.
    */
-  public override int getEra(Time time) {
+  public override uint getEra(Time time) {
     return HEBREW_ERA;
   }
 
@@ -167,7 +167,7 @@ public class HebrewCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of days in the specified _year and _month of the specified _era.
    */
-  public override int getDaysInMonth(int year, int month, int era) {
+  public override uint getDaysInMonth(uint year, uint month, uint era) {
     checkYear(year, era);
     return MonthDays[getYearType(year)][month];
   }
@@ -179,7 +179,7 @@ public class HebrewCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of days in the specified _year in the specified _era.
    */
-  public override int getDaysInYear(int year, int era) {
+  public override uint getDaysInYear(uint year, uint era) {
     return getStartOfYear(year + 1) - getStartOfYear(year);
   }
 
@@ -190,7 +190,7 @@ public class HebrewCalendar : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of months in the specified _year in the specified _era.
    */
-  public override int getMonthsInYear(int year, int era) {
+  public override uint getMonthsInYear(uint year, uint era) {
     return isLeapYear(year, era) ? 13 : 12;
   }
 
@@ -200,7 +200,7 @@ public class HebrewCalendar : Calendar {
    * Params: era = An integer representing the _era.
    * Returns: true is the specified _year is a leap _year; otherwise, false.
    */
-  public override bool isLeapYear(int year, int era) {
+  public override bool isLeapYear(uint year, uint era) {
     checkYear(year, era);
     // true if year % 19 == 0, 3, 6, 8, 11, 14, 17
     return ((7 * year + 1) % 19) < 7;
@@ -210,8 +210,8 @@ public class HebrewCalendar : Calendar {
    * $(I Property.) Overridden. Retrieves the list of eras in the current calendar.
    * Returns: An integer array representing the eras in the current calendar.
    */
-  public override int[] eras() {
-        int[] tmp = [HEBREW_ERA];
+  public override uint[] eras() {
+        auto tmp = [HEBREW_ERA];
         return tmp.dup;
   }
 
@@ -219,16 +219,16 @@ public class HebrewCalendar : Calendar {
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
    * Returns: An integer representing the identifier of the current calendar.
    */
-  public override int id() {
+  public override uint id() {
     return HEBREW;
   }
 
-  private void checkYear(int year, int era) {
+  private void checkYear(uint year, uint era) {
     if ((era != CURRENT_ERA && era != HEBREW_ERA) || (year > maxYear_ || year < minYear_))
       throw new IllegalArgumentException("Value was out of range.");
   }
 
-  private int getYearType(int year) {
+  private uint getYearType(uint year) {
     int yearLength = getStartOfYear(year + 1) - getStartOfYear(year);
     if (yearLength > 380)
       yearLength -= 30;
@@ -258,13 +258,13 @@ public class HebrewCalendar : Calendar {
     throw new IllegalArgumentException("Value was not valid.");
   }
 
-  private int getStartOfYear(int year) {
-    int months = (235 * year - 234) / 19;
-    int fraction = months * DaysPerMonthFraction + FirstNewMoon;
-    int day = months * 29 + (fraction / PartsPerDay);
+  private uint getStartOfYear(uint year) {
+    auto months = (235 * year - 234) / 19;
+    auto fraction = months * DaysPerMonthFraction + FirstNewMoon;
+    auto day = months * 29 + (fraction / PartsPerDay);
     fraction %= PartsPerDay;
 
-    int dayOfWeek = day % 7;
+    auto dayOfWeek = day % 7;
     if (dayOfWeek == 2 || dayOfWeek == 4 || dayOfWeek == 6) {
       day++;
       dayOfWeek = day % 7;
@@ -276,9 +276,9 @@ public class HebrewCalendar : Calendar {
     return day;
   }
 
-  private Time getGregorianTime(int year, int month, int day, int hour, int minute, int second, int millisecond) {
-    int yearType = getYearType(year);
-    int days = getStartOfYear(year) - DaysToOneAD + day - 1;
+  private Time getGregorianTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond) {
+    auto yearType = getYearType(year);
+    auto days = getStartOfYear(year) - DaysToOneAD + day - 1;
     for (int i = 1; i <= month; i++)
       days += MonthDays[yearType][i - 1];
     return Time((days * TimeSpan.TicksPerDay) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);

@@ -45,9 +45,9 @@ class GregorianCalendar : Calendar
         */
         enum {AD_ERA = 1, MAX_YEAR = 9999};
 
-        private static final int[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        private static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
-        private static final int[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
+        private static final uint[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
         /**
         * create a generic instance of this calendar
@@ -79,7 +79,7 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        override Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era)
+        override Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era)
         {
                 return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
         }
@@ -99,7 +99,7 @@ class GregorianCalendar : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */
-        override int getDayOfMonth(Time time) 
+        override uint getDayOfMonth(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Day);
         }
@@ -109,7 +109,7 @@ class GregorianCalendar : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */
-        override int getDayOfYear(Time time) 
+        override uint getDayOfYear(Time time) 
         {
                 return extractPart(time.ticks, DatePart.DayOfYear);
         }
@@ -119,7 +119,7 @@ class GregorianCalendar : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */
-        override int getMonth(Time time) 
+        override uint getMonth(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Month);
         }
@@ -129,7 +129,7 @@ class GregorianCalendar : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */
-        override int getYear(Time time) 
+        override uint getYear(Time time) 
         {
                 return extractPart(time.ticks, DatePart.Year);
         }
@@ -139,7 +139,7 @@ class GregorianCalendar : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the ear in time.
         */
-        override int getEra(Time time) 
+        override uint getEra(Time time) 
         {
                 return AD_ERA;
         }
@@ -152,9 +152,9 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year and _month of the specified _era.
         */
-        override int getDaysInMonth(int year, int month, int era) 
+        override uint getDaysInMonth(uint year, uint month, uint era) 
         {
-                int[] monthDays = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? DaysToMonthLeap : DaysToMonthCommon;
+                auto monthDays = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? DaysToMonthLeap : DaysToMonthCommon;
                 return monthDays[month] - monthDays[month - 1];
         }
 
@@ -165,7 +165,7 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year in the specified _era.
         */
-        override int getDaysInYear(int year, int era) 
+        override uint getDaysInYear(uint year, uint era) 
         {
                 return isLeapYear(year, era) ? 366 : 365;
         }
@@ -177,7 +177,7 @@ class GregorianCalendar : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of months in the specified _year in the specified _era.
         */
-        override int getMonthsInYear(int year, int era) 
+        override uint getMonthsInYear(uint year, uint era) 
         {
                 return 12;
         }
@@ -188,7 +188,7 @@ class GregorianCalendar : Calendar
         * Params: era = An integer representing the _era.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */
-        override bool isLeapYear(int year, int era) 
+        override bool isLeapYear(uint year, uint era) 
         {
                 return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
         }
@@ -206,9 +206,9 @@ class GregorianCalendar : Calendar
         * $(I Property.) Overridden. Retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */
-        override int[] eras() 
+        override uint[] eras() 
         {       
-                int[] tmp = [AD_ERA];
+                uint[] tmp = [AD_ERA];
                 return tmp.dup;
         }
 
@@ -216,31 +216,31 @@ class GregorianCalendar : Calendar
         * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */
-        override int id() 
+        override uint id() 
         {
                 return cast(int) type_;
         }
 
-        override void split(Time time, ref int year, ref int month, ref int day, ref int doy, ref int dow, ref int era)
+        override void split(Time time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
         {
             splitDate(time.ticks, year, month, day, doy);
             era = AD_ERA;
             dow = getDayOfWeek(time);
         }
 
-        package static void splitDate (long ticks, ref int year, ref int month, ref int day, ref int dayOfYear) 
+        package static void splitDate (long ticks, ref uint year, ref uint month, ref uint day, ref uint dayOfYear) 
         {
-                int numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
-                int whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
+                auto numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
+                auto whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
                 numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
-                int whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
+                auto whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
                 if (whole100Years == 4)
                     whole100Years = 3;
 
                 numDays -= whole100Years * cast(int) TimeSpan.DaysPer100Years;
-                int whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
+                auto whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
                 numDays -= whole4Years * cast(int) TimeSpan.DaysPer4Years;
-                int wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
+                auto wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
                 if (wholeYears == 4)
                     wholeYears = 3;
 
@@ -248,7 +248,7 @@ class GregorianCalendar : Calendar
                 numDays -= wholeYears * TimeSpan.DaysPerYear;
                 dayOfYear = numDays + 1;
 
-                int[] monthDays = (wholeYears == 3 && (whole4Years != 24 || whole100Years == 3)) ? DaysToMonthLeap : DaysToMonthCommon;
+                auto monthDays = (wholeYears == 3 && (whole4Years != 24 || whole100Years == 3)) ? DaysToMonthLeap : DaysToMonthCommon;
                 month = numDays >> 5 + 1;
                 while (numDays >= monthDays[month])
                        month++;
@@ -256,9 +256,9 @@ class GregorianCalendar : Calendar
                 day = numDays - monthDays[month - 1] + 1;
         }
 
-        package static int extractPart (long ticks, DatePart part) 
+        package static uint extractPart (long ticks, DatePart part) 
         {
-                int year, month, day, dayOfYear;
+                uint year, month, day, dayOfYear;
 
                 splitDate(ticks, year, month, day, dayOfYear);
 
@@ -274,9 +274,9 @@ class GregorianCalendar : Calendar
                 return day;
         }
 
-        package long getDateTicks (int year, int month, int day) 
+        package long getDateTicks (uint year, uint month, uint day) 
         {
-                int[] monthDays = isLeapYear(year, AD_ERA) ? DaysToMonthLeap : DaysToMonthCommon;
+                auto monthDays = isLeapYear(year, AD_ERA) ? DaysToMonthLeap : DaysToMonthCommon;
                 year--;
                 return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.TicksPerDay;
         }

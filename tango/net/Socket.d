@@ -62,11 +62,11 @@
 
 module tango.net.Socket;
 
+private import  tango.time.Time;
+
 private import  tango.sys.Common;
 
 private import  tango.core.Exception;
-
-private import  tango.time.TimeSpan;
 
 
 /*******************************************************************************

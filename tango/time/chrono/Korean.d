@@ -25,7 +25,7 @@ public class KoreanCalendar : GregorianBasedCalendar {
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
    * Returns: An integer representing the identifier of the current calendar.
    */
-  public override int id() {
+  public override uint id() {
     return KOREA;
   }
 

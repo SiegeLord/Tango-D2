@@ -105,7 +105,7 @@ public abstract class Calendar
          * directly, a derived class may override if it has a more efficient
          * method.
          */
-        void split (Time time, ref int year, ref int month, ref int day, ref int doy, ref int dow, ref int era)
+        void split (Time time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
         {
             year = getYear(time);
             month = getMonth(time);
@@ -127,7 +127,7 @@ public abstract class Calendar
         *   millisecond = An integer representing the _millisecond.
         * Returns: The Time set to the specified date and time.
         */
-        Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond=0) 
+        Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond=0) 
         {
                 return toTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
         }
@@ -160,7 +160,7 @@ public abstract class Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        abstract Time toTime (int year, int month, int day, int hour, int minute, int second, int millisecond, int era);
+        abstract Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era);
 
         /**
         * When overridden, returns the day of the week in the specified Time.
@@ -174,35 +174,35 @@ public abstract class Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */
-        abstract int getDayOfMonth (Time time);
+        abstract uint getDayOfMonth (Time time);
 
         /**
         * When overridden, returns the day of the year in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */
-        abstract int getDayOfYear (Time time);
+        abstract uint getDayOfYear (Time time);
 
         /**
         * When overridden, returns the month in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */
-        abstract int getMonth (Time time);
+        abstract uint getMonth (Time time);
 
         /**
         * When overridden, returns the year in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */
-        abstract int getYear (Time time);
+        abstract uint getYear (Time time);
 
         /**
         * When overridden, returns the era in the specified Time.
         * Params: time = A Time value.
         * Returns: An integer representing the ear in time.
         */
-        abstract int getEra (Time time);
+        abstract uint getEra (Time time);
 
         /**
         * Returns the number of days in the specified _year and _month of the current era.
@@ -211,7 +211,7 @@ public abstract class Calendar
         *   month = An integer representing the _month.
         * Returns: The number of days in the specified _year and _month of the current era.
         */
-        int getDaysInMonth (int year, int month) 
+        uint getDaysInMonth (uint year, uint month) 
         {
                 return getDaysInMonth (year, month, CURRENT_ERA);
         }
@@ -224,14 +224,14 @@ public abstract class Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year and _month of the specified _era.
         */
-        abstract int getDaysInMonth (int year, int month, int era);
+        abstract uint getDaysInMonth (uint year, uint month, uint era);
 
         /**
         * Returns the number of days in the specified _year of the current era.
         * Params: year = An integer representing the _year.
         * Returns: The number of days in the specified _year in the current era.
         */
-        int getDaysInYear (int year) 
+        uint getDaysInYear (uint year) 
         {
                 return getDaysInYear (year, CURRENT_ERA);
         }
@@ -243,14 +243,14 @@ public abstract class Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year in the specified _era.
         */
-        abstract int getDaysInYear (int year, int era);
+        abstract uint getDaysInYear (uint year, uint era);
 
         /**
         * Returns the number of months in the specified _year of the current era.
         * Params: year = An integer representing the _year.
         * Returns: The number of months in the specified _year in the current era.
         */
-        int getMonthsInYear (int year) 
+        uint getMonthsInYear (uint year) 
         {
                 return getMonthsInYear (year, CURRENT_ERA);
         }
@@ -262,7 +262,7 @@ public abstract class Calendar
         *   era = An integer representing the _era.
         * Returns: The number of months in the specified _year in the specified _era.
         */
-        abstract int getMonthsInYear (int year, int era);
+        abstract uint getMonthsInYear (uint year, uint era);
 
         /**
         * Returns the week of the year that includes the specified Time.
@@ -272,10 +272,10 @@ public abstract class Calendar
         *   firstDayOfWeek = A DayOfWeek value representing the first day of the week.
         * Returns: An integer representing the week of the year that includes the date in time.
         */
-        int getWeekOfYear (Time time, WeekRule rule, DayOfWeek firstDayOfWeek) 
+        uint getWeekOfYear (Time time, WeekRule rule, DayOfWeek firstDayOfWeek) 
         {
-                int year = getYear (time);
-                int jan1 = cast(int) getDayOfWeek (toTime (year, 1, 1, 0, 0, 0, 0));
+                auto year = getYear (time);
+                auto jan1 = cast(int) getDayOfWeek (toTime (year, 1, 1, 0, 0, 0, 0));
 
                 switch (rule) 
                        {
@@ -317,7 +317,7 @@ public abstract class Calendar
         * Params: year = An integer representing the _year.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */
-        bool isLeapYear(int year) 
+        bool isLeapYear(uint year) 
         {
                 return isLeapYear(year, CURRENT_ERA);
         }
@@ -328,24 +328,24 @@ public abstract class Calendar
         * Params: era = An integer representing the _era.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */
-        abstract bool isLeapYear(int year, int era);
+        abstract bool isLeapYear(uint year, uint era);
 
         /**
         * $(I Property.) When overridden, retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */
-        abstract int[] eras();
+        abstract uint[] eras();
 
         /**
         * $(I Property.) Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */
-        int id() 
+        uint id() 
         {
                 return -1;
         }
 
-        package static long getTimeTicks (int hour, int minute, int second) 
+        package static long getTimeTicks (uint hour, uint minute, uint second) 
         {
                 return (TimeSpan.hours(hour) + TimeSpan.minutes(minute) + TimeSpan.seconds(second)).ticks;
         }

@@ -12,7 +12,7 @@
 
 module tango.util.log.EventLayout;
 
-private import tango.time.TimeSpan;
+private import tango.time.Time;
 
 private import tango.util.log.Event;
 

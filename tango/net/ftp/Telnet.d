@@ -12,15 +12,14 @@
 
 module tango.net.ftp.Telnet;
 
+private import tango.time.Time,
+               tango.time.Clock;
+
 private import tango.net.Socket;
 
 private import tango.core.Exception;
 
-private import tango.time.Clock;
-
 private import Integer = tango.text.convert.Integer;
-
-private import tango.time.TimeSpan;
 
 
 /// Utilities for telnet-based connections.

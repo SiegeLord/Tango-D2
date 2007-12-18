@@ -34,11 +34,11 @@ private class GregorianBasedCalendar : GregorianCalendar {
     minYear_ = eraRanges_[0].minEraYear;
   }
 
-  public override Time toTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int era) {
+  public override Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
     year = getGregorianYear(year, era);
     return super.toTime(year, month, day, hour, minute, second, millisecond, era);
   }
-  public override int getYear(Time time) {
+  public override uint getYear(Time time) {
     auto ticks = time.ticks;
     auto year = extractPart(time.ticks, DatePart.Year);
     foreach (EraRange eraRange; eraRanges_) {
@@ -48,7 +48,7 @@ private class GregorianBasedCalendar : GregorianCalendar {
     throw new IllegalArgumentException("Value was out of range.");
   }
 
-  public override int getEra(Time time) {
+  public override uint getEra(Time time) {
     auto ticks = time.ticks;
     foreach (EraRange eraRange; eraRanges_) {
       if (ticks >= eraRange.ticks)
@@ -57,14 +57,14 @@ private class GregorianBasedCalendar : GregorianCalendar {
     throw new IllegalArgumentException("Value was out of range.");
   }
 
-  public override int[] eras() {
-    int[] result;
+  public override uint[] eras() {
+    uint[] result;
     foreach (EraRange eraRange; eraRanges_)
       result ~= eraRange.era;
     return result;
   }
 
-  private int getGregorianYear(int year, int era) {
+  private uint getGregorianYear(uint year, uint era) {
     if (era == 0)
       era = currentEra;
     foreach (EraRange eraRange; eraRanges_) {
@@ -77,7 +77,7 @@ private class GregorianBasedCalendar : GregorianCalendar {
     throw new IllegalArgumentException("Era value was not valid.");
   }
 
-  protected int currentEra() {
+  protected uint currentEra() {
     if (currentEra_ == -1)
       currentEra_ = EraRange.getCurrentEra(id);
     return currentEra_;
@@ -88,19 +88,19 @@ private class GregorianBasedCalendar : GregorianCalendar {
 
 package struct EraRange {
 
-  private static EraRange[][int] eraRanges;
-  private static int[int] currentEras;
+  private static EraRange[][uint] eraRanges;
+  private static uint[uint] currentEras;
   private static bool initialized_;
 
-  package int era;
+  package uint era;
   package long ticks;
-  package int yearOffset;
-  package int minEraYear;
-  package int maxEraYear;
+  package uint yearOffset;
+  package uint minEraYear;
+  package uint maxEraYear;
 
   private static void initialize() {
     if (!initialized_) {
-      long getTicks(int year, int month, int day)
+      long getTicks(uint year, uint month, uint day)
       {
         return GregorianCalendar.generic.getDateTicks(year, month, day);
       }
@@ -119,19 +119,19 @@ package struct EraRange {
     }
   }
 
-  package static EraRange[] getEraRanges(int calID) {
+  package static EraRange[] getEraRanges(uint calID) {
     if (!initialized_)
       initialize();
     return eraRanges[calID];
   }
 
-  package static int getCurrentEra(int calID) {
+  package static uint getCurrentEra(uint calID) {
     if (!initialized_)
       initialize();
     return currentEras[calID];
   }
 
-  private static EraRange opCall(int era, long ticks, int yearOffset, int minEraYear, int prevEraYear) {
+  private static EraRange opCall(uint era, long ticks, uint yearOffset, uint minEraYear, uint prevEraYear) {
     EraRange eraRange;
     eraRange.era = era;
     eraRange.ticks = ticks;

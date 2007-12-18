@@ -17,6 +17,5 @@ module tango.group.time;
 public import tango.time.Time;
 public import tango.time.Clock;
 public import tango.time.ISO8601;
-public import tango.time.TimeSpan;
 public import tango.time.WallClock;
 public import tango.time.StopWatch;

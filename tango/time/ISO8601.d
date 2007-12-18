@@ -38,7 +38,7 @@
 
 module tango.time.ISO8601;
 
-public import tango.time.TimeSpan;
+public import tango.time.Time;
 
 public import tango.time.chrono.Calendar;
 

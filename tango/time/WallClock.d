@@ -12,12 +12,11 @@
 
 module tango.time.WallClock;
 
-private import  tango.sys.Common;
+public  import  tango.time.Time;
 
 private import  tango.time.Clock;
 
-public  import  tango.time.Time,
-                tango.time.TimeSpan;
+private import  tango.sys.Common;
 
 /******************************************************************************
 

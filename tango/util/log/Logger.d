@@ -13,11 +13,11 @@
 
 module tango.util.log.Logger;
 
+private import tango.time.Time;
+
 private import tango.util.log.Appender;
 
 private import tango.util.log.model.ILevel;
-
-private import tango.time.TimeSpan;
 
 /*******************************************************************************
 

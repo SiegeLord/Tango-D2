@@ -18,14 +18,14 @@
 
 module tango.net.http.HttpClient;
 
+private import  tango.time.Time;
+                
 private import  tango.io.Buffer;
 
 private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
-private import  tango.time.TimeSpan;
-                
 private import  tango.net.http.HttpConst,
                 tango.net.http.HttpParams,  
                 tango.net.http.HttpHeaders,
