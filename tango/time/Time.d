@@ -1,6 +1,6 @@
 /******************************************************************************
 
-        copyright:      Copyright (c) 2005 John Chapman. All rights reserved
+        copyright:      Copyright (c) 2007 Tango. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
@@ -8,7 +8,7 @@
                         Apr 2007: heavily reshaped
                         Dec 2007: moved to tango.time
 
-        author:         Chapman, Kris, scheivguy
+        author:         John Chapman, Kris, scheivguy
 
 ******************************************************************************/
 
@@ -706,7 +706,7 @@ struct TimeOfDay
          */
         static TimeOfDay opCall (long ticks)
         {       
-                TimeOfDay t;
+                TimeOfDay t = void;
                 ticks = modulo24(ticks).ticks_;
                 t.millis  = cast(uint) (ticks / TimeSpan.TicksPerMillisecond); 
                 t.seconds = (t.millis / 1_000) % 60;
