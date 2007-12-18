@@ -11,12 +11,24 @@ private import  tango.time.WallClock;
 /******************************************************************************
 
         Example code to format a local time in the following format:
-        "Wed Dec 31 16:00:00 GMT-0800 1969"
+        "Wed Dec 31 16:00:00 GMT-0800 1969". The day and month names
+        would typically be extracted from a locale instance, but we
+        convert them locally here for the sake of simplicity
 
 ******************************************************************************/
 
 void main ()
 {
+        /// list of day names
+        static char[][] days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        /// list of month names
+        static char[][] months =
+        [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        ];
+
         // retreive local time
         auto dt = WallClock.toDate;
 
@@ -28,8 +40,8 @@ void main ()
 
         // format date
         Stdout.formatln ("{}, {} {:d2} {:d2}:{:d2}:{:d2} GMT{}{:d2}:{:d2} {}",
-                          dt.date.asDay,
-                          dt.date.asMonth,
+                          days[dt.date.dow],
+                          months[dt.date.month-1],
                           dt.date.day,
                           dt.time.hours, 
                           dt.time.minutes,
