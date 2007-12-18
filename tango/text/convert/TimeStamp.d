@@ -138,7 +138,7 @@ T[] format(T) (T[] output, Time t)
 
         // convert time to field values
         auto time = t.time;
-        auto date = GregorianCalendar.generic.toDate (t);
+        auto date = Gregorian.generic.toDate (t);
 
         // use the featherweight formatter ...
         T[14] tmp = void;
@@ -215,7 +215,7 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = GregorianCalendar.generic.toTime (date, tod);
+            value = Gregorian.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -262,7 +262,7 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = GregorianCalendar.generic.toTime (date, tod);
+            value = Gregorian.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -302,7 +302,7 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             (date.year = parseInt (p)) > 0)
             {
-            value = GregorianCalendar.generic.toTime (date, tod);
+            value = Gregorian.generic.toTime (date, tod);
             return p - src.ptr;
             }
 
@@ -349,7 +349,7 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = GregorianCalendar.generic.toTime (date, tod);
+            value = Gregorian.generic.toTime (date, tod);
             return (p+2) - src.ptr;
             }
 
@@ -386,7 +386,7 @@ int iso8601(T) (T[] src, inout Time value)
             *p++ == ',')
             {
             date.ms = parseInt (p);
-            value = GregorianCalendar.generic.toTime (date, tod);
+            value = Gregorian.generic.toTime (date, tod);
             return p - src.ptr;
             }
 

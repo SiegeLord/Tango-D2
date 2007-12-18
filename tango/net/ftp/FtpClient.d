@@ -1354,7 +1354,7 @@ class FTPConnection : Telnet
         if (timeval.length < 14)
             throw new FTPException("CLIENT: Unable to parse timeval", "501");
 
-        return GregorianCalendar.generic.toTime (Integer.atoi (timeval[0..4]), 
+        return Gregorian.generic.toTime (Integer.atoi (timeval[0..4]), 
                                                  Integer.atoi (timeval[4..6]),
                                                  Integer.atoi (timeval[6..8]),
                                                  Integer.atoi (timeval[8..10]),

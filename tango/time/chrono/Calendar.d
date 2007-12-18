@@ -23,9 +23,9 @@ private import tango.core.Exception;
  * $(ANCHOR _Calendar)
  * Represents time in week, month and year divisions.
  * Remarks: Calendar is the abstract base class for the following Calendar implementations: 
- *   $(LINK2 #GregorianCalendar, GregorianCalendar), $(LINK2 #HebrewCalendar, HebrewCalendar), $(LINK2 #HijriCalendar, HijriCalendar),
- *   $(LINK2 #JapaneseCalendar, JapaneseCalendar), $(LINK2 #KoreanCalendar, KoreanCalendar), $(LINK2 #TaiwanCalendar, TaiwanCalendar) and
- *   $(LINK2 #ThaiBuddhistCalendar, ThaiBuddhistCalendar).
+ *   $(LINK2 #Gregorian, Gregorian), $(LINK2 #Hebrew, Hebrew), $(LINK2 #Hijri, Hijri),
+ *   $(LINK2 #Japanese, Japanese), $(LINK2 #Korean, Korean), $(LINK2 #Taiwan, Taiwan) and
+ *   $(LINK2 #ThaiBuddhist, ThaiBuddhist).
  */
 public abstract class Calendar 
 {

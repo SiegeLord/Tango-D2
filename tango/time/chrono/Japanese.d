@@ -17,10 +17,10 @@ private import tango.time.chrono.GregorianBased;
 
 
 /**
- * $(ANCHOR _JapaneseCalendar)
+ * $(ANCHOR _Japanese)
  * Represents the Japanese calendar.
  */
-public class JapaneseCalendar : GregorianBasedCalendar 
+public class Japanese : GregorianBased 
 {
   /**
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.

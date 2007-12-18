@@ -16,10 +16,10 @@ module tango.time.chrono.Taiwan;
 private import tango.time.chrono.GregorianBased;
 
 /**
- * $(ANCHOR _TaiwanCalendar)
+ * $(ANCHOR _Taiwan)
  * Represents the Taiwan calendar.
  */
-public class TaiwanCalendar : GregorianBasedCalendar 
+public class Taiwan : GregorianBased 
 {
   /**
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.

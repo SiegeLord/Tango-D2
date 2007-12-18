@@ -17,10 +17,10 @@ private import tango.time.chrono.GregorianBased;
 
 
 /**
- * $(ANCHOR _ThaiBuddhistCalendar)
+ * $(ANCHOR _ThaiBuddhist)
  * Represents the Thai Buddhist calendar.
  */
-public class ThaiBuddhistCalendar : GregorianBasedCalendar {
+public class ThaiBuddhist : GregorianBased {
   /**
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
    * Returns: An integer representing the identifier of the current calendar.

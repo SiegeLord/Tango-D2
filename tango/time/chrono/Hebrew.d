@@ -20,10 +20,10 @@ private import tango.time.chrono.Calendar;
 
 
 /**
- * $(ANCHOR _HebrewCalendar)
+ * $(ANCHOR _Hebrew)
  * Represents the Hebrew calendar.
  */
-public class HebrewCalendar : Calendar {
+public class Hebrew : Calendar {
 
   private const uint[14][7] MonthDays = [
     // month                                                    // year type

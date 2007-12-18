@@ -21,7 +21,7 @@ private import tango.time.chrono.Gregorian;
 
 
 
-private class GregorianBasedCalendar : GregorianCalendar {
+private class GregorianBased : Gregorian {
 
   private EraRange[] eraRanges_;
   private int maxYear_, minYear_;
@@ -102,19 +102,19 @@ package struct EraRange {
     if (!initialized_) {
       long getTicks(uint year, uint month, uint day)
       {
-        return GregorianCalendar.generic.getDateTicks(year, month, day);
+        return Gregorian.generic.getDateTicks(year, month, day);
       }
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(4, getTicks(1989, 1, 8), 1988, 1, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(3, getTicks(1926, 12, 25), 1925, 1, 1989);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(2, getTicks(1912, 7, 30), 1911, 1, 1926);
-      eraRanges[GregorianCalendar.JAPAN] ~= EraRange(1, getTicks(1868, 9, 8), 1867, 1, 1912);
-      eraRanges[GregorianCalendar.TAIWAN] ~= EraRange(1, getTicks(1912, 1, 1), 1911, 1, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.KOREA] ~= EraRange(1, getTicks(1, 1, 1), -2333, 2334, GregorianCalendar.MAX_YEAR);
-      eraRanges[GregorianCalendar.THAI] ~= EraRange(1, getTicks(1, 1, 1), -543, 544, GregorianCalendar.MAX_YEAR);
-      currentEras[GregorianCalendar.JAPAN] = 4;
-      currentEras[GregorianCalendar.TAIWAN] = 1;
-      currentEras[GregorianCalendar.KOREA] = 1;
-      currentEras[GregorianCalendar.THAI] = 1;
+      eraRanges[Gregorian.JAPAN] ~= EraRange(4, getTicks(1989, 1, 8), 1988, 1, Gregorian.MAX_YEAR);
+      eraRanges[Gregorian.JAPAN] ~= EraRange(3, getTicks(1926, 12, 25), 1925, 1, 1989);
+      eraRanges[Gregorian.JAPAN] ~= EraRange(2, getTicks(1912, 7, 30), 1911, 1, 1926);
+      eraRanges[Gregorian.JAPAN] ~= EraRange(1, getTicks(1868, 9, 8), 1867, 1, 1912);
+      eraRanges[Gregorian.TAIWAN] ~= EraRange(1, getTicks(1912, 1, 1), 1911, 1, Gregorian.MAX_YEAR);
+      eraRanges[Gregorian.KOREA] ~= EraRange(1, getTicks(1, 1, 1), -2333, 2334, Gregorian.MAX_YEAR);
+      eraRanges[Gregorian.THAI] ~= EraRange(1, getTicks(1, 1, 1), -543, 544, Gregorian.MAX_YEAR);
+      currentEras[Gregorian.JAPAN] = 4;
+      currentEras[Gregorian.TAIWAN] = 1;
+      currentEras[Gregorian.KOREA] = 1;
+      currentEras[Gregorian.THAI] = 1;
       initialized_ = true;
     }
   }

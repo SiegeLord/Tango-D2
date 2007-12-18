@@ -17,16 +17,16 @@ private import tango.time.chrono.Calendar;
 
 
 /**
- * $(ANCHOR _GregorianCalendar)
+ * $(ANCHOR _Gregorian)
  * Represents the Gregorian calendar.
 */
-class GregorianCalendar : Calendar 
+class Gregorian : Calendar 
 {
         // import baseclass toTime()
         alias Calendar.toTime toTime;
 
         /// static shared instance
-        public static GregorianCalendar generic;
+        public static Gregorian generic;
 
         enum Type 
         {
@@ -54,11 +54,11 @@ class GregorianCalendar : Calendar
         */
         static this()
         {       
-                generic = new GregorianCalendar;
+                generic = new Gregorian;
         }
 
         /**
-        * Initializes an instance of the GregorianCalendar class using the specified GregorianTypes value. If no value is 
+        * Initializes an instance of the Gregorian class using the specified GregorianTypes value. If no value is 
         * specified, the default is Gregorian.Types.Localized.
         */
         this (Type type = Type.Localized) 
@@ -194,8 +194,8 @@ class GregorianCalendar : Calendar
         }
 
         /**
-        * $(I Property.) Retrieves the GregorianTypes value indicating the language version of the GregorianCalendar.
-        * Returns: The Gregorian.Type value indicating the language version of the GregorianCalendar.
+        * $(I Property.) Retrieves the GregorianTypes value indicating the language version of the Gregorian.
+        * Returns: The Gregorian.Type value indicating the language version of the Gregorian.
         */
         Type calendarType() 
         {

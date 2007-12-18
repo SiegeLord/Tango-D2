@@ -60,7 +60,7 @@ out {
 } body {
 
         // always set era to AD
-        date.era = GregorianCalendar.AD_ERA;
+        date.era = Gregorian.AD_ERA;
 
     size_t eaten() { return p - src.ptr; }
     bool done(T[] s) { return .done(eaten(), src.length, *p, s); }

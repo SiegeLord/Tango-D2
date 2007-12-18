@@ -49,23 +49,23 @@
  * $(TD Represents a period of daylight-saving time.)
  * )
  * $(TR
- * $(TD $(LINK2 #GregorianCalendar, GregorianCalendar))
+ * $(TD $(LINK2 #Gregorian, Gregorian))
  * $(TD Represents the Gregorian calendar.)
  * )
  * $(TR
- * $(TD $(LINK2 #HebrewCalendar, HebrewCalendar))
+ * $(TD $(LINK2 #Hebrew, Hebrew))
  * $(TD Represents the Hebrew calendar.)
  * )
  * $(TR
- * $(TD $(LINK2 #HijriCalendar, HijriCalendar))
+ * $(TD $(LINK2 #Hijri, Hijri))
  * $(TD Represents the Hijri calendar.)
  * )
  * $(TR
- * $(TD $(LINK2 #JapaneseCalendar, JapaneseCalendar))
+ * $(TD $(LINK2 #Japanese, Japanese))
  * $(TD Represents the Japanese calendar.)
  * )
  * $(TR
- * $(TD $(LINK2 #KoreanCalendar, KoreanCalendar))
+ * $(TD $(LINK2 #Korean, Korean))
  * $(TD Represents the Korean calendar.)
  * )
  * $(TR
@@ -77,11 +77,11 @@
  * $(TD Provides information about a region.)
  * )
  * $(TR
- * $(TD $(LINK2 #TaiwanCalendar, TaiwanCalendar))
+ * $(TD $(LINK2 #Taiwan, Taiwan))
  * $(TD Represents the Taiwan calendar.)
  * )
  * $(TR
- * $(TD $(LINK2 #ThaiBuddhistCalendar, ThaiBuddhistCalendar))
+ * $(TD $(LINK2 #ThaiBuddhist, ThaiBuddhist))
  * $(TD Represents the Thai Buddhist calendar.)
  * )
  * )
@@ -681,27 +681,27 @@ version (Clone)
   private static Calendar getCalendarInstance(int calendarType, bool readOnly=false) {
     switch (calendarType) {
       case Calendar.JAPAN:
-        return new JapaneseCalendar();
+        return new Japanese();
       case Calendar.TAIWAN:
-        return new TaiwanCalendar();
+        return new Taiwan();
       case Calendar.KOREA:
-        return new KoreanCalendar();
+        return new Korean();
       case Calendar.HIJRI:
-        return new HijriCalendar();
+        return new Hijri();
       case Calendar.THAI:
-        return new ThaiBuddhistCalendar();
+        return new ThaiBuddhist();
       case Calendar.HEBREW:
-        return new HebrewCalendar;
+        return new Hebrew;
       case Calendar.GREGORIAN_US:
       case Calendar.GREGORIAN_ME_FRENCH:
       case Calendar.GREGORIAN_ARABIC:
       case Calendar.GREGORIAN_XLIT_ENGLISH:
       case Calendar.GREGORIAN_XLIT_FRENCH:
-        return new GregorianCalendar(cast(GregorianCalendar.Type) calendarType);
+        return new Gregorian(cast(Gregorian.Type) calendarType);
       default:
         break;
     }
-    return new GregorianCalendar();
+    return new Gregorian();
   }
 
 }
@@ -1473,7 +1473,7 @@ public class DateTimeFormat : IFormatService {
   public this() {
     // This ctor is used by invariantFormat so we can't set the calendar property.
     cultureData_ = Culture.invariantCulture.cultureData_;
-    calendar_ = GregorianCalendar.generic;
+    calendar_ = Gregorian.generic;
     initialize();
   }
 
@@ -1697,7 +1697,7 @@ version(Clone)
   public static DateTimeFormat invariantFormat() {
     if (invariantFormat_ is null) {
       invariantFormat_ = new DateTimeFormat;
-      invariantFormat_.calendar = new GregorianCalendar();
+      invariantFormat_.calendar = new Gregorian();
       invariantFormat_.isReadOnly_ = true;
     }
     return invariantFormat_;
@@ -1714,7 +1714,7 @@ version(Clone)
 
   /**
    * $(I Property.) Retrieves the calendar used by the current culture.
-   * Returns: The Calendar determining the calendar used by the current culture. For example, the GregorianCalendar.
+   * Returns: The Calendar determining the calendar used by the current culture. For example, the Gregorian.
    */
   public final Calendar calendar() {
     assert(calendar_ !is null);

@@ -854,8 +854,8 @@ debug (Time)
 
                 auto now = Clock.now;
                 auto time = now.time;
-                auto date = GregorianCalendar.generic.toDate (now);
-                now = GregorianCalendar.generic.toTime (date, time);
+                auto date = Gregorian.generic.toDate (now);
+                now = Gregorian.generic.toTime (date, time);
         }
 }
 

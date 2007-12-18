@@ -231,8 +231,8 @@ version (Full)
                        case 'U':
                             dtf = cast(DateTimeFormat) dtf.clone();
                             dateTime = dateTime.toUniversalTime();
-                            if (typeid(typeof(dtf.calendar)) !is typeid(GregorianCalendar))
-                                dtf.calendar = GregorianCalendar.generic;
+                            if (typeid(typeof(dtf.calendar)) !is typeid(Gregorian))
+                                dtf.calendar = Gregorian.generic;
                             f = dtf.fullDateTimePattern;
                             break;
 }
@@ -363,7 +363,7 @@ version (Full)
                              case 'y':  // year
                                   len = parseRepeat(format, index, c);
                                   int year = calendar.getYear(dateTime);
-                                  // Two-digit years for JapaneseCalendar
+                                  // Two-digit years for Japanese
                                   if (calendar.id is Calendar.JAPAN)
                                       result ~= formatInt (tmp, year, 2);
                                   else

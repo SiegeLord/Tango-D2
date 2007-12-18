@@ -17,10 +17,10 @@ private import tango.time.chrono.Calendar;
 
 
 /**
- * $(ANCHOR _HijriCalendar)
+ * $(ANCHOR _Hijri)
  * Represents the Hijri calendar.
  */
-public class HijriCalendar : Calendar {
+public class Hijri : Calendar {
 
   private static const uint[] DAYS_TO_MONTH = [ 0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325, 355 ];
 
