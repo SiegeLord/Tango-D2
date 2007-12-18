@@ -417,7 +417,7 @@ size_t iso8601(T)(T[] src, ref Date date, ref TimeOfDay time) {
 \+ +++++++++++++++++++++++++++++++++++++++ +/
 
 // /([+-]Y{expanded})?(YYYY|YY)/
-private bool parseYear(T)(ref T* p, size_t expanded, out int year) {
+private bool parseYear(T)(ref T* p, size_t expanded, out uint year) {
 
     bool doParse() {
         T* p2 = p;
@@ -800,7 +800,10 @@ private size_t parseInt(T, U)(ref T* p, uint max, out U i) {
 debug (UnitTest) {
     import tango.io.Stdout;
 
-    void main() { }
+    debug(ISO8601)
+    {
+        void main() { }
+    }
 
     unittest {
         Date date;

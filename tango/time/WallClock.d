@@ -209,7 +209,7 @@ struct WallClock
                         dt.time.hours   = t.tm_hour;
                         dt.time.minutes = t.tm_min;
                         dt.time.seconds = t.tm_sec;
-                        return date;
+                        return dt;
                 }
 
                 /***************************************************************
