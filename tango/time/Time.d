@@ -832,7 +832,7 @@ debug (Time)
 {
         import tango.io.Stdout;
         import tango.time.Clock;
-        import tango.time.chrono.DefaultCalendar;
+        import tango.time.chrono.Gregorian;
 
         Time foo() 
         {
@@ -845,7 +845,7 @@ debug (Time)
         void main()
         {
                 auto c = foo();
-                Stdout (c).newline;
+                Stdout (c.ticks).newline;
 
 
                 auto t = TimeSpan(1);
@@ -854,8 +854,8 @@ debug (Time)
 
                 auto now = Clock.now;
                 auto time = now.time;
-                auto date = DefaultCalendar.toDate (now);
-                now = DefaultCalendar.toTime (date, time);
+                auto date = GregorianCalendar.generic.toDate (now);
+                now = GregorianCalendar.generic.toTime (date, time);
         }
 }
 
