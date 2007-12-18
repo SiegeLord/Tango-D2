@@ -28,7 +28,7 @@ private
 {
     struct IsEqual( T )
     {
-        bool opCall( T p1, T p2 )
+        static bool opCall( T p1, T p2 )
         {
             // TODO: Fix this if/when opEquals is changed to return a bool.
             static if( is( T == class ) || is( T == struct ) )
@@ -41,7 +41,7 @@ private
 
     struct IsLess( T )
     {
-        bool opCall( T p1, T p2 )
+        static bool opCall( T p1, T p2 )
         {
             return p1 < p2;
         }
