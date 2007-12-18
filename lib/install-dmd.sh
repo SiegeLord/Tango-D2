@@ -14,7 +14,7 @@ die() {
 }
 
 usage() {
-    echo 'Usage: install-dmd.sh [option <argument>] ... 
+    echo 'Usage: install-dmd.sh [[option <argument>] ...] 
 Options:
   --prefix: Install to the specified prefix (absolute path), default is /usr/local
   --userlib: Installs libtango-user-dmd.a too. It will also be built if it is missing
@@ -57,10 +57,10 @@ INCLPREFIX="$PREFIX"
 BASELIB="libtango-base-dmd.a"
 
 # 0) Parse arguments
-if [ "$#" = "0" ]
-then
-    usage
-fi
+#if [ "$#" = "0" ]
+#then
+#    usage
+#fi
 
 while [ "$#" != "0" ]
 do
@@ -107,7 +107,7 @@ do
                 INCL="$1"
             fi
             ;;
-        --binprefix)
+        --confprefix)
             shift
                 CONFPREFIX="$1"
             ;;
