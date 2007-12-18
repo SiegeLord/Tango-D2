@@ -12,9 +12,9 @@
 
 module tango.net.cluster.NetworkClient;
 
-private import  tango.core.Exception;        
-
 private import  tango.time.Clock;
+
+private import  tango.core.Exception;        
 
 public  import  tango.net.cluster.model.ICluster;        
 

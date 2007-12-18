@@ -122,12 +122,9 @@ T[] format(T, U=Time) (T[] output, U t)
 
 T[] format(T) (T[] output, Time t)
 {
-        // these arrays also reside in Date, but need to be templated here
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        // ditto
-        static T[][] Days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        static T[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         T[] convert (T[] tmp, int i)
         {
@@ -136,7 +133,6 @@ T[] format(T) (T[] output, Time t)
 
 
         assert (output.length >= 29);
-
         if (t is t.max)
             throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
 

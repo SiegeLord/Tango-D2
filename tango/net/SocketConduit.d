@@ -122,13 +122,8 @@ class SocketConduit : Conduit
 
         SocketConduit setTimeout (TimeSpan interval)
         {
-                tv = socket_.toTimeval (interval);
+                tv = Socket.toTimeval (interval);
                 return this;
-        }
-
-        deprecated SocketConduit setTimeout (double interval)
-        {
-                return setTimeout(TimeSpan.interval(interval));
         }
 
         /***********************************************************************

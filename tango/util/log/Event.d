@@ -15,11 +15,11 @@ module tango.util.log.Event;
 
 version = UseEventFreeList;
 
+private import  tango.time.Clock;
+
 private import  tango.sys.Common;
 
 private import  tango.core.Exception;
-
-private import  tango.time.Clock;
 
 private import  tango.util.log.model.ILevel,
                 tango.util.log.model.IHierarchy;

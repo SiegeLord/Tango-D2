@@ -12,6 +12,8 @@
 
 module tango.net.http.HttpHeaders;
 
+private import  tango.time.Time;
+
 private import  tango.io.model.IBuffer;
 
 public  import  tango.net.http.HttpConst;
@@ -19,8 +21,6 @@ public  import  tango.net.http.HttpConst;
 private import  tango.net.http.HttpTokens;
 
 private import  tango.text.stream.LineIterator;
-
-private import  tango.time.Time;
 
 /******************************************************************************
 

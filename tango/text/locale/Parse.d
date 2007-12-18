@@ -12,12 +12,11 @@
 
 module tango.text.locale.Parse;
 
+private import  tango.time.WallClock;
+
 private import  tango.core.Exception;
 
 private import  tango.text.locale.Core;
-
-private import  tango.time.Time,
-                tango.time.WallClock;
 
 private import  tango.time.chrono.Calendar;
 

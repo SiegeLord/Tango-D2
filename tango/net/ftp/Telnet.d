@@ -12,8 +12,7 @@
 
 module tango.net.ftp.Telnet;
 
-private import tango.time.Time,
-               tango.time.Clock;
+private import tango.time.Clock;
 
 private import tango.net.Socket;
 

@@ -1351,7 +1351,6 @@ class Socket
                 return result;
         }
 
-
         /***********************************************************************
 
                 select with specified timeout
@@ -1363,21 +1362,6 @@ class Socket
                 auto tv = toTimeval (time);
                 return select (checkRead, checkWrite, checkError, &tv);
         }
-
-        /***********************************************************************
-                select with specified timeout
-          
-                Note: The period is not always accurate, so it is possible
-                that the function will return with a timeout before the
-                specified period.  For more accuracy, use the TimeSpan
-                version.
-        ***********************************************************************/
-
-        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, double time)
-        {
-                return select(checkRead, checkWrite, checkError, TimeSpan.interval(time));
-        }
-
 
         /***********************************************************************
 

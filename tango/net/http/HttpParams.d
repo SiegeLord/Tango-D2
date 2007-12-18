@@ -12,6 +12,8 @@
 
 module tango.net.http.HttpParams;
 
+private import  tango.time.Time;
+
 private import  tango.io.model.IBuffer;
 
 private import  tango.net.http.HttpTokens;
@@ -19,8 +21,6 @@ private import  tango.net.http.HttpTokens;
 private import  tango.io.protocol.model.IWriter;
 
 private import  tango.text.stream.SimpleIterator;
-
-private import  tango.time.Time;
 
 public  import  tango.net.http.model.HttpParamsView;
 

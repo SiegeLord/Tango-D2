@@ -12,6 +12,8 @@
 
 module tango.net.http.HttpTokens;
 
+private import  tango.time.Time;
+
 private import  tango.io.Buffer;
 
 private import  tango.io.model.IBuffer;
@@ -20,8 +22,6 @@ private import  tango.net.http.HttpStack,
                 tango.net.http.HttpConst;
 
 private import  Text = tango.text.Util;
-
-private import  tango.time.Time;
 
 private import  tango.io.protocol.model.IWriter;
 
