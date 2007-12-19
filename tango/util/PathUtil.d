@@ -63,13 +63,11 @@ char[] normalize(char[] path, bool normSlash = true)
     */
     int findSlashDot(char[] path, int start) {
         assert(start < path.length);
-        foreach(i, c; path[start..$-1]) {
-            if (c == '/') {
-                if (path[start+i+1] == '.') {
+        foreach(i, c; path[start..$-1]) 
+            if (c == '/') 
+                if (path[start+i+1] == '.') 
                     return i + start + 1;
-                }
-            }
-        }
+
         return -1;
     }
 
