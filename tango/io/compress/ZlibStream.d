@@ -8,6 +8,8 @@
 
     author:     Daniel Keep
 
+    history:    Added support for "window bits", needed for Zip support.
+
 *******************************************************************************/
 
 module tango.io.compress.ZlibStream;
@@ -64,6 +66,12 @@ class ZlibInput : InputFilter
         input.read(myContent);
         ---
 
+        The optional windowBits parameter is the base two logarithm of the
+        window size, and should be in the range 8-15, defaulting to 15 if not
+        specified.  Additionally, the windowBits parameter may be negative to
+        indicate that zlib should omit the standard zlib header and trailer,
+        with the window size being -windowBits.
+
     ***************************************************************************/
 
     this(InputStream stream)
@@ -88,6 +96,29 @@ class ZlibInput : InputFilter
         zs_valid = true;
     }
 
+    /// ditto
+    this(InputStream stream, int windowBits)
+    {
+        super (stream);
+        in_chunk = new ubyte[CHUNKSIZE];
+
+        // Allocate inflate state
+        with( zs )
+        {
+            zalloc = null;
+            zfree = null;
+            opaque = null;
+            avail_in = 0;
+            next_in = null;
+        }
+
+        auto ret = inflateInit2(&zs, windowBits);
+        if( ret != Z_OK )
+            throw new ZlibException(ret);
+
+        zs_valid = true;
+    }
+
     ~this()
     {
         if( zs_valid )
@@ -103,9 +134,10 @@ class ZlibInput : InputFilter
 
     ***************************************************************************/ 
 
-    uint read(void[] dst)
+    override uint read(void[] dst)
     {
-        check_valid();
+        if( !zs_valid )
+            return IConduit.Eof;
 
         // Check to see if we've run out of input data.  If we have, get some
         // more.
@@ -152,7 +184,7 @@ class ZlibInput : InputFilter
 
     ***************************************************************************/ 
 
-    InputStream clear()
+    override InputStream clear()
     {
         check_valid();
 
@@ -240,6 +272,12 @@ class ZlibOutput : OutputFilter
         output.write(myContent);
         ---
 
+        The optional windowBits parameter is the base two logarithm of the
+        window size, and should be in the range 8-15, defaulting to 15 if not
+        specified.  Additionally, the windowBits parameter may be negative to
+        indicate that zlib should omit the standard zlib header and trailer,
+        with the window size being -windowBits.
+
     ***************************************************************************/
 
     this(OutputStream stream, Level level = Level.Normal)
@@ -262,6 +300,28 @@ class ZlibOutput : OutputFilter
         zs_valid = true;
     }
 
+    /// ditto
+    this(OutputStream stream, Level level, int windowBits)
+    {
+        super(stream);
+        out_chunk = new ubyte[CHUNKSIZE];
+
+        // Allocate deflate state
+        with( zs )
+        {
+            zalloc = null;
+            zfree = null;
+            opaque = null;
+        }
+
+        auto ret = deflateInit2(&zs, level, Z_DEFLATED, windowBits, 8,
+                Z_DEFAULT_STRATEGY);
+        if( ret != Z_OK )
+            throw new ZlibException(ret);
+
+        zs_valid = true;
+    }
+
     ~this()
     {
         if( zs_valid )
@@ -278,7 +338,7 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    uint write(void[] src)
+    override uint write(void[] src)
     {
         check_valid();
         scope(failure) kill_zs();
@@ -338,7 +398,7 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    void close()
+    override void close()
     {
         // Only commit if the stream is still open.
         if( zs_valid ) commit;
