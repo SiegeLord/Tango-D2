@@ -39,6 +39,13 @@ version( DDoc )
      * auto v = to!(int)("123");
      * -----
      *
+     * You may also specify a default value which should be returned in the
+     * event that the conversion cannot take place:
+     *
+     * -----
+     * auto v = to!(int)("abc", 456);
+     * -----
+     *
      * The function will attempt to preserve the input value as exactly as
      * possible, given the limitations of the destination format.  For
      * instance, converting a floating-point value to an integer will cause it
@@ -125,6 +132,7 @@ version( DDoc )
      * "fromString" static methods.
      */
     D to(D,S)(S value);
+    D to(D,S)(S value, D default_); /// ditto
 }
 else
 {
