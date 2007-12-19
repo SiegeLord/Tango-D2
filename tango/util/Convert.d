@@ -325,7 +325,15 @@ template isArrayType(T)
 
 template isPointerType(T)
 {
+    /*
+     * You might think these first two tests are redundant.  You'd be wrong.
+     * The linux compilers, for whatever reason, seem to think that objects
+     * and arrays are implicitly castable to void*, whilst the Windows one
+     * doesn't.  Don't ask me; just nod and smile...
+     */
     static if( is( T : Object ) )
+        const isPointerType = false;
+    else static if( is( T : void[] ) )
         const isPointerType = false;
     else static if( is( T : void* ) )
         const isPointerType = true;
