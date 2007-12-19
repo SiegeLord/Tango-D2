@@ -130,9 +130,35 @@ else
 {
     template to(D)
     {
-        D to(S)(S value)
+        D to(S, Def=Missing)(S value, Def def=Def.init)
         {
-            return toImpl!(D,S)(value);
+            static if( is( Def == Missing ) )
+                return toImpl!(D,S)(value);
+
+            else
+            {
+                try
+                {
+                    return toImpl!(D,S)(value);
+                }
+                catch( ConversionException e )
+                    {}
+
+                return def;
+
+                //D result = def;
+                /+
+                try
+                {
+                    return toImpl!(D,S)(value);
+                }
+                catch( ConversionException e )
+                {
+                    return def;
+                }
+                // +/
+                //return result;
+            }
         }
     }
 }
@@ -152,6 +178,8 @@ class ConversionException : TracedException
 }
 
 private:
+
+typedef int Missing;
 
 /*
  * So, how is this module structured?
@@ -656,7 +684,6 @@ D toBool(D,S)(S value)
 
     else static if( isString!(S) )
     {
-        // TODO: change input string to lower-case
         switch( Ascii.toLower(value) )
         {
             case "false":
@@ -737,7 +764,26 @@ D toIntegerFromString(D,S)(S value)
 {
     static if( is( S charT : charT[] ) )
     {
-        return tango.text.convert.Integer.parse!(charT,D)(value);
+        mixin convError;
+
+        static if( is( D == ulong ) )
+        {
+            uint len;
+            auto result = tango.text.convert.Integer.convert(value, 10, &len);
+
+            if( len < value.length )
+                throwConvError;
+        }
+        else
+        {
+            uint len;
+            auto result = tango.text.convert.Integer.parse(value, 10, &len);
+
+            if( len < value.length )
+                throwConvError;
+
+            return toIntegerFromInteger!(D,long)(result);
+        }
     }
 }
 
@@ -1137,8 +1183,8 @@ unittest
 
     assert( to!(bool)("true") == true );
     assert( to!(bool)("false") == false );
-    assert( to!(bool)("TrUe") == true );    // TODO
-    assert( to!(bool)("fAlSe") == false );  // TODO
+    assert( to!(bool)("TrUe") == true );
+    assert( to!(bool)("fAlSe") == false );
 
     /*
      * Integer
@@ -1260,6 +1306,17 @@ unittest
         assert( to!(ireal)(to!(Bar)(foo)) == 42.0i );
         assert( to!(real)(to!(Bar)(to!(Baz)(foo))) == 3.14159 );
     }
-}
 
+    /*
+     * Default values
+     */
+    {
+        assert( to!(int)("123", 456) == 123,
+                `to!(int)("123", 456) == "` ~ to!(char[])(
+                    to!(int)("123", 456)) ~ `"` );
+        assert( to!(int)("abc", 456) == 456,
+                `to!(int)("abc", 456) == "` ~ to!(char[])(
+                    to!(int)("abc", 456)) ~ `"` );
+    }
+}
 

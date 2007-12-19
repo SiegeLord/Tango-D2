@@ -1,53 +1,21 @@
 /**
  * The variant module contains a variant, or polymorphic type.
  *
- * Copyright: Copyright (C) 2005-2006 The Tango Team.  All rights reserved.
+ * Copyright: Copyright (C) 2005-2007 The Tango Team.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Daniel Keep, Sean Kelly
  */
 module tango.core.Variant;
 
-
 private import tango.core.Exception : TracedException;
 private import tango.core.Vararg : va_list;
 
-
-/+
-import tango.text.convert.Float;
-import tango.text.convert.Integer;
-import tango.text.convert.Layout : Layout;
-import tango.text.convert.Utf;
-
-
 private
 {
-    alias tango.text.convert.Float.toString toString;
-    alias tango.text.convert.Integer.toString toString;
-    alias tango.text.convert.Utf.toString toString;
-
-    char[] toString( bool v )
+    template maxT(uint a, uint b)
     {
-        return v ? "true" : "false";
+        const maxT = (a > b) ? a : b;
     }
-
-    Layout!(char) layout;
-}
-
-
-static this()
-{
-    layout = new Layout!(char);
-}
-+/
-
-
-private
-{
-    template maxT( uint a, uint b )
-    {
-        const maxT = a > b ? a : b;
-    }
-
 
     struct AtomicTypes
     {
@@ -78,8 +46,7 @@ private
         }
     }
 
-
-    template isAtomicType( T )
+    template isAtomicType(T)
     {
         static if( is( T == bool )
                 || is( T == char )
@@ -104,8 +71,7 @@ private
             const isAtomicType = false;
     }
 
-
-    template isArray( T )
+    template isArray(T)
     {
         static if( is( T U : U[] ) )
             const isArray = true;
@@ -113,8 +79,7 @@ private
             const isArray = false;
     }
 
-
-    template isPointer( T )
+    template isPointer(T)
     {
         static if( is( T U : U* ) )
             const isPointer = true;
@@ -122,8 +87,7 @@ private
             const isPointer = false;
     }
 
-
-    template isObject( T )
+    template isObject(T)
     {
         static if( is( T : Object ) )
             const isObject = true;
@@ -131,8 +95,7 @@ private
             const isObject = false;
     }
 
-
-    template isStaticArray( T )
+    template isStaticArray(T)
     {
         static if( is( typeof(T.init)[(T).sizeof / typeof(T.init).sizeof] == T ) )
             const isStaticArray = true;
@@ -140,14 +103,12 @@ private
             const isStaticArray = false;
     }
 
-
-    bool isAny(T,argsT...)( T v, argsT args )
+    bool isAny(T,argsT...)(T v, argsT args)
     {
         foreach( arg ; args )
             if( v is arg ) return true;
         return false;
     }
-
 
     const tibool = typeid(bool);
     const tichar = typeid(char);
@@ -168,8 +129,7 @@ private
     const tiidouble = typeid(idouble);
     const tiireal = typeid(ireal);
 
-
-    bool canImplicitCastTo(dsttypeT)( TypeInfo srctype )
+    bool canImplicitCastTo(dsttypeT)(TypeInfo srctype)
     {
         static if( is( dsttypeT == char ) )
             return isAny(srctype, tibool, tiubyte);
@@ -224,8 +184,7 @@ private
             return false;
     }
 
-
-    template storageT( T )
+    template storageT(T)
     {
         static if( isStaticArray!(T) )
             alias typeof(T.dup) storageT;
@@ -234,41 +193,43 @@ private
     }
 }
 
-
 /**
- * Thrown on a type conversion error.
+ * This exception is thrown whenever you attempt to get the value of a Variant
+ * without using a compatible type.
  */
 class VariantTypeMismatchException : TracedException
 {
-    /**
-     *
-     */
-    this( TypeInfo expected, TypeInfo got )
+    this(TypeInfo expected, TypeInfo got)
     {
-        super( "cannot convert " ~ expected.toString ~ " value to a " ~ got.toString );
+        super("cannot convert "~expected.toString
+                    ~" value to a "~got.toString);
     }
 }
 
-
 /**
- * This object can represent nearly any type in a dynamic manner.
+ * The Variant type is used to dynamically store values of different types at
+ * runtime.
+ *
+ * You can create a Variant using either the pseudo-constructor or direct
+ * assignment.
+ *
+ * -----
+ *  Variant v = Variant(42);
+ *  v = "abc";
+ * -----
  */
 struct Variant
 {
-    TypeInfo    type = typeid(void);
-    AtomicTypes value;
-
-
     /**
-     * Constructs a new variant with the supplied type and value.
+     * This pseudo-constructor is used to place a value into a new Variant.
      *
      * Params:
-     *  value = The value to assign.
+     *  value = The value you wish to put in the Variant.
      *
      * Returns:
-     *  A variant representing the supplied value.
+     *  The new Variant.
      */
-    static Variant opCall(T)( T value )
+    static Variant opCall(T)(T value)
     {
         Variant _this;
 
@@ -281,18 +242,17 @@ struct Variant
         return _this;
     }
 
-
     /**
-     * Changes the type and value of the current variant to that of the
-     * supplied value.
+     * This operator allows you to assign arbitrary values directly into an
+     * existing Variant.
      *
      * Params:
-     *  value = The value to assign.
+     *  value = The value you wish to put in the Variant.
      *
      * Returns:
-     *  A copy of the newly assigned variant.
+     *  The new value of the assigned-to variant.
      */
-    final Variant opAssign(T)( T value )
+    Variant opAssign(T)(T value)
     {
         static if( isStaticArray!(T) )
         {
@@ -304,29 +264,31 @@ struct Variant
 
             static if( isAtomicType!(T) )
             {
-                mixin( "this.value._" ~ T.stringof ~ "=value;" );
+                mixin("this.value._"~T.stringof~"=value;");
             }
             else static if( isArray!(T) )
             {
-                this.value.arr = (cast(void*)value.ptr)[0 .. value.length];
+                this.value.arr = (cast(void*)value.ptr)
+                    [0 .. value.length];
             }
             else static if( isPointer!(T) )
             {
-                this.value.ptr = cast(void*)value;
+                this.value.ptr = cast(void*)T;
             }
             else static if( isObject!(T) )
             {
-                this.value.obj = value;
+                this.value.obj = T;
             }
             else
             {
                 if( T.sizeof <= this.value.data.length )
                 {
-                    this.value.data[0 .. T.sizeof] = (cast(ubyte*)&value)[0 .. T.sizeof];
+                    this.value.data[0..T.sizeof] =
+                        (cast(ubyte*)&value)[0..T.sizeof];
                 }
                 else
                 {
-                    auto buffer = (cast(ubyte*)&value)[0 .. T.sizeof].dup;
+                    auto buffer = (cast(ubyte*)&value)[0..T.sizeof].dup;
                     this.value.arr = cast(void[])buffer;
                 }
             }
@@ -334,50 +296,80 @@ struct Variant
         }
     }
 
-
     /**
-     * Tests whether the variant currently represents a T.
+     * This member can be used to determine if the value stored in the Variant
+     * is of the specified type.  Note that this comparison is exact: it does
+     * not take implicit casting rules into account.
      *
      * Returns:
-     *  true if the variant represents a T and false if not.
+     *  true if the Variant contains a value of type T, false otherwise.
      */
-    final bool isA(T)()
+    bool isA(T)()
     {
         return cast(bool)(typeid(T) is type);
     }
 
-
     /**
-     * Tests whether the variant is currently implicitly convertible to a T.
+     * This member can be used to determine if the value stored in the Variant
+     * is of the specified type.  This comparison attempts to take implicit
+     * conversion rules into account.
      *
      * Returns:
-     *  true if the variant is implicitly convertible to a T and false if not.
+     *  true if the Variant contains a value of type T, or if the Variant
+     *  contains a value that can be implicitly cast to type T; false
+     *  otherwise.
      */
-    final bool isImplicitly(T)()
+    bool isImplicitly(T)()
     {
-        return cast(bool)(typeid(T) is type)
-               || canImplicitCastTo!(T)(type);
+        return ( cast(bool)(typeid(T) is type)
+                || canImplicitCastTo!(T)(type) );
     }
 
-
     /**
-     * Gets the currently stored value, by type.
+     * This determines whether the Variant has an assigned value or not.  It
+     * is simply short-hand for calling the isA member with a type of void.
      *
      * Returns:
-     *  The currently stored value.
+     *  true if the Variant does not contain a value, false otherwise.
      */
-    final storageT!(S) get(S)()
+    bool isEmpty()
+    {
+        return isA!(void);
+    }
+
+    /**
+     * This member will clear the Variant, returning it to an empty state.
+     */
+    void clear()
+    {
+        _type = typeid(void);
+        value = value.init;
+    }
+
+    /**
+     * This is the primary mechanism for extracting a value from a Variant.
+     * Given a destination type S, it will attempt to extract the value of the
+     * Variant into that type.  If the value contained within the Variant
+     * cannot be implicitly cast to the given type S, it will throw an
+     * exception.
+     *
+     * You can check to see if this operation will fail by calling the
+     * isImplicitly member with the type S.
+     *
+     * Returns:
+     *  The value stored within the Variant.
+     */
+    storageT!(S) get(S)()
     {
         alias storageT!(S) T;
 
         if( type !is typeid(T)
-            // Let D do runtime check itself
-            && !isObject!(T)
-            // Allow implicit upcasts
-            && !canImplicitCastTo!(T)(type) )
-        {
-            throw new VariantTypeMismatchException( type, typeid(T) );
-        }
+                // Let D do runtime check itself
+                && !isObject!(T)
+                // Allow implicit upcasts
+                && !canImplicitCastTo!(T)(type)
+          )
+            throw new VariantTypeMismatchException(type,typeid(T));
 
         static if( isAtomicType!(T) )
         {
@@ -405,12 +397,14 @@ struct Variant
                 else if( type is tiifloat ) return cast(T)this.value._ifloat;
                 else if( type is tiidouble ) return cast(T)this.value._idouble;
                 else if( type is tiireal ) return cast(T)this.value._ireal;
-                else throw new VariantTypeMismatchException( type, typeid(T) );
+                else
+                    throw new VariantTypeMismatchException(type,typeid(T));
             }
         }
         else static if( isArray!(T) )
         {
-            return (cast(typeof(T[0])*)this.value.arr.ptr)[0 .. this.value.arr.length];
+            return (cast(typeof(T[0])*)this.value.arr.ptr)
+                [0 .. this.value.arr.length];
         }
         else static if( isPointer!(T) )
         {
@@ -425,59 +419,72 @@ struct Variant
             if( T.sizeof <= this.value.data.length )
             {
                 T result;
-                (cast(ubyte*)&result)[0 .. T.sizeof] = this.value.data[0 .. T.sizeof];
+                (cast(ubyte*)&result)[0..T.sizeof] =
+                    this.value.data[0..T.sizeof];
                 return result;
             }
             else
             {
                 T result;
-                (cast(ubyte*)&result)[0 .. T.sizeof] = (cast(ubyte[])this.value.arr)[0 .. T.sizeof];
+                (cast(ubyte*)&result)[0..T.sizeof] =
+                    (cast(ubyte[])this.value.arr)[0..T.sizeof];
                 return result;
             }
         }
+        assert(false);
     }
 
+    /**
+     * The following operator overloads are defined for the sake of
+     * convenience.  It is important to understand that they do not allow you
+     * to use a Variant as both the left-hand and right-hand sides of an
+     * expression.  One side of the operator must be a concrete type in order
+     * for the Variant to know what code to generate.
+     */
+    typeof(T+T) opAdd(T)(T rhs)     { return get!(T) + rhs; }
+    typeof(T+T) opAdd_r(T)(T lhs)   { return lhs + get!(T); } /// ditto
+    typeof(T-T) opSub(T)(T rhs)     { return get!(T) - rhs; } /// ditto
+    typeof(T-T) opSub_r(T)(T lhs)   { return lhs - get!(T); } /// ditto
+    typeof(T*T) opMul(T)(T rhs)     { return get!(T) * rhs; } /// ditto
+    typeof(T*T) opMul_r(T)(T lhs)   { return lhs * get!(T); } /// ditto
+    typeof(T/T) opDiv(T)(T rhs)     { return get!(T) / rhs; } /// ditto
+    typeof(T/T) opDiv_r(T)(T lhs)   { return lhs / get!(T); } /// ditto
+    typeof(T%T) opMod(T)(T rhs)     { return get!(T) % rhs; } /// ditto
+    typeof(T%T) opMod_r(T)(T lhs)   { return lhs % get!(T); } /// ditto
+    typeof(T&T) opAnd(T)(T rhs)     { return get!(T) & rhs; } /// ditto
+    typeof(T&T) opAnd_r(T)(T lhs)   { return lhs & get!(T); } /// ditto
+    typeof(T|T) opOr(T)(T rhs)      { return get!(T) | rhs; } /// ditto
+    typeof(T|T) opOr_r(T)(T lhs)    { return lhs | get!(T); } /// ditto
+    typeof(T^T) opXor(T)(T rhs)     { return get!(T) ^ rhs; } /// ditto
+    typeof(T^T) opXor_r(T)(T lhs)   { return lhs ^ get!(T); } /// ditto
+    typeof(T<<T) opShl(T)(T rhs)    { return get!(T) << rhs; } /// ditto
+    typeof(T<<T) opShl_r(T)(T lhs)  { return lhs << get!(T); } /// ditto
+    typeof(T>>T) opShr(T)(T rhs)    { return get!(T) >> rhs; } /// ditto
+    typeof(T>>T) opShr_r(T)(T lhs)  { return lhs >> get!(T); } /// ditto
+    typeof(T>>>T) opUShr(T)(T rhs)  { return get!(T) >>> rhs; } /// ditto
+    typeof(T>>>T) opUShr_r(T)(T lhs){ return lhs >>> get!(T); } /// ditto
+    typeof(T~T) opCat(T)(T rhs)     { return get!(T) ~ rhs; } /// ditto
+    typeof(T~T) opCat_r(T)(T lhs)   { return lhs ~ get!(T); } /// ditto
 
-    final typeof(T+T) opAdd(T)( T rhs )      { return get!(T) + rhs; }
-    final typeof(T+T) opAdd_r(T)( T lhs )    { return lhs + get!(T); }
-    final typeof(T-T) opSub(T)( T rhs )      { return get!(T) - rhs; }
-    final typeof(T-T) opSub_r(T)( T lhs )    { return lhs - get!(T); }
-    final typeof(T*T) opMul(T)( T rhs )      { return get!(T) * rhs; }
-    final typeof(T*T) opMul_r(T)( T lhs )    { return lhs * get!(T); }
-    final typeof(T/T) opDiv(T)( T rhs )      { return get!(T) / rhs; }
-    final typeof(T/T) opDiv_r(T)( T lhs )    { return lhs / get!(T); }
-    final typeof(T%T) opMod(T)( T rhs )      { return get!(T) % rhs; }
-    final typeof(T%T) opMod_r(T)( T lhs )    { return lhs % get!(T); }
-    final typeof(T&T) opAnd(T)( T rhs )      { return get!(T) & rhs; }
-    final typeof(T&T) opAnd_r(T)( T lhs )    { return lhs & get!(T); }
-    final typeof(T|T) opOr(T)( T rhs )       { return get!(T) | rhs; }
-    final typeof(T|T) opOr_r(T)( T lhs )     { return lhs | get!(T); }
-    final typeof(T^T) opXor(T)( T rhs )      { return get!(T) ^ rhs; }
-    final typeof(T^T) opXor_r(T)( T lhs )    { return lhs ^ get!(T); }
-    final typeof(T<<T) opShl(T)( T rhs )     { return get!(T) << rhs; }
-    final typeof(T<<T) opShl_r(T)( T lhs )   { return lhs << get!(T); }
-    final typeof(T>>T) opShr(T)( T rhs )     { return get!(T) >> rhs; }
-    final typeof(T>>T) opShr_r(T)( T lhs )   { return lhs >> get!(T); }
-    final typeof(T>>>T) opUShr(T)( T rhs )   { return get!(T) >>> rhs; }
-    final typeof(T>>>T) opUShr_r(T)( T lhs ) { return lhs >>> get!(T); }
-    final typeof(T~T) opCat(T)( T rhs )      { return get!(T) ~ rhs; }
-    final typeof(T~T) opCat_r(T)( T lhs )    { return lhs ~ get!(T); }
+    Variant opAddAssign(T)(T value) { return (*this = get!(T) + value); } /// ditto
+    Variant opSubAssign(T)(T value) { return (*this = get!(T) - value); } /// ditto
+    Variant opMulAssign(T)(T value) { return (*this = get!(T) * value); } /// ditto
+    Variant opDivAssign(T)(T value) { return (*this = get!(T) / value); } /// ditto
+    Variant opModAssign(T)(T value) { return (*this = get!(T) % value); } /// ditto
+    Variant opAndAssign(T)(T value) { return (*this = get!(T) & value); } /// ditto
+    Variant opOrAssign(T)(T value)  { return (*this = get!(T) | value); } /// ditto
+    Variant opXorAssign(T)(T value) { return (*this = get!(T) ^ value); } /// ditto
+    Variant opShlAssign(T)(T value) { return (*this = get!(T) << value); } /// ditto
+    Variant opShrAssign(T)(T value) { return (*this = get!(T) >> value); } /// ditto
+    Variant opUShrAssign(T)(T value){ return (*this = get!(T) >>> value); } /// ditto
+    Variant opCatAssign(T)(T value) { return (*this = get!(T) ~ value); } /// ditto
 
-    final Variant opAddAssign(T)( T value )  { return (*this = get!(T) + value); }
-    final Variant opSubAssign(T)( T value )  { return (*this = get!(T) - value); }
-    final Variant opMulAssign(T)( T value )  { return (*this = get!(T) * value); }
-    final Variant opDivAssign(T)( T value )  { return (*this = get!(T) / value); }
-    final Variant opModAssign(T)( T value )  { return (*this = get!(T) % value); }
-    final Variant opAndAssign(T)( T value )  { return (*this = get!(T) & value); }
-    final Variant opOrAssign(T)( T value )   { return (*this = get!(T) | value); }
-    final Variant opXorAssign(T)( T value )  { return (*this = get!(T) ^ value); }
-    final Variant opShlAssign(T)( T value )  { return (*this = get!(T) << value); }
-    final Variant opShrAssign(T)( T value )  { return (*this = get!(T) >> value); }
-    final Variant opUShrAssign(T)( T value ) { return (*this = get!(T) >>> value); }
-    final Variant opCatAssign(T)( T value )  { return (*this = get!(T) ~ value); }
-
-
-    final int opEquals(T)( T rhs )
+    /**
+     * The following operators can be used with Variants on both sides.  Note
+     * that these operators do not follow the standard rules of
+     * implicit conversions.
+     */
+    int opEquals(T)(T rhs)
     {
         static if( is( T == Variant ) )
             return opEqualsVariant(rhs);
@@ -485,9 +492,8 @@ struct Variant
             return get!(T) == rhs;
     }
 
-
-
-    final int opCmp(T)( T rhs )
+    /// ditto
+    int opCmp(T)(T rhs)
     {
         static if( is( T == Variant ) )
             return opCmpVariant(rhs);
@@ -498,98 +504,73 @@ struct Variant
         }
     }
 
-
-    /**
-     * Gets the hash of the currently contained value.
-     *
-     * Returns:
-     *  A hash for the currently contained value.
-     */
+    /// ditto
     hash_t toHash()
     {
         return type.getHash(data.ptr);
     }
 
-
     /**
-     * Gets a string representation of the currently contained value.  At the
-     * moment, this is just the name of the contained type.
+     * Performs "stringification" of the value stored within the Variant.  In
+     * the case of the Variant having no assigned value, it will return the
+     * string "Variant.init".
      *
      * Returns:
-     *  A string representing the currently contained value.
+     *  The string representation of the value contained within the Variant.
      */
     char[] toString()
     {
         return type.toString;
-        /+
-        // Special case: void type
-        if( type is typeid(void) )
-        {
-            return "Variant.init";
-        }
-        // Special case: strings (for h3r3tic)
-        else if( type is typeid(char[]) )
-        {
-            return get!(char[]);
-        }
-        else if( type is typeid(wchar[]) )
-        {
-            return .toString( get!(wchar[]) );
-        }
-        else if( type is typeid(dchar[]) )
-        {
-            return .toString( get!(dchar[]) );
-        }
-        // Everything else
-        else
-        {
-            TypeInfo[1] tis = [type];
-            void* args = this.data.ptr;
-
-            return layout.convert( tis, args, "{}" );
-        }
-        +/
     }
 
+    /**
+     * This can be used to retrieve the TypeInfo for the currently stored
+     * value.
+     */
+    TypeInfo type()
+    {
+        return _type;
+    }
 
 private:
-    int opEqualsVariant(Variant rhs)
+    TypeInfo _type = typeid(void);
+    AtomicTypes value;
+
+    TypeInfo type(TypeInfo v)
     {
-        if( type != rhs.type )
-            return false;
-        return cast(bool) type.equals( data.ptr, rhs.data.ptr );
+        return (_type = v);
     }
 
+    int opEqualsVariant(Variant rhs)
+    {
+        if( type != rhs.type ) return false;
+        return cast(bool) type.equals(data.ptr, rhs.data.ptr);
+    }
 
     int opCmpVariant(Variant rhs)
     {
         if( type != rhs.type )
-            throw new VariantTypeMismatchException( type, rhs.type );
-        return type.compare( data.ptr, rhs.data.ptr );
+            throw new VariantTypeMismatchException(type, rhs.type);
+        return type.compare(data.ptr, rhs.data.ptr);
     }
-
 
     void[] data()
     {
         if( type.tsize <= value.data.length )
-        {
             return cast(void[])(value.data);
-        }
         else
-        {
             return value.arr;
-        }
     }
 }
-
 
 debug( UnitTest )
 {
     unittest
     {
         Variant v;
-
         assert( v.isA!(void), v.type.toString );
+        assert( v.isEmpty, v.type.toString );
+
         v = 42;
         assert( v.isA!(int), v.type.toString );
         assert( v.isImplicitly!(long), v.type.toString );
@@ -598,6 +579,10 @@ debug( UnitTest )
         assert( v.get!(int) == 42 );
         assert( v.get!(long) == 42L );
         assert( v.get!(ulong) == 42uL );
+
+        v.clear;
+        assert( v.isA!(void), v.type.toString );
+        assert( v.isEmpty, v.type.toString );
 
         v = "Hello, World!"c;
         assert( v.isA!(char[]), v.type.toString );
@@ -613,7 +598,7 @@ debug( UnitTest )
         assert( v.isImplicitly!(real), v.type.toString );
         assert( !v.isImplicitly!(float), v.type.toString );
         assert( v.get!(double) == 3.1413 );
-
+        
         auto u = Variant(v);
         assert( u.isA!(double), u.type.toString );
         assert( u.get!(double) == 3.1413 );
@@ -655,17 +640,7 @@ debug( UnitTest )
         v = 38; v >>= 1; assert( v == 19 );
 
         v = "abc"; v ~= "def"; assert( v == "abcdef" );
-        /+
-        v = Variant.init;   assert( v.toString == "Variant.init", v.toString );
-        v = 42;             assert( v.toString == "42", v.toString );
-        v = "abc";          assert( v.toString == "abc", v.toString );
 
-        v = [1,2,3];
-        printf( "v.toString: %.*s\n", v.toString );
-        assert( v.toString == "[1,2,3]", v.toString );
-
-        v = 1+2.0i;         assert( v.toString == "1+2i", v.toString );
-        +/
         assert( Variant(0) < Variant(42) );
         assert( Variant(42) > Variant(0) );
         assert( Variant(21) == Variant(21) );
@@ -681,7 +656,7 @@ debug( UnitTest )
             hash[v1] = 0;
             hash[v2] = 1;
             hash[v3] = 2;
-
+            
             assert( hash[v1] == 0 );
             assert( hash[v2] == 1 );
             assert( hash[v3] == 2 );
@@ -699,3 +674,4 @@ debug( UnitTest )
         }
     }
 }
+
