@@ -1930,7 +1930,7 @@ const char[][] cp437_to_utf8_map_low = [
     "\u25d8",   "\u25cb",   "\u25d9",   "\u2642",
     "\u2640",   "\u266a",   "\u266b",   "\u263c",
 
-    "\u25b6",   "\u25c0",   "\u2195",   "\u2195",
+    "\u25b6",   "\u25c0",   "\u2195",   "\u203c",
     "\u00b6",   "\u00a7",   "\u25ac",   "\u21a8",
     "\u2191",   "\u2193",   "\u2192",   "\u2190",
     "\u221f",   "\u2194",   "\u25b2",   "\u25bc"
@@ -2015,7 +2015,7 @@ char[] cp437_to_utf8(ubyte[] s)
                 }
                 else if( d > 127 )
                 {
-                    char[] repl = cp437_to_utf8_map_high[d-127];
+                    char[] repl = cp437_to_utf8_map_high[d-128];
                     r[k..k+repl.length] = repl[];
                     k += repl.length;
                 }
@@ -2039,8 +2039,10 @@ debug( UnitTest )
     {
         char[] c(char[] s) { return cp437_to_utf8(cast(ubyte[]) s); }
 
-        assert( c("Hi there \x01 old \x0c!") == "Hi there \u263a old \u2640!" );
-        assert( c("Markers \x7f and \xf4.") == "Markers \u2302 and \u00b6." );
+        auto s = c("Hi there \x01 old \x0c!");
+        assert( s == "Hi there \u263a old \u2640!", "\""~s~"\"" );
+        s = c("Marker \x7f and divide \xf6.");
+        assert( s == "Marker \u2302 and divide \u00f7.", "\""~s~"\"" );
     }
 }
 
@@ -2054,7 +2056,7 @@ static this()
         '\u25d8': '\x08', '\u25cb': '\x09', '\u25d9': '\x0a', '\u2642': '\x0b',
         '\u2640': '\x0c', '\u266a': '\x0d', '\u266b': '\x0e', '\u263c': '\x0f',
 
-        '\u25b6': '\x10', '\u25c0': '\x11', '\u2195': '\x12', '\u2195': '\x13',
+        '\u25b6': '\x10', '\u25c0': '\x11', '\u2195': '\x12', '\u203c': '\x13',
         '\u00b6': '\x14', '\u00a7': '\x15', '\u25ac': '\x16', '\u21a8': '\x17',
         '\u2191': '\x18', '\u2193': '\x19', '\u2192': '\x1a', '\u2190': '\x1b',
         '\u221f': '\x1c', '\u2194': '\x1d', '\u25b2': '\x1e', '\u25bc': '\x1f',
@@ -2158,7 +2160,30 @@ debug( UnitTest )
         foreach( i,ref c ; s )
             c = i;
 
-        assert( y(x(s)) == s );
+        auto a = x(s);
+        auto b = y(a);
+        if(!( b == s ))
+        {
+            // Display list of characters that failed to convert as expected,
+            // and what value we got.
+            auto hex = "0123456789abcdef";
+            auto msg = "".dup;
+            foreach( i,ch ; b )
+            {
+                if( ch != i )
+                {
+                    msg ~= hex[i>>4];
+                    msg ~= hex[i&15];
+                    msg ~= " (";
+                    msg ~= hex[ch>>4];
+                    msg ~= hex[ch&15];
+                    msg ~= "), ";
+                }
+            }
+            msg ~= "failed.";
+
+            assert( false, msg );
+        }
     }
 }
 
