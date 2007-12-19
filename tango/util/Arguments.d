@@ -23,13 +23,15 @@
 
 module tango.util.Arguments;
 
+private import tango.core.Exception : TracedException;
+
 /***********************************************************************
 
     This exception is thrown during argument validation.
 
 ***********************************************************************/
 
-public class ArgumentException : Exception
+public class ArgumentException : TracedException
 {
     /*********************************************************************** 
 
