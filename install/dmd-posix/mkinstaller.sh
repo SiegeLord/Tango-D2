@@ -33,14 +33,14 @@ fi
 
 
 # 1) The core
-if [ ! -e lib/libphobos.a ]
+if [ ! -e lib/libtango-base-dmd.a ]
 then
     cd lib || die 1 "Failed to cd to lib"
     ./build-dmd.sh || die 1 "Failed to build the core"
     cd .. || die 1
 fi
 
-tar zcf core.tar.gz object.di lib/libphobos.a \
+tar zcf core.tar.gz object.di lib/libtango-base-dmd.a \
     lib/install-dmd.sh || die 1 "Failed to create core.tar.gz"
 
 
