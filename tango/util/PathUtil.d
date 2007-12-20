@@ -156,6 +156,19 @@ else {
                 return removeDots(path, idx);
             }
         }
+        else {
+            if (findSlash(path, path.length - 1) < start)
+                // segment is filename that starts with ., and at the end
+                return path;
+            else {
+                // not at end
+                int idx = findSlashDot(path, start);
+                if (idx > -1) 
+                    return removeDots(path, idx);
+                else
+                    return path;
+            }
+        }
         assert(false, "PathUtil :: invalid code path");
     }
 
@@ -183,9 +196,20 @@ debug (UnitTest)
 
     unittest
     {
-        assert (normalize ("foo/bar/././.") == "foo/bar", normalize ("foo/bar/././."));
-        assert (normalize ("././foo/././././bar") == "foo/bar", normalize ("././foo/././././bar"));
-        assert (normalize ("/foo/../john") == "/john", normalize("/foo/../john"));
+        assert (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess",
+                normalize ("/home/../john/../.tango/.htaccess"));
+        assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf",
+                normalize ("/home/../john/../.tango/foo.conf"));
+        assert (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf",
+                normalize ("/home/john/.tango/foo.conf"));
+        assert (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess", 
+                normalize ("/foo/bar/.htaccess"));
+        assert (normalize ("foo/bar/././.") == "foo/bar", 
+                normalize ("foo/bar/././."));
+        assert (normalize ("././foo/././././bar") == "foo/bar", 
+                normalize ("././foo/././././bar"));
+        assert (normalize ("/foo/../john") == "/john", 
+                normalize("/foo/../john"));
         assert (normalize ("foo/../john") == "john");
         assert (normalize ("foo/bar/..") == "foo");
         assert (normalize ("foo/bar/../john") == "foo/john");
