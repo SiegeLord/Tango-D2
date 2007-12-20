@@ -396,6 +396,18 @@ version( linux )
         _SC_RAW_SOCKETS
     }
 }
+else version( darwin )
+{
+    const F_OK          = 0;
+    const R_OK          = 4;
+    const W_OK          = 2;
+    const X_OK          = 1;
+
+    const F_ULOCK       = 0;
+    const F_LOCK        = 1;
+    const F_TLOCK       = 2;
+    const F_TEST        = 3;
+}
 
 //
 // File Synchronization (FSC)
