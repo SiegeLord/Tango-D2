@@ -102,7 +102,7 @@ package struct EraRange {
     if (!initialized_) {
       long getTicks(uint year, uint month, uint day)
       {
-        return Gregorian.generic.getDateTicks(year, month, day);
+        return Gregorian.generic.getDateTicks(year, month, day, Gregorian.AD_ERA);
       }
       eraRanges[Gregorian.JAPAN] ~= EraRange(4, getTicks(1989, 1, 8), 1988, 1, Gregorian.MAX_YEAR);
       eraRanges[Gregorian.JAPAN] ~= EraRange(3, getTicks(1926, 12, 25), 1925, 1, 1989);

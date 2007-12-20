@@ -7,7 +7,7 @@
         version:        Mid 2005: Initial release
                         Apr 2007: reshaped                        
 
-        author:         John Chapman, Kris
+        author:         John Chapman, Kris, schveiguy
 
 ******************************************************************************/
 
@@ -15,11 +15,17 @@ module tango.time.chrono.Gregorian;
 
 private import tango.time.chrono.Calendar;
 
-
 /**
  * $(ANCHOR _Gregorian)
  * Represents the Gregorian calendar.
-*/
+ *
+ * Note that this is the Proleptic Gregorian calendar.  Most calendars assume
+ * that dates before 9/14/1752 were Julian Dates.  Julian differs from
+ * Gregorian in that leap years occur every 4 years, even on 100 year
+ * increments.  The Proleptic Gregorian calendar applies the Gregorian leap
+ * year rules to dates before 9/14/1752, making the calculation of dates much
+ * easier.
+ */
 class Gregorian : Calendar 
 {
         // import baseclass toTime()
@@ -43,7 +49,7 @@ class Gregorian : Calendar
         /**
         * Represents the current era.
         */
-        enum {AD_ERA = 1, MAX_YEAR = 9999};
+        enum {AD_ERA = 1, BC_ERA = 2, MAX_YEAR = 9999};
 
         private static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
@@ -81,7 +87,7 @@ class Gregorian : Calendar
         */
         override Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era)
         {
-                return Time (getDateTicks(year, month, day) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
+                return Time (getDateTicks(year, month, day, era) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
         }
 
         /**
@@ -91,7 +97,16 @@ class Gregorian : Calendar
         */
         override DayOfWeek getDayOfWeek(Time time) 
         {
-                return cast(DayOfWeek)((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
+                int dow;
+                if(time.ticks < 0)
+                {
+                        dow = ((time.ticks + 1) / TimeSpan.TicksPerDay) % 7;
+                        if(dow < 0)
+                                dow += 7;
+                }
+                else
+                        dow = (time.ticks / TimeSpan.TicksPerDay + 1) % 7;
+                return cast(DayOfWeek)dow;
         }
 
         /**
@@ -137,11 +152,14 @@ class Gregorian : Calendar
         /**
         * Overridden. Returns the era in the specified Time.
         * Params: time = A Time value.
-        * Returns: An integer representing the ear in time.
+        * Returns: An integer representing the era in time.
         */
         override uint getEra(Time time) 
         {
-                return AD_ERA;
+                if(time < time.epoch)
+                        return BC_ERA;
+                else
+                        return AD_ERA;
         }
 
         /**
@@ -154,7 +172,7 @@ class Gregorian : Calendar
         */
         override uint getDaysInMonth(uint year, uint month, uint era) 
         {
-                auto monthDays = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? DaysToMonthLeap : DaysToMonthCommon;
+                auto monthDays = isLeapYear(year, era) ? DaysToMonthLeap : DaysToMonthCommon;
                 return monthDays[month] - monthDays[month - 1];
         }
 
@@ -190,7 +208,7 @@ class Gregorian : Calendar
         */
         override bool isLeapYear(uint year, uint era) 
         {
-                return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+                return staticIsLeapYear(year, era);
         }
 
         /**
@@ -208,7 +226,7 @@ class Gregorian : Calendar
         */
         override uint[] eras() 
         {       
-                uint[] tmp = [AD_ERA];
+                uint[] tmp = [AD_ERA, BC_ERA];
                 return tmp.dup;
         }
 
@@ -223,32 +241,69 @@ class Gregorian : Calendar
 
         override void split(Time time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
         {
-            splitDate(time.ticks, year, month, day, doy);
-            era = AD_ERA;
+            splitDate(time.ticks, year, month, day, doy, era);
             dow = getDayOfWeek(time);
         }
 
-        package static void splitDate (long ticks, ref uint year, ref uint month, ref uint day, ref uint dayOfYear) 
+        package static void splitDate (long ticks, ref uint year, ref uint month, ref uint day, ref uint dayOfYear, ref uint era) 
         {
-                auto numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
-                auto whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
-                numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
-                auto whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
-                if (whole100Years == 4)
-                    whole100Years = 3;
+                int numDays;
 
-                numDays -= whole100Years * cast(int) TimeSpan.DaysPer100Years;
-                auto whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
-                numDays -= whole4Years * cast(int) TimeSpan.DaysPer4Years;
-                auto wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
-                if (wholeYears == 4)
-                    wholeYears = 3;
+                void calculateYear()
+                {
+                        auto whole400Years = numDays / cast(int) TimeSpan.DaysPer400Years;
+                        numDays -= whole400Years * cast(int) TimeSpan.DaysPer400Years;
+                        auto whole100Years = numDays / cast(int) TimeSpan.DaysPer100Years;
+                        if (whole100Years == 4)
+                                whole100Years = 3;
 
-                year = whole400Years * 400 + whole100Years * 100 + whole4Years * 4 + wholeYears + 1;
-                numDays -= wholeYears * TimeSpan.DaysPerYear;
+                        numDays -= whole100Years * cast(int) TimeSpan.DaysPer100Years;
+                        auto whole4Years = numDays / cast(int) TimeSpan.DaysPer4Years;
+                        numDays -= whole4Years * cast(int) TimeSpan.DaysPer4Years;
+                        auto wholeYears = numDays / cast(int) TimeSpan.DaysPerYear;
+                        if (wholeYears == 4)
+                                wholeYears = 3;
+
+                        year = whole400Years * 400 + whole100Years * 100 + whole4Years * 4 + wholeYears + era;
+                        numDays -= wholeYears * TimeSpan.DaysPerYear;
+                }
+
+                if(ticks < 0)
+                {
+                        // in the BC era
+                        era = BC_ERA;
+                        //
+                        // set up numDays to be like AD.  AD days start at
+                        // year 1.  However, in BC, year 1 is like AD year 0,
+                        // so we must subtract one year.
+                        //
+                        numDays = cast(int)((-ticks - 1) / TimeSpan.TicksPerDay);
+                        if(numDays < 366)
+                        {
+                                // in the year 1 B.C.  This is a special case
+                                // leap year
+                                year = 1;
+                        }
+                        else
+                        {
+                                numDays -= 366;
+                                calculateYear;
+                        }
+                        //
+                        // numDays is the number of days back from the end of
+                        // the year, because the original ticks were negative
+                        //
+                        numDays = (staticIsLeapYear(year, era) ? 366 : 365) - numDays - 1;
+                }
+                else
+                {
+                        era = AD_ERA;
+                        numDays = cast(int)(ticks / TimeSpan.TicksPerDay);
+                        calculateYear;
+                }
                 dayOfYear = numDays + 1;
 
-                auto monthDays = (wholeYears == 3 && (whole4Years != 24 || whole100Years == 3)) ? DaysToMonthLeap : DaysToMonthCommon;
+                auto monthDays = staticIsLeapYear(year, era) ? DaysToMonthLeap : DaysToMonthCommon;
                 month = numDays >> 5 + 1;
                 while (numDays >= monthDays[month])
                        month++;
@@ -258,9 +313,9 @@ class Gregorian : Calendar
 
         package static uint extractPart (long ticks, DatePart part) 
         {
-                uint year, month, day, dayOfYear;
+                uint year, month, day, dayOfYear, era;
 
-                splitDate(ticks, year, month, day, dayOfYear);
+                splitDate(ticks, year, month, day, dayOfYear, era);
 
                 if (part is DatePart.Year)
                     return year;
@@ -274,10 +329,94 @@ class Gregorian : Calendar
                 return day;
         }
 
-        package long getDateTicks (uint year, uint month, uint day) 
+        package static long getDateTicks (uint year, uint month, uint day, uint era) 
         {
-                auto monthDays = isLeapYear(year, AD_ERA) ? DaysToMonthLeap : DaysToMonthCommon;
-                year--;
-                return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.TicksPerDay;
+                auto monthDays = staticIsLeapYear(year, era) ? DaysToMonthLeap : DaysToMonthCommon;
+                if(era == BC_ERA)
+                {
+                        year += 2;
+                        return -cast(long)( (year - 3) * 365 + year / 4 - year / 100 + year / 400 + monthDays[12] - (monthDays[month - 1] + day - 1)) * TimeSpan.TicksPerDay;
+                }
+                else
+                {
+                        year--;
+                        return (year * 365 + year / 4 - year / 100 + year / 400 + monthDays[month - 1] + day - 1) * TimeSpan.TicksPerDay;
+                }
+        }
+
+        package static bool staticIsLeapYear(uint year, uint era)
+        {
+                if(era == BC_ERA)
+                        return staticIsLeapYear(year - 1, AD_ERA);
+                if(era == AD_ERA)
+                        return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+                return false;
+        }
+}
+
+debug(Gregorian)
+{
+        import tango.io.Stdout;
+
+        void output(Time t)
+        {
+                Date d = Gregorian.generic.toDate(t);
+                TimeOfDay tod = t.time;
+                Stdout.format("{}/{}/{:d4} {} {}:{:d2}:{:d2}.{:d3} dow:{}",
+                                d.month, d.day, d.year, d.era == Gregorian.AD_ERA ? "AD" : "BC",
+                                tod.hours, tod.minutes, tod.seconds, tod.millis, d.dow).newline;
+        }
+
+        void main()
+        {
+                Time t = Time(365 * TimeSpan.TicksPerDay);
+                output(t);
+                for(int i = 0; i < 366 + 365; i++)
+                {
+                        t -= TimeSpan.days(1);
+                        output(t);
+                }
+        }
+}
+
+debug(UnitTest)
+{
+        debug(Gregorian)
+        {
+        }
+        else
+        {
+                void main() {}
+        }
+
+        unittest
+        {
+                //
+                // check Gregorian date handles positive time.
+                //
+                Time t = Time.epoch + TimeSpan.days(365);
+                Date d = Gregorian.generic.toDate(t);
+                assert(d.year == 2);
+                assert(d.month == 1);
+                assert(d.day == 1);
+                assert(d.era == Gregorian.AD_ERA);
+                assert(d.doy == 1);
+                //
+                // note that this is in disagreement with the Julian Calendar
+                //
+                assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+
+                //
+                // check that it handles negative time
+                //
+                t = Time.epoch - TimeSpan.days(366);
+                d = Gregorian.generic.toDate(t);
+                assert(d.year == 1);
+                assert(d.month == 1);
+                assert(d.day == 1);
+                assert(d.era == Gregorian.BC_ERA);
+                assert(d.doy == 1);
+                assert(d.dow == Gregorian.DayOfWeek.Saturday);
+
         }
 }

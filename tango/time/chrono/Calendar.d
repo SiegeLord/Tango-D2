@@ -134,7 +134,7 @@ public abstract class Calendar
 
         Time toTime (Date d) 
         {
-                return toTime (d.year, d.month, d.day, 0, 0, 0, 0, CURRENT_ERA);
+                return toTime (d.year, d.month, d.day, 0, 0, 0, 0, d.era);
         }
 
         Time toTime (DateTime dt) 
@@ -144,7 +144,7 @@ public abstract class Calendar
 
         Time toTime (Date d, TimeOfDay t) 
         {
-                return toTime (d.year, d.month, d.day, t.hours, t.minutes, t.seconds, t.millis, CURRENT_ERA);
+                return toTime (d.year, d.month, d.day, t.hours, t.minutes, t.seconds, t.millis, d.era);
         }
 
         /**
