@@ -381,14 +381,6 @@ debug(Gregorian)
 
 debug(UnitTest)
 {
-        debug(Gregorian)
-        {
-        }
-        else
-        {
-                void main() {}
-        }
-
         unittest
         {
                 //
