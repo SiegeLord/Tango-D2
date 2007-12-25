@@ -789,6 +789,8 @@ D toIntegerFromString(D,S)(S value)
 
             if( len < value.length )
                 throwConvError;
+
+            return result;
         }
         else
         {
