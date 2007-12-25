@@ -54,7 +54,7 @@ version (Windows)
  * // Register to read from socket
  * selector.register(socket, Event.Read);
  *
- * uint eventCount = selector.select(Msec(100));
+ * uint eventCount = selector.select(0.1); // 0.1 seconds
  * if (eventCount > 0)
  * {
  *     // We can now read from the socket
