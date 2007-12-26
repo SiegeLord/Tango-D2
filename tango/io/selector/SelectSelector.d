@@ -24,6 +24,8 @@ debug (selector)
 
 version (Windows)
 {
+    import tango.core.Thread;
+
     private
     {
         // Opaque struct
@@ -516,7 +518,7 @@ public class SelectSelector: AbstractSelector
             else
             {
                 Thread.sleep(timeout.interval());
-                _eventCount  = 0;
+                _eventCount = 0;
             }
         }
         return _eventCount;
