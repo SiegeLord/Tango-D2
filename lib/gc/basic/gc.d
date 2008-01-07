@@ -25,6 +25,7 @@
  */
 
 private import gcx;
+private import gcstats;
 private import tango.stdc.stdlib;
 
 version=GCCLASS;
@@ -124,6 +125,11 @@ extern (C) size_t gc_extend( void* p, size_t mx, size_t sz )
     return _gc.extend( p, mx, sz );
 }
 
+extern (C) size_t gc_reserve( size_t sz )
+{
+    return _gc.reserve( sz );
+}
+
 extern (C) void gc_free( void* p )
 {
     _gc.free( p );
@@ -142,6 +148,15 @@ extern (C) size_t gc_sizeOf( void* p )
 extern (C) BlkInfo gc_query( void* p )
 {
     return _gc.query( p );
+}
+
+// NOTE: This routine is experimental.  The stats or function name may change
+//       before it is made officially available.
+extern (C) GCStats gc_stats()
+{
+    GCStats stats;
+    _gc.getStats(stats);
+    return stats;
 }
 
 extern (C) void gc_addRoot( void* p )

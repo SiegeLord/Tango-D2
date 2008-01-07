@@ -26,6 +26,7 @@ private
     extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
     extern (C) void*  gc_realloc( void* p, size_t sz, uint ba = 0 );
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
+    extern (C) size_t gc_reserve( size_t sz );
     extern (C) void   gc_free( void* p );
 
     extern (C) void*   gc_addrOf( void* p );
@@ -277,6 +278,22 @@ struct GC
     static size_t extend( void* p, size_t mx, size_t sz )
     {
         return gc_extend( p, mx, sz );
+    }
+
+
+    /**
+     * Requests that at least sz bytes of memory be obtained from the operating
+     * system and marked as free.
+     *
+     * Params:
+     *  sz = The desired size in bytes.
+     *
+     * Returns:
+     *  The actual number of bytes reserved or zero on error.
+     */
+    static size_t reserve( size_t sz )
+    {
+        return gc_reserve( sz );
     }
 
 

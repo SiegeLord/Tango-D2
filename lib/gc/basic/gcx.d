@@ -791,6 +791,39 @@ class GC
     /**
      *
      */
+    size_t reserve(size_t size)
+    {
+        if (!size)
+        {
+            return 0;
+        }
+
+        if (!thread_needLock())
+        {
+            return reserveNoSync(size);
+        }
+        else synchronized (gcLock)
+        {
+            return reserveNoSync(size);
+        }
+    }
+
+
+    //
+    //
+    //
+    private size_t reserveNoSync(size_t size)
+    {
+        assert(size != 0);
+        assert(gcx);
+
+        return gcx.reserve(size);
+    }
+
+
+    /**
+     *
+     */
     void free(void *p)
     {
         if (!p)
@@ -1780,6 +1813,23 @@ struct Gcx
             }
         }
         return bin;
+    }
+
+
+    /**
+     * Allocate a new pool of at least size bytes.
+     * Sort it into pooltable[].
+     * Mark all memory in the pool as B_FREE.
+     * Return the actual number of bytes reserved or 0 on error.
+     */
+    size_t reserve(size_t size)
+    {
+        uint npages = (size + PAGESIZE - 1) / PAGESIZE;
+        Pool *pool = newPool(npages);
+
+        if (!pool || pool.extendPages(npages) == ~0u)
+            return 0;
+        return pool.ncommitted * PAGESIZE;
     }
 
 
