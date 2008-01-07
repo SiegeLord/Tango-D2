@@ -2308,7 +2308,7 @@ static this()
     else static if( is( typeof( sysconf ) ) &&
                     is( typeof( _SC_PAGESIZE ) ) )
     {
-        PAGESIZE = sysconf( _SC_PAGESIZE );
+        PAGESIZE = cast(size_t) sysconf( _SC_PAGESIZE );
         assert( PAGESIZE < int.max );
     }
     else
