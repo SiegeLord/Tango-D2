@@ -50,9 +50,9 @@ struct GCBits
     const int BITS_SHIFT = 5;
     const int BITS_MASK = 31;
 
-    uint *data = null;
-    uint nwords = 0;    // allocated words in data[] excluding sentinals
-    uint nbits = 0;     // number of bits in data[] excluding sentinals
+    uint*  data = null;
+    size_t nwords = 0;    // allocated words in data[] excluding sentinals
+    size_t nbits = 0;     // number of bits in data[] excluding sentinals
 
     void Dtor()
     {
@@ -71,16 +71,16 @@ struct GCBits
         }
     }
 
-    void alloc(uint nbits)
+    void alloc(size_t nbits)
     {
         this.nbits = nbits;
         nwords = (nbits + (BITS_PER_WORD - 1)) >> BITS_SHIFT;
-        data = cast(uint *)calloc(nwords + 2, uint.sizeof);
+        data = cast(uint*)calloc(nwords + 2, uint.sizeof);
         if (!data)
             onOutOfMemoryError();
     }
 
-    uint test(uint i)
+    uint test(size_t i)
     in
     {
         assert(i < nbits);
@@ -91,7 +91,7 @@ struct GCBits
         return data[1 + (i >> BITS_SHIFT)] & (1 << (i & BITS_MASK));
     }
 
-    void set(uint i)
+    void set(size_t i)
     in
     {
         assert(i < nbits);
@@ -102,7 +102,7 @@ struct GCBits
         data[1 + (i >> BITS_SHIFT)] |= (1 << (i & BITS_MASK));
     }
 
-    void clear(uint i)
+    void clear(size_t i)
     in
     {
         assert(i < nbits);
@@ -113,7 +113,7 @@ struct GCBits
         data[1 + (i >> BITS_SHIFT)] &= ~(1 << (i & BITS_MASK));
     }
 
-    uint testClear(uint i)
+    uint testClear(size_t i)
     {
         version (bitops)
         {
@@ -137,8 +137,8 @@ struct GCBits
             //result = (cast(bit *)(data + 1))[i];
             //(cast(bit *)(data + 1))[i] = 0;
 
-            uint *p = &data[1 + (i >> BITS_SHIFT)];
-            uint mask = (1 << (i & BITS_MASK));
+            uint* p = &data[1 + (i >> BITS_SHIFT)];
+            uint  mask = (1 << (i & BITS_MASK));
             result = *p & mask;
             *p &= ~mask;
             return result;
@@ -160,7 +160,7 @@ struct GCBits
         memcpy(data + 1, f.data + 1, nwords * uint.sizeof);
     }
 
-    uint *base()
+    uint* base()
     in
     {
         assert(data);

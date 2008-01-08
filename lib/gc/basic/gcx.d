@@ -116,7 +116,7 @@ debug (LOGGING)
     {
         void*  p;
         size_t size;
-        uint   line;
+        size_t line;
         char*  file;
         void*  parent;
 
@@ -154,14 +154,14 @@ debug (LOGGING)
                 assert(dim + nentries <= allocdim);
                 if (!data)
                 {
-                    data = cast(Log *)cstdlib.malloc(allocdim * Log.sizeof);
+                    data = cast(Log*)cstdlib.malloc(allocdim * Log.sizeof);
                     if (!data && allocdim)
                         onOutOfMemoryError();
                 }
                 else
                 {   Log *newdata;
 
-                    newdata = cast(Log *)cstdlib.malloc(allocdim * Log.sizeof);
+                    newdata = cast(Log*)cstdlib.malloc(allocdim * Log.sizeof);
                     if (!newdata && allocdim)
                         onOutOfMemoryError();
                     cstring.memcpy(newdata, data, dim * Log.sizeof);
@@ -231,7 +231,7 @@ class GC
     void initialize()
     {
         gcLock = GCLock.classinfo;
-        gcx = cast(Gcx *)cstdlib.calloc(1, Gcx.sizeof);
+        gcx = cast(Gcx*)cstdlib.calloc(1, Gcx.sizeof);
         if (!gcx)
             onOutOfMemoryError();
         gcx.initialize();
@@ -316,7 +316,7 @@ class GC
 
             if (pool)
             {
-                uint biti = (p - pool.baseAddr) / 16;
+                auto biti = cast(size_t)(p - pool.baseAddr) / 16;
 
                 oldb = gcx.getBits(pool, biti);
             }
@@ -351,7 +351,7 @@ class GC
 
             if (pool)
             {
-                uint biti = (p - pool.baseAddr) / 16;
+                auto biti = cast(size_t)(p - pool.baseAddr) / 16;
 
                 oldb = gcx.getBits(pool, biti);
                 gcx.setBits(pool, biti, mask);
@@ -387,7 +387,7 @@ class GC
 
             if (pool)
             {
-                uint biti = (p - pool.baseAddr) / 16;
+                auto biti = cast(size_t)(p - pool.baseAddr) / 16;
 
                 oldb = gcx.getBits(pool, biti);
                 gcx.clrBits(pool, biti, mask);
@@ -491,7 +491,7 @@ class GC
             }
 
             // Return next item from free list
-            gcx.bucket[bin] = (cast(List *)p).next;
+            gcx.bucket[bin] = (cast(List*)p).next;
             if( !(bits & BlkAttr.NO_SCAN) )
                 cstring.memset(p + size, 0, binsize[bin] - size);
             //debug(PRINTF) printf("\tmalloc => %x\n", p);
@@ -513,7 +513,7 @@ class GC
             Pool *pool = gcx.findPool(p);
             assert(pool);
 
-            gcx.setBits(pool, (p - pool.baseAddr) / 16, bits);
+            gcx.setBits(pool, cast(size_t)(p - pool.baseAddr) / 16, bits);
         }
         return p;
     }
@@ -602,7 +602,7 @@ class GC
 
                         if (pool)
                         {
-                            uint biti = cast(uint)(p - pool.baseAddr) / 16;
+                            auto biti = cast(size_t)(p - pool.baseAddr) / 16;
 
                             if (bits)
                             {
@@ -682,7 +682,7 @@ class GC
 
                         if (pool)
                         {
-                            uint biti = cast(uint)(p - pool.baseAddr) / 16;
+                            auto biti = cast(size_t)(p - pool.baseAddr) / 16;
 
                             if (bits)
                             {
@@ -849,10 +849,10 @@ class GC
     {
         assert (p);
 
-        Pool *pool;
-        uint pagenum;
-        Bins bin;
-        uint biti;
+        Pool*  pool;
+        size_t pagenum;
+        Bins   bin;
+        size_t biti;
 
         // Find which page it is in
         pool = gcx.findPool(p);
@@ -860,14 +860,14 @@ class GC
             return;                             // ignore
         sentinel_Invariant(p);
         p = sentinel_sub(p);
-        pagenum = (p - pool.baseAddr) / PAGESIZE;
-        biti = cast(uint)(p - pool.baseAddr) / 16;
+        pagenum = cast(size_t)(p - pool.baseAddr) / PAGESIZE;
+        biti = cast(size_t)(p - pool.baseAddr) / 16;
         gcx.clrBits(pool, biti, BlkAttr.ALL_BITS);
 
         bin = cast(Bins)pool.pagetable[pagenum];
         if (bin == B_PAGE)              // if large alloc
-        {   int npages;
-            uint n;
+        {   size_t npages;
+            size_t n;
 
             // Free pages
             npages = 1;
@@ -879,7 +879,7 @@ class GC
         }
         else
         {   // Add to free list
-            List *list = cast(List *)p;
+            List *list = cast(List*)p;
 
             debug (MEMSTOMP) cstring.memset(p, 0xF2, binsize[bin]);
 
@@ -1061,14 +1061,14 @@ class GC
         debug (PTRCHECK)
         {
             Pool*  pool;
-            uint   pagenum;
+            size_t pagenum;
             Bins   bin;
             size_t size;
 
             p = sentinel_sub(p);
             pool = gcx.findPool(p);
             assert(pool);
-            pagenum = (p - pool.baseAddr) / PAGESIZE;
+            pagenum = cast(size_t)(p - pool.baseAddr) / PAGESIZE;
             bin = cast(Bins)pool.pagetable[pagenum];
             assert(bin <= B_PAGE);
             size = binsize[bin];
@@ -1083,7 +1083,7 @@ class GC
 
                     for (list = gcx.bucket[bin]; list; list = list.next)
                     {
-                        assert(cast(void *)list != p);
+                        assert(cast(void*)list != p);
                     }
                 }
             }
@@ -1111,7 +1111,7 @@ class GC
             if (p < gcx.stackBottom)
             {
                 //debug(PRINTF) printf("setStackBottom(%x)\n", p);
-                gcx.stackBottom = cast(char *)p;
+                gcx.stackBottom = cast(char*)p;
             }
         }
     }
@@ -1288,7 +1288,7 @@ class GC
         {   Pool *pool = gcx.pooltable[n];
 
             psize += pool.ncommitted * PAGESIZE;
-            for (uint j = 0; j < pool.ncommitted; j++)
+            for (size_t j = 0; j < pool.ncommitted; j++)
             {
                 Bins bin = cast(Bins)pool.pagetable[j];
                 if (bin == B_FREE)
@@ -1416,8 +1416,8 @@ struct Gcx
     void initialize()
     {   int dummy;
 
-        (cast(byte *)this)[0 .. Gcx.sizeof] = 0;
-        stackBottom = cast(char *)&dummy;
+        (cast(byte*)this)[0 .. Gcx.sizeof] = 0;
+        stackBottom = cast(char*)&dummy;
         log_init();
         debug (THREADINVARIANT)
             self = pthread_self();
@@ -1430,7 +1430,7 @@ struct Gcx
     {
         inited = 0;
 
-        for (uint i = 0; i < npools; i++)
+        for (size_t i = 0; i < npools; i++)
         {   Pool *pool = pooltable[i];
 
             pool.Dtor();
@@ -1455,7 +1455,7 @@ struct Gcx
         if (inited)
         {
         //printf("Gcx.invariant(): this = %p\n", this);
-            uint i;
+            size_t i;
 
             // Assure we're called on the right thread
             debug (THREADINVARIANT) assert(self == pthread_self());
@@ -1517,7 +1517,7 @@ struct Gcx
             size_t newdim = rootdim * 2 + 16;
             void** newroots;
 
-            newroots = cast(void **)cstdlib.malloc(newdim * newroots[0].sizeof);
+            newroots = cast(void**)cstdlib.malloc(newdim * newroots[0].sizeof);
             if (!newroots)
                 onOutOfMemoryError();
             if (roots)
@@ -1562,7 +1562,7 @@ struct Gcx
             size_t newdim = rangedim * 2 + 16;
             Range *newranges;
 
-            newranges = cast(Range *)cstdlib.malloc(newdim * newranges[0].sizeof);
+            newranges = cast(Range*)cstdlib.malloc(newdim * newranges[0].sizeof);
             if (!newranges)
                 onOutOfMemoryError();
             if (ranges)
@@ -1617,7 +1617,7 @@ struct Gcx
                 return pooltable[0];
             }
 
-            for (uint i = 0; i < npools; i++)
+            for (size_t i = 0; i < npools; i++)
             {   Pool *pool;
 
                 pool = pooltable[i];
@@ -1644,8 +1644,8 @@ struct Gcx
         if (pool)
         {
             size_t offset = cast(size_t)(p - pool.baseAddr);
-            uint pn = offset / PAGESIZE;
-            Bins bin = cast(Bins)pool.pagetable[pn];
+            size_t pn = offset / PAGESIZE;
+            Bins   bin = cast(Bins)pool.pagetable[pn];
 
             // Adjust bit to be at start of allocated memory block
             if (bin <= B_PAGE)
@@ -1676,22 +1676,22 @@ struct Gcx
      */
     size_t findSize(void *p)
     {
-        Pool *pool;
+        Pool*  pool;
         size_t size = 0;
 
         pool = findPool(p);
         if (pool)
         {
-            uint pagenum;
-            Bins bin;
+            size_t pagenum;
+            Bins   bin;
 
-            pagenum = (cast(uint)(p - pool.baseAddr)) / PAGESIZE;
+            pagenum = cast(size_t)(p - pool.baseAddr) / PAGESIZE;
             bin = cast(Bins)pool.pagetable[pagenum];
             size = binsize[bin];
             if (bin == B_PAGE)
-            {   uint npages = pool.ncommitted;
+            {   size_t npages = pool.ncommitted;
                 ubyte* pt;
-                uint i;
+                size_t i;
 
                 pt = &pool.pagetable[0];
                 for (i = pagenum + 1; i < npages; i++)
@@ -1711,15 +1711,15 @@ struct Gcx
      */
     BlkInfo getInfo(void* p)
     {
-        Pool *pool;
+        Pool*   pool;
         BlkInfo info;
 
         pool = findPool(p);
         if (pool)
         {
             size_t offset = cast(size_t)(p - pool.baseAddr);
-            uint pn = offset / PAGESIZE;
-            Bins bin = cast(Bins)pool.pagetable[pn];
+            size_t pn = offset / PAGESIZE;
+            Bins   bin = cast(Bins)pool.pagetable[pn];
 
             ////////////////////////////////////////////////////////////////////
             // findAddr
@@ -1747,9 +1747,9 @@ struct Gcx
 
             info.size = binsize[bin];
             if (bin == B_PAGE)
-            {   uint npages = pool.ncommitted;
+            {   size_t npages = pool.ncommitted;
                 ubyte* pt;
-                uint i;
+                size_t i;
 
                 pt = &pool.pagetable[0];
                 for (i = pn + 1; i < npages; i++)
@@ -1764,7 +1764,7 @@ struct Gcx
             // getBits
             ////////////////////////////////////////////////////////////////////
 
-            info.attr = getBits(pool, offset / 16);
+            info.attr = getBits(pool, cast(size_t)(offset / 16));
         }
         return info;
     }
@@ -1824,8 +1824,8 @@ struct Gcx
      */
     size_t reserve(size_t size)
     {
-        uint npages = (size + PAGESIZE - 1) / PAGESIZE;
-        Pool *pool = newPool(npages);
+        size_t npages = (size + PAGESIZE - 1) / PAGESIZE;
+        Pool*  pool = newPool(npages);
 
         if (!pool || pool.extendPages(npages) == ~0u)
             return 0;
@@ -1839,13 +1839,13 @@ struct Gcx
      */
     void *bigAlloc(size_t size)
     {
-        Pool *pool;
-        uint npages;
-        uint n;
-        uint pn;
-        uint freedpages;
-        void *p;
-        int state;
+        Pool*  pool;
+        size_t npages;
+        size_t n;
+        size_t pn;
+        size_t freedpages;
+        void*  p;
+        int    state;
 
         npages = (size + PAGESIZE - 1) / PAGESIZE;
 
@@ -1920,12 +1920,12 @@ struct Gcx
      * Sort it into pooltable[].
      * Return null if failed.
      */
-    Pool *newPool(uint npages)
+    Pool *newPool(size_t npages)
     {
-        Pool *pool;
-        Pool **newpooltable;
-        uint newnpools;
-        uint i;
+        Pool*  pool;
+        Pool** newpooltable;
+        size_t newnpools;
+        size_t i;
 
         //debug(PRINTF) printf("************Gcx::newPool(npages = %d)****************\n", npages);
 
@@ -1944,7 +1944,7 @@ struct Gcx
 
         // Allocate successively larger pools up to 8 megs
         if (npools)
-        {   uint n;
+        {   size_t n;
 
             n = npools;
             if (n > 8)
@@ -1997,11 +1997,11 @@ struct Gcx
      */
     int allocPage(Bins bin)
     {
-        Pool *pool;
-        uint n;
-        uint pn;
-        byte *p;
-        byte *ptop;
+        Pool*  pool;
+        size_t n;
+        size_t pn;
+        byte*  p;
+        byte*  ptop;
 
         //debug(PRINTF) printf("Gcx::allocPage(bin = %d)\n", bin);
         for (n = 0; n < npools; n++)
@@ -2053,9 +2053,9 @@ struct Gcx
                 if (pool)
                 {
                     size_t offset = cast(size_t)(p - pool.baseAddr);
-                    uint biti;
-                    uint pn = offset / PAGESIZE;
-                    Bins bin = cast(Bins)pool.pagetable[pn];
+                    size_t biti;
+                    size_t pn = offset / PAGESIZE;
+                    Bins   bin = cast(Bins)pool.pagetable[pn];
 
                     //debug(PRINTF) printf("\t\tfound pool %x, base=%x, pn = %d, bin = %d, biti = x%x\n", pool, pool.baseAddr, pn, bin, biti);
 
@@ -2140,8 +2140,8 @@ struct Gcx
      */
     size_t fullcollect(void *stackTop)
     {
-        uint n;
-        Pool *pool;
+        size_t n;
+        Pool*  pool;
 
         debug(COLLECT_PRINTF) printf("Gcx.fullcollect()\n");
 
@@ -2166,7 +2166,7 @@ struct Gcx
             {
                 pool = findPool(list);
                 assert(pool);
-                pool.freebits.set(cast(uint)(cast(byte *)list - pool.baseAddr) / 16);
+                pool.freebits.set(cast(size_t)(cast(byte*)list - pool.baseAddr) / 16);
             }
         }
 
@@ -2228,11 +2228,11 @@ struct Gcx
                 bbase = pool.scan.base();
                 btop = bbase + pool.scan.nwords;
                 for (b = bbase; b < btop;)
-                {   Bins bin;
-                    uint pn;
-                    uint u;
-                    uint bitm;
-                    byte *o;
+                {   Bins   bin;
+                    size_t pn;
+                    size_t u;
+                    size_t bitm;
+                    byte*  o;
 
                     bitm = *b;
                     if (!bitm)
@@ -2282,9 +2282,9 @@ struct Gcx
         size_t freedpages = 0;
         size_t freed = 0;
         for (n = 0; n < npools; n++)
-        {   uint pn;
-            uint ncommitted;
-            uint *bbase;
+        {   size_t pn;
+            size_t ncommitted;
+            uint*  bbase;
 
             pool = pooltable[n];
             bbase = pool.mark.base();
@@ -2294,11 +2294,11 @@ struct Gcx
                 Bins bin = cast(Bins)pool.pagetable[pn];
 
                 if (bin < B_PAGE)
-                {   byte *p;
-                    byte *ptop;
-                    uint biti;
-                    uint bitstride;
-                    uint size = binsize[bin];
+                {   byte* p;
+                    byte* ptop;
+                    size_t biti;
+                    size_t bitstride;
+                    auto   size = binsize[bin];
 
                     p = pool.baseAddr + pn * PAGESIZE;
                     ptop = p + PAGESIZE;
@@ -2351,7 +2351,7 @@ struct Gcx
                     }
                 }
                 else if (bin == B_PAGE)
-                {   uint biti = pn * (PAGESIZE / 16);
+                {   size_t biti = pn * (PAGESIZE / 16);
 
                     if (!pool.mark.test(biti))
                     {   byte *p = pool.baseAddr + pn * PAGESIZE;
@@ -2389,24 +2389,24 @@ struct Gcx
         debug(COLLECT_PRINTF) printf("\tfree complete pages\n");
         size_t recoveredpages = 0;
         for (n = 0; n < npools; n++)
-        {   uint pn;
-            uint ncommitted;
+        {   size_t pn;
+            size_t ncommitted;
 
             pool = pooltable[n];
             ncommitted = pool.ncommitted;
             for (pn = 0; pn < ncommitted; pn++)
             {
-                Bins bin = cast(Bins)pool.pagetable[pn];
-                uint biti;
-                uint u;
+                Bins   bin = cast(Bins)pool.pagetable[pn];
+                size_t biti;
+                size_t u;
 
                 if (bin < B_PAGE)
                 {
-                    uint size = binsize[bin];
-                    uint bitstride = size / 16;
-                    uint bitbase = pn * (PAGESIZE / 16);
-                    uint bittop = bitbase + (PAGESIZE / 16);
-                    byte *p;
+                    size_t size = binsize[bin];
+                    size_t bitstride = size / 16;
+                    size_t bitbase = pn * (PAGESIZE / 16);
+                    size_t bittop = bitbase + (PAGESIZE / 16);
+                    byte*  p;
 
                     biti = bitbase;
                     for (biti = bitbase; biti < bittop; biti += bitstride)
@@ -2444,7 +2444,7 @@ struct Gcx
     /**
      *
      */
-    uint getBits(Pool* pool, uint biti)
+    uint getBits(Pool* pool, size_t biti)
     in
     {
         assert( pool );
@@ -2468,7 +2468,7 @@ struct Gcx
     /**
      *
      */
-    void setBits(Pool* pool, uint biti, uint mask)
+    void setBits(Pool* pool, size_t biti, uint mask)
     in
     {
         assert( pool );
@@ -2497,7 +2497,7 @@ struct Gcx
     /**
      *
      */
-    void clrBits(Pool* pool, uint biti, uint mask)
+    void clrBits(Pool* pool, size_t biti, uint mask)
     in
     {
         assert( pool );
@@ -2622,8 +2622,8 @@ struct Gcx
                 pool = findPool(p);
                 assert(pool);
                 size_t offset = cast(size_t)(p - pool.baseAddr);
-                uint biti;
-                uint pn = offset / PAGESIZE;
+                size_t biti;
+                size_t pn = offset / PAGESIZE;
                 Bins bin = cast(Bins)pool.pagetable[pn];
                 biti = (offset & notbinsize[bin]);
                 debug(PRINTF) printf("\tbin = %d, offset = x%x, biti = x%x\n", bin, offset, biti);
@@ -2660,12 +2660,12 @@ struct Pool
     GCBits finals;      // entries that need finalizer run on them
     GCBits noscan;      // entries that should not be scanned
 
-    uint npages;
-    uint ncommitted;    // ncommitted <= npages
+    size_t npages;
+    size_t ncommitted;    // ncommitted <= npages
     ubyte* pagetable;
 
 
-    void initialize(uint npages)
+    void initialize(size_t npages)
     {
         size_t poolsize;
 
@@ -2675,7 +2675,7 @@ struct Pool
         baseAddr = cast(byte *)os_mem_map(poolsize);
 
         // Some of the code depends on page alignment of memory pools
-        assert((cast(uint)baseAddr & (PAGESIZE - 1)) == 0);
+        assert((cast(size_t)baseAddr & (PAGESIZE - 1)) == 0);
 
         if (!baseAddr)
         {
@@ -2688,10 +2688,10 @@ struct Pool
         //assert(baseAddr);
         topAddr = baseAddr + poolsize;
 
-        mark.alloc(poolsize / 16);
-        scan.alloc(poolsize / 16);
-        freebits.alloc(poolsize / 16);
-        noscan.alloc(poolsize / 16);
+        mark.alloc(cast(size_t)poolsize / 16);
+        scan.alloc(cast(size_t)poolsize / 16);
+        freebits.alloc(cast(size_t)poolsize / 16);
+        noscan.alloc(cast(size_t)poolsize / 16);
 
         pagetable = cast(ubyte*)cstdlib.malloc(npages);
         if (!pagetable)
@@ -2756,7 +2756,7 @@ struct Pool
             assert(ncommitted <= npages);
         }
 
-        for (uint i = 0; i < npages; i++)
+        for (size_t i = 0; i < npages; i++)
         {   Bins bin = cast(Bins)pagetable[i];
 
             assert(bin < B_MAX);
@@ -2768,10 +2768,10 @@ struct Pool
      * Allocate n pages from Pool.
      * Returns ~0u on failure.
      */
-    uint allocPages(uint n)
+    uint allocPages(size_t n)
     {
-        uint i;
-        uint n2;
+        size_t i;
+        size_t n2;
 
         //debug(PRINTF) printf("Pool::allocPages(n = %d)\n", n);
         n2 = n;
@@ -2794,12 +2794,12 @@ struct Pool
      * Extend Pool by n pages.
      * Returns ~0u on failure.
      */
-    uint extendPages(uint n)
+    uint extendPages(size_t n)
     {
         //debug(PRINTF) printf("Pool::extendPages(n = %d)\n", n);
         if (ncommitted + n <= npages)
         {
-            uint tocommit;
+            size_t tocommit;
 
             tocommit = (n + (COMMITSIZE/PAGESIZE) - 1) & ~(COMMITSIZE/PAGESIZE - 1);
             if (ncommitted + tocommit > npages)
@@ -2827,7 +2827,7 @@ struct Pool
     /**
      * Free npages pages starting with pagenum.
      */
-    void freePages(uint pagenum, uint npages)
+    void freePages(size_t pagenum, size_t npages)
     {
         cstring.memset(&pagetable[pagenum], B_FREE, npages);
     }
