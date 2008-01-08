@@ -853,10 +853,9 @@ private:
 
         // Now look for our magic number.  Don't forget that on big-endian
         // machines, we need to byteswap the value we're looking for.
+        uint eocd_magic = EndOfCDRecord.signature;
         version( BigEndian )
-            uint eocd_magic = swap(EndOfCDRecord.signature);
-        else
-            uint eocd_magic = EndOfCDRecord.signature;
+            swap(eocd_magic);
 
         size_t eocd_loc = -1;
 
