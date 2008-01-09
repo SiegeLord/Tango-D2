@@ -772,7 +772,7 @@ class Buffer : IBuffer
 
         uint write (uint delegate (void[]) dg)
         {
-                uint count = dg (data [extent..dimension]);
+                auto count = dg (data [extent..dimension]);
 
                 if (count != IConduit.Eof)
                    {
