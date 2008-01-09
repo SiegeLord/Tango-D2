@@ -154,8 +154,8 @@ extern (C) BlkInfo gc_query( void* p )
 //       before it is made officially available.
 extern (C) GCStats gc_stats()
 {
-    GCStats stats;
-    _gc.getStats(stats);
+    GCStats stats = void;
+    _gc.getStats( stats );
     return stats;
 }
 

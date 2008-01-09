@@ -17,8 +17,8 @@ CP=cp -f
 RM=rm -f
 MD=mkdir -p
 
-CFLAGS=-O -m32 $(ADD_CFLAGS)
-#CFLAGS=-g -m32 $(ADD_CFLAGS)
+CFLAGS=-O $(ADD_CFLAGS)
+#CFLAGS=-g $(ADD_CFLAGS)
 
 DFLAGS=-release -O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
 #DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)

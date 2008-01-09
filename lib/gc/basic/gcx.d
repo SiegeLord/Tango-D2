@@ -101,6 +101,11 @@ private
     }
 
     extern (C) void onOutOfMemoryError();
+
+    enum
+    {
+        OPFAIL = ~cast(size_t)0
+    }
 }
 
 
@@ -192,7 +197,7 @@ debug (LOGGING)
                 if (data[i].p == p)
                     return i;
             }
-            return ~0u;         // not found
+            return OPFAIL; // not found
         }
 
 
@@ -661,7 +666,7 @@ class GC
                                 if (i == pool.ncommitted)
                                 {
                                     auto u = pool.extendPages(pagenum + newsz - pool.ncommitted);
-                                    if (u == ~0u)
+                                    if (u == OPFAIL)
                                         break;
                                     i = pagenum + newsz;
                                     continue;
@@ -774,7 +779,7 @@ class GC
         else if (pagenum + psz + sz == pool.ncommitted)
         {
             auto u = pool.extendPages(minsz - sz);
-            if (u == ~0u)
+            if (u == OPFAIL)
                 return 0;
             sz = minsz;
         }
@@ -1407,7 +1412,7 @@ struct Gcx
     byte *minAddr;      // min(baseAddr)
     byte *maxAddr;      // max(topAddr)
 
-    uint npools;
+    size_t npools;
     Pool **pooltable;
 
     List *bucket[B_MAX];        // free list for each size
@@ -1827,7 +1832,7 @@ struct Gcx
         size_t npages = (size + PAGESIZE - 1) / PAGESIZE;
         Pool*  pool = newPool(npages);
 
-        if (!pool || pool.extendPages(npages) == ~0u)
+        if (!pool || pool.extendPages(npages) == OPFAIL)
             return 0;
         return pool.ncommitted * PAGESIZE;
     }
@@ -1858,7 +1863,7 @@ struct Gcx
             {
                 pool = pooltable[n];
                 pn = pool.allocPages(npages);
-                if (pn != ~0u)
+                if (pn != OPFAIL)
                     goto L1;
             }
 
@@ -1883,7 +1888,7 @@ struct Gcx
                     continue;
                 }
                 pn = pool.allocPages(npages);
-                assert(pn != ~0u);
+                assert(pn != OPFAIL);
                 goto L1;
             case 1:
                 // Allocate new pool
@@ -1891,7 +1896,7 @@ struct Gcx
                 if (!pool)
                     goto Lnomemory;
                 pn = pool.allocPages(npages);
-                assert(pn != ~0u);
+                assert(pn != OPFAIL);
                 goto L1;
             case 2:
                 goto Lnomemory;
@@ -2008,7 +2013,7 @@ struct Gcx
         {
             pool = pooltable[n];
             pn = pool.allocPages(1);
-            if (pn != ~0u)
+            if (pn != OPFAIL)
                 goto L1;
         }
         return 0;               // failed
@@ -2252,7 +2257,7 @@ struct Gcx
                         if (!(bitm & 1))
                             continue;
 
-                        pn = (o - pool.baseAddr) / PAGESIZE;
+                        pn = cast(size_t)(o - pool.baseAddr) / PAGESIZE;
                         bin = cast(Bins)pool.pagetable[pn];
                         if (bin < B_PAGE)
                         {
@@ -2556,7 +2561,7 @@ struct Gcx
             size_t i;
 
             i = current.find(p);
-            if (i == ~0u)
+            if (i == OPFAIL)
             {
                 debug(PRINTF) printf("free'ing unallocated memory %x\n", p);
             }
@@ -2578,7 +2583,7 @@ struct Gcx
                 size_t j;
 
                 j = prev.find(current.data[i].p);
-                if (j == ~0u)
+                if (j == OPFAIL)
                     current.data[i].print();
                 else
                     used++;
@@ -2594,7 +2599,7 @@ struct Gcx
                 if (!findPool(current.data[i].parent))
                 {
                     j = prev.find(current.data[i].p);
-                    if (j == ~0u)
+                    if (j == OPFAIL)
                         debug(PRINTF) printf("N");
                     else
                         debug(PRINTF) printf(" ");;
@@ -2615,7 +2620,7 @@ struct Gcx
             size_t i;
 
             i = current.find(p);
-            if (i == ~0u)
+            if (i == OPFAIL)
             {
                 debug(PRINTF) printf("parent'ing unallocated memory %x, parent = %x\n", p, parent);
                 Pool *pool;
@@ -2766,9 +2771,9 @@ struct Pool
 
     /**
      * Allocate n pages from Pool.
-     * Returns ~0u on failure.
+     * Returns OPFAIL on failure.
      */
-    uint allocPages(size_t n)
+    size_t allocPages(size_t n)
     {
         size_t i;
         size_t n2;
@@ -2792,9 +2797,9 @@ struct Pool
 
     /**
      * Extend Pool by n pages.
-     * Returns ~0u on failure.
+     * Returns OPFAIL on failure.
      */
-    uint extendPages(size_t n)
+    size_t extendPages(size_t n)
     {
         //debug(PRINTF) printf("Pool::extendPages(n = %d)\n", n);
         if (ncommitted + n <= npages)
@@ -2820,7 +2825,7 @@ struct Pool
             //debug(PRINTF) printf("\tfailed to commit %d pages\n", tocommit);
         }
 
-        return ~0u;
+        return OPFAIL;
     }
 
 
