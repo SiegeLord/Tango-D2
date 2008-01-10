@@ -2012,10 +2012,74 @@ else
                 buf[p2] = t;
             }
 
-            void quicksort( size_t l, size_t r )
+            // NOTE: This algorithm operates on the inclusive range [l .. r].
+            void insertionSort( size_t l, size_t r )
+            {
+                for( size_t i = l; i <= r; ++i )
+                {
+                    size_t  j = i;
+                    Elem    v = buf[i];
+
+                    while( j != l && pred( v, buf[j - 1] ) )
+                    {
+                        buf[j] = buf[j - 1];
+                        j--;
+                    }
+                    buf[j] = v;
+                }
+            }
+
+            size_t medianOf( size_t l, size_t m, size_t r )
+            {
+                if( pred( buf[m], buf[l] ) )
+                {
+                    if( pred( buf[r], buf[m] ) )
+                        return m;
+                    else
+                    {
+                        if( pred( buf[r], buf[l] ) )
+                            return r;
+                        else
+                            return l;
+                    }
+                }
+                else
+                {
+                    if( pred( buf[r], buf[m] ) )
+                    {
+                        if( pred( buf[r], buf[l] ) )
+                            return l;
+                        else
+                            return r;
+                    }
+                    else
+                        return m;
+                }
+            }
+
+            // NOTE: This algorithm operates on the inclusive range [l .. r].
+            void quicksort( size_t l, size_t r, size_t d )
             {
                 if( r <= l )
                     return;
+
+                // HEURISTIC: Use insertion sort for sufficiently small arrays.
+                enum { MIN_LENGTH = 80 }
+                if( r - l < MIN_LENGTH )
+                    return insertionSort( l, r );
+
+                // HEURISTIC: If the recursion depth is too great, assume this
+                //            is a worst-case array and fail to heap sort.
+                if( d-- == 0 )
+                {
+                    makeHeap( buf[l .. r+1], pred );
+                    sortHeap( buf[l .. r+1], pred );
+                    return;
+                }
+
+                // HEURISTIC: Use the median-of-3 value as a pivot.  Swap this
+                //            into r so quicksort remains untouched.
+                exch( r, medianOf( l, l + (r - l) / 2, r ) );
 
                 // This implementation of quicksort improves upon the classic
                 // algorithm by partitioning the array into three parts, one
@@ -2063,19 +2127,31 @@ else
                     j = i - 1;
                     for( size_t k = l; k < p; k++, j-- )
                         exch( k, j );
-                    quicksort( l, j );
+                    quicksort( l, j, d );
                 }
                 if( ++i < q )
                 {
                     for( size_t k = r - 1; k >= q; k--, i++ )
                         exch( k, i );
-                    quicksort( i, r );
+                    quicksort( i, r, d );
                 }
+            }
+
+            size_t maxDepth( size_t x )
+            {
+                size_t d = 0;
+
+                do
+                {
+                    ++d;
+                    x /= 2;
+                } while( x > 1 );
+                return d * 2; // same as "floor( log( x ) / log( 2 ) ) * 2"
             }
 
             if( buf.length > 1 )
             {
-                quicksort( 0, buf.length - 1 );
+                quicksort( 0, buf.length - 1, maxDepth( buf.length ) );
             }
         }
     }
