@@ -75,6 +75,16 @@ version( linux )
             fpregset_t  fpregs;
             c_ulong[8]  __reserved1;
         }
+
+        struct ucontext_t
+        {
+            c_ulong         uc_flags;
+            ucontext_t*     uc_link;
+            stack_t         uc_stack;
+            mcontext_t      uc_mcontext;
+            sigset_t        uc_sigmask;
+            _libc_fpstate   __fpregs_mem;
+        }
     }
     else version( X86 )
     {
