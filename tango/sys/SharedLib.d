@@ -28,8 +28,6 @@ private {
     }
     else version (Posix) {
         import tango.stdc.posix.dlfcn;
-
-        pragma (lib, "libdl");
     }
     else {
         static assert (false, "No support for this platform");

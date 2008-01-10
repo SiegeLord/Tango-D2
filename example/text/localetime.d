@@ -18,7 +18,4 @@ void main ()
         auto layout = new Locale;
 
         Cout (layout ("{:ddd, dd MMMM yyyy HH:mm:ss z}", Clock.now)).newline;
-        Cout (layout ("{:s}", Clock.now)).newline;
-        Cout (layout ("{:%s}", Clock.now)).newline;
-        Cout (layout ("{:h}", Clock.now)).newline;
 }

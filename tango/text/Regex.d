@@ -144,13 +144,7 @@ private
     import tango.core.BitArray;
     import tango.core.Vararg;
 }
-        version (X86_64)
-                {
-                private import std.stdarg;
-                alias void* Arg;
-                alias va_list ArgList;
-                }
- 
+
 /** Regular expression to extract an _email address */
 const char[] email =
     r"[a-zA-Z]([.]?([[a-zA-Z0-9_]-]+)*)?@([[a-zA-Z0-9_]\-_]+\.)+[a-zA-Z]{2,6}";

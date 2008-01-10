@@ -26,15 +26,6 @@ void main ()
         log.addAppender (new ConsoleAppender);
 
         // log to all
-       log.trace ("three-way logging 1");
-       log.trace ("three-way logging 2");
-       log.trace ("three-way logging 3");
-       log.trace ("three-way logging 4");
-       log.trace ("three-way logging 5");
-       log.trace ("three-way logging 6");
-       log.trace ("three-way logging 7");
-       log.trace ("three-way logging 8");
-
         log.trace ("three-way logging");
 }
 
