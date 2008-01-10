@@ -34,11 +34,11 @@ done
 
 HOME=`pwd` make -s clean -fgdc-posix.mak
 
-LIBS="common/libtango.a gc/libbasic.a libgphobos.a"
+LIBS="common/libtango-cc-tango.a gc/libtango-gc-basic.a libgphobos.a"
 
 for lib in $LIBS; do test -r $lib && rm $lib; done
 
-if [ "`./build-gdc-x.sh powerpc-apple-darwin8 1>&2`" = "0" ]
+if ./build-gdc-x.sh powerpc-apple-darwin8 1>&2
 then
     for lib in $LIBS; do mv $lib $lib.ppc; done
 else
@@ -47,7 +47,7 @@ fi
 
 if [ "$FAILED" = "0" ]
 then
-    if [ "`./build-gdc-x.sh i686-apple-darwin8 1>&2`" = "0" ]
+    if ./build-gdc-x.sh i686-apple-darwin8 1>&2
     then
         for lib in $LIBS; do mv $lib $lib.i386; done
     else

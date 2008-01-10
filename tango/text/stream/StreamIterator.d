@@ -54,6 +54,8 @@ private import tango.io.model.IConduit;
 
 class StreamIterator(T) : InputStream, Buffered
 {
+
+
         protected T[]           slice,
                                 pushed;
         private IBuffer         input;
@@ -337,5 +339,3 @@ class StreamIterator(T) : InputStream, Buffered
                 input.close;
         }               
 }
-
-
