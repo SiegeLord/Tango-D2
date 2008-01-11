@@ -328,8 +328,15 @@ version (Clone)
     return culture;
   }
 
-  private static Culture getCultureInternal(int cultureID, char[] name) {
+  private static Culture getCultureInternal(int cultureID, char[] cname) {
     // If cultureID is - 1, name is an IETF name; if it's 0, name is a culture name; otherwise, it's a valid LCID.
+    char[] name = cname; 
+    foreach (i, c; cname)
+       if (c is '_') {
+         name = cname.dup;
+         name[i] = '-';
+         break;
+       }
 
     // Look up tables first.
     if (cultureID == 0) {
