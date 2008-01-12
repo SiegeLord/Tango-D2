@@ -31,6 +31,7 @@
 typedef struct Monitor
 {
     void* impl; // for user-level monitors
+    Array devt; // for internal monitors
 
 #if _WIN32
     CRITICAL_SECTION mon;
