@@ -1120,7 +1120,7 @@ extern (C) void _moduleDtor()
 // Monitor
 ////////////////////////////////////////////////////////////////////////////////
 
-alias Object.Monitor IMonitor;
+alias Object.Monitor        IMonitor;
 alias void delegate(Object) DEvent;
 
 // NOTE: The dtor callback feature is only supported for monitors that are not
@@ -1204,11 +1204,13 @@ extern (C) void _d_monitorexit(Object h)
     }
     i.unlock();
 }
+
 extern (C) void _d_monitor_devt(Monitor* m, Object h)
 {
     if (m.devt.length)
     {
         DEvent[] devt;
+
         synchronized (h)
         {
             devt = m.devt;
@@ -1222,13 +1224,14 @@ extern (C) void _d_monitor_devt(Monitor* m, Object h)
         free(devt.ptr);
     }
 }
+
 extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
 {
     synchronized (h)
     {
         Monitor* m = getMonitor(h);
-        IMonitor i = m.impl;
-        assert(i is null);
+        assert(m.impl is null);
+
         foreach (inout v; m.devt)
         {
             if (v is null || v == e)
@@ -1237,6 +1240,7 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
                 return;
             }
         }
+
         auto len = m.devt.length + 4; // grow by 4 elements
         auto pos = m.devt.length;     // insert position
         auto p = realloc(m.devt.ptr, DEvent.sizeof * len);
@@ -1247,13 +1251,14 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
         m.devt[pos] = e;
     }
 }
+
 extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
 {
     synchronized (h)
     {
         Monitor* m = getMonitor(h);
-        IMonitor i = m.impl;
-        assert(i is null);
+        assert(m.impl is null);
+
         foreach (p, v; m.devt)
         {
             if (v == e)
@@ -1261,6 +1266,7 @@ extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
                 memmove(&m.devt[p],
                         &m.devt[p+1],
                         (m.devt.length - p - 1) * DEvent.sizeof);
+                m.devt[$ - 1] = null;
                 return;
             }
         }

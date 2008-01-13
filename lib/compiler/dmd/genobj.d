@@ -1209,8 +1209,7 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
     synchronized (h)
     {
         Monitor* m = getMonitor(h);
-        IMonitor i = m.impl;
-        assert(i is null);
+        assert(m.impl is null);
 
         foreach (inout v; m.devt)
         {
@@ -1237,8 +1236,7 @@ extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
     synchronized (h)
     {
         Monitor* m = getMonitor(h);
-        IMonitor i = m.impl;
-        assert(i is null);
+        assert(m.impl is null);
 
         foreach (p, v; m.devt)
         {
@@ -1247,6 +1245,7 @@ extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
                 memmove(&m.devt[p],
                         &m.devt[p+1],
                         (m.devt.length - p - 1) * DEvent.sizeof);
+                m.devt[$ - 1] = null;
                 return;
             }
         }
