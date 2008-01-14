@@ -37,6 +37,11 @@ extern (C) void _moduleCtor();
 extern (C) void _moduleDtor();
 extern (C) void thread_joinAll();
 
+version (GNU_CBridge_Stdio)
+{
+    extern (C) void _d_gnu_cbridge_init_stdio();
+}
+
 /***********************************
  * These functions must be defined for any D program linked
  * against this library.
