@@ -202,19 +202,6 @@ class SocketConduit : Conduit
 
         /***********************************************************************
 
-                Read content from socket. This is implemented as a callback
-                from the reader() method so we can expose the timout support
-                to subclasses
-                
-        ***********************************************************************/
-
-        protected uint socketReader (void[] dst)
-        {
-                return socket_.receive (dst);
-        }
-        
-        /***********************************************************************
-
                 Release this SocketConduit
 
                 Note that one should always disconnect a SocketConduit 
@@ -235,9 +222,9 @@ class SocketConduit : Conduit
 
        /***********************************************************************
 
-                Callback routine to read content from the socket. Note
-                that the operation may timeout if method setTimeout()
-                has been invoked with a non-zero value.
+                Read content from the socket. Note that the operation 
+                may timeout if method setTimeout() has been invoked with 
+                a non-zero value.
 
                 Returns the number of bytes read from the socket, or
                 IConduit.Eof where there's no more content available
@@ -252,9 +239,36 @@ class SocketConduit : Conduit
 
         override uint read (void[] dst)
         {
-                // ensure just one read at a time
-                synchronized (this)
-                {
+                return read (dst, (void[] dst){return cast(uint) socket_.receive(dst);});
+        }
+        
+        /***********************************************************************
+
+                Callback routine to write the provided content to the
+                socket. This will stall until the socket responds in
+                some manner. Returns the number of bytes sent to the
+                output, or IConduit.Eof if the socket cannot write.
+
+        ***********************************************************************/
+
+        override uint write (void[] src)
+        {
+                int count = socket_.send (src);
+                if (count <= 0)
+                    count = Eof;
+                return count;
+        }
+
+        /***********************************************************************
+ 
+                Internal routine to handle socket read under a timeout.
+                Note that this is synchronized, in order to serialize
+                socket access
+
+        ***********************************************************************/
+
+        package final synchronized uint read (void[] dst, uint delegate(void[]) dg)
+        {
                 // reset timeout; we assume there's no thread contention
                 timeout = false;
 
@@ -281,30 +295,12 @@ class SocketConduit : Conduit
                    }       
 
                 // invoke the actual read op
-                int count = socketReader (dst);
+                int count = dg (dst);
                 if (count <= 0)
                     count = Eof;
                 return count;
-                }
         }
         
-        /***********************************************************************
-
-                Callback routine to write the provided content to the
-                socket. This will stall until the socket responds in
-                some manner. Returns the number of bytes sent to the
-                output, or IConduit.Eof if the socket cannot write.
-
-        ***********************************************************************/
-
-        override uint write (void[] src)
-        {
-                int count = socket_.send (src);
-                if (count <= 0)
-                    count = Eof;
-                return count;
-        }
-
         /***********************************************************************
 
                 Allocate a SocketConduit from a list rather than creating
