@@ -97,16 +97,14 @@ class Gregorian : Calendar
         */
         override DayOfWeek getDayOfWeek(Time time) 
         {
-                int dow;
-                if(time.ticks < 0)
-                {
-                        dow = ((time.ticks + 1) / TimeSpan.TicksPerDay) % 7;
-                        if(dow < 0)
-                                dow += 7;
-                }
-                else
-                        dow = (time.ticks / TimeSpan.TicksPerDay + 1) % 7;
-                return cast(DayOfWeek)dow;
+                auto ticks = time.ticks;
+                if (ticks < 0)
+                    ++ticks;
+       
+                auto dow = cast(int) ((ticks / TimeSpan.TicksPerDay) % 7);
+                if (dow < 0)
+                    dow += 7;
+                return cast(DayOfWeek) dow;
         }
 
         /**
