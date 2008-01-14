@@ -12,7 +12,7 @@
 
 *******************************************************************************/
 
-module tango.net.convert;
+module tango.group.convert;
 
 public import Utf = tango.text.convert.Utf;
 public import Float = tango.text.convert.Float;
