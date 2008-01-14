@@ -46,8 +46,8 @@ else
     }
 }
 
-alias int time_t;
-alias int clock_t;
+alias c_long time_t;
+alias c_long clock_t;
 
 version( Win32 )
 {
