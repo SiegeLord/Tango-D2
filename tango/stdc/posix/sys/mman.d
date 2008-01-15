@@ -31,7 +31,15 @@ POSIX_MADV_WILLNEED
 POSIX_MADV_DONTNEED
 */
 
-version( darwin )
+version( linux )
+{
+    const POSIX_MADV_NORMAL     = 0;
+    const POSIX_MADV_RANDOM     = 1;
+    const POSIX_MADV_SEQUENTIAL = 2;
+    const POSIX_MADV_WILLNEED   = 3;
+    const POSIX_MADV_DONTNEED   = 4;
+}
+else version( darwin )
 {
     const POSIX_MADV_NORMAL     = 0;
     const POSIX_MADV_RANDOM     = 1;
