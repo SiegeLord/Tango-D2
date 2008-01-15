@@ -968,8 +968,7 @@ class Thread
      * result of deleting any Thread object is undefined.
      *
      * Params:
-     *
-     * dg = The supplied code as a delegate.
+     *  dg = The supplied code as a delegate.
      *
      * Returns:
      *  Zero if all elemented are visited, nonzero if not.
@@ -1004,8 +1003,8 @@ class Thread
 
 
     /**
-     * Reserves a local storage pointer for use and initializes this
-     * location to null for all running threads.
+     * Reserves a local storage pointer for use and initializes this location
+     * to null for all running threads.
      *
      * Returns:
      *  A key representing the array offset of this memory location.
@@ -1056,8 +1055,8 @@ class Thread
 
 
     /**
-     * Gets the data associated with the supplied key value.  It is assumed
-     * that any key passed to this function is valid.
+     * Loads the value stored at key within a thread-local static array.  It is
+     * assumed that any key passed to this function is valid.
      *
      * Params:
      *  key = The location which holds the desired data.
@@ -1072,8 +1071,8 @@ class Thread
 
 
     /**
-     * Stores the supplied value in the specified location.  It is assumed
-     * that any key passed to this function is valid.
+     * Stores the supplied value at key within a thread-local static array.  It
+     * is assumed that any key passed to this function is valid.
      *
      * Params:
      *  key = The location to store the supplied data.
