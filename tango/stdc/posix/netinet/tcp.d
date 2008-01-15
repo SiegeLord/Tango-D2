@@ -25,5 +25,5 @@ version( linux )
 }
 else version( darwin )
 {
-
+    const TCP_NODELAY = 1;
 }
