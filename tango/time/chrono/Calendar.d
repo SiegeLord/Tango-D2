@@ -345,6 +345,107 @@ public abstract class Calendar
                 return -1;
         }
 
+        /**
+         * Returns a new Time with the specified number of months added.  If
+         * the months are negative, the months are subtracted.
+         *
+         * The default implementation uses information provided by the
+         * calendar to calculate the correct time to add.  Derived classes may
+         * override if there is a more optimized method.
+         *
+         * Note that the generic method does not take into account crossing
+         * era boundaries.  Derived classes may support this.
+         *
+         * Params: t = A time to add the months to
+         * Params: nMonths = The number of months to add.  This can be
+         * negative.
+         *
+         * Returns: A Time that represents the provided time with the number
+         * of months added.
+         */
+        Time addMonths(Time t, int nMonths)
+        {
+                uint era = getEra(t);
+                uint year = getYear(t);
+                uint month = getMonth(t);
+
+                //
+                // Assume we go back to day 1 of the current year, taking
+                // into account that offset using the nMonths and nDays
+                // offsets.
+                //
+                nMonths += month - 1;
+                long nDays = cast(int)getDayOfMonth(t) - cast(int)getDayOfYear(t);
+                if(nMonths > 0)
+                {
+                        //
+                        // Adding, add all the years until the year we want to
+                        // be in.
+                        //
+                        auto miy = getMonthsInYear(year, era);
+                        while(nMonths >= miy)
+                        {
+                                //
+                                // skip a whole year
+                                //
+                                nDays += getDaysInYear(year, era);
+                                nMonths -= miy;
+                                year++;
+
+                                //
+                                // update miy
+                                //
+                                miy = getMonthsInYear(year, era);
+                        }
+                }
+                else if(nMonths < 0)
+                {
+                        //
+                        // subtracting months
+                        //
+                        while(nMonths < 0)
+                        {
+                                auto miy = getMonthsInYear(--year, era);
+                                nDays -= getDaysInYear(year, era);
+                                nMonths += miy;
+                        }
+                }
+
+                //
+                // we now are offset to the resulting year.
+                // Add the rest of the months to get to the day we want.
+                //
+                for(int m = 0; m < nMonths; m++)
+                        nDays += getDaysInMonth(year, m + 1, era);
+                return t + TimeSpan.days(nDays);
+        }
+
+        /**
+         * Add the specified number of years to the given Time.
+         *
+         * The generic algorithm uses information provided by the abstract
+         * methods.  Derived classes may re-implement this in order to
+         * optimize the algorithm
+         *
+         * Note that the generic algorithm does not take into account crossing
+         * era boundaries.  Derived classes may support this.
+         *
+         * Params: t = A time to add the years to
+         * Params: nYears = The number of years to add.  This can be negative.
+         *
+         * Returns: A Time that represents the provided time with the number
+         * of years added.
+         */
+        Time addYears(Time t, int nYears)
+        {
+                auto date = toDate(t);
+                auto tod = t.ticks % TimeSpan.TicksPerDay;
+                if(tod < 0)
+                        tod += TimeSpan.TicksPerDay;
+                date.year += nYears;
+                return toTime(date) + TimeSpan(tod);
+        }
+
         package static long getTimeTicks (uint hour, uint minute, uint second) 
         {
                 return (TimeSpan.hours(hour) + TimeSpan.minutes(minute) + TimeSpan.seconds(second)).ticks;

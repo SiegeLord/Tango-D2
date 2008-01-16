@@ -98,10 +98,14 @@ class Gregorian : Calendar
         override DayOfWeek getDayOfWeek(Time time) 
         {
                 auto ticks = time.ticks;
+                int offset = 1;
                 if (ticks < 0)
+                {
                     ++ticks;
+                    offset = 0;
+                }
        
-                auto dow = cast(int) ((ticks / TimeSpan.TicksPerDay) % 7);
+                auto dow = cast(int) ((ticks / TimeSpan.TicksPerDay + offset) % 7);
                 if (dow < 0)
                     dow += 7;
                 return cast(DayOfWeek) dow;
@@ -243,6 +247,47 @@ class Gregorian : Calendar
             dow = getDayOfWeek(time);
         }
 
+        override Time addMonths(Time t, int nMonths)
+        {
+                //
+                // We know all years are 12 months, so use the to/from date
+                // methods to make the calculation an O(1) operation
+                //
+                auto date = toDate(t);
+                nMonths += date.month - 1;
+                int nYears = nMonths / 12;
+                nMonths %= 12;
+                if(nMonths < 0)
+                {
+                        nYears--;
+                        nMonths += 12;
+                }
+                int realYear = date.year;
+                if(date.era == BC_ERA)
+                        realYear = -realYear + 1;
+                realYear += nYears;
+                if(realYear < 1)
+                {
+                        date.year = -realYear + 1;
+                        date.era = BC_ERA;
+                }
+                else
+                {
+                        date.year = realYear;
+                        date.era = AD_ERA;
+                }
+                date.month = nMonths + 1;
+                auto tod = t.ticks % TimeSpan.TicksPerDay;
+                if(tod < 0)
+                        tod += TimeSpan.TicksPerDay;
+                return toTime(date) + TimeSpan(tod);
+        }
+
+        override Time addYears(Time t, int nYears)
+        {
+                return addMonths(t, nYears * 12);
+        }
+
         package static void splitDate (long ticks, ref uint year, ref uint month, ref uint day, ref uint dayOfYear, ref uint era) 
         {
                 int numDays;
@@ -346,7 +391,7 @@ class Gregorian : Calendar
         {
                 if(era == BC_ERA)
                         return staticIsLeapYear(year - 1, AD_ERA);
-                if(era == AD_ERA)
+                if(era == AD_ERA || era == CURRENT_ERA)
                         return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
                 return false;
         }
@@ -408,5 +453,37 @@ debug(UnitTest)
                 assert(d.doy == 1);
                 assert(d.dow == Gregorian.DayOfWeek.Saturday);
 
+                //
+                // check that addMonths works properly, add 15 months to
+                // 2/3/2004, 04:05:06.007008, then subtract 15 months again.
+                //
+                t = Gregorian.generic.toTime(2004, 2, 3, 4, 5, 6, 7) + TimeSpan.micros(8);
+                d = Gregorian.generic.toDate(t);
+                assert(d.year == 2004);
+                assert(d.month == 2);
+                assert(d.day == 3);
+                assert(d.era == Gregorian.AD_ERA);
+                assert(d.doy == 34);
+                assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+
+                auto t2 = Gregorian.generic.addMonths(t, 15);
+                d = Gregorian.generic.toDate(t2);
+                assert(d.year == 2005);
+                assert(d.month == 5);
+                assert(d.day == 3);
+                assert(d.era == Gregorian.AD_ERA);
+                assert(d.doy == 123);
+                assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+
+                t2 = Gregorian.generic.addMonths(t2, -15);
+                d = Gregorian.generic.toDate(t2);
+                assert(d.year == 2004);
+                assert(d.month == 2);
+                assert(d.day == 3);
+                assert(d.era == Gregorian.AD_ERA);
+                assert(d.doy == 34);
+                assert(d.dow == Gregorian.DayOfWeek.Tuesday);
+
+                assert(t == t2);
         }
 }
