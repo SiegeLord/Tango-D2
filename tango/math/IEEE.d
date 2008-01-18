@@ -1363,7 +1363,8 @@ int feqrel(real x, real y)
         const int EXPONENTPOS = 3;
     else const int EXPONENTPOS = 0;
 
-    int bitsdiff = ( ((pa[EXPONENTPOS]&0x7FF0) + (pb[EXPONENTPOS]&0x7FF0)-0x10)>>5) - (pd[EXPONENTPOS]&0x7FF0>>4);
+    int bitsdiff = (( ((pa[EXPONENTPOS]&0x7FF0) + (pb[EXPONENTPOS]&0x7FF0)-0x10)>>1) 
+                 - (pd[EXPONENTPOS]&0x7FF0))>>4;
 
     if (pd[EXPONENTPOS] == 0)
     {   // Difference is denormal
@@ -1378,9 +1379,8 @@ int feqrel(real x, real y)
         return bitsdiff + 1; // add the 1 we subtracted before
 
     // Avoid out-by-1 errors when factor is almost 2.
-    if (bitsdiff == 0 && (pa[EXPONENTPOS] ^ pb[EXPONENTPOS])&0x7FF0) return 1;
+    if (bitsdiff == 0 && !((pa[EXPONENTPOS] ^ pb[EXPONENTPOS])&0x7FF0)) return 1;
     else return 0;
-
  }
 
 }
