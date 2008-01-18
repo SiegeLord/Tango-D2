@@ -77,14 +77,14 @@ do
             LIBPREFIX="$PREFIX"
             INCLPREFIX="$PREFIX"
             ;;
-        --altbin)
+        --altconf)
             shift
 
             if [ "$1" = "-" ]
             then
-                BIN=""
+                CONF=""
             else
-                BIN="$1"
+                CONF="$1"
             fi
             ;;
         --altlib)
