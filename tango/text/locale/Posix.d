@@ -21,9 +21,7 @@ private import tango.text.locale.Data;
 private import tango.stdc.ctype;
 private import tango.stdc.posix.stdlib;
 private import tango.stdc.string;
-private import tango.stdc.time;
 private import tango.stdc.locale;
-private import tango.stdc.posix.time;
 
 /*private extern(C) char* setlocale(int type, char* locale);
 private extern(C) void putenv(char*);
@@ -95,13 +93,6 @@ void setUserCulture(int lcid) {
   setlocale(LC_TELEPHONE, name.ptr);
   setlocale(LC_MEASUREMENT, name.ptr);
   setlocale(LC_IDENTIFICATION, name.ptr);
-}
-
-ulong getUtcTime() {
-   int t;
-   time(&t);
-   gmtime(&t);
-   return cast(ulong)((cast(long)t * 10000000L) + 116444736000000000L);
 }
 
 int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
