@@ -63,13 +63,13 @@ cd tmp || die 1 "Failed to cd to temporary Tango install"
 mkdir -p bin
 cp ../install/gdc-posix/uninstall.sh bin/uninstall-tango-core || die 1 "Failed to install the uninstaller"
 
-mkdir -p include
-cp -pR ../tango include || die 1 "Failed to copy in the tango .d files"
+mkdir -p include/d
+cp -pR ../tango include/d || die 1 "Failed to copy in the tango .d files"
 
 mkdir -p lib
 cp ../libgtango.a lib || die 1 "Failed to copy in the tango .a file"
 
-find include/tango -name .svn | xargs rm -rf
+find include/d/tango -name .svn | xargs rm -rf
 tar zcf ../tango.tar.gz * || die 1 "Failed to create tango.tar.gz"
 cd .. || exit 1
 rm -rf tmp || exit 1
