@@ -1,19 +1,59 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2007-2008 Jascha Wetzel. All rights reserved.
+    copyright:      Copyright (c) 2007-2008 Jascha Wetzel. All rights reserved.
 
-        license:        BSD style: $(LICENSE)
+    license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Jan 2008
+    version:        Initial release: Jan 2008
 
-        authors:        Jascha Wetzel
+    authors:        Jascha Wetzel
 
-        Regular expression engine based on tagged NFA/DFA method.
+    Regular expression engine based on tagged NFA/DFA method.
 
+    The syntax of a regular expression is as follows.
+    <i>X</i> stands for an arbitrary regular expression.
+
+    <i>Operators</i>
+    $(TABLE
+    $(TR $(TD |) $(TD alternation) )
+    $(TR $(TD (X)) $(TD matching brackets - creates a sub-match) )
+    $(TR $(TD (?X)) $(TD non-matching brackets - only groups X, no sub-match is created) )
+    $(TR $(TD [X]) $(TD character class specification) )
+    $(TR $(TD &lt;X) $(TD lookbehind, X may be a single character or a character class) )
+    $(TR $(TD &gt;X) $(TD lookahead, X may be a single character or a character class) )
+    $(TR $(TD ^) $(TD start of input or start of line) )
+    $(TR $(TD $) $(TD end of input or end of line) )
+    $(TR $(TD \b) $(TD start or end of word, equals (?&lt;\s&gt;\S|&lt;\S&gt;\s)) )
+    $(TR $(TD \B) $(TD opposite of \b, equals (?&lt;\S&gt;\S|&lt;\s&gt;\s)) )
+    )
+
+    <i>Quantifiers</i>
+    $(TABLE
+    $(TR $(TD X?) $(TD zero or one) )
+    $(TR $(TD X*) $(TD zero or more) )
+    $(TR $(TD X+) $(TD one or more) )
+    $(TR $(TD X{n,m}) $(TD at least n, at most m instances of X
+            If n is missing, it's set to 0. If m is missing, it is set to infinity.) )
+    $(TR $(TD X??) $(TD non-greedy version of the above operators) )
+    $(TR $(TD X*?) $(TD ) )
+    $(TR $(TD X+?) $(TD ) )
+    $(TR $(TD X{n,m}?) $(TD ) )
+    )
+
+    <i>Pre-defined character classes</i>
+    $(TABLE
+    $(TR $(TD .) $(TD any printable character) )
+    $(TR $(TD \s) $(TD whitespace) )
+    $(TR $(TD \S) $(TD non-whitespace) )
+    $(TR $(TD \w) $(TD alpha-numeric characters or _) )
+    $(TR $(TD \W) $(TD opposite of \w) )
+    $(TR $(TD \d) $(TD digits) )
+    $(TR $(TD \D) $(TD non-digit) )
+    )
 *******************************************************************************/
 module tango.text.Regex;
 
-/*******************************************************************************
+/* *****************************************************************************
     A simple pair
 *******************************************************************************/
 private struct Pair(T)
@@ -37,7 +77,7 @@ private struct Pair(T)
     }
 }
 
-/*******************************************************************************
+/* *****************************************************************************
     Double linked list
 *******************************************************************************/
 private class List(T)
@@ -247,7 +287,7 @@ private class List(T)
     }
 }
 
-/*******************************************************************************
+/* *****************************************************************************
     Stack based on dynamic array
 *******************************************************************************/
 private struct Stack(T)
@@ -331,7 +371,7 @@ private struct Stack(T)
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Set container based on assoc array
 **************************************************************************************************/
 private struct Set(T)
@@ -415,10 +455,10 @@ private struct Set(T)
 }
 import tango.math.Math;
 
-/**************************************************************************************************
+/* ************************************************************************************************
     A range of characters
 **************************************************************************************************/
-private struct CharRange(char_t)
+struct CharRange(char_t)
 {
     char_t  l, r;
 
@@ -537,7 +577,7 @@ private struct CharRange(char_t)
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Represents a class of characters as used in regular expressions (e.g. [0-9a-z], etc.)
 **************************************************************************************************/
 struct CharClass(char_t)
@@ -747,7 +787,7 @@ struct CharClass(char_t)
 }
 
 
-/**************************************************************************************************
+/* ************************************************************************************************
 
 **************************************************************************************************/
 private struct Predicate(char_t)
@@ -848,7 +888,7 @@ private struct Predicate(char_t)
 import Utf = tango.text.convert.Utf;
 import tango.text.convert.Layout;
 
-/**************************************************************************************************
+/* ************************************************************************************************
 
 **************************************************************************************************/
 class RegExpException : Exception
@@ -859,7 +899,7 @@ class RegExpException : Exception
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     TNFA state
 **************************************************************************************************/
 private class TNFAState(char_t)
@@ -876,14 +916,14 @@ private class TNFAState(char_t)
 }
 
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Priority classes used to linearize priorities after non-linear transition creation.
 **************************************************************************************************/
 private enum PriorityClass {
     greedy=0, normal, reluctant, extraReluctant
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     TNFA tagged transition
 **************************************************************************************************/
 private class TNFATransition(char_t)
@@ -900,7 +940,7 @@ private class TNFATransition(char_t)
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Fragments of TNFAs as used in the Thompson method
 **************************************************************************************************/
 private class TNFAFragment(char_t)
@@ -923,7 +963,7 @@ private class TNFAFragment(char_t)
         exit_state  = new List!(trans_t);
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Write the given state as entry state to this fragment.
     **********************************************************************************************/
     void setEntry(state_t state)
@@ -933,7 +973,7 @@ private class TNFAFragment(char_t)
             t.target = state;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Write the given state as exit state to this fragment.
     **********************************************************************************************/
     void setExit(state_t state)
@@ -944,7 +984,7 @@ private class TNFAFragment(char_t)
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Tagged NFA
 **************************************************************************************************/
 private class TNFA(char_t)
@@ -961,7 +1001,7 @@ private class TNFA(char_t)
 
     bool swapMatchingBracketSyntax; /// whether to make (?...) matching and (...) non-matching
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Creates the TNFA from the given regex pattern
     **********************************************************************************************/
     this(string_t regex)
@@ -972,7 +1012,7 @@ private class TNFA(char_t)
         pattern = regex;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Print the TNFA (tabular representation of the delta function)
     **********************************************************************************************/
     void print()
@@ -1000,7 +1040,7 @@ private class TNFA(char_t)
         return next_tag-1;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Constructs the TNFA using extended Thompson method.
         Uses a slightly extended version of Dijkstra's shunting yard algorithm to convert
         the regexp from infix notation.
@@ -1014,7 +1054,7 @@ private class TNFA(char_t)
         Stack!(Pair!(uint)) occurStack;
         opStack ~= Operator.eos;
 
-        /******************************************************************************************
+        /* ****************************************************************************************
             Perform action on operator stack
         ******************************************************************************************/
         bool perform(Operator next_op, bool explicit_operator=true)
@@ -1919,7 +1959,7 @@ private:
     }
 }
 
-/**************************************************************************************************
+/* ************************************************************************************************
     Tagged DFA
 **************************************************************************************************/
 private class TDFA(char_t)
@@ -1929,7 +1969,7 @@ private class TDFA(char_t)
 
     const uint CURRENT_POSITION_REGISTER = ~0;
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Tag map assignment command
     **********************************************************************************************/
     struct Command
@@ -1943,7 +1983,7 @@ private class TDFA(char_t)
             return layout.convert("{}<-{}", dst, src==CURRENT_POSITION_REGISTER?"p":layout.convert("{}", src));
         }
 
-        /******************************************************************************************
+        /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
         int opCmp(Command cmd)
@@ -1966,7 +2006,7 @@ private class TDFA(char_t)
                 index;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         TDFA state
     **********************************************************************************************/
     class State
@@ -1977,7 +2017,7 @@ private class TDFA(char_t)
         Command[]       finishers;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         TDFA transition
     **********************************************************************************************/
     class Transition
@@ -1986,7 +2026,7 @@ private class TDFA(char_t)
         predicate_t predicate;
         Command[]   commands;
 
-        /******************************************************************************************
+        /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
         int opCmp(Object o)
@@ -2011,7 +2051,7 @@ private class TDFA(char_t)
         return next_register;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Constructs the TDFA from the given TNFA using extended power set method
     **********************************************************************************************/
     this(TNFA!(char_t) tnfa)
@@ -2203,7 +2243,7 @@ private class TDFA(char_t)
         //       (execution may stop in that state)
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Print the TDFA (tabular representation of the delta function)
     **********************************************************************************************/
     void print()
@@ -2258,7 +2298,7 @@ private class TDFA(char_t)
     }
 
 private:
-    /**********************************************************************************************
+    /* ********************************************************************************************
         A (TNFA state, tags) pair element of a subset state.
     **********************************************************************************************/
     class StateElement
@@ -2309,7 +2349,7 @@ private:
         }
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Represents a state in the NFA to DFA conversion.
         Contains the set of states (StateElements) the NFA might be in at the same time and the
         corresponding DFA state that we create.
@@ -2338,7 +2378,7 @@ private:
         }
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Calculates the register index for a given tag map entry. The TDFA implementation uses
         registers to save potential tag positions, the index space gets linearized here.
     
@@ -2362,7 +2402,7 @@ private:
             return tag-1;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Add new TDFA state to the automaton.
     **********************************************************************************************/
     State addState()
@@ -2373,7 +2413,7 @@ private:
         return s;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Creates disjoint predicates from all outgoing, potentially overlapping TNFA transitions.
 
         Params:     state = SubsetState to create the predicates from
@@ -2430,7 +2470,7 @@ private:
         return disjoint;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Finds all TNFA states that can be reached directly with the given predicate and creates
         a new SubsetState containing those target states.
     
@@ -2515,7 +2555,7 @@ private:
         return r;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Extends the given SubsetState with the states that are reached through lookbehind transitions.
     
         Params:     from =      SubsetState to create the lookbehind closure for
@@ -2559,7 +2599,7 @@ private:
         return res;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Generates the epsilon closure of the given subset state, creating tag map entries
         if tags are passed. Takes priorities into account, effectively realizing
         greediness and reluctancy.
@@ -2677,7 +2717,7 @@ private:
         return res;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Tries to create commands that reorder the tag map of "previous", such that "from" becomes
         tag-wise identical to "to". If successful, these commands are added to "trans". This
         is done for state re-use.
@@ -2741,7 +2781,7 @@ private:
         return true;
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Generate tag map initialization commands for start state.
     **********************************************************************************************/
     void generateInitializers(SubsetState start)
@@ -2761,7 +2801,7 @@ private:
         }
     }
 
-    /**********************************************************************************************
+    /* ********************************************************************************************
         Generates finisher commands for accepting states.
     **********************************************************************************************/
     void generateFinishers(SubsetState r)
@@ -2789,40 +2829,6 @@ private:
 }
 /**************************************************************************************************
     Regular expression compiler and interpreter.
-
-    In the following description, X stands for an arbitrary regular expression.
-
-    Operators:
-        |       alternation
-        (X)     matching brackets - creates a sub-match
-        (?X)    non-matching brackets - only groups X, no sub-match is created
-        [X]     character class specification
-        <X      lookbehind, X may be a single character or a character class
-        >X      lookahead, X may be a single character or a character class 
-        ^       start of input or start of line
-        $       end of input or end of line
-        \b      start or end of word, equals (?<\s>\S|<\S>\s)
-        \B      opposite of \b, equals (?<\S>\S|<\s>\s)
-
-    Quantifiers:
-        X?      zero or one
-        X*      zero or more
-        X+      one or more
-        X{n,m}  at least n, at most m instances of X
-                If n is missing, it's set to 0. If m is missing, it is set to infinity.
-        X??     non-greedy version of the above operators
-        X*?
-        X+?
-        X{n,m}?
-
-    Pre-defined character classes:
-        .       any printable character
-        \s      whitespace
-        \S      non-whitespace
-        \w      alpha-numeric characters or _
-        \W      opposite of \w
-        \d      digits
-        \D      non-digit
 **************************************************************************************************/
 class RegExpT(char_t)
 {
@@ -3063,7 +3069,7 @@ class RegExpT(char_t)
     }
 
     /**********************************************************************************************
-        Compiles TDFA to D code
+        Compiles the regular expression to D code.
     **********************************************************************************************/
     // TODO: input-end special case
     string compileToD(string func_name = "match", bool lexer=false)
@@ -3364,7 +3370,7 @@ bool isValidDchar(dchar c)
 	(c > 0xDFFF && c <= 0x10FFFF /*&& c != 0xFFFE && c != 0xFFFF*/);
 }
 
-/***************
+/* *************
  * Decodes and returns character starting at s[idx]. idx is advanced past the
  * decoded character. If the character is not well formed, a UtfException is
  * thrown and idx remains unchanged.
@@ -3500,7 +3506,7 @@ unittest
     }
 }
 
-/** ditto */
+/*  ditto */
 
 dchar decode(wchar[] s, inout size_t idx)
     in
@@ -3557,7 +3563,7 @@ dchar decode(wchar[] s, inout size_t idx)
 	throw new UtfException(msg, i);
     }
 
-/** ditto */
+/*  ditto */
 
 dchar decode(dchar[] s, inout size_t idx)
     in
@@ -3582,7 +3588,7 @@ dchar decode(dchar[] s, inout size_t idx)
 
 /* =================== Encode ======================= */
 
-/*******************************
+/* *****************************
  * Encodes character c and appends it to array s[].
  */
 
@@ -3653,7 +3659,7 @@ unittest
     assert(s == "abcda\xC2\xA9\xE2\x89\xA0");
 }
 
-/** ditto */
+/*  ditto */
 
 void encode(inout wchar[] s, dchar c)
     in
@@ -3679,7 +3685,7 @@ void encode(inout wchar[] s, dchar c)
 	s = r;
     }
 
-/** ditto */
+/*  ditto */
 
 void encode(inout dchar[] s, dchar c)
     in
