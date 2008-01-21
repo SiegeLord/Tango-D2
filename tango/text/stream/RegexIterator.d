@@ -92,8 +92,8 @@ class RegexIterator : StreamIterator!(char)
 
                 if (regex.test (content))
                    {
-                   int start = regex.pmatch[0].rm_so;
-                   int finish = regex.pmatch[0].rm_eo;
+                   int start = regex.registers[0];
+                   int finish = regex.registers[1];
                    set (content.ptr, 0, start);
                    return found (finish-1);        
                    }

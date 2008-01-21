@@ -2831,9 +2831,26 @@ class RegExpT(char_t)
     alias TNFA!(dchar)      tnfa_t;
     alias CharClass!(dchar) charclass_t;
 
-    static const char[] VERSION = "0.3 alpha";
+    static const char[] VERSION = "0.4 alpha";
 
-    this(string_t pattern, bool swapMBS=false, bool unanchored=true)
+    /**********************************************************************************************
+        Construct a RegExpT object.
+        Params:
+            pattern = regular expression
+        Throws: RegExpException if there are any compilation errors.
+        Example:
+            Declare two variables and assign to them a Regex object:
+            ---
+            auto r = new Regex("pattern");
+            auto s = new Regex(r"p[1-5]\s*");
+            ---
+    **********************************************************************************************/
+    this(char_t[] pattern, char_t[] attributes = null)
+    {
+        this(pattern, false, true);
+    }
+
+    this(string_t pattern, bool swapMBS, bool unanchored)
     {
         static if ( is(char_t == dchar) ) {
             tnfa = new tnfa_t(pattern);
@@ -2847,17 +2864,79 @@ class RegExpT(char_t)
         registers.length = tdfa.num_regs;
     }
 
-    static RegExpT!(char_t) opCall(string_t pattern, bool swapMBS=false)
+    /**********************************************************************************************
+        Generate instance of Regex.
+        Params:
+            pattern = regular expression
+            attributes = _attributes
+        Throws: RegExpException if there are any compilation errors.
+        Example:
+            Declare two variables and assign to them a Regex object:
+            ---
+            auto r = Regex("pattern");
+            auto s = Regex(r"p[1-5]\s*");
+            ---
+    **********************************************************************************************/
+    static RegExpT!(char_t) opCall(char_t[] pattern, char_t[] attributes = null)
     {
-        return new RegExpT!(char_t)(pattern, swapMBS);
+        return new RegExpT!(char_t)(pattern, attributes);
     }
 
     /**********************************************************************************************
-        Run TDFA on given input
+        Set up for start of foreach loop.
+        Returns:    instance of RegExpT set up to search input.
+        Example:
+            ---
+            import tango.text.Regex;
+            
+            void main()
+            {
+                foreach(m; Regex("ab").search("abcabcabab"))
+                    Stdout.formatln("{}[{}]{}", m.pre, m.match(0), m.post);
+            }
+            // Prints:
+            // [ab]cabcabab
+            // abc[ab]cabab
+            // abcabc[ab]ab
+            // abcabcab[ab]
+            ---
     **********************************************************************************************/
-    bool match(string_t input)
+    public RegExpT!(char_t) search(string_t input)
     {
         this.input = input;
+        next_start = 0;
+        last_start = 0;
+        return this;
+    }
+
+    /** ditto */
+    public int opApply(int delegate(inout RegExpT!(char_t)) dg)
+    {
+        int result;
+        while ( !result && test() )
+            result = dg(this);
+        return result;
+    }
+
+    /**********************************************************************************************
+        Search input for match.
+        Returns: false for no match, true for match
+    **********************************************************************************************/
+    bool test(string_t input)
+    {
+        this.input = input;
+        next_start = 0;
+        last_start = 0;
+        return test();
+    }
+
+    /**********************************************************************************************
+        Pick up where last test(input) or test() left off, and search again.
+        Returns: false for no match, true for match
+    **********************************************************************************************/
+    bool test()
+    {
+        auto inp = input[next_start .. $];
         auto s = tdfa.start;
 
         // initialize registers
@@ -2869,8 +2948,8 @@ class RegExpT(char_t)
         }
 
         // DFA execution
-        debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, input[0..$]);
-        dfaLoop: for ( size_t p, next_p; p < input.length; )
+        debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
+        dfaLoop: for ( size_t p, next_p; p < inp.length; )
         {
             version(LexerTest)
             {
@@ -2893,7 +2972,7 @@ class RegExpT(char_t)
             }
 
             next_p = p;
-            dchar c = decode(input, next_p);
+            dchar c = decode(inp, next_p);
         processChar:
             debug {
                 Stdout.formatln("{} (0x{:x})", c, cast(int)c);
@@ -2915,10 +2994,10 @@ class RegExpT(char_t)
                     }
 
                     s = t.target;
-                    debug writefln("{}{}: {}", s.accept?"*":" ", s.index, input[p..$]);
+                    debug writefln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
 
-                    // if input ends here and do not already accept, try to add an explicit string/line end
-                    if ( p >= input.length && !s.accept && c != 0 ) {
+                    // if inp ends here and do not already accept, try to add an explicit string/line end
+                    if ( p >= inp.length && !s.accept && c != 0 ) {
                         c = 0;
                         goto processChar;
                     }
@@ -2935,6 +3014,10 @@ class RegExpT(char_t)
                 assert(cmd.src != tdfa.CURRENT_POSITION_REGISTER);
                 registers[cmd.dst] = registers[cmd.src];
             }
+            if ( registers[1] >= 0 && registers[1] <= inp.length ) {
+                last_start = next_start;
+                next_start += registers[1];
+            }
             return true;
         }
 
@@ -2942,18 +3025,40 @@ class RegExpT(char_t)
     }
 
     /**********************************************************************************************
-        Return submatch with the given index
+        Return submatch with the given index.
         index = 0   = whole match
         index > 0   = submatch of bracket #index
     **********************************************************************************************/
-    string_t submatch(uint index)
+    string_t match(uint index)
     {
         if ( index > tdfa.num_tags )
             return null;
-        int start   = registers[index*2],
-            end     = registers[index*2+1];
+        int start   = last_start+registers[index*2],
+            end     = last_start+registers[index*2+1];
         if ( start >= 0 && start < end && end <= input.length )
             return input[start .. end];
+        return null;
+    }
+
+    /**********************************************************************************************
+        Return the slice of the input that precedes the matched substring.
+    **********************************************************************************************/
+    string_t pre()
+    {
+        int start = last_start+registers[0];
+        if ( start >= 0 && start <= input.length )
+            return input[0 .. start];
+        return null;
+    }
+
+    /**********************************************************************************************
+        Return the slice of the input that follows the matched substring.
+    **********************************************************************************************/
+    string_t post()
+    {
+        int end = last_start+registers[1];
+        if ( end >= 0 && end <= input.length )
+            return input[end .. $];
         return null;
     }
 
@@ -3142,9 +3247,9 @@ class RegExpT(char_t)
                 if ( lexer )
                 {
                     if ( tdfa.states[group].finishers.length > 1 )
-                        throw new Exception("Lexer error: more than one finisher in flm lexer!");
+                        throw new RegExpException("Lexer error: more than one finisher in flm lexer!");
                     if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa.num_tags )
-                        throw new Exception(layout.convert("Lexer error: unexpected dst register %d in flm lexer!", cmd.dst));
+                        throw new RegExpException(layout.convert("Lexer error: unexpected dst register %d in flm lexer!", cmd.dst));
                     code ~= layout.convert("\n            match = input[0 .. r%d];\n            token = %d;", cmd.src, cmd.dst/2);
                 }
                 else
@@ -3165,12 +3270,20 @@ class RegExpT(char_t)
         return code;
     }
 
-    tnfa_t      tnfa;
-    tdfa_t      tdfa;
+    uint tagCount()
+    {
+        return tdfa.num_tags;
+    }
+
     int[]       registers;
-    string_t    input;
 
 private:
+    tnfa_t      tnfa;
+    tdfa_t      tdfa;
+    string_t    input;
+    size_t      next_start,
+                last_start;
+    
     string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, string_t indent)
     {
         string  code,
@@ -3189,9 +3302,17 @@ private:
     }
 }
 
-alias RegExpT!(char)     RegExp;
-alias RegExpT!(wchar)    RegExpw;
-alias RegExpT!(dchar)    RegExpd;
+alias RegExpT!(char)     Regex;
+alias RegExpT!(wchar)    Regexw;
+alias RegExpT!(dchar)    Regexd;
+
+RegExpT!(char_t) search(char_t)(char_t[] str, char_t[] pattern, char_t[] attributes = null)
+{
+    auto r = new RegExpT!(char_t)(pattern, attributes);
+    if ( !r.test(str) )
+        delete r;
+    return r;
+}
 public import tango.io.Stdout;
 
 alias char[] string;
