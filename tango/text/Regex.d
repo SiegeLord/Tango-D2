@@ -13,8 +13,8 @@
     The syntax of a regular expression is as follows.
     <i>X</i> stands for an arbitrary regular expression.
 
-    <i>Operators</i>
-    $(TABLE
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Operators</caption>
     $(TR $(TD |) $(TD alternation) )
     $(TR $(TD (X)) $(TD matching brackets - creates a sub-match) )
     $(TR $(TD (?X)) $(TD non-matching brackets - only groups X, no sub-match is created) )
@@ -25,23 +25,22 @@
     $(TR $(TD $) $(TD end of input or end of line) )
     $(TR $(TD \b) $(TD start or end of word, equals (?&lt;\s&gt;\S|&lt;\S&gt;\s)) )
     $(TR $(TD \B) $(TD opposite of \b, equals (?&lt;\S&gt;\S|&lt;\s&gt;\s)) )
-    )
+    </table>
 
-    <i>Quantifiers</i>
-    $(TABLE
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Quantifiers</caption>
     $(TR $(TD X?) $(TD zero or one) )
     $(TR $(TD X*) $(TD zero or more) )
     $(TR $(TD X+) $(TD one or more) )
-    $(TR $(TD X{n,m}) $(TD at least n, at most m instances of X
-            If n is missing, it's set to 0. If m is missing, it is set to infinity.) )
+    $(TR $(TD X{n,m}) $(TD at least n, at most m instances of X.<br>If n is missing, it's set to 0.<br>If m is missing, it is set to infinity.) )
     $(TR $(TD X??) $(TD non-greedy version of the above operators) )
-    $(TR $(TD X*?) $(TD ) )
-    $(TR $(TD X+?) $(TD ) )
-    $(TR $(TD X{n,m}?) $(TD ) )
-    )
+    $(TR $(TD X*?) $(TD see above) )
+    $(TR $(TD X+?) $(TD see above) )
+    $(TR $(TD X{n,m}?) $(TD see above)
+    </table>
 
-    <i>Pre-defined character classes</i>
-    $(TABLE
+    <table border=1 cellspacing=0 cellpadding=5>
+    <caption>Pre-defined character classes</caption>
     $(TR $(TD .) $(TD any printable character) )
     $(TR $(TD \s) $(TD whitespace) )
     $(TR $(TD \S) $(TD non-whitespace) )
@@ -49,7 +48,7 @@
     $(TR $(TD \W) $(TD opposite of \w) )
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
-    )
+    </table>
 *******************************************************************************/
 module tango.text.Regex;
 
@@ -2029,7 +2028,7 @@ private class TDFA(char_t)
         /* ****************************************************************************************
             Order transitions by the order of their predicates.
         ******************************************************************************************/
-        int opCmp(Object o)
+        final int opCmp(Object o)
         {
             Transition t = cast(Transition)o;
             assert(t !is null);
@@ -2837,12 +2836,10 @@ class RegExpT(char_t)
     alias TNFA!(dchar)      tnfa_t;
     alias CharClass!(dchar) charclass_t;
 
-    static const char[] VERSION = "0.4 alpha";
-
     /**********************************************************************************************
         Construct a RegExpT object.
         Params:
-            pattern = regular expression
+            pattern = Regular expression.
         Throws: RegExpException if there are any compilation errors.
         Example:
             Declare two variables and assign to them a Regex object:
@@ -2851,7 +2848,7 @@ class RegExpT(char_t)
             auto s = new Regex(r"p[1-5]\s*");
             ---
     **********************************************************************************************/
-    this(char_t[] pattern, char_t[] attributes = null)
+    this(char_t[] pattern, char_t[] attributes=null)
     {
         this(pattern, false, true);
     }
@@ -2873,8 +2870,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Generate instance of Regex.
         Params:
-            pattern = regular expression
-            attributes = _attributes
+            pattern = Regular expression.
         Throws: RegExpException if there are any compilation errors.
         Example:
             Declare two variables and assign to them a Regex object:
@@ -2890,21 +2886,22 @@ class RegExpT(char_t)
 
     /**********************************************************************************************
         Set up for start of foreach loop.
-        Returns:    instance of RegExpT set up to search input.
+        Returns:    Instance of RegExpT set up to search input.
         Example:
             ---
+            import tango.io.Stdout;
             import tango.text.Regex;
             
             void main()
             {
-                foreach(m; Regex("ab").search("abcabcabab"))
+                foreach(m; Regex("ab").search("qwerabcabcababqwer"))
                     Stdout.formatln("{}[{}]{}", m.pre, m.match(0), m.post);
             }
             // Prints:
-            // [ab]cabcabab
-            // abc[ab]cabab
-            // abcabc[ab]ab
-            // abcabcab[ab]
+            // qwer[ab]cabcababqwer
+            // qwerabc[ab]cababqwer
+            // qwerabcabc[ab]abqwer
+            // qwerabcabcab[ab]qwer
             ---
     **********************************************************************************************/
     public RegExpT!(char_t) search(string_t input)
@@ -2955,7 +2952,7 @@ class RegExpT(char_t)
 
         // DFA execution
         debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
-        dfaLoop: for ( size_t p, next_p; p < inp.length; )
+        dfaLoop: for ( size_t p, next_p; p < inp.length; next_p = p )
         {
             version(LexerTest)
             {
@@ -2977,12 +2974,9 @@ class RegExpT(char_t)
                 }
             }
 
-            next_p = p;
             dchar c = decode(inp, next_p);
         processChar:
-            debug {
-                Stdout.formatln("{} (0x{:x})", c, cast(int)c);
-            }
+            debug Stdout.formatln("{} (0x{:x})", c, cast(int)c);
 
             foreach ( t; s.transitions )
             {
@@ -3000,9 +2994,9 @@ class RegExpT(char_t)
                     }
 
                     s = t.target;
-                    debug writefln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                    debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
 
-                    // if inp ends here and do not already accept, try to add an explicit string/line end
+                    // if inp ends here and we do not already accept, try to add an explicit string/line end
                     if ( p >= inp.length && !s.accept && c != 0 ) {
                         c = 0;
                         goto processChar;
@@ -3015,8 +3009,7 @@ class RegExpT(char_t)
 
         if ( s.accept )
         {
-            foreach ( cmd; s.finishers )
-            {
+            foreach ( cmd; s.finishers ) {
                 assert(cmd.src != tdfa.CURRENT_POSITION_REGISTER);
                 registers[cmd.dst] = registers[cmd.src];
             }
@@ -3032,8 +3025,10 @@ class RegExpT(char_t)
 
     /**********************************************************************************************
         Return submatch with the given index.
-        index = 0   = whole match
-        index > 0   = submatch of bracket #index
+        Params:
+            index   index = 0 returns whole match, index > 0 returns submatch of bracket #index
+        Returns:
+            Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
     string_t match(uint index)
     {
@@ -3312,7 +3307,28 @@ alias RegExpT!(char)     Regex;
 alias RegExpT!(wchar)    Regexw;
 alias RegExpT!(dchar)    Regexd;
 
-RegExpT!(char_t) search(char_t)(char_t[] str, char_t[] pattern, char_t[] attributes = null)
+/**************************************************************************************************
+    Search input for first match of pattern.
+    Params:
+        input       String to search.
+        pattern     Regular expression.
+    Returns:
+        The RegExpT object created if the pattern matched, null else.
+    Example:
+        ---
+        import tango.io.Stdout;
+        import tango.text.Regex;
+
+        void main()
+        {
+            if ( auto m = search("qwerabcabcababqwer", "ab") )
+                Stdout.formatln("{}[{}]{}", m.pre, m.match(0), m.post);
+        }
+        // Prints:
+        // qwer[ab]cabcababqwer
+        ---
+**************************************************************************************************/
+RegExpT!(char_t) search(char_t)(char_t[] str, char_t[] pattern, char_t[] attributes=null)
 {
     auto r = new RegExpT!(char_t)(pattern, attributes);
     if ( !r.test(str) )
