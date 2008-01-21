@@ -11,7 +11,7 @@
         Regular expression engine based on tagged NFA/DFA method.
 
 *******************************************************************************/
-module regexp;
+module tango.text.Regex;
 
 /*******************************************************************************
     A simple pair
