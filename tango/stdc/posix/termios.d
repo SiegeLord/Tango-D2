@@ -9,7 +9,7 @@
 module tango.stdc.posix.termios;
 
 private import tango.stdc.posix.config;
-private import tango.stdc.posix.sys.types;
+public import tango.stdc.posix.sys.types; // for pid_t
 
 extern (C):
 
