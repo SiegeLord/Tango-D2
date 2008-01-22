@@ -82,7 +82,7 @@ out {
 
         T* p2 = p;
 
-        int i = parseIntMax(p, 3u);
+        int i = parseIntMax(p, cast(size_t)3);
 
         if (i) if (p - p2 == 2) {
 
@@ -130,7 +130,7 @@ out {
             // (year)-MM-DD
             if (!(
                 demand(p, '-') &&
-                (date.day = parseIntMax(p, 2u)) != 0 && date.day <= daysPerMonth(date.month, date.year)
+                (date.day = parseIntMax(p, cast(size_t)2)) != 0 && date.day <= daysPerMonth(date.month, date.year)
             )) {
                 date.day = 0;
                 return onlyMonth;
@@ -268,7 +268,7 @@ out {
     if (separators == WHATEVER)
         accept(p, 'T');
 
-    if (parseInt(p, 2u, time.hours) != 2 || time.hours > 24)
+    if (parseInt(p, cast(size_t)2, time.hours) != 2 || time.hours > 24)
         return (time.hours = 0);
 
     auto onlyHour = eaten();
@@ -301,7 +301,7 @@ out {
     if (
         !checkColon() ||
 
-        parseInt(p, 2u, time.minutes) != 2 || time.minutes > 59 ||
+        parseInt(p, cast(size_t)2, time.minutes) != 2 || time.minutes > 59 ||
 
         // hour 24 is only for 24:00:00
         (time.hours == 24 && time.minutes != 0)
@@ -342,7 +342,7 @@ out {
 
     if (
         !checkColon() ||
-         parseInt(p, 2u, time.seconds) != 2 || time.seconds > 60 ||
+         parseInt(p, cast(size_t)2, time.seconds) != 2 || time.seconds > 60 ||
         (time.hours == 24 && time.seconds  != 0) ||
         (time.seconds  == 60 && time.hours != 23 && time.minutes != 59)
     ) {
@@ -395,7 +395,7 @@ size_t iso8601(T)(T[] src, ref Date date, ref TimeOfDay time) {
     bool bothValid = false;
 
     if (
-        doIso8601Date(p, src, date, 0u, sep) &&
+        doIso8601Date(p, src, date, cast(size_t)0, sep) &&
         date.year && date.month && date.day &&
 
         // by mutual agreement this T may be omitted
@@ -644,7 +644,7 @@ private byte getTimeZone(T)(ref T* p, ref Date date, ref TimeOfDay time, ubyte s
     int hour, realhour = time.hours, realminute = time.minutes;
         scope(exit) time.hours = cast(uint)realhour;
         scope(exit) time.minutes = cast(uint)realminute;
-    if (parseInt(p, 2u, hour) != 2 || hour > 12 || (hour == 0 && factor == 1))
+    if (parseInt(p, cast(size_t)2, hour) != 2 || hour > 12 || (hour == 0 && factor == 1))
         return BAD;
 
     realhour += factor * hour;
@@ -693,7 +693,7 @@ private byte getTimeZone(T)(ref T* p, ref Date date, ref TimeOfDay time, ubyte s
         return BAD;
 
     int minute;
-    if (parseInt(p, 2u, minute) != 2)
+    if (parseInt(p, cast(size_t)2, minute) != 2)
         return BAD;
 
     assert (minute <= 59);
@@ -763,8 +763,8 @@ private int daysPerMonth(int month, int year) {
 
 // note: ISO 8601 code relies on these values always being positive, failing if *p == '-'
 
-private uint parseIntMax(T) (ref T* p) {
-    uint value = 0;
+private size_t parseIntMax(T) (ref T* p) {
+    size_t value = 0;
     while (*p >= '0' && *p <= '9')
         value = value * 10 + *p++ - '0';
     return value;
@@ -772,9 +772,9 @@ private uint parseIntMax(T) (ref T* p) {
 
 // ... but accept no more than max digits
 
-private uint parseIntMax(T)(ref T* p, uint max) {
+private size_t parseIntMax(T)(ref T* p, size_t max) {
     size_t i = 0;
-    uint value = 0;
+    size_t value = 0;
     while (p[i] >= '0' && p[i] <= '9' && i < max)
         value = value * 10 + p[i++] - '0';
     p += i;
@@ -789,7 +789,7 @@ private size_t parseInt(T, U)(ref T* p, out U i) {
     return p - p2;
 }
 
-private size_t parseInt(T, U)(ref T* p, uint max, out U i) {
+private size_t parseInt(T, U)(ref T* p, size_t max, out U i) {
     T* p2 = p;
     i = cast(U)parseIntMax(p, max);
     return p - p2;
