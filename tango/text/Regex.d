@@ -36,7 +36,7 @@
     $(TR $(TD X??) $(TD non-greedy version of the above operators) )
     $(TR $(TD X*?) $(TD see above) )
     $(TR $(TD X+?) $(TD see above) )
-    $(TR $(TD X{n,m}?) $(TD see above)
+    $(TR $(TD X{n,m}?) $(TD see above) )
     </table>
 
     <table border=1 cellspacing=0 cellpadding=5>
@@ -2138,8 +2138,8 @@ private class TDFA(char_t)
                         if ( !found )
                         {
                             // if index is < 0 it is a temporary index
-							// used only to distinguish the state from existing ones.
-							// the previous index can be reused instead.
+                            // used only to distinguish the state from existing ones.
+                            // the previous index can be reused instead.
                             if ( index < 0 )
                                 index = -index-1;
                             cmds[tag] = index;
@@ -2831,9 +2831,8 @@ private:
 **************************************************************************************************/
 class RegExpT(char_t)
 {
-    alias char_t[]          string_t;
     alias TDFA!(dchar)      tdfa_t;
-    alias TNFA!(dchar)      tnfa_t;
+    alias TNFA!(dchar)      tnfa_t;     
     alias CharClass!(dchar) charclass_t;
 
     /**********************************************************************************************
@@ -2853,7 +2852,7 @@ class RegExpT(char_t)
         this(pattern, false, true);
     }
 
-    this(string_t pattern, bool swapMBS, bool unanchored)
+    this(char_t[] pattern, bool swapMBS, bool unanchored)
     {
         static if ( is(char_t == dchar) ) {
             tnfa = new tnfa_t(pattern);
@@ -2904,7 +2903,7 @@ class RegExpT(char_t)
             // qwerabcabcab[ab]qwer
             ---
     **********************************************************************************************/
-    public RegExpT!(char_t) search(string_t input)
+    public RegExpT!(char_t) search(char_t[] input)
     {
         this.input = input;
         next_start = 0;
@@ -2925,7 +2924,7 @@ class RegExpT(char_t)
         Search input for match.
         Returns: false for no match, true for match
     **********************************************************************************************/
-    bool test(string_t input)
+    bool test(char_t[] input)
     {
         this.input = input;
         next_start = 0;
@@ -3030,7 +3029,7 @@ class RegExpT(char_t)
         Returns:
             Slice of input for the requested submatch, or null if no such submatch exists.
     **********************************************************************************************/
-    string_t match(uint index)
+    char_t[] match(uint index)
     {
         if ( index > tdfa.num_tags )
             return null;
@@ -3044,7 +3043,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Return the slice of the input that precedes the matched substring.
     **********************************************************************************************/
-    string_t pre()
+    char_t[] pre()
     {
         int start = last_start+registers[0];
         if ( start >= 0 && start <= input.length )
@@ -3055,7 +3054,7 @@ class RegExpT(char_t)
     /**********************************************************************************************
         Return the slice of the input that follows the matched substring.
     **********************************************************************************************/
-    string_t post()
+    char_t[] post()
     {
         int end = last_start+registers[1];
         if ( end >= 0 && end <= input.length )
@@ -3281,11 +3280,11 @@ class RegExpT(char_t)
 private:
     tnfa_t      tnfa;
     tdfa_t      tdfa;
-    string_t    input;
+    char_t[]    input;
     size_t      next_start,
                 last_start;
     
-    string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, string_t indent)
+    string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, char_t[] indent)
     {
         string  code,
                 dst;
@@ -3365,12 +3364,12 @@ alias char[] string;
 
 class UtfException : Exception
 {
-    size_t idx;	/// index in string of where error occurred
+    size_t idx; /// index in string of where error occurred
 
     this(char[] s, size_t i)
     {
-	idx = i;
-	super(s);
+        idx = i;
+        super(s);
     }
 }
 
@@ -3383,7 +3382,7 @@ bool isValidDchar(dchar c)
      */
 
     return c < 0xD800 ||
-	(c > 0xDFFF && c <= 0x10FFFF /*&& c != 0xFFFE && c != 0xFFFF*/);
+        (c > 0xDFFF && c <= 0x10FFFF /*&& c != 0xFFFE && c != 0xFFFF*/);
 }
 
 /* *************
@@ -3394,79 +3393,79 @@ bool isValidDchar(dchar c)
 
 dchar decode(in char[] s, inout size_t idx)
     {
-	size_t len = s.length;
-	dchar V;
-	size_t i = idx;
-	char u = s[i];
+        size_t len = s.length;
+        dchar V;
+        size_t i = idx;
+        char u = s[i];
 
-	if (u & 0x80)
-	{   uint n;
-	    char u2;
+        if (u & 0x80)
+        {   uint n;
+            char u2;
 
-	    /* The following encodings are valid, except for the 5 and 6 byte
-	     * combinations:
-	     *	0xxxxxxx
-	     *	110xxxxx 10xxxxxx
-	     *	1110xxxx 10xxxxxx 10xxxxxx
-	     *	11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-	     *	111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-	     *	1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-	     */
-	    for (n = 1; ; n++)
-	    {
-		if (n > 4)
-		    goto Lerr;		// only do the first 4 of 6 encodings
-		if (((u << n) & 0x80) == 0)
-		{
-		    if (n == 1)
-			goto Lerr;
-		    break;
-		}
-	    }
+            /* The following encodings are valid, except for the 5 and 6 byte
+             * combinations:
+             *  0xxxxxxx
+             *  110xxxxx 10xxxxxx
+             *  1110xxxx 10xxxxxx 10xxxxxx
+             *  11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+             *  111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+             *  1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+             */
+            for (n = 1; ; n++)
+            {
+                if (n > 4)
+                    goto Lerr;          // only do the first 4 of 6 encodings
+                if (((u << n) & 0x80) == 0)
+                {
+                    if (n == 1)
+                        goto Lerr;
+                    break;
+                }
+            }
 
-	    // Pick off (7 - n) significant bits of B from first byte of octet
-	    V = cast(dchar)(u & ((1 << (7 - n)) - 1));
+            // Pick off (7 - n) significant bits of B from first byte of octet
+            V = cast(dchar)(u & ((1 << (7 - n)) - 1));
 
-	    if (i + (n - 1) >= len)
-		goto Lerr;			// off end of string
+            if (i + (n - 1) >= len)
+                goto Lerr;                      // off end of string
 
-	    /* The following combinations are overlong, and illegal:
-	     *	1100000x (10xxxxxx)
-	     *	11100000 100xxxxx (10xxxxxx)
-	     *	11110000 1000xxxx (10xxxxxx 10xxxxxx)
-	     *	11111000 10000xxx (10xxxxxx 10xxxxxx 10xxxxxx)
-	     *	11111100 100000xx (10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx)
-	     */
-	    u2 = s[i + 1];
-	    if ((u & 0xFE) == 0xC0 ||
-		(u == 0xE0 && (u2 & 0xE0) == 0x80) ||
-		(u == 0xF0 && (u2 & 0xF0) == 0x80) ||
-		(u == 0xF8 && (u2 & 0xF8) == 0x80) ||
-		(u == 0xFC && (u2 & 0xFC) == 0x80))
-		goto Lerr;			// overlong combination
+            /* The following combinations are overlong, and illegal:
+             *  1100000x (10xxxxxx)
+             *  11100000 100xxxxx (10xxxxxx)
+             *  11110000 1000xxxx (10xxxxxx 10xxxxxx)
+             *  11111000 10000xxx (10xxxxxx 10xxxxxx 10xxxxxx)
+             *  11111100 100000xx (10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx)
+             */
+            u2 = s[i + 1];
+            if ((u & 0xFE) == 0xC0 ||
+                (u == 0xE0 && (u2 & 0xE0) == 0x80) ||
+                (u == 0xF0 && (u2 & 0xF0) == 0x80) ||
+                (u == 0xF8 && (u2 & 0xF8) == 0x80) ||
+                (u == 0xFC && (u2 & 0xFC) == 0x80))
+                goto Lerr;                      // overlong combination
 
-	    for (uint j = 1; j != n; j++)
-	    {
-		u = s[i + j];
-		if ((u & 0xC0) != 0x80)
-		    goto Lerr;			// trailing bytes are 10xxxxxx
-		V = (V << 6) | (u & 0x3F);
-	    }
-	    if (!isValidDchar(V))
-		goto Lerr;
-	    i += n;
-	}
-	else
-	{
-	    V = cast(dchar) u;
-	    i++;
-	}
+            for (uint j = 1; j != n; j++)
+            {
+                u = s[i + j];
+                if ((u & 0xC0) != 0x80)
+                    goto Lerr;                  // trailing bytes are 10xxxxxx
+                V = (V << 6) | (u & 0x3F);
+            }
+            if (!isValidDchar(V))
+                goto Lerr;
+            i += n;
+        }
+        else
+        {
+            V = cast(dchar) u;
+            i++;
+        }
 
-	idx = i;
-	return V;
+        idx = i;
+        return V;
 
       Lerr:
-	throw new Exception("4invalid UTF-8 sequence");
+        throw new Exception("4invalid UTF-8 sequence");
     }
 
 unittest
@@ -3497,28 +3496,28 @@ unittest
     assert(i == 3);
 
     static char[][] s4 =
-    [	"\xE2\x89",		// too short
-	"\xC0\x8A",
-	"\xE0\x80\x8A",
-	"\xF0\x80\x80\x8A",
-	"\xF8\x80\x80\x80\x8A",
-	"\xFC\x80\x80\x80\x80\x8A",
+    [   "\xE2\x89",             // too short
+        "\xC0\x8A",
+        "\xE0\x80\x8A",
+        "\xF0\x80\x80\x8A",
+        "\xF8\x80\x80\x80\x8A",
+        "\xFC\x80\x80\x80\x80\x8A",
     ];
 
     for (int j = 0; j < s4.length; j++)
     {
-	try
-	{
-	    i = 0;
-	    c = decode(s4[j], i);
-	    assert(0);
-	}
-	catch (UtfException u)
-	{
-	    i = 23;
-	    delete u;
-	}
-	assert(i == 23);
+        try
+        {
+            i = 0;
+            c = decode(s4[j], i);
+            assert(0);
+        }
+        catch (UtfException u)
+        {
+            i = 23;
+            delete u;
+        }
+        assert(i == 23);
     }
 }
 
@@ -3527,56 +3526,56 @@ unittest
 dchar decode(wchar[] s, inout size_t idx)
     in
     {
-	assert(idx >= 0 && idx < s.length);
+        assert(idx >= 0 && idx < s.length);
     }
     out (result)
     {
-	assert(isValidDchar(result));
+        assert(isValidDchar(result));
     }
     body
     {
-	char[] msg;
-	dchar V;
-	size_t i = idx;
-	uint u = s[i];
+        char[] msg;
+        dchar V;
+        size_t i = idx;
+        uint u = s[i];
 
-	if (u & ~0x7F)
-	{   if (u >= 0xD800 && u <= 0xDBFF)
-	    {   uint u2;
+        if (u & ~0x7F)
+        {   if (u >= 0xD800 && u <= 0xDBFF)
+            {   uint u2;
 
-		if (i + 1 == s.length)
-		{   msg = "surrogate UTF-16 high value past end of string";
-		    goto Lerr;
-		}
-		u2 = s[i + 1];
-		if (u2 < 0xDC00 || u2 > 0xDFFF)
-		{   msg = "surrogate UTF-16 low value out of range";
-		    goto Lerr;
-		}
-		u = ((u - 0xD7C0) << 10) + (u2 - 0xDC00);
-		i += 2;
-	    }
-	    else if (u >= 0xDC00 && u <= 0xDFFF)
-	    {   msg = "unpaired surrogate UTF-16 value";
-		goto Lerr;
-	    }
-	    else if (u == 0xFFFE || u == 0xFFFF)
-	    {   msg = "illegal UTF-16 value";
-		goto Lerr;
-	    }
-	    else
-		i++;
-	}
-	else
-	{
-	    i++;
-	}
+                if (i + 1 == s.length)
+                {   msg = "surrogate UTF-16 high value past end of string";
+                    goto Lerr;
+                }
+                u2 = s[i + 1];
+                if (u2 < 0xDC00 || u2 > 0xDFFF)
+                {   msg = "surrogate UTF-16 low value out of range";
+                    goto Lerr;
+                }
+                u = ((u - 0xD7C0) << 10) + (u2 - 0xDC00);
+                i += 2;
+            }
+            else if (u >= 0xDC00 && u <= 0xDFFF)
+            {   msg = "unpaired surrogate UTF-16 value";
+                goto Lerr;
+            }
+            else if (u == 0xFFFE || u == 0xFFFF)
+            {   msg = "illegal UTF-16 value";
+                goto Lerr;
+            }
+            else
+                i++;
+        }
+        else
+        {
+            i++;
+        }
 
-	idx = i;
-	return cast(dchar)u;
+        idx = i;
+        return cast(dchar)u;
 
       Lerr:
-	throw new UtfException(msg, i);
+        throw new UtfException(msg, i);
     }
 
 /*  ditto */
@@ -3584,20 +3583,20 @@ dchar decode(wchar[] s, inout size_t idx)
 dchar decode(dchar[] s, inout size_t idx)
     in
     {
-	assert(idx >= 0 && idx < s.length);
+        assert(idx >= 0 && idx < s.length);
     }
     body
     {
-	size_t i = idx;
-	dchar c = s[i];
+        size_t i = idx;
+        dchar c = s[i];
 
-	if (!isValidDchar(c))
-	    goto Lerr;
-	idx = i + 1;
-	return c;
+        if (!isValidDchar(c))
+            goto Lerr;
+        idx = i + 1;
+        return c;
 
       Lerr:
-	throw new UtfException("5invalid UTF-32 value", i);
+        throw new UtfException("5invalid UTF-32 value", i);
     }
 
 
@@ -3611,49 +3610,49 @@ dchar decode(dchar[] s, inout size_t idx)
 void encode(inout char[] s, dchar c)
     in
     {
-	assert(isValidDchar(c));
+        assert(isValidDchar(c));
     }
     body
     {
-	char[] r = s;
+        char[] r = s;
 
-	if (c <= 0x7F)
-	{
-	    r ~= cast(char) c;
-	}
-	else
-	{
-	    char[4] buf;
-	    uint L;
+        if (c <= 0x7F)
+        {
+            r ~= cast(char) c;
+        }
+        else
+        {
+            char[4] buf;
+            uint L;
 
-	    if (c <= 0x7FF)
-	    {
-		buf[0] = cast(char)(0xC0 | (c >> 6));
-		buf[1] = cast(char)(0x80 | (c & 0x3F));
-		L = 2;
-	    }
-	    else if (c <= 0xFFFF)
-	    {
-		buf[0] = cast(char)(0xE0 | (c >> 12));
-		buf[1] = cast(char)(0x80 | ((c >> 6) & 0x3F));
-		buf[2] = cast(char)(0x80 | (c & 0x3F));
-		L = 3;
-	    }
-	    else if (c <= 0x10FFFF)
-	    {
-		buf[0] = cast(char)(0xF0 | (c >> 18));
-		buf[1] = cast(char)(0x80 | ((c >> 12) & 0x3F));
-		buf[2] = cast(char)(0x80 | ((c >> 6) & 0x3F));
-		buf[3] = cast(char)(0x80 | (c & 0x3F));
-		L = 4;
-	    }
-	    else
-	    {
-		assert(0);
-	    }
-	    r ~= buf[0 .. L];
-	}
-	s = r;
+            if (c <= 0x7FF)
+            {
+                buf[0] = cast(char)(0xC0 | (c >> 6));
+                buf[1] = cast(char)(0x80 | (c & 0x3F));
+                L = 2;
+            }
+            else if (c <= 0xFFFF)
+            {
+                buf[0] = cast(char)(0xE0 | (c >> 12));
+                buf[1] = cast(char)(0x80 | ((c >> 6) & 0x3F));
+                buf[2] = cast(char)(0x80 | (c & 0x3F));
+                L = 3;
+            }
+            else if (c <= 0x10FFFF)
+            {
+                buf[0] = cast(char)(0xF0 | (c >> 18));
+                buf[1] = cast(char)(0x80 | ((c >> 12) & 0x3F));
+                buf[2] = cast(char)(0x80 | ((c >> 6) & 0x3F));
+                buf[3] = cast(char)(0x80 | (c & 0x3F));
+                L = 4;
+            }
+            else
+            {
+                assert(0);
+            }
+            r ~= buf[0 .. L];
+        }
+        s = r;
     }
 
 unittest
@@ -3668,7 +3667,7 @@ unittest
     encode(s, cast(dchar)'\u00A9');
     assert(s.length == 7);
     assert(s == "abcda\xC2\xA9");
-    //assert(s == "abcda\u00A9");	// BUG: fix compiler
+    //assert(s == "abcda\u00A9");       // BUG: fix compiler
 
     encode(s, cast(dchar)'\u2260');
     assert(s.length == 10);
@@ -3680,25 +3679,25 @@ unittest
 void encode(inout wchar[] s, dchar c)
     in
     {
-	assert(isValidDchar(c));
+        assert(isValidDchar(c));
     }
     body
     {
-	wchar[] r = s;
+        wchar[] r = s;
 
-	if (c <= 0xFFFF)
-	{
-	    r ~= cast(wchar) c;
-	}
-	else
-	{
-	    wchar[2] buf;
+        if (c <= 0xFFFF)
+        {
+            r ~= cast(wchar) c;
+        }
+        else
+        {
+            wchar[2] buf;
 
-	    buf[0] = cast(wchar) ((((c - 0x10000) >> 10) & 0x3FF) + 0xD800);
-	    buf[1] = cast(wchar) (((c - 0x10000) & 0x3FF) + 0xDC00);
-	    r ~= buf;
-	}
-	s = r;
+            buf[0] = cast(wchar) ((((c - 0x10000) >> 10) & 0x3FF) + 0xD800);
+            buf[1] = cast(wchar) (((c - 0x10000) & 0x3FF) + 0xDC00);
+            r ~= buf;
+        }
+        s = r;
     }
 
 /*  ditto */
@@ -3706,9 +3705,9 @@ void encode(inout wchar[] s, dchar c)
 void encode(inout dchar[] s, dchar c)
     in
     {
-	assert(isValidDchar(c));
+        assert(isValidDchar(c));
     }
     body
     {
-	s ~= c;
+        s ~= c;
     }
