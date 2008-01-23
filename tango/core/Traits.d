@@ -178,7 +178,10 @@ template ReturnTypeOf( Fn )
  */
 template ReturnTypeOf( alias fn )
 {
-    alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
+    static if( is( typeof(fn) Base == typedef ) )
+        alias ReturnTypeOf!(Base) ReturnTypeOf;
+    else
+        alias ReturnTypeOf!(typeof(fn)) ReturnTypeOf;
 }
 
 
@@ -203,7 +206,10 @@ template ParameterTupleOf( Fn )
  */
 template ParameterTupleOf( alias fn )
 {
-    alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
+    static if( is( typeof(fn) Base == typedef ) )
+        alias ParameterTupleOf!(Base) ParameterTupleOf;
+    else
+        alias ParameterTupleOf!(typeof(fn)) ParameterTupleOf;
 }
 
 
