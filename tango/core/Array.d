@@ -2015,12 +2015,19 @@ else
             // NOTE: This algorithm operates on the inclusive range [l .. r].
             void insertionSort( size_t l, size_t r )
             {
-                for( size_t i = l; i <= r; ++i )
+                for( size_t i = r; i > l; --i )
+                {
+                    // swap the min element to buf[0] to act as a sentinel
+                    if( pred( buf[i], buf[i - 1] ) )
+                        exch( i, i - 1 );
+                }
+                for( size_t i = l + 2; i <= r; ++i )
                 {
                     size_t  j = i;
                     Elem    v = buf[i];
 
-                    while( j != l && pred( v, buf[j - 1] ) )
+                    // don't need to test (j != l) because of the sentinel
+                    while( pred( v, buf[j - 1] ) )
                     {
                         buf[j] = buf[j - 1];
                         j--;
