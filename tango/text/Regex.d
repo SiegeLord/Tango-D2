@@ -8,14 +8,25 @@
 
     authors:        Jascha Wetzel
 
-    Regular expression engine based on tagged NFA/DFA method.
+    This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
-    The syntax of a regular expression is as follows.
-    <i>X</i> stands for an arbitrary regular expression.
+    This implies, that the expressions it can handle are <i>regular</i>, in the way language theory defines it,
+    as opposed to what &quot;regular expression&quot; means in most implementations
+    (e.g. PCRE or those from the standard libraries of Perl, Java or Python).
+    The advantage of this method is it's performance, it's disadvantage is the inability to realize some features
+    that Perl-like regular expressions have (e.g. back-references).
+    See <a href="http://swtch.com/~rsc/regexp/regexp1.html">&quot;Regular Expression Matching Can Be Simple And Fast&quot;</a>
+    for details on the differences.
+
+    See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
+    for details on regular expressions in general.
+
+    The syntax of a regular expressions is as follows.
+    <i>X</i> and <i>Y</i> stand for an arbitrary regular expression.
 
     <table border=1 cellspacing=0 cellpadding=5>
     <caption>Operators</caption>
-    $(TR $(TD |) $(TD alternation) )
+    $(TR $(TD X|Y) $(TD alternation, i.e. X or Y) )
     $(TR $(TD (X)) $(TD matching brackets - creates a sub-match) )
     $(TR $(TD (?X)) $(TD non-matching brackets - only groups X, no sub-match is created) )
     $(TR $(TD [X]) $(TD character class specification) )
@@ -51,6 +62,8 @@
     </table>
 *******************************************************************************/
 module tango.text.Regex;
+
+debug import tango.io.Stdout;
 
 /* *****************************************************************************
     A simple pair
@@ -1014,7 +1027,7 @@ private class TNFA(char_t)
     /* ********************************************************************************************
         Print the TNFA (tabular representation of the delta function)
     **********************************************************************************************/
-    void print()
+    debug void print()
     {
         foreach ( int i, s; states )
         {
@@ -2245,7 +2258,7 @@ private class TDFA(char_t)
     /* ********************************************************************************************
         Print the TDFA (tabular representation of the delta function)
     **********************************************************************************************/
-    void print()
+    debug void print()
     {
         Stdout.formatln("#tags = {}", num_tags);
         
@@ -2854,6 +2867,9 @@ class RegExpT(char_t)
 
     this(char_t[] pattern, bool swapMBS, bool unanchored)
     {
+        this.pattern = pattern;
+        
+        scope tnfa_t tnfa;
         static if ( is(char_t == dchar) ) {
             tnfa = new tnfa_t(pattern);
         }
@@ -3012,7 +3028,7 @@ class RegExpT(char_t)
                 assert(cmd.src != tdfa.CURRENT_POSITION_REGISTER);
                 registers[cmd.dst] = registers[cmd.src];
             }
-            if ( registers[1] >= 0 && registers[1] <= inp.length ) {
+            if ( registers[1] >= 0 ) {
                 last_start = next_start;
                 next_start += registers[1];
             }
@@ -3040,8 +3056,15 @@ class RegExpT(char_t)
         return null;
     }
 
+    /** ditto */
+    char_t[] opIndex(uint index)
+    {
+        return match(index);
+    }
+
     /**********************************************************************************************
         Return the slice of the input that precedes the matched substring.
+        If no match was found, null is returned.
     **********************************************************************************************/
     char_t[] pre()
     {
@@ -3053,13 +3076,67 @@ class RegExpT(char_t)
 
     /**********************************************************************************************
         Return the slice of the input that follows the matched substring.
+        If no match was found, the whole slice of the input that was processed in the last test.
     **********************************************************************************************/
     char_t[] post()
     {
-        int end = last_start+registers[1];
-        if ( end >= 0 && end <= input.length )
-            return input[end .. $];
-        return null;
+        if ( registers[1] >= 0 )
+            return input[next_start .. $];
+        return input[last_start .. $];
+    }
+
+    /**********************************************************************************************
+        Splits the input at the matches of this regular expression into an array of slices.
+        Example:
+            ---
+            import tango.io.Stdout;
+            import tango.text.Regex;
+
+            void main()
+            {
+                auto strs = Regex("ab").split("abcabcababqwer");
+                foreach( s; strs )
+                    Stdout.formatln("{}", s);
+            }
+            ---
+            // Prints:
+            // c
+            // c
+            // qwer
+    **********************************************************************************************/
+    char_t[][] split(char_t[] input)
+    {
+        char_t[][]  res;
+        char_t[]    tmp;
+        foreach ( r; search(input) )
+        {
+            tmp = pre;
+            if ( tmp.length > last_start )
+                res ~= tmp[last_start .. $];
+            tmp = post;
+        }
+        res ~= tmp;
+        return res;
+    }
+
+    /**********************************************************************************************
+        Returns a copy of the input with all matches replaced by replacement.
+    **********************************************************************************************/
+    char_t[] replaceAll(char_t[] input, char_t[] replacement)
+    {
+        char_t[] res, tmp;
+        res.length = input.length;
+        res.length = 0;
+        foreach ( r; search(input) )
+        {
+            tmp = pre;
+            if ( tmp.length > last_start )
+                res ~= tmp[last_start .. $];
+            res ~= replacement;
+            tmp = post;
+        }
+        res ~= tmp;
+        return res;
     }
 
     /**********************************************************************************************
@@ -3079,10 +3156,10 @@ class RegExpT(char_t)
         auto layout = new Layout!(char);
 
         if ( lexer )
-            code = layout.convert("// %s\nbool %s(%s input, out uint token, out %s match", tnfa.pattern, func_name, str_type, str_type);
+            code = layout.convert("// %s\nbool %s(%s input, out uint token, out %s match", pattern, func_name, str_type, str_type);
         else
         {
-            code = layout.convert("// %s\nbool match(%s input", tnfa.pattern, str_type);
+            code = layout.convert("// %s\nbool match(%s input", pattern, str_type);
             for ( int i = 0; i < tdfa.num_tags/2; ++i )
                 code ~= layout.convert(", out %s group%d", str_type, i);
         }
@@ -3276,14 +3353,14 @@ class RegExpT(char_t)
     }
 
     int[]       registers;
-
-private:
-    tnfa_t      tnfa;
-    tdfa_t      tdfa;
-    char_t[]    input;
     size_t      next_start,
                 last_start;
-    
+
+private:
+    tdfa_t      tdfa;
+    char_t[]    input,
+                pattern;
+
     string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, char_t[] indent)
     {
         string  code,
@@ -3334,10 +3411,10 @@ RegExpT!(char_t) search(char_t)(char_t[] str, char_t[] pattern, char_t[] attribu
         delete r;
     return r;
 }
-public import tango.io.Stdout;
 
 alias char[] string;
 
+debug(utf) import tango.stdc.stdio;
 // the following block is stolen from phobos.
 // the copyright notice applies for this block only.
 /*
@@ -3503,7 +3580,7 @@ unittest
         "\xF8\x80\x80\x80\x8A",
         "\xFC\x80\x80\x80\x80\x8A",
     ];
-
+    
     for (int j = 0; j < s4.length; j++)
     {
         try
@@ -3512,7 +3589,7 @@ unittest
             c = decode(s4[j], i);
             assert(0);
         }
-        catch (UtfException u)
+        catch ( Exception u )
         {
             i = 23;
             delete u;
