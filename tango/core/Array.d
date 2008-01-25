@@ -11,7 +11,7 @@ module tango.core.Array;
 
 
 private import tango.core.Traits;
-private import tango.stdc.stdlib : alloca;
+private import tango.stdc.stdlib : alloca, rand;
 
 
 version( DDoc )
@@ -21,6 +21,7 @@ version( DDoc )
 
     typedef bool function( Elem )       Pred1E;
     typedef bool function( Elem, Elem ) Pred2E;
+    typedef size_t function( size_t )   Oper1A;
 }
 
 
@@ -44,6 +45,27 @@ private
         static bool opCall( T p1, T p2 )
         {
             return p1 < p2;
+        }
+    }
+
+
+    struct RandOper
+    {
+        static size_t opCall( size_t lim )
+        {
+            static if( size_t.sizeof == 4 )
+            {
+                size_t val = (((cast(size_t)rand()) << 16) & 0xffff0000u) |
+                             (((cast(size_t)rand()))       & 0x0000ffffu);
+            }
+            else // assume size_t.sizeof == 8
+            {
+                size_t val = (((cast(size_t)rand()) << 48) & 0xffff000000000000uL) |
+                             (((cast(size_t)rand()) << 32) & 0x0000ffff00000000uL) |
+                             (((cast(size_t)rand()) << 16) & 0x00000000ffff0000uL) |
+                             (((cast(size_t)rand()))       & 0x000000000000ffffuL);
+            }
+            return val % lim;
         }
     }
 
@@ -1732,6 +1754,77 @@ else
         test( "bcdefghijj".dup, "bcdefghij" );
         test( "abccdefghi".dup, "abcdefghi" );
         test( "abccdddefg".dup, "abcdefg" );
+      }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Shuffle
+////////////////////////////////////////////////////////////////////////////////
+
+
+version( DDoc )
+{
+    /**
+     * Performs a linear scan of buf from $(LB)2 .. buf.length$(RP), exchanging
+     * each element with an element in the range $(LB)0 .. pos$(RP), where pos
+     * represents the current array position.
+     *
+     * Params:
+     *  buf  = The array to shuffle.
+     *  oper = The randomize operation, which should return a number in the
+     *         range $(LB)0 .. N$(RP) for any supplied value N.  This routine
+     *         may be any callable type.
+     */
+    void shuffle( Elem[] buf, Oper1A oper = Oper1A.init );
+
+}
+else
+{
+    template shuffle_( Elem, Oper )
+    {
+        static assert( isCallableType!(Oper) );
+
+
+        void fn( Elem[] buf, Oper oper )
+        {
+            // NOTE: Indexes are passed instead of references because DMD does
+            //       not inline the reference-based version.
+            void exch( size_t p1, size_t p2 )
+            {
+                Elem t  = buf[p1];
+                buf[p1] = buf[p2];
+                buf[p2] = t;
+            }
+
+            for( size_t pos = 2, end = buf.length; pos < buf.length; ++pos )
+            {
+                exch( pos, oper( pos ) );
+            }
+        }
+    }
+
+
+    template shuffle( Buf, Oper = RandOper )
+    {
+        void shuffle( Buf buf, Oper oper = Oper.init )
+        {
+            return shuffle_!(ElemTypeOf!(Buf), Oper).fn( buf, oper );
+        }
+    }
+
+
+    debug( UnitTest )
+    {
+      unittest
+      {
+        char[] buf = "abcdefghijklmnopqrstuvwxyz";
+        char[] tmp = buf.dup;
+
+        assert( tmp == buf );
+        shuffle( tmp );
+        assert( tmp != buf );
       }
     }
 }
