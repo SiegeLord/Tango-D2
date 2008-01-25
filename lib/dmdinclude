@@ -5,14 +5,35 @@
 
 # Various common build and install functionality
 
-echo ">> Checking compiler version DMD"
+dmdversion() {
+    echo ">> Checking compiler version DMD"
 
-DMDVERSION=`dmd | head -1 | cut -c 26-`
-DMDVERSIONMAJ="${DMDVERSION:0:1}" #`echo $DMDVERSION | cut -d . -f 1`
-# TODO: Strip leading 0's
-DMDVERSIONMIN="${DMDVERSION:2}" #`echo $DMDVERSIOM | cut -c 3-`
-echo ">> Compiler version is $DMDVERSIONMAJ.$DMDVERSIONMIN"
-while [ "${DMDVERSIONMIN:0:1}" = "0" ]
-do
-    DMDVERSIONMIN="${DMDVERSIONMIN:1}"
-done
+    DMDVERSION=`dmd | head -1 | cut -c 26-`
+    DMDVERSIONMAJ="${DMDVERSION:0:1}" #`echo $DMDVERSION | cut -d . -f 1`
+    # TODO: Strip leading 0's
+    DMDVERSIONMIN="${DMDVERSION:2}" #`echo $DMDVERSIOM | cut -c 3-`
+    echo ">> Compiler version is $DMDVERSIONMAJ.$DMDVERSIONMIN"
+    while [ "${DMDVERSIONMIN:0:1}" = "0" ]
+    do
+        DMDVERSIONMIN="${DMDVERSIONMIN:1}"
+    done
+}
+
+dmdbugs() {
+    dmdversion
+
+    if [ ! "$DMDVERSIONMAJ" -gt "1" ]
+    then
+        if [ ! "$DMDVERSIONMIN" -gt "21" ]
+        then
+            INLINE=""
+            echo ">> Removing -inline due to bugzilla 668"
+        fi
+        if [ "$DMDVERSIONMIN" = "26" ]
+        then
+            echo ">> This version of DMD has broken scoped interfaces."
+            echo ">> Aborting."
+            die "Broken version of compiler." 1
+        fi
+    fi
+}

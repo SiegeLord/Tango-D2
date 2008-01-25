@@ -30,26 +30,8 @@ Options:
 UNAME=`uname`
 INLINE="-inline"
 
-# Various functions to workaround bugs in the compilers
-
-# Sets the variables DMDVERSIONMAJ and DMDVERSIONMIN
-dmdversion() {
-    . dmdinclude
-}
-
-# Checks if this DMD version has known bugs that can be worked around build time
-dmdbugs() {
-    dmdversion
-
-    if [ ! "$DMDVERSIONMAJ" -gt "1" ]
-    then
-        if [ ! "$DMDVERSIONMIN" -gt "21" ]
-        then
-            INLINE=""
-            echo ">> Removing -inline due to bugzilla 668"
-        fi
-    fi
-}
+# Compiler specific includes
+. dmdinclude
 
 # Checks for known compiler bugs
 compilerbugs() {
