@@ -18,9 +18,15 @@ then
     exit 1
 fi
 
+# Make sure object.di is present for clean GDC installs
+cp ../object.di compiler/gdc/object.di
+
 pushd ./compiler/gdc
 ./configure || exit 1
 popd
+
+# Remove object.di again
+rm compiler/gdc/object.di
 
 OLDHOME=$HOME
 export HOME=`pwd`
