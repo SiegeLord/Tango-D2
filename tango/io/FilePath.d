@@ -950,6 +950,20 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Transfer the content of another file to this one. Returns a
+                reference to this class on success, or throws an IOException
+                upon failure.
+
+        ***********************************************************************/
+
+        final FilePath copy (char[] source)
+        {
+                scope src = new FilePath (source);
+                return copy (src);
+        }
+
+        /***********************************************************************
+
                 Throw an exception using the last known error
 
         ***********************************************************************/
@@ -1112,20 +1126,6 @@ class FilePath : PathView
                         time.accessed = convert (info.ftLastAccessTime);
                         time.created  = convert (info.ftCreationTime);
                         return time;
-                }
-
-                /***********************************************************************
-
-                        Transfer the content of another file to this one. Returns a
-                        reference to this class on success, or throws an IOException
-                        upon failure.
-
-                ***********************************************************************/
-
-                final FilePath copy (char[] source)
-                {
-                        scope src = new FilePath (source);
-                        return copy (src);
                 }
 
                 /***********************************************************************
@@ -1455,11 +1455,9 @@ class FilePath : PathView
 
                 ***********************************************************************/
 
-                final FilePath copy (char[] source)
+                final FilePath copy (FilePath source)
                 {
-                        auto from = new FilePath (source);
-
-                        auto src = posix.open (from.cString.ptr, O_RDONLY, 0640);
+                        auto src = posix.open (source.cString.ptr, O_RDONLY, 0640);
                         scope (exit)
                                if (src != -1)
                                    posix.close (src);
@@ -1492,7 +1490,7 @@ class FilePath : PathView
 
                         // copy timestamps
                         stat_t stats;
-                        if (posix.stat (from.cString.ptr, &stats))
+                        if (posix.stat (source.cString.ptr, &stats))
                             exception;
 
                         utimbuf utim;
