@@ -1124,8 +1124,20 @@ class FilePath : PathView
 
                 final FilePath copy (char[] source)
                 {
-                        auto src = new FilePath (source);
+                        scope src = new FilePath (source);
+                        return copy (src);
+                }
 
+                /***********************************************************************
+
+                        Transfer the content of another file to this one. Returns a
+                        reference to this class on success, or throws an IOException
+                        upon failure.
+
+                ***********************************************************************/
+
+                final FilePath copy (FilePath src)
+                {
                         version (Win32SansUnicode)
                                 {
                                 if (! CopyFileA (src.cString.ptr, this.cString.ptr, false))
