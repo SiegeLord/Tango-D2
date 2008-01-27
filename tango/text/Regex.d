@@ -55,7 +55,7 @@
     $(TR $(TD .) $(TD any printable character) )
     $(TR $(TD \s) $(TD whitespace) )
     $(TR $(TD \S) $(TD non-whitespace) )
-    $(TR $(TD \w) $(TD alpha-numeric characters or _) )
+    $(TR $(TD \w) $(TD alpha-numeric characters or underscore) )
     $(TR $(TD \W) $(TD opposite of \w) )
     $(TR $(TD \d) $(TD digits) )
     $(TR $(TD \D) $(TD non-digit) )
@@ -564,26 +564,26 @@ struct CharRange(char_t)
 
     string toString()
     {
-        char[] str;
+        string str;
         auto layout = new Layout!(char);
         if ( l == r )
         {
             if ( l > 0x20 && l < 0x7f )
-                encode(str, l);
+                str = layout.convert("'{}'", l);
             else
-                str = "("~layout.convert("{:x}", cast(int)l)~")";
+                str = layout.convert("({:x})", cast(int)l);
         }
         else
         {
             if ( l > 0x20 && l < 0x7f )
-                encode(str, l);
+                str = layout.convert("'{}'", l);
             else
-                str ~= "("~layout.convert("{:x}", cast(int)l)~")";
+                str = layout.convert("({:x})", cast(int)l);
             str ~= "-";
             if ( r > 0x20 && r < 0x7f )
-                encode(str, r);
+                str ~= layout.convert("'{}'", r);
             else
-                str ~= "("~layout.convert("{:x}", cast(int)r)~")";
+                str ~= layout.convert("({:x})", cast(int)r);
         }
         return str;
     }
@@ -808,12 +808,82 @@ private struct Predicate(char_t)
     alias CharClass!(char_t)    cc_t;
     alias CharRange!(char_t)    cr_t;
 
+    // generic data
     enum Type {
         consume, epsilon, lookahead, lookbehind
     }
 
     private cc_t    input;
     Type            type;
+
+    // data for compiled predicates
+    const uint  MAX_BITMAP_LENGTH = 256*8,
+                MAX_SEARCH_LENGTH = 256;
+    enum MatchMode {
+        generic, generic_l,
+        single_char, bitmap, string_search,         // consume
+        single_char_l, bitmap_l, string_search_l    // lookahead
+    }
+
+    MatchMode   mode;
+    union {
+        char_t      data_chr;
+        ubyte[]     data_bmp;
+        string_t    data_str;
+    };
+
+
+    void compile()
+    {
+        assert(input.parts.length > 0);
+        
+        // single char?
+        if ( input.parts.length == 1 && input.parts[0].l == input.parts[0].r )
+        {
+            mode = type==Type.consume ? MatchMode.single_char : MatchMode.single_char_l;
+            data_chr = input.parts[0].l;
+            return;
+        }
+        
+        // check whether we can use a bitmap
+        foreach ( p; input.parts )
+        {
+            if ( p.l > MAX_BITMAP_LENGTH || p.r > MAX_BITMAP_LENGTH )
+                goto LnoBitmap;
+        }
+
+        // setup bitmap
+        data_bmp.length = MAX_BITMAP_LENGTH/8;
+        foreach ( p; input.parts )
+        {
+            for ( char_t c = p.l; c <= p.r; ++c )
+                data_bmp[c/8] |= 1 << (c&7);
+        }
+        mode = type==Type.consume ? MatchMode.bitmap : MatchMode.bitmap_l;
+        return;
+
+    LnoBitmap:
+        // check whether the class is small enough to justify a string-search
+        // TODO: consider inverse class for 8bit chars?
+        uint class_size;
+        foreach ( p; input.parts )
+            class_size += cast(uint)p.r+1-p.l;
+        if ( class_size > MAX_SEARCH_LENGTH )
+            goto Lgeneric;
+        data_str.length = class_size;
+        size_t ind;
+        foreach ( p; input.parts )
+        {
+            for ( char_t c = p.l; c <= p.r; ++c )
+                data_str[ind++] = c;
+        }
+        mode = type==Type.consume ? MatchMode.string_search : MatchMode.string_search_l;
+        return;
+
+    Lgeneric:
+        data_str = cast(char_t[])input.parts;
+        mode = type==Type.consume ? MatchMode.generic : MatchMode.generic_l;
+    }
 
     bool matches(char_t c)
     {
@@ -881,7 +951,7 @@ private struct Predicate(char_t)
     {
         input.parts ~= cr;
     }
-
+    
     string toString()
     {
         string str;
@@ -1006,6 +1076,7 @@ private class TNFA(char_t)
     alias TNFAState!(char_t)        state_t;
     alias Predicate!(char_t)        predicate_t;
     alias char_t[]                  string_t;
+    alias CharRange!(char_t)        range_t;
 
     string_t    pattern;
     state_t[]   states;
@@ -1075,7 +1146,7 @@ private class TNFA(char_t)
             int index = cast(int)opStack.top*(Operator.max+1);
             index += cast(int)next_op;
 
-            debug(tnfa) writefln("\t{}:{} -> {}  {} frag(s)",
+            debug(tnfa) Stdout.formatln("\t{}:{} -> {}  {} frag(s)",
                 operator_names[opStack.top], operator_names[next_op], action_names[action_lookup[index]], frags.length
             );
             switch ( action_lookup[index] )
@@ -1616,10 +1687,7 @@ private:
 
     frag_t constructSingleChar(char_t c, predicate_t.Type type)
     {
-        debug(tnfa) {
-            writef("constructCharFrag ");
-            writefln("{}", c);
-        }
+        debug(tnfa) Stdout.formatln("constructCharFrag {}", c);
 
         trans_t trans = addTransition;
         trans.predicate.appendInput(CharRange!(char_t)(c));
@@ -1643,7 +1711,7 @@ private:
 
     frag_t constructChars(CharClass!(char_t) charclass, predicate_t.Type type)
     {
-        debug(tnfa) writef("constructChars");
+        debug(tnfa) Stdout.format("constructChars");
 
         trans_t trans = addTransition;
         trans.predicate.type = type;
@@ -1651,7 +1719,7 @@ private:
         trans.predicate.setInput(charclass);
 
         trans.predicate.optimize;
-        debug(tnfa) writefln("-> {}", trans.predicate.toString);
+        debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
 
         frag_t frag = new frag_t;
         frag.exit_state ~= trans;
@@ -1661,7 +1729,7 @@ private:
 
     frag_t constructCharClass(predicate_t.Type type)
     {
-        debug(tnfa) writef("constructCharClass");
+        debug(tnfa) Stdout.format("constructCharClass");
         auto oldCursor = cursor;
 
         trans_t trans = addTransition;
@@ -1672,21 +1740,27 @@ private:
             negated = true;
         }
 
-        char_t last;
+        char_t  last;
+        bool    have_range_start;
         for ( ; !endOfPattern && peekPattern != ']'; )
         {
             dchar c = readPattern;
             switch ( c )
             {
                 case '-':
-                    if ( last == char_t.init )
-                        throw new RegExpException("unexpected - operator at \""~Utf.toString(pattern[cursor..$])~"\"");
-                    if ( peekPattern == ']' || peekPattern == 0 )
-                        throw new RegExpException("unexpected end of string after \""~Utf.toString(pattern)~"\"");
-                    trans.predicate.appendInput(CharRange!(char_t)(last, c));
-                    last = char_t.init;
+                    if ( !have_range_start )
+                        throw new RegExpException("Missing range start for '-' operator ater \""~Utf.toString(pattern)~"\"");
+                    else if ( endOfPattern || peekPattern == ']' )
+                        throw new RegExpException("Missing range end for '-' operator ater \""~Utf.toString(pattern)~"\"");
+                    else {
+                        c = readPattern;
+                        trans.predicate.appendInput(range_t(last, c));
+                        have_range_start = false;
+                    }
                     break;
                 case '\\':
+                    if ( endOfPattern )
+                        throw new RegExpException("unexpected end of string after \""~Utf.toString(pattern)~"\"");
                     c = readPattern;
                     switch ( c )
                     {
@@ -1703,21 +1777,23 @@ private:
                             break;
                     }
                 default:
-                    if ( last != char_t.init )
-                        trans.predicate.appendInput(CharRange!(char_t)(last));
+                    if ( have_range_start )
+                        trans.predicate.appendInput(range_t(last));
                     last = c;
+                    have_range_start = true;
             }
         }
-        readPattern;
+        if ( !endOfPattern )
+            readPattern;
         if ( last != char_t.init )
-            trans.predicate.appendInput(CharRange!(char_t)(last));
-        debug(tnfa) writefln(" {}", pattern[oldCursor..cursor]);
+            trans.predicate.appendInput(range_t(last));
+        debug(tnfa) Stdout.formatln(" {}", pattern[oldCursor..cursor]);
 
         if ( negated )
             trans.predicate.negate;
         else
             trans.predicate.optimize;
-        debug(tnfa) writefln("-> {}", trans.predicate.toString);
+        debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
 
         trans.predicate.type = type;
 
@@ -1729,7 +1805,7 @@ private:
 
     void constructBracket(List!(frag_t) frags, uint tag=0)
     {
-        debug(tnfa) writefln("constructBracket");
+        debug(tnfa) Stdout.formatln("constructBracket");
 
         state_t entry = addState,
                 exit = addState;
@@ -1759,7 +1835,7 @@ private:
 
     void constructOneMore(List!(frag_t) frags, PriorityClass prioClass)
     {
-        debug(tnfa) writefln("constructOneMore");
+        debug(tnfa) Stdout.formatln("constructOneMore");
 
         if ( frags.empty )
             throw new RegExpException("too few arguments for + at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -1785,7 +1861,7 @@ private:
 
     void constructZeroMore(List!(frag_t) frags, PriorityClass prioClass)
     {
-        debug(tnfa) writefln("constructZeroMore");
+        debug(tnfa) Stdout.formatln("constructZeroMore");
 
         if ( frags.empty )
             throw new RegExpException("too few arguments for * at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -1815,7 +1891,7 @@ private:
 
     void constructZeroOne(List!(frag_t) frags, PriorityClass prioClass)
     {
-        debug(tnfa) writefln("constructZeroOne");
+        debug(tnfa) Stdout.formatln("constructZeroOne");
 
         if ( frags.empty )
             throw new RegExpException("too few arguments for ? at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -1841,7 +1917,7 @@ private:
 
     void constructOccur(List!(frag_t) frags, uint minOccur, uint maxOccur, PriorityClass prioClass)
     {
-        debug(tnfa) writefln(format("constructOccur {},{}", minOccur, maxOccur));
+        debug(tnfa) Stdout.formatln("constructOccur {},{}", minOccur, maxOccur);
 
         if ( frags.empty )
             throw new RegExpException("too few arguments for {x,y} at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -1924,7 +2000,7 @@ private:
 
     void constructAltern(List!(frag_t) frags)
     {
-        debug(tnfa) writefln("constructAltern");
+        debug(tnfa) Stdout.formatln("constructAltern");
 
         if ( frags.empty || frags.head is frags.tail )
             throw new RegExpException("too few arguments for | at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -1948,7 +2024,7 @@ private:
 
     void constructConcat(List!(frag_t) frags)
     {
-        debug(tnfa) writefln("constructConcat");
+        debug(tnfa) Stdout.formatln("constructConcat");
 
         if ( frags.empty || frags.head is frags.tail )
             throw new RegExpException("too few operands for concatenation at \""~Utf.toString(pattern[cursor..$])~"\"");
@@ -2069,7 +2145,7 @@ private class TDFA(char_t)
     this(TNFA!(char_t) tnfa)
     {
         num_tags        = tnfa.tagCount;
-        assert(num_tags%2 == 0);
+        
         next_register   = num_tags;
         for ( int i = 1; i <= num_tags; ++i ) {
             TagIndex ti;
@@ -2101,9 +2177,7 @@ private class TDFA(char_t)
                             unmarked        = new List!(SubsetState);
         subset_states   ~= subset_start;
         unmarked        ~= subset_start;
-        debug(tdfa) {
-            Stdout.formatln("\n{} = {}\n", subset_start.dfa_state.index, subset_start);
-        }
+        debug(tdfa) Stdout.formatln("\n{} = {}\n", subset_start.dfa_state.index, subset_start.toString);
 
         while ( !unmarked.empty )
         {
@@ -2118,12 +2192,12 @@ private class TDFA(char_t)
                 if ( target is null )
                 {
                     debug(tdfa) {
-                        Stdout.formatln("from {} with {} - lookbehind at beginning", state.dfa_state.index, pred);
+                        Stdout.formatln("from {} with {} - lookbehind at beginning", state.dfa_state.index, pred.toString);
                     }
                     throw new Exception("Lookbehind at beginning of expression");
                 }
                 debug(tdfa) {
-                    Stdout.formatln("from {} with {} reach {}", state.dfa_state.index, pred, target);
+                    Stdout.formatln("from {} with {} reach {}", state.dfa_state.index, pred.toString, target.toString);
                 }
                 target = epsilonClosure(target, state);
                 target = lookbehindClosure(target, pred);
@@ -2180,7 +2254,7 @@ private class TDFA(char_t)
                     subset_states   ~= target;
                     unmarked        ~= target;
                     debug(tdfa) {
-                        Stdout.formatln("\n{} = {}\n", target.dfa_state.index, target);
+                        Stdout.formatln("\n{} = {}\n", target.dfa_state.index, target.toString);
                     }
                     generateFinishers(target);
                 }
@@ -2210,7 +2284,7 @@ private class TDFA(char_t)
 
                 trans.target = target.dfa_state;
                 debug(tdfa) {
-                    Stdout.formatln("=> from {} with {} reach {}", state.dfa_state.index, pred, target.dfa_state.index);
+                    Stdout.formatln("=> from {} with {} reach {}", state.dfa_state.index, pred.toString, target.dfa_state.index);
                 }
             }
         }
@@ -2245,6 +2319,7 @@ private class TDFA(char_t)
                 foreach ( ref cmd; trans.commands )
                     renumberCommand(cmd);
                 trans.commands.sort;
+                trans.predicate.compile;
             }
         }
 
@@ -2656,20 +2731,20 @@ private:
                 {
                     // if smaller prio exists, do not use this transition
                     if ( tmp.maxPriority < new_maxPri ) {
-                        debug(tdfa) writefln("maxPrio({}) {} beats {}", t.target.index, tmp.maxPriority, new_maxPri);
+                        debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, tmp.maxPriority, new_maxPri);
                         continue;
                     }
                     else if ( tmp.maxPriority == new_maxPri )
                     {
                         if ( tmp.lastPriority < t.priority ) {
-                            debug(tdfa) writefln("lastPrio({}) {} beats {}", t.target.index, tmp.lastPriority, t.priority);
+                            debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, tmp.lastPriority, t.priority);
                             continue;
                         }
                         else
-                            debug(tdfa) writefln("lastPrio({}) {} beats {}", t.target.index, t.priority, tmp.lastPriority);
+                            debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, t.priority, tmp.lastPriority);
                     }
                     else
-                        debug(tdfa) writefln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
+                        debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
                 }
                 StateElement new_se = new StateElement;
                 new_se.maxPriority = new_maxPri;
@@ -2786,7 +2861,7 @@ private:
         }
 
         debug(tdfa) {
-            Stdout.formatln("\nreorder {} to {}\n", from, to.dfa_state.index);
+            Stdout.formatln("\nreorder {} to {}\n", from.toString, to.dfa_state.index);
         }
 
         trans.commands ~= cmds.keys;
@@ -2839,6 +2914,8 @@ private:
             }
     }
 }
+import tango.text.Util;
+
 /**************************************************************************************************
     Regular expression compiler and interpreter.
 **************************************************************************************************/
@@ -2847,6 +2924,7 @@ class RegExpT(char_t)
     alias TDFA!(dchar)      tdfa_t;
     alias TNFA!(dchar)      tnfa_t;     
     alias CharClass!(dchar) charclass_t;
+    alias Predicate!(dchar) predicate_t;
 
     /**********************************************************************************************
         Construct a RegExpT object.
@@ -2865,21 +2943,23 @@ class RegExpT(char_t)
         this(pattern, false, true);
     }
 
+    /** ditto */
     this(char_t[] pattern, bool swapMBS, bool unanchored)
     {
-        this.pattern = pattern;
+        pattern_ = pattern;
         
-        scope tnfa_t tnfa;
+        debug {}
+        else { scope tnfa_t tnfa_; }
         static if ( is(char_t == dchar) ) {
-            tnfa = new tnfa_t(pattern);
+            tnfa_ = new tnfa_t(pattern_);
         }
         else {
-            tnfa = new tnfa_t(tango.text.convert.Utf.toString32(pattern));
+            tnfa_ = new tnfa_t(tango.text.convert.Utf.toString32(pattern_));
         }
-        tnfa.swapMatchingBracketSyntax = swapMBS;
-        tnfa.parse(unanchored);
-        tdfa = new tdfa_t(tnfa);
-        registers.length = tdfa.num_regs;
+        tnfa_.swapMatchingBracketSyntax = swapMBS;
+        tnfa_.parse(unanchored);
+        tdfa_ = new tdfa_t(tnfa_);
+        registers_.length = tdfa_.num_regs;
     }
 
     /**********************************************************************************************
@@ -2921,9 +3001,9 @@ class RegExpT(char_t)
     **********************************************************************************************/
     public RegExpT!(char_t) search(char_t[] input)
     {
-        this.input = input;
-        next_start = 0;
-        last_start = 0;
+        input_ = input;
+        next_start_ = 0;
+        last_start_ = 0;
         return this;
     }
 
@@ -2942,9 +3022,9 @@ class RegExpT(char_t)
     **********************************************************************************************/
     bool test(char_t[] input)
     {
-        this.input = input;
-        next_start = 0;
-        last_start = 0;
+        this.input_ = input;
+        next_start_ = 0;
+        last_start_ = 0;
         return test();
     }
 
@@ -2954,83 +3034,141 @@ class RegExpT(char_t)
     **********************************************************************************************/
     bool test()
     {
-        auto inp = input[next_start .. $];
-        auto s = tdfa.start;
-
         // initialize registers
-        assert(registers.length == tdfa.num_regs);
-        registers[0..$] = -1;
-        foreach ( cmd; tdfa.initializer ) {
-            assert(cmd.src == tdfa.CURRENT_POSITION_REGISTER);
-            registers[cmd.dst] = 0;
+        assert(registers_.length == tdfa_.num_regs);
+        registers_[0..$] = -1;
+        foreach ( cmd; tdfa_.initializer ) {
+            assert(cmd.src == tdfa_.CURRENT_POSITION_REGISTER);
+            registers_[cmd.dst] = 0;
         }
 
         // DFA execution
-        debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
-        dfaLoop: for ( size_t p, next_p; p < inp.length; next_p = p )
-        {
-            version(LexerTest)
-            {
-                if ( s.accept )
-                {
-                    if ( s.transitions.length == 0 )
-                        break;
-                    auto first_t = s.transitions[0].target;
-                    if ( first_t is s )
-                    {
-                        foreach ( t; s.transitions[1 .. $] )
-                        {
-                            if ( t.target !is first_t )
-                                goto noAccept;
-                        }
-                        break;
-                        noAccept: {}
-                    }
-                }
-            }
+        auto inp = input_[next_start_ .. $];
+        auto s = tdfa_.start;
 
-            dchar c = decode(inp, next_p);
-        processChar:
+        debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
+        Ldfa_loop: for ( size_t p, next_p; p < inp.length; next_p = p )
+        {
+            dchar c = cast(dchar)inp[p];
+            if ( c & 0x80 )
+                c = decode(inp, next_p);
+            else
+                next_p = p+1;
+
+        Lprocess_char:
             debug Stdout.formatln("{} (0x{:x})", c, cast(int)c);
 
-            foreach ( t; s.transitions )
+            Ltrans_loop: foreach ( t; s.transitions )
             {
-                if ( t.predicate.matches(c) )
+                switch ( t.predicate.mode )
                 {
-                    if ( t.predicate.type == typeof(t.predicate).Type.consume )
-                        p = next_p;
+                    // single char
+                    case predicate_t.MatchMode.single_char:
+                        debug Stdout.formatln("single char {} == {}", c, t.predicate.data_chr);
+                        if ( c != t.predicate.data_chr )
+                            continue Ltrans_loop;
+                        goto Lconsume;
+                    case predicate_t.MatchMode.single_char_l:
+                        debug Stdout.formatln("single char {} == {}", c, t.predicate.data_chr);
+                        if ( c != t.predicate.data_chr )
+                            continue Ltrans_loop;
+                        goto Lno_consume;
 
-                    foreach ( cmd; t.commands )
-                    {
-                        if ( cmd.src == tdfa.CURRENT_POSITION_REGISTER )
-                            registers[cmd.dst] = p;
-                        else
-                            registers[cmd.dst] = registers[cmd.src];
-                    }
+                    // bitmap
+                    case predicate_t.MatchMode.bitmap:
+                        debug Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
+                            goto Lconsume;
+                        continue Ltrans_loop;
+                    case predicate_t.MatchMode.bitmap_l:
+                        debug Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
+                            goto Lno_consume;
+                        continue Ltrans_loop;
 
-                    s = t.target;
-                    debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                    // string search
+                    case predicate_t.MatchMode.string_search:
+                        debug Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
+                            continue Ltrans_loop;
+                        goto Lconsume;
+                    case predicate_t.MatchMode.string_search_l:
+                        debug Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
+                            continue Ltrans_loop;
+                        goto Lno_consume;
+                    
+                    // generic
+                    case predicate_t.MatchMode.generic:
+                        debug Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        for ( auto cmp = t.predicate.data_str.ptr,
+                            cmpend = cmp + t.predicate.data_str.length;
+                            cmp < cmpend; ++cmp )
+                        {
+                            if ( c < *cmp ) {
+                                ++cmp;
+                                continue;
+                            }
+                            ++cmp;
+                            if ( c <= *cmp )
+                                goto Lconsume;
+                        }
+                        continue Ltrans_loop;
+                    case predicate_t.MatchMode.generic_l:
+                        debug Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        for ( auto cmp = t.predicate.data_str.ptr,
+                            cmpend = cmp + t.predicate.data_str.length;
+                            cmp < cmpend; ++cmp )
+                        {
+                            if ( c < *cmp ) {
+                                ++cmp;
+                                continue;
+                            }
+                            ++cmp;
+                            if ( c <= *cmp )
+                                goto Lno_consume;
+                        }
+                        continue Ltrans_loop;
 
-                    // if inp ends here and we do not already accept, try to add an explicit string/line end
-                    if ( p >= inp.length && !s.accept && c != 0 ) {
-                        c = 0;
-                        goto processChar;
-                    }
-                    continue dfaLoop;
+                    default:
+                        assert(0);
                 }
+
+            Lconsume:
+                p = next_p;
+            Lno_consume:
+
+                foreach ( cmd; t.commands )
+                {
+                    if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
+                        registers_[cmd.dst] = p;
+                    else
+                        registers_[cmd.dst] = registers_[cmd.src];
+                }
+
+                s = t.target;
+                debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+
+                // if inp ends here and we do not already accept, try to add an explicit string/line end
+                if ( p >= inp.length && !s.accept && c != 0 ) {
+                    c = 0;
+                    goto Lprocess_char;
+                }
+                continue Ldfa_loop;
             }
+            // no applicable transition
             break;
         }
 
         if ( s.accept )
         {
             foreach ( cmd; s.finishers ) {
-                assert(cmd.src != tdfa.CURRENT_POSITION_REGISTER);
-                registers[cmd.dst] = registers[cmd.src];
+                assert(cmd.src != tdfa_.CURRENT_POSITION_REGISTER);
+                registers_[cmd.dst] = registers_[cmd.src];
             }
-            if ( registers[1] >= 0 ) {
-                last_start = next_start;
-                next_start += registers[1];
+            if ( registers_[1] >= 0 ) {
+                last_start_ = next_start_;
+                next_start_ += registers_[1];
             }
             return true;
         }
@@ -3047,12 +3185,12 @@ class RegExpT(char_t)
     **********************************************************************************************/
     char_t[] match(uint index)
     {
-        if ( index > tdfa.num_tags )
+        if ( index > tdfa_.num_tags )
             return null;
-        int start   = last_start+registers[index*2],
-            end     = last_start+registers[index*2+1];
-        if ( start >= 0 && start < end && end <= input.length )
-            return input[start .. end];
+        int start   = last_start_+registers_[index*2],
+            end     = last_start_+registers_[index*2+1];
+        if ( start >= 0 && start < end && end <= input_.length )
+            return input_[start .. end];
         return null;
     }
 
@@ -3068,10 +3206,10 @@ class RegExpT(char_t)
     **********************************************************************************************/
     char_t[] pre()
     {
-        int start = last_start+registers[0];
-        if ( start >= 0 && start <= input.length )
-            return input[0 .. start];
-        return null;
+        auto start = registers_[0];
+        if ( start < 0 )
+            return null;
+        return input_[0 .. last_start_+start];
     }
 
     /**********************************************************************************************
@@ -3080,9 +3218,9 @@ class RegExpT(char_t)
     **********************************************************************************************/
     char_t[] post()
     {
-        if ( registers[1] >= 0 )
-            return input[next_start .. $];
-        return input[last_start .. $];
+        if ( registers_[1] >= 0 )
+            return input_[next_start_ .. $];
+        return input_[last_start_ .. $];
     }
 
     /**********************************************************************************************
@@ -3098,45 +3236,77 @@ class RegExpT(char_t)
                 foreach( s; strs )
                     Stdout.formatln("{}", s);
             }
-            ---
             // Prints:
             // c
             // c
             // qwer
+            ---
     **********************************************************************************************/
     char_t[][] split(char_t[] input)
     {
-        char_t[][]  res;
-        char_t[]    tmp;
+        auto res = new char_t[][PREALLOC];
+        uint index;
+        char_t[] tmp;
+        
         foreach ( r; search(input) )
         {
             tmp = pre;
-            if ( tmp.length > last_start )
-                res ~= tmp[last_start .. $];
+            if ( tmp.length > last_start_ )
+            {
+                res[index++] = tmp[last_start_ .. $];
+                if ( index >= res.length )
+                    res.length = res.length*2;
+            }
             tmp = post;
         }
-        res ~= tmp;
+        
+        res[index++] = tmp;
+        res.length = index;
         return res;
     }
 
     /**********************************************************************************************
         Returns a copy of the input with all matches replaced by replacement.
     **********************************************************************************************/
-    char_t[] replaceAll(char_t[] input, char_t[] replacement)
+    char_t[] replaceAll(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
     {
-        char_t[] res, tmp;
-        res.length = input.length;
-        res.length = 0;
+        char_t[] tmp;
+        if ( output_buffer.length <= 0 )
+            output_buffer = new char_t[input.length];
+        output_buffer.length = 0;
+
         foreach ( r; search(input) )
         {
             tmp = pre;
-            if ( tmp.length > last_start )
-                res ~= tmp[last_start .. $];
-            res ~= replacement;
+            if ( tmp.length > last_start_ )
+                output_buffer ~= tmp[last_start_ .. $];
+            output_buffer ~= replacement;
             tmp = post;
         }
-        res ~= tmp;
-        return res;
+        output_buffer ~= tmp;
+        return output_buffer;
+    }
+
+    /**********************************************************************************************
+        Calls dg for each match and replaces it with dg's return value.
+    **********************************************************************************************/
+    char_t[] replaceAll(char_t[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
+    {
+        char_t[]    tmp;
+        uint        offset;
+        if ( output_buffer.length <= 0 )
+            output_buffer = new char_t[input.length];
+
+        foreach ( r; search(input) )
+        {
+            tmp = pre;
+            if ( tmp.length > last_start_ )
+                output_buffer ~= tmp[last_start_ .. $];
+            output_buffer ~= dg(this);
+            tmp = post;
+        }
+        output_buffer ~= tmp;
+        return output_buffer;
     }
 
     /**********************************************************************************************
@@ -3156,16 +3326,16 @@ class RegExpT(char_t)
         auto layout = new Layout!(char);
 
         if ( lexer )
-            code = layout.convert("// %s\nbool %s(%s input, out uint token, out %s match", pattern, func_name, str_type, str_type);
+            code = layout.convert("// %s\nbool %s(%s input, out uint token, out %s match", pattern_, func_name, str_type, str_type);
         else
         {
-            code = layout.convert("// %s\nbool match(%s input", pattern, str_type);
-            for ( int i = 0; i < tdfa.num_tags/2; ++i )
+            code = layout.convert("// %s\nbool match(%s input", pattern_, str_type);
+            for ( int i = 0; i < tdfa_.num_tags/2; ++i )
                 code ~= layout.convert(", out %s group%d", str_type, i);
         }
-        code ~= layout.convert(")\n{\n    uint s = %d;", tdfa.start.index);
+        code ~= layout.convert(")\n{\n    uint s = %d;", tdfa_.start.index);
 
-        uint num_vars = tdfa.num_regs;
+        uint num_vars = tdfa_.num_regs;
         if ( num_vars > 0 )
         {
             if ( lexer )
@@ -3175,11 +3345,11 @@ class RegExpT(char_t)
             bool first = true;
             for ( int i = 0, used = 0; i < num_vars; ++i )
             {
-                if ( lexer && i < tdfa.num_tags )
+                if ( lexer && i < tdfa_.num_tags )
                     continue;
 
                 bool hasInit = false;
-                foreach ( cmd; tdfa.initializer )
+                foreach ( cmd; tdfa_.initializer )
                 {
                     if ( cmd.dst == i ) {
                         hasInit = true;
@@ -3209,7 +3379,7 @@ class RegExpT(char_t)
         code ~= "\n        else\n            ++p;\n        switch ( s )\n        {";
 
         uint[] finish_states;
-        foreach ( s; tdfa.states )
+        foreach ( s; tdfa_.states )
         {
             code ~= layout.convert("\n            case %d:", s.index);
 
@@ -3289,12 +3459,12 @@ class RegExpT(char_t)
             foreach ( fg; finisherGroup.keys )
             {
                 bool equalCommands = false;
-                if ( tdfa.states[fs].finishers.length == tdfa.states[fg].finishers.length )
+                if ( tdfa_.states[fs].finishers.length == tdfa_.states[fg].finishers.length )
                 {
                     equalCommands = true;
-                    foreach ( i, cmd; tdfa.states[fs].finishers )
+                    foreach ( i, cmd; tdfa_.states[fs].finishers )
                     {
-                        if ( cmd != tdfa.states[fg].finishers[i] ) {
+                        if ( cmd != tdfa_.states[fg].finishers[i] ) {
                             equalCommands = false;
                             break;
                         }
@@ -3319,13 +3489,13 @@ class RegExpT(char_t)
             foreach ( s; states )
                 code ~= layout.convert("\n        case %d: finish%d:", s, s);
 
-            foreach ( cmd; tdfa.states[group].finishers )
+            foreach ( cmd; tdfa_.states[group].finishers )
             {
                 if ( lexer )
                 {
-                    if ( tdfa.states[group].finishers.length > 1 )
+                    if ( tdfa_.states[group].finishers.length > 1 )
                         throw new RegExpException("Lexer error: more than one finisher in flm lexer!");
-                    if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa.num_tags )
+                    if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa_.num_tags )
                         throw new RegExpException(layout.convert("Lexer error: unexpected dst register %d in flm lexer!", cmd.dst));
                     code ~= layout.convert("\n            match = input[0 .. r%d];\n            token = %d;", cmd.src, cmd.dst/2);
                 }
@@ -3339,7 +3509,7 @@ class RegExpT(char_t)
 
         if ( !lexer )
         {
-            for ( int i = 0; i < tdfa.num_tags/2; ++i )
+            for ( int i = 0; i < tdfa_.num_tags/2; ++i )
                 code ~= layout.convert("\n    if ( r%d > -1 && r%d > -1 )\n        group%d = input[r%d .. r%d];", 2*i, 2*i+1, i, 2*i, 2*i+1);
         }
 
@@ -3349,24 +3519,26 @@ class RegExpT(char_t)
 
     uint tagCount()
     {
-        return tdfa.num_tags;
+        return tdfa_.num_tags;
     }
 
-    int[]       registers;
-    size_t      next_start,
-                last_start;
+    int[]       registers_;
+    size_t      next_start_,
+                last_start_;
 
+    debug tnfa_t tnfa_;
+    tdfa_t      tdfa_;
 private:
-    tdfa_t      tdfa;
-    char_t[]    input,
-                pattern;
+    const int   PREALLOC = 16;
+    char_t[]    input_,
+                pattern_;
 
     string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, char_t[] indent)
     {
         string  code,
                 dst;
         code ~= layout.convert("\n%sr%d = ", indent, cmd.dst);
-        if ( cmd.src != tdfa.CURRENT_POSITION_REGISTER )
+        if ( cmd.src != tdfa_.CURRENT_POSITION_REGISTER )
             code ~= layout.convert("r%d;", cmd.src);
         else
         {
@@ -3382,35 +3554,6 @@ private:
 alias RegExpT!(char)     Regex;
 alias RegExpT!(wchar)    Regexw;
 alias RegExpT!(dchar)    Regexd;
-
-/**************************************************************************************************
-    Search input for first match of pattern.
-    Params:
-        input       String to search.
-        pattern     Regular expression.
-    Returns:
-        The RegExpT object created if the pattern matched, null else.
-    Example:
-        ---
-        import tango.io.Stdout;
-        import tango.text.Regex;
-
-        void main()
-        {
-            if ( auto m = search("qwerabcabcababqwer", "ab") )
-                Stdout.formatln("{}[{}]{}", m.pre, m.match(0), m.post);
-        }
-        // Prints:
-        // qwer[ab]cabcababqwer
-        ---
-**************************************************************************************************/
-RegExpT!(char_t) search(char_t)(char_t[] str, char_t[] pattern, char_t[] attributes=null)
-{
-    auto r = new RegExpT!(char_t)(pattern, attributes);
-    if ( !r.test(str) )
-        delete r;
-    return r;
-}
 
 alias char[] string;
 

@@ -28,7 +28,7 @@ private import  Text = tango.text.Util;
 
 private import  Ascii = tango.text.Ascii;
 
-private import  Regex = tango.text.Regex;
+private import  tango.text.Regex : Regex;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -681,7 +681,7 @@ class FTPConnection : Telnet
                 auto response = this.readResponse("229");
 
                 // Try to pull out the (possibly not parenthesized) address.
-                auto r = Regex.search(response.message, `\([^0-9][^0-9][^0-9](\d+)[^0-9]\)`);
+                auto r = Regex(`\([^0-9][^0-9][^0-9](\d+)[^0-9]\)`).search(response.message);
                 if (r is null)
                     throw new FTPException("CLIENT: Unable to parse address", "501");
 
@@ -699,7 +699,7 @@ class FTPConnection : Telnet
                 auto response = this.readResponse("227");
 
                 // Try to pull out the (possibly not parenthesized) address.
-                auto r = Regex.search(response.message, `(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(,\s*(\d+))?`);
+                auto r = Regex(`(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(,\s*(\d+))?`).search(response.message);
                 if (r is null)
                     throw new FTPException("CLIENT: Unable to parse address", "501");
 
@@ -1223,7 +1223,7 @@ class FTPConnection : Telnet
                     return info;
 
                 // The order is 1 MM, 2 DD, 3 YY, 4 HH, 5 MM, 6 P
-                auto r = Regex.search(line, `(\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(A|P)M`);
+                auto r = Regex(`(\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(A|P)M`).search(line);
                 if (r is null)
                     return info;
 
