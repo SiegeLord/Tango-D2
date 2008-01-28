@@ -49,22 +49,30 @@ private
     }
 
 
-    struct RandOper
+    struct RandOper()
     {
         static size_t opCall( size_t lim )
         {
-            static if( size_t.sizeof == 4 )
+            // NOTE: The use of 'max' here is intended to eliminate modulo bias
+            //       in this routine.
+            size_t max = size_t.max - (size_t.max % lim);
+            size_t val;
+
+            do
             {
-                size_t val = (((cast(size_t)rand()) << 16) & 0xffff0000u) |
-                             (((cast(size_t)rand()))       & 0x0000ffffu);
-            }
-            else // assume size_t.sizeof == 8
-            {
-                size_t val = (((cast(size_t)rand()) << 48) & 0xffff000000000000uL) |
-                             (((cast(size_t)rand()) << 32) & 0x0000ffff00000000uL) |
-                             (((cast(size_t)rand()) << 16) & 0x00000000ffff0000uL) |
-                             (((cast(size_t)rand()))       & 0x000000000000ffffuL);
-            }
+                static if( size_t.sizeof == 4 )
+                {
+                    val = (((cast(size_t)rand()) << 16) & 0xffff0000u) |
+                          (((cast(size_t)rand()))       & 0x0000ffffu);
+                }
+                else // assume size_t.sizeof == 8
+                {
+                    val = (((cast(size_t)rand()) << 48) & 0xffff000000000000uL) |
+                          (((cast(size_t)rand()) << 32) & 0x0000ffff00000000uL) |
+                          (((cast(size_t)rand()) << 16) & 0x00000000ffff0000uL) |
+                          (((cast(size_t)rand()))       & 0x000000000000ffffuL);
+                }
+            } while( val > max );
             return val % lim;
         }
     }
@@ -1798,15 +1806,15 @@ else
                 buf[p2] = t;
             }
 
-            for( size_t pos = 2, end = buf.length; pos < buf.length; ++pos )
+            for( size_t pos = buf.length - 1; pos > 0; --pos )
             {
-                exch( pos, oper( pos ) );
+                exch( pos, oper( pos + 1 ) );
             }
         }
     }
 
 
-    template shuffle( Buf, Oper = RandOper )
+    template shuffle( Buf, Oper = RandOper!() )
     {
         void shuffle( Buf buf, Oper oper = Oper.init )
         {
