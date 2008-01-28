@@ -89,7 +89,7 @@ class Layout(T)
                 uint sink (T[] s)
                 {
                         int len = s.length;
-                        if (len < (result.ptr + result.length) - p)
+                        if (len <= (result.ptr + result.length) - p)
                            {
                            p [0..len] = s;
                            p += len;
@@ -902,6 +902,7 @@ debug (Layout)
         {
                 auto layout = new Layout!(char);
 
+                layout.sprint (new char[3], "hi");
                 Cout (layout ("{:d2}", 56)).newline;
                 Cout (layout ("{:f4}", 0.001)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
