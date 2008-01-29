@@ -402,8 +402,27 @@ private class LoggerInstance : Logger
 
         /***********************************************************************
 
-                Format text using the formatter configured in the associated
-                hierarchy (see Hierarchy.setFormat)
+                Format text using a temporary buffer for output (2048 bytes 
+                maximum capacity). This is purely for convenience purposes, 
+                and an exception will be generated where the output exceeds
+                this length.
+
+        ***********************************************************************/
+
+        final char[] layout (char[] formatStr, ...)
+        {
+                char[2048] buffer = void;
+
+                return .format.vprint (buffer, formatStr, _arguments, _argptr);     
+        }
+
+        /***********************************************************************
+
+                Format text using the provided buffer for output. Note that
+                we do not directly support heap-based formatting, since 
+                logging should make a point of avoiding heap activity. An
+                exception is thrown if the output buffer is too small for
+                the generated result.
 
         ***********************************************************************/
 
