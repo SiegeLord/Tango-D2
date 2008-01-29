@@ -143,7 +143,7 @@ public class Logger : ILevel
 
         ***********************************************************************/
 
-        abstract char[] layout (char[] format, ...);
+        abstract char[] toString (char[] format, ...);
 
         /***********************************************************************
 

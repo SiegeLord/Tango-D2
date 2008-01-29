@@ -409,7 +409,7 @@ private class LoggerInstance : Logger
 
         ***********************************************************************/
 
-        final char[] layout (char[] formatStr, ...)
+        final char[] toString (char[] formatStr, ...)
         {
                 char[2048] buffer = void;
 
