@@ -136,22 +136,8 @@ public class Logger : ILevel
 
         /***********************************************************************
 
-                Format text using a temporary buffer for output (2048 bytes 
-                maximum capacity). This is purely for convenience purposes, 
-                and an exception will be generated where the output exceeds
-                this length.
-
-        ***********************************************************************/
-
-        abstract char[] toString (char[] format, ...);
-
-        /***********************************************************************
-
-                Format text using the provided buffer for output. Note that
-                we do not directly support heap-based formatting, since 
-                logging should make a point of avoiding heap activity. An
-                exception is thrown if the output buffer is too small for
-                the generated result.
+                Format text using the formatter configured in the associated
+                hierarchy (see Hierarchy.setFormat)
 
         ***********************************************************************/
 
