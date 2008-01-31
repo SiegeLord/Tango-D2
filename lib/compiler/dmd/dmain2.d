@@ -231,13 +231,21 @@ extern (C) int main(int argc, char **argv)
                     if (e.file)
                     {
                        // fprintf(stderr, "%.*s(%u): %.*s\n", e.file, e.line, e.msg);
-                       console (e.classinfo.name)("@")(e.file)("(")(e.line)("): ")(e.msg)("\n");
+                       console (e.classinfo.name)("@")(e.file)("(")(e.line)("): ")(e.toString)("\n");
                     }
                     else
                     {
                        // fprintf(stderr, "%.*s\n", e.toString());
                        console (e.classinfo.name)(": ")(e.toString)("\n");
                     }
+                    if (e.info)
+                    {
+                        console ("----------------\n");
+                        foreach (t; e.info)
+                            console (t)("\n");
+                    }
+                    if (e.next)
+                        console ("\n");
                     e = e.next;
                 }
                 result = EXIT_FAILURE;

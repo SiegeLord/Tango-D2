@@ -896,17 +896,26 @@ class TypeInfo_Tuple : TypeInfo
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Exception
+////////////////////////////////////////////////////////////////////////////////
 class Exception : Object
 {
+    interface TraceInfo
+    {
+        int opApply( int delegate( inout char[] ) );
+    }
     char[]      msg;
     char[]      file;
     size_t      line;
+    TraceInfo   info;
     Exception   next;
 
     this(char[] msg, Exception next = null)
     {
         this.msg = msg;
         this.next = next;
+        this.info = traceContext();
     }
 
     this(char[] msg, char[] file, size_t line, Exception next = null)
@@ -914,12 +923,51 @@ class Exception : Object
         this(msg, next);
         this.file = file;
         this.line = line;
+        this.info = traceContext();
     }
 
     char[] toString()
     {
         return msg;
     }
+}
+
+
+alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
+private TraceHandler traceHandler = null;
+
+
+/**
+ * Overrides the default trace hander with a user-supplied version.
+ *
+ * Params:
+ *  h = The new trace handler.  Set to null to use the default handler.
+ */
+extern (C) void  rt_setTraceHandler( TraceHandler h )
+{
+    traceHandler = h;
+}
+
+
+/**
+ * This function will be called when an Exception is constructed.  The
+ * user-supplied trace handler will be called if one has been supplied,
+ * otherwise no trace will be generated.
+ *
+ * Params:
+ *  ptr = A pointer to the location from which to generate the trace, or null
+ *        if the trace should be generated from within the trace handler
+ *        itself.
+ *
+ * Returns:
+ *  An object describing the current calling context or null if no handler is
+ *  supplied.
+ */
+Exception.TraceInfo traceContext( void* ptr = null )
+{
+    if( traceHandler is null )
+        return null;
+    return traceHandler( ptr );
 }
 
 

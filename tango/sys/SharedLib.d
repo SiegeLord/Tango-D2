@@ -11,15 +11,14 @@ module tango.sys.SharedLib;
 
 
 private {
-    import tango.core.Exception : TracedException;
     import tango.stdc.stringz : fromUtf8z;
 
     version (Windows) {
         import tango.sys.Common : SysError;
-        
+
         alias void* HINSTANCE, HMODULE;
         alias int BOOL;
-        
+
         extern (Windows) {
             void* GetProcAddress(HINSTANCE, char*);
             HINSTANCE LoadLibraryA(char*);
@@ -32,7 +31,7 @@ private {
     else {
         static assert (false, "No support for this platform");
     }
-    
+
     version (SharedLibVerbose) import tango.util.log.Trace;
 }
 
@@ -41,7 +40,7 @@ private {
     SharedLib is an interface to system-specific shared libraries, such
     as ".dll", ".so" or ".dylib" files. It provides a simple interface to obtain
     symbol addresses (such as function pointers) from these libraries.
-    
+
     Example:
     ----
 
@@ -55,12 +54,12 @@ private {
             } else {
                 Trace.formatln("Symbol glClear not found");
             }
-            
+
             lib.unload();
         } else {
             Trace.formatln("Could not load the library");
         }
-        
+
         assert (0 == SharedLib.numLoadedLibs);
     }
 
@@ -84,11 +83,11 @@ final class SharedLib {
         Global = 0b100,
         Local = 0b1000
     }
-    
-    
+
+
     /**
         Loads an OS-specific shared library.
-        
+
         Note:
         Please use this function instead of the constructor, which is private.
 
@@ -103,7 +102,7 @@ final class SharedLib {
       */
     static SharedLib load(char[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
         SharedLib res;
-        
+
         synchronized (mutex) {
             auto lib = path in loadedLibs;
             if (lib) {
@@ -121,7 +120,7 @@ final class SharedLib {
 
         bool delRes = false;
         Exception exc;
-        
+
         synchronized (res) {
             if (!res.loaded) {
                 version (SharedLibVerbose) Trace.formatln("Loading the SharedLib");
@@ -143,26 +142,26 @@ final class SharedLib {
                     }
                 }
             }
-            
+
             // make sure that only one thread will delete the object
             if (0 == --res.refCnt) {
                 delRes = true;
             }
         }
-        
+
         if (delRes) {
             version (SharedLibVerbose) Trace.formatln("Deleting the SharedLib");
             delete res;
         }
-        
+
         if (exc !is null) {
             throw exc;
         }
-        
+
         version (SharedLibVerbose) Trace.formatln("SharedLib not loaded, returning null");
         return null;
     }
-    
+
 
     /**
         Unloads the OS-specific shared library associated with this SharedLib instance.
@@ -170,7 +169,7 @@ final class SharedLib {
         Note:
         It's invalid to use the object after unload() has been called, as unload()
         will delete it if it's not referenced any more.
-        
+
         Throws SharedLibException on failure. In this case, the SharedLib object is not deleted.
       */
     void unload() {
@@ -179,7 +178,7 @@ final class SharedLib {
         synchronized (this) {
             assert (loaded);
             assert (refCnt > 0);
-            
+
             synchronized (mutex) {
                 if (--refCnt <= 0) {
                     version (SharedLibVerbose) Trace.formatln("Unloading the SharedLib");
@@ -189,7 +188,7 @@ final class SharedLib {
                         ++refCnt;
                         throw e;
                     }
-                    
+
                     assert ((path in loadedLibs) !is null);
                     loadedLibs.remove(path);
 
@@ -202,7 +201,7 @@ final class SharedLib {
             delete this;
         }
     }
-    
+
 
     /**
         Returns the path to the OS-specific shared library associated with this object.
@@ -210,7 +209,7 @@ final class SharedLib {
     char[] path() {
         return this.path_;
     }
-    
+
 
     /**
         Obtains the address of a symbol within the shared library
@@ -226,7 +225,7 @@ final class SharedLib {
         assert (loaded);
         return getSymbol_(name);
     }
-    
+
 
 
     /**
@@ -235,12 +234,12 @@ final class SharedLib {
     static uint numLoadedLibs() {
         return loadedLibs.keys.length;
     }
-    
-    
+
+
     private {
         version (Windows) {
             HMODULE handle;
-            
+
             void load_(LoadMode mode) {
                 handle = LoadLibraryA((this.path_ ~ \0).ptr);
                 if (handle is null && SharedLib.throwExceptions) {
@@ -256,7 +255,7 @@ final class SharedLib {
                     return res;
                 }
             }
-            
+
             void unload_() {
                 if (0 == FreeLibrary(handle) && SharedLib.throwExceptions) {
                     throw new SharedLibException("Couldn't unload shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
@@ -265,7 +264,7 @@ final class SharedLib {
         }
         else version (Posix) {
             void* handle;
-            
+
             void load_(LoadMode mode) {
                 int mode_;
                 if (mode & LoadMode.Now) mode_ |= RTLD_NOW;
@@ -278,7 +277,7 @@ final class SharedLib {
                     throw new SharedLibException("Couldn't load shared library: " ~ fromUtf8z(dlerror()));
                 }
             }
-        
+
             void* getSymbol_(char* name) {
                 auto res = dlsym(handle, name);
                 if (res is null && SharedLib.throwExceptions) {
@@ -297,12 +296,12 @@ final class SharedLib {
         else {
             static assert (false, "No support for this platform");
         }
-        
-        
+
+
         char[] path_;
         int refCnt = 0;
-        
-        
+
+
         bool loaded() {
             return handle !is null;
         }
@@ -312,8 +311,8 @@ final class SharedLib {
             this.path_ = path.dup;
         }
     }
-    
-    
+
+
     private static {
         SharedLib[char[]] loadedLibs;
         Object mutex;
@@ -323,14 +322,14 @@ final class SharedLib {
     static this() {
         mutex = new Object;
     }
-    
-    
+
+
     /// Set this to false if you don't want SharedLib to throw exceptions in symbol(),  load() and unload()
     static bool throwExceptions = true;
 }
 
 
-class SharedLibException : TracedException {
+class SharedLibException : Exception {
     this (char[] msg) {
         super(msg);
     }

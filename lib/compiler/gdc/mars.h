@@ -73,6 +73,7 @@ typedef struct Exception
 
     size_t line;
 
+    struct Interface *info;
     struct Exception *next;
 } Exception;
 

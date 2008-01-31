@@ -5,7 +5,7 @@
 
     version:    Oct2007
     author:     Darryl B, Jeff D
-    
+
     History:
     ---
     Date     Who           What
@@ -23,17 +23,15 @@
 
 module tango.util.Arguments;
 
-private import tango.core.Exception : TracedException;
-
 /***********************************************************************
 
     This exception is thrown during argument validation.
 
 ***********************************************************************/
 
-public class ArgumentException : TracedException
+public class ArgumentException : Exception
 {
-    /*********************************************************************** 
+    /***********************************************************************
 
         The reason the exception was thrown
 
@@ -41,18 +39,18 @@ public class ArgumentException : TracedException
 
     enum ExceptionReason
     {
-        /*********************************************************************** 
-          An invalid parameter was passed 
+        /***********************************************************************
+          An invalid parameter was passed
          ***********************************************************************/
 
         INVALID_PARAMETER,
-        /*********************************************************************** 
-          A parameter wasn't passed to an argument when it was expected 
+        /***********************************************************************
+          A parameter wasn't passed to an argument when it was expected
          ***********************************************************************/
 
         MISSING_PARAMETER,
-        /*********************************************************************** 
-          An argument was missing 
+        /***********************************************************************
+          An argument was missing
          ***********************************************************************/
 
         MISSING_ARGUMENT
@@ -62,9 +60,9 @@ public class ArgumentException : TracedException
     private char[] _parameter;
     private ExceptionReason _reason;
 
-    /*********************************************************************** 
+    /***********************************************************************
 
-      The name of the specific argument 
+      The name of the specific argument
 
      ***********************************************************************/
 
@@ -72,7 +70,7 @@ public class ArgumentException : TracedException
 
     /***********************************************************************
 
-      The parameter to the argument 
+      The parameter to the argument
 
      ***********************************************************************/
 
@@ -80,7 +78,7 @@ public class ArgumentException : TracedException
 
     /***********************************************************************
 
-      The enum to the reason it failed 
+      The enum to the reason it failed
 
      ***********************************************************************/
 
@@ -100,13 +98,13 @@ public class ArgumentException : TracedException
     The Arguments class is used to parse arguments and encapsulate the
     parameters passed by an application user.
 
-    The command line arguments into an array of found arguments and their 
+    The command line arguments into an array of found arguments and their
     respective parameters (if any).
-    
-    Arguments can be short (-), long (--), or implicit. Arguments can 
+
+    Arguments can be short (-), long (--), or implicit. Arguments can
     optionally be passed parameters. For example, this module
     parses command lines such as: "-a -b -c --long --argument=parameter"
-    
+
     Example:
     ---
     char[][] arguments = [ "programname", "-a:on", "-abc:on", "--this=good", "-x:on" ];
@@ -129,7 +127,7 @@ public class ArgumentException : TracedException
         }
     }
     ---
-    
+
     Syntax:
     ---
     Short Argument - -[x][:=]?[ parameter]...
@@ -159,8 +157,8 @@ public class ArgumentException : TracedException
     - "myprogram --long:arg"
     ---
 
-    Arguments can contain either '=' or ':', but not both. For example. 
-    the following results in the argument 'long' being set to 'arg=other' 
+    Arguments can contain either '=' or ':', but not both. For example.
+    the following results in the argument 'long' being set to 'arg=other'
     and 'arg:other', respectively.
     ---
     - "myprogram --long:arg=other"
@@ -174,7 +172,7 @@ public class ArgumentException : TracedException
     - "myprogram - - - -a -- -c"
     ---
 
-    In the absence of implicit arguments, short options can be infered when 
+    In the absence of implicit arguments, short options can be infered when
     they come first. Given no implicit arguments, the following are equivalent.
     ---
     - "myprogram abc"
@@ -182,7 +180,7 @@ public class ArgumentException : TracedException
     - "myprogram -a -b -c"
     ---
 
-    Short options are case sensitive, while long options are not. The following 
+    Short options are case sensitive, while long options are not. The following
     are equivalent.
     ---
     - "myprogram -a -A -LONG"
@@ -190,46 +188,46 @@ public class ArgumentException : TracedException
     - "myprogram -a -A -long"
     ---
 
-    In the event of multiple definitions of an argument, any parameters given 
+    In the event of multiple definitions of an argument, any parameters given
     will be concatenated. The following are equivalent.
     ---
     - "myprogram -a one two three"
     - "myprogram -a one -a two -a three"
     - "myprogram -a:one two -a=three"
     ---
-        
-    Multiple parameters can be iterated through using via the opIndex operator. 
+
+    Multiple parameters can be iterated through using via the opIndex operator.
     For example, given:
     ---
     - "myprogram -collect one two three '4 5 6'"
     ---
     args["collect"] will return a char[][] array ["one", "two", "three", "4 5 6"].
 
-    Implicit arguments can be defined by passing in an implicit arguments array, 
+    Implicit arguments can be defined by passing in an implicit arguments array,
     which may look something like: ["first", "second"].
-    Given implicit arguments, any non-argument command line parameters will be 
+    Given implicit arguments, any non-argument command line parameters will be
     automatically assigned to the implicit arguments,
     in the order they were given.
     For example, given the implicit arguments ["first", "second"] and command line:
     ---
     - "myprogram hello there bob"
     ---
-    The argument 'first' will be assigned 'hello', and the argument 'second' will 
+    The argument 'first' will be assigned 'hello', and the argument 'second' will
     be assigned both 'there' and 'bob'.
 
     Any intervening arguments will end the assignment. For example, given:
     ---
     - "myprogram hello there bob -a how are you"
     ---
-    'first' is assigned 'hello', 'second' is assigned 'there' and 'bob', and 'a' 
+    'first' is assigned 'hello', 'second' is assigned 'there' and 'bob', and 'a'
     is assigned 'how', 'are', and 'you'.
-    
-    Implicit arguments also allows programs to support non-option arguments, 
+
+    Implicit arguments also allows programs to support non-option arguments,
     given implicit arguments ["actions"], and a command line such as:
     ---
     - "myprogram mop sweep get_coffee -time:now"
     ---
-    args["actions"] will contain ["mop", "sweep", "get_coffee"], and 
+    args["actions"] will contain ["mop", "sweep", "get_coffee"], and
     args["time"] will contain "now".
 
 ***********************************************************************/
@@ -244,7 +242,7 @@ public class Arguments
     alias bool function(char[] param) validationFunction;
     /// Delegate used to validate single parameters at a time.
     alias bool delegate(char[] param) validationDelegate;
-    
+
     private char[][][char[]] _args;
     private char[] _program;
     private struct validation
@@ -268,7 +266,7 @@ public class Arguments
                     return i;
             return arg.length;
         }
-            
+
 
         if (arg)
         {
@@ -325,7 +323,7 @@ public class Arguments
             }
             rtn = argName;
         }
-        return rtn;     
+        return rtn;
     }
 
     /***********************************************************************
@@ -358,7 +356,7 @@ public class Arguments
     {
         _args[key] = null;
     }
-    
+
     /***********************************************************************
 
         Directly access an argument's parameters via opIndex operator as an
@@ -369,14 +367,14 @@ public class Arguments
 
     char[][] opIndex(char[] key)
     {
-        char[][] rtn = null;    
+        char[][] rtn = null;
         if (key && (key in _args))
             rtn = _args[key];
         return rtn;
     }
 
-    /*********************************************************************** 
-      
+    /***********************************************************************
+
         Operator is used to check if the argument exists
 
     ***********************************************************************/
@@ -412,7 +410,7 @@ public class Arguments
             }
         }
     }
-    
+
     /***********************************************************************
 
         Adds a validation to the arguments
@@ -421,7 +419,7 @@ public class Arguments
             argument = the argument name
             validF = a validation function for single parameters
 
-    ***********************************************************************/    
+    ***********************************************************************/
 
     void addValidation(char[] argument, validationFunction validF)
     {
@@ -441,7 +439,7 @@ public class Arguments
             argument = the argument name
             validD = a validation delegate for single parameters
 
-    ***********************************************************************/    
+    ***********************************************************************/
 
     void addValidation(char[] argument, validationDelegate validD)
     {
@@ -461,7 +459,7 @@ public class Arguments
             argument = the argument name
             validF = a validation function for multiple parameters
 
-    ***********************************************************************/    
+    ***********************************************************************/
 
     void addValidation(char[] argument, validationFunctionMulti validFM)
     {
@@ -481,7 +479,7 @@ public class Arguments
             argument = the argument name
             validD = a validation delegate for multiple parameters
 
-    ***********************************************************************/    
+    ***********************************************************************/
 
     void addValidation(char[] argument, validationDelegateMulti validDM)
     {
@@ -491,7 +489,7 @@ public class Arguments
             if (val !is null)
                 val.validDM ~= validDM;
         }
-    }   
+    }
 
     private validation* getValidation(char[] argument)
     {
@@ -505,7 +503,7 @@ public class Arguments
             rtn = &(_validations[argument]);
         return rtn;
     }
-    
+
     /***********************************************************************
 
         Validates the parsed arguments.
@@ -566,7 +564,7 @@ public class Arguments
     }
 
     /***********************************************************************
-    
+
             Parse the arguments according to the passed implicitArg list
             and aliases.
 
@@ -638,11 +636,11 @@ public class Arguments
 
     /***********************************************************************
 
-        Constructor that supports all features 
+        Constructor that supports all features
 
         Params:
             arguments = the list of arguments (usually from main)
-            implicitArgs = assigns values using these keys in order from the arguments array. 
+            implicitArgs = assigns values using these keys in order from the arguments array.
             aliases = aliases specific arguments to each other to concat parameters. looks like aliases[0] = [ "alias1", "alias2", "alias3" ]; (which groups all these arguments together)
 
     ***********************************************************************/
@@ -668,7 +666,7 @@ public class Arguments
     }
 
 
-    /*********************************************************************** 
+    /***********************************************************************
 
         This constructor allows implicitArgs to be set as well
 
@@ -709,11 +707,11 @@ version(UnitTest)
     import tango.util.Test;
     import tango.text.Util;
     import tango.io.Stdout;
-    
+
     unittest
-    {   
+    {
         Test.Status parseTest(inout char[][] messages)
-        {   
+        {
             char[][] arguments = [ "ignoreprogramname", "--accumulate", "one", "-x", "on", "--accumulate:two", "-y", "off", "--accumulate=three", "-abc" ];
             Arguments args = new Arguments(arguments);
             if (args)
@@ -725,7 +723,7 @@ version(UnitTest)
                         if (args["x"][0] == "on")
                         {
                             if (("a" in args) && ("b" in args) && ("c" in args))
-                                return Test.Status.Success;     
+                                return Test.Status.Success;
                         }
                     }
                 }
@@ -771,7 +769,7 @@ version(UnitTest)
             aliases[3] = [ "lettere", "eff", "e" ];
             Arguments args = new Arguments(arguments, aliases);
             if (args)
-            {       
+            {
                 if (!("ignoreprogramname" in args) && ("letterbc" in args) && ("a" in args) && ("b" in args) &&
                         ("c" in args) && ("d" in args) && ("eff" in args))
                 {
@@ -797,7 +795,7 @@ version(UnitTest)
             testRan = true;
             return rtn;
         }
-        
+
         Test.Status validationTest(inout char[][] messages)
         {
             char[][] arguments = [ "programname", "-a:on", "-abc:on", "--this=good", "-x:on" ];

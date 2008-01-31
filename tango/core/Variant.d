@@ -7,7 +7,6 @@
  */
 module tango.core.Variant;
 
-private import tango.core.Exception : TracedException;
 private import tango.core.Vararg : va_list;
 
 private
@@ -197,7 +196,7 @@ private
  * This exception is thrown whenever you attempt to get the value of a Variant
  * without using a compatible type.
  */
-class VariantTypeMismatchException : TracedException
+class VariantTypeMismatchException : Exception
 {
     this(TypeInfo expected, TypeInfo got)
     {
@@ -598,7 +597,7 @@ debug( UnitTest )
         assert( v.isImplicitly!(real), v.type.toString );
         assert( !v.isImplicitly!(float), v.type.toString );
         assert( v.get!(double) == 3.1413 );
-        
+
         auto u = Variant(v);
         assert( u.isA!(double), u.type.toString );
         assert( u.get!(double) == 3.1413 );
@@ -656,7 +655,7 @@ debug( UnitTest )
             hash[v1] = 0;
             hash[v2] = 1;
             hash[v3] = 2;
-            
+
             assert( hash[v1] == 0 );
             assert( hash[v2] == 1 );
             assert( hash[v3] == 2 );

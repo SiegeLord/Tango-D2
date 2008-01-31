@@ -12,16 +12,8 @@ module tango.core.Exception;
 private
 {
     alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
-    alias TracedExceptionInfo function( void* ptr = null ) traceHandlerType;
 
     assertHandlerType   assertHandler   = null;
-    traceHandlerType    traceHandler    = null;
-}
-
-
-interface TracedExceptionInfo
-{
-    int opApply( int delegate( inout char[] ) );
 }
 
 
@@ -29,38 +21,36 @@ interface TracedExceptionInfo
 /*
 - Exception
   - OutOfMemoryException
+  - SwitchException
+  - AssertException
+  - ArrayBoundsException
+  - FinalizeException
 
-  - TracedException
-    - SwitchException
-    - AssertException
-    - ArrayBoundsException
-    - FinalizeException
+  - PlatformException
+    - ProcessException
+    - ThreadException
+      - FiberException
+    - SyncException
+    - IOException
+      - SocketException
+        - SocketAcceptException
+      - AddressException
+      - HostException
+      - VfsException
+      - ClusterException
 
-    - PlatformException
-      - ProcessException
-      - ThreadException
-        - FiberException
-      - SyncException
-      - IOException
-        - SocketException
-          - SocketAcceptException
-        - AddressException
-        - HostException
-        - VfsException
-        - ClusterException
+  - NoSuchElementException
+    - CorruptedIteratorException
 
-    - NoSuchElementException
-      - CorruptedIteratorException
+  - IllegalArgumentException
+    - IllegalElementException
 
-    - IllegalArgumentException
-      - IllegalElementException
+  - TextException
+    - RegexException
+    - LocaleException
+    - UnicodeException
 
-    - TextException
-      - RegexException
-      - LocaleException
-      - UnicodeException
-
-    - PayloadException
+  - PayloadException
 */
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -83,55 +73,9 @@ class OutOfMemoryException : Exception
 
 
 /**
- * Stores a stack trace when thrown.
- */
-class TracedException : Exception
-{
-    this( char[] msg )
-    {
-        super( msg );
-        m_info = traceContext();
-    }
-
-    this( char[] msg, Exception e )
-    {
-        super( msg, e );
-        m_info = traceContext();
-    }
-
-    this( char[] msg, char[] file, size_t line )
-    {
-        super( msg, file, line );
-        m_info = traceContext();
-    }
-
-    char[] toString()
-    {
-        if( m_info is null )
-            return super.toString();
-        char[] buf = super.toString();
-        buf ~= "\n----------------";
-        foreach( line; m_info )
-            buf ~= "\n" ~ line;
-        return buf;
-    }
-
-    int opApply( int delegate( inout char[] buf ) dg )
-    {
-        if( m_info is null )
-            return 0;
-        return m_info.opApply( dg );
-    }
-
-private:
-    TracedExceptionInfo m_info;
-}
-
-
-/**
  * Base class for operating system or library exceptions.
  */
-class PlatformException : TracedException
+class PlatformException : Exception
 {
     this( char[] msg )
     {
@@ -142,7 +86,7 @@ class PlatformException : TracedException
 /**
  * Thrown on an assert error.
  */
-class AssertException : TracedException
+class AssertException : Exception
 {
     this( char[] file, size_t line )
     {
@@ -159,7 +103,7 @@ class AssertException : TracedException
 /**
  * Thrown on an array bounds error.
  */
-class ArrayBoundsException : TracedException
+class ArrayBoundsException : Exception
 {
     this( char[] file, size_t line )
     {
@@ -171,7 +115,7 @@ class ArrayBoundsException : TracedException
 /**
  * Thrown on finalize error.
  */
-class FinalizeException : TracedException
+class FinalizeException : Exception
 {
     ClassInfo   info;
 
@@ -191,7 +135,7 @@ class FinalizeException : TracedException
 /**
  * Thrown on a switch error.
  */
-class SwitchException : TracedException
+class SwitchException : Exception
 {
     this( char[] file, size_t line )
     {
@@ -203,7 +147,7 @@ class SwitchException : TracedException
 /**
  * Represents a text processing error.
  */
-class TextException : TracedException
+class TextException : Exception
 {
     this( char[] msg )
     {
@@ -276,7 +220,7 @@ class IOException : PlatformException
 }
 
 /**
- * The basic exception thrown by the tango.io.vfs package. 
+ * The basic exception thrown by the tango.io.vfs package.
  */
 private class VfsException : IOException
 {
@@ -287,7 +231,7 @@ private class VfsException : IOException
 }
 
 /**
- * The basic exception thrown by the tango.io.cluster package. 
+ * The basic exception thrown by the tango.io.cluster package.
  */
 private class ClusterException : IOException
 {
@@ -386,7 +330,7 @@ class LocaleException : TextException
  * problem during proxy registration, or when it sees an unregistered
  * guid.
  */
-class RegistryException : TracedException
+class RegistryException : Exception
 {
     this( char[] msg )
     {
@@ -398,7 +342,7 @@ class RegistryException : TracedException
 /**
  * Thrown when an illegal argument is encountered.
  */
-class IllegalArgumentException : TracedException
+class IllegalArgumentException : Exception
 {
     this( char[] msg )
     {
@@ -426,7 +370,7 @@ class IllegalElementException : IllegalArgumentException
 /**
  * Thrown on past-the-end errors by iterators and containers.
  */
-class NoSuchElementException : TracedException
+class NoSuchElementException : Exception
 {
     this( char[] msg )
     {
@@ -461,18 +405,6 @@ class CorruptedIteratorException : NoSuchElementException
 void setAssertHandler( assertHandlerType h )
 {
     assertHandler = h;
-}
-
-
-/**
- * Overrides the default trace hander with a user-supplied version.
- *
- * Params:
- *  h = The new trace handler.  Set to null to use the default handler.
- */
-void setTraceHandler( traceHandlerType h )
-{
-    traceHandler = h;
 }
 
 
@@ -515,27 +447,6 @@ extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
     assertHandler( file, line, msg );
 }
 
-
-/**
- * This function will be called when a TracedException is constructed.  The
- * user-supplied trace handler will be called if one has been supplied,
- * otherwise no trace will be generated.
- *
- * Params:
- *  ptr = A pointer to the location from which to generate the trace, or null
- *        if the trace should be generated from within the trace handler
- *        itself.
- *
- * Returns:
- *  An object describing the current calling context or null if no handler is
- *  supplied.
- */
-TracedExceptionInfo traceContext( void* ptr = null )
-{
-    if( traceHandler is null )
-        return null;
-    return traceHandler( ptr );
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Internal Error Callbacks

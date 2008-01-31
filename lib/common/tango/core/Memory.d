@@ -46,8 +46,6 @@ private
 
     extern (C) void gc_removeRoot( void* p );
     extern (C) void gc_removeRange( void* p );
-
-    alias bool function( Object obj ) collectHandlerType;
 }
 
 
@@ -431,45 +429,4 @@ struct GC
     {
         gc_removeRange( p );
     }
-
-
-    /**
-     * Overrides the default collect hander with a user-supplied version.
-     *
-     * Params:
-     *  h = The new collect handler.  Set to null to use the default handler.
-     */
-    static void collectHandler( collectHandlerType h )
-    {
-        sm_collectHandler = h;
-    }
-
-
-private:
-    static collectHandlerType   sm_collectHandler = null;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Overridable Callbacks
-////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * This function will be called when resource objects (ie. objects with a dtor)
- * are finalized by the garbage collector.  The user-supplied collect handler
- * will be called if one has been supplied, otherwise no action will be taken.
- *
- * Params:
- *  obj = The object being collected.
- *
- * Returns:
- *  true if the runtime should call this object's dtor and false if not.
- *  Default behavior is to return true.
- */
-extern (C) bool onCollectResource( Object obj )
-{
-    if( GC.sm_collectHandler is null )
-        return true;
-    return GC.sm_collectHandler( obj );
 }

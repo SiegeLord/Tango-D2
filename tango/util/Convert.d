@@ -13,7 +13,6 @@ module tango.util.Convert;
 
 private import tango.core.Traits;
 private import tango.core.Tuple : Tuple;
-private import tango.core.Exception : TracedException;
 
 private import tango.math.Math;
 private import tango.text.convert.Utf;
@@ -177,7 +176,7 @@ else
  * be represented in the destination type.  This exception is also thrown when
  * the conversion would cause an over- or underflow.
  */
-class ConversionException : TracedException
+class ConversionException : Exception
 {
     this( char[] msg )
     {

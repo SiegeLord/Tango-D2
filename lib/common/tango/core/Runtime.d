@@ -12,7 +12,12 @@ private
 {
     extern (C) bool rt_isHalting();
 
-    alias bool function() moduleUnitTesterType;
+    alias bool function() ModuleUnitTester;
+    alias bool function(Object) CollectHandler;
+    alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
+
+    extern (C) void  rt_setCollectHandler( CollectHandler h );
+    extern (C) void  rt_setTraceHandler( TraceHandler h );
 }
 
 
@@ -42,19 +47,56 @@ struct Runtime
 
 
     /**
+     * Overrides the default trace mechanism with s user-supplied version.  A
+     * trace represents the context from which an exception was thrown, and the
+     * trace handler will be called when this occurs.  The pointer supplied to
+     * this routine indicates the base address from which tracing should occur.
+     * If the supplied pointer is null then the trace routine should determine
+     * an appropriate calling context from which to begin the trace.
+     *
+     * Params:
+     *  h = The new trace handler.  Set to null to use the default handler.
+     */
+    static void traceHandler( TraceHandler h )
+    {
+        rt_setTraceHandler( h );
+    }
+
+
+    /**
+     * Overrides the default collect hander with a user-supplied version.  This
+     * routine will be called for each resource object that is finalized in a
+     * non-deterministic manner--typically during a garbage collection cycle.
+     * If the supplied routine returns true then the object's dtor will called
+     * as normal, but if the routine returns false than the dtor will not be
+     * called.  The default behavior is for all object dtors to be called.
+     *
+     * Params:
+     *  h = The new collect handler.  Set to null to use the default handler.
+     */
+    static void collectHandler( CollectHandler h )
+    {
+        rt_setCollectHandler( h );
+    }
+
+
+    /**
      * Overrides the default module unit tester with a user-supplied version.
+     * This routine will be called once on program initialization.  The return
+     * value of this routine indicates to the runtime whether the body of the
+     * program will be executed.
      *
      * Params:
      *  h = The new unit tester.  Set to null to use the default unit tester.
      */
-    static void moduleUnitTester( moduleUnitTesterType h )
+    static void moduleUnitTester( ModuleUnitTester h )
     {
         sm_moduleUnitTester = h;
     }
 
 
 private:
-    static moduleUnitTesterType sm_moduleUnitTester = null;
+    static ModuleUnitTester sm_moduleUnitTester = null;
 }
 
 

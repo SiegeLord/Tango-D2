@@ -66,7 +66,6 @@ private
     extern (C) size_t  gc_sizeOf( void* p );
     extern (C) BlkInfo gc_query( void* p );
 
-    extern (C) bool onCollectResource( Object o );
     extern (C) void onFinalizeError( ClassInfo c, Exception e );
     extern (C) void onOutOfMemoryError();
 
@@ -76,6 +75,9 @@ private
     {
         PAGESIZE = 4096
     }
+
+    alias bool function(Object) CollectHandler;
+    CollectHandler collectHandler = null;
 }
 
 
@@ -445,6 +447,15 @@ extern (C) void _d_callfinalizer(void* p)
 /**
  *
  */
+extern (C) void  rt_setCollectHandler(CollectHandler h)
+{
+    collectHandler = h;
+}
+
+
+/**
+ *
+ */
 extern (C) void rt_finalize(void* p, bool det = true)
 {
     debug(PRINTF) printf("rt_finalize(p = %p)\n", p);
@@ -459,7 +470,7 @@ extern (C) void rt_finalize(void* p, bool det = true)
 
             try
             {
-                if (det || onCollectResource(cast(Object)p))
+                if (det || collectHandler is null || collectHandler(cast(Object)p))
                 {
                     do
                     {
