@@ -62,7 +62,7 @@ dchar* toString32z (dchar[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
-                   s = s ~ "\0"w;
+                   s = s ~ "\0"d;
         return s.ptr;
 }
 
