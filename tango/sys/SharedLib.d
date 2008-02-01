@@ -11,7 +11,7 @@ module tango.sys.SharedLib;
 
 
 private {
-    import tango.stdc.stringz : fromUtf8z;
+    import tango.stdc.stringz : fromStringz;
 
     version (Windows) {
         import tango.sys.Common : SysError;
@@ -250,7 +250,7 @@ final class SharedLib {
             void* getSymbol_(char* name) {
                 auto res = GetProcAddress(handle, name);
                 if (res is null && SharedLib.throwExceptions) {
-                    throw new SharedLibException("Couldn't load symbol '" ~ fromUtf8z(name) ~ "' from shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
+                    throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name) ~ "' from shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
                 } else {
                     return res;
                 }
@@ -274,14 +274,14 @@ final class SharedLib {
 
                 handle = dlopen((this.path_ ~ \0).ptr, mode_);
                 if (handle is null && SharedLib.throwExceptions) {
-                    throw new SharedLibException("Couldn't load shared library: " ~ fromUtf8z(dlerror()));
+                    throw new SharedLibException("Couldn't load shared library: " ~ fromStringz(dlerror()));
                 }
             }
 
             void* getSymbol_(char* name) {
                 auto res = dlsym(handle, name);
                 if (res is null && SharedLib.throwExceptions) {
-                    throw new SharedLibException("Couldn't load symbol: " ~ fromUtf8z(dlerror()));
+                    throw new SharedLibException("Couldn't load symbol: " ~ fromStringz(dlerror()));
                 } else {
                     return res;
                 }
@@ -289,7 +289,7 @@ final class SharedLib {
 
             void unload_() {
                 if (0 != dlclose(handle) && SharedLib.throwExceptions) {
-                    throw new SharedLibException("Couldn't unload shared library: " ~ fromUtf8z(dlerror()));
+                    throw new SharedLibException("Couldn't unload shared library: " ~ fromStringz(dlerror()));
                 }
             }
         }
