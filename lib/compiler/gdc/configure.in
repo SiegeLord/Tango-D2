@@ -182,7 +182,7 @@ if test $r -eq 0; then
   AC_MSG_RESULT([yes])
 else
   AC_MSG_RESULT([no])
-  AC_MSG_ERROR([can't compile D sources!])
+  #AC_MSG_ERROR([can't compile D sources!])
 fi
 
 AC_SUBST(GDC)

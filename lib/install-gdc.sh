@@ -21,7 +21,7 @@ Options:
   --prefix: Install to the specified prefix.
   --uninstall: Uninstall tango, switch back to standard phobos.'
     exit 0
-}
+} #'
 
 cd "`dirname $0`"
 
@@ -58,6 +58,7 @@ ${CROSS}gdc --help >& /dev/null || die "gdc not found on your \$PATH!" 1
 
 GPHOBOS_DIR="`${CROSS}gdc -print-file-name=libgphobos.a`"
 GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
+
 # If we have which, use it to get the prefix
 which --version >& /dev/null
 if [ "$?" = "0" ]
@@ -67,6 +68,13 @@ then
 else
     PREFIX="$GPHOBOS_DIR/.."
 fi
+
+# If libgphobos.a isn't installed, make it up
+if [ "$GPHOBOS_DIR" = "." ]
+then
+    GPHOBOS_DIR="$PREFIX/lib"
+fi
+
 GDC_VER="`${CROSS}gdc -dumpversion`"
 GDC_MCH="`${CROSS}gdc -dumpmachine`"
 
