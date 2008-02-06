@@ -107,13 +107,12 @@ then
 fi
 
 # Back up the original files
-if [ -e "$GPHOBOS_DIR/libgphobos.a.phobos" ]
+if [ -e "$GPHOBOS_DIR/libgphobos.a" -a \
+     ! -e "$GPHOBOS_DIR/libgphobos.a.phobos" ]
 then
-    die "You must uninstall your old copy of Tango before installing a new one." 4
+    mv -f $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libgphobos.a.phobos
+    mv -f $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos
 fi
-mv -f $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libgphobos.a.phobos
-mv $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos ||
-    die "Failed to move Phobos' object.d" 8
 
 # Install ...
 if [ "$INPLACE" = "0" ]
