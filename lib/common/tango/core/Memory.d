@@ -17,6 +17,7 @@ private
     extern (C) void gc_enable();
     extern (C) void gc_disable();
     extern (C) void gc_collect();
+    extern (C) void gc_minimize();
 
     extern (C) uint gc_getAttr( void* p );
     extern (C) uint gc_setAttr( void* p, uint a );
@@ -87,6 +88,16 @@ struct GC
     static void collect()
     {
         gc_collect();
+    }
+
+    /**
+     * Indicates that the managed memory space be minimized by returning free
+     * physical memory to the operating system.  The amount of free memory
+     * returned depends on the allocator design and on program behavior.
+     */
+    static void minimize()
+    {
+        gc_minimize();
     }
 
 

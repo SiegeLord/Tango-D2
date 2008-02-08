@@ -1258,6 +1258,22 @@ class GC
 
 
     /**
+     * minimize free space usage
+     */
+    void minimize()
+    {
+        if (!thread_needLock())
+        {
+            gcx.minimize();
+        }
+        else synchronized (gcLock)
+        {
+            gcx.minimize();
+        }
+    }
+
+
+    /**
      * Retrieve statistics about garbage collection.
      * Useful for debugging and tuning.
      */
@@ -1839,6 +1855,41 @@ struct Gcx
 
 
     /**
+     * Minimizes physical memory usage by returning free pools to the OS.
+     */
+    void minimize()
+    {
+        size_t n;
+        size_t pn;
+        Pool*  pool;
+        size_t ncommitted;
+
+        for (n = 0; n < npools; n++)
+        {
+            pool = pooltable[n];
+            ncommitted = pool.ncommitted;
+            for (pn = 0; pn < ncommitted; pn++)
+            {
+                if (cast(Bins)pool.pagetable[pn] != B_FREE)
+                    break;
+            }
+            if (pn < ncommitted)
+            {
+                n++;
+                continue;
+            }
+            pool.Dtor();
+            cstdlib.free(pool);
+            cstring.memmove(pooltable + n,
+                            pooltable + n + 1,
+                            (--npools - n) * (Pool*).sizeof);
+            minAddr = pooltable[0].baseAddr;
+            maxAddr = pooltable[npools - 1].topAddr;
+        }
+    }
+
+
+    /**
      * Allocate a chunk of memory that is larger than a page.
      * Return null if out of memory.
      */
@@ -1881,6 +1932,8 @@ struct Gcx
                 {   state = 1;
                     continue;
                 }
+                // Release empty pools to prevent bloat
+                minimize();
                 // Allocate new pool
                 pool = newPool(npages);
                 if (!pool)
@@ -1891,6 +1944,8 @@ struct Gcx
                 assert(pn != OPFAIL);
                 goto L1;
             case 1:
+                // Release empty pools to prevent bloat
+                minimize();
                 // Allocate new pool
                 pool = newPool(npages);
                 if (!pool)

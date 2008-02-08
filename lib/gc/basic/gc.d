@@ -90,6 +90,12 @@ extern (C) void gc_collect()
     _gc.fullCollect();
 }
 
+
+extern (C) void gc_minimize()
+{
+    _gc.minimize();
+}
+
 extern (C) uint gc_getAttr( void* p )
 {
     return _gc.getAttr( p );
