@@ -121,6 +121,11 @@ then
     mkdir -p $PREFIX/include/d/$GDC_VER || die "Failed to create include/d/$GDC_VER (maybe you need root privileges?)" 5
     cp -pRvf libgphobos.a $GPHOBOS_DIR || die "Failed to copy libraries" 7
     cp -pRvf ../object.di $PREFIX/include/d/$GDC_VER/object.d || die "Failed to copy source" 8
+    if [ ! -e $PREFIX/include/d/$GDC_VER/gcc ]
+    then
+	mkdir $PREFIX/include/d/$GDC_VER/gcc || die "Failed to create $PREFIX/include/d/$GDC_VER/gcc" 9
+	cp -pRvf compiler/gdc/gcc/*.d $PREFIX/include/d/$GDC_VER/gcc || die "Failed to install gcc internals." 10
+    fi
 fi
 
 die "Done!" 0
