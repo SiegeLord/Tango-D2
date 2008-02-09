@@ -60,7 +60,7 @@ GPHOBOS_DIR="`${CROSS}gdc -print-file-name=libgphobos.a`"
 GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
 
 # If we have which, use it to get the prefix
-which --version >& /dev/null
+which gdc >& /dev/null
 if [ "$?" = "0" ]
 then
     PREFIX="`which ${CROSS}gdc`"
@@ -70,7 +70,7 @@ else
 fi
 
 # If libgphobos.a isn't installed, make it up
-if [ "$GPHOBOS_DIR" = "." ]
+if [ -n "$GPHOBOS_DIR" -o "$GPHOBOS_DIR" = "." ]
 then
     GPHOBOS_DIR="$PREFIX/lib"
 fi
