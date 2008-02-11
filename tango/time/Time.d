@@ -25,9 +25,12 @@ module tango.time.Time;
     Use tango.time.chrono.* to deal with these concepts.
 
     Note: nobody should change this struct without really good reason as it is
-    required to be a part of some interfaces.  It should be treated as a builtin 
-    type. Also note that there is deliberately no opCall constructor here, since 
-    it tends to produce too much overhead. 
+    required to be a part of some interfaces.  It should be treated as a
+    builtin type. Also note that there is deliberately no opCall constructor
+    here, since it tends to produce too much overhead.   If you wish to build
+    a TimeSpan struct from a ticks value, use D's builtin ability to create a
+    struct with given member values (See the description of ticks() for an
+    example of how to do this).
 
     Example:
     -------------------
@@ -93,7 +96,13 @@ struct TimeSpan
         static const TimeSpan zero = {0};
 
         /**
-         * Get the number of ticks that this timespan represents.
+         * Get the number of ticks that this timespan represents.  This can be
+         * used to construct another TimeSpan:
+         *
+         * --------
+         * long ticks = myTimeSpan.ticks;
+         * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
+         * --------
          */
         long ticks()
         {
@@ -161,7 +170,6 @@ struct TimeSpan
         /**
          *
          * Subtract the specified TimeSpan from this TimeSpan and assign the
-         * value to this TimeSpan.
          *
          * Params: t = A TimeSpan to subtract
          * Returns: A copy of this instance after subtracting t.
@@ -480,7 +488,15 @@ struct Time
 
         /**********************************************************************
 
-                $(I Property.) Retrieves the number of ticks for this Time
+                $(I Property.) Retrieves the number of ticks for this Time.
+                This value can be used to construct another Time struct by
+                writing:
+
+                ---------
+                long ticks = myTime.ticks;
+                Time copyOfMyTime = Time(ticks);
+                ---------
+
 
                 Returns: A long represented by the time of this 
                          instance.

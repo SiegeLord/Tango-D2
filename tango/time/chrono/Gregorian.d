@@ -15,6 +15,8 @@ module tango.time.chrono.Gregorian;
 
 private import tango.time.chrono.Calendar;
 
+private import tango.core.Exception;
+
 /**
  * $(ANCHOR _Gregorian)
  * Represents the Gregorian calendar.
@@ -174,6 +176,11 @@ class Gregorian : Calendar
         */
         override uint getDaysInMonth(uint year, uint month, uint era) 
         {
+                //
+                // verify args.  isLeapYear verifies the year is valid.
+                //
+                if(month < 1 || month > 12)
+                        argumentError("months out of range");
                 auto monthDays = isLeapYear(year, era) ? DaysToMonthLeap : DaysToMonthCommon;
                 return monthDays[month] - monthDays[month - 1];
         }
@@ -241,12 +248,29 @@ class Gregorian : Calendar
                 return cast(int) type_;
         }
 
+        /**
+         * Overridden.  Get the components of a Time structure using the rules
+         * of the calendar.  This is useful if you want more than one of the
+         * given components.  Note that this doesn't handle the time of day,
+         * as that is calculated directly from the Time struct.
+         */
         override void split(Time time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
         {
             splitDate(time.ticks, year, month, day, doy, era);
             dow = getDayOfWeek(time);
         }
 
+        /**
+         * Overridden. Returns a new Time with the specified number of months
+         * added.  If the months are negative, the months are subtracted.
+         *
+         * Params: t = A time to add the months to
+         * Params: nMonths = The number of months to add.  This can be
+         * negative.
+         *
+         * Returns: A Time that represents the provided time with the number
+         * of months added.
+         */
         override Time addMonths(Time t, int nMonths)
         {
                 //
@@ -283,6 +307,18 @@ class Gregorian : Calendar
                 return toTime(date) + TimeSpan(tod);
         }
 
+        /**
+         * Overridden.  Add the specified number of years to the given Time.
+         *
+         * Note that the Gregorian calendar takes into account that BC time
+         * is negative, and supports crossing from BC to AD.
+         *
+         * Params: t = A time to add the years to
+         * Params: nYears = The number of years to add.  This can be negative.
+         *
+         * Returns: A Time that represents the provided time with the number
+         * of years added.
+         */
         override Time addYears(Time t, int nYears)
         {
                 return addMonths(t, nYears * 12);
@@ -374,6 +410,13 @@ class Gregorian : Calendar
 
         package static long getDateTicks (uint year, uint month, uint day, uint era) 
         {
+                //
+                // verify arguments, getDaysInMonth verifies the year and
+                // month is valid.
+                //
+                if(day < 1 || day > generic.getDaysInMonth(year, month, era))
+                        argumentError("days out of range");
+
                 auto monthDays = staticIsLeapYear(year, era) ? DaysToMonthLeap : DaysToMonthCommon;
                 if(era == BC_ERA)
                 {
@@ -389,11 +432,22 @@ class Gregorian : Calendar
 
         package static bool staticIsLeapYear(uint year, uint era)
         {
+                if(year < 1)
+                        argumentError("year cannot be 0");
                 if(era == BC_ERA)
+                {
+                        if(year == 1)
+                                return true;
                         return staticIsLeapYear(year - 1, AD_ERA);
+                }
                 if(era == AD_ERA || era == CURRENT_ERA)
                         return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
                 return false;
+        }
+
+        package static void argumentError(char[] str)
+        {
+                throw new IllegalArgumentException(str);
         }
 }
 
@@ -485,5 +539,33 @@ debug(UnitTest)
                 assert(d.dow == Gregorian.DayOfWeek.Tuesday);
 
                 assert(t == t2);
+
+                //
+                // verify that illegal argument exceptions occur
+                //
+                try
+                {
+                        t = Gregorian.generic.toTime (0, 1, 1, 0, 0, 0, 0, Gregorian.AD_ERA);
+                        assert(false, "Did not throw illegal argument exception");
+                }
+                catch(Exception iae)
+                {
+                }
+                try
+                {
+                        t = Gregorian.generic.toTime (1, 0, 1, 0, 0, 0, 0, Gregorian.AD_ERA);
+                        assert(false, "Did not throw illegal argument exception");
+                }
+                catch(IllegalArgumentException iae)
+                {
+                }
+                try
+                {
+                        t = Gregorian.generic.toTime (1, 1, 0, 0, 0, 0, 0, Gregorian.BC_ERA);
+                        assert(false, "Did not throw illegal argument exception");
+                }
+                catch(IllegalArgumentException iae)
+                {
+                }
         }
 }
