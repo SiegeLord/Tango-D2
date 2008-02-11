@@ -26,7 +26,7 @@
 
 *******************************************************************************/
 
-module tango.util.time.ISO8601;
+module tango.time.ISO8601;
 
 public import tango.time.Time;
 public import tango.time.chrono.Gregorian;
@@ -90,7 +90,7 @@ public struct ExtendedDate {
     *
     * If the time of val is not exactly 00:00:00.000, this value is undefined.
     */
-   bool endOfDay() { return 1 == ((mask >>> 1) & 1); }
+   bool endOfDay() { return 1 ==              ((mask >>> 1) & 1); }
 
    private void setLeap    () { mask |= 1 << 0; }
    private void setEndOfDay() { mask |= 1 << 1; }
