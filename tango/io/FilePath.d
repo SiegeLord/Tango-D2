@@ -80,7 +80,7 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         to the suffix i.e. ".file" is a name rather than a suffix.
 
         Note also that normalization of path-separators occurs by default. 
-        This means that the use of '\' characters with be converted into
+        This means that the use of '\' characters will be converted into
         '/' instead while parsing. To mutate the path into an O/S native
         version, use the native() method. To obtain a copy instead, use the 
         path.dup.native sequence
@@ -808,7 +808,9 @@ class FilePath : PathView
         /***********************************************************************
 
                 Returns the time of the last modification. Accurate
-                to whatever the OS supports
+                to whatever the OS supports, and in a format dictated
+                by the file-system. For example NTFS keeps UTC time, 
+                while FAT timestamps are based on the local time. 
 
         ***********************************************************************/
 
@@ -820,7 +822,9 @@ class FilePath : PathView
         /***********************************************************************
 
                 Returns the time of the last access. Accurate to
-                whatever the OS supports
+                whatever the OS supports, and in a format dictated
+                by the file-system. For example NTFS keeps UTC time, 
+                while FAT timestamps are based on the local time.
 
         ***********************************************************************/
 
@@ -832,7 +836,9 @@ class FilePath : PathView
         /***********************************************************************
 
                 Returns the time of file creation. Accurate to
-                whatever the OS supports
+                whatever the OS supports, and in a format dictated
+                by the file-system. For example NTFS keeps UTC time,  
+                while FAT timestamps are based on the local time.
 
         ***********************************************************************/
 
@@ -1108,6 +1114,10 @@ class FilePath : PathView
                 /***************************************************************
 
                         Return timestamp information
+
+                        Timstamps are returns in a format dictated by the 
+                        file-system. For example NTFS keeps UTC time, 
+                        while FAT timestamps are based on the local time
 
                 ***************************************************************/
 
@@ -1424,6 +1434,10 @@ class FilePath : PathView
                 /***************************************************************
 
                         Return timestamp information
+
+                        Timstamps are returns in a format dictated by the 
+                        file-system. For example NTFS keeps UTC time, 
+                        while FAT timestamps are based on the local time
 
                 ***************************************************************/
 
