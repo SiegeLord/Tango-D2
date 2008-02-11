@@ -22,17 +22,76 @@ import tango.core.BitManip;
         byte-swap approach avoids alignment issues, so is probably
         faster overall than a traditional 'shift' implementation.
 
+        ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
+
+        swap16 (x.ptr, 8) -> 02 01 04 03 06 05 08 07     
+        swap32 (x.ptr, 8) -> 04 03 02 01 08 07 06 05
+        swap64 (x.ptr, 8) -> 08 07 06 05 04 03 02 01
+
 *******************************************************************************/
 
 struct ByteSwap
 {
         /***********************************************************************
 
+                Reverses two-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 2
+
+        ***********************************************************************/
+
+        final static void swap16 (void[] dst)
+        {
+                swap16 (dst.ptr, dst.length);
+        }
+
+        /***********************************************************************
+
+                Reverses four-byte sequences. Parameter bytes specifies the  
+                number of bytes, which should be a multiple of 4
+
+        ***********************************************************************/
+
+        final static void swap32 (void[] dst)
+        {
+                swap32 (dst.ptr, dst.length);
+        }
+
+        /***********************************************************************
+
+                Reverse eight-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 8
+
+        ***********************************************************************/
+
+        final static void swap64 (void[] dst)
+        {
+                swap64 (dst.ptr, dst.length);
+        }
+
+        /***********************************************************************
+
+                Reverse ten-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 10
+
+        ***********************************************************************/
+
+        final static void swap80 (void[] dst)
+        {
+                swap80 (dst.ptr, dst.length);
+        }
+
+        /***********************************************************************
+
+                Reverses two-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 2
+
         ***********************************************************************/
 
         final static void swap16 (void *dst, uint bytes)
         {
-                ubyte* p = cast(ubyte*) dst;
+                assert (bytes & 0x01 is 0);
+
+                auto p = cast(ubyte*) dst;
                 while (bytes)
                       {
                       ubyte b = p[0];
@@ -46,26 +105,36 @@ struct ByteSwap
 
         /***********************************************************************
 
+                Reverses four-byte sequences. Parameter bytes specifies the  
+                number of bytes, which should be a multiple of 4
+
         ***********************************************************************/
 
         final static void swap32 (void *dst, uint bytes)
         {
-                uint* p = cast(uint*) dst;
+                assert (bytes & 0x03 is 0);
+
+                auto p = cast(uint*) dst;
                 while (bytes)
                       {
                       *p = bswap(*p);
-                      p ++;
+                      ++p;
                       bytes -= int.sizeof;
                       }
         }
 
         /***********************************************************************
 
+                Reverse eight-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 8
+
         ***********************************************************************/
 
         final static void swap64 (void *dst, uint bytes)
         {
-                uint* p = cast(uint*) dst;
+                assert (bytes & 0x07 is 0);
+
+                auto p = cast(uint*) dst;
                 while (bytes)
                       {
                       uint i = p[0];
@@ -79,11 +148,16 @@ struct ByteSwap
 
         /***********************************************************************
 
+                Reverse ten-byte sequences. Parameter bytes specifies the 
+                number of bytes, which should be a multiple of 10
+
         ***********************************************************************/
 
         final static void swap80 (void *dst, uint bytes)
         {
-                ubyte* p = cast(ubyte*) dst;
+                assert ((bytes % 10) is 0);
+               
+                auto p = cast(ubyte*) dst;
                 while (bytes)
                       {
                       ubyte b = p[0];
