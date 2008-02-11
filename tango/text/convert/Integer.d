@@ -209,6 +209,8 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
                   {
                   case 'd':
                   case 'D':
+                  case 'g':
+                  case 'G':
                        if (i < 0)
                           {
                           prefix = "-";
