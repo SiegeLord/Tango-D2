@@ -467,6 +467,14 @@ struct TimeSpan
         calendar, but for an example, the beginning of December 31, 1 BC 
         in the Gregorian calendar is Time.epoch - TimeSpan.days(1).
 
+        Note: common system epochs are provided to allow calculation of time
+        in other time systems.  For example, to convert a Time myTime to Unix
+        time (number of seconds elapsed since 1/1/1970), you can write:
+
+        --------
+        auto unixTime = (myTime - Time.epoch1970).seconds;
+        --------
+
 ******************************************************************************/
 
 struct Time 
@@ -481,10 +489,16 @@ struct Time
 
         /// Represents the smallest and largest Time value.
         static const Time min       = {minimum},
-                          max       = {maximum},
-                          epoch     = {0},
-                          epoch1601 = {TimeSpan.Epoch1601},
-                          epoch1970 = {TimeSpan.Epoch1970};
+                          max       = {maximum};
+
+        /// Represents the epoch (1/1/0001)
+        static const Time epoch     = {0};
+
+        /// Represents the epoch of 1/1/1601 (Commonly used in Windows systems)
+        static const Time epoch1601 = {TimeSpan.Epoch1601};
+
+        /// Represents the epoch of 1/1/1970 (Commonly used in Unix systems)
+        static const Time epoch1970 = {TimeSpan.Epoch1970};
 
         /**********************************************************************
 
