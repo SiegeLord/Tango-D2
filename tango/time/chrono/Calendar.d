@@ -132,16 +132,35 @@ public abstract class Calendar
                 return toTime (year, month, day, hour, minute, second, millisecond, CURRENT_ERA);
         }
 
+        /**
+        * Returns a Time value for the given Date, in the current era 
+        * Params:
+        *   date = a representation of the Date
+        * Returns: The Time set to the specified date.
+        */
         Time toTime (Date d) 
         {
                 return toTime (d.year, d.month, d.day, 0, 0, 0, 0, d.era);
         }
 
+        /**
+        * Returns a Time value for the given DateTime, in the current era 
+        * Params:
+        *   dt = a representation of the date and time
+        * Returns: The Time set to the specified date and time.
+        */
         Time toTime (DateTime dt) 
         {
                 return toTime (dt.date, dt.time);
         }
 
+        /**
+        * Returns a Time value for the given Date and TimeOfDay, in the current era 
+        * Params:
+        *   d = a representation of the date 
+        *   t = a representation of the day time 
+        * Returns: The Time set to the specified date and time.
+        */
         Time toTime (Date d, TimeOfDay t) 
         {
                 return toTime (d.year, d.month, d.day, t.hours, t.minutes, t.seconds, t.millis, d.era);
