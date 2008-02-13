@@ -28,11 +28,29 @@ popd
 # Remove object.di again
 rm compiler/gdc/object.di
 
+# Check which make we have
+make --version >& /dev/null
+if [ "$?" = "0" ]
+then
+    MAKE=make
+else
+    gmake --version >& /dev/null
+    if [ "$?" = "0" ]
+    then
+        MAKE=gmake
+    else
+        echo 'No supported build tool found.'
+        exit 1
+    fi
+fi
+
+export MAKETOOL=$MAKE
+
 OLDHOME=$HOME
 export HOME=`pwd`
-make clean -fgdc-posix.mak || exit 1
-make lib doc install -fgdc-posix.mak ADD_CFLAGS="$ADD_CFLAGS" || exit 1
-make clean -fgdc-posix.mak || exit 1
+$MAKE clean -fgdc-posix.mak || exit 1
+$MAKE lib doc install -fgdc-posix.mak ADD_CFLAGS="$ADD_CFLAGS" || exit 1
+$MAKE clean -fgdc-posix.mak || exit 1
 chmod 644 ../tango/core/*.di || exit 1
 
 export HOME=$OLDHOME
