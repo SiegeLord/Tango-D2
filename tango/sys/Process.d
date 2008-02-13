@@ -644,8 +644,13 @@ class Process
 
             // Convert the working directory to a null-ended string if
             // necessary.
+            //
+            // Note, this used to contain DETACHED_PROCESS, but
+            // this causes problems with redirection if the program being
+            // started decides to allocate a console (i.e. if you run a batch
+            // file)
             if (CreateProcessA(null, command.ptr, null, null, true,
-                               DETACHED_PROCESS,
+                               0,
                                (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
                                toStringz(_workDir), &startup, _info))
             {
