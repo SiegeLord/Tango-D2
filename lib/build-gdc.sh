@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cd "`dirname $0`"
 
 GDC_VER="`gdc --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"

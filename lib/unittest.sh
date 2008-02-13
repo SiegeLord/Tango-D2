@@ -1,4 +1,4 @@
-#!/bin/bash +x
+#!/usr/bin/env bash
 
 # A simple script to build unittests for on posix for dmd/gdc
 # Copyright (C) 2007  Lars Ivar Igesund

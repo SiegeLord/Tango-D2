@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # A simple script to install Tango for GDC
 # Copyright (C) 2006  Gregor Richards
