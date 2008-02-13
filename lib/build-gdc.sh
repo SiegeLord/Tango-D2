@@ -28,17 +28,13 @@ popd
 # Remove object.di again
 rm compiler/gdc/object.di
 
-# Check which make we have
-make --version >& /dev/null
-if [ "$?" = "0" ]
+# Check make we have
+MAKE=`which gmake`
+if [ ! "$MAKE" ]
 then
-    MAKE=make
-else
-    gmake --version >& /dev/null
-    if [ "$?" = "0" ]
+    MAKE=`which make`
+    if [ ! `$MAKE --version | grep 'GNU Make'` ]
     then
-        MAKE=gmake
-    else
         echo 'No supported build tool found.'
         exit 1
     fi
