@@ -89,7 +89,7 @@ struct ByteSwap
 
         final static void swap16 (void *dst, uint bytes)
         {
-                assert (bytes & 0x01 is 0);
+                assert ((bytes & 0x01) is 0);
 
                 auto p = cast(ubyte*) dst;
                 while (bytes)
@@ -112,7 +112,7 @@ struct ByteSwap
 
         final static void swap32 (void *dst, uint bytes)
         {
-                assert (bytes & 0x03 is 0);
+                assert ((bytes & 0x03) is 0);
 
                 auto p = cast(uint*) dst;
                 while (bytes)
@@ -132,7 +132,7 @@ struct ByteSwap
 
         final static void swap64 (void *dst, uint bytes)
         {
-                assert (bytes & 0x07 is 0);
+                assert ((bytes & 0x07) is 0);
 
                 auto p = cast(uint*) dst;
                 while (bytes)
