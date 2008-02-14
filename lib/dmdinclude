@@ -29,11 +29,5 @@ dmdbugs() {
             INLINE=""
             echo ">> Removing -inline due to bugzilla 668"
         fi
-        if [ "$DMDVERSIONMIN" = "26" ]
-        then
-            echo ">> This version of DMD has broken scoped interfaces."
-            echo ">> Aborting."
-            die "Broken version of compiler." 1
-        fi
     fi
 }

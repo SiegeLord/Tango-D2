@@ -1422,7 +1422,7 @@ class ZipEntry
     {
         // If we haven't verified the contents yet, just read everything in
         // to trigger it.
-        scope s = open;
+        auto s = open;
         auto buffer = new ubyte[s.conduit.bufferSize];
         while( s.read(buffer) != s.Eof )
             {/*Do nothing*/}

@@ -165,7 +165,7 @@ private
                 if( file.zipEntry !is null )
                 {
                     {
-                        zi = file.zipEntry.open;
+                        auto zi = file.zipEntry.open;
                         scope(exit) zi.close;
     
                         file.tempFile = new TempFile;
@@ -660,8 +660,8 @@ class ZipFolder : VfsFolder, VfsSync
         // up first.
         if( dir.nz() )
         {
-            scope dir_ent = this.folder(dir);
-            scope dir_obj = dir_ent.open;
+            auto dir_ent = this.folder(dir);
+            auto dir_obj = dir_ent.open;
             return dir_obj.file(name);
         }
         else
