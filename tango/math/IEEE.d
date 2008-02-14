@@ -228,6 +228,14 @@ private:
             DIVBYZERO_MASK = 0x020,
             INVALID_MASK   = 0xF80
         }
+    } else { //SPARC -- not yet implemented
+        enum : int {
+            INEXACT_MASK   = 0,
+            UNDERFLOW_MASK = 0,
+            OVERFLOW_MASK  = 0,
+            DIVBYZERO_MASK = 0,
+            INVALID_MASK   = 0
+        }
     }
 private:
     static IeeeFlags getIeeeFlags()
@@ -443,8 +451,7 @@ real frexp(real value, out int exp)
         exp = i;
         vu[EXPONENTPOS_SHORT] = cast(ushort)((0x8000 & vu[EXPONENTPOS_SHORT]) | 0x3FFE);
     }
-  } else static if (real.mant_dig == 113) {
-      // quadruple      
+  } else static if (real.mant_dig == 113) { // quadruple      
         if (ex) { // If exponent is non-zero
             if (ex == EXPMASK) {   // infinity or NaN
                 if (*vl || vl[1]&0x0000_FFFF_FFFF_FFFF) {  // NaN
@@ -469,15 +476,13 @@ real frexp(real value, out int exp)
             i--;
             // multi-byte left shift
             vl[1]<<=1;
-            if (*v1<0) ++vl[1];
+            if (*vl<0) ++vl[1];
             *vl <<= 1;
         } while ((vl[1]&0x0000_8000_0000_0000)== 0);
         exp = i;
         vu[EXPONENTPOS_SHORT] = cast(ushort)((0x8000 & vu[EXPONENTPOS_SHORT]) | 0x3FFE);
     }
-  } else static if(real.mant_dig==106) { // doubledouble
-        assert(0, "Unsupported");
-  } else {    // 64-bit reals
+  } else static if (real.mant_dig==53) { // real is double
     if (ex) { // If exponent is non-zero
         if (ex == EXPMASK) {   // infinity or NaN
             if (*vl==0x7FF0_0000_0000_0000) {  // positive infinity
@@ -509,6 +514,8 @@ real frexp(real value, out int exp)
         exp = i;
         ve[EXPONENTPOS_SHORT] = sgn;
     }
+  }else { //static if(real.mant_dig==106) // doubledouble
+        assert(0, "Unsupported");
   }
     return value;
 }
@@ -736,7 +743,7 @@ real scalbn(real x, int n)
             fstp st(1), st;
         }
     } else {
-        // BUG: Not implemented in DMD
+        // NOTE: Not implemented in DMD
         return tango.stdc.math.scalbnl(x, n);
     }
 }
@@ -902,9 +909,9 @@ int isNormal(double d)
 {
     ushort *p = cast(ushort *)&d;
     version(LittleEndian) {
-        uint e = p[3] & 0x7FF0;
+        ushort e = p[3] & 0x7FF0;
     } else {
-        uint e = p[0] & 0x7FF0;
+        ushort e = p[0] & 0x7FF0;
     }
     return e!=0 && e != 0x7FF0;
 }
@@ -1008,7 +1015,7 @@ int isSubnormal(float f)
 {
     uint *p = cast(uint *)&f;
 
-    return (*p & 0x7F800000) == 0 && *p & 0x007FFFFF;
+    return (*p & 0x7F80_0000) == 0 && *p & 0x007F_FFFF;
 }
 
 debug(UnitTest) {
@@ -1027,7 +1034,11 @@ int isSubnormal(double d)
 {
     uint *p = cast(uint *)&d;
 
-    return (p[1] & 0x7FF00000) == 0 && (p[0] || p[1] & 0x000FFFFF);
+    version(LittleEndian) {
+        return (p[1] & 0x7FF0_0000) == 0 && (p[0] || p[1] & 0x000F_FFFF);
+    } else {
+        return (p[0] & 0x7FF0_0000) == 0 && (p[1] || p[0] & 0x000F_FFFF);
+    }
 }
 
 debug(UnitTest) {
@@ -1076,8 +1087,8 @@ int isZero(real x)
     static if (real.mant_dig == 53) { // double
         return ((*cast(ulong *)&x) & 0x7FFF_FFFF_FFFF_FFFF) == 0;
     } else static if (real.mant_dig == 113) { // quadruple   
-        long*   ps = cast(long *)&e;
-            return (ps[MANTISSA_LSB]==0 || (ps[MANTISSA_MSB]& 0x7FFF_FFFF_FFFF_FFFF) == 0);
+        long*   ps = cast(long *)&x;
+        return (ps[MANTISSA_LSB] | (ps[MANTISSA_MSB]& 0x7FFF_FFFF_FFFF_FFFF)) == 0;
     } else { // real80
         ushort* pe = cast(ushort *)&x;
         ulong*  ps = cast(ulong  *)&x;
@@ -1468,7 +1479,7 @@ int feqrel(real x, real y)
     // always 1 lower than we want, except that if bitsdiff==0,
     // they could have 0 or 1 bits in common.
 
- static if (real.mant_dig==64 || real.mant_dig==113) { // real64
+ static if (real.mant_dig==64 || real.mant_dig==113) { // real80 or quadruple
     int bitsdiff = ( ((pa[EXPONENTPOS_SHORT]&0x7FFF) + (pb[EXPONENTPOS_SHORT]&0x7FFF)-1)>>1) - pd[EXPONENTPOS_SHORT];
 
     if (pd[EXPONENTPOS_SHORT] == 0)
@@ -1485,9 +1496,7 @@ int feqrel(real x, real y)
 
     // Avoid out-by-1 errors when factor is almost 2.
     return (bitsdiff == 0) ? (pa[EXPONENTPOS_SHORT] == pb[EXPONENTPOS_SHORT]) : 0;
- } else static if(real.mant_dig==106) { // doubledouble
-        assert(0, "Unsupported");
- } else { // real64
+ } else static if(real.mant_dig==53) { // real is double
     int bitsdiff = (( ((pa[EXPONENTPOS_SHORT]&0x7FF0) + (pb[EXPONENTPOS_SHORT]&0x7FF0)-0x10)>>1) 
                  - (pd[EXPONENTPOS_SHORT]&0x7FF0))>>4;
 
@@ -1506,8 +1515,9 @@ int feqrel(real x, real y)
     // Avoid out-by-1 errors when factor is almost 2.
     if (bitsdiff == 0 && !((pa[EXPONENTPOS_SHORT] ^ pb[EXPONENTPOS_SHORT])&EXPMASK)) return 1;
     else return 0;
- }
-
+ } else { //static if(real.mant_dig==106) { // doubledouble
+        assert(0, "Unsupported");
+ } 
 }
 
 debug(UnitTest) {
@@ -1643,7 +1653,7 @@ body {
     // average them (avoiding overflow), and cast the result back to a floating-point number.
 
     T u;
-    static if (T.mant_dig==64) { // x87, 80-bit reals
+    static if (T.mant_dig==64) { // real80
         // There's slight additional complexity because they are actually
         // 79-bit reals...
         ushort *ue = cast(ushort *)&u;
@@ -1652,7 +1662,7 @@ body {
         ulong *xl = cast(ulong *)&x;
         ushort *ye = cast(ushort *)&y;
         ulong *yl = cast(ulong *)&y;
-        // Ignore the useless implicit bit.
+        // Ignore the useless implicit bit. (Bonus: this prevents overflows)
         ulong m = ((*xl) & 0x7FFF_FFFF_FFFF_FFFF) + ((*yl) & 0x7FFF_FFFF_FFFF_FFFF);
 
         ushort e = cast(ushort)((xe[EXPONENTPOS_SHORT] & 0x7FFF) + (ye[EXPONENTPOS_SHORT] & 0x7FFF));
@@ -1673,9 +1683,16 @@ body {
         ulong *ul = cast(ulong *)&u;
         ulong *xl = cast(ulong *)&x;
         ulong *yl = cast(ulong *)&y;
-        ulong m = (((*xl) & 0x7FFF_FFFF_FFFF_FFFF) + ((*yl) & 0x7FFF_FFFF_FFFF_FFFF)) >>> 1;
-        m |= ((*xl) & 0x8000_0000_0000_0000);
-        *ul = m;           
+        // Multi-byte add, then multi-byte right shift.        
+        ulong mh = ((xl[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFF) + (yl[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFF));
+        ulong ml = (xl[MANTISSA_LSB]>>>1) + (yl[MANTISSA_LSB]>>>1);        
+        if (xl[MANTISSA_LSB] & yl[MANTISSA_LSB]) {
+            ++ml;
+            if (ml==0) ++mh;
+        }
+        mh >>>=1;
+        ul[MANTISSA_MSB] = mh | (xl[MANTISSA_MSB] & 0x8000_0000_0000_0000);
+        ul[MANTISSA_LSB] = ml;
     } else static if (T.mant_dig == double.mant_dig) {
         ulong *ul = cast(ulong *)&u;
         ulong *xl = cast(ulong *)&x;
@@ -1683,13 +1700,15 @@ body {
         ulong m = (((*xl) & 0x7FFF_FFFF_FFFF_FFFF) + ((*yl) & 0x7FFF_FFFF_FFFF_FFFF)) >>> 1;
         m |= ((*xl) & 0x8000_0000_0000_0000);
         *ul = m;
-    }else static if (T.mant_dig == float.mant_dig) {
+    } else static if (T.mant_dig == float.mant_dig) {
         uint *ul = cast(uint *)&u;
         uint *xl = cast(uint *)&x;
         uint *yl = cast(uint *)&y;
         uint m = (((*xl) & 0x7FFF_FFFF) + ((*yl) & 0x7FFF_FFFF)) >>> 1;
         m |= ((*xl) & 0x8000_0000);
         *ul = m;
+    } else {
+        assert(0, "Not implemented");
     }
     return u;
 }
@@ -1731,10 +1750,10 @@ unittest {
  */
 real NaN(ulong payload)
 {
-    static if (real.mant_dig == 53) {
-      ulong v = 2; // no implied bit. quiet bit = 1
-    } else {
+    static if (real.mant_dig == 64) { //real80
       ulong v = 3; // implied bit = 1, quiet bit = 1
+    } else {
+      ulong v = 2; // no implied bit. quiet bit = 1
     }
 
     ulong a = payload;
