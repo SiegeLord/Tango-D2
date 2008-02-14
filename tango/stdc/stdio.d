@@ -63,6 +63,10 @@ else version( darwin )
         }
     }
 }
+else version ( freebsd )
+{
+
+}
 else
 {
     static assert( false );

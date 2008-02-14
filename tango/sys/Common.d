@@ -28,7 +28,11 @@ version (darwin)
         public import tango.sys.darwin.darwin;
         alias tango.sys.darwin.darwin posix;
         }
-
+version (freebsd)
+        {
+        public import tango.sys.freebsd.freebsd;
+        alias tango.sys.freebsd.freebsd posix;
+        }
 
 /*******************************************************************************
 
