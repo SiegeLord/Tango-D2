@@ -109,7 +109,7 @@ public class FilteringIterator(T) : Iterator!(T)
         }
 
         /**
-         * Implements java.util.Iterator.more
+         * Implements tango.util.collection.model.Iterator.more
         **/
 
         public final bool more()
@@ -118,7 +118,7 @@ public class FilteringIterator(T) : Iterator!(T)
         }
 
         /**
-         * Implements java.util.Iterator.get.
+         * Implements tango.util.collection.model.Iterator.get.
         **/
         public final T get()
         {
