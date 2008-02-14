@@ -217,8 +217,8 @@ private:
             DIVBYZERO_MASK = 0x04,
             INVALID_MASK   = 0x01
         }
-        // Don't bother about denormals, they are not supported on all CPUs.
-        //const int DENORMAL_MASK = 0x02;
+        // Don't bother about denormals, they are not supported on most CPUs.
+        //  DENORMAL_MASK = 0x02;
     } else version (PPC) {
         // PowerPC FPSCR is a 32-bit register.
         enum : int {
@@ -228,13 +228,14 @@ private:
             DIVBYZERO_MASK = 0x020,
             INVALID_MASK   = 0xF80
         }
-    } else { //SPARC -- not yet implemented
+    } else { //SPARC FSR is a 32bit register
+             //(64 bits for Sparc 7 & 8, but high 32 bits are uninteresting).
         enum : int {
-            INEXACT_MASK   = 0,
-            UNDERFLOW_MASK = 0,
-            OVERFLOW_MASK  = 0,
-            DIVBYZERO_MASK = 0,
-            INVALID_MASK   = 0
+            INEXACT_MASK   = 0x020,
+            UNDERFLOW_MASK = 0x080,
+            OVERFLOW_MASK  = 0x100,
+            DIVBYZERO_MASK = 0x040,
+            INVALID_MASK   = 0x200
         }
     }
 private:
@@ -253,6 +254,11 @@ private:
               and EAX, 0x03D;
            }
        } else {
+           /*   SPARC:
+               int retval;
+               asm { st %fsr, retval; }
+               return retval;
+            */
            assert(0, "Not yet supported");
        }
     }
@@ -263,6 +269,12 @@ private:
                 fnclex;
             }
         } else {
+            /* SPARC:
+              int tmpval;
+              asm { st %fsr, tmpval; }
+              tmpval &=0xFFFF_FC00;
+              asm { ld tmpval, %fsr; }
+            */
            assert(0, "Not yet supported");
         }
     }
