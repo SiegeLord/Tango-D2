@@ -14,6 +14,5 @@
 
 module tango.core.Version;
 
-public const Tango = 0.995f;
-
+public enum {Tango = 995}
 
