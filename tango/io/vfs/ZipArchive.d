@@ -165,7 +165,7 @@ private
                 if( file.zipEntry !is null )
                 {
                     {
-                        scope zi = file.zipEntry.open;
+                        zi = file.zipEntry.open;
                         scope(exit) zi.close;
     
                         file.tempFile = new TempFile;
