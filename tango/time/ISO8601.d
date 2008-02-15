@@ -128,6 +128,7 @@ public struct ExtendedDate {
  * ---
  * Time t;
  * ExtendedDate ed;
+ * 
  * parseDate("19",             t);    // January 1st, 1900
  * parseDate("1970",           t);    // January 1st, 1970
  * parseDate("1970-02",        t);    // February 1st, 1970
@@ -150,7 +151,7 @@ public size_t parseDate(T)(T[] src, inout DT dt) {
    dt = fd.val;
    return ret;
 }
-/// ditto
+/** ditto */
 public size_t parseDate(T)(T[] src, inout FullDate fd, ubyte expanded = 0) {
    ubyte dummy = void;
    T* p = src.ptr;
@@ -297,10 +298,12 @@ private size_t doIso8601Date(T)(
  * beginning, although they both refer to the same instant in time. A Time
  * will be precisely 00:00 in either case.
  *
- * Examples (",000" omitted for clarity):
+ * Examples:
  * ---
  * Time t;
  * ExtendedDate ed;
+ *
+ * // ",000" omitted for clarity
  * parseTime("20",             t); // 20:00:00
  * parseTime("2004",           t); // 20:04:00
  * parseTime("20:04:06",       t); // 20:04:06
@@ -321,7 +324,7 @@ public size_t parseTime(T)(T[] src, inout DT dt) {
    dt = fd.val;
    return ret;
 }
-/// ditto
+/** ditto */
 public size_t parseTime(T)(T[] src, inout FullDate fd) {
    bool dummy = void;
    T* p = src.ptr;
@@ -530,7 +533,7 @@ public size_t parseDateAndTime(T)(T[] src, inout DT dt) {
    date = fd.val;
    return ret;
 }
-/// ditto
+/** ditto */
 public size_t parseDateAndTime(T)(T[] src, inout FullDate fd) {
    T* p = src.ptr;
    ubyte sep;
