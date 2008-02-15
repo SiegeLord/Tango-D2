@@ -246,12 +246,29 @@ private:
         // take advantage of the fact that for DMD
         // a struct containing only a int is returned in EAX.
        version(D_InlineAsm_X86) {
-           asm {
-              fstsw AX;
-              // NOTE: If compiler supports SSE2, need to OR the result with
-              // the SSE2 status register.
-              // Clear all irrelevant bits
-              and EAX, 0x03D;
+           version(GNU) {
+             IeeeFlags tmp1;
+             asm {
+                 fstsw AX;
+                 // NOTE: If compiler supports SSE2, need to OR the result with
+                 // the SSE2 status register.
+                 // Clear all irrelevant bits
+                 and EAX, 0x03D;
+                 mov tmp1, EAX;
+             }
+             return tmp1;
+           }
+           else { // DMD
+             // In this case, we
+             // take advantage of the fact that for DMD
+             // a struct containing only a int is returned in EAX.
+             asm {
+                 fstsw AX;
+                 // NOTE: If compiler supports SSE2, need to OR the result with
+                 // the SSE2 status register.
+                 // Clear all irrelevant bits
+                 and EAX, 0x03D;
+             }
            }
        } else {
            /*   SPARC:
