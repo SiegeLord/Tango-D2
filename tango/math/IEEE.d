@@ -438,8 +438,8 @@ real frexp(real value, out int exp)
   static if (real.mant_dig == 64) { // real80
     if (ex) { // If exponent is non-zero
         if (ex == EXPMASK) {   // infinity or NaN
-            if (*vl &  0x7FFFFFFFFFFFFFFF) {  // NaN
-                *vl |= 0xC000000000000000;  // convert $(NAN)S to $(NAN)Q
+            if (*vl &  0x7FFF_FFFF_FFFF_FFFF) {  // NaN
+                *vl |= 0xC000_0000_0000_0000;  // convert $(NAN)S to $(NAN)Q
                 exp = int.min;
             } else if (vu[EXPONENTPOS_SHORT] & 0x8000) {   // negative infinity
                 exp = int.min;
@@ -455,19 +455,16 @@ real frexp(real value, out int exp)
         exp = 0;
     } else {
         // denormal
-        int i = -0x3FFD;
-        do {
-            i--;
-            *vl <<= 1;
-        } while (*vl > 0);
-        exp = i;
+        value *= POW2MANTDIG;
+        ex = vu[EXPONENTPOS_SHORT] & EXPMASK;
+        exp = ex - 0x3FFE - 63;
         vu[EXPONENTPOS_SHORT] = cast(ushort)((0x8000 & vu[EXPONENTPOS_SHORT]) | 0x3FFE);
     }
   } else static if (real.mant_dig == 113) { // quadruple      
         if (ex) { // If exponent is non-zero
             if (ex == EXPMASK) {   // infinity or NaN
-                if (*vl || vl[1]&0x0000_FFFF_FFFF_FFFF) {  // NaN
-                    vl[1] |= 0x0000_8000_0000_0000;  // convert $(NAN)S to $(NAN)Q
+                if (vl[MANTISSA_LSB] |( vl[MANTISSA_MSB]&0x0000_FFFF_FFFF_FFFF)) {  // NaN
+                    vl[MANTISSA_MSB] |= 0x0000_8000_0000_0000;  // convert $(NAN)S to $(NAN)Q
                     exp = int.min;
                 } else if (vu[EXPONENTPOS_SHORT] & 0x8000) {   // negative infinity
                     exp = int.min;
@@ -478,20 +475,14 @@ real frexp(real value, out int exp)
                 exp = ex - 0x3FFE;
                 vu[EXPONENTPOS_SHORT] = cast(ushort)((0x8000 & vu[EXPONENTPOS_SHORT]) | 0x3FFE);
             }
-        } else if (*vl==0 && ((vl[1]&0x0000_FFFF_FFFF_FFFF)==0)) {
+        } else if ((vl[MANTISSA_LSB] |(vl[MANTISSA_MSB]&0x0000_FFFF_FFFF_FFFF))==0) {
             // value is +-0.0
             exp = 0;
     } else {
         // denormal
-        int i = -0x3FFD;
-        do {
-            i--;
-            // multi-byte left shift
-            vl[1]<<=1;
-            if (*vl<0) ++vl[1];
-            *vl <<= 1;
-        } while ((vl[1]&0x0000_8000_0000_0000)== 0);
-        exp = i;
+        value *= POW2MANTDIG;
+        ex = vu[EXPONENTPOS_SHORT] & EXPMASK;
+        exp = ex - 0x3FFE - 113;
         vu[EXPONENTPOS_SHORT] = cast(ushort)((0x8000 & vu[EXPONENTPOS_SHORT]) | 0x3FFE);
     }
   } else static if (real.mant_dig==53) { // real is double
@@ -878,13 +869,8 @@ int isNaN(real x)
   } else static if (real.mant_dig==113) {  // quadruple
         ushort e = EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT];
         ulong*  ps = cast(ulong *)&x;
-        version(LittleEndian) {
-            return e == 0x7FFF &&
-                (*ps | (ps[1]& 0x0000_FFFF_FFFF_FFFF))!=0;
-        } else {
-            return e == 0x7FFF &&
-                (ps[1] | (ps[0]& 0x0000_FFFF_FFFF_FFFF))!=0;
-        }
+        return e == 0x7FFF &&
+           (ps[MANTISSA_LSB] | (ps[MANTISSA_MSB]& 0x0000_FFFF_FFFF_FFFF))!=0;
   } else {
       return x!=x;
   }
@@ -1209,7 +1195,7 @@ real nextUp(real x)
         if (pe[EXPONENTPOS_SHORT] & 0x8000)  { // Negative number -- need to decrease the significand
             --*ps;
             // Need to mask with 0x7FFF... so denormals are treated correctly.
-            if ((*ps & 0x7FFFFFFFFFFFFFFF) == 0x7FFFFFFFFFFFFFFF) {
+            if ((*ps & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FFF_FFFF_FFFF_FFFF) {
                 if (pe[EXPONENTPOS_SHORT] == 0x8000) { // it was negative zero
                     *ps = 1;  pe[EXPONENTPOS_SHORT] = 0; // smallest subnormal.
                     return x;
@@ -1218,7 +1204,7 @@ real nextUp(real x)
                 if (pe[EXPONENTPOS_SHORT] == 0x8000) {
                     return x; // it's become a denormal, implied bit stays low.
                 }
-                *ps = 0xFFFFFFFFFFFFFFFF; // set the implied bit
+                *ps = 0xFFFF_FFFF_FFFF_FFFF; // set the implied bit
                 return x;
             }
             return x;
@@ -1371,8 +1357,6 @@ X splitSignificand(X)(inout X x)
     return y - x;
 }
 
-
-//import tango.stdc.stdio;
 unittest {
     double x = -0x1.234_567A_AAAA_AAp+250;
     double y = splitSignificand(x);
@@ -1423,7 +1407,6 @@ unittest {
     assert( nextDown(1.0 + real.epsilon) == 1.0);
 }
 }
-
 
 /**
  * Calculates the next representable value after x in the direction of y.
