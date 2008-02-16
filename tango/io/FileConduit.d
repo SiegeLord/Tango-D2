@@ -434,19 +434,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
             
                 /***************************************************************
 
-                        Ensures that data is flushed immediately to disk
-
-                ***************************************************************/
-/+
-                override void commit ()
-                {
-                        if (style_.access & Access.Write)
-                            if (! FlushFileBuffers (handle))
-                                  error ();
-                }
-+/
-                /***************************************************************
-
                         Set the file size to be that of the current seek 
                         position. The file must be writable for this to
                         succeed.
