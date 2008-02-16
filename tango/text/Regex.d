@@ -406,24 +406,24 @@ private struct Set(T)
         s ~= v;
         return s;
     }
-    
+
     void opAddAssign(T v)
     {
         data[v] = true;
     }
-    
+
     void opAddAssign(Set s)
     {
         foreach ( v; s.elements )
             data[v] = true;
     }
     alias opAddAssign opCatAssign;
-    
+
     size_t length()
     {
         return data.length;
     }
-    
+
     T[] elements()
     {
         return data.keys;
@@ -436,12 +436,12 @@ private struct Set(T)
         data.remove(v);
         return true;
     }
-    
+
     bool contains(T v)
     {
         return (v in data) !is null;
     }
-    
+
     bool contains(Set s)
     {
         Set tmp = s - *this;
@@ -468,54 +468,6 @@ private struct Set(T)
             s.data[v] = true;
         return s;
     }
-}
-
-/* ************************************************************************************************
-
-**************************************************************************************************/
-void quickSort(T)(T[] a)
-{
-    quickSort(a,cast(size_t)0,a.length);
-}
-
-void quickSort(T)(T[] a, size_t l, size_t r)
-{
-    T t;
-    auto i = r-l;
-    if ( i < 3 )
-    {
-        if ( i < 2 )
-            return;
-        if ( a[l] < a[l+1] )
-            return;
-        t = a[l];
-        a[l] = a[l+1];
-        a[l+1] = t;
-        return;
-    }
-    
-    auto p = a[l];
-    i = l;
-    auto j = r;
-    
-    while ( true )
-    {
-        ++i;
-        for ( ; i < j && a[i] < p; ++i ) {}
-        --j;
-        for ( ; i < j && a[j] >= p; --j ) {}
-        if ( i >= j )
-            break;
-        t = a[i];
-        a[i] = a[j];
-        a[j] = t;
-    }
-    --i;
-    a[l] = a[i];
-    a[i] = p;
-
-    quickSort(a, l, i);
-    quickSort(a, i+1, r);
 }
 import tango.math.Math;
 
@@ -2178,6 +2130,7 @@ private:
         frags ~= frag;
     }
 }
+import tango.core.Array;
 
 /* ************************************************************************************************
     Tagged DFA
@@ -2279,7 +2232,7 @@ private class TDFA(char_t)
     this(TNFA!(char_t) tnfa)
     {
         num_tags        = tnfa.tagCount;
-        
+
         next_register   = num_tags;
         for ( int i = 1; i <= num_tags; ++i ) {
             TagIndex ti;
@@ -2467,7 +2420,7 @@ private class TDFA(char_t)
     debug void print()
     {
         Stdout.formatln("#tags = {}", num_tags);
-        
+
         auto tis = new TagIndex[registers.length];
         foreach ( k, v; registers )
             tis [v] = k;
@@ -2552,7 +2505,7 @@ private:
             }
             return -1;
         }
-        
+
         string toString()
         {
             string str;
@@ -2582,7 +2535,7 @@ private:
         {
             this.elms = elms;
         }
-        
+
         string toString()
         {
             string str = "[ ";
@@ -2624,7 +2577,7 @@ private:
     /* ********************************************************************************************
         Calculates the register index for a given tag map entry. The TDFA implementation uses
         registers to save potential tag positions, the index space gets linearized here.
-    
+
         Params:     tag =   tag number
                     index = tag map index
         Returns:    index of the register to use for the tag map entry
@@ -2646,7 +2599,7 @@ private:
     }
 
     Mark[] marks_;
-    
+
     /* ********************************************************************************************
         Add new TDFA state to the automaton.
     **********************************************************************************************/
@@ -2668,7 +2621,7 @@ private:
     {
         alias CharRange!(char_t) range_t;
         debug(tdfa) Stdout.formatln("disjointPredicates()");
-        
+
         size_t num_marks;
         foreach ( elm; state.elms )
         {
@@ -2688,13 +2641,13 @@ private:
                 }
             }
         }
-        
+
         if ( num_marks <= 1 )
             throw new Exception("disjointPredicates: No transitions in subset state");
-        
+
         debug(tdfa) Stdout("\nsorting...").newline;
         // using built-in sort somtimes gives an AV in TypeInfo.swap
-        quickSort(marks_, cast(size_t)0, num_marks);
+        sort(marks_[0 .. num_marks]);
         assert(!marks_[0].end);
 
         debug(tdfa)
@@ -2720,7 +2673,7 @@ private:
         char_t  start = marks_[0].c,
                 end;
         range_t[]   disjoint = new range_t[num_marks/2+1];
-        
+
         foreach ( m; marks_[1 .. num_marks] )
         {
             if ( m.end )
@@ -2758,11 +2711,11 @@ private:
             // save range
             if ( disjoint.length <= next )
                 disjoint.length = disjoint.length*2;
-            
+
             disjoint[next].l_ = start;
             disjoint[next].r_ = end;
             ++next;
-            
+
             // advance cursor
             start = m.c;
         }
@@ -2790,7 +2743,7 @@ private:
     /* ********************************************************************************************
         Finds all TNFA states that can be reached directly with the given predicate and creates
         a new SubsetState containing those target states.
-    
+
         Params:     subst = SubsetState to start from
                     pred =  predicate that is matched against outgoing transitions
         Returns:    SubsetState containing the reached target states
@@ -2874,7 +2827,7 @@ private:
 
     /* ********************************************************************************************
         Extends the given SubsetState with the states that are reached through lookbehind transitions.
-    
+
         Params:     from =      SubsetState to create the lookbehind closure for
                     previous =  predicate "from" was reached with
         Returns:    SubsetState containing "from" and all states of it's lookbehind closure
@@ -2920,7 +2873,7 @@ private:
         Generates the epsilon closure of the given subset state, creating tag map entries
         if tags are passed. Takes priorities into account, effectively realizing
         greediness and reluctancy.
-    
+
         Params:     from =      SubsetState to create the epsilon closure for
                     previous =  SubsetState "from" was reached from
         Returns:    SubsetState containing "from" and all states of it's epsilon closure
@@ -3040,7 +2993,7 @@ private:
         Tries to create commands that reorder the tag map of "previous", such that "from" becomes
         tag-wise identical to "to". If successful, these commands are added to "trans". This
         is done for state re-use.
-    
+
         Params:     from =      SubsetState to check for tag-wise equality to "to"
                     to =        existing SubsetState that we want to re-use
                     previous =  SubsetState we're coming from
