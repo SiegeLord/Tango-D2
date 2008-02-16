@@ -4,13 +4,15 @@
 
     license:    BSD style: $(LICENSE)
 
-    version:    Initial release: December 2007
+    version:    The Great Namechange: February 2008
+
+                Initial release: December 2007
 
     author:     Daniel Keep
 
 *******************************************************************************/
 
-module tango.io.vfs.ZipArchive;
+module tango.io.vfs.ZipFolder;
 
 import tango.io.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath;
@@ -23,7 +25,7 @@ import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
        VfsInfo, VfsSync;
 import tango.util.PathUtil : patternMatch;
 
-debug( ZipArchive )
+debug( ZipFolder )
 {
     import tango.io.Stdout : Stderr;
 }
@@ -171,7 +173,7 @@ private
                         file.tempFile = new TempFile;
                         file.tempFile.output.copy(zi).close;
 
-                        debug( ZipArchive )
+                        debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
                                     " temp file {} for {}",
                                     file.tempFile, this.fullname);
@@ -186,7 +188,7 @@ private
                     // Otherwise, just make a new, blank temp file
                     file.tempFile = new TempFile;
 
-                    debug( ZipArchive )
+                    debug( ZipFolder )
                         Stderr.formatln("Entry.openOutput: created"
                                 " temp file {} for {}",
                                 file.tempFile, this.fullname);
@@ -240,7 +242,7 @@ private
                     }
                     break;
 
-                debug( ZipArchive )
+                debug( ZipFolder )
                 {
                 default:
                     Stderr.formatln(
@@ -276,10 +278,10 @@ private
 // ************************************************************************ //
 
 /**
- * ZipArchive serves as the root object for all Zip archives in the VFS.
+ * ZipFolder serves as the root object for all Zip archives in the VFS.
  * Presently, it can only open archives on the local filesystem.
  */
-class ZipArchive : ZipFolder
+class ZipFolder : ZipSubFolder
 {
     /**
      * Opens an archive from the local filesystem.  If the readonly argument
@@ -290,8 +292,8 @@ class ZipArchive : ZipFolder
     out { assert( valid ); }
     body
     {
-        debug( ZipArchive )
-            Stderr.formatln(`ZipArchive("{}", {})`, path, readonly);
+        debug( ZipFolder )
+            Stderr.formatln(`ZipFolder("{}", {})`, path, readonly);
         this(FilePath(path), readonly);
     }
 
@@ -300,8 +302,8 @@ class ZipArchive : ZipFolder
     out { assert( valid ); }
     body
     {
-        debug( ZipArchive )
-            Stderr.formatln(`ZipArchive("{}", {})`, path, readonly);
+        debug( ZipFolder )
+            Stderr.formatln(`ZipFolder("{}", {})`, path, readonly);
         this.resetArchive(path, readonly);
         super(this, root);
     }
@@ -315,8 +317,8 @@ class ZipArchive : ZipFolder
     in { assert( valid ); }
     body
     {
-        debug( ZipArchive )
-            Stderr.formatln("ZipArchive.close({})",commit);
+        debug( ZipFolder )
+            Stderr.formatln("ZipFolder.close({})",commit);
 
         // MUTATE
         if( commit ) sync;
@@ -350,15 +352,15 @@ class ZipArchive : ZipFolder
     }
     body
     {
-        debug( ZipArchive )
-            Stderr("ZipArchive.sync()").newline;
+        debug( ZipFolder )
+            Stderr("ZipFolder.sync()").newline;
 
         if( !modified )
             return this;
 
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
-        mutate_error("ZipArchive.sync");
+        mutate_error("ZipFolder.sync");
         assert(false);
 }
 else
@@ -379,7 +381,7 @@ else
                 {
                     tempFile = new TempFile(path.path, TempFile.Permanent);
                     os = tempFile.output;
-                    debug( ZipArchive )
+                    debug( ZipFolder )
                         Stderr.formatln(" sync: created temp file {}",
                                 tempFile.path);
                     break;
@@ -421,7 +423,7 @@ else
         }
 
         // With that done, we can free all our handles, etc.
-        debug( ZipArchive )
+        debug( ZipFolder )
             Stderr(" sync: close").newline;
         this.close(/*commit*/ false);
         os.close;
@@ -430,11 +432,11 @@ else
         // top of the old archive.
         if( tempFile !is null )
         {
-            debug( ZipArchive )
+            debug( ZipFolder )
                 Stderr(" sync: destroying temp file").newline;
             auto tempFilePath = tempFile.path.dup;
             delete tempFile;
-            debug( ZipArchive )
+            debug( ZipFolder )
                 Stderr.formatln(" sync: renaming {} to {}",
                         tempFilePath, path);
             tempFilePath.rename(path);
@@ -442,15 +444,15 @@ else
 
         // Finally, re-open the archive so that we have all the nicely
         // compressed files.
-        debug( ZipArchive )
+        debug( ZipFolder )
             Stderr(" sync: reset archive").newline;
         this.resetArchive(path, readonly);
         
-        debug( ZipArchive )
+        debug( ZipFolder )
             Stderr(" sync: reset folder").newline;
         this.reset(this, root);
 
-        debug( ZipArchive )
+        debug( ZipFolder )
             Stderr(" sync: done").newline;
 
         return this;
@@ -483,15 +485,15 @@ private:
 
     final bool closed()
     {
-        debug( ZipArchive )
-            Stderr("ZipArchive.closed()").newline;
+        debug( ZipFolder )
+            Stderr("ZipFolder.closed()").newline;
         return (root is null);
     }
 
     final bool valid()
     {
-        debug( ZipArchive )
-            Stderr("ZipArchive.valid()").newline;
+        debug( ZipFolder )
+            Stderr("ZipFolder.valid()").newline;
         return !closed;
     }
 
@@ -515,10 +517,10 @@ private:
     out { assert( valid ); }
     body
     {
-        debug( ZipArchive )
-            Stderr.formatln(`ZipArchive.resetArchive("{}", {})`, path, readonly);
+        debug( ZipFolder )
+            Stderr.formatln(`ZipFolder.resetArchive("{}", {})`, path, readonly);
 
-        debug( ZipArchive )
+        debug( ZipFolder )
             Stderr.formatln(" .. size of Entry: {0}, {0:x} bytes", Entry.sizeof);
 
         this.path = path;
@@ -623,9 +625,9 @@ private:
 /**
  * This class represents a folder in an archive.  In addition to supporting
  * the sync operation, you can also use the archive member to get a reference
- * to the underlying ZipArchive instance.
+ * to the underlying ZipFolder instance.
  */
-class ZipFolder : VfsFolder, VfsSync
+class ZipSubFolder : VfsFolder, VfsSync
 {
     ///
     final override char[] name()
@@ -692,7 +694,7 @@ class ZipFolder : VfsFolder, VfsSync
     {
         // Locate the folder in question.  We do this by "walking" the
         // path components.  If we find a component that doesn't exist,
-        // then we create a ZipFolderEntry for the remainder.
+        // then we create a ZipSubFolderEntry for the remainder.
         Entry* curent = this.entry;
 
         // h is the "head" of the path, t is the remainder.  ht is both
@@ -718,8 +720,8 @@ class ZipFolder : VfsFolder, VfsSync
             else
                 // If the next component doesn't exist, return a folder entry.
                 // If the tail is empty, return a folder entry as well (let
-                // the ZipFolderEntry do the last lookup.)
-                return new ZipFolderEntry(archive, curent, ht);
+                // the ZipSubFolderEntry do the last lookup.)
+                return new ZipSubFolderEntry(archive, curent, ht);
         }
         while( true );
     }
@@ -729,7 +731,7 @@ class ZipFolder : VfsFolder, VfsSync
     in { assert( valid ); }
     body
     {
-        return new ZipFolderGroup(archive, this, false);
+        return new ZipSubFolderGroup(archive, this, false);
     }
 
     ///
@@ -737,7 +739,7 @@ class ZipFolder : VfsFolder, VfsSync
     in { assert( valid ); }
     body
     {
-        return new ZipFolderGroup(archive, this, true);
+        return new ZipSubFolderGroup(archive, this, true);
     }
 
     ///
@@ -751,7 +753,7 @@ class ZipFolder : VfsFolder, VfsSync
         {
             if( childEntry.isDir )
             {
-                VfsFolder childFolder = new ZipFolder(archive, childEntry);
+                VfsFolder childFolder = new ZipSubFolder(archive, childEntry);
                 if( (result = dg(childFolder)) != 0 )
                     break;
             }
@@ -765,7 +767,7 @@ class ZipFolder : VfsFolder, VfsSync
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("VfsFolder.clear");
         assert(false);
@@ -825,7 +827,7 @@ else
     in { assert( valid ); }
     body
     {
-        auto zipfolder = cast(ZipFolder) folder;
+        auto zipfolder = cast(ZipSubFolder) folder;
 
         if( mounting
                 && zipfolder !is null
@@ -843,23 +845,23 @@ else
     }
 
     /**
-     * Returns a reference to the underlying ZipArchive instance.
+     * Returns a reference to the underlying ZipFolder instance.
      */
-    final ZipArchive archive() { return _archive; }
+    final ZipFolder archive() { return _archive; }
 
 private:
-    ZipArchive _archive;
+    ZipFolder _archive;
     Entry* entry;
     VfsStats stats;
 
-    final ZipArchive archive(ZipArchive v) { return _archive = v; }
+    final ZipFolder archive(ZipFolder v) { return _archive = v; }
 
-    this(ZipArchive archive, Entry* entry)
+    this(ZipFolder archive, Entry* entry)
     {
         this.reset(archive, entry);
     }
 
-    final void reset(ZipArchive archive, Entry* entry)
+    final void reset(ZipFolder archive, Entry* entry)
     in
     {
         assert( archive !is null );
@@ -894,18 +896,18 @@ private:
         archive.modified = true;
     }
 
-    final ZipFolder[] folders(bool collect)
+    final ZipSubFolder[] folders(bool collect)
     in { assert( valid ); }
     body
     {
-        ZipFolder[] folders;
+        ZipSubFolder[] folders;
         stats = stats.init;
 
         foreach( _,childEntry ; entry.dir.children )
         {
             if( childEntry.isDir )
             {
-                if( collect ) folders ~= new ZipFolder(archive, childEntry);
+                if( collect ) folders ~= new ZipSubFolder(archive, childEntry);
                 ++ stats.folders;
             }
             else
@@ -993,7 +995,7 @@ class ZipFile : VfsFile
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("ZipFile.copy");
         assert(false);
@@ -1015,7 +1017,7 @@ else
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("ZipFile.move");
         assert(false);
@@ -1038,7 +1040,7 @@ else
     out { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("ZipFile.create");
         assert(false);
@@ -1073,7 +1075,7 @@ else
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("ZipFile.create");
         assert(false);
@@ -1092,7 +1094,7 @@ else
     out { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         mutate_error("ZipFile.remove");
         assert(false);
@@ -1142,7 +1144,7 @@ else
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutable )
+version( ZipFolder_NonMutable )
 {
         mutate_error("ZipFile.output");
         assert(false);
@@ -1170,7 +1172,7 @@ else
     }
 
 private:
-    ZipArchive archive;
+    ZipFolder archive;
     Entry* entry;
 
     Entry* parent;
@@ -1182,7 +1184,7 @@ private:
     {
     }
 
-    this(ZipArchive archive, Entry* parent, Entry* entry)
+    this(ZipFolder archive, Entry* parent, Entry* entry)
     in
     {
         assert( archive !is null );
@@ -1198,7 +1200,7 @@ private:
         this.reset(archive, parent, entry);
     }
 
-    this(ZipArchive archive, Entry* parent, char[] name)
+    this(ZipFolder archive, Entry* parent, char[] name)
     in
     {
         assert( archive !is null );
@@ -1235,7 +1237,7 @@ private:
         archive.modified = true;
     }
 
-    final void reset(ZipArchive archive, Entry* parent, Entry* entry)
+    final void reset(ZipFolder archive, Entry* parent, Entry* entry)
     in
     {
         assert( archive !is null );
@@ -1254,7 +1256,7 @@ private:
         this.name_ = null;
     }
 
-    final void reset(ZipArchive archive, Entry* parent, char[] name)
+    final void reset(ZipFolder archive, Entry* parent, char[] name)
     in
     {
         assert( archive !is null );
@@ -1287,7 +1289,7 @@ private:
 // ************************************************************************ //
 // ************************************************************************ //
 
-class ZipFolderEntry : VfsFolderEntry
+class ZipSubFolderEntry : VfsFolderEntry
 {
     final override VfsFolder open()
     in { assert( valid ); }
@@ -1295,12 +1297,12 @@ class ZipFolderEntry : VfsFolderEntry
     {
         auto entry = (name in parent.dir.children);
         if( entry )
-            return new ZipFolder(archive, *entry);
+            return new ZipSubFolder(archive, *entry);
 
         else
         {
             // NOTE: this can be called with a multi-part path.
-            error("ZipFolderEntry.open: \""
+            error("ZipSubFolderEntry.open: \""
                     ~ parent.fullname ~ "/" ~ name
                     ~ "\" does not exist");
         }
@@ -1310,11 +1312,11 @@ class ZipFolderEntry : VfsFolderEntry
     in { assert( valid ); }
     body
     {
-version( ZipArchive_NonMutating )
+version( ZipFolder_NonMutating )
 {
         // TODO: different exception if folder exists (this operation is
         // currently invalid either way...)
-        mutate_error("ZipFolderEntry.create");
+        mutate_error("ZipSubFolderEntry.create");
         assert(false);
 }
 else
@@ -1324,7 +1326,7 @@ else
 
         // If the folder exists, we can't really create it, now can we?
         if( this.exists )
-            error("ZipFolderEntry.create: cannot create folder that already "
+            error("ZipSubFolderEntry.create: cannot create folder that already "
                     "exists, and believe me, I *tried*");
         
         // Ok, I suppose I can do this for ya...
@@ -1339,7 +1341,7 @@ else
         mutate;
 
         // Done
-        return new ZipFolder(archive, entry);
+        return new ZipSubFolder(archive, entry);
 }
     }
 
@@ -1351,11 +1353,11 @@ else
     }
 
 private:
-    ZipArchive archive;
+    ZipFolder archive;
     Entry* parent;
     char[] name;
 
-    this(ZipArchive archive, Entry* parent, char[] name)
+    this(ZipFolder archive, Entry* parent, char[] name)
     in
     {
         assert( archive !is null );
@@ -1397,7 +1399,7 @@ private:
 // ************************************************************************ //
 // ************************************************************************ //
 
-class ZipFolderGroup : VfsFolders
+class ZipSubFolderGroup : VfsFolders
 {
     final override int opApply(int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
@@ -1457,13 +1459,13 @@ class ZipFolderGroup : VfsFolders
     in { assert( valid ); }
     body
     {
-        ZipFolder[] set;
+        ZipSubFolder[] set;
 
         foreach( folder ; members )
             if( patternMatch(folder.name, pattern) )
                 set ~= folder;
 
-        return new ZipFolderGroup(archive, set);
+        return new ZipSubFolderGroup(archive, set);
     }
 
     final override VfsFiles catalog(char[] pattern)
@@ -1486,10 +1488,10 @@ class ZipFolderGroup : VfsFolders
     }
 
 private:
-    ZipArchive archive;
-    ZipFolder[] members;
+    ZipFolder archive;
+    ZipSubFolder[] members;
 
-    this(ZipArchive archive, ZipFolder root, bool recurse)
+    this(ZipFolder archive, ZipSubFolder root, bool recurse)
     out { assert( valid ); }
     body
     {
@@ -1497,7 +1499,7 @@ private:
         members = root ~ scan(root, recurse);
     }
 
-    this(ZipArchive archive, ZipFolder[] members)
+    this(ZipFolder archive, ZipSubFolder[] members)
     out { assert( valid ); }
     body
     {
@@ -1510,7 +1512,7 @@ private:
         return (archive !is null) && !archive.closed;
     }
 
-    final ZipFolder[] scan(ZipFolder root, bool recurse)
+    final ZipSubFolder[] scan(ZipSubFolder root, bool recurse)
     in { assert( valid ); }
     body
     {
@@ -1562,7 +1564,7 @@ class ZipFileGroup : VfsFiles
     }
 
 private:
-    ZipArchive archive;
+    ZipFolder archive;
     FileEntry[] group;
     VfsStats stats;
 
@@ -1572,7 +1574,7 @@ private:
         Entry* entry;
     }
 
-    this(ZipArchive archive, ZipFolderGroup host, VfsFilter filter)
+    this(ZipFolder archive, ZipSubFolderGroup host, VfsFilter filter)
     out { assert( valid ); }
     body
     {
@@ -1600,7 +1602,7 @@ void error(char[] msg)
 
 void mutate_error(char[] method)
 {
-    error(method ~ ": mutating the contents of a ZipArchive "
+    error(method ~ ": mutating the contents of a ZipFolder "
             "is not supported yet; terribly sorry");
 }
 

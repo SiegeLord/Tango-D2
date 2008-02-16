@@ -1,6 +1,6 @@
 module vfszip;
 
-import tango.io.vfs.ZipArchive;
+import tango.io.vfs.ZipFolder;
 import tango.io.Stdout;
 
 /******************************************************************************
@@ -22,7 +22,7 @@ void main(char[][] args)
     else
         zipname = "tmp.zip";
 
-    auto archive = new ZipArchive(zipname);
+    auto archive = new ZipFolder(zipname);
     auto info = archive.self;
 
     Stdout.formatln ("file count: {}", info.files);
