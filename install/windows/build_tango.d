@@ -1,3 +1,5 @@
+module build_tango;
+
 import tango.io.FileConduit;
 import tango.io.FileScan;
 import tango.io.Stdout;
@@ -40,17 +42,19 @@ void main( char[][] args )
 
 bool filter( FilePath file )
 {
-    return containsPattern( file.folder, "posix"  ) ||
-           containsPattern( file.folder, "linux"  ) ||
-           containsPattern( file.folder, "darwin" ) ||
-           containsPattern( file.name,   "Posix"  );
+    return containsPattern( file.folder, "posix"   ) ||
+           containsPattern( file.folder, "linux"   ) ||
+           containsPattern( file.folder, "darwin"  ) ||
+           containsPattern( file.name,   "Posix"   ) ||
+           containsPattern( file.folder, "freebsd" );
 }
 
 
 char[] objname( FilePath file )
 {
     size_t pos = 0;
-    char[] name = file.folder;
+    char[] folder = file.dup.native.folder;
+    char[] name = folder;
     foreach( elem; name )
     {
         if( elem == '.' || elem == '\\' )
@@ -59,7 +63,7 @@ char[] objname( FilePath file )
         }
         break;
     }
-    return file.folder[pos .. $].dup.replace( '\\', '-' ) ~ file.name ~ ".obj";
+    return folder[pos .. $].dup.replace( '\\', '-' ) ~ file.name ~ ".obj";
 }
 
 
