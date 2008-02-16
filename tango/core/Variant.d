@@ -430,7 +430,6 @@ struct Variant
                 return result;
             }
         }
-        assert(false);
     }
 
     /**

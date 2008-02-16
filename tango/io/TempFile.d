@@ -547,7 +547,8 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         // See DDoc version
         long seek(long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
         {
-            long result = lseek(handle, offset, anchor);
+            assert( offset <= int.sizeof );
+            long result = lseek(handle, cast(int) offset, anchor);
             if (result is -1)
                 error();
             return result;

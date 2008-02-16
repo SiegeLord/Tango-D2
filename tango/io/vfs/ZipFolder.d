@@ -112,8 +112,10 @@ private
                 return file.zipEntry.size;
 
             else if( file.tempFile !is null )
-                return file.tempFile.length;
-
+            {
+                assert( file.tempFile.length >= 0 );
+                return cast(ulong) file.tempFile.length;
+            }
             else
                 return 0;
         }
@@ -242,14 +244,11 @@ private
                     }
                     break;
 
-                debug( ZipFolder )
-                {
                 default:
-                    Stderr.formatln(
+                    debug( ZipFolder ) Stderr.formatln(
                             "Entry.dispose_children: unknown type {}",
                             type);
                     assert(false);
-                }
             }
         }
     }
@@ -724,6 +723,8 @@ class ZipSubFolder : VfsFolder, VfsSync
                 return new ZipSubFolderEntry(archive, curent, ht);
         }
         while( true );
+
+        assert(false);
     }
 
     ///
@@ -988,6 +989,8 @@ class ZipFile : VfsFile
         else
             error("ZipFile.size: cannot reliably determine size of a "
                     "non-existent file");
+
+        assert(false);
     }
 
     ///
@@ -1137,6 +1140,8 @@ else
         else
             error("ZipFile.input: cannot open non-existent file for input; "
                     "results would not be very useful");
+
+        assert(false);
     }
 
     ///
@@ -1305,6 +1310,8 @@ class ZipSubFolderEntry : VfsFolderEntry
             error("ZipSubFolderEntry.open: \""
                     ~ parent.fullname ~ "/" ~ name
                     ~ "\" does not exist");
+
+            assert(false);
         }
     }
 

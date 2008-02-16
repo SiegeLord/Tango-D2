@@ -129,8 +129,8 @@ struct LocalFileHeader
 
         // Update lengths in data
         Data data = this.data;
-        data.file_name_length = file_name.length;
-        data.extra_field_length = extra_field.length;
+        data.file_name_length = cast(ushort) file_name.length;
+        data.extra_field_length = cast(ushort) extra_field.length;
 
         // Do it
         version( BigEndian ) swapAll(data);
@@ -314,9 +314,9 @@ struct FileHeader
 
         // Update the lengths
         Data data = *(this.data);
-        data.file_name_length = file_name.length;
-        data.extra_field_length = extra_field.length;
-       data.file_comment_length = file_comment.length;
+        data.file_name_length = cast(ushort) file_name.length;
+        data.extra_field_length = cast(ushort) extra_field.length;
+        data.file_comment_length = cast(ushort) file_comment.length;
 
         // Ok; let's do this!
         version( BigEndian ) swapAll(data);
@@ -425,7 +425,7 @@ struct EndOfCDRecord
 
         // Set up data block
         Data data = this.data;
-        data.file_comment_length = file_comment.length;
+        data.file_comment_length = cast(ushort) file_comment.length;
 
         version( BigEndian ) swapAll(data);
         writeExact(output, (&data)[0..1]);
@@ -493,6 +493,8 @@ private
             case 8:     return Method.Deflate;
             default:    return Method.Unsupported;
         }
+
+        assert(false);
     }
 
     ushort fromMethod(Method method)
@@ -504,6 +506,8 @@ private
             default:
                 assert(false, "unsupported compression method");
         }
+
+        assert(false);
     }
 
     /* NOTE: This doesn't actually appear to work.  Using the default magic
@@ -665,7 +669,12 @@ version( none )
 
             case State.Done:
                 return false;
+
+            default:
+                assert(false);
         }
+
+        assert(false);
     }
 
     /**
@@ -795,7 +804,8 @@ private:
             }
 
             auto used = header.map(cd_data[4..$]);
-            cd_data = cd_data[4+used..$];
+            assert( used <= (size_t.max-4) );
+            cd_data = cd_data[4+cast(size_t)used..$];
 
             // Update offset for next record
             cdr_offset += 4 /* for sig. */ + used;
@@ -835,16 +845,17 @@ private:
         const max_chunk_len = 4 + EndOfCDRecord.Data.sizeof + ushort.max;
 
         auto file_len = seeker.seek(0, IConduit.Seek.Anchor.End);
+        assert( file_len <= size_t.max );
 
         // We're going to need min(max_chunk_len, file_len) bytes.
-        long chunk_len = max_chunk_len;
+        size_t chunk_len = max_chunk_len;
         if( file_len < max_chunk_len )
-            chunk_len = file_len;
+            chunk_len = cast(size_t) file_len;
         //Stderr.formatln(" . chunk_len = {}", chunk_len);
 
         // Seek back and read in the chunk.  Don't forget to clean up after
         // ourselves.
-        seeker.seek(-chunk_len, IConduit.Seek.Anchor.End);
+        seeker.seek(-cast(long)chunk_len, IConduit.Seek.Anchor.End);
         auto chunk_offset = seeker.seek(0, IConduit.Seek.Anchor.Current);
         //Stderr.formatln(" . chunk_offset = {}", chunk_offset);
         auto chunk = new ubyte[chunk_len];
@@ -859,16 +870,17 @@ private:
 
         size_t eocd_loc = -1;
 
-        for( size_t i=chunk_len-18; i>=0; --i )
-        {
-            if( *(cast(uint*)(chunk.ptr+i)) == eocd_magic )
+        if( chunk_len >= 18 )
+            for( size_t i=chunk_len-18; i>=0; --i )
             {
-                // Found the bugger!  Make sure we skip the signature (forgot
-                // to do that originally; talk about weird errors :P)
-                eocd_loc = i+4;
-                break;
+                if( *(cast(uint*)(chunk.ptr+i)) == eocd_magic )
+                {
+                    // Found the bugger!  Make sure we skip the signature (forgot
+                    // to do that originally; talk about weird errors :P)
+                    eocd_loc = i+4;
+                    break;
+                }
             }
-        }
 
         // If we didn't find it, then we'll assume that this is not a valid
         // archive.
@@ -1120,12 +1132,19 @@ private:
             ZipException.cdtoolong;
 
         {
+            assert( entries.length < ushort.max );
+            assert( cd_len < uint.max );
+            assert( cd_pos < uint.max );
+
             EndOfCDRecord eocdr;
             eocdr.data.central_directory_entries_on_this_disk =
-                entries.length;
-            eocdr.data.central_directory_entries_total = entries.length;
-            eocdr.data.size_of_central_directory = cd_len;
-            eocdr.data.offset_of_start_of_cd_from_starting_disk = cd_pos;
+                cast(ushort) entries.length;
+            eocdr.data.central_directory_entries_total =
+                cast(ushort) entries.length;
+            eocdr.data.size_of_central_directory =
+                cast(ushort) cd_len;
+            eocdr.data.offset_of_start_of_cd_from_starting_disk =
+                cast(ushort) cd_pos;
 
             write(output, EndOfCDRecord.signature);
             eocdr.put(output);
@@ -1185,12 +1204,14 @@ private:
             // Count number of bytes coming in from the source file
             scope in_counter = new CounterInput(in_chain);
             in_chain = in_counter;
-            scope(success) uncompressed_size = in_counter.count;
+            assert( in_counter.count <= typeof(uncompressed_size).max );
+            scope(success) uncompressed_size = cast(uint) in_counter.count;
 
             // Count the number of bytes going out to the archive
             scope out_counter = new CounterOutput(out_chain);
             out_chain = out_counter;
-            scope(success) compressed_size = out_counter.count;
+            assert( out_counter.count <= typeof(compressed_size).max );
+            scope(success) compressed_size = cast(uint) out_counter.count;
 
             // Add crc
             scope crc_d = new Crc32(/*CRC_MAGIC*/);
@@ -1216,6 +1237,9 @@ private:
                             ZlibOutput.Level.init, -15);
                     out_chain = compress;
                     break;
+
+                default:
+                    assert(false);
             }
 
             // All done.
@@ -1316,6 +1340,8 @@ private:
                 {
                     case 0: minver(10); break;
                     case 8: minver(20); break;
+                    default:
+                        assert(false);
                 }
 
                 // File is a folder
@@ -1349,11 +1375,12 @@ private:
         header.put(output);
 
         // Save the header
+        assert( header_pos <= int.max );
         Entry entry;
         entry.data.fromLocal(header.data);
         entry.filename = file_name;
         entry.header_position = header_pos;
-        entry.data.relative_offset_of_local_header = header_pos;
+        entry.data.relative_offset_of_local_header = cast(int) header_pos;
         entries ~= entry;
     }
 }
@@ -1381,7 +1408,7 @@ class ZipEntry
      */
     uint size()
     {
-        return header.data.uncompressed_size;;
+        return header.data.uncompressed_size;
     }
 
     /**
@@ -2229,15 +2256,15 @@ void timeToDos(Time time, out ushort dostime, out ushort dosdate)
         ZipException.tooold;
 
     auto span = time.span;
-    dostime =
+    dostime = cast(ushort) (
         (span.seconds / 2)
       | (span.minutes << 5)
-      | (span.hours   << 11);
+      | (span.hours   << 11));
 
-    dosdate =
+    dosdate = cast(ushort) (
         (cal.getDayOfMonth(time))
       | (cal.getMonth(time) << 5)
-      |((cal.getYear(time) - 1980) << 9);
+      |((cal.getYear(time) - 1980) << 9));
 }
 
 // ************************************************************************** //
@@ -2439,7 +2466,7 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
 
         // Otherwise, make sure we don't try to read past the end of the slice
         if( _position+dst.length > length )
-            dst.length = length-_position;
+            dst.length = cast(size_t) (length-_position);
 
         // Seek source stream to the appropriate location.
         if( seeker.seek(0, Anchor.Current) != begin+_position )
@@ -2479,6 +2506,9 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
                 _position = length+offset;
                 if( _position < 0 ) _position = 0;
                 break;
+
+            default:
+                assert(false);
         }
 
         return _position;
@@ -2539,7 +2569,7 @@ class SliceInputStream : InputStream
 
         // Otherwise, make sure we don't try to read past the end of the slice
         if( dst.length > _length )
-            dst.length = _length;
+            dst.length = cast(size_t) _length;
 
         // Do the read
         auto read = source.read(dst);
@@ -2618,7 +2648,7 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
         // Otherwise, make sure we don't try to write past the end of the
         // slice
         if( _position+src.length > length )
-            src.length = length-_position;
+            src.length = cast(size_t) (length-_position);
 
         // Seek source stream to the appropriate location.
         if( seeker.seek(0, Anchor.Current) != begin+_position )
@@ -2663,6 +2693,9 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
                 _position = length+offset;
                 if( _position < 0 ) _position = 0;
                 break;
+
+            default:
+                assert(false);
         }
 
         return _position;
