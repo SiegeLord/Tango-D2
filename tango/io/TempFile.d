@@ -366,7 +366,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
      */
     private void create(Style style)
     {
-        create(FilePath(tempPath).dup, style);
+        create(tempPath, style);
     }
 
     private void create(FilePath prefix, Style style)
@@ -392,9 +392,9 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         /*
          * Returns the path to the temporary directory.
          */
-        private char[] tempPath()
+        public static FilePath tempPath()
         {
-            return GetTempPath();
+            return FilePath(GetTempPath()).dup;
         }
 
         /*
@@ -470,13 +470,13 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         /*
          * Returns the path to the temporary directory.
          */
-        private char[] tempPath()
+        public static FilePath tempPath()
         {
             // Check for TMPDIR; failing that, use /tmp
             if( auto tmpdir = Environment.get("TMPDIR") )
-                return tmpdir;
+                return FilePath(tmpdir).dup;
             else
-                return "/tmp/";
+                return FilePath("/tmp/").dup;
         }
 
         /*
@@ -561,6 +561,14 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
          *
          **********************************************************************/
         long seek(long offset, Seek.Anchor anchor = Seek.Anchor.Begin);
+
+        /**********************************************************************
+         * 
+         * Returns the path to the directory where temporary files will be
+         * created.  The returned path is safe to mutate.
+         *
+         **********************************************************************/
+        FilePath tempPath();
     }
     else
     {
@@ -641,7 +649,7 @@ You might want to delete the permanent one afterwards, too. :)")
 
     Stdout.formatln("Creating a permanent file:");
     {
-        scope tempFile = new TempFile(TempFile.UserPermanent);
+        scope tempFile = new TempFile(TempFile.Permanent);
         scope(exit) tempFile.detach;
 
         Stdout.formatln(" .. path: {}", tempFile);
