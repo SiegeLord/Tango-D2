@@ -10,7 +10,10 @@
 
     This is a regular expression compiler and interpreter based on the Tagged NFA/DFA method.
 
-    This implies, that the expressions it can handle are <i>regular</i>, in the way language theory defines it,
+    See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
+    for details on regular expressions in general.
+
+    The used method implies, that the expressions are <i>regular</i>, in the way language theory defines it,
     as opposed to what &quot;regular expression&quot; means in most implementations
     (e.g. PCRE or those from the standard libraries of Perl, Java or Python).
     The advantage of this method is it's performance, it's disadvantage is the inability to realize some features
@@ -18,8 +21,9 @@
     See <a href="http://swtch.com/~rsc/regexp/regexp1.html">&quot;Regular Expression Matching Can Be Simple And Fast&quot;</a>
     for details on the differences.
 
-    See <a href="http://en.wikipedia.org/wiki/Regular_expression">Wikpedia's article on regular expressions</a>
-    for details on regular expressions in general.
+    The time for matching a regular expression against an input string of length N is in O(M*N), where M depends on the
+    number of matching brackets and the complexity of the expression. That is, M is constant wrt. the input
+    and therefore matching is a linear-time process.
 
     The syntax of a regular expressions is as follows.
     <i>X</i> and <i>Y</i> stand for an arbitrary regular expression.
@@ -465,6 +469,54 @@ private struct Set(T)
         return s;
     }
 }
+
+/* ************************************************************************************************
+
+**************************************************************************************************/
+void quickSort(T)(T[] a)
+{
+    quickSort(a,cast(size_t)0,a.length);
+}
+
+void quickSort(T)(T[] a, size_t l, size_t r)
+{
+    T t;
+    auto i = r-l;
+    if ( i < 3 )
+    {
+        if ( i < 2 )
+            return;
+        if ( a[l] < a[l+1] )
+            return;
+        t = a[l];
+        a[l] = a[l+1];
+        a[l+1] = t;
+        return;
+    }
+    
+    auto p = a[l];
+    i = l;
+    auto j = r;
+    
+    while ( true )
+    {
+        ++i;
+        for ( ; i < j && a[i] < p; ++i ) {}
+        --j;
+        for ( ; i < j && a[j] >= p; --j ) {}
+        if ( i >= j )
+            break;
+        t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+    --i;
+    a[l] = a[i];
+    a[i] = p;
+
+    quickSort(a, l, i);
+    quickSort(a, i+1, r);
+}
 import tango.math.Math;
 
 /* ************************************************************************************************
@@ -472,54 +524,69 @@ import tango.math.Math;
 **************************************************************************************************/
 struct CharRange(char_t)
 {
-    char_t  l, r;
+    char_t  l_, r_;
 
     static CharRange opCall(char_t c)
     {
-        CharRange r;
-        r.l = c;
-        r.r = c;
-        return r;
+        CharRange cr;
+        cr.l_ = c;
+        cr.r_ = c;
+        return cr;
     }
 
     static CharRange opCall(char_t a, char_t b)
     {
-        CharRange r;
-        r.l = min(a,b);
-        r.r = max(a,b);
-        return r;
+        CharRange cr;
+        cr.l_ = min(a,b);
+        cr.r_ = max(a,b);
+        return cr;
     }
 
+    char_t l()
+    {
+        return l_;
+    }
+
+    char_t r()
+    {
+        return r_;
+    }
+
+    /* ********************************************************************************************
+        Compares the ranges according to their beginning.
+    **********************************************************************************************/
     int opCmp(CharRange cr)
     {
-        if ( l == cr.l )
+        if ( l_ == cr.l_ )
             return 0;
-        if ( l < cr.l )
+        if ( l_ < cr.l_ )
             return -1;
         return 1;
     }
 
     bool contains(char_t c)
     {
-        return c >= l && c <= r;
+        return c >= l_ && c <= r_;
     }
 
     bool contains(CharRange cr)
     {
-        return l <= cr.l && r >= cr.r;
+        return l_ <= cr.l_ && r_ >= cr.r_;
     }
 
     bool intersects(CharRange cr)
     {
-        return r >= cr.l && l <= cr.r;
+        return r_ >= cr.l_ && l_ <= cr.r_;
     }
 
     CharRange intersect(CharRange cr)
     {
         assert(intersects(cr));
         CharRange ir;
-        ir.l = max(l, cr.l);
-        ir.r = min(r, cr.r);
+        ir.l_ = max(l_, cr.l_);
+        ir.r_ = min(r_, cr.r_);
+        if ( ir.l_ > ir.r_ )
+            ir.l_ = ir.r_ = char_t.min;
         return ir;
     }
 
@@ -535,27 +602,27 @@ struct CharRange(char_t)
             CharRange d;
             if ( contains(cr) )
             {
-                d.l = l;
-                d.r = cr.l-1;
-                if ( d.l <= d.r )
+                d.l_ = l_;
+                d.r_ = cr.l_-1;
+                if ( d.l_ <= d.r_ )
                     sr ~= d;
-                d.l = cr.r+1;
-                d.r = r;
-                if ( d.l <= d.r )
-                    sr ~= d;
-            }
-            else if ( cr.r > l )
-            {
-                d.l = cr.r+1;
-                d.r = r;
-                if ( d.l <= d.r )
+                d.l_ = cr.r_+1;
+                d.r_ = r_;
+                if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
-            else if ( cr.l < r )
+            else if ( cr.r_ > l_ )
             {
-                d.l = l;
-                d.r = cr.l-1;
-                if ( d.l <= d.r )
+                d.l_ = cr.r_+1;
+                d.r_ = r_;
+                if ( d.l_ <= d.r_ )
+                    sr ~= d;
+            }
+            else if ( cr.l_ < r_ )
+            {
+                d.l_ = l_;
+                d.r_ = cr.l_-1;
+                if ( d.l_ <= d.r_ )
                     sr ~= d;
             }
         }
@@ -566,24 +633,24 @@ struct CharRange(char_t)
     {
         string str;
         auto layout = new Layout!(char);
-        if ( l == r )
+        if ( l_ == r_ )
         {
-            if ( l > 0x20 && l < 0x7f )
-                str = layout.convert("'{}'", l);
+            if ( l_ > 0x20 && l_ < 0x7f )
+                str = layout.convert("'{}'", l_);
             else
-                str = layout.convert("({:x})", cast(int)l);
+                str = layout.convert("({:x})", cast(int)l_);
         }
         else
         {
-            if ( l > 0x20 && l < 0x7f )
-                str = layout.convert("'{}'", l);
+            if ( l_ > 0x20 && l_ < 0x7f )
+                str = layout.convert("'{}'", l_);
             else
-                str = layout.convert("({:x})", cast(int)l);
+                str = layout.convert("({:x})", cast(int)l_);
             str ~= "-";
-            if ( r > 0x20 && r < 0x7f )
-                str ~= layout.convert("'{}'", r);
+            if ( r_ > 0x20 && r_ < 0x7f )
+                str ~= layout.convert("'{}'", r_);
             else
-                str ~= layout.convert("({:x})", cast(int)r);
+                str ~= layout.convert("({:x})", cast(int)r_);
         }
         return str;
     }
@@ -600,21 +667,20 @@ struct CharClass(char_t)
     // pre-defined character classes
     static const CharClass!(char_t)
         line_startend = {parts: [
-            {l:0x00, r:0x00},
-            {l:0x0a, r:0x0a},
-            {l:0x13, r:0x13}
+            {l_:0x00, r_:0x00},
+            {l_:0x0a, r_:0x0a},
+            {l_:0x13, r_:0x13}
         ]},
         digit = {parts: [
-            {l:0x30, r:0x39}
+            {l_:0x30, r_:0x39}
         ]},
         whitespace = {parts: [
-            {l:0x00, r:0x00},
-            {l:0x09, r:0x09},
-            {l:0x0a, r:0x0a},
-            {l:0x0b, r:0x0b},
-            {l:0x13, r:0x13},
-            {l:0x14, r:0x14},
-            {l:0x20, r:0x20}
+            {l_:0x09, r_:0x09},
+            {l_:0x0a, r_:0x0a},
+            {l_:0x0b, r_:0x0b},
+            {l_:0x13, r_:0x13},
+            {l_:0x14, r_:0x14},
+            {l_:0x20, r_:0x20}
         ]};
 
     // 8bit classes
@@ -622,21 +688,18 @@ struct CharClass(char_t)
     {
         static const CharClass!(char_t)
             any_char = {parts: [
-                {l:0x00, r:0x00},
-                {l:0x09, r:0x13},   // basic control chars
-                {l:0x20, r:0x7e},   // basic latin
-                {l:0xa0, r:0xff}    // latin-1 supplement
+                {l_:0x01, r_:0xff}
             ]},
             dot_oper = {parts: [
-                {l:0x09, r:0x13},   // basic control chars
-                {l:0x20, r:0x7e},   // basic latin
-                {l:0xa0, r:0xff}    // latin-1 supplement
+                {l_:0x09, r_:0x13},   // basic control chars
+                {l_:0x20, r_:0x7e},   // basic latin
+                {l_:0xa0, r_:0xff}    // latin-1 supplement
             ]},
             alphanum_ = {parts: [
-                {l:0x30, r:0x39},
-                {l:0x41, r:0x5a},
-                {l:0x5f, r:0x5f},
-                {l:0x61, r:0x7a}
+                {l_:0x30, r_:0x39},
+                {l_:0x41, r_:0x5a},
+                {l_:0x5f, r_:0x5f},
+                {l_:0x61, r_:0x7a}
             ]};
     }
     // 16bit and 32bit classes
@@ -644,28 +707,37 @@ struct CharClass(char_t)
     {
         static const CharClass!(char_t)
             any_char = {parts: [
-                {l:0x00, r:0x00},
-                {l:0x09,r:0x13},{l:0x20, r:0x7e},{l:0xa0, r:0xff},
-                {l:0x0100, r:0x017f},   // latin extended a
-                {l:0x0180, r:0x024f},   // latin extended b
-                {l:0x20a3, r:0x20b5},   // currency symbols
+                {l_:0x0001, r_:0xffff}
             ]},
             dot_oper = {parts: [
-                {l:0x09,r:0x13},{l:0x20, r:0x7e},{l:0xa0, r:0xff},
-                {l:0x0100, r:0x017f},   // latin extended a
-                {l:0x0180, r:0x024f},   // latin extended b
-                {l:0x20a3, r:0x20b5},   // currency symbols
+                {l_:0x09,r_:0x13},{l_:0x20, r_:0x7e},{l_:0xa0, r_:0xff},
+                {l_:0x0100, r_:0x017f},   // latin extended a
+                {l_:0x0180, r_:0x024f},   // latin extended b
+                {l_:0x20a3, r_:0x20b5},   // currency symbols
             ]},
             alphanum_ = {parts: [
-                {l:0x30, r:0x39},
-                {l:0x41, r:0x5a},
-                {l:0x5f, r:0x5f},
-                {l:0x61, r:0x7a}
+                {l_:0x30, r_:0x39},
+                {l_:0x41, r_:0x5a},
+                {l_:0x5f, r_:0x5f},
+                {l_:0x61, r_:0x7a}
             ]};
     }
 
     //---------------------------------------------------------------------------------------------
     range_t[] parts;
+
+    invariant()
+    {
+//        foreach ( i, p; parts )
+//            assert(p.l_<=p.r_, Int.toString(i)~": "~Int.toString(p.l_)~" > "~Int.toString(p.r_));
+    }
+
+    static CharClass opCall(CharClass cc)
+    {
+        CharClass ncc;
+        ncc.parts = cc.parts.dup;
+        return ncc;
+    }
 
     int opCmp(CharClass cc)
     {
@@ -675,7 +747,7 @@ struct CharClass(char_t)
             return 1;
         foreach ( i, p; cc.parts )
         {
-            if ( p.l != parts[i].l || p.r != parts[i].r )
+            if ( p.l_ != parts[i].l_ || p.r_ != parts[i].r_ )
                 return 1;
         }
         return 0;
@@ -707,7 +779,6 @@ struct CharClass(char_t)
                     ic.parts ~= p.intersect(cp);
             }
         }
-        ic.optimize;
         return ic;
     }
 
@@ -716,53 +787,63 @@ struct CharClass(char_t)
         negate;
         add(cc);
         negate;
-        optimize;
     }
 
     void add(CharClass cc)
     {
         parts ~= cc.parts;
-        optimize;
     }
 
     void add(char_t c)
     {
         parts ~= CharRange!(char_t)(c);
-        optimize;
     }
-
+    
+    /* ********************************************************************************************
+        Requires the CharClass to be optimized.
+    **********************************************************************************************/
     void negate()
     {
-        if ( empty ) {
-            parts ~= any_char.parts;
+        optimize;
+        char_t  start = char_t.min;
+
+        // first part touches left boundary of value range
+        if ( parts.length > 0 && parts[0].l_ == start )
+        {
+            start = parts[0].r_;
+            if ( start < char_t.max )
+                ++start;
+
+            foreach ( i, ref cr; parts[0 .. $-1] )
+            {
+                cr.l_ = start;
+                cr.r_ = parts[i+1].l_-1;
+                start = parts[i+1].r_;
+                if ( start < char_t.max )
+                    ++start;
+            }
+            if ( start != char_t.max ) {
+                parts[$-1].l_ = start;
+                parts[$-1].r_ = char_t.max;
+            }
+            else
+                parts.length = parts.length-1;
             return;
         }
-
-        optimize;
-        range_t[] oldparts = parts;
-        parts = null;
-
-        Stack!(range_t) stack;
-        foreach_reverse ( p; any_char.parts )
-            stack ~= p;
-        outerLoop: while ( !stack.empty )
+        
+        foreach ( i, ref cr; parts )
         {
-            range_t r = stack.top;
-            stack.pop;
-
-            foreach ( op; oldparts )
-            {
-                range_t[] sr = r.subtract(op);
-
-                if ( sr.length == 0 )
-                    continue outerLoop;
-                if ( sr.length == 2 )
-                    stack ~= sr[1];
-                r = sr[0];
-            }
-            
-            parts ~= r;
+            char_t tmp = cr.l_-1;
+            cr.l_ = start;
+            start = cr.r_;
+            if ( start < char_t.max )
+                ++start;
+            cr.r_ = tmp;
         }
+
+        // last part does not touch right boundary
+        if ( start != char_t.max )
+            parts ~= range_t(start, char_t.max);
     }
 
     void optimize()
@@ -770,21 +851,22 @@ struct CharClass(char_t)
         if ( empty )
             return;
 
-        range_t[] oldparts = parts;
-        oldparts.sort;
-        parts = null;
+        parts.sort;
 
-        range_t cp = oldparts[0];
-        foreach ( ocp; oldparts[1..$] )
+        size_t i = 0;
+        foreach ( p; parts[1 .. $] )
         {
-            if ( ocp.l > cp.r+1 ) {
-                parts ~= cp;
-                cp = ocp;
+            if ( p.l_ > parts[i].r_+1 ) {
+                ++i;
+                parts[i].l_ = p.l_;
+                parts[i].r_ = p.r_;
+                continue;
             }
-            else if ( ocp.l <= cp.r+1 )
-                cp.r = max(ocp.r, cp.r);
+            parts[i].r_ = max(p.r_, parts[i].r_);
+            if ( parts[i].r_ >= char_t.max )
+                break;
         }
-        parts ~= cp;
+        parts.length = i+1;
     }
 
     char[] toString()
@@ -796,6 +878,57 @@ struct CharClass(char_t)
         str ~= "]";
         return str;
     }
+}
+
+import tango.io.Stdout;
+unittest
+{
+    Stdout.formatln("CharClass unittest");
+    static CharClass!(char) cc = { parts: [{l_:0,r_:10},{l_:0,r_:6},{l_:5,r_:12},{l_:12,r_:17},{l_:20,r_:100}] };
+    Stdout.formatln("{}", cc.toString);
+    cc.optimize;
+    Stdout.formatln("optimized: {}", cc.toString);
+    cc.negate;
+    Stdout.formatln("negated: {}", cc.toString);
+    cc.optimize;
+    Stdout.formatln("optimized: {}", cc.toString);
+    cc.negate;
+    Stdout.formatln("negated: {}", cc.toString);
+    
+    static CharClass!(char) cc2 = { parts: [] };
+    Stdout.formatln("{}", cc2.toString);
+    cc2.optimize;
+    Stdout.formatln("optimized: {}", cc2.toString);
+    cc2.negate;
+    Stdout.formatln("negated: {}", cc2.toString);
+    cc2.optimize;
+    Stdout.formatln("optimized: {}", cc2.toString);
+    cc2.negate;
+    Stdout.formatln("negated: {}", cc2.toString);
+    
+    static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
+    Stdout.formatln("{}", cc3.toString);
+    cc3.negate;
+    Stdout.formatln("negated: {}", cc3.toString);
+    cc3.negate;
+    Stdout.formatln("negated: {}", cc3.toString);
+    
+    static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
+    Stdout.formatln("{}", cc4.toString);
+    cc4.optimize;
+    Stdout.formatln("optimized: {}", cc4.toString);
+
+    static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
+    Stdout.formatln("{}", cc5.toString);
+    cc5.optimize;
+    Stdout.formatln("optimized: {}", cc5.toString);
+    cc5.negate;
+    Stdout.formatln("negated: {}", cc5.toString);
+    cc5.optimize;
+    Stdout.formatln("optimized: {}", cc5.toString);
+    cc5.negate;
+    Stdout.formatln("negated: {}", cc5.toString);
+    assert(0, "control the results for yourself, i'm too lazy to type all those asserts ;)");
 }
 
 
@@ -817,7 +950,7 @@ private struct Predicate(char_t)
     Type            type;
 
     // data for compiled predicates
-    const uint  MAX_BITMAP_LENGTH = 256*8,
+    const uint  MAX_BITMAP_LENGTH = 256,
                 MAX_SEARCH_LENGTH = 256;
     enum MatchMode {
         generic, generic_l,
@@ -838,17 +971,16 @@ private struct Predicate(char_t)
         assert(input.parts.length > 0);
         
         // single char?
-        if ( input.parts.length == 1 && input.parts[0].l == input.parts[0].r )
+        if ( input.parts.length == 1 && input.parts[0].l_ == input.parts[0].r_ )
         {
             mode = type==Type.consume ? MatchMode.single_char : MatchMode.single_char_l;
-            data_chr = input.parts[0].l;
+            data_chr = input.parts[0].l_;
             return;
         }
-        
         // check whether we can use a bitmap
         foreach ( p; input.parts )
         {
-            if ( p.l > MAX_BITMAP_LENGTH || p.r > MAX_BITMAP_LENGTH )
+            if ( p.l_ > MAX_BITMAP_LENGTH || p.r_ > MAX_BITMAP_LENGTH )
                 goto LnoBitmap;
         }
 
@@ -856,30 +988,31 @@ private struct Predicate(char_t)
         data_bmp.length = MAX_BITMAP_LENGTH/8;
         foreach ( p; input.parts )
         {
-            for ( char_t c = p.l; c <= p.r; ++c )
+            for ( char_t c = p.l_; c <= p.r_; ++c )
                 data_bmp[c/8] |= 1 << (c&7);
         }
         mode = type==Type.consume ? MatchMode.bitmap : MatchMode.bitmap_l;
         return;
 
     LnoBitmap:
+/*
         // check whether the class is small enough to justify a string-search
         // TODO: consider inverse class for 8bit chars?
         uint class_size;
         foreach ( p; input.parts )
-            class_size += cast(uint)p.r+1-p.l;
+            class_size += cast(uint)p.r_+1-p.l_;
         if ( class_size > MAX_SEARCH_LENGTH )
             goto Lgeneric;
         data_str.length = class_size;
         size_t ind;
         foreach ( p; input.parts )
         {
-            for ( char_t c = p.l; c <= p.r; ++c )
+            for ( char_t c = p.l_; c <= p.r_; ++c )
                 data_str[ind++] = c;
         }
         mode = type==Type.consume ? MatchMode.string_search : MatchMode.string_search_l;
         return;
-
+*/
     Lgeneric:
         data_str = cast(char_t[])input.parts;
         mode = type==Type.consume ? MatchMode.generic : MatchMode.generic_l;
@@ -1077,6 +1210,7 @@ private class TNFA(char_t)
     alias Predicate!(char_t)        predicate_t;
     alias char_t[]                  string_t;
     alias CharRange!(char_t)        range_t;
+    alias CharClass!(char_t)        cc_t;
 
     string_t    pattern;
     state_t[]   states;
@@ -1217,7 +1351,7 @@ private class TNFA(char_t)
         // add implicit extra reluctant .* at the beginning for unanchored matches
         // and matching bracket for total match group
         if ( unanchored ) {
-            frags ~= constructChars(CharClass!(char_t).dot_oper, predicate_t.Type.consume);
+            frags ~= constructChars(cc_t.dot_oper, predicate_t.Type.consume);
             perform(Operator.zero_more_xr, false);
             perform(Operator.concat, false);
             perform(Operator.open_par, false);
@@ -1297,21 +1431,21 @@ private class TNFA(char_t)
                     if ( implicit_concat )
                         perform(Operator.concat, false);
                     implicit_concat = true;
-                    frags ~= constructChars(CharClass!(char_t).dot_oper, pred_type);
+                    frags ~= constructChars(cc_t.dot_oper, pred_type);
                     break;
                 case '$':
                     if ( implicit_concat )
                         perform(Operator.concat, false);
                     implicit_concat = true;
 
-                    frags ~= constructChars(CharClass!(char_t).line_startend, predicate_t.Type.lookahead);
+                    frags ~= constructChars(cc_t.line_startend, predicate_t.Type.lookahead);
                     break;
                 case '^':
                     if ( implicit_concat )
                         perform(Operator.concat, false);
                     implicit_concat = true;
 
-                    frags ~= constructChars(CharClass!(char_t).line_startend, predicate_t.Type.lookbehind);
+                    frags ~= constructChars(cc_t.line_startend, predicate_t.Type.lookbehind);
                     break;
                 case '>':
                     c = readPattern;
@@ -1324,7 +1458,6 @@ private class TNFA(char_t)
                         goto case '.';
                     else
                         goto default;
-                    break;
                 case '<':
                     c = readPattern;
                     pred_type = predicate_t.Type.lookbehind;
@@ -1336,7 +1469,6 @@ private class TNFA(char_t)
                         goto case '.';
                     else
                         goto default;
-                    break;
                 case '\\':
                     c = readPattern;
 
@@ -1356,26 +1488,26 @@ private class TNFA(char_t)
                             frags ~= constructSingleChar('\r', pred_type);
                             break;
                         case 'w':   // alphanumeric and _
-                            frags ~= constructChars(CharClass!(char_t).alphanum_, pred_type);
+                            frags ~= constructChars(cc_t.alphanum_, pred_type);
                             break;
                         case 'W':   // non-(alphanum and _)
-                            auto cc = CharClass!(char_t).alphanum_;
+                            auto cc = cc_t(cc_t.alphanum_);
                             cc.negate;
                             frags ~= constructChars(cc, pred_type);
                             break;
                         case 's':   // whitespace
-                            frags ~= constructChars(CharClass!(char_t).whitespace, pred_type);
+                            frags ~= constructChars(cc_t.whitespace, pred_type);
                             break;
                         case 'S':   // non-whitespace
-                            auto cc = CharClass!(char_t).whitespace;
+                            auto cc = cc_t(cc_t.whitespace);
                             cc.negate;
                             frags ~= constructChars(cc, pred_type);
                             break;
                         case 'd':   // digit
-                            frags ~= constructChars(CharClass!(char_t).digit, pred_type);
+                            frags ~= constructChars(cc_t.digit, pred_type);
                             break;
                         case 'D':   // non-digit
-                            auto cc = CharClass!(char_t).digit;
+                            auto cc = cc_t(cc_t.digit);
                             cc.negate;
                             frags ~= constructChars(cc, pred_type);
                             break;
@@ -1384,19 +1516,19 @@ private class TNFA(char_t)
                                 throw new RegExpException("Escape sequence \\b not allowed in look-ahead or -behind");
 
                             // create (?<\S>\s|<\s>\S)
-                            auto cc = CharClass!(char_t).whitespace;
+                            auto cc = cc_t(cc_t.whitespace);
                             cc.negate;
 
                             perform(Operator.open_par_nm);
 
                             frags ~= constructChars(cc, predicate_t.Type.lookbehind);
                             perform(Operator.concat, false);
-                            frags ~= constructChars(CharClass!(char_t).whitespace, predicate_t.Type.lookahead);
+                            frags ~= constructChars(cc_t.whitespace, predicate_t.Type.lookahead);
                             perform(Operator.altern, false);
-                            frags ~= constructChars(CharClass!(char_t).whitespace, predicate_t.Type.lookbehind);
+                            frags ~= constructChars(cc_t.whitespace, predicate_t.Type.lookbehind);
                             perform(Operator.concat, false);
                             frags ~= constructChars(cc, predicate_t.Type.lookahead);
-                            
+
                             perform(Operator.close_par, false);
                             break;
                         case 'B':   // neither end of word
@@ -1404,7 +1536,7 @@ private class TNFA(char_t)
                                 throw new RegExpException("Escape sequence \\B not allowed in look-ahead or -behind");
 
                             // create (?<\S>\S|<\s>\s)
-                            auto cc = CharClass!(char_t).whitespace;
+                            auto cc = cc_t(cc_t.whitespace);
                             cc.negate;
 
                             perform(Operator.open_par_nm);
@@ -1413,10 +1545,10 @@ private class TNFA(char_t)
                             perform(Operator.concat, false);
                             frags ~= constructChars(cc, predicate_t.Type.lookahead);
                             perform(Operator.altern, false);
-                            frags ~= constructChars(CharClass!(char_t).whitespace, predicate_t.Type.lookbehind);
+                            frags ~= constructChars(cc_t.whitespace, predicate_t.Type.lookbehind);
                             perform(Operator.concat, false);
-                            frags ~= constructChars(CharClass!(char_t).whitespace, predicate_t.Type.lookahead);
-                            
+                            frags ~= constructChars(cc_t.whitespace, predicate_t.Type.lookahead);
+
                             perform(Operator.close_par, false);
                             break;
                         case '(':
@@ -1435,10 +1567,10 @@ private class TNFA(char_t)
                         case '|':
                         case '<':
                         case '>':
+                        default:
                             frags ~= constructSingleChar(c, pred_type);
                             break;
-                        default:
-                            throw new RegExpException(layout.convert("Unknown escape sequence \\{}", c));
+//                            throw new RegExpException(layout.convert("Unknown escape sequence \\{}", c));
                     }
                     break;
 
@@ -1456,13 +1588,13 @@ private class TNFA(char_t)
             perform(Operator.close_par, false);
             if ( implicit_concat )
                 perform(Operator.concat, false);
-            frags ~= constructChars(CharClass!(char_t).dot_oper, predicate_t.Type.consume);
+            frags ~= constructChars(cc_t.dot_oper, predicate_t.Type.consume);
             perform(Operator.zero_more_ng, false);
         }
 
         // empty operator stack
         while ( !perform(Operator.eos) ) {}
-        
+
         // set start and finish states
         start = addState;
         state_t finish = addState;
@@ -1702,21 +1834,21 @@ private:
 
     frag_t constructChars(string_t chars, predicate_t.Type type)
     {
-        CharClass!(char_t) cc;
+        cc_t cc;
         for ( int i = 0; i < chars.length; ++i )
             cc.add(chars[i]);
 
         return constructChars(cc, type);
     }
 
-    frag_t constructChars(CharClass!(char_t) charclass, predicate_t.Type type)
+    frag_t constructChars(cc_t charclass, predicate_t.Type type)
     {
-        debug(tnfa) Stdout.format("constructChars");
+        debug(tnfa) Stdout.format("constructChars type={}", type);
 
         trans_t trans = addTransition;
         trans.predicate.type = type;
 
-        trans.predicate.setInput(charclass);
+        trans.predicate.setInput(cc_t(charclass));
 
         trans.predicate.optimize;
         debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
@@ -1729,7 +1861,7 @@ private:
 
     frag_t constructCharClass(predicate_t.Type type)
     {
-        debug(tnfa) Stdout.format("constructCharClass");
+        debug(tnfa) Stdout.format("constructCharClass type={}", type);
         auto oldCursor = cursor;
 
         trans_t trans = addTransition;
@@ -1940,7 +2072,7 @@ private:
             }
             prev = f;
         }
-        
+
         if ( maxOccur == 0 )
         {
             frag_t f = frags.tail.value;
@@ -1966,7 +2098,7 @@ private:
 
             prev = f;
         }
-        
+
         for ( int i = minOccur; i < maxOccur; ++i )
         {
             frag_t f;
@@ -2053,6 +2185,8 @@ private:
 private class TDFA(char_t)
 {
     alias Predicate!(char_t)    predicate_t;
+    alias CharRange!(char_t)    range_t;
+    alias CharClass!(char_t)    charclass_t;
     alias char_t[]              string_t;
 
     const uint CURRENT_POSITION_REGISTER = ~0;
@@ -2158,12 +2292,11 @@ private class TDFA(char_t)
         StateElement se             = new StateElement;
         se.nfa_state = tnfa.start;
         subset_start.elms ~= se;
-        subset_start = epsilonClosure(subset_start, subset_start);
 
         // apply lookbehind closure for string/line start
-        predicate_t pred;
-        pred.setInput(CharClass!(char_t).line_startend);
-        subset_start = lookbehindClosure(subset_start, pred);
+        predicate_t tmp_pred;
+        tmp_pred.setInput(CharClass!(char_t).line_startend);
+        subset_start = epsilonClosure(lookbehindClosure(epsilonClosure(subset_start, subset_start), tmp_pred), subset_start);
 
         start = addState;
         subset_start.dfa_state = start;
@@ -2185,22 +2318,21 @@ private class TDFA(char_t)
             unmarked.pop;
 
             // create transitions for each class, creating new states when necessary
-            foreach ( pred; disjointPredicates(state) )
+            foreach ( disjoint; disjointPredicates(state) )
             {
                 // find NFA state we reach with pred
+                predicate_t pred;
+                pred.appendInput(disjoint);
+
+                // reach will set predicate type correctly
+                debug(tdfa) Stdout.format("from {} with {} reach", state.dfa_state.index, pred.toString);
                 SubsetState target = reach(state, pred);
-                if ( target is null )
-                {
-                    debug(tdfa) {
-                        Stdout.formatln("from {} with {} - lookbehind at beginning", state.dfa_state.index, pred.toString);
-                    }
-                    throw new Exception("Lookbehind at beginning of expression");
+                if ( target is null ) {
+                    continue;
+                    debug(tdfa) Stdout.formatln(" nothing - lookbehind at beginning, skipping");
                 }
-                debug(tdfa) {
-                    Stdout.formatln("from {} with {} reach {}", state.dfa_state.index, pred.toString, target.toString);
-                }
-                target = epsilonClosure(target, state);
-                target = lookbehindClosure(target, pred);
+                debug(tdfa) Stdout.formatln(" {}", target.toString);
+                target = epsilonClosure(lookbehindClosure(epsilonClosure(target, state), pred), state);
 
                 Transition trans = new Transition;
                 state.dfa_state.transitions ~= trans;
@@ -2323,8 +2455,7 @@ private class TDFA(char_t)
             }
         }
 
-        // TODO: add lookahead for string end somewhere
-        // TODO: minimize DFA
+        // TODO: add lookahead for string-end somewhere
         // TODO: mark dead-end states (not leaving a non-finishing susbet)
         // TODO: mark states that can leave the finishing subset of DFA states or use a greedy transition
         //       (execution may stop in that state)
@@ -2392,6 +2523,7 @@ private:
     {
         TNFAState!(char_t)  nfa_state;
         int[uint]           tags;
+        // use place-value priority with 2 places, value(maxPrio) > value(lastPrio)
         uint                maxPriority,
                             lastPriority;
 
@@ -2466,6 +2598,30 @@ private:
     }
 
     /* ********************************************************************************************
+        Temporary structure used for disjoint predicate computation
+    **********************************************************************************************/
+    struct Mark
+    {
+        char_t  c;
+        bool    end;    /// false = start of range
+
+        int opCmp(Mark m)
+        {
+            if ( c < m.c )
+                return -1;
+            if ( c == m.c )
+            {
+                if ( !end )
+                    return -1;
+                if ( !m.end )
+                    return 1;
+                return 0;
+            }
+            return 1;
+        }
+    }
+
+    /* ********************************************************************************************
         Calculates the register index for a given tag map entry. The TDFA implementation uses
         registers to save potential tag positions, the index space gets linearized here.
     
@@ -2489,6 +2645,8 @@ private:
             return tag-1;
     }
 
+    Mark[] marks_;
+    
     /* ********************************************************************************************
         Add new TDFA state to the automaton.
     **********************************************************************************************/
@@ -2506,11 +2664,12 @@ private:
         Params:     state = SubsetState to create the predicates from
         Returns:    List of disjoint predicates that can be used for a DFA state
     **********************************************************************************************/
-    List!(predicate_t) disjointPredicates(SubsetState state)
+    range_t[] disjointPredicates(SubsetState state)
     {
-        auto    queue = new List!(predicate_t),
-                disjoint = new List!(predicate_t);
-
+        alias CharRange!(char_t) range_t;
+        debug(tdfa) Stdout.formatln("disjointPredicates()");
+        
+        size_t num_marks;
         foreach ( elm; state.elms )
         {
             foreach ( t; elm.nfa_state.transitions )
@@ -2518,42 +2677,113 @@ private:
                 // partitioning will consider lookbehind transitions,
                 // st. lb-closure will not expand for transitions with a superset of the lb-predicate
                 if ( t.predicate.type != predicate_t.Type.epsilon )
-                    queue ~= t.predicate;
-            }
-        }
-
-        while ( !queue.empty )
-        {
-            predicate_t pred = queue.head.value;
-            queue.remove(queue.head);
-
-            bool intersected=false;
-            foreach ( inout pred2; &queue.elements )
-            {
-                auto intpred = pred.intersect(pred2.value);
-                if ( !intpred.empty )
                 {
-                    intersected = true;
-                    pred.subtract(intpred);
-                    pred2.value.subtract(intpred);
-                    if ( pred2.value.empty )
-                        queue.remove(pred2);
-                    // make sure we don't process intpred in this loop again
-                    queue.pushFront(intpred);
-                    if ( pred.empty )
-                        break;
+                    debug(tdfa) Stdout.formatln("{}", t.predicate.toString);
+                    if ( marks_.length < num_marks+2*t.predicate.getInput.parts.length )
+                        marks_.length = num_marks+2*t.predicate.getInput.parts.length;
+                    foreach ( p; t.predicate.getInput.parts ) {
+                        marks_[num_marks++] = Mark(p.l, false);
+                        marks_[num_marks++] = Mark(p.r, true);
+                    }
                 }
             }
-            if ( !pred.empty )
+        }
+        
+        if ( num_marks <= 1 )
+            throw new Exception("disjointPredicates: No transitions in subset state");
+        
+        debug(tdfa) Stdout("\nsorting...").newline;
+        // using built-in sort somtimes gives an AV in TypeInfo.swap
+        quickSort(marks_, cast(size_t)0, num_marks);
+        assert(!marks_[0].end);
+
+        debug(tdfa)
+        {
+            Stdout("\nsorted marks:\n");
+            bool first=true;
+            foreach ( m; marks_[0 .. num_marks] )
             {
-                if ( intersected )
-                    queue ~= pred;
-                // lb-transitions are not added, since result is used for reach
-                else if ( pred.type != predicate_t.Type.lookbehind )
-                    disjoint ~= pred;
+                if ( first )
+                    first = false;
+                else
+                    Stdout(",");
+                if ( m.c > 0x20 && m.c < 0x7f )
+                    Stdout.format("{}{}", m.end?"e":"s", m.c);
+                else
+                    Stdout.format("{}{:x}", m.end?"e":"s", cast(int)m.c);
             }
+            Stdout.newline;
         }
 
+        size_t  next,
+                active = 1;
+        char_t  start = marks_[0].c,
+                end;
+        range_t[]   disjoint = new range_t[num_marks/2+1];
+        
+        foreach ( m; marks_[1 .. num_marks] )
+        {
+            if ( m.end )
+            {
+                assert(active>0);
+                --active;
+                if ( m.c < start )
+                    continue;
+                end = m.c;
+                // the next range cannot start at the same pos
+                // because starts are sorted before endings
+                if ( active > 0 )
+                    ++m.c;
+            }
+            else
+            {
+                ++active;
+                if ( active == 1 )
+                {
+                    // skip uncovered interval
+                    if ( m.c > start ) {
+                        start = m.c;
+                        continue;
+                    }
+                    end = m.c;
+                    ++m.c;
+                }
+                // skip range start if cursor already marks it
+                else if ( m.c <= start )
+                    continue;
+                else
+                    end = m.c-1;
+            }
+
+            // save range
+            if ( disjoint.length <= next )
+                disjoint.length = disjoint.length*2;
+            
+            disjoint[next].l_ = start;
+            disjoint[next].r_ = end;
+            ++next;
+            
+            // advance cursor
+            start = m.c;
+        }
+        disjoint.length = next;
+
+        debug(tdfa)
+        {
+            Stdout("\ndisjoint ranges:\n");
+            first=true;
+            foreach ( r; disjoint )
+            {
+                if ( first )
+                    first = false;
+                else
+                    Stdout(",");
+                Stdout.format("{}", r);
+            }
+            Stdout.newline;
+        }
+
+        debug(tdfa) Stdout.formatln("disjointPredicates() end");
         return disjoint;
     }
 
@@ -2584,8 +2814,6 @@ private:
                         have_consume = true;
                     else if ( t.predicate.type == predicate_t.Type.lookahead )
                         have_lookahead = true;
-                    else
-                        assert(0);
                 }
             }
         }
@@ -2597,8 +2825,10 @@ private:
             processed_type = predicate_t.Type.lookahead;
         else if ( have_consume )
             processed_type = predicate_t.Type.consume;
-        else
+        else {
+            debug(tdfa) Stdout.formatln("\nERROR: reach found no consume/lookahead symbol for {} in \n{}", pred.toString, subst.toString);
             return null;
+        }
         pred.type = processed_type;
 
         // add destination states to new subsetstate
@@ -2729,13 +2959,15 @@ private:
                 StateElement* tmp = t.target.index in closure;
                 if ( tmp !is null )
                 {
-                    // if smaller prio exists, do not use this transition
+                    // if higher prio (smaller value) exists, do not use this transition
                     if ( tmp.maxPriority < new_maxPri ) {
                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, tmp.maxPriority, new_maxPri);
                         continue;
                     }
                     else if ( tmp.maxPriority == new_maxPri )
                     {
+                        // "equal lastPrio -> first-come-first-serve"
+                        // doesn't work for lexer - how to solve it properly?
                         if ( tmp.lastPriority < t.priority ) {
                             debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, tmp.lastPriority, t.priority);
                             continue;
@@ -2944,7 +3176,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    this(char_t[] pattern, bool swapMBS, bool unanchored)
+    this(char_t[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
     {
         pattern_ = pattern;
         
@@ -2958,6 +3190,10 @@ class RegExpT(char_t)
         }
         tnfa_.swapMatchingBracketSyntax = swapMBS;
         tnfa_.parse(unanchored);
+        if ( printNFA ) {
+            debug Stdout.formatln("\nTNFA:");
+            debug tnfa_.print;
+        }
         tdfa_ = new tdfa_t(tnfa_);
         registers_.length = tdfa_.num_regs;
     }
@@ -3047,8 +3283,9 @@ class RegExpT(char_t)
         auto s = tdfa_.start;
 
         debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
-        Ldfa_loop: for ( size_t p, next_p; p < inp.length; next_p = p )
+        for ( size_t p, next_p; p < inp.length; )
         {
+        Lread_char:
             dchar c = cast(dchar)inp[p];
             if ( c & 0x80 )
                 c = decode(inp, next_p);
@@ -3138,6 +3375,9 @@ class RegExpT(char_t)
                 p = next_p;
             Lno_consume:
 
+                s = t.target;
+                debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                
                 foreach ( cmd; t.commands )
                 {
                     if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
@@ -3146,15 +3386,15 @@ class RegExpT(char_t)
                         registers_[cmd.dst] = registers_[cmd.src];
                 }
 
-                s = t.target;
-                debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
-
-                // if inp ends here and we do not already accept, try to add an explicit string/line end
-                if ( p >= inp.length && !s.accept && c != 0 ) {
+                // if all input was consumed and we do not already accept, try to add an explicit string/line end
+                if ( p >= inp.length )
+                {
+                    if ( s.accept || c == 0 )
+                        break;
                     c = 0;
                     goto Lprocess_char;
                 }
-                continue Ldfa_loop;
+                goto Lread_char;
             }
             // no applicable transition
             break;
@@ -3166,7 +3406,7 @@ class RegExpT(char_t)
                 assert(cmd.src != tdfa_.CURRENT_POSITION_REGISTER);
                 registers_[cmd.dst] = registers_[cmd.src];
             }
-            if ( registers_[1] >= 0 ) {
+            if ( registers_.length > 1 && registers_[1] >= 0 ) {
                 last_start_ = next_start_;
                 next_start_ += registers_[1];
             }
@@ -3318,22 +3558,20 @@ class RegExpT(char_t)
         string code;
         string str_type;
         static if ( is(char_t == char) )
-            str_type = "string";
+            str_type = "char[]";
         static if ( is(char_t == wchar) )
-            str_type = "wstring";
+            str_type = "wchar[]";
         static if ( is(char_t == dchar) )
-            str_type = "dstring";
+            str_type = "dchar[]";
         auto layout = new Layout!(char);
 
         if ( lexer )
-            code = layout.convert("// %s\nbool %s(%s input, out uint token, out %s match", pattern_, func_name, str_type, str_type);
-        else
-        {
-            code = layout.convert("// %s\nbool match(%s input", pattern_, str_type);
-            for ( int i = 0; i < tdfa_.num_tags/2; ++i )
-                code ~= layout.convert(", out %s group%d", str_type, i);
+            code = layout.convert("// {}\nbool {}({} input, out uint token, out {} match", pattern_, func_name, str_type, str_type);
+        else {
+            code = layout.convert("// {}\nbool match({} input", pattern_, str_type);
+            code ~= layout.convert(", ref {}[] groups", str_type);
         }
-        code ~= layout.convert(")\n{\n    uint s = %d;", tdfa_.start.index);
+        code ~= layout.convert(")\n{{\n    uint s = {};", tdfa_.start.index);
 
         uint num_vars = tdfa_.num_regs;
         if ( num_vars > 0 )
@@ -3364,7 +3602,7 @@ class RegExpT(char_t)
                 if ( used > 0 && used % 10 == 0 )
                     code ~= "\n        ";
                 ++used;
-                code ~= layout.convert("r%d", i);
+                code ~= layout.convert("r{}", i);
 
                 if ( hasInit )
                     code ~= "=0";
@@ -3374,19 +3612,19 @@ class RegExpT(char_t)
             code ~= ";";
         }
 
-        code ~= "\n\n    for ( size_t p = 0, q = 0, p_end = input.length; p < p_end; q = p )\n    {";
-        code ~= "\n        dchar c = cast(dchar)input[p];\n        if ( c & 0x80 )\n            decode(input, p);";
-        code ~= "\n        else\n            ++p;\n        switch ( s )\n        {";
+        code ~= "\n\n    for ( size_t p, next_p; p < input.length; )\n    {";
+        code ~= "\n        dchar c = cast(dchar)input[p];\n        if ( c & 0x80 )\n            decode(input, next_p);";
+        code ~= "\n        else\n            next_p = p+1;\n        switch ( s )\n        {";
 
         uint[] finish_states;
         foreach ( s; tdfa_.states )
         {
-            code ~= layout.convert("\n            case %d:", s.index);
+            code ~= layout.convert("\n            case {}:", s.index);
 
             if ( s.accept )
             {
                 finish_states ~= s.index;
-
+                
                 tdfa_t.State target;
                 foreach ( t; s.transitions )
                 {
@@ -3428,26 +3666,33 @@ class RegExpT(char_t)
                     else
                         code ~= " || ";
                     if ( cr.l == cr.r )
-                        code ~= layout.convert("c == 0x%x", cr.l);
+                        code ~= layout.convert("c == 0x{:x}", cast(int)cr.l);
                     else
-                        code ~= layout.convert("c >= 0x%x && c <= 0x%x", cr.l, cr.r);
+                        code ~= layout.convert("c >= 0x{:x} && c <= 0x{:x}", cast(int)cr.l, cast(int)cr.r);
                 }
-                code ~= layout.convert(" ) {\n                    s = %d;", t.target.index);
+                code ~= layout.convert(" ) {{\n                    s = {};", t.target.index);
 
+                if ( t.predicate.type == typeof(t.predicate.type).consume )
+                    code ~= "\n                    p = next_p;";
                 foreach ( cmd; t.commands )
-                    code ~= compileCommand(layout, t.predicate.type == typeof(t.predicate.type).lookahead, cmd, "                    ");
-                if ( t.predicate.type == typeof(t.predicate.type).lookahead )
-                    code ~= "\n                    p = q;";
+                    code ~= compileCommand(layout, cmd, "                    ");
+/*                
+                // if inp ends here and we do not already accept, try to add an explicit string/line end
+                if ( p >= inp.length && !s.accept && c != 0 ) {
+                    c = 0;
+                    goto Lprocess_char;
+                }
+*/
                 code ~= "\n                }";
             }
 
             if ( !first_if )
                 code ~= layout.convert(
-                    "\n                else\n                    %s;\n                break;",
-                    s.accept?layout.convert("goto finish%d", s.index):"return false"
+                    "\n                else\n                    {};\n                break;",
+                    s.accept?layout.convert("goto finish{}", s.index):"return false"
                 );
             else
-                code ~= layout.convert("\n                %s;", s.accept?layout.convert("goto finish%d", s.index):"return false");
+                code ~= layout.convert("\n                {};", s.accept?layout.convert("goto finish{}", s.index):"return false");
         }
 
         // create finisher groups
@@ -3487,7 +3732,7 @@ class RegExpT(char_t)
         foreach ( group, states; finisherGroup )
         {
             foreach ( s; states )
-                code ~= layout.convert("\n        case %d: finish%d:", s, s);
+                code ~= layout.convert("\n        case {}: finish{}:", s, s);
 
             foreach ( cmd; tdfa_.states[group].finishers )
             {
@@ -3496,21 +3741,22 @@ class RegExpT(char_t)
                     if ( tdfa_.states[group].finishers.length > 1 )
                         throw new RegExpException("Lexer error: more than one finisher in flm lexer!");
                     if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa_.num_tags )
-                        throw new RegExpException(layout.convert("Lexer error: unexpected dst register %d in flm lexer!", cmd.dst));
-                    code ~= layout.convert("\n            match = input[0 .. r%d];\n            token = %d;", cmd.src, cmd.dst/2);
+                        throw new RegExpException(layout.convert("Lexer error: unexpected dst register {} in flm lexer!", cmd.dst));
+                    code ~= layout.convert("\n            match = input[0 .. r{}];\n            token = {};", cmd.src, cmd.dst/2);
                 }
                 else
-                    code ~= compileCommand(layout, false, cmd, "            ");
+                    code ~= compileCommand(layout, cmd, "            ");
             }
 
             code ~= "\n            break;";
         }
-        code ~= "\n        default:\n            return false;\n    }";
+        code ~= "\n        default:\n            return false;\n    }\n";
 
         if ( !lexer )
         {
+            code ~= layout.convert("\n    groups.length = {};", tdfa_.num_tags/2);
             for ( int i = 0; i < tdfa_.num_tags/2; ++i )
-                code ~= layout.convert("\n    if ( r%d > -1 && r%d > -1 )\n        group%d = input[r%d .. r%d];", 2*i, 2*i+1, i, 2*i, 2*i+1);
+                code ~= layout.convert("\n    if ( r{} > -1 && r{} > -1 )\n        groups[{}] = input[r{} .. r{}];", 2*i, 2*i+1, i, 2*i, 2*i+1);
         }
 
         code ~= "\n    return true;\n}";
@@ -3533,20 +3779,15 @@ private:
     char_t[]    input_,
                 pattern_;
 
-    string compileCommand(Layout!(char) layout, bool is_lookahead, tdfa_t.Command cmd, char_t[] indent)
+    string compileCommand(Layout!(char) layout, tdfa_t.Command cmd, char_t[] indent)
     {
         string  code,
                 dst;
-        code ~= layout.convert("\n%sr%d = ", indent, cmd.dst);
-        if ( cmd.src != tdfa_.CURRENT_POSITION_REGISTER )
-            code ~= layout.convert("r%d;", cmd.src);
+        code ~= layout.convert("\n{}r{} = ", indent, cmd.dst);
+        if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
+            code ~= "p;";
         else
-        {
-            if ( is_lookahead )
-                code ~= layout.convert("q;");
-            else
-                code ~= layout.convert("p;");
-        }
+            code ~= layout.convert("r{};", cmd.src);
         return code;
     }
 }
