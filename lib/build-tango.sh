@@ -61,6 +61,16 @@ filter() {
         fi
     fi
 
+    if [ "`echo $FILE | grep freebsd`" ]
+    then
+        if [ ! "$UNAME" == "FreeBSD" ]
+        then
+            return 1
+        else
+            return 0
+        fi
+    fi
+
     if [ "`echo $FILE | grep linux`" ]
     then
         if [ ! "$UNAME" == "Linux" ]
@@ -80,7 +90,7 @@ compile() {
 
     if filter $OBJNAME
     then
-        $DC -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC -w -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
