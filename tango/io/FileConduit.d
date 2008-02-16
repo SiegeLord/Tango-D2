@@ -541,17 +541,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 /***************************************************************
 
-                        Ensures that data is flushed immediately to disk
-
-                ***************************************************************/
-/+
-                override void commit ()
-                {
-                        // no Posix API for this :(
-                }
-+/
-                /***************************************************************
-
                         Set the file size to be that of the current seek 
                         position. The file must be writable for this to
                         succeed.
@@ -561,7 +550,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, position) is -1)
+                        if (ftruncate (handle, cast(int) position) is -1)
                             error ();
                 }               
 
@@ -574,7 +563,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        long result = posix.lseek (handle, offset, anchor);
+                        long result = posix.lseek (handle, cast(int) offset, anchor);
                         if (result is -1)
                             error ();
                         return result;
