@@ -21,12 +21,13 @@ import tango.core.BitManip;
         Reverse byte order for specific datum sizes. Note that the
         byte-swap approach avoids alignment issues, so is probably
         faster overall than a traditional 'shift' implementation.
-
+        ---
         ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
 
-        swap16 (x.ptr, 8) -> 02 01 04 03 06 05 08 07     
-        swap32 (x.ptr, 8) -> 04 03 02 01 08 07 06 05
-        swap64 (x.ptr, 8) -> 08 07 06 05 04 03 02 01
+        swap16 (x) => 02 01 04 03 06 05 08 07     
+        swap32 (x) => 04 03 02 01 08 07 06 05
+        swap64 (x) => 08 07 06 05 04 03 02 01
+        ---
 
 *******************************************************************************/
 
@@ -34,7 +35,7 @@ struct ByteSwap
 {
         /***********************************************************************
 
-                Reverses two-byte sequences. Parameter bytes specifies the 
+                Reverses two-byte sequences. Parameter dst imples the 
                 number of bytes, which should be a multiple of 2
 
         ***********************************************************************/
@@ -46,7 +47,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverses four-byte sequences. Parameter bytes specifies the  
+                Reverses four-byte sequences. Parameter dst implies the  
                 number of bytes, which should be a multiple of 4
 
         ***********************************************************************/
@@ -58,7 +59,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse eight-byte sequences. Parameter bytes specifies the 
+                Reverse eight-byte sequences. Parameter dst implies the 
                 number of bytes, which should be a multiple of 8
 
         ***********************************************************************/
@@ -70,7 +71,7 @@ struct ByteSwap
 
         /***********************************************************************
 
-                Reverse ten-byte sequences. Parameter bytes specifies the 
+                Reverse ten-byte sequences. Parameter dst implies the 
                 number of bytes, which should be a multiple of 10
 
         ***********************************************************************/
