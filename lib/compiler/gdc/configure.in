@@ -171,7 +171,10 @@ dnl fi
 
 # For Tango
 #GDC=$CC
-GDC=`echo $CC | sed 's/gcc$/gdc/'`
+if test "x$GDC" = "x"
+then
+    GDC=`echo $CC | sed 's/gcc$/gdc/'`
+fi
 
 AC_MSG_CHECKING([If $GDC can compile D sources])
 echo "int function(int) test;" > actest.d
