@@ -358,7 +358,6 @@ class Document(T) : private PullParser!(T)
                                   break;
                              }
                       }
-                      //return this;
         }
         
         /***********************************************************************
