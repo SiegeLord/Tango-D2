@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 cd "`dirname $0`"
 
-GDC_VER="`gdc --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
+# Allow gdc and gdmd to be overriden
+if [ "$GDC" = "" ]
+then
+    export GDC=${GDC_PREFIX}gdc${GDC_POSTFIX}
+fi
+if [ "$GDMD" = "" ]
+then
+    export GDMD=${GDC_PREFIX}gdmd${GDC_POSTFIX}
+fi
+
+GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
 HOST_ARCH="`./compiler/gdc/config.guess | sed 's/-.*//'`"
@@ -44,9 +54,9 @@ export MAKETOOL=$MAKE
 
 OLDHOME=$HOME
 export HOME=`pwd`
-$MAKE clean -fgdc-posix.mak || exit 1
-$MAKE lib doc install -fgdc-posix.mak ADD_CFLAGS="$ADD_CFLAGS" || exit 1
-$MAKE clean -fgdc-posix.mak || exit 1
+$MAKE clean -fgdc-posix.mak DC="$GDMD" || exit 1
+$MAKE lib doc install -fgdc-posix.mak DC="$GDMD" ADD_CFLAGS="$ADD_CFLAGS" || exit 1
+$MAKE clean -fgdc-posix.mak DC="$GDMD" || exit 1
 chmod 644 ../tango/core/*.di || exit 1
 
 export HOME=$OLDHOME
