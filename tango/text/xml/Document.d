@@ -119,30 +119,28 @@ class Document(T) : private PullParser!(T)
         
         /***********************************************************************
         
+                Attach an XML header to this document
+
+        ***********************************************************************/
+        
+        final void header ()
+        {
+                root.prepend (pi (`xml version="1.0"`));
+        }
+
+        /***********************************************************************
+        
                 Creates and returns an ELEMENT node
 
         ***********************************************************************/
         
-        final Node element (T[] prefix, T[] localName)
+        final Node element (T[] prefix, T[] localName, T[] value = null)
         {
                 auto node = allocate;
                 node.type = XmlNodeType.Element;
                 node.localName = localName;
+                node.rawValue = value;
                 node.prefix = prefix;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns a DATA node
-
-        ***********************************************************************/
-        
-        final Node data (T[] data)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.Data;
-                node.rawValue = data;
                 return node;
         }
         
@@ -242,18 +240,13 @@ class Document(T) : private PullParser!(T)
                       switch (super.type) 
                              {
                              case XmlTokenType.EndElement:
-                                  if (! cur.hasChildren) 
-                                        cur.append (data(null));
-        
+                             case XmlTokenType.EndEmptyElement:
                                   assert (cur.parent_);
                                   cur = cur.parent_;                      
                                   break;
         
                              case XmlTokenType.Data:
-                                  auto node = allocate;
-                                  node.type = XmlNodeType.Data;
-                                  node.rawValue = super.rawValue;
-                                  cur.append (node);
+                                  cur.rawValue = super.rawValue;
                                   break;
         
                              case XmlTokenType.StartElement:
@@ -333,17 +326,12 @@ class Document(T) : private PullParser!(T)
                                      cur.attribute (attr, defNamespace);
                                   break;
         
-                             case XmlTokenType.EndEmptyElement:
-                                  assert (cur.parent_);
-                                  cur = cur.parent_;
+                             case XmlTokenType.PI:
+                                  cur.append (pi (super.rawValue));
                                   break;
         
                              case XmlTokenType.Comment:
                                   cur.append (comment(super.rawValue));
-                                  break;
-        
-                             case XmlTokenType.PI:
-                                  cur.append (pi (super.rawValue));
                                   break;
         
                              case XmlTokenType.CData:
@@ -799,14 +787,15 @@ class Document(T) : private PullParser!(T)
         final T[] print (Node root)
         {
                 T[] res;
-        
-                void printNode (Node node)
+                T[256] spaces = ' ';
+
+                void printNode (Node node, uint indent)
                 {
                         switch (node.type)
                                {
                                case XmlNodeType.Document:
                                     foreach (n; node.children)
-                                             printNode (n);
+                                             printNode (n, indent + 2);
                                     break;
         
                                case XmlNodeType.Element:
@@ -814,31 +803,35 @@ class Document(T) : private PullParser!(T)
                                     foreach (attr; node.attributes)
                                              res ~= " " ~ print(attr);
         
-                                    if (node.hasChildren)
+                                    if (node.hasChildren || node.rawValue.length)
                                        {
                                        res ~= ">";
+                                       res ~= node.rawValue;
                                        foreach (n; node.children)
-                                                printNode(n);
-                                       res ~= "</" ~ node.name ~ ">";
+                                               {
+                                               res ~= spaces[0..indent];
+                                               printNode (n, indent + 2);
+                                               }
+                                       res ~= "</" ~ node.name ~ ">\r\n";
                                        }
                                     else 
-                                       res ~= " />";      
+                                       res ~= "/>\r\n";      
                                     break;
         
                                case XmlNodeType.Data:
                                     res ~= node.rawValue;
                                     break;
         
-                               case XmlNodeType.Attribute:
-                                    res ~= node.name ~ "=\"" ~ node.rawValue ~ "\"";
+                               case XmlNodeType.Attribute:                               
+                                    res ~= node.name ~ "=\"" ~ node.rawValue ~ "\"";                                
                                     break;
         
                                case XmlNodeType.Comment:
-                                    res ~= "<!--" ~ node.rawValue ~ "-->";
+                                    res ~= "<!--" ~ node.rawValue ~ "-->\r\n";
                                     break;
         
                                case XmlNodeType.PI:
-                                    res ~= "<?" ~ node.rawValue ~ "?>";
+                                    res ~= "<?" ~ node.rawValue ~ "?>\r\n";
                                     break;
         
                                case XmlNodeType.CData:
@@ -846,7 +839,7 @@ class Document(T) : private PullParser!(T)
                                     break;
         
                                case XmlNodeType.Doctype:
-                                    res ~= "<!DOCTYPE " ~ node.rawValue ~ ">";
+                                    res ~= "<!DOCTYPE " ~ node.rawValue ~ ">\r\n";
                                     break;
         
                                default:
@@ -854,7 +847,7 @@ class Document(T) : private PullParser!(T)
                                }
                 }
         
-                printNode (root);
+                printNode (root, 0);
                 return res;
         }
 }
