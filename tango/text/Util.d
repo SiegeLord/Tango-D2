@@ -58,8 +58,10 @@
         triml (source)                              // trim whitespace
         trimr (source)                              // trim whitespace
         strip (source, match)                       // trim elements
-        stripl (source, match)                      // trim left elements
-        stripr (source, match)                      // trim right elements
+        stripl (source, match)                      // trim elements
+        stripr (source, match)                      // trim elements
+        chopl (source, match)                       // trim pattern match
+        chopr (source, match)                       // trim pattern match
         delimit (src, set)                          // split on delims
         split (source, pattern)                     // split on pattern
         splitLines (source);                        // split on lines
@@ -187,6 +189,24 @@ T[] stripl(T) (T[] source, T match)
 
 /******************************************************************************
 
+        Trim the given array by stripping the provided match from
+        the right hand side. Returns a slice of the original content
+
+******************************************************************************/
+
+T[] stripr(T) (T[] source, T match)
+{
+        T*   head = source.ptr,
+             tail = head + source.length;
+
+        while (tail > head && *(tail-1) is match)
+               --tail;
+
+        return head [0 .. tail - head];
+}
+
+/******************************************************************************
+
         Chop the given source by stripping the provided match from
         the left hand side. Returns a slice of the original content
 
@@ -215,24 +235,6 @@ T[] chopr(T) (T[] source, T[] match)
                 source = source [0 .. $-match.length];
 
         return source;
-}
-
-/******************************************************************************
-
-        Trim the given array by stripping the provided match from
-        the right hand side. Returns a slice of the original content
-
-******************************************************************************/
-
-T[] stripr(T) (T[] source, T match)
-{
-        T*   head = source.ptr,
-             tail = head + source.length;
-
-        while (tail > head && *(tail-1) is match)
-               --tail;
-
-        return head [0 .. tail - head];
 }
 
 /******************************************************************************
@@ -544,10 +546,10 @@ T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
 
 /******************************************************************************
 
-        Combine a series of text segments together, each appended with an 
-        optional postfix pattern. An optional output buffer can be provided
-        to avoid heap activity - it should be large enough to contain the 
-        entire output, otherwise the heap will be used instead.
+        Repeat an array for a specific number of times. An optional output 
+        buffer can be provided to avoid heap activity - it should be large 
+        enough to contain the entire output, otherwise the heap will be used 
+        instead.
 
         Returns a valid slice of the output, containing the concatenated
         text.
