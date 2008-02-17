@@ -4,7 +4,7 @@
                    All rights reserved.
 
         License:   BSD Style
-        Authors:   Aaron Craelius, Kris
+        Authors:   Aaron, Kris
 
 *******************************************************************************/
 
@@ -14,8 +14,8 @@ private import tango.text.xml.PullParser;
 
 /*******************************************************************************
 
-        Implements a DOM atop of the XML parser supporting document 
-        parsing, tree traversal, and ad-hoc tree manipulation.
+        Implements a DOM atop the XML parser, supporting document 
+        parsing, tree traversal and ad-hoc tree manipulation.
 
         The DOM API is non-conformant, yet simple and functional in 
         style - locate a tree node of interest and operate upon or 
@@ -24,7 +24,7 @@ private import tango.text.xml.PullParser;
         existing document or via API manipulation.
 
         This particular DOM employs a simple free-list to allocate
-        each of the tree nodes, making it rather efficient at parsing
+        each of the tree nodes, making it quite efficient at parsing
         XML documents. The tradeoff with such a scheme is that copying
         nodes from one document to another requires a little more care
         than otherwise. We felt this was a reasonable tradeoff, given
