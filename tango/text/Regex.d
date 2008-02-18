@@ -750,7 +750,7 @@ struct CharClass(char_t)
     {
         parts ~= CharRange!(char_t)(c);
     }
-    
+
     /* ********************************************************************************************
         Requires the CharClass to be optimized.
     **********************************************************************************************/
@@ -782,7 +782,7 @@ struct CharClass(char_t)
                 parts.length = parts.length-1;
             return;
         }
-        
+
         foreach ( i, ref cr; parts )
         {
             char_t tmp = cr.l_-1;
@@ -832,6 +832,8 @@ struct CharClass(char_t)
     }
 }
 
+version(RegexUnittests)
+{
 import tango.io.Stdout;
 unittest
 {
@@ -846,7 +848,7 @@ unittest
     Stdout.formatln("optimized: {}", cc.toString);
     cc.negate;
     Stdout.formatln("negated: {}", cc.toString);
-    
+
     static CharClass!(char) cc2 = { parts: [] };
     Stdout.formatln("{}", cc2.toString);
     cc2.optimize;
@@ -857,14 +859,14 @@ unittest
     Stdout.formatln("optimized: {}", cc2.toString);
     cc2.negate;
     Stdout.formatln("negated: {}", cc2.toString);
-    
+
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
     Stdout.formatln("{}", cc3.toString);
     cc3.negate;
     Stdout.formatln("negated: {}", cc3.toString);
     cc3.negate;
     Stdout.formatln("negated: {}", cc3.toString);
-    
+
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
     Stdout.formatln("{}", cc4.toString);
     cc4.optimize;
@@ -882,7 +884,7 @@ unittest
     Stdout.formatln("negated: {}", cc5.toString);
     assert(0, "control the results for yourself, i'm too lazy to type all those asserts ;)");
 }
-
+}
 
 /* ************************************************************************************************
 
@@ -921,7 +923,7 @@ private struct Predicate(char_t)
     void compile()
     {
         assert(input.parts.length > 0);
-        
+
         // single char?
         if ( input.parts.length == 1 && input.parts[0].l_ == input.parts[0].r_ )
         {
@@ -1036,7 +1038,7 @@ private struct Predicate(char_t)
     {
         input.parts ~= cr;
     }
-    
+
     string toString()
     {
         string str;
