@@ -158,7 +158,7 @@ class Document(T) : private PullParser!(T)
                                   if (cur.rawValue.length is 0)
                                       cur.rawValue = super.rawValue;
                                   else
-                                     // mixed model
+                                     // multiple data sections
                                      cur.data (super.rawValue);
                                   break;
         
@@ -200,7 +200,12 @@ class Document(T) : private PullParser!(T)
                                   break;
         
                              case XmlTokenType.Attribute:
-                                  auto attr = attribute (super.prefix, super.localName, super.rawValue);
+                                  auto attr = allocate;
+                                  attr.prefix = super.prefix;
+                                  attr.rawValue = super.rawValue;
+                                  attr.localName = super.localName;
+                                  attr.type = XmlNodeType.Attribute;
+
                                   if (super.prefix.length) 
                                      {
                                      if (super.prefix == xmlns) 
@@ -285,23 +290,6 @@ class Document(T) : private PullParser!(T)
                 p.rawValue = null;
                 return p;
         }
-
-        /***********************************************************************
-        
-                Creates and returns an ATTRIBUTE node
-
-        ***********************************************************************/
-        
-        private final Node attribute (T[] prefix, T[] localName, T[] value)
-        {
-                auto attr = allocate;
-                attr.prefix = prefix;
-                attr.rawValue = value;
-                attr.localName = localName;
-                attr.type = XmlNodeType.Attribute;
-                return attr;
-        }
-        
 
         /***********************************************************************
         
@@ -805,7 +793,7 @@ version (tools)
                 
                 /***************************************************************
         
-                        Configures node values
+                        Configure node values
         
                 ***************************************************************/
         
@@ -824,7 +812,6 @@ version (tools)
         
                 private Node create (XmlNodeType type, T[] value)
                 {
-                        //auto node = new NodeImpl;
                         auto node = document.allocate;
                         node.rawValue = value;
                         node.type = type;
