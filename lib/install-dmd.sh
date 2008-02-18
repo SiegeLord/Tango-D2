@@ -141,13 +141,16 @@ done
 # Check if installed DMD supports -defaultlib flag, otherwise set ASPHOBOS
 . dmdinclude
 
-if [ ! "$DMDVERSIONMAJ" -gt 1 ]
+if [ "$DMDVERSIONMAJ" != "" ]
 then
-    if [ ! "$DMDVERSIONMIN" -gt 21 ]
-    then
-        echo 'Your version of DMD have no support for -defaultlib flag, using libphobos.a'
-        ASPHOBOS="1"
-    fi
+	if [ ! "$DMDVERSIONMAJ" -gt 1 ]
+	then
+		if [ ! "$DMDVERSIONMIN" -gt 21 ]
+		then
+			echo 'Your version of DMD have no support for -defaultlib flag, using libphobos.a'
+			ASPHOBOS="1"
+		fi
+	fi
 fi
 
 if [ "$ASPHOBOS" = "1" ]
@@ -282,7 +285,7 @@ fi
 
 # Create dmd.conf
 create_dmd_conf() {
-    if [ "$ASPHOBOS" = "0" ]
+    if [ "$ASPHOBOS" = "1" ]
     then
         cat > $CONFPREFIX/$CONF/dmd.conf <<EOF
 [Environment]

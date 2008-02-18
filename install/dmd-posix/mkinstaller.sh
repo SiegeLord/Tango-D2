@@ -67,6 +67,7 @@ cp -pR ../std include/d || die 1 "Failed to copy in the std .d files"
 
 mkdir -p lib
 cp ../lib/libtango-user-dmd.a lib || die 1 "Failed to copy in the tango .a file"
+cp ../lib/dmdinclude lib || die 1 "Failed to copy in the dmdinclude file"
 
 find include/d -name .svn | xargs rm -rf
 tar zcf ../tango.tar.gz include lib bin || die 1 "Failed to create tango.tar.gz"
