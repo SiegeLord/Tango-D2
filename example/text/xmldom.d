@@ -36,7 +36,7 @@ void bench (int iterations, char[] filename)
 
 void main()
 {
-        for (int i=10; --i;)
-             bench (1000, "hamlet.xml");
+        for (int i=20; --i;)
+             bench (2000, "hamlet.xml");
 }
 
