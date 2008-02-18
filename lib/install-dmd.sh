@@ -141,9 +141,9 @@ done
 # Check if installed DMD supports -defaultlib flag, otherwise set ASPHOBOS
 . dmdinclude
 
-if [ ! "$DMDVERSIONMAJ" -gt "1" ]
+if [ ! "$DMDVERSIONMAJ" -gt 1 ]
 then
-    if [ ! "$DMDVERSIONMIN" -gt "21" ]
+    if [ ! "$DMDVERSIONMIN" -gt 21 ]
     then
         echo 'Your version of DMD have no support for -defaultlib flag, using libphobos.a'
         ASPHOBOS="1"

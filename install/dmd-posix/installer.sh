@@ -71,7 +71,7 @@ then
 
 	export PATH="$DMDDIR/bin:$PATH"
 	mkdir -p $DMDDIR/bin || die 1 "Failed to create the DMD install directory"
-	cd $DMDDIR || die 1 "Failed to cd to the DMD install directory"
+	cd $DMDDIR/bin || die 1 "Failed to cd to the DMD install directory"
     tail -n+$LINES $FULLNAME | tar Oxf - dmd.tar.gz | gunzip -c | tar xf - || die 1 "Failed to extract DMD"
 else
     DMDDIR="$PREFIX"
