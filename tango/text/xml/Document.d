@@ -29,7 +29,8 @@ private import tango.text.xml.PullParser;
         nodes from one document to another requires a little more care
         than otherwise. We felt this was a reasonable tradeoff, given
         the throughput gains vs the relative infrequency of grafting
-        operations. Use node.dup and node.clone for these purposes.
+        operations. For grafting within or across documents, please
+        use the move() and copy() methods.
 
         Another simplification is related to entity transcoding. This
         is not performed internally, and becomes the responsibility
@@ -50,6 +51,9 @@ private import tango.text.xml.PullParser;
         API example:
         ---
         auto doc = new Document!(char);
+
+        // attach an xml header
+        doc.header;
 
         // attach an element with some attributes, plus 
         // a child element with an attached data value
@@ -106,6 +110,18 @@ class Document(T) : private PullParser!(T)
         final Document collect ()
         {
                 index = 1;
+                return this;
+        }
+
+        /***********************************************************************
+        
+               Add an XML header to the document root
+
+        ***********************************************************************/
+        
+        final Document header ()
+        {
+                root.pi (`xml version="1.0"`);
                 return this;
         }
 
