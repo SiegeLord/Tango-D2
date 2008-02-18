@@ -121,7 +121,7 @@ class Document(T) : private PullParser!(T)
         
         final Document header ()
         {
-                root.pi (`xml version="1.0"`);
+                root.prepend (root.create(XmlNodeType.PI, `xml version="1.0"`));
                 return this;
         }
 
