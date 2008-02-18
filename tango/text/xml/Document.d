@@ -51,22 +51,14 @@ private import tango.text.xml.PullParser;
         ---
         auto doc = new Document!(char);
 
-        // create an element
-        auto elem = doc.element (null, "element");
+        // attach an element with some attributes, plus 
+        // a child element with an attached data value
+        doc.root.element   (null, "element")
+                .attribute (null, "attrib1", "value")
+                .attribute (null, "attrib2")
+                .element   (null, "child", "value");
 
-        // add an attribute to it
-        elem.attribute (doc.attribute (null, "attrib", "value"));
-
-        // append element to document
-        doc.root.append (elem);
-
-        // traverse some nodes
-        foreach (node; doc.root.children)
-                {
-                Stdout (node.name).newline;
-                foreach (attr; node.attributes)
-                         Stdout (attr.name).newline;
-                }
+        Stdout(doc.print).newline;
         ---
 
 *******************************************************************************/
@@ -116,106 +108,7 @@ class Document(T) : private PullParser!(T)
                 index = 1;
                 return this;
         }
-        
-        /***********************************************************************
-        
-                Attach an XML header to this document
 
-        ***********************************************************************/
-        
-        final void header ()
-        {
-                root.prepend (pi (`xml version="1.0"`));
-        }
-
-        /***********************************************************************
-        
-                Creates and returns an ELEMENT node
-
-        ***********************************************************************/
-        
-        final Node element (T[] prefix, T[] localName, T[] value = null)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.Element;
-                node.localName = localName;
-                node.rawValue = value;
-                node.prefix = prefix;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns a CDATA node
-
-        ***********************************************************************/
-        
-        final Node cdata (T[] cdata)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.CData;
-                node.rawValue = cdata;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns a PI node
-
-        ***********************************************************************/
-        
-        final Node pi (T[] pi)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.PI;
-                node.rawValue = pi;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns a DOCTYPE node
-
-        ***********************************************************************/
-        
-        final Node doctype (T[] doctype)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.Doctype;
-                node.rawValue = doctype;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns a COMMENT node
-
-        ***********************************************************************/
-        
-        final Node comment (T[] comment)
-        {
-                auto node = allocate;
-                node.type = XmlNodeType.Comment;
-                node.rawValue = comment;
-                return node;
-        }
-        
-        /***********************************************************************
-        
-                Creates and returns an ATTRIBUTE node
-
-        ***********************************************************************/
-        
-        final Node attribute (T[] prefix, T[] localName, T[] value)
-        {
-                auto attr = allocate;
-                attr.prefix = prefix;
-                attr.rawValue = value;
-                attr.localName = localName;
-                attr.type = XmlNodeType.Attribute;
-                return attr;
-        }
-        
         /***********************************************************************
         
                 Parse the given xml content, which will reuse any existing 
@@ -246,43 +139,48 @@ class Document(T) : private PullParser!(T)
                                   break;
         
                              case XmlTokenType.Data:
-                                  cur.rawValue = super.rawValue;
+                                  if (cur.rawValue.length is 0)
+                                      cur.rawValue = super.rawValue;
+                                  else
+                                     // mixed model
+                                     cur.data (super.rawValue);
                                   break;
         
                              case XmlTokenType.StartElement:
                                   auto node = allocate;
+                                  node.parent_ = cur;
                                   node.prefix = super.prefix;
                                   node.type = XmlNodeType.Element;
                                   node.localName = super.localName;
-                                  node.parent_ = cur;
                                 
-                                  if (super.prefix.length) 
-                                     {
-                                     auto pURI = super.prefix in inscopeNSs;
-                                     if (pURI) 
-                                         node.uriID = *pURI;
-                                     else 
-                                        {
-                                        debug (XmlNamespaces) 
-                                               assert (false, "Unresolved namespace prefix:" ~ super.prefix);
-                                        node.uriID = 0;
-                                        }
-                                     }
-                                  else 
-                                     node.uriID = defNamespace;
-                                
-                                  if (cur.lastChild_ is null) 
-                                     {
-                                     cur.firstChild_ = node;
-                                     cur.lastChild_ = node;
-                                     }
-                                  else 
+                                  // inline append
+                                  if (cur.lastChild_) 
                                      {
                                      cur.lastChild_.nextSibling_ = node;
                                      node.prevSibling_ = cur.lastChild_;
                                      cur.lastChild_ = node;
                                      }
+                                  else 
+                                     {
+                                     cur.firstChild_ = node;
+                                     cur.lastChild_ = node;
+                                     }
                                   cur = node;
+
+                                  if (node.prefix.length) 
+                                     {
+                                     auto pURI = node.prefix in inscopeNSs;
+                                     if (pURI) 
+                                         node.uriID = *pURI;
+                                     else 
+                                        {
+                                        debug (XmlNamespaces) 
+                                               assert (false, "Unresolved namespace prefix:" ~ node.prefix);
+                                        node.uriID = 0;
+                                        }
+                                     }
+                                  else 
+                                     node.uriID = defNamespace;
                                   break;
         
                              case XmlTokenType.Attribute:
@@ -314,32 +212,32 @@ class Document(T) : private PullParser!(T)
                                      
                                      auto pURI = super.prefix in inscopeNSs;
                                      if (pURI) 
-                                         cur.attribute (attr, *pURI);
+                                         cur.attrib (attr, *pURI);
                                      else 
                                         {
                                         debug (XmlNamespaces) 
                                                assert (false, "Unresolved namespace prefix:" ~ super.prefix);
-                                        cur.attribute (attr, 0);
+                                        cur.attrib (attr, 0);
                                         }
                                      }
                                   else 
-                                     cur.attribute (attr, defNamespace);
+                                     cur.attrib (attr, defNamespace);
                                   break;
         
                              case XmlTokenType.PI:
-                                  cur.append (pi (super.rawValue));
+                                  cur.pi (super.rawValue);
                                   break;
         
                              case XmlTokenType.Comment:
-                                  cur.append (comment(super.rawValue));
+                                  cur.comment (super.rawValue);
                                   break;
         
                              case XmlTokenType.CData:
-                                  cur.append (cdata (super.rawValue));
+                                  cur.cdata (super.rawValue);
                                   break;
         
                              case XmlTokenType.Doctype:
-                                  cur.append (doctype (super.rawValue));
+                                  cur.doctype (super.rawValue);
                                   break;
         
                              default:
@@ -354,18 +252,40 @@ class Document(T) : private PullParser!(T)
 
         ***********************************************************************/
 
-        private final Node allocate()
+        private final Node allocate ()
         {
                 if (index >= list.length)
-                    list.length = list.length + list.length/2;
+                    list.length = list.length + list.length / 2;
 
                 auto p = &list[index++];
-                p.prevSibling_ = p.nextSibling_ = p.firstChild_ 
-                               = p.lastChild_   = p.firstAttr_
-                               = p.lastAttr_    = p.parent_ = null;
+                p.document = this;
+                p.parent_ =
+                p.prevSibling_ = 
+                p.nextSibling_ = 
+                p.firstChild_ =
+                p.lastChild_ = 
+                p.firstAttr_ =
+                p.lastAttr_ = null;
+                p.rawValue = null;
                 return p;
         }
 
+        /***********************************************************************
+        
+                Creates and returns an ATTRIBUTE node
+
+        ***********************************************************************/
+        
+        private final Node attribute (T[] prefix, T[] localName, T[] value)
+        {
+                auto attr = allocate;
+                attr.prefix = prefix;
+                attr.rawValue = value;
+                attr.localName = localName;
+                attr.type = XmlNodeType.Attribute;
+                return attr;
+        }
+        
 
         /***********************************************************************
         
@@ -407,10 +327,10 @@ class Document(T) : private PullParser!(T)
         private struct NodeImpl
         {
                 public XmlNodeType      type;
+                public uint             uriID;
                 public T[]              prefix;
                 public T[]              localName;
                 public T[]              rawValue;
-                public uint             uriID;
                 
                 private Node            parent_,
                                         prevSibling_,
@@ -419,14 +339,15 @@ class Document(T) : private PullParser!(T)
                                         lastChild_,
                                         firstAttr_,
                                         lastAttr_;
-                
+                private Document        document;
+
                 /***************************************************************
                 
                         Return the parent, which may be null
 
                 ***************************************************************/
         
-                Node parent() { return parent_; }
+                Node parent () {return parent_;}
         
                 /***************************************************************
                 
@@ -434,7 +355,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Node firstChild() { return firstChild_; }
+                Node firstChild () {return firstChild_;}
         
                 /***************************************************************
                 
@@ -442,7 +363,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Node lastChild() { return lastChild_; }
+                Node lastChild () {return lastChild_;}
         
                 /***************************************************************
                 
@@ -450,7 +371,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Node prevSibling() { return prevSibling_; }
+                Node prevSibling () {return prevSibling_;}
         
                 /***************************************************************
                 
@@ -458,7 +379,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Node nextSibling() { return nextSibling_; }
+                Node nextSibling () {return nextSibling_;}
         
                 /***************************************************************
                 
@@ -466,7 +387,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                bool hasAttr() {return firstAttr_ !is null;}
+                bool hasAttributes () {return firstAttr_ !is null;}
                                
                 /***************************************************************
                 
@@ -474,7 +395,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                bool hasChildren() {return firstChild_ !is null;}
+                bool hasChildren () {return firstChild_ !is null;}
                 
                 /***************************************************************
                 
@@ -483,12 +404,10 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                T[] name()
+                T[] name ()
                 {
-                        static T[] colon = ":";
-        
                         if (prefix.length)
-                            return prefix ~ colon ~ localName;
+                            return prefix ~ ':' ~ localName;
                         return localName;
                 }
                 
@@ -498,7 +417,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                T[] value()
+                T[] value ()
                 {
                         return rawValue;
                 }
@@ -509,18 +428,29 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                void value(T[] val)
+                void value (T[] val)
                 {
                         rawValue = val; 
                 }
                 
                 /***************************************************************
                 
+                        Locate the root of this node
+
+                ***************************************************************/
+        
+                Node root ()
+                {
+                        return document.root;
+                }
+
+                /***************************************************************
+                
                         Return an foreach iterator for node children
 
                 ***************************************************************/
         
-                Visitor children() 
+                Visitor children () 
                 {
                         Visitor v = {firstChild_};
                         return v;
@@ -532,181 +462,147 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Visitor attributes() 
+                Visitor attributes () 
                 {
                         Visitor v = {firstAttr_};
                         return v;
                 }
         
                 /***************************************************************
-                
-                        Append a node to this one. The given node cannot
-                        have an existing parent.
+        
+                        Creates a child Element
+
+                        Returns a reference to the child
 
                 ***************************************************************/
         
-                void append (Node node)
+                Node element (T[] prefix, T[] local, T[] value = null)
                 {
-                        assert (node.parent is null);
-                        node.parent_ = this;
-                        if (lastChild_) 
-                           {
-                           lastChild_.nextSibling_ = node;
-                           node.prevSibling_ = lastChild_;
-                           lastChild_ = node;
-                           }
-                        else 
-                           {
-                           firstChild_ = node;
-                           lastChild_ = node;                  
-                           }
+                        auto node = create (XmlNodeType.Element, value);
+                        append (node.set (prefix, local));
+                        return node;
                 }
-                
+        
                 /***************************************************************
-                
-                        Prepend a node to this one. The given node cannot
-                        have an existing parent.
+        
+                        Attaches an Attribute, and returns the host
 
                 ***************************************************************/
         
-                void prepend (Node node)
+                Node attribute (T[] prefix, T[] local, T[] value = null)
                 {
-                        assert (node.parent is null);
-                        node.parent_ = this;
-                        if (firstChild_) 
-                           {
-                           firstChild_.prevSibling_ = node;
-                           node.nextSibling_ = firstChild_;
-                           firstChild_ = node;
-                           }
-                        else 
-                           {
-                           firstChild_ = node;
-                           lastChild_ = node;
-                           }
+                        auto node = create (XmlNodeType.Attribute, value);
+                        attrib (node.set (prefix, local));
+                        return this;
                 }
-                
+        
                 /***************************************************************
-                
-                        Insert a node after this one. The given node cannot
-                        have an existing parent.
+        
+                        Attaches a Data node, and returns the host
 
                 ***************************************************************/
         
-                void insertAfter (Node node)
+                Node data (T[] data)
                 {
-                        assert (node.parent is null);
-                        node.parent_ = parent_;
-                        if (nextSibling_) 
-                           {
-                           nextSibling_.prevSibling_ = node;
-                           node.nextSibling_ = nextSibling_;
-                           node.prevSibling_ = this;
-                           }
-                        else 
-                           {
-                           node.prevSibling_ = this;
-                           node.nextSibling_ = null;
-                           }
-                        nextSibling_ = node;
+                        append (create (XmlNodeType.Data, data));
+                        return this;
                 }
-                
+        
                 /***************************************************************
-                
-                        Insert a node before this one. The given node cannot
-                        have an existing parent.
+        
+                        Attaches a CData node, and returns the host
 
                 ***************************************************************/
         
-                void insertBefore (Node node)
+                Node cdata (T[] cdata)
                 {
-                        assert (node.parent is null);
-                        node.parent_ = parent_;
-                        if (prevSibling_) 
-                           {
-                           prevSibling_.nextSibling_ = node;
-                           node.prevSibling_ = prevSibling_;
-                           node.nextSibling_ = this;
-                           }
-                        else 
-                           {
-                           node.nextSibling_ = this;
-                           node.prevSibling_ = null;
-                           }
-                        prevSibling_ = node;
+                        append (create (XmlNodeType.CData, cdata));
+                        return this;
                 }
-                
+        
                 /***************************************************************
-                
-                        Append an attribute to this node, The given attribute
-                        cannot have an existing parent.
+        
+                        Attaches a Comment node, and returns the host
 
                 ***************************************************************/
         
-                void attribute (Node node, uint uriID = 0)
+                Node comment (T[] comment)
                 {
-                        assert (node.parent is null);
-                        node.uriID = uriID;
-                        node.parent_ = this;
-                        node.type = XmlNodeType.Attribute;
+                        append (create (XmlNodeType.Comment, comment));
+                        return this;
+                }
         
-                        if (lastAttr_) 
-                           {
-                           lastAttr_.nextSibling_ = node;
-                           node.prevSibling_ = lastAttr_;
-                           lastAttr_ = node;
-                           }
-                        else 
-                           firstAttr_ = lastAttr_ = node;
+                /***************************************************************
+        
+                        Attaches a PI node, and returns the host
+
+                ***************************************************************/
+        
+                Node pi (T[] pi)
+                {
+                        append (create (XmlNodeType.PI, pi));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a Doctype node, and returns the host
+
+                ***************************************************************/
+        
+                Node doctype (T[] doctype)
+                {
+                        append (create (XmlNodeType.Doctype, doctype));
+                        return this;
                 }
         
                 /***************************************************************
                 
-                        Duplicate a single node
+                        Duplicate the given sub-tree into place as a child 
+                        of this node. 
+                        
+                        Returns a reference to the subtree
 
                 ***************************************************************/
         
-                Node dup()
+                Node copy (Node tree)
                 {
-                        auto p = new NodeImpl;
-
-                        p.prefix = prefix.dup;
-                        p.rawValue = rawValue.dup;
-                        p.localName = localName.dup;
-                        p.type = type;
-                        return p;
+                        assert (tree);
+                        tree = tree.clone;
+                        tree.migrate (document);
+                        append (tree);
+                        return tree;
                 }
 
                 /***************************************************************
                 
-                        Duplicate a subtree
+                        Relocate the given sub-tree into place as a child 
+                        of this node. 
+                        
+                        Returns a reference to the subtree
 
                 ***************************************************************/
         
-                Node clone ()
+                Node move (Node tree)
                 {
-                        auto p = dup;
-
-                        foreach (node; attributes)
-                                 p.attribute (node.dup);
-
-                        foreach (node; children)
-                                 p.append (node.clone);
-
-                        return p;
+                        tree.detach;
+                        if (tree.document is document)
+                            append (tree);
+                        else
+                           tree = copy (tree);
+                        return tree;
                 }
 
                 /***************************************************************
                 
-                        Detach this node from its parent and siblings. Note 
-                        that it still remains in the freelist
+                        Detach this node from its parent and siblings
 
                 ***************************************************************/
         
-                void detach()
+                private Node detach()
                 {
                         if (! parent_) 
-                              return;
+                              return this;
                         
                         if (prevSibling_ && nextSibling_) 
                            {
@@ -764,6 +660,202 @@ class Document(T) : private PullParser!(T)
                                     parent_ = null;
                                     }
                                  }
+                        return this;
+                }
+
+version (tools)
+{                
+                /***************************************************************
+                
+                        Insert a node after this one. The given node cannot
+                        have an existing parent.
+
+                ***************************************************************/
+        
+                private void insertAfter (Node node)
+                {
+                        assert (node.parent is null);
+                        node.parent_ = parent_;
+                        if (nextSibling_) 
+                           {
+                           nextSibling_.prevSibling_ = node;
+                           node.nextSibling_ = nextSibling_;
+                           node.prevSibling_ = this;
+                           }
+                        else 
+                           {
+                           node.prevSibling_ = this;
+                           node.nextSibling_ = null;
+                           }
+                        nextSibling_ = node;
+                }
+                
+                /***************************************************************
+                
+                        Insert a node before this one. The given node cannot
+                        have an existing parent.
+
+                ***************************************************************/
+        
+                private void insertBefore (Node node)
+                {
+                        assert (node.parent is null);
+                        node.parent_ = parent_;
+                        if (prevSibling_) 
+                           {
+                           prevSibling_.nextSibling_ = node;
+                           node.prevSibling_ = prevSibling_;
+                           node.nextSibling_ = this;
+                           }
+                        else 
+                           {
+                           node.nextSibling_ = this;
+                           node.prevSibling_ = null;
+                           }
+                        prevSibling_ = node;
+                }
+}                
+                /***************************************************************
+                
+                        Append an attribute to this node, The given attribute
+                        cannot have an existing parent.
+
+                ***************************************************************/
+        
+                private void attrib (Node node, uint uriID = 0)
+                {
+                        assert (node.parent is null);
+                        node.uriID = uriID;
+                        node.parent_ = this;
+                        node.type = XmlNodeType.Attribute;
+        
+                        if (lastAttr_) 
+                           {
+                           lastAttr_.nextSibling_ = node;
+                           node.prevSibling_ = lastAttr_;
+                           lastAttr_ = node;
+                           }
+                        else 
+                           firstAttr_ = lastAttr_ = node;
+                }
+        
+                /***************************************************************
+                
+                        Append a node to this one. The given node cannot
+                        have an existing parent.
+
+                ***************************************************************/
+        
+                private void append (Node node)
+                {
+                        assert (node.parent is null);
+                        node.parent_ = this;
+                        if (lastChild_) 
+                           {
+                           lastChild_.nextSibling_ = node;
+                           node.prevSibling_ = lastChild_;
+                           lastChild_ = node;
+                           }
+                        else 
+                           {
+                           firstChild_ = node;
+                           lastChild_ = node;                  
+                           }
+                }
+
+                /***************************************************************
+                
+                        Prepend a node to this one. The given node cannot
+                        have an existing parent.
+
+                ***************************************************************/
+        
+                private void prepend (Node node)
+                {
+                        assert (node.parent is null);
+                        node.parent_ = this;
+                        if (firstChild_) 
+                           {
+                           firstChild_.prevSibling_ = node;
+                           node.nextSibling_ = firstChild_;
+                           firstChild_ = node;
+                           }
+                        else 
+                           {
+                           firstChild_ = node;
+                           lastChild_ = node;
+                           }
+                }
+                
+                /***************************************************************
+        
+                        Configures node values
+        
+                ***************************************************************/
+        
+                private Node set (T[] prefix, T[] local)
+                {
+                        this.localName = local;
+                        this.prefix = prefix;
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Creates and returns a child Element node
+
+                ***************************************************************/
+        
+                private Node create (XmlNodeType type, T[] value)
+                {
+                        //auto node = new NodeImpl;
+                        auto node = document.allocate;
+                        node.rawValue = value;
+                        node.type = type;
+                        return node;
+                }
+        
+                /***************************************************************
+                
+                        Duplicate a single node
+
+                ***************************************************************/
+        
+                private Node dup()
+                {
+                        return create(type, rawValue.dup).set(prefix.dup, localName.dup);
+                }
+
+                /***************************************************************
+                
+                        Duplicate a subtree
+
+                ***************************************************************/
+        
+                private Node clone ()
+                {
+                        auto p = dup;
+
+                        foreach (attr; attributes)
+                                 p.attrib (attr.dup);
+                        foreach (child; children)
+                                 p.append (child.clone);
+                        return p;
+                }
+
+                /***************************************************************
+
+                        Reset the document host for this subtree
+
+                ***************************************************************/
+        
+                private void migrate (Document host)
+                {
+                        this.document = host;
+                        foreach (attr; attributes)
+                                 attr.migrate (host);
+                        foreach (child; children)
+                                 child.migrate (host);
                 }
         }
 
@@ -774,19 +866,21 @@ class Document(T) : private PullParser!(T)
         *******************************************************************************/
         
         final T[] print()
-        {
-                return print (this.root);
+        {       
+                T[] content;
+
+                print (this.root, (T[][] s...){foreach(t; s) content ~= t;});
+                return content;
         }
         
         /*******************************************************************************
         
-                Generate a text representation of the given node-subtree 
+                Generate a representation of the given node-subtree 
 
         *******************************************************************************/
         
-        final T[] print (Node root)
+        final void print (Node root, void delegate(T[][]...) emit)
         {
-                T[] res;
                 T[256] spaces = ' ';
 
                 void printNode (Node node, uint indent)
@@ -799,47 +893,49 @@ class Document(T) : private PullParser!(T)
                                     break;
         
                                case XmlNodeType.Element:
-                                    res ~= "<" ~ node.name;
+                                    emit ("<", node.name);
                                     foreach (attr; node.attributes)
-                                             res ~= " " ~ print(attr);
-        
+                                             emit (" ", attr.name, "=\"", attr.rawValue, "\"");
+
                                     if (node.hasChildren || node.rawValue.length)
                                        {
-                                       res ~= ">";
-                                       res ~= node.rawValue;
+                                       if (node.rawValue.length)
+                                           emit (">", node.rawValue);
+                                       else
+                                          emit (">\r\n");
                                        foreach (n; node.children)
                                                {
-                                               res ~= spaces[0..indent];
+                                               emit (spaces[0..indent]);
                                                printNode (n, indent + 2);
                                                }
-                                       res ~= "</" ~ node.name ~ ">\r\n";
+                                       emit ("</", node.name, ">\r\n");
                                        }
                                     else 
-                                       res ~= "/>\r\n";      
+                                       emit ("/>\r\n");      
                                     break;
         
                                case XmlNodeType.Data:
-                                    res ~= node.rawValue;
+                                    emit (node.rawValue);
                                     break;
         
                                case XmlNodeType.Attribute:                               
-                                    res ~= node.name ~ "=\"" ~ node.rawValue ~ "\"";                                
+                                    emit (node.name, "=\"", node.rawValue, "\"");                                
                                     break;
         
                                case XmlNodeType.Comment:
-                                    res ~= "<!--" ~ node.rawValue ~ "-->\r\n";
+                                    emit ("<!--", node.rawValue, "-->\r\n");
                                     break;
         
                                case XmlNodeType.PI:
-                                    res ~= "<?" ~ node.rawValue ~ "?>\r\n";
+                                    emit ("<?", node.rawValue, "?>\r\n");
                                     break;
         
                                case XmlNodeType.CData:
-                                    res ~= "<![CDATA[" ~ node.rawValue ~ "]]>";
+                                    emit ("<![CDATA[", node.rawValue, "]]>");
                                     break;
         
                                case XmlNodeType.Doctype:
-                                    res ~= "<!DOCTYPE " ~ node.rawValue ~ ">\r\n";
+                                    emit ("<!DOCTYPE ", node.rawValue, ">\r\n");
                                     break;
         
                                default:
@@ -848,6 +944,5 @@ class Document(T) : private PullParser!(T)
                 }
         
                 printNode (root, 0);
-                return res;
         }
 }
