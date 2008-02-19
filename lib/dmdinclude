@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # A library file for detecting dmd versions and setting up variables.  Now that
 # Tango supports DMD 2, we must setup variables properly
