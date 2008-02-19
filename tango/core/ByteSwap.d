@@ -181,8 +181,8 @@ struct ByteSwap
                       p[4] = p[5];
                       p[5] = b;
 
-                      p += real.sizeof;
-                      bytes -= real.sizeof;
+                      p += 10;
+                      bytes -= 10;
                       }
         }
 }
