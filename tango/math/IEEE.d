@@ -879,7 +879,8 @@ int isNaN(real x)
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000_0000_0000 == 0x7FF0_0000_0000_0000) && *p & 0x000F_FFFF_FFFF_FFFF;
   } else static if (real.mant_dig==64) {     // real80
-        ushort e = EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT];
+        // Prevent a ridiculous warning (why does (ushort | ushort) get promoted to int???)
+        ushort e = cast(ushort)(EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT]);
         ulong*  ps = cast(ulong *)&x;
         return e == 0x7FFF &&
             *ps & 0x7FFF_FFFF_FFFF_FFFF; // not infinity
@@ -924,9 +925,10 @@ int isNormal(double d)
 {
     ushort *p = cast(ushort *)&d;
     version(LittleEndian) {
-        ushort e = p[3] & 0x7FF0;
+        ushort e = p[3];
+        e &= 0x7FF0;
     } else {
-        ushort e = p[0] & 0x7FF0;
+        ushort e = p[0]; e &= 0x7FF0;
     }
     return e!=0 && e != 0x7FF0;
 }
@@ -940,7 +942,8 @@ int isNormal(real x)
     // doubledouble is normal if the least significant part is normal.
         return isNormal((cast(double*)&x)[1]);
     } else static if (real.mant_dig == 64) { // real80
-        ushort e = EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT];
+    // ridiculous DMD warning
+        ushort e = cast(ushort)(EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT]);
         return (e != 0x7FFF && e!=0);
     } else static if (real.mant_dig == 113) { // quadruple
         ushort e = EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT];
@@ -1136,7 +1139,7 @@ int isInfinity(real x)
         return ps[MANTISSA_LSB]==0 
          && (ps[MANTISSA_MSB] & 0x7FFF_FFFF_FFFF_FFFF) == 0x7FFF_0000_0000_0000;
     } else { // real80
-        ushort e = EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT];
+        ushort e = cast(ushort)(EXPMASK & (cast(ushort *)&x)[EXPONENTPOS_SHORT]);
         ulong*  ps = cast(ulong *)&x;
 
         return e == 0x7FFF && *ps == 0x8000_0000_0000_0000;
