@@ -10,7 +10,7 @@
 
 module tango.text.xml.Document;
 
-private import tango.text.xml.PullParser;
+package import tango.text.xml.PullParser;
 
 /*******************************************************************************
 
@@ -45,8 +45,9 @@ private import tango.text.xml.PullParser;
         auto doc = new Document!(char);
         doc.parse (content);
 
-        Stdout(doc.print).newline;
-        ---
+        auto print = new XmlPrinter!(char);
+        Stdout(print(doc)).newline;
+         ---
 
         API example:
         ---
@@ -62,7 +63,8 @@ private import tango.text.xml.PullParser;
                 .attribute (null, "attrib2")
                 .element   (null, "child", "value");
 
-        Stdout(doc.print).newline;
+        auto print = new XmlPrinter!(char);
+        Stdout(print(doc)).newline;
         ---
 
 *******************************************************************************/
@@ -73,7 +75,10 @@ class Document(T) : private PullParser!(T)
 
         public  Node            root;
         private NodeImpl[]      list;
-        private int             index;
+        private NodeImpl[][]    lists;
+        private int             index,
+                                chunks,
+                                freelists;
         private uint[T[]]       namespaceURIs;
         
         static const T[] xmlns = "xmlns";
@@ -87,15 +92,15 @@ class Document(T) : private PullParser!(T)
 
         ***********************************************************************/
 
-        this (uint nodes = 1000)
+        this (uint nodes = 5000)
         {
-                assert (nodes);
-
+                assert (nodes > 50);
                 super (null);
                 namespaceURIs[xmlURI] = 1;
                 namespaceURIs[xmlnsURI] = 2;
-                list = new NodeImpl [nodes];
 
+                chunks = nodes;
+                newlist;
                 root = allocate;
                 root.type = XmlNodeType.Document;
         }
@@ -109,7 +114,11 @@ class Document(T) : private PullParser!(T)
         
         final Document collect ()
         {
+                root.lastChild_ = 
+                root.firstChild_ = null;
+                freelists = 0;
                 index = 1;
+                freelists = 0;          // needed to align the codegen!
                 return this;
         }
 
@@ -119,9 +128,9 @@ class Document(T) : private PullParser!(T)
 
         ***********************************************************************/
         
-        final Document header ()
+        final Document header (T[] encoding = "UTF-8")
         {
-                root.prepend (root.create(XmlNodeType.PI, `xml version="1.0"`));
+                root.prepend (root.create(XmlNodeType.PI, `xml version="1.0" encoding="`~encoding~`"`));
                 return this;
         }
 
@@ -276,7 +285,7 @@ class Document(T) : private PullParser!(T)
         private final Node allocate ()
         {
                 if (index >= list.length)
-                    list.length = list.length + list.length / 2;
+                    newlist;
 
                 auto p = &list[index++];
                 p.document = this;
@@ -289,6 +298,23 @@ class Document(T) : private PullParser!(T)
                 p.lastAttr_ = null;
                 p.rawValue = null;
                 return p;
+        }
+
+        /***********************************************************************
+        
+                allocate a node from the freelist
+
+        ***********************************************************************/
+
+        private final void newlist ()
+        {
+                index = 0;
+                if (freelists >= lists.length)
+                   {
+                   lists.length = lists.length + 1;
+                   lists[$-1] = new NodeImpl [chunks];
+                   }
+                list = lists[freelists++];
         }
 
         /***********************************************************************
@@ -861,91 +887,32 @@ version (tools)
                                  child.migrate (host);
                 }
         }
+}
 
-        /*******************************************************************************
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+interface IXmlPrinter(T)
+{
+        public alias Document!(T) Doc;          /// the typed document
+        public alias Doc.Node Node;             /// generic document node
+        public alias print opCall;              /// alias for print method
+
+        /***********************************************************************
         
                 Generate a text representation of the document tree
 
-        *******************************************************************************/
+        ***********************************************************************/
         
-        final T[] print()
-        {       
-                T[] content;
-
-                print (this.root, (T[][] s...){foreach(t; s) content ~= t;});
-                return content;
-        }
+        T[] print (Doc doc);
         
-        /*******************************************************************************
+        /***********************************************************************
         
                 Generate a representation of the given node-subtree 
 
-        *******************************************************************************/
+        ***********************************************************************/
         
-        final void print (Node root, void delegate(T[][]...) emit)
-        {
-                T[256] spaces = ' ';
-
-                void printNode (Node node, uint indent)
-                {
-                        switch (node.type)
-                               {
-                               case XmlNodeType.Document:
-                                    foreach (n; node.children)
-                                             printNode (n, indent + 2);
-                                    break;
-        
-                               case XmlNodeType.Element:
-                                    emit ("<", node.name);
-                                    foreach (attr; node.attributes)
-                                             emit (" ", attr.name, "=\"", attr.rawValue, "\"");
-
-                                    if (node.hasChildren || node.rawValue.length)
-                                       {
-                                       if (node.rawValue.length)
-                                           emit (">", node.rawValue);
-                                       else
-                                          emit (">\r\n");
-                                       foreach (n; node.children)
-                                               {
-                                               emit (spaces[0..indent]);
-                                               printNode (n, indent + 2);
-                                               }
-                                       emit ("</", node.name, ">\r\n");
-                                       }
-                                    else 
-                                       emit ("/>\r\n");      
-                                    break;
-        
-                               case XmlNodeType.Data:
-                                    emit (node.rawValue);
-                                    break;
-        
-                               case XmlNodeType.Attribute:                               
-                                    emit (node.name, "=\"", node.rawValue, "\"");                                
-                                    break;
-        
-                               case XmlNodeType.Comment:
-                                    emit ("<!--", node.rawValue, "-->\r\n");
-                                    break;
-        
-                               case XmlNodeType.PI:
-                                    emit ("<?", node.rawValue, "?>\r\n");
-                                    break;
-        
-                               case XmlNodeType.CData:
-                                    emit ("<![CDATA[", node.rawValue, "]]>");
-                                    break;
-        
-                               case XmlNodeType.Doctype:
-                                    emit ("<!DOCTYPE ", node.rawValue, ">\r\n");
-                                    break;
-        
-                               default:
-                                    break;
-                               }
-                }
-        
-                printNode (root, 0);
-        }
+        void print (Node root, void delegate(T[][]...) emit);
 }
