@@ -2088,7 +2088,7 @@ version( DDoc )
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
-    void sort( Elem[] buf, Pred2E pred = Pred2E.init );
+    void sort( Elem, Pred2E = IsLess!(Elem) )( Elem[] buf, Pred2E pred = Pred2E.init );
 }
 else
 {
