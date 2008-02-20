@@ -28,5 +28,5 @@ void benchmark (int iterations, char[] filename)
 void main() 
 {       
         for (int i = 10; --i;)
-             benchmark (5000, "hamlet.xml");       
+             benchmark (5000, "soap_mid.xml");       
 }

@@ -24,7 +24,7 @@ void bench (int iterations, char[] filename)
         auto content = cast(char[]) File(filename).read;
 
         elapsed.start;
-        for (int i=0; i < iterations; i++)
+        for (auto i=0; ++i < iterations;))
              doc.parse (content);
 
         Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
@@ -36,7 +36,7 @@ void bench (int iterations, char[] filename)
 
 void main()
 {
-        for (int i=20; --i;)
-             bench (2000, "hamlet.xml");
+        for (int i=10; --i;)
+             bench (5000, "soap_mid.xml");
 }
 
