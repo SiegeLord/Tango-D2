@@ -69,6 +69,9 @@
 @jake text\formatspec.d -I.. -op
 @jake text\localetime.d -I.. -op
 @jake text\token.d -I.. -op
+@jake text\xmlpull.d -I.. -op
+@jake text\xmldom.d -I.. -op
+@jake text\xmlsax.d -I.. -op
 
 @rem FINI
 
