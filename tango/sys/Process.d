@@ -650,7 +650,7 @@ class Process
             // started decides to allocate a console (i.e. if you run a batch
             // file)
             if (CreateProcessA(null, command.ptr, null, null, true,
-                               DETACHED_PROCESS,
+                               CREATE_NO_WINDOW,
                                (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
                                toStringz(_workDir), &startup, _info))
             {
