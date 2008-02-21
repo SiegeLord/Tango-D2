@@ -1443,8 +1443,8 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
         private void doParse() {
                 contentHandler.setDocumentLocator(this);
                 contentHandler.startDocument();
-                while (parser.next) {
-                        switch (parser.type) {
+                while (true) {
+                        switch (parser.next) {
                         case XmlTokenType.StartElement :
                                 doStartElement;
                                 startElemName = parser.localName;
@@ -1471,10 +1471,15 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                         case XmlTokenType.None :
                                 doStartElement;
                                 break;
+
+                        case XmlTokenType.Done:
+                             goto foo;
+
                         default:
                                 throw new SAXException!(Ch)("unknown parser token type");
                         }
-                }               
+                } 
+foo:                              
                 contentHandler.endDocument();
         }
 

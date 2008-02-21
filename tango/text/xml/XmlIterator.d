@@ -149,14 +149,11 @@ package struct XmlIterator(Ch)
             }
             else
             {
-                auto tmp = end - point;
-                    auto l = Util.indexOf!(Ch)(point, ch, tmp);
+                    auto tmp = end - p;
+                    auto l = Util.indexOf!(Ch)(p, ch, tmp);
                     if (l < tmp) 
-                       {
-                       point += l;
-                       return true;
-                       }
-                    return false;
+                        return p += l;
+                    throw new Exception ("malformed XML");
             }
         }
         

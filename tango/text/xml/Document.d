@@ -12,6 +12,8 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
+version = NameSpace;
+
 /*******************************************************************************
 
         Implements a DOM atop the XML parser, supporting document 
@@ -153,9 +155,9 @@ class Document(T) : private PullParser!(T)
                 inscopeNSs["xml"] = 1;
                 inscopeNSs["xmlns"] = 2;        
                 
-                while (super.next) 
+                while (true) 
                       {
-                      switch (super.type) 
+                      switch (super.next) 
                              {
                              case XmlTokenType.EndElement:
                              case XmlTokenType.EndEmptyElement:
@@ -191,7 +193,8 @@ class Document(T) : private PullParser!(T)
                                      cur.lastChild_ = node;
                                      }
                                   cur = node;
-
+version (NameSpace)
+{
                                   if (node.prefix.length) 
                                      {
                                      auto pURI = node.prefix in inscopeNSs;
@@ -206,6 +209,7 @@ class Document(T) : private PullParser!(T)
                                      }
                                   else 
                                      node.uriID = defNamespace;
+}
                                   break;
         
                              case XmlTokenType.Attribute:
@@ -214,7 +218,8 @@ class Document(T) : private PullParser!(T)
                                   attr.rawValue = super.rawValue;
                                   attr.localName = super.localName;
                                   attr.type = XmlNodeType.Attribute;
-
+version (NameSpace)
+{
                                   if (super.prefix.length) 
                                      {
                                      if (super.prefix == xmlns) 
@@ -252,6 +257,9 @@ class Document(T) : private PullParser!(T)
                                      }
                                   else 
                                      cur.attrib (attr, defNamespace);
+}
+else
+                                     cur.attrib (attr, defNamespace);
                                   break;
         
                              case XmlTokenType.PI:
@@ -270,6 +278,9 @@ class Document(T) : private PullParser!(T)
                                   cur.doctype (super.rawValue);
                                   break;
         
+                             case XmlTokenType.Done:
+                                  return;
+
                              default:
                                   break;
                              }

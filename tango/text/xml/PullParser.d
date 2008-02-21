@@ -25,7 +25,7 @@ public enum XmlNodeType {Element, Data, Attribute, CData,
 
 *******************************************************************************/
 
-public enum XmlTokenType {StartElement, Attribute, EndElement, 
+public enum XmlTokenType {Done, StartElement, Attribute, EndElement, 
                           EndEmptyElement, Data, Comment, CData, 
                           Doctype, PI, None};
 
@@ -57,21 +57,7 @@ class PullParser(Ch = char)
         private XmlIterator!(Ch)        text;
         private bool                    err;
         private char[]                  errMsg;
-        private static Object           dummy;
 
-        /***********************************************************************
-        
-                Adding this static-ctor gains another 20MB/s
-
-                Go figure ...
-
-        ***********************************************************************/
-
-        static this()
-        {
-                dummy = null;
-        }
-        
         /***********************************************************************
         
         ***********************************************************************/
@@ -85,226 +71,61 @@ class PullParser(Ch = char)
         
         ***********************************************************************/
 
-        private bool doAttributeName()
-        {
+        final XmlTokenType next()
+        {      
                 auto p = text.point;
-                auto q = text.eatAttrName (p);
+                if (*p <= 32) 
+                   {
+                   while (*++p <= 32)
+                   if (p >= text.end)                                      
+                       return doEndOfStream;
+                   text.point = p;
+                   }
+                
+                if (type >= XmlTokenType.EndElement) 
+                    return doMain;
 
-                if (*q == ':')
-                   {
-                   prefix = p[0 .. q - p];
-                   q = text.eatAttrName (p = q + 1);
-                   localName = p[0 .. q - p];
-                   }
-                else 
-                   {
-                   prefix = null;
-                   localName = p[0 .. q - p];
-                   }
+                // in element
+                switch (*p)
+                       {
+                       case '/':
+                            return doEndEmptyElement;
 
-                type = XmlTokenType.Attribute;
-                if (*q <= 32) 
-                   {
-                   auto e = text.end;
-                   do {
-                      if (++q >= e)                                      
-                          return doEndOfStream;
-                      } while (*q <= 32);
-                   }
-            
-                if (*q is '=')
-                    return doAttributeValue (q + 1);
-                return false;
+                       case '>':
+                            ++depth;
+                            ++text.point;
+                            return doMain;
+
+                       default:
+                            return doAttributeName;
+                       }
         }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doEndEmptyElement()
-        {
-                if (text[0..2] != "/>")
-                    return doUnexpected("/>");
  
-                type = XmlTokenType.EndEmptyElement;
-                localName = prefix = null;
-                text.point += 2;
-                return true;
-        }
-        
         /***********************************************************************
         
         ***********************************************************************/
 
-        private bool doComment()
-        {
-                auto p = text.point;
-
-                while (text.good)
-                      {
-                      if (! text.forwardLocate('-')) 
-                            return doUnexpectedEOF;
-
-                      if (text[0..3] == "-->") 
-                         {
-                         rawValue = p [0 .. text.point - p];
-                         type = XmlTokenType.Comment;
-                         //prefix = null;
-                         text.point += 3;
-                         return true;
-                         }
-                      ++text.point;
-                      }
-
-                return doUnexpectedEOF;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doCData()
-        {
-                auto p = text.point;
-                
-                while (text.good)
-                      {
-                      if (! text.forwardLocate(']')) 
-                            return doUnexpectedEOF;
-                
-                      if (text[0..3] == "]]>") 
-                         {
-                         type = XmlTokenType.CData;
-                         rawValue = p [0 .. text.point - p];
-                         //prefix = null;
-                         text.point += 3;                      
-                         return true;
-                         }
-                      ++text.point;
-                      }
-
-                return doUnexpectedEOF;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doPI()
-        {
-                auto p = text.point;
-                text.eatElemName;
-                ++text.point;
-
-                while (text.good)
-                      {
-                      if (! text.forwardLocate('\?')) 
-                            return doUnexpectedEOF;
-
-                      if (text.point[1] == '>') 
-                         {
-                         type = XmlTokenType.PI;
-                         rawValue = p [0 .. text.point - p];
-                         text.point += 2;
-                         return true;
-                         }
-                      ++text.point;
-                      }
-                return doUnexpectedEOF;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doDoctype()
-        {
-                text.eatSpace;
-                auto p = text.point;
-                                
-                while (text.good) 
-                      {
-                      if (*text.point == '>') 
-                         {
-                         type = XmlTokenType.Doctype;
-                         rawValue = p [0 .. text.point - p];
-                         prefix = null;
-                         ++text.point;
-                         return true;
-                         }
-                      else 
-                         if (*text.point == '[') 
-                            {
-                            ++text.point;
-                            text.forwardLocate(']');
-                            ++text.point;
-                            }
-                         else 
-                            ++text.point;
-                      }
-
-                if (! text.good)
-                      return doUnexpectedEOF;
-                return true;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doUnexpectedEOF()
-        {
-                return error ("Unexpected EOF");
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doUnexpected(char[] msg = null)
-        {
-                return error ("Unexpected event " ~ msg ~ " " ~ Integer.toString(type));
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doEndOfStream()
-        {
-                return false;
-        }
-              
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private bool doMain()
+        private XmlTokenType doMain()
         {
                 auto p = text.point;
                 if (*p != '<') 
                    {
                    auto q = p;
-                   while (++p < text.end) 
-                          if (*p is '<')
-                             {
-                             type = XmlTokenType.Data;
-                             rawValue = q [0 .. p - q];
-                             text.point = p;
-                             return true;
-                             }
-                   return doUnexpectedEOF;
+                   while (*++p != '<') 
+                         {}
+                   if (p < text.end)
+                      {
+                      rawValue = q [0 .. p - q];
+                      text.point = p;
+                      return type = XmlTokenType.Data;
+                      }
+                   return XmlTokenType.Done;
                    }
 
                 switch (p[1])
                        {
-                       case '\?':
-                            text.point += 2;
-                            return doPI();
-
                        default:
                             auto q = ++p;
-                            //auto e = text.end;
                             while (q < text.end)
                                   {
                                   auto c = *q;
@@ -328,8 +149,7 @@ class PullParser(Ch = char)
                                localName = p [0 .. q - p];
                                }
 
-                            type = XmlTokenType.StartElement;
-                            return true;
+                            return type = XmlTokenType.StartElement;
 
                        case '!':
                             if (text[2..4] == "--") 
@@ -351,117 +171,282 @@ class PullParser(Ch = char)
                                      }
                             return doUnexpected("!");
 
+                       case '\?':
+                            text.point += 2;
+                            return doPI();
+
                        case '/':
                             p += 2;
                             auto q = p;
-                            auto e = text.end;
-                            while (q < e)
-                                  {
-                                  auto c = *q;
-                                  if (c > 63 || text.name[c])
-                                      ++q;
-                                  else
-                                     break;
-                                  }
-                            text.point = q;
+                            while (*q > 63 || text.name[*q]) 
+                                   ++q;
 
-                            if (*q != ':') 
+                            if (*q is ':') 
                                {
-                               prefix = null;
+                               prefix = p[0 .. q - p];
+                               p = ++q;
+                               while (*q > 63 || text.attributeName[*q])
+                                      ++q;
                                localName = p[0 .. q - p];
                                }
                             else 
                                {
-                               prefix = p[0 .. q - p];
-                               p = ++text.point;
-                               q = text.eatAttrName;
+                               prefix = null;
                                localName = p[0 .. q - p];
                                }
 
-                            auto end = text.end;
-                            while (*q <= 32 && q <= end)
+                            while (*q <= 32) 
                                    ++q;
 
-                            type = XmlTokenType.EndElement;
-                            if (*q == '>')
+                            if (q >= text.end)
+                                return doUnexpectedEOF;
+
+                            if (*q is '>')
                                {
                                text.point = q + 1;
                                --depth;
-                               return true;
+                               return type = XmlTokenType.EndElement;
                                }
                             return doUnexpected(">");
                        }
 
-               return false;
+               return XmlTokenType.Done;
         }
         
         /***********************************************************************
         
         ***********************************************************************/
 
-        final bool next()
-        {      
+        private XmlTokenType doAttributeName()
+        {
                 auto p = text.point;
-                if (*p <= 32) 
+                auto q = p;
+                auto e = text.end;
+
+                while (*q > 63 || text.attributeName[*q])
+                       ++q;
+                if (q >= e)
+                    return doUnexpectedEOF;
+
+                if (*q is ':')
                    {
-                   while (*++p <= 32)
-                          if (p >= text.end)                                      
-                              return doEndOfStream;
-                   text.point = p;
+                   prefix = p[0 .. q - p];
+                   p = ++q;
+
+                   while (*q > 63 || text.attributeName[*q])
+                          ++q;
+                   if (q >= e)
+                       return doUnexpectedEOF;
+
+                   localName = p[0 .. q - p];
+                   }
+                else 
+                   {
+                   prefix = null;
+                   localName = p[0 .. q - p];
                    }
                 
-                if (type >= XmlTokenType.EndElement) 
-                    return doMain;
+                if (*q <= 32) 
+                   {
+                   while (*++q <= 32) {}
+                   if (q >= e)
+                       return doUnexpectedEOF;
+                   }
 
-                // in element
-                switch (*p)
-                       {
-                       case '/':
-                            return doEndEmptyElement;
+                if (*q is '=')
+                   {
+                   while (*++q <= 32) {}
+                   if (q >= e)
+                       return doUnexpectedEOF;
 
-                       case '>':
-                            ++depth;
-                            ++text.point;
-                            return doMain;
+                   auto quote = *q;
+                   switch (quote)
+                          {
+                          case '"':
+                          case '\'':
+                               p = q + 1;
+                               while (*++q != quote) {}
+                               //q = text.forwardLocate(p, quote);
+                               if (q < e)
+                                  {
+                                  rawValue = p[0 .. q - p];
+                                  text.point = q + 1;   //Skip end quote
+                                  return type = XmlTokenType.Attribute;
+                                  }
+                               return doUnexpectedEOF; 
 
-                       default:
-                            break;
-                       }
-                return doAttributeName;
+                          default: 
+                               return doUnexpected("\' or \"");
+                          }
+                   }
+                
+                return doUnexpected (q[0..1]);
         }
- 
+
         /***********************************************************************
         
         ***********************************************************************/
 
-        private bool doAttributeValue(Ch* q)
+        private XmlTokenType doEndEmptyElement()
         {
-                auto p = text.eatSpace (q);
-                auto quote = *p++;
+                if (text.point[0] is '/' && text.point[1] is '>')
+                   {
+                   localName = prefix = null;
+                   text.point += 2;
+                   return type = XmlTokenType.EndEmptyElement;
+                   }
+                return doUnexpected("/>");               
+       }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
 
-                switch (quote)
-                       {
-                       case '"':
-                       case '\'':
-                            q = text.forwardLocate(p, quote);
-                            rawValue = p[0 .. q - p];
-                            text.point = q + 1; //Skip end quote
-                            return true;
+        private XmlTokenType doComment()
+        {
+                auto p = text.point;
 
-                       default: 
-                            return doUnexpected("\' or \"");
-                       }
+                while (text.good)
+                      {
+                      if (! text.forwardLocate('-')) 
+                            return doUnexpectedEOF;
+
+                      if (text[0..3] == "-->") 
+                         {
+                         rawValue = p [0 .. text.point - p];
+                         //prefix = null;
+                         text.point += 3;
+                         return type = XmlTokenType.Comment;
+                         }
+                      ++text.point;
+                      }
+
+                return doUnexpectedEOF;
         }
         
         /***********************************************************************
         
         ***********************************************************************/
 
-        private bool error (char[] msg)
+        private XmlTokenType doCData()
+        {
+                auto p = text.point;
+                
+                while (text.good)
+                      {
+                      if (! text.forwardLocate(']')) 
+                            return doUnexpectedEOF;
+                
+                      if (text[0..3] == "]]>") 
+                         {
+                         rawValue = p [0 .. text.point - p];
+                         //prefix = null;
+                         text.point += 3;                      
+                         return type = XmlTokenType.CData;
+                         }
+                      ++text.point;
+                      }
+
+                return doUnexpectedEOF;
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doPI()
+        {
+                auto p = text.point;
+                text.eatElemName;
+                ++text.point;
+
+                while (text.good)
+                      {
+                      if (! text.forwardLocate('\?')) 
+                            return doUnexpectedEOF;
+
+                      if (text.point[1] == '>') 
+                         {
+                         rawValue = p [0 .. text.point - p];
+                         text.point += 2;
+                         return type = XmlTokenType.PI;
+                         }
+                      ++text.point;
+                      }
+                return doUnexpectedEOF;
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doDoctype()
+        {
+                text.eatSpace;
+                auto p = text.point;
+                                
+                while (text.good) 
+                      {
+                      if (*text.point == '>') 
+                         {
+                         rawValue = p [0 .. text.point - p];
+                         prefix = null;
+                         ++text.point;
+                         return type = XmlTokenType.Doctype;
+                         }
+                      else 
+                         if (*text.point == '[') 
+                            {
+                            ++text.point;
+                            text.forwardLocate(']');
+                            ++text.point;
+                            }
+                         else 
+                            ++text.point;
+                      }
+
+                if (! text.good)
+                      return doUnexpectedEOF;
+                return XmlTokenType.Doctype;
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doUnexpectedEOF()
+        {
+                return error ("Unexpected EOF");
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doUnexpected(char[] msg = null)
+        {
+                return error ("Unexpected event " ~ msg ~ " " ~ Integer.toString(type));
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doEndOfStream()
+        {
+                return XmlTokenType.Done;
+        }
+              
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType error (char[] msg)
         {
                 errMsg = msg;
                 err = true;
-                return false;
+                throw new Exception (msg);
+                return XmlTokenType.Done;
         }
 
         /***********************************************************************
@@ -565,6 +550,8 @@ class PullParser(Ch = char)
 
 debug (UnitTest)
 {
+        void main() {}
+
 	/***********************************************************************
 	
 	***********************************************************************/

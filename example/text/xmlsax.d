@@ -1,26 +1,15 @@
 module xmlsax;
 
-import tango.io.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
 
 import tango.text.xml.Sax;
 
-void benchmark (int iterations, char[] filename) 
+void benchmark (int iterations, SaxParser!(char) parser, char[] content) 
 {       
-        char c1;
-        static char c;
         StopWatch elapsed;
-
-        auto file = new File (filename);
-        auto content = cast(char[]) file.read;
-        auto parser = new SaxParser!(char);
-//      auto handler = new EventsHandler!(char);
-        auto handler = new LengthHandler!(char);
-        parser.setContentHandler(handler);
-        parser.setContent(content);
-
         elapsed.start;
+
         for (auto i=0; ++i < iterations;)
         {
                 parser.parse;
@@ -30,11 +19,22 @@ void benchmark (int iterations, char[] filename)
         Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
 }
 
+
 void main() 
 {       
+        auto content = import ("hamlet.xml");
+        auto parser = new SaxParser!(char);
+        auto handler = new EventsHandler!(char);
+        //auto handler = new LengthHandler!(char);
+        parser.setContentHandler(handler);
+        parser.setContent(content);
+
         for (int i = 10; --i;)
-                benchmark (5000, "soap_mid.xml");       
+             benchmark (2000, parser, content);       
 }
+
+
+
 
 private class EventsHandler(Ch = char) : ContentHandler!(Ch) {
 
@@ -63,7 +63,7 @@ private class EventsHandler(Ch = char) : ContentHandler!(Ch) {
 
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
                 events++;
-                foreach (Attribute!(Ch) attr; atts) {
+                foreach (inout attr; atts) {
                         events++;
                 }
         }
@@ -121,7 +121,7 @@ private class LengthHandler(Ch = char) : ContentHandler!(Ch) {
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
                 elm++;
                 elmlen += localName.length;
-                foreach (Attribute!(Ch) attr; atts) {
+                foreach (inout attr; atts) {
                         att++;
                         attlen += attr.localName.length;
                 }
