@@ -24,9 +24,10 @@ void main()
 {       
         auto content = import ("hamlet.xml");
         auto parser = new SaxParser!(char);
-        auto handler = new EventsHandler!(char);
-        //auto handler = new LengthHandler!(char);
-        parser.setContentHandler(handler);
+        //auto handler = new EventsHandler!(char);
+        //auto handler = new SaxHandler!(char);
+        auto handler = new LengthHandler!(char);
+        parser.setSaxHandler(handler);
         parser.setContent(content);
 
         for (int i = 10; --i;)
@@ -36,7 +37,7 @@ void main()
 
 
 
-private class EventsHandler(Ch = char) : ContentHandler!(Ch) {
+private class EventsHandler(Ch = char) : SaxHandler!(Ch) {
 
         public uint events;
 
@@ -89,7 +90,7 @@ private class EventsHandler(Ch = char) : ContentHandler!(Ch) {
         }       
 }
 
-private class LengthHandler(Ch = char) : ContentHandler!(Ch) {
+private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
 
         public uint elm;
         public uint att;

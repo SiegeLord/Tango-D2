@@ -70,10 +70,11 @@ struct Attribute(Ch = char) {
  * @author David Megginson
  * @version 2.0.1+ (sax2r3pre1)
  * @see org.xml.sax.XMLReader
- * @see org.xml.sax.DTDHandler
  * @see org.xml.sax.ErrorHandler
  *******************************************************************************/
-public interface ContentHandler(Ch = char) {
+public class SaxHandler(Ch = char) {
+        
+        Locator!(Ch) locator;
 
         /*******************************************************************************
          * Receive an object for locating the origin of SAX document events.
@@ -102,7 +103,10 @@ public interface ContentHandler(Ch = char) {
          *                any SAX document event
          * @see org.xml.sax.Locator
          *******************************************************************************/
-        public void setDocumentLocator(Locator!(Ch) locator);
+        public void setDocumentLocator(Locator!(Ch) locator)
+        {
+                this.locator = locator;
+        }
 
         /*******************************************************************************
          * Receive notification of the beginning of a document.
@@ -115,7 +119,10 @@ public interface ContentHandler(Ch = char) {
          *            wrapping another exception
          * @see #endDocument
          *******************************************************************************/
-        public void startDocument();
+        public void startDocument()
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of the end of a document.
@@ -138,7 +145,10 @@ public interface ContentHandler(Ch = char) {
          *            wrapping another exception
          * @see #startDocument
          *******************************************************************************/
-        public void endDocument();
+        public void endDocument()
+        {
+                
+        }
 
         /*******************************************************************************
          * Begin the scope of a prefix-URI Namespace mapping.
@@ -178,7 +188,10 @@ public interface ContentHandler(Ch = char) {
          * @see #endPrefixMapping
          * @see #startElement
          *******************************************************************************/
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri);
+        public void startPrefixMapping(Ch[] prefix, Ch[] uri)
+        {
+                
+        }
 
         /*******************************************************************************
          * End the scope of a prefix-URI mapping.
@@ -196,7 +209,10 @@ public interface ContentHandler(Ch = char) {
          * @see #startPrefixMapping
          * @see #endElement
          *******************************************************************************/
-        public void endPrefixMapping(Ch[] prefix);
+        public void endPrefixMapping(Ch[] prefix)
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of the beginning of an element.
@@ -262,7 +278,10 @@ public interface ContentHandler(Ch = char) {
          * @see org.xml.sax.Attributes
          * @see org.xml.sax.helpers.AttributesImpl
          *******************************************************************************/
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts);
+        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts)
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of the end of an element.
@@ -285,7 +304,10 @@ public interface ContentHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName);
+        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName)
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of character data.
@@ -330,7 +352,10 @@ public interface ContentHandler(Ch = char) {
          * @see #ignorableWhitespace 
          * @see org.xml.sax.Locator
          *******************************************************************************/
-        public void characters(Ch ch[]);
+        public void characters(Ch ch[])
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of ignorable whitespace in element content.
@@ -357,7 +382,10 @@ public interface ContentHandler(Ch = char) {
          *            wrapping another exception
          * @see #characters
          *******************************************************************************/
-        public void ignorableWhitespace(Ch ch[]);
+        public void ignorableWhitespace(Ch ch[])
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of a processing instruction.
@@ -381,7 +409,10 @@ public interface ContentHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void processingInstruction(Ch[] target, Ch[] data);
+        public void processingInstruction(Ch[] target, Ch[] data)
+        {
+                
+        }
 
         /*******************************************************************************
          * Receive notification of a skipped entity.
@@ -408,192 +439,10 @@ public interface ContentHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void skippedEntity(Ch[] name);
-
-}
-
-/*******************************************************************************
- * Empty default implementation of the ContentHandler interface, 
- * meant for easy extension.
- *******************************************************************************/
-class DefaultHandler(Ch = char) : ContentHandler!(Ch) {
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void setDocumentLocator(Locator!(Ch) locator) {
+        public void skippedEntity(Ch[] name)
+        {
+                
         }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void startDocument() {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void endDocument() {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void endPrefixMapping(Ch[] prefix) {
-        }                                               
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void characters(Ch ch[]) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void ignorableWhitespace(Ch ch[]) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void processingInstruction(Ch[] target, Ch[] data) {
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        public void skippedEntity(Ch[] name) {
-        }       
-
-}
-
-/*******************************************************************************
- * Receive notification of basic DTD-related events.
- *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
- * <p>If a SAX application needs information about notations and
- * unparsed entities, then the application implements this 
- * interface and registers an instance with the SAX parser using 
- * the parser's setDTDHandler method.  The parser uses the 
- * instance to report notation and unparsed entity declarations to 
- * the application.</p>
- *
- * <p>Note that this interface includes only those DTD events that
- * the XML recommendation <em>requires</em> processors to report:
- * notation and unparsed entity declarations.</p>
- *
- * <p>The SAX parser may report these events in any order, regardless
- * of the order in which the notations and unparsed entities were
- * declared; however, all DTD events must be reported after the
- * document handler's startDocument event, and before the first
- * startElement event.
- * (If the {@link org.xml.sax.ext.LexicalHandler LexicalHandler} is
- * used, these events must also be reported before the endDTD event.)
- * </p>
- *
- * <p>It is up to the application to store the information for 
- * future use (perhaps in a hash table or object tree).
- * If the application encounters attributes of type "NOTATION",
- * "ENTITY", or "ENTITIES", it can use the information that it
- * obtained through this interface to find the entity and/or
- * notation corresponding with the attribute value.</p>
- *
- * @since SAX 1.0
- * @author David Megginson
- * @version 2.0.1 (sax2r2)
- * @see org.xml.sax.XMLReader#setDTDHandler
- *******************************************************************************/
-public interface DTDHandler(Ch = char) {
-
-        /*******************************************************************************
-         * Receive notification of a notation declaration event.
-         *
-         * <p>It is up to the application to record the notation for later
-         * reference, if necessary;
-         * notations may appear as attribute values and in unparsed entity
-         * declarations, and are sometime used with processing instruction
-         * target names.</p>
-         *
-         * <p>At least one of publicId and systemId must be non-null.
-         * If a system identifier is present, and it is a URL, the SAX
-         * parser must resolve it fully before passing it to the
-         * application through this event.</p>
-         *
-         * <p>There is no guarantee that the notation declaration will be
-         * reported before any unparsed entities that use it.</p>
-         *
-         * @param name The notation name.
-         * @param publicId The notation's public identifier, or null if
-         *        none was given.
-         * @param systemId The notation's system identifier, or null if
-         *        none was given.
-         * @exception org.xml.sax.SAXException Any SAX exception, possibly
-         *            wrapping another exception.
-         * @see #unparsedEntityDecl
-         * @see org.xml.sax.Attributes
-         *******************************************************************************/
-        public void notationDecl(Ch[] name, Ch[] publicId, Ch[] systemId);
-
-        /*******************************************************************************
-         * Receive notification of an unparsed entity declaration event.
-         *
-         * <p>Note that the notation name corresponds to a notation
-         * reported by the {@link #notationDecl notationDecl} event.  
-         * It is up to the application to record the entity for later 
-         * reference, if necessary;
-         * unparsed entities may appear as attribute values. 
-         * </p>
-         *
-         * <p>If the system identifier is a URL, the parser must resolve it
-         * fully before passing it to the application.</p>
-         *
-         * @exception org.xml.sax.SAXException Any SAX exception, possibly
-         *            wrapping another exception.
-         * @param name The unparsed entity's name.
-         * @param publicId The entity's public identifier, or null if none
-         *        was given.
-         * @param systemId The entity's system identifier.
-         * @param notationName The name of the associated notation.
-         * @see #notationDecl
-         * @see org.xml.sax.Attributes
-         *******************************************************************************/
-        public void unparsedEntityDecl(Ch[] name, Ch[] publicId, Ch[] systemId, Ch[] notationName);
 
 }
 
@@ -699,13 +548,6 @@ public interface EntityResolver(Ch = char) {
 /*******************************************************************************
  * Basic interface for SAX error handlers.
  *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
  * <p>If a SAX application needs to implement customized error
  * handling, it must implement this interface and then register an
  * instance with the XML reader using the
@@ -759,7 +601,7 @@ public interface ErrorHandler(Ch = char) {
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException 
          *******************************************************************************/
-        public void warning(SAXException!(Ch) exception);
+        public void warning(SAXException exception);
 
         /*******************************************************************************
          * Receive notification of a recoverable error.
@@ -786,7 +628,7 @@ public interface ErrorHandler(Ch = char) {
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException 
          *******************************************************************************/
-        public void error(SAXException!(Ch) exception);
+        public void error(SAXException exception);
 
         /*******************************************************************************
          * Receive notification of a non-recoverable error.
@@ -816,19 +658,12 @@ public interface ErrorHandler(Ch = char) {
          *            wrapping another exception.
          * @see org.xml.sax.SAXParseException
          *******************************************************************************/
-        public void fatalError(SAXException!(Ch) exception);
+        public void fatalError(SAXException exception);
 
 }
 
 /*******************************************************************************
  * Interface for associating a SAX event with a document location.
- *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
  *
  * <p>If a SAX parser provides location information to the SAX
  * application, it does so by implementing this interface and then
@@ -947,13 +782,6 @@ public interface Locator(Ch = char) {
 /*******************************************************************************
  * Encapsulate a general SAX error or warning.
  *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
  * <p>This class can contain basic error or warning information from
  * either the XML parser or the application: a parser writer or
  * application writer can subclass it to provide additional
@@ -973,7 +801,7 @@ public interface Locator(Ch = char) {
  * @version 2.0.1 (sax2r2)
  * @see org.xml.sax.SAXParseException
  *******************************************************************************/
-public class SAXException(Ch = char) : Exception {
+public class SAXException : Exception {
 
         /*******************************************************************************
          * Create a new SAXException.
@@ -987,7 +815,7 @@ public class SAXException(Ch = char) : Exception {
          *
          * @param message The error or warning message.
          *******************************************************************************/
-        public this (Ch[] message) {
+        public this (char[] message) {
                 super (message, null);
         }
 
@@ -1013,7 +841,7 @@ public class SAXException(Ch = char) : Exception {
          * @param message The detail message.
          * @param e The exception to be wrapped in a SAXException.
          *******************************************************************************/
-        public this (Ch[] message, Exception e) {
+        public this (char[] message, Exception e) {
                 super (message, e);
         }
 
@@ -1026,7 +854,7 @@ public class SAXException(Ch = char) : Exception {
          *
          * @return The error or warning message.
          *******************************************************************************/
-        public Ch[] message() {
+        public char[] message() {
                 if (msg == null && next != null) {
                         return next.msg;
                 }
@@ -1041,8 +869,7 @@ public class SAXException(Ch = char) : Exception {
  *******************************************************************************/
 class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
 
-        private ContentHandler!(Ch) contentHandler;
-        private DTDHandler!(Ch) dtdHandler;
+        private SaxHandler!(Ch) saxHandler;
         private ErrorHandler!(Ch) errorHandler;
         private EntityResolver!(Ch) entityResolver;
         private Ch[] content;
@@ -1238,34 +1065,6 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
         }
 
         /*******************************************************************************
-         * Allow an application to register a DTD event handler.
-         *
-         * <p>If the application does not register a DTD handler, all DTD
-         * events reported by the SAX parser will be silently ignored.</p>
-         *
-         * <p>Applications may register a new or different handler in the
-         * middle of a parse, and the SAX parser must begin using the new
-         * handler immediately.</p>
-         *
-         * @param handler The DTD handler.
-         * @see #getDTDHandler
-         *******************************************************************************/
-        public void setDTDHandler(DTDHandler!(Ch) handler) {
-                dtdHandler = handler;
-        }
-
-        /*******************************************************************************
-         * Return the current DTD handler.
-         *
-         * @return The current DTD handler, or null if none
-         *         has been registered.
-         * @see #setDTDHandler
-         *******************************************************************************/
-        public DTDHandler!(Ch) getDTDHandler() {
-                return dtdHandler;
-        }
-
-        /*******************************************************************************
          * Allow an application to register a content event handler.
          *
          * <p>If the application does not register a content handler, all
@@ -1279,8 +1078,8 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          * @param handler The content handler.
          * @see #getContentHandler
          *******************************************************************************/
-        public void setContentHandler(ContentHandler!(Ch) handler) {
-                contentHandler = handler;
+        public void setSaxHandler(SaxHandler!(Ch) handler) {
+                saxHandler = handler;
         }
 
         /*******************************************************************************
@@ -1290,8 +1089,8 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *         has been registered.
          * @see #setContentHandler
          *******************************************************************************/
-        public ContentHandler!(Ch) getContentHandler() {
-                return contentHandler;
+        public SaxHandler!(Ch) getSaxHandler() {
+                return saxHandler;
         }
 
         /*******************************************************************************
@@ -1366,7 +1165,6 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          * @see org.xml.sax.InputSource
          * @see #parse(java.lang.String)
          * @see #setEntityResolver
-         * @see #setDTDHandler
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/
@@ -1441,8 +1239,8 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *         events and send out to the ContentHandler.
          *******************************************************************************/
         private void doParse() {
-                contentHandler.setDocumentLocator(this);
-                contentHandler.startDocument();
+                saxHandler.setDocumentLocator(this);
+                saxHandler.startDocument();
                 while (true) {
                         switch (parser.next) {
                         case XmlTokenType.StartElement :
@@ -1458,11 +1256,11 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                         case XmlTokenType.EndElement :
                         case XmlTokenType.EndEmptyElement :
                                 doStartElement;
-                                contentHandler.endElement(null, parser.localName, null);
+                                saxHandler.endElement(null, parser.localName, null);
                                 break;
                         case XmlTokenType.Data :
                                 doStartElement;
-                                contentHandler.characters(parser.rawValue);
+                                saxHandler.characters(parser.rawValue);
                                 break;
                         case XmlTokenType.Comment :
                         case XmlTokenType.CData :
@@ -1476,18 +1274,18 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                              goto foo;
 
                         default:
-                                throw new SAXException!(Ch)("unknown parser token type");
+                                throw new SAXException("unknown parser token type");
                         }
                 } 
 foo:                              
-                contentHandler.endDocument();
+                saxHandler.endDocument();
         }
 
         /*******************************************************************************
          *******************************************************************************/
         private void doStartElement() {
                 if (hasStartElement) {
-                        contentHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
+                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
                         hasStartElement = false;
                         attrTop = 0;
                 }               
@@ -1591,13 +1389,6 @@ foo:
 /*******************************************************************************
  * Interface for an XML filter.
  *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
  * <p>An XML filter is like an XML reader, except that it obtains its
  * events from another XML reader rather than a primary source like
  * an XML document or database.  Filters can modify a stream of
@@ -1648,13 +1439,6 @@ public abstract class XMLFilter(Ch = char) : XMLReader {
 /*******************************************************************************
  * Base class for deriving an XML filter.
  *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
  * <p>This class is designed to sit between an {@link org.xml.sax.XMLReader
  * XMLReader} and the client application's event handlers.  By default, it
  * does nothing but pass requests up to the reader and events
@@ -1668,11 +1452,10 @@ public abstract class XMLFilter(Ch = char) : XMLReader {
  * @see org.xml.sax.XMLFilter
  * @see org.xml.sax.XMLReader
  * @see org.xml.sax.EntityResolver
- * @see org.xml.sax.DTDHandler
  * @see org.xml.sax.ContentHandler
  * @see org.xml.sax.ErrorHandler
  *******************************************************************************/
-public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, ContentHandler, ErrorHandler {
+public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, ErrorHandler {
 
         ////////////////////////////////////////////////////////////////////
         // Constructors.
@@ -1845,30 +1628,12 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
         }
 
         /*******************************************************************************
-         * Set the DTD event handler.
-         *
-         * @param handler the new DTD handler
-         *******************************************************************************/
-        public void setDTDHandler(DTDHandler handler) {
-                dtdHandler = handler;
-        }
-
-        /*******************************************************************************
-         * Get the current DTD event handler.
-         *
-         * @return The current DTD handler, or null if none was set.
-         *******************************************************************************/
-        public DTDHandler getDTDHandler() {
-                return dtdHandler;
-        }
-
-        /*******************************************************************************
          * Set the content event handler.
          *
          * @param handler the new content handler
          *******************************************************************************/
-        public void setContentHandler(ContentHandler handler) {
-                contentHandler = handler;
+        public void setSaxHandler(SaxHandler handler) {
+                saxHandler = handler;
         }
 
         /*******************************************************************************
@@ -1876,8 +1641,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *
          * @return The current content handler, or null if none was set.
          *******************************************************************************/
-        public ContentHandler getContentHandler() {
-                return contentHandler;
+        public SaxHandler getSaxHandler() {
+                return saxHandler;
         }
 
         /*******************************************************************************
@@ -1974,42 +1739,6 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
         }
 
         ////////////////////////////////////////////////////////////////////
-        // Implementation of org.xml.sax.DTDHandler.
-        ////////////////////////////////////////////////////////////////////
-        /*******************************************************************************
-         * Filter a notation declaration event.
-         *
-         * @param name The notation name.
-         * @param publicId The notation's public identifier, or null.
-         * @param systemId The notation's system identifier, or null.
-         * @exception org.xml.sax.SAXException The client may throw
-         *            an exception during processing.
-         *******************************************************************************/
-        public void notationDecl(Ch[] name, Ch[] publicId, Ch[] systemId) {
-                if (dtdHandler != null) {
-                        dtdHandler.notationDecl(name, publicId, systemId);
-                }
-
-        }
-
-        /*******************************************************************************
-         * Filter an unparsed entity declaration event.
-         *
-         * @param name The entity name.
-         * @param publicId The entity's public identifier, or null.
-         * @param systemId The entity's system identifier, or null.
-         * @param notationName The name of the associated notation.
-         * @exception org.xml.sax.SAXException The client may throw
-         *            an exception during processing.
-         *******************************************************************************/
-        public void unparsedEntityDecl(Ch[] name, Ch[] publicId, Ch[] systemId, Ch[] notationName) {
-                if (dtdHandler != null) {
-                        dtdHandler.unparsedEntityDecl(name, publicId, systemId, notationName);
-                }
-
-        }
-
-        ////////////////////////////////////////////////////////////////////
         // Implementation of org.xml.sax.ContentHandler.
         ////////////////////////////////////////////////////////////////////
         /*******************************************************************************
@@ -2019,8 +1748,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *******************************************************************************/
         public void setDocumentLocator(Locator locator) {
                 this.locator = locator;
-                if (contentHandler != null) {
-                        contentHandler.setDocumentLocator(locator);
+                if (saxHandler != null) {
+                        saxHandler.setDocumentLocator(locator);
                 }
 
         }
@@ -2032,8 +1761,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void startDocument() {
-                if (contentHandler != null) {
-                        contentHandler.startDocument();
+                if (saxHandler != null) {
+                        saxHandler.startDocument();
                 }
 
         }
@@ -2045,8 +1774,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void endDocument() {
-                if (contentHandler != null) {
-                        contentHandler.endDocument();
+                if (saxHandler != null) {
+                        saxHandler.endDocument();
                 }
 
         }
@@ -2060,8 +1789,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
-                if (contentHandler != null) {
-                        contentHandler.startPrefixMapping(prefix, uri);
+                if (saxHandler != null) {
+                        saxHandler.startPrefixMapping(prefix, uri);
                 }
 
         }
@@ -2074,8 +1803,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void endPrefixMapping(Ch[] prefix) {
-                if (contentHandler != null) {
-                        contentHandler.endPrefixMapping(prefix);
+                if (saxHandler != null) {
+                        saxHandler.endPrefixMapping(prefix);
                 }
 
         }
@@ -2092,8 +1821,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute[] atts) {
-                if (contentHandler != null) {
-                        contentHandler.startElement(uri, localName, qName, atts);
+                if (saxHandler != null) {
+                        saxHandler.startElement(uri, localName, qName, atts);
                 }    
 
         }
@@ -2109,8 +1838,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
-                if (contentHandler != null) {
-                        contentHandler.endElement(uri, localName, qName);
+                if (saxHandler != null) {
+                        saxHandler.endElement(uri, localName, qName);
                 }
 
         }
@@ -2123,8 +1852,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void characters(Ch ch[]) {
-                if (contentHandler != null) {
-                        contentHandler.characters(ch);
+                if (saxHandler != null) {
+                        saxHandler.characters(ch);
                 }
 
         }
@@ -2139,8 +1868,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void ignorableWhitespace(Ch ch[]) {
-                if (contentHandler != null) {
-                        contentHandler.ignorableWhitespace(ch);
+                if (saxHandler != null) {
+                        saxHandler.ignorableWhitespace(ch);
                 }
 
         }
@@ -2154,8 +1883,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void processingInstruction(Ch[] target, Ch[] data) {
-                if (contentHandler != null) {
-                        contentHandler.processingInstruction(target, data);
+                if (saxHandler != null) {
+                        saxHandler.processingInstruction(target, data);
                 }
 
         }
@@ -2168,8 +1897,8 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
          *            an exception during processing.
          *******************************************************************************/
         public void skippedEntity(Ch[] name) {
-                if (contentHandler != null) {
-                        contentHandler.skippedEntity(name);
+                if (saxHandler != null) {
+                        saxHandler.skippedEntity(name);
                 }
 
         }
@@ -2234,8 +1963,7 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
                         throw new Exception("No parent for filter");
                 }
                 parent.setEntityResolver(this);
-                parent.setDTDHandler(this);
-                parent.setContentHandler(this);
+                parent.setSaxHandler(this);
                 parent.setErrorHandler(this);
         }
 
@@ -2248,9 +1976,7 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
 
         private EntityResolver entityResolver = null;
 
-        private DTDHandler dtdHandler = null;
-
-        private ContentHandler contentHandler = null;
+        private SaxHandler saxHandler = null;
 
         private ErrorHandler errorHandler = null;
 
@@ -2260,18 +1986,6 @@ public class XMLFilterImpl(Ch = char) : XMLFilter, EntityResolver, DTDHandler, C
 
 /*******************************************************************************
  * Interface for reading an XML document using callbacks.
- *
- * <blockquote>
- * <em>This module, both source code and documentation, is in the
- * Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
- * See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
- * for further information.
- * </blockquote>
- *
- * <p><strong>Note:</strong> despite its name, this interface does 
- * <em>not</em> extend the standard Java {@link java.io.Reader Reader} 
- * interface, because reading XML is a fundamentally different activity 
- * than reading character data.</p>
  *
  * <p>XMLReader is the interface that an XML parser's SAX2 driver must
  * implement.  This interface allows an application to set and
@@ -2476,30 +2190,6 @@ public interface XMLReader(Ch = char) {
         public EntityResolver!(Ch) getEntityResolver();
 
         /*******************************************************************************
-         * Allow an application to register a DTD event handler.
-         *
-         * <p>If the application does not register a DTD handler, all DTD
-         * events reported by the SAX parser will be silently ignored.</p>
-         *
-         * <p>Applications may register a new or different handler in the
-         * middle of a parse, and the SAX parser must begin using the new
-         * handler immediately.</p>
-         *
-         * @param handler The DTD handler.
-         * @see #getDTDHandler
-         *******************************************************************************/
-        public void setDTDHandler(DTDHandler!(Ch) handler);
-
-        /*******************************************************************************
-         * Return the current DTD handler.
-         *
-         * @return The current DTD handler, or null if none
-         *         has been registered.
-         * @see #setDTDHandler
-         *******************************************************************************/
-        public DTDHandler!(Ch) getDTDHandler();
-
-        /*******************************************************************************
          * Allow an application to register a content event handler.
          *
          * <p>If the application does not register a content handler, all
@@ -2513,7 +2203,7 @@ public interface XMLReader(Ch = char) {
          * @param handler The content handler.
          * @see #getContentHandler
          *******************************************************************************/
-        public void setContentHandler(ContentHandler!(Ch) handler);
+        public void setSaxHandler(SaxHandler!(Ch) handler);
 
         /*******************************************************************************
          * Return the current content handler.
@@ -2522,7 +2212,7 @@ public interface XMLReader(Ch = char) {
          *         has been registered.
          * @see #setContentHandler
          *******************************************************************************/
-        public ContentHandler!(Ch) getContentHandler();
+        public SaxHandler!(Ch) getSaxHandler();
 
         /*******************************************************************************
          * Allow an application to register an error event handler.
@@ -2592,7 +2282,6 @@ public interface XMLReader(Ch = char) {
          * @see org.xml.sax.InputSource
          * @see #parse(java.lang.String)
          * @see #setEntityResolver
-         * @see #setDTDHandler
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/
