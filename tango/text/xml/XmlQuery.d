@@ -138,6 +138,16 @@ class XmlQuery(T)
         
                 ***************************************************************/
         
+                NodeSet parent (T[] name = null)
+                {
+                        return parent ((Node node)
+                                      {return name.ptr is null || node.name == name;});
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
                 NodeSet text ()
                 {
                         return child ((Node node)
@@ -196,11 +206,41 @@ class XmlQuery(T)
 
                 /***************************************************************
         
+                ***************************************************************/
+        
+                NodeSet ancestor (T[] name = null)
+                {
+                        return ancestor ((Node node)
+                                         {return name.ptr is null || node.name == name;});
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                NodeSet prev (T[] name = null)
+                {
+                        return prev ((Node node)
+                                     {return name.ptr is null || node.name == name;});
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                NodeSet next (T[] name = null)
+                {
+                        return next ((Node node)
+                                     {return name.ptr is null || node.name == name;});
+                }
+
+                /***************************************************************
+        
                         Construct a filtered Nodeset
 
                 ***************************************************************/
         
-                NodeSet predicate (bool delegate(Node) filter)
+                NodeSet filter (bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -227,12 +267,29 @@ class XmlQuery(T)
         
                 ***************************************************************/
         
+                NodeSet parent (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.parent;
+                                if (p && p.type != XmlNodeType.Document)
+                                   test (filter, p);
+                                }
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
                 NodeSet attributes (bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (parent; members)
-                                 foreach (attr; parent.attributes)
+                        foreach (member; members)
+                                 foreach (attr; member.attributes)
                                           test (filter, attr);
                         return set.assign (mark);
                 }
@@ -255,9 +312,74 @@ class XmlQuery(T)
                         NodeSet set = {host};
                         auto mark = host.mark;
 
-                        foreach (parent; members)
-                                 traverse (parent);
+                        foreach (member; members)
+                                 traverse (member);
 
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                NodeSet ancestor (bool delegate(Node) filter)
+                {
+                        void traverse (Node child)
+                        {
+                                auto p = child.parent_;
+                                if (p && p.type != XmlNodeType.Document)
+                                   {
+                                   test (filter, p);
+                                   traverse (p);
+                                   }
+                        }
+
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+
+                        foreach (member; members)
+                                 traverse (member);
+
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                NodeSet next (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.nextSibling_;
+                                while (p)
+                                      {
+                                      test (filter, p);
+                                      p = p.nextSibling_;
+                                      }
+                                }
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                NodeSet prev (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.prevSibling_;
+                                while (p)
+                                      {
+                                      test (filter, p);
+                                      p = p.prevSibling_;
+                                      }
+                                }
                         return set.assign (mark);
                 }
 
@@ -336,55 +458,3 @@ class XmlQuery(T)
  }
 
 
-/*******************************************************************************
-
-*******************************************************************************/
-
-import tango.io.Stdout;
-import tango.time.StopWatch;
-import tango.text.xml.XmlPrinter;
-
-void main()
-{
-        auto doc = new Document!(char);
-
-        // attach an xml header
-        doc.header;
-
-        // attach an element with some attributes, plus 
-        // a child element with an attached data value
-        doc.root.element   (null, "element")
-                .attribute (null, "attrib1", "value")
-                .attribute (null, "attrib2")
-                .element   (null, "child", "value")
-                .parent
-                .parent
-                .element   (null, "second");
-
-        // emit document
-        auto print = new XmlPrinter!(char);
-        Stdout(print(doc)).newline;
-
-        StopWatch w;
-        auto query = new XmlQuery!(char);
-        auto set = query(doc);
-
-        // simple lookup
-        w.start;
-        for (uint i = 5000000; --i;)
-             set = query(doc).child("element").child("child");
-
-        Stdout.formatln("{} generic lookups per ms", 5000.0/w.stop);
-        foreach (element; set)
-                 Stdout.formatln ("selected '{}'", element.name);
-
-        // recursive lookup
-        w.start;
-        for (uint i = 5000000; --i;)
-             set = query(doc).descendent.predicate((query.Node n){return query(n).attribute.count > 0;});
-
-        Stdout.formatln("{} recursive lookups per ms", 5000.0/w.stop);
-        foreach (element; set)
-                 Stdout.formatln ("selected '{}'", element.name);
-
-}
