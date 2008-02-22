@@ -1244,7 +1244,11 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                 while (true) {
                         switch (parser.next) {
                         case XmlTokenType.StartElement :
-                                doStartElement;
+                                if (hasStartElement) {
+                                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
+                                        hasStartElement = false;
+                                        attrTop = 0;
+                                }               
                                 startElemName = parser.localName;
                                 hasStartElement = true;
                                 break;
@@ -1255,11 +1259,19 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                                 break;
                         case XmlTokenType.EndElement :
                         case XmlTokenType.EndEmptyElement :
-                                doStartElement;
+                                if (hasStartElement) {
+                                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
+                                        hasStartElement = false;
+                                        attrTop = 0;
+                                }               
                                 saxHandler.endElement(null, parser.localName, null);
                                 break;
                         case XmlTokenType.Data :
-                                doStartElement;
+                                if (hasStartElement) {
+                                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
+                                        hasStartElement = false;
+                                        attrTop = 0;
+                                }               
                                 saxHandler.characters(parser.rawValue);
                                 break;
                         case XmlTokenType.Comment :
@@ -1267,7 +1279,11 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                         case XmlTokenType.Doctype :
                         case XmlTokenType.PI :
                         case XmlTokenType.None :
-                                doStartElement;
+                                if (hasStartElement) {
+                                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
+                                        hasStartElement = false;
+                                        attrTop = 0;
+                                }               
                                 break;
 
                         case XmlTokenType.Done:
@@ -1279,16 +1295,6 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
                 } 
 foo:                              
                 saxHandler.endDocument();
-        }
-
-        /*******************************************************************************
-         *******************************************************************************/
-        private void doStartElement() {
-                if (hasStartElement) {
-                        saxHandler.startElement(null, startElemName, null, attributes[0..attrTop]);
-                        hasStartElement = false;
-                        attrTop = 0;
-                }               
         }
 
         /*******************************************************************************
