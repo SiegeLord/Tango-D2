@@ -15,7 +15,7 @@
                    <a href='http://www.saxproject.org'>http://www.saxproject.org</a>.
  *******************************************************************************/
 
-module tango.text.xml.Sax;
+module tango.text.xml.SaxParser;
 
 private import tango.io.model.IConduit;
 private import tango.text.xml.PullParser;

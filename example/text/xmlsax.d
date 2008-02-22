@@ -3,7 +3,7 @@ module xmlsax;
 import tango.io.Stdout;
 import tango.time.StopWatch;
 
-import tango.text.xml.Sax;
+import tango.text.xml.SaxParser;
 
 void benchmark (int iterations, SaxParser!(char) parser, char[] content) 
 {       
