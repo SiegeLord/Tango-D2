@@ -120,7 +120,7 @@ class Document(T) : private PullParser!(T)
                 root.firstChild_ = null;
                 freelists = 0;
                 index = 1;
-                freelists = 0;          // needed to align the codegen!
+                //freelists = 0;          // needed to align the codegen!
                 return this;
         }
 
@@ -166,11 +166,17 @@ class Document(T) : private PullParser!(T)
                                   break;
         
                              case XmlTokenType.Data:
-                                  if (cur.rawValue.length is 0)
-                                      cur.rawValue = super.rawValue;
-                                  else
+//                                  if (cur.rawValue.length is 0)
+//                                      cur.rawValue = super.rawValue;
+//                                  else
                                      // multiple data sections
-                                     cur.data (super.rawValue);
+                                  cur.data (super.rawValue);
+/+
+                                  auto node = allocate;
+                                  node.rawValue = super.rawValue;
+                                  node.type = XmlNodeType.Data;
+                                  cur.append (node);
++/
                                   break;
         
                              case XmlTokenType.StartElement:
@@ -373,14 +379,14 @@ else
                 public T[]              localName;
                 public T[]              rawValue;
                 
-                private Node            parent_,
+                package Node            parent_,
                                         prevSibling_,
                                         nextSibling_,
                                         firstChild_,
                                         lastChild_,
                                         firstAttr_,
                                         lastAttr_;
-                private Document        document;
+                package Document        document;
 
                 /***************************************************************
                 
@@ -519,8 +525,10 @@ else
         
                 Node element (T[] prefix, T[] local, T[] value = null)
                 {
-                        auto node = create (XmlNodeType.Element, value);
+                        auto node = create (XmlNodeType.Element, null);
                         append (node.set (prefix, local));
+                        if (value.length)
+                            node.append (create(XmlNodeType.Data, value));
                         return node;
                 }
         
@@ -632,6 +640,77 @@ else
                         else
                            tree = copy (tree);
                         return tree;
+                }
+
+                /***************************************************************
+                
+                        Sweep the attributes looking for a name or value
+                        match. Either may be null
+
+                        Returns a matching node, or null.
+
+                ***************************************************************/
+        
+                Node getAttribute (T[] name, T[] value = null)
+                {
+                        if (type is XmlNodeType.Element)
+                            foreach (attr; attributes)
+                                     if (attr.type is XmlNodeType.Attribute)
+                                        {
+                                        if (name.ptr && name != attr.localName)
+                                            continue;
+
+                                        if (value.ptr && value != attr.rawValue)
+                                            continue;
+
+                                        return attr;
+                                        }
+                        return null;
+                }
+
+                /***************************************************************
+                
+                        Sweep the attributes looking for a name or value
+                        match. Either may be null
+
+                        Returns true if found.
+
+                ***************************************************************/
+        
+                bool hasAttribute (T[] name, T[] value = null)
+                {
+                        return getAttribute (name, value) !is null;
+                }
+
+                /***************************************************************
+                
+                        Sweep the text nodes looking for match
+
+                        Returns a matching node, or null.
+
+                ***************************************************************/
+        
+                Node getText (T[] text)
+                {
+                        if (type is XmlNodeType.Element)
+                            foreach (child; children)
+                                     if (child.type is XmlNodeType.Data)
+                                         if (text == child.rawValue)
+                                             return child;
+                        return null;
+                }
+
+                /***************************************************************
+                
+                        Sweep the text nodes looking for match
+
+                        Returns true if found.
+
+                ***************************************************************/
+        
+                bool hasText (T[] text)
+                {
+                        return getText (text) !is null;
                 }
 
                 /***************************************************************
