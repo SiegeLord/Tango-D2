@@ -284,8 +284,18 @@ class SocketConduit : Conduit
 
                    // wait until data is available, or a timeout occurs
                    auto copy = tv;
+version (linux)
+{
+                   // disable blocking to deal with potential linux bug
+                   auto b = socket.blocking;
+                   if (b)
+                       socket.blocking (false);
                    int i = socket_.select (ss, null, null, &copy);
-                       
+                   if (b)
+                       socket.blocking (true);                
+}
+else
+                   int i = socket_.select (ss, null, null, &copy);
                    if (i <= 0)
                       {
                       if (i is 0)
