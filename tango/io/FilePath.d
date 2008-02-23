@@ -165,12 +165,6 @@ class FilePath : PathView
                 set (filepath);
         }
         
-        // now converts to '/' always. Use toNative to get Win32 paths
-        deprecated this (char[] filepath, bool native)
-        {
-                set (filepath);
-        }
-
         /***********************************************************************
 
                 Return the complete text of this filepath
