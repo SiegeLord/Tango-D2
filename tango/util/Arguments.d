@@ -123,7 +123,10 @@ public class ArgumentException : Exception
         }
         catch (ArgumentException ex)
         {
-            messages ~= Stdout.layout.convert("{}: {} - {}", ex.name, ex.msg, ex.reason == ArgumentException.ExceptionReason.INVALID_PARAMETER ? "invalid parameter" : ex.reason == ArgumentException.ExceptionReason.MISSING_PARAMETER ? "missing parameter" : "missing argument");
+            messages ~= Stdout.layout.convert("{}: {} - {}", ex.name, ex.msg, 
+                        ex.reason == ArgumentException.ExceptionReason.INVALID_PARAMETER ? 
+                        "invalid parameter" : ex.reason == ArgumentException.ExceptionReason.MISSING_PARAMETER ? 
+                        "missing parameter" : "missing argument");
         }
     }
     ---
@@ -272,7 +275,10 @@ public class Arguments
         {
             int equalDelim = locate(arg, '=');
             int colonDelim = locate(arg, ':');
-            int paramPos = ((equalDelim != arg.length) && (colonDelim != arg.length)) ? (equalDelim < colonDelim ? equalDelim : colonDelim) : (equalDelim != arg.length) ? equalDelim : colonDelim;
+            int paramPos = ((equalDelim != arg.length) && 
+                           (colonDelim != arg.length)) ? 
+                           (equalDelim < colonDelim ? equalDelim : colonDelim) : 
+                           (equalDelim != arg.length) ? equalDelim : colonDelim;
             if (paramPos != arg.length)
             {
                 char[] argName = arg[0 .. paramPos];
@@ -518,8 +524,10 @@ public class Arguments
         {
             if (val.required && !(argument in _args))
                 throw new ArgumentException("Argument required.", argument, null, ArgumentException.ExceptionReason.MISSING_ARGUMENT);
+
             if (val.paramRequired && (argument in _args) && (_args[argument].length == 0))
                 throw new ArgumentException("Parameter required.", argument, null, ArgumentException.ExceptionReason.MISSING_PARAMETER);
+
             if ((argument in _args) && (_args[argument].length > 0))
             {
                 char[] invalidParameter = null;
@@ -641,7 +649,9 @@ public class Arguments
         Params:
             arguments = the list of arguments (usually from main)
             implicitArgs = assigns values using these keys in order from the arguments array.
-            aliases = aliases specific arguments to each other to concat parameters. looks like aliases[0] = [ "alias1", "alias2", "alias3" ]; (which groups all these arguments together)
+            aliases = aliases specific arguments to each other to concat parameters. 
+            looks like aliases[0] = [ "alias1", "alias2", "alias3" ]; 
+            (which groups all these arguments together)
 
     ***********************************************************************/
 
@@ -712,7 +722,9 @@ version(UnitTest)
     {
         Test.Status parseTest(inout char[][] messages)
         {
-            char[][] arguments = [ "ignoreprogramname", "--accumulate", "one", "-x", "on", "--accumulate:two", "-y", "off", "--accumulate=three", "-abc" ];
+            char[][] arguments = [ "ignoreprogramname", "--accumulate", "one", 
+                                   "-x", "on", "--accumulate:two", "-y", "off", 
+                                   "--accumulate=three", "-abc" ];
             Arguments args = new Arguments(arguments);
             if (args)
             {
@@ -815,7 +827,10 @@ version(UnitTest)
                 }
                 catch (ArgumentException ex)
                 {
-                    messages ~= Stdout.layout.convert("{}: {} - {} ({})", ex.name, ex.msg, ex.reason == ArgumentException.ExceptionReason.INVALID_PARAMETER ? "invalid parameter" : ex.reason == ArgumentException.ExceptionReason.MISSING_PARAMETER ? "missing parameter" : "missing argument", ex.parameter);
+                    messages ~= Stdout.layout.convert("{}: {} - {} ({})", ex.name, ex.msg, 
+                    ex.reason == ArgumentException.ExceptionReason.INVALID_PARAMETER ? 
+                    "invalid parameter" : ex.reason == ArgumentException.ExceptionReason.MISSING_PARAMETER ? 
+                    "missing parameter" : "missing argument", ex.parameter);
                 }
             }
             return Test.Status.Failure;
