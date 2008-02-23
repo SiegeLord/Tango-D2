@@ -80,6 +80,7 @@
         mismatch (s1*, s2*, length)                 // low-level compare
         matching (s1*, s2*, length)                 // low-level compare
         isSpace (match)                             // is whitespace?
+        unescape(source, output)                    // convert '\' prefixes
         layout (destination, format ...)            // featherweight printf
         lines (str)                                 // foreach lines
         quotes (str, set)                           // foreach quotes
@@ -964,6 +965,91 @@ T[] layout(T) (T[] output, T[][] layout ...)
 
 /******************************************************************************
 
+        Convert 'escaped' chars to normal ones: \t => ^t for example.
+        Supports \" \' \\ \a \b \f \n \r \t \v
+        
+******************************************************************************/
+
+T[] unescape(T) (T[] src, T[] dst = null)
+{
+        int delta;
+        auto s = src.ptr;
+        auto len = src.length;
+
+        // take a peek first to see if there's anything
+        if ((delta = indexOf (s, '\\', len)) < len)
+           {
+           // make some room if not enough provided
+           if (dst.length < src.length)
+               dst.length = src.length;
+           auto d = dst.ptr;
+
+           // copy segments over, a chunk at a time
+           do {
+              d [0 .. delta] = s [0 .. delta];
+              len -= delta;
+              s += delta;
+              d += delta;
+
+              // bogus trailing '\'
+              if (len < 2)
+                 {
+                 *d++ = '\\';
+                 len = 0;
+                 break;
+                 }
+
+              // translate \char
+              auto c = s[1];
+              switch (c)
+                     {
+                      case '\\':
+                           break;
+                      case '\'':
+                           c = '\'';
+                           break;
+                      case '"':
+                           c = '"';
+                           break;
+                      case 'a':
+                           c = '\a';
+                           break;
+                      case 'b':
+                           c = '\b';
+                           break;
+                      case 'f':
+                           c = '\f';
+                           break;
+                      case 'n':
+                           c = '\n';
+                           break;
+                      case 'r':
+                           c = '\r';
+                           break;
+                      case 't':
+                           c = '\t';
+                           break;
+                      case 'v':
+                           c = '\v';
+                           break;
+                      default:
+                           *d++ = '\\';
+                     }
+              *d++ = c;  
+              len -= 2;           
+              s += 2;
+              } while ((delta = indexOf (s, '\\', len)) < len);
+
+           // copy tail too
+           d [0 .. len] = s [0 .. len];
+           return dst [0 .. (d + len) - dst.ptr];
+           }
+        return src;
+}
+
+
+/******************************************************************************
+
         jhash() -- hash a variable-length key into a 32-bit value
 
           k     : the key (the unaligned variable-length array of bytes)
@@ -1245,7 +1331,7 @@ private struct QuoteFreach(T)
 
 debug (UnitTest)
 {
-        //void main() {}
+        void main() {}
         
         unittest
         {
@@ -1416,6 +1502,15 @@ debug (UnitTest)
         assert (repeat ("abc", 1, rep) == "abc");
         assert (repeat ("abc", 2, rep) == "abcabc");
         assert (repeat ("", 4, rep) == "");
+
+        assert (unescape ("abc") == "abc");
+        assert (unescape ("abc\\") == "abc\\");
+        assert (unescape ("abc\\t") == "abc\t");
+        assert (unescape ("abc\\tc") == "abc\tc");
+        assert (unescape ("\\t") == "\t");
+        assert (unescape ("\\tx") == "\tx");
+        assert (unescape ("\\v\\vx") == "\v\vx");
+        assert (unescape ("abc\\t\\a\\bc") == "abc\t\a\bc");
         }
 }
 
