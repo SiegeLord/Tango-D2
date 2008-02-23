@@ -178,7 +178,7 @@ class StreamIterator(T) : InputStream, Buffered
                 latter processes all tokens in one go, whereas the former
                 processes in a piecemeal fashion. To wit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit("myfile"))
+                foreach (line; new LineIterator!(char) (new FileConduit("myfile")))
                          Cout(line).newline;
                 ---
 
