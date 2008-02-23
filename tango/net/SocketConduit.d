@@ -49,9 +49,9 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        this ()
+        this (bool init = true)
         {
-                this (SocketType.STREAM, ProtocolType.TCP);
+                this (SocketType.STREAM, ProtocolType.TCP, init);
         }
 
         /***********************************************************************
