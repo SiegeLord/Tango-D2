@@ -10,7 +10,7 @@
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
-import tango.text.xml.XmlQuery;
+import tango.text.xml.XmlPath;
 import tango.text.xml.XmlPrinter;
 
 /*******************************************************************************
@@ -40,7 +40,7 @@ void main()
 
         // time some queries
         StopWatch w;
-        auto query = new XmlQuery!(char);
+        auto query = new XmlPath!(char);
         auto set = query(doc);
 
         // simple lookup: locate a specific named element
@@ -70,7 +70,7 @@ void main()
 
 }
 
-void result (char[] msg, double time, XmlQuery!(char).NodeSet set)
+void result (char[] msg, double time, XmlPath!(char).NodeSet set)
 {
         Stdout.newline.formatln("{} {}", time, msg);
         foreach (element; set)
