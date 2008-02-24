@@ -27,3 +27,7 @@ else version( darwin )
 {
     const TCP_NODELAY = 1;
 }
+else version( freebsd )
+{
+    const TCP_NODELAY = 1;
+}

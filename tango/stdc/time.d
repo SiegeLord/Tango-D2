@@ -57,6 +57,10 @@ else version( darwin )
 {
     clock_t CLOCKS_PER_SEC = 100;
 }
+else version( freebsd )
+{
+	clock_t CLOCKS_PER_SEC = 128;
+}	 
 else
 {
     clock_t CLOCKS_PER_SEC = 1000000;

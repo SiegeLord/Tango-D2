@@ -107,6 +107,30 @@ else version( darwin )
     const uint INADDR_ANY       = 0x00000000;
     const uint INADDR_BROADCAST = 0xffffffff;
 }
+else version( freebsd )
+{
+    private const __SOCK_SIZE__ = 16;
+
+    struct sockaddr_in
+    {
+        ubyte       sin_len;
+        sa_family_t sin_family;
+        in_port_t   sin_port;
+        in_addr     sin_addr;
+        ubyte[8]    sin_zero;
+    }
+
+    enum
+    {
+        IPPROTO_IP   = 0,
+        IPPROTO_ICMP = 1,
+        IPPROTO_TCP  = 6,
+        IPPROTO_UDP  = 17
+    }
+
+    const uint INADDR_ANY       = 0x00000000;
+    const uint INADDR_BROADCAST = 0xffffffff;
+}
 
 
 //

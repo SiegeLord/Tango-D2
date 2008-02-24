@@ -82,7 +82,28 @@ else version( darwin )
     char*     inet_ntop(int, void*, char*, socklen_t);
     int       inet_pton(int, char*, void*);
 }
+else version( freebsd )
+{
+	alias uint16_t in_port_t; // TODO: verify
+    alias uint32_t in_addr_t; // TODO: verify
 
+    struct in_addr
+    {
+        in_addr_t s_addr;
+    }
+
+    const INET_ADDRSTRLEN = 16;
+
+    uint32_t htonl(uint32_t);
+    uint16_t htons(uint16_t);
+    uint32_t ntohl(uint32_t);
+    uint16_t ntohs(uint16_t);
+
+    in_addr_t inet_addr(char*);
+    char*     inet_ntoa(in_addr);
+    char*     inet_ntop(int, void*, char*, socklen_t);
+    int       inet_pton(int, char*, void*);
+}
 
 //
 // IPV6 (IP6)
@@ -96,6 +117,10 @@ version( linux )
     const INET6_ADDRSTRLEN = 46;
 }
 else version( darwin )
+{
+    const INET6_ADDRSTRLEN = 46;
+}
+else version( freebsd )
 {
     const INET6_ADDRSTRLEN = 46;
 }
