@@ -12,8 +12,6 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
-//version = NameSpace;
-
 /*******************************************************************************
 
         Implements a DOM atop the XML parser, supporting document 
@@ -149,11 +147,7 @@ class Document(T) : private PullParser!(T)
                 collect;
                 reset (xml);
                 auto cur = root;
-
                 uint defNamespace;
-                uint[T[]] inscopeNSs;
-                inscopeNSs["xml"] = 1;
-                inscopeNSs["xmlns"] = 2;        
                 
                 while (true) 
                       {
@@ -166,11 +160,11 @@ class Document(T) : private PullParser!(T)
                                   break;
         
                              case XmlTokenType.Data:
-//                                  if (cur.rawValue.length is 0)
-//                                      cur.rawValue = super.rawValue;
-//                                  else
+                                  if (cur.rawValue.length is 0)
+                                      cur.rawValue = super.rawValue;
+                                  else
                                      // multiple data sections
-                                  cur.data (super.rawValue);
+                                     cur.data (super.rawValue);
 /+
                                   auto node = allocate;
                                   node.rawValue = super.rawValue;
@@ -199,23 +193,6 @@ class Document(T) : private PullParser!(T)
                                      cur.lastChild_ = node;
                                      }
                                   cur = node;
-version (NameSpace)
-{
-                                  if (node.prefix.length) 
-                                     {
-                                     auto pURI = node.prefix in inscopeNSs;
-                                     if (pURI) 
-                                         node.uriID = *pURI;
-                                     else 
-                                        {
-                                        debug (XmlNamespaces) 
-                                               assert (false, "Unresolved namespace prefix:" ~ node.prefix);
-                                        node.uriID = 0;
-                                        }
-                                     }
-                                  else 
-                                     node.uriID = defNamespace;
-}
                                   break;
         
                              case XmlTokenType.Attribute:
@@ -224,48 +201,7 @@ version (NameSpace)
                                   attr.rawValue = super.rawValue;
                                   attr.localName = super.localName;
                                   attr.type = XmlNodeType.Attribute;
-version (NameSpace)
-{
-                                  if (super.prefix.length) 
-                                     {
-                                     if (super.prefix == xmlns) 
-                                        {
-                                        uint uri;
-                                        if (super.rawValue.length) 
-                                           {
-                                           auto pURI = (super.rawValue in namespaceURIs);
-                                           if (pURI is null) 
-                                              {
-                                              uri = namespaceURIs.length + 1;
-                                              namespaceURIs[super.rawValue] = uri;
-                                              }
-                                           else 
-                                              uri = *pURI;
-                                           }
-                                        else 
-                                           uri = 0;
-                                                
-                                        if (super.localName.length is 0) 
-                                            defNamespace = uri;
-                                        else 
-                                           inscopeNSs[super.localName] = uri;
-                                        }
-                                     
-                                     auto pURI = super.prefix in inscopeNSs;
-                                     if (pURI) 
-                                         cur.attrib (attr, *pURI);
-                                     else 
-                                        {
-                                        debug (XmlNamespaces) 
-                                               assert (false, "Unresolved namespace prefix:" ~ super.prefix);
-                                        cur.attrib (attr, 0);
-                                        }
-                                     }
-                                  else 
-                                     cur.attrib (attr, defNamespace);
-}
-else
-                                     cur.attrib (attr, defNamespace);
+                                  cur.attrib (attr);
                                   break;
         
                              case XmlTokenType.PI:
