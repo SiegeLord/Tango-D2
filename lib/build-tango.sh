@@ -18,6 +18,7 @@ usage() {
     echo 'Usage: build-tango.sh [--help] identifier
 Options:
   --help: Will print this help text
+  --warn: Will enable warnings
   <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
                 libgtango.a or universal Mac binaries respectively
 
@@ -29,6 +30,7 @@ Options:
 
 UNAME=`uname`
 INLINE="-inline"
+WARN=""
 
 # Compiler specific includes
 . dmdinclude
@@ -90,7 +92,7 @@ compile() {
 
     if filter $OBJNAME
     then
-        $DC -w -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC $WARN -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
@@ -134,21 +136,30 @@ then
     die "You must run this script from the lib directory." 1
 fi
 
-if [ "$1" = "--help" ]
-then
-    usage
-elif [ "$1" = "dmd" ]
-then
-    build dmd libtango-user-dmd.a libtango-base-dmd.a
-elif [ "$1" = "gdc" ]
-then
-    build gdmd libgtango.a libgphobos.a
-elif [ "$1" = "mac" ]
-then
-    # build Universal Binary version of the Tango library
-    build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc
-    build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386
-    lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386
-else
-    usage
-fi
+while [ "$#" != "0" ]
+do
+    case "$1" in
+        --help)
+            usage
+            ;;
+        --warn)
+            WARN="-w"
+            ;;
+        dmd)
+            build dmd libtango-user-dmd.a libtango-base-dmd.a
+            ;;
+        gdc)
+            build gdmd libgtango.a libgphobos.a
+            ;;
+        mac)
+            # build Universal Binary version of the Tango library
+            build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc
+            build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386
+            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
