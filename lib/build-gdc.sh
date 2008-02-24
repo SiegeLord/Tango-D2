@@ -40,7 +40,7 @@ rm compiler/gdc/object.di
 
 # Check make we have
 MAKE=`which gmake`
-if [ ! "$MAKE" ]
+if [ ! -e "$MAKE" ]
 then
     MAKE=`which make`
     if [ ! `$MAKE --version | grep 'GNU Make'` ]
