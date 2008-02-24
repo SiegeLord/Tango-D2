@@ -80,6 +80,8 @@ class Document(T) : private PullParser!(T)
                                 chunks,
                                 freelists;
         private uint[T[]]       namespaceURIs;
+
+        private XmlPath!(T)     xpath;
         
         static const T[] xmlns = "xmlns";
         static const T[] xmlnsURI = "http://www.w3.org/2000/xmlns/";
@@ -103,6 +105,22 @@ class Document(T) : private PullParser!(T)
                 newlist;
                 root = allocate;
                 root.type = XmlNodeType.Document;
+
+                xpath = new XmlPath!(T);
+        }
+
+        /***********************************************************************
+        
+                Return an xpath handle to query this document. This starts
+                at the document root.
+
+                See also Node.query
+
+        ***********************************************************************/
+        
+        final XmlPath!(T).NodeSet query ()
+        {
+                return xpath.start (root);
         }
 
         /***********************************************************************
@@ -112,7 +130,7 @@ class Document(T) : private PullParser!(T)
 
         ***********************************************************************/
         
-        final Document collect ()
+        private final Document collect ()
         {
                 root.lastChild_ = 
                 root.firstChild_ = null;
@@ -241,7 +259,7 @@ class Document(T) : private PullParser!(T)
                     newlist;
 
                 auto p = &list[index++];
-                p.document_ = this;
+                p.document = this;
                 p.parent_ =
                 p.prevSibling_ = 
                 p.nextSibling_ = 
@@ -314,6 +332,7 @@ class Document(T) : private PullParser!(T)
                 public T[]              prefix;
                 public T[]              localName;
                 public T[]              rawValue;
+                public Document         document;
                 
                 package Node            parent_,
                                         prevSibling_,
@@ -322,16 +341,7 @@ class Document(T) : private PullParser!(T)
                                         lastChild_,
                                         firstAttr_,
                                         lastAttr_;
-                package Document        document_;
 
-                /***************************************************************
-                
-                        Return the document
-
-                ***************************************************************/
-        
-                Document document () {return document_;}
-        
                 /***************************************************************
                 
                         Return the parent, which may be null
@@ -432,7 +442,7 @@ class Document(T) : private PullParser!(T)
         
                 Node root ()
                 {
-                        return document_.root;
+                        return document.root;
                 }
 
                 /***************************************************************
@@ -562,7 +572,7 @@ class Document(T) : private PullParser!(T)
                 {
                         assert (tree);
                         tree = tree.clone;
-                        tree.migrate (document_);
+                        tree.migrate (document);
                         append (tree);
                         return tree;
                 }
@@ -579,11 +589,24 @@ class Document(T) : private PullParser!(T)
                 Node move (Node tree)
                 {
                         tree.detach;
-                        if (tree.document_ is document_)
+                        if (tree.document is document)
                             append (tree);
                         else
                            tree = copy (tree);
                         return tree;
+                }
+
+                /***************************************************************
+        
+                        Return an xpath handle to query this node
+
+                        See also Node.document.query
+
+                ***************************************************************/
+        
+                final XmlPath!(T).NodeSet query ()
+                {
+                        return document.xpath.start (this);
                 }
 
                 /***************************************************************
@@ -872,7 +895,7 @@ version (tools)
         
                 private Node create (XmlNodeType type, T[] value)
                 {
-                        auto node = document_.allocate;
+                        auto node = document.allocate;
                         node.rawValue = value;
                         node.type = type;
                         return node;
@@ -914,7 +937,7 @@ version (tools)
         
                 private void migrate (Document host)
                 {
-                        this.document_ = host;
+                        this.document = host;
                         foreach (attr; attributes)
                                  attr.migrate (host);
                         foreach (child; children)
@@ -925,6 +948,607 @@ version (tools)
 
 
 /*******************************************************************************
+
+        XPath support 
+
+        Provides support for common XPath axis and filtering functions,
+        via a native-D interface instead of typical interpreted notation.
+
+        The general idea here is to generate a NodeSet consisting of those
+        tree-nodes which satisfy a filtering function. The direction, or
+        axis, of tree traversal is governed by one of several predefined
+        operations. All methods facilitiate call-chaining, where each step 
+        returns a new NodeSet instance to be operated upon.
+
+        The set of nodes themselves are collected in a freelist, avoiding
+        heap-activity and making good use of D array-slicing facilities.
+
+        (this needs to be a class in order to avoid forward-ref issues)
+
+*******************************************************************************/
+
+private class XmlPath(T)
+{       
+        public alias Document!(T) Doc;          /// the typed document
+        public alias Doc.Node Node;             /// generic document node
+         
+        private Node[]          freelist;
+        private uint            freeIndex,
+                                markIndex;
+        private uint            recursion;
+
+        /***********************************************************************
+        
+                Prime a query
+
+                Returns a NodeSet containing just the given node, which
+                can then be used to cascade results into subsequent NodeSet
+                instances.
+
+        ***********************************************************************/
+        
+        final NodeSet start (Node root)
+        {
+                // we have to support recursion which may occur within
+                // a filter callback
+                if (recursion is 0)
+                   {
+                   if (freelist.length is 0)
+                       freelist.length = 256;
+                   freeIndex = 0;
+                   }
+
+                NodeSet set = {this};
+                auto mark = freeIndex;
+                allocate(root);
+                return set.assign (mark);
+
+        }
+
+        /***********************************************************************
+        
+                This is the meat of XPath support. All of the NodeSet
+                operators exist here, in order to enable call-chaining.
+
+                Note that some of the axis do double-duty as a filter 
+                also. This is just a convenience factor, and doesn't 
+                change the underlying mechanisms.
+
+        ***********************************************************************/
+        
+        struct NodeSet
+        {
+                private XmlPath host;
+                private Node[]   members;
+               
+                /***************************************************************
+        
+                        Return the number of selected nodes in the set
+
+                ***************************************************************/
+        
+                uint count ()
+                {
+                        return members.length;
+                }
+
+                /***************************************************************
+        
+                        Return a set containing just the first node of
+                        the current set
+
+                ***************************************************************/
+        
+                NodeSet first ()
+                {
+                        return nth (0);
+                }
+
+                /***************************************************************
+       
+                        Return a set containing just the last node of
+                        the current set
+
+                ***************************************************************/
+        
+                NodeSet last ()
+                {       
+                        auto i = members.length;
+                        if (i > 0)
+                            --i;
+                        return nth (i);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing just the nth node of
+                        the current set
+
+                ***************************************************************/
+        
+                NodeSet opIndex (uint i)
+                {
+                        return nth (i);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing just the nth node of
+                        the current set
+        
+                ***************************************************************/
+        
+                NodeSet nth (uint index)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        if (index < members.length)
+                            host.allocate (members [index]);
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child elements of the 
+                        nodes within this set
+        
+                ***************************************************************/
+        
+                NodeSet opSlice ()
+                {
+                        return child();
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child elements of the 
+                        nodes within this set, which match the given name
+
+                ***************************************************************/
+        
+                NodeSet opIndex (T[] name)
+                {
+                        return child (name);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child elements of the 
+                        nodes within this set
+        
+                ***************************************************************/
+        
+                NodeSet child ()
+                {
+                        return child ((Node node)
+                                      {return node.type is XmlNodeType.Element;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child elements of the 
+                        nodes within this set, which match the given name
+
+                ***************************************************************/
+        
+                NodeSet child (T[] name)
+                {
+                        return child ((Node node)
+                                      {return node.type is XmlNodeType.Element && 
+                                              node.name == name;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all parent elements of the 
+                        nodes within this set, which match the optional name
+
+                ***************************************************************/
+        
+                NodeSet parent (T[] name = null)
+                {
+                        return parent ((Node node)
+                                      {return name.ptr is null || 
+                                              node.name == name;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all text nodes of the 
+                        nodes within this set
+
+                ***************************************************************/
+        
+                NodeSet text ()
+                {
+                        return child ((Node node)
+                                      {return node.type is XmlNodeType.Data;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all text nodes of the 
+                        nodes within this set, which have a matching value
+
+                ***************************************************************/
+        
+                NodeSet text (T[] value)
+                {
+                        return child ((Node node)
+                                      {return node.type is XmlNodeType.Data && 
+                                              node.value == value;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all attributes of the 
+                        nodes within this set, which have a matching value
+
+                ***************************************************************/
+        
+                NodeSet attribute ()
+                {
+                        return attributes ((Node node)
+                                          {return node.type is XmlNodeType.Attribute;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all attributes of the 
+                        nodes within this set, which have a matching name
+
+                ***************************************************************/
+        
+                NodeSet attribute (T[] name)
+                {
+                        return attributes ((Node node)
+                                           {return node.type is XmlNodeType.Attribute && 
+                                                   node.name == name;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all descendant elements of 
+                        the nodes within this set
+
+                ***************************************************************/
+        
+                NodeSet descendant ()
+                {
+                        return descendant ((Node node)
+                                           {return node.type is XmlNodeType.Element;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all descendant elements of 
+                        the nodes within this set, which match the given name
+
+                ***************************************************************/
+        
+                NodeSet descendant (T[] name)
+                {
+                        return descendant ((Node node)
+                                           {return node.type is XmlNodeType.Element && 
+                                                   node.name == name;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all ancestor elements of 
+                        the nodes within this set, which match the optional
+                        name
+
+                ***************************************************************/
+        
+                NodeSet ancestor (T[] name = null)
+                {
+                        return ancestor ((Node node)
+                                         {return name.ptr is null || 
+                                                 node.name == name;});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all prior sibling elements of 
+                        the nodes within this set, which match the optional
+                        name
+
+                ***************************************************************/
+        
+                NodeSet prev (T[] name = null)
+                {
+                        return prev ((Node node)
+                                     {return node.type is XmlNodeType.Element &&
+                                             (name.ptr is null || 
+                                              node.name == name);});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all subsequent sibling 
+                        elements of the nodes within this set, which 
+                        match the optional name
+
+                ***************************************************************/
+        
+                NodeSet next (T[] name = null)
+                {
+                        return next ((Node node)
+                                     {return node.type is XmlNodeType.Element &&
+                                             (name.ptr is null || 
+                                              node.name == name);});
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all nodes within this set
+                        which pass the filtering test
+
+                ***************************************************************/
+        
+                NodeSet filter (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                 test (filter, member);
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child nodes of 
+                        the nodes within this set which pass the 
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet child (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (parent; members)
+                                 foreach (child; parent.children)
+                                          test (filter, child);
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all parent nodes of 
+                        the nodes within this set which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet parent (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.parent;
+                                if (p && p.type != XmlNodeType.Document)
+                                   test (filter, p);
+                                }
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all attribute nodes of 
+                        the nodes within this set which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet attributes (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                 foreach (attr; member.attributes)
+                                          test (filter, attr);
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all descendant nodes of 
+                        the nodes within this set, which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet descendant (bool delegate(Node) filter)
+                {
+                        void traverse (Node parent)
+                        {
+                                 foreach (child; parent.children)
+                                         {
+                                         test (filter, child);
+                                         traverse (child);
+                                         }                                                
+                        }
+
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+
+                        foreach (member; members)
+                                 traverse (member);
+
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all ancestor nodes of 
+                        the nodes within this set, which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet ancestor (bool delegate(Node) filter)
+                {
+                        void traverse (Node child)
+                        {
+                                auto p = child.parent_;
+                                if (p && p.type != XmlNodeType.Document)
+                                   {
+                                   test (filter, p);
+                                   traverse (p);
+                                   }
+                        }
+
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+
+                        foreach (member; members)
+                                 traverse (member);
+
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all following siblings 
+                        of the ones within this set, which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet next (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.nextSibling_;
+                                while (p)
+                                      {
+                                      test (filter, p);
+                                      p = p.nextSibling_;
+                                      }
+                                }
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all prior sibling nodes 
+                        of the ones within this set, which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet prev (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+                        foreach (member; members)
+                                {
+                                auto p = member.prevSibling_;
+                                while (p)
+                                      {
+                                      test (filter, p);
+                                      p = p.prevSibling_;
+                                      }
+                                }
+                        return set.assign (mark);
+                }
+
+                /***************************************************************
+                
+                        Traverse the members of this set
+
+                ***************************************************************/
+        
+                int opApply (int delegate(inout Node) dg)
+                {
+                        int ret;
+                        foreach (member; members)
+                                 if ((ret = dg (member)) != 0) 
+                                      break;
+                        return ret;
+                }
+
+                /***************************************************************
+        
+                        Assign a slice of the freelist to this NodeSet
+
+                ***************************************************************/
+        
+                private NodeSet assign (uint mark)
+                {
+                        members = host.slice (mark);
+                        return *this;
+                }
+
+                /***************************************************************
+        
+                        Execute a filter on the given node. We have to
+                        deal with potential query recusion, so we set
+                        all kinda crap to recover from that
+
+                ***************************************************************/
+        
+                private void test (bool delegate(Node) filter, Node node)
+                {
+                        ++host.recursion;
+                        auto pop = host.freeIndex;
+                        auto add = filter (node);
+                        host.freeIndex = pop;
+                        --host.recursion;
+                        if (add)
+                            host.allocate (node);
+                }
+        }
+
+        /***********************************************************************
+
+                Return the current freelist index
+                        
+        ***********************************************************************/
+        
+        private uint mark ()
+        {       
+                return freeIndex;
+        }
+
+        /***********************************************************************
+        
+                Return a slice of the freelist
+
+        ***********************************************************************/
+        
+        private Node[] slice (uint mark)
+        {
+                assert (mark <= freeIndex);
+                return freelist [mark .. freeIndex];
+        }
+
+        /***********************************************************************
+        
+                Allocate an entry in the freelist, expanding as necessary
+
+        ***********************************************************************/
+        
+        private uint allocate (Node node)
+        {
+                if (freeIndex >= freelist.length)
+                    freelist.length = freelist.length + freelist.length / 2;
+
+                freelist[freeIndex] = node;
+                return ++freeIndex;
+        }
+}
+
+
+
+/*******************************************************************************
+
+        Specification for an XML serializer
 
 *******************************************************************************/
 
@@ -950,3 +1574,6 @@ interface IXmlPrinter(T)
         
         void print (Node root, void delegate(T[][]...) emit);
 }
+
+
+

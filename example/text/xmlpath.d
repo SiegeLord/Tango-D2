@@ -10,7 +10,6 @@
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
-import tango.text.xml.XmlPath;
 import tango.text.xml.XmlPrinter;
 
 /*******************************************************************************
@@ -40,33 +39,38 @@ void main()
 
         // time some queries
         StopWatch w;
-        auto query = new XmlPath!(char);
-        auto set = query(doc);
+        uint count = 100000;
+        auto set = doc.query;
 
         // simple lookup: locate a specific named element
         w.start;
-        uint count= 1000000;
         for (uint i = count; --i;)
-             set = query(doc).child("element").child("sub").child("second");
+             set = doc.query["element"]["sub"]["child"];
         result ("generic lookups/s", count/w.stop, set);
 
         // attribute lookup: select all attributes of 'sub'
         w.start;
         for (uint i = count; --i;)
-             set = query(doc).child("element").child("sub").attribute;
+             set = doc.query.child("element").child("sub").attribute;
         result ("attribute lookups/s", count/w.stop, set);
 
         // filtered lookup: locate all elements with text "value"
         w.start;
         for (uint i = count; --i;)
-             set = query(doc).descendent.filter((query.Node n) {return n.hasText("value");});
+             set = doc.query.descendant.filter((doc.Node n) {return n.hasText("value");});
         result ("text-predicate lookups/s", count/w.stop, set);
 
         // filtered lookup: locate all elements with attribute name "attrib1"
         w.start;
         for (uint i = count; --i;)
-             set = query(doc).descendent.filter((query.Node n) {return n.hasAttribute("attrib1");});
+             set = doc.query.descendant.filter((doc.Node n) {return n.hasAttribute("attrib1");});
         result ("attr-predicate lookups/s", count/w.stop, set);
+
+        // filtered lookup: locate all elements with more than 1 child
+        w.start;
+        for (uint i = count; --i;)
+             set = doc.query.descendant.filter((doc.Node n) {return n.query[].count > 1;});
+        result ("text-predicate lookups/s", count/w.stop, set);
 
 }
 
