@@ -67,6 +67,27 @@ package import tango.text.xml.PullParser;
         Stdout(print(doc)).newline;
         ---
 
+        XPath examples:
+        ---
+        auto doc = new Document!(char);
+
+        // attach an element with some attributes, plus 
+        // a child element with an attached data value
+        doc.root.element   (null, "element")
+                .attribute (null, "attrib1", "value")
+                .attribute (null, "attrib2")
+                .element   (null, "child", "value");
+
+        // select named-elements
+        auto set = doc.query["element"]["child"];
+
+        // select all attributes named "attrib1"
+        set = doc.query.descendant.attribute("attrib1");
+
+        // select elements with one parent and a matching text value
+        set = doc.query[].filter((doc.Node n) {return n.hasText("value);});
+        ---
+
 *******************************************************************************/
 
 class Document(T) : private PullParser!(T)
@@ -79,13 +100,14 @@ class Document(T) : private PullParser!(T)
         private int             index,
                                 chunks,
                                 freelists;
+        private XmlPath!(T)     xpath;
+/+
         private uint[T[]]       namespaceURIs;
 
-        private XmlPath!(T)     xpath;
-        
-        static const T[] xmlns = "xmlns";
-        static const T[] xmlnsURI = "http://www.w3.org/2000/xmlns/";
-        static const T[] xmlURI = "http://www.w3.org/XML/1998/namespace";
+        public static const T[] xmlns = "xmlns";
+        public static const T[] xmlnsURI = "http://www.w3.org/2000/xmlns/";
+        public static const T[] xmlURI = "http://www.w3.org/XML/1998/namespace";
++/
 
         /***********************************************************************
         
@@ -94,12 +116,12 @@ class Document(T) : private PullParser!(T)
 
         ***********************************************************************/
 
-        this (uint nodes = 5000)
+        this (uint nodes = 1000)
         {
                 assert (nodes > 50);
                 super (null);
-                namespaceURIs[xmlURI] = 1;
-                namespaceURIs[xmlnsURI] = 2;
+                //namespaceURIs[xmlURI] = 1;
+                //namespaceURIs[xmlnsURI] = 2;
 
                 chunks = nodes;
                 newlist;
