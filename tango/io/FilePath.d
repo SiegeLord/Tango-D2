@@ -1715,7 +1715,7 @@ private struct FS
 
                 static void remove (char[] name)
                 {
-                        if (isFolder (char))
+                        if (isFolder (name))
                            {
                            if (posix.rmdir (name.ptr))
                                exception (name);
