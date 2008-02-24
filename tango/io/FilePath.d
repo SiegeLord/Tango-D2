@@ -714,7 +714,7 @@ class FilePath : PathView
 
                             version (Win32)
                             {
-                            case FileConst.RootSeparatorChar:
+                            case ':':
                                  folder_ = i + 1;
                                  break;
                             }
