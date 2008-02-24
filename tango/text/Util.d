@@ -1457,6 +1457,8 @@ debug (UnitTest)
         assert (x.length is 3 && x[0] == "one" && x[1] == "two" && x[2] == "three");
         x = split ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
+        x = split ("one,,", ",");
+        assert (x.length is 2 && x[0] == "one" && x[1] == "");
 
         char[] h, t;
         h =  head ("one:two:three", ":", t);
