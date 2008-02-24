@@ -1578,7 +1578,7 @@ private struct FS
 
                 private static uint getInfo (char[] name, inout stat_t stats)
                 {
-                        if (posix.stat (name, &stats))
+                        if (posix.stat (name.ptr, &stats))
                             exception (name);
 
                         return stats.st_mode;
@@ -1688,12 +1688,12 @@ private struct FS
                                  p += written;
                                  read -= written;
                                  if (written is -1)
-                                     exception;
+                                     exception (dest);
                                  } while (read > 0);
                               read = posix.read (src, buf.ptr, buf.length);
                               }
                         if (read is -1)
-                            exception (dest);
+                            exception (source);
 
                         // copy timestamps
                         stat_t stats;
@@ -1715,7 +1715,7 @@ private struct FS
 
                 static void remove (char[] name)
                 {
-                        if (isFolder)
+                        if (isFolder (char))
                            {
                            if (posix.rmdir (name.ptr))
                                exception (name);
@@ -1820,7 +1820,7 @@ private struct FS
                               if (str.length > 3 || str != "..."[0 .. str.length])
                                  {
                                  if (stat (sfnbuf.ptr, &sbuf))
-                                     exception;
+                                     exception (folder);
 
                                  FileInfo info = void;
                                  info.name   = str;
