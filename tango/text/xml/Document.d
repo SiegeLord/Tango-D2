@@ -12,7 +12,7 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
-version = NameSpace;
+//version = NameSpace;
 
 /*******************************************************************************
 
