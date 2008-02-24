@@ -1,12 +1,3 @@
-/*******************************************************************************
-
-        Copyright: Copyright (C) 2007-2008 Kris Bell. All rights reserved.
-
-        License:   BSD Style
-        Authors:   Kris
-
-*******************************************************************************/
-
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
