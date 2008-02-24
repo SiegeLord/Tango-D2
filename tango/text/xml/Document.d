@@ -241,7 +241,7 @@ class Document(T) : private PullParser!(T)
                     newlist;
 
                 auto p = &list[index++];
-                p.document = this;
+                p.document_ = this;
                 p.parent_ =
                 p.prevSibling_ = 
                 p.nextSibling_ = 
@@ -322,8 +322,16 @@ class Document(T) : private PullParser!(T)
                                         lastChild_,
                                         firstAttr_,
                                         lastAttr_;
-                package Document        document;
+                package Document        document_;
 
+                /***************************************************************
+                
+                        Return the document
+
+                ***************************************************************/
+        
+                Document document () {return document_;}
+        
                 /***************************************************************
                 
                         Return the parent, which may be null
@@ -424,7 +432,7 @@ class Document(T) : private PullParser!(T)
         
                 Node root ()
                 {
-                        return document.root;
+                        return document_.root;
                 }
 
                 /***************************************************************
@@ -554,7 +562,7 @@ class Document(T) : private PullParser!(T)
                 {
                         assert (tree);
                         tree = tree.clone;
-                        tree.migrate (document);
+                        tree.migrate (document_);
                         append (tree);
                         return tree;
                 }
@@ -571,7 +579,7 @@ class Document(T) : private PullParser!(T)
                 Node move (Node tree)
                 {
                         tree.detach;
-                        if (tree.document is document)
+                        if (tree.document_ is document_)
                             append (tree);
                         else
                            tree = copy (tree);
@@ -864,7 +872,7 @@ version (tools)
         
                 private Node create (XmlNodeType type, T[] value)
                 {
-                        auto node = document.allocate;
+                        auto node = document_.allocate;
                         node.rawValue = value;
                         node.type = type;
                         return node;
@@ -906,7 +914,7 @@ version (tools)
         
                 private void migrate (Document host)
                 {
-                        this.document = host;
+                        this.document_ = host;
                         foreach (attr; attributes)
                                  attr.migrate (host);
                         foreach (child; children)
