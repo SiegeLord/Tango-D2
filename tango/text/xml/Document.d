@@ -88,6 +88,26 @@ package import tango.text.xml.PullParser;
         set = doc.query[].filter((doc.Node n) {return n.hasText("value);});
         ---
 
+        Note that path queries are temporal - they do not retain content
+        across mulitple queries. For example:
+        ---
+        auto elements = doc.query["element"];
+        auto children = elements["child"];
+        ---
+
+        The above will clobber 'elements', because the document reuses node
+        space for subsequent queries. In order to retain queries, do this:
+        ---
+        auto elements = doc.query["element"].dup;
+        auto children = elements["child"];
+        ---
+
+        The above .dup is generally very small (a set of pointers only). On
+        the other hand, recursive queries are fully supported:
+        ---
+        set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
+        ---
+   
 *******************************************************************************/
 
 class Document(T) : private PullParser!(T)
@@ -987,6 +1007,47 @@ version (tools)
 
         (this needs to be a class in order to avoid forward-ref issues)
 
+        XPath examples:
+        ---
+        auto doc = new Document!(char);
+
+        // attach an element with some attributes, plus 
+        // a child element with an attached data value
+        doc.root.element   (null, "element")
+                .attribute (null, "attrib1", "value")
+                .attribute (null, "attrib2")
+                .element   (null, "child", "value");
+
+        // select named-elements
+        auto set = doc.query["element"]["child"];
+
+        // select all attributes named "attrib1"
+        set = doc.query.descendant.attribute("attrib1");
+
+        // select elements with one parent and a matching text value
+        set = doc.query[].filter((doc.Node n) {return n.hasText("value);});
+        ---
+
+        Note that path queries are temporal - they do not retain content
+        across mulitple queries. For example:
+        ---
+        auto elements = doc.query["element"];
+        auto children = elements["child"];
+        ---
+
+        The above will clobber elements, because the document reuses node
+        space for subsequent queries. In order to retain queries, do this:
+        ---
+        auto elements = doc.query["element"].dup;
+        auto children = elements["child"];
+        ---
+
+        The above .dup is generally very small (a set of pointers only). On
+        the other hand, recursive queries are fully supported:
+        ---
+        set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
+        ---
+   
 *******************************************************************************/
 
 private class XmlPath(T)
