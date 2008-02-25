@@ -113,14 +113,15 @@ class PullParser(Ch = char)
 version (a)
 {
                    auto q = p;
-                   auto e = text.end;
-                   while (++p < e) 
-                          if (*p is '<')
-                             {
-                             rawValue = q [0 .. p - q];
-                             text.point = p;
-                             return type = XmlTokenType.Data;
-                             }
+                   if (p < text.end)
+                       while (*++p != '<') {}
+
+                   if (p < text.end)
+                      {
+                      rawValue = q [0 .. p - q];
+                      text.point = p;
+                      return type = XmlTokenType.Data;
+                      }
                    return XmlTokenType.Done;
 }
 else
