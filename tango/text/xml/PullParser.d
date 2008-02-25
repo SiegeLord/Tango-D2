@@ -110,6 +110,21 @@ class PullParser(Ch = char)
                 auto p = text.point;
                 if (*p != '<') 
                    {
+version (a)
+{
+                   auto q = p;
+                   auto e = text.end;
+                   while (++p < e) 
+                          if (*p is '<')
+                             {
+                             rawValue = q [0 .. p - q];
+                             text.point = p;
+                             return type = XmlTokenType.Data;
+                             }
+                   return XmlTokenType.Done;
+}
+else
+{
                    auto q = p;
                    while (*++p != '<') 
                          {}
@@ -120,12 +135,20 @@ class PullParser(Ch = char)
                       return type = XmlTokenType.Data;
                       }
                    return XmlTokenType.Done;
+}
                    }
 
                 switch (p[1])
                        {
                        default:
                             auto q = ++p;
+version (b)
+{
+                            while (*q > 63 || text.name[*q]) 
+                                   ++q;
+}
+else
+{
                             while (q < text.end)
                                   {
                                   auto c = *q;
@@ -134,6 +157,7 @@ class PullParser(Ch = char)
                                   else
                                      break;
                                   }                        
+}
                             text.point = q;
 
                             if (*q != ':') 
@@ -143,10 +167,22 @@ class PullParser(Ch = char)
                                }
                             else
                                {
+version (c)
+{
+                               prefix = p[0 .. q - p];
+                               p = ++q;
+                               while (*q > 63 || text.attributeName[*q])
+                                      ++q;
+                               localName = p[0 .. q - p];
+                               text.point = q;
+}
+else
+{
                                prefix = p [0 .. q - p];
                                p = ++text.point;
                                q = text.eatAttrName;
                                localName = p [0 .. q - p];
+}
                                }
 
                             return type = XmlTokenType.StartElement;
