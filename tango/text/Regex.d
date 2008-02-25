@@ -469,6 +469,54 @@ private struct Set(T)
         return s;
     }
 }
+
+/* ************************************************************************************************
+
+**************************************************************************************************/
+void quickSort(T)(T[] a)
+{
+    quickSort(a,cast(size_t)0,a.length);
+}
+
+void quickSort(T)(T[] a, size_t l, size_t r)
+{
+    T t;
+    auto i = r-l;
+    if ( i < 3 )
+    {
+        if ( i < 2 )
+            return;
+        if ( a[l] < a[l+1] )
+            return;
+        t = a[l];
+        a[l] = a[l+1];
+        a[l+1] = t;
+        return;
+    }
+
+    auto p = a[l];
+    i = l;
+    auto j = r;
+
+    while ( true )
+    {
+        ++i;
+        for ( ; i < j && a[i] < p; ++i ) {}
+        --j;
+        for ( ; i < j && a[j] >= p; --j ) {}
+        if ( i >= j )
+            break;
+        t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+    --i;
+    a[l] = a[i];
+    a[i] = p;
+
+    quickSort(a, l, i);
+    quickSort(a, i+1, r);
+}
 import tango.math.Math;
 
 /* ************************************************************************************************
@@ -2649,7 +2697,7 @@ private:
 
         debug(tdfa) Stdout("\nsorting...").newline;
         // using built-in sort somtimes gives an AV in TypeInfo.swap
-        sort(marks_[0 .. num_marks]);
+        quickSort(marks_[0 .. num_marks]);
         assert(!marks_[0].end);
 
         debug(tdfa)
