@@ -1086,6 +1086,19 @@ private class XmlPath(T)
                
                 /***************************************************************
         
+                        Return a duplicate NodeSet
+
+                ***************************************************************/
+        
+                NodeSet dup ()
+                {
+                        NodeSet copy = {host};
+                        copy.members = members.dup;
+                        return copy;
+                }
+
+                /***************************************************************
+        
                         Return the number of selected nodes in the set
 
                 ***************************************************************/
