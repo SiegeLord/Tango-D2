@@ -78,7 +78,7 @@ struct Environment
                 // on Windows, this is a .exe
                 version (Windows)
                          if (bin.ext.length is 0)
-                             bin.append (".exe");
+                             bin.suffix = "exe";
 
                 // is this a directory? Potentially make it absolute
                 if (bin.isChild)
