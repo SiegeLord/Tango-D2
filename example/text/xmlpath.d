@@ -48,20 +48,20 @@ void main()
         // filtered lookup: locate all elements with text "value"
         w.start;
         for (uint i = count; --i;)
-             set = doc.query.descendant.filter((doc.Node n) {return n.hasText("value");});
-        result ("text-predicate lookups/s", count/w.stop, set);
+             set = doc.query.descendant.filter((doc.Node n) {return n.hasData("value");});
+        result ("text-filter lookups/s", count/w.stop, set);
 
         // filtered lookup: locate all elements with attribute name "attrib1"
         w.start;
         for (uint i = count; --i;)
              set = doc.query.descendant.filter((doc.Node n) {return n.hasAttribute("attrib1");});
-        result ("attr-predicate lookups/s", count/w.stop, set);
+        result ("attr-filter lookups/s", count/w.stop, set);
 
         // filtered lookup: locate all elements with more than 1 child
         w.start;
         for (uint i = count; --i;)
              set = doc.query.descendant.filter((doc.Node n) {return n.query[].count > 1;});
-        result ("text-predicate lookups/s", count/w.stop, set);
+        result ("recursive-filter lookups/s", count/w.stop, set);
 
 }
 

@@ -143,12 +143,12 @@ class Document(T) : private PullParser!(T)
                 //namespaceURIs[xmlURI] = 1;
                 //namespaceURIs[xmlnsURI] = 2;
 
+                xpath = new XmlPath!(T);
+
                 chunks = nodes;
                 newlist;
                 root = allocate;
                 root.type = XmlNodeType.Document;
-
-                xpath = new XmlPath!(T);
         }
 
         /***********************************************************************
@@ -177,8 +177,12 @@ class Document(T) : private PullParser!(T)
                 root.lastChild_ = 
                 root.firstChild_ = null;
                 freelists = 0;
+                newlist;
                 index = 1;
-                //freelists = 0;          // needed to align the codegen!
+version(d)
+{
+                freelists = 0;          // needed to align the codegen!
+}
                 return this;
         }
 
@@ -190,7 +194,8 @@ class Document(T) : private PullParser!(T)
         
         final Document header (T[] encoding = "UTF-8")
         {
-                root.prepend (root.create(XmlNodeType.PI, `xml version="1.0" encoding="`~encoding~`"`));
+                root.prepend (root.create(XmlNodeType.PI, 
+                              `xml version="1.0" encoding="`~encoding~`"`));
                 return this;
         }
 
@@ -220,17 +225,21 @@ class Document(T) : private PullParser!(T)
                                   break;
         
                              case XmlTokenType.Data:
+version (discrete)
+{
+                                  auto node = allocate;
+                                  node.rawValue = super.rawValue;
+                                  node.type = XmlNodeType.Data;
+                                  cur.append (node);
+}
+else
+{
                                   if (cur.rawValue.length is 0)
                                       cur.rawValue = super.rawValue;
                                   else
                                      // multiple data sections
                                      cur.data (super.rawValue);
-/+
-                                  auto node = allocate;
-                                  node.rawValue = super.rawValue;
-                                  node.type = XmlNodeType.Data;
-                                  cur.append (node);
-+/
+}
                                   break;
         
                              case XmlTokenType.StartElement:
@@ -699,7 +708,7 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                Node getText (T[] text)
+                Node getData (T[] text)
                 {
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
@@ -717,9 +726,9 @@ class Document(T) : private PullParser!(T)
 
                 ***************************************************************/
         
-                bool hasText (T[] text)
+                bool hasData (T[] text)
                 {
-                        return getText (text) !is null;
+                        return getData (text) !is null;
                 }
 
                 /***************************************************************
@@ -1197,28 +1206,15 @@ private class XmlPath(T)
                 /***************************************************************
         
                         Return a set containing all child elements of the 
-                        nodes within this set
-        
-                ***************************************************************/
-        
-                NodeSet child ()
-                {
-                        return child ((Node node)
-                                      {return node.type is XmlNodeType.Element;});
-                }
-
-                /***************************************************************
-        
-                        Return a set containing all child elements of the 
-                        nodes within this set, which match the given name
+                        nodes within this set, which match the optional name
 
                 ***************************************************************/
         
-                NodeSet child (T[] name)
+                NodeSet child (T[] name = null)
                 {
-                        return child ((Node node)
-                                      {return node.type is XmlNodeType.Element && 
-                                              node.name == name;});
+                        if (name.ptr)
+                            return child ((Node node){return node.name == name;});
+                        return  child (&always);
                 }
 
                 /***************************************************************
@@ -1230,76 +1226,40 @@ private class XmlPath(T)
         
                 NodeSet parent (T[] name = null)
                 {
-                        return parent ((Node node)
-                                      {return name.ptr is null || 
-                                              node.name == name;});
+                        if (name.ptr)
+                            return parent ((Node node){return node.name == name;});
+                        return parent (&always);
                 }
 
                 /***************************************************************
         
                         Return a set containing all text nodes of the 
-                        nodes within this set
+                        nodes within this set, which match the optional
+                        value
 
                 ***************************************************************/
         
-                NodeSet text ()
+                NodeSet text (T[] value = null)
                 {
-                        return child ((Node node)
-                                      {return node.type is XmlNodeType.Data;});
-                }
-
-                /***************************************************************
-        
-                        Return a set containing all text nodes of the 
-                        nodes within this set, which have a matching value
-
-                ***************************************************************/
-        
-                NodeSet text (T[] value)
-                {
-                        return child ((Node node)
-                                      {return node.type is XmlNodeType.Data && 
-                                              node.value == value;});
+                        if (value.ptr)
+                            return child ((Node node){return node.value == value;}, 
+                                           XmlNodeType.Data);
+                        return child (&always, XmlNodeType.Data);
                 }
 
                 /***************************************************************
         
                         Return a set containing all attributes of the 
-                        nodes within this set, which have a matching value
+                        nodes within this set, which match the optional
+                        name
 
                 ***************************************************************/
         
-                NodeSet attribute ()
+                NodeSet attribute (T[] name = null)
                 {
-                        return attributes ((Node node)
-                                          {return node.type is XmlNodeType.Attribute;});
-                }
-
-                /***************************************************************
-        
-                        Return a set containing all attributes of the 
-                        nodes within this set, which have a matching name
-
-                ***************************************************************/
-        
-                NodeSet attribute (T[] name)
-                {
-                        return attributes ((Node node)
-                                           {return node.type is XmlNodeType.Attribute && 
-                                                   node.name == name;});
-                }
-
-                /***************************************************************
-        
-                        Return a set containing all descendant elements of 
-                        the nodes within this set
-
-                ***************************************************************/
-        
-                NodeSet descendant ()
-                {
-                        return descendant ((Node node)
-                                           {return node.type is XmlNodeType.Element;});
+                        if (name.ptr)
+                            return attribute ((Node node){return node.name == name;});
+                        return attribute (&always);
                 }
 
                 /***************************************************************
@@ -1309,11 +1269,11 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet descendant (T[] name)
+                NodeSet descendant (T[] name = null)
                 {
-                        return descendant ((Node node)
-                                           {return node.type is XmlNodeType.Element && 
-                                                   node.name == name;});
+                        if (name.ptr)
+                            return descendant ((Node node){return node.name == name;});
+                        return descendant (&always);
                 }
 
                 /***************************************************************
@@ -1326,9 +1286,9 @@ private class XmlPath(T)
         
                 NodeSet ancestor (T[] name = null)
                 {
-                        return ancestor ((Node node)
-                                         {return name.ptr is null || 
-                                                 node.name == name;});
+                        if (name.ptr)
+                            return ancestor ((Node node){return node.name == name;});
+                        return ancestor (&always);
                 }
 
                 /***************************************************************
@@ -1341,10 +1301,9 @@ private class XmlPath(T)
         
                 NodeSet prev (T[] name = null)
                 {
-                        return prev ((Node node)
-                                     {return node.type is XmlNodeType.Element &&
-                                             (name.ptr is null || 
-                                              node.name == name);});
+                        if (name.ptr)
+                            return prev ((Node node){return node.name == name;});
+                        return prev (&always);
                 }
 
                 /***************************************************************
@@ -1357,10 +1316,9 @@ private class XmlPath(T)
         
                 NodeSet next (T[] name = null)
                 {
-                        return next ((Node node)
-                                     {return node.type is XmlNodeType.Element &&
-                                             (name.ptr is null || 
-                                              node.name == name);});
+                        if (name.ptr)
+                            return next ((Node node){return node.name == name;});
+                        return next (&always);
                 }
 
                 /***************************************************************
@@ -1387,13 +1345,15 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet child (bool delegate(Node) filter)
+                NodeSet child (bool delegate(Node) filter, 
+                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
                         foreach (parent; members)
                                  foreach (child; parent.children)
-                                          test (filter, child);
+                                          if (child.type is type)
+                                              test (filter, child);
                         return set.assign (mark);
                 }
 
@@ -1426,7 +1386,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet attributes (bool delegate(Node) filter)
+                NodeSet attribute (bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1444,14 +1404,17 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet descendant (bool delegate(Node) filter)
+                NodeSet descendant (bool delegate(Node) filter, 
+                                    XmlNodeType type = XmlNodeType.Element)
                 {
                         void traverse (Node parent)
                         {
                                  foreach (child; parent.children)
                                          {
-                                         test (filter, child);
-                                         traverse (child);
+                                         if (child.type is type)
+                                             test (filter, child);
+                                         if (child.firstChild_)
+                                             traverse (child);
                                          }                                                
                         }
 
@@ -1501,7 +1464,8 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet next (bool delegate(Node) filter)
+                NodeSet next (bool delegate(Node) filter, 
+                              XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1510,7 +1474,8 @@ private class XmlPath(T)
                                 auto p = member.nextSibling_;
                                 while (p)
                                       {
-                                      test (filter, p);
+                                      if (p.type is type)
+                                          test (filter, p);
                                       p = p.nextSibling_;
                                       }
                                 }
@@ -1525,7 +1490,8 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet prev (bool delegate(Node) filter)
+                NodeSet prev (bool delegate(Node) filter, 
+                              XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1534,7 +1500,8 @@ private class XmlPath(T)
                                 auto p = member.prevSibling_;
                                 while (p)
                                       {
-                                      test (filter, p);
+                                      if (p.type is type)
+                                          test (filter, p);
                                       p = p.prevSibling_;
                                       }
                                 }
@@ -1554,6 +1521,17 @@ private class XmlPath(T)
                                  if ((ret = dg (member)) != 0) 
                                       break;
                         return ret;
+                }
+
+                /***************************************************************
+        
+                        Common predicate
+                                
+                ***************************************************************/
+        
+                private bool always (Node node)
+                {
+                        return true;
                 }
 
                 /***************************************************************

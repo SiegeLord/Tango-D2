@@ -56,13 +56,11 @@ class XmlPrinter(T) : IXmlPrinter!(T)
                                     foreach (attr; node.attributes)
                                              emit (" ", attr.name, "=\"", attr.rawValue, "\"");
 
-                                    if (node.hasChildren)// || node.rawValue.length)
+                                    if (node.hasChildren || node.rawValue.length)
                                        {
-/+
                                        if (node.rawValue.length)
                                            emit (">", node.rawValue);
                                        else
-+/
                                        if (node.firstChild_.type is XmlNodeType.Data)
                                            emit (">");
                                        else
