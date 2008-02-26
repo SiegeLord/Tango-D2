@@ -1858,7 +1858,7 @@ private struct FS
 
 *******************************************************************************/
 
-struct Path
+private struct Path
 {
         private FS fs;
         
