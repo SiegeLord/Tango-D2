@@ -1082,7 +1082,7 @@ private class XmlPath(T)
         struct NodeSet
         {
                 private XmlPath host;
-                private Node[]  members;
+                public  Node[]  members;
                
                 /***************************************************************
         
