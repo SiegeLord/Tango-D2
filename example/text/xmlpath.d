@@ -30,7 +30,7 @@ void main()
 
         // time some queries
         StopWatch w;
-        uint count = 100000;
+        uint count = 1000000;
         auto set = doc.query;
 
         // simple lookup: locate a specific named element
