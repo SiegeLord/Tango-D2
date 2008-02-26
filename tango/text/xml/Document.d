@@ -456,10 +456,18 @@ else
 
                 ***************************************************************/
         
-                T[] name ()
+                T[] name (T[] output = null)
                 {
                         if (prefix.length)
-                            return prefix ~ ':' ~ localName;
+                           {
+                           auto len = prefix.length + localName.length + 1;
+                           if (output.length < len)
+                               output.length = len;
+                           output[0..prefix.length] = prefix;
+                           output[prefix.length] = ':';
+                           output[prefix.length+1 .. len] = localName;
+                           return output[0..len];
+                           }
                         return localName;
                 }
                 
@@ -487,6 +495,21 @@ else
                 
                 /***************************************************************
                 
+                        Return the 'string' of this node, which is raw 
+                        content for most nodes, and local name for elements
+
+                ***************************************************************/
+        
+                T[] string ()
+                {
+                        auto m = rawValue;
+                        if (type is XmlNodeType.Element)
+                            m = localName;
+                        return m;
+                }
+                
+                /***************************************************************
+                
                         Locate the root of this node
 
                 ***************************************************************/
@@ -498,7 +521,7 @@ else
 
                 /***************************************************************
                 
-                        Return an foreach iterator for node children
+                        Return a foreach iterator for node children
 
                 ***************************************************************/
         
@@ -801,58 +824,6 @@ else
                         return this;
                 }
 
-version (tools)
-{                
-                /***************************************************************
-                
-                        Insert a node after this one. The given node cannot
-                        have an existing parent.
-
-                ***************************************************************/
-        
-                private void insertAfter (Node node)
-                {
-                        assert (node.parent is null);
-                        node.parent_ = parent_;
-                        if (nextSibling_) 
-                           {
-                           nextSibling_.prevSibling_ = node;
-                           node.nextSibling_ = nextSibling_;
-                           node.prevSibling_ = this;
-                           }
-                        else 
-                           {
-                           node.prevSibling_ = this;
-                           node.nextSibling_ = null;
-                           }
-                        nextSibling_ = node;
-                }
-                
-                /***************************************************************
-                
-                        Insert a node before this one. The given node cannot
-                        have an existing parent.
-
-                ***************************************************************/
-        
-                private void insertBefore (Node node)
-                {
-                        assert (node.parent is null);
-                        node.parent_ = parent_;
-                        if (prevSibling_) 
-                           {
-                           prevSibling_.nextSibling_ = node;
-                           node.prevSibling_ = prevSibling_;
-                           node.nextSibling_ = this;
-                           }
-                        else 
-                           {
-                           node.nextSibling_ = this;
-                           node.prevSibling_ = null;
-                           }
-                        prevSibling_ = node;
-                }
-}                
                 /***************************************************************
                 
                         Append an attribute to this node, The given attribute
@@ -1034,17 +1005,17 @@ version (tools)
         set = doc.query.descendant.attribute("attrib1");
 
         // select elements with one parent and a matching text value
-        set = doc.query[].filter((doc.Node n) {return n.hasData("value);});
+        set = doc.query[].filter((doc.Node n) {return n.hasData("value");});
         ---
 
         Note that path queries are temporal - they do not retain content
-        across mulitple queries. For example:
+        across mulitple queries. For example, this will fail:
         ---
         auto elements = doc.query["element"];
         auto children = elements["child"];
         ---
 
-        The above will clobber elements, because the document reuses node
+        The above will lose elements, because the document reuses node
         space for subsequent queries. In order to retain queries, do this:
         ---
         auto elements = doc.query["element"].dup;
@@ -1111,7 +1082,7 @@ private class XmlPath(T)
         struct NodeSet
         {
                 private XmlPath host;
-                private Node[]   members;
+                private Node[]  members;
                
                 /***************************************************************
         
