@@ -390,7 +390,7 @@ else
         private struct NodeImpl
         {
                 public XmlNodeType      type;
-                public uint             uriID;
+                public uint             index;
                 public T[]              prefix;
                 public T[]              localName;
                 public T[]              rawValue;
@@ -517,6 +517,18 @@ else
                         if (type is XmlNodeType.Element)
                             m = localName;
                         return m;
+                }
+                
+                /***************************************************************
+                
+                        Return the index of this node, or how many 
+                        prior siblings it has
+
+                ***************************************************************/
+       
+                uint position ()
+                {
+                        return index;
                 }
                 
                 /***************************************************************
@@ -733,6 +745,37 @@ else
                 }
 
                 /***************************************************************
+        
+                        Return a set containing all data nodes of the 
+                        nodes within this set, which match the optional
+                        value
+
+                ***************************************************************/
+        
+                Node data (bool delegate(Node) test)
+                {
+                        if (type is XmlNodeType.Element)
+                            foreach (child; children)
+                                     if (child.type is XmlNodeType.Data)
+                                         if (test (child))
+                                             return child;
+                        return null;
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all data nodes of the 
+                        nodes within this set, which match the optional
+                        value
+
+                ***************************************************************/
+        
+                bool hasData (bool delegate(Node) test)
+                {
+                        return data(test) !is null;
+                }
+
+                /***************************************************************
                 
                         Sweep the text nodes looking for match
 
@@ -740,27 +783,9 @@ else
 
                 ***************************************************************/
         
-                Node getData (T[] text)
-                {
-                        if (type is XmlNodeType.Element)
-                            foreach (child; children)
-                                     if (child.type is XmlNodeType.Data)
-                                         if (text == child.rawValue)
-                                             return child;
-                        return null;
-                }
-
-                /***************************************************************
-                
-                        Sweep the text nodes looking for match
-
-                        Returns true if found.
-
-                ***************************************************************/
-        
                 bool hasData (T[] text)
                 {
-                        return getData (text) !is null;
+                        return hasData ((Node n){return n.rawValue == text;});
                 }
 
                 /***************************************************************
@@ -843,7 +868,6 @@ else
                 private void attrib (Node node, uint uriID = 0)
                 {
                         assert (node.parent is null);
-                        node.uriID = uriID;
                         node.parent_ = this;
                         node.type = XmlNodeType.Attribute;
         
@@ -851,10 +875,14 @@ else
                            {
                            lastAttr_.nextSibling_ = node;
                            node.prevSibling_ = lastAttr_;
+                           node.index = lastAttr_.index + 1;
                            lastAttr_ = node;
                            }
                         else 
+                           {
                            firstAttr_ = lastAttr_ = node;
+                           node.index = 0;
+                           }
                 }
         
                 /***************************************************************
@@ -872,12 +900,13 @@ else
                            {
                            lastChild_.nextSibling_ = node;
                            node.prevSibling_ = lastChild_;
+                           node.index = lastChild_.index + 1;
                            lastChild_ = node;
                            }
                         else 
                            {
-                           firstChild_ = node;
-                           lastChild_ = node;                  
+                           firstChild_ = lastChild_ = node;                  
+                           node.index = 0;
                            }
                 }
 
@@ -1296,13 +1325,13 @@ private class XmlPath(T)
 
                 /***************************************************************
         
-                        Return a set containing all text nodes of the 
+                        Return a set containing all data nodes of the 
                         nodes within this set, which match the optional
                         value
 
                 ***************************************************************/
         
-                NodeSet text (T[] value = null)
+                NodeSet data (T[] value = null)
                 {
                         if (value.ptr)
                             return child ((Node node){return node.value == value;}, 
