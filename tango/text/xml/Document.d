@@ -89,14 +89,16 @@ package import tango.text.xml.PullParser;
         ---
 
         Note that path queries are temporal - they do not retain content
-        across mulitple queries. For example:
+        across mulitple queries. That is, the lifetime of a query result
+        is limited unless you explicitly copy it. For example, this will 
+        fail:
         ---
         auto elements = doc.query["element"];
         auto children = elements["child"];
         ---
 
-        The above will clobber 'elements', because the document reuses node
-        space for subsequent queries. In order to retain queries, do this:
+        The above will lose elements because the associated document reuses 
+        node space for subsequent queries. In order to retain results, do this:
         ---
         auto elements = doc.query["element"].dup;
         auto children = elements["child"];
@@ -107,7 +109,16 @@ package import tango.text.xml.PullParser;
         ---
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
         ---
-   
+
+        Typical usage tends to follow the following pattern, Where each query 
+        result is processed before another is initiated:
+        ---
+        foreach (node; doc.query.child("element"))
+                {
+                // do something with each node
+                }
+        ---
+            
 *******************************************************************************/
 
 class Document(T) : private PullParser!(T)
@@ -1030,6 +1041,74 @@ else
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
         ---
   
+        Typical usage tends to follow the following pattern, Where each query 
+        result is processed before another is initiated:
+        ---
+        foreach (node; doc.query.child("element"))
+                {
+                // do something with each node
+                }
+        ---
+
+        Supported axis include:
+        ---
+        .child                  immediate children
+        .parent                 immediate parent 
+        .next                   following siblings
+        .prev                   prior siblings
+        .ancestor               all parents
+        .descendant             all descendants
+        .text                   text children
+        .attribute              attribute children
+        ---
+
+        Each of the above accept an optional string, which is used in an
+        axis-specific way to filter nodes. For instance, a .child("food") 
+        will filter <food> child elements. These variants are shortcuts
+        to using a filter to post-process a result. Each of the above also
+        have variants which accept a delegate instead.
+
+        In general, you traverse an axis and operate upon the results. The
+        operation applied may be another axis traversal, or a filtering 
+        step. All steps can be, and generally should be chained together. 
+        Filters are implemented via a delegate mechanism:
+        ---
+        .filter (bool delegate(Node))
+        ---
+
+        Where the delegate returns true if the node passes the filter. An
+        example might be selecting all nodes with a specific attribute:
+        ---
+        auto set = doc.query.descendant.filter((doc.Node n){return n.hasAttribute("test");});
+        ---
+
+        Obviously this is not as clean and tidy as true XPath notation, but 
+        that can be wrapped atop this API instead. The benefit here is one 
+        of raw throughput - important for some applications. 
+
+        Note that every operation returns a discrete result. Methods first()
+        and last() also return a set of one or zero elements. Some language
+        specific extensions are provided for too:
+        ---
+        * .child() can be substituted with [] notation instead
+
+        * [] notation can be used to index a specific element, like .nth()
+
+        * the .nodes attribute exposes an underlying Node[], which may be
+          sliced or traversed in the usual D manner
+        ---
+
+       Other NodeSet utility methods include:
+       ---
+       .dup
+       .first
+       .last
+       .opIndex
+       .nth
+       .count
+       .opApply
+       ---
+
 *******************************************************************************/
 
 private class XmlPath(T)
