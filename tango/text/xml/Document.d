@@ -12,6 +12,8 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
+version=discrete;
+
 /*******************************************************************************
 
         Implements a DOM atop the XML parser, supporting document 
@@ -484,12 +486,19 @@ else
                 
                 /***************************************************************
                 
-                        Return the raw data content, which may be null
+                        Return the data content, which may be null
 
                 ***************************************************************/
         
                 T[] value ()
                 {
+version(discrete)
+{
+                        if (type is XmlNodeType.Element)
+                            foreach (child; children)
+                                     if (child.type is XmlNodeType.Data)
+                                         return child.rawValue;
+}
                         return rawValue;
                 }
                 
@@ -502,21 +511,6 @@ else
                 void value (T[] val)
                 {
                         rawValue = val; 
-                }
-                
-                /***************************************************************
-                
-                        Return the 'string' of this node, which is raw 
-                        content for most nodes, and local name for elements
-
-                ***************************************************************/
-        
-                T[] string ()
-                {
-                        auto m = rawValue;
-                        if (type is XmlNodeType.Element)
-                            m = localName;
-                        return m;
                 }
                 
                 /***************************************************************
@@ -578,8 +572,15 @@ else
                 {
                         auto node = create (XmlNodeType.Element, null);
                         append (node.set (prefix, local));
+version(discrete)
+{
                         if (value.length)
-                            node.append (create(XmlNodeType.Data, value));
+                            node.data (value);
+}
+else
+{
+                        node.rawValue = value;
+}
                         return node;
                 }
         
@@ -746,9 +747,9 @@ else
 
                 /***************************************************************
         
-                        Return a set containing all data nodes of the 
-                        nodes within this set, which match the optional
-                        value
+                        Sweep the data nodes looking for match
+
+                        Returns a matching node, or null.
 
                 ***************************************************************/
         
@@ -764,9 +765,9 @@ else
 
                 /***************************************************************
         
-                        Return a set containing all data nodes of the 
-                        nodes within this set, which match the optional
-                        value
+                        Sweep the data nodes looking for match
+
+                        Returns true if found.
 
                 ***************************************************************/
         
@@ -777,9 +778,9 @@ else
 
                 /***************************************************************
                 
-                        Sweep the text nodes looking for match
+                        Sweep the data nodes looking for match
 
-                        Returns a matching node, or null.
+                        Returns true if found.
 
                 ***************************************************************/
         
