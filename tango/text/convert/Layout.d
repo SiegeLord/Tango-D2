@@ -396,7 +396,7 @@ class Layout(T)
                                        if (p !is _arg )
                                            length += sink (", ");
                                        processElement (tiStat.value, p);
-                                       p += tiStat.tsize;
+                                       p += tiStat.tsize/tiStat.len;
                                        }
                                    length += sink (" ]");
                                    }
