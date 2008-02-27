@@ -705,18 +705,16 @@ else
         
                 Node getAttribute (T[] name, T[] value = null)
                 {
-                        if (type is XmlNodeType.Element)
-                            foreach (attr; attributes)
-                                     if (attr.type is XmlNodeType.Attribute)
-                                        {
-                                        if (name.ptr && name != attr.localName)
-                                            continue;
+                        foreach (attr; attributes)
+                                {
+                                if (name.ptr && name != attr.localName)
+                                    continue;
 
-                                        if (value.ptr && value != attr.rawValue)
-                                            continue;
+                                if (value.ptr && value != attr.rawValue)
+                                    continue;
 
-                                        return attr;
-                                        }
+                                return attr;
+                                }
                         return null;
                 }
 
