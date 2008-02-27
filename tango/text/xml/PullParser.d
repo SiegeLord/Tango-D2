@@ -14,6 +14,9 @@ private import tango.text.Util : indexOf;
 
 private import Integer = tango.text.convert.Integer;
 
+version = a;
+version = b;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -34,15 +37,6 @@ public enum XmlTokenType {Done, StartElement, Attribute, EndElement,
 
         Token based XML Parser.  Works with char[], wchar[], and dchar[] 
         based Xml strings. 
-
-        Acknowledgements:
-
-        This parser was inspired by VTD-XML and Marcin Kalicinski's RapidXml 
-        parser.  Thanks to the RapidXml project for the lookup table idea.  
-        We have used a few similar lookup tables to implement this parser. 
-        Also the idea of not copying the source string but simply referencing 
-        it is used here. IXmlTokenIterator doesn't implement the same interface 
-        as VTD-XML, but  the spirit is similar. Thank you for your work!
 
 *******************************************************************************/
 
