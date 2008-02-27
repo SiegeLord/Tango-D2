@@ -1098,7 +1098,7 @@ else
           sliced or traversed in the usual D manner
         ---
 
-       Other NodeSet utility methods include:
+       Other (query result) utility methods include:
        ---
        .dup
        .first
