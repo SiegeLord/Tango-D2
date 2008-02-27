@@ -682,6 +682,7 @@ int ilogb(real x)
             }
             return y;
         } else static if (real.mant_dig==64) { // 80-bit reals
+            alias floatTraits!(real) F;
             short e = (cast(short *)&x)[F.EXPPOS_SHORT] & F.EXPMASK;
             if (e == F.EXPMASK) {
                 // BUG: should also set the invalid exception
