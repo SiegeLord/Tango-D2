@@ -1009,14 +1009,16 @@ else
         ---
 
         Note that path queries are temporal - they do not retain content
-        across mulitple queries. For example, this will fail:
+        across mulitple queries. That is, the lifetime of a query result
+        is limited unless you explicitly copy it. For example, this will 
+        fail:
         ---
         auto elements = doc.query["element"];
         auto children = elements["child"];
         ---
 
-        The above will lose elements, because the document reuses node
-        space for subsequent queries. In order to retain queries, do this:
+        The above will lose elements, because the associated document reuses 
+        node space for subsequent queries. In order to retain results, do this:
         ---
         auto elements = doc.query["element"].dup;
         auto children = elements["child"];
@@ -1027,13 +1029,13 @@ else
         ---
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
         ---
-   
+  
 *******************************************************************************/
 
 private class XmlPath(T)
 {       
         public alias Document!(T) Doc;          /// the typed document
-        public alias Doc.Node Node;             /// generic document node
+        public alias Doc.Node     Node;         /// generic document node
          
         private Node[]          freelist;
         private uint            freeIndex,
@@ -1082,7 +1084,7 @@ private class XmlPath(T)
         struct NodeSet
         {
                 private XmlPath host;
-                public  Node[]  members;
+                public  Node[]  nodes;
                
                 /***************************************************************
         
@@ -1093,7 +1095,7 @@ private class XmlPath(T)
                 NodeSet dup ()
                 {
                         NodeSet copy = {host};
-                        copy.members = members.dup;
+                        copy.nodes = nodes.dup;
                         return copy;
                 }
 
@@ -1105,7 +1107,7 @@ private class XmlPath(T)
         
                 uint count ()
                 {
-                        return members.length;
+                        return nodes.length;
                 }
 
                 /***************************************************************
@@ -1129,7 +1131,7 @@ private class XmlPath(T)
         
                 NodeSet last ()
                 {       
-                        auto i = members.length;
+                        auto i = nodes.length;
                         if (i > 0)
                             --i;
                         return nth (i);
@@ -1158,8 +1160,8 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        if (index < members.length)
-                            host.allocate (members [index]);
+                        if (index < nodes.length)
+                            host.allocate (nodes [index]);
                         return set.assign (mark);
                 }
 
@@ -1316,8 +1318,9 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (member; members)
-                                 test (filter, member);
+
+                        foreach (node; nodes)
+                                 test (filter, node);
                         return set.assign (mark);
                 }
 
@@ -1334,31 +1337,11 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (parent; members)
+
+                        foreach (parent; nodes)
                                  foreach (child; parent.children)
                                           if (child.type is type)
                                               test (filter, child);
-                        return set.assign (mark);
-                }
-
-                /***************************************************************
-        
-                        Return a set containing all parent nodes of 
-                        the nodes within this set which pass the given
-                        filtering test
-
-                ***************************************************************/
-        
-                NodeSet parent (bool delegate(Node) filter)
-                {
-                        NodeSet set = {host};
-                        auto mark = host.mark;
-                        foreach (member; members)
-                                {
-                                auto p = member.parent;
-                                if (p && p.type != XmlNodeType.Document)
-                                   test (filter, p);
-                                }
                         return set.assign (mark);
                 }
 
@@ -1374,8 +1357,9 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (member; members)
-                                 foreach (attr; member.attributes)
+
+                        foreach (node; nodes)
+                                 foreach (attr; node.attributes)
                                           test (filter, attr);
                         return set.assign (mark);
                 }
@@ -1405,9 +1389,38 @@ private class XmlPath(T)
                         NodeSet set = {host};
                         auto mark = host.mark;
 
-                        foreach (member; members)
-                                 traverse (member);
+                        foreach (node; nodes)
+                                 traverse (node);
+                        return set.assign (mark);
+                }
 
+                /***************************************************************
+        
+                        Return a set containing all parent nodes of 
+                        the nodes within this set which pass the given
+                        filtering test
+
+                ***************************************************************/
+        
+                NodeSet parent (bool delegate(Node) filter)
+                {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+
+                        foreach (node; nodes)
+                                {
+                                auto p = node.parent;
+                                if (p && p.type != XmlNodeType.Document && !set.has(p))
+                                   {
+                                   test (filter, p);
+                                   // continually update our set of nodes, so
+                                   // that set.has() can see a prior entry.
+                                   // Ideally we'd avoid invoking test() on
+                                   // prior nodes, but I don't feel the added
+                                   // complexity is warranted
+                                   set.nodes = host.slice (mark);
+                                   }
+                                }
                         return set.assign (mark);
                 }
 
@@ -1421,22 +1434,27 @@ private class XmlPath(T)
         
                 NodeSet ancestor (bool delegate(Node) filter)
                 {
+                        NodeSet set = {host};
+                        auto mark = host.mark;
+
                         void traverse (Node child)
                         {
                                 auto p = child.parent_;
-                                if (p && p.type != XmlNodeType.Document)
+                                if (p && p.type != XmlNodeType.Document && !set.has(p))
                                    {
                                    test (filter, p);
+                                   // continually update our set of nodes, so
+                                   // that set.has() can see a prior entry.
+                                   // Ideally we'd avoid invoking test() on
+                                   // prior nodes, but I don't feel the added
+                                   // complexity is warranted
+                                   set.nodes = host.slice (mark);
                                    traverse (p);
                                    }
                         }
 
-                        NodeSet set = {host};
-                        auto mark = host.mark;
-
-                        foreach (member; members)
-                                 traverse (member);
-
+                        foreach (node; nodes)
+                                 traverse (node);
                         return set.assign (mark);
                 }
 
@@ -1453,9 +1471,10 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (member; members)
+
+                        foreach (node; nodes)
                                 {
-                                auto p = member.nextSibling_;
+                                auto p = node.nextSibling_;
                                 while (p)
                                       {
                                       if (p.type is type)
@@ -1479,9 +1498,10 @@ private class XmlPath(T)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
-                        foreach (member; members)
+
+                        foreach (node; nodes)
                                 {
-                                auto p = member.prevSibling_;
+                                auto p = node.prevSibling_;
                                 while (p)
                                       {
                                       if (p.type is type)
@@ -1494,15 +1514,16 @@ private class XmlPath(T)
 
                 /***************************************************************
                 
-                        Traverse the members of this set
+                        Traverse the nodes of this set
 
                 ***************************************************************/
         
                 int opApply (int delegate(inout Node) dg)
                 {
                         int ret;
-                        foreach (member; members)
-                                 if ((ret = dg (member)) != 0) 
+
+                        foreach (node; nodes)
+                                 if ((ret = dg (node)) != 0) 
                                       break;
                         return ret;
                 }
@@ -1526,7 +1547,7 @@ private class XmlPath(T)
         
                 private NodeSet assign (uint mark)
                 {
-                        members = host.slice (mark);
+                        nodes = host.slice (mark);
                         return *this;
                 }
 
@@ -1547,6 +1568,22 @@ private class XmlPath(T)
                         --host.recursion;
                         if (add)
                             host.allocate (node);
+                }
+
+                /***************************************************************
+        
+                        We typically need to filter ancestors in order
+                        to avoid duplicates, so this is used for those
+                        purposes                        
+
+                ***************************************************************/
+        
+                private bool has (Node p)
+                {
+                        foreach (node; nodes)
+                                 if (node is p)
+                                     return true;
+                        return false;
                 }
         }
 
