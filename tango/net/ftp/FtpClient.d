@@ -189,7 +189,7 @@ class FTPConnection : Telnet
     {
         throw new FTPException ("Exception: " ~ msg);
     }
-      
+
     /// ditto
     protected void exception (FtpResponse r)
     {
@@ -575,7 +575,7 @@ class FTPConnection : Telnet
                         h4 = (data_addr.addr() >> 0_) % 256;
                         p1 = (data_addr.port() >> 8_) % 256;
                         p2 = (data_addr.port() >> 0_) % 256;
-        
+
                         // low overhead method to format a numerical string
                         char[64] tmp = void;
                         char[20] foo = void;
@@ -681,8 +681,8 @@ class FTPConnection : Telnet
                 auto response = this.readResponse("229");
 
                 // Try to pull out the (possibly not parenthesized) address.
-                auto r = Regex(`\([^0-9][^0-9][^0-9](\d+)[^0-9]\)`).search(response.message);
-                if (r is null)
+                auto r = Regex(`\([^0-9][^0-9][^0-9](\d+)[^0-9]\)`);
+                if ( !r.test(response.message) )
                     throw new FTPException("CLIENT: Unable to parse address", "501");
 
                 IPv4Address remote = cast(IPv4Address) this.socket.remoteAddress();
@@ -699,8 +699,8 @@ class FTPConnection : Telnet
                 auto response = this.readResponse("227");
 
                 // Try to pull out the (possibly not parenthesized) address.
-                auto r = Regex(`(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(,\s*(\d+))?`).search(response.message);
-                if (r is null)
+                auto r = Regex(`(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)(,\s*(\d+))?`);
+                if ( !r.test(response.message) )
                     throw new FTPException("CLIENT: Unable to parse address", "501");
 
                 // Now put it into something std.socket will understand.
@@ -1223,8 +1223,8 @@ class FTPConnection : Telnet
                     return info;
 
                 // The order is 1 MM, 2 DD, 3 YY, 4 HH, 5 MM, 6 P
-                auto r = Regex(`(\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(A|P)M`).search(line);
-                if (r is null)
+                auto r = Regex(`(\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(A|P)M`);
+                if ( r.test(line) )
                     return info;
 
                 if (Timestamp.dostime (r.match(0), info.modify) is 0)
@@ -1354,7 +1354,7 @@ class FTPConnection : Telnet
         if (timeval.length < 14)
             throw new FTPException("CLIENT: Unable to parse timeval", "501");
 
-        return Gregorian.generic.toTime (Integer.atoi (timeval[0..4]), 
+        return Gregorian.generic.toTime (Integer.atoi (timeval[0..4]),
                                                  Integer.atoi (timeval[4..6]),
                                                  Integer.atoi (timeval[6..8]),
                                                  Integer.atoi (timeval[8..10]),
