@@ -276,11 +276,9 @@ private:
     static IeeeFlags getIeeeFlags()
     {
         // This is a highly time-critical operation, and
-        // should really be an intrinsic. In this case, we
-        // take advantage of the fact that for DMD
-        // a struct containing only a int is returned in EAX.
+        // should really be an intrinsic.
        version(D_InlineAsm_X86) {
-           version(GNU) {
+           version(Linux) {
              IeeeFlags tmp1;
              asm {
                  fstsw AX;
@@ -292,7 +290,7 @@ private:
              }
              return tmp1;
            }
-           else { // DMD
+           else { // DMD-Windows
              // In this case, we
              // take advantage of the fact that for DMD-Windows
              // a struct containing only a int is returned in EAX.
@@ -1113,6 +1111,8 @@ unittest
 
 /*********************************
  * Return !=0 if x is &plusmn;0.
+ *
+ * Does not affect any floating-point flags
  */
 int isZero(real x)
 {
@@ -1405,7 +1405,7 @@ unittest {
 }
 
 /**
- * Calculate the next smallest floating point value after x.
+ * Calculate the next smallest floating point value before x.
  *
  * Return the greatest number less than x that is representable as a real;
  * thus, it gives the previous point on the IEEE number line.
@@ -1493,6 +1493,7 @@ int feqrel(real x, real y)
 {
     /* Public Domain. Author: Don Clugston, 18 Aug 2005.
      */
+  static if (real.mant_dig==64 || real.mant_dig==113 || real.mant_dig==53) {
 
     if (x == y) return real.mant_dig; // ensure diff!=0, cope with INF.
 
@@ -1520,9 +1521,6 @@ int feqrel(real x, real y)
  } else static if (real.mant_dig==53) { // double
     int bitsdiff = (( ((pa[F.EXPPOS_SHORT]&0x7FF0) + (pb[F.EXPPOS_SHORT]&0x7FF0)-0x10)>>1) 
                  - (pd[F.EXPPOS_SHORT]&0x7FF0))>>4;
- } else { //static if(real.mant_dig==106) { // doubledouble.
-    // doubledouble is difficult since it doesn't support denormals.
-    assert(0, "Unsupported");
  } 
 
     if (pd[F.EXPPOS_SHORT] == 0)
@@ -1540,9 +1538,13 @@ int feqrel(real x, real y)
     // Avoid out-by-1 errors when factor is almost 2.    
  static if (real.mant_dig==64 || real.mant_dig==113) { // real80 or quadruple    
     return (bitsdiff == 0) ? (pa[F.EXPPOS_SHORT] == pb[F.EXPPOS_SHORT]) : 0;
- } else { // double
+ } else static if (real.mant_dig==53) { // double
     if (bitsdiff == 0 && !((pa[F.EXPPOS_SHORT] ^ pb[F.EXPPOS_SHORT])& F.EXPMASK)) return 1;
     else return 0;
+ }
+ }else { //static if(real.mant_dig==106) { // doubledouble.
+    // doubledouble is difficult since it doesn't support denormals.
+    assert(0, "Unsupported");
  }
 }
 
