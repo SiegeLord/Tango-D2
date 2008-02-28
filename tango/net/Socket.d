@@ -500,7 +500,7 @@ else version (darwin)
 
         enum SocketOptionLevel
         {
-                SOCKET =  1,  // correct for linux on x86
+                SOCKET =  0xffff,
                 IP =      0,  // appears to be correct
                 TCP =     6,  // appears to be correct
                 UDP =     17, // appears to be correct
