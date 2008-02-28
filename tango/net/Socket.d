@@ -1557,15 +1557,18 @@ class NetHost
 
         ***********************************************************************/
 
-        synchronized bool getHostByName(char[] name)
+        bool getHostByName(char[] name)
         {
                 char[1024] tmp;
 
-                hostent* he = gethostbyname(convert2C (name, tmp));
-                if(!he)
-                    return false;
-                validHostent(he);
-                populate(he);
+                synchronized (Socket.classinfo)
+                             {
+                             hostent* he = gethostbyname(convert2C (name, tmp));
+                             if(!he)
+                                return false;
+                             validHostent(he);
+                             populate(he);
+                             }
                 return true;
         }
 
@@ -1575,14 +1578,17 @@ class NetHost
 
         ***********************************************************************/
 
-        synchronized bool getHostByAddr(uint addr)
+        bool getHostByAddr(uint addr)
         {
                 uint x = htonl(addr);
-                hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
-                if(!he)
-                    return false;
-                validHostent(he);
-                populate(he);
+                synchronized (Socket.classinfo)
+                             {
+                             hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
+                             if(!he)
+                                 return false;
+                             validHostent(he);
+                             populate(he);
+                             }
                 return true;
         }
 
@@ -1593,16 +1599,19 @@ class NetHost
         ***********************************************************************/
 
         //shortcut
-        synchronized bool getHostByAddr(char[] addr)
+        bool getHostByAddr(char[] addr)
         {
                 char[64] tmp;
 
-                uint x = inet_addr(convert2C (addr, tmp));
-                hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
-                if(!he)
-                    return false;
-                validHostent(he);
-                populate(he);
+                synchronized (Socket.classinfo)
+                             {
+                             uint x = inet_addr(convert2C (addr, tmp));
+                             hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
+                             if(!he)
+                                 return false;
+                             validHostent(he);
+                             populate(he);
+                             }
                 return true;
         }
 }
