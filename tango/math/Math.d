@@ -49,6 +49,11 @@
  *  POWER = $1<sup>$2</sup>
  *  BIGSUM = $(BIG &Sigma; <sup>$2</sup><sub>$(SMALL $1)</sub>)
  *  CHOOSE = $(BIG &#40;) <sup>$(SMALL $1)</sup><sub>$(SMALL $2)</sub> $(BIG &#41;)
+ *	PLUSMN = &plusmn;
+ *	INFIN = &infin;
+ *	PI = &pi;
+ *	LT = &lt;
+ *	GT = &gt;
  *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
  *      <caption>Special Values</caption>
  *      $0</table>
@@ -358,12 +363,12 @@ version (GNU) {
 /**
  * Returns tangent of x. x is in radians.
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> tan(x)      <th> invalid?
- *  <tr> <td> $(NAN)          <td> $(NAN)      <td> yes
- *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0 <td> no
- *  <tr> <td> &plusmn;&infin; <td> $(NAN) <td> yes
- *  )
+ *	$(TABLE_SV
+ *	$(TR $(TH x)               $(TH tan(x))       $(TH invalid?))
+ *	$(TR $(TD $(NAN))          $(TD $(NAN))       $(TD yes))
+ *	$(TR $(TD $(PLUSMN)0.0)    $(TD $(PLUSMN)0.0) $(TD no))
+ *	$(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))     $(TD yes))
+ *	)
  */
 real tan(real x)
 {
@@ -562,11 +567,11 @@ unittest{
  * Calculates the arc cosine of x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
  *
- *  $(TABLE_SV
- *      <tr> <th> x        <th> acos(x) <th> invalid?
- *      <tr> <td> &gt;1.0  <td> $(NAN)  <td> yes
- *      <tr> <td> &lt;-1.0 <td> $(NAN)  <td> yes
- *      <tr> <td> $(NAN)   <td> $(NAN)  <td> yes
+ *	$(TABLE_SV
+ *      $(TR $(TH x)         $(TH acos(x)) $(TH invalid?))
+ *      $(TR $(TD $(GT)1.0)  $(TD $(NAN))  $(TD yes))
+ *      $(TR $(TD $(LT)-1.0) $(TD $(NAN))  $(TD yes))
+ *      $(TR $(TD $(NAN))    $(TD $(NAN))  $(TD yes))
  *      )
  */
 real acos(real x)
@@ -585,11 +590,11 @@ unittest {
  * Calculates the arc sine of x,
  * returning a value ranging from -&pi;/2 to &pi;/2.
  *
- *  $(TABLE_SV
- *  <tr> <th> x        <th> asin(x)  <th> invalid?
- *  <tr> <td> &plusmn;0.0    <td> &plusmn;0.0    <td> no
- *  <tr> <td> &gt;1.0  <td> $(NAN)   <td> yes
- *  <tr> <td> &lt;-1.0 <td> $(NAN)   <td> yes
+ *	$(TABLE_SV
+ *	$(TR $(TH x)            $(TH asin(x))      $(TH invalid?))
+ *	$(TR $(TD $(PLUSMN)0.0) $(TD $(PLUSMN)0.0) $(TD no))
+ *	$(TR $(TD $(GT)1.0)     $(TD $(NAN))       $(TD yes))
+ *	$(TR $(TD $(LT)-1.0)    $(TD $(NAN))       $(TD yes))
  *       )
  */
 real asin(real x)
@@ -606,13 +611,13 @@ unittest {
 
 /**
  * Calculates the arc tangent of x,
- * returning a value ranging from -&pi;/2 to &pi;/2.
+ * returning a value ranging from -$(PI)/2 to $(PI)/2.
  *
- *  $(TABLE_SV
- *  <tr> <th> x           <th> atan(x)  <th> invalid?
- *  <tr> <td> &plusmn;0.0       <td> &plusmn;0.0    <td> no
- *  <tr> <td> &plusmn;&infin;  <td> $(NAN)   <td> yes
- *       )
+ *	$(TABLE_SV
+ *	$(TR $(TH x)                 $(TH atan(x))      $(TH invalid?))
+ *	$(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) $(TD no))
+ *	$(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))       $(TD yes))
+ *  )
  */
 real atan(real x)
 {

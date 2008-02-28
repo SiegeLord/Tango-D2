@@ -512,6 +512,7 @@ real frexp(real value, out int exp)
         exp = ex - F.EXPBIAS - 63;
         vu[F.EXPPOS_SHORT] = cast(ushort)((0x8000 & vu[F.EXPPOS_SHORT]) | 0x3FFE);
     }
+   return value;
   } else static if (real.mant_dig == 113) { // quadruple      
         if (ex) { // If exponent is non-zero
             if (ex == F.EXPMASK) {   // infinity or NaN
@@ -537,6 +538,7 @@ real frexp(real value, out int exp)
         exp = ex - F.EXPBIAS - 113;
         vu[F.EXPPOS_SHORT] = cast(ushort)((0x8000 & vu[F.EXPPOS_SHORT]) | 0x3FFE);
     }
+   return value;
   } else static if (real.mant_dig==53) { // real is double
     if (ex) { // If exponent is non-zero
         if (ex == F.EXPMASK) {   // infinity or NaN
@@ -569,10 +571,10 @@ real frexp(real value, out int exp)
         exp = i;
         ve[F.EXPPOS_SHORT] = sgn;
     }
+   return value;
   }else { //static if(real.mant_dig==106) // doubledouble
         assert(0, "Unsupported");
   }
-    return value;
 }
 
 debug(UnitTest) {
@@ -681,7 +683,7 @@ int ilogb(real x)
             return y;
         } else static if (real.mant_dig==64) { // 80-bit reals
             alias floatTraits!(real) F;
-            short e = (cast(short *)&x)[F.EXPPOS_SHORT] & F.EXPMASK;
+            short e = cast(short)((cast(short *)&x)[F.EXPPOS_SHORT] & F.EXPMASK);
             if (e == F.EXPMASK) {
                 // BUG: should also set the invalid exception
                 ulong s = *cast(ulong *)&x;
@@ -700,7 +702,6 @@ int ilogb(real x)
                 x *= F.POW2MANTDIG;
                 short f = (cast(short *)&x)[F.EXPPOS_SHORT];
                 return -0x3FFF - (63-f);
-
             }
             return e - 0x3FFF;
         } else {
