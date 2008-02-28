@@ -317,13 +317,6 @@ class CertificateStore
         else
             throwOpenSSLError();
     }
-
-    // TODO: need to research what this does.
-    void depth(int dep)
-    {
-        if (!X509_STORE_set_depth(_store, dep))
-            throwOpenSSLError();
-    }
 }
 
 
@@ -406,7 +399,7 @@ class PrivateKey
 
     int opEquals(PrivateKey obj)
     {
-        return EVP_PKEY_cmp(obj._evpKey, this._evpKey);
+        return EVP_PKEY_cmp_parameters(obj._evpKey, this._evpKey);
     }
 
     /*******************************************************************************

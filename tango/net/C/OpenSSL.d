@@ -96,7 +96,16 @@ extern (C)
 
     const int ERR_TXT_STRING = 0x02;
 
-    struct BIO {};
+    struct BIO 
+	{
+		BIO_METHOD *method;
+		int function(BIO *b, int a, char *c, int d, int e, int f) callback;
+		char *cb_arg;
+		int init;
+		int shutdown;
+		int flags;
+		// yadda yadda
+	};
 
     typedef BIO* function(int sock, int close_flag) tBIO_new_socket;
     typedef BIO* function(SSL_CTX *ctx, int client) tBIO_new_ssl;
@@ -198,7 +207,7 @@ extern (C)
     typedef X509_STORE* function() tX509_STORE_new;
     typedef void function(X509_STORE *v) tX509_STORE_free;
     typedef int function(X509_STORE *store, X509 *x) tX509_STORE_add_cert;
-    typedef int function(X509_STORE *store, int depth) tX509_STORE_set_depth;
+//    typedef int function(X509_STORE *store, int depth) tX509_STORE_set_depth;
     typedef BIO* function(void *buff, int len) tBIO_new_mem_buf;
     typedef RSA* function(int bits, uint e, void function(int a, int b, void *c) callback, void *cb_arg) tRSA_generate_key;
     typedef EVP_PKEY* function() tEVP_PKEY_new;
@@ -229,7 +238,7 @@ extern (C)
     typedef int function(i2d_of_void i2d, char *name, BIO *bp, char *x, EVP_CIPHER *enc, char *kstr, int klen, pem_password_cb cb, void *u) tPEM_ASN1_write_bio;
     typedef int function(X509_NAME *name, char* field, int type, char *bytes, int len, int loc, int set) tX509_NAME_add_entry_by_txt;
     typedef int function(SSL_CTX *ctx, ubyte *id, uint len) tSSL_CTX_set_session_id_context;
-    typedef int function(EVP_PKEY *a, EVP_PKEY *b) tEVP_PKEY_cmp;
+    typedef int function(EVP_PKEY *a, EVP_PKEY *b) tEVP_PKEY_cmp_parameters;
     typedef int function(X509 *a, X509 *b) tX509_cmp;
     typedef void function() tOPENSSL_add_all_algorithms_noconf;
     typedef ASN1_GENERALIZEDTIME *function(ASN1_TIME *t, ASN1_GENERALIZEDTIME **outTime) tASN1_TIME_to_generalizedtime;
@@ -323,6 +332,7 @@ extern (C)
     }
 
 }
+private bool _bioTestFlags = true;
 tBIO_test_flags BIO_test_flags;
 tBIO_new_socket BIO_new_socket;
 tBIO_new_ssl BIO_new_ssl;
@@ -372,7 +382,7 @@ tX509_STORE_CTX_get_error X509_STORE_CTX_get_error;
 tX509_STORE_new X509_STORE_new;
 tX509_STORE_free X509_STORE_free;
 tX509_STORE_add_cert X509_STORE_add_cert;
-tX509_STORE_set_depth X509_STORE_set_depth;
+//tX509_STORE_set_depth X509_STORE_set_depth;
 tBIO_new_mem_buf BIO_new_mem_buf;
 tRSA_generate_key RSA_generate_key;
 tEVP_PKEY_new EVP_PKEY_new;
@@ -405,7 +415,7 @@ tPEM_ASN1_write_bio PEM_ASN1_write_bio;
 i2d_of_void i2d_X509;
 tX509_NAME_add_entry_by_txt X509_NAME_add_entry_by_txt;
 tSSL_CTX_set_session_id_context SSL_CTX_set_session_id_context;
-tEVP_PKEY_cmp EVP_PKEY_cmp;
+tEVP_PKEY_cmp_parameters EVP_PKEY_cmp_parameters;
 tX509_cmp X509_cmp;
 tOPENSSL_add_all_algorithms_noconf OPENSSL_add_all_algorithms_noconf;
 tASN1_TIME_to_generalizedtime ASN1_TIME_to_generalizedtime;
@@ -459,22 +469,30 @@ int BIO_reset(BIO *b)
 
 bool BIO_should_retry(BIO *b)
 {
-    return cast(bool)BIO_test_flags(b, BIO_FLAGS_SHOULD_RETRY);
+	if (_bioTestFlags)
+	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_SHOULD_RETRY);
+	return cast(bool)(b.flags & BIO_FLAGS_SHOULD_RETRY);
 }
 
 bool BIO_should_io_special(BIO *b)
 {
-    return cast(bool)BIO_test_flags(b, BIO_FLAGS_IO_SPECIAL);
+	if (_bioTestFlags)
+	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_IO_SPECIAL);
+	return cast(bool)(b.flags & BIO_FLAGS_IO_SPECIAL);
 }
 
 bool BIO_should_read(BIO *b)
 {
-    return cast(bool)BIO_test_flags(b, BIO_FLAGS_READ);
+	if (_bioTestFlags)
+	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_READ);
+	return cast(bool)(b.flags & BIO_FLAGS_READ);
 }
 
 bool BIO_should_write(BIO *b)
 {
-    return cast(bool)BIO_test_flags(b, BIO_FLAGS_WRITE);
+	if (_bioTestFlags)
+	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_WRITE);
+	return cast(bool)(b.flags & BIO_FLAGS_WRITE);
 }
 
 X509* PEM_read_bio_X509(BIO *b, X509 **x, pem_password_cb cb, void *u)
@@ -540,7 +558,7 @@ void _initOpenSSL()
     SSL_load_error_strings();
     SSL_library_init();
     OPENSSL_add_all_algorithms_noconf();
-    version(linux)
+    version(Posix)
         RAND_load_file("/dev/urandom", BYTES_ENTROPY);
     version(Win32)
     {
@@ -622,14 +640,14 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(OPENSSL_add_all_algorithms_noconf, "OPENSSL_add_all_algorithms_noconf", ssllib);
         bindFunc(ASN1_TIME_to_generalizedtime, "ASN1_TIME_to_generalizedtime", ssllib);
         bindFunc(ASN1_STRING_free, "ASN1_STRING_free", ssllib);
-        bindFunc(EVP_PKEY_cmp, "EVP_PKEY_cmp", ssllib);
+        bindFunc(EVP_PKEY_cmp_parameters, "EVP_PKEY_cmp_parameters", ssllib);
         bindFunc(X509_STORE_CTX_get_current_cert, "X509_STORE_CTX_get_current_cert", ssllib);
         bindFunc(X509_STORE_CTX_get_error_depth, "X509_STORE_CTX_get_error_depth", ssllib);
         bindFunc(X509_STORE_CTX_get_error, "X509_STORE_CTX_get_error", ssllib);
         bindFunc(X509_STORE_new, "X509_STORE_new", ssllib);
         bindFunc(X509_STORE_free, "X509_STORE_free", ssllib);
         bindFunc(X509_STORE_add_cert, "X509_STORE_add_cert", ssllib);
-        bindFunc(X509_STORE_set_depth, "X509_STORE_set_depth", ssllib);
+//        bindFunc(X509_STORE_set_depth, "X509_STORE_set_depth", ssllib);
         bindFunc(BIO_new_mem_buf, "BIO_new_mem_buf", ssllib);
         bindFunc(RSA_generate_key, "RSA_generate_key", ssllib);
         bindFunc(EVP_PKEY_new, "EVP_PKEY_new", ssllib);
@@ -664,7 +682,10 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(PEM_read_bio_PrivateKey, "PEM_read_bio_PrivateKey", ssllib);
         bindFunc(BIO_new_file, "BIO_new_file", ssllib);
         bindFunc(ERR_peek_error, "ERR_peek_error", ssllib);
-        bindFunc(BIO_test_flags, "BIO_test_flags", ssllib);
+		try
+	        bindFunc(BIO_test_flags, "BIO_test_flags", ssllib); // 0.9.7 doesn't have this function, it access the struct directly
+		catch (Exception ex)
+			_bioTestFlags = false;
         bindFunc(BIO_ctrl, "BIO_ctrl", ssllib);
         bindFunc(RAND_load_file, "RAND_load_file", ssllib);
         bindFunc(CRYPTO_num_locks, "CRYPTO_num_locks", ssllib);
@@ -701,8 +722,12 @@ void loadOpenSSL()
     }
     version (Win32)
     {
-        char[][] loadPath = [ "libssl32.dll" ]; // ??
+        char[][] loadPath = [ "libssl32.dll" ];
     }
+	version (darwin)
+	{
+		char[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
+	}
     if ((ssllib = loadLib(loadPath)) !is null)
     {
 
@@ -723,7 +748,7 @@ void loadOpenSSL()
         bindFunc(SSL_CTX_set_cert_store, "SSL_CTX_set_cert_store", ssllib);
         bindFunc(SSL_CTX_load_verify_locations, "SSL_CTX_load_verify_locations", ssllib);
         bindFunc(SSL_CTX_set_session_id_context, "SSL_CTX_set_session_id_context", ssllib);
-        version(linux)
+        version(Posix)
         {
             bindCrypto(ssllib);
         }
