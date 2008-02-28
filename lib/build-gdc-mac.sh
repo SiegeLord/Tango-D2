@@ -32,6 +32,8 @@ done
 
 # build Universal Binary versions of the Tango libraries
 
+export MAKETOOL=make
+
 HOME=`pwd` make -s clean -fgdc-posix.mak
 
 LIBS="common/libtango-cc-tango.a gc/libtango-gc-basic.a libgphobos.a"
