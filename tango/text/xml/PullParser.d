@@ -1,10 +1,13 @@
 /*******************************************************************************
  
-        Copyright: Copyright (C) 2007 Aaron Craelius and Kris Bell.  
+        Copyright: Copyright (C) 2007 Aaron Craelius and Kris Bell  
                    All rights reserved.
 
-        License:   BSD Style
-        Authors:   Aaron Craelius and Kris Bell
+        License:   BSD style: $(LICENSE)
+
+        version:   Initial release: February 2008      
+
+        Authors:   Aaron, Kris
 
 *******************************************************************************/
 
@@ -35,8 +38,24 @@ public enum XmlTokenType {Done, StartElement, Attribute, EndElement,
 
 /*******************************************************************************
 
-        Token based XML Parser.  Works with char[], wchar[], and dchar[] 
-        based Xml strings. 
+        Token based XML Parser.  Templated to operate with char[], wchar[], 
+        and dchar[] based Xml strings. 
+
+        The parser is constructed with some tradeoffs relating to document
+        integrity. It is generally optimized for well-formed documents, and
+        currently may read past a document-end for those that are not well
+        formed. There are various compilation options to enable checks and
+        balances, depending on how things should be handled. We'll settle
+        on a common configuration over the next few weeks, but for now all
+        settings are somewhat experimental. Partly because making some tiny 
+        unrelated change to the code can cause notable throughput changes, 
+        and we need to track that down.
+
+        We're not yet clear why these swings are so pronounced (for changes
+        outside the code path) but they seem to be related to the alignment
+        of codegen. It could be a cache-line issue, or something else. We'll
+        figure it out, yet it's interesting that some hardware buttons are 
+        clearly being pushed
 
 *******************************************************************************/
 

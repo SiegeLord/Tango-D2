@@ -3,7 +3,10 @@
         Copyright: Copyright (C) 2007-2008 Scott Sanders, Kris Bell.  
                    All rights reserved.
 
-        License:   BSD Style
+        License:   BSD style: $(LICENSE)
+
+        version:   Initial release: February 2008      
+
         Authors:   stonecobra, Kris
 
         Acknowledgements: 
@@ -13,7 +16,8 @@
                    de-facto standard.  It may not be the best XML API, 
                    but it sure is handy. For more information, see 
                    <a href='http://www.saxproject.org'>http://www.saxproject.org</a>.
- *******************************************************************************/
+
+*******************************************************************************/
 
 module tango.text.xml.SaxParser;
 

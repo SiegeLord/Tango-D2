@@ -1,10 +1,12 @@
 /*******************************************************************************
 
-        Copyright: Copyright (C) 2007-2008 Aaron Craelius, Kris Bell.  
-                   All rights reserved.
+        Copyright: Copyright (C) 2007-2008 Aaron Craelius.  All rights reserved.
 
-        License:   BSD Style
-        Authors:   Aaron, Kris
+        License:   BSD style: $(LICENSE)
+
+        version:   Initial release: February 2008      
+
+        Authors:   Aaron
 
 *******************************************************************************/
 
