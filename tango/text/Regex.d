@@ -564,6 +564,13 @@ struct CharRange(char_t)
         return 1;
     }
 
+    int opEquals(CharRange cr)
+    {
+        if ( l_ == cr.l_ && r_ == cr.r_ )
+            return 1;
+        return 0;
+    }
+
     bool contains(char_t c)
     {
         return c >= l_ && c <= r_;
@@ -780,6 +787,32 @@ struct CharClass(char_t)
             }
         }
         return ic;
+    }
+
+    // requires the class to be optimized
+    bool contains(range_t cr)
+    {
+        foreach ( p; parts )
+        {
+            if ( p.contains(cr) )
+                return true;
+        }
+        return false;
+    }
+
+    // requires the class to be optimized
+    bool contains(CharClass cc)
+    {
+        Louter: foreach ( p; cc.parts )
+        {
+            foreach ( p2; parts )
+            {
+                if ( p2.contains(p) )
+                    continue Louter;
+            }
+            return false;
+        }
+        return true;
     }
 
     void subtract(CharClass cc)
@@ -1137,7 +1170,7 @@ private class TNFAState(char_t)
     Priority classes used to linearize priorities after non-linear transition creation.
 **************************************************************************************************/
 private enum PriorityClass {
-    greedy=0, normal, reluctant, extraReluctant
+    greedy=0, normal=1, reluctant=2, extraReluctant=3
 }
 
 /* ************************************************************************************************
@@ -1244,7 +1277,7 @@ private class TNFA(char_t)
             Stdout(" {");
             foreach ( t; s.transitions )
             {
-                Stdout.format("{}{}{}:{}->{}", first?"":", ", t.priority, "gnrx"[t.priorityClass], t.predicate.toString, t.target.index);
+                Stdout.format("{}{}{}:{}->{}", first?"":", ", t.priority, "gnrx"[t.priorityClass], t.predicate.toString, t.target is null?-1:t.target.index);
                 if ( t.tag > 0 ) {
                     Stdout.format(" t{}", t.tag);
                 }
@@ -2321,12 +2354,9 @@ private class TDFA(char_t)
             unmarked.pop;
 
             // create transitions for each class, creating new states when necessary
-            foreach ( disjoint; disjointPredicates(state) )
+            foreach ( pred; disjointPredicates(state) )
             {
                 // find NFA state we reach with pred
-                predicate_t pred;
-                pred.appendInput(disjoint);
-
                 // reach will set predicate type correctly
                 debug(tdfa) Stdout.format("from {} with {} reach", state.dfa_state.index, pred.toString);
                 SubsetState target = reach(state, pred);
@@ -2586,6 +2616,21 @@ private:
             this.elms = elms;
         }
 
+        int opApply(int delegate (ref TNFATransition!(char_t)) dg)
+        {
+            int res;
+            foreach ( elm; elms )
+            {
+                foreach ( t; elm.nfa_state.transitions )
+                {
+                    res = dg(t);
+                    if ( res )
+                        return res;
+                }
+            }
+            return res;
+        }
+
         string toString()
         {
             string str = "[ ";
@@ -2667,27 +2712,24 @@ private:
         Params:     state = SubsetState to create the predicates from
         Returns:    List of disjoint predicates that can be used for a DFA state
     **********************************************************************************************/
-    range_t[] disjointPredicates(SubsetState state)
+    predicate_t[] disjointPredicates(SubsetState state)
     {
         alias CharRange!(char_t) range_t;
         debug(tdfa) Stdout.formatln("disjointPredicates()");
 
         size_t num_marks;
-        foreach ( elm; state.elms )
+        foreach ( t; state )
         {
-            foreach ( t; elm.nfa_state.transitions )
+            // partitioning will consider lookbehind transitions,
+            // st. lb-closure will not expand for transitions with a superset of the lb-predicate
+            if ( t.predicate.type != predicate_t.Type.epsilon )
             {
-                // partitioning will consider lookbehind transitions,
-                // st. lb-closure will not expand for transitions with a superset of the lb-predicate
-                if ( t.predicate.type != predicate_t.Type.epsilon )
-                {
-                    debug(tdfa) Stdout.formatln("{}", t.predicate.toString);
-                    if ( marks_.length < num_marks+2*t.predicate.getInput.parts.length )
-                        marks_.length = num_marks+2*t.predicate.getInput.parts.length;
-                    foreach ( p; t.predicate.getInput.parts ) {
-                        marks_[num_marks++] = Mark(p.l, false);
-                        marks_[num_marks++] = Mark(p.r, true);
-                    }
+                debug(tdfa) Stdout.formatln("{}", t.predicate.toString);
+                if ( marks_.length < num_marks+2*t.predicate.getInput.parts.length )
+                    marks_.length = num_marks+2*t.predicate.getInput.parts.length;
+                foreach ( p; t.predicate.getInput.parts ) {
+                    marks_[num_marks++] = Mark(p.l, false);
+                    marks_[num_marks++] = Mark(p.r, true);
                 }
             }
         }
@@ -2771,6 +2813,34 @@ private:
         }
         disjoint.length = next;
 
+        // merge isolated ranges into sets of ranges
+        // no range in a set may occur separated from the others in any predicate
+        predicate_t[]   preds;
+        preds.length = 1;
+        Lmerge: foreach ( r; disjoint )
+        {
+            if ( preds[$-1].empty )
+                preds[$-1].appendInput(r);
+            else
+            {
+                // we can merge r into the current predicate if
+                // pred contains r <=> pred contains all the other ranges
+                foreach ( t; state )
+                {
+                    if ( t.predicate.type == predicate_t.Type.epsilon )
+                        continue;
+
+                    if ( t.predicate.getInput.contains(r)
+                        != t.predicate.getInput.contains(preds[$-1].getInput) )
+                    {
+                        preds.length = preds.length+1;
+                        break;
+                    }
+                }
+                preds[$-1].appendInput(r);
+            }
+        }
+
         debug(tdfa)
         {
             Stdout("\ndisjoint ranges:\n");
@@ -2784,10 +2854,21 @@ private:
                 Stdout.format("{}", r);
             }
             Stdout.newline;
+            Stdout("\ndisjoint predicates:\n");
+            first=true;
+            foreach ( ref p; preds )
+            {
+                if ( first )
+                    first = false;
+                else
+                    Stdout(",");
+                Stdout.format("{}", p.toString);
+            }
+            Stdout.newline;
         }
 
         debug(tdfa) Stdout.formatln("disjointPredicates() end");
-        return disjoint;
+        return preds;
     }
 
     /* ********************************************************************************************
@@ -2804,20 +2885,17 @@ private:
         // we find the different intersecting predicate types
         bool    have_consume,
                 have_lookahead;
-        foreach ( s; subst.elms )
+        foreach ( t; subst )
         {
-            foreach ( t; s.nfa_state.transitions )
+            if ( t.predicate.type != predicate_t.Type.consume && t.predicate.type != predicate_t.Type.lookahead )
+                continue;
+            auto intpred = t.predicate.intersect(pred);
+            if ( !intpred.empty )
             {
-                if ( t.predicate.type != predicate_t.Type.consume && t.predicate.type != predicate_t.Type.lookahead )
-                    continue;
-                auto intpred = t.predicate.intersect(pred);
-                if ( !intpred.empty )
-                {
-                    if ( t.predicate.type == predicate_t.Type.consume )
-                        have_consume = true;
-                    else if ( t.predicate.type == predicate_t.Type.lookahead )
-                        have_lookahead = true;
-                }
+                if ( t.predicate.type == predicate_t.Type.consume )
+                    have_consume = true;
+                else if ( t.predicate.type == predicate_t.Type.lookahead )
+                    have_lookahead = true;
             }
         }
 
@@ -2981,7 +3059,8 @@ private:
                     else
                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
                 }
-                StateElement new_se = new StateElement;
+
+                auto new_se = new StateElement;
                 new_se.maxPriority = new_maxPri;
                 new_se.lastPriority = t.priority;
                 new_se.nfa_state = t.target;
@@ -3076,6 +3155,7 @@ private:
                     ti.tag = tag;
                     ti.index = te.tags[tag];
 
+                    // make sure the reordering is injective
                     if ( (ti in reorderedIndeces) !is null )
                     {
                         if ( reorderedIndeces[ti] != findex )
@@ -3083,12 +3163,12 @@ private:
                     }
                     else if ( te.tags[tag] != findex )
                     {
-                        reorderedIndeces[ti] = findex;
                         Command cmd;
                         cmd.src = registerFromTagIndex(tag,findex);
                         cmd.dst = registerFromTagIndex(tag,te.tags[tag]);
                         cmds[cmd] = true;
                     }
+                    reorderedIndeces[ti] = findex;
                 }
             }
             if ( !foundState )
