@@ -278,7 +278,7 @@ private:
         // This is a highly time-critical operation, and
         // should really be an intrinsic.
        version(D_InlineAsm_X86) {
-           version(linux) {
+           version(Posix) {
              IeeeFlags tmp1;
              asm {
                  fstsw AX;
