@@ -690,7 +690,7 @@ class Socket
         ProtocolType    protocol;
 
         version(Win32)
-                private bool _blocking = false;
+                private bool _blocking = true;
 
         // For use with accept().
         package this()
