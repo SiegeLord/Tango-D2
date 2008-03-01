@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        author:         Jeff <j@submersion.com>
+        author:         Jeff Davey <j@submersion.com>
 
 *******************************************************************************/
 
@@ -21,9 +21,13 @@ import tango.stdc.stringz;
   Specifically, it provides the ability to:
 
   - Make a X509 Certificate (SSL Certificate)
+
   - Make a Public and Private key pair
+
   - Validate a X509 Certificate against a Certificate Authority
+
   - Generate a SSLCtx for SSLSocketConduit and SSLServerSocket
+
   - Wrap a SSLVerifyCallback so that retrieving the peer cert is easier
 
   PKI requires the OpenSSL library, and uses a dynamic binding to the library.
@@ -39,6 +43,7 @@ import tango.stdc.stringz;
   only).
 
 *******************************************************************************/
+
 const int SSL_VERIFY_NONE = 0x00;
 
 /*******************************************************************************
@@ -46,6 +51,7 @@ const int SSL_VERIFY_NONE = 0x00;
   Ask for a peer certificate, but do not fail if it is not provided.
 
 *******************************************************************************/
+
 const int SSL_VERIFY_PEER = 0x01;
 
 /*******************************************************************************
@@ -53,6 +59,7 @@ const int SSL_VERIFY_PEER = 0x01;
   Ask for a peer certificate, however, fail if it is not provided
 
 *******************************************************************************/
+
 const int SSL_VERIFY_FAIL_IF_NO_PEER_CERT = 0x02;
 
 /*******************************************************************************
@@ -60,6 +67,7 @@ const int SSL_VERIFY_FAIL_IF_NO_PEER_CERT = 0x02;
   Only validate once, do not re-validate during handshake renegotiation.
 
 *******************************************************************************/
+
 const int SSL_VERIFY_CLIENT_ONCE = 0x04;
 
 const int SSL_SESS_CACHE_SERVER = 0x0002;
@@ -84,7 +92,18 @@ extern (C) typedef int function(int, X509_STORE_CTX *ctx) SSLVerifyCallback;
     It contains the public/private keypair, and some additional options that
     control how the SSL streams work.
 
+	Example
+	---
+	auto cert = new Certificate(cast(char[])File("public.pem").read);
+	auto pkey = new PrivateKey(cast(char[])File("private.pem").read);;
+	auto ctx = new SSLCtx();
+	ctx.certificate = cert;
+	ctx.pkey = pkey;
+	ctx.checkKey();
+	---
+
 *******************************************************************************/
+
 class SSLCtx
 {
     package SSL_CTX *_ctx = null;
@@ -124,12 +143,13 @@ class SSLCtx
         
     *******************************************************************************/
 
-    void certificate(Certificate cert)
+    SSLCtx certificate(Certificate cert)
     {
         if (SSL_CTX_use_certificate(_ctx, cert._cert))
             _cert = cert;
         else
             throwOpenSSLError();
+		return this;
     }
 
     /*******************************************************************************
@@ -141,12 +161,13 @@ class SSLCtx
     *******************************************************************************/
 
 
-    void privateKey(PrivateKey key)
+    SSLCtx privateKey(PrivateKey key)
     {
         if (SSL_CTX_use_PrivateKey(_ctx, key._evpKey))
             _key = key;
         else
             throwOpenSSLError();
+		return this;
     }
 
     /*******************************************************************************
@@ -155,10 +176,12 @@ class SSLCtx
         public/private keypair. Throws an exception if this is not the case.
                 
     *******************************************************************************/
-    void checkKey()
+
+    SSLCtx checkKey()
     {
         if (!SSL_CTX_check_private_key(_ctx))
             throwOpenSSLError();
+		return this;
     }
 
     /*******************************************************************************
@@ -168,9 +191,10 @@ class SSLCtx
                 
     *******************************************************************************/
 
-    void setVerification(int flags, SSLVerifyCallback cb)
+    SSLCtx setVerification(int flags, SSLVerifyCallback cb)
     {
         SSL_CTX_set_verify(_ctx, flags, cb);
+		return this;
     }
 
     /*******************************************************************************
@@ -181,10 +205,11 @@ class SSLCtx
     *******************************************************************************/
 
 
-    void store(CertificateStore store) // warning this will free the existing one.. not sure if it frees on close yet ( so don't set it twice! ?!)
+    SSLCtx store(CertificateStore store) // warning this will free the existing one.. not sure if it frees on close yet ( so don't set it twice! ?!)
     {
         SSL_CTX_set_cert_store(_ctx, store._store);
         _store = store;
+		return this;
     }
 
     /*******************************************************************************
@@ -202,14 +227,15 @@ class SSLCtx
                 
     *******************************************************************************/
 
-    void caCertsPath(char[] path)
+    SSLCtx caCertsPath(char[] path)
     {
         if (!SSL_CTX_load_verify_locations(_ctx, null, toStringz(path)))
             throwOpenSSLError();
+		return this;
     }
 
     // TODO need to finish adding Session handling functionality
-    void sessionCacheMode(int mode)
+/*    void sessionCacheMode(int mode)
     {
         if (!SSL_CTX_set_session_cache_mode(_ctx, mode))
             throwOpenSSLError();
@@ -219,7 +245,7 @@ class SSLCtx
     {
         if (!SSL_CTX_set_session_id_context(_ctx, id.ptr, id.length))
             throwOpenSSLError();
-    }
+    } */
 }
 
 /*******************************************************************************
@@ -229,7 +255,24 @@ class SSLCtx
 
     It allows retrieving the peer certificate, and examining any errors during
     validation.
-            
+
+
+	The following example will probably change sometime soon.
+
+	Example
+	---
+	extern (C)
+	{
+		int myCallback(int code, X509_STORE_CTX *ctx)
+		{
+			auto myCtx = new CertificateStoreCtx(ctx);
+			Certificate cert = myCtx.cert;
+			Stdout(cert.subject).newline;
+			return 0; // BAD CERT! (1 is good)
+		}
+	}
+	---
+
 *******************************************************************************/
 
 class CertificateStoreCtx
@@ -280,6 +323,18 @@ class CertificateStoreCtx
 
     CertificateStore stores numerous X509 Certificates for use in CRL lists,
     CA lists, etc.
+
+	Example
+	---
+	auto store = new CertificateStore();
+	auto caCert = new Certificate(cast(char[])File("cacert.pem").read);
+	store.add(caCert);
+	auto untrustedCert = new Certificate(cast(char[])File("cert.pem").read);
+	if (untrustedCert.verify(store))
+		Stdout("The untrusted cert was signed by our caCert and is valid.").newline;
+	else
+		Stdout("The untrusted cert was expired, or not signed by the caCert").newline;
+	---
             
 *******************************************************************************/
 
@@ -310,12 +365,13 @@ class CertificateStore
             
     *******************************************************************************/
 
-    void add(Certificate cert)
+    CertificateStore add(Certificate cert)
     {
         if (X509_STORE_add_cert(_store, cert._cert))
             _certs ~= cert; // just in case it gets GC'd?
         else
             throwOpenSSLError();
+		return this;
     }
 }
 
@@ -324,7 +380,14 @@ class CertificateStore
 
     Generates a RSA public/private key pair for use with X509 Certificates
     and other applications search as S/MIME, DomainKeys, etc.
-        
+
+	Example
+	---
+	auto newPkey = new PrivateKey(2048); // create new keypair
+	Stdout(newPkey.pemFormat("password"); // dumps in pemFormat with encryption
+	Stdout(newPkey.pemFormat(); // dumps in pemFormat without encryption
+	---
+
 *******************************************************************************/
 
 class PrivateKey
@@ -442,7 +505,21 @@ class PrivateKey
     be modified.
 
     X509 Certificates are sometimes called SSL Certificates.
-        
+
+	Example
+	---
+	auto newPkey = new PrivateKey(2048); // create new keypair
+	auto cert = new Certificate();
+	cert.privateKey = newPkey;
+	cert.serialNumber = 1;
+	cert.dateBeforeOffset = TimeSpan.zero;
+	cert.dateAfterOffset = TimeSpan.days(365); // cert is valid for one year
+	cert.setSubject("US", "State", "City", "Organization", "CN", "Organizational Unit", "Email");
+	cert.sign(cert, newPkey); // self signed cert
+	Stdout(newPkey.pemFormat).newline;
+	Stdout(cert.pemFormat).newline;
+	---
+
 *******************************************************************************/
 
 class Certificate
@@ -517,11 +594,12 @@ class Certificate
             
     *******************************************************************************/
 
-    void serialNumber(uint serial)
+    Certificate serialNumber(uint serial)
     {
         checkFlag();
         if (!ASN1_INTEGER_set(X509_get_serialNumber(_cert), serial))
             throwOpenSSLError();
+		return this;
     }
     /*******************************************************************************
 
@@ -549,11 +627,12 @@ class Certificate
             
     *******************************************************************************/
 
-    void dateBeforeOffset(TimeSpan t)
+    Certificate dateBeforeOffset(TimeSpan t)
     {
         checkFlag();
         if (!X509_gmtime_adj(X509_get_notBefore(_cert), cast(int)t.seconds))
             throwOpenSSLError();
+		return this;
     }
 
     /*******************************************************************************
@@ -570,11 +649,12 @@ class Certificate
             
     *******************************************************************************/
 
-    void dateAfterOffset(TimeSpan t)
+    Certificate dateAfterOffset(TimeSpan t)
     {
         checkFlag();
         if (!X509_gmtime_adj(X509_get_notAfter(_cert), cast(int)t.seconds))
             throwOpenSSLError();
+		return this;
     }
 
     
@@ -585,6 +665,7 @@ class Certificate
         Note, this will eventually befome a DateTime struct.
             
     *******************************************************************************/
+
     char[] dateAfter()
     {
         char[] rtn;
@@ -605,6 +686,7 @@ class Certificate
         Note, this will eventually befome a DateTime struct.
             
     *******************************************************************************/
+
     char[] dateBefore()    
     {
         char[] rtn;
@@ -622,7 +704,8 @@ class Certificate
         Sets the public/private keypair of an unsigned certificate.
             
     *******************************************************************************/
-    void privateKey(PrivateKey key)
+
+    Certificate privateKey(PrivateKey key)
     {
         checkFlag();
         if (key)
@@ -630,6 +713,7 @@ class Certificate
             if (!X509_set_pubkey(_cert, key._evpKey))
                 throwOpenSSLError();
         }
+		return this;
     }
 
     /*******************************************************************************
@@ -651,7 +735,7 @@ class Certificate
     *******************************************************************************/
 
     // this kinda sucks.. but it has to be done in a certain order..
-    void setSubject(char[] country, char[] stateProvince, char[] city, char[] organization, char[] cn, char[] organizationalUnit = null, char[] email = null)
+    Certificate setSubject(char[] country, char[] stateProvince, char[] city, char[] organization, char[] cn, char[] organizationalUnit = null, char[] email = null)
     in
     {
         assert(country);
@@ -677,7 +761,9 @@ class Certificate
         }
         else
             throwOpenSSLError();
+		return this;
     }
+
     /*******************************************************************************
 
         Returns the Certificate subject in a multi-line string.
@@ -716,7 +802,7 @@ class Certificate
             
     *******************************************************************************/
 
-    void sign(Certificate caCert, PrivateKey caKey)
+    Certificate sign(Certificate caCert, PrivateKey caKey)
     in
     {
         assert(caCert);
@@ -737,6 +823,7 @@ class Certificate
 
         if (!readOnly)
             throwOpenSSLError();
+		return this;
     }
 
     /*******************************************************************************
@@ -744,6 +831,7 @@ class Certificate
         Checks if the underlying data structur of the Certificate is equal
             
     *******************************************************************************/
+
     int opEquals(Certificate obj)
     {
         return !X509_cmp(obj._cert, this._cert);
@@ -781,7 +869,6 @@ class Certificate
         Returns the Certificate in a PEM encoded string.
             
     *******************************************************************************/
-
 
     char[] pemFormat()
     {
@@ -850,12 +937,8 @@ version (Test)
         {
             auto cert = new Certificate();
             auto pkey = new PrivateKey(2048);
-            cert.privateKey = pkey;
-            cert.serialNumber = 123;
-            cert.dateBeforeOffset = t1;
-            cert.dateAfterOffset = t2;
-            cert.setSubject("CA", "Alberta", "Place", "None", "Jeff Davey", "no unit", "jeffd@gwava.com");
-            cert.sign(cert, pkey);
+			cert.privateKey(pkey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
+            cert.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(cert, pkey);
             char[] pemData = cert.pemFormat;
             auto cert2 = new Certificate(pemData);
 //            Stdout.formatln("{}\n{}\n{}\n{}", cert2.serialNumber, cert2.subject, cert2.dateBefore, cert2.dateAfter);

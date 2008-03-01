@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        author:         Jeff <j@submersion.com>
+        author:         Jeff Davey <j@submersion.com>
 
 *******************************************************************************/
 
