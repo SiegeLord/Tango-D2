@@ -248,6 +248,7 @@ final class SharedLib {
             }
 
             void* getSymbol_(char* name) {
+				// MSDN: "Multiple threads do not overwrite each other's last-error code."
                 auto res = GetProcAddress(handle, name);
                 if (res is null && SharedLib.throwExceptions) {
                     throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name) ~ "' from shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
@@ -279,12 +280,21 @@ final class SharedLib {
             }
 
             void* getSymbol_(char* name) {
-                auto res = dlsym(handle, name);
-                if (res is null && SharedLib.throwExceptions) {
-                    throw new SharedLibException("Couldn't load symbol: " ~ fromStringz(dlerror()));
-                } else {
-                    return res;
-                }
+            	if (SharedLib.throwExceptions) {
+					synchronized (typeof(this).classinfo) {	// dlerror need not be reentrant
+						auto err = dlerror();				// clear previous error condition
+						auto res = dlsym(handle, name);		// result of null does NOT indicate error
+						
+						err = dlerror();					// check for error condition
+						if (err !is null) {
+							throw new SharedLibException("Couldn't load symbol: " ~ fromStringz(err));
+						} else {
+							return res;
+						}
+					}
+            	} else {
+            		return dlsym(handle, name);
+            	}
             }
 
             void unload_() {
