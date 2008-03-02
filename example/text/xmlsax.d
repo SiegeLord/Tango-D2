@@ -1,37 +1,36 @@
 module xmlsax;
 
+import tango.io.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
-
 import tango.text.xml.SaxParser;
-
-void benchmark (int iterations, SaxParser!(char) parser, char[] content) 
-{       
-        StopWatch elapsed;
-        elapsed.start;
-
-        for (auto i=0; ++i < iterations;)
-        {
-                parser.parse;
-                parser.reset;
-        }
-
-        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
-}
-
 
 void main() 
 {       
-        auto content = import ("hamlet.xml");
-        auto parser = new SaxParser!(char);
-        //auto handler = new EventsHandler!(char);
-        //auto handler = new SaxHandler!(char);
-        auto handler = new LengthHandler!(char);
-        parser.setSaxHandler(handler);
+        for (int i = 10; --i;)
+            {
+            auto parser = new SaxParser!(char);
+            auto handler = new LengthHandler!(char);
+            parser.setSaxHandler(handler);
+            benchmark (2000, parser);
+            }
+}
+
+
+void benchmark (int iterations, SaxParser!(char) parser) 
+{       
+        StopWatch elapsed;
+
+        auto content = cast(char[]) File("hamlet.xml").read;
         parser.setContent(content);
 
-        for (int i = 10; --i;)
-             benchmark (2000, parser, content);       
+        elapsed.start;
+        for (auto i=0; ++i < iterations;)
+            {
+            parser.parse;
+            parser.reset;
+            }
+        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
 }
 
 

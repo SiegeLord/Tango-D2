@@ -1,26 +1,31 @@
+import tango.io.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
-
 import tango.text.xml.PullParser;
 
-void benchmark (int iterations, char[] filename) 
+void benchmark (int iterations) 
 {       
         StopWatch elapsed;
         
-        auto content = import ("hamlet.xml");
+        auto content = cast (char[]) File("hamlet.xml").read;
         auto parser = new PullParser!(char) (content);
 
+        uint j;
         elapsed.start;
         for (auto i=0; ++i < iterations;)
             {
-            while (parser.next) {}
+            while (parser.next) {++j;}
             parser.reset;
             }
-        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
+        Stdout.formatln ("{} MB/s, {} tokens", (content.length * iterations) / (elapsed.stop * (1024 * 1024)), j);
 }
 
+
 void main() 
-{       
+{      
+        // uncomment me, and try again ... 
+        //char[] s = null;
         for (int i = 10; --i;)
-             benchmark (2000, "hamlet.xml");       
+             benchmark (2000);       
 }
+
