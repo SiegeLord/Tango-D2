@@ -430,6 +430,20 @@ extern (C) void _d_delmemory(void* *p)
 /**
  *
  */
+extern (C) void _d_callinterfacefinalizer(void *p)
+{
+    if (p)
+    {
+        Interface *pi = **cast(Interface ***)p;
+        Object o = cast(Object)(p - pi.offset);
+        rt_finalize(cast(void*)o);
+    }
+}
+
+
+/**
+ *
+ */
 extern (C) void _d_callfinalizer(void* p)
 {
     rt_finalize( p );

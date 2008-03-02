@@ -94,7 +94,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
          * using AddRef() and Release().  They get free'd by C's free()
          * function called by Release() when Release()'s reference count goes
          * to zero.
-	 */
+     */
         p = tango.stdc.stdlib.malloc(ci.init.length);
         if (!p)
             onOutOfMemoryError();
@@ -431,6 +431,20 @@ extern (C) void _d_delmemory(void* *p)
     {
         gc_free(*p);
         *p = null;
+    }
+}
+
+
+/**
+ *
+ */
+extern (C) void _d_callinterfacefinalizer(void *p)
+{
+    if (p)
+    {
+        Interface *pi = **cast(Interface ***)p;
+        Object o = cast(Object)(p - pi.offset);
+        rt_finalize(cast(void*)o);
     }
 }
 
