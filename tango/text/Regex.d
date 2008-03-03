@@ -2657,15 +2657,13 @@ private:
         {
             if ( c < m.c )
                 return -1;
-            if ( c == m.c )
-            {
-                if ( !end )
-                    return -1;
-                if ( !m.end )
-                    return 1;
-                return 0;
-            }
-            return 1;
+            if ( c > m.c )
+                return 1;
+            if ( end < m.end )
+                return -1;
+            if ( end > m.end )
+                return 1;
+            return 0;
         }
     }
 
@@ -3237,7 +3235,7 @@ import tango.text.Util;
 class RegExpT(char_t)
 {
     alias TDFA!(dchar)      tdfa_t;
-    alias TNFA!(dchar)      tnfa_t;     
+    alias TNFA!(dchar)      tnfa_t;
     alias CharClass!(dchar) charclass_t;
     alias Predicate!(dchar) predicate_t;
 
@@ -3262,7 +3260,7 @@ class RegExpT(char_t)
     this(char_t[] pattern, bool swapMBS, bool unanchored, bool printNFA=false)
     {
         pattern_ = pattern;
-        
+
         debug {}
         else { scope tnfa_t tnfa_; }
         static if ( is(char_t == dchar) ) {
@@ -3305,7 +3303,7 @@ class RegExpT(char_t)
             ---
             import tango.io.Stdout;
             import tango.text.Regex;
-            
+
             void main()
             {
                 foreach(m; Regex("ab").search("qwerabcabcababqwer"))
@@ -3417,7 +3415,7 @@ class RegExpT(char_t)
                         if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
                             continue Ltrans_loop;
                         goto Lno_consume;
-                    
+
                     // generic
                     case predicate_t.MatchMode.generic:
                         debug Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
@@ -3460,7 +3458,7 @@ class RegExpT(char_t)
 
                 s = t.target;
                 debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
-                
+
                 foreach ( cmd; t.commands )
                 {
                     if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
@@ -3570,7 +3568,7 @@ class RegExpT(char_t)
         auto res = new char_t[][PREALLOC];
         uint index;
         char_t[] tmp;
-        
+
         foreach ( r; search(input) )
         {
             tmp = pre;
@@ -3582,7 +3580,7 @@ class RegExpT(char_t)
             }
             tmp = post;
         }
-        
+
         res[index++] = tmp;
         res.length = index;
         return res;
@@ -3707,7 +3705,7 @@ class RegExpT(char_t)
             if ( s.accept )
             {
                 finish_states ~= s.index;
-                
+
                 tdfa_t.State target;
                 foreach ( t; s.transitions )
                 {
@@ -3759,7 +3757,7 @@ class RegExpT(char_t)
                     code ~= "\n                    p = next_p;";
                 foreach ( cmd; t.commands )
                     code ~= compileCommand(layout, cmd, "                    ");
-/*                
+/*
                 // if inp ends here and we do not already accept, try to add an explicit string/line end
                 if ( p >= inp.length && !s.accept && c != 0 ) {
                     c = 0;
@@ -4047,7 +4045,7 @@ unittest
         "\xF8\x80\x80\x80\x8A",
         "\xFC\x80\x80\x80\x80\x8A",
     ];
-    
+
     for (int j = 0; j < s4.length; j++)
     {
         try
