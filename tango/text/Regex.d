@@ -827,6 +827,11 @@ struct CharClass(char_t)
         parts ~= cc.parts;
     }
 
+    void add(range_t cr)
+    {
+        parts ~= cr;
+    }
+
     void add(char_t c)
     {
         parts ~= CharRange!(char_t)(c);
@@ -981,8 +986,8 @@ private struct Predicate(char_t)
         consume, epsilon, lookahead, lookbehind
     }
 
-    private cc_t    input;
-    Type            type;
+    cc_t    input;
+    Type    type;
 
     // data for compiled predicates
     const uint  MAX_BITMAP_LENGTH = 256,
@@ -1068,6 +1073,32 @@ private struct Predicate(char_t)
         return p2;
     }
 
+    bool intersects(Predicate p)
+    {
+        if ( type != p.type )
+            return false;
+        foreach ( cr; input.parts )
+        {
+            foreach ( cr2; p.input.parts )
+            {
+                if ( cr.intersects(cr2) )
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    bool exceedsMax(uint maxc)
+    {
+        foreach ( p; input.parts )
+        {
+            if ( p.l_ > maxc || p.r_ > maxc )
+                return true;
+        }
+
+        return false;
+    }
+
     bool empty()
     {
         return type != Type.epsilon && input.empty;
@@ -1117,7 +1148,17 @@ private struct Predicate(char_t)
 
     void appendInput(cr_t cr)
     {
-        input.parts ~= cr;
+        input.add(cr);
+    }
+
+    void appendInput(cc_t cc)
+    {
+        input.add(cc);
+    }
+
+    void appendInput(Predicate p)
+    {
+        input.add(p.input);
     }
 
     string toString()
@@ -1383,10 +1424,10 @@ private class TNFA(char_t)
             return false;
         }
 
-        // add implicit extra reluctant .* at the beginning for unanchored matches
+        // add implicit extra reluctant .* (with . == any_char) at the beginning for unanchored matches
         // and matching bracket for total match group
         if ( unanchored ) {
-            frags ~= constructChars(cc_t.dot_oper, predicate_t.Type.consume);
+            frags ~= constructChars(cc_t.any_char, predicate_t.Type.consume);
             perform(Operator.zero_more_xr, false);
             perform(Operator.concat, false);
             perform(Operator.open_par, false);
@@ -1617,13 +1658,13 @@ private class TNFA(char_t)
             }
         }
 
-        // add implicit reluctant .* at the end for unanchored matches
+        // add implicit reluctant .* (with . == any_char) at the end for unanchored matches
         if ( unanchored )
         {
             perform(Operator.close_par, false);
             if ( implicit_concat )
                 perform(Operator.concat, false);
-            frags ~= constructChars(cc_t.dot_oper, predicate_t.Type.consume);
+            frags ~= constructChars(cc_t.any_char, predicate_t.Type.consume);
             perform(Operator.zero_more_ng, false);
         }
 
@@ -2256,6 +2297,13 @@ private class TDFA(char_t)
                 return 0;
             return 1;
         }
+
+        int opEquals(Command cmd)
+        {
+            if ( dst != cmd.dst || src != cmd.src )
+                return 0;
+            return 1;
+        }
     }
 
     struct TagIndex
@@ -2269,10 +2317,96 @@ private class TDFA(char_t)
     **********************************************************************************************/
     class State
     {
+        enum Mode {
+            GENERIC, MIXED, LOOKUP
+        }
+
+        const uint  LOOKUP_LENGTH = 256,
+                    INVALID_STATE = 255;
+
         bool            accept = false;
         uint            index;
-        Transition[]    transitions;
+        Transition[]    transitions,
+                        generic_transitions;
         Command[]       finishers;
+
+        ubyte[]         lookup;
+        Mode            mode;
+
+        void optimize()
+        {
+            // merge transitions with equal targets (same state index and equal commands)
+            size_t[] remove_indeces;
+            foreach ( i, t; transitions[0 .. $-1] )
+            {
+                foreach ( t2; transitions[i+1 .. $] )
+                {
+                    if ( t.predicate.type != t2.predicate.type || !t.equalTarget(t2) )
+                        continue;
+                    t2.predicate.appendInput(t.predicate);
+                    remove_indeces ~= i;
+                    break;
+                }
+            }
+
+            // remove transitions that have been merged into another
+            if ( remove_indeces.length > 0 )
+            {
+                Transition[] tmp;
+                tmp.length = transitions.length - remove_indeces.length;
+                size_t next_remove, next;
+                foreach ( i, t; transitions )
+                {
+                    if ( next_remove < remove_indeces.length && remove_indeces[next_remove] == i ) {
+                        ++next_remove;
+                        continue;
+                    }
+                    tmp[next++] = t;
+                }
+                transitions = tmp;
+
+                foreach ( t; transitions )
+                    t.predicate.optimize;
+            }
+        }
+
+        void createLookup()
+        {
+            size_t count;
+            foreach ( t; transitions )
+            {
+                if ( !t.predicate.exceedsMax(LOOKUP_LENGTH) )
+                    ++count;
+            }
+
+            if ( count < 1 || transitions.length > INVALID_STATE ) {
+                generic_transitions.length = transitions.length;
+                generic_transitions[] = transitions;
+                return;
+            }
+
+            foreach ( t; transitions )
+            {
+                if ( t.predicate.exceedsMax(LOOKUP_LENGTH) )
+                    generic_transitions ~= t;
+            }
+
+            // setup lookup table
+            lookup.length = LOOKUP_LENGTH;
+            lookup[] = INVALID_STATE;
+            foreach ( i, t; transitions )
+            {
+                foreach ( p; t.predicate.input.parts )
+                {
+                    if ( p.l_ >= lookup.length )
+                        continue;
+                    for ( char_t c = p.l_; c <= min(p.r_, LOOKUP_LENGTH-1); ++c )
+                        lookup[c] = i;
+                }
+            }
+
+            mode = count < transitions.length? Mode.MIXED : Mode.LOOKUP;
+        }
     }
 
     /* ********************************************************************************************
@@ -2292,6 +2426,34 @@ private class TDFA(char_t)
             Transition t = cast(Transition)o;
             assert(t !is null);
             return predicate.opCmp(t.predicate);
+        }
+
+        final int opEquals(Object o)
+        {
+            auto t = cast(Transition)o;
+            if ( t is null )
+                return 0;
+            if ( equalTarget(t) && t.predicate == predicate )
+                return 1;
+            return 0;
+        }
+
+        bool equalTarget(Transition t)
+        {
+            if ( t.target.index != target.index )
+                return false;
+            if ( commands.length != t.commands.length )
+                return false;
+            Louter: foreach ( cmd; commands )
+            {
+                foreach ( cmd2; t.commands )
+                {
+                    if ( cmd == cmd2 )
+                        continue Louter;
+                }
+                return false;
+            }
+            return true;
         }
     }
 
@@ -2452,6 +2614,8 @@ private class TDFA(char_t)
                     Stdout.formatln("=> from {} with {} reach {}", state.dfa_state.index, pred.toString, target.dfa_state.index);
                 }
             }
+
+            state.dfa_state.optimize;
         }
 
         // renumber registers continuously
@@ -2487,6 +2651,13 @@ private class TDFA(char_t)
                 trans.predicate.compile;
             }
         }
+
+        minimizeDFA;
+
+        foreach ( state; states )
+            state.createLookup;
+
+        // TODO: optimize memory layout of TDFA
 
         // TODO: add lookahead for string-end somewhere
         // TODO: mark dead-end states (not leaving a non-finishing susbet)
@@ -3226,6 +3397,137 @@ private:
                 }
             }
     }
+
+    /* ********************************************************************************************
+        Assumes that the command-lists are sorted and transitions are optimized
+    **********************************************************************************************/
+    void minimizeDFA()
+    {
+        class DiffTable
+        {
+            this(size_t num) {
+                diff_ = new bool[num*(num+1)/2];
+            }
+
+            ~this() { delete diff_; }
+
+            bool opCall(size_t a, size_t b)
+            {
+                if ( a < b )
+                    return diff_[b*(b+1)/2+a];
+                return diff_[a*(a+1)/2+b];
+            }
+
+            void set(size_t a, size_t b)
+            {
+                if ( a < b )
+                    diff_[b*(b+1)/2+a] = true;
+                else
+                    diff_[a*(a+1)/2+b] = true;
+            }
+
+            bool[]  diff_;
+        }
+
+        debug Stdout.formatln("Minimizing TDFA");
+
+        scope diff = new DiffTable(states.length);
+        bool new_diff = true;
+
+        while ( new_diff )
+        {
+            new_diff = false;
+            foreach ( i, a; states[0 .. $-1] )
+            {
+                Linner: foreach ( j, b; states[i+1 .. $] )
+                {
+                    if ( diff(i, j+i+1) )
+                        continue;
+
+                    // assume optimized transitions
+                    if ( a.accept != b.accept || a.transitions.length != b.transitions.length ) {
+                        diff.set(i, j+i+1);
+                        new_diff = true;
+                        continue;
+                    }
+
+                    if ( a.accept ) // b accepts too
+                    {
+                        // assume sorted finishers
+                        if ( a.finishers.length != b.finishers.length ) {
+                            diff.set(i, j+i+1);
+                            new_diff = true;
+                            continue;
+                        }
+                        foreach ( k, cmd; a.finishers )
+                        {
+                            if ( cmd != b.finishers[k] ) {
+                                diff.set(i, j+i+1);
+                                new_diff = true;
+                                continue Linner;
+                            }
+                        }
+                    }
+
+                    Ltrans: foreach ( ta; a.transitions )
+                    {
+                        foreach ( tb; b.transitions )
+                        {
+                            if ( ta.predicate.intersects(tb.predicate) )
+                            {
+                                if ( diff(ta.target.index, tb.target.index) ) {
+                                    diff.set(i, j+i+1);
+                                    new_diff = true;
+                                    continue Linner;
+                                }
+                                // assume sorted commands
+                                if ( ta.commands.length != tb.commands.length ) {
+                                    diff.set(i, j+i+1);
+                                    new_diff = true;
+                                    continue Linner;
+                                }
+                                foreach ( k, cmd; ta.commands )
+                                {
+                                    if ( cmd != tb.commands[k] ) {
+                                        diff.set(i, j+i+1);
+                                        new_diff = true;
+                                        continue Linner;
+                                    }
+                                }
+                                continue Ltrans;
+                            }
+                        }
+
+                        diff.set(i, j+i+1);
+                        new_diff = true;
+                        continue Linner;
+                    }
+
+                }
+            }
+        }
+
+        foreach ( i, a; states[0 .. $-1] )
+        {
+            foreach ( j, b; states[i+1 .. $] )
+            {
+                if ( !diff(i, j+i+1) )
+                {
+                    debug Stdout.formatln("State {} == {}", i, j+i+1);
+                    // remap b to a
+                    foreach ( k, c; states )
+                    {
+                        foreach ( t; c.transitions )
+                        {
+                            if ( t.target.index == j+i+1 )
+                                t.target = a;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }
 import tango.text.Util;
 
@@ -3364,7 +3666,7 @@ class RegExpT(char_t)
         auto s = tdfa_.start;
 
         debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
-        for ( size_t p, next_p; p < inp.length; )
+        LmainLoop: for ( size_t p, next_p; p < inp.length; )
         {
         Lread_char:
             dchar c = cast(dchar)inp[p];
@@ -3376,18 +3678,56 @@ class RegExpT(char_t)
         Lprocess_char:
             debug Stdout.formatln("{} (0x{:x})", c, cast(int)c);
 
-            Ltrans_loop: foreach ( t; s.transitions )
+            tdfa_t.Transition t = void;
+            switch ( s.mode )
             {
+                case s.Mode.LOOKUP:
+                    if ( c <= s.LOOKUP_LENGTH )
+                    {
+                        debug Stdout.formatln("lookup");
+                        auto i = s.lookup[c];
+                        if ( i == s.INVALID_STATE )
+                            break LmainLoop;
+                        t = s.transitions[ i ];
+                        if ( t.predicate.type != t.predicate.Type.consume )
+                            goto Lno_consume;
+                        goto Lconsume;
+                    }
+                    break LmainLoop;
+
+                case s.Mode.MIXED:
+                    if ( c <= s.LOOKUP_LENGTH )
+                    {
+                        debug Stdout.formatln("mixed");
+                        auto i = s.lookup[c];
+                        if ( i == s.INVALID_STATE )
+                            break;
+                        t = s.transitions[ i ];
+                        if ( t.predicate.type != t.predicate.Type.consume )
+                            goto Lno_consume;
+                        goto Lconsume;
+                    }
+                    break;
+
+                case s.Mode.GENERIC:
+                default:
+                    break;
+            }
+
+            Ltrans_loop: for ( tdfa_t.Transition* tp = &s.generic_transitions[0], tp_end = tp+s.generic_transitions.length;
+                tp < tp_end; ++tp )
+            {
+                t = *tp;
                 switch ( t.predicate.mode )
                 {
                     // single char
                     case predicate_t.MatchMode.single_char:
-                        debug Stdout.formatln("single char {} == {}", c, t.predicate.data_chr);
+                        debug Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lconsume;
                     case predicate_t.MatchMode.single_char_l:
-                        debug Stdout.formatln("single char {} == {}", c, t.predicate.data_chr);
+                        debug Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lno_consume;
@@ -3458,6 +3798,7 @@ class RegExpT(char_t)
 
                 s = t.target;
                 debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                debug Stdout.formatln("{} commands", t.commands.length);
 
                 foreach ( cmd; t.commands )
                 {
@@ -4045,7 +4386,7 @@ unittest
         "\xF8\x80\x80\x80\x8A",
         "\xFC\x80\x80\x80\x80\x8A",
     ];
-
+    
     for (int j = 0; j < s4.length; j++)
     {
         try
