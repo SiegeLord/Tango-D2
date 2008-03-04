@@ -384,8 +384,8 @@ class CertificateStore
 	Example
 	---
 	auto newPkey = new PrivateKey(2048); // create new keypair
-	Stdout(newPkey.pemFormat("password"); // dumps in pemFormat with encryption
-	Stdout(newPkey.pemFormat(); // dumps in pemFormat without encryption
+	Stdout(newPkey.pemFormat("password")); // dumps in pemFormat with encryption
+	Stdout(newPkey.pemFormat()); // dumps in pemFormat without encryption
 	---
 
 *******************************************************************************/
