@@ -3932,7 +3932,7 @@ class RegExpT(char_t)
     **********************************************************************************************/
     char_t[] replaceAll(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
     {
-        char_t[] tmp;
+        char_t[] tmp = input;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length];
         output_buffer.length = 0;
@@ -3954,7 +3954,7 @@ class RegExpT(char_t)
     **********************************************************************************************/
     char_t[] replaceAll(char_t[] input, char_t[] delegate(RegExpT!(char_t)) dg, char_t[] output_buffer=null)
     {
-        char_t[]    tmp;
+        char_t[]    tmp = input;
         uint        offset;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length];
