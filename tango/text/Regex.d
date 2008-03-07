@@ -3958,6 +3958,7 @@ class RegExpT(char_t)
         uint        offset;
         if ( output_buffer.length <= 0 )
             output_buffer = new char_t[input.length];
+        output_buffer.length = 0;
 
         foreach ( r; search(input) )
         {
