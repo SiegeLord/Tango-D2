@@ -4352,58 +4352,6 @@ dchar decode(in char[] s, inout size_t idx)
         throw new Exception("4invalid UTF-8 sequence");
     }
 
-unittest
-{   size_t i;
-    dchar c;
-
-    debug(utf) printf("utf.decode.unittest\n");
-
-    static char[] s1 = "abcd";
-    i = 0;
-    c = decode(s1, i);
-    assert(c == cast(dchar)'a');
-    assert(i == 1);
-    c = decode(s1, i);
-    assert(c == cast(dchar)'b');
-    assert(i == 2);
-
-    static char[] s2 = "\xC2\xA9";
-    i = 0;
-    c = decode(s2, i);
-    assert(c == cast(dchar)'\u00A9');
-    assert(i == 2);
-
-    static char[] s3 = "\xE2\x89\xA0";
-    i = 0;
-    c = decode(s3, i);
-    assert(c == cast(dchar)'\u2260');
-    assert(i == 3);
-
-    static char[][] s4 =
-    [   "\xE2\x89",             // too short
-        "\xC0\x8A",
-        "\xE0\x80\x8A",
-        "\xF0\x80\x80\x8A",
-        "\xF8\x80\x80\x80\x8A",
-        "\xFC\x80\x80\x80\x80\x8A",
-    ];
-    
-    for (int j = 0; j < s4.length; j++)
-    {
-        try
-        {
-            i = 0;
-            c = decode(s4[j], i);
-            assert(0);
-        }
-        catch ( Exception u )
-        {
-            i = 23;
-            delete u;
-        }
-        assert(i == 23);
-    }
-}
 
 /*  ditto */
 
@@ -4539,24 +4487,6 @@ void encode(inout char[] s, dchar c)
         s = r;
     }
 
-unittest
-{
-    debug(utf) printf("utf.encode.unittest\n");
-
-    char[] s = "abcd";
-    encode(s, cast(dchar)'a');
-    assert(s.length == 5);
-    assert(s == "abcda");
-
-    encode(s, cast(dchar)'\u00A9');
-    assert(s.length == 7);
-    assert(s == "abcda\xC2\xA9");
-    //assert(s == "abcda\u00A9");       // BUG: fix compiler
-
-    encode(s, cast(dchar)'\u2260');
-    assert(s.length == 10);
-    assert(s == "abcda\xC2\xA9\xE2\x89\xA0");
-}
 
 /*  ditto */
 
