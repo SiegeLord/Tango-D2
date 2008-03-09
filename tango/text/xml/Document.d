@@ -798,7 +798,7 @@ else
 
                 ***************************************************************/
         
-                private Node detach()
+                Node detach()
                 {
                         if (! parent_) 
                               return this;
