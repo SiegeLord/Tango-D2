@@ -15,7 +15,7 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
-version=discrete;
+//version=discrete;
 
 /*******************************************************************************
 
@@ -126,7 +126,7 @@ version=discrete;
             
 *******************************************************************************/
 
-class Document(T) : private PullParser!(T)
+class Document(T) : package PullParser!(T)
 {
         public alias NodeImpl*  Node;
 
@@ -137,13 +137,6 @@ class Document(T) : private PullParser!(T)
                                 chunks,
                                 freelists;
         private XmlPath!(T)     xpath;
-/+
-        private uint[T[]]       namespaceURIs;
-
-        public static const T[] xmlns = "xmlns";
-        public static const T[] xmlnsURI = "http://www.w3.org/2000/xmlns/";
-        public static const T[] xmlURI = "http://www.w3.org/XML/1998/namespace";
-+/
 
         /***********************************************************************
         
@@ -156,9 +149,6 @@ class Document(T) : private PullParser!(T)
         {
                 assert (nodes > 50);
                 super (null);
-                //namespaceURIs[xmlURI] = 1;
-                //namespaceURIs[xmlnsURI] = 2;
-
                 xpath = new XmlPath!(T);
 
                 chunks = nodes;
@@ -229,14 +219,16 @@ version(d)
                 reset (xml);
                 auto cur = root;
                 uint defNamespace;
-                
+
                 while (true) 
                       {
+                      auto p = text.point;
                       switch (super.next) 
                              {
                              case XmlTokenType.EndElement:
                              case XmlTokenType.EndEmptyElement:
                                   assert (cur.parent_);
+                                  cur.end = text.point;
                                   cur = cur.parent_;                      
                                   break;
         
@@ -245,6 +237,7 @@ version (discrete)
 {
                                   auto node = allocate;
                                   node.rawValue = super.rawValue;
+                                  node.type = XmlNodeType.Data;
                                   node.type = XmlNodeType.Data;
                                   cur.append (node);
 }
@@ -264,6 +257,8 @@ else
                                   node.prefix = super.prefix;
                                   node.type = XmlNodeType.Element;
                                   node.localName = super.localName;
+                                  node.start = p;
+                                  node.start = p;
                                 
                                   // inline append
                                   if (cur.lastChild_) 
@@ -290,7 +285,7 @@ else
                                   break;
         
                              case XmlTokenType.PI:
-                                  cur.pi (super.rawValue);
+                                  cur.pi (super.rawValue, p[0..text.point-p]);
                                   break;
         
                              case XmlTokenType.Comment:
@@ -326,6 +321,7 @@ else
                     newlist;
 
                 auto p = &list[index++];
+                p.start = p.end = null;
                 p.document = this;
                 p.parent_ =
                 p.prevSibling_ = 
@@ -408,6 +404,9 @@ else
                                         lastChild_,
                                         firstAttr_,
                                         lastAttr_;
+
+                package T*              end,
+                                        start;
 
                 /***************************************************************
                 
@@ -514,6 +513,7 @@ version(discrete)
                 void value (T[] val)
                 {
                         rawValue = val; 
+                        mutate;
                 }
                 
                 /***************************************************************
@@ -642,10 +642,21 @@ else
 
                 ***************************************************************/
         
-                Node pi (T[] pi)
+                Node pi (T[] pi, T[] patch)
                 {
-                        append (create (XmlNodeType.PI, pi));
+                        append (create(XmlNodeType.PI, pi).patch(patch));
                         return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a PI node, and returns the host
+
+                ***************************************************************/
+        
+                Node pi (T[] text)
+                {
+                        return pi (text, null);
                 }
         
                 /***************************************************************
@@ -660,6 +671,17 @@ else
                         return this;
                 }
         
+                /***************************************************************
+                
+                        Detach this node from its parent and siblings
+
+                ***************************************************************/
+        
+                Node detach()
+                {
+                        return remove;
+                }
+
                 /***************************************************************
                 
                         Duplicate the given sub-tree into place as a child 
@@ -794,76 +816,6 @@ else
 
                 /***************************************************************
                 
-                        Detach this node from its parent and siblings
-
-                ***************************************************************/
-        
-                Node detach()
-                {
-                        if (! parent_) 
-                              return this;
-                        
-                        if (prevSibling_ && nextSibling_) 
-                           {
-                           prevSibling_.nextSibling_ = nextSibling_;
-                           nextSibling_.prevSibling_ = prevSibling_;
-                           prevSibling_ = null;
-                           nextSibling_ = null;
-                           parent_ = null;
-                           }
-                        else 
-                           if (nextSibling_)
-                              {
-                              debug assert(parent_.firstChild_ == this);
-                              parent_.firstChild_ = nextSibling_;
-                              nextSibling_.prevSibling_ = null;
-                              nextSibling_ = null;
-                              parent_ = null;
-                              }
-                           else 
-                              if (type != XmlNodeType.Attribute)
-                                 {
-                                 if (prevSibling_)
-                                    {
-                                    debug assert(parent_.lastChild_ == this);
-                                    parent_.lastChild_ = prevSibling_;
-                                    prevSibling_.nextSibling_ = null;
-                                    prevSibling_ = null;
-                                    parent_ = null;
-                                    }
-                                 else
-                                    {
-                                    debug assert(parent_.firstChild_ == this);
-                                    debug assert(parent_.lastChild_ == this);
-                                    parent_.firstChild_ = null;
-                                    parent_.lastChild_ = null;
-                                    parent_ = null;
-                                    }
-                                 }
-                              else
-                                 {
-                                 if (prevSibling_)
-                                    {
-                                    debug assert(parent_.lastAttr_ == this);
-                                    parent_.lastAttr_ = prevSibling_;
-                                    prevSibling_.nextSibling_ = null;
-                                    prevSibling_ = null;
-                                    parent_ = null;
-                                    }
-                                 else
-                                    {
-                                    debug assert(parent_.firstAttr_ == this);
-                                    debug assert(parent_.lastAttr_ == this);
-                                    parent_.firstAttr_ = null;
-                                    parent_.lastAttr_ = null;
-                                    parent_ = null;
-                                    }
-                                 }
-                        return this;
-                }
-
-                /***************************************************************
-                
                         Append an attribute to this node, The given attribute
                         cannot have an existing parent.
 
@@ -963,6 +915,108 @@ else
                         node.rawValue = value;
                         node.type = type;
                         return node;
+                }
+        
+                /***************************************************************
+                
+                        Detach this node from its parent and siblings
+
+                ***************************************************************/
+        
+                private Node remove()
+                {
+                        if (! parent_) 
+                              return this;
+                        
+                        mutate;
+                        if (prevSibling_ && nextSibling_) 
+                           {
+                           prevSibling_.nextSibling_ = nextSibling_;
+                           nextSibling_.prevSibling_ = prevSibling_;
+                           prevSibling_ = null;
+                           nextSibling_ = null;
+                           parent_ = null;
+                           }
+                        else 
+                           if (nextSibling_)
+                              {
+                              debug assert(parent_.firstChild_ == this);
+                              parent_.firstChild_ = nextSibling_;
+                              nextSibling_.prevSibling_ = null;
+                              nextSibling_ = null;
+                              parent_ = null;
+                              }
+                           else 
+                              if (type != XmlNodeType.Attribute)
+                                 {
+                                 if (prevSibling_)
+                                    {
+                                    debug assert(parent_.lastChild_ == this);
+                                    parent_.lastChild_ = prevSibling_;
+                                    prevSibling_.nextSibling_ = null;
+                                    prevSibling_ = null;
+                                    parent_ = null;
+                                    }
+                                 else
+                                    {
+                                    debug assert(parent_.firstChild_ == this);
+                                    debug assert(parent_.lastChild_ == this);
+                                    parent_.firstChild_ = null;
+                                    parent_.lastChild_ = null;
+                                    parent_ = null;
+                                    }
+                                 }
+                              else
+                                 {
+                                 if (prevSibling_)
+                                    {
+                                    debug assert(parent_.lastAttr_ == this);
+                                    parent_.lastAttr_ = prevSibling_;
+                                    prevSibling_.nextSibling_ = null;
+                                    prevSibling_ = null;
+                                    parent_ = null;
+                                    }
+                                 else
+                                    {
+                                    debug assert(parent_.firstAttr_ == this);
+                                    debug assert(parent_.lastAttr_ == this);
+                                    parent_.firstAttr_ = null;
+                                    parent_.lastAttr_ = null;
+                                    parent_ = null;
+                                    }
+                                 }
+
+                        return this;
+                }
+
+                /***************************************************************
+
+                        purge serialization cache for this node and its
+                        ancestors
+
+                ***************************************************************/
+        
+                private Node mutate ()
+                {
+                        auto node = this;
+                        do {
+                           node.end = null;
+                           } while ((node = node.parent_) !is null);
+
+                        return node;
+                }
+
+                /***************************************************************
+        
+                        Patch the serialization text
+
+                ***************************************************************/
+        
+                private Node patch (T[] text)
+                {
+                        end = text.ptr + text.length;
+                        start = text.ptr;
+                        return this;
                 }
         
                 /***************************************************************
@@ -1177,7 +1231,6 @@ private class XmlPath(T)
                 auto mark = freeIndex;
                 allocate(root);
                 return set.assign (mark);
-
         }
 
         /***********************************************************************
@@ -1301,20 +1354,6 @@ private class XmlPath(T)
 
                 /***************************************************************
         
-                        Return a set containing all child elements of the 
-                        nodes within this set, which match the optional name
-
-                ***************************************************************/
-        
-                NodeSet child (T[] name = null)
-                {
-                        if (name.ptr)
-                            return child ((Node node){return node.name == name;});
-                        return  child (&always);
-                }
-
-                /***************************************************************
-        
                         Return a set containing all parent elements of the 
                         nodes within this set, which match the optional name
 
@@ -1370,6 +1409,20 @@ private class XmlPath(T)
                         if (name.ptr)
                             return descendant ((Node node){return node.name == name;});
                         return descendant (&always);
+                }
+
+                /***************************************************************
+        
+                        Return a set containing all child elements of the 
+                        nodes within this set, which match the optional name
+
+                ***************************************************************/
+        
+                NodeSet child (T[] name = null)
+                {
+                        if (name.ptr)
+                            return child ((Node node){return node.name == name;});
+                        return  child (&always);
                 }
 
                 /***************************************************************
@@ -1671,11 +1724,9 @@ private class XmlPath(T)
         
                 private void test (bool delegate(Node) filter, Node node)
                 {
-                        ++host.recursion;
-                        auto pop = host.freeIndex;
+                        auto pop = host.push;
                         auto add = filter (node);
-                        host.freeIndex = pop;
-                        --host.recursion;
+                        host.pop (pop);
                         if (add)
                             host.allocate (node);
                 }
@@ -1706,6 +1757,30 @@ private class XmlPath(T)
         private uint mark ()
         {       
                 return freeIndex;
+        }
+
+        /***********************************************************************
+
+                Recurse and save the current state
+                        
+        ***********************************************************************/
+        
+        private uint push ()
+        {       
+                ++recursion;
+                return freeIndex;
+        }
+
+        /***********************************************************************
+
+                Restore prior state
+                        
+        ***********************************************************************/
+        
+        private void pop (uint prior)
+        {       
+                freeIndex = prior;
+                --recursion;
         }
 
         /***********************************************************************
