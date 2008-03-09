@@ -1240,7 +1240,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
 
         /*******************************************************************************
          *         The meat of the class.  Turn the pull parser's nodes into SAX
-         *         events and send out to the ContentHandler.
+         *         events and send out to the SaxHandler.
          *******************************************************************************/
         private void doParse() {
                 saxHandler.setDocumentLocator(this);
