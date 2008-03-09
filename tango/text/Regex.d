@@ -4216,8 +4216,6 @@ private:
 }
 
 alias RegExpT!(char)     Regex;
-alias RegExpT!(wchar)    Regexw;
-alias RegExpT!(dchar)    Regexd;
 
 alias char[] string;
 
@@ -4352,7 +4350,6 @@ dchar decode(in char[] s, inout size_t idx)
         throw new Exception("4invalid UTF-8 sequence");
     }
 
-
 /*  ditto */
 
 dchar decode(wchar[] s, inout size_t idx)
@@ -4486,7 +4483,6 @@ void encode(inout char[] s, dchar c)
         }
         s = r;
     }
-
 
 /*  ditto */
 
