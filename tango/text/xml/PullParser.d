@@ -67,7 +67,7 @@ class PullParser(Ch = char)
         public Ch[]                     localName;     
         public XmlTokenType             type = XmlTokenType.None;
 
-        private XmlIterator!(Ch)        text;
+        package XmlIterator!(Ch)        text;
         private bool                    err;
         private char[]                  errMsg;
 
