@@ -488,7 +488,7 @@ static Symbol* trace_addsym(char[] id)
     //printf("trace_addsym('%s',%d)\n",p,len);
     parent = &root;
     rover = *parent;
-    while (rover != null)               // while we haven't run out of tree
+    while (rover !is null)               // while we haven't run out of tree
     {
         cmp = stringCompare (id, rover.Sident);
         if (cmp == 0)
@@ -691,7 +691,7 @@ static void trace_merge()
     SymPair *sfanin;
     SymPair **psp;
 
-    if (trace_logfilename && (fp = fopen(trace_logfilename.ptr,"r")) != null)
+    if (trace_logfilename && (fp = fopen(trace_logfilename.ptr,"r")) !is null)
     {
         buf = null;
         sfanin = null;

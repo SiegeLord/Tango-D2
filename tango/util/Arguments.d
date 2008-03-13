@@ -389,7 +389,7 @@ public class Arguments
     {
         bool rtn = false;
         if (key)
-            rtn = (key in _args) != null;
+            rtn = (key in _args) !is null;
         return rtn;
     }
 

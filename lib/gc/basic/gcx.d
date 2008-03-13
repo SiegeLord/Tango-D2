@@ -464,7 +464,7 @@ class GC
         if (bin < B_PAGE)
         {
             p = gcx.bucket[bin];
-            if (p == null)
+            if (p is null)
             {
                 if (!gcx.allocPage(bin) && !gcx.disabled)   // try to find a new page
                 {

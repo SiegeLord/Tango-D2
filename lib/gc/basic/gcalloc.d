@@ -85,7 +85,7 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
     {   void *p;
 
         p = VirtualAlloc(base + offset, nbytes, MEM_COMMIT, PAGE_READWRITE);
-    return cast(int)(p == null);
+    return cast(int)(p is null);
     }
 
 

@@ -859,7 +859,7 @@ public class SAXException : Exception {
          * @return The error or warning message.
          *******************************************************************************/
         public char[] message() {
-                if (msg == null && next != null) {
+                if (msg is null && next !is null) {
                         return next.msg;
                 }
                 else {
@@ -1543,7 +1543,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            cannot set the requested value.
          *******************************************************************************/
         public void setFeature(Ch[] name, bool value) {
-                if (parent != null) {
+                if (parent !is null) {
                         parent.setFeature(name, value);
                 }
                 else {
@@ -1566,7 +1566,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            cannot determine its value at this time.
          *******************************************************************************/
         public bool getFeature(Ch[] name) {
-                if (parent != null) {
+                if (parent !is null) {
                         return parent.getFeature(name);
                 }
                 else {
@@ -1589,7 +1589,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            cannot set the requested value.
          *******************************************************************************/
         public void setProperty(Ch[] name, Object value) {
-                if (parent != null) {
+                if (parent !is null) {
                         parent.setProperty(name, value);
                 }
                 else {
@@ -1610,7 +1610,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            cannot determine its value at this time.
          *******************************************************************************/
         public Object getProperty(Ch[] name) {
-                if (parent != null) {
+                if (parent !is null) {
                         return parent.getProperty(name);
                 }
                 else {
@@ -1739,7 +1739,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            new InputSource.
          *******************************************************************************/
         public InputStream resolveEntity(Ch[] publicId, Ch[] systemId) {
-                if (entityResolver != null) {
+                if (entityResolver !is null) {
                         return entityResolver.resolveEntity(publicId, systemId);
                 }
                 else {
@@ -1758,7 +1758,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *******************************************************************************/
         public void setDocumentLocator(Locator locator) {
                 this.locator = locator;
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.setDocumentLocator(locator);
                 }
 
@@ -1771,7 +1771,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void startDocument() {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.startDocument();
                 }
 
@@ -1784,7 +1784,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void endDocument() {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.endDocument();
                 }
 
@@ -1799,7 +1799,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.startPrefixMapping(prefix, uri);
                 }
 
@@ -1813,7 +1813,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void endPrefixMapping(Ch[] prefix) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.endPrefixMapping(prefix);
                 }
 
@@ -1831,7 +1831,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute[] atts) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.startElement(uri, localName, qName, atts);
                 }    
 
@@ -1848,7 +1848,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.endElement(uri, localName, qName);
                 }
 
@@ -1862,7 +1862,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void characters(Ch ch[]) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.characters(ch);
                 }
 
@@ -1878,7 +1878,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void ignorableWhitespace(Ch ch[]) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.ignorableWhitespace(ch);
                 }
 
@@ -1893,7 +1893,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void processingInstruction(Ch[] target, Ch[] data) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.processingInstruction(target, data);
                 }
 
@@ -1907,7 +1907,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void skippedEntity(Ch[] name) {
-                if (saxHandler != null) {
+                if (saxHandler !is null) {
                         saxHandler.skippedEntity(name);
                 }
 
@@ -1924,7 +1924,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void warning(SAXException e) {
-                if (errorHandler != null) {
+                if (errorHandler !is null) {
                         errorHandler.warning(e);
                 }
 
@@ -1938,7 +1938,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void error(SAXException e) {
-                if (errorHandler != null) {
+                if (errorHandler !is null) {
                         errorHandler.error(e);
                 }
 
@@ -1952,7 +1952,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            an exception during processing.
          *******************************************************************************/
         public void fatalError(SAXException e) {
-                if (errorHandler != null) {
+                if (errorHandler !is null) {
                         errorHandler.fatalError(e);
                 }
 
@@ -1969,7 +1969,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * events.</p>
          *******************************************************************************/
         private void setupParse() {
-                if (parent == null) {
+                if (parent is null) {
                         throw new Exception("No parent for filter");
                 }
                 parent.setEntityResolver(this);

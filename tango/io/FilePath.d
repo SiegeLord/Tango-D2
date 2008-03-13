@@ -1803,7 +1803,7 @@ private struct FS
                         sfnbuf = prefix.dup;
                         
                         // pentry is null at end of listing, or on an error 
-                        while (readdir_r (dir, &entry, &pentry), pentry != null)
+                        while (readdir_r (dir, &entry, &pentry), pentry !is null)
                               {
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];

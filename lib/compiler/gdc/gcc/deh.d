@@ -247,7 +247,7 @@ private _Unwind_Reason_Code personalityImpl(int iversion,
       // no cleanups or handlers to be run.
       found_type = Found.nothing;
     }
-  else if (action_record == null)
+  else if (action_record is null)
     {
       // If ip is present, has a non-null landing pad, and a null
       // action table offset, then there are only cleanups present.

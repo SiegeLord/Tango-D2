@@ -306,7 +306,7 @@ version (Clone)
    * Remarks: Instances returned by this method are cached.
    */
   public static Culture getCulture(char[] cultureName) {
-    if (cultureName == null)
+    if (cultureName is null)
        error("Value cannot be null.");
     Culture culture = getCultureInternal(0, cultureName);
     if (culture is null)
@@ -320,7 +320,7 @@ version (Clone)
     * Returns: A read-only culture instance.
     */
   public static Culture getCultureFromIetfLanguageTag(char[] name) {
-    if (name == null)
+    if (name is null)
       error("Value cannot be null.");
     Culture culture = getCultureInternal(-1, name);
     if (culture is null)
@@ -358,7 +358,7 @@ version (Clone)
     try {
       if (cultureID == -1) {
         name = CultureData.getCultureNameFromIetfName(name);
-        if (name == null)
+        if (name is null)
           return null;
       }
       else if (cultureID == 0)
@@ -1513,31 +1513,31 @@ version(Clone)
 }
 
   package char[][] shortTimePatterns() {
-    if (shortTimePatterns_ == null)
+    if (shortTimePatterns_ is null)
       shortTimePatterns_ = cultureData_.shortTimes;
     return shortTimePatterns_.dup;
   }
 
   package char[][] shortDatePatterns() {
-    if (shortDatePatterns_ == null)
+    if (shortDatePatterns_ is null)
       shortDatePatterns_ = cultureData_.shortDates;
     return shortDatePatterns_.dup;
   }
 
   package char[][] longTimePatterns() {
-    if (longTimePatterns_ == null)
+    if (longTimePatterns_ is null)
       longTimePatterns_ = cultureData_.longTimes;
     return longTimePatterns_.dup;
   }
 
   package char[][] longDatePatterns() {
-    if (longDatePatterns_ == null)
+    if (longDatePatterns_ is null)
       longDatePatterns_ = cultureData_.longDates;
     return longDatePatterns_.dup;
   }
 
   package char[][] yearMonthPatterns() {
-    if (yearMonthPatterns_ == null)
+    if (yearMonthPatterns_ is null)
       yearMonthPatterns_ = cultureData_.yearMonths;
     return yearMonthPatterns_;
   }
@@ -1814,7 +1814,7 @@ version(Clone)
    * Returns: The string separating date components.
    */
   public final char[] dateSeparator() {
-    if (dateSeparator_ == null)
+    if (dateSeparator_ is null)
       dateSeparator_ = cultureData_.date;
     return dateSeparator_;
   }
@@ -1833,7 +1833,7 @@ version(Clone)
    * Returns: The string separating time components.
    */
   public final char[] timeSeparator() {
-    if (timeSeparator_ == null)
+    if (timeSeparator_ is null)
       timeSeparator_ = cultureData_.time;
     return timeSeparator_;
   }
@@ -1852,7 +1852,7 @@ version(Clone)
    * Returns: The string designator for hours before noon. For example, "AM".
    */
   public final char[] amDesignator() {
-    assert(amDesignator_ != null);
+    assert(amDesignator_ !is null);
     return amDesignator_;
   }
   /**
@@ -1870,7 +1870,7 @@ version(Clone)
    * Returns: The string designator for hours after noon. For example, "PM".
    */
   public final char[] pmDesignator() {
-    assert(pmDesignator_ != null);
+    assert(pmDesignator_ !is null);
     return pmDesignator_;
   }
   /**
@@ -1888,7 +1888,7 @@ version(Clone)
    * Returns: The format pattern for a short date value.
    */
   public final char[] shortDatePattern() {
-    assert(shortDatePattern_ != null);
+    assert(shortDatePattern_ !is null);
     return shortDatePattern_;
   }
   /**
@@ -1897,7 +1897,7 @@ version(Clone)
    */
   public final void shortDatePattern(char[] value) {
     checkReadOnly();
-    if (shortDatePatterns_ != null)
+    if (shortDatePatterns_ !is null)
       shortDatePatterns_[0] = value;
     shortDatePattern_ = value;
     generalLongTimePattern_ = null;
@@ -1910,7 +1910,7 @@ version(Clone)
    * Returns: The format pattern for a short time value.
    */
   public final char[] shortTimePattern() {
-    if (shortTimePattern_ == null)
+    if (shortTimePattern_ is null)
       shortTimePattern_ = cultureData_.shortTime;
     return shortTimePattern_;
   }
@@ -1930,7 +1930,7 @@ version(Clone)
    * Returns: The format pattern for a long date value.
    */
   public final char[] longDatePattern() {
-    assert(longDatePattern_ != null);
+    assert(longDatePattern_ !is null);
     return longDatePattern_;
   }
   /**
@@ -1939,7 +1939,7 @@ version(Clone)
    */
   public final void longDatePattern(char[] value) {
     checkReadOnly();
-    if (longDatePatterns_ != null)
+    if (longDatePatterns_ !is null)
       longDatePatterns_[0] = value;
     longDatePattern_ = value;
     fullDateTimePattern_ = null;
@@ -1951,7 +1951,7 @@ version(Clone)
    * Returns: The format pattern for a long time value.
    */
   public final char[] longTimePattern() {
-    assert(longTimePattern_ != null);
+    assert(longTimePattern_ !is null);
     return longTimePattern_;
   }
   /**
@@ -1970,7 +1970,7 @@ version(Clone)
    * Returns: The format pattern for a month and day value.
    */
   public final char[] monthDayPattern() {
-    if (monthDayPattern_ == null)
+    if (monthDayPattern_ is null)
       monthDayPattern_ = cultureData_.monthDay;
     return monthDayPattern_;
   }
@@ -1989,7 +1989,7 @@ version(Clone)
    * Returns: The format pattern for a year and month value.
    */
   public final char[] yearMonthPattern() {
-    assert(yearMonthPattern_ != null);
+    assert(yearMonthPattern_ !is null);
     return yearMonthPattern_;
   }
   /**
@@ -2008,7 +2008,7 @@ version(Clone)
    *   this contains "Sun", "Mon", "Tue", "Wed", "Thu", "Fri" and "Sat".
    */
   public final char[][] abbreviatedDayNames() {
-    if (abbreviatedDayNames_ == null)
+    if (abbreviatedDayNames_ is null)
       abbreviatedDayNames_ = cultureData_.abbrevDayNames;
     return abbreviatedDayNames_.dup;
   }
@@ -2028,7 +2028,7 @@ version(Clone)
    *   this contains "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" and "Saturday".
    */
   public final char[][] dayNames() {
-    if (dayNames_ == null)
+    if (dayNames_ is null)
       dayNames_ = cultureData_.dayNames;
     return dayNames_.dup;
   }
@@ -2048,7 +2048,7 @@ version(Clone)
    *   this contains "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" and "".
    */
   public final char[][] abbreviatedMonthNames() {
-    if (abbreviatedMonthNames_ == null)
+    if (abbreviatedMonthNames_ is null)
       abbreviatedMonthNames_ = cultureData_.abbrevMonthNames;
     return abbreviatedMonthNames_.dup;
   }
@@ -2068,7 +2068,7 @@ version(Clone)
    *   this contains "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" and "".
    */
   public final char[][] monthNames() {
-    if (monthNames_ == null)
+    if (monthNames_ is null)
       monthNames_ = cultureData_.monthNames;
     return monthNames_.dup;
   }
@@ -2087,7 +2087,7 @@ version(Clone)
    * Returns: The format pattern for a long date and a long time value.
    */
   public final char[] fullDateTimePattern() {
-    if (fullDateTimePattern_ == null)
+    if (fullDateTimePattern_ is null)
       fullDateTimePattern_ = longDatePattern ~ " " ~ longTimePattern;
     return fullDateTimePattern_;
   }
@@ -2128,13 +2128,13 @@ version(Clone)
   }
 
   package char[] generalShortTimePattern() {
-    if (generalShortTimePattern_ == null)
+    if (generalShortTimePattern_ is null)
       generalShortTimePattern_ = shortDatePattern ~ " " ~ shortTimePattern;
     return generalShortTimePattern_;
   }
 
   package char[] generalLongTimePattern() {
-    if (generalLongTimePattern_ == null)
+    if (generalLongTimePattern_ is null)
       generalLongTimePattern_ = shortDatePattern ~ " " ~ longTimePattern;
     return generalLongTimePattern_;
   }
@@ -2145,19 +2145,19 @@ version(Clone)
   }
 
   private void initialize() {
-    if (longTimePattern_ == null)
+    if (longTimePattern_ is null)
       longTimePattern_ = cultureData_.longTime;
-    if (shortDatePattern_ == null)
+    if (shortDatePattern_ is null)
       shortDatePattern_ = cultureData_.shortDate;
-    if (longDatePattern_ == null)
+    if (longDatePattern_ is null)
       longDatePattern_ = cultureData_.longDate;
-    if (yearMonthPattern_ == null)
+    if (yearMonthPattern_ is null)
       yearMonthPattern_ = cultureData_.yearMonth;
-    if (amDesignator_ == null)
+    if (amDesignator_ is null)
       amDesignator_ = cultureData_.am;
-    if (pmDesignator_ == null)
+    if (pmDesignator_ is null)
       pmDesignator_ = cultureData_.pm;
-    if (firstDayOfWeek_ == -1)
+    if (firstDayOfWeek_ is -1)
       firstDayOfWeek_ = cultureData_.firstDayOfWeek;
     if (calendarWeekRule_ == -1)
       calendarWeekRule_ = cultureData_.firstDayOfYear;

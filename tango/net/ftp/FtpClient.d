@@ -335,7 +335,7 @@ class FTPConnection : Telnet
             listen_port = port;
 
         // Any specific IP to listen on?
-        if (listen_ip == null)
+        if (listen_ip is null)
             this.data_info.listen = new IPv4Address(IPv4Address.ADDR_ANY, listen_port);
         else
             this.data_info.listen = new IPv4Address(listen_ip, listen_port);
