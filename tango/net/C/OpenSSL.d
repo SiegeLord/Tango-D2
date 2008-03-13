@@ -566,12 +566,12 @@ void _initOpenSSL()
     }
 
     uint numLocks = CRYPTO_num_locks();
-    if ((_locks = new ReadWriteMutex[numLocks]) != null)
+    if ((_locks = new ReadWriteMutex[numLocks]) !is null)
     {
         uint i = 0;
         for (; i < numLocks; i++)
         {
-            if((_locks[i] = new ReadWriteMutex()) == null)
+            if((_locks[i] = new ReadWriteMutex()) is null)
                 break;
         }
         if (i == numLocks)
