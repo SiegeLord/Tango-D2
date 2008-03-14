@@ -1178,9 +1178,16 @@ private struct LineFreach(T)
                       }
 
                 line = src [mark .. $];
+version(995)
+{
                 if (mark < src.length)
                     ret = dg (line);
-
+}
+else
+{
+                if (mark <= src.length)
+                    ret = dg (line);
+}
                 return ret;
         }
 }
@@ -1224,9 +1231,16 @@ private struct DelimFreach(T)
                                    }
 
                 token = src [mark .. $];
+version(995)
+{
                 if (mark < src.length)
                     ret = dg (token);
-
+}
+else
+{
+                if (mark <= src.length)
+                    ret = dg (token);
+}
                 return ret;
         }
 }
@@ -1276,9 +1290,16 @@ private struct PatternFreach(T)
                              }
 
                 token = src [mark .. $];
+version(995)
+{
                 if (mark < src.length)
                     ret = dg (token);
-
+}
+else
+{
+                if (mark <= src.length)
+                    ret = dg (token);
+}
                 return ret;
         }
 }
@@ -1317,9 +1338,16 @@ private struct QuoteFreach(T)
                         }
                 
                 token = src [mark .. $];
+version(995)
+{
                 if (mark < src.length)
                     ret = dg (token);
-
+}
+else
+{
+                if (mark <= src.length)
+                    ret = dg (token);
+}
                 return ret;
         }
 }
@@ -1415,7 +1443,10 @@ debug (UnitTest)
         x = delimit ("abcd", ":");
         assert (x.length is 1 && x[0] == "abcd");
         x = delimit ("abcd:", ":");
+version(995)
         assert (x.length is 1 && x[0] == "abcd");
+else
+        assert (x.length is 2 && x[0] == "abcd" && x[1] == "");
         x = delimit ("a;b$c#d:e@f", ";:$#@");
         assert (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
                                  x[3]=="d" && x[4]=="e" && x[5]=="f");
@@ -1435,14 +1466,27 @@ debug (UnitTest)
         assert (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
         assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
 
+version(995)
+{
         x = splitLines ("a\nb\n");
         assert (x.length is 2 && x[0] == "a" && x[1] == "b");
         x = splitLines ("a\r\n");
         assert (x.length is 1 && x[0] == "a");
+}
+else
+{
+        x = splitLines ("a\nb\n");
+        assert (x.length is 3 && x[0] == "a" && x[1] == "b" && x[2] == "");
+        x = splitLines ("a\r\n");
+        assert (x.length is 2 && x[0] == "a" && x[1] == "");
+}
         x = splitLines ("a");
         assert (x.length is 1 && x[0] == "a");
         x = splitLines ("");
+version(995)
         assert (x.length is 0);
+else
+        assert (x.length is 1);
 
         char[][] q;
         foreach (element; quotes ("1 'avcc   cc ' 3", " "))
@@ -1458,7 +1502,10 @@ debug (UnitTest)
         x = split ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
         x = split ("one,,", ",");
+version(995)
         assert (x.length is 2 && x[0] == "one" && x[1] == "");
+else
+        assert (x.length is 3 && x[0] == "one" && x[1] == "" && x[2] == "");
 
         char[] h, t;
         h =  head ("one:two:three", ":", t);
