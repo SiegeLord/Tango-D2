@@ -508,7 +508,7 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
                    RBPairT t = tree;
                    for (;;)
                        {
-                       int diff = cmp.compare(key, t.key());
+                       int diff = cmp(key, t.key());
                        if (diff is 0 && checkOccurrence)
                           {
                           if (t.element() != element)
@@ -567,7 +567,7 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
                    while (t !is null)
                          {
                          K v = t.key();
-                         assert((last is K.init || cmp.compare(last, v) <= 0));
+                         assert((last is K.init || cmp(last, v) <= 0));
                          last = v;
                          t = cast(RBPairT)(t.successor());
                          }
