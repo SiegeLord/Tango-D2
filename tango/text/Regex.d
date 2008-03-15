@@ -3908,7 +3908,7 @@ class RegExpT(char_t)
     {
         auto res = new char_t[][PREALLOC];
         uint index;
-        char_t[] tmp;
+        char_t[] tmp = input;
 
         foreach ( r; search(input) )
         {
