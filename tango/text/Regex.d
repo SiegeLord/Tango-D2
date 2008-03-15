@@ -3913,12 +3913,9 @@ class RegExpT(char_t)
         foreach ( r; search(input) )
         {
             tmp = pre;
-            if ( tmp.length > last_start_ )
-            {
-                res[index++] = tmp[last_start_ .. $];
-                if ( index >= res.length )
-                    res.length = res.length*2;
-            }
+            res[index++] = tmp[last_start_ .. $];
+            if ( index >= res.length )
+                res.length = res.length*2;
             tmp = post;
         }
 
