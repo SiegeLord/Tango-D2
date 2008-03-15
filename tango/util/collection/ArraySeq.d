@@ -916,6 +916,7 @@ debug (Test)
                          Cout (value).newline;
 
                 auto a = array.toArray;
+                a.sort;
                 foreach (value; a)
                          Cout (value).newline;
 

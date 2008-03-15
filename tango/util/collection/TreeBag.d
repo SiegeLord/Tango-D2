@@ -492,9 +492,11 @@ debug (Test)
         void main()
         {
                 auto bag = new TreeBag!(char[]);
+                bag.add ("zebra");
                 bag.add ("bar");
                 bag.add ("barrel");
                 bag.add ("foo");
+                bag.add ("apple");
 
                 foreach (value; bag.elements) {}
 
