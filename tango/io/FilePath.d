@@ -1152,21 +1152,6 @@ private struct FS
 
         /***********************************************************************
 
-                Does this path currently exist?
-
-        ***********************************************************************/
-
-        static bool exists (char[] name)
-        {
-                try {
-                    fileSize (name);
-                    return true;
-                    } catch (IOException){}
-                return false;
-        }
-
-        /***********************************************************************
-
                 Returns the time of the last modification. Accurate
                 to whatever the OS supports, and in a format dictated
                 by the file-system. For example NTFS keeps UTC time, 
@@ -1248,21 +1233,34 @@ private struct FS
 
                 ***************************************************************/
 
-                private static DWORD getInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
+                private static bool fileInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         version (Win32SansUnicode)
                                 {
                                 if (! GetFileAttributesExA (name.ptr, GetFileInfoLevelStandard, &info))
-                                      exception (name);
+                                      return false;
                                 }
                              else
                                 {
                                 wchar[MAX_PATH] tmp = void;
                                 if (! GetFileAttributesExW (toString16(tmp, name).ptr, GetFileInfoLevelStandard, &info))
-                                      exception (name);
+                                      return false;
                                 }
 
-                        return info.dwFileAttributes;
+                        return true;
+                }
+
+                /***************************************************************
+
+                        Get info about this path
+
+                ***************************************************************/
+
+                private static DWORD getInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
+                {
+                        if (fileInfo (name, info))
+                            return info.dwFileAttributes;
+                        exception (name);
                 }
 
                 /***************************************************************
@@ -1276,6 +1274,19 @@ private struct FS
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
                         return getInfo (name, info);
+                }
+
+                /***************************************************************
+
+                        Return whether the file or path exists
+
+                ***************************************************************/
+
+                static bool exists (char[] name)
+                {
+                        WIN32_FILE_ATTRIBUTE_DATA info = void;
+
+                        return fileInfo (name, info);
                 }
 
                 /***************************************************************
@@ -1582,6 +1593,18 @@ private struct FS
                             exception (name);
 
                         return stats.st_mode;
+                }
+
+                /***************************************************************
+
+                        Return whether the file or path exists
+
+                ***************************************************************/
+
+                static bool exists (char[] name)
+                {
+                        stat_t stats = void;
+                        return posix.stat (name.ptr, &stats) is 0;
                 }
 
                 /***************************************************************
