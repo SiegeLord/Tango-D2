@@ -157,7 +157,7 @@ struct FileSystem
                                 GetCurrentDirectoryA (len, dir.ptr);
                                 if (len)
                                    {
-                                   dir[len-1] = '\\';                                   
+                                   dir[len-1] = '/';                                   
                                    path = dir;
                                    }
                                 else
@@ -176,7 +176,7 @@ struct FileSystem
                                 if (len && i)
                                    {
                                    path = dir[0..i];
-                                   path[$-1] = '\\';
+                                   path[$-1] = '/';
                                    }
                                 else
                                    exception ("Failed to get current directory");
@@ -260,7 +260,7 @@ debug (FileSystem)
         path.set ("...");
         foo (path); 
 
-        path.set (r"\x\y\.file");
+        path.set (r"/x/y/.file");
         foo (path); 
 
         path.suffix = ".foo";
@@ -270,7 +270,7 @@ debug (FileSystem)
         FileSystem.toAbsolute(path);
         foo(path);
 
-        path.set (r"arf\test");
+        path.set (r"arf/test");
         foo(path);
         FileSystem.toAbsolute(path);
         foo(path);
