@@ -101,6 +101,7 @@ protected class DocTester(T)
         
         void element (Node node)
         {
+                uniqueAttrNames (node);
         }
 
         /***********************************************************************
@@ -111,7 +112,6 @@ protected class DocTester(T)
         
         void attribute (Node node)
         {
-                uniqueAttrNames (node);
         }
 
         /***********************************************************************
