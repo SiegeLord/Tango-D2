@@ -175,6 +175,7 @@ protected class DocTester(T)
                 T[128]  name1 = void,
                         name2 = void;
 
+                // non-optimal, but is it critical?
                 foreach (attr; node.attributes)
                         {
                         auto name = attr.name (name1);
