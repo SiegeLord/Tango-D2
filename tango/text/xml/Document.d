@@ -475,6 +475,8 @@ else
                 {
                         if (prefix.length)
                            {
+version (old)
+{
                            auto len = prefix.length + localName.length + 1;
                            if (output.length < len)
                                output.length = len;
@@ -482,6 +484,9 @@ else
                            output[prefix.length] = ':';
                            output[prefix.length+1 .. len] = localName;
                            return output[0..len];
+}
+else
+                           return prefix.ptr [0 .. prefix.length + localName.length + 1];
                            }
                         return localName;
                 }
