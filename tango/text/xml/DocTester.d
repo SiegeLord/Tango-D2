@@ -172,21 +172,21 @@ protected class DocTester(T)
         
         static void uniqueAttrNames (Node node)
         {
-                T[][] list;
+                T[128]  name1 = void,
+                        name2 = void;
 
                 foreach (attr; node.attributes)
-                         list ~= attr.name;
-                list.sort;
-
-                if (list.length > 1)
-                   {
-                   auto test = list[0];
-                   foreach (name; list[1..$])
-                            if (name == test)
-                                error ("duplicate attribute name '{}' for element '{}'", name, node.name);
-                            else
-                               test = name;
-                   }
+                        {
+                        auto name = attr.name (name1);
+                        auto next = attr.nextSibling_;
+                        while (next !is null)
+                              {
+                              if (name == next.name(name2))
+                                  error ("duplicate attribute name '{}' for element '{}'", 
+                                          name, node.name(name2));
+                              next = attr.nextSibling_;
+                              }
+                        }
         }
 
         /***********************************************************************
