@@ -353,7 +353,8 @@ else
 
         /***********************************************************************
         
-                opApply support for nodes
+                Fruct support for nodes. A fruct is a low-overhead 
+                mechanism for capturing context relating to an opApply
 
         ***********************************************************************/
         

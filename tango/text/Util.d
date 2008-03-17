@@ -1146,9 +1146,11 @@ uint jhash (void[] x, uint c = 0)
 
 
 /******************************************************************************
-
-        Helper struct for iterator lines()
-         
+      
+        Helper fruct for iterator lines(). A fruct is a low 
+        impact mechanism for capturing context relating to an 
+        opApply (conjunction of the names struct and foreach)
+        
 ******************************************************************************/
 
 private struct LineFreach(T)
@@ -1194,7 +1196,9 @@ else
 
 /******************************************************************************
 
-        Helper struct for iterator delimiters()
+        Helper fruct for iterator delims(). A fruct is a low 
+        impact mechanism for capturing context relating to an 
+        opApply (conjunction of the names struct and foreach)
         
 ******************************************************************************/
 
@@ -1247,7 +1251,9 @@ else
 
 /******************************************************************************
 
-        Helper struct for iterator patterns()
+        Helper fruct for iterator patterns(). A fruct is a low 
+        impact mechanism for capturing context relating to an 
+        opApply (conjunction of the names struct and foreach)
         
 ******************************************************************************/
 
@@ -1306,7 +1312,9 @@ else
 
 /******************************************************************************
 
-        Helper struct for iterator quotes()
+        Helper fruct for iterator quotes(). A fruct is a low 
+        impact mechanism for capturing context relating to an 
+        opApply (conjunction of the names struct and foreach)
         
 ******************************************************************************/
 
