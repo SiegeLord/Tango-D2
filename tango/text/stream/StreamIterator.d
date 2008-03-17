@@ -190,7 +190,11 @@ class StreamIterator(T) : InputStream, Buffered
         final T[] next ()
         {
                 if (pushed.ptr)
-                    return pushed;
+                   {
+                   slice = pushed;
+                   pushed = null;
+                   return slice;
+                   }
                 else
                    if (consume() || slice.length)
                        return slice;
