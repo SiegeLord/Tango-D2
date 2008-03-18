@@ -39,19 +39,19 @@ import tango.core.Thread;
     to an existing server. Connection will cause the library to stall on a 
     read on connection.
 
-	Example
-	---
-	auto s1 = new SSLSocketConduit();
-	if (s1.connect(new InternetAddress("www.yahoo.com", 443)))
-	{
-		char[] cmd = "GET / HTTP/1.0\r\n\r\n";
-		s1.write(cmd);
-		char[1024] buff;
-		uint bytesRead = read(buff);
-		if (byteRead != SSLSocketConduit.Eof)
-			Stdout.formatln("received: {}", buff[0..bytesRead]);
-	}
-	---
+    Example
+    ---
+    auto s1 = new SSLSocketConduit();
+    if (s1.connect(new InternetAddress("www.yahoo.com", 443)))
+    {
+        char[] cmd = "GET / HTTP/1.0\r\n\r\n";
+        s1.write(cmd);
+        char[1024] buff;
+        uint bytesRead = read(buff);
+        if (byteRead != SSLSocketConduit.Eof)
+            Stdout.formatln("received: {}", buff[0..bytesRead]);
+    }
+    ---
 
 *******************************************************************************/
 
@@ -414,22 +414,22 @@ version(Test)
                     Socket mySock = new Socket(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
                     if (mySock)
                     {
-						Certificate publicCertificate;
-						PrivateKey privateKey;
-						try
-						{
-							publicCertificate = new Certificate(cast(char[])File("public.pem").read); 
-							privateKey = new PrivateKey(cast(char[])File("private.pem").read);
-						}						
-						catch (Exception ex)
-						{
-							privateKey = new PrivateKey(2048);
-							publicCertificate = new Certificate();
-							publicCertificate.privateKey(privateKey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
-				            publicCertificate.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(publicCertificate, privateKey);
-						}						
+                        Certificate publicCertificate;
+                        PrivateKey privateKey;
+                        try
+                        {
+                            publicCertificate = new Certificate(cast(char[])File("public.pem").read); 
+                            privateKey = new PrivateKey(cast(char[])File("private.pem").read);
+                        }                        
+                        catch (Exception ex)
+                        {
+                            privateKey = new PrivateKey(2048);
+                            publicCertificate = new Certificate();
+                            publicCertificate.privateKey(privateKey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
+                            publicCertificate.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(publicCertificate, privateKey);
+                        }                        
                         auto sslCtx = new SSLCtx();
-						sslCtx.certificate(publicCertificate).privateKey(privateKey).checkKey();
+                        sslCtx.certificate(publicCertificate).privateKey(privateKey).checkKey();
                         auto s3 = new SSLSocketConduit(mySock, sslCtx);
                         if (s3)
                             return Test.Status.Success;

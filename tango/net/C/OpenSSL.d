@@ -54,7 +54,7 @@ private CRYPTO_dynlock_value *last = null;
 Mutex _dynLocksMutex = null;
 extern (C)
 {
-
+    const int RSA_PKCS1_OAEP_PADDING = 4;
     const int BIO_C_SET_NBIO = 102;
     const int SHA_DIGEST_LENGTH = 20;
     const int SSL_CTRL_SET_SESS_CACHE_MODE = 44;
@@ -82,7 +82,8 @@ extern (C)
     const int XN_FLAG_MULTILINE = ASN1_STRFLGS_ESC_CTRL | ASN1_STRFLGS_ESC_MSB | XN_FLAG_SEP_MULTILINE | XN_FLAG_SPC_EQ | XN_FLAG_FN_LN | XN_FLAG_FN_ALIGN;
 
     const char* PEM_STRING_EVP_PKEY = "ANY PRIVATE KEY";
-    const char* PEM_STRING_X509 = "CERTIFICATE";    
+    const char* PEM_STRING_X509 = "CERTIFICATE";   
+    const char* PEM_STRING_RSA_PUBLIC = "RSA PUBLIC KEY";    
 
     const int SSL_CTRL_OPTIONS = 32;
 
@@ -97,15 +98,15 @@ extern (C)
     const int ERR_TXT_STRING = 0x02;
 
     struct BIO 
-	{
-		BIO_METHOD *method;
-		int function(BIO *b, int a, char *c, int d, int e, int f) callback;
-		char *cb_arg;
-		int init;
-		int shutdown;
-		int flags;
-		// yadda yadda
-	};
+    {
+        BIO_METHOD *method;
+        int function(BIO *b, int a, char *c, int d, int e, int f) callback;
+        char *cb_arg;
+        int init;
+        int shutdown;
+        int flags;
+        // yadda yadda
+    };
 
     typedef BIO* function(int sock, int close_flag) tBIO_new_socket;
     typedef BIO* function(SSL_CTX *ctx, int client) tBIO_new_ssl;
@@ -115,7 +116,14 @@ extern (C)
     struct SSL_CTX {};
     struct SSL {};
     struct SSL_METHOD {};
-    struct EVP_PKEY {};
+    struct EVP_PKEY 
+    {
+        int type;
+        int save_type;
+        int references;
+        void *pkey;
+        // yadda yadda ...        
+    };
     struct X509_STORE_CTX {};
     struct EVP_CIPHER {};
     struct X509_ALGOR {};
@@ -244,6 +252,9 @@ extern (C)
     typedef ASN1_GENERALIZEDTIME *function(ASN1_TIME *t, ASN1_GENERALIZEDTIME **outTime) tASN1_TIME_to_generalizedtime;
     typedef void function(ASN1_STRING *a) tASN1_STRING_free;
     typedef int function() tRAND_poll;
+    typedef int function(RSA *rsa) tRSA_size;
+    typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_public_encrypt;
+    typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_private_decrypt;
 
     struct CRYPTO_dynlock_value
     {
@@ -394,6 +405,7 @@ tPEM_write_bio_PKCS8PrivateKey PEM_write_bio_PKCS8PrivateKey;
 tEVP_aes_256_cbc EVP_aes_256_cbc;
 tPEM_ASN1_read_bio PEM_ASN1_read_bio;
 d2i_of_void d2i_X509;
+d2i_of_void d2i_RSAPublicKey;
 tX509_new X509_new;
 tX509_free X509_free;
 tX509_set_version X509_set_version;
@@ -413,6 +425,7 @@ tX509_verify_cert X509_verify_cert;
 tX509_STORE_CTX_free X509_STORE_CTX_free;
 tPEM_ASN1_write_bio PEM_ASN1_write_bio;
 i2d_of_void i2d_X509;
+i2d_of_void i2d_RSAPublicKey;
 tX509_NAME_add_entry_by_txt X509_NAME_add_entry_by_txt;
 tSSL_CTX_set_session_id_context SSL_CTX_set_session_id_context;
 tEVP_PKEY_cmp_parameters EVP_PKEY_cmp_parameters;
@@ -421,6 +434,19 @@ tOPENSSL_add_all_algorithms_noconf OPENSSL_add_all_algorithms_noconf;
 tASN1_TIME_to_generalizedtime ASN1_TIME_to_generalizedtime;
 tASN1_STRING_free ASN1_STRING_free;
 tRAND_poll RAND_poll;
+tRSA_size RSA_size;
+tRSA_public_encrypt RSA_public_encrypt;
+tRSA_private_decrypt RSA_private_decrypt;
+
+int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
+{
+    return PEM_ASN1_write_bio(i2d_RSAPublicKey, PEM_STRING_RSA_PUBLIC, bp, cast(char*)x, null, null, 0, null, null);
+}
+
+RSA *PEM_read_bio_RSAPublicKey(BIO *bp, RSA **x, pem_password_cb cb, void *u)
+{
+    return cast(RSA *)PEM_ASN1_read_bio(d2i_RSAPublicKey, PEM_STRING_RSA_PUBLIC, bp, cast(void **)x, cb, u);
+}
 
 int PEM_write_bio_X509(BIO *b, X509 *x)
 {
@@ -469,30 +495,30 @@ int BIO_reset(BIO *b)
 
 bool BIO_should_retry(BIO *b)
 {
-	if (_bioTestFlags)
-	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_SHOULD_RETRY);
-	return cast(bool)(b.flags & BIO_FLAGS_SHOULD_RETRY);
+    if (_bioTestFlags)
+        return cast(bool)BIO_test_flags(b, BIO_FLAGS_SHOULD_RETRY);
+    return cast(bool)(b.flags & BIO_FLAGS_SHOULD_RETRY);
 }
 
 bool BIO_should_io_special(BIO *b)
 {
-	if (_bioTestFlags)
-	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_IO_SPECIAL);
-	return cast(bool)(b.flags & BIO_FLAGS_IO_SPECIAL);
+    if (_bioTestFlags)
+        return cast(bool)BIO_test_flags(b, BIO_FLAGS_IO_SPECIAL);
+    return cast(bool)(b.flags & BIO_FLAGS_IO_SPECIAL);
 }
 
 bool BIO_should_read(BIO *b)
 {
-	if (_bioTestFlags)
-	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_READ);
-	return cast(bool)(b.flags & BIO_FLAGS_READ);
+    if (_bioTestFlags)
+        return cast(bool)BIO_test_flags(b, BIO_FLAGS_READ);
+    return cast(bool)(b.flags & BIO_FLAGS_READ);
 }
 
 bool BIO_should_write(BIO *b)
 {
-	if (_bioTestFlags)
-	    return cast(bool)BIO_test_flags(b, BIO_FLAGS_WRITE);
-	return cast(bool)(b.flags & BIO_FLAGS_WRITE);
+    if (_bioTestFlags)
+        return cast(bool)BIO_test_flags(b, BIO_FLAGS_WRITE);
+    return cast(bool)(b.flags & BIO_FLAGS_WRITE);
 }
 
 X509* PEM_read_bio_X509(BIO *b, X509 **x, pem_password_cb cb, void *u)
@@ -659,6 +685,7 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(EVP_aes_256_cbc, "EVP_aes_256_cbc", ssllib);
         bindFunc(PEM_ASN1_read_bio, "PEM_ASN1_read_bio", ssllib);
         bindFunc(d2i_X509, "d2i_X509", ssllib);
+        bindFunc(d2i_RSAPublicKey, "d2i_RSAPublicKey", ssllib);
         bindFunc(X509_new, "X509_new", ssllib);
         bindFunc(X509_free, "X509_free", ssllib);
         bindFunc(X509_set_version, "X509_set_version", ssllib);
@@ -678,14 +705,15 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(X509_STORE_CTX_free, "X509_STORE_CTX_free", ssllib);
         bindFunc(PEM_ASN1_write_bio, "PEM_ASN1_write_bio", ssllib);
         bindFunc(i2d_X509, "i2d_X509", ssllib);
+        bindFunc(i2d_RSAPublicKey, "i2d_RSAPublicKey", ssllib);
         bindFunc(X509_NAME_add_entry_by_txt, "X509_NAME_add_entry_by_txt", ssllib);
         bindFunc(PEM_read_bio_PrivateKey, "PEM_read_bio_PrivateKey", ssllib);
         bindFunc(BIO_new_file, "BIO_new_file", ssllib);
         bindFunc(ERR_peek_error, "ERR_peek_error", ssllib);
-		try
-	        bindFunc(BIO_test_flags, "BIO_test_flags", ssllib); // 0.9.7 doesn't have this function, it access the struct directly
-		catch (Exception ex)
-			_bioTestFlags = false;
+        try
+            bindFunc(BIO_test_flags, "BIO_test_flags", ssllib); // 0.9.7 doesn't have this function, it access the struct directly
+        catch (Exception ex)
+            _bioTestFlags = false;
         bindFunc(BIO_ctrl, "BIO_ctrl", ssllib);
         bindFunc(RAND_load_file, "RAND_load_file", ssllib);
         bindFunc(CRYPTO_num_locks, "CRYPTO_num_locks", ssllib);
@@ -711,6 +739,9 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(BIO_push, "BIO_push", ssllib);    
         bindFunc(BIO_new_socket, "BIO_new_socket", ssllib);
         bindFunc(RAND_poll, "RAND_poll", ssllib);
+        bindFunc(RSA_size, "RSA_size", ssllib);
+        bindFunc(RSA_public_encrypt, "RSA_public_encrypt", ssllib);
+        bindFunc(RSA_private_decrypt, "RSA_private_decrypt", ssllib);
     }
 }
 
@@ -724,10 +755,10 @@ void loadOpenSSL()
     {
         char[][] loadPath = [ "libssl32.dll" ];
     }
-	version (darwin)
-	{
-		char[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
-	}
+    version (darwin)
+    {
+        char[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
+    }
     if ((ssllib = loadLib(loadPath)) !is null)
     {
 

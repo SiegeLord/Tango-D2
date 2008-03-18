@@ -92,15 +92,15 @@ extern (C) typedef int function(int, X509_STORE_CTX *ctx) SSLVerifyCallback;
     It contains the public/private keypair, and some additional options that
     control how the SSL streams work.
 
-	Example
-	---
-	auto cert = new Certificate(cast(char[])File("public.pem").read);
-	auto pkey = new PrivateKey(cast(char[])File("private.pem").read);;
-	auto ctx = new SSLCtx();
-	ctx.certificate = cert;
-	ctx.pkey = pkey;
-	ctx.checkKey();
-	---
+    Example
+    ---
+    auto cert = new Certificate(cast(char[])File("public.pem").read);
+    auto pkey = new PrivateKey(cast(char[])File("private.pem").read);;
+    auto ctx = new SSLCtx();
+    ctx.certificate = cert;
+    ctx.pkey = pkey;
+    ctx.checkKey();
+    ---
 
 *******************************************************************************/
 
@@ -149,7 +149,7 @@ class SSLCtx
             _cert = cert;
         else
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -167,7 +167,7 @@ class SSLCtx
             _key = key;
         else
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -181,7 +181,7 @@ class SSLCtx
     {
         if (!SSL_CTX_check_private_key(_ctx))
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -194,7 +194,7 @@ class SSLCtx
     SSLCtx setVerification(int flags, SSLVerifyCallback cb)
     {
         SSL_CTX_set_verify(_ctx, flags, cb);
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -209,7 +209,7 @@ class SSLCtx
     {
         SSL_CTX_set_cert_store(_ctx, store._store);
         _store = store;
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -231,7 +231,7 @@ class SSLCtx
     {
         if (!SSL_CTX_load_verify_locations(_ctx, null, toStringz(path)))
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     // TODO need to finish adding Session handling functionality
@@ -257,21 +257,21 @@ class SSLCtx
     validation.
 
 
-	The following example will probably change sometime soon.
+    The following example will probably change sometime soon.
 
-	Example
-	---
-	extern (C)
-	{
-		int myCallback(int code, X509_STORE_CTX *ctx)
-		{
-			auto myCtx = new CertificateStoreCtx(ctx);
-			Certificate cert = myCtx.cert;
-			Stdout(cert.subject).newline;
-			return 0; // BAD CERT! (1 is good)
-		}
-	}
-	---
+    Example
+    ---
+    extern (C)
+    {
+        int myCallback(int code, X509_STORE_CTX *ctx)
+        {
+            auto myCtx = new CertificateStoreCtx(ctx);
+            Certificate cert = myCtx.cert;
+            Stdout(cert.subject).newline;
+            return 0; // BAD CERT! (1 is good)
+        }
+    }
+    ---
 
 *******************************************************************************/
 
@@ -324,17 +324,17 @@ class CertificateStoreCtx
     CertificateStore stores numerous X509 Certificates for use in CRL lists,
     CA lists, etc.
 
-	Example
-	---
-	auto store = new CertificateStore();
-	auto caCert = new Certificate(cast(char[])File("cacert.pem").read);
-	store.add(caCert);
-	auto untrustedCert = new Certificate(cast(char[])File("cert.pem").read);
-	if (untrustedCert.verify(store))
-		Stdout("The untrusted cert was signed by our caCert and is valid.").newline;
-	else
-		Stdout("The untrusted cert was expired, or not signed by the caCert").newline;
-	---
+    Example
+    ---
+    auto store = new CertificateStore();
+    auto caCert = new Certificate(cast(char[])File("cacert.pem").read);
+    store.add(caCert);
+    auto untrustedCert = new Certificate(cast(char[])File("cert.pem").read);
+    if (untrustedCert.verify(store))
+        Stdout("The untrusted cert was signed by our caCert and is valid.").newline;
+    else
+        Stdout("The untrusted cert was expired, or not signed by the caCert").newline;
+    ---
             
 *******************************************************************************/
 
@@ -371,22 +371,142 @@ class CertificateStore
             _certs ~= cert; // just in case it gets GC'd?
         else
             throwOpenSSLError();
-		return this;
+        return this;
     }
 }
 
+/*******************************************************************************
+
+    PublicKey contains the RSA public key from a private/public keypair.
+
+    It also allows extraction of the public key from a keypair.
+
+    This is useful for encryption, you can encrypt data with someone's public key
+    and they can decrypt it with their private key.
+
+    Example
+    ---
+    auto public = new PublicKey(cast(char[])File("public.pem").read);
+    auto encrypted = public.encrypt(cast(ubyte[])"Hello, how are you today?");
+    auto pemData = public.pemFormat;
+    ---
+
+*******************************************************************************/
+
+class PublicKey
+{
+    package RSA *_evpKey = null;
+    private PrivateKey _existingKey = null;
+
+    /*******************************************************************************
+
+        Generate a PublicKey object from the passed PEM formatted data
+
+        Params:
+            publicPemData = pem encoded data containing the public key 
+            
+    *******************************************************************************/
+    this (char[] publicPemData)
+    {
+        BIO *bp = BIO_new_mem_buf(publicPemData.ptr, publicPemData.length);
+        if (bp)
+        {
+            _evpKey = PEM_read_bio_RSAPublicKey(bp, null, null, null);
+            BIO_free_all(bp);
+        }
+
+        if (_evpKey is null)
+            throwOpenSSLError();
+    }
+    package this(PrivateKey key) 
+    {        
+        this._evpKey = cast(RSA *)key._evpKey.pkey;
+        this._existingKey = key;
+    }
+
+    ~this()
+    {
+        if (_existingKey !is null)
+        {
+            _existingKey = null;
+            _evpKey = null;
+        }
+        else if (_evpKey)
+        {
+            RSA_free(_evpKey);
+            _evpKey = null;
+        }
+    }
+
+    /*******************************************************************************
+
+        Return a PublicKey in the PEM format.
+            
+    *******************************************************************************/
+
+    char[] pemFormat()
+    {
+        char[] rtn = null;
+        BIO *bp = BIO_new(BIO_s_mem());
+        if (bp)
+        {
+            if (PEM_write_bio_RSAPublicKey(bp, _evpKey))
+            {
+                char *pemData = null;
+                int pemSize = BIO_get_mem_data(bp, &pemData);
+                rtn = pemData[0..pemSize].dup;
+            }
+            BIO_free_all(bp);
+        }
+        if (rtn is null)
+            throwOpenSSLError();
+        return rtn;
+    }
+
+    /*******************************************************************************
+
+        Encrypt the passed data using the PublicKey 
+        
+        Notes:
+        This is size limited based off the key
+        Not recommended for general encryption, use RSA for encrypting a 
+        random key instead and switch to a block cipher.
+
+        Params:
+        data = the data to encrypt
+            
+    *******************************************************************************/
+
+    ubyte[] encrypt(ubyte[] data)
+    {
+        ubyte[] rtn;
+
+        uint maxSize = RSA_size(_evpKey);
+        if (data.length > maxSize)
+            throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
+        ubyte[] tmpRtn = new ubyte[maxSize];
+        int numBytes = RSA_public_encrypt(data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_OAEP_PADDING);
+        if (numBytes >= 0)
+            rtn = tmpRtn[0..numBytes];
+        if (rtn is null)
+            throwOpenSSLError();
+        return rtn;
+    }
+}
 
 /*******************************************************************************
 
     Generates a RSA public/private key pair for use with X509 Certificates
     and other applications search as S/MIME, DomainKeys, etc.
 
-	Example
-	---
-	auto newPkey = new PrivateKey(2048); // create new keypair
-	Stdout(newPkey.pemFormat("password")); // dumps in pemFormat with encryption
-	Stdout(newPkey.pemFormat()); // dumps in pemFormat without encryption
-	---
+    Example
+    ---
+    auto newPkey = new PrivateKey(2048); // create new keypair
+    Stdout(newPkey.pemFormat("password")); // dumps in pemFormat with encryption
+    Stdout(newPkey.pemFormat()); // dumps in pemFormat without encryption
+    Stdout(newPkey.publicKey.pemFormat); // dump out just the public key portion
+    auto data = newPkey.decrypt(someData); // decrypt data encrypted with public Key
+    ---
 
 *******************************************************************************/
 
@@ -494,6 +614,44 @@ class PrivateKey
             throwOpenSSLError();
         return rtn;
     }
+
+    /*******************************************************************************
+
+        Returns the underlying PublicKey
+
+    *******************************************************************************/
+
+    PublicKey publicKey()
+    {
+        auto rtn = new PublicKey(this);
+        return rtn;
+    }
+
+     /*******************************************************************************
+
+        Decrypts data previously encrypted with the PublicKey
+
+        Please see the PublicKey encrypt notes.
+
+        Parmas:
+            data = the data to encrypt
+
+    *******************************************************************************/
+       
+    ubyte[] decrypt(ubyte[] data)
+    {
+        ubyte[] rtn;
+
+        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
+        ubyte[] tmpRtn = new ubyte[maxSize];
+        int numBytes = RSA_private_decrypt(data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_OAEP_PADDING);
+        if (numBytes >= 0)
+            rtn = tmpRtn[0..numBytes];
+        if (rtn is null)
+            throwOpenSSLError();
+        return rtn;
+    }
+
 }
 
 /*******************************************************************************
@@ -506,19 +664,19 @@ class PrivateKey
 
     X509 Certificates are sometimes called SSL Certificates.
 
-	Example
-	---
-	auto newPkey = new PrivateKey(2048); // create new keypair
-	auto cert = new Certificate();
-	cert.privateKey = newPkey;
-	cert.serialNumber = 1;
-	cert.dateBeforeOffset = TimeSpan.zero;
-	cert.dateAfterOffset = TimeSpan.days(365); // cert is valid for one year
-	cert.setSubject("US", "State", "City", "Organization", "CN", "Organizational Unit", "Email");
-	cert.sign(cert, newPkey); // self signed cert
-	Stdout(newPkey.pemFormat).newline;
-	Stdout(cert.pemFormat).newline;
-	---
+    Example
+    ---
+    auto newPkey = new PrivateKey(2048); // create new keypair
+    auto cert = new Certificate();
+    cert.privateKey = newPkey;
+    cert.serialNumber = 1;
+    cert.dateBeforeOffset = TimeSpan.zero;
+    cert.dateAfterOffset = TimeSpan.days(365); // cert is valid for one year
+    cert.setSubject("US", "State", "City", "Organization", "CN", "Organizational Unit", "Email");
+    cert.sign(cert, newPkey); // self signed cert
+    Stdout(newPkey.pemFormat).newline;
+    Stdout(cert.pemFormat).newline;
+    ---
 
 *******************************************************************************/
 
@@ -599,7 +757,7 @@ class Certificate
         checkFlag();
         if (!ASN1_INTEGER_set(X509_get_serialNumber(_cert), serial))
             throwOpenSSLError();
-		return this;
+        return this;
     }
     /*******************************************************************************
 
@@ -632,7 +790,7 @@ class Certificate
         checkFlag();
         if (!X509_gmtime_adj(X509_get_notBefore(_cert), cast(int)t.seconds))
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -654,7 +812,7 @@ class Certificate
         checkFlag();
         if (!X509_gmtime_adj(X509_get_notAfter(_cert), cast(int)t.seconds))
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     
@@ -713,7 +871,7 @@ class Certificate
             if (!X509_set_pubkey(_cert, key._evpKey))
                 throwOpenSSLError();
         }
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -761,7 +919,7 @@ class Certificate
         }
         else
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -823,7 +981,7 @@ class Certificate
 
         if (!readOnly)
             throwOpenSSLError();
-		return this;
+        return this;
     }
 
     /*******************************************************************************
@@ -937,7 +1095,7 @@ version (Test)
         {
             auto cert = new Certificate();
             auto pkey = new PrivateKey(2048);
-			cert.privateKey(pkey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
+            cert.privateKey(pkey).serialNumber(123).dateBeforeOffset(t1).dateAfterOffset(t2);
             cert.setSubject("CA", "Alberta", "Place", "None", "First Last", "no unit", "email@example.com").sign(cert, pkey);
             char[] pemData = cert.pemFormat;
             auto cert2 = new Certificate(pemData);
@@ -985,13 +1143,26 @@ version (Test)
             }
 
             return Test.Status.Failure;
-        }    
+        }   
+
+        Test.Status _rsaCrypto(inout char[][] messages)
+        {
+            auto key = new PrivateKey(2048);
+            char[] pemData = key.publicKey.pemFormat;
+            auto pub = new PublicKey(pemData);
+            auto encrypted = pub.encrypt(cast(ubyte[])"Hello, how are you today?");
+            auto decrypted = key.decrypt(encrypted);
+            if (cast(char[])decrypted == "Hello, how are you today?")
+                return Test.Status.Success;
+            return Test.Status.Failure;
+        }
 
 
         auto t = new Test("tetra.net.PKI");
         t["Public/Private Keypair"] = &_pkeyGenTest;
         t["Self-Signed Certificate"] = &_certGenTest;
         t["Chain Validation"] = &_chainValidation;
+        t["RSA Crypto"] = &_rsaCrypto;
         t.run();
     }
 }

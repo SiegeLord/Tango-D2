@@ -26,21 +26,21 @@ import tango.net.PKI;
     to the library. You can find the library at http://www.openssl.org and a
     Win32 specific port at http://www.slproweb.com/products/Win32OpenSSL.html.
 
-	Example
-	---
-	auto cert = new Certificate(cast(char[])File("public.pem").read);
-	auto pkey = new PrivateKey(cast(char[])File("private.pem").read);
-	auto ctx = new SSLCtx();
-	ctx.certificate(cert).privateKey(pkey);
-	auto server = new SSLServerSocket(new InternetAddress(443), ctx);
-	for(;;)
-	{
-		auto sslSock = server.accept();
-		sc.write("HTTP/1.1 200\r\n\r\n<b>Hello World</b>");
-		sc.shutdown();
-		sc.close();
-	}
-	---
+    Example
+    ---
+    auto cert = new Certificate(cast(char[])File("public.pem").read);
+    auto pkey = new PrivateKey(cast(char[])File("private.pem").read);
+    auto ctx = new SSLCtx();
+    ctx.certificate(cert).privateKey(pkey);
+    auto server = new SSLServerSocket(new InternetAddress(443), ctx);
+    for(;;)
+    {
+        auto sslSock = server.accept();
+        sc.write("HTTP/1.1 200\r\n\r\n<b>Hello World</b>");
+        sc.shutdown();
+        sc.close();
+    }
+    ---
 
 *******************************************************************************/
 
