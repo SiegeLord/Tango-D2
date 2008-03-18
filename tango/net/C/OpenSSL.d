@@ -55,6 +55,7 @@ Mutex _dynLocksMutex = null;
 extern (C)
 {
     const int RSA_PKCS1_OAEP_PADDING = 4;
+    const int RSA_PKCS1_PADDING = 1;
     const int BIO_C_SET_NBIO = 102;
     const int SHA_DIGEST_LENGTH = 20;
     const int SSL_CTRL_SET_SESS_CACHE_MODE = 44;
@@ -255,6 +256,8 @@ extern (C)
     typedef int function(RSA *rsa) tRSA_size;
     typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_public_encrypt;
     typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_private_decrypt;
+    typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_private_encrypt;
+    typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_public_decrypt;
 
     struct CRYPTO_dynlock_value
     {
@@ -437,6 +440,8 @@ tRAND_poll RAND_poll;
 tRSA_size RSA_size;
 tRSA_public_encrypt RSA_public_encrypt;
 tRSA_private_decrypt RSA_private_decrypt;
+tRSA_private_encrypt RSA_private_encrypt;
+tRSA_public_decrypt RSA_public_decrypt;
 
 int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
 {
@@ -742,6 +747,8 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(RSA_size, "RSA_size", ssllib);
         bindFunc(RSA_public_encrypt, "RSA_public_encrypt", ssllib);
         bindFunc(RSA_private_decrypt, "RSA_private_decrypt", ssllib);
+        bindFunc(RSA_private_encrypt, "RSA_private_encrypt", ssllib);
+        bindFunc(RSA_public_decrypt, "RSA_public_decrypt", ssllib);
     }
 }
 

@@ -492,6 +492,32 @@ class PublicKey
             throwOpenSSLError();
         return rtn;
     }
+
+     /*******************************************************************************
+
+        Decrypts data previously encrypted with the matching PrivateKey
+
+        Please see the encrypt notes.
+
+        Parmas:
+            data = the data to encrypt
+
+    *******************************************************************************/
+       
+    ubyte[] decrypt(ubyte[] data)
+    {
+        ubyte[] rtn;
+
+        uint maxSize = RSA_size(_evpKey);
+        ubyte[] tmpRtn = new ubyte[maxSize];
+        int numBytes = RSA_public_decrypt(data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_PADDING);
+        if (numBytes >= 0)
+            rtn = tmpRtn[0..numBytes];
+        if (rtn is null)
+            throwOpenSSLError();
+        return rtn;
+    }
+
 }
 
 /*******************************************************************************
@@ -627,11 +653,41 @@ class PrivateKey
         return rtn;
     }
 
+    /*******************************************************************************
+
+        Encrypt the passed data using the PrivateKey
+        
+        Notes:
+        This is size limited based off the key
+        Not recommended for general encryption, use RSA for encrypting a 
+        random key instead and switch to a block cipher.
+
+        Params:
+        data = the data to encrypt
+            
+    *******************************************************************************/
+
+    ubyte[] encrypt(ubyte[] data)
+    {
+        ubyte[] rtn;
+
+        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
+        if (data.length > maxSize)
+            throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
+        ubyte[] tmpRtn = new ubyte[maxSize];
+        int numBytes = RSA_private_encrypt(data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_PADDING);
+        if (numBytes >= 0)
+            rtn = tmpRtn[0..numBytes];
+        if (rtn is null)
+            throwOpenSSLError();
+        return rtn;
+    }
+
      /*******************************************************************************
 
-        Decrypts data previously encrypted with the PublicKey
+        Decrypts data previously encrypted with the matching PublicKey
 
-        Please see the PublicKey encrypt notes.
+        Please see the encrypt notes.
 
         Parmas:
             data = the data to encrypt
@@ -1153,7 +1209,12 @@ version (Test)
             auto encrypted = pub.encrypt(cast(ubyte[])"Hello, how are you today?");
             auto decrypted = key.decrypt(encrypted);
             if (cast(char[])decrypted == "Hello, how are you today?")
-                return Test.Status.Success;
+            {
+                encrypted = key.encrypt(cast(ubyte[])"Hello, how are you today, mister?");
+                decrypted = pub.decrypt(encrypted);
+                if (cast(char[])decrypted == "Hello, how are you today, mister?")
+                    return Test.Status.Success;
+            }
             return Test.Status.Failure;
         }
 
