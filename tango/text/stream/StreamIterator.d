@@ -54,8 +54,7 @@ private import tango.io.model.IConduit;
 
 class StreamIterator(T) : InputStream, Buffered
 {
-        protected T[]           slice,
-                                pushed;
+        protected T[]           slice;
         private IBuffer         input;
 
         /***********************************************************************
@@ -111,10 +110,10 @@ class StreamIterator(T) : InputStream, Buffered
 
         ***********************************************************************/
 
-        final StreamIterator push (T[] token)
+        final deprecated StreamIterator push (T[] token)
         {
-                pushed = token;
-                return this;
+                assert(false, "StreamIterator.push not supported");
+                return null;
         }
 
         /**********************************************************************
@@ -189,15 +188,8 @@ class StreamIterator(T) : InputStream, Buffered
 
         final T[] next ()
         {
-                if (pushed.ptr)
-                   {
-                   slice = pushed;
-                   pushed = null;
-                   return slice;
-                   }
-                else
-                   if (consume() || slice.length)
-                       return slice;
+                if (consume() || slice.length)
+                    return slice;
                 return null;
         }
 
