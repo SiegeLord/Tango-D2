@@ -58,11 +58,9 @@ void testComparator(){
     char[][] result;
 
     // Create and fill the containers
-    auto nameSet = new TreeBag!(char[])( null, new class() Comparator!(char[]){
-        int compare( char[] first, char[] second ){
-            return Ascii.icompare( first, second );
-        }
-    });
+    auto nameSet = new TreeBag!(char[])( null, (char[] first, char[] second)
+                               {return Ascii.icompare(first, second);}
+                               );
 
     nameSet.addIf( "Alice" );
     nameSet.addIf( "Bob" );
