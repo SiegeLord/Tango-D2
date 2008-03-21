@@ -113,7 +113,6 @@ class StreamIterator(T) : InputStream, Buffered
         final deprecated StreamIterator push (T[] token)
         {
                 assert(false, "StreamIterator.push not supported");
-                return null;
         }
 
         /**********************************************************************

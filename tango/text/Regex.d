@@ -2401,7 +2401,7 @@ private class TDFA(char_t)
                     if ( p.l_ >= lookup.length )
                         continue;
                     for ( char_t c = p.l_; c <= min(p.r_, LOOKUP_LENGTH-1); ++c )
-                        lookup[c] = i;
+                        lookup[c] = cast(ubyte) i;
                 }
             }
 

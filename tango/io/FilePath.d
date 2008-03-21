@@ -1258,9 +1258,9 @@ private struct FS
 
                 private static DWORD getInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
                 {
-                        if (fileInfo (name, info))
-                            return info.dwFileAttributes;
-                        exception (name);
+                        if (! fileInfo (name, info))
+                              exception (name);
+                        return info.dwFileAttributes;
                 }
 
                 /***************************************************************
