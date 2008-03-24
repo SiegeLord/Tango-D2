@@ -15,7 +15,7 @@ module tango.text.xml.PullParser;
 
 private import tango.text.Util : indexOf;
 
-private import Integer = tango.core.Exception;
+private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
