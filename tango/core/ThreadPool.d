@@ -42,7 +42,7 @@ private import  tango.core.sync.Mutex,
  *     Stdout("No one was available to do the job right now").newline;
  * // After giving the pool some jobs to do, we need to give it a chance to
  * // finish, so we can do one of two things.
- * // Choice no. 1 is to finish what has already been assigned to the threads, 
+ * // Choice no. 1 is to finish what has already been assigned to the threads,
  * // but ignore any remaining queued jobs
  * //   pool.shutdown();
  * // The other choice is to finish all jobs currently executing or in queue:
@@ -149,7 +149,9 @@ class ThreadPool(Args...)
     void shutdown()
     {
         done.store(true);
+        m.lock();
         q.length = 0;
+        m.unlock();
         poolActivity.notifyAll();
         foreach (thread; pool)
             thread.join();
@@ -171,7 +173,7 @@ private:
     // Our list of threads -- only used during startup and shutdown
     Thread[] pool;
     struct Job
-    { 
+    {
         JobD dg;
         Args args;
     }
@@ -240,11 +242,14 @@ private:
             active_jobs.decrement();
 
             // Tell the pool that we are done with something
+            m.lock();
             workerActivity.notify();
-            Thread.yield();
+            m.unlock();
         }
         // Tell the pool that we are now done
+        m.lock();
         workerActivity.notify();
+        m.unlock();
     }
 }
 
@@ -268,9 +273,9 @@ debug (ThreadPool)
                         return val;
                 }
 
-                void hashJob(char[] file) 
+                void hashJob(char[] file)
                 {
-                        // If we don't catch exceptions the thread-pool will still 
+                        // If we don't catch exceptions the thread-pool will still
                         // work, but the job will fail silently
                         try {
                             long n = Integer.parse(file);
