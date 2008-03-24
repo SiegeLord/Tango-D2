@@ -46,6 +46,7 @@ private
     - IllegalElementException
 
   - TextException
+    - XmlException
     - RegexException
     - LocaleException
     - UnicodeException
@@ -317,6 +318,18 @@ class RegexException : TextException
  * Base class for locale exceptions.
  */
 class LocaleException : TextException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
+ * Base class for XML exceptions.
+ */
+class XmlException : TextException
 {
     this( char[] msg )
     {
