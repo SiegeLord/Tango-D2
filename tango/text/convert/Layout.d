@@ -41,7 +41,7 @@ private import  Float   = tango.text.convert.Float,
 
 version (X86_64)
         {
-        private import std.stdarg;
+        private import tango.core.Vararg;
         alias void* Arg;
         alias va_list ArgList;
         }
