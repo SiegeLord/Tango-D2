@@ -1997,8 +1997,11 @@ private:
             trans.predicate.appendInput(range_t(last));
         debug(tnfa) Stdout.formatln(" {}", pattern[oldCursor..cursor]);
 
-        if ( negated )
-            trans.predicate.negate;
+        if ( negated ) {
+            auto tmp = cc_t(cc_t.any_char);
+            tmp.subtract(trans.predicate.input);
+            trans.predicate.input = tmp;
+        }
         else
             trans.predicate.optimize;
         debug(tnfa) Stdout.formatln("-> {}", trans.predicate.toString);
@@ -2401,7 +2404,7 @@ private class TDFA(char_t)
                     if ( p.l_ >= lookup.length )
                         continue;
                     for ( char_t c = p.l_; c <= min(p.r_, LOOKUP_LENGTH-1); ++c )
-                        lookup[c] = cast(ubyte) i;
+                        lookup[c] = cast(ubyte)i;
                 }
             }
 
