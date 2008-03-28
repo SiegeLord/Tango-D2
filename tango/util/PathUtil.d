@@ -172,6 +172,9 @@ else {
         assert(false, "PathUtil :: invalid code path");
     }
 
+    if (path.length == 0)
+        return path;
+
     char[] normpath = path.dup;
     if (normSlash) {
         normpath = normalizeSlashes(normpath);
@@ -196,6 +199,7 @@ debug (UnitTest)
 
     unittest
     {
+        assert (normalize ("") == "");
         assert (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess",
                 normalize ("/home/../john/../.tango/.htaccess"));
         assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf",
