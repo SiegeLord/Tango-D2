@@ -33,7 +33,8 @@
     $(TR $(TD X|Y) $(TD alternation, i.e. X or Y) )
     $(TR $(TD (X)) $(TD matching brackets - creates a sub-match) )
     $(TR $(TD (?X)) $(TD non-matching brackets - only groups X, no sub-match is created) )
-    $(TR $(TD [X]) $(TD character class specification) )
+    $(TR $(TD [Z]) $(TD character class specification, Z is a string of characters or character ranges, e.g. [a-zA-Z0-9_.\-]) )
+    $(TR $(TD [^Z]) $(TD negated character class specification) )
     $(TR $(TD &lt;X) $(TD lookbehind, X may be a single character or a character class) )
     $(TR $(TD &gt;X) $(TD lookahead, X may be a single character or a character class) )
     $(TR $(TD ^) $(TD start of input or start of line) )
@@ -3432,7 +3433,7 @@ private:
             bool[]  diff_;
         }
 
-        debug Stdout.formatln("Minimizing TDFA");
+        debug(tdfa) Stdout.formatln("Minimizing TDFA");
 
         scope diff = new DiffTable(states.length);
         bool new_diff = true;
@@ -3516,7 +3517,7 @@ private:
             {
                 if ( !diff(i, j+i+1) )
                 {
-                    debug Stdout.formatln("State {} == {}", i, j+i+1);
+                    debug(tdfa) Stdout.formatln("State {} == {}", i, j+i+1);
                     // remap b to a
                     foreach ( k, c; states )
                     {
@@ -3668,7 +3669,7 @@ class RegExpT(char_t)
         auto inp = input_[next_start_ .. $];
         auto s = tdfa_.start;
 
-        debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
+        debug(regex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
         LmainLoop: for ( size_t p, next_p; p < inp.length; )
         {
         Lread_char:
@@ -3679,7 +3680,7 @@ class RegExpT(char_t)
                 next_p = p+1;
 
         Lprocess_char:
-            debug Stdout.formatln("{} (0x{:x})", c, cast(int)c);
+            debug(regex) Stdout.formatln("{} (0x{:x})", c, cast(int)c);
 
             tdfa_t.Transition t = void;
             switch ( s.mode )
@@ -3687,7 +3688,7 @@ class RegExpT(char_t)
                 case s.Mode.LOOKUP:
                     if ( c <= s.LOOKUP_LENGTH )
                     {
-                        debug Stdout.formatln("lookup");
+                        debug(regex) Stdout.formatln("lookup");
                         auto i = s.lookup[c];
                         if ( i == s.INVALID_STATE )
                             break LmainLoop;
@@ -3701,7 +3702,7 @@ class RegExpT(char_t)
                 case s.Mode.MIXED:
                     if ( c <= s.LOOKUP_LENGTH )
                     {
-                        debug Stdout.formatln("mixed");
+                        debug(regex) Stdout.formatln("mixed");
                         auto i = s.lookup[c];
                         if ( i == s.INVALID_STATE )
                             break;
@@ -3725,43 +3726,43 @@ class RegExpT(char_t)
                 {
                     // single char
                     case predicate_t.MatchMode.single_char:
-                        debug Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
+                        debug(regex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lconsume;
                     case predicate_t.MatchMode.single_char_l:
-                        debug Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
+                        debug(regex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lno_consume;
 
                     // bitmap
                     case predicate_t.MatchMode.bitmap:
-                        debug Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        debug(regex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
                         if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
                             goto Lconsume;
                         continue Ltrans_loop;
                     case predicate_t.MatchMode.bitmap_l:
-                        debug Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        debug(regex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
                         if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
                             goto Lno_consume;
                         continue Ltrans_loop;
 
                     // string search
                     case predicate_t.MatchMode.string_search:
-                        debug Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        debug(regex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
                         if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
                             continue Ltrans_loop;
                         goto Lconsume;
                     case predicate_t.MatchMode.string_search_l:
-                        debug Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        debug(regex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
                         if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
                             continue Ltrans_loop;
                         goto Lno_consume;
 
                     // generic
                     case predicate_t.MatchMode.generic:
-                        debug Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        debug(regex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
                         for ( auto cmp = t.predicate.data_str.ptr,
                             cmpend = cmp + t.predicate.data_str.length;
                             cmp < cmpend; ++cmp )
@@ -3776,7 +3777,7 @@ class RegExpT(char_t)
                         }
                         continue Ltrans_loop;
                     case predicate_t.MatchMode.generic_l:
-                        debug Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        debug(regex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
                         for ( auto cmp = t.predicate.data_str.ptr,
                             cmpend = cmp + t.predicate.data_str.length;
                             cmp < cmpend; ++cmp )
@@ -3800,8 +3801,8 @@ class RegExpT(char_t)
             Lno_consume:
 
                 s = t.target;
-                debug Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
-                debug Stdout.formatln("{} commands", t.commands.length);
+                debug(regex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                debug(regex) Stdout.formatln("{} commands", t.commands.length);
 
                 foreach ( cmd; t.commands )
                 {
