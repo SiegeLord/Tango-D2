@@ -9,12 +9,12 @@
         author:         Kris
 
         A more direct route to the file-system than FilePath, but with 
-        the overhead of repeated heap activity. Use this if you don't
-        need path editing or extraction features. For example, if the
-        only thing you want is to see if some path exists, using this 
-        module might be a more convenient option:
+        the potential overhead of heap activity. Use this if you don't
+        need path editing or extraction features. For example, if all
+        you want is to see if some path exists, using this module might 
+        be a more convenient option than FilePath:
         ---
-        if (exists("some path")) 
+        if (exists ("my file path")) 
             ...
         ---
 
@@ -22,7 +22,15 @@
         they have to attach a null to the filename for each underlying O/S
         call. Use Path when you need pedestrian access to the file-system, 
         and are not manipulating the path components. Use FilePath for other
-        scenarios, since it will be notably more efficient in many cases.
+        scenarios.
+
+        We encourage the use of "scoped import" with this module, such as
+        ---
+        import Path = tango.io.Path;
+
+        if (Path.exists ("my file path")) 
+            ...
+        ---
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
         support.
@@ -70,8 +78,8 @@ version (Posix)
 /*******************************************************************************
 
         Wraps the O/S specific calls with a D API. Note that these accept
-        null-terminated strings only, which is why it's not public. Note
-        that we need this declared first to avoid forward-reference issues
+        null-terminated strings only, which is why it's not public. We need 
+        this declared first to avoid forward-reference issues
 
 *******************************************************************************/
 
@@ -216,6 +224,23 @@ package struct FS
                          result ~= padded (path);
 
                 return result.length ? result [0 .. $-1] : "";
+        }
+
+        /***********************************************************************
+
+                Append a terminating null onto a string, cheaply where 
+                feasible
+
+        ***********************************************************************/
+
+        static char[] strz (char[] src, char[] dst)
+        {
+                int i = src.length;
+                if (dst.length - i < 1)
+                    dst.length = i + 1;
+                dst [0..i] = src;
+                dst[i] = 0;
+                return dst [0..i+1];
         }
 
         /***********************************************************************
@@ -899,10 +924,10 @@ package struct FS
 
 *******************************************************************************/
 
-static bool exists (char[] name)
+bool exists (char[] name)
 {
         char[512] tmp = void;
-        return FS.exists (terminate(name, tmp));
+        return FS.exists (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -914,10 +939,10 @@ static bool exists (char[] name)
 
 *******************************************************************************/
 
-static Time modified (char[] name)
+Time modified (char[] name)
 {
         char[512] tmp = void;
-        return FS.modified (terminate(name, tmp));
+        return FS.modified (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -929,10 +954,10 @@ static Time modified (char[] name)
 
 *******************************************************************************/
 
-static Time accessed (char[] name)
+Time accessed (char[] name)
 {
         char[512] tmp = void;
-        return FS.accessed (terminate(name, tmp));
+        return FS.accessed (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -944,10 +969,10 @@ static Time accessed (char[] name)
 
 *******************************************************************************/
 
-static Time created (char[] name)
+Time created (char[] name)
 {
         char[512] tmp = void;
-        return FS.created (terminate(name, tmp));
+        return FS.created (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -956,10 +981,10 @@ static Time created (char[] name)
 
 *******************************************************************************/
 
-static ulong fileSize (char[] name)
+ulong fileSize (char[] name)
 {
         char[512] tmp = void;
-        return FS.fileSize (terminate(name, tmp));
+        return FS.fileSize (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -968,10 +993,10 @@ static ulong fileSize (char[] name)
 
 *******************************************************************************/
 
-static bool isWritable (char[] name)
+bool isWritable (char[] name)
 {
         char[512] tmp = void;
-        return FS.isWritable (terminate(name, tmp));
+        return FS.isWritable (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -980,10 +1005,10 @@ static bool isWritable (char[] name)
 
 *******************************************************************************/
 
-static bool isFolder (char[] name)
+bool isFolder (char[] name)
 {
         char[512] tmp = void;
-        return FS.isFolder (terminate(name, tmp));
+        return FS.isFolder (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -996,10 +1021,10 @@ static bool isFolder (char[] name)
 
 *******************************************************************************/
 
-static FS.Stamps timeStamps (char[] name)
+FS.Stamps timeStamps (char[] name)
 {
         char[512] tmp = void;
-        return FS.timeStamps (terminate(name, tmp));
+        return FS.timeStamps (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -1008,10 +1033,10 @@ static FS.Stamps timeStamps (char[] name)
 
 *******************************************************************************/
 
-static void remove (char[] name)
+void remove (char[] name)
 {      
         char[512] tmp = void;
-        FS.remove (terminate(name, tmp));
+        FS.remove (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -1020,10 +1045,10 @@ static void remove (char[] name)
 
 *******************************************************************************/
 
-static void createFile (char[] name)
+void createFile (char[] name)
 {
         char[512] tmp = void;
-        FS.createFile (terminate(name, tmp));
+        FS.createFile (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -1032,10 +1057,10 @@ static void createFile (char[] name)
 
 *******************************************************************************/
 
-static void createFolder (char[] name)
+void createFolder (char[] name)
 {
         char[512] tmp = void;
-        FS.createFolder (terminate(name, tmp));
+        FS.createFolder (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
@@ -1044,11 +1069,11 @@ static void createFolder (char[] name)
 
 *******************************************************************************/
 
-static void rename (char[] src, char[] dst)
+void rename (char[] src, char[] dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
-        FS.rename (terminate(src, tmp1), terminate(dst, tmp2));
+        FS.rename (FS.strz(src, tmp1), FS.strz(dst, tmp2));
 }
 
 /*******************************************************************************
@@ -1058,11 +1083,11 @@ static void rename (char[] src, char[] dst)
 
 *******************************************************************************/
 
-static void copy (char[] src, char[] dst)
+void copy (char[] src, char[] dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
-        FS.copy (terminate(src, tmp1), terminate(dst, tmp2));
+        FS.copy (FS.strz(src, tmp1), FS.strz(dst, tmp2));
 }
 
 /*******************************************************************************
@@ -1086,7 +1111,7 @@ static void copy (char[] src, char[] dst)
 
 *******************************************************************************/
 
-static FS.Listing children (char[] folder)
+FS.Listing children (char[] folder)
 {
         return FS.Listing (folder~'\0');
 }
@@ -1098,26 +1123,8 @@ static FS.Listing children (char[] folder)
 
 *******************************************************************************/
 
-static char[] join (char[][] paths...)
+char[] join (char[][] paths...)
 {
         return FS.join (paths);
 }
-
-
-/*******************************************************************************
-
-        Append a terminating null onto a string, cheaply where feasible
-
-*******************************************************************************/
-
-private static char[] terminate (char[] src, char[] dst)
-{
-        int i = src.length;
-        if (dst.length - i < 1)
-            dst.length = i + 1;
-        dst [0..i] = src;
-        dst[i] = 0;
-        return dst [0..i+1];
-}
-
 
