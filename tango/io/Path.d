@@ -901,7 +901,8 @@ package struct FS
 
 static bool exists (char[] name)
 {
-        return FS.exists (name~'\0');
+        char[512] tmp = void;
+        return FS.exists (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -915,7 +916,8 @@ static bool exists (char[] name)
 
 static Time modified (char[] name)
 {
-        return FS.modified (name~'\0');
+        char[512] tmp = void;
+        return FS.modified (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -929,7 +931,8 @@ static Time modified (char[] name)
 
 static Time accessed (char[] name)
 {
-        return FS.accessed (name~'\0');
+        char[512] tmp = void;
+        return FS.accessed (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -943,7 +946,8 @@ static Time accessed (char[] name)
 
 static Time created (char[] name)
 {
-        return FS.created (name~'\0');
+        char[512] tmp = void;
+        return FS.created (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -954,7 +958,8 @@ static Time created (char[] name)
 
 static ulong fileSize (char[] name)
 {
-        return FS.fileSize (name~'\0');
+        char[512] tmp = void;
+        return FS.fileSize (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -965,7 +970,8 @@ static ulong fileSize (char[] name)
 
 static bool isWritable (char[] name)
 {
-        return FS.isWritable (name~'\0');
+        char[512] tmp = void;
+        return FS.isWritable (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -976,7 +982,8 @@ static bool isWritable (char[] name)
 
 static bool isFolder (char[] name)
 {
-        return FS.isFolder (name~'\0');
+        char[512] tmp = void;
+        return FS.isFolder (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -991,7 +998,8 @@ static bool isFolder (char[] name)
 
 static FS.Stamps timeStamps (char[] name)
 {
-        return FS.timeStamps (name~'\0');
+        char[512] tmp = void;
+        return FS.timeStamps (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -1002,7 +1010,8 @@ static FS.Stamps timeStamps (char[] name)
 
 static void remove (char[] name)
 {      
-        FS.remove (name~'\0');
+        char[512] tmp = void;
+        FS.remove (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -1013,7 +1022,8 @@ static void remove (char[] name)
 
 static void createFile (char[] name)
 {
-        FS.createFile (name~'\0');
+        char[512] tmp = void;
+        FS.createFile (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -1024,7 +1034,8 @@ static void createFile (char[] name)
 
 static void createFolder (char[] name)
 {
-        FS.createFolder (name~'\0');
+        char[512] tmp = void;
+        FS.createFolder (terminate(name, tmp));
 }
 
 /*******************************************************************************
@@ -1035,7 +1046,9 @@ static void createFolder (char[] name)
 
 static void rename (char[] src, char[] dst)
 {
-        FS.rename (src~'\0', dst~'\0');
+        char[512] tmp1 = void;
+        char[512] tmp2 = void;
+        FS.rename (terminate(src, tmp1), terminate(dst, tmp2));
 }
 
 /*******************************************************************************
@@ -1047,7 +1060,9 @@ static void rename (char[] src, char[] dst)
 
 static void copy (char[] src, char[] dst)
 {
-        FS.copy (src~'\0', dst~'\0');
+        char[512] tmp1 = void;
+        char[512] tmp2 = void;
+        FS.copy (terminate(src, tmp1), terminate(dst, tmp2));
 }
 
 /*******************************************************************************
@@ -1073,8 +1088,7 @@ static void copy (char[] src, char[] dst)
 
 static FS.Listing children (char[] folder)
 {
-        FS.Listing list = {folder ~ '\0'};
-        return list;
+        return FS.Listing (folder~'\0');
 }
 
 /*******************************************************************************
@@ -1087,6 +1101,23 @@ static FS.Listing children (char[] folder)
 static char[] join (char[][] paths...)
 {
         return FS.join (paths);
+}
+
+
+/*******************************************************************************
+
+        Append a terminating null onto a string, cheaply where feasible
+
+*******************************************************************************/
+
+private static char[] terminate (char[] src, char[] dst)
+{
+        int i = src.length;
+        if (dst.length - i < 1)
+            dst.length = i + 1;
+        dst [0..i] = src;
+        dst[i] = 0;
+        return dst [0..i+1];
 }
 
 
