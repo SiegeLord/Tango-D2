@@ -454,7 +454,10 @@ T[] tail(T) (T[] src, T[] pattern, out T[] head)
         matched as a set of alternates rather than as a pattern.
 
         Splitting on a single delimiter is considerably faster than
-        splitting upon a set of alternatives
+        splitting upon a set of alternatives. 
+
+        Note that the src content is not duplicated by this function, 
+        but is sliced instead.
 
 ******************************************************************************/
 
@@ -473,6 +476,9 @@ T[][] delimit(T) (T[] src, T[] set)
         found, and return the resultant segments. The pattern is
         excluded from each of the segments.
         
+        Note that the src content is not duplicated by this function, 
+        but is sliced instead.
+
 ******************************************************************************/
 
 T[][] split(T) (T[] src, T[] pattern)
@@ -489,6 +495,9 @@ T[][] split(T) (T[] src, T[] pattern)
         Convert text into a set of lines, where each line is identified
         by a \n or \r\n combination. The line terminator is stripped from
         each resultant array
+
+        Note that the src content is not duplicated by this function, but
+        is sliced instead.
 
 ******************************************************************************/
 
@@ -797,7 +806,7 @@ uint mismatch(T) (T* s1, T* s2, uint length)
 
 /******************************************************************************
 
-        Freachable iterator to isolate lines.
+        Iterator to isolate lines.
 
         Converts text into a set of lines, where each line is identified
         by a \n or \r\n combination. The line terminator is stripped from
@@ -810,16 +819,16 @@ uint mismatch(T) (T* s1, T* s2, uint length)
         
 ******************************************************************************/
 
-LineFreach!(T) lines(T) (T[] src)
+LineFruct!(T) lines(T) (T[] src)
 {
-        LineFreach!(T) lines;
+        LineFruct!(T) lines;
         lines.src = src;
         return lines;
 }
 
 /******************************************************************************
 
-        Freachable iterator to isolate text elements.
+        Iterator to isolate text elements.
 
         Splits the provided array wherever a delimiter-set instance is
         found, and return the resultant segments. The delimiters are
@@ -836,9 +845,9 @@ LineFreach!(T) lines(T) (T[] src)
         
 ******************************************************************************/
 
-DelimFreach!(T) delimiters(T) (T[] src, T[] set)
+DelimFruct!(T) delimiters(T) (T[] src, T[] set)
 {
-        DelimFreach!(T) elements;
+        DelimFruct!(T) elements;
         elements.set = set;
         elements.src = src;
         return elements;
@@ -846,7 +855,7 @@ DelimFreach!(T) delimiters(T) (T[] src, T[] set)
 
 /******************************************************************************
 
-        Freachable iterator to isolate text elements.
+        Iterator to isolate text elements.
 
         Split the provided array wherever a pattern instance is found, 
         and return the resultant segments. Pattern are excluded from
@@ -860,9 +869,9 @@ DelimFreach!(T) delimiters(T) (T[] src, T[] set)
         
 ******************************************************************************/
 
-PatternFreach!(T) patterns(T) (T[] src, T[] pattern, T[] sub=null)
+PatternFruct!(T) patterns(T) (T[] src, T[] pattern, T[] sub=null)
 {
-        PatternFreach!(T) elements;
+        PatternFruct!(T) elements;
         elements.pattern = pattern;
         elements.sub = sub;
         elements.src = src;
@@ -871,7 +880,7 @@ PatternFreach!(T) patterns(T) (T[] src, T[] pattern, T[] sub=null)
 
 /******************************************************************************
 
-        Freachable iterator to isolate optionally quoted text elements.
+        Iterator to isolate optionally quoted text elements.
 
         As per elements(), but with the extension of being quote-aware;
         the set of delimiters is ignored inside a pair of quotes. Note
@@ -884,9 +893,9 @@ PatternFreach!(T) patterns(T) (T[] src, T[] pattern, T[] sub=null)
         
 ******************************************************************************/
 
-QuoteFreach!(T) quotes(T) (T[] src, T[] set)
+QuoteFruct!(T) quotes(T) (T[] src, T[] set)
 {
-        QuoteFreach!(T) quotes;
+        QuoteFruct!(T) quotes;
         quotes.set = set;
         quotes.src = src;
         return quotes;
@@ -1153,7 +1162,7 @@ uint jhash (void[] x, uint c = 0)
         
 ******************************************************************************/
 
-private struct LineFreach(T)
+private struct LineFruct(T)
 {
         private T[] src;
 
@@ -1202,7 +1211,7 @@ else
         
 ******************************************************************************/
 
-private struct DelimFreach(T)
+private struct DelimFruct(T)
 {
         private T[] src;
         private T[] set;
@@ -1257,7 +1266,7 @@ else
         
 ******************************************************************************/
 
-private struct PatternFreach(T)
+private struct PatternFruct(T)
 {
         private T[] src,
                     sub,
@@ -1318,7 +1327,7 @@ else
         
 ******************************************************************************/
 
-private struct QuoteFreach(T)
+private struct QuoteFruct(T)
 {
         private T[] src;
         private T[] set;
