@@ -857,7 +857,7 @@ class FilePath : PathView
 
         final Time modified ()
         {
-                return fs.modified (cString);
+                return timeStamps.modified;
         }
 
         /***********************************************************************
@@ -871,7 +871,7 @@ class FilePath : PathView
 
         final Time accessed ()
         {
-                return fs.accessed (cString);
+                return timeStamps.accessed;
         }
 
         /***********************************************************************
@@ -885,7 +885,7 @@ class FilePath : PathView
 
         final Time created ()
         {
-                return fs.created (cString);
+                return timeStamps.created;
         }
 
         /***********************************************************************

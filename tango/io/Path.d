@@ -141,48 +141,6 @@ package struct FS
 
         /***********************************************************************
 
-                Returns the time of the last modification. Accurate
-                to whatever the F/S supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time, 
-                while FAT timestamps are based on the local time. 
-
-        ***********************************************************************/
-
-        static Time modified (char[] name)
-        {
-                return timeStamps(name).modified;
-        }
-
-        /***********************************************************************
-
-                Returns the time of the last access. Accurate to
-                whatever the F/S supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time, 
-                while FAT timestamps are based on the local time.
-
-        ***********************************************************************/
-
-        static Time accessed (char[] name)
-        {
-                return timeStamps(name).accessed;
-        }
-
-        /***********************************************************************
-
-                Returns the time of file creation. Accurate to
-                whatever the F/S supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time,  
-                while FAT timestamps are based on the local time.
-
-        ***********************************************************************/
-
-        static Time created (char[] name)
-        {
-                return timeStamps(name).created;
-        }
-
-        /***********************************************************************
-
                 Return an adjusted path such that non-empty instances always
                 have a trailing separator
 
@@ -940,9 +898,8 @@ bool exists (char[] name)
 *******************************************************************************/
 
 Time modified (char[] name)
-{
-        char[512] tmp = void;
-        return FS.modified (FS.strz(name, tmp));
+{       
+        return timeStamps(name).modified;
 }
 
 /*******************************************************************************
@@ -956,8 +913,7 @@ Time modified (char[] name)
 
 Time accessed (char[] name)
 {
-        char[512] tmp = void;
-        return FS.accessed (FS.strz(name, tmp));
+        return timeStamps(name).accessed;
 }
 
 /*******************************************************************************
@@ -971,8 +927,7 @@ Time accessed (char[] name)
 
 Time created (char[] name)
 {
-        char[512] tmp = void;
-        return FS.created (FS.strz(name, tmp));
+        return timeStamps(name).created;
 }
 
 /*******************************************************************************
