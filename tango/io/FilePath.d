@@ -69,8 +69,6 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class FilePath : PathView
 {
-        private FS      fs;                     // the file-system calls
-
         private char[]  fp;                     // filepath with trailing 0
 
         private bool    dir_;                   // this represents a dir?
@@ -843,7 +841,7 @@ class FilePath : PathView
 
         final bool exists ()
         {
-                return fs.exists (cString);
+                return FS.exists (cString);
         }
 
         /***********************************************************************
@@ -897,7 +895,7 @@ class FilePath : PathView
 
         final FilePath rename (FilePath dst)
         {
-                fs.rename (cString, dst.cString);
+                FS.rename (cString, dst.cString);
                 return this.set (dst);
         }
 
@@ -911,7 +909,7 @@ class FilePath : PathView
 
         final FilePath copy (char[] source)
         {
-                fs.copy (source~'\0', cString);
+                FS.copy (source~'\0', cString);
                 return this;
         }
 
@@ -923,7 +921,7 @@ class FilePath : PathView
 
         final ulong fileSize ()
         {
-                return fs.fileSize (cString);
+                return FS.fileSize (cString);
         }
 
         /***********************************************************************
@@ -934,7 +932,7 @@ class FilePath : PathView
 
         final bool isWritable ()
         {
-                return fs.isWritable (cString);
+                return FS.isWritable (cString);
         }
 
         /***********************************************************************
@@ -948,7 +946,7 @@ class FilePath : PathView
                 if (dir_)
                     return true;
 
-                return fs.isFolder (cString);
+                return FS.isFolder (cString);
         }
 
         /***********************************************************************
@@ -963,7 +961,7 @@ class FilePath : PathView
 
         final Stamps timeStamps ()
         {
-                return fs.timeStamps (cString);
+                return FS.timeStamps (cString);
         }
 
         /***********************************************************************
@@ -976,7 +974,7 @@ class FilePath : PathView
 
         final FilePath copy (FilePath src)
         {
-                fs.copy (src.cString, cString);
+                FS.copy (src.cString, cString);
                 return this;
         }
 
@@ -988,7 +986,7 @@ class FilePath : PathView
 
         final FilePath remove ()
         {      
-                fs.remove (cString);
+                FS.remove (cString);
                 return this;
         }
 
@@ -1001,7 +999,7 @@ class FilePath : PathView
 
         final FilePath rename (char[] dst)
         {
-                fs.rename (cString, dst~'\0');
+                FS.rename (cString, dst~'\0');
                 return this.set (dst);
         }
 
@@ -1013,7 +1011,7 @@ class FilePath : PathView
 
         final FilePath createFile ()
         {
-                fs.createFile (cString);
+                FS.createFile (cString);
                 return this;
         }
 
@@ -1025,7 +1023,7 @@ class FilePath : PathView
 
         final FilePath createFolder ()
         {
-                fs.createFolder (cString);
+                FS.createFolder (cString);
                 return this;
         }
 
@@ -1043,7 +1041,7 @@ class FilePath : PathView
 
         final int opApply (int delegate(ref FileInfo) dg)
         {
-                return fs.list (cString, dg);
+                return FS.list (cString, dg);
         }
 
         /***********************************************************************
