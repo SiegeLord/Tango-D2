@@ -193,11 +193,11 @@ package struct FS
 
         static char[] strz (char[] src, char[] dst)
         {
-                int i = src.length + 1;
-                if (i - cast(int) dst.length > 0)
+                auto i = src.length + 1;
+                if (dst.length < i)
                     dst.length = i;
-                dst [0 .. src.length] = src;
-                dst[src.length] = 0;
+                dst [0 .. i-1] = src;
+                dst[i-1] = 0;
                 return dst [0 .. i];
         }
 
@@ -1081,4 +1081,19 @@ FS.Listing children (char[] folder)
 char[] join (char[][] paths...)
 {
         return FS.join (paths);
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug(Path)
+{
+        void main()
+        {
+                exists ("path.d");
+                assert(exists("Path.d"));
+                    
+        }
 }
