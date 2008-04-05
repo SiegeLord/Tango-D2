@@ -25,8 +25,7 @@ private import  tango.core.Exception;
     <segment>/.. at the end is removed
     <segment>/../ in path is removed
 
-    Unless normSlash is set to false, all slashes will be converted
-    to the systems path separator character.
+    On Windows, \ will be converted to / prior to normalization.
 
     Note that any number of ../ segments at the front is ignored,
     unless it is an absolute path, in which case an exception will
@@ -34,7 +33,7 @@ private import  tango.core.Exception;
     considered valid if it can be joined with a path such that it can
     be fully normalized.
 
-    Throws: Exception if the root separator is followed by ..
+    Throws: IllegalArgumentException if the root separator is followed by ..
 
     Examples:
     -----
@@ -43,8 +42,10 @@ private import  tango.core.Exception;
 
 *******************************************************************************/
 
-char[] normalize(char[] path, bool normSlash = true)
+char[] normalize(char[] path)
 {
+
+version (Windows) {
     /*
        Internal helper to patch slashes
     */
@@ -57,6 +58,7 @@ char[] normalize(char[] path, bool normSlash = true)
                      c = to;
         return path;
     }
+}
 
     /*
        Internal helper that finds a slash followed by a dot
@@ -112,15 +114,15 @@ char[] normalize(char[] path, bool normSlash = true)
         }
         else if (path[start..start+2] == "..") {
             // found /.. sequence
-version (Win32) {
+version (Windows) {
             if (start == 3 && path[1] == '/') { // absolute, X:/..
-                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root can not be followed by ..");
+                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root can't be followed by ..");
             }
 
 }
 else {
             if (start == 1) { // absolute
-                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can not be followed by ..");
+                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can't be followed by ..");
             }
 }
             int idx = findSlash(path, start - 2);
@@ -176,9 +178,9 @@ else {
         return path;
 
     char[] normpath = path.dup;
-    if (normSlash) {
-        normpath = normalizeSlashes(normpath);
-    }
+version (Windows) {
+    normpath = normalizeSlashes(normpath);
+}
 
     // if path starts with ./, remove all subsequent instances
     while (normpath.length > 1 && normpath[0] == '.' &&
@@ -227,6 +229,7 @@ debug (UnitTest)
         assert (normalize ("../../../foo/bar") == "../../../foo/bar");
         assert (normalize ("d/") == "d/");
 
+version (Windows) {
         assert (normalize ("\\foo\\..\\john") == "/john");
         assert (normalize ("foo\\..\\john") == "john");
         assert (normalize ("foo\\bar\\..") == "foo");
@@ -239,6 +242,7 @@ debug (UnitTest)
         assert (normalize ("foo\\bar\\.\\doe\\..\\..\\john") == "foo/john");
         assert (normalize ("..\\..\\foo\\bar") == "../../foo/bar");
         assert (normalize ("..\\..\\..\\foo\\bar") == "../../../foo/bar");
+}
     }
 }
 
