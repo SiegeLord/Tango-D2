@@ -40,20 +40,20 @@ extern (C):
 byte[] _d_arraycopy(size_t size, byte[] from, byte[] to)
 {
     debug printf("f = %p,%d, t = %p,%d, size = %d\n",
-                 cast(void*)from, from.length, cast(void*)to, to.length, size);
+                 from.ptr, from.length, to.ptr, to.length, size);
 
     if (to.length != from.length)
     {
         throw new Exception("lengths don't match for array copy");
     }
-    else if (cast(byte *)to + to.length * size <= cast(byte *)from ||
-        cast(byte *)from + from.length * size <= cast(byte *)to)
+    else if (to.ptr + to.length * size <= from.ptr ||
+             from.ptr + from.length * size <= to.ptr)
     {
-        memcpy(cast(byte *)to, cast(byte *)from, to.length * size);
+        memcpy(to.ptr, from.ptr, to.length * size);
     }
     else
     {
         throw new Exception("overlapping array copy");
-}
+    }
     return to;
 }
