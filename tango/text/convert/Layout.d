@@ -39,7 +39,7 @@ private import  Float   = tango.text.convert.Float,
 
 *******************************************************************************/
 
-version (X86_64)
+version (GNU)
         {
         private import std.stdarg;
         alias void* Arg;
@@ -181,7 +181,7 @@ class Layout(T)
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
 
-        version (X86_64)
+        version (GNU)
                 {
                 Arg[64] arglist = void;
                 int[64] intargs = void;
@@ -195,7 +195,7 @@ class Layout(T)
 
                 foreach (i, arg; arguments)
                         {
-                        arglist[i] = args.ptr;
+                        arglist[i] = args;
                         /* Since floating point types don't live on
                          * the stack, they must be accessed by the
                          * correct type. */
@@ -854,7 +854,7 @@ debug (UnitTest)
         assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
         assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
-        //assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
+        assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
         assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
         assert( Formatter( "{0:e4}", 0.0001) == "0.1000e-03");
 
