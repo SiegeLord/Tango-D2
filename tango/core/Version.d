@@ -14,5 +14,7 @@
 
 module tango.core.Version;
 
-public enum {Tango = 995}
-
+public enum Tango {
+    Major = 0,
+    Minor = 996
+}
