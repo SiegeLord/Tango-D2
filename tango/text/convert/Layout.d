@@ -195,7 +195,6 @@ class Layout(T)
 
                 foreach (i, arg; arguments)
                         {
-                        arglist[i] = args;
                         static if (is(typeof(args.ptr)))
                             arglist[i] = args.ptr;
                         else
