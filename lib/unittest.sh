@@ -50,17 +50,19 @@ import tango.core.Runtime;
 
 bool tangoUnitTester()
 {
-    uint count = 0;
+    uint countFailed = 0;
+    uint countTotal = 1;
     Stdout ("NOTE: This is still fairly rudimentary, and will only report the").newline;
     Stdout ("    first error per module.").newline;
     foreach ( m; ModuleInfo )  // _moduleinfo_array )
     {
         if ( m.unitTest) {
-            Stdout.format ("{}. Executing unittests in '{}' ", count, m.name);
+            Stdout.format ("{}. Executing unittests in '{}' ", countTotal, m.name);
             try {
                m.unitTest();
             }
             catch (Exception e) {
+                countFailed++;
                 Stdout(" - Unittest failed.").newline;
                 Stdout.format("   File '{}', line '{}'.", e.file, e.line).newline;
                 Stdout.format("     Message is : '{}'", e.msg).newline;
@@ -69,9 +71,11 @@ bool tangoUnitTester()
                 continue;
             }
             Stdout(" - Success.").newline;
-            count++;
+            countTotal++;
         }
     }
+
+    Stdout.format ("{} out of {} tests failed.", countFailed, countTotal - 1).newline;
     return true;
 }
 
