@@ -196,6 +196,10 @@ class Layout(T)
                 foreach (i, arg; arguments)
                         {
                         arglist[i] = args;
+                        static if (is(typeof(args.ptr)))
+                            arglist[i] = args.ptr;
+                        else
+                            arglist[i] = args;
                         /* Since floating point types don't live on
                          * the stack, they must be accessed by the
                          * correct type. */
