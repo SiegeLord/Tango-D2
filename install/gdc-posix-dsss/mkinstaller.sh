@@ -70,6 +70,7 @@ if [ -e dsss ]
 then
     cd dsss || die 1 "Failed to cd to dsss"
     find . -type f | xargs strip --strip-unneeded
+    echo 'profile=gdc-posix-tango' > etc/rebuild/default
     tar zcf ../dsss.tar.gz * || die 1 "Failed to create dsss.tar.gz"
     cd .. || exit 1
 
