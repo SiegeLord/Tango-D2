@@ -847,7 +847,7 @@ debug(UnitTest)
 		assert(!args.contains("x"));
 		assert(args["a"]);
 		assert(!args["x"]);
-		assert("a" in args);
+		assert(args.contains("a"));
 		assert(args["a"] == "1");
 		assert(args["b"] == "2");
 		assert(args.parameters["b"][1] == "3");
