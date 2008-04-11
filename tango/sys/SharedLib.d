@@ -21,8 +21,15 @@ private {
 
         extern (Windows) {
             void* GetProcAddress(HINSTANCE, char*);
-            HINSTANCE LoadLibraryA(char*);
             BOOL FreeLibrary(HMODULE);
+
+            version (Win32SansUnicode)
+                     HINSTANCE LoadLibraryA(char*);
+                else {
+                   enum {CP_UTF8 = 65001}
+                   HINSTANCE LoadLibraryW(wchar*);
+                   int MultiByteToWideChar(uint, uint, char*, int, wchar*, int);
+                }
         }
     }
     else version (Posix) {
@@ -241,7 +248,19 @@ final class SharedLib {
             HMODULE handle;
 
             void load_(LoadMode mode) {
-                handle = LoadLibraryA((this.path_ ~ \0).ptr);
+                version (Win32SansUnicode)
+                         handle = LoadLibraryA((this.path_ ~ \0).ptr);
+                    else {
+                         wchar[1024] tmp = void;
+                         auto i = MultiByteToWideChar (CP_UTF8, 0,
+                                                       path.ptr, path.length,
+                                                       tmp.ptr, tmp.length-1);
+                         if (i > 0)
+                            {
+                            tmp[i] = 0;
+                            handle = LoadLibraryW (tmp.ptr);
+                            }
+                    }
                 if (handle is null && SharedLib.throwExceptions) {
                     throw new SharedLibException("Couldn't load shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
                 }
@@ -343,4 +362,15 @@ class SharedLibException : Exception {
     this (char[] msg) {
         super(msg);
     }
+}
+
+
+
+
+debug (SharedLib)
+{
+        void main()
+        {       
+                auto lib = new SharedLib("foo");
+        }
 }
