@@ -208,7 +208,7 @@ struct Environment
 
                 static char[] get (char[] variable, char[] def = null)
                 {
-                        char* ptr = getenv (variable.ptr);
+                        char* ptr = getenv ((variable ~ '\0').ptr);
 
                         if (ptr is null)
                             return def;
