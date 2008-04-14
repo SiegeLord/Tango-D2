@@ -59,6 +59,8 @@ ${CROSS}gdc --help >& /dev/null || die "gdc not found on your \$PATH!" 1
 GPHOBOS_DIR="`${CROSS}gdc -print-file-name=libgphobos.a`"
 GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
 
+GPHOBOS_64=0
+
 # If we have which, use it to get the prefix
 which gdc >& /dev/null
 if [ "$?" = "0" ]
@@ -75,6 +77,11 @@ then
     GPHOBOS_DIR="$PREFIX/lib"
 fi
 
+if [ -e "$GPHOBOS_DIR/../lib64" ]
+then
+    GPHOBOS_64=1
+fi
+
 GDC_VER="`${CROSS}gdc -dumpversion`"
 GDC_MCH="`${CROSS}gdc -dumpmachine`"
 
@@ -87,15 +94,22 @@ fi
 # If uninstalling, do that now
 if [ "$UNINSTALL" = "1" ]
 then
-    if [ ! -e "$GPHOBOS_DIR/libgphobos.a.phobos" ]
-    then
-        die "tango does not appear to be installed!" 3
-    fi
     if [ "$INPLACE" = "0" ]
     then
         rm -rf $GPHOBOS_DIR/libgphobos.a $PREFIX/include/d/$GDC_VER/object.d
-        mv $PREFIX/include/d/$GDC_VER/object.d.phobos $PREFIX/include/d/$GDC_VER/object.d
-        mv $GPHOBOS_DIR/libgphobos.a.phobos $GPHOBOS_DIR/libgphobos.a
+        if [ "$GPHOBOS_64" = "1" ]
+        then
+            rm -rf $GPHOBOS_DIR/../lib64/libgphobos.a
+            if [ -e "$GPHOBOS_DIR/../lib64/libgphobos.a.phobos" ]
+            then
+                mv $GPHOBOS_DIR/../lib64/libgphobos.a.phobos $GPHOBOS_DIR/../lib64/libgphobos.a
+            fi
+        fi
+        if [ -e "$GPHOBOS_DIR/libgphobos.a.phobos" ]
+        then
+            mv $PREFIX/include/d/$GDC_VER/object.d.phobos $PREFIX/include/d/$GDC_VER/object.d
+            mv $GPHOBOS_DIR/libgphobos.a.phobos $GPHOBOS_DIR/libgphobos.a
+        fi
     fi
     die "Done!" 0
 fi
@@ -112,6 +126,13 @@ if [ -e "$GPHOBOS_DIR/libgphobos.a" -a \
 then
     mv -f $GPHOBOS_DIR/libgphobos.a $GPHOBOS_DIR/libgphobos.a.phobos
     mv -f $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos
+    if [ "$GPHOBOS_64" = "1" ]
+    then
+        if [ -e "$GPHOBOS_DIR/../lib64/libgphobos.a" ]
+        then
+            mv -f $GPHOBOS_DIR7../lib64/libgphobos.a $GPHOBOS_DIR/../lib64/libgphobos.a.phobos
+        fi
+    fi
 fi
 
 # Install ...
@@ -120,6 +141,11 @@ then
     echo 'Copying files...'
     mkdir -p $PREFIX/include/d/$GDC_VER || die "Failed to create include/d/$GDC_VER (maybe you need root privileges?)" 5
     cp -pRvf libgphobos.a $GPHOBOS_DIR || die "Failed to copy libraries" 7
+    if [ "$GPHOBOS_64" = "1" ]
+    then
+        cp -pRvf libgphobos.a $GPHOBOS_DIR/../lib64 || die "Failed to copy libraries" 7
+    fi
+
     cp -pRvf ../object.di $PREFIX/include/d/$GDC_VER/object.d || die "Failed to copy source" 8
     if [ ! -e $PREFIX/include/d/$GDC_VER/gcc ]
     then
