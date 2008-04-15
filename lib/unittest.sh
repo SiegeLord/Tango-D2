@@ -86,7 +86,20 @@ static this() {
 void main() {}
 EOF
 
-        rebuild -w -d -g -L-ldl -L-lz -debug=UnitTest -debug -full -clean -unittest -version=UnitTest $EXE.d tango/core/*.d tango/io/digest/*.d tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d tango/io/vfs/*.d tango/io/vfs/model/* tango/math/*.d tango/net/ftp/*.d tango/net/http/*.d tango/net/model/*.d tango/stdc/stringz.d tango/sys/*.d tango/text/convert/*.d tango/text/locale/Collation.d tango/text/locale/Convert.d tango/text/locale/Core.d tango/text/locale/Data.d tango/text/locale/Locale.d tango/text/locale/Parse.d tango/text/locale/Posix.d tango/text/stream/*.d tango/text/*.d tango/util/*.d tango/util/collection/model/*.d tango/util/collection/*.d tango/util/collection/iterator/*.d tango/util/collection/impl/*.d tango/util/log/model/*.d tango/util/log/*.d tango/time/chrono/*.d tango/time/*.d -dc=$DC-posix-tango
+        rebuild -w -d -g -L-ldl -L-lz -L-lbz2 -debug=UnitTest -debug -full -clean -unittest \
+        -version=UnitTest $EXE.d tango/core/*.d tango/core/sync/*.d tango/io/digest/*.d \
+        tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d \
+        tango/io/vfs/*.d tango/io/vfs/model/*.d tango/io/archive/*.d \
+        tango/io/stream/*.d tango/math/*.d \
+        tango/io/compress/*.d tango/net/ftp/*.d tango/net/http/*.d tango/net/*.d \
+        tango/net/model/*.d tango/stdc/stringz.d tango/sys/*.d tango/text/convert/*.d \
+        tango/text/locale/Collation.d tango/text/locale/Convert.d tango/text/locale/Core.d \
+        tango/text/locale/Data.d tango/text/locale/Locale.d tango/text/locale/Parse.d \
+        tango/text/xml/*.d \
+        tango/text/locale/Posix.d tango/text/stream/*.d tango/text/*.d tango/util/*.d \
+        tango/util/collection/model/*.d tango/util/collection/*.d tango/util/collection/iterator/*.d \
+        tango/util/collection/impl/*.d tango/util/log/model/*.d tango/util/log/*.d \
+        tango/time/chrono/*.d tango/time/*.d -dc=$DC-posix-tango
 
         mv $EXE lib/$EXE
         rm $EXE.d
