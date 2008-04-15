@@ -751,7 +751,6 @@ private struct XmlIterator(Ch)
 
 debug (UnitTest)
 {
-        void main() {}
 
 	/***********************************************************************
 	
