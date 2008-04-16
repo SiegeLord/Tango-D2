@@ -27,6 +27,18 @@ version (Posix)
     private import tango.stdc.posix.sys.wait;
 }
 
+version (Windows)
+{
+  version (Win32SansUnicode)
+  {
+    pragma(msg, "unicode free!");
+  }
+  else
+  {
+    private import tango.text.convert.Utf : toString16;
+  }
+}
+
 debug (Process)
 {
     private import tango.io.Stdout;
@@ -736,24 +748,53 @@ class Process
             //char[] command = toString();
             //command ~= '\0';
 
-            // Convert the working directory to a null-ended string if
-            // necessary.
-            //
-            // Note, this used to contain DETACHED_PROCESS, but
-            // this causes problems with redirection if the program being
-            // started decides to allocate a console (i.e. if you run a batch
-            // file)
-            if (CreateProcessA(null, command.ptr, null, null, true,
-                               CREATE_NO_WINDOW,
-                               (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
-                               toStringz(_workDir), &startup, _info))
+            version(Win32SansUnicode)
             {
+              //
+              // ASCII version of CreateProcess
+              //
+
+              // Convert the working directory to a null-ended string if
+              // necessary.
+              //
+              // Note, this used to contain DETACHED_PROCESS, but
+              // this causes problems with redirection if the program being
+              // started decides to allocate a console (i.e. if you run a batch
+              // file)
+              if (CreateProcessA(null, command.ptr, null, null, true,
+                    CREATE_NO_WINDOW,
+                    (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
+                    toStringz(_workDir), &startup, _info))
+              {
                 CloseHandle(_info.hThread);
                 _running = true;
+              }
+              else
+              {
+                throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+              }
             }
             else
             {
+              // Convert the working directory to a null-ended string if
+              // necessary.
+              //
+              // Note, this used to contain DETACHED_PROCESS, but
+              // this causes problems with redirection if the program being
+              // started decides to allocate a console (i.e. if you run a batch
+              // file)
+              if (CreateProcessW(null, toString16(command).ptr, null, null, true,
+                    CREATE_NO_WINDOW,
+                    (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
+                    toString16z(toString16(_workDir)), &startup, _info))
+              {
+                CloseHandle(_info.hThread);
+                _running = true;
+              }
+              else
+              {
                 throw new ProcessCreateException(_args[0], __FILE__, __LINE__);
+              }
             }
         }
         else version (Posix)

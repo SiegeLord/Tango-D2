@@ -100,9 +100,13 @@ version( Win32 )
         void e(){throw new Exception("could not determine Windows version");};
 
         version( Win32SansUnicode )
+        {
             if( !GetVersionExA(&versionInfo) ) e();
+        }
         else
+        {
             if( !GetVersionExW(&versionInfo) ) e();
+        }
 
         return (versionInfo.dwMajorVersion >= 6);
     }
