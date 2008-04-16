@@ -31,7 +31,6 @@ version (Windows)
 {
   version (Win32SansUnicode)
   {
-    pragma(msg, "unicode free!");
   }
   else
   {
