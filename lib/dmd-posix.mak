@@ -43,7 +43,7 @@ ALL_DOCS=
 
 lib : $(ALL_OBJS)
 	make -C $(DIR_CC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
-	make -C $(DIR_RT) -fposix.mak lib
+	make -C $(DIR_RT) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	make -C $(DIR_GC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(LC) $(LIB_TARGET) `find $(DIR_CC) -name "*.o" | xargs echo`
@@ -51,9 +51,9 @@ lib : $(ALL_OBJS)
 	$(LC) $(LIB_TARGET) `find $(DIR_GC) -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
-	make -C $(DIR_CC) -fposix.mak doc
-	make -C $(DIR_RT) -fposix.mak doc
-	make -C $(DIR_GC) -fposix.mak doc
+	make -C $(DIR_CC) -fposix.mak doc DC=$(DC)
+	make -C $(DIR_RT) -fposix.mak doc DC=$(DC)
+	make -C $(DIR_GC) -fposix.mak doc DC=$(DC)
 
 ######################################################
 
