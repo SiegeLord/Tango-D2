@@ -92,6 +92,7 @@ struct BB
 {
     aaA*[] b;
     size_t nodes;       // total number of aaA nodes
+    TypeInfo keyti;     // TODO: replace this with TypeInfo_AssociativeArray when available in _aaGet()
 }
 
 /* This is the type actually seen by the programmer, although
@@ -258,6 +259,7 @@ body
 
     if (!aa.a)
         aa.a = new BB();
+    aa.a.keyti = keyti;
 
     if (!aa.a.b.length)
     {
@@ -287,10 +289,8 @@ body
     // Not found, create new elem
     //printf("create new one\n");
     size_t size = aaA.sizeof + keysize + valuesize;
-    uint   bits = keysize   < (void*).sizeof &&
-                  keysize   > (void).sizeof  &&
-                  valuesize < (void*).sizeof &&
-                  valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0;
+    uint   bits = !(aa.a.keyti.flags() & 1) &&
+                  valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
     e = cast(aaA *) gc_calloc(size, bits);
     memcpy(e + 1, pkey, keysize);
     e.hash = key_hash;
@@ -491,8 +491,7 @@ body
     {
         a.length = _aaLen(aa);
         a.ptr = cast(byte*) gc_malloc(a.length * valuesize,
-                                      valuesize < (void*).sizeof &&
-                                      valuesize > (void).sizeof  ? BlkAttr.NO_SCAN : 0);
+                                      valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0);
         resi = 0;
         foreach (e; aa.a.b)
         {
@@ -629,8 +628,7 @@ Array _aaKeys(AA aa, size_t keysize)
     if (!len)
         return a;
     res = (cast(byte*) gc_malloc(len * keysize,
-                                 keysize < (void*).sizeof &&
-                                 keysize > (void).sizeof  ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
+                                 !(aa.a.keyti.flags() & 1) ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
     resi = 0;
     foreach (e; aa.a.b)
     {
@@ -783,6 +781,7 @@ BB* _d_assocarrayliteralTp(TypeInfo_AssociativeArray ti, size_t length, void *ke
         void * qval = values;
 
         result = new BB();
+        result.keyti = keyti;
         size_t i;
 
         for (i = 0; i < prime_list.length - 1; i++)
