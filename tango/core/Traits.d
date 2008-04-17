@@ -135,12 +135,20 @@ template isDynamicArrayType( T )
 }
 
 
+private template isStaticArrayTypeInst( T )
+{
+    const T isStaticArrayTypeInst = void;
+}
+
+
 /**
  * Evaluates to true if T is a static array type.
  */
 template isStaticArrayType( T )
 {
-    const bool isStaticArrayType = is( typeof(T.init)[(T).sizeof / typeof(T.init).sizeof] == T );
+    const bool isStaticArrayType = is( typeof(T.length) ) &&
+                                   !is( typeof(T) == typeof(T.init) ) &&
+                                   is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
 }
 
 
