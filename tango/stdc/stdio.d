@@ -230,7 +230,8 @@ version( Win32 )
 
 	extern void function() _fcloseallp;
 
-	version (GNU) {
+	version (GNU)
+	{
 		extern FILE[_NFILE]* _imp___iob;
 
 		const FILE* stdin;
@@ -238,15 +239,18 @@ version( Win32 )
 		const FILE* stderr;
 		const FILE* stdaux;
 		const FILE* stdprn;
-		
-		static this() {
+
+		static this()
+		{
 			stdin  = &(*_imp___iob)[0];
 			stdout = &(*_imp___iob)[1];
 			stderr = &(*_imp___iob)[2];
 			stdaux = &(*_imp___iob)[3];
 			stdprn = &(*_imp___iob)[4];
 		}
-	} else {
+	}
+	else
+	{
 		extern FILE[_NFILE] _iob;
 
 		const FILE* stdin  = &_iob[0];
@@ -271,14 +275,18 @@ else version( linux )
 }
 else version( darwin )
 {
-    extern FILE[3] __sF;
-    const FILE* stdin  = &__sF[0];
-    const FILE* stdout = &__sF[1];
-    const FILE* stderr = &__sF[2];
+    extern FILE* __stdinp;
+    extern FILE* __stdoutp;
+    extern FILE* __stderrp;
+
+    const FILE* stdin  = __stdinp;
+    const FILE* stdout = __stdoutp;
+    const FILE* stderr = __stdoutp;
 }
 else version( freebsd )
 {
 	extern FILE[3] __sF;
+
     const FILE* stdin  = &__sF[0];
     const FILE* stdout = &__sF[1];
     const FILE* stderr = &__sF[2];
