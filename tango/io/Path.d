@@ -1083,6 +1083,55 @@ char[] join (char[][] paths...)
         return FS.join (paths);
 }
 
+/*******************************************************************************
+
+        Convert path separators to a standard format, using '/' as
+        the path separator. This is compatible with URI and all of 
+        the contemporary O/S which Tango supports. Known exceptions
+        include the Windows command-line processor, which considers
+        '/' characters to be switches instead. Use the native()
+        method to support that.
+
+        Note: mutates the provided path.
+
+*******************************************************************************/
+
+final char[] standard (char[] path)
+{
+        return replace (path, '\\', '/');
+}
+
+/*******************************************************************************
+
+        Convert to native O/S path separators where that is required,
+        such as when dealing with the Windows command-line. 
+        
+        Note: mutates the provided path. Use this pattern to obtain a 
+        copy instead: native(path.dup);
+
+*******************************************************************************/
+
+final char[] native (char[] path)
+{
+        version (Win32)
+                 replace (path, '/', '\\');
+        return path;
+}
+
+/*******************************************************************************
+
+        Replace all path 'from' instances with 'to'
+
+*******************************************************************************/
+
+package char[] replace (char[] path, char from, char to)
+{
+        foreach (inout char c; path)
+                 if (c is from)
+                     c = to;
+        return path;
+}
+
 
 /*******************************************************************************
 

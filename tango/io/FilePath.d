@@ -356,9 +356,7 @@ class FilePath : PathView
 
         final FilePath replace (char from, char to)
         {
-                foreach (inout char c; path)
-                         if (c is from)
-                             c = to;
+                .replace (path, from, to);
                 return this;
         }
 
@@ -377,7 +375,8 @@ class FilePath : PathView
 
         final FilePath standard ()
         {
-                return replace ('\\', '/');
+                .standard (path);
+                return this;
         }
 
         /***********************************************************************
@@ -392,10 +391,8 @@ class FilePath : PathView
 
         final FilePath native ()
         {
-                version (Win32)
-                         return replace ('/', '\\');
-                     else
-                        return this;
+                .native (path);
+                return this;
         }
 
         /***********************************************************************
