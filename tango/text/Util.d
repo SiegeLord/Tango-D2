@@ -88,6 +88,10 @@
         patterns (str, pattern)                     // foreach patterns
         ---
 
+        Please note that any 'pattern' referred to within this module
+        refers to a pattern of characters, and not some kind of regex
+        descriptor. Use the Regex module for regex operation.
+
 *******************************************************************************/
 
 module tango.text.Util;
