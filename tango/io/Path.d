@@ -1120,6 +1120,30 @@ final char[] native (char[] path)
 
 /*******************************************************************************
 
+        Break a path into "head" and "tail" components. For example: 
+        ---
+        "/a/b/c" -> "/a","b/c" 
+        "a/b/c" -> "a","b/c" 
+        ---
+
+*******************************************************************************/
+
+char[] split (char[] path, out char[] head, out char[] tail)
+{
+        head = path;
+        if (path.length > 1)
+            foreach (i, char c; path[1..$])
+                     if (c is '/')
+                        {
+                        head = path [0 .. i+1];
+                        tail = path [i+2 .. $];
+                        break;
+                        }
+        return path;
+}
+
+/*******************************************************************************
+
         Replace all path 'from' instances with 'to'
 
 *******************************************************************************/
@@ -1131,6 +1155,7 @@ package char[] replace (char[] path, char from, char to)
                      c = to;
         return path;
 }
+
 
 
 /*******************************************************************************
