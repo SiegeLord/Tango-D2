@@ -529,28 +529,28 @@ class Layout(T)
                             return (*cast(bool*) p) ? t : f;
 
                        case TypeCode.BYTE:
-                            return integer (result, *cast(byte*) p, format);
+                            return integer (result, *cast(byte*) p, format, ubyte.max);
 
                        case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format, 'u');
+                            return integer (result, *cast(ubyte*) p, format, ubyte.max, 'u');
 
                        case TypeCode.SHORT:
-                            return integer (result, *cast(short*) p, format);
+                            return integer (result, *cast(short*) p, format, ushort.max);
 
                        case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format, 'u');
+                            return integer (result, *cast(ushort*) p, format, ushort.max, 'u');
 
                        case TypeCode.INT:
-                            return integer (result, *cast(int*) p, format);
+                            return integer (result, *cast(int*) p, format, uint.max);
 
                        case TypeCode.UINT:
-                            return integer (result, *cast(uint*) p, format, 'u');
+                            return integer (result, *cast(uint*) p, format, uint.max, 'u');
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format, 'u');
+                            return integer (result, *cast(long*) p, format, ulong.max, 'u');
 
                        case TypeCode.LONG:
-                            return integer (result, *cast(long*) p, format);
+                            return integer (result, *cast(long*) p, format, ulong.max);
 
                        case TypeCode.FLOAT:
                             return floater (result, *cast(float*) p, format);
@@ -571,7 +571,7 @@ class Layout(T)
                             return fromUtf32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, 'x');
+                            return integer (result, *cast(size_t*) p, format, size_t.max, 'x');
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
@@ -621,7 +621,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] format, T style = 'd')
+        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T style = 'd')
         {
                 Integer.Flags flags;
                 uint          width = output.length;
@@ -632,6 +632,8 @@ class Layout(T)
                        output = output [0 .. width];
                        flags |= flags.Zero;
                        }
+                if (style != 'd')
+                    v &= mask;
                 return Integer.format (output, v, cast(Integer.Style) style, flags);
         }
 
@@ -842,6 +844,29 @@ debug (UnitTest)
         assert( Formatter( "{0}", "s" ) == "s" );
         // fragments before and after
         assert( Formatter( "d{0}d", "s" ) == "dsd" );
+
+        // Negative numbers in various bases
+        assert( Formatter( "{:b}", cast(byte) -1 ) == "11111111" );
+        assert( Formatter( "{:b}", cast(short) -1 ) == "1111111111111111" );
+        assert( Formatter( "{:b}", cast(int) -1 )
+                == "11111111111111111111111111111111" );
+        assert( Formatter( "{:b}", cast(long) -1 )
+                == "1111111111111111111111111111111111111111111111111111111111111111" );
+
+        assert( Formatter( "{:o}", cast(byte) -1 ) == "377" );
+        assert( Formatter( "{:o}", cast(short) -1 ) == "177777" );
+        assert( Formatter( "{:o}", cast(int) -1 ) == "37777777777" );
+        assert( Formatter( "{:o}", cast(long) -1 ) == "1777777777777777777777" );
+
+        assert( Formatter( "{:d}", cast(byte) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(short) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(int) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(long) -1 ) == "-1" );
+
+        assert( Formatter( "{:x}", cast(byte) -1 ) == "ff" );
+        assert( Formatter( "{:x}", cast(short) -1 ) == "ffff" );
+        assert( Formatter( "{:x}", cast(int) -1 ) == "ffffffff" );
+        assert( Formatter( "{:x}", cast(long) -1 ) == "ffffffffffffffff" );
 
         // argument index
         assert( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
