@@ -6,7 +6,7 @@ module tango.sys.win32.Types;
 */
 
 /+ Aliases, Types, and Constants +/
-const int NULL = 0;
+const void* NULL = null;
 alias int SCODE;
 alias void VOID;
 alias void* POINTER;
@@ -2858,7 +2858,7 @@ enum : DWORD {
     RDW_ALLCHILDREN = (128),
     RDW_NOCHILDREN = (64),
 /*
-    // 
+    //
     HKEY_CLASSES_ROOT = (0x80000000),
     HKEY_CURRENT_USER = (0x80000001),
     HKEY_LOCAL_MACHINE = (0x80000002),
