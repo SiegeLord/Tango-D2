@@ -530,7 +530,7 @@ private size_t doIso8601Time(T)(
 public size_t parseDateAndTime(T)(T[] src, inout DT dt) {
    FullDate fd;
    auto ret = parseDateAndTime(src, fd);
-   date = fd.val;
+   dt = fd.val;
    return ret;
 }
 /** ditto */
