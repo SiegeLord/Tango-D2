@@ -766,7 +766,7 @@ else version( D_InlineAsm_X86 )
                         mov EDX, 4[EDI];
                         mov EDI, val;
                         lock; // lock always needed to make this op atomic
-                        cmpxchg8b [EDI];
+                        cmpxch8b [EDI];
                         setz AL;
                         pop EBX;
                         pop EDI;
