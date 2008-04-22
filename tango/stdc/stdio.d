@@ -65,23 +65,23 @@ else version( darwin )
 }
 else version ( freebsd )
 {
-	const int EOF			= -1;
-	const int FOPEN_MAX		= 20;
-	const int FILENAME_MAX	= 1024;
-	const int TMP_MAX		= 308915776;
-	const int L_tmpnam		= 1024;
+    const int EOF           = -1;
+    const int FOPEN_MAX     = 20;
+    const int FILENAME_MAX  = 1024;
+    const int TMP_MAX       = 308915776;
+    const int L_tmpnam      = 1024;
 
-	private
-	{
-		struct __sbuf
-		{
-			ubyte *_base;
-			int _size;
-		}
-		struct __sFILEX
-		{
-		}
-	}
+    private
+    {
+        struct __sbuf
+        {
+            ubyte *_base;
+            int _size;
+        }
+        struct __sFILEX
+        {
+        }
+    }
 }
 else
 {
@@ -159,7 +159,7 @@ struct _iobuf
         int       _blksize;
         fpos_t    _offset;
     }
-	else version( freebsd )
+    else version( freebsd )
     {
         ubyte*    _p;
         int       _r;
@@ -169,7 +169,7 @@ struct _iobuf
         __sbuf    _bf;
         int       _lbfsize;
 
-		void* function()						_cookie;
+        void* function()                        _cookie;
         int* function(void*)                    _close;
         int* function(void*, char*, int)        _read;
         fpos_t* function(void*, fpos_t, int)    _seek;
@@ -187,10 +187,10 @@ struct _iobuf
         int       _blksize;
         fpos_t    _offset;
     }
-	else
-	{
-		static assert( false );
-	}
+    else
+    {
+        static assert( false );
+    }
 }
 
 alias _iobuf FILE;
@@ -228,37 +228,37 @@ version( Win32 )
         _IOAPP   = 0x200,
     }
 
-	extern void function() _fcloseallp;
+    extern void function() _fcloseallp;
 
-	version (GNU)
-	{
-		extern FILE[_NFILE]* _imp___iob;
+    version (GNU)
+    {
+        extern FILE[_NFILE]* _imp___iob;
 
-		const FILE* stdin;
-		const FILE* stdout;
-		const FILE* stderr;
-		const FILE* stdaux;
-		const FILE* stdprn;
+        const FILE* stdin;
+        const FILE* stdout;
+        const FILE* stderr;
+        const FILE* stdaux;
+        const FILE* stdprn;
 
-		static this()
-		{
-			stdin  = &(*_imp___iob)[0];
-			stdout = &(*_imp___iob)[1];
-			stderr = &(*_imp___iob)[2];
-			stdaux = &(*_imp___iob)[3];
-			stdprn = &(*_imp___iob)[4];
-		}
-	}
-	else
-	{
-		extern FILE[_NFILE] _iob;
+        static this()
+        {
+            stdin  = &(*_imp___iob)[0];
+            stdout = &(*_imp___iob)[1];
+            stderr = &(*_imp___iob)[2];
+            stdaux = &(*_imp___iob)[3];
+            stdprn = &(*_imp___iob)[4];
+        }
+    }
+    else
+    {
+        extern FILE[_NFILE] _iob;
 
-		const FILE* stdin  = &_iob[0];
-		const FILE* stdout = &_iob[1];
-		const FILE* stderr = &_iob[2];
-		const FILE* stdaux = &_iob[3];
-		const FILE* stdprn = &_iob[4];
-	}
+        const FILE* stdin  = &_iob[0];
+        const FILE* stdout = &_iob[1];
+        const FILE* stderr = &_iob[2];
+        const FILE* stdaux = &_iob[3];
+        const FILE* stdprn = &_iob[4];
+    }
 }
 else version( linux )
 {
@@ -279,13 +279,20 @@ else version( darwin )
     extern FILE* __stdoutp;
     extern FILE* __stderrp;
 
-    const FILE* stdin  = __stdinp;
-    const FILE* stdout = __stdoutp;
-    const FILE* stderr = __stdoutp;
+    const FILE* stdin;
+    const FILE* stdout;
+    const FILE* stderr;
+
+    static this()
+    {
+        stdin  = __stdinp;
+        stdout = __stdoutp;
+        stderr = __stderrp;
+    }
 }
 else version( freebsd )
 {
-	extern FILE[3] __sF;
+    extern FILE[3] __sF;
 
     const FILE* stdin  = &__sF[0];
     const FILE* stdout = &__sF[1];
@@ -391,7 +398,7 @@ else version( darwin )
 }
 else version( freebsd )
 {
-	void rewind(FILE*);
+    void rewind(FILE*);
     void clearerr(FILE*);
     int  feof(FILE*);
     int  ferror(FILE*);
