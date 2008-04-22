@@ -37,7 +37,7 @@ ALL_DOCS=
 
 lib : $(ALL_OBJS)
 	$(MAKE) -C compiler/gdc CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
-	$(RM) compiler/gdc/config/*.o compiler/gdc/gcc/builtins.o compiler/gdc/gcc/configunix.o compiler/gdc/minimal.o
+	$(RM) compiler/gdc/config/*.o compiler/gdc/gcc/configunix.o compiler/gdc/minimal.o
 	$(MAKE) -C gc/basic -fposix.mak lib CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	$(MAKE) -C common/tango -fposix.mak lib CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libgphobos*.a" | xargs $(RM)
