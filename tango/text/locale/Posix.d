@@ -32,31 +32,40 @@ int getUserCulture() {
   char* env = getenv("LC_ALL");
   if (!env || *env == '\0') {
     env = getenv("LANG");
-    if (!env || *env == '\0')
-      throw new LocaleException("Neither LANG nor LC_ALL were found to be set. Please set for locale formatting to function.");
   }
 
   // getenv returns a string of the form <language>_<region>.
   // Therefore we need to replace underscores with hyphens.
-  char* p = env;
-  int len;
-  while (*p) {
-    if (*p == '.'){
-      break;
-    }
-    if (*p == '_'){
-      *p = '-';
-    }
-    p++;
-    len++;
-  }
+  char[] s;
+  if (env){
+      char* p = env;
+      int len;
+      while (*p) {
+        if (*p == '.'){
+          break;
+        }
+        if (*p == '_'){
+          *p = '-';
+        }
+        p++;
+        len++;
+      }
 
-  char[] s = env[0 .. len];
+      s = env[0 .. len];
+  } else {
+      s="en-US";
+  }
   foreach (entry; CultureData.cultureDataTable) {
     // todo: there is also a local compareString defined. Is it correct that here 
     // we use tango.text.locale.Data, which matches the signature?
     if (tango.text.locale.Data.compareString(entry.name, s) == 0)
-	// todo: here was entry.id returned, which does not exist. Is lcid correct?
+      return entry.lcid;
+  }
+  
+  foreach (entry; CultureData.cultureDataTable) {
+    // todo: there is also a local compareString defined. Is it correct that here 
+    // we use tango.text.locale.Data, which matches the signature?
+    if (tango.text.locale.Data.compareString(entry.name, "en-US") == 0)
       return entry.lcid;
   }
   return 0;
