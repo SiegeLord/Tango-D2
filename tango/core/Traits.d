@@ -146,9 +146,14 @@ private template isStaticArrayTypeInst( T )
  */
 template isStaticArrayType( T )
 {
-    const bool isStaticArrayType = is( typeof(T.length) ) &&
-                                   !is( typeof(T) == typeof(T.init) ) &&
-                                   is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
+    static if( is( typeof(T.length) ) && !is( typeof(T) == typeof(T.init) ) )
+    {
+        const bool isStaticArrayType = is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
+    }
+    else
+    {
+        const bool isStaticArrayType = false;
+    }
 }
 
 
