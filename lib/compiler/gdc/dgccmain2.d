@@ -106,7 +106,9 @@ void _d_criticalInit()
     }
 }
 
-extern (C) bool rt_init( void delegate( Exception ) dg = null )
+alias void delegate( Exception ) ExceptionHandler;
+
+extern (C) bool rt_init( ExceptionHandler dg = null )
 {
     _d_criticalInit();
 
@@ -138,7 +140,7 @@ void _d_criticalTerm()
     }
 }
 
-extern (C) bool rt_term( void delegate( Exception ) dg = null )
+extern (C) bool rt_term( ExceptionHandler dg = null )
 {
     try
     {

@@ -16,8 +16,12 @@ private
     alias bool function(Object) CollectHandler;
     alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
 
-    extern (C) void  rt_setCollectHandler( CollectHandler h );
-    extern (C) void  rt_setTraceHandler( TraceHandler h );
+    extern (C) void rt_setCollectHandler( CollectHandler h );
+    extern (C) void rt_setTraceHandler( TraceHandler h );
+
+    alias void delegate( Exception ) ExceptionHandler;
+    extern (C) bool rt_init( ExceptionHandler dg = null );
+    extern (C) bool rt_term( ExceptionHandler dg = null );
 }
 
 
@@ -32,6 +36,44 @@ private
  */
 struct Runtime
 {
+    /**
+     * Initializes the runtime.  This call is to be used in instances where the
+     * standard program initialization process is not executed.  This is most
+     * often in shared libraries or in libraries linked to a C program.
+     *
+     * Params:
+     *  dg = A delegate which will receive any exception thrown during the
+     *       initialization process or null if such exceptions should be
+     *       discarded.
+     *
+     * Returns:
+     *  true if initialization succeeds and false if initialization fails.
+     */
+    static bool initialize( void delegate( Exception ) dg = null )
+    {
+        return rt_init( dg );
+    }
+
+
+    /**
+     * Terminates the runtime.  This call is to be used in instances where the
+     * standard program termination process will not be not executed.  This is
+     * most often in shared libraries or in libraries linked to a C program.
+     *
+     * Params:
+     *  dg = A delegate which will receive any exception thrown during the
+     *       termination process or null if such exceptions should be
+     *       discarded.
+     *
+     * Returns:
+     *  true if termination succeeds and false if termination fails.
+     */
+    static bool terminate( void delegate( Exception ) dg = null )
+    {
+        return rt_term( dg );
+    }
+
+
     /**
      * Returns true if the runtime is halting.  Under normal circumstances,
      * this will be set between the time that normal application code has
