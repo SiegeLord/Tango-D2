@@ -44,10 +44,15 @@ compilerbugs() {
 }
 
 # This filter can probably be improved quite a bit, but should work
-# on the supported platforms as of May 2007
+# on the supported platforms as of April 2008
 filter() {
 
     FILE=$1
+    if [ "`echo $FILE | grep group`" ]
+    then
+        return 1
+    fi
+
     if [ "`echo $FILE | grep win32`" -o "`echo $FILE | grep Win32`" ]
     then
         return 1
