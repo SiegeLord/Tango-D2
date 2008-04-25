@@ -36,7 +36,7 @@ public interface View(T)
          * All Views implement duplicate
         **/
 
-        public Dispenser!(T) duplicate ();
+        public View!(T) duplicate ();
         public alias duplicate dup;
 
         /**
