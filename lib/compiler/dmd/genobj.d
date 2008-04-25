@@ -124,7 +124,8 @@ class Object
 
 /**
  * Information about an interface.
- * A pointer to this appears as the first entry in the interface's vtbl[].
+ * When an object is accessed via an interface, an Interface* appears as the
+ * first entry in its vtbl.
  */
 struct Interface
 {
@@ -621,8 +622,7 @@ class TypeInfo_Class : TypeInfo
     hash_t getHash(void *p)
     {
         Object o = *cast(Object*)p;
-        assert(o);
-        return o.toHash();
+        return o ? o.toHash() : 0;
     }
 
     int equals(void *p1, void *p2)
