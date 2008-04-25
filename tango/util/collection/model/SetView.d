@@ -34,6 +34,8 @@ private import tango.util.collection.model.View;
 
 public interface SetView(T) : View!(T)
 {
+        public override SetView!(T) duplicate ();
+        public alias duplicate dup;
 version (VERBOSE)
 {
         /**

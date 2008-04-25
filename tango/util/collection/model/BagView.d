@@ -30,6 +30,9 @@ private import tango.util.collection.model.View;
 
 public interface BagView(V) : View!(V)
 {
+        public override BagView!(V) duplicate();
+        public alias duplicate dup;
+
 version (VERBOSE)
 {
         public alias adding opCat;

@@ -104,11 +104,11 @@ public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
          * Make an independent copy. The elements themselves are not cloned
         **/
 
-        public final ArraySeq duplicate()
+        public final ArraySeq!(T) duplicate()
         {
                 int cap = count;
                 if (cap is 0)
-                    return new ArraySeq (screener, null, 0);
+                    return new ArraySeq!(T) (screener, null, 0);
                 else
                    {
                    if (cap < minCapacity)

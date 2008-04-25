@@ -83,12 +83,12 @@ public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
          * Make an independent copy of the list. Does not clone elements
         **/
 
-        public LinkMap duplicate()
+        public LinkMap!(K, T) duplicate()
         {
                 if (list is null)
-                    return new LinkMap (screener, null, 0);
+                    return new LinkMap!(K, T) (screener, null, 0);
                 else
-                   return new LinkMap (screener, cast(LLPairT)(list.copyList()), count);
+                   return new LinkMap!(K, T) (screener, cast(LLPairT)(list.copyList()), count);
         }
 
 

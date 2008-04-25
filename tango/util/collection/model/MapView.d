@@ -33,6 +33,8 @@ private import  tango.util.collection.model.View,
 
 public interface MapView(K, V) : View!(V)
 {
+        public override MapView!(K,V) duplicate();
+        public alias duplicate dup;
         /**
          * Report whether the MapT COULD include k as a key
          * Always returns false if k is null

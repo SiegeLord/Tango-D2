@@ -152,7 +152,7 @@ public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
          * Create an independent copy. Does not clone elements.
         **/
 
-        public TreeMap duplicate()
+        public TreeMap!(K, T) duplicate()
         {
                 if (count is 0)
                     return new TreeMap!(K, T)(screener, cmp);

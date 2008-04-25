@@ -119,10 +119,10 @@ public class ArrayBag(T) : BagCollection!(T)
          * Make an independent copy. Does not clone elements.
         **/ 
 
-        public final ArrayBag duplicate ()
+        public final ArrayBag!(T) duplicate ()
         {
                 if (count is 0)
-                    return new ArrayBag (screener);
+                    return new ArrayBag!(T) (screener);
                 else
                    {
                    CLCellT h = tail.copyList();
@@ -139,7 +139,7 @@ public class ArrayBag(T) : BagCollection!(T)
                       p = p.next();
                       } while (p !is h);
 
-                   return new ArrayBag (screener, count, h, lastCount, chunkSize_);
+                   return new ArrayBag!(T) (screener, count, h, lastCount, chunkSize_);
                    }
         }
 

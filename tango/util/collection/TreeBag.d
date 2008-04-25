@@ -125,7 +125,7 @@ public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
          * Make an independent copy of the tree. Does not clone elements.
         **/ 
 
-        public TreeBag duplicate()
+        public TreeBag!(T) duplicate()
         {
                 if (count is 0)
                     return new TreeBag!(T)(screener, cmp_);

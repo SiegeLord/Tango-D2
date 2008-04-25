@@ -87,12 +87,12 @@ public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
         **/
 
         //  protected Object clone() {
-        public LinkSeq duplicate()
+        public LinkSeq!(T) duplicate()
         {
                 if (list is null)
-                    return new LinkSeq(screener, null, 0);
+                    return new LinkSeq!(T)(screener, null, 0);
                 else
-                   return new LinkSeq(screener, list.copyList(), count);
+                   return new LinkSeq!(T)(screener, list.copyList(), count);
         }
 
 

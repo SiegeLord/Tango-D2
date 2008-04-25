@@ -107,7 +107,7 @@ public class HashMap(K, V) : MapCollection!(K, V), HashParams
 
         public final HashMap!(K, V) duplicate()
         {
-                auto c = new HashMap (screener, loadFactor);
+                auto c = new HashMap!(K, V) (screener, loadFactor);
 
                 if (count !is 0)
                    {

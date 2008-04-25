@@ -71,12 +71,12 @@ public class CircularSeq(T) : SeqCollection!(T)
         /**
          * Make an independent copy of the list. Elements themselves are not cloned
         **/
-        public final CircularSeq duplicate()
+        public final CircularSeq!(T) duplicate()
         {
                 if (list is null)
-                    return new CircularSeq (screener, null, 0);
+                    return new CircularSeq!(T) (screener, null, 0);
                 else
-                   return new CircularSeq (screener, list.copyList(), count);
+                   return new CircularSeq!(T) (screener, list.copyList(), count);
         }
 
 

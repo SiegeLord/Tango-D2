@@ -32,6 +32,8 @@ private import  tango.util.collection.model.SeqView,
 
 public interface Seq(T) : SeqView!(T), Dispenser!(T)
 {
+        public override Seq!(T) duplicate();
+        public alias duplicate dup;
         /**
          * Insert all elements of enumeration e at a given index, preserving 
          * their order. The index can range from

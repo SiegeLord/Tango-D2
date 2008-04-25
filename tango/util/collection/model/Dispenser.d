@@ -30,6 +30,8 @@ private import  tango.util.collection.model.View,
 
 public interface Dispenser(T) : View!(T)
 {
+        public override Dispenser!(T) duplicate ();
+        public alias duplicate dup;
         /**
          * Cause the collection to become empty. 
          * Returns: condition:

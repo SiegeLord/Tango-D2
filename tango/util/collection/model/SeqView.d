@@ -35,6 +35,8 @@ private import tango.util.collection.model.View;
 
 public interface SeqView(T) : View!(T)
 {
+        public override SeqView!(T) duplicate();
+        public alias duplicate dup;
         /**
          * Return the element at the indicated index
          * @param index 

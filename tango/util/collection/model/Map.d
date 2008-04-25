@@ -33,6 +33,8 @@ private import  tango.util.collection.model.MapView,
 
 public interface Map(K, T) : MapView!(K, T), Dispenser!(T)
 {
+        public override Map!(K,T) duplicate();
+        public alias duplicate dup;
         /**
          * Include the indicated pair in the Map
          * If a different pair

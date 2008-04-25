@@ -34,6 +34,9 @@ private import  tango.util.collection.model.SetView,
 
 public interface Set(T) : SetView!(T), Dispenser!(T)
 {
+        public override Set!(T) duplicate();
+        public alias duplicate dup;
+
         /**
          * Include the indicated element in the collection.
          * No effect if the element is already present.

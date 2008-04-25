@@ -91,9 +91,9 @@ public class HashSet(T) : SetCollection!(T), HashParams
          * Make an independent copy of the table. Does not clone elements.
         **/
 
-        public final HashSet duplicate()
+        public final HashSet!(T) duplicate()
         {
-                auto c = new HashSet (screener, loadFactor);
+                auto c = new HashSet!(T) (screener, loadFactor);
 
                 if (count !is 0)
                    {
