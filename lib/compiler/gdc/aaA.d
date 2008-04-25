@@ -290,9 +290,7 @@ body
     // Not found, create new elem
     //printf("create new one\n");
     size_t size = aaA.sizeof + keysize + valuesize;
-    uint   bits = !(aa.a.keyti.flags() & 1) &&
-                  valuesize < (void*).sizeof ? BlkAttr.NO_SCAN : 0;
-    e = cast(aaA *) gc_calloc(size, bits);
+    e = cast(aaA *) gc_calloc(size);
     memcpy(e + 1, pkey, keysize);
     e.hash = key_hash;
     *pe = e;
