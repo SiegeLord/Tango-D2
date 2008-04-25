@@ -80,8 +80,8 @@ private import  Integer = tango.text.convert.Integer;
 class HttpClient
 {       
         // callback for sending PUT content
-        alias void delegate (IBuffer)   Pump;
-
+        alias void delegate (IBuffer) Pump;
+        
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
         {
@@ -108,12 +108,18 @@ class HttpClient
         // should we perform internal redirection?
         private bool                    doRedirect = true;
 
+        // attempt keepalive? 
+        private bool                    keepalive = false;
+
         // limit the number of redirects, or catch circular redirects
         private uint                    redirections, 
                                         redirectionLimit = 5;
 
-        // use HTTP v1.0?
-        private static const char[] DefaultHttpVersion = "HTTP/1.0";
+        // the http version being sent with requests
+        private char[]                  httpVersion;
+
+        // http version id
+        public enum Version {OnePointZero, OnePointOne};
 
         // standard set of request methods ...
         static const RequestMethod      Get = {"GET"},
@@ -155,16 +161,21 @@ class HttpClient
                 headersIn    = new HttpHeadersView;
 
                 tmp          = new Buffer (1024 * 4);
+                output       = new Buffer (1024 * 16);
+
                 paramsOut    = new HttpParams  (new Buffer (1024 * 4));
                 headersOut   = new HttpHeaders (new Buffer (1024 * 4));
                 cookiesOut   = new HttpCookies (headersOut);
 
                 // decode the host name (may take a second or two)
-                auto host = uri.getHost ();
+                auto host = uri.getHost;
                 if (host)
                     address = new InternetAddress (host, uri.getValidPort);
                 else
                    responseLine.error ("invalid url provided to HttpClient ctor");
+
+                // default the http version to 1.0
+                setVersion (Version.OnePointZero);
         }
 
         /***********************************************************************
@@ -292,6 +303,30 @@ class HttpClient
         }
 
         /***********************************************************************
+        
+                Set the request method
+
+        ***********************************************************************/
+
+        void setRequest (RequestMethod method)
+        {
+                this.method = method;
+        }
+
+        /***********************************************************************
+        
+                Set the request version
+
+        ***********************************************************************/
+
+        void setVersion (Version v)
+        {
+                static const char[][] versions = ["HTTP/1.0", "HTTP/1.1"];
+
+                httpVersion = versions[v];
+        }
+
+        /***********************************************************************
 
                 enable/disable the internal redirection suppport
         
@@ -313,25 +348,15 @@ class HttpClient
                 timeout = interval;
         }
 
-        /**
-         * Deprecated: use setTimeout(TimeSpan) instead
-         */
-        deprecated void setTimeout(double interval)
-        {
-                setTimeout(TimeSpan.interval(interval));
-        }
-
         /***********************************************************************
 
-                Overridable method to create a Socket. You may find a need 
-                to override this for some purpose; perhaps to add input or 
-                output filters.
-                 
+                Control keepalive option 
+
         ***********************************************************************/
 
-        protected SocketConduit createSocket ()
+        void keepAlive (bool yes)
         {
-                return new SocketConduit;
+                keepalive = yes;
         }
 
         /***********************************************************************
@@ -392,17 +417,25 @@ class HttpClient
                     if (++redirections > redirectionLimit)
                         responseLine.error ("too many redirections, or a circular redirection");
     
-                    // create socket, and connect it 
-                    socket = createSocket;
-                    socket.setTimeout (timeout);
-                    socket.connect (address);
+                    // new socket for each request?
+                    if (keepalive is false)
+                        close;
+
+                    // create socket and connect it. Retain prior socket if
+                    // not closed between calls
+                    if (socket is null)
+                       {
+                       socket = new SocketConduit;
+                       socket.setTimeout (timeout);
+                       socket.connect (address);
+                       }
     
-                    // create buffers for input and output
+                    // setup buffers for input and output
+                    output.setConduit(socket);
                     if (input)
-                        input.clear, input.setConduit (socket);
+                        input.setConduit(socket).clear;
                     else
-                       input = new Buffer (socket);
-                    output = new Buffer (socket);
+                       input = new Buffer(socket);
     
                     // save for read() method
                     this.input = input;
@@ -412,7 +445,8 @@ class HttpClient
                         headersOut.add (HttpHeader.Host, uri.getHost);
     
                     // http/1.0 needs connection:close
-                    headersOut.add (HttpHeader.Connection, "close");
+                    if (keepalive is false)
+                        headersOut.add (HttpHeader.Connection, "close");
     
                     // attach/extend query parameters if user has added some
                     tmp.clear;
@@ -428,10 +462,10 @@ class HttpClient
     
                     // should we emit query as part of request line?
                     if (query.length)
-                        if (method is Get)
+                        if (method != Post)
                             output ("?"), uri.encode (&output.consume, query, uri.IncQueryAll);
                         else 
-                           if (method is Post && pump.funcptr is null)
+                           if (pump.funcptr is null)
                               {
                               // we're POSTing query text - add default info
                               if (headersOut.get (HttpHeader.ContentType, null) is null)
@@ -442,7 +476,7 @@ class HttpClient
                               }
     
                     // complete the request line, and emit headers too
-                    output (" ") (DefaultHttpVersion) (HttpConst.Eol);
+                    output (" ") (httpVersion) (HttpConst.Eol);
        
                     headersOut.produce (&output.consume, HttpConst.Eol);
                     output (HttpConst.Eol);
@@ -500,7 +534,7 @@ class HttpClient
                                     // decode the host name (may take a second or two)
                                     auto host = uri.getHost();
                                     if (host)
-                                        address = new InternetAddress (uri.getHost, uri.getValidPort);
+                                       address = new InternetAddress (uri.getHost, uri.getValidPort);
                                     else
                                        responseLine.error ("redirect has invalid url: "~redirect);
     

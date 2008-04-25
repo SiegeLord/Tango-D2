@@ -82,3 +82,17 @@ class HttpGet : HttpClient
         alias HttpClient.read read;
 }
 
+
+debug (HttpGet)
+{       
+        import tango.io.Console;
+
+        void main()
+        {
+                // open a web-page for reading (see HttpPost for writing)
+                auto page = new HttpGet ("http://www.digitalmars.com/d/intro.html");
+
+                // retrieve and flush display content
+                Cout (cast(char[]) page.read) ();
+        }
+}
