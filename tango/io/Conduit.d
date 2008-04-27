@@ -198,6 +198,23 @@ class Conduit : IConduit, ISelectable
 
         /***********************************************************************
 
+
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                
+        ***********************************************************************/
+
+        final void[] load (void[] dst = null)
+        {
+                return load (this, dst);
+        }
+
+        /***********************************************************************
+
                 Transfer the content of one stream to another. Returns
                 the dst OutputStream, and throws IOException on failure.
                 Queries dst to identify what size of buffer to utilize.
@@ -218,6 +235,35 @@ class Conduit : IConduit, ISelectable
                       }
                 delete tmp;
                 return dst;
+        }
+
+        /***********************************************************************
+
+
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                
+        ***********************************************************************/
+
+        static void[] load (InputStream src, void[] dst = null)
+        {
+                auto chunk = 0;
+                auto index = 0;
+                
+                while (chunk != Eof)
+                      {
+                      if (dst.length - index < 1024)
+                          dst.length = dst.length + 16 * 1024;
+
+                      chunk = src.read (dst[index .. $]);
+                      index += chunk;
+                      } 
+
+                return dst [0 .. index - chunk];
         }
 }
 
@@ -281,6 +327,22 @@ class InputFilter : InputStream
         {
                 host.clear;
                 return this;
+        }
+
+        /***********************************************************************
+
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                              
+        ***********************************************************************/
+
+        void[] load (void[] dst = null)
+        {
+                return Conduit.load (this, dst);
         }
 
         /***********************************************************************
@@ -359,17 +421,6 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Close the output
-
-        ***********************************************************************/
-
-        void close ()
-        {
-                host.close;
-        }
-
-        /***********************************************************************
-
                 Transfer the content of another conduit to this one. Returns
                 a reference to this class, or throws IOException on failure.
 
@@ -378,6 +429,17 @@ class OutputFilter : OutputStream
         OutputStream copy (InputStream src)
         {
                 return Conduit.transfer (src, this);
+        }
+
+        /***********************************************************************
+
+                Close the output
+
+        ***********************************************************************/
+
+        void close ()
+        {
+                host.close;
         }
 }
 

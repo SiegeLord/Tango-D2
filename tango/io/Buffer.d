@@ -1229,6 +1229,22 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                              
+        ***********************************************************************/
+
+        void[] load (void[] dst = null)
+        {
+                return slice();
+        }
+        
+        /***********************************************************************
+
                 Transfer content into the provided dst
 
                 Params:

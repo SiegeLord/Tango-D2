@@ -185,8 +185,8 @@ interface InputStream : IOStream
 {
         /***********************************************************************
         
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from stream into a target array. The provided dst 
+                will be populated with content from the stream. 
 
                 Returns the number of bytes read, which may be less than
                 requested in dst. Eof is returned whenever an end-of-flow 
@@ -196,6 +196,19 @@ interface InputStream : IOStream
 
         uint read (void[] dst);               
                         
+        /***********************************************************************
+
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                              
+        ***********************************************************************/
+
+        void[] load (void[] dst = null);
+        
         /***********************************************************************
         
                 Clear any buffered content
@@ -216,8 +229,8 @@ interface OutputStream : IOStream
 {
         /***********************************************************************
         
-                Write to conduit from a source array. The provided src
-                content will be written to the conduit.
+                Write to stream from a source array. The provided src
+                content will be written to the stream.
 
                 Returns the number of bytes written from src, which may
                 be less than the quantity provided. Eof is returned when 
@@ -229,7 +242,7 @@ interface OutputStream : IOStream
         
         /***********************************************************************
 
-                Transfer the content of another conduit to this one. Returns
+                Transfer the content of another stream to this one. Returns
                 a reference to this class, and throws IOException on failure.
 
         ***********************************************************************/
