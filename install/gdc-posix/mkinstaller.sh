@@ -83,6 +83,16 @@ rm -rf tmp || exit 1
 ) > tango-$TANGO_VERSION-gdc-$PLATFORM.sh || die 1 "Failed to create the installer"
 chmod 0755 tango-$TANGO_VERSION-gdc-$PLATFORM.sh
 
+# Plus a tarball
+mkdir tango-$TANGO_VERSION-gdc-$PLATFORM || die 1 "Failed to mkdir tango-$TANGO_VERSION-gdc-$PLATFORM"
+cd tango-$TANGO_VERSION-gdc-$PLATFORM || die 1 "Failed to cd into tango-$TANGO_VERSION-gdc-$PLATFORM"
+tar zxf ../core.tar.gz || die 1 "Failed to extract core.tar.gz"
+tar zxf ../tango.tar.gz || die 1 "Failed to extract tango.tar.gz"
+mv object.di include
+rm -f lib/install-gdc.sh
+cd .. || die 1 "Failed to cd out of tango-$TANGO_VERSION-gdc-$PLATFORM"
+tar zcf tango-$TANGO_VERSION-gdc-$PLATFORM.tar.gz tango-$TANGO_VERSION-gdc-$PLATFORM/
+
 # 4) GDC
 if [ -e gdc ]
 then
