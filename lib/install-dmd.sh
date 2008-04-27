@@ -56,12 +56,6 @@ LIBPREFIX="$PREFIX"
 INCLPREFIX="$PREFIX"
 BASELIB="libtango-base-dmd.a"
 
-# 0) Parse arguments
-#if [ "$#" = "0" ]
-#then
-#    usage
-#fi
-
 while [ "$#" != "0" ]
 do
 
@@ -156,7 +150,7 @@ fi
 if [ "$ASPHOBOS" = "1" ]
 then
     BASELIB="libphobos.a"
-    cp libtango-base-dmd.a libphobos.a
+    cp -pv libtango-base-dmd.a libphobos.a
 fi
 
 echo "Binary prefix: $CONFPREFIX"
@@ -262,8 +256,8 @@ if [ "$USERLIB" = "1" ]
 then
     if [ "$BASELIB" -nt "libtango-user-dmd.a" ]
     then
-        echo 'libtango-user-dmd.a not found or older than libtango-base-dmd.a, trying to 
-        build it.'
+        echo 'libtango-user-dmd.a not found or older than libtango-base-dmd.a, trying
+        to build it.'
         ./build-tango.sh dmd || die "Failed to build libtango-user-dmd.a, try running 
         ./build-tango.sh dmd manually." 4
     fi
@@ -301,31 +295,48 @@ EOF
 
 # Install ...
 echo 'Copying files...'
+echo "Creating directories $INCLPREFIX/$INCL/d, $LIBPREFIX/$LIB and $CONFPREFIX/$CONF
+      if they don't exist."
 mkdir -p $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
 mkdir -p $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
 mkdir -p $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
 
+echo "Installing $BASELIB to $LIBPREFIX/$LIB"
 cp -pRvf $BASELIB $LIBPREFIX/$LIB/ || die "Failed to copy base library." 7
+echo "Installing object.di to $INCLPREFIX/$INCL/d/"
 cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source." 8
 
 if [ "$USERLIB" = "1" ]
 then
+    echo "Installing libtango-user-dmd.a to $LIBPREFIX/$LIB"
     cp -pRvf libtango-user-dmd.a $LIBPREFIX/$LIB/ || die "Failed to copy user library." 8
+    cd ..
+    for file in `find tango -name '*.di' -o -name '*.d'`
+    do
+        if [ ! -e `dirname $INCLPREFIX/$INCL/d/$file` ]
+        then
+            mkdir -v `dirname $INCLPREFIX/$INCL/d/$file`
+        fi
+        cp $file -pRvf $INCLPREFIX/$INCL/d/$file
+    done
 fi
 
 if [ ! -e "$CONFPREFIX/$CONF/dmd.conf" ]
 then
+    echo "Could not find dmd.conf in $CONFPREFIX/$CONF, create a new one."
     create_dmd_conf
 else
     # Is it a phobos conf ?
     if [ ! "`grep '\-version=Tango' $CONFPREFIX/$CONF/dmd.conf`" ]
     then
+        echo 'Backing up dmd.conf to dmd.conf.phobos, creating new dmd.conf'
         mv $CONFPREFIX/$CONF/dmd.conf $CONFPREFIX/$CONF/dmd.conf.phobos
         create_dmd_conf
     elif [ "$ASPHOBOS" = "1" ]
     then
         if [ "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
         then
+            echo 'Removing and re-creating dmd.conf'
             rm -rf $CONFPREFIX/$CONF/dmd.conf
             create_dmd_conf
         fi
