@@ -347,6 +347,22 @@ class StreamIterator(T) : InputStream, Buffered
         }               
                         
         /***********************************************************************
+
+                Load the bits from a stream, and return them all in an
+                array. The dst array can be provided as an option, which
+                will be expanded as necessary to consume the input.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                              
+        ***********************************************************************/
+
+        void[] load (void[] dst = null)
+        {
+                return input.load (dst);
+        }
+
+        /***********************************************************************
         
                 Clear any buffered content
 
