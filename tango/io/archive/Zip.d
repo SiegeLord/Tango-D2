@@ -1839,6 +1839,11 @@ class ZipEntryVerifier : InputStream
         return bytes;
     }
 
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
+    }
+    
     InputStream clear()
     {
         this.source.clear;
@@ -2333,6 +2338,11 @@ class CounterInput : InputStream
         return read;
     }
 
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
+    }
+
     override InputStream clear()
     {
         input.clear();
@@ -2483,6 +2493,11 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
         return read;
     }
 
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
+    }
+
     override InputStream clear()
     {
         source.clear();
@@ -2580,6 +2595,11 @@ class SliceInputStream : InputStream
 
         _length -= read;
         return read;
+    }
+
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
     }
 
     override InputStream clear()
@@ -2794,6 +2814,11 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
             _position += read;
 
         return read;
+    }
+
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
     }
 
     override InputStream clear()

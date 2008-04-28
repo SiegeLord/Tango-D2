@@ -1718,6 +1718,10 @@ class DummyInputStream : InputStream, IConduit.Seek
     override void close() {}
     override uint read(void[] dst) { return IConduit.Eof; }
     override InputStream clear() { return this; }
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
+    }
     override long seek(long offset, Anchor anchor = cast(Anchor)0) { return 0; }
 }
 
@@ -1814,6 +1818,11 @@ class EventSeekInputStream : InputStream, IConduit.Seek
         source.clear();
         if( callbacks.clear ) callbacks.clear();
         return this;
+    }
+
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
@@ -1996,6 +2005,11 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
     {
         source.clear();
         return this;
+    }
+
+    override void[] load(void[] dst = null)
+    {
+        return Conduit.load(this, dst);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
