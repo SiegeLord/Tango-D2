@@ -1092,7 +1092,7 @@ int isSubnormal(real x)
 
         return (pe[F.EXPPOS_SHORT] & F.EXPMASK) == 0 && *ps > 0;
     } else { // double double
-        return isSubnormal(cast(double*)(&x)[MANTISSA_MSB]);
+        return isSubnormal((cast(double*)&x)[MANTISSA_MSB]);
     }
 }
 
