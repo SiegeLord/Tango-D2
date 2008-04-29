@@ -105,6 +105,9 @@ class HttpClient
         // default to three second timeout on read operations ...
         private TimeSpan                timeout = TimeSpan.seconds(3);
 
+        // enable uri encoding?
+        private bool                    encode = true;
+
         // should we perform internal redirection?
         private bool                    doRedirect = true;
 
@@ -360,6 +363,17 @@ class HttpClient
         }
 
         /***********************************************************************
+
+                Control Uri output encoding 
+
+        ***********************************************************************/
+
+        void encodeUri (bool yes)
+        {
+                encode = yes;
+        }
+
+        /***********************************************************************
         
                 Make a request for the resource specified via the constructor,
                 using the specified timeout period (in milli-seconds).The 
@@ -458,19 +472,29 @@ class HttpClient
                         path = "/";
      
                     // format encoded request 
-                    output (method.name) (" "), uri.encode (&output.consume, path, uri.IncPath);
+                    output (method.name) (" ");
+                    if (encode)
+                        uri.encode (&output.consume, path, uri.IncPath);
+                    else
+                       output (path);
     
                     // should we emit query as part of request line?
                     if (query.length)
                         if (method != Post)
-                            output ("?"), uri.encode (&output.consume, query, uri.IncQueryAll);
+                           {
+                           output ("?");
+                           if (encode)
+                               uri.encode (&output.consume, query, uri.IncQueryAll);
+                           else
+                              output (query);
+                           }
                         else 
                            if (pump.funcptr is null)
                               {
                               // we're POSTing query text - add default info
                               if (headersOut.get (HttpHeader.ContentType, null) is null)
                                   headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
-    
+   
                               if (headersOut.get (HttpHeader.ContentLength, null) is null)
                                   headersOut.addInt (HttpHeader.ContentLength, query.length);
                               }
@@ -487,7 +511,10 @@ class HttpClient
                     else
                        // send encoded POST query instead?
                        if (method is Post && query.length)
-                           uri.encode (&output.consume, query, uri.IncQueryAll);
+                           if (encode)
+                               uri.encode (&output.consume, query, uri.IncQueryAll);
+                           else
+                              output (query);
     
                     // send entire request
                     output.flush;
