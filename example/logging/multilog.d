@@ -1,8 +1,8 @@
 import tango.util.log.Log;
-import tango.util.log.Log4Layout;
-import tango.util.log.FileAppender;
-import tango.util.log.ConsoleAppender;
-import tango.util.log.RollingFileAppender;
+import tango.util.log.AppendFile;
+import tango.util.log.AppendFiles;
+import tango.util.log.AppendConsole;
+import tango.util.log.LayoutChainsaw;
 
 /*******************************************************************************
 
@@ -13,17 +13,17 @@ import tango.util.log.RollingFileAppender;
 void main ()
 {
         // set default logging level at the root
-        auto log = Log.getRootLogger;
-        log.setLevel (log.Level.Trace);
+        auto log = Log.root;
+        log.level = Level.Trace;
 
         // 10 logs, all with 10 mbs each
-        log.addAppender (new RollingFileAppender("rolling.log", 9, 1024*1024*10));
+        log.add (new AppendFiles ("rolling.log", 9, 1024*1024*10));
 
         // a single file appender, with an XML layout
-        log.addAppender (new FileAppender ("single.log", new Log4Layout));
+        log.add (new AppendFile ("single.log", new LayoutChainsaw));
 
         // console appender
-        log.addAppender (new ConsoleAppender);
+        log.add (new AppendConsole);
 
         // log to all
         log.trace ("three-way logging");

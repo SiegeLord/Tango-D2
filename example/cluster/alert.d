@@ -1,6 +1,7 @@
 private import  tango.core.Thread;
 
-private import  tango.util.log.Configurator;
+private import  tango.util.log.Log,
+                tango.util.log.Config;
 
 private import  tango.net.cluster.NetworkAlert;
 

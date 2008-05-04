@@ -12,7 +12,7 @@
 
 module tango.net.cluster.model.ICluster;
 
-public  import  tango.util.log.Logger;
+public  import  tango.util.log.model.ILogger;
 
 public  import  tango.net.cluster.model.IChannel,
                 tango.net.cluster.model.IMessage,
@@ -44,5 +44,5 @@ interface ICluster
 
         ***********************************************************************/
         
-        Logger log ();
+        ILogger log ();
 }

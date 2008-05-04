@@ -1,8 +1,8 @@
 import  tango.core.Thread;
 
 import  tango.util.log.Log,
-        tango.util.log.Log4Layout,
-        tango.util.log.SocketAppender;
+        tango.util.log.AppendSocket,
+        tango.util.log.LayoutChainsaw;
 
 import  tango.net.InternetAddress;
 
@@ -17,10 +17,10 @@ import  tango.net.InternetAddress;
 void main()
 {
         // get a logger to represent this module
-        auto logger = Log.getLogger ("example.chainsaw");
+        auto logger = Log.lookup ("example.chainsaw");
 
         // hook up an appender for XML output
-        logger.addAppender (new SocketAppender (new InternetAddress("127.0.0.1", 4448), new Log4Layout));
+        logger.add (new AppendSocket (new InternetAddress("127.0.0.1", 4448), new LayoutChainsaw));
 
         while (true)
               {

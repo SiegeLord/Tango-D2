@@ -26,7 +26,7 @@ private import  tango.net.cluster.tina.Cluster,
 
 class ClusterQueue
 {
-        private Logger          log;
+        private ILogger         log;
         private uint            used, 
                                 limit;
         private double          sleep;

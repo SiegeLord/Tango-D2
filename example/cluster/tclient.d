@@ -7,9 +7,10 @@ import Add;
 
 import tango.io.Stdout;
 
-import tango.time.StopWatch;
+import tango.util.log.Log,
+       tango.util.log.Config;
 
-import tango.util.log.Configurator;
+import tango.time.StopWatch;
 
 import tango.net.cluster.tina.ClusterTask;
 

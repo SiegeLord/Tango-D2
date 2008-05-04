@@ -5,9 +5,10 @@
 
 import tango.io.Stdout;
 
-import tango.time.StopWatch;
+import tango.util.log.Log,
+       tango.util.log.Config;
 
-import tango.util.log.Configurator;
+import tango.time.StopWatch;
 
 import tango.net.cluster.NetworkCache;
 
@@ -21,7 +22,7 @@ import tango.net.cluster.tina.Cluster;
 void main (char[][] args)
 {
         StopWatch w;
-
+        
         if (args.length > 1)
            {
            auto cluster = (new Cluster).join (args[1..$]);

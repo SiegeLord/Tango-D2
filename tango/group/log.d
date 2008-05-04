@@ -17,15 +17,11 @@ module tango.group.log;
 pragma (msg, "Please post your usage of tango.group to this ticket: http://dsource.org/projects/tango/ticket/1013");
 
 public import tango.util.log.Log;
-public import tango.util.log.Logger;
-public import tango.util.log.Hierarchy;
-public import tango.util.log.DateLayout;
-public import tango.util.log.Log4Layout;
-public import tango.util.log.EventLayout;
-public import tango.util.log.FileAppender;
-public import tango.util.log.MailAppender;
-public import tango.util.log.SocketAppender;
-public import tango.util.log.ConsoleAppender;
-public import tango.util.log.RollingFileAppender;
+public import tango.util.log.LayoutDate;
+public import tango.util.log.LayoutChainsaw;
+public import tango.util.log.AppendFile;
+public import tango.util.log.AppendMail;
+public import tango.util.log.AppendSocket;
+public import tango.util.log.AppendFiles;
                 
 

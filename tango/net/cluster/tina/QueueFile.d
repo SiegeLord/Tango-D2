@@ -15,7 +15,7 @@ module tango.net.cluster.tina.QueueFile;
 private import  tango.io.FilePath,
                 tango.io.FileConduit;
 
-private import  tango.util.log.Logger;
+private import  tango.util.log.model.ILogger;
 
 private import  tango.text.convert.Sprint;
 
@@ -40,7 +40,7 @@ class QueueFile
                 byte[5] unused;                 // future use
         }
 
-        private Logger          log;            // logging target
+        private ILogger         log;            // logging target
         private bool            dirty;          // is queue dirty?
         private uint            limit,          // max file size
                                 depth,          // stack depth
@@ -55,7 +55,7 @@ class QueueFile
 
         **********************************************************************/
 
-        this (Logger log, IChannel channel, uint max, uint min=1024*1024)
+        this (ILogger log, IChannel channel, uint max, uint min=1024*1024)
         {
                 this (log, channel.name~".queue", max, min);
                 channel_ = channel;
@@ -65,7 +65,7 @@ class QueueFile
 
         **********************************************************************/
 
-        this (Logger log, char[] name, uint max, uint min=1024*1024)
+        this (ILogger log, char[] name, uint max, uint min=1024*1024)
         {
                 Header tmp;
 

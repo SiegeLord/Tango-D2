@@ -103,7 +103,7 @@ class NetworkClient
 
         ***********************************************************************/
         
-        Logger log ()
+        ILogger log ()
         {
                 return cluster_.log;
         }

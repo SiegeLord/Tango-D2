@@ -1,6 +1,7 @@
 private import  tango.core.Thread;
 
-private import  tango.util.log.Configurator;
+private import  tango.util.log.Log,
+                tango.util.log.Config;
 
 private import  tango.net.cluster.NetworkQueue;
 
@@ -19,7 +20,6 @@ void main ()
                 while (event.get)
                        event.log.info ("received asynch msg on channel " ~ event.channel.name);
         }
-                
 
         // join the cluster 
         auto cluster = (new Cluster).join;

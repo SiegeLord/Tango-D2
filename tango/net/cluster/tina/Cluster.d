@@ -18,8 +18,7 @@ private import  tango.core.Thread,
                 tango.core.Runtime,
                 tango.core.Exception;
 
-private import  tango.util.log.Log,
-                tango.util.log.Logger;
+private import  tango.util.log.Log;
 
 private import  tango.time.Clock;
 

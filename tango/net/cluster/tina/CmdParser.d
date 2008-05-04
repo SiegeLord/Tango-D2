@@ -12,12 +12,12 @@
 
 module tango.net.cluster.tina.CmdParser;
 
+private import  tango.util.log.Log,
+                tango.util.log.Config;
+
 private import  tango.util.Arguments;
 
 private import  tango.text.convert.Integer;
-
-private import  tango.util.log.Log,
-                tango.util.log.Configurator;
 
 /******************************************************************************
         
@@ -38,10 +38,10 @@ class CmdParser : Arguments
 
         this (char[] name)
         {
-                log = Log.getLogger (name);
+                log = Log.lookup (name);
 
                 // default logging is info, not trace
-                log.setLevel (log.Level.Info);
+                log.level = Level.Info;
         }
 
         /**********************************************************************
@@ -60,7 +60,7 @@ class CmdParser : Arguments
                 if (this.contains("h"))
                     help = true;
                 if (this.contains("log"))
-                    log.setLevel(Log.level(this["log"]));
+                    log.level = Log.convert(this["log"]);
                 if (this.contains("port"))
                     port = cast(ushort)atoi(this["port"]);
                 if (this.contains("size"))

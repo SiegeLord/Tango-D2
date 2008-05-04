@@ -25,14 +25,14 @@ private
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
     import tango.time.Clock;
-    import tango.util.log.Log;
-    import tango.util.log.ConsoleAppender;
-    import tango.util.log.DateLayout;
     import tango.text.convert.Sprint;
     import tango.core.Exception;
     import tango.core.Thread;
     import tango.sys.Common;
     import tango.stdc.errno;
+    import tango.util.log.Log;
+    import tango.util.log.LayoutDate;
+    import tango.util.log.AppendConsole;
 }
 
 
@@ -45,10 +45,10 @@ const uint      MAX_LENGTH      = 16;
 
 int main(char[][] args)
 {
-    Logger          log     = Log.getLogger("selector");
+    Logger          log     = Log.lookup("selector");
     Sprint!(char)   sprint  = new Sprint!(char)(256);
 
-    log.addAppender(new ConsoleAppender(new DateLayout()));
+    log.add (new AppendConsole(new LayoutDate));
 
     ISelector selector;
 

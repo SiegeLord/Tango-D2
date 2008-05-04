@@ -12,7 +12,7 @@
 
 module tango.net.cluster.model.IChannel;
 
-private import  tango.util.log.Logger;
+private import  tango.util.log.model.ILogger;
 
 private import  tango.net.cluster.model.IMessage,
                 tango.net.cluster.model.IConsumer;    
@@ -35,7 +35,7 @@ interface IChannel
 
         ***********************************************************************/
         
-        Logger log ();
+        ILogger log ();
 
         /***********************************************************************
         
@@ -189,7 +189,7 @@ interface IEvent
 
         ***********************************************************************/
         
-        Logger log ();
+        ILogger log ();
 }
 
 /*******************************************************************************
