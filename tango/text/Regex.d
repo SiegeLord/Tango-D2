@@ -3154,6 +3154,31 @@ private:
                     continue;
                 if ( t.predicate.intersect(pred).empty )
                     continue;
+                uint new_maxPri = max(t.priority, se.maxPriority);
+
+                StateElement* tmp = t.target.index in closure;
+                if ( tmp !is null )
+                {
+                    // if higher prio (smaller value) exists, do not use this transition
+                    if ( tmp.maxPriority < new_maxPri ) {
+//                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}, continuing", t.target.index, tmp.maxPriority, new_maxPri);
+                        continue;
+                    }
+                    else if ( tmp.maxPriority == new_maxPri )
+                    {
+                        // "equal lastPrio -> first-come-first-serve"
+                        // doesn't work for lexer - how to solve it properly?
+                        if ( tmp.lastPriority <= t.priority ) {
+//                             debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}, continuing", t.target.index, tmp.lastPriority, t.priority);
+                            continue;
+                        }
+//                         else
+//                             debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, t.priority, tmp.lastPriority);
+                    }
+//                     else
+//                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
+                }
+
                 StateElement new_se = new StateElement;
                 new_se.maxPriority = max(t.priority, se.maxPriority);
                 new_se.lastPriority = t.priority;
@@ -3215,22 +3240,22 @@ private:
                 {
                     // if higher prio (smaller value) exists, do not use this transition
                     if ( tmp.maxPriority < new_maxPri ) {
-                        debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, tmp.maxPriority, new_maxPri);
+//                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}, continuing", t.target.index, tmp.maxPriority, new_maxPri);
                         continue;
                     }
                     else if ( tmp.maxPriority == new_maxPri )
                     {
                         // "equal lastPrio -> first-come-first-serve"
                         // doesn't work for lexer - how to solve it properly?
-                        if ( tmp.lastPriority < t.priority ) {
-                            debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, tmp.lastPriority, t.priority);
+                        if ( tmp.lastPriority <= t.priority ) {
+//                             debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}, continuing", t.target.index, tmp.lastPriority, t.priority);
                             continue;
                         }
-                        else
-                            debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, t.priority, tmp.lastPriority);
+//                         else
+//                             debug(tdfa) Stdout.formatln("lastPrio({}) {} beats {}", t.target.index, t.priority, tmp.lastPriority);
                     }
-                    else
-                        debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
+//                     else
+//                         debug(tdfa) Stdout.formatln("maxPrio({}) {} beats {}", t.target.index, new_maxPri, tmp.maxPriority);
                 }
 
                 auto new_se = new StateElement;
@@ -3308,17 +3333,19 @@ private:
         if ( from.elms.length != to.elms.length )
             return false;
 
-        bool[Command]   cmds;
-        uint[TagIndex]  reorderedIndeces;
+        bool[Command]
+            cmds;
+        uint[TagIndex]
+            reorderedIndeces;
+        StateElement[TagIndex]
+            reordered_elements;
 
-        foreach ( fe; from.elms )
+        Louter: foreach ( fe; from.elms )
         {
-            bool foundState = false;
             foreach ( te; to.elms )
             {
                 if ( te.nfa_state.index != fe.nfa_state.index )
                     continue;
-                foundState = true;
                 foreach ( tag, findex; fe.tags )
                 {
                     if ( (tag in te.tags) is null )
@@ -3328,24 +3355,37 @@ private:
                     ti.tag = tag;
                     ti.index = te.tags[tag];
 
-                    // make sure the reordering is injective
+                    // apply priority for conflicting tag indeces
                     if ( (ti in reorderedIndeces) !is null )
                     {
-                        if ( reorderedIndeces[ti] != findex )
-                            return false;
+                        auto rse = reordered_elements[ti];
+                        auto ri = reorderedIndeces[ti];
+                        if ( ri != findex
+                            && ( rse.maxPriority < fe.maxPriority
+                                || rse.maxPriority == fe.maxPriority
+                                && rse.lastPriority <= fe.lastPriority )
+                        )
+                            continue;
+                        Command cmd;
+                        cmd.src = registerFromTagIndex(tag,ri);
+                        cmd.dst = registerFromTagIndex(tag,te.tags[tag]);
+                        cmds.remove(cmd);
                     }
-                    else if ( te.tags[tag] != findex )
+                    // if target index differs, create reordering command
+                    if ( te.tags[tag] != findex )
                     {
                         Command cmd;
                         cmd.src = registerFromTagIndex(tag,findex);
                         cmd.dst = registerFromTagIndex(tag,te.tags[tag]);
                         cmds[cmd] = true;
                     }
+
                     reorderedIndeces[ti] = findex;
+                    reordered_elements[ti] = fe;
                 }
+                continue Louter;
             }
-            if ( !foundState )
-                return false;
+            return false;
         }
 
         debug(tdfa) {
@@ -4007,9 +4047,6 @@ class RegExpT(char_t)
             bool first = true;
             for ( int i = 0, used = 0; i < num_vars; ++i )
             {
-                if ( lexer && i < tdfa_.num_tags )
-                    continue;
-
                 bool hasInit = false;
                 foreach ( cmd; tdfa_.initializer )
                 {
