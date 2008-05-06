@@ -88,6 +88,24 @@ private import  tango.util.log.model.ILogger;
 
 /*******************************************************************************
 
+        Platform issues ...
+
+*******************************************************************************/
+
+version (GNU)
+        {
+        private import std.stdarg;
+        alias void* Arg;
+        alias va_list ArgList;
+        }
+     else
+        {
+        alias void* Arg;
+        alias void* ArgList;
+        }
+
+/*******************************************************************************
+
         Pull in additional functions from the C library
 
 *******************************************************************************/
@@ -900,7 +918,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final char[] format (TypeInfo[] arguments, void* argptr, char[] formatStr, char[] scratchpad)
+        final char[] format (TypeInfo[] arguments, ArgList argptr, char[] formatStr, char[] scratchpad)
         {    
                 return Format.vprint (scratchpad, formatStr, arguments, argptr);                
         }
