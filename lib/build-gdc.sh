@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 cd "`dirname $0`"
 
+while [ "$#" != "0" ]
+do
+    case "$1" in
+        --debug)
+            DEBUG=1
+            ;;
+    esac
+done
+ 
 # Allow gdc and gdmd to be overriden
 if [ "$GDC" = "" ]
 then
@@ -11,7 +20,7 @@ then
     export GDMD=${GDC_PREFIX}gdmd${GDC_POSTFIX}
 fi
 
-GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \([0-9]*\.[0-9]*\).*$/\1/'`"
+GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \(pre\-?release \)*\([0-9]*\.[0-9]*\).*$/\2/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
 HOST_ARCH="`./compiler/gdc/config.guess | sed 's/-.*//'`"
@@ -19,6 +28,11 @@ ADD_CFLAGS=
 if [ "$HOST_ARCH" = "powerpc" -a ! "`./compiler/gdc/config.guess | grep darwin`" ]
 then
     ADD_CFLAGS="-mregnames"
+fi
+
+if [ "$DEBUG" = "1" ]
+then
+    ADD_CFLAGS="$ADD_CFLAGS -g"
 fi
 
 if [ "$GDC_MAJOR" = "0" -a \
