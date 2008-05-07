@@ -162,7 +162,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static const uint[] K =
+        protected static const uint[] K =
         [
                 0x5A827999,
                 0x6ED9EBA1,
