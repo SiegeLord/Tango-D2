@@ -847,7 +847,7 @@ D toReal(D,S)(S value)
     /+static if( is( S == bool ) )
         return (value ? 1.0 : 0.0);
 
-    else+/ static if( isIntegerType!(S) )
+    else+/ static if( isIntegerType!(S) || isRealType!(S) )
         return cast(D) value;
 
     /+else static if( isCharType!(S) )
