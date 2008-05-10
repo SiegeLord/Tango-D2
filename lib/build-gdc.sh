@@ -20,7 +20,7 @@ then
     export GDMD=${GDC_PREFIX}gdmd${GDC_POSTFIX}
 fi
 
-GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \(pre\-?release \)*\([0-9]*\.[0-9]*\).*$/\2/'`"
+GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \(pre\-\{0,1\}release \)*\([0-9]*\.[0-9]*\).*$/\2/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
 HOST_ARCH="`./compiler/gdc/config.guess | sed 's/-.*//'`"
