@@ -19,6 +19,7 @@ usage() {
 Options:
   --help: Will print this help text
   --warn: Will enable warnings
+  --verbose: Increase verbosity 
   <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
                 libgtango.a or universal Mac binaries respectively
 
@@ -31,6 +32,7 @@ Options:
 UNAME=`uname`
 INLINE="-inline"
 WARN=""
+VERBOSE=0
 
 # Compiler specific includes
 . dmdinclude
@@ -97,6 +99,7 @@ compile() {
 
     if filter $OBJNAME
     then
+        if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
         $DC $WARN -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
@@ -149,6 +152,9 @@ do
             ;;
         --warn)
             WARN="-w"
+            ;;
+        --verbose) 
+            VERBOSE=1
             ;;
         dmd)
             build dmd libtango-user-dmd.a libtango-base-dmd.a
