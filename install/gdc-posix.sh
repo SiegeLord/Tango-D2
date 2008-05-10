@@ -53,10 +53,12 @@ ln -s ../../../dl/d-$GDC_VERSION d ||
     die "Failed to link gdc sources into gcc"
 cd ../
 ./gcc/d/setup-gcc.sh || die ""
-./configure --prefix="$BASEDIR/gdc" --enable-languages=c,d --enable-static --disable-shared ||
+./configure --prefix="$BASEDIR/gdc" --enable-languages=c,d --enable-static --disable-shared --disable-multilib ||
     die "Failed to configure gcc"
-make all install ||
+make all ||
     die "Failed to build gcc"
+make install ||
+    die "Failed to install gcc"
 cd ..
 
 # build DSSS
