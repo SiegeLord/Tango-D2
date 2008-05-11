@@ -752,14 +752,8 @@ package struct FS
 
                 static void remove (char[] name)
                 {
-                        if (isFolder (name))
-                           {
-                           if (posix.rmdir (name.ptr))
-                               exception (name);
-                           }
-                        else
-                           if (tango.stdc.stdio.remove (name.ptr) == -1)
-                               exception (name);
+                        if (tango.stdc.stdio.remove (name.ptr) == -1)
+                            exception (name);
                 }
 
                 /***************************************************************
