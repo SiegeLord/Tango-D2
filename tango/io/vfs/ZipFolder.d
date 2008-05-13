@@ -657,6 +657,10 @@ class ZipSubFolder : VfsFolder, VfsSync
         auto dir = fp.path;
         auto name = fp.file;
 
+        if (dir.length > 0 && '/' == dir[$-1]) {
+            dir = dir[0..$-1];
+        }
+		
         // If the file is in another directory, then we need to look up that
         // up first.
         if( dir.nz() )
