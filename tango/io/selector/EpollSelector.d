@@ -10,8 +10,8 @@ module tango.io.selector.EpollSelector;
 version (linux)
 {
     public import tango.io.model.IConduit;
+    public import tango.io.selector.model.ISelector;
 
-    private import tango.io.selector.model.ISelector;
     private import tango.io.selector.AbstractSelector;
     private import tango.sys.Common;
     private import tango.sys.linux.linux;
