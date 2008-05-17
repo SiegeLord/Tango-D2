@@ -166,7 +166,7 @@ static int isearch (in char[] src, in char[] pattern)
         assert(src.ptr);
         assert(pattern.ptr);
 
-        for (uint i2, i1=0; i1 <= (src.length - pattern.length); ++i1)
+        for (int i1=0, i2; i1 <= (src.length - pattern.length); ++i1)
             {   
             for (i2=0; i2 < pattern.length; ++i2)
                  if (_caseMap[src[i1 + i2]] != _caseMap[pattern[i2]])
