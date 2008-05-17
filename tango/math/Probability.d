@@ -261,7 +261,7 @@ assert(isfeqabs(studentsTDistributionInv(8, 0.6), 0.261_921_096_769_043L,0.000_0
 
 assert(isfeqabs(studentsTDistributionInv(18, 0.4), -0.257_123_042_655_869L, 0.000_000_000_05L));
 assert( feqrel(studentsTDistribution(18, studentsTDistributionInv(18, 0.4L)),0.4L)
- > real.mant_dig-2 );
+ > real.mant_dig-5 );
 assert( feqrel(studentsTDistribution(11, studentsTDistributionInv(11, 0.9L)),0.9L)
   > real.mant_dig-2);
 }
@@ -436,7 +436,7 @@ body
 
 debug(UnitTest) {
 unittest {
-  assert(feqrel(chiSqrDistributionCompl(3.5L, chiSqrDistributionComplInv(3.5L, 0.1L)), 0.1L)>=real.mant_dig-3);
+  assert(feqrel(chiSqrDistributionCompl(3.5L, chiSqrDistributionComplInv(3.5L, 0.1L)), 0.1L)>=real.mant_dig-5);
   assert(chiSqrDistribution(19.02L, 0.4L) + chiSqrDistributionCompl(19.02L, 0.4L) ==1.0L);
 }
 }
