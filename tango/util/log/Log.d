@@ -1233,8 +1233,8 @@ private class Hierarchy : Logger.Context
                    logger.parent = changed;
 
                    // if we don't have an explicit level set, inherit it
-                   if ((logger.level_ is Level.None) || force)
-                        logger.level (changed.level);
+                   if (force)
+                       logger.level (changed.level);
                    }
         }
 }
@@ -1727,7 +1727,7 @@ debug (Log)
         {
                 Log.config (Cerr.stream);
                 auto log = Log.lookup ("fu.bar");
-
+                log.level = log.level.Info;
                 // traditional usage
                 log.trace ("hello");
 
@@ -1736,7 +1736,7 @@ debug (Log)
                 log.info (format ("blah{}", 1));
 
                 // snapshot
-                auto snap = Log.snapshot (log, Level.Info);
+                auto snap = Log.snapshot (log, Level.Error);
                 snap.format ("arg{}; ", 1);
                 snap.format ("arg{}; ", 2);
                 log.trace (snap.format ("error! arg{}", 3));
