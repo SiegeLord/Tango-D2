@@ -58,7 +58,7 @@ version (linux)
      *     char[16] buffer;
      *     int count;
      *
-     *     foreach (SelectionKey key, selector.selectedSet())
+     *     foreach (SelectionKey key; selector.selectedSet())
      *     {
      *         if (key.isReadable())
      *         {
