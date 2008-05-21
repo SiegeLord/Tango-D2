@@ -490,14 +490,14 @@ class HttpClient
 					else
 						output (query);
 
-			// send entire request
-			output.flush;
-
 			return output;
 		}
 
 		IBuffer openFinish(Pump pump)
 		{
+			// send entire request
+			output.flush;
+
 			// Token for initial parsing of input header lines
 			auto line = new LineIterator!(char) (input);
 
