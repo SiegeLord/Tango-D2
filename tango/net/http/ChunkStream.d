@@ -129,7 +129,11 @@ class ChunkInput : LineIterator!(char)
         final override uint read (void[] dst)
         {
                 if (available is 0)
+                {
+                    // terminated 0, read empty line, as per rfc2616
+                    super.next;
                     return IConduit.Eof;
+                }
                         
                 auto size = dst.length > available ? available : dst.length;
                 auto read = super.read (dst [0 .. size]);
