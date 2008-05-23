@@ -233,6 +233,11 @@ class Text(T) : TextView!(T)
                 Create an empty Text with the specified available
                 space
 
+                Note: A character like 'a' will be implicitly converted to
+                uint and thus will be accepted for this constructor, making
+                it appear like you can initialize a Text instance with a 
+                single character, something which is not supported.
+
         ***********************************************************************/
 
         this (uint space = 0)
