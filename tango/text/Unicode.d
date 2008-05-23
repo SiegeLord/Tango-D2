@@ -628,9 +628,9 @@ bool isWhitespace(dchar ch) {
 
 /**
  * Detemines if a character is a Space character as
- * specified in the Unicode Standart.
+ * specified in the Unicode Standard.
  *
- * WARNING: look at isWhitepace, maybe that function does
+ * WARNING: look at isWhitespace, maybe that function does
  *          more what you expect.
  *
  * Params:
@@ -647,18 +647,14 @@ bool isSpace(dchar ch) {
 
 /**
  * Detemines if a character is a printable character as
- * specified in the Unicode Standart.
- *
- *
- * WARNING: look at isWhitepace, maybe that function does
- *          more what you expect.
+ * specified in the Unicode Standard.
  *
  * Params:
  *     ch = the character to be inspected
  */
 bool isPrintable(dchar ch) {
 	UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory &
+    return (d !is null) && !((*d).generalCategory &
     		( UnicodeData.GeneralCategory.Cn
     		| UnicodeData.GeneralCategory.Cc
     		| UnicodeData.GeneralCategory.Cf
