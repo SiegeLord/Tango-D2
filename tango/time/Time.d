@@ -469,7 +469,7 @@ struct TimeSpan
 
         Note: common system epochs are provided to allow calculation of time
         in other time systems.  For example, to convert a Time myTime to Unix
-        time (number of seconds elapsed since 1/1/1970), you can write:
+        time (number of seconds elapsed since 1/1/1970), you can write$(CLN)
 
         --------
         auto unixTime = (myTime - Time.epoch1970).seconds;
