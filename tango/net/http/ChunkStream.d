@@ -26,10 +26,9 @@ private import  Integer = tango.text.convert.Integer;
 /*******************************************************************************
 
         Prefix each block of data with its length (in hex digits) and add
-        appropriate \r\n sequences. To write trailing headers you'll need
-        to step around this stream (otherwise those headers will be chunk
-        stamped also: use this.host or this.buffer to obtain the upstream
-        sibling)
+        appropriate \r\n sequences. To commit the stream you'll need to use
+        the terminate() function and optionally provide it with a callback 
+        for writing trailing headers
 
 *******************************************************************************/
 
@@ -76,6 +75,21 @@ class ChunkOutput : OutputFilter, Buffered
                       .append ("\r\n");
                 return src.length;
         }
+
+        /***********************************************************************
+
+                Write a zero length chunk, trailing headers and a terminating 
+                blank line
+
+        ***********************************************************************/
+
+        final void terminate (void delegate(IBuffer) headers = null)
+        {
+                write (null);
+                if (headers)
+                    headers (output);
+                output.append ("\r\n");
+        }
 }
 
 
@@ -83,14 +97,17 @@ class ChunkOutput : OutputFilter, Buffered
 
         Parse hex digits, and use the resultant size to modulate requests 
         for incoming data. A chunk size of 0 terminates the stream, so to
-        read any trailing headers you'll need to reach into the upstream
-        sibling instead (this.host or this.buffer, for example).
+        read any trailing headers you'll need to provide a delegate handler
+        for receiving those
 
 *******************************************************************************/
 
 class ChunkInput : LineIterator!(char)
 {
-        private uint available;
+        private alias void delegate(char[] line) Headers;
+
+        private Headers headers;
+        private uint    available;
 
         /***********************************************************************
 
@@ -99,10 +116,11 @@ class ChunkInput : LineIterator!(char)
 
         ***********************************************************************/
 
-        this (InputStream stream)
+        this (InputStream stream, Headers headers = null)
         {
                 super (stream);
                 available = nextChunk;
+                this.headers = headers;
         }
 
         /***********************************************************************
@@ -129,11 +147,14 @@ class ChunkInput : LineIterator!(char)
         final override uint read (void[] dst)
         {
                 if (available is 0)
-                {
-                    // terminated 0, read empty line, as per rfc2616
-                    super.next;
-                    return IConduit.Eof;
-                }
+                   {
+                   // terminated 0 - read headers and empty line, per rfc2616
+                   char[] line;
+                   while ((line = super.next).length)
+                           if (headers)
+                               headers (line);
+                   return IConduit.Eof;
+                   }
                         
                 auto size = dst.length > available ? available : dst.length;
                 auto read = super.read (dst [0 .. size]);
@@ -161,9 +182,10 @@ debug (ChunkStream)
 
         void main()
         {
-                auto buf = new Buffer(20);
+                auto buf = new Buffer(40);
                 auto chunk = new ChunkOutput (buf);
                 chunk.write ("hello world");
+                chunk.terminate;
                 auto input = new ChunkInput (buf);
                 Cout.stream.copy (input);
         }
