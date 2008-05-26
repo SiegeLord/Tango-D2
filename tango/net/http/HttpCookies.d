@@ -578,7 +578,7 @@ class CookieParser : StreamIterator!(char)
                                    if (c is '"')
                                        state = State.DQuote;
                                    else
-                                      if (isalpha (c))
+                                      if (isalnum (c))
                                           state = State.Token;
                                 continue;
 
