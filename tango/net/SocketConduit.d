@@ -51,19 +51,29 @@ class SocketConduit : Conduit
 
         this ()
         {
-                this (SocketType.STREAM, ProtocolType.TCP);
+                this (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
         }
 
         /***********************************************************************
         
-                Create an Internet Socket. Used by subclasses and by
-                ServerSocket; the latter via method allocate() below
+                Create an Internet Socket with the provided characteristics
 
         ***********************************************************************/
 
-        protected this (SocketType type, ProtocolType protocol, bool create=true)
+        this (AddressFamily family, SocketType type, ProtocolType protocol)
         {
-                socket_ = new Socket (AddressFamily.INET, type, protocol, create);
+                this (family, type, protocol, true);
+        }
+
+        /***********************************************************************
+        
+                Create an Internet Socket. See method allocate() below
+
+        ***********************************************************************/
+
+        private this (AddressFamily family, SocketType type, ProtocolType protocol, bool create)
+        {
+                socket_ = new Socket (family, type, protocol, create);
         }
 
         /***********************************************************************
@@ -331,7 +341,7 @@ else
                    }
                 else
                    {
-                   s = new SocketConduit (SocketType.STREAM, ProtocolType.TCP, false);
+                   s = new SocketConduit (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP, false);
                    s.fromList = true;
                    }
                 return s;

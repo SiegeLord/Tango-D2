@@ -50,7 +50,7 @@ class DatagramConduit : SocketConduit
 
         this ()
         {
-                super (SocketType.DGRAM, ProtocolType.IP);
+                super (AddressFamily.INET, SocketType.DGRAM, ProtocolType.IP);
         }
 
         /***********************************************************************
