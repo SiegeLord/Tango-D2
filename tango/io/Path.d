@@ -658,7 +658,7 @@ package struct FS
                 {
                         stat_t stats = void;
 
-                        return (getInfo(name, stats) & S_IFDIR) != 0;
+                        return (getInfo(name, stats) & S_IFMT) == S_IFDIR;
                 }
 
                 /***************************************************************
