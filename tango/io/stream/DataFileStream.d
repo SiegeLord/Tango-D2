@@ -25,6 +25,8 @@ private import tango.io.stream.DataStream;
 
 class DataFileInput : DataInput
 {
+        alias FileConduit.Seek.Anchor Anchor;
+
         private FileConduit conduit;
 
         /***********************************************************************
@@ -45,10 +47,10 @@ class DataFileInput : DataInput
         
         ***********************************************************************/
 
-        final long seek (long offset)
+        final long seek (long offset, Anchor anchor = Anchor.Begin)
         {
                 host.clear;
-                return conduit.seek (offset);
+                return conduit.seek (offset, anchor);
         }
 
         /***********************************************************************
@@ -73,6 +75,8 @@ class DataFileInput : DataInput
 
 class DataFileOutput : DataOutput
 {
+        alias FileConduit.Seek.Anchor Anchor;
+
         private FileConduit conduit;
 
         /***********************************************************************
@@ -93,10 +97,10 @@ class DataFileOutput : DataOutput
         
         ***********************************************************************/
 
-        final long seek (long offset)
+        final long seek (long offset, Anchor anchor = Anchor.Begin)
         {
                 host.flush;
-                return conduit.seek (offset);
+                return conduit.seek (offset, anchor);
         }
 
         /***********************************************************************
