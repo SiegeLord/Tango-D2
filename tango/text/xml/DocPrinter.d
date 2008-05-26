@@ -45,6 +45,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
         
         final void print (Node root, void delegate(T[][]...) emit)
         {
+                T[256] tmp;
                 T[256] spaces = ' ';
 
                 void printNode (Node node, uint indent)
@@ -61,7 +62,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                     break;
         
                                case XmlNodeType.Element:
-                                    emit ("\r\n", spaces[0..indent], "<", node.name);
+                                    emit ("\r\n", spaces[0..indent], "<", node.name(tmp));
                                     foreach (attr; node.attributes)
                                              emit (` `, attr.name, `="`, attr.rawValue, `"`);  
 
@@ -74,7 +75,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                        // inhibit newline if we're closing Data
                                        if (node.lastChild_.type != XmlNodeType.Data)
                                            emit ("\r\n", spaces[0..indent]);
-                                       emit ("</", node.name, ">");
+                                       emit ("</", node.name(tmp), ">");
                                        }
                                     else 
                                        emit ("/>");      

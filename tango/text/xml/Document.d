@@ -50,7 +50,7 @@ package import tango.text.xml.PullParser;
         auto doc = new Document!(char);
         doc.parse (content);
 
-        auto print = new XmlPrinter!(char);
+        auto print = new DocPrinter!(char);
         Stdout(print(doc)).newline;
          ---
 
@@ -68,7 +68,7 @@ package import tango.text.xml.PullParser;
                 .attribute (null, "attrib2")
                 .element   (null, "child", "value");
 
-        auto print = new XmlPrinter!(char);
+        auto print = new DocPrinter!(char);
         Stdout(print(doc)).newline;
         ---
 
@@ -476,8 +476,9 @@ else
                 {
                         if (prefix.length)
                            {
-version (old)
-{
+                           if (prefix.ptr + prefix.length + 1 is localName.ptr)
+                               return prefix.ptr [0 .. prefix.length + localName.length + 1];
+
                            auto len = prefix.length + localName.length + 1;
                            if (output.length < len)
                                output.length = len;
@@ -485,9 +486,6 @@ version (old)
                            output[prefix.length] = ':';
                            output[prefix.length+1 .. len] = localName;
                            return output[0..len];
-}
-else
-                           return prefix.ptr [0 .. prefix.length + localName.length + 1];
                            }
                         return localName;
                 }

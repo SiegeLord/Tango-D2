@@ -1,7 +1,7 @@
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
-import tango.text.xml.XmlPrinter;
+import tango.text.xml.DocPrinter;
 
 /*******************************************************************************
 
@@ -25,7 +25,7 @@ void main()
                 .element   (null, "second");
 
         // emit document
-        auto print = new XmlPrinter!(char);
+        auto print = new DocPrinter!(char);
         Stdout(print(doc)).newline;
 
         // time some queries
