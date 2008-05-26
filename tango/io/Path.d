@@ -43,7 +43,7 @@ private import  tango.sys.Common;
 
 public  import  tango.time.Time : Time, TimeSpan;
 
-public  import  tango.core.Exception : IOException;
+public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
 
 /*******************************************************************************
@@ -1014,6 +1014,41 @@ void createFolder (char[] name)
 
 /*******************************************************************************
 
+        Create an entire path consisting of this folder along with
+        all parent folders. The path must not contain '.' or '..'
+        segments. Related methods include PathUtil.normalize() and
+        FileSystem.toAbsolute()
+
+        Note that each segment is created as a folder, including the
+        trailing segment.
+
+        Throws: IOException upon system errors
+
+        Throws: IllegalArgumentException if a segment exists but as a 
+        file instead of a folder
+
+*******************************************************************************/
+
+void createPath (char[] path)
+{
+        void test (char[] segment)
+        {
+                if (segment.length)
+                    if (! exists (segment))
+                          createFolder (segment);
+                    else
+                       if (! isFolder (segment))
+                             throw new IllegalArgumentException ("Path.create :: file/folder conflict: " ~ segment);
+        }
+
+        foreach (i, char c; path)
+                 if (c is '/')
+                     test (path [0 .. i]);
+        test (path);
+}
+
+/*******************************************************************************
+
        change the name or location of a file/directory
 
 *******************************************************************************/
@@ -1090,7 +1125,7 @@ char[] join (char[][] paths...)
 
 *******************************************************************************/
 
-final char[] standard (char[] path)
+char[] standard (char[] path)
 {
         return replace (path, '\\', '/');
 }
@@ -1105,11 +1140,31 @@ final char[] standard (char[] path)
 
 *******************************************************************************/
 
-final char[] native (char[] path)
+char[] native (char[] path)
 {
         version (Win32)
                  replace (path, '/', '\\');
         return path;
+}
+
+/*******************************************************************************
+
+        Returns a path representing the parent of this one, with a special 
+        case concerning a trailing '/':
+        ---
+        normal:  /x/y/z => /x/y
+        special: /x/y/  => /x
+        final:   /x     => empty
+        ---
+
+*******************************************************************************/
+
+char[] pop (char[] path)
+{
+        path = FS.stripped (path);
+        int i = path.length;
+        while (i && path[--i] != '/') {}
+        return path [0..i];
 }
 
 /*******************************************************************************

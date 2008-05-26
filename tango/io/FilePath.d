@@ -572,7 +572,8 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Pop to the parent of the current filepath (in place)
+                Pop to the parent of the current filepath (in situ - mutates
+                this FilePath)
 
         ***********************************************************************/
 
@@ -749,30 +750,14 @@ class FilePath : PathView
 
                 Throws: IOException upon systen errors
 
-                Throws: IllegalArgumentException if the path contains invalid
-                        path segment names (such as '.' or '..') or a segment
-                        exists but as a file instead of a folder
+                Throws: IllegalArgumentException if a segment exists but as 
+                a file instead of a folder
 
         ***********************************************************************/
 
         final FilePath create ()
-        {
-                auto segment = name;
-                if (segment.length > 0)
-                   {
-                   if (segment == FileConst.CurrentDirString ||
-                       segment == FileConst.ParentDirString)
-                       badArg ("FilePath.create :: invalid path: ");
-
-                   if (this.exists)
-                       if (this.isFolder)
-                           return this;
-                       else
-                          badArg ("FilePath.create :: file/folder conflict: ");
-
-                   FilePath(this.parent).create;
-                   return createFolder;
-                   }
+        {       
+                createPath (this.toString);
                 return this;
         }
 
@@ -1039,17 +1024,6 @@ class FilePath : PathView
         final int opApply (int delegate(ref FileInfo) dg)
         {
                 return FS.list (cString, dg);
-        }
-
-        /***********************************************************************
-
-                Throw an exception using the last known error
-
-        ***********************************************************************/
-
-        private void badArg (char[] msg)
-        {
-                throw new IllegalArgumentException (msg ~ toString);
         }
 }
 
@@ -1487,6 +1461,7 @@ debug (FilePath)
 
         void main() 
         {
+                assert (FilePath("/foo/").create.exists);
                 Cout (FilePath("c:/temp/").file("foo.bar")).newline;
         }
 
