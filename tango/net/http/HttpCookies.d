@@ -77,9 +77,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setName (char[] name)
+        Cookie setName (char[] name)
         {
                 this.name = name;
+                return this;
         }
 
         /***********************************************************************
@@ -88,9 +89,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setValue (char[] value)
+        Cookie setValue (char[] value)
         {
                 this.value = value;
+                return this;
         }
 
         /***********************************************************************
@@ -99,9 +101,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setVersion (uint vrsn)
+        Cookie setVersion (uint vrsn)
         {
                 this.vrsn = vrsn;
+                return this;
         }
 
         /***********************************************************************
@@ -110,9 +113,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setPath (char[] path)
+        Cookie setPath (char[] path)
         {
                 this.path = path;
+                return this;
         }
 
         /***********************************************************************
@@ -121,9 +125,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setDomain (char[] domain)
+        Cookie setDomain (char[] domain)
         {
                 this.domain = domain;
+                return this;
         }
 
         /***********************************************************************
@@ -132,9 +137,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setComment (char[] comment)
+        Cookie setComment (char[] comment)
         {
                 this.comment = comment;
+                return this;
         }
 
         /***********************************************************************
@@ -143,9 +149,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setMaxAge (long maxAge)
+        Cookie setMaxAge (long maxAge)
         {
                 this.maxAge = maxAge;
+                return this;
         }
 
         /***********************************************************************
@@ -154,9 +161,10 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void setSecure (bool secure)
+        Cookie setSecure (bool secure)
         {
                 this.secure = secure;
+                return this;
         }
 
         /***********************************************************************
@@ -213,12 +221,13 @@ class Cookie : IWritable
 
         ***********************************************************************/
 
-        void clear ()
+        Cookie clear ()
         {
                 vrsn = 1;
                 maxAge = 0;
                 secure = false;
                 name = path = domain = comment = null;
+                return this;
         }
 }
 
