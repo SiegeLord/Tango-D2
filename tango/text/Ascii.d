@@ -186,8 +186,6 @@ static int isearch (in char[] src, in char[] pattern)
 
 debug (UnitTest)
 {       
-        //void main(){}
-        
         unittest
         {
         char[20] tmp;
@@ -206,4 +204,9 @@ debug (UnitTest)
         assert (isearch ("ACC", "acc") is 0);
         assert (isearch ("aACC", "acc") is 1);
         }
+}
+
+debug (Ascii)
+{
+        void main() {}
 }
