@@ -16,9 +16,11 @@ private import tango.text.xml.Document;
 
 /*******************************************************************************
 
+        Use DocPrinter instead
+
 *******************************************************************************/
 
-class XmlPrinter(T) : IXmlPrinter!(T)
+deprecated class XmlPrinter(T) : IXmlPrinter!(T)
 {
         /***********************************************************************
         
