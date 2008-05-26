@@ -102,13 +102,11 @@ class AppendFile : Filer
 
 /*******************************************************************************
 
-        Append log messages to a file. This basic version has no rollover 
-        support, so it just keeps on adding to the file. There's also a
-        RollingFileAppender that may suit your needs.
+        Base class for file appenders
 
 *******************************************************************************/
 
-package class Filer : Appender
+class Filer : Appender
 {
         package Buffer          buffer;
         private IConduit        conduit_;
@@ -126,19 +124,6 @@ package class Filer : Appender
 
         /***********************************************************************
                 
-                Set the conduit
-
-        ***********************************************************************/
-
-        final Buffer configure (IConduit conduit)
-        {
-                // create a new buffer upon this conduit
-                conduit_ = conduit;
-                return (buffer = new Buffer(conduit));
-        }
-
-        /***********************************************************************
-                
                 Close the file associated with this Appender
 
         ***********************************************************************/
@@ -150,6 +135,19 @@ package class Filer : Appender
                    conduit_.detach;
                    conduit_ = null;
                    }
+        }
+
+        /***********************************************************************
+                
+                Set the conduit
+
+        ***********************************************************************/
+
+        package final Buffer configure (IConduit conduit)
+        {
+                // create a new buffer upon this conduit
+                conduit_ = conduit;
+                return (buffer = new Buffer(conduit));
         }
 }
 
