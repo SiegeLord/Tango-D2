@@ -744,6 +744,17 @@ class Socket
 
         /***********************************************************************
 
+                Create a new native socket instance for this Socket
+
+        ***********************************************************************/
+
+        void reopen ()
+        {
+                initialize;
+        }
+
+        /***********************************************************************
+
                 Is this socket still alive? A closed socket is considered to
                 be dead, but a shutdown socket is still alive.
 
