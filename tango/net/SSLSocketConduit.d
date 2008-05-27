@@ -99,7 +99,7 @@ class SSLSocketConduit : SocketConduit
             throw new Exception("SSL is only supported over TCP.");
         if (type != SocketType.STREAM)
             throw new Exception("SSL is only supporting with streaming types.");
-        super(type, protocol, create);
+        super(AddressFamily.INET, type, protocol, create); // hardcoding this to INET for now
         if (create)
         {
             sslCtx = new SSLCtx();
@@ -125,7 +125,7 @@ class SSLSocketConduit : SocketConduit
 
     this(Socket sock, SSLCtx ctx, bool clientMode = true)
     {
-        super(SocketType.STREAM, ProtocolType.TCP, false);
+        super(AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP, false); // hardcoding to inet now
         socket_ = sock;
         sslCtx = ctx;
         sslSocket = _convertToSSL(sslCtx, false, clientMode);
@@ -442,14 +442,14 @@ version(Test)
         Test.Status sslReadWriteTest(inout char[][] messages)
         {
             auto s1 = new SSLSocketConduit();
-            auto address = new IPv4Address("209.115.221.132", 443);
+            auto address = new IPv4Address("209.20.65.224", 443);
             if (s1.connect(address))
             {
                 char[] command = "GET /result.txt\r\n";
                 s1.write(command);
                 char[1024] result;
                 uint bytesRead = s1.read(result);
-                if (bytesRead > 0 && (result[0 .. bytesRead] == "I got results!\n"))
+                if (bytesRead > 0 && bytesRead != Eof && (result[0 .. bytesRead] == "I got results!\n"))
                     return Test.Status.Success;
                 else
                     messages ~= Stdout.layout()("Received wrong results: (bytesRead: {}), (result: {})", bytesRead, result[0..bytesRead]);
@@ -460,7 +460,7 @@ version(Test)
         Test.Status sslReadWriteTestWithTimeout(inout char[][] messages)
         {
             auto s1 = new SSLSocketConduit();
-            auto address = new IPv4Address("209.115.221.132", 443);
+            auto address = new IPv4Address("209.20.65.224", 443);
             if (s1.connect(address))
             {
                 char[] command = "GET /result.txt HTTP/1.1\r\nHost: submersion.com\r\n\r\n";
@@ -468,7 +468,7 @@ version(Test)
                 char[1024] result;
                 uint bytesRead = s1.read(result);
                 char[] expectedResult = "HTTP/1.1 200 OK";
-                if (bytesRead > 0 && (result[0 .. expectedResult.length] == expectedResult))
+                if (bytesRead > 0 && bytesRead != Eof && (result[0 .. expectedResult.length] == expectedResult))
                 {
                     s1.setTimeout(t2);
                     while (bytesRead != SocketConduit.Eof)
