@@ -1161,7 +1161,7 @@ T[] unentity (T) (T[] src, T[] dst = null)
         this code any way you wish, private, educational, or commercial.  
         It's free.
 
-        See http://burlteburtle.net/bob/hash/evahash.html
+        See http://burtleburtle.net/bob/hash/evahash.html
         Use for hash table lookup, or anything where one collision in 2^32 
         is acceptable. Do NOT use for cryptographic purposes.
 
