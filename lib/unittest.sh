@@ -58,6 +58,7 @@ bool tangoUnitTester()
     {
         if ( m.unitTest) {
             Stdout.format ("{}. Executing unittests in '{}' ", countTotal, m.name);
+            countTotal++;
             try {
                m.unitTest();
             }
@@ -71,7 +72,6 @@ bool tangoUnitTester()
                 continue;
             }
             Stdout(" - Success.").newline;
-            countTotal++;
         }
     }
 
