@@ -368,13 +368,13 @@ template sintSuperType(T,U)
 template uintSuperType(T,U)
 {
     static if( is( T == ulong ) || is( U == ulong ) )
-        alias ulong sintSuperType;
+        alias ulong uintSuperType;
     else static if( is( T == uint ) || is( U == uint ) )
-        alias uint sintSuperType;
+        alias uint uintSuperType;
     else static if( is( T == ushort ) || is( U == ushort ) )
-        alias ushort sintSuperType;
+        alias ushort uintSuperType;
     else static if( is( T == ubyte ) || is( U == ubyte ) )
-        alias ubyte sintSuperType;
+        alias ubyte uintSuperType;
 }
 
 template uintOfSize(uint bytes)
