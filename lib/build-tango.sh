@@ -15,7 +15,7 @@ DC=
 LIB=
 
 usage() {
-    echo 'Usage: build-tango.sh [--help] identifier
+    echo 'Usage: build-tango.sh <options> identifier
 Options:
   --help: Will print this help text
   --warn: Will enable warnings
@@ -142,6 +142,11 @@ ORIGDIR=`pwd`
 if [ ! "`basename $ORIGDIR`" = "lib" ]
 then
     die "You must run this script from the lib directory." 1
+fi
+
+if [ "$#" == "0" ]
+then
+    usage
 fi
 
 while [ "$#" != "0" ]
