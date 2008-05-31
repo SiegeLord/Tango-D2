@@ -12,8 +12,6 @@
 
 module tango.io.vfs.model.Vfs;
 
-private import tango.io.FilePath;
-
 private import tango.io.model.IConduit;
 
 /*******************************************************************************
