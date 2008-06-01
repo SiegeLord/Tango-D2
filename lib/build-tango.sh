@@ -101,6 +101,10 @@ compile() {
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
         $DC $WARN -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        if [ "$?" != 0 ]
+        then
+            return 1;
+        fi
         ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
@@ -131,6 +135,10 @@ build() {
     for file in `find tango -name '*.d'`
     do
         compile $file
+        if [ "$?" = 1 ]
+        then
+            die "Compilation of $file failed" 1 
+        fi
     done
 
     ranlib lib/$LIB 2>&1 | grep -v "ranlib: .* has no symbols"
