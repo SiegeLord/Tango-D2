@@ -14,6 +14,8 @@ import tango.net.cluster.NetworkCache;
 
 import tango.net.cluster.tina.Cluster;
 
+import Integer = tango.text.convert.Integer;
+
 /*******************************************************************************
 
 
@@ -28,17 +30,24 @@ void main (char[][] args)
            auto cluster = (new Cluster).join (args[1..$]);
            auto cache   = new NetworkCache (cluster, "my.cache.channel");
 
+           char[64] tmp;
            while (true)
                  {
                  w.start;
                  for (int i=10000; i--;)
-                      cache.put ("key", cache.EmptyMessage);
+                     {
+                     auto key = Integer.format (tmp, i);
+                     cache.put (key, cache.EmptyMessage);
+                     }
 
                  Stdout.formatln ("{} put/s", 10000/w.stop);
 
                  w.start;
                  for (int i=10000; i--;)
-                      cache.get ("key");
+                     {
+                     auto key = Integer.format (tmp, i);
+                     cache.get (key);
+                     }
         
                  Stdout.formatln ("{} get/s", 10000/w.stop);
                  }
