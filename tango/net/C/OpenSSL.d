@@ -54,6 +54,8 @@ private CRYPTO_dynlock_value *last = null;
 Mutex _dynLocksMutex = null;
 extern (C)
 {
+    const int NID_sha1 = 64;
+    const int NID_md5 = 4;
     const int RSA_PKCS1_OAEP_PADDING = 4;
     const int RSA_PKCS1_PADDING = 1;
     const int BIO_C_SET_NBIO = 102;
@@ -97,6 +99,22 @@ extern (C)
     const int CRYPTO_WRITE = 8;
 
     const int ERR_TXT_STRING = 0x02;
+
+    const int MD5_CBLOCK = 64;
+    const int MD5_LBLOCK = MD5_CBLOCK / 4;
+    const int MD5_DIGEST_LENGTH = 16;
+
+    struct MD5_CTX
+    {
+        uint A;
+        uint B;
+        uint C;
+        uint D;
+        uint Nl;
+        uint Nh;
+        uint[MD5_LBLOCK] data;
+        uint num;
+    };
 
     struct BIO 
     {
@@ -258,6 +276,11 @@ extern (C)
     typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_private_decrypt;
     typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_private_encrypt;
     typedef int function(int flen, ubyte *from, ubyte *to, RSA *rsa, int padding) tRSA_public_decrypt;
+    typedef int function(int type, ubyte *m, uint m_length, ubyte *sigret, uint *siglen, RSA *rsa) tRSA_sign;
+    typedef int function(int type, ubyte *m, uint m_length, ubyte *sigbuf, uint siglen, RSA *rsa) tRSA_verify;
+    typedef void function(MD5_CTX *c) tMD5_Init;
+    typedef void function(MD5_CTX *c, void *data, size_t len) tMD5_Update;
+    typedef void function(ubyte *md, MD5_CTX *c) tMD5_Final;
 
     struct CRYPTO_dynlock_value
     {
@@ -442,6 +465,11 @@ tRSA_public_encrypt RSA_public_encrypt;
 tRSA_private_decrypt RSA_private_decrypt;
 tRSA_private_encrypt RSA_private_encrypt;
 tRSA_public_decrypt RSA_public_decrypt;
+tRSA_sign RSA_sign;
+tRSA_verify RSA_verify;
+tMD5_Init MD5_Init;
+tMD5_Update MD5_Update;
+tMD5_Final MD5_Final;
 
 int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
 {
@@ -749,6 +777,11 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(RSA_private_decrypt, "RSA_private_decrypt", ssllib);
         bindFunc(RSA_private_encrypt, "RSA_private_encrypt", ssllib);
         bindFunc(RSA_public_decrypt, "RSA_public_decrypt", ssllib);
+        bindFunc(RSA_sign, "RSA_sign", ssllib);
+        bindFunc(RSA_verify, "RSA_verify", ssllib);
+        bindFunc(MD5_Init, "MD5_Init", ssllib);
+        bindFunc(MD5_Update, "MD5_Update", ssllib);
+        bindFunc(MD5_Final, "MD5_Final", ssllib);
     }
 }
 

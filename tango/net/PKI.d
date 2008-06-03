@@ -465,6 +465,28 @@ class PublicKey
 
     /*******************************************************************************
 
+        Verify the data passed was signed with the public key.
+
+        Params:
+        data = the data to verify
+        signature = the digital signature
+    *******************************************************************************/
+
+    bool verify(ubyte[] data, ubyte[] signature)
+    {
+        ubyte[MD5_DIGEST_LENGTH] digest;
+        MD5_CTX c;
+        MD5_Init(&c);
+        MD5_Update(&c, data.ptr, data.length);
+        MD5_Final(digest.ptr, &c);
+        
+        if (RSA_verify(NID_md5, digest.ptr, MD5_DIGEST_LENGTH, signature.ptr, signature.length, _evpKey))
+            return true;
+        return false;
+    }
+
+    /*******************************************************************************
+
         Encrypt the passed data using the PublicKey 
         
         Notes:
@@ -651,6 +673,37 @@ class PrivateKey
     {
         auto rtn = new PublicKey(this);
         return rtn;
+    }
+
+    /*******************************************************************************
+        Sign the given data with the private key
+
+        Params:
+        data = the data to sign
+        sigbuf = the buffer to store the signature in
+        
+        Returns a slice of the signature or null
+
+    *******************************************************************************/
+
+    ubyte[] sign(ubyte[] data, ubyte[] sigbuf)
+    {
+        uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
+        if (sigbuf.length < maxSize)
+            throw new Exception("The signature buffer is too small to fit the signature for this key.");
+        ubyte[MD5_DIGEST_LENGTH] digest;
+
+        MD5_CTX c;
+        MD5_Init(&c);
+        MD5_Update(&c, data.ptr, data.length);
+        MD5_Final(digest.ptr, &c);
+
+        uint len = sigbuf.length;
+        if (RSA_sign(NID_md5, digest.ptr, digest.length, sigbuf.ptr, &len, cast(RSA *)_evpKey.pkey))
+            return sigbuf[0..len];
+        else
+            throwOpenSSLError;
+        return null;
     }
 
     /*******************************************************************************
@@ -1218,12 +1271,37 @@ version (Test)
             return Test.Status.Failure;
         }
 
+        Test.Status _rsaSignVerify(inout char[][] messages)
+        {
+            auto key = new PrivateKey(1024);
+            auto key2 = new PrivateKey(1024);
+            ubyte[] data = cast(ubyte[])"I am some special data, yes I am.";
+            ubyte[512] sigBuf;
+            ubyte[512] sigBuf2;
+            auto sig1 = key.sign(data, sigBuf);
+            auto sig2 = key2.sign(data, sigBuf2);
+            if (key.publicKey.verify(data, sig1))
+            {
+                if (!key.publicKey.verify(data, sig2))
+                {
+                    if (key2.publicKey.verify(data, sig2))
+                    {
+                        if (!key2.publicKey.verify(data, sig1))
+                            return Test.Status.Success;
+                    }
+                }
+            }
+
+            return Test.Status.Failure;
+        }
+
 
         auto t = new Test("tetra.net.PKI");
         t["Public/Private Keypair"] = &_pkeyGenTest;
         t["Self-Signed Certificate"] = &_certGenTest;
         t["Chain Validation"] = &_chainValidation;
         t["RSA Crypto"] = &_rsaCrypto;
+        t["RSA sign/verify"] = &_rsaSignVerify;
         t.run();
     }
 }
