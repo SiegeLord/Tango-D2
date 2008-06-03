@@ -13,10 +13,10 @@
 
 module tango.io.protocol.Writer;
 
-private import  tango.io.Buffer,
-                tango.io.FileConst;
+private import  tango.io.Buffer;
 
-public  import  tango.io.model.IBuffer,
+public  import  tango.io.model.IFile,
+                tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
 public  import  tango.io.protocol.model.IWriter;

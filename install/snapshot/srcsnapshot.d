@@ -2,7 +2,7 @@ import tango.text.Properties;
 import tango.sys.Process;
 import tango.io.FileSystem;
 import tango.io.FilePath;
-import tango.io.FileConst;
+import tango.io.model.IFile;
 
 import tango.io.Stdout;
 

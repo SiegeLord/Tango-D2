@@ -1,7 +1,7 @@
 
 private import  tango.io.Console,
                 tango.io.FileScan,
-                tango.io.FileConst;
+                tango.io.model.IFile;
 
 /*******************************************************************************
 

@@ -6,7 +6,7 @@
 
 module tango.sys.Process;
 
-private import tango.io.FileConst;
+private import tango.io.model.IFile;
 private import tango.io.Console;
 private import tango.io.Buffer;
 private import tango.sys.Common;

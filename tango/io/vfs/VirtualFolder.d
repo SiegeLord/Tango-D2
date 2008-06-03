@@ -12,11 +12,11 @@
 
 module tango.io.vfs.VirtualFolder;
 
-private import tango.io.FileConst;
-
 private import tango.util.PathUtil;
 
 private import tango.core.Exception;
+
+private import tango.io.model.IFile;
 
 private import tango.io.vfs.model.Vfs;
 

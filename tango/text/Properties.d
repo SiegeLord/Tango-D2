@@ -14,8 +14,9 @@ module tango.text.Properties;
 
 private import  tango.io.Buffer,
                 tango.io.FilePath,
-                tango.io.FileConst,
                 tango.io.FileConduit;
+
+private import  tango.io.model.IFile;
 
 private import  Text = tango.text.Util;
 

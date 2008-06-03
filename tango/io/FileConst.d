@@ -12,52 +12,6 @@
 
 module tango.io.FileConst;
 
-/*******************************************************************************
+public import tango.io.model.IFile : FileConst;
 
-        A set of file-system specific constants for file and path
-        separators (chars and strings).
-
-        Keep these constants mirrored for each OS
-        
-*******************************************************************************/
-
-struct FileConst
-{
-        version (Win32)
-        {
-                enum : char 
-                {
-                        CurrentDirChar = '.',
-                        FileSeparatorChar = '.',
-                        PathSeparatorChar = '/',
-                        SystemPathChar = ';',
-                }
-
-                static const char[] ParentDirString = "..";
-                static const char[] CurrentDirString = ".";
-                static const char[] FileSeparatorString = ".";
-                static const char[] PathSeparatorString = "/";
-                static const char[] SystemPathString = ";";
-
-                static const char[] NewlineString = "\r\n";
-        }
-
-        version (Posix)
-        {
-                enum : char 
-                {
-                        CurrentDirChar = '.',
-                        FileSeparatorChar = '.',
-                        PathSeparatorChar = '/',
-                        SystemPathChar = ':',
-                }
-
-                static const char[] ParentDirString = "..";
-                static const char[] CurrentDirString = ".";
-                static const char[] FileSeparatorString = ".";
-                static const char[] PathSeparatorString = "/";
-                static const char[] SystemPathString = ":";
-
-                static const char[] NewlineString = "\n";
-        }
-}
+pragma (msg, "tango.io.FileConst is being migrated - please import tango.io.model.IFile instead");

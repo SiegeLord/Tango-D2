@@ -15,10 +15,11 @@ module tango.sys.Environment;
 private import  tango.sys.Common;
 
 private import  tango.io.FilePath,
-                tango.io.FileConst,
                 tango.io.FileSystem;
 
 private import  tango.core.Exception;
+
+private import  tango.io.model.IFile;
 
 private import  Text = tango.text.Util;
 

@@ -15,10 +15,10 @@ module tango.util.log.AppendFiles;
 private import  tango.time.Time;
 
 private import  tango.io.FilePath,
-                tango.io.FileConst,
                 tango.io.FileConduit;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.model.IFile,
+                tango.io.model.IBuffer;
 
 private import  tango.util.log.Log,
                 tango.util.log.AppendFile;
