@@ -1193,11 +1193,12 @@ char[] split (char[] path, out char[] head, out char[] tail)
 
 /*******************************************************************************
 
-        Replace all path 'from' instances with 'to'
+        Replace all path 'from' instances with 'to', in place (overwrites
+        the provided path)
 
 *******************************************************************************/
 
-package char[] replace (char[] path, char from, char to)
+char[] replace (char[] path, char from, char to)
 {
         foreach (inout char c; path)
                  if (c is from)
