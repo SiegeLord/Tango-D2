@@ -1,8 +1,7 @@
 module createzip;
 
 import tango.io.archive.Zip;
-import tango.io.FileScan;
-import tango.io.Stdout;
+import tango.io.vfs.FileFolder;
 
 /******************************************************************************
 
@@ -13,11 +12,12 @@ import tango.io.Stdout;
 
 ******************************************************************************/
 
-void main(){
-    auto scan = (new FileScan)(".", ".d");
-    char[][] files;
-    foreach (file; scan.files) 
-        files ~= file.toString;
+void main()
+{
+        char[][] files;
+        auto root = new FileFolder (".");
+        foreach (file; root.tree.catalog ("*.d"))
+                 files ~= file.toString;
 
-    createArchive("tmp.zip", Method.Deflate, files);
+        createArchive("tmp.zip", Method.Deflate, files);
 }

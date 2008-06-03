@@ -1,7 +1,9 @@
 
 private import  tango.io.Console,
-                tango.io.FileScan,
-                tango.io.model.IFile;
+                tango.io.model.IFile,
+                tango.io.vfs.FileFolder;
+
+private import  Path = tango.io.Path;
 
 /*******************************************************************************
 
@@ -18,13 +20,10 @@ private import  tango.io.Console,
 void main(char[][] args)
 {
         // sweep all html files in the specified subdir
-        if (args.length is 2)
-            foreach (proxy; (new FileScan).sweep(args[1], ".html").files)
-                    {
-                    auto other = new FilePath (proxy.toString);
-                    proxy.rename (other.replace (FileConst.PathSeparatorChar, '.'));
-                    }
+        if (args.length !is 2)
+            Cout ("usage is filebubbler subdir").newline;
         else
-           Cout ("usage is filebubbler subdir").newline;
+           foreach (file; (new FileFolder(args[1])).tree.catalog("*.html"))
+                    Path.rename (file.toString, Path.replace (file.toString.dup, FileConst.PathSeparatorChar, '.'));
 }
 
