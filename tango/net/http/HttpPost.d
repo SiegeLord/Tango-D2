@@ -14,7 +14,7 @@ module tango.net.http.HttpPost;
 
 public import   tango.net.Uri;
 
-private import  tango.io.GrowBuffer;
+private import  tango.io.Buffer;
 
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;

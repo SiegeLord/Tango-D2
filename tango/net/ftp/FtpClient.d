@@ -18,8 +18,8 @@ private import  tango.net.ftp.Telnet;
 
 private import  tango.time.Clock;
 
-private import  tango.io.Conduit,
-                tango.io.GrowBuffer,
+private import  tango.io.Buffer,
+                tango.io.Conduit,
                 tango.io.FileConduit;
 
 private import  tango.time.chrono.Gregorian;

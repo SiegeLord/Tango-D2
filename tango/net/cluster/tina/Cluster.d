@@ -22,8 +22,7 @@ private import  tango.util.log.Log;
 
 private import  tango.time.Clock;
 
-private import  tango.io.Buffer,
-                tango.io.GrowBuffer;
+private import  tango.io.Buffer;
 
 private import  tango.io.model.IConduit;
 

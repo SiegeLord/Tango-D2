@@ -17,7 +17,6 @@ private import  tango.core.Thread,
                 tango.core.Exception;
 
 private import  tango.io.Buffer,
-                tango.io.GrowBuffer,
                 tango.net.ServerSocket;
 
 package import  tango.io.model.IBuffer,

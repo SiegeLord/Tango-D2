@@ -319,7 +319,7 @@ class Print(T) : OutputStream
 
 debug (Print)
 {
-        import tango.io.GrowBuffer;
+        import tango.io.Buffer;
         import tango.text.convert.Layout;
 
         void main()

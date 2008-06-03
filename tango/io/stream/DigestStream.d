@@ -140,7 +140,7 @@ class DigestOutput : OutputFilter
 debug (DigestStream)
 {
         import tango.io.Stdout;
-        import tango.io.GrowBuffer;
+        import tango.io.Buffer;
         import tango.io.digest.Md5;
         import tango.io.stream.FileStream;
 

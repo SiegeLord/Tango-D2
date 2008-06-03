@@ -553,7 +553,7 @@ class ZlibException : IOException
 
 debug(UnitTest) {
 
-import tango.io.GrowBuffer : GrowBuffer;
+import tango.io.Buffer : GrowBuffer;
 
 unittest
 {

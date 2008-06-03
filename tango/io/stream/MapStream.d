@@ -205,7 +205,7 @@ class MapOutput(T) : OutputFilter, Buffered
 debug (UnitTest)
 {
         import tango.io.Stdout;
-        import tango.io.GrowBuffer;
+        import tango.io.Buffer;
 
         unittest
         {
