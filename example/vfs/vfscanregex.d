@@ -10,8 +10,7 @@ import tango.io.File,
        tango.io.Stdout,
        tango.text.Regex;
 
-import  tango.io.vfs.FileFolder,
-        tango.io.vfs.model.Vfs;
+import  tango.io.vfs.FileFolder;
 
 void main(char[][] args) 
 {

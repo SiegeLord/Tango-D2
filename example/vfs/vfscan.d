@@ -1,5 +1,5 @@
-private import  tango.io.Stdout,
-                tango.io.vfs.FileFolder;
+import tango.io.Stdout,
+       tango.io.vfs.FileFolder;
 
 /*******************************************************************************
 

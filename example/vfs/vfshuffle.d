@@ -1,11 +1,9 @@
-import  tango.io.Stdout,
-        tango.io.FilePath;
+import tango.io.Stdout,
+       tango.io.FilePath;
 
-import  tango.io.vfs.model.Vfs,
-        tango.io.vfs.FileFolder;
+import tango.io.vfs.FileFolder;
       
-
-import  Array = tango.core.Array;
+import Array = tango.core.Array;
 
 int main (char[][] args)
 {
