@@ -1142,9 +1142,9 @@ private:
             eocdr.data.central_directory_entries_total =
                 cast(ushort) entries.length;
             eocdr.data.size_of_central_directory =
-                cast(ushort) cd_len;
+                cast(uint) cd_len;
             eocdr.data.offset_of_start_of_cd_from_starting_disk =
-                cast(ushort) cd_pos;
+                cast(uint) cd_pos;
 
             write(output, EndOfCDRecord.signature);
             eocdr.put(output);
