@@ -137,7 +137,17 @@ package struct FS
 
                 int opApply (int delegate(ref FileInfo) dg)
                 {
-                        return list (folder, dg);
+                        char[256] tmp = void;
+                        auto path = strz (folder, tmp);
+
+                        // sanity check on Win32 ...
+                        version (Win32)
+                                {
+                                bool kosher(){foreach (c; path) if (c is '\\') return false; return true;};
+                                assert (kosher, "attempting to use non-standard '\\' in a path for a folder listing");
+                                }
+
+                        return list (path, dg);
                 }
         }
 
@@ -548,9 +558,9 @@ package struct FS
 
                         static T[] padded (T[] s, T[] ext)
                         {
-                                if (s.length is 0 || s[$-1] != '\\')
-                                    return s ~ "\\" ~ ext;
-                                return s ~ ext;
+                                if (s.length && s[$-1] is '/')
+                                    return s ~ ext;
+                                return s ~ "/" ~ ext;
                         }
 
                         version (Win32SansUnicode)
@@ -1392,9 +1402,9 @@ void copy (char[] src, char[] dst)
 
 *******************************************************************************/
 
-FS.Listing children (char[] folder)
+FS.Listing children (char[] path)
 {
-        return FS.Listing (folder~'\0');
+        return FS.Listing (path);
 }
 
 /*******************************************************************************
@@ -1412,7 +1422,7 @@ char[] join (char[][] paths...)
 /*******************************************************************************
 
         Convert path separators to a standard format, using '/' as
-        the path separator. This is compatible with URI and all of 
+        the path separator. This is compatible with Uri and all of 
         the contemporary O/S which Tango supports. Known exceptions
         include the Windows command-line processor, which considers
         '/' characters to be switches instead. Use the native()

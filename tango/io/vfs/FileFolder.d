@@ -12,16 +12,18 @@
 
 module tango.io.vfs.FileFolder;
 
-private import tango.io.FilePath,
-               tango.io.FileConduit;
-
 private import tango.util.PathUtil;
+
+private import tango.io.FileConduit;
+
+private import Path = tango.io.Path;
 
 private import tango.core.Exception;
 
-private import tango.io.vfs.model.Vfs;
+public import tango.io.vfs.model.Vfs;
 
 private import tango.io.model.IConduit;
+
 
 /*******************************************************************************
 
@@ -32,23 +34,21 @@ private import tango.io.model.IConduit;
 
 class FileFolder : VfsFolder
 {
-        private FilePath        path;
+        private char[]          path;
         private VfsStats        stats;
 
         /***********************************************************************
 
-                Create a file folder with the given name and path. The
-                name itself should not include '.' or '/' characters, 
-                though the path can point at whatever it pleases. 
+                Create a file folder with the given path. 
 
-                Option 'create' will create the folder when set true, 
-                and open an existing folder otherwise
+                Option 'create' will create the path when set true, 
+                or reference an existing path otherwise
 
         ***********************************************************************/
 
         this (char[] path, bool create=false)
         {
-                this.path = open (FilePath(path), create);
+                this.path = open (Path.standard(path.dup), create);
         }
 
         /***********************************************************************
@@ -57,9 +57,9 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private this (FilePath path)
+        private this (char[] path, char[] name)
         {
-                this.path = path;
+                this.path = Path.join (path, name);
         }
 
         /***********************************************************************
@@ -71,7 +71,7 @@ class FileFolder : VfsFolder
         private this (FileFolder parent, char[] name, bool create=false)
         {
                 assert (parent);
-                this.path = open (parent.path.dup.append(name), create);
+                this.path = open (Path.join(parent.path, name), create);
         }
 
         /***********************************************************************
@@ -82,7 +82,7 @@ class FileFolder : VfsFolder
 
         final char[] name ()
         {
-                return path.name;
+                return Path.parse(path).name;
         }
 
         /***********************************************************************
@@ -93,7 +93,7 @@ class FileFolder : VfsFolder
 
         final char[] toString ()
         {
-                return path.toString;
+                return path;
         }
 
         /***********************************************************************
@@ -110,8 +110,8 @@ class FileFolder : VfsFolder
         {       
                 if (mounting && cast(FileFolder) folder)
                    {
-                   auto src = FilePath.padded(this.toString);
-                   auto dst = FilePath.padded(folder.toString);
+                   auto src = Path.FS.padded (this.toString);
+                   auto dst = Path.FS.padded (folder.toString);
 
                    auto len = src.length;
                    if (len > dst.length)
@@ -130,7 +130,7 @@ class FileFolder : VfsFolder
 
         final VfsFile file (char[] name)
         {
-                return (new FileHost).set (path.toString, name);
+                return new FileHost (Path.join (path, name));
         }
 
         /***********************************************************************
@@ -152,7 +152,7 @@ class FileFolder : VfsFolder
 
         final VfsFolder clear ()
         {
-                path.remove;
+                Path.remove (path);
                 return this;
         }
 
@@ -164,7 +164,7 @@ class FileFolder : VfsFolder
 
         final bool writable ()
         {
-                return path.isWritable;
+                return Path.isWritable (path);
         }
 
         /***********************************************************************
@@ -229,16 +229,16 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private final FileFolder[] folders (bool collect)
+        private FileFolder[] folders (bool collect)
         {
                 FileFolder[] folders;
 
                 stats = stats.init;
-                foreach (info; path)
+                foreach (info; Path.children (path))
                          if (info.folder)
                             {
                             if (collect)
-                                folders ~= new FileFolder (FilePath.from (info));
+                                folders ~= new FileFolder (info.path, info.name);
                             ++stats.folders;
                             }
                          else
@@ -250,22 +250,21 @@ class FileFolder : VfsFolder
                 return folders;         
         }
 
-
         /***********************************************************************
 
                 Sweep owned files
 
         ***********************************************************************/
 
-        private final FilePath[] files (ref VfsStats stats, VfsFilter filter = null)
+        private char[][] files (ref VfsStats stats, VfsFilter filter = null)
         {
-                FilePath[] files;
+                char[][] files;
 
-                foreach (info; path)
+                foreach (info; Path.children (path))
                          if (info.folder is false)
                              if (filter is null || filter(cast(VfsInfo) &info))
                                 {
-                                files ~= FilePath.from (info);
+                                files ~= Path.join (info.path, info.name);
                                 stats.bytes += info.bytes; 
                                 ++stats.files;
                                 }
@@ -279,7 +278,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private final char[] error (char[] msg)
+        private char[] error (char[] msg)
         {
                 throw new VfsException (msg);
         }
@@ -290,18 +289,18 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        private final FilePath open (FilePath path, bool create)
+        private char[] open (char[] path, bool create)
         {
-                if (path.exists)
+                if (Path.exists (path))
                    {
-                   if (path.isFolder is false)
-                       error ("FileFolder.open :: path exists but not as a folder: "~path.toString);
+                   if (! Path.isFolder (path))
+                       error ("FileFolder.open :: path exists but not as a folder: "~path);
                    }
                 else
                    if (create)
-                       path.create;
+                       Path.createPath (path);
                    else
-                      error ("FileFolder.open :: path does not exist: "~path.toString);
+                      error ("FileFolder.open :: path does not exist: "~path);
                 return path;
         }
 }
@@ -316,7 +315,7 @@ class FileFolder : VfsFolder
 
 class FileGroup : VfsFiles
 {
-        private FilePath[]      group;
+        private char[][]        group;
         private VfsStats        stats;
 
         /***********************************************************************
@@ -342,8 +341,8 @@ class FileGroup : VfsFiles
 
                 foreach (file; group)    
                         {    
-                        host.path = file;
                         VfsFile x = host;
+                        host.path.parse (file);
                         if ((result = dg(x)) != 0)
                              break;
                         } 
@@ -485,10 +484,11 @@ private class FolderGroup : VfsFolders
 
         final VfsFolders subset (char[] pattern)
         {  
+                Path.PathParser parser;
                 auto set = new FolderGroup;
 
                 foreach (folder; members)    
-                         if (patternMatch (folder.path.name, pattern))
+                         if (patternMatch (parser.parse(folder.path).name, pattern))
                              set.members ~= folder; 
                 return set;
         }
@@ -602,15 +602,15 @@ private class FolderHost : VfsFolderEntry
 
 private class FileHost : VfsFile
 {
-        private FilePath path;
+        private Path.PathParser path;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private this (char[] path = null)
+        this (char[] path = null)
         {
-                this.path = FilePath (path);
+                this.path.parse (path);
         }
 
         /***********************************************************************
@@ -643,7 +643,7 @@ private class FileHost : VfsFile
 
         final bool exists()
         {
-                return path.exists;
+                return Path.exists (path.toString);
         }
 
         /***********************************************************************
@@ -654,7 +654,7 @@ private class FileHost : VfsFile
 
         final ulong size()
         {
-                return path.fileSize;
+                return Path.fileSize(path.toString);
         }
 
         /***********************************************************************
@@ -665,7 +665,7 @@ private class FileHost : VfsFile
 
         final VfsFile create ()
         {
-                path.createFile ();
+                Path.createFile(path.toString);
                 return this;
         }
 
@@ -715,7 +715,7 @@ private class FileHost : VfsFile
 
         final InputStream input ()
         {
-                return new FileConduit (path.dup);
+                return new FileConduit (path.toString);
         }
 
         /***********************************************************************
@@ -726,7 +726,7 @@ private class FileHost : VfsFile
 
         final OutputStream output ()
         {
-                return new FileConduit (path.dup, FileConduit.WriteExisting);
+                return new FileConduit (path.toString, FileConduit.WriteExisting);
         }
 
         /***********************************************************************
@@ -737,7 +737,7 @@ private class FileHost : VfsFile
 
         final VfsFile remove ()
         {
-                path.remove;
+                Path.remove (path.toString);
                 return this;
         }
 
@@ -749,17 +749,9 @@ private class FileHost : VfsFile
 
         final VfsFile dup()
         {
-                return new FileHost (path.toString);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private VfsFile set (char[] folder, char[] name)
-        {
-                path.set(folder).append(name);
-                return this;
+                auto ret = new FileHost;
+                ret.path = path.dup;
+                return ret;
         }
 }
 
@@ -782,7 +774,6 @@ void main()
         Stdout.formatln ("test.txt.length = {}", root.file("test.txt").size);
         
         root = new FileFolder ("c:/");
-
         auto set = root.self;
 
         Stdout.formatln ("self.files = {}", set.files);
@@ -797,11 +788,12 @@ void main()
         Stdout.formatln ("tree.entries = {}", set.entries);
 
         //foreach (folder; set)
-        //         Stdout.formatln ("tree.folder '{}' has {} files", folder.name, folder.self.files);
+        //Stdout.formatln ("tree.folder '{}' has {} files", folder.name, folder.self.files);
 
         auto cat = set.catalog ("s*");
         Stdout.formatln ("cat.files = {}", cat.files);
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
+
         //foreach (file; cat)
         //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString);
 }
