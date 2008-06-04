@@ -859,28 +859,28 @@ class Process
                     char*[] argptr;
                     char*[] envptr;
 
+                    // Note that for all the pipes, we can close both ends
+                    // because dup2 opens a duplicate file descriptor to the
+                    // same resource.
+
                     // Replace stdin with the "read" pipe
                     dup2(pin.source.fileHandle(), STDIN_FILENO);
                     pin.sink().close();
-                    scope(exit)
-                        pin.source.close();
+                    pin.source.close();
 
                     // Replace stdout with the "write" pipe
                     dup2(pout.sink.fileHandle(), STDOUT_FILENO);
                     pout.source.close();
-                    scope(exit)
-                        pout.sink.close();
+                    pout.sink.close();
 
                     // Replace stderr with the "write" pipe
                     dup2(perr.sink.fileHandle(), STDERR_FILENO);
                     perr.source.close();
-                    scope(exit)
-                        perr.sink.close();
+                    perr.sink.close();
 
                     // We close the unneeded part of the execv*() notification pipe
                     pexec.source.close();
-                    scope(exit)
-                        pexec.sink.close();
+
                     // Set the "write" pipe so that it closes upon a successful
                     // call to execv*()
                     if (fcntl(cast(int) pexec.sink.fileHandle(), F_SETFD, FD_CLOEXEC) == 0)
