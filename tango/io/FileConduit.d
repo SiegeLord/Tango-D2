@@ -206,7 +206,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        deprecated const Style WriteAppending = {Access.Write, Open.Append};
+        const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
         
