@@ -69,17 +69,12 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
 
 class FilePath : PathView
 {
-        private char[]  fp;                     // filepath with trailing 0
-
-        private bool    dir_;                   // this represents a dir?
-
-        private int     end_,                   // before the trailing 0
-                        name_,                  // file/dir name
-                        folder_,                // path before name
-                        suffix_;                // after rightmost '.'
+        private PathParser      p;              // the parsed path
+        private bool            dir_;           // this represents a dir?
 
         public alias    set     opAssign;       // path = x;
         public alias    append  opCatAssign;    // path ~= x;
+
 
         /***********************************************************************
 
@@ -136,7 +131,7 @@ class FilePath : PathView
 
         final char[] toString ()
         {
-                return fp [0 .. end_];
+                return  p.toString;
         }
 
         /***********************************************************************
@@ -164,7 +159,7 @@ class FilePath : PathView
 
         final char[] cString ()
         {
-                return fp [0 .. end_+1];
+                return p.fp [0 .. p.end_+1];
         }
 
         /***********************************************************************
@@ -176,7 +171,7 @@ class FilePath : PathView
 
         final char[] root ()
         {
-                return fp [0 .. folder_];
+                return p.root;
         }
 
         /***********************************************************************
@@ -191,7 +186,7 @@ class FilePath : PathView
 
         final char[] folder ()
         {
-                return fp [folder_ .. name_];
+                return p.folder;
         }
 
         /***********************************************************************
@@ -215,15 +210,7 @@ class FilePath : PathView
 
         final char[] parent ()
         {
-                auto p = path;
-                if (name.length is 0)
-                    for (int i=p.length-1; --i > 0;)
-                         if (p[i] is FileConst.PathSeparatorChar)
-                            {
-                            p = p[0 .. i];
-                            break;
-                            }
-                return stripped (p);
+                return p.parent;
         }
 
         /***********************************************************************
@@ -234,7 +221,7 @@ class FilePath : PathView
 
         final char[] name ()
         {
-                return fp [name_ .. suffix_];
+                return p.name;
         }
 
         /***********************************************************************
@@ -248,10 +235,7 @@ class FilePath : PathView
 
         final char[] ext ()
         {
-                auto x = suffix;
-                if (x.length)
-                    x = x [1..$];
-                return x;
+                return p.ext;
         }
 
         /***********************************************************************
@@ -263,7 +247,7 @@ class FilePath : PathView
 
         final char[] suffix ()
         {
-                return fp [suffix_ .. end_];
+                return p.suffix;
         }
 
         /***********************************************************************
@@ -274,7 +258,7 @@ class FilePath : PathView
 
         final char[] path ()
         {
-                return fp [0 .. name_];
+                return p.path;
         }
 
         /***********************************************************************
@@ -285,7 +269,7 @@ class FilePath : PathView
 
         final char[] file ()
         {
-                return fp [name_ .. end_];
+                return p.file;
         }
 
         /***********************************************************************
@@ -307,7 +291,7 @@ class FilePath : PathView
 
         final override int opEquals (char[] s)
         {
-                return toString() == s;
+                return p.opEquals(s);
         }
 
         /***********************************************************************
@@ -319,8 +303,7 @@ class FilePath : PathView
 
         final bool isAbsolute ()
         {
-                return (folder_ > 0) ||
-                       (folder_ < end_ && fp[folder_] is FileConst.PathSeparatorChar);
+                return p.isAbsolute;
         }
 
         /***********************************************************************
@@ -331,7 +314,7 @@ class FilePath : PathView
 
         final bool isEmpty ()
         {
-                return end_ is 0;
+                return p.isEmpty;
         }
 
         /***********************************************************************
@@ -345,7 +328,7 @@ class FilePath : PathView
 
         final bool isChild ()
         {
-                return folder.length > 0;
+                return p.isChild;
         }
 
         /***********************************************************************
@@ -406,11 +389,11 @@ class FilePath : PathView
         {
                 foreach (other; others)
                         {
-                        auto len = end_ + other.length;
+                        auto len = p.end_ + other.length;
                         expand (len);
-                        fp [end_ .. len] = other;
-                        fp [len] = 0;
-                        end_ = len;
+                        p.fp [p.end_ .. len] = other;
+                        p.fp [len] = 0;
+                        p.end_ = len;
                         }
                 return parse;
         }
@@ -438,7 +421,7 @@ class FilePath : PathView
 
         final FilePath prepend (char[] path)
         {
-                adjust (0, folder_, folder_, padded (path));
+                adjust (0, p.folder_, p.folder_, padded (path));
                 return parse;
         }
 
@@ -462,13 +445,13 @@ class FilePath : PathView
 
         final FilePath set (char[] path)
         {
-                end_ = path.length;
+                p.end_ = path.length;
 
-                expand (end_);
-                if (end_)
-                    fp[0 .. end_] = path;
+                expand (p.end_);
+                if (p.end_)
+                    p.fp[0 .. p.end_] = path;
 
-                fp[end_] = '\0';
+                p.fp[p.end_] = '\0';
                 return parse;
         }
 
@@ -494,10 +477,10 @@ class FilePath : PathView
 
         final FilePath root (char[] other)
         {
-                auto x = adjust (0, folder_, folder_, padded (other, ':'));
-                folder_ += x;
-                suffix_ += x;
-                name_ += x;
+                auto x = adjust (0, p.folder_, p.folder_, padded (other, ':'));
+                p.folder_ += x;
+                p.suffix_ += x;
+                p.name_ += x;
                 return this;
         }
 
@@ -510,9 +493,9 @@ class FilePath : PathView
 
         final FilePath folder (char[] other)
         {
-                auto x = adjust (folder_, name_, name_ - folder_, padded (other));
-                suffix_ += x;
-                name_ += x;
+                auto x = adjust (p.folder_, p.name_, p.name_ - p.folder_, padded (other));
+                p.suffix_ += x;
+                p.name_ += x;
                 return this;
         }
 
@@ -524,8 +507,8 @@ class FilePath : PathView
 
         final FilePath name (char[] other)
         {
-                auto x = adjust (name_, suffix_, suffix_ - name_, other);
-                suffix_ += x;
+                auto x = adjust (p.name_, p.suffix_, p.suffix_ - p.name_, other);
+                p.suffix_ += x;
                 return this;
         }
 
@@ -538,7 +521,7 @@ class FilePath : PathView
 
         final FilePath suffix (char[] other)
         {
-                adjust (suffix_, end_, end_ - suffix_, prefixed (other, '.'));
+                adjust (p.suffix_, p.end_, p.end_ - p.suffix_, prefixed (other, '.'));
                 return this;
         }
 
@@ -552,7 +535,7 @@ class FilePath : PathView
 
         final FilePath path (char[] other)
         {
-                adjust (0, name_, name_, padded (other));
+                adjust (0, p.name_, p.name_, padded (other));
                 return parse;
         }
 
@@ -566,7 +549,7 @@ class FilePath : PathView
 
         final FilePath file (char[] other)
         {
-                adjust (name_, end_, end_ - name_, other);
+                adjust (p.name_, p.end_, p.end_ - p.name_, other);
                 return parse;
         }
 
@@ -580,8 +563,8 @@ class FilePath : PathView
         final FilePath pop ()
         {
                 auto path = parent();
-                end_ = path.length;
-                fp[end_] = '\0';
+                p.end_ = path.length;
+                p.fp[p.end_] = '\0';
                 return parse;
         }
 
@@ -643,45 +626,7 @@ class FilePath : PathView
 
         private final FilePath parse ()
         {
-                folder_ = 0;
-                name_ = suffix_ = -1;
-
-                for (int i=end_; --i >= 0;)
-                     switch (fp[i])
-                            {
-                            case FileConst.FileSeparatorChar:
-                                 if (name_ < 0)
-                                     if (suffix_ < 0 && i && fp[i-1] != '.')
-                                         suffix_ = i;
-                                 break;
-
-                            version (Win32)
-                            {
-                            case '\\':
-                                 fp[i] = '/';
-                            }
-                            case FileConst.PathSeparatorChar:
-                                 if (name_ < 0)
-                                     name_ = i + 1;
-                                 break;
-
-                            version (Win32)
-                            {
-                            case ':':
-                                 folder_ = i + 1;
-                                 break;
-                            }
-
-                            default:
-                                 break;
-                            }
-
-                if (name_ < 0)
-                    name_ = folder_;
-
-                if (suffix_ < 0 || suffix_ is name_)
-                    suffix_ = end_;
-
+                p.parse (p.fp, p.end_);
                 return this;
         }
 
@@ -694,8 +639,8 @@ class FilePath : PathView
         private final void expand (uint size)
         {
                 ++size;
-                if (fp.length < size)
-                    fp.length = (size + 127) & ~127;
+                if (p.fp.length < size)
+                    p.fp.length = (size + 127) & ~127;
         }
 
         /***********************************************************************
@@ -709,7 +654,7 @@ class FilePath : PathView
                 len = sub.length - len;
 
                 // don't destroy self-references!
-                if (len && sub.ptr >= fp.ptr+head+len && sub.ptr < fp.ptr+fp.length)
+                if (len && sub.ptr >= p.fp.ptr+head+len && sub.ptr < p.fp.ptr+p.fp.length)
                    {
                    char[512] tmp = void;
                    assert (sub.length < tmp.length);
@@ -717,16 +662,16 @@ class FilePath : PathView
                    }
 
                 // make some room if necessary
-                expand  (len + end_);
+                expand (len + p.end_);
 
                 // slide tail around to insert or remove space
-                memmove (fp.ptr+tail+len, fp.ptr+tail, end_ +1 - tail);
+                memmove (p.fp.ptr+tail+len, p.fp.ptr+tail, p.end_ +1 - tail);
 
                 // copy replacement
-                memmove (fp.ptr + head, sub.ptr, sub.length);
+                memmove (p.fp.ptr + head, sub.ptr, sub.length);
 
                 // adjust length
-                end_ += len;
+                p.end_ += len;
                 return len;
         }
 
@@ -1250,7 +1195,7 @@ debug (UnitTest)
         
                 // special case for popping empty names
                 fp = r"C:/home/foo/bar/john/";
-                assert (fp.pop == r"C:/home/foo/bar", fp.toString);
+                assert (fp.pop == r"C:/home/foo/bar");
 
                 fp = new FilePath;
                 fp = r"C:/home/foo/bar/john/";

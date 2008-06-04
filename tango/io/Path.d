@@ -14,12 +14,12 @@
         you want is to see if some path exists, using this module might 
         be a more convenient option than FilePath:
         ---
-        if (exists ("my file path")) 
+        if (exists ("some/file/path")) 
             ...
         ---
 
-        These functions are generally less efficient than FilePath because 
-        they have to attach a null to the filename for each underlying O/S
+        These functions can be less efficient than FilePath because they 
+        may have to attach a null to the filename for each underlying O/S
         call. Use Path when you need pedestrian access to the file-system, 
         and are not manipulating the path components. Use FilePath for other
         scenarios.
@@ -28,8 +28,19 @@
         ---
         import Path = tango.io.Path;
 
-        if (Path.exists ("my file path")) 
+        if (Path.exists ("some/file/path")) 
             ...
+        ---
+
+        Also residing here is a lightweight path-parser, which splits a filepath
+        into constituent components. See PathParser below:
+        ---
+        auto p = Path.parse ("some/file/path");
+        auto path = p.path;
+        auto name = p.name;
+        auto suffix = p.suffix;
+        ...
+        ...
         ---
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
@@ -40,6 +51,8 @@
 module tango.io.Path;
 
 private import  tango.sys.Common;
+
+private import  tango.io.model.IFile : FileConst;
 
 public  import  tango.time.Time : Time, TimeSpan;
 
@@ -872,6 +885,290 @@ package struct FS
 
 /*******************************************************************************
 
+        Parse a file path
+
+        File paths containing non-ansi characters should be UTF-8 encoded.
+        Supporting Unicode in this manner was deemed to be more suitable
+        than providing a wchar version of PathParser, and is both consistent
+        & compatible with the approach taken with the Uri class.
+
+        Note that patterns of adjacent '.' separators are treated specially
+        in that they will be assigned to the name instead of the suffix. In
+        addition, a '.' at the start of a name signifies it does not belong
+        to the suffix i.e. ".file" is a name rather than a suffix.
+
+        Note also that normalization of path-separators occurs by default. 
+        This means that the use of '\' characters will be converted into
+        '/' instead while parsing. 
+
+*******************************************************************************/
+
+struct PathParser
+{       
+        package char[]  fp;                     // filepath with trailing
+        package int     end_,                   // before any trailing 0
+                        name_,                  // file/dir name
+                        folder_,                // path before name
+                        suffix_;                // after rightmost '.'
+
+        /***********************************************************************
+
+                Parse the path spec
+
+        ***********************************************************************/
+
+        PathParser parse (char[] path)
+        {
+                return parse (path, path.length);
+        }
+
+        /***********************************************************************
+
+                Duplicate this path
+
+        ***********************************************************************/
+
+        PathParser dup ()
+        {
+                auto ret = *this;
+                ret.fp = fp.dup;
+                return ret;
+        }
+
+        /***********************************************************************
+
+                Return the complete text of this filepath
+
+        ***********************************************************************/
+
+        char[] toString ()
+        {
+                return fp [0 .. end_];
+        }
+
+        /***********************************************************************
+
+                Return the root of this path. Roots are constructs such as
+                "c:"
+
+        ***********************************************************************/
+
+        char[] root ()
+        {
+                return fp [0 .. folder_];
+        }
+
+        /***********************************************************************
+
+                Return the file path. Paths may start and end with a "/".
+                The root path is "/" and an unspecified path is returned as
+                an empty string. Directory paths may be split such that the
+                directory name is placed into the 'name' member; directory
+                paths are treated no differently than file paths
+
+        ***********************************************************************/
+
+        char[] folder ()
+        {
+                return fp [folder_ .. name_];
+        }
+
+        /***********************************************************************
+
+                Returns a path representing the parent of this one. This
+                will typically return the current path component, though
+                with a special case where the name component is empty. In 
+                such cases, the path is scanned for a prior segment:
+                ---
+                normal:  /x/y/z => /x/y
+                special: /x/y/  => /x
+                ---
+
+                Note that this returns a path suitable for splitting into
+                path and name components (there's no trailing separator).
+
+        ***********************************************************************/
+
+        char[] parent ()
+        {
+                auto p = path;
+                if (name.length is 0)
+                    for (int i=p.length-1; --i > 0;)
+                         if (p[i] is FileConst.PathSeparatorChar)
+                            {
+                            p = p[0 .. i];
+                            break;
+                            }
+                return FS.stripped (p);
+        }
+
+        /***********************************************************************
+
+                Return the name of this file, or directory.
+
+        ***********************************************************************/
+
+        char[] name ()
+        {
+                return fp [name_ .. suffix_];
+        }
+
+        /***********************************************************************
+
+                Ext is the tail of the filename, rightward of the rightmost
+                '.' separator e.g. path "foo.bar" has ext "bar". Note that
+                patterns of adjacent separators are treated specially; for
+                example, ".." will wind up with no ext at all
+
+        ***********************************************************************/
+
+        char[] ext ()
+        {
+                auto x = suffix;
+                if (x.length)
+                    x = x [1..$];
+                return x;
+        }
+
+        /***********************************************************************
+
+                Suffix is like ext, but includes the separator e.g. path
+                "foo.bar" has suffix ".bar"
+
+        ***********************************************************************/
+
+        char[] suffix ()
+        {
+                return fp [suffix_ .. end_];
+        }
+
+        /***********************************************************************
+
+                return the root + folder combination
+
+        ***********************************************************************/
+
+        char[] path ()
+        {
+                return fp [0 .. name_];
+        }
+
+        /***********************************************************************
+
+                return the name + suffix combination
+
+        ***********************************************************************/
+
+        char[] file ()
+        {
+                return fp [name_ .. end_];
+        }
+
+        /***********************************************************************
+
+                Returns true if this path is *not* relative to the
+                current working directory
+
+        ***********************************************************************/
+
+        bool isAbsolute ()
+        {
+                return (folder_ > 0) ||
+                       (folder_ < end_ && fp[folder_] is FileConst.PathSeparatorChar);
+        }
+
+        /***********************************************************************
+
+                Returns true if this FilePath is empty
+
+        ***********************************************************************/
+
+        bool isEmpty ()
+        {
+                return end_ is 0;
+        }
+
+        /***********************************************************************
+
+                Returns true if this path has a parent. Note that a
+                parent is defined by the presence of a path-separator in
+                the path. This means 'foo' within "/foo" is considered a
+                child of the root
+
+        ***********************************************************************/
+
+        bool isChild ()
+        {
+                return folder.length > 0;
+        }
+
+        /***********************************************************************
+
+                Does this path equate to the given text?
+
+        ***********************************************************************/
+
+        int opEquals (char[] s)
+        {
+                return toString == s;
+        }
+
+        /***********************************************************************
+
+                Parse the path spec with explicit end point
+
+        ***********************************************************************/
+
+        package PathParser parse (char[] path, uint end)
+        {
+                end_ = end;
+                fp = path;
+                folder_ = 0;
+                name_ = suffix_ = -1;
+
+                for (int i=end_; --i >= 0;)
+                     switch (fp[i])
+                            {
+                            case FileConst.FileSeparatorChar:
+                                 if (name_ < 0)
+                                     if (suffix_ < 0 && i && fp[i-1] != '.')
+                                         suffix_ = i;
+                                 break;
+
+                            version (Win32)
+                            {
+                            case '\\':
+                                 fp[i] = '/';
+                            }
+                            case FileConst.PathSeparatorChar:
+                                 if (name_ < 0)
+                                     name_ = i + 1;
+                                 break;
+
+                            version (Win32)
+                            {
+                            case ':':
+                                 folder_ = i + 1;
+                                 break;
+                            }
+
+                            default:
+                                 break;
+                            }
+
+                if (name_ < 0)
+                    name_ = folder_;
+
+                if (suffix_ < 0 || suffix_ is name_)
+                    suffix_ = end_;
+
+                return *this;
+        }
+}
+
+
+/*******************************************************************************
+
         Does this path currently exist?
 
 *******************************************************************************/
@@ -1206,6 +1503,21 @@ char[] replace (char[] path, char from, char to)
         return path;
 }
 
+/*******************************************************************************
+
+        Parse a path into its constituent components. 
+        
+        Note that the provided path is not duplicated
+
+*******************************************************************************/
+
+PathParser parse (char[] path)
+{
+        PathParser p;
+        
+        p.parse (path);
+        return p;
+}
 
 
 /*******************************************************************************
@@ -1214,10 +1526,24 @@ char[] replace (char[] path, char from, char to)
 
 debug(Path)
 {
+        import tango.io.Stdout;
+
         void main()
         {
                 exists ("path.d");
                 assert(exists("Path.d"));
                     
+                auto p = parse ("d:/foo/bar/file.ext");
+                Stdout.formatln ("string '{}'", p);
+                Stdout.formatln ("root '{}'", p.root);
+                Stdout.formatln ("folder '{}'", p.folder);
+                Stdout.formatln ("path '{}'", p.path);
+                Stdout.formatln ("file '{}'", p.file);
+                Stdout.formatln ("name '{}'", p.name);
+                Stdout.formatln ("suffix '{}'", p.suffix);
+                Stdout.formatln ("ext '{}'", p.ext);
+                Stdout.formatln ("isChild: {}", p.isChild);
+                Stdout.formatln ("isEmpty: {}", p.isEmpty);
+                Stdout.formatln ("isAbsolute: {}", p.isAbsolute);
         }
 }
