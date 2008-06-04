@@ -200,7 +200,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static char[][] list ()
+                static char[][] roots ()
                 {
                         int             len;
                         char[]          str;
@@ -267,7 +267,7 @@ struct FileSystem
 
                  ***************************************************************/
 
-                static char[][] list ()
+                static char[][] roots ()
                 {
                         version(darwin)
                         {
