@@ -9,7 +9,7 @@
 module tango.stdc.posix.netinet.in_;
 
 private import tango.stdc.posix.config;
-public import tango.stdc.inttypes : uint32_t, uint16_t;
+public import tango.stdc.inttypes : uint32_t, uint16_t, uint8_t;
 public import tango.stdc.posix.arpa.inet;
 public import tango.stdc.posix.sys.socket; // for sa_family_t
 
@@ -187,7 +187,7 @@ int IN6_IS_ADDR_MC_NODELOCAL(in6_addr*)
 int IN6_IS_ADDR_MC_LINKLOCAL(in6_addr*)
 int IN6_IS_ADDR_MC_SITELOCAL(in6_addr*)
 int IN6_IS_ADDR_MC_ORGLOCAL(in6_addr*)
-int IN6_IS_ADDR_MC_GLOBAL(in6_adddr*)
+int IN6_IS_ADDR_MC_GLOBAL(in6_addr*)
 */
 
 version ( linux )
@@ -306,7 +306,7 @@ version ( linux )
                ((cast(uint8_t*) addr)[1] & 0xf) == 0x8;
     }
 
-    extern (D) int IN6_IS_ADDR_MC_GLOBAL( in6_adddr* addr )
+    extern (D) int IN6_IS_ADDR_MC_GLOBAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
                ((cast(uint8_t*) addr)[1] & 0xf) == 0xe;
