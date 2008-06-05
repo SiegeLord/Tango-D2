@@ -12,12 +12,12 @@
 
 module tango.net.cluster.tina.CmdParser;
 
-private import  tango.util.log.Log,
-                tango.util.log.Config;
-
-private import  tango.util.Arguments;
+private import  tango.util.ArgParser;
 
 private import  tango.text.convert.Integer;
+
+private import  tango.util.log.Log,
+                tango.util.log.Config;
 
 /******************************************************************************
         
@@ -25,7 +25,7 @@ private import  tango.text.convert.Integer;
 
 ******************************************************************************/
 
-class CmdParser : Arguments
+class CmdParser : ArgParser
 {
         Logger  log;
         ushort  port;
@@ -50,20 +50,29 @@ class CmdParser : Arguments
 
         void parse (char[][] args)
         {
-                define("h");
-                define("log").parameters(1);
-                define("port").parameters(1);
-                define("size").parameters(1);
-                
-                super.parse(args);
-                
-                if (this.contains("h"))
-                    help = true;
-                if (this.contains("log"))
-                    log.level = Log.convert(this["log"]);
-                if (this.contains("port"))
-                    port = cast(ushort)atoi(this["port"]);
-                if (this.contains("size"))
-                    size = atoi(this["size"]);
+                static char[] strip (char[] value)
+                {
+                        if (value.length && (value[0] is '=' || value [0] is ':'))
+                            value = value[1..$];
+                        return value;
+                }
+
+                static int toInt (char[] value)
+                {
+                        return atoi (strip(value));
+                }
+
+                bind ("-", "h", {help = true;});
+
+                bind ("-", "log", delegate (char[] value)
+                                           {log.level(Log.convert(strip(value)));});
+
+                bind ("-", "port", delegate (char[] value) 
+                                            {port = cast(ushort) toInt (value);});
+
+                bind ("-", "size", delegate (char[] value) 
+                                            {size = toInt (value);});
+
+                super.parse (args);
         }
 }
