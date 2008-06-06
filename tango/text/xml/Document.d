@@ -1130,7 +1130,7 @@ else
         set = doc.query[].filter((doc.Node n) {return n.query[].count > 1;});
         ---
   
-        Typical usage tends to follow the following pattern, Where each query 
+        Typical usage tends to exhibit the following pattern, Where each query 
         result is processed before another is initiated:
         ---
         foreach (node; doc.query.child("element"))
