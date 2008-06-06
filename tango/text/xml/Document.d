@@ -476,10 +476,13 @@ else
                 {
                         if (prefix.length)
                            {
-                           if (prefix.ptr + prefix.length + 1 is localName.ptr)
-                               return prefix.ptr [0 .. prefix.length + localName.length + 1];
-
                            auto len = prefix.length + localName.length + 1;
+                           
+                           // is the prefix already attached to the name?
+                           if (prefix.ptr + prefix.length + 1 is localName.ptr)
+                               return prefix.ptr [0 .. len];
+       
+                           // nope, copy the discrete segments into output
                            if (output.length < len)
                                output.length = len;
                            output[0..prefix.length] = prefix;
@@ -487,6 +490,7 @@ else
                            output[prefix.length+1 .. len] = localName;
                            return output[0..len];
                            }
+
                         return localName;
                 }
                 
