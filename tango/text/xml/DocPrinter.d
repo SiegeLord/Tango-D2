@@ -48,6 +48,15 @@ class DocPrinter(T) : IXmlPrinter!(T)
                 T[256] tmp;
                 T[256] spaces = ' ';
 
+                // ignore whitespace from mixed-model values
+                T[] rawValue (Node node)
+                {
+                        foreach (c; node.rawValue)
+                                 if (c > 32)
+                                     return node.rawValue;
+                        return null;
+                }
+
                 void printNode (Node node, uint indent)
                 {
                         // check for cached output
@@ -66,9 +75,12 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                     foreach (attr; node.attributes)
                                              emit (` `, attr.name, `="`, attr.rawValue, `"`);  
 
+                                    auto value = rawValue (node);
                                     if (node.hasChildren)
                                        {
                                        emit (">");
+                                       if (value.length)
+                                           emit (value);
                                        foreach (child; node.children)
                                                 printNode (child, indent + 2);
                                         
@@ -78,7 +90,10 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                        emit ("</", node.name(tmp), ">");
                                        }
                                     else 
-                                       emit ("/>");      
+                                       if (value.length)
+                                           emit (">", value, "</", node.name(tmp), ">");
+                                       else
+                                          emit ("/>");      
                                     break;
         
                                     // ingore whitespace data in mixed-model
@@ -87,12 +102,9 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                     //
                                     // a whitespace Data instance follows <foo>
                                case XmlNodeType.Data:
-                                    foreach (c; node.rawValue)
-                                             if (c > 32)
-                                                {
-                                                emit (node.rawValue);
-                                                break;
-                                                }
+                                    auto value = rawValue (node);
+                                    if (value.length)
+                                        emit (node.rawValue);
                                     break;
         
                                case XmlNodeType.Comment:
