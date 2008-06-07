@@ -779,8 +779,11 @@ public class Logger : ILogger
 
         final Logger level (Level level, bool propagate)
         {
-                level_ = level;     
-                host_.update (this, propagate);
+                level_ = level; 
+                if (propagate)    
+                    foreach (log; host_)
+                             if (log.isChildOf (name_))
+                                 log.level_ = level;
                 return this;
         }
 
@@ -925,28 +928,45 @@ public class Logger : ILogger
 
         /***********************************************************************
         
-                See if the provided Logger is a good match as a parent of
-                this one. Note that each Logger name has a '.' appended to
-                the end, such that name segments will not partially match.
+                See if the provided Logger name is a parent of this one. Note 
+                that each Logger name has a '.' appended to the end, such that 
+                name segments will not partially match.
+
+        ***********************************************************************/
+
+        private final bool isChildOf (char[] candidate)
+        {
+                Stdout.formatln (">> this '{}', candidate '{}'", name_, candidate);
+                auto len = candidate.length;
+
+                // possible parent if length is shorter
+                if (len < name_.length)
+                    // does the prefix match? Note we append a "." to each 
+                    // (the root is a parent of everything)
+                    return (len is 0 || 
+                            memcmp (&candidate[0], &name_[0], len) is 0);
+                return false;
+        }
+
+        /***********************************************************************
+        
+                See if the provided Logger is a better match as a parent of
+                this one. This is used to restructure the hierarchy when a
+                new logger instance is introduced
 
         ***********************************************************************/
 
         private final bool isCloserAncestor (Logger other)
         {
-                auto length = other.name_.length;
-
-                // possible parent if length is shorter
-                if (length < name_.length)
-                    // does the prefix match? Note we append a "." to each 
-                    if (length is 0 || 
-                        memcmp (&other.name_[0], &name_[0], length) is 0)
-                        // is this a better (longer) match than prior parent?
-                        if ((parent is null) || (length >= parent.name_.length))
-                             return true;
+                auto name = other.name_;
+                if (isChildOf (name))
+                    // is this a better (longer) match than prior parent?
+                    if ((parent is null) || (name.length >= parent.name_.length))
+                         return true;
                 return false;
         }
 }
-
+import tango.io.Stdout;
 
 /*******************************************************************************
  
@@ -1100,25 +1120,20 @@ private class Hierarchy : Logger.Context
                                       {return new Logger (this, name);});
         }
 
-        /**********************************************************************
+        /***********************************************************************
 
-                Iterate over all Loggers in list
+                traverse the set of configured loggers
 
-        **********************************************************************/
+        ***********************************************************************/
 
-        final int opApply (int delegate(inout Logger) dg)
+        final int opApply (int delegate(ref Logger) dg)
         {
-                int result;
-                auto curr = root;
+                int ret;
 
-                while (curr)
-                      {
-                      auto logger = curr;
-                      if ((result = dg (logger)) != 0)
-                           break;
-                      curr = curr.next;
-                      }
-                return result;
+                for (auto log=root; log; log = log.next)
+                     if ((ret = dg(log)) != 0)
+                          break;
+                return ret;
         }
 
         /***********************************************************************
@@ -1204,16 +1219,8 @@ private class Hierarchy : Logger.Context
 
         private void update (Logger changed, bool force)
         {
-                auto logger = root;
-
-                // scan all loggers 
-                while (logger)
-                      {
-                      propagate (logger, changed, force);
-
-                      // try next entry
-                      logger = logger.next;
-                      }                
+                foreach (logger; this)
+                         propagate (logger, changed, force);
         }
 
         /***********************************************************************
@@ -1233,8 +1240,9 @@ private class Hierarchy : Logger.Context
                    logger.parent = changed;
 
                    // if we don't have an explicit level set, inherit it
+                   // Be careful to avoid recursion, or other overhead
                    if (force)
-                       logger.level (changed.level);
+                       logger.level_ = changed.level;
                    }
         }
 }
