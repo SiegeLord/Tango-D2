@@ -15,7 +15,7 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
-//version=discrete;
+version=discrete;
 
 /*******************************************************************************
 
@@ -238,7 +238,6 @@ version (discrete)
                                   auto node = allocate;
                                   node.rawValue = super.rawValue;
                                   node.type = XmlNodeType.Data;
-                                  node.type = XmlNodeType.Data;
                                   cur.append (node);
 }
 else
@@ -257,7 +256,6 @@ else
                                   node.prefix = super.prefix;
                                   node.type = XmlNodeType.Element;
                                   node.localName = super.localName;
-                                  node.start = p;
                                   node.start = p;
                                 
                                   // inline append
