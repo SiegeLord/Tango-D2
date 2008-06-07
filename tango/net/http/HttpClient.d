@@ -414,11 +414,11 @@ class HttpClient
             // create socket and connect it. Retain prior socket if
             // not closed between calls
             if (socket is null)
-            {
+                {
                 socket = new SocketConduit;
                 socket.setTimeout (timeout);
                 socket.connect (address);
-            }
+                }
 
             // setup buffers for input and output
             output.setConduit(socket);
@@ -457,23 +457,23 @@ class HttpClient
             // should we emit query as part of request line?
             if (query.length)
                 if (method != Post)
-                {
+                    {
                     output ("?");
                     if (encode)
                         uri.encode (&output.consume, query, uri.IncQueryAll);
                     else
                         output (query);
-                }
+                    }
                 else 
                     if (pump.funcptr is null)
-                    {
+                        {
                         // we're POSTing query text - add default info
                         if (headersOut.get (HttpHeader.ContentType, null) is null)
                             headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
 
                         if (headersOut.get (HttpHeader.ContentLength, null) is null)
                             headersOut.addInt (HttpHeader.ContentLength, query.length);
-                    }
+                        }
 
             // complete the request line, and emit headers too
             output (" ") (httpVersion) (HttpConst.Eol);
@@ -522,7 +522,7 @@ class HttpClient
             // check for redirection
             if (doRedirect)
                 switch (responseLine.getStatus)
-                {
+                    {
                     case HttpResponseCode.SeeOther:
                     case HttpResponseCode.MovedPermanently:
                     case HttpResponseCode.MovedTemporarily:
@@ -554,7 +554,7 @@ class HttpClient
                                 responseLine.error ("unexpected redirect for method "~method.name);
                     default:
                         break;
-                }
+                    }
 
             // return the input buffer
             return input;
