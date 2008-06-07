@@ -936,7 +936,6 @@ public class Logger : ILogger
 
         private final bool isChildOf (char[] candidate)
         {
-                Stdout.formatln (">> this '{}', candidate '{}'", name_, candidate);
                 auto len = candidate.length;
 
                 // possible parent if length is shorter
@@ -966,7 +965,6 @@ public class Logger : ILogger
                 return false;
         }
 }
-import tango.io.Stdout;
 
 /*******************************************************************************
  
