@@ -28,7 +28,7 @@ module tango.text.convert.Layout;
 
 private import  tango.core.Exception;
 
-private import  Unicode = tango.text.convert.Utf;
+private import  Utf = tango.text.convert.Utf;
 
 private import  Float   = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
@@ -387,11 +387,11 @@ class Layout(T)
                                       if (left)
                                          {
                                          length += sink ("...");
-                                         length += sink (clipLeft (str[-padding..$]));
+                                         length += sink (Utf.cropLeft (str[-padding..$]));
                                          }
                                       else
                                          {
-                                         length += sink (clipRight (str[0..width]));
+                                         length += sink (Utf.cropRight (str[0..width]));
                                          length += sink ("...");
                                          }
                                       }
@@ -540,15 +540,15 @@ class Layout(T)
                        {
                        case TypeCode.ARRAY:
                             if (type is typeid(char[]))
-                                return fromUtf8 (*cast(char[]*) p, result);
+                                return Utf.fromString8 (*cast(char[]*) p, result);
 
                             if (type is typeid(wchar[]))
-                                return fromUtf16 (*cast(wchar[]*) p, result);
+                                return Utf.fromString16 (*cast(wchar[]*) p, result);
 
                             if (type is typeid(dchar[]))
-                                return fromUtf32 (*cast(dchar[]*) p, result);
+                                return Utf.fromString32 (*cast(dchar[]*) p, result);
 
-                            return fromUtf8 (type.toString, result);
+                            return Utf.fromString8 (type.toString, result);
 
                        case TypeCode.BOOL:
                             static T[] t = "true";
@@ -589,13 +589,13 @@ class Layout(T)
                             return floater (result, *cast(real*) p, format);
 
                        case TypeCode.CHAR:
-                            return fromUtf8 ((cast(char*) p)[0..1], result);
+                            return Utf.fromString8 ((cast(char*) p)[0..1], result);
 
                        case TypeCode.WCHAR:
-                            return fromUtf16 ((cast(wchar*) p)[0..1], result);
+                            return Utf.fromString16 ((cast(wchar*) p)[0..1], result);
 
                        case TypeCode.DCHAR:
-                            return fromUtf32 ((cast(dchar*) p)[0..1], result);
+                            return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.POINTER:
                             return integer (result, *cast(size_t*) p, format, size_t.max, 'x');
@@ -603,13 +603,13 @@ class Layout(T)
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
                             if (c)
-                                return fromUtf8 (c.toString, result);
+                                return Utf.fromString8 (c.toString, result);
                             break;
 
                        case TypeCode.STRUCT:
                             auto s = cast(TypeInfo_Struct) type;
                             if (s.xtoString)
-                                return fromUtf8 (s.xtoString(p), result);
+                                return Utf.fromString8 (s.xtoString(p), result);
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -618,7 +618,7 @@ class Layout(T)
                                {
                                auto pi = **cast(Interface ***) x;
                                auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return fromUtf8 (o.toString, result);
+                               return Utf.fromString8 (o.toString, result);
                                }
                             break;
 
@@ -641,7 +641,7 @@ class Layout(T)
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
-                return "{unhandled argument type: " ~ fromUtf8 (type.toString, result) ~ "}";
+                return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
         }
 
         /**********************************************************************
@@ -703,91 +703,6 @@ class Layout(T)
                    }
                 return false;
         }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static T[] fromUtf8 (char[] s, T[] scratch)
-        {
-                static if (is (T == char))
-                           return s;
-
-                static if (is (T == wchar))
-                           return Unicode.toString16 (s, scratch);
-
-                static if (is (T == dchar))
-                           return Unicode.toString32 (s, scratch);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static T[] fromUtf16 (wchar[] s, T[] scratch)
-        {
-                static if (is (T == wchar))
-                           return s;
-
-                static if (is (T == char))
-                           return Unicode.toString (s, scratch);
-
-                static if (is (T == dchar))
-                           return Unicode.toString32 (s, scratch);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static T[] fromUtf32 (dchar[] s, T[] scratch)
-        {
-                static if (is (T == dchar))
-                           return s;
-
-                static if (is (T == char))
-                           return Unicode.toString (s, scratch);
-
-                static if (is (T == wchar))
-                           return Unicode.toString16 (s, scratch);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static T[] clipLeft (T[] s)
-        {
-                static if (is (T == char))
-                           foreach (i, c; s)
-                                    if ((c & 0xc0) is 0xc0)
-                                         return s [i..$];
-
-                static if (is (T == wchar))
-                           // skip if first char is a trailing surrogate
-                           if ((s[0] & 0xfffffc00) is 0xdc00)
-                                return s [1..$];
-
-                return s;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        private static T[] clipRight (T[] s)
-        {
-                static if (is (T == char))
-                           foreach_reverse (i, c; s)
-                                            if ((c & 0xc0) is 0xc0)
-                                                 return s [0..i-1];
-
-                static if (is (T == wchar))
-                           // skip if last char is a leading surrogate
-                           if ((s[$-1] & 0xfffffc00) is 0xd800)
-                                return s [0..$-1];
-                return s;
-        }
 }
 
 
@@ -830,8 +745,6 @@ private enum TypeCode
 
 debug (UnitTest)
 {
-        //void main() {}
-
         unittest
         {
         auto Formatter = new Layout!(char);
@@ -989,6 +902,9 @@ debug (Layout)
                 auto layout = new Layout!(char);
 
                 Cout (layout.sprint (new char[1], "hi")).newline;
+                Cout (layout.sprint (new char[10], "{.4}", "hello")).newline;
+                Cout (layout.sprint (new char[10], "{.-4}", "hello")).newline;
+
                 Cout (layout ("{:d2}", 56)).newline;
                 Cout (layout ("{:f4}", 0.001)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
