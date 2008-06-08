@@ -387,11 +387,11 @@ class Layout(T)
                                       if (left)
                                          {
                                          length += sink ("...");
-                                         length += sink (str [-padding..$]);
+                                         length += sink (clipLeft (str[-padding..$]));
                                          }
                                       else
                                          {
-                                         length += sink (str [0..width]);
+                                         length += sink (clipRight (str[0..width]));
                                          length += sink ("...");
                                          }
                                       }
@@ -750,6 +750,43 @@ class Layout(T)
 
                 static if (is (T == wchar))
                            return Unicode.toString16 (s, scratch);
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static T[] clipLeft (T[] s)
+        {
+                static if (is (T == char))
+                           foreach (i, c; s)
+                                    if ((c & 0xc0) is 0xc0)
+                                         return s [i..$];
+
+                static if (is (T == wchar))
+                           // skip if first char is a trailing surrogate
+                           if ((s[0] & 0xfffffc00) is 0xdc00)
+                                return s [1..$];
+
+                return s;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static T[] clipRight (T[] s)
+        {
+                static if (is (T == char))
+                           foreach_reverse (i, c; s)
+                                            if ((c & 0xc0) is 0xc0)
+                                                 return s [0..i-1];
+
+                static if (is (T == wchar))
+                           // skip if last char is a leading surrogate
+                           if ((s[$-1] & 0xfffffc00) is 0xd800)
+                                return s [0..$-1];
+                return s;
         }
 }
 
