@@ -530,3 +530,227 @@ dchar[] toString32 (wchar[] input, dchar[] output=null, uint* ate=null)
 }
 
 
+/*******************************************************************************
+
+        Decodes a single dchar from the given src text, and indicates how
+        many chars were consumed from src to do so.
+
+*******************************************************************************/
+
+dchar decode (char[] src, inout uint ate)
+{
+        dchar[1] ret;
+        return toString32 (src, ret, &ate)[0];
+}
+
+/*******************************************************************************
+
+        Decodes a single dchar from the given src text, and indicates how
+        many wchars were consumed from src to do so.
+
+*******************************************************************************/
+
+dchar decode (wchar[] src, inout uint ate)
+{
+        dchar[1] ret;
+        return toString32 (src, ret, &ate)[0];
+}
+
+/*******************************************************************************
+
+        Encode a dchar into the provided dst array, and return a slice of 
+        it representing the encoding
+
+*******************************************************************************/
+
+char[] encode (char[] dst, dchar c)
+{
+        return toString ((&c)[0..1], dst);
+}
+
+/*******************************************************************************
+
+        Encode a dchar into the provided dst array, and return a slice of 
+        it representing the encoding
+
+*******************************************************************************/
+
+wchar[] encode (wchar[] dst, dchar c)
+{
+        return toString16 ((&c)[0..1], dst);
+}
+
+/*******************************************************************************
+
+        Is the given character valid?
+
+*******************************************************************************/
+
+bool isValid (dchar c)
+{
+        return (c < 0xD800 || (c > 0xDFFF && c <= 0x10FFFF));
+}
+
+/*******************************************************************************
+
+        Convert from a char[] into the type of the dst provided. 
+
+        Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.
+
+*******************************************************************************/
+
+T[] fromString8(T) (char[] s, T[] dst)
+{
+        static if (is (T == char))
+                   return s;
+
+        static if (is (T == wchar))
+                   return .toString16 (s, dst);
+
+        static if (is (T == dchar))
+                   return .toString32 (s, dst);
+}
+
+/*******************************************************************************
+
+        Convert from a wchar[] into the type of the dst provided. 
+
+        Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.
+
+*******************************************************************************/
+
+T[] fromString16(T) (wchar[] s, T[] dst)
+{
+        static if (is (T == wchar))
+                   return s;
+
+        static if (is (T == char))
+                   return .toString (s, dst);
+
+        static if (is (T == dchar))
+                   return .toString32 (s, dst);
+}
+
+/*******************************************************************************
+
+        Convert from a dchar[] into the type of the dst provided. 
+
+        Returns a slice of the given dst, where it is sufficiently large
+        to house the result, or a heap-allocated array otherwise. Returns
+        the original input where no conversion is required.
+
+*******************************************************************************/
+
+T[] fromString32(T) (dchar[] s, T[] dst)
+{
+        static if (is (T == dchar))
+                   return s;
+
+        static if (is (T == char))
+                   return .toString (s, dst);
+
+        static if (is (T == wchar))
+                   return .toString16 (s, dst);
+}
+
+/*******************************************************************************
+
+        Adjust the content such that no partial encodings exist on the 
+        left side of the provided text.
+
+        Returns a slice of the input
+
+*******************************************************************************/
+
+T[] cropLeft(T) (T[] s)
+{
+        static if (is (T == char))
+                   for (int i=0; i < s.length && (s[i] & 0x80); ++i)
+                        if ((s[i] & 0xc0) is 0xc0)
+                             return s [i..$];
+
+        static if (is (T == wchar))
+                   // skip if first char is a trailing surrogate
+                   if ((s[0] & 0xfffffc00) is 0xdc00)
+                        return s [1..$];
+
+        return s;
+}
+
+/*******************************************************************************
+
+        Adjust the content such that no partial encodings exist on the 
+        right side of the provided text.
+
+        Returns a slice of the input
+
+*******************************************************************************/
+
+T[] cropRight(T) (T[] s)
+{
+        uint i = s.length - 1;
+        static if (is (T == char))
+                   while (i && (s[i] & 0x80))
+                          if ((s[i] & 0xc0) is 0xc0)
+                             {
+                             // located the first byte of a sequence
+                             ubyte b = s[i];
+                             int d = s.length - i;
+
+                             // is it a 3 byte sequence?
+                             if (b & 0x20)
+                                 --d;
+
+                             // or a four byte sequence?
+                             if (b & 0x10)
+                                 --d;
+
+                             // is the sequence complete?
+                             if (d is 2)
+                                 i = s.length;
+                             return s [0..i];
+                             }
+                          else 
+                             --i;
+
+        static if (is (T == wchar))
+                   // skip if last char is a leading surrogate
+                   if ((s[i] & 0xfffffc00) is 0xd800)
+                        return s [0..$-1];
+        return s;
+}
+
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (Utf)
+{
+        import tango.io.Console;
+
+        void main()
+        {
+                auto s = "[\xc2\xa2\xc2\xa2\xc2\xa2]";
+                Cout (s).newline;
+
+                Cout (cropLeft(s[0..$])).newline;
+                Cout (cropLeft(s[1..$])).newline;
+                Cout (cropLeft(s[2..$])).newline;
+                Cout (cropLeft(s[3..$])).newline;
+                Cout (cropLeft(s[4..$])).newline;
+                Cout (cropLeft(s[5..$])).newline;
+
+                Cout (cropRight(s[0..$])).newline;
+                Cout (cropRight(s[0..$-1])).newline;
+                Cout (cropRight(s[0..$-2])).newline;
+                Cout (cropRight(s[0..$-3])).newline;
+                Cout (cropRight(s[0..$-4])).newline;
+                Cout (cropRight(s[0..$-5])).newline;
+        }
+}
