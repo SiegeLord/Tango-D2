@@ -10,9 +10,11 @@
 
 module tango.net.PKI;
 
-import tango.net.C.OpenSSL;
-import tango.time.Time;
-import tango.stdc.stringz;
+private import tango.time.Time;
+
+private import tango.stdc.stringz;
+
+private import tango.net.C.OpenSSL;
 
 /*******************************************************************************
 
