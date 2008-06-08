@@ -1110,12 +1110,17 @@ private class Hierarchy : Logger.Context
                 Return the instance of a Logger with the provided label. If
                 the instance does not exist, it is created at this time.
 
+                Note that an empty label is considered illegal, and will be
+                ignored.
+
         ***********************************************************************/
 
         final Logger lookup (char[] label)
         {
-                return inject (label, (char[] name)
-                                      {return new Logger (this, name);});
+                if (label.length)
+                    return inject (label, (char[] name)
+                                          {return new Logger (this, name);});
+                return null;
         }
 
         /***********************************************************************
