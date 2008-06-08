@@ -323,9 +323,12 @@ class Layout(T)
                       bool right;
                       int  width;
 
-                      // has minimum width?
-                      if (*s is ',')
+                      // has minimum or maximum width?
+                      if (*s is ',' || *s is '.')
                          {
+                         if (*s is '.')
+                             crop = true;
+
                          while (++s < end && *s is ' ') {}
                          if (*s is '-')
                             {
@@ -343,19 +346,6 @@ class Layout(T)
                          while (s < end && *s is ' ')
                                 ++s;
                          }
-                      else
-                         // has maximum width?
-                         if (*s is '.')
-                            {
-                            crop = true;
-                            while (++s < end && *s is ' ') {}
-                            while (*s >= '0' && *s <= '9')
-                                   width = width * 10 + *s++ -'0';
-
-                            // skip spaces
-                            while (s < end && *s is ' ')
-                                   ++s;
-                            }
 
                       T[] format;
 
@@ -390,10 +380,23 @@ class Layout(T)
                       {
                                 int padding = width - str.length;
 
-                                if (crop && padding < 0)
+                                if (crop)
                                    {
-                                   length += sink (str [0..width]);
-                                   length += sink ("...");
+                                   if (padding < 0)
+                                      {
+                                      if (left)
+                                         {
+                                         length += sink ("...");
+                                         length += sink (str [-padding..$]);
+                                         }
+                                      else
+                                         {
+                                         length += sink (str [0..width]);
+                                         length += sink ("...");
+                                         }
+                                      }
+                                   else
+                                       length += sink (str);
                                    }
                                 else
                                    {
