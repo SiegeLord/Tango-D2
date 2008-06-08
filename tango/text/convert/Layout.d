@@ -6,7 +6,7 @@
 
         version:        Initial release: 2005
 
-        author:         Kris
+        author:         Kris, Keinfarbton
 
         This module provides a general-purpose formatting system to
         convert values to text suitable for display. There is support
@@ -78,18 +78,18 @@ class Layout(T)
 
         public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
-                T* p = result.ptr;
+                T*  p = result.ptr;
+                int available = result.length;
 
                 uint sink (T[] s)
                 {
                         int len = s.length;
-                        if (len <= (result.ptr + result.length) - p)
-                           {
-                           p [0..len] = s;
-                           p += len;
-                           }
-                        else
-                           error ("Layout.vprint :: output buffer is full");
+                        if (len > available)
+                            len = available;
+
+                        available -= len;
+                        p [0..len] = s[0..len];
+                        p += len;
                         return len;
                 }
 
@@ -924,7 +924,7 @@ debug (Layout)
         {
                 auto layout = new Layout!(char);
 
-                layout.sprint (new char[3], "hi");
+                Cout (layout.sprint (new char[1], "hi")).newline;
                 Cout (layout ("{:d2}", 56)).newline;
                 Cout (layout ("{:f4}", 0.001)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
