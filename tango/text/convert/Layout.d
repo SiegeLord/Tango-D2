@@ -318,19 +318,22 @@ class Layout(T)
                       while (s < end && *s is ' ')
                              ++s;
 
+                      bool crop;
+                      bool left;
+                      bool right;
                       int  width;
-                      bool leftAlign;
 
-                      // has width?
+                      // has minimum width?
                       if (*s is ',')
                          {
                          while (++s < end && *s is ' ') {}
-
                          if (*s is '-')
                             {
-                            leftAlign = true;
+                            left = true;
                             ++s;
                             }
+                         else
+                            right = true;
 
                          // get width
                          while (*s >= '0' && *s <= '9')
@@ -340,6 +343,19 @@ class Layout(T)
                          while (s < end && *s is ' ')
                                 ++s;
                          }
+                      else
+                         // has maximum width?
+                         if (*s is '.')
+                            {
+                            crop = true;
+                            while (++s < end && *s is ' ') {}
+                            while (*s >= '0' && *s <= '9')
+                                   width = width * 10 + *s++ -'0';
+
+                            // skip spaces
+                            while (s < end && *s is ' ')
+                                   ++s;
+                            }
 
                       T[] format;
 
@@ -357,7 +373,7 @@ class Layout(T)
                       // insist on a closing brace
                       if (*s != '}')
                          {
-                         length += sink ("{missing or misplaced '}'}");
+                         length += sink ("{malformed format}");
                          continue;
                          }
 
@@ -374,16 +390,24 @@ class Layout(T)
                       {
                                 int padding = width - str.length;
 
-                                // if not left aligned, pad out with spaces
-                                if (! leftAlign && padding > 0)
-                                      length += spaces (sink, padding);
+                                if (crop && padding < 0)
+                                   {
+                                   length += sink (str [0..width]);
+                                   length += sink ("...");
+                                   }
+                                else
+                                   {
+                                   // if right aligned, pad out with spaces
+                                   if (right && padding > 0)
+                                       length += spaces (sink, padding);
 
-                                // emit formatted argument
-                                length += sink (str);
+                                   // emit formatted argument
+                                   length += sink (str);
 
-                                // finally, pad out on right
-                                if (leftAlign && padding > 0)
-                                    length += spaces (sink, padding);
+                                   // finally, pad out on right
+                                   if (left && padding > 0)
+                                       length += spaces (sink, padding);
+                                   }
                       }
 
                       // an astonishing number of typehacks needed to handle arrays :(
