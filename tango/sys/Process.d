@@ -61,8 +61,8 @@ debug (Process)
  * You can check whether the process is running or not with the isRunning()
  * method and you can get its process ID via the pid property.
  *
- * After you are done with the process of if you just want to wait for it to
- * end you need to call the wait() method, which will return once the process
+ * After you are done with the process, or if you just want to wait for it to
+ * end, you need to call the wait() method which will return once the process
  * is no longer running.
  *
  * To stop a running process you must use kill() method. If you do this you
