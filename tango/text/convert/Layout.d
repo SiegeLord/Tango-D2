@@ -181,90 +181,90 @@ class Layout(T)
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
 
-        version (GNU)
-                {
-                Arg[64] arglist = void;
-                int[64] intargs = void;
-                byte[64] byteargs = void;
-                long[64] longargs = void;
-                short[64] shortargs = void;
-                void[][64] voidargs = void;
-                real[64] realargs = void;
-                float[64] floatargs = void;
-                double[64] doubleargs = void;
-
-                foreach (i, arg; arguments)
+                version (GNU)
                         {
-                        static if (is(typeof(args.ptr)))
-                            arglist[i] = args.ptr;
-                        else
-                            arglist[i] = args;
-                        /* Since floating point types don't live on
-                         * the stack, they must be accessed by the
-                         * correct type. */
-                        bool converted = false;
-                        switch (arg.classinfo.name[9])
-                               {
-                               case TypeCode.FLOAT:
-                                    floatargs[i] = va_arg!(float)(args);
-                                    arglist[i] = &floatargs[i];
-                                    converted = true;
-                                    break;
-
-                               case TypeCode.DOUBLE:
-                                    doubleargs[i] = va_arg!(double)(args);
-                                    arglist[i] = &doubleargs[i];
-                                    converted = true;
-                                    break;
-
-                               case TypeCode.REAL:
-                                    realargs[i] = va_arg!(real)(args);
-                                    arglist[i] = &realargs[i];
-                                    converted = true;
-                                    break;
-
-                               default:
-                                    break;
+                        Arg[64] arglist = void;
+                        int[64] intargs = void;
+                        byte[64] byteargs = void;
+                        long[64] longargs = void;
+                        short[64] shortargs = void;
+                        void[][64] voidargs = void;
+                        real[64] realargs = void;
+                        float[64] floatargs = void;
+                        double[64] doubleargs = void;
+        
+                        foreach (i, arg; arguments)
+                                {
+                                static if (is(typeof(args.ptr)))
+                                    arglist[i] = args.ptr;
+                                else
+                                    arglist[i] = args;
+                                /* Since floating point types don't live on
+                                 * the stack, they must be accessed by the
+                                 * correct type. */
+                                bool converted = false;
+                                switch (arg.classinfo.name[9])
+                                       {
+                                       case TypeCode.FLOAT:
+                                            floatargs[i] = va_arg!(float)(args);
+                                            arglist[i] = &floatargs[i];
+                                            converted = true;
+                                            break;
+        
+                                       case TypeCode.DOUBLE:
+                                            doubleargs[i] = va_arg!(double)(args);
+                                            arglist[i] = &doubleargs[i];
+                                            converted = true;
+                                            break;
+        
+                                       case TypeCode.REAL:
+                                            realargs[i] = va_arg!(real)(args);
+                                            arglist[i] = &realargs[i];
+                                            converted = true;
+                                            break;
+        
+                                       default:
+                                            break;
+                                        }
+                                if (! converted)
+                                   {
+                                   switch (arg.tsize)
+                                          {
+                                          case 1:
+                                               byteargs[i] = va_arg!(byte)(args);
+                                               arglist[i] = &byteargs[i];
+                                               break;
+                                          case 2:
+                                               shortargs[i] = va_arg!(short)(args);
+                                               arglist[i] = &shortargs[i];
+                                               break;
+                                          case 4:
+                                               intargs[i] = va_arg!(int)(args);
+                                               arglist[i] = &intargs[i];
+                                               break;
+                                          case 8:
+                                               longargs[i] = va_arg!(long)(args);
+                                               arglist[i] = &longargs[i];
+                                               break;
+                                          case 16:
+                                               voidargs[i] = va_arg!(void[])(args);
+                                               arglist[i] = &voidargs[i];
+                                               break;
+                                          default:
+                                               assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
+                                          }
+                                   }
                                 }
-                        if (! converted)
-                           {
-                           switch (arg.tsize)
-                                  {
-                                  case 1:
-                                       byteargs[i] = va_arg!(byte)(args);
-                                       arglist[i] = &byteargs[i];
-                                       break;
-                                  case 2:
-                                       shortargs[i] = va_arg!(short)(args);
-                                       arglist[i] = &shortargs[i];
-                                       break;
-                                  case 4:
-                                       intargs[i] = va_arg!(int)(args);
-                                       arglist[i] = &intargs[i];
-                                       break;
-                                  case 8:
-                                       longargs[i] = va_arg!(long)(args);
-                                       arglist[i] = &longargs[i];
-                                       break;
-                                  case 16:
-                                       voidargs[i] = va_arg!(void[])(args);
-                                       arglist[i] = &voidargs[i];
-                                       break;
-                                  default:
-                                       assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
-                                  }
-                           }
                         }
-                }
-             else
-                {
-                Arg[64] arglist = void;
-                foreach (i, arg; arguments)
+                     else
                         {
-                        arglist[i] = args;
-                        args += (arg.tsize + int.sizeof - 1) & ~ (int.sizeof - 1);
+                        Arg[64] arglist = void;
+                        foreach (i, arg; arguments)
+                                {
+                                arglist[i] = args;
+                                args += (arg.tsize + int.sizeof - 1) & ~ (int.sizeof - 1);
+                                }
                         }
-                }
                 return parse (formatStr, arguments, arglist, sink);
         }
 
