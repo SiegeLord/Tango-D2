@@ -168,7 +168,7 @@ class HttpClient
 
                 paramsOut    = new HttpParams  (new Buffer (1024 * 4));
                 headersOut   = new HttpHeaders (new Buffer (1024 * 4));
-                cookiesOut   = new HttpCookies (headersOut);
+                cookiesOut   = new HttpCookies (headersOut, HttpHeader.Cookie);
 
                 // decode the host name (may take a second or two)
                 auto host = uri.getHost;

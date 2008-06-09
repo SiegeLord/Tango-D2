@@ -416,7 +416,8 @@ class HttpCookiesView : IWritable
 
 class HttpCookies
 {
-        private HttpHeaders headers;
+        private HttpHeaderName  name;
+        private HttpHeaders     headers;
 
         /**********************************************************************
 
@@ -426,9 +427,10 @@ class HttpCookies
 
         **********************************************************************/
 
-        this (HttpHeaders headers)
+        this (HttpHeaders headers, HttpHeaderName name = HttpHeader.SetCookie)
         {
                 this.headers = headers;
+                this.name = name;
         }
 
         /**********************************************************************
@@ -440,7 +442,7 @@ class HttpCookies
         void add (Cookie cookie)
         {
                 // add the cookie header via our callback
-                headers.add (HttpHeader.SetCookie, (IBuffer buf){cookie.produce (&buf.consume);});        
+                headers.add (name, (IBuffer buf){cookie.produce (&buf.consume);});        
         }
 }
 
