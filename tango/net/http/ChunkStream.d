@@ -69,7 +69,7 @@ class ChunkOutput : OutputFilter, Buffered
         {
                 char[8] tmp = void;
                 
-                output.append (Integer.format (tmp, src.length, Integer.Style.Hex))
+                output.append (Integer.format (tmp, src.length, "x"))
                       .append ("\r\n")
                       .append (src)
                       .append ("\r\n");

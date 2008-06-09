@@ -37,7 +37,7 @@ private import Util = tango.text.Util;
 
 private import tango.time.chrono.Gregorian;
 
-private import Int = tango.text.convert.Integer;
+private import Integer = tango.text.convert.Integer;
 
 /******************************************************************************
 
@@ -128,7 +128,7 @@ T[] format(T) (T[] output, Time t)
 
         T[] convert (T[] tmp, int i)
         {
-                return Int.format!(T) (tmp, i, Int.Style.Unsigned, Int.Flags.Zero);
+                return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
         }
 
 

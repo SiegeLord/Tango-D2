@@ -495,7 +495,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (int v, Integer.Style fmt=Integer.Style.Signed)
+        final Text append (int v, T[] fmt = null)
         {
                 return append (cast(long) v, fmt);
         }
@@ -506,7 +506,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Text append (long v, Integer.Style fmt=Integer.Style.Signed)
+        final Text append (long v, T[] fmt = null)
         {
                 T[64] tmp = void;
                 return append (Integer.format(tmp, v, fmt));
@@ -1387,7 +1387,7 @@ debug (UnitTest)
 
         assert (s.clear.append(1.2345, 4) == "1.2345");
 
-        assert (s.clear.append(0xf0, Integer.Style.Binary) == "11110000");
+        assert (s.clear.append(0xf0, "b") == "11110000");
 
         assert (s.clear.encode("one"d).toString == "one");
 

@@ -30,7 +30,7 @@ private import  tango.core.Exception;
 
 private import  Utf = tango.text.convert.Utf;
 
-private import  Float   = tango.text.convert.Float,
+private import  Float  = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
@@ -251,7 +251,7 @@ class Layout(T)
                                                arglist[i] = &voidargs[i];
                                                break;
                                           default:
-                                               assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
+                                               assert (false, "Unknown size: " ~ Number.toString (arg.tsize));
                                           }
                                    }
                                 }
@@ -654,7 +654,7 @@ class Layout(T)
                     format = def;
                 if (format[0] != 'd')
                     v &= mask;
-                return Integer.format2 (output, v, format);
+                return Integer.format (output, v, format);
         }
 
         /**********************************************************************
@@ -799,11 +799,11 @@ debug (UnitTest)
         assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
         assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
 
-        assert( Formatter( "{0:d7}", -123 ) == "-000123" );
+        assert( Formatter( "{0:d7}", -123 ) == "-0000123" );
         assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
-        assert( Formatter( "{0,7:d7}", -123 ) == "-000123" );
-        assert( Formatter( "{0,8:d7}", -123 ) == " -000123" );
-        assert( Formatter( "{0,5:d7}", -123 ) == "-000123" );
+        assert( Formatter( "{0,7:d7}", -123 ) == "-0000123" );
+        assert( Formatter( "{0,8:d7}", -123 ) == "-0000123" );
+        assert( Formatter( "{0,5:d7}", -123 ) == "-0000123" );
 
         assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
         assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );

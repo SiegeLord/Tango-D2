@@ -278,7 +278,7 @@ version (Full)
 
                 char[] formatInt (char[] tmp, int v, int minimum)
                 {
-                        auto num = Integer.format (tmp, v, Integer.Style.Unsigned);
+                        auto num = Integer.format (tmp, v, "u");
                         if ((minimum -= num.length) > 0)
                            {
                            auto p = tmp.ptr + tmp.length - num.length;

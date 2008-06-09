@@ -27,38 +27,6 @@ private import tango.core.Exception;
 
 /******************************************************************************
 
-        Style identifiers 
-
-******************************************************************************/
-
-enum Style
-{
-        Signed = 'd',                   /// signed decimal
-        Binary = 'b',                   /// binary output
-        Octal = 'o',                    /// octal output
-        Hex = 'x',                      /// lowercase hexadecimal
-        HexUpper = 'X',                 /// uppercase hexadecimal
-        Unsigned = 'u',                 /// unsigned integer
-}
-
-/******************************************************************************
-
-        Style flags 
-
-******************************************************************************/
-
-enum Flags
-{
-        None    = 0x00,                    /// no flags
-        Prefix  = 0x01,                    /// prefix value with type
-        Zero    = 0x02,                    /// prefix value with zeroes
-        Plus    = 0x04,                    /// prefix decimal with '+'
-        Space   = 0x08,                    /// prefix decimal with space
-        Throw   = 0x10,                    /// throw on output truncation
-}
-
-/******************************************************************************
-
         Parse an integer value from the provided 'digits' string. 
 
         The string is inspected for a sign and an optional radix 
@@ -111,195 +79,49 @@ long toLong(T) (T[] digits, uint radix=0)
 
 /******************************************************************************
 
-        Template wrapper to make life simpler. Returns a text version
+        Wrapper to make life simpler. Returns a text version
         of the provided value.
 
         See format() for details
 
 ******************************************************************************/
 
-char[] toString (long i, Style t=Style.Signed, Flags f=Flags.None)
+char[] toString (long i, char[] fmt = null)
 {
         char[66] tmp = void;
-        
-        return format (tmp, i, t, f).dup;
+        return format (tmp, i, fmt).dup;
 }
                
 /******************************************************************************
 
-        Template wrapper to make life simpler. Returns a text version
+        Wrapper to make life simpler. Returns a text version
         of the provided value.
 
         See format() for details
 
 ******************************************************************************/
 
-wchar[] toString16 (long i, Style t=Style.Signed, Flags f=Flags.None)
+wchar[] toString16 (long i, wchar[] fmt = null)
 {
         wchar[66] tmp = void;
-        
-        return format (tmp, i, t, f).dup;
+        return format (tmp, i, fmt).dup;
 }
                
 /******************************************************************************
 
-        Template wrapper to make life simpler. Returns a text version
+        Wrapper to make life simpler. Returns a text version
         of the provided value.
 
         See format() for details
 
 ******************************************************************************/
 
-dchar[] toString32 (long i, Style t=Style.Signed, Flags f=Flags.None)
+dchar[] toString32 (long i, dchar[] fmt = null)
 {
         dchar[66] tmp = void;
-        
-        return format (tmp, i, t, f).dup;
+        return format (tmp, i, fmt).dup;
 }
                
-/*******************************************************************************
-
-        Style numeric values into the provided output buffer. The
-        following types are supported:
-
-        Unsigned        - unsigned decimal
-        Signed          - signed decimal
-        Octal           - octal
-        Hex             - lowercase hexadecimal
-        HexUpper        - uppercase hexadecimal
-        Binary          - binary
-
-        Modifiers supported include:
-
-        Prefix          - prefix the conversion with a type identifier
-        Plus            - prefix positive decimals with a '+'
-        Space           - prefix positive decimals with one space
-        Zero            - left-pad the number with zeros
-        Throw           - throw an exception when output would be truncated
-
-        The provided 'dst' buffer should be sufficiently large
-        enough to house the output. A 64-element array is often
-        the maximum required (for a padded binary 64-bit string)
-
-*******************************************************************************/
-
-T[] format(T, U=long) (T[] dst, U i, Style fmt=Style.Signed, Flags flags=Flags.None)
-{return format!(T)(dst, i, fmt, flags);}
-
-T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
-{
-        T[]     prefix;
-        auto    len = dst.length;
-        
-        static T[] error (T[] msg)
-        {
-                if (1 & Flags.Throw)
-                    throw new IllegalArgumentException ("Integer.format :: invalid arguments");
-                 return msg;
-        }
-
-        // must have some buffer space to operate within! 
-        if (len)
-           {
-           uint radix;
-           T[]  numbers = "0123456789abcdef";
-
-           // pre-conversion setup
-           switch (cast(byte) fmt)
-                  {
-                  case 'd':
-                  case 'D':
-                  case 'g':
-                  case 'G':
-                       if (i < 0)
-                          {
-                          prefix = "-";
-                          i = -i;
-                          }
-                       else
-                          if (flags & Flags.Space)
-                              prefix = " ";
-                          else
-                             if (flags & Flags.Plus)
-                                 prefix = "+";
-                       // fall through!
-                  case 'u':
-                  case 'U':
-                       radix = 10;
-                       break;
-
-                  case 'b':
-                  case 'B':
-                       radix = 2;
-                       if (flags & Flags.Prefix)
-                           prefix = "0b";
-                       break;
-
-                  case 'o':
-                  case 'O':
-                       radix = 8;
-                       if (flags & Flags.Prefix)
-                           prefix = "0o";
-                       break;
-
-                  case 'x':
-                       radix = 16;
-                       if (flags & Flags.Prefix)
-                           prefix = "0x";
-                       break;
-
-                  case 'X':
-                       radix = 16;
-                       numbers = "0123456789ABCDEF";
-                       if (flags & Flags.Prefix)
-                           prefix = "0X";
-                       break;
-
-                  default:
-                        return error (cast(T[])"{unknown format '"~cast(T)fmt~"'}");
-                  }
-
-           // convert number to text
-           T* p = dst.ptr + len;
-           if (uint.max >= cast(ulong) i)
-              {
-              uint v = cast (uint) i;
-              do {
-                 *--p = numbers[v % radix];
-                 } while ((v /= radix) && --len);
-              }
-           else
-              {
-              ulong v = cast (ulong) i;
-              do {
-                 *--p = numbers[cast(uint) (v % radix)];
-                 } while ((v /= radix) && --len);
-              }
-           }
-        
-        // are we about to overflow?
-        if (len > prefix.length)
-           {
-           len -= prefix.length + 1;
-
-           // prefix number with zeros? 
-           if (flags & Flags.Zero)
-              {
-              dst [prefix.length .. len + prefix.length] = '0';
-              len = 0;
-              }
-
-           // write optional prefix string ...
-           dst [len .. len + prefix.length] = prefix[];
-           }
-        else
-           return error ("{output width too small}");
-
-        // return slice of provided output buffer
-        return dst [len .. $];                               
-} 
-
-
 /*******************************************************************************
 
         Supports format specifications via an array, where format follows
@@ -338,10 +160,40 @@ T[] format(T) (T[] dst, long i, Style fmt=Style.Signed, Flags flags=Flags.None)
 
 *******************************************************************************/
 
-T[] format2(T, U=long) (T[] dst, U i, T[] format = null)
-{return format2!(T)(dst, i, format);}
+T[] format(T, U=long) (T[] dst, U i, T[] fmt = null)
+{return format!(T)(dst, i, fmt);}
 
-T[] format2(T) (T[] dst, long i, T[] format = null)
+T[] format(T) (T[] dst, long i, T[] fmt = null)
+{
+        byte    pre,
+                type;
+        int     width;
+
+        decode (fmt, type, pre, width);
+        return formatter (dst, i, type, pre, width);
+} 
+
+private void decode(T) (T[] fmt, ref byte type, out byte pre, out int width)
+{
+        if (fmt.length is 0)
+            type = 'd';
+        else
+           {
+           type = fmt[0];
+           if (fmt.length > 1)
+              {
+              auto p = &fmt[1];
+              for (int j=1; j < fmt.length; ++j, ++p)
+                   if (*p >= '0' && *p <= '9')
+                       width = width * 10 + (*p - '0');
+                   else
+                      pre = *p;
+              }
+           }
+} 
+
+
+T[] formatter(T) (T[] dst, long i, byte type, byte pre, int width)
 {
         const T[] lower = "0123456789abcdef";
         const T[] upper = "0123456789ABCDEF";
@@ -365,28 +217,12 @@ T[] format2(T) (T[] dst, long i, T[] format = null)
                 {16, "0X", upper},
                 ];
 
-        int   width;
-        ubyte pre, index;
+        ubyte index;
         int   len = dst.length;
 
-        // must have some output space
         if (len)
            {
-           if (format.length is 0)
-               format = "d";
-           else
-              if (format.length > 1)
-                 {
-                 auto p = &format[1];
-                 for (int j=1; j < format.length; ++j, ++p)
-                      if (*p >= '0' && *p <= '9')
-                          width = width * 10 + (*p - '0');
-                      else
-                         pre = *p;
-                 }
-
-
-           switch (format[0])
+           switch (type)
                   {
                   case 'd':
                   case 'D':
@@ -427,12 +263,12 @@ T[] format2(T) (T[] dst, long i, T[] format = null)
                        break;
 
                   default:
-                        return "{unknown format '"~format[0]~"'}";
+                        return cast(T[])"{unknown format '"~cast(T)type~"'}";
                   }
 
            auto info = &formats[index];
-           auto radix = info.radix;
            auto numbers = info.numbers;
+           auto radix = info.radix;
 
            // convert number to text
            auto p = dst.ptr + len;
@@ -459,8 +295,8 @@ T[] format2(T) (T[] dst, long i, T[] format = null)
               // prefix number with zeros? 
               if (width)
                  {
-                 int min = dst.length - width - prefix.length;
-                 while (len > min && len > 0)
+                 width = dst.length - width - prefix.length;
+                 while (len > width && len > 0)
                        {
                        *--p = '0';
                        --len;
@@ -756,23 +592,44 @@ debug (UnitTest)
         assert(parse("0b10", 2) == 0b10);
         assert(parse("0o10", 8) == 010);
 
-        // format tests
-        assert (format (tmp, 12345L) == "12345");
-        assert (format (tmp, 0) == "0");
-        assert (format (tmp, 0x10101L, Style.Hex) == "10101");
-        assert (format (tmp, 0xfafaL, Style.Hex) == "fafa");
-        assert (format (tmp, 0xfafaL, Style.HexUpper, Flags.Prefix) == "0XFAFA");
-        assert (format (tmp, -1L, Style.HexUpper, Flags.Prefix) == "0XFFFFFFFFFFFFFFFF");
-        assert (format (tmp, -101L) == "-101");
-        assert (format (tmp, 101L, Style.Signed, Flags.Plus) == "+101");
-        assert (format (tmp, 101L, Style.Signed, Flags.Space) == " 101");
-        assert (format (tmp[0..8], 0x5L, Style.Binary, Flags.Prefix | Flags.Zero) == "0b000101");
+        // revised tests
+        assert (format(tmp, 10, "d") == "10");
+        assert (format(tmp, -10, "d") == "-10");
 
-        assert (format (tmp[0..8], -1, Style.Binary, Flags.Prefix | Flags.Zero) == "{output width too small}");
-        assert (format (tmp[0..2], 0x3, Style.Binary, Flags.Throw) == "11");
-        assert (format (tmp[0..4], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b11");
-        assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Prefix | Flags.Zero | Flags.Throw) == "0b011");
-        assert (format (tmp[0..5], 0x3, Style.Binary, Flags.Zero | Flags.Throw) == "00011");
+        assert (format(tmp, 10L, "u") == "10");
+        assert (format(tmp, 10L, "U") == "10");
+        assert (format(tmp, 10L, "g") == "10");
+        assert (format(tmp, 10L, "G") == "10");
+        assert (format(tmp, 10L, "o") == "12");
+        assert (format(tmp, 10L, "O") == "12");
+        assert (format(tmp, 10L, "b") == "1010");
+        assert (format(tmp, 10L, "B") == "1010");
+        assert (format(tmp, 10L, "x") == "a");
+        assert (format(tmp, 10L, "X") == "A");
+
+        assert (format(tmp, 10L, "d+") == "+10");
+        assert (format(tmp, 10L, "d ") == " 10");
+        assert (format(tmp, 10L, "d#") == "10");
+        assert (format(tmp, 10L, "x#") == "0xa");
+        assert (format(tmp, 10L, "X#") == "0XA");
+        assert (format(tmp, 10L, "b#") == "0b1010");
+        assert (format(tmp, 10L, "o#") == "0o12");
+
+        assert (format(tmp, 10L, "d1") == "10");
+        assert (format(tmp, 10L, "d8") == "00000010");
+        assert (format(tmp, 10L, "x8") == "0000000a");
+        assert (format(tmp, 10L, "X8") == "0000000A");
+        assert (format(tmp, 10L, "b8") == "00001010");
+        assert (format(tmp, 10L, "o8") == "00000012");
+
+        assert (format(tmp, 10L, "d1#") == "10");
+        assert (format(tmp, 10L, "d6#") == "000010");
+        assert (format(tmp, 10L, "x6#") == "0x00000a");
+        assert (format(tmp, 10L, "X6#") == "0X00000A");
+
+        char[8] tmp1;
+        assert (format(tmp1, 10L, "b12#") == "0b001010");
+        assert (format(tmp1, 10L, "o12#") == "0o000012");
         }
 }
 
@@ -783,48 +640,47 @@ debug (UnitTest)
 debug (Integer)
 {
         import tango.io.Stdout;
-        import tango.io.Console;
 
         void main()
         {
                 char[8] tmp;
 
-                Stdout.formatln ("d '{}'", format2(tmp, 10));
-                Stdout.formatln ("d '{}'", format2(tmp, -10));
+                Stdout.formatln ("d '{}'", format(tmp, 10));
+                Stdout.formatln ("d '{}'", format(tmp, -10));
 
-                Stdout.formatln ("u '{}'", format2(tmp, 10L, "u"));
-                Stdout.formatln ("U '{}'", format2(tmp, 10L, "U"));
-                Stdout.formatln ("g '{}'", format2(tmp, 10L, "g"));
-                Stdout.formatln ("G '{}'", format2(tmp, 10L, "G"));
-                Stdout.formatln ("o '{}'", format2(tmp, 10L, "o"));
-                Stdout.formatln ("O '{}'", format2(tmp, 10L, "O"));
-                Stdout.formatln ("b '{}'", format2(tmp, 10L, "b"));
-                Stdout.formatln ("B '{}'", format2(tmp, 10L, "B"));
-                Stdout.formatln ("x '{}'", format2(tmp, 10L, "x"));
-                Stdout.formatln ("X '{}'", format2(tmp, 10L, "X"));
+                Stdout.formatln ("u '{}'", format(tmp, 10L, "u"));
+                Stdout.formatln ("U '{}'", format(tmp, 10L, "U"));
+                Stdout.formatln ("g '{}'", format(tmp, 10L, "g"));
+                Stdout.formatln ("G '{}'", format(tmp, 10L, "G"));
+                Stdout.formatln ("o '{}'", format(tmp, 10L, "o"));
+                Stdout.formatln ("O '{}'", format(tmp, 10L, "O"));
+                Stdout.formatln ("b '{}'", format(tmp, 10L, "b"));
+                Stdout.formatln ("B '{}'", format(tmp, 10L, "B"));
+                Stdout.formatln ("x '{}'", format(tmp, 10L, "x"));
+                Stdout.formatln ("X '{}'", format(tmp, 10L, "X"));
 
-                Stdout.formatln ("d+ '{}'", format2(tmp, 10L, "d+"));
-                Stdout.formatln ("ds '{}'", format2(tmp, 10L, "d "));
-                Stdout.formatln ("d# '{}'", format2(tmp, 10L, "d#"));
-                Stdout.formatln ("x# '{}'", format2(tmp, 10L, "x#"));
-                Stdout.formatln ("X# '{}'", format2(tmp, 10L, "X#"));
-                Stdout.formatln ("b# '{}'", format2(tmp, 10L, "b#"));
-                Stdout.formatln ("o# '{}'", format2(tmp, 10L, "o#"));
+                Stdout.formatln ("d+ '{}'", format(tmp, 10L, "d+"));
+                Stdout.formatln ("ds '{}'", format(tmp, 10L, "d "));
+                Stdout.formatln ("d# '{}'", format(tmp, 10L, "d#"));
+                Stdout.formatln ("x# '{}'", format(tmp, 10L, "x#"));
+                Stdout.formatln ("X# '{}'", format(tmp, 10L, "X#"));
+                Stdout.formatln ("b# '{}'", format(tmp, 10L, "b#"));
+                Stdout.formatln ("o# '{}'", format(tmp, 10L, "o#"));
 
-                Stdout.formatln ("d1 '{}'", format2(tmp, 10L, "d1"));
-                Stdout.formatln ("d8 '{}'", format2(tmp, 10L, "d8"));
-                Stdout.formatln ("x8 '{}'", format2(tmp, 10L, "x8"));
-                Stdout.formatln ("X8 '{}'", format2(tmp, 10L, "X8"));
-                Stdout.formatln ("b8 '{}'", format2(tmp, 10L, "b8"));
-                Stdout.formatln ("o8 '{}'", format2(tmp, 10L, "o8"));
+                Stdout.formatln ("d1 '{}'", format(tmp, 10L, "d1"));
+                Stdout.formatln ("d8 '{}'", format(tmp, 10L, "d8"));
+                Stdout.formatln ("x8 '{}'", format(tmp, 10L, "x8"));
+                Stdout.formatln ("X8 '{}'", format(tmp, 10L, "X8"));
+                Stdout.formatln ("b8 '{}'", format(tmp, 10L, "b8"));
+                Stdout.formatln ("o8 '{}'", format(tmp, 10L, "o8"));
 
-                Stdout.formatln ("d1# '{}'", format2(tmp, 10L, "d1#"));
-                Stdout.formatln ("d6# '{}'", format2(tmp, 10L, "d6#"));
-                Stdout.formatln ("x6# '{}'", format2(tmp, 10L, "x6#"));
-                Stdout.formatln ("X6# '{}'", format2(tmp, 10L, "X6#"));
+                Stdout.formatln ("d1# '{}'", format(tmp, 10L, "d1#"));
+                Stdout.formatln ("d6# '{}'", format(tmp, 10L, "d6#"));
+                Stdout.formatln ("x6# '{}'", format(tmp, 10L, "x6#"));
+                Stdout.formatln ("X6# '{}'", format(tmp, 10L, "X6#"));
 
-                Stdout.formatln ("b12# '{}'", format2(tmp, 10L, "b12#"));
-                Stdout.formatln ("o12# '{}'", format2(tmp, 10L, "o12#"));
+                Stdout.formatln ("b12# '{}'", format(tmp, 10L, "b12#"));
+                Stdout.formatln ("o12# '{}'", format(tmp, 10L, "o12#"));
         }
 }
 

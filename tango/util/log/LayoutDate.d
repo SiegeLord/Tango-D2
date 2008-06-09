@@ -86,6 +86,6 @@ public class LayoutDate : Appender.Layout
 
         private char[] convert (char[] tmp, int i)
         {
-                return Integer.format (tmp, cast(long) i, Integer.Style.Unsigned, Integer.Flags.Zero);
+                return Integer.formatter (tmp, cast(long) i, 'u', 0, 8);
         }
 }
