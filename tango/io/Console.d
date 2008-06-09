@@ -469,18 +469,21 @@ struct Console
 
                                 assert (handle_ < 3);
                                 handle = GetStdHandle (id[handle_]);
-                                if (handle is null)
+                                if (handle is null || handle is INVALID_HANDLE_VALUE)
                                     handle = CreateFileA (f[handle_].ptr, 
                                              GENERIC_READ | GENERIC_WRITE,  
                                              FILE_SHARE_READ | FILE_SHARE_WRITE, 
                                              null, OPEN_EXISTING, 0, cast(HANDLE) 0);
-                                if (handle is null)
-                                    error ();
 
-                                // are we redirecting?
-                                DWORD mode;
-                                if (! GetConsoleMode (handle, &mode))
-                                      redirected = true;
+                                // allow invalid handles to remain, since it
+                                // may be patched later in some special cases
+                                if (handle != INVALID_HANDLE_VALUE)
+                                   {
+                                   // are we redirecting?
+                                   DWORD mode;
+                                   if (! GetConsoleMode (handle, &mode))
+                                         redirected = true;
+                                   }
                         }
 
                         /*******************************************************
