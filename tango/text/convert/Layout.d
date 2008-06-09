@@ -251,7 +251,7 @@ class Layout(T)
                                                arglist[i] = &voidargs[i];
                                                break;
                                           default:
-                                               assert (false, "Unknown size: " ~ Number.toString (arg.tsize));
+                                               assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
                                           }
                                    }
                                 }
