@@ -559,22 +559,22 @@ class Layout(T)
                             return integer (result, *cast(byte*) p, format, ubyte.max);
 
                        case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format, ubyte.max, 'u');
+                            return integer (result, *cast(ubyte*) p, format, ubyte.max, "u");
 
                        case TypeCode.SHORT:
                             return integer (result, *cast(short*) p, format, ushort.max);
 
                        case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format, ushort.max, 'u');
+                            return integer (result, *cast(ushort*) p, format, ushort.max, "u");
 
                        case TypeCode.INT:
                             return integer (result, *cast(int*) p, format, uint.max);
 
                        case TypeCode.UINT:
-                            return integer (result, *cast(uint*) p, format, uint.max, 'u');
+                            return integer (result, *cast(uint*) p, format, uint.max, "u");
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(ulong*) p, format, ulong.max, 'u');
+                            return integer (result, *cast(ulong*) p, format, ulong.max, "u");
 
                        case TypeCode.LONG:
                             return integer (result, *cast(long*) p, format, ulong.max);
@@ -598,7 +598,7 @@ class Layout(T)
                             return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, size_t.max, 'x');
+                            return integer (result, *cast(size_t*) p, format, size_t.max, "x");
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
@@ -648,20 +648,13 @@ class Layout(T)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T style = 'd')
+        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T[] def="d")
         {
-                Integer.Flags flags;
-                uint          width = output.length;
-
-                if (parseGeneric (format, width, style))
-                    if (width <= output.length)
-                       {
-                       output = output [0 .. width];
-                       flags |= flags.Zero;
-                       }
-                if (style != 'd')
+                if (format.length is 0)
+                    format = def;
+                if (format[0] != 'd')
                     v &= mask;
-                return Integer.format (output, v, cast(Integer.Style) style, flags);
+                return Integer.format2 (output, v, format);
         }
 
         /**********************************************************************
@@ -906,6 +899,7 @@ debug (Layout)
                 Cout (layout.sprint (new char[10], "{.-4}", "hello")).newline;
 
                 Cout (layout ("{:d2}", 56)).newline;
+                Cout (layout ("{:d4}", cast(byte) -56)).newline;
                 Cout (layout ("{:f4}", 0.001)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 0.001)).newline;
