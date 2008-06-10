@@ -1,0 +1,1154 @@
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Apr 2008: Initial release
+
+        authors:        Kris
+
+        Based upon Doug Lea's Java collection package
+
+*******************************************************************************/
+
+module tango.util.container.HashMap;
+
+private import tango.util.container.Slink;
+
+public  import tango.util.container.Container;
+
+private import tango.util.container.model.IContainer;
+
+/*******************************************************************************
+
+        Hash table implementation of a Map
+
+        ---
+        Iterator iterator ()
+        IteratorMatch iterator (V value)
+        int opApply (int delegate(ref V value) dg)
+        int opApply (int delegate(ref K key, ref V value) dg)
+
+        bool get (K key, ref V element)
+        bool keyOf (V value, ref K key)
+        bool contains (V element)
+        bool containsPair (K key, V element)
+
+        bool removeKey (K key)
+        bool take (ref V element)
+        bool take (K key, ref V element)
+        uint remove (V element, bool all)
+        uint remove (IContainer!(V) e, bool all)
+        uint replace (V oldElement, V newElement, bool all)
+        bool replacePair (K key, V oldElement, V newElement)
+
+        bool add (K key, V element)
+        bool opIndexAssign (V element, K key)
+        V*   opIn (K key)
+
+        uint size ()
+        bool isEmpty ()
+        V[] toArray (V[] dst)
+        HashMap dup ()
+        HashMap clear ()
+        HashMap reset ()
+        uint buckets ()
+        float threshold ()
+        void buckets (uint cap)
+        void threshold (float desired)
+        Allocator allocator()
+        ---
+
+*******************************************************************************/
+
+class HashMap (K, V, alias Hash = Container.hash, 
+                     alias Reap = Container.reap, 
+                     alias Heap = Container.Collect) 
+                     : IContainer!(V)
+{
+        // bucket types
+        private alias Slink!(V, K) Type;
+        private alias Type         *Ref;
+
+        // allocator type
+        private alias Heap!(Type)  Alloc;
+
+        // each table entry is a linked list, or null
+        private Ref                table[];
+        
+        // number of elements contained
+        private uint               count;
+
+        // the threshold load factor
+        private float              loadFactor;
+
+        // configured heap manager
+        private Alloc              heap;
+        
+        // mutation tag updates on each change
+        private uint               mutation;
+
+        /***********************************************************************
+
+                Construct a HashMap instance
+
+        ***********************************************************************/
+
+        this (float f = Container.defaultLoadFactor)
+        {
+                loadFactor = f;
+        }
+
+        /***********************************************************************
+
+                Clean up when deleted
+
+        ***********************************************************************/
+
+        ~this ()
+        {
+                reset;
+        }
+
+        /***********************************************************************
+
+                Return the configured allocator
+                
+        ***********************************************************************/
+
+        final Alloc allocator ()
+        {
+                return heap;
+        }
+
+        /***********************************************************************
+
+                Return a generic iterator for contained elements
+                
+        ***********************************************************************/
+
+        final Iterator iterator ()
+        {
+                Iterator i = void;
+                i.mutation = mutation;
+                i.table = table;
+                i.owner = this;
+                i.cell = null;
+                i.row = 0;
+                return i;
+        }
+
+        /***********************************************************************
+
+                Return an iterator which filters on the provided key
+                
+        ***********************************************************************/
+
+        final IteratorMatch iterator (V value)
+        {
+                IteratorMatch m = void;
+                m.host = iterator;
+                m.match = value;
+                return m;
+        }
+        
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        final int opApply (int delegate(ref K key, ref V value) dg)
+        {
+                auto freach = iterator.freach;
+                return freach.opApply (dg);
+        }
+
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        final int opApply (int delegate(ref V value) dg)
+        {
+                auto freach = iterator.freach;
+                return freach.opApply ((ref K k, ref V v) {return dg(v);});
+        }
+
+        /***********************************************************************
+
+                Return the number of elements contained
+                
+        ***********************************************************************/
+
+        final uint size ()
+        {
+                return count;
+        }
+        
+        /***********************************************************************
+
+                Add a new element to the set. Does not add if there is an
+                equivalent already present. Returns true where an element
+                is added, false where it already exists (and was possibly
+                updated).
+                
+                Time complexity: O(1) average; O(n) worst.
+                
+        ***********************************************************************/
+
+        final bool add (K key, V element)
+        {
+                if (table is null)
+                    resize (Container.defaultInitialBuckets);
+
+                auto hd = &table [Hash (key, table.length)];
+                auto node = *hd;
+                
+                if (node is null)
+                   {
+                   *hd = heap.allocate.set (key, element, null);
+                   increment;
+                   }
+                else
+                   {
+                   auto p = node.findKey (key);
+                   if (p)
+                      {
+                      if (element != p.value)
+                         {
+                         p.value = element;
+                         mutate;
+                         }
+                      return false;
+                      }
+                   else
+                      {
+                      *hd = heap.allocate.set (key, element, node);
+                      increment;
+
+                      // we only check load factor on add to nonempty bin
+                      checkLoad; 
+                      }
+                   }
+                return true;
+        }
+
+        /***********************************************************************
+
+                Return the element associated with key
+
+                param: a key
+                param: a value reference (where returned value will reside)
+                Returns: whether the key is contained or not
+        
+        ************************************************************************/
+
+        final bool get (K key, ref V element)
+        {
+                if (count)
+                   {
+                   auto p = table [Hash (key, table.length)];
+                   if (p && (p = p.findKey(key)) !is null)
+                      {
+                      element = p.value;
+                      return true;
+                      }
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Return the element associated with key
+
+                param: a key
+                Returns: a pointer to the located value, or null if not found
+        
+        ************************************************************************/
+
+        final V* opIn (K key)
+        {
+                if (count)
+                   {
+                   auto p = table [Hash (key, table.length)];
+                   if (p && (p = p.findKey(key)) !is null)
+                       return &p.value;
+                   }
+                return null;
+        }
+
+        /***********************************************************************
+
+                Does this set contain the given element?
+        
+                Time complexity: O(1) average; O(n) worst
+                
+        ***********************************************************************/
+
+        final bool contains (V element)
+        {
+                return instances (element) > 0;
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(n).
+        
+        ************************************************************************/
+        
+        final bool keyOf (V value, ref K key)
+        {
+                if (count)
+                    foreach (list; table)
+                            if (list)
+                               {
+                               auto p = list.find (value);
+                               if (p)
+                                  {
+                                  key = p.key;
+                                  return true;
+                                  }
+                               }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(1) average; O(n) worst.
+                
+        ***********************************************************************/
+        
+        final bool containsKey (K key)
+        {
+                if (count)
+                   {
+                   auto p = table[Hash (key, table.length)];
+                   if (p && p.findKey(key))
+                       return true;
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(1) average; O(n) worst.
+        
+        ***********************************************************************/
+        
+        final bool containsPair (K key, V element)
+        {
+                if (count)
+                   {                    
+                   auto p = table[Hash (key, table.length)];
+                   if (p && p.findPair (key, element))
+                       return true;
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Make an independent copy of the container. Does not clone
+                elements
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        final HashMap dup ()
+        {
+                auto clone = new HashMap!(K, V, Hash, Reap, Heap) (loadFactor);
+
+                if (count)
+                   {
+                   clone.buckets (buckets);
+
+                   foreach (key, value; iterator.freach)
+                            clone.add (key, value);
+                   }
+                return clone;
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(1) average; O(n) worst.
+        
+        ***********************************************************************/
+        
+        final bool removeKey (K key)
+        {
+                V value;
+
+                return take (key, value);
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(1) average; O(n) worst.
+        
+        ***********************************************************************/
+        
+        final bool replaceKey (K key, K replace)
+        {
+                if (count)
+                   {
+                   auto h = Hash (key, table.length);
+                   auto hd = table[h];
+                   auto trail = hd;
+                   auto p = hd;
+
+                   while (p)
+                         {
+                         auto n = p.next;
+                         if (key == p.key)
+                            {
+                            if (p is hd)
+                                table[h] = n;
+                            else
+                               trail.detachNext;
+                            
+                            // inject into new location
+                            h = Hash (replace, table.length);
+                            table[h] = p.set (replace, p.value, table[h]);
+                            return true;
+                            }
+                         else
+                            {
+                            trail = p;
+                            p = n;
+                            }
+                         }
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Time complexity: O(1) average; O(n) worst.
+        
+        ***********************************************************************/
+        
+        final bool replacePair (K key, V oldElement, V newElement)
+        {
+                if (count)
+                   {
+                   auto p = table [Hash (key, table.length)];
+                   if (p)
+                      {
+                      auto c = p.findPair (key, oldElement);
+                      if (c)
+                         {
+                         c.value = newElement;
+                         mutate;
+                         return true;
+                         }
+                      }
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Remove and expose the first element. Returns false when no
+                more elements are contained
+        
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final bool take (ref V element)
+        {
+                if (count)
+                    foreach (ref list; table)
+                             if (list)
+                                {
+                                auto p = list;
+                                element = p.value;
+                                list = p.next;
+                                decrement (p);
+                                return true;
+                                }
+                return false;
+        }
+
+        /***********************************************************************
+
+                Remove and expose the element associated with key
+
+                param: a key
+                param: a value reference (where returned value will reside)
+                Returns: whether the key is contained or not
+        
+                Time complexity: O(1) average, O(n) worst
+
+        ***********************************************************************/
+        
+        final bool take (K key, ref V value)
+        {
+                if (count)
+                   {
+                   auto p = &table [Hash (key, table.length)];
+                   auto n = *p;
+
+                   while ((n = *p) !is null)
+                           if (key == n.key)
+                              {
+                              *p = n.next;
+                              value = n.value;
+                              decrement (n);
+                              return true;
+                              } 
+                           else
+                              p = &n.next;
+                   }
+                return false;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final bool opIndexAssign (V element, K key)
+        {
+                return add (key, element);
+        }
+
+        /***********************************************************************
+
+        ************************************************************************/
+
+        final uint remove (IContainer!(V) e, bool all = false)
+        {
+                int i = count;
+                foreach (value; e)
+                         remove (value, all);
+                return i - count;
+        }
+
+        /***********************************************************************
+
+                Removes element instances, and returns the number of elements
+                removed
+                
+                Time complexity: O(1) average; O(n) worst
+        
+        ************************************************************************/
+
+        final uint remove (V element, bool all = false)
+        {
+                auto i = count;
+                
+                if (i)
+                    foreach (ref node; table)
+                            {                         
+                            auto p = node;
+                            auto trail = node;
+
+                            while (p)
+                                  {     
+                                  auto n = p.next;
+                                  if (element == p.value)
+                                     {
+                                     decrement (p);
+                                     if (p is node)
+                                        {
+                                        node = n;
+                                        trail = n;
+                                        }
+                                     else
+                                        trail.next = n;
+
+                                     if (! all)
+                                           return i - count;
+                                     else
+                                        p = n;
+                                     }
+                                  else
+                                     {
+                                     trail = p;
+                                     p = n;
+                                     }
+                                  }
+                            }
+
+                return i - count;
+        }
+
+        /***********************************************************************
+
+                Replace instances of oldElement with newElement, and returns
+                the number of replacements
+
+                Time complexity: O(n).
+                
+        ************************************************************************/
+
+        final uint replace (V oldElement, V newElement, bool all = false)
+        {
+                uint i;
+                
+                if (count && oldElement != newElement)
+                    foreach (node; table)
+                             while (node && (node = node.find(oldElement)) !is null)
+                                   {
+                                   ++i;
+                                   mutate;
+                                   node.value = newElement;
+                                   if (! all)
+                                         return i;
+                                   }
+                return i;
+        }
+        
+        /***********************************************************************
+
+                Clears the HashMap contents. Various attributes are
+                retained, such as the internal table itself. Invoke
+                reset() to drop everything.
+
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        final HashMap clear ()
+        {
+                return clear (false);
+        }
+
+        /***********************************************************************
+
+                Reset the HashMap contents. This releases more memory 
+                than clear() does
+
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        final HashMap reset ()
+        {
+                clear (true);
+                heap.collect (table);
+                table = null;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Return the number of buckets
+
+                Time complexity: O(1)
+
+        ***********************************************************************/
+
+        final uint buckets ()
+        {
+                return table ? table.length : 0;
+        }
+
+        /***********************************************************************
+
+                Set the desired number of buckets in the hash table. Any 
+                value greater than or equal to one is OK.
+
+                If different than current buckets, causes a version change
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final void buckets (uint cap)
+        {
+                if (cap < Container.defaultInitialBuckets)
+                    cap = Container.defaultInitialBuckets;
+
+                if (cap !is buckets)
+                    resize (cap);
+        }
+
+        /***********************************************************************
+
+                Set the number of buckets for the given threshold
+                and resize as required
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final void buckets (uint cap, float threshold)
+        {
+                loadFactor = threshold;
+                buckets (cast(int)(cap / threshold) + 1);
+        }
+
+        /***********************************************************************
+
+                Return the current load factor threshold
+
+                The Hash table occasionally checka against the load factor
+                resizes itself if it has gone past it.
+
+                Time complexity: O(1)
+
+        ***********************************************************************/
+
+        final float threshold ()
+        {
+                return loadFactor;
+        }
+
+        /***********************************************************************
+
+                Set the resize threshold, and resize as required
+                Set the current desired load factor. Any value greater 
+                than 0 is OK. The current load is checked against it, 
+                possibly causing a resize.
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        final void threshold (float desired)
+        {
+                assert (desired > 0.0);
+                loadFactor = desired;
+                if (table)
+                    checkLoad;
+        }
+
+        /***********************************************************************
+
+                Copy and return the contained set of values in an array, 
+                using the optional dst as a recipient (which is resized 
+                as necessary).
+
+                Returns a slice of dst representing the container values.
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        final V[] toArray (V[] dst = null)
+        {
+                if (dst.length < count)
+                    dst.length = count;
+
+                int i = 0;
+                foreach (k, v; this)
+                         dst[i++] = v;
+                return dst [0 .. count];                        
+        }
+
+        /***********************************************************************
+
+                Is this container empty?
+                
+                Time complexity: O(1)
+                
+        ***********************************************************************/
+
+        final bool isEmpty ()
+        {
+                return count is 0;
+        }
+
+        /***********************************************************************
+
+                Sanity check
+
+        ***********************************************************************/
+                        
+        final HashMap check ()
+        {
+                assert(!(table is null && count !is 0));
+                assert((table is null || table.length > 0));
+                assert(loadFactor > 0.0f);
+
+                if (table)
+                   {
+                   int c = 0;
+                   for (int i=0; i < table.length; ++i)
+                        for (auto p = table[i]; p; p = p.next)
+                            {
+                            ++c;
+                            assert(contains(p.value));
+                            assert(containsKey(p.key));
+                            assert(instances(p.value) >= 1);
+                            assert(containsPair(p.key, p.value));
+                            assert(Hash (p.key, table.length) is i);
+                            }
+                   assert(c is count);
+                   }
+                return this;
+        }
+
+        /***********************************************************************
+
+                Count the element instances in the set (there can only be
+                0 or 1 instances in a Set).
+                
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        private uint instances (V element)
+        {
+                uint c = 0;
+                foreach (node; table)
+                         if (node)
+                             c += node.count (element);
+                return c;
+        }
+
+        /***********************************************************************
+
+                 Check to see if we are past load factor threshold. If so,
+                 resize so that we are at half of the desired threshold.
+                 
+        ***********************************************************************/
+
+        private HashMap checkLoad ()
+        {
+                float fc = count;
+                float ft = table.length;
+                if (fc / ft > loadFactor)
+                    resize (2 * cast(int)(fc / loadFactor) + 1);
+                return this;
+        }
+
+        /***********************************************************************
+
+                resize table to new capacity, rehashing all elements
+                
+        ***********************************************************************/
+
+        private void resize (uint newCap)
+        {
+                // Stdout.formatln ("resize {}", newCap);
+                auto newtab = heap.allocate (newCap);
+                mutate;
+
+                foreach (bucket; table)
+                         while (bucket)
+                               {
+                               auto n = bucket.next;
+                               auto h = Hash (bucket.key, newCap);
+                               bucket.next = newtab[h];
+                               newtab[h] = bucket;
+                               bucket = n;
+                               }
+
+                // release the prior table and assign new one
+                heap.collect (table);
+                table = newtab;
+        }
+
+        /***********************************************************************
+
+                Remove the indicated node. We need to traverse buckets
+                for this, since we're singly-linked only. Better to save
+                the per-node memory than to gain a little on each remove
+
+                Used by iterators only
+                 
+        ***********************************************************************/
+
+        private void removeNode (Ref node, Ref* list)
+        {
+                auto p = list;
+                auto n = *p;
+
+                while ((n = *p) !is null)
+                       if (n is node)
+                          {
+                          *p = n.next;
+                          decrement (n);
+                          break;
+                          } 
+                       else
+                          p = &n.next;
+        }
+
+        /***********************************************************************
+
+                Clears the HashMap contents. Various attributes are
+                retained, such as the internal table itself. Invoke
+                reset() to drop everything.
+
+                Time complexity: O(n)
+                
+        ***********************************************************************/
+
+        private final HashMap clear (bool all)
+        {
+                mutate;
+
+                // collect each node if we can't collect all at once
+                if (heap.collect(all) is false)
+                    foreach (v; table)
+                             while (v)
+                                   {
+                                   auto n = v.next;
+                                   decrement (v);
+                                   v = n;
+                                   }
+
+                // retain table, but remove bucket chains
+                foreach (ref v; table)
+                         v = null;
+
+                count = 0;
+                return this;
+        }
+
+        /***********************************************************************
+
+                new element was added
+                
+        ***********************************************************************/
+
+        private void increment ()
+        {
+                ++mutation;
+                ++count;
+        }
+        
+        /***********************************************************************
+
+                element was removed
+                
+        ***********************************************************************/
+
+        private void decrement (Ref p)
+        {
+                Reap (p.key, p.value);
+                heap.collect (p);
+                ++mutation;
+                --count;
+        }
+        
+        /***********************************************************************
+
+                set was changed
+                
+        ***********************************************************************/
+
+        private void mutate ()
+        {
+                ++mutation;
+        }
+
+        /***********************************************************************
+
+                foreach support for iterators
+                
+        ***********************************************************************/
+
+        private struct Freach
+        {
+                bool delegate(ref K, ref V) next;
+                
+                int opApply (int delegate(ref K key, ref V value) dg)
+                {
+                        K   key;
+                        V   value;
+                        int result;
+
+                        while (next (key, value))
+                               if ((result = dg(key, value)) != 0)
+                                    break;
+                        return result;
+                }               
+        }
+        
+        /***********************************************************************
+
+                Iterator with no filtering
+
+        ***********************************************************************/
+
+        private struct Iterator
+        {
+                uint    row;
+                Ref     cell,
+                        prior;
+                Ref[]   table;
+                HashMap owner;
+                uint    mutation;
+
+                bool next (ref K k, ref V v)
+                {
+                        while (cell is null)
+                               if (row < table.length)
+                                   cell = table [row++];
+                               else
+                                  return false;
+  
+                        prior = cell;
+                        k = cell.key;
+                        v = cell.value;
+                        cell = cell.next;
+                        return true;
+                }
+
+                void remove ()
+                {
+                        if (prior)
+                            owner.removeNode (prior, &table[row-1]);
+                        prior = null;
+                }
+                
+                bool valid ()
+                {
+                        return owner.mutation is mutation;
+                }
+                
+                Freach freach()
+                {
+                        Freach f = {&next};
+                        return f;
+                }
+        }
+
+        /***********************************************************************
+
+                Iterator with value filtering
+                
+        ***********************************************************************/
+
+        private struct IteratorMatch
+        {
+                Iterator host;
+                V        match;
+
+                bool next (ref K k, ref V v)
+                {
+                        while (host.next (k, v))
+                               if (match == v)
+                                   return true;
+                        return false;
+                }
+
+                void remove ()
+                {
+                        host.remove;
+                }
+               
+                bool valid ()
+                {
+                        return host.valid;
+                }
+                
+                Freach freach()
+                {
+                        Freach f = {&next};
+                        return f;
+                }
+        }
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (HashMap)
+{
+        import tango.io.Stdout;
+        import tango.core.Memory;
+        import tango.time.StopWatch;
+
+        void main()
+        {
+                // usage examples ...
+                auto map = new HashMap!(char[], int);
+                map.add ("foo", 1);
+                map.add ("bar", 2);
+                map.add ("wumpus", 3);
+
+                // implicit generic iteration
+                foreach (key, value; map)
+                         Stdout.formatln ("{}:{}", key, value);
+
+                // explicit generic iteration
+                foreach (key, value; map.iterator.freach)
+                         Stdout.formatln ("{}:{}", key, value);
+
+                // generic filtered iteration 
+                foreach (key, value; map.iterator(2).freach)
+                         Stdout.formatln ("{}:{}", key, value);
+
+                // generic iteration with optional remove
+                auto s = map.iterator;
+                foreach (key, value; s.freach)
+                        {} // s.remove;
+
+                // incremental iteration, with optional remove
+                char[] k;
+                int    v;
+                auto iterator = map.iterator;
+                while (iterator.next(k, v))
+                      {} //iterator.remove;
+                
+                // incremental iteration, with optional failfast
+                auto it = map.iterator;
+                while (it.valid && it.next(k, v))
+                      {}
+
+                // remove specific element
+                map.removeKey ("wumpus");
+
+                // remove first element ...
+                while (map.take(v))
+                       Stdout.formatln ("taking {}, {} left", v, map.size);
+                
+                // setup for benchmark, with a set of integers. We
+                // use a chunk allocator, and presize the bucket[]
+                auto test = new HashMap!(int, int, Container.hash, Container.reap, Container.Chunk);
+                test.allocator.config (1000, 1000);
+                test.buckets = 1_500_000;
+                const count = 1_000_000;
+                StopWatch w;
+
+                // benchmark adding
+                w.start;
+                for (int i=count; i--;)
+                     test.add(i, i);
+                Stdout.formatln ("{} adds: {}/s", test.size, test.size/w.stop);
+
+                // benchmark reading
+                w.start;
+                for (int i=count; i--;)
+                     test.get(i, v);
+                Stdout.formatln ("{} lookups: {}/s", test.size, test.size/w.stop);
+
+                // benchmark adding without allocation overhead
+                test.clear;
+                w.start;
+                for (int i=count; i--;)
+                     test.add(i, i);
+                Stdout.formatln ("{} adds (after clear): {}/s", test.size, test.size/w.stop);
+
+                // benchmark duplication
+                w.start;
+                auto dup = test.dup;
+                Stdout.formatln ("{} element dup: {}/s", dup.size, dup.size/w.stop);
+
+                // benchmark iteration
+                w.start;
+                foreach (key, value; test) {}
+                Stdout.formatln ("{} element iteration: {}/s", test.size, test.size/w.stop);
+
+                GC.collect;
+                test.check;
+
+                auto aa = new HashMap!(long, int, Container.hash, Container.reap, Container.Chunk);
+                aa.allocator.config (5000, 1000);
+                aa.buckets = 7_500_000;
+                w.start;
+                for (int i=5_000_000; i--;)
+                     aa.add (i, 0);
+                Stdout.formatln ("{} test iteration: {}/s", aa.size, aa.size/w.stop);
+
+        }
+}
