@@ -165,7 +165,7 @@ T[] format(T, U=long) (T[] dst, U i, T[] fmt = null)
 
 T[] format(T) (T[] dst, long i, T[] fmt = null)
 {
-        byte    pre,
+        char    pre,
                 type;
         int     width;
 
@@ -173,7 +173,7 @@ T[] format(T) (T[] dst, long i, T[] fmt = null)
         return formatter (dst, i, type, pre, width);
 } 
 
-private void decode(T) (T[] fmt, ref byte type, out byte pre, out int width)
+private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
 {
         if (fmt.length is 0)
             type = 'd';
@@ -193,7 +193,10 @@ private void decode(T) (T[] fmt, ref byte type, out byte pre, out int width)
 } 
 
 
-T[] formatter(T) (T[] dst, long i, byte type, byte pre, int width)
+T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width)
+{return formatter!(T)(dst, i, type, pre, width);}
+
+T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
         const T[] lower = "0123456789abcdef";
         const T[] upper = "0123456789ABCDEF";

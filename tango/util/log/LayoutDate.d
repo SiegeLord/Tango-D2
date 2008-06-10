@@ -84,8 +84,8 @@ public class LayoutDate : Appender.Layout
 
         **********************************************************************/
 
-        private char[] convert (char[] tmp, int i)
+        private char[] convert (char[] tmp, long i)
         {
-                return Integer.formatter (tmp, cast(long) i, 'u', 0, 8);
+                return Integer.formatter (tmp, i, 'u', '?', 8);
         }
 }

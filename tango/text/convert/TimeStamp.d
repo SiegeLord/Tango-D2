@@ -126,7 +126,7 @@ T[] format(T) (T[] output, Time t)
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         static T[][] Days   = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-        T[] convert (T[] tmp, int i)
+        T[] convert (T[] tmp, long i)
         {
                 return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
         }
