@@ -161,7 +161,7 @@ dchar[] toString32 (long i, dchar[] fmt = null)
 *******************************************************************************/
 
 T[] format(T, U=long) (T[] dst, U i, T[] fmt = null)
-{return format!(T)(dst, i, fmt);}
+{return format!(T)(dst, cast(long) i, fmt);}
 
 T[] format(T) (T[] dst, long i, T[] fmt = null)
 {
@@ -194,7 +194,7 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
 
 
 T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width)
-{return formatter!(T)(dst, i, type, pre, width);}
+{return formatter!(T)(dst, cast(long) i, type, pre, width);}
 
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
