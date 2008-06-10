@@ -121,9 +121,10 @@ struct Stack (V, int Size)
 
         V pop ()
         {
-                if (depth is 0)
-                    error (__LINE__);
-                return stack[--depth];
+                if (depth)
+                    return stack[--depth];
+
+                return error (__LINE__);
         }
 
         /**********************************************************************
@@ -136,9 +137,10 @@ struct Stack (V, int Size)
 
         V top ()
         {
-                if (depth is 0)
-                    error (__LINE__);
-                return stack[depth-1];
+                if (depth)
+                    return stack[depth-1];
+
+                return error (__LINE__);
         }
 
         /**********************************************************************
@@ -151,17 +153,21 @@ struct Stack (V, int Size)
 
         V swap ()
         {
-                if (depth < 2)
-                    error (__LINE__);
-                auto v = stack[depth-2];
-                stack[depth-2] = stack[depth-1];
-                stack[depth-1] = v;
-                return v;
+                auto p = stack.ptr + depth;
+                if ((p -= 2) >= stack.ptr)
+                   {
+                   auto v = p[0];
+                   p[0] = p[1];
+                   return p[1] = v; 
+                   }
+
+                return error (__LINE__);                
         }
 
         /**********************************************************************
 
-                Index stack entries.
+                Index stack entries, where a zero index represents the
+                newest stack entry (the top).
 
                 Throws an exception when the given index is out of range
 
@@ -169,9 +175,10 @@ struct Stack (V, int Size)
 
         V nth (uint i)
         {
-                if (i >= depth)
-                    error (__LINE__);
-                return stack[i];
+                if (i < depth)
+                    return stack [depth-i-1];
+
+                return error (__LINE__);
         }
 
         /**********************************************************************
@@ -184,14 +191,16 @@ struct Stack (V, int Size)
 
         void rotateLeft (uint d)
         {
-                if (d > depth)
-                    error (__LINE__);
-
-                auto p = &stack[depth-d];
-                auto t = *p;
-                while (--d)
-                       *p++ = *(p+1);
-                *p = t;
+                if (d <= depth)
+                   {
+                   auto p = &stack[depth-d];
+                   auto t = *p;
+                   while (--d)
+                          *p++ = *(p+1);
+                   *p = t;
+                   }
+                else
+                   error (__LINE__);
         }
 
         /**********************************************************************
@@ -204,14 +213,16 @@ struct Stack (V, int Size)
 
         void rotateRight (uint d)
         {
-                if (d > depth)
-                    error (__LINE__);
-
-                auto p = &stack[depth-1];
-                auto t = *p;
-                while (--d)
-                       *p-- = *(p-1);
-                *p = t;
+                if (d <= depth)
+                   {
+                   auto p = &stack[depth-1];
+                   auto t = *p;
+                   while (--d)
+                          *p-- = *(p-1);
+                   *p = t;
+                   }
+                else
+                   error (__LINE__);
         }
 
         /**********************************************************************
@@ -235,7 +246,7 @@ struct Stack (V, int Size)
 
         **********************************************************************/
 
-        private void error (size_t line)
+        private V error (size_t line)
         {
                 throw new ArrayBoundsException (__FILE__, line);
         }
@@ -280,13 +291,11 @@ debug (Stack)
                 s.push (4);
                 foreach (v; s)
                          Stdout.formatln ("{}", v);
-                s ~= 4;
                 s <<= 4;
                 s >>= 4;
                 foreach (v; s)
                          Stdout.formatln ("{}", v);
 
-                s.dup;
                 s = s.clone;
                 Stdout.formatln ("pop one: {}", s.pop);
                 foreach (v; s)
