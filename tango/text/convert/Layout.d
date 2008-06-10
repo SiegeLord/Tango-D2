@@ -574,7 +574,7 @@ class Layout(T)
                             return integer (result, *cast(uint*) p, format, uint.max, "u");
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(ulong*) p, format, ulong.max, "u");
+                            return integer (result, *cast(long*) p, format, ulong.max, "u");
 
                        case TypeCode.LONG:
                             return integer (result, *cast(long*) p, format, ulong.max);
