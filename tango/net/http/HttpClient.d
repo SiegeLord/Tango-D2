@@ -103,7 +103,7 @@ class HttpClient
         private ResponseLine            responseLine;
 
         // default to three second timeout on read operations ...
-        private TimeSpan                timeout = TimeSpan.seconds(3);
+        private float                   timeout = 3.0;
 
         // enable uri encoding?
         private bool                    encode = true;
@@ -346,7 +346,7 @@ class HttpClient
         
         ***********************************************************************/
 
-        void setTimeout (TimeSpan interval)
+        void setTimeout (float interval)
         {
                 timeout = interval;
         }

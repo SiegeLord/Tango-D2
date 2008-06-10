@@ -35,8 +35,9 @@ public  import  tango.net.InternetAddress;
 
 class ServerSocket : ISelectable
 {
-        private Socket  socket_;
-        private int     linger = -1;
+        private Socket   socket_;
+        private float    timeout;
+        private int      linger = -1;
 
         /***********************************************************************
         
@@ -76,9 +77,23 @@ class ServerSocket : ISelectable
 
         ***********************************************************************/
 
-        void setLingerPeriod (int period)
+        ServerSocket setLingerPeriod (int period)
         {
                 linger = period;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Set the default read timeout to the specified interval. Set a
+                value of zero to disable timeout support.
+
+        ***********************************************************************/
+
+        ServerSocket setTimeout (float timeout)
+        {
+                this.timeout = timeout;
+                return this;
         }
 
         /***********************************************************************
@@ -130,6 +145,9 @@ class ServerSocket : ISelectable
                 // force abortive closure to avoid prolonged OS scavenging?
                 if (linger >= 0)
                     accepted.setLingerPeriod (linger);
+
+                // set default timeout for read operations on this connection
+                wrapper.setTimeout (timeout);
 
                 return wrapper;
         }

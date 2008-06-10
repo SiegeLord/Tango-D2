@@ -14,8 +14,6 @@
 
 module tango.net.SocketConduit;
 
-private import  tango.time.Time;
-
 public  import  tango.io.Conduit;
 
 private import  tango.net.Socket;
@@ -130,9 +128,10 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        SocketConduit setTimeout (TimeSpan interval)
+        SocketConduit setTimeout (float timeout)
         {
-                tv = Socket.toTimeval (interval);
+                tv.tv_sec = cast(uint) timeout;
+                tv.tv_usec = cast(uint) ((timeout - tv.tv_sec) * 1_000_000);
                 return this;
         }
 

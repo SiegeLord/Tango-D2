@@ -330,9 +330,10 @@ class SSLSocketConduit : SocketConduit
 
     *******************************************************************************/
 
-    override SocketConduit setTimeout(TimeSpan interval)
+    override SocketConduit setTimeout(float timeout)
     {
-        tv = Socket.toTimeval(interval);
+        tv.tv_sec = cast(uint) timeout;
+        tv.tv_usec = cast(uint) ((timeout - tv.tv_sec) * 1_000_000);
         return this;
     }
 
@@ -396,7 +397,7 @@ version(Test)
 
     unittest
     {
-        auto t2 = TimeSpan.seconds(1);
+        auto t2 = 1.0;
         loadOpenSSL();
         Test.Status sslCTXTest(inout char[][] messages)
         {
