@@ -16,7 +16,8 @@ private import tango.core.Exception : ArrayBoundsException;
 
 /******************************************************************************
 
-        A stack of the given value-type V, with maximum depth Size
+        A stack of the given value-type V, with maximum depth Size. Note
+        that, being a struct, this is a stack-based Stack
 
 ******************************************************************************/
 
@@ -25,6 +26,12 @@ struct Stack (V, int Size)
         private V[Size]         stack;
         private uint            depth;
 
+        alias rotateLeft       opShlAssign;
+        alias rotateRight      opShrAssign;
+        alias push             opCatAssign;
+        alias slice            opSlice;
+        alias nth              opIndex;
+          
         /***********************************************************************
 
                 Clear the stack
@@ -49,16 +56,29 @@ struct Stack (V, int Size)
 
         /***********************************************************************
                 
-                Returns a (shallow) clone of this stack
+                Returns a (shallow) clone of this stack, on the stack
 
         ***********************************************************************/
 
-        Stack dup ()
+        Stack clone ()
         {       
                 Stack s = void;
                 s.stack[] = stack;
                 s.depth = depth;
                 return s;
+        }
+
+        /***********************************************************************
+                
+                Push and return a (shallow) copy of the topmost element
+
+        ***********************************************************************/
+
+        V dup ()
+        {
+                auto v = top;
+                push (v);       
+                return v;
         }
 
         /**********************************************************************
@@ -108,6 +128,21 @@ struct Stack (V, int Size)
 
         /**********************************************************************
 
+                Return the most recent addition to the stack.
+
+                Throws an exception when the stack is empty
+
+        **********************************************************************/
+
+        V top ()
+        {
+                if (depth is 0)
+                    error (__LINE__);
+                return stack[depth-1];
+        }
+
+        /**********************************************************************
+
                 Swaps the top two entries, and return the top
 
                 Throws an exception when the stack has insufficient entries
@@ -126,32 +161,57 @@ struct Stack (V, int Size)
 
         /**********************************************************************
 
-                Return the most recent addition to the stack.
-
-                Throws an exception when the stack is empty
-
-        **********************************************************************/
-
-        V top ()
-        {
-                if (depth is 0)
-                    error (__LINE__);
-                return stack[depth-1];
-        }
-
-        /**********************************************************************
-
                 Index stack entries.
 
                 Throws an exception when the given index is out of range
 
         **********************************************************************/
 
-        V opIndex (int i)
+        V nth (uint i)
         {
                 if (i >= depth)
                     error (__LINE__);
                 return stack[i];
+        }
+
+        /**********************************************************************
+
+                Rotate the given number of stack entries 
+
+                Throws an exception when the number is out of range
+
+        **********************************************************************/
+
+        void rotateLeft (uint d)
+        {
+                if (d > depth)
+                    error (__LINE__);
+
+                auto p = &stack[depth-d];
+                auto t = *p;
+                while (--d)
+                       *p++ = *(p+1);
+                *p = t;
+        }
+
+        /**********************************************************************
+
+                Rotate the given number of stack entries 
+
+                Throws an exception when the number is out of range
+
+        **********************************************************************/
+
+        void rotateRight (uint d)
+        {
+                if (d > depth)
+                    error (__LINE__);
+
+                auto p = &stack[depth-1];
+                auto t = *p;
+                while (--d)
+                       *p-- = *(p-1);
+                *p = t;
         }
 
         /**********************************************************************
@@ -164,7 +224,7 @@ struct Stack (V, int Size)
                  
         **********************************************************************/
 
-        V[] opSlice ()
+        V[] slice ()
         {
                 return stack [0 .. depth];
         }
@@ -220,8 +280,14 @@ debug (Stack)
                 s.push (4);
                 foreach (v; s)
                          Stdout.formatln ("{}", v);
+                s ~= 4;
+                s <<= 4;
+                s >>= 4;
+                foreach (v; s)
+                         Stdout.formatln ("{}", v);
 
-                s = s.dup;
+                s.dup;
+                s = s.clone;
                 Stdout.formatln ("pop one: {}", s.pop);
                 foreach (v; s)
                          Stdout.formatln ("{}", v);
