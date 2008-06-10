@@ -123,12 +123,13 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        protected OutputStream  sink;           // optional data sink
-        protected InputStream   source;         // optional data source
-        protected void[]        data;           // the raw data buffer
-        protected uint          index;          // current read position
-        protected uint          extent;         // limit of valid content
-        protected uint          dimension;      // maximum extent of content
+        protected OutputStream  sink;                   // optional data sink
+        protected InputStream   source;                 // optional data source
+        protected void[]        data;                   // the raw data buffer
+        protected uint          index;                  // current read position
+        protected uint          extent;                 // limit of valid content
+        protected uint          dimension;              // maximum extent of content
+        protected bool          canCompress = true;     // compress iterator content?
 
 
         protected static char[] overflow  = "output buffer is full";
@@ -433,7 +434,8 @@ class Buffer : IBuffer
                       {
                       if (size > dimension)
                           error (underflow);
-                      compress ();
+                      if (canCompress)
+                          compress ();
                       }
 
                    // populate tail of buffer with new content
@@ -702,9 +704,9 @@ class Buffer : IBuffer
                        if (source)
                           {
                           // did we start at the beginning?
-                          if (position)
-                              // nope - move partial token to start of buffer
-                              compress ();
+                          if (position && canCompress)
+                              // yep - move partial token to start of buffer
+                              compress;
                           else
                              // no more space in the buffer?
                              if (writable is 0)
@@ -720,6 +722,24 @@ class Buffer : IBuffer
                 return true;
         }
 
+        /***********************************************************************
+
+                Configure the compression strategy for iterators
+
+                Remarks:
+                Iterators will tend to compress the buffered content in
+                order to maximize space for new data. You can disable this
+                behaviour by setting this boolean to false
+
+        ***********************************************************************/
+
+        final bool compress (bool yes)
+        {
+                auto ret = canCompress;
+                canCompress = yes;
+                return ret;
+        }
+        
         /***********************************************************************
 
                 Available content
@@ -867,8 +887,8 @@ class Buffer : IBuffer
                 if (src is null)
                     return IConduit.Eof;
 
-                if (readable is 0)
-                    index = extent = 0;  // same as clear(), but without chain
+                if (readable is 0 && canCompress)
+                    index = extent = 0;  // same as clear(), without call-chain
                 else
                    if (writable is 0)
                        return 0;

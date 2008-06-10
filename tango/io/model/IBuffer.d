@@ -331,6 +331,19 @@ abstract class IBuffer : IConduit, Buffered
         abstract bool truncate (uint extent);
 
         /***********************************************************************
+
+                Configure the compression strategy for iterators
+
+                Remarks:
+                Iterators will tend to compress the buffered content in
+                order to maximize space for new data. You can disable this
+                behaviour by setting this boolean to false
+
+        ***********************************************************************/
+
+        abstract bool compress (bool yes);
+        
+        /***********************************************************************
         
                 Return count of readable bytes remaining in buffer. This is 
                 calculated simply as limit() - position().
