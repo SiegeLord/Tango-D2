@@ -834,7 +834,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 void remove ()
                 {
                         if (prior)
-                            owner.remove (prior);
+                           {
+                           owner.remove (prior);
+                           // ignore this change
+                           ++mutation;
+                           }
                         prior = null;
                 }
                 

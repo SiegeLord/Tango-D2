@@ -551,7 +551,7 @@ class HashSet (V, alias Hash = Container.hash,
                  
         ***********************************************************************/
 
-        private void remove (Ref node, uint row)
+        private bool remove (Ref node, uint row)
         {
                 auto hd = table[row];
                 auto trail = hd;
@@ -567,7 +567,7 @@ class HashSet (V, alias Hash = Container.hash,
                              table[row] = n;
                          else
                             trail.next = n;
-                         return;
+                         return true;
                          } 
                       else
                          {
@@ -575,6 +575,7 @@ class HashSet (V, alias Hash = Container.hash,
                          p = n;
                          }
                       }
+                return false;
         }
 
         /***********************************************************************
@@ -700,7 +701,9 @@ class HashSet (V, alias Hash = Container.hash,
                 void remove ()
                 {
                         if (prior)
-                            owner.remove (prior, row-1);
+                            if (owner.remove (prior, row-1))
+                                // ignore this change
+                                ++mutation;
                         prior = null;
                 }
                 

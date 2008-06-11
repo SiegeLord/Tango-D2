@@ -853,20 +853,21 @@ class HashMap (K, V, alias Hash = Container.hash,
                  
         ***********************************************************************/
 
-        private void removeNode (Ref node, Ref* list)
+        private bool removeNode (Ref node, Ref* list)
         {
                 auto p = list;
                 auto n = *p;
 
                 while ((n = *p) !is null)
-                       if (n is node)
-                          {
-                          *p = n.next;
-                          decrement (n);
-                          break;
-                          } 
-                       else
-                          p = &n.next;
+                        if (n is node)
+                           {
+                           *p = n.next;
+                           decrement (n);
+                           return true;
+                           } 
+                        else
+                           p = &n.next;
+                return false;
         }
 
         /***********************************************************************
@@ -994,7 +995,9 @@ class HashMap (K, V, alias Hash = Container.hash,
                 void remove ()
                 {
                         if (prior)
-                            owner.removeNode (prior, &table[row-1]);
+                            if (owner.removeNode (prior, &table[row-1]))
+                                // ignore this change
+                                ++mutation;
                         prior = null;
                 }
                 

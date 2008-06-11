@@ -973,6 +973,8 @@ class LinkedList (V, alias Reap = Container.reap,
                            owner.decrement (p);
                            hook = prior;
                            prior = null;
+                           // ignore this change
+                           ++mutation;
                            return true;
                            }
                         return false;

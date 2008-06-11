@@ -1010,6 +1010,9 @@ class CircularList (V, alias Reap = Container.reap,
                            prior.unlink;
                            owner.decrement (prior);
                            prior = null;
+
+                           // ignore this change
+                           ++mutation;
                            }
                 }
                 
