@@ -196,17 +196,20 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
 T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width)
 {return formatter!(T)(dst, cast(long) i, type, pre, width);}
 
+
+private struct _FormatterInfo(T)
+{
+		uint    radix;
+		T[]     prefix;
+		T[]     numbers;
+}
+
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
         const T[] lower = "0123456789abcdef";
         const T[] upper = "0123456789ABCDEF";
-
-        struct Info
-        {
-                uint    radix;
-                T[]     prefix;
-                T[]     numbers;
-        }
+        
+        alias _FormatterInfo!(T) Info;
 
         const   Info[] formats = 
                 [
