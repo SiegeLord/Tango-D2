@@ -17,7 +17,7 @@ module tango.io.vfs.ZipFolder;
 import tango.io.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath;
 import tango.io.TempFile : TempFile;
-import tango.io.archive.Zip : ZipReader, ZipBlockReader,
+import tango.io.compress.Zip : ZipReader, ZipBlockReader,
        ZipWriter, ZipBlockWriter, ZipEntry, ZipEntryInfo, Method;
 import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
