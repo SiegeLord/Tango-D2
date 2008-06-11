@@ -1717,6 +1717,7 @@ T rationalPoly(T)(T x, T [] numerator, T [] denominator)
 }
 }
 
+deprecated {
 private enum : int { MANTDIG_2 = real.mant_dig/2 } // Compiler workaround
 
 /** Floating point "approximate equality".
@@ -1734,6 +1735,7 @@ unittest{
     assert(!feq(1.0,2.0));
     real y = 58.0000000001;
     assert(feq!(20)(58, y));
+}
 }
 
 /*
