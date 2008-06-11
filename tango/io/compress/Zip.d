@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * copyright:   Copyright © 2007 Daniel Keep.  All rights reserved.
+ * copyright:   Copyright (c) 2007 Daniel Keep.  All rights reserved.
  *
  * license:     BSD style: $(LICENSE)
  *
