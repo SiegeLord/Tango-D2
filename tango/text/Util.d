@@ -67,6 +67,9 @@
         splitLines (source);                        // split on lines
         head (source, pattern, tail)                // split to head & tail
         join (source, postfix, output)              // join text segments
+        prefix (dst, prefix, content...)            // prefix text segments
+        postfix (dst, postfix, content...)          // postfix text segments
+        combine (dst, prefix, postfix, content...)  // combine lotsa stuff
         repeat (source, count, output)              // repeat source 
         replace (source, match, replacement)        // replace chars
         substitute (source, match, replacement)     // replace patterns
@@ -523,9 +526,9 @@ T[][] splitLines(T) (T[] src)
 
 /******************************************************************************
 
-        Combine a series of text segments together, each appended with an 
-        optional postfix pattern. An optional output buffer can be provided
-        to avoid heap activity - it should be large enough to contain the 
+        Combine a series of text segments together, each appended with 
+        a postfix pattern. An optional output buffer can be provided to
+        avoid heap activity - it should be large enough to contain the 
         entire output, otherwise the heap will be used instead.
 
         Returns a valid slice of the output, containing the concatenated
@@ -535,7 +538,68 @@ T[][] splitLines(T) (T[] src)
 
 T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
 {
-        uint len = src.length * postfix.length;
+        return combine!(T) (dst, null, postfix, src);
+}
+
+/******************************************************************************
+
+        Combine a series of text segments together, each prepended with 
+        a prefix pattern. An optional output buffer can be provided to 
+        avoid heap activity - it should be large enough to contain the 
+        entire output, otherwise the heap will be used instead.
+
+        Note that, unlike join(), the output buffer is specified first
+        such that a set of trailing strings can be provided. 
+
+        Returns a valid slice of the output, containing the concatenated
+        text.
+
+******************************************************************************/
+
+T[] prefix(T) (T[] dst, T[] prefix, T[][] src...)
+{
+        return combine!(T) (dst, prefix, null, src);
+}
+
+/******************************************************************************
+
+        Combine a series of text segments together, each appended with an 
+        optional postfix pattern. An optional output buffer can be provided
+        to avoid heap activity - it should be large enough to contain the 
+        entire output, otherwise the heap will be used instead.
+
+        Note that, unlike join(), the output buffer is specified first
+        such that a set of trailing strings can be provided. 
+
+        Returns a valid slice of the output, containing the concatenated
+        text.
+
+******************************************************************************/
+
+T[] postfix(T) (T[] dst, T[] postfix, T[][] src...)
+{
+        return combine!(T) (dst, null, postfix, src);
+}
+
+/******************************************************************************
+
+        Combine a series of text segments together, each prefixed and/or 
+        postfixed with optional strings. An optional output buffer can be 
+        provided to avoid heap activity - which should be large enough to 
+        contain the entire output, otherwise the heap will be used instead.
+
+        Note that, unlike join(), the output buffer is specified first
+        such that a set of trailing strings can be provided. 
+
+        Returns a valid slice of the output, containing the concatenated
+        text.
+
+******************************************************************************/
+
+T[] combine(T) (T[] dst, T[] prefix, T[] postfix, T[][] src ...)
+{
+        uint len = src.length * prefix.length + 
+                   src.length * postfix.length;
 
         foreach (segment; src)
                  len += segment.length;
@@ -546,6 +610,8 @@ T[] join(T) (T[][] src, T[] postfix=null, T[] dst=null)
         T* p = dst.ptr;
         foreach (segment; src)
                 {
+                p[0 .. prefix.length] = prefix;
+                p += prefix.length;
                 p[0 .. segment.length] = segment;
                 p += segment.length;
                 p[0 .. postfix.length] = postfix;
