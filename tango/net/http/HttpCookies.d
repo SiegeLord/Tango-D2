@@ -38,14 +38,14 @@ private import  Integer = tango.text.convert.Integer;
 
 class Cookie : IWritable
 {
-        private char[]  name,
+        char[]          name,
                         path,
                         value,
                         domain,
                         comment;
-        private uint    vrsn=1;              // 'version' is a reserved word
-        private long    maxAge;
-        private bool    secure;
+        uint            vrsn=1;              // 'version' is a reserved word
+        long            maxAge=-1;
+        bool            secure=false;
 
         /***********************************************************************
                 
@@ -157,7 +157,7 @@ class Cookie : IWritable
 
         /***********************************************************************
         
-                Indicate wether this cookie should be considered secure or not
+                Indicate whether this cookie should be considered secure or not
 
         ***********************************************************************/
 
@@ -210,7 +210,7 @@ class Cookie : IWritable
                    if (secure)
                        consume (";Secure");
 
-                   if (maxAge >= 0)
+                   if (maxAge > 0)
                        consume (";Max-Age="c), consume (Integer.format (tmp, maxAge));
                    }
         }
@@ -224,7 +224,7 @@ class Cookie : IWritable
         Cookie clear ()
         {
                 vrsn = 1;
-                maxAge = 0;
+                maxAge = -1;
                 secure = false;
                 name = path = domain = comment = null;
                 return this;
@@ -458,8 +458,36 @@ class CookieParser : StreamIterator!(char)
 {
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 
-        private CookieStack stack;
-        private Buffer      buffer;
+        private CookieStack       stack;
+        private Buffer            buffer;
+        private static bool[128]  charMap;
+
+        /***********************************************************************
+
+                populate a map of token separators
+
+        ***********************************************************************/
+
+        static this ()
+        {
+                charMap['('] = true;
+                charMap[')'] = true;
+                charMap['<'] = true;
+                charMap['>'] = true;
+                charMap['@'] = true;
+                charMap[','] = true;
+                charMap[';'] = true;
+                charMap[':'] = true;
+                charMap['\\'] = true;
+                charMap['"'] = true;
+                charMap['/'] = true;
+                charMap['['] = true;
+                charMap[']'] = true;
+                charMap['?'] = true;
+                charMap['='] = true;
+                charMap['{'] = true;
+                charMap['}'] = true;
+        }
         
         /***********************************************************************
 
@@ -505,7 +533,7 @@ class CookieParser : StreamIterator!(char)
 
                         if (name[0] != '$')
                            {
-                           cookie = stack.push();
+                           cookie = stack.push;
                            cookie.setName (name);
                            cookie.setValue (token);
                            cookie.setVersion (vrsn);
@@ -547,13 +575,13 @@ class CookieParser : StreamIterator!(char)
                            // look for an lValue
                            case State.Begin:
                                 mark = i;
-                                if (isalpha (c) || c is '$')
+                                if (isToken(c))
                                     state = State.LValue;
                                 continue;
 
                            // scan until we have all lValue chars
                            case State.LValue:
-                                if (! isalnum (c))
+                                if (! isToken(c))
                                    {
                                    state = State.Equals;
                                    name = content [mark..i];
@@ -580,13 +608,13 @@ class CookieParser : StreamIterator!(char)
                                    if (c is '"')
                                        state = State.DQuote;
                                    else
-                                      if (isalnum (c))
+                                      if (isToken(c))
                                           state = State.Token;
                                 continue;
 
                            // scan for all plain token chars
                            case State.Token:
-                                if (! isalnum (c))
+                                if (! isToken(c))
                                    {
                                    setValue (i);
                                    --i;
@@ -654,6 +682,17 @@ class CookieParser : StreamIterator!(char)
                          if (c >= 'A' && c <= 'Z')
                              src[i] = c + ('a' - 'A');
                 return src;
+        }
+
+        /***********************************************************************
+
+                Is 'c' a valid token character?
+
+        ***********************************************************************/
+
+        private static bool isToken (char c)
+        {
+                return (c > 32 && c < 127 && !charMap[c]);
         }
 }
    
