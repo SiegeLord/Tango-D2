@@ -173,18 +173,25 @@ class Process
      * Constructor (variadic version).
      *
      * Params:
-     * args     = array of strings with the process' arguments; the first
-     *            argument must be the process' name; the arguments can be
-     *            empty.
+     * args     = array of strings with the process' arguments.  If there is
+     *            exactly one argument, it is considered to contain the entire
+     *            command line including parameters.  If you pass only one
+     *            argument, spaces that are not intended to separate
+     *            parameters should be embedded in quotes.  The arguments can
+     *            also be empty.
      *
      * Examples:
      * ---
-     * auto p = new Process("myprogram", "first argument", "second", "third")
+     * auto p = new Process("myprogram", "first argument", "second", "third");
+     * auto p = new Process("myprogram \"first argument\" second third");
      * ---
      */
     public this(char[][] args ...)
     {
-        _args = args;
+        if(args.length == 1)
+            _args = splitArgs(args[0]);
+        else
+            _args = args;
     }
 
     /**
