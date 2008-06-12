@@ -122,6 +122,10 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                case XmlNodeType.Doctype:
                                     emit ("<!DOCTYPE ", node.rawValue, ">");
                                     break;
+
+                               default:
+                                    emit ("<!-- unknown node type -->");
+                                    break;
                                }
                 }
         

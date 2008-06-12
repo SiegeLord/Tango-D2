@@ -112,8 +112,9 @@ class PullParser(Ch = char)
                             return doMain;
 
                        default:
-                            return doAttributeName;
+                            break;
                        }
+                return doAttributeName;
         }
  
         /***********************************************************************
@@ -498,7 +499,6 @@ else
                 errMsg = msg;
                 err = true;
                 throw new XmlException (msg);
-                return XmlTokenType.Done;
         }
 
         /***********************************************************************
