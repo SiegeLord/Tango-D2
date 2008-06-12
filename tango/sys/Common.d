@@ -139,7 +139,7 @@ struct SysError
                         if (i >= 2) i -= 2;
                         text = new char[i * 3];
                         i = WideCharToMultiByte (CP_UTF8, 0, lpMsgBuf, i, 
-                                                 text.ptr, i, null, null);
+                                                 text.ptr, text.length, null, null);
                         text = text [0 .. i];
                         LocalFree (cast(HLOCAL) lpMsgBuf);
                         }
