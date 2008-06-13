@@ -126,6 +126,10 @@ class SocketConduit : Conduit
                 Set the read timeout to the specified interval. Set a
                 value of zero to disable timeout support.
 
+                The interval is in units of seconds, where 0.500 would
+                represent 500 milliseconds. Use TimeSpan.interval to
+                convert from a TimeSpan instance.
+
         ***********************************************************************/
 
         SocketConduit setTimeout (float timeout)
