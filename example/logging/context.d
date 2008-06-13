@@ -232,18 +232,17 @@ void main(char[][] args)
     auto appender = new TestingConsoleAppender(new SimpleTimerLayout);
     Log.getRootLogger.addAppender(appender);
 
-    char[128] tmp = 0;
     auto log = Log.getLogger("context");    
     log.setLevel(log.Level.Info);
     
     //first test, use all defaults, validating it is working.  None of the trace()
     //calls should count in the test.
     for (int i=0;i < 10; i++) {
-    	log.info(log.format(tmp, "test1 {}", i));
-    	log.trace(log.format(tmp, "test1 {}", i));
+    	log.info("test1 {}", i);
+    	log.trace("test1 {}", i);
     }
     if (appender.events !is 10) {
-    	log.error(log.format(tmp, "events:{}", appender.events));
+    	log.error("events:{}", appender.events);
     	throw new Exception("Incorrect Number of events in normal mode");	
     }
     
@@ -254,11 +253,11 @@ void main(char[][] args)
     auto context = new ThreadLocalDiagnosticContext;
     Log.getHierarchy.context(context);
     for (int i=0;i < 10; i++) {
-    	log.info(log.format(tmp, "test2 {}", i));
-    	log.trace(log.format(tmp, "test2 {}", i));
+    	log.info(tmp, "test2 {}", i);
+    	log.trace("test2 {}", i);
     }
     if (appender.events !is 10) {
-    	log.error(log.format(tmp, "events:{}", appender.events));
+    	log.error("events:{}", appender.events);
     	throw new Exception("Incorrect Number of events in TLS single thread mode");	
     }
     
@@ -269,11 +268,11 @@ void main(char[][] args)
     //'overridden' the logging level on ALL loggers up to TRACE.
     context.setLevel(log.Level.Trace);
     for (int i=0;i < 10; i++) {
-    	log.info(log.format(tmp, "test3 {}", i));
-    	log.trace(log.format(tmp, "test3 {}", i));
+    	log.info("test3 {}", i);
+    	log.trace("test3 {}", i);
     }
     if (appender.events !is 20) {
-    	log.error(log.format(tmp, "events:{}", appender.events));
+    	log.error("events:{}", appender.events);
     	throw new Exception("Incorrect Number of events in TLS single thread mode with level set");	
     }
     
@@ -282,11 +281,11 @@ void main(char[][] args)
     //test the thread local implementation without any threads, as a baseline.
     context.setLevel(log.Level.None);
     for (int i=0;i < 10; i++) {
-    	log.info(log.format(tmp, "test4 {}", i));
-    	log.trace(log.format(tmp, "test4 {}", i));
+    	log.info("test4 {}", i);
+    	log.trace("test4 {}", i);
     }
     if (appender.events !is 10) {
-    	log.error(log.format(tmp, "events:{}", appender.events));
+    	log.error("events:{}", appender.events);
     	throw new Exception("Incorrect Number of events in TLS single thread mode after level reset");	
     }
     
@@ -295,27 +294,25 @@ void main(char[][] args)
     appender.events = 0;
     ThreadGroup tg = new ThreadGroup();
     tg.create({
-        char[128] tmp = 0;
         context.setLevel(log.Level.Trace);        
         context.push("specialthread");
         context.push("2ndlevel");
         for (int i=0;i < 10; i++) {
-             log.info(log.format(tmp, "test5 {}", i));
-             log.trace(log.format(tmp, "test5 {}", i));
+             log.info("test5 {}", i);
+             log.trace("test5 {}", i);
         }
     });
     tg.create({
-        char[128] tmp = 0;      
         context.setLevel(log.Level.None);
         for (int i=0;i < 10; i++) {
-             log.info(log.format(tmp, "test6 {}", i));
-             log.trace(log.format(tmp, "test6 {}", i));
+             log.info("test6 {}", i);
+             log.trace("test6 {}", i);
         }
     });
     tg.joinAll();
     
     if (appender.events !is 30) {
-    	log.error(log.format(tmp, "events:{}", appender.events));
+    	log.error("events:{}", appender.events);
     	throw new Exception("Incorrect Number of events in TLS multi thread mode");	
     }   
 }

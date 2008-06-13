@@ -33,11 +33,8 @@ void compute (Logger log, uint max)
                         return cast(byte) (*(f+(x)/16) & (1 << (((x)%16)/2)));
                 }
 
-                // get a log formatting instance
-                auto format = Log.format;
-
                 // information level
-                log.info (format ("Searching prime numbers up to {}", max));
+                log.info ("Searching prime numbers up to {}", max);
 
                 feld = (new byte[max / 16 + 1]).ptr;
 
@@ -46,7 +43,7 @@ void compute (Logger log, uint max)
                            {
                            if  ((++hits & 0x0f) == 0) 
                                 // more information level
-                                log.info (format ("found {}", hits)); 
+                                log.info ("found {}", hits); 
 
                            for (mom=3*teste; mom < max; mom += teste<<1) 
                                 set (feld, mom);
@@ -54,7 +51,7 @@ void compute (Logger log, uint max)
 
                 if (hits)
                     // more information
-                    log.info (format ("{} prime numbers found", hits));
+                    log.info ("{} prime numbers found", hits);
                 else
                    // a warning level
                    log.warn ("no prime numbers found");
@@ -71,7 +68,7 @@ void compute (Logger log, uint max)
                    while ((count+=2) < e) 
                            // log trace information
                            if (! test (feld, count)) 
-                                 log.trace (format ("prime found: {}", count));
+                                 log.trace ("prime found: {}", count);
                    }
 }
 

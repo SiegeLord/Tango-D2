@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
       
-        version:        Initial release: May 2004
-        version:        Hierarchy moved due to circular dependencies; Oct 2004
-        
+        version:        May 2004 : Initial release
+        version:        Oct 2004: Hierarchy moved due to circular dependencies
+        version:        Apr 2008: Lazy delegates removed due to awkward usage
         author:         Kris
 
 
@@ -15,12 +15,12 @@
         nature, using dot notation (with '.') to separate each named section. 
         For example, a typical name might be something like "mail.send.writer"
         ---
-        import tango.util.log.Log;
+        import tango.util.log.Log;format
         
         auto log = Log.lookup ("mail.send.writer");
 
         log.info  ("an informational message");
-        log.error ("an exception message: " ~ exception.toString);
+        log.error ("an exception message: {}", exception.toString);
 
         etc ...
         ---
@@ -38,33 +38,32 @@
         }
         ---
 
-        Messages passed to a Logger are assumed to be pre-formatted. You 
-        may find that the format() methos is handy for collating various 
-        components of the message: 
+        Messages passed to a Logger are assumed to be either self-contained
+        or configured with "{}" notation a la Layout & Stdout:
         ---
-        auto format = Log.format;
-        ...
-        log.warn (format ("temperature is {} degrees!", 101));
+        log.warn ("temperature is {} degrees!", 101);
         ---
 
-        Note that a provided workspace is used to format the message, which 
-        should generally be located on the stack so as to support multiple
-        threads of execution. In the example above we indicate assignment as 
-        "tmp = void", although this is an optional attribute (see the language 
-        manual for more information).
-
-        To avoid overhead when constructing formatted messages, the logging
-        system employs lazy expressions such that the message is not constructed
-        unless the logger is actually active. You can also explicitly check to
-        see whether a logger is active or not:
+        Note that an internal workspace is used to format the message, which
+        is limited to 2000 bytes. Use "{.256}" truncation notation to limit
+        the size of individual message components, or use explicit formatting:
         ---
-        if (log.isEnabled (log.Level.Warn))
-            log.warn (format ("temperature is {} degrees!", 101));
+        char[4096] buf = void;
+
+        log.warn (log.format (buf, "a very long warning: {}", someLongWarning);
         ---
 
-        You might optionally configure various layout & appender implementations
-        to support specific rendering needs.
+        To avoid overhead when constructing argument passed to formatted 
+        messages, you should check to see whether a logger is active or not:
+        ---
+        if (log.enabled (log.Level.Warn))
+            log.warn ("temperature is {} degrees!", complexFunction());
+        ---
         
+        The above will be handled implicitly by the logging system when 
+        macros are added to the language (used to be handled implicitly 
+        via lazy delegates, but usage of those turned out to be awkward).
+
         tango.log closely follows both the API and the behaviour as documented 
         at the official Log4J site, where you'll find a good tutorial. Those 
         pages are hosted over 
@@ -327,54 +326,12 @@ public struct Log
 
         /***********************************************************************
         
-                Format support for use with existing log instances. We have
-                to do it this way because log instances are shared, and the
-                formatting buffer must be on the stack instead (in order to
-                avoid potential thread contention). Typical usage is:
-                ---
-                auto format = Log.format;
-                ...
-                log.trace (format ("{} trace {}", 'a', "message"));
-                ...
-                log.info (format ("{} {} {}", "an", "info", "message"));
-                ...
-                ---
-
-                Setting a larger buffer size than the default (of 512):
-                ---
-                char[2048] buf = void;
-                auto format = Log.format (buf);
-
-                log.trace (format ("{} formatted {}", 'a', "string"));
-                ...
-                ---
-
-                Note that this is a struct, and is thus allocated on the 
-                stack. Note also that the format() call is *not* invoked
-                unless the log instance is actually enabled - meaning we
-                pay only for what will be emitted.
-
-        ***********************************************************************/
-
-        static Sprint format (char[] buffer = null)
-        {
-                Sprint sprint = void;
-        
-                if (buffer.length is 0)
-                    buffer = sprint.tmp;
-        
-                sprint.buffer = buffer;
-                return sprint;
-        }
-
-        /***********************************************************************
-        
                 Initialize a snapshot for a specific logging level, and 
                 with an optional buffer. Default buffer size is 1024
 
         ***********************************************************************/
 
-        static Snapshot snapshot (Logger owner, Level level, char[] buffer = null)
+        static private Snapshot snapshot (Logger owner, Level level, char[] buffer = null)
         {
                 assert (owner);
                 Snapshot snap = void;
@@ -387,21 +344,6 @@ public struct Log
                 snap.owner = owner;
                 snap.next = 0;
                 return snap;
-        }
-
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private struct Sprint
-        {
-                private char[]    buffer;
-                private char[512] tmp = void;
-        
-                char[] opCall (char[] formatStr, ...)
-                {
-                        return Format.vprint (buffer, formatStr, _arguments, _argptr);                
-                }
         }
 }
 
@@ -434,7 +376,7 @@ public struct Log
 
 *******************************************************************************/
 
-public struct Snapshot
+private struct Snapshot
 {
         private Logger          owner;
         private int             next;
@@ -493,12 +435,12 @@ public struct Snapshot
         nature, using dot notation (with '.') to separate each named section. 
         For example, a typical name might be something like "mail.send.writer"
         ---
-        import tango.util.log.Log;
+        import tango.util.log.Log;format
         
         auto log = Log.lookup ("mail.send.writer");
 
         log.info  ("an informational message");
-        log.error ("an exception message: " ~ exception.toString);
+        log.error ("an exception message: {}", exception.toString);
 
         etc ...
         ---
@@ -516,33 +458,32 @@ public struct Snapshot
         }
         ---
 
-        Messages passed to a Logger are assumed to be pre-formatted. You 
-        may find that the format() methos is handy for collating various 
-        components of the message: 
+        Messages passed to a Logger are assumed to be either self-contained
+        or configured with "{}" notation a la Layout & Stdout:
         ---
-        auto format = Log.format;
-        ...
-        log.warn (format ("temperature is {} degrees!", 101));
+        log.warn ("temperature is {} degrees!", 101);
         ---
 
-        Note that a provided workspace is used to format the message, which 
-        should generally be located on the stack so as to support multiple
-        threads of execution. In the example above we indicate assignment as 
-        "tmp = void", although this is an optional attribute (see the language 
-        manual for more information).
-
-        To avoid overhead when constructing formatted messages, the logging
-        system employs lazy expressions such that the message is not constructed
-        unless the logger is actually active. You can also explicitly check to
-        see whether a logger is active or not:
+        Note that an internal workspace is used to format the message, which
+        is limited to 2000 bytes. Use "{.256}" truncation notation to limit
+        the size of individual message components, or use explicit formatting:
         ---
-        if (log.isEnabled (log.Level.Warn))
-            log.warn (format ("temperature is {} degrees!", 101));
+        char[4096] buf = void;
+
+        log.warn (log.format (buf, "a very long warning: {}", someLongWarning);
         ---
 
-        You might optionally configure various layout & appender implementations
-        to support specific rendering needs.
+        To avoid overhead when constructing argument passed to formatted 
+        messages, you should check to see whether a logger is active or not:
+        ---
+        if (log.enabled (log.Level.Warn))
+            log.warn ("temperature is {} degrees!", complexFunction());
+        ---
         
+        The above will be handled implicitly by the logging system when 
+        macros are added to the language (used to be handled implicitly 
+        via lazy delegates, but usage of those turned out to be awkward).
+
         tango.log closely follows both the API and the behaviour as documented 
         at the official Log4J site, where you'll find a good tutorial. Those 
         pages are hosted over 
@@ -625,9 +566,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger trace (lazy char[] msg)
+        final Logger trace (char[] fmt, ...)
         {
-                return append (Level.Trace, msg);
+                return format (Level.Trace, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -636,7 +577,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void trace (lazy void dg)
+        private void trace (lazy void dg)
         {
                 if (enabled (Level.Trace))
                     dg();
@@ -648,9 +589,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger info (lazy char[] msg)
+        final Logger info (char[] fmt, ...)
         {
-                return append (Level.Info, msg);
+                return format (Level.Info, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -659,7 +600,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void info (lazy void dg)
+        private void info (lazy void dg)
         {
                 if (enabled (Level.Info))
                     dg();
@@ -671,9 +612,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger warn (lazy char[] msg)
+        final Logger warn (char[] fmt, ...)
         {
-                return append (Level.Warn, msg);
+                return format (Level.Warn, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -682,7 +623,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void warn (lazy void dg)
+        private void warn (lazy void dg)
         {
                 if (enabled (Level.Warn))
                     dg();
@@ -694,9 +635,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger error (lazy char[] msg)
+        final Logger error (char[] fmt, ...)
         {
-                return append (Level.Error, msg);
+                return format (Level.Error, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -705,7 +646,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void error (lazy void dg)
+        private void error (lazy void dg)
         {
                 if (enabled (Level.Error))
                     dg();
@@ -717,9 +658,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger fatal (lazy char[] msg)
+        final Logger fatal (char[] fmt, ...)
         {
-                return append (Level.Fatal, msg);
+                return format (Level.Fatal, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -728,7 +669,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void fatal (lazy void dg)
+        private void fatal (lazy void dg)
         {
                 if (enabled (Level.Fatal))
                     dg();
@@ -911,7 +852,7 @@ public class Logger : ILogger
 
         final char[] format (char[] buffer, char[] formatStr, ...)
         {
-                return format (_arguments, _argptr, formatStr, buffer);     
+                return Format.vprint (buffer, formatStr, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -921,9 +862,15 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final char[] format (TypeInfo[] arguments, ArgList argptr, char[] formatStr, char[] scratchpad)
+        final Logger format (Level level, char[] fmt, TypeInfo[] types, ArgList args)
         {    
-                return Format.vprint (scratchpad, formatStr, arguments, argptr);                
+                char[2048] tmp = void;
+ 
+                if (types.length)
+                    append (level, Format.vprint (tmp, fmt, types, args));
+                else
+                   append (level, fmt);                
+                return this;
         }
 
         /***********************************************************************
@@ -1738,11 +1685,12 @@ debug (Log)
         {
                 Log.config (Cerr.stream);
                 auto log = Log.lookup ("fu.bar");
-                log.level = log.level.Info;
+                log.level = log.level.Trace;
                 // traditional usage
-                log.trace ("hello");
+                log.trace ("hello {}", "world");
 
                 // formatted output
+/*                /
                 auto format = Log.format;
                 log.info (format ("blah{}", 1));
 
@@ -1750,7 +1698,8 @@ debug (Log)
                 auto snap = Log.snapshot (log, Level.Error);
                 snap.format ("arg{}; ", 1);
                 snap.format ("arg{}; ", 2);
-                log.trace (snap.format ("error! arg{}", 3));
+                //log.trace (snap.format ("error! arg{}", 3));
                 snap.flush;
+*/
         }
 }
