@@ -15,6 +15,8 @@ module tango.io.FileSystem;
 
 private import  tango.sys.Common;
 
+private import  tango.io.Path;
+
 private import  tango.io.FilePath;
 
 private import  tango.core.Exception;
@@ -184,7 +186,7 @@ struct FileSystem
                                                               dir.ptr, dir.length, null, null);
                                 if (len && i)
                                    {
-                                   path = dir[0..i];
+                                   path = standard (dir[0..i]);
                                    path[$-1] = '/';
                                    }
                                 else
@@ -334,6 +336,8 @@ debug (FileSystem)
 
         void main() 
         {
+        Stdout.formatln ("dir: {}", FileSystem.getDirectory);
+
         auto path = new FilePath (".");
         foo (path);
 
