@@ -26,7 +26,7 @@ public import tango.io.model.IConduit;
  * auto tc = new ThreadConduit;
  * void outFunc()
  * {
- *   Stdout.copy(tc.input)
+ *   Stdout.copy(tc.input);
  * }
  *
  * auto t = new Thread(&outFunc);
