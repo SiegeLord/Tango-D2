@@ -20,6 +20,8 @@ private import  tango.util.container.RedBlack;
 
 private import  tango.util.container.model.IContainer;
 
+private import tango.core.Exception : NoSuchElementException;
+
 /*******************************************************************************
 
         RedBlack trees of (key, value) pairs
@@ -45,6 +47,7 @@ private import  tango.util.container.model.IContainer;
         uint replace (V oldElement, V newElement, bool all)
         bool replacePair (K key, V oldElement, V newElement)
         bool opIndexAssign (V element, K key)
+        V    opIndex (K key)
         V*   opIn (K key)
 
         uint size ()
@@ -495,6 +498,22 @@ class SortedMap (K, V, alias Reap = Container.reap,
         final bool opIndexAssign (V element, K key)
         {
                 return add (key, element);
+        }
+
+        /***********************************************************************
+
+                Operator retreival function
+
+                Throws NoSuchElementException where key is missing
+
+        ***********************************************************************/
+
+        final V opIndex (K key)
+        {
+                auto p = opIn (key);
+                if (p)
+                    return *p;
+                throw new NoSuchElementException ("missing or invalid key");
         }
 
         /***********************************************************************

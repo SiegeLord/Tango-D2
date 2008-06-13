@@ -20,6 +20,8 @@ public  import tango.util.container.Container;
 
 private import tango.util.container.model.IContainer;
 
+private import tango.core.Exception : NoSuchElementException;
+
 /*******************************************************************************
 
         Hash table implementation of a Map
@@ -45,6 +47,7 @@ private import tango.util.container.model.IContainer;
 
         bool add (K key, V element)
         bool opIndexAssign (V element, K key)
+        V    opIndex (K key)
         V*   opIn (K key)
 
         uint size ()
@@ -507,6 +510,8 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
+                Operator shortcut for assignment
+
         ***********************************************************************/
 
         final bool opIndexAssign (V element, K key)
@@ -515,6 +520,24 @@ class HashMap (K, V, alias Hash = Container.hash,
         }
 
         /***********************************************************************
+
+                Operator retreival function
+
+                Throws NoSuchElementException where key is missing
+
+        ***********************************************************************/
+
+        final V opIndex (K key)
+        {
+                auto p = opIn (key);
+                if (p)
+                    return *p;
+                throw new NoSuchElementException ("missing or invalid key");
+        }
+
+        /***********************************************************************
+
+                Remove a set of values 
 
         ************************************************************************/
 
