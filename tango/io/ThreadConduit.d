@@ -188,6 +188,9 @@ class ThreadConduit : IConduit
      */
     uint read(void[] dst)
     {
+        //
+        // don't block for empty read
+        //
         if(dst.length == 0)
             return 0;
         synchronized(_mutex)
@@ -288,6 +291,11 @@ class ThreadConduit : IConduit
      */
     uint write(void[] src)
     {
+        //
+        // don't block for empty write
+        //
+        if(src.length == 0)
+            return 0;
         synchronized(_mutex)
         {
             uint w;
