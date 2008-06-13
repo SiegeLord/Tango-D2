@@ -77,7 +77,7 @@ class ThreadPool(Args...)
         workerActivity = new Condition(m);
 
         priority_job.store(cast(Job*)null);
-        active_jobs.store(0u);
+        active_jobs.store(cast(uint) 0);
         done.store(false);
 
         for (size_t i = 0; i < workers; i++)
