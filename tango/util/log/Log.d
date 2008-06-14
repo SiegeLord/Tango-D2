@@ -492,7 +492,16 @@ private struct Snapshot
 *******************************************************************************/
 
 public class Logger : ILogger
-{      
+{     
+        
+        alias Level.Trace Trace;        // shortcut to Level values 
+        alias Level.Info  Info;         // ...
+        alias Level.Warn  Warn;         // ...
+        alias Level.Error Error;        // ...
+        alias Level.Fatal Fatal;        // ...
+
+        alias append      opCall;       // shortcut to append
+
         /***********************************************************************
                 
                 Context for a hierarchy, used for customizing behaviour
@@ -579,7 +588,7 @@ public class Logger : ILogger
 
         private void trace (lazy void dg)
         {
-                if (enabled (Level.Trace))
+                if (enabled (Level.Info))
                     dg();
         }
 
@@ -1680,14 +1689,17 @@ public class LayoutTimer : Appender.Layout
 debug (Log)
 {
         import tango.io.Console;
-
+ 
         void main()
         {
                 Log.config (Cerr.stream);
                 auto log = Log.lookup ("fu.bar");
-                log.level = log.level.Trace;
+                log.level = log.Trace;
                 // traditional usage
                 log.trace ("hello {}", "world");
+
+                char[100] buf;
+                log (log.Trace, log.format(buf, "hello {}", "world"));
 
                 // formatted output
 /*                /
