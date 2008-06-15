@@ -187,6 +187,20 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         /**********************************************************************
 
+                Remove the cache entry associated with the provided key. 
+                Returns false if there is no such entry.
+
+        **********************************************************************/
+
+        final bool take (K key)
+        {
+                V value;
+
+                return take (key, value);
+        }
+
+        /**********************************************************************
+
                 Remove (and return) the cache entry associated with the 
                 provided key. Returns false if there is no such entry.
 
