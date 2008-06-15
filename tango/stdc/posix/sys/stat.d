@@ -79,15 +79,33 @@ version( linux )
         struct stat_t
         {
             dev_t       st_dev;
+          static if( __WORDSIZE == 64 )
+          {
+            ino64_t     st_ino;
+            nlink_t     st_nlink;
+            mode_t      st_mode;
+          }
+          else
+          {
             uint        __pad1;
             ino_t       __st_ino;
             mode_t      st_mode;
             nlink_t     st_nlink;
+          }
             uid_t       st_uid;
             gid_t       st_gid;
+          static if( __WORDSIZE == 64 )
+          {
+            int         pad0;
+            dev_t       st_rdev;
+            off_t       st_size;
+          }
+          else
+          {
             dev_t       st_rdev;
             uint        __pad2;
             off64_t     st_size;
+          }
             blksize_t   st_blksize;
             blkcnt64_t  st_blocks;
 
@@ -109,7 +127,14 @@ version( linux )
             time_t      st_ctime;
             c_ulong     st_ctimensec;
           }
+          static if ( __WORDSIZE == 64 )
+          {
+            long        __unused[3];
+          }
+          else
+          {
             ino64_t     st_ino;
+          }
         }
     }
     else
@@ -117,8 +142,11 @@ version( linux )
         struct stat_t
         {
             dev_t       st_dev;
+          static if( __WORDSIZE == 32 )
+          {
             ushort      __pad1;
-          static if( __USE_FILE_OFFSET64 )
+          }
+          static if( __WORDSIZE != 64 && __USE_FILE_OFFSET64 )
           {
             ino_t       __st_ino;
           }
@@ -126,15 +154,37 @@ version( linux )
           {
             ino_t       st_ino;
           }
+          static if( __WORDSIZE == 32 )
+          {
             mode_t      st_mode;
             nlink_t     st_nlink;
+          }
+          else
+          {
+            nlink_t     st_nlink;
+            mode_t      st_mode;
+          }
             uid_t       st_uid;
             gid_t       st_gid;
+          static if( __WORDSIZE == 64 )
+          {
+            int         pad0;
+          }
             dev_t       st_rdev;
+          static if( __WORDSIZE == 32 )
+          {
             ushort      __pad2;
+          }
             off_t       st_size;
             blksize_t   st_blksize;
+          static if( __WORDSIZE != 64 && __USE_FILE_OFFSET64 )
+          {
+            blkcnt64_t  st_blocks;
+          }
+          else
+          {
             blkcnt_t    st_blocks;
+          }
           static if( false /*__USE_MISC*/ ) // true if _BSD_SOURCE || _SVID_SOURCE
           {
             timespec    st_atim;
@@ -153,9 +203,13 @@ version( linux )
             time_t      st_ctime;
             c_ulong     st_ctimensec;
           }
+          static if( __WORDSIZE == 64 )
+          {
+            long[3]     __unused;
+          }
           static if( __USE_FILE_OFFSET64 )
           {
-            ino_t       st_ino;
+            ino64_t     st_ino;
           }
           else
           {

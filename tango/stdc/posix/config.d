@@ -16,10 +16,12 @@ version( linux )
 {
   version( none /* X86_64 */ )
   {
+    const uint  __WORDSIZE          = 64;
     const bool  __USE_LARGEFILE64   = true;
   }
   else
   {
+    const uint  __WORDSIZE          = 32;
     const bool  __USE_LARGEFILE64   = false;
   }
     const bool  __USE_FILE_OFFSET64 = __USE_LARGEFILE64;

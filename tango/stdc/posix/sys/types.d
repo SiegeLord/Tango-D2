@@ -36,26 +36,22 @@ uid_t
 
 version( linux )
 {
-  static if( __USE_FILE_OFFSET64 )
-  {
+    // From <bits/typesizes.h>
+
     alias long      blkcnt_t;
-    alias ulong     ino_t;
-    alias long      off_t;
-  }
-  else
-  {
-    alias c_long    blkcnt_t;
-    alias c_ulong   ino_t;
-    alias c_long    off_t;
-  }
-    alias c_long    blksize_t;
+    alias long      blkcnt64_t;
+    alias long      blksize_t;
     alias ulong     dev_t;
     alias uint      gid_t;
+    alias ulong     ino_t;
+    alias ulong     ino64_t;
     alias uint      mode_t;
-    alias uint      nlink_t;
+    alias c_ulong   nlink_t;
+    alias long      off_t;
+    alias long      off64_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
-    alias int       ssize_t;
+    alias c_long    ssize_t;
     //time_t (defined in tango.stdc.time)
     alias uint      uid_t;
 }
@@ -107,17 +103,13 @@ useconds_t
 
 version( linux )
 {
-  static if( __USE_FILE_OFFSET64 )
-  {
-    alias ulong     fsblkcnt_t;
-    alias ulong     fsfilcnt_t;
-  }
-  else
-  {
-    alias c_ulong   fsblkcnt_t;
-    alias c_ulong   fsfilcnt_t;
-  }
+    // From <bits/typesizes.h>
+
     // clock_t (defined in tango.stdc.time)
+    alias c_ulong   fsblkcnt_t;
+    alias ulong     fsblkcnt64_t;
+    alias ulong     fsfilcnt_t;
+    alias ulong     fsfilcnt64_t;
     alias uint      id_t;
     alias int       key_t;
     alias c_long    suseconds_t;
