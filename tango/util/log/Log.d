@@ -575,9 +575,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger trace (char[] fmt, ...)
+        final void trace (char[] fmt, ...)
         {
-                return format (Level.Trace, fmt, _arguments, _argptr);
+                format (Level.Trace, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -598,9 +598,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger info (char[] fmt, ...)
+        final void info (char[] fmt, ...)
         {
-                return format (Level.Info, fmt, _arguments, _argptr);
+                format (Level.Info, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -621,9 +621,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger warn (char[] fmt, ...)
+        final void warn (char[] fmt, ...)
         {
-                return format (Level.Warn, fmt, _arguments, _argptr);
+                format (Level.Warn, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -644,9 +644,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger error (char[] fmt, ...)
+        final void error (char[] fmt, ...)
         {
-                return format (Level.Error, fmt, _arguments, _argptr);
+                format (Level.Error, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
@@ -667,9 +667,9 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger fatal (char[] fmt, ...)
+        final void fatal (char[] fmt, ...)
         {
-                return format (Level.Fatal, fmt, _arguments, _argptr);
+                format (Level.Fatal, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
