@@ -147,8 +147,11 @@ class File
 
 debug (File)
 {
+        import tango.io.Stdout;
+
         void main()
         {
-                auto content = File("file.d").read;
+                auto content = cast(char[]) File("file.d").read;
+                Stdout (content).newline;
         }
 }
