@@ -39,8 +39,8 @@ private class SocketPool
 
         private int                     size, 
                                         count;
-        private bool                    online,
-                                        noDelay;
+        private bool                    nagle,
+                                        online;
 
         private Error                   error;
         private InternetAddress         address;
@@ -53,12 +53,12 @@ private class SocketPool
 
         ***********************************************************************/
 
-        this (InternetAddress address, Error error=null, bool noDelay=true)
+        this (InternetAddress address, Error error=null, bool nagle=true)
         {      
                 this.online = true;
                 this.error = error;
+                this.nagle = nagle;
                 this.address = address;
-                this.noDelay = noDelay;
         }
 
         /***********************************************************************
@@ -218,7 +218,7 @@ private class SocketPool
                             socket = new SocketConduit;
 
                             // apply Nagle settings
-                            socket.socket.setNoDelay (parent.noDelay);
+                            socket.socket.setNoDelay (parent.nagle is false);
 
                             // set a 500ms timeout for read operations
                             socket.setTimeout (0.500);
