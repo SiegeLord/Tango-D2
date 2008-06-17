@@ -16,7 +16,7 @@
 
     Example:
     ---
-    char[] blah = "Hello there, my name is Jeff."
+    char[] blah = "Hello there, my name is Jeff.";
     scope encodebuf = new char[allocateEncodeSize(cast(ubyte[])blah)];
     char[] encoded = encode(cast(ubyte[])blah, encodebuf);
 
