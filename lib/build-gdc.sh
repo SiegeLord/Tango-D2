@@ -45,6 +45,10 @@ fi
 # Make sure object.di is present for clean GDC installs
 cp ../object.di compiler/gdc/object.di
 
+# Make sure scripts are installable (typically zip doesn't preserve x bit)
+chmod a+x compiler/gdc/configure
+chmod a+x compiler/gdc/config.guess
+
 pushd ./compiler/gdc
 ./configure || exit 1
 popd
