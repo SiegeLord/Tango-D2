@@ -87,8 +87,13 @@ if [ -e dmd ]
 then
 	cd dmd || die 1 "Failed to cd to dmd"
 
-	# No cleaning up needed here, arr.
+    # Make sure all binaries are executable
+    chmod a+x bin/dmd
+    chmod a+x bin/dumpobj
+    chmod a+x bin/obj2asm
+    chmod a+x bin/rdmd
 
+	# No cleaning up needed here, arr.
     tar zcf ../dmd.tar.gz * || die 1 "Failed to create dmd.tar.gz"
 
 	cd .. || exit 1
