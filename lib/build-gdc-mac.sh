@@ -6,6 +6,7 @@ cd "`dirname \"$0\"`"
 
 # set up symbolic links to compilers without version suffix
 
+tempdir=/tmp/build-$$
 for target in powerpc-apple-darwin8 i686-apple-darwin8; do
   for prefix in /usr /usr/local /opt/gdc /sw /opt/local; do
   if [ -x $prefix/bin/gdc ]; then
@@ -13,8 +14,8 @@ for target in powerpc-apple-darwin8 i686-apple-darwin8; do
     for program in gcc g++ gdc; do
     if [ ! -L "$prefix/bin/$target-$program" ]; then
       if [ -x "$prefix/bin/$target-$program-$version" ]; then
-      echo "$prefix/bin/$target-$program -> $target-$program-$version"
-      sudo ln -s $target-$program-$version $prefix/bin/$target-$program
+      echo "$target-$program -> $target-$program-$version"
+      ln -s $prefix/bin/$target-$program-$version $tempdir/$target-$program
       fi
     fi
     done
@@ -22,13 +23,14 @@ for target in powerpc-apple-darwin8 i686-apple-darwin8; do
   if [ -x "$prefix/bin/gdmd" ]; then
     for program in gdmd; do
     if [ ! -L "$prefix/bin/$target-$program" ]; then
-      echo "$prefix/bin/$target-$program -> $program"
-      sudo ln -s $program $prefix/bin/$target-$program
+      echo "$target-$program -> $program"
+      ln -s $prefix/bin/$program $tempdir/$target-$program
     fi
     done
   fi
   done
 done
+export PATH="$tempdir:$PATH"
 
 # build Universal Binary versions of the Tango libraries
 
