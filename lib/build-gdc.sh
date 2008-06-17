@@ -8,6 +8,7 @@ do
             DEBUG=1
             ;;
     esac
+    shift
 done
  
 # Allow gdc and gdmd to be overriden
