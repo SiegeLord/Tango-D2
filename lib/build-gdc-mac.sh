@@ -62,7 +62,12 @@ fi
 if [ "$FAILED" = "1" ]
 then
     echo 'Failed to build universal binaries. Trying GDC.'
-    ./build-gdc.sh
+    if ./build-gdc.sh 1>&2
+    then
+        echo 'Universal binary failed to build, fallback succeded by using standard GDC.'
+    else
+        echo 'Universal binary failed to build, and so did the fallback method using standard GDC.'
+    fi
 else
     for lib in $LIBS; do \
     lipo -create -output $lib $lib.ppc $lib.i386; done
