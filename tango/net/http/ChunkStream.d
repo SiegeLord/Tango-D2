@@ -85,7 +85,7 @@ class ChunkOutput : OutputFilter, Buffered
 
         final void terminate (void delegate(IBuffer) headers = null)
         {
-                write (null);
+                output.append ("0\r\n");
                 if (headers)
                     headers (output);
                 output.append ("\r\n");
