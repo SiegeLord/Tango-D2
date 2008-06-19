@@ -108,9 +108,9 @@ class DeviceConduit : Conduit
 
                 override void detach ()
                 {
-                        if (handle)
+                        if (handle != INVALID_HANDLE_VALUE)
                             CloseHandle (handle);
-                        handle = cast(HANDLE) null;
+                        handle = INVALID_HANDLE_VALUE;
                 }
 
                 /***************************************************************
@@ -200,8 +200,7 @@ class DeviceConduit : Conduit
                 override void detach ()
                 {
                         if (handle >= 0)
-                            if (posix.close (handle) is -1)
-                                error;
+                            posix.close (handle);
                         handle = -1;
                 }
 
