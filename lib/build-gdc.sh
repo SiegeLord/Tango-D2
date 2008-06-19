@@ -21,6 +21,10 @@ then
     export GDMD=${GDC_PREFIX}gdmd${GDC_POSTFIX}
 fi
 
+# Make sure scripts are installable (typically zip doesn't preserve x bit)
+chmod a+x compiler/gdc/configure
+chmod a+x compiler/gdc/config.guess
+
 GDC_VER="`$GDC --version | grep 'gdc' | sed 's/^.*gdc \(pre\-\{0,1\}release \)*\([0-9]*\.[0-9]*\).*$/\2/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
 GDC_MINOR="`echo $GDC_VER | sed 's/.*\.//'`"
@@ -45,10 +49,6 @@ fi
 
 # Make sure object.di is present for clean GDC installs
 cp ../object.di compiler/gdc/object.di
-
-# Make sure scripts are installable (typically zip doesn't preserve x bit)
-chmod a+x compiler/gdc/configure
-chmod a+x compiler/gdc/config.guess
 
 pushd ./compiler/gdc
 ./configure || exit 1
