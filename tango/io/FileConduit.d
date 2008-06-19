@@ -22,6 +22,8 @@ public  import  tango.io.FilePath;
 
 private import  tango.io.DeviceConduit;
 
+private import  stdc = tango.stdc.stringz;
+
 private import  Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
@@ -236,20 +238,19 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
 
         // the file we're working with 
-        private PathView path_;
+        private char[]  path_;
 
         // the style we're opened with
-        private Style    style_;
+        private Style   style_;
 
         /***********************************************************************
         
-                Create a FileConduit with the provided path and style.
+                Create a FileConduit for use with open()
 
         ***********************************************************************/
 
-        this (char[] name, Style style = ReadExisting)
+        this ()
         {
-                this (new FilePath(name), style);
         }
 
         /***********************************************************************
@@ -258,24 +259,36 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         ***********************************************************************/
 
-        this (PathView path, Style style = ReadExisting)
+        this (char[] path, Style style = ReadExisting)
         {
-                // remember who we are
-                path_ = path;
+                open (path, style);
+        }
 
-                // open the file
-                open (this.style_ = style);
+        /***********************************************************************
+        
+                Create a FileConduit with the provided path and style.
+
+                Deprecated: use char[] ctor instead
+
+        ***********************************************************************/
+
+        deprecated this (PathView path, Style style = ReadExisting)
+        {
+                this (path.toString, style);
         }    
 
         /***********************************************************************
         
                 Return the PathView used by this file.
 
+                We're removing PathView here, in favour of toString()
+
         ***********************************************************************/
 
-        PathView path ()
+        deprecated PathView path ()
         {
-                return path_;
+                // return something useful in the interim
+                return new FilePath (path_);
         }               
 
         /***********************************************************************
@@ -297,7 +310,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         override char[] toString ()
         {
-                return path_.toString;
+                return path_;
         }               
 
         /***********************************************************************
@@ -345,7 +358,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected void open (Style style)
+                void open (char[] path, Style style = ReadExisting)
                 {
                         DWORD   attr,
                                 share,
@@ -386,6 +399,11 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         FILE_FLAG_WRITE_THROUGH,
                                         ];
 
+                        // remember our settings
+                        assert(path);
+                        path_ = path;
+                        style_ = style;
+
                         attr   = Attr[style.cache];
                         share  = Share[style.share];
                         create = Create[style.open];
@@ -398,16 +416,22 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                                        cast(HANDLE) null);
                              else
                                 {
-                                wchar[256] tmp = void;
-                                auto name = Utf.toString16 (path.cString, tmp);
-                                handle = CreateFileW (name.ptr, access, share,
+                                char[512] zero = void;
+                                wchar[512] convert = void;
+
+                                // zero terminate and convert to utf16
+                                auto name = stdc.toStringz (path, zero);
+                                auto wide = Utf.toString16 (name[0..path.length+1], convert);
+
+                                // open the file
+                                handle = CreateFileW (wide.ptr, access, share,
                                                       null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
                                                       cast(HANDLE) null);
                                 }
 
                         if (handle is INVALID_HANDLE_VALUE)
-                            error ();
+                            error;
 
                         // move to end of file?
                         if (style.open is Open.Append)
@@ -444,7 +468,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 {
                         // must have Generic_Write access
                         if (! SetEndOfFile (handle))
-                              error ();                            
+                              error;                            
                 }               
 
                 /***************************************************************
@@ -462,7 +486,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                         if (result is -1 && 
                             GetLastError() != ERROR_SUCCESS)
-                            error ();
+                            error;
 
                         return result + (cast(long) high << 32);
                 }               
@@ -490,7 +514,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                protected void open (Style style)
+                void open (char[] path, Style style = ReadExisting)
                 {
                         alias int[] Flags;
 
@@ -518,12 +542,20 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                                         F_RDLCK,                // shared read
                                         ];
                                                 
+                        // remember our settings
+                        assert(path);
+                        path_ = path;
+                        style_ = style;
+
+                        // zero terminate and convert to utf16
+                        char[512] zero = void;
+                        auto name = stdc.toStringz (path, zero);
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = posix.open (path.cString.ptr, mode | O_LARGEFILE, 0666);
+                        handle = posix.open (name, mode | O_LARGEFILE, 0666);
                         if (handle is -1)
-                            error ();
+                            error;
                 }
 
                 /***************************************************************
@@ -538,7 +570,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 {
                         // set filesize to be current seek-position
                         if (ftruncate (handle, cast(int) position) is -1)
-                            error ();
+                            error;
                 }               
 
                 /***************************************************************
@@ -552,7 +584,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 {
                         long result = posix.lseek (handle, cast(int) offset, anchor);
                         if (result is -1)
-                            error ();
+                            error;
                         return result;
                 }               
         }
