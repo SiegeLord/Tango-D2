@@ -39,7 +39,7 @@ class DeviceConduit : Conduit
 
         final void error ()
         {
-                super.error (toString() ~ " :: " ~ SysError.lastMsg);
+                super.error (this.toString ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -48,7 +48,7 @@ class DeviceConduit : Conduit
 
         ***********************************************************************/
 
-        override char[] toString()
+        override char[] toString ()
         {
                 return "<device>";
         }
@@ -98,15 +98,18 @@ class DeviceConduit : Conduit
 
                 /***************************************************************
 
-                        Release the underlying file
+                        Release the underlying file. Note that an exception
+                        is not thrown on error, as doing so can induce some
+                        spaggetti into error handling. Instead, we need to
+                        change this to return a bool instead, so the caller
+                        can decide what to do.                        
 
                 ***************************************************************/
 
                 override void detach ()
                 {
                         if (handle)
-                            if (! CloseHandle (handle))
-                                  error ();
+                            CloseHandle (handle);
                         handle = cast(HANDLE) null;
                 }
 
@@ -130,7 +133,7 @@ class DeviceConduit : Conduit
                               if (SysError.lastCode is ERROR_BROKEN_PIPE)
                                   return Eof;
                               else
-                                 error ();
+                                 error;
 
                         if (read is 0 && dst.length > 0)
                             return Eof;
@@ -149,7 +152,7 @@ class DeviceConduit : Conduit
                         DWORD written;
 
                         if (! WriteFile (handle, src.ptr, src.length, &written, null))
-                              error ();
+                              error;
 
                         return written;
                 }
@@ -198,7 +201,7 @@ class DeviceConduit : Conduit
                 {
                         if (handle >= 0)
                             if (posix.close (handle) is -1)
-                                error ();
+                                error;
                         handle = -1;
                 }
 
@@ -213,7 +216,7 @@ class DeviceConduit : Conduit
                 {
                         int read = posix.read (handle, dst.ptr, dst.length);
                         if (read == -1)
-                            error ();
+                            error;
                         else
                            if (read is 0 && dst.length > 0)
                                return Eof;
@@ -231,7 +234,7 @@ class DeviceConduit : Conduit
                 {
                         int written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)
-                            error ();
+                            error;
                         return written;
                 }
         }
