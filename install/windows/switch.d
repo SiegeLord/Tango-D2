@@ -25,7 +25,7 @@ Example: switch.exe phobos
     void showMessage(char[] msg)
     {
         if(useMessageBoxes)
-            MessageBoxA(null, toStringz(msg), "Tango Switch utility\0", 0);
+            MessageBoxA(null, cast(ubyte*) toStringz(msg), cast(ubyte*) "Tango Switch utility\0", 0);
         else
             printf("%s\n", toStringz(msg));
     }
@@ -93,10 +93,10 @@ Example: switch.exe phobos
         	return;
         }
         
-        MoveFileA(toStringz(targetConf), toStringz(tangoConf));   // backup the Tango Build config
-        MoveFileA(toStringz(phobosConf), toStringz(targetConf));  // put Phobos's Build config in place
+        MoveFileA(cast(ubyte*) toStringz(targetConf), cast(ubyte*) toStringz(tangoConf));   // backup the Tango Build config
+        MoveFileA(cast(ubyte*) toStringz(phobosConf), cast(ubyte*) toStringz(targetConf));  // put Phobos's Build config in place
         
-        if (!CopyFileA(toStringz(phobosLib), toStringz(targetLib), false))
+        if (!CopyFileA(cast(ubyte*) toStringz(phobosLib), cast(ubyte*) toStringz(targetLib), false))
             showMessage("Error: Could not find " ~ phobosLib);
         else
             showMessage("Switched to Phobos");
@@ -110,10 +110,10 @@ Example: switch.exe phobos
         	return;
         }
         
-        MoveFileA(toStringz(targetConf), toStringz(phobosConf));  // backup the Phobos Build config
-        MoveFileA(toStringz(tangoConf), toStringz(targetConf));   // put Tango's Build config in place
+        MoveFileA(cast(ubyte*) toStringz(targetConf), cast(ubyte*) toStringz(phobosConf));  // backup the Phobos Build config
+        MoveFileA(cast(ubyte*) toStringz(tangoConf), cast(ubyte*) toStringz(targetConf));   // put Tango's Build config in place
         
-        if (!CopyFileA(toStringz(tangoLib), toStringz(targetLib), false))
+        if (!CopyFileA(cast(ubyte*) toStringz(tangoLib), cast(ubyte*) toStringz(targetLib), false))
             showMessage("Error: Could not find " ~ tangoLib);
         else
             showMessage("Switched to Tango");
