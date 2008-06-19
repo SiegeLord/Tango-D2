@@ -142,7 +142,7 @@ T[] format(T) (T[] output, Time t)
 
         // use the featherweight formatter ...
         T[14] tmp = void;
-        return Util.layout (output, "%0, %1 %2 %3 %4:%5:%6 GMT", 
+        return Util.layout (output, cast(T[])"%0, %1 %2 %3 %4:%5:%6 GMT", 
                             Days[date.dow],
                             convert (tmp[0..2], date.day),
                             Months[date.month-1],
