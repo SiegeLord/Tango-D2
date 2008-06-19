@@ -39,6 +39,7 @@ import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
 
+import Path = tango.io.Path;
 import Integer = tango.text.convert.Integer;
 
 debug(Zip) import tango.io.Stdout : Stderr;
@@ -540,7 +541,8 @@ interface ZipWriter
 {
     void finish();
     void putFile(ZipEntryInfo info, char[] path);
-    void putFile(ZipEntryInfo info, PathView path);
+    deprecated void putFile(ZipEntryInfo info, PathView path);
+    void putFile(ZipEntryInfo info, char[] path);
     void putStream(ZipEntryInfo info, InputStream source);
     void putEntry(ZipEntryInfo info, ZipEntry entry);
     void putData(ZipEntryInfo info, void[] data);
@@ -585,13 +587,13 @@ class ZipBlockReader : ZipReader
      * Creates a ZipBlockReader using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    deprecated this(PathView path)
     {
-        this(FilePath(path));
+        this(path.toString);
     }
 
     /// ditto
-    this(PathView path)
+    this(char[] path)
     {
         file_source = new FileConduit(path);
         this(file_source);
@@ -990,13 +992,13 @@ class ZipBlockWriter : ZipWriter
      * Creates a ZipBlockWriter using the specified file on the local
      * filesystem.
      */
-    this(char[] path)
+    deprecated this(FilePath path)
     {
-        this(FilePath(path));
+        this(path.toString);
     }
 
     /// ditto
-    this(PathView path)
+    this(char[] path)
     {
         file_output = new FileConduit(path, FileConduit.WriteCreate);
         this(file_output);
@@ -1038,13 +1040,13 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file from the local filesystem to the archive.
      */
-    void putFile(ZipEntryInfo info, char[] path)
+    deprecated void putFile(ZipEntryInfo info, PathView path)
     {
-        putFile(info, FilePath(path));
+        putFile(info, path.toString);
     }
 
     /// ditto
-    void putFile(ZipEntryInfo info, PathView path)
+    void putFile(ZipEntryInfo info, char[] path)
     {
         scope file = new FileConduit(path);
         scope(exit) file.close();
@@ -1748,25 +1750,29 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.finish;
 }
 
-void createArchive(PathView archive, Method method, PathView[] files...)
+deprecated void createArchive(PathView archive, Method method, PathView[] files...)
 {
-    scope zw = new ZipBlockWriter(archive);
+    scope zw = new ZipBlockWriter(archive.toString);
     zw.method = method;
 
     foreach( file ; files )
-        zw.putFile(ZipEntryInfo(file.toString), file);
+        zw.putFile(ZipEntryInfo(file.toString), file.toString);
 
     zw.finish;
 }
 
-void extractArchive(char[] archive, char[] folder)
+deprecated void extractArchive(FilePath archive, char[] folder)
 {
-    extractArchive(FilePath(archive), FilePath(folder));
+    extractArchive(archive, folder);
 }
 
-void extractArchive(PathView archive, PathView dest)
+deprecated void extractArchive(PathView archive, PathView dest)
 {
-    scope folder = FilePath(dest.toString);
+        extractArchive (archive.toString, dest.toString);
+}
+
+void extractArchive(char[] archive, char[] dest)
+{
     scope zr = new ZipBlockReader(archive);
 
     foreach( entry ; zr )
@@ -1774,7 +1780,7 @@ void extractArchive(PathView archive, PathView dest)
         // Skip directories
         if( entry.info.name[$-1] == '/' ) continue;
 
-        auto path = folder.dup.append(entry.info.name);
+        auto path = Path.join(dest, entry.info.name);
         scope fout = new FileConduit(path, FileConduit.WriteCreate);
         fout.output.copy(entry.open);
     }
