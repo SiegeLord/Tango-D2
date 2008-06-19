@@ -409,18 +409,19 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                         create = Create[style.open];
                         access = Access[style.access];
 
+                        // zero terminate the path
+                        char[512] zero = void;
+                        auto name = stdc.toStringz (path, zero);
+
                         version (Win32SansUnicode)
-                                 handle = CreateFileA (path.cString.ptr, access, share, 
+                                 handle = CreateFileA (name, access, share, 
                                                        null, create, 
                                                        attr | FILE_ATTRIBUTE_NORMAL,
                                                        cast(HANDLE) null);
                              else
                                 {
-                                char[512] zero = void;
+                                // convert to utf16
                                 wchar[512] convert = void;
-
-                                // zero terminate and convert to utf16
-                                auto name = stdc.toStringz (path, zero);
                                 auto wide = Utf.toString16 (name[0..path.length+1], convert);
 
                                 // open the file
