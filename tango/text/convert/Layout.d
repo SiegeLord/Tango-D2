@@ -420,7 +420,7 @@ class Layout(T)
                                    {
                                    auto tiStat = cast(TypeInfo_StaticArray)_ti;
                                    auto p = _arg;
-                                   length += sink ("[ ");
+                                   length += sink ("[");
                                    for (int i = 0; i < tiStat.len; i++)
                                        {
                                        if (p !is _arg )
@@ -428,7 +428,7 @@ class Layout(T)
                                        processElement (tiStat.value, p);
                                        p += tiStat.tsize/tiStat.len;
                                        }
-                                   length += sink (" ]");
+                                   length += sink ("]");
                                    }
                                 else 
                                 if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
@@ -442,7 +442,7 @@ class Layout(T)
                                    alias ubyte AK;
                                    auto aa = *cast(AV[AK]*) _arg;
 
-                                   length += sink ("{ ");
+                                   length += sink ("{");
                                    bool first = true;
                                   
                                    int roundUp (int sz)
@@ -460,11 +460,11 @@ class Layout(T)
                                            if (!first)
                                                 length += sink (", ");
                                            processElement (tiKey, pk);
-                                           length += sink ("=>");
+                                           length += sink (" => ");
                                            processElement (tiVal, pv);
                                            first = false;
                                            }
-                                   length += sink (" }");
+                                   length += sink ("}");
                                    }
                                 else 
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY &&
@@ -478,7 +478,7 @@ class Layout(T)
                                    auto ptr = cast(Arg) arr.ptr;
                                    auto elTi = _ti.next();
                                    auto size = elTi.tsize();
-                                   length += sink ("[ ");
+                                   length += sink ("[");
                                    while (len > 0)
                                          {
                                          if (ptr !is arr.ptr)
@@ -487,7 +487,7 @@ class Layout(T)
                                          len -= 1;
                                          ptr += size;
                                          }
-                                   length += sink (" ]");
+                                   length += sink ("]");
                                    }
                                 else
                                    // the standard processing
