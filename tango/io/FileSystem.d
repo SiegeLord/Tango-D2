@@ -24,7 +24,7 @@ private import  tango.core.Exception;
 version (Win32)
         {
         private import Text = tango.text.Util;
-        private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPTSTR);
+        private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPSTR);
         }
 
 version (Posix)
@@ -142,7 +142,7 @@ struct FileSystem
                                 wchar[MAX_PATH+1] tmp = void;
                                 assert (path.length < tmp.length);
                                 auto i = MultiByteToWideChar (CP_UTF8, 0, 
-                                                              path.ptr, path.length, 
+                                                              cast(PCHAR)path.ptr, path.length, 
                                                               tmp.ptr, tmp.length);
                                 tmp[i] = 0;
 
@@ -183,7 +183,7 @@ struct FileSystem
                                 auto dir = new char [len * 3];
                                 GetCurrentDirectoryW (len, tmp.ptr); 
                                 auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, len, 
-                                                              dir.ptr, dir.length, null, null);
+                                                              cast(PCHAR)dir.ptr, dir.length, null, null);
                                 if (len && i)
                                    {
                                    path = standard (dir[0..i]);
@@ -213,7 +213,7 @@ struct FileSystem
                         if (len)
                            {
                            str = new char [len];
-                           GetLogicalDriveStringsA (len, str.ptr);
+                           GetLogicalDriveStringsA (len, cast(PCHAR)str.ptr);
 
                            // split roots into seperate strings
                            roots = Text.delimit (str [0 .. $-1], "\0");

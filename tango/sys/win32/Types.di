@@ -1,8 +1,8 @@
 module tango.sys.win32.Types;
 
 /*
- 	Module:		Windows Types
- 	Author: 	Trevor Parscal
+    Module:     Windows Types
+    Author:     Trevor Parscal
 */
 
 /+ Aliases, Types, and Constants +/
@@ -15,10 +15,11 @@ alias int WINBOOL;
 alias WINBOOL BOOL;
 alias uint CALTYPE;
 alias uint CALID;
-alias char CCHAR;
-alias char* PCHAR;
+alias ubyte CCHAR;
+alias ubyte* PCHAR;
 alias uint COLORREF;
 alias uint TCOLORREF;
+alias ubyte CHAR;
 alias ubyte BYTE;
 alias short INT16;
 alias ushort UINT16;
@@ -32,10 +33,11 @@ alias int INT_PTR;
 alias uint UINT_PTR;
 alias int LONG_PTR;
 alias uint ULONG_PTR;
+alias DWORD DWORD_PTR;
 alias uint PROPID;
 const BOOL FALSE = 0;
 const BOOL TRUE = -1;
-alias char* PANSICHAR;
+alias ubyte* PANSICHAR;
 alias wchar* PWIDECHAR;
 alias int* PINTEGER;
 alias long LONGLONG;
@@ -96,7 +98,7 @@ alias PCHAR LPCCH;
 alias PCHAR LPCH;
 alias COLORREF* LPCOLORREF;
 alias PCHAR LPCSTR;
-alias PCHAR LPCTSTR;
+alias TCHAR* LPCTSTR;
 alias wchar* LPCWCH;
 alias wchar* LPCWSTR;
 alias DWORD* LPDWORD;
@@ -105,7 +107,7 @@ alias int* LPINT;
 alias int* LPLONG;
 alias PCHAR LPSTR;
 alias PCHAR LPTCH;
-alias PCHAR LPTSTR;
+alias TCHAR* LPTSTR;
 alias int LRESULT;
 alias POINTER LPVOID;
 alias POINTER LPCVOID;
@@ -149,7 +151,13 @@ alias LPVOID SC_LOCK;
 alias SC_HANDLE* LPSC_HANDLE;
 alias DWORD SERVICE_STATUS_HANDLE;
 alias ubyte TBYTE;
-alias char TCHAR;
+
+version(Win32SansUnicode){
+    alias ubyte  TCHAR;
+}else{
+    alias wchar TCHAR;
+}
+
 alias ubyte BCHAR;
 alias ubyte UCHAR;
 alias wchar WCHAR;
@@ -159,16 +167,13 @@ alias ushort USHORT;
 alias uint WPARAM;
 alias int ACL_INFORMATION_CLASS;
 
-struct GUID { // size is 16
-align(1):
-	DWORD   Data1;
-	WORD    Data2;
-	WORD    Data3;
-	BYTE[8] Data4;
-}
-
 alias GUID IID;
 alias IID* REFIID;
+
+// Cast a string literal to a ubyte*=PCHAR
+template _PCHAR( char[] a ){
+    const PCHAR _PCHAR = cast(PCHAR)a.ptr;
+}
 
 enum { AclRevisionInformation = 1, AclSizeInformation,  };
 alias ACL_INFORMATION_CLASS _ACL_INFORMATION_CLASS;
@@ -251,36 +256,47 @@ alias WINBOOL (*PFNPROCESSPOLICIES)(HWND, LPCTSTR, LPCTSTR, LPCTSTR, DWORD);
 }
 
 const {
- char* SE_CREATE_TOKEN_NAME = ("SeCreateTokenPrivilege");
- char* SE_ASSIGNPRIMARYTOKEN_NAME = ("SeAssignPrimaryTokenPrivilege");
- char* SE_LOCK_MEMORY_NAME = ("SeLockMemoryPrivilege");
- char* SE_INCREASE_QUOTA_NAME = ("SeIncreaseQuotaPrivilege");
- char* SE_UNSOLICITED_INPUT_NAME = ("SeUnsolicitedInputPrivilege");
- char* SE_MACHINE_ACCOUNT_NAME = ("SeMachineAccountPrivilege");
- char* SE_TCB_NAME = ("SeTcbPrivilege");
- char* SE_SECURITY_NAME = ("SeSecurityPrivilege");
- char* SE_TAKE_OWNERSHIP_NAME = ("SeTakeOwnershipPrivilege");
- char* SE_LOAD_DRIVER_NAME = ("SeLoadDriverPrivilege");
- char* SE_SYSTEM_PROFILE_NAME = ("SeSystemProfilePrivilege");
- char* SE_SYSTEMTIME_NAME = ("SeSystemtimePrivilege");
- char* SE_PROF_SINGLE_PROCESS_NAME = ("SeProfileSingleProcessPrivilege");
- char* SE_INC_BASE_PRIORITY_NAME = ("SeIncreaseBasePriorityPrivilege");
- char* SE_CREATE_PAGEFILE_NAME = ("SeCreatePagefilePrivilege");
- char* SE_CREATE_PERMANENT_NAME = ("SeCreatePermanentPrivilege");
- char* SE_BACKUP_NAME = ("SeBackupPrivilege");
- char* SE_RESTORE_NAME = ("SeRestorePrivilege");
- char* SE_SHUTDOWN_NAME = ("SeShutdownPrivilege");
- char* SE_DEBUG_NAME = ("SeDebugPrivilege");
- char* SE_AUDIT_NAME = ("SeAuditPrivilege");
- char* SE_SYSTEM_ENVIRONMENT_NAME = ("SeSystemEnvironmentPrivilege");
- char* SE_CHANGE_NOTIFY_NAME = ("SeChangeNotifyPrivilege");
- char* SE_REMOTE_SHUTDOWN_NAME = ("SeRemoteShutdownPrivilege");
- char* SERVICES_ACTIVE_DATABASEA = ("ServicesActive");
- char* SERVICES_FAILED_DATABASEA = ("ServicesFailed");
- char* SC_GROUP_IDENTIFIERA = ("+");
- char* SERVICES_ACTIVE_DATABASE = (SERVICES_ACTIVE_DATABASEA);
- char* SERVICES_FAILED_DATABASE = (SERVICES_FAILED_DATABASEA);
- char* SC_GROUP_IDENTIFIER = (SC_GROUP_IDENTIFIERA);
+    LPCTSTR SE_CREATE_TOKEN_NAME = ("SeCreateTokenPrivilege");
+    LPCTSTR SE_ASSIGNPRIMARYTOKEN_NAME = ("SeAssignPrimaryTokenPrivilege");
+    LPCTSTR SE_LOCK_MEMORY_NAME = ("SeLockMemoryPrivilege");
+    LPCTSTR SE_INCREASE_QUOTA_NAME = ("SeIncreaseQuotaPrivilege");
+    LPCTSTR SE_UNSOLICITED_INPUT_NAME = ("SeUnsolicitedInputPrivilege");
+    LPCTSTR SE_MACHINE_ACCOUNT_NAME = ("SeMachineAccountPrivilege");
+    LPCTSTR SE_TCB_NAME = ("SeTcbPrivilege");
+    LPCTSTR SE_SECURITY_NAME = ("SeSecurityPrivilege");
+    LPCTSTR SE_TAKE_OWNERSHIP_NAME = ("SeTakeOwnershipPrivilege");
+    LPCTSTR SE_LOAD_DRIVER_NAME = ("SeLoadDriverPrivilege");
+    LPCTSTR SE_SYSTEM_PROFILE_NAME = ("SeSystemProfilePrivilege");
+    LPCTSTR SE_SYSTEMTIME_NAME = ("SeSystemtimePrivilege");
+    LPCTSTR SE_PROF_SINGLE_PROCESS_NAME = ("SeProfileSingleProcessPrivilege");
+    LPCTSTR SE_INC_BASE_PRIORITY_NAME = ("SeIncreaseBasePriorityPrivilege");
+    LPCTSTR SE_CREATE_PAGEFILE_NAME = ("SeCreatePagefilePrivilege");
+    LPCTSTR SE_CREATE_PERMANENT_NAME = ("SeCreatePermanentPrivilege");
+    LPCTSTR SE_BACKUP_NAME = ("SeBackupPrivilege");
+    LPCTSTR SE_RESTORE_NAME = ("SeRestorePrivilege");
+    LPCTSTR SE_SHUTDOWN_NAME = ("SeShutdownPrivilege");
+    LPCTSTR SE_DEBUG_NAME = ("SeDebugPrivilege");
+    LPCTSTR SE_AUDIT_NAME = ("SeAuditPrivilege");
+    LPCTSTR SE_SYSTEM_ENVIRONMENT_NAME = ("SeSystemEnvironmentPrivilege");
+    LPCTSTR SE_CHANGE_NOTIFY_NAME = ("SeChangeNotifyPrivilege");
+    LPCTSTR SE_REMOTE_SHUTDOWN_NAME = ("SeRemoteShutdownPrivilege");
+
+    LPCSTR  SERVICES_ACTIVE_DATABASEA = _PCHAR!("ServicesActive");
+    LPCWSTR SERVICES_ACTIVE_DATABASEW = ("ServicesActive");
+    LPCSTR  SERVICES_FAILED_DATABASEA = _PCHAR!("ServicesFailed");
+    LPCWSTR SERVICES_FAILED_DATABASEW = ("ServicesFailed");
+    LPCSTR  SC_GROUP_IDENTIFIERA = _PCHAR!("+");
+    LPCWSTR SC_GROUP_IDENTIFIERW = ("+");
+    version(Win32SansUnicode){
+        alias SERVICES_ACTIVE_DATABASEA SERVICES_ACTIVE_DATABASE;
+        alias SERVICES_FAILED_DATABASEA SERVICES_FAILED_DATABASE;
+        alias SC_GROUP_IDENTIFIERA SC_GROUP_IDENTIFIER;
+    }
+    else{
+        alias SERVICES_ACTIVE_DATABASEW SERVICES_ACTIVE_DATABASE;
+        alias SERVICES_FAILED_DATABASEW SERVICES_FAILED_DATABASE;
+        alias SC_GROUP_IDENTIFIERW SC_GROUP_IDENTIFIER;
+    }
 }
 
 extern(Windows){
@@ -4071,9 +4087,14 @@ enum : DWORD {
     LVIS_STATEIMAGEMASK = (61440),
 }
 const {
-wchar* LPSTR_TEXTCALLBACKW = cast(LPWSTR)(-(1));
-char* LPSTR_TEXTCALLBACKA = cast(LPSTR)(-(1));
-char* LPSTR_TEXTCALLBACK = (LPSTR_TEXTCALLBACKA);
+    LPWSTR LPSTR_TEXTCALLBACKW = cast(LPWSTR)(-(1));
+    LPSTR  LPSTR_TEXTCALLBACKA = cast(LPSTR)(-(1));
+    version(Win32SansUnicode){
+        alias LPSTR_TEXTCALLBACKA LPSTR_TEXTCALLBACK;
+    }
+    else{
+        alias LPSTR_TEXTCALLBACKW LPSTR_TEXTCALLBACK;
+    }
 }
 enum : DWORD {
     LVIF_TEXT = (1),
@@ -6030,9 +6051,9 @@ struct VA_LIST
 
 struct ABC
 {
-	int abcA;
-	UINT abcB;
-	int abcC;
+    int abcA;
+    UINT abcB;
+    int abcC;
 }
 
 alias ABC* LPABC;
@@ -6042,9 +6063,9 @@ alias ABC* PABC;
 
 struct ABCFLOAT
 {
-	FLOAT abcfA;
-	FLOAT abcfB;
-	FLOAT abcfC;
+    FLOAT abcfA;
+    FLOAT abcfB;
+    FLOAT abcfC;
 }
 
 alias ABCFLOAT* LPABCFLOAT;
@@ -6054,9 +6075,9 @@ alias ABCFLOAT* PABCFLOAT;
 
 struct ACCEL
 {
-	ubyte fVirt;
-	ushort key;
-	ushort cmd;
+    ubyte fVirt;
+    ushort key;
+    ushort cmd;
 }
 
 alias ACCEL* LPACCEL;
@@ -6066,9 +6087,9 @@ alias ACCEL* PACCEL;
 
 struct ACE_HEADER
 {
-	ubyte AceType;
-	ubyte AceFlags;
-	ushort AceSize;
+    ubyte AceType;
+    ubyte AceFlags;
+    ushort AceSize;
 }
 
 alias ACE_HEADER _ACE_HEADER;
@@ -6079,9 +6100,9 @@ alias ACCESS_MASK REGSAM;
 
 struct ACCESS_ALLOWED_ACE
 {
-	ACE_HEADER Header;
-	ACCESS_MASK Mask;
-	DWORD SidStart;
+    ACE_HEADER Header;
+    ACCESS_MASK Mask;
+    DWORD SidStart;
 }
 
 alias ACCESS_ALLOWED_ACE _ACCESS_ALLOWED_ACE;
@@ -6090,9 +6111,9 @@ alias ACCESS_ALLOWED_ACE* PACCESS_ALLOWED_ACE;
 
 struct ACCESS_DENIED_ACE
 {
-	ACE_HEADER Header;
-	ACCESS_MASK Mask;
-	DWORD SidStart;
+    ACE_HEADER Header;
+    ACCESS_MASK Mask;
+    DWORD SidStart;
 }
 
 alias ACCESS_DENIED_ACE _ACCESS_DENIED_ACE;
@@ -6100,9 +6121,9 @@ alias ACCESS_DENIED_ACE TACCESS_DENIED_ACE;
 
 struct ACCESSTIMEOUT
 {
-	UINT cbSize;
-	DWORD dwFlags;
-	DWORD iTimeOutMSec;
+    UINT cbSize;
+    DWORD dwFlags;
+    DWORD iTimeOutMSec;
 }
 
 alias ACCESSTIMEOUT _ACCESSTIMEOUT;
@@ -6111,11 +6132,11 @@ alias ACCESSTIMEOUT* PACCESSTIMEOUT;
 
 struct ACL
 {
-	ubyte AclRevision;
-	ubyte Sbz1;
-	ushort AclSize;
-	ushort AceCount;
-	ushort Sbz2;
+    ubyte AclRevision;
+    ubyte Sbz1;
+    ushort AclSize;
+    ushort AceCount;
+    ushort Sbz2;
 }
 
 alias ACL* PACL;
@@ -6124,7 +6145,7 @@ alias ACL TACL;
 
 struct ACL_REVISION_INFORMATION
 {
-	DWORD AclRevision;
+    DWORD AclRevision;
 }
 
 alias ACL_REVISION_INFORMATION _ACL_REVISION_INFORMATION;
@@ -6133,9 +6154,9 @@ alias ACL_REVISION_INFORMATION* PACLREVISIONINFORMATION;
 
 struct ACL_SIZE_INFORMATION
 {
-	DWORD AceCount;
-	DWORD AclBytesInUse;
-	DWORD AclBytesFree;
+    DWORD AceCount;
+    DWORD AclBytesInUse;
+    DWORD AclBytesFree;
 }
 
 alias ACL_SIZE_INFORMATION _ACL_SIZE_INFORMATION;
@@ -6144,9 +6165,9 @@ alias ACL_SIZE_INFORMATION* PACLSIZEINFORMATION;
 
 struct ACTION_HEADER
 {
-	ULONG transport_id;
-	USHORT action_code;
-	USHORT reserved;
+    ULONG transport_id;
+    USHORT action_code;
+    USHORT reserved;
 }
 
 alias ACTION_HEADER _ACTION_HEADER;
@@ -6155,33 +6176,33 @@ alias ACTION_HEADER* PACTIONHEADER;
 
 struct ADAPTER_STATUS
 {
-	UCHAR[1 + 5] adapter_address;
-	UCHAR rev_major;
-	UCHAR reserved0;
-	UCHAR adapter_type;
-	UCHAR rev_minor;
-	ushort duration;
-	ushort frmr_recv;
-	ushort frmr_xmit;
-	ushort iframe_recv_err;
-	ushort xmit_aborts;
-	DWORD xmit_success;
-	DWORD recv_success;
-	ushort iframe_xmit_err;
-	ushort recv_buff_unavail;
-	ushort t1_timeouts;
-	ushort ti_timeouts;
-	DWORD reserved1;
-	ushort free_ncbs;
-	ushort max_cfg_ncbs;
-	ushort max_ncbs;
-	ushort xmit_buf_unavail;
-	ushort max_dgram_size;
-	ushort pending_sess;
-	ushort max_cfg_sess;
-	ushort max_sess;
-	ushort max_sess_pkt_size;
-	ushort name_count;
+    UCHAR[1 + 5] adapter_address;
+    UCHAR rev_major;
+    UCHAR reserved0;
+    UCHAR adapter_type;
+    UCHAR rev_minor;
+    ushort duration;
+    ushort frmr_recv;
+    ushort frmr_xmit;
+    ushort iframe_recv_err;
+    ushort xmit_aborts;
+    DWORD xmit_success;
+    DWORD recv_success;
+    ushort iframe_xmit_err;
+    ushort recv_buff_unavail;
+    ushort t1_timeouts;
+    ushort ti_timeouts;
+    DWORD reserved1;
+    ushort free_ncbs;
+    ushort max_cfg_ncbs;
+    ushort max_ncbs;
+    ushort xmit_buf_unavail;
+    ushort max_dgram_size;
+    ushort pending_sess;
+    ushort max_cfg_sess;
+    ushort max_sess;
+    ushort max_sess_pkt_size;
+    ushort name_count;
 }
 
 alias ADAPTER_STATUS _ADAPTER_STATUS;
@@ -6190,8 +6211,8 @@ alias ADAPTER_STATUS* PADAPTERSTATUS;
 
 struct ADDJOB_INFO_1
 {
-	LPTSTR Path;
-	DWORD JobId;
+    LPTSTR Path;
+    DWORD JobId;
 }
 
 alias ADDJOB_INFO_1 _ADDJOB_INFO_1;
@@ -6200,8 +6221,8 @@ alias ADDJOB_INFO_1* PADDJOB_INFO_1;
 
 struct ANIMATIONINFO
 {
-	UINT cbSize;
-	int iMinAnimate;
+    UINT cbSize;
+    int iMinAnimate;
 }
 
 alias ANIMATIONINFO* LPANIMATIONINFO;
@@ -6211,12 +6232,13 @@ alias ANIMATIONINFO* PANIMATIONINFO;
 
 struct RECT
 {
-	LONG left;
-	LONG top;
-	LONG right;
-	LONG bottom;
+    LONG left;
+    LONG top;
+    LONG right;
+    LONG bottom;
 }
 
+alias RECT* LPCRECT;
 alias RECT* LPRECT;
 alias RECT _RECT;
 alias RECT TRECT;
@@ -6224,24 +6246,26 @@ alias RECT* PRECT;
 
 struct RECTL
 {
-	LONG left;
-	LONG top;
-	LONG right;
-	LONG bottom;
+    LONG left;
+    LONG top;
+    LONG right;
+    LONG bottom;
 }
 
 alias RECTL _RECTL;
 alias RECTL TRECTL;
 alias RECTL* PRECTL;
+alias RECTL* LPRECTL;
+alias RECTL* LPCRECTL;
 
 struct APPBARDATA
 {
-	DWORD cbSize;
-	HWND hWnd;
-	UINT uCallbackMessage;
-	UINT uEdge;
-	RECT rc;
-	LPARAM lParam;
+    DWORD cbSize;
+    HWND hWnd;
+    UINT uCallbackMessage;
+    UINT uEdge;
+    RECT rc;
+    LPARAM lParam;
 }
 
 alias APPBARDATA _APPBARDATA;
@@ -6250,13 +6274,13 @@ alias APPBARDATA* PAPPBARDATA;
 
 struct BITMAP
 {
-	LONG bmType;
-	LONG bmWidth;
-	LONG bmHeight;
-	LONG bmWidthBytes;
-	ushort bmPlanes;
-	ushort bmBitsPixel;
-	LPVOID bmBits;
+    LONG bmType;
+    LONG bmWidth;
+    LONG bmHeight;
+    LONG bmWidthBytes;
+    ushort bmPlanes;
+    ushort bmBitsPixel;
+    LPVOID bmBits;
 }
 
 alias BITMAP* PBITMAP;
@@ -6267,11 +6291,11 @@ alias BITMAP TBITMAP;
 
 struct BITMAPCOREHEADER
 {
-	DWORD bcSize;
-	ushort bcWidth;
-	ushort bcHeight;
-	ushort bcPlanes;
-	ushort bcBitCount;
+    DWORD bcSize;
+    ushort bcWidth;
+    ushort bcHeight;
+    ushort bcPlanes;
+    ushort bcBitCount;
 }
 
 alias BITMAPCOREHEADER TAGBITMAPCOREHEADER;
@@ -6280,9 +6304,9 @@ alias BITMAPCOREHEADER* PBITMAPCOREHEADER;
 
 struct RGBTRIPLE
 {
-	ubyte rgbtBlue;
-	ubyte rgbtGreen;
-	ubyte rgbtRed;
+    ubyte rgbtBlue;
+    ubyte rgbtGreen;
+    ubyte rgbtRed;
 }
 
 alias RGBTRIPLE TAGRGBTRIPLE;
@@ -6291,8 +6315,8 @@ alias RGBTRIPLE* PRGBTRIPLE;
 
 struct BITMAPCOREINFO
 {
-	BITMAPCOREHEADER bmciHeader;
-	RGBTRIPLE[1 + 0] bmciColors;
+    BITMAPCOREHEADER bmciHeader;
+    RGBTRIPLE[1 + 0] bmciColors;
 }
 
 alias BITMAPCOREINFO* PBITMAPCOREINFO;
@@ -6302,17 +6326,17 @@ alias BITMAPCOREINFO TBITMAPCOREINFO;
 
 struct BITMAPINFOHEADER
 {
-	DWORD biSize;
-	LONG biWidth;
-	LONG biHeight;
-	ushort biPlanes;
-	ushort biBitCount;
-	DWORD biCompression;
-	DWORD biSizeImage;
-	LONG biXPelsPerMeter;
-	LONG biYPelsPerMeter;
-	DWORD biClrUsed;
-	DWORD biClrImportant;
+    DWORD biSize;
+    LONG biWidth;
+    LONG biHeight;
+    ushort biPlanes;
+    ushort biBitCount;
+    DWORD biCompression;
+    DWORD biSizeImage;
+    LONG biXPelsPerMeter;
+    LONG biYPelsPerMeter;
+    DWORD biClrUsed;
+    DWORD biClrImportant;
 }
 
 alias BITMAPINFOHEADER* LPBITMAPINFOHEADER;
@@ -6321,10 +6345,10 @@ alias BITMAPINFOHEADER* PBITMAPINFOHEADER;
 
 struct RGBQUAD
 {
-	ubyte rgbBlue;
-	ubyte rgbGreen;
-	ubyte rgbRed;
-	ubyte rgbReserved;
+    ubyte rgbBlue;
+    ubyte rgbGreen;
+    ubyte rgbRed;
+    ubyte rgbReserved;
 }
 
 alias RGBQUAD TAGRGBQUAD;
@@ -6333,8 +6357,8 @@ alias RGBQUAD* PRGBQUAD;
 
 struct BITMAPINFO
 {
-	BITMAPINFOHEADER bmiHeader;
-	RGBQUAD[1 + 0] bmiColors;
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD[1 + 0] bmiColors;
 }
 
 alias BITMAPINFO* LPBITMAPINFO;
@@ -6347,9 +6371,9 @@ alias FXPT2DOT30* PPFXPT2DOT30;
 
 struct CIEXYZ
 {
-	FXPT2DOT30 ciexyzX;
-	FXPT2DOT30 ciexyzY;
-	FXPT2DOT30 ciexyzZ;
+    FXPT2DOT30 ciexyzX;
+    FXPT2DOT30 ciexyzY;
+    FXPT2DOT30 ciexyzZ;
 }
 
 alias CIEXYZ TAGCIEXYZ;
@@ -6359,9 +6383,9 @@ alias CIEXYZ* PCIEXYZ;
 
 struct CIEXYZTRIPLE
 {
-	CIEXYZ ciexyzRed;
-	CIEXYZ ciexyzGreen;
-	CIEXYZ ciexyzBlue;
+    CIEXYZ ciexyzRed;
+    CIEXYZ ciexyzGreen;
+    CIEXYZ ciexyzBlue;
 }
 
 alias CIEXYZTRIPLE TAGCIEXYZTRIPLE;
@@ -6371,26 +6395,26 @@ alias CIEXYZTRIPLE* PCIEXYZTRIPLE;
 
 struct BITMAPV4HEADER
 {
-	DWORD bV4Size;
-	LONG bV4Width;
-	LONG bV4Height;
-	ushort bV4Planes;
-	ushort bV4BitCount;
-	DWORD bV4V4Compression;
-	DWORD bV4SizeImage;
-	LONG bV4XPelsPerMeter;
-	LONG bV4YPelsPerMeter;
-	DWORD bV4ClrUsed;
-	DWORD bV4ClrImportant;
-	DWORD bV4RedMask;
-	DWORD bV4GreenMask;
-	DWORD bV4BlueMask;
-	DWORD bV4AlphaMask;
-	DWORD bV4CSType;
-	CIEXYZTRIPLE bV4Endpoints;
-	DWORD bV4GammaRed;
-	DWORD bV4GammaGreen;
-	DWORD bV4GammaBlue;
+    DWORD bV4Size;
+    LONG bV4Width;
+    LONG bV4Height;
+    ushort bV4Planes;
+    ushort bV4BitCount;
+    DWORD bV4V4Compression;
+    DWORD bV4SizeImage;
+    LONG bV4XPelsPerMeter;
+    LONG bV4YPelsPerMeter;
+    DWORD bV4ClrUsed;
+    DWORD bV4ClrImportant;
+    DWORD bV4RedMask;
+    DWORD bV4GreenMask;
+    DWORD bV4BlueMask;
+    DWORD bV4AlphaMask;
+    DWORD bV4CSType;
+    CIEXYZTRIPLE bV4Endpoints;
+    DWORD bV4GammaRed;
+    DWORD bV4GammaGreen;
+    DWORD bV4GammaBlue;
 }
 
 alias BITMAPV4HEADER* LPBITMAPV4HEADER;
@@ -6399,18 +6423,18 @@ alias BITMAPV4HEADER* PBITMAPV4HEADER;
 
 align(1) struct BITMAPFILEHEADER
 {
-	ushort bfType;
-	DWORD bfSize;
-	ushort bfReserved1;
-	ushort bfReserved2;
-	DWORD bfOffBits;
+    ushort bfType;
+    DWORD bfSize;
+    ushort bfReserved1;
+    ushort bfReserved2;
+    DWORD bfOffBits;
 }
 
 
 struct BLOB
 {
-	ULONG cbSize;
-	ubyte* pBlobData;
+    ULONG cbSize;
+    ubyte* pBlobData;
 }
 
 alias BLOB _BLOB;
@@ -6419,8 +6443,8 @@ alias BLOB* PBLOB;
 
 struct SHITEMID
 {
-	USHORT cb;
-	ubyte[1 + 0] abID;
+    USHORT cb;
+    ubyte[1 + 0] abID;
 }
 
 alias SHITEMID* LPSHITEMID;
@@ -6431,7 +6455,7 @@ alias SHITEMID* PSHITEMID;
 
 struct ITEMIDLIST
 {
-	SHITEMID mkid;
+    SHITEMID mkid;
 }
 
 alias ITEMIDLIST* LPITEMIDLIST;
@@ -6440,27 +6464,42 @@ alias ITEMIDLIST _ITEMIDLIST;
 alias ITEMIDLIST TITEMIDLIST;
 alias ITEMIDLIST* PITEMIDLIST;
 
-struct BROWSEINFO
+struct BROWSEINFOA
 {
-	HWND hwndOwner;
-	LPCITEMIDLIST pidlRoot;
-	LPSTR pszDisplayName;
-	LPCSTR lpszTitle;
-	UINT ulFlags;
-	BFFCALLBACK lpfn;
-	LPARAM lParam;
-	int iImage;
+    HWND hwndOwner;
+    LPCITEMIDLIST pidlRoot;
+    LPSTR pszDisplayName;
+    LPCSTR lpszTitle;
+    UINT ulFlags;
+    BFFCALLBACK lpfn;
+    LPARAM lParam;
+    int iImage;
 }
-
-alias BROWSEINFO* LPBROWSEINFO;
-alias BROWSEINFO _BROWSEINFO;
-alias BROWSEINFO TBROWSEINFO;
-alias BROWSEINFO* PBROWSEINFO;
+struct BROWSEINFOW
+{
+    HWND hwndOwner;
+    LPCITEMIDLIST pidlRoot;
+    LPWSTR pszDisplayName;
+    LPCWSTR lpszTitle;
+    UINT ulFlags;
+    BFFCALLBACK lpfn;
+    LPARAM lParam;
+    int iImage;
+}
+version( Win32SansUnicode )
+{
+    alias BROWSEINFOA BROWSEINFO;
+}
+else
+{
+    alias BROWSEINFOW BROWSEINFO;
+}
+alias BROWSEINFO* PBROWSEINFO, LPBROWSEINFO;
 
 struct FILETIME
 {
-	DWORD dwLowDateTime;
-	DWORD dwHighDateTime;
+    DWORD dwLowDateTime;
+    DWORD dwHighDateTime;
 }
 
 alias FILETIME* LPFILETIME;
@@ -6470,16 +6509,16 @@ alias FILETIME* PFILETIME;
 
 struct BY_HANDLE_FILE_INFORMATION
 {
-	DWORD dwFileAttributes;
-	FILETIME ftCreationTime;
-	FILETIME ftLastAccessTime;
-	FILETIME ftLastWriteTime;
-	DWORD dwVolumeSerialNumber;
-	DWORD nFileSizeHigh;
-	DWORD nFileSizeLow;
-	DWORD nNumberOfLinks;
-	DWORD nFileIndexHigh;
-	DWORD nFileIndexLow;
+    DWORD dwFileAttributes;
+    FILETIME ftCreationTime;
+    FILETIME ftLastAccessTime;
+    FILETIME ftLastWriteTime;
+    DWORD dwVolumeSerialNumber;
+    DWORD nFileSizeHigh;
+    DWORD nFileSizeLow;
+    DWORD nNumberOfLinks;
+    DWORD nFileIndexHigh;
+    DWORD nFileIndexLow;
 }
 
 alias BY_HANDLE_FILE_INFORMATION* LPBY_HANDLE_FILE_INFORMATION;
@@ -6489,8 +6528,8 @@ alias BY_HANDLE_FILE_INFORMATION* PBYHANDLEFILEINFORMATION;
 
 struct FIXED
 {
-	ushort fract;
-	int value;
+    ushort fract;
+    int value;
 }
 
 alias FIXED _FIXED;
@@ -6499,8 +6538,8 @@ alias FIXED* PFIXED;
 
 struct POINT
 {
-	LONG x;
-	LONG y;
+    LONG x;
+    LONG y;
 }
 
 alias POINT* LPPOINT;
@@ -6510,8 +6549,8 @@ alias POINT* PPOINT;
 
 struct POINTFX
 {
-	FIXED x;
-	FIXED y;
+    FIXED x;
+    FIXED y;
 }
 
 alias POINTFX TAGPOINTFX;
@@ -6520,8 +6559,8 @@ alias POINTFX* PPOINTFX;
 
 struct POINTL
 {
-	LONG x;
-	LONG y;
+    LONG x;
+    LONG y;
 }
 
 alias POINTL _POINTL;
@@ -6530,14 +6569,14 @@ alias POINTL* PPOINTL;
 
 struct TSMALLPOINT
 {
-	byte X, Y;
+    byte X, Y;
 }
 
 
 struct POINTS
 {
-	SHORT x;
-	SHORT y;
+    SHORT x;
+    SHORT y;
 }
 
 alias POINTS TAGPOINTS;
@@ -6546,10 +6585,10 @@ alias POINTS* PPOINTS;
 
 struct CANDIDATEFORM
 {
-	DWORD dwIndex;
-	DWORD dwStyle;
-	POINT ptCurrentPos;
-	RECT rcArea;
+    DWORD dwIndex;
+    DWORD dwStyle;
+    POINT ptCurrentPos;
+    RECT rcArea;
 }
 
 alias CANDIDATEFORM* LPCANDIDATEFORM;
@@ -6559,13 +6598,13 @@ alias CANDIDATEFORM* PCANDIDATEFORM;
 
 struct CANDIDATELIST
 {
-	DWORD dwSize;
-	DWORD dwStyle;
-	DWORD dwCount;
-	DWORD dwSelection;
-	DWORD dwPageStart;
-	DWORD dwPageSize;
-	DWORD[1 + 0] dwOffset;
+    DWORD dwSize;
+    DWORD dwStyle;
+    DWORD dwCount;
+    DWORD dwSelection;
+    DWORD dwPageStart;
+    DWORD dwPageSize;
+    DWORD[1 + 0] dwOffset;
 }
 
 alias CANDIDATELIST* LPCANDIDATELIST;
@@ -6575,18 +6614,18 @@ alias CANDIDATELIST* PCANDIDATELIST;
 
 struct CREATESTRUCT
 {
-	LPVOID lpCreateParams;
-	HINST hInstance;
-	HMENU hMenu;
-	HWND hwndParent;
-	int cy;
-	int cx;
-	int y;
-	int x;
-	LONG style;
-	LPCTSTR lpszName;
-	LPCTSTR lpszClass;
-	DWORD dwExStyle;
+    LPVOID lpCreateParams;
+    HINST hInstance;
+    HMENU hMenu;
+    HWND hwndParent;
+    int cy;
+    int cx;
+    int y;
+    int x;
+    LONG style;
+    LPCTSTR lpszName;
+    LPCTSTR lpszClass;
+    DWORD dwExStyle;
 }
 
 alias CREATESTRUCT* LPCREATESTRUCT;
@@ -6596,8 +6635,8 @@ alias CREATESTRUCT* PCREATESTRUCT;
 
 struct CBT_CREATEWND
 {
-	LPCREATESTRUCT lpcs;
-	HWND hwndInsertAfter;
+    LPCREATESTRUCT lpcs;
+    HWND hwndInsertAfter;
 }
 
 alias CBT_CREATEWND TAGCBT_CREATEWND;
@@ -6606,8 +6645,8 @@ alias CBT_CREATEWND* PCBT_CREATEWND;
 
 struct CBTACTIVATESTRUCT
 {
-	WINBOOL fMouse;
-	HWND hWndActive;
+    WINBOOL fMouse;
+    HWND hWndActive;
 }
 
 alias CBTACTIVATESTRUCT TAGCBTACTIVATESTRUCT;
@@ -6617,18 +6656,18 @@ alias CBTACTIVATESTRUCT* PCBTACTIVATESTRUCT;
 struct CHAR_INFO
 {
 
-	union
-	{
-		struct
-		{
-			WCHAR UnicodeChar;
-			ushort Attributes;
-		}
-		struct
-		{
-			char AsciiChar;
-		}
-	}
+    union
+    {
+        struct
+        {
+            WCHAR UnicodeChar;
+            ushort Attributes;
+        }
+        struct
+        {
+            char AsciiChar;
+        }
+    }
 }
 
 alias CHAR_INFO _CHAR_INFO;
@@ -6637,15 +6676,15 @@ alias CHAR_INFO* PCHAR_INFO;
 
 struct CHARFORMAT
 {
-	UINT cbSize;
-	DWORD dwMask;
-	DWORD dwEffects;
-	LONG yHeight;
-	LONG yOffset;
-	COLORREF crTextColor;
-	ubyte bCharSet;
-	ubyte bPitchAndFamily;
-	TCHAR[1 + LF_FACESIZE-1] szFaceName;
+    UINT cbSize;
+    DWORD dwMask;
+    DWORD dwEffects;
+    LONG yHeight;
+    LONG yOffset;
+    COLORREF crTextColor;
+    ubyte bCharSet;
+    ubyte bPitchAndFamily;
+    TCHAR[1 + LF_FACESIZE-1] szFaceName;
 }
 
 alias CHARFORMAT _CHARFORMAT;
@@ -6654,8 +6693,8 @@ alias CHARFORMAT* PCHARFORMAT;
 
 struct CHARRANGE
 {
-	LONG cpMin;
-	LONG cpMax;
+    LONG cpMin;
+    LONG cpMax;
 }
 
 alias CHARRANGE _CHARRANGE;
@@ -6664,8 +6703,8 @@ alias CHARRANGE* PCHARRANGE;
 
 struct CHARSET
 {
-	DWORD[1 + 2] aflBlock;
-	DWORD flLang;
+    DWORD[1 + 2] aflBlock;
+    DWORD flLang;
 }
 
 alias CHARSET TAGCHARSET;
@@ -6674,8 +6713,8 @@ alias CHARSET* PCHARSET;
 
 struct FONTSIGNATURE
 {
-	DWORD[1 + 3] fsUsb;
-	DWORD[1 + 1] fsCsb;
+    DWORD[1 + 3] fsUsb;
+    DWORD[1 + 1] fsCsb;
 }
 
 alias FONTSIGNATURE* LPFONTSIGNATURE;
@@ -6685,53 +6724,70 @@ alias FONTSIGNATURE* PFONTSIGNATURE;
 
 struct CHARSETINFO
 {
-	UINT ciCharset;
-	UINT ciACP;
-	FONTSIGNATURE fs;
+    UINT ciCharset;
+    UINT ciACP;
+    FONTSIGNATURE fs;
 }
 
 alias CHARSETINFO* LPCHARSETINFO;
 alias CHARSETINFO TCHARSETINFO;
 alias CHARSETINFO* PCHARSETINFO;
 
-struct TCHOOSECOLOR
+struct CHOOSECOLORA {
+    DWORD        lStructSize;
+    HWND         hwndOwner;
+    HWND         hInstance;
+    COLORREF     rgbResult;
+    COLORREF*    lpCustColors;
+    DWORD        Flags;
+    LPARAM       lCustData;
+    LPCCHOOKPROC lpfnHook;
+    LPCSTR      lpTemplateName;
+}
+alias CHOOSECOLORA* PCHOOSECOLORA, LPCHOOSECOLORA;
+struct CHOOSECOLORW {
+    DWORD        lStructSize;
+    HWND         hwndOwner;
+    HWND         hInstance;
+    COLORREF     rgbResult;
+    COLORREF*    lpCustColors;
+    DWORD        Flags;
+    LPARAM       lCustData;
+    LPCCHOOKPROC lpfnHook;
+    LPCWSTR      lpTemplateName;
+}
+alias CHOOSECOLORW* PCHOOSECOLORW, LPCHOOSECOLORW;
+version(Win32SansUnicode)
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HWND hInstance;
-	COLORREF rgbResult;
-	COLORREF* lpCustColors;
-	DWORD Flags;
-	LPARAM lCustData;
-	LPCCHOOKPROC lpfnHook;
-	LPCTSTR lpTemplateName;
+    alias CHOOSECOLORA CHOOSECOLOR;
+}
+else
+{
+    alias CHOOSECOLORW CHOOSECOLOR;
+}
+alias CHOOSECOLOR* PCHOOSECOLOR, LPCHOOSECOLOR;
+
+struct LOGFONTA
+{
+    LONG lfHeight;
+    LONG lfWidth;
+    LONG lfEscapement;
+    LONG lfOrientation;
+    LONG lfWeight;
+    ubyte lfItalic;
+    ubyte lfUnderline;
+    ubyte lfStrikeOut;
+    ubyte lfCharSet;
+    ubyte lfOutPrecision;
+    ubyte lfClipPrecision;
+    ubyte lfQuality;
+    ubyte lfPitchAndFamily;
+    ubyte[1 + LF_FACESIZE-1] lfFaceName;
 }
 
-alias TCHOOSECOLOR* LPCHOOSECOLOR;
-alias TCHOOSECOLOR* PCHOOSECOLOR;
-
-struct LOGFONT
-{
-	LONG lfHeight;
-	LONG lfWidth;
-	LONG lfEscapement;
-	LONG lfOrientation;
-	LONG lfWeight;
-	ubyte lfItalic;
-	ubyte lfUnderline;
-	ubyte lfStrikeOut;
-	ubyte lfCharSet;
-	ubyte lfOutPrecision;
-	ubyte lfClipPrecision;
-	ubyte lfQuality;
-	ubyte lfPitchAndFamily;
-	TCHAR[1 + LF_FACESIZE-1] lfFaceName;
-}
-
-alias LOGFONT* LPLOGFONT;
-alias LOGFONT TLOGFONT;
-alias LOGFONT TLOGFONTA;
-alias LOGFONT* PLOGFONT;
+alias LOGFONTA  TLOGFONTA;
+alias LOGFONTA* PLOGFONTA;
+alias LOGFONTA* LPLOGFONTA;
 
 struct LOGFONTW
 {
@@ -6751,29 +6807,41 @@ struct LOGFONTW
     WCHAR lfFaceName[LF_FACESIZE];
 };
 
+alias LOGFONTW  TLOGFONTW;
 alias LOGFONTW* LPLOGFONTW;
-alias LOGFONTW TLOGFONTW;
-alias LOGFONTW TLOGFONTWA;
 alias LOGFONTW* PLOGFONTW;
+
+version( Win32SansUnicode ){
+    alias LOGFONTA  LOGFONT;
+    alias LOGFONTA  TLOGFONT;
+    alias LOGFONTA* PLOGFONT;
+    alias LOGFONTA* LPLOGFONT;
+}
+else{
+    alias LOGFONTW  LOGFONT;
+    alias LOGFONTW  TLOGFONT;
+    alias LOGFONTW* PLOGFONT;
+    alias LOGFONTW* LPLOGFONT;
+}
 
 struct TCHOOSEFONT
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HDC hDC;
-	LPLOGFONT lpLogFont;
-	INT iPointSize;
-	DWORD Flags;
-	DWORD rgbColors;
-	LPARAM lCustData;
-	LPCFHOOKPROC lpfnHook;
-	LPCTSTR lpTemplateName;
-	HINST hInstance;
-	LPTSTR lpszStyle;
-	ushort nFontType;
-	ushort ___MISSING_ALIGNMENT__;
-	INT nSizeMin;
-	INT nSizeMax;
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HDC hDC;
+    LPLOGFONT lpLogFont;
+    INT iPointSize;
+    DWORD Flags;
+    DWORD rgbColors;
+    LPARAM lCustData;
+    LPCFHOOKPROC lpfnHook;
+    LPCTSTR lpTemplateName;
+    HINST hInstance;
+    LPTSTR lpszStyle;
+    ushort nFontType;
+    ushort ___MISSING_ALIGNMENT__;
+    INT nSizeMin;
+    INT nSizeMax;
 }
 
 alias TCHOOSEFONT* LPCHOOSEFONT;
@@ -6781,8 +6849,8 @@ alias TCHOOSEFONT* PCHOOSEFONT;
 
 struct CIDA
 {
-	UINT cidl;
-	UINT[1 + 0] aoffset;
+    UINT cidl;
+    UINT[1 + 0] aoffset;
 }
 
 alias CIDA* LPIDA;
@@ -6792,8 +6860,8 @@ alias CIDA* PIDA;
 
 struct CLIENTCREATESTRUCT
 {
-	HANDLE hWindowMenu;
-	UINT idFirstChild;
+    HANDLE hWindowMenu;
+    UINT idFirstChild;
 }
 
 alias CLIENTCREATESTRUCT* LPCLIENTCREATESTRUCT;
@@ -6803,15 +6871,15 @@ alias CLIENTCREATESTRUCT* PCLIENTCREATESTRUCT;
 
 struct CMINVOKECOMMANDINFO
 {
-	DWORD cbSize;
-	DWORD fMask;
-	HWND hwnd;
-	LPCSTR lpVerb;
-	LPCSTR lpParameters;
-	LPCSTR lpDirectory;
-	int nShow;
-	DWORD dwHotKey;
-	HANDLE hIcon;
+    DWORD cbSize;
+    DWORD fMask;
+    HWND hwnd;
+    LPCSTR lpVerb;
+    LPCSTR lpParameters;
+    LPCSTR lpDirectory;
+    int nShow;
+    DWORD dwHotKey;
+    HANDLE hIcon;
 }
 
 alias CMINVOKECOMMANDINFO* LPCMINVOKECOMMANDINFO;
@@ -6821,18 +6889,18 @@ alias CMINVOKECOMMANDINFO* PCMINVOKECOMMANDINFO;
 
 struct COLORADJUSTMENT
 {
-	ushort caSize;
-	ushort caFlags;
-	ushort caIlluminantIndex;
-	ushort caRedGamma;
-	ushort caGreenGamma;
-	ushort caBlueGamma;
-	ushort caReferenceBlack;
-	ushort caReferenceWhite;
-	SHORT caContrast;
-	SHORT caBrightness;
-	SHORT caColorfulness;
-	SHORT caRedGreenTint;
+    ushort caSize;
+    ushort caFlags;
+    ushort caIlluminantIndex;
+    ushort caRedGamma;
+    ushort caGreenGamma;
+    ushort caBlueGamma;
+    ushort caReferenceBlack;
+    ushort caReferenceWhite;
+    SHORT caContrast;
+    SHORT caBrightness;
+    SHORT caColorfulness;
+    SHORT caRedGreenTint;
 }
 
 alias COLORADJUSTMENT* LPCOLORADJUSTMENT;
@@ -6842,8 +6910,8 @@ alias COLORADJUSTMENT* PCOLORADJUSTMENT;
 
 struct COLORMAP
 {
-	COLORREF from;
-	COLORREF _to;
+    COLORREF from;
+    COLORREF _to;
 }
 
 alias COLORMAP* LPCOLORMAP;
@@ -6853,21 +6921,21 @@ alias COLORMAP* PCOLORMAP;
 
 struct DCB
 {
-	DWORD DCBlength;
-	DWORD BaudRate;
-	int flag0;
-	ushort wReserved;
-	ushort XonLim;
-	ushort XoffLim;
-	ubyte ByteSize;
-	ubyte Parity;
-	ubyte StopBits;
-	char XonChar;
-	char XoffChar;
-	char ErrorChar;
-	char EofChar;
-	char EvtChar;
-	ushort wReserved1;
+    DWORD DCBlength;
+    DWORD BaudRate;
+    int flag0;
+    ushort wReserved;
+    ushort XonLim;
+    ushort XoffLim;
+    ubyte ByteSize;
+    ubyte Parity;
+    ubyte StopBits;
+    char XonChar;
+    char XoffChar;
+    char ErrorChar;
+    char EofChar;
+    char EvtChar;
+    ushort wReserved1;
 }
 
 alias DCB* LPDCB;
@@ -6907,14 +6975,14 @@ enum : DWORD {
 
 struct COMMCONFIG
 {
-	DWORD dwSize;
-	ushort wVersion;
-	ushort wReserved;
-	DCB dcb;
-	DWORD dwProviderSubType;
-	DWORD dwProviderOffset;
-	DWORD dwProviderSize;
-	WCHAR[1 + 0] wcProviderData;
+    DWORD dwSize;
+    ushort wVersion;
+    ushort wReserved;
+    DCB dcb;
+    DWORD dwProviderSubType;
+    DWORD dwProviderOffset;
+    DWORD dwProviderSize;
+    WCHAR[1 + 0] wcProviderData;
 }
 
 alias COMMCONFIG* LPCOMMCONFIG;
@@ -6924,24 +6992,24 @@ alias COMMCONFIG* PCOMMCONFIG;
 
 struct COMMPROP
 {
-	ushort wPacketLength;
-	ushort wPacketVersion;
-	DWORD dwServiceMask;
-	DWORD dwReserved1;
-	DWORD dwMaxTxQueue;
-	DWORD dwMaxRxQueue;
-	DWORD dwMaxBaud;
-	DWORD dwProvSubType;
-	DWORD dwProvCapabilities;
-	DWORD dwSettableParams;
-	DWORD dwSettableBaud;
-	ushort wSettableData;
-	ushort wSettableStopParity;
-	DWORD dwCurrentTxQueue;
-	DWORD dwCurrentRxQueue;
-	DWORD dwProvSpec1;
-	DWORD dwProvSpec2;
-	WCHAR[1 + 0] wcProvChar;
+    ushort wPacketLength;
+    ushort wPacketVersion;
+    DWORD dwServiceMask;
+    DWORD dwReserved1;
+    DWORD dwMaxTxQueue;
+    DWORD dwMaxRxQueue;
+    DWORD dwMaxBaud;
+    DWORD dwProvSubType;
+    DWORD dwProvCapabilities;
+    DWORD dwSettableParams;
+    DWORD dwSettableBaud;
+    ushort wSettableData;
+    ushort wSettableStopParity;
+    DWORD dwCurrentTxQueue;
+    DWORD dwCurrentRxQueue;
+    DWORD dwProvSpec1;
+    DWORD dwProvSpec2;
+    WCHAR[1 + 0] wcProvChar;
 }
 
 alias COMMPROP* LPCOMMPROP;
@@ -6951,11 +7019,11 @@ alias COMMPROP* PCOMMPROP;
 
 struct COMMTIMEOUTS
 {
-	DWORD ReadIntervalTimeout;
-	DWORD ReadTotalTimeoutMultiplier;
-	DWORD ReadTotalTimeoutConstant;
-	DWORD WriteTotalTimeoutMultiplier;
-	DWORD WriteTotalTimeoutConstant;
+    DWORD ReadIntervalTimeout;
+    DWORD ReadTotalTimeoutMultiplier;
+    DWORD ReadTotalTimeoutConstant;
+    DWORD WriteTotalTimeoutMultiplier;
+    DWORD WriteTotalTimeoutConstant;
 }
 
 alias COMMTIMEOUTS* LPCOMMTIMEOUTS;
@@ -6965,13 +7033,13 @@ alias COMMTIMEOUTS* PCOMMTIMEOUTS;
 
 struct COMPAREITEMSTRUCT
 {
-	UINT CtlType;
-	UINT CtlID;
-	HWND hwndItem;
-	UINT itemID1;
-	DWORD itemData1;
-	UINT itemID2;
-	DWORD itemData2;
+    UINT CtlType;
+    UINT CtlID;
+    HWND hwndItem;
+    UINT itemID1;
+    DWORD itemData1;
+    UINT itemID2;
+    DWORD itemData2;
 }
 
 alias COMPAREITEMSTRUCT TAGCOMPAREITEMSTRUCT;
@@ -6980,9 +7048,9 @@ alias COMPAREITEMSTRUCT* PCOMPAREITEMSTRUCT;
 
 struct COMPCOLOR
 {
-	COLORREF crText;
-	COLORREF crBackground;
-	DWORD dwEffects;
+    COLORREF crText;
+    COLORREF crBackground;
+    DWORD dwEffects;
 }
 
 alias COMPCOLOR TCOMPCOLOR;
@@ -6990,9 +7058,9 @@ alias COMPCOLOR* PCOMPCOLOR;
 
 struct COMPOSITIONFORM
 {
-	DWORD dwStyle;
-	POINT ptCurrentPos;
-	RECT rcArea;
+    DWORD dwStyle;
+    POINT ptCurrentPos;
+    RECT rcArea;
 }
 
 alias COMPOSITIONFORM* LPCOMPOSITIONFORM;
@@ -7002,9 +7070,9 @@ alias COMPOSITIONFORM* PCOMPOSITIONFORM;
 
 struct COMSTAT
 {
-	int flag0;
-	DWORD cbInQue;
-	DWORD cbOutQue;
+    int flag0;
+    DWORD cbInQue;
+    DWORD cbOutQue;
 }
 
 alias COMSTAT* LPCOMSTAT;
@@ -7031,8 +7099,8 @@ enum : DWORD {
 }
 struct CONSOLE_CURSOR_INFO
 {
-	DWORD dwSize;
-	WINBOOL bVisible;
+    DWORD dwSize;
+    WINBOOL bVisible;
 }
 
 alias CONSOLE_CURSOR_INFO* PCONSOLE_CURSOR_INFO;
@@ -7043,8 +7111,8 @@ alias CONSOLE_CURSOR_INFO TCURSORINFO;
 
 struct COORD
 {
-	SHORT X;
-	SHORT Y;
+    SHORT X;
+    SHORT Y;
 }
 
 alias COORD _COORD;
@@ -7053,10 +7121,10 @@ alias COORD* PCOORD;
 
 struct SMALL_RECT
 {
-	SHORT Left;
-	SHORT Top;
-	SHORT Right;
-	SHORT Bottom;
+    SHORT Left;
+    SHORT Top;
+    SHORT Right;
+    SHORT Bottom;
 }
 
 alias SMALL_RECT _SMALL_RECT;
@@ -7065,11 +7133,11 @@ alias SMALL_RECT* PSMALL_RECT;
 
 align(1) struct CONSOLE_SCREEN_BUFFER_INFO
 {
-	COORD dwSize;
-	COORD dwCursorPosition;
-	ushort wAttributes;
-	SMALL_RECT srWindow;
-	COORD dwMaximumWindowSize;
+    COORD dwSize;
+    COORD dwCursorPosition;
+    ushort wAttributes;
+    SMALL_RECT srWindow;
+    COORD dwMaximumWindowSize;
 }
 
 alias CONSOLE_SCREEN_BUFFER_INFO* PCONSOLE_SCREEN_BUFFER_INFO;
@@ -7079,15 +7147,15 @@ alias CONSOLE_SCREEN_BUFFER_INFO* PCONSOLESCREENBUFFERINFO;
 
 struct FLOATING_SAVE_AREA
 {
-	DWORD ControlWord;
-	DWORD StatusWord;
-	DWORD TagWord;
-	DWORD ErrorOffset;
-	DWORD ErrorSelector;
-	DWORD DataOffset;
-	DWORD DataSelector;
-	ubyte[1 + 79] RegisterArea;
-	DWORD Cr0NpxState;
+    DWORD ControlWord;
+    DWORD StatusWord;
+    DWORD TagWord;
+    DWORD ErrorOffset;
+    DWORD ErrorSelector;
+    DWORD DataOffset;
+    DWORD DataSelector;
+    ubyte[1 + 79] RegisterArea;
+    DWORD Cr0NpxState;
 }
 
 alias FLOATING_SAVE_AREA _FLOATING_SAVE_AREA;
@@ -7099,44 +7167,44 @@ enum : DWORD
 //
 // The following flags control the contents of the CONTEXT structure.
 //
-	CONTEXT_i386 = 0x00010000,    // this assumes that i386 and
-	CONTEXT_i486 = 0x00010000,    // i486 have identical context records
+    CONTEXT_i386 = 0x00010000,    // this assumes that i386 and
+    CONTEXT_i486 = 0x00010000,    // i486 have identical context records
 
-	CONTEXT_CONTROL =         (CONTEXT_i386 | 0x00000001), // SS:SP, CS:IP, FLAGS, BP
-	CONTEXT_INTEGER =         (CONTEXT_i386 | 0x00000002), // AX, BX, CX, DX, SI, DI
-	CONTEXT_SEGMENTS =        (CONTEXT_i386 | 0x00000004), // DS, ES, FS, GS
-	CONTEXT_FLOATING_POINT =  (CONTEXT_i386 | 0x00000008), // 387 state
-	CONTEXT_DEBUG_REGISTERS = (CONTEXT_i386 | 0x00000010), // DB 0-3,6,7
+    CONTEXT_CONTROL =         (CONTEXT_i386 | 0x00000001), // SS:SP, CS:IP, FLAGS, BP
+    CONTEXT_INTEGER =         (CONTEXT_i386 | 0x00000002), // AX, BX, CX, DX, SI, DI
+    CONTEXT_SEGMENTS =        (CONTEXT_i386 | 0x00000004), // DS, ES, FS, GS
+    CONTEXT_FLOATING_POINT =  (CONTEXT_i386 | 0x00000008), // 387 state
+    CONTEXT_DEBUG_REGISTERS = (CONTEXT_i386 | 0x00000010), // DB 0-3,6,7
 
-	CONTEXT_FULL = (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_SEGMENTS),
+    CONTEXT_FULL = (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_SEGMENTS),
 }
 
 struct CONTEXT
 {
-	DWORD ContextFlags;
-	DWORD Dr0;
-	DWORD Dr1;
-	DWORD Dr2;
-	DWORD Dr3;
-	DWORD Dr6;
-	DWORD Dr7;
-	FLOATING_SAVE_AREA FloatSave;
-	DWORD SegGs;
-	DWORD SegFs;
-	DWORD SegEs;
-	DWORD SegDs;
-	DWORD Edi;
-	DWORD Esi;
-	DWORD Ebx;
-	DWORD Edx;
-	DWORD Ecx;
-	DWORD Eax;
-	DWORD Ebp;
-	DWORD Eip;
-	DWORD SegCs;
-	DWORD EFlags;
-	DWORD Esp;
-	DWORD SegSs;
+    DWORD ContextFlags;
+    DWORD Dr0;
+    DWORD Dr1;
+    DWORD Dr2;
+    DWORD Dr3;
+    DWORD Dr6;
+    DWORD Dr7;
+    FLOATING_SAVE_AREA FloatSave;
+    DWORD SegGs;
+    DWORD SegFs;
+    DWORD SegEs;
+    DWORD SegDs;
+    DWORD Edi;
+    DWORD Esi;
+    DWORD Ebx;
+    DWORD Edx;
+    DWORD Ecx;
+    DWORD Eax;
+    DWORD Ebp;
+    DWORD Eip;
+    DWORD SegCs;
+    DWORD EFlags;
+    DWORD Esp;
+    DWORD SegSs;
 }
 
 alias CONTEXT* LPCONTEXT;
@@ -7146,8 +7214,8 @@ alias CONTEXT* PCONTEXT;
 
 struct LIST_ENTRY
 {
-	_LIST_ENTRY* Flink;
-	_LIST_ENTRY* Blink;
+    _LIST_ENTRY* Flink;
+    _LIST_ENTRY* Blink;
 }
 
 alias LIST_ENTRY _LIST_ENTRY;
@@ -7156,14 +7224,14 @@ alias LIST_ENTRY* PLISTENTRY;
 
 struct CRITICAL_SECTION_DEBUG
 {
-	ushort _Type;
-	ushort CreatorBackTraceIndex;
-	_CRITICAL_SECTION* CriticalSection;
-	LIST_ENTRY ProcessLocksList;
-	DWORD EntryCount;
-	DWORD ContentionCount;
-	DWORD Depth;
-	PVOID[1 + 4] OwnerBackTrace;
+    ushort _Type;
+    ushort CreatorBackTraceIndex;
+    _CRITICAL_SECTION* CriticalSection;
+    LIST_ENTRY ProcessLocksList;
+    DWORD EntryCount;
+    DWORD ContentionCount;
+    DWORD Depth;
+    PVOID[1 + 4] OwnerBackTrace;
 }
 
 alias CRITICAL_SECTION_DEBUG* LPCRITICAL_SECTION_DEBUG;
@@ -7174,12 +7242,12 @@ alias CRITICAL_SECTION_DEBUG* PCRITICALSECTIONDEBUG;
 
 struct CRITICAL_SECTION
 {
-	PCRITICAL_SECTION_DEBUG DebugInfo;
-	LONG LockCount;
-	LONG RecursionCount;
-	HANDLE OwningThread;
-	HANDLE LockSemaphore;
-	DWORD Reserved;
+    PCRITICAL_SECTION_DEBUG DebugInfo;
+    LONG LockCount;
+    LONG RecursionCount;
+    HANDLE OwningThread;
+    HANDLE LockSemaphore;
+    DWORD Reserved;
 }
 
 alias CRITICAL_SECTION* LPCRITICAL_SECTION;
@@ -7190,10 +7258,10 @@ alias CRITICAL_SECTION* PCRITICALSECTION;
 
 struct SECURITY_QUALITY_OF_SERVICE
 {
-	DWORD Length;
-	SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
-	WINBOOL ContextTrackingMode;
-	ubyte EffectiveOnly;
+    DWORD Length;
+    SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
+    WINBOOL ContextTrackingMode;
+    ubyte EffectiveOnly;
 }
 
 alias SECURITY_QUALITY_OF_SERVICE* PSECURITY_QUALITY_OF_SERVICE;
@@ -7203,13 +7271,13 @@ alias SECURITY_QUALITY_OF_SERVICE* PSECURITYQUALITYOFSERVICE;
 
 struct CONVCONTEXT
 {
-	UINT cb;
-	UINT wFlags;
-	UINT wCountryID;
-	int iCodePage;
-	DWORD dwLangID;
-	DWORD dwSecurity;
-	SECURITY_QUALITY_OF_SERVICE qos;
+    UINT cb;
+    UINT wFlags;
+    UINT wCountryID;
+    int iCodePage;
+    DWORD dwLangID;
+    DWORD dwSecurity;
+    SECURITY_QUALITY_OF_SERVICE qos;
 }
 
 alias CONVCONTEXT TAGCONVCONTEXT;
@@ -7218,22 +7286,22 @@ alias CONVCONTEXT* PCONVCONTEXT;
 
 struct CONVINFO
 {
-	DWORD cb;
-	DWORD hUser;
-	HCONV hConvPartner;
-	HSZ hszSvcPartner;
-	HSZ hszServiceReq;
-	HSZ hszTopic;
-	HSZ hszItem;
-	UINT wFmt;
-	UINT wType;
-	UINT wStatus;
-	UINT wConvst;
-	UINT wLastError;
-	HCONVLIST hConvList;
-	CONVCONTEXT ConvCtxt;
-	HWND _hwnd;
-	HWND hwndPartner;
+    DWORD cb;
+    DWORD hUser;
+    HCONV hConvPartner;
+    HSZ hszSvcPartner;
+    HSZ hszServiceReq;
+    HSZ hszTopic;
+    HSZ hszItem;
+    UINT wFmt;
+    UINT wType;
+    UINT wStatus;
+    UINT wConvst;
+    UINT wLastError;
+    HCONVLIST hConvList;
+    CONVCONTEXT ConvCtxt;
+    HWND _hwnd;
+    HWND hwndPartner;
 }
 
 alias CONVINFO TAGCONVINFO;
@@ -7242,9 +7310,9 @@ alias CONVINFO* PCONVINFO;
 
 struct COPYDATASTRUCT
 {
-	DWORD dwData;
-	DWORD cbData;
-	PVOID lpData;
+    DWORD dwData;
+    DWORD cbData;
+    PVOID lpData;
 }
 
 alias COPYDATASTRUCT TAGCOPYDATASTRUCT;
@@ -7253,9 +7321,9 @@ alias COPYDATASTRUCT* PCOPYDATASTRUCT;
 
 struct CPINFO
 {
-	UINT MaxCharSize;
-	ubyte[1 + MAX_DEFAULTCHAR-1] DefaultChar;
-	ubyte[1 + MAX_LEADBYTES-1] LeadByte;
+    UINT MaxCharSize;
+    ubyte[1 + MAX_DEFAULTCHAR-1] DefaultChar;
+    ubyte[1 + MAX_LEADBYTES-1] LeadByte;
 }
 
 alias CPINFO* LPCPINFO;
@@ -7265,10 +7333,10 @@ alias CPINFO* PCPINFO;
 
 struct CPLINFO
 {
-	int idIcon;
-	int idName;
-	int idInfo;
-	LONG lData;
+    int idIcon;
+    int idName;
+    int idInfo;
+    LONG lData;
 }
 
 alias CPLINFO TAGCPLINFO;
@@ -7277,16 +7345,16 @@ alias CPLINFO* PCPLINFO;
 
 struct CREATE_PROCESS_DEBUG_INFO
 {
-	HANDLE hFile;
-	HANDLE hProcess;
-	HANDLE hThread;
-	LPVOID lpBaseOfImage;
-	DWORD dwDebugInfoFileOffset;
-	DWORD nDebugInfoSize;
-	LPVOID lpThreadLocalBase;
-	LPTHREAD_START_ROUTINE lpStartAddress;
-	LPVOID lpImageName;
-	ushort fUnicode;
+    HANDLE hFile;
+    HANDLE hProcess;
+    HANDLE hThread;
+    LPVOID lpBaseOfImage;
+    DWORD dwDebugInfoFileOffset;
+    DWORD nDebugInfoSize;
+    LPVOID lpThreadLocalBase;
+    LPTHREAD_START_ROUTINE lpStartAddress;
+    LPVOID lpImageName;
+    ushort fUnicode;
 }
 
 alias CREATE_PROCESS_DEBUG_INFO _CREATE_PROCESS_DEBUG_INFO;
@@ -7295,9 +7363,9 @@ alias CREATE_PROCESS_DEBUG_INFO* PCREATEPROCESSDEBUGINFO;
 
 struct CREATE_THREAD_DEBUG_INFO
 {
-	HANDLE hThread;
-	LPVOID lpThreadLocalBase;
-	LPTHREAD_START_ROUTINE lpStartAddress;
+    HANDLE hThread;
+    LPVOID lpThreadLocalBase;
+    LPTHREAD_START_ROUTINE lpStartAddress;
 }
 
 alias CREATE_THREAD_DEBUG_INFO _CREATE_THREAD_DEBUG_INFO;
@@ -7306,14 +7374,14 @@ alias CREATE_THREAD_DEBUG_INFO* PCREATETHREADDEBUGINFO;
 
 struct CURRENCYFMT
 {
-	UINT NumDigits;
-	UINT LeadingZero;
-	UINT Grouping;
-	LPTSTR lpDecimalSep;
-	LPTSTR lpThousandSep;
-	UINT NegativeOrder;
-	UINT PositiveOrder;
-	LPTSTR lpCurrencySymbol;
+    UINT NumDigits;
+    UINT LeadingZero;
+    UINT Grouping;
+    LPTSTR lpDecimalSep;
+    LPTSTR lpThousandSep;
+    UINT NegativeOrder;
+    UINT PositiveOrder;
+    LPTSTR lpCurrencySymbol;
 }
 
 alias CURRENCYFMT _CURRENCYFMT;
@@ -7322,13 +7390,13 @@ alias CURRENCYFMT* PCURRENCYFMT;
 
 struct CURSORSHAPE
 {
-	int xHotSpot;
-	int yHotSpot;
-	int cx;
-	int cy;
-	int cbWidth;
-	ubyte Planes;
-	ubyte BitsPixel;
+    int xHotSpot;
+    int yHotSpot;
+    int cx;
+    int cy;
+    int cbWidth;
+    ubyte Planes;
+    ubyte BitsPixel;
 }
 
 alias CURSORSHAPE* LPCURSORSHAPE;
@@ -7338,11 +7406,11 @@ alias CURSORSHAPE* PCURSORSHAPE;
 
 struct CWPRETSTRUCT
 {
-	LRESULT lResult;
-	LPARAM lParam;
-	WPARAM wParam;
-	DWORD message;
-	HWND hwnd;
+    LRESULT lResult;
+    LPARAM lParam;
+    WPARAM wParam;
+    DWORD message;
+    HWND hwnd;
 }
 
 alias CWPRETSTRUCT TAGCWPRETSTRUCT;
@@ -7351,10 +7419,10 @@ alias CWPRETSTRUCT* PCWPRETSTRUCT;
 
 struct CWPSTRUCT
 {
-	LPARAM lParam;
-	WPARAM wParam;
-	UINT message;
-	HWND hwnd;
+    LPARAM lParam;
+    WPARAM wParam;
+    UINT message;
+    HWND hwnd;
 }
 
 alias CWPSTRUCT TAGCWPSTRUCT;
@@ -7363,7 +7431,7 @@ alias CWPSTRUCT* PCWPSTRUCT;
 
 struct DATATYPES_INFO_1
 {
-	LPTSTR pName;
+    LPTSTR pName;
 }
 
 alias DATATYPES_INFO_1 _DATATYPES_INFO_1;
@@ -7372,7 +7440,7 @@ alias DATATYPES_INFO_1* PDATATYPESINFO1;
 
 struct DDEACK
 {
-	ushort flag0;
+    ushort flag0;
 }
 
 alias DDEACK TDDEACK;
@@ -7390,8 +7458,8 @@ enum : DWORD {
 
 struct DDEADVISE
 {
-	ushort flag0;
-	int cfFormat;
+    ushort flag0;
+    int cfFormat;
 }
 
 alias DDEADVISE TDDEADVISE;
@@ -7407,9 +7475,9 @@ enum : DWORD {
 
 struct DDEDATA
 {
-	ushort flag0;
-	int cfFormat;
-	ubyte[1 + 0] Value;
+    ushort flag0;
+    int cfFormat;
+    ubyte[1 + 0] Value;
 }
 
 alias DDEDATA* PDDEDATA;
@@ -7428,8 +7496,8 @@ enum : DWORD {
 
 struct DDELN
 {
-	ushort flag0;
-	int cfFormat;
+    ushort flag0;
+    int cfFormat;
 }
 
 alias DDELN TDDELN;
@@ -7447,10 +7515,10 @@ enum : DWORD {
 
 struct DDEML_MSG_HOOK_DATA
 {
-	UINT uiLo;
-	UINT uiHi;
-	DWORD cbData;
-	DWORD[1 + 7] Data;
+    UINT uiLo;
+    UINT uiHi;
+    DWORD cbData;
+    DWORD[1 + 7] Data;
 }
 
 alias DDEML_MSG_HOOK_DATA TAGDDEML_MSG_HOOK_DATA;
@@ -7459,9 +7527,9 @@ alias DDEML_MSG_HOOK_DATA* PDDEMLMSGHOOKDATA;
 
 struct DDEPOKE
 {
-	ushort flag0;
-	int cfFormat;
-	ubyte[1 + 0] Value;
+    ushort flag0;
+    int cfFormat;
+    ubyte[1 + 0] Value;
 }
 
 alias DDEPOKE TDDEPOKE;
@@ -7476,9 +7544,9 @@ enum : DWORD {
 }
 struct DDEUP
 {
-	ushort flag0;
-	int cfFormat;
-	ubyte[1 + 0] rgb;
+    ushort flag0;
+    int cfFormat;
+    ubyte[1 + 0] rgb;
 }
 
 alias DDEUP TDDEUP;
@@ -7499,12 +7567,12 @@ enum : DWORD {
 
 struct EXCEPTION_RECORD
 {
-	DWORD ExceptionCode;
-	DWORD ExceptionFlags;
-	_EXCEPTION_RECORD* ExceptionRecord;
-	PVOID ExceptionAddress;
-	DWORD NumberParameters;
-	DWORD[1 + EXCEPTION_MAXIMUM_PARAMETERS-1] ExceptionInformation;
+    DWORD ExceptionCode;
+    DWORD ExceptionFlags;
+    _EXCEPTION_RECORD* ExceptionRecord;
+    PVOID ExceptionAddress;
+    DWORD NumberParameters;
+    DWORD[1 + EXCEPTION_MAXIMUM_PARAMETERS-1] ExceptionInformation;
 }
 
 alias EXCEPTION_RECORD* PEXCEPTION_RECORD;
@@ -7514,8 +7582,8 @@ alias EXCEPTION_RECORD* PEXCEPTIONRECORD;
 
 struct EXCEPTION_DEBUG_INFO
 {
-	EXCEPTION_RECORD ExceptionRecord;
-	DWORD dwFirstChance;
+    EXCEPTION_RECORD ExceptionRecord;
+    DWORD dwFirstChance;
 }
 
 alias EXCEPTION_DEBUG_INFO* PEXCEPTION_DEBUG_INFO;
@@ -7525,7 +7593,7 @@ alias EXCEPTION_DEBUG_INFO* PEXCEPTIONDEBUGINFO;
 
 struct EXIT_PROCESS_DEBUG_INFO
 {
-	DWORD dwExitCode;
+    DWORD dwExitCode;
 }
 
 alias EXIT_PROCESS_DEBUG_INFO _EXIT_PROCESS_DEBUG_INFO;
@@ -7534,7 +7602,7 @@ alias EXIT_PROCESS_DEBUG_INFO* PEXITPROCESSDEBUGINFO;
 
 struct EXIT_THREAD_DEBUG_INFO
 {
-	DWORD dwExitCode;
+    DWORD dwExitCode;
 }
 
 alias EXIT_THREAD_DEBUG_INFO _EXIT_THREAD_DEBUG_INFO;
@@ -7543,12 +7611,12 @@ alias EXIT_THREAD_DEBUG_INFO* PEXITTHREADDEBUGINFO;
 
 struct LOAD_DLL_DEBUG_INFO
 {
-	HANDLE hFile;
-	LPVOID lpBaseOfDll;
-	DWORD dwDebugInfoFileOffset;
-	DWORD nDebugInfoSize;
-	LPVOID lpImageName;
-	ushort fUnicode;
+    HANDLE hFile;
+    LPVOID lpBaseOfDll;
+    DWORD dwDebugInfoFileOffset;
+    DWORD nDebugInfoSize;
+    LPVOID lpImageName;
+    ushort fUnicode;
 }
 
 alias LOAD_DLL_DEBUG_INFO _LOAD_DLL_DEBUG_INFO;
@@ -7557,7 +7625,7 @@ alias LOAD_DLL_DEBUG_INFO* PLOADDLLDEBUGINFO;
 
 struct UNLOAD_DLL_DEBUG_INFO
 {
-	LPVOID lpBaseOfDll;
+    LPVOID lpBaseOfDll;
 }
 
 alias UNLOAD_DLL_DEBUG_INFO _UNLOAD_DLL_DEBUG_INFO;
@@ -7566,9 +7634,9 @@ alias UNLOAD_DLL_DEBUG_INFO* PUNLOADDLLDEBUGINFO;
 
 struct OUTPUT_DEBUG_STRING_INFO
 {
-	LPSTR lpDebugStringData;
-	ushort fUnicode;
-	ushort nDebugStringLength;
+    LPSTR lpDebugStringData;
+    ushort fUnicode;
+    ushort nDebugStringLength;
 }
 
 alias OUTPUT_DEBUG_STRING_INFO _OUTPUT_DEBUG_STRING_INFO;
@@ -7577,8 +7645,8 @@ alias OUTPUT_DEBUG_STRING_INFO* POUTPUTDEBUGSTRINGINFO;
 
 struct RIP_INFO
 {
-	DWORD dwError;
-	DWORD dwType;
+    DWORD dwError;
+    DWORD dwType;
 }
 
 alias RIP_INFO _RIP_INFO;
@@ -7587,49 +7655,49 @@ alias RIP_INFO* PRIPINFO;
 
 struct DEBUG_EVENT
 {
-	DWORD dwDebugEventCode;
-	DWORD dwProcessId;
-	DWORD dwThreadId;
+    DWORD dwDebugEventCode;
+    DWORD dwProcessId;
+    DWORD dwThreadId;
 
-	union
-	{
-		struct
-		{
-			EXCEPTION_DEBUG_INFO Exception;
-		}
-		struct
-		{
-			CREATE_THREAD_DEBUG_INFO CreateThread;
-		}
-		struct
-		{
-			CREATE_PROCESS_DEBUG_INFO CreateProcessInfo;
-		}
-		struct
-		{
-			EXIT_THREAD_DEBUG_INFO ExitThread;
-		}
-		struct
-		{
-			EXIT_PROCESS_DEBUG_INFO ExitProcess;
-		}
-		struct
-		{
-			LOAD_DLL_DEBUG_INFO LoadDll;
-		}
-		struct
-		{
-			UNLOAD_DLL_DEBUG_INFO UnloadDll;
-		}
-		struct
-		{
-			OUTPUT_DEBUG_STRING_INFO DebugString;
-		}
-		struct
-		{
-			RIP_INFO RipInfo;
-		}
-	}
+    union
+    {
+        struct
+        {
+            EXCEPTION_DEBUG_INFO Exception;
+        }
+        struct
+        {
+            CREATE_THREAD_DEBUG_INFO CreateThread;
+        }
+        struct
+        {
+            CREATE_PROCESS_DEBUG_INFO CreateProcessInfo;
+        }
+        struct
+        {
+            EXIT_THREAD_DEBUG_INFO ExitThread;
+        }
+        struct
+        {
+            EXIT_PROCESS_DEBUG_INFO ExitProcess;
+        }
+        struct
+        {
+            LOAD_DLL_DEBUG_INFO LoadDll;
+        }
+        struct
+        {
+            UNLOAD_DLL_DEBUG_INFO UnloadDll;
+        }
+        struct
+        {
+            OUTPUT_DEBUG_STRING_INFO DebugString;
+        }
+        struct
+        {
+            RIP_INFO RipInfo;
+        }
+    }
 }
 
 alias DEBUG_EVENT* LPDEBUG_EVENT;
@@ -7639,11 +7707,11 @@ alias DEBUG_EVENT* PDEBUGEVENT;
 
 struct DEBUGHOOKINFO
 {
-	DWORD idThread;
-	DWORD idThreadInstaller;
-	LPARAM lParam;
-	WPARAM wParam;
-	int code;
+    DWORD idThread;
+    DWORD idThreadInstaller;
+    LPARAM lParam;
+    WPARAM wParam;
+    int code;
 }
 
 alias DEBUGHOOKINFO TAGDEBUGHOOKINFO;
@@ -7652,11 +7720,11 @@ alias DEBUGHOOKINFO* PDEBUGHOOKINFO;
 
 struct DELETEITEMSTRUCT
 {
-	UINT CtlType;
-	UINT CtlID;
-	UINT itemID;
-	HWND hwndItem;
-	UINT itemData;
+    UINT CtlType;
+    UINT CtlID;
+    UINT itemID;
+    HWND hwndItem;
+    UINT itemData;
 }
 
 alias DELETEITEMSTRUCT TAGDELETEITEMSTRUCT;
@@ -7665,9 +7733,9 @@ alias DELETEITEMSTRUCT* PDELETEITEMSTRUCT;
 
 struct DEV_BROADCAST_HDR
 {
-	ULONG dbch_size;
-	ULONG dbch_devicetype;
-	ULONG dbch_reserved;
+    ULONG dbch_size;
+    ULONG dbch_devicetype;
+    ULONG dbch_reserved;
 }
 
 alias DEV_BROADCAST_HDR* PDEV_BROADCAST_HDR;
@@ -7677,11 +7745,11 @@ alias DEV_BROADCAST_HDR* PDEVBROADCASTHDR;
 
 struct DEV_BROADCAST_OEM
 {
-	ULONG dbco_size;
-	ULONG dbco_devicetype;
-	ULONG dbco_reserved;
-	ULONG dbco_identifier;
-	ULONG dbco_suppfunc;
+    ULONG dbco_size;
+    ULONG dbco_devicetype;
+    ULONG dbco_reserved;
+    ULONG dbco_identifier;
+    ULONG dbco_suppfunc;
 }
 
 alias DEV_BROADCAST_OEM* PDEV_BROADCAST_OEM;
@@ -7691,10 +7759,10 @@ alias DEV_BROADCAST_OEM* PDEVBROADCASTOEM;
 
 struct DEV_BROADCAST_PORT
 {
-	ULONG dbcp_size;
-	ULONG dbcp_devicetype;
-	ULONG dbcp_reserved;
-	char[1 + 0] dbcp_name;
+    ULONG dbcp_size;
+    ULONG dbcp_devicetype;
+    ULONG dbcp_reserved;
+    char[1 + 0] dbcp_name;
 }
 
 alias DEV_BROADCAST_PORT* PDEV_BROADCAST_PORT;
@@ -7704,9 +7772,9 @@ alias DEV_BROADCAST_PORT* PDEVBROADCASTPORT;
 
 struct _DEV_BROADCAST_USERDEFINED
 {
-	_DEV_BROADCAST_HDR dbud_dbh;
-	char[1 + 0] dbud_szName;
-	ubyte[1 + 0] dbud_rgbUserDefined;
+    _DEV_BROADCAST_HDR dbud_dbh;
+    char[1 + 0] dbud_szName;
+    ubyte[1 + 0] dbud_rgbUserDefined;
 }
 
 alias _DEV_BROADCAST_USERDEFINED TDEVBROADCASTUSERDEFINED;
@@ -7714,11 +7782,11 @@ alias _DEV_BROADCAST_USERDEFINED* PDEVBROADCASTUSERDEFINED;
 
 struct DEV_BROADCAST_VOLUME
 {
-	ULONG dbcv_size;
-	ULONG dbcv_devicetype;
-	ULONG dbcv_reserved;
-	ULONG dbcv_unitmask;
-	USHORT dbcv_flags;
+    ULONG dbcv_size;
+    ULONG dbcv_devicetype;
+    ULONG dbcv_reserved;
+    ULONG dbcv_unitmask;
+    USHORT dbcv_flags;
 }
 
 alias DEV_BROADCAST_VOLUME* PDEV_BROADCAST_VOLUME;
@@ -7728,38 +7796,38 @@ alias DEV_BROADCAST_VOLUME* PDEVBROADCASTVOLUME;
 
 struct DEVMODE
 {
-	BCHAR[1 + CCHDEVICENAME-1] dmDeviceName;
-	ushort dmSpecVersion;
-	ushort dmDriverVersion;
-	ushort dmSize;
-	ushort dmDriverExtra;
-	DWORD dmFields;
-	int dmOrientation;
-	int dmPaperSize;
-	int dmPaperLength;
-	int dmPaperWidth;
-	int dmScale;
-	int dmCopies;
-	int dmDefaultSource;
-	int dmPrintQuality;
-	int dmColor;
-	int dmDuplex;
-	int dmYResolution;
-	int dmTTOption;
-	int dmCollate;
-	BCHAR[1 + CCHFORMNAME-1] dmFormName;
-	ushort dmLogPixels;
-	DWORD dmBitsPerPel;
-	DWORD dmPelsWidth;
-	DWORD dmPelsHeight;
-	DWORD dmDisplayFlags;
-	DWORD dmDisplayFrequency;
-	DWORD dmICMMethod;
-	DWORD dmICMIntent;
-	DWORD dmMediaType;
-	DWORD dmDitherType;
-	DWORD dmICCManufacturer;
-	DWORD dmICCModel;
+    BCHAR[1 + CCHDEVICENAME-1] dmDeviceName;
+    ushort dmSpecVersion;
+    ushort dmDriverVersion;
+    ushort dmSize;
+    ushort dmDriverExtra;
+    DWORD dmFields;
+    int dmOrientation;
+    int dmPaperSize;
+    int dmPaperLength;
+    int dmPaperWidth;
+    int dmScale;
+    int dmCopies;
+    int dmDefaultSource;
+    int dmPrintQuality;
+    int dmColor;
+    int dmDuplex;
+    int dmYResolution;
+    int dmTTOption;
+    int dmCollate;
+    BCHAR[1 + CCHFORMNAME-1] dmFormName;
+    ushort dmLogPixels;
+    DWORD dmBitsPerPel;
+    DWORD dmPelsWidth;
+    DWORD dmPelsHeight;
+    DWORD dmDisplayFlags;
+    DWORD dmDisplayFrequency;
+    DWORD dmICMMethod;
+    DWORD dmICMIntent;
+    DWORD dmMediaType;
+    DWORD dmDitherType;
+    DWORD dmICCManufacturer;
+    DWORD dmICCModel;
 }
 
 alias DEVMODE* LPDEVMODE;
@@ -7772,10 +7840,10 @@ alias DEVMODE* PDEVMODE;
 
 struct DEVNAMES
 {
-	ushort wDriverOffset;
-	ushort wDeviceOffset;
-	ushort wOutputOffset;
-	ushort wDefault;
+    ushort wDriverOffset;
+    ushort wDeviceOffset;
+    ushort wOutputOffset;
+    ushort wDefault;
 }
 
 alias DEVNAMES* LPDEVNAMES;
@@ -7785,11 +7853,11 @@ alias DEVNAMES* PDEVNAMES;
 
 struct DIBSECTION
 {
-	BITMAP dsBm;
-	BITMAPINFOHEADER dsBmih;
-	DWORD[1 + 2] dsBitfields;
-	HANDLE dshSection;
-	DWORD dsOffset;
+    BITMAP dsBm;
+    BITMAPINFOHEADER dsBmih;
+    DWORD[1 + 2] dsBitfields;
+    HANDLE dshSection;
+    DWORD dsOffset;
 }
 
 alias DIBSECTION TAGDIBSECTION;
@@ -7798,18 +7866,18 @@ alias DIBSECTION* PDIBSECTION;
 
 union LARGE_INTEGER
 {
-	struct
-	{
-		DWORD LowPart;
-    	LONG HighPart;
-	};
-	struct u
-	{
-		DWORD LowPart;
-		LONG HighPart;
-	};
-	LONGLONG QuadPart;
-};
+    struct
+    {
+        DWORD LowPart;
+        LONG HighPart;
+    };
+    struct u
+    {
+        DWORD LowPart;
+        LONG HighPart;
+    };
+    LONGLONG QuadPart;
+}
 
 alias LARGE_INTEGER* PLARGE_INTEGER;
 alias LARGE_INTEGER _LARGE_INTEGER;
@@ -7818,11 +7886,11 @@ alias LARGE_INTEGER* PLARGEINTEGER;
 
 struct DISK_GEOMETRY
 {
-	LARGE_INTEGER Cylinders;
-	MEDIA_TYPE MediaType;
-	DWORD TracksPerCylinder;
-	DWORD SectorsPerTrack;
-	DWORD BytesPerSector;
+    LARGE_INTEGER Cylinders;
+    MEDIA_TYPE MediaType;
+    DWORD TracksPerCylinder;
+    DWORD SectorsPerTrack;
+    DWORD BytesPerSector;
 }
 
 alias DISK_GEOMETRY _DISK_GEOMETRY;
@@ -7831,13 +7899,13 @@ alias DISK_GEOMETRY* PDISKGEOMETRY;
 
 struct DISK_PERFORMANCE
 {
-	LARGE_INTEGER BytesRead;
-	LARGE_INTEGER BytesWritten;
-	LARGE_INTEGER ReadTime;
-	LARGE_INTEGER WriteTime;
-	DWORD ReadCount;
-	DWORD WriteCount;
-	DWORD QueueDepth;
+    LARGE_INTEGER BytesRead;
+    LARGE_INTEGER BytesWritten;
+    LARGE_INTEGER ReadTime;
+    LARGE_INTEGER WriteTime;
+    DWORD ReadCount;
+    DWORD WriteCount;
+    DWORD QueueDepth;
 }
 
 alias DISK_PERFORMANCE _DISK_PERFORMANCE;
@@ -7846,13 +7914,13 @@ alias DISK_PERFORMANCE* PDISKPERFORMANCE;
 
 align(1) struct DLGITEMTEMPLATE
 {
-	DWORD style;
-	DWORD dwExtendedStyle;
-	int x;
-	int y;
-	int cx;
-	int cy;
-	ushort id;
+    DWORD style;
+    DWORD dwExtendedStyle;
+    int x;
+    int y;
+    int cx;
+    int cy;
+    ushort id;
 }
 
 alias DLGITEMTEMPLATE* LPDLGITEMTEMPLATE;
@@ -7861,13 +7929,13 @@ alias DLGITEMTEMPLATE* PDLGITEMTEMPLATE;
 
 align(1) struct DLGTEMPLATE
 {
-	DWORD style;
-	DWORD dwExtendedStyle;
-	ushort cdit;
-	int x;
-	int y;
-	int cx;
-	int cy;
+    DWORD style;
+    DWORD dwExtendedStyle;
+    ushort cdit;
+    int x;
+    int y;
+    int cx;
+    int cy;
 }
 
 alias DLGTEMPLATE* LPDLGTEMPLATE;
@@ -7877,9 +7945,9 @@ alias DLGTEMPLATE* PDLGTEMPLATE;
 
 struct DOC_INFO_1
 {
-	LPTSTR pDocName;
-	LPTSTR pOutputFile;
-	LPTSTR pDatatype;
+    LPTSTR pDocName;
+    LPTSTR pOutputFile;
+    LPTSTR pDatatype;
 }
 
 alias DOC_INFO_1 _DOC_INFO_1;
@@ -7888,35 +7956,55 @@ alias DOC_INFO_1* PDOCINFO1;
 
 struct DOC_INFO_2
 {
-	LPTSTR pDocName;
-	LPTSTR pOutputFile;
-	LPTSTR pDatatype;
-	DWORD dwMode;
-	DWORD JobId;
+    LPTSTR pDocName;
+    LPTSTR pOutputFile;
+    LPTSTR pDatatype;
+    DWORD dwMode;
+    DWORD JobId;
 }
 
 alias DOC_INFO_2 _DOC_INFO_2;
 alias DOC_INFO_2 TDOCINFO2;
 alias DOC_INFO_2* PDOCINFO2;
 
-struct DOCINFO
+struct DOCINFOA
 {
-	int cbSize;
-	LPCTSTR lpszDocName;
-	LPCTSTR lpszOutput;
-	LPCTSTR lpszDatatype;
-	DWORD fwType;
+    int     cbSize;
+    LPCSTR   lpszDocName;
+    LPCSTR   lpszOutput;
+    LPCSTR   lpszDatatype;
+    DWORD    fwType;
 }
+alias DOCINFOA TDOCINFOA;
 
+struct DOCINFOW
+{
+    int     cbSize;
+    LPCWSTR  lpszDocName;
+    LPCWSTR  lpszOutput;
+    LPCWSTR  lpszDatatype;
+    DWORD    fwType;
+}
+alias DOCINFOW TDOCINFOW;
+
+version(Win32SansUnicode)
+{
+    alias DOCINFOA DOCINFO;
+}
+else
+{
+    alias DOCINFOW DOCINFO;
+}
 alias DOCINFO TDOCINFO;
-alias DOCINFO TDOCINFOA;
+alias DOCINFO* LPDOCINFO;
 alias DOCINFO* PDOCINFO;
+
 
 struct DRAGLISTINFO
 {
-	UINT uNotification;
-	HWND hWnd;
-	POINT ptCursor;
+    UINT uNotification;
+    HWND hWnd;
+    POINT ptCursor;
 }
 
 alias DRAGLISTINFO* LPDRAGLISTINFO;
@@ -7925,15 +8013,15 @@ alias DRAGLISTINFO* PDRAGLISTINFO;
 
 struct DRAWITEMSTRUCT
 {
-	UINT CtlType;
-	UINT CtlID;
-	UINT itemID;
-	UINT itemAction;
-	UINT itemState;
-	HWND hwndItem;
-	HDC hDC;
-	RECT rcItem;
-	DWORD itemData;
+    UINT CtlType;
+    UINT CtlID;
+    UINT itemID;
+    UINT itemAction;
+    UINT itemState;
+    HWND hwndItem;
+    HDC hDC;
+    RECT rcItem;
+    DWORD itemData;
 }
 
 alias DRAWITEMSTRUCT* LPDRAWITEMSTRUCT;
@@ -7943,11 +8031,11 @@ alias DRAWITEMSTRUCT* PDRAWITEMSTRUCT;
 
 struct DRAWTEXTPARAMS
 {
-	UINT cbSize;
-	int iTabLength;
-	int iLeftMargin;
-	int iRightMargin;
-	UINT uiLengthDrawn;
+    UINT cbSize;
+    int iTabLength;
+    int iLeftMargin;
+    int iRightMargin;
+    UINT uiLengthDrawn;
 }
 
 alias DRAWTEXTPARAMS* LPDRAWTEXTPARAMS;
@@ -7956,13 +8044,13 @@ alias DRAWTEXTPARAMS* PDRAWTEXTPARAMS;
 
 struct PARTITION_INFORMATION
 {
-	ubyte PartitionType;
-	ubyte BootIndicator;
-	ubyte RecognizedPartition;
-	ubyte RewritePartition;
-	LARGE_INTEGER StartingOffset;
-	LARGE_INTEGER PartitionLength;
-	LARGE_INTEGER HiddenSectors;
+    ubyte PartitionType;
+    ubyte BootIndicator;
+    ubyte RecognizedPartition;
+    ubyte RewritePartition;
+    LARGE_INTEGER StartingOffset;
+    LARGE_INTEGER PartitionLength;
+    LARGE_INTEGER HiddenSectors;
 }
 
 alias PARTITION_INFORMATION _PARTITION_INFORMATION;
@@ -7971,9 +8059,9 @@ alias PARTITION_INFORMATION* PPARTITIONINFORMATION;
 
 struct DRIVE_LAYOUT_INFORMATION
 {
-	DWORD PartitionCount;
-	DWORD Signature;
-	PARTITION_INFORMATION[1 + 0] PartitionEntry;
+    DWORD PartitionCount;
+    DWORD Signature;
+    PARTITION_INFORMATION[1 + 0] PartitionEntry;
 }
 
 alias DRIVE_LAYOUT_INFORMATION _DRIVE_LAYOUT_INFORMATION;
@@ -7982,7 +8070,7 @@ alias DRIVE_LAYOUT_INFORMATION* PDRIVELAYOUTINFORMATION;
 
 struct DRIVER_INFO_1
 {
-	LPTSTR pName;
+    LPTSTR pName;
 }
 
 alias DRIVER_INFO_1 _DRIVER_INFO_1;
@@ -7991,12 +8079,12 @@ alias DRIVER_INFO_1* PDRIVERINFO1;
 
 struct DRIVER_INFO_2
 {
-	DWORD cVersion;
-	LPTSTR pName;
-	LPTSTR pEnvironment;
-	LPTSTR pDriverPath;
-	LPTSTR pDataFile;
-	LPTSTR pConfigFile;
+    DWORD cVersion;
+    LPTSTR pName;
+    LPTSTR pEnvironment;
+    LPTSTR pDriverPath;
+    LPTSTR pDataFile;
+    LPTSTR pConfigFile;
 }
 
 alias DRIVER_INFO_2 _DRIVER_INFO_2;
@@ -8005,16 +8093,16 @@ alias DRIVER_INFO_2* PDRIVERINFO2;
 
 struct DRIVER_INFO_3
 {
-	DWORD cVersion;
-	LPTSTR pName;
-	LPTSTR pEnvironment;
-	LPTSTR pDriverPath;
-	LPTSTR pDataFile;
-	LPTSTR pConfigFile;
-	LPTSTR pHelpFile;
-	LPTSTR pDependentFiles;
-	LPTSTR pMonitorName;
-	LPTSTR pDefaultDataType;
+    DWORD cVersion;
+    LPTSTR pName;
+    LPTSTR pEnvironment;
+    LPTSTR pDriverPath;
+    LPTSTR pDataFile;
+    LPTSTR pConfigFile;
+    LPTSTR pHelpFile;
+    LPTSTR pDependentFiles;
+    LPTSTR pMonitorName;
+    LPTSTR pDefaultDataType;
 }
 
 alias DRIVER_INFO_3 _DRIVER_INFO_3;
@@ -8023,9 +8111,9 @@ alias DRIVER_INFO_3* PDRIVERINFO3;
 
 struct EDITSTREAM
 {
-	DWORD dwCookie;
-	DWORD dwError;
-	EDITSTREAMCALLBACK pfnCallback;
+    DWORD dwCookie;
+    DWORD dwError;
+    EDITSTREAMCALLBACK pfnCallback;
 }
 
 alias EDITSTREAM _EDITSTREAM;
@@ -8034,8 +8122,8 @@ alias EDITSTREAM* PEDITSTREAM;
 
 struct EMR
 {
-	DWORD iType;
-	DWORD nSize;
+    DWORD iType;
+    DWORD nSize;
 }
 
 alias EMR TAGEMR;
@@ -8044,11 +8132,11 @@ alias EMR* PEMR;
 
 struct EMRANGLEARC
 {
-	EMR emr;
-	POINTL ptlCenter;
-	DWORD nRadius;
-	FLOAT eStartAngle;
-	FLOAT eSweepAngle;
+    EMR emr;
+    POINTL ptlCenter;
+    DWORD nRadius;
+    FLOAT eStartAngle;
+    FLOAT eSweepAngle;
 }
 
 alias EMRANGLEARC TAGEMRANGLEARC;
@@ -8057,10 +8145,10 @@ alias EMRANGLEARC* PEMRANGLEARC;
 
 struct EMRARC
 {
-	EMR emr;
-	RECTL rclBox;
-	POINTL ptlStart;
-	POINTL ptlEnd;
+    EMR emr;
+    RECTL rclBox;
+    POINTL ptlStart;
+    POINTL ptlEnd;
 }
 
 alias EMRARC TAGEMRARC;
@@ -8078,12 +8166,12 @@ alias EMRARC* PEMRPIE;
 
 struct XFORM
 {
-	FLOAT eM11;
-	FLOAT eM12;
-	FLOAT eM21;
-	FLOAT eM22;
-	FLOAT eDx;
-	FLOAT eDy;
+    FLOAT eM11;
+    FLOAT eM12;
+    FLOAT eM21;
+    FLOAT eM22;
+    FLOAT eDx;
+    FLOAT eDy;
 }
 
 alias XFORM* LPXFORM;
@@ -8093,21 +8181,21 @@ alias XFORM* PXFORM;
 
 struct EMRBITBLT
 {
-	EMR emr;
-	RECTL rclBounds;
-	LONG xDest;
-	LONG yDest;
-	LONG cxDest;
-	LONG cyDest;
-	DWORD dwRop;
-	LONG xSrc;
-	LONG ySrc;
-	XFORM xformSrc;
-	COLORREF crBkColorSrc;
-	DWORD iUsageSrc;
-	DWORD offBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
+    EMR emr;
+    RECTL rclBounds;
+    LONG xDest;
+    LONG yDest;
+    LONG cxDest;
+    LONG cyDest;
+    DWORD dwRop;
+    LONG xSrc;
+    LONG ySrc;
+    XFORM xformSrc;
+    COLORREF crBkColorSrc;
+    DWORD iUsageSrc;
+    DWORD offBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
 }
 
 alias EMRBITBLT TAGEMRBITBLT;
@@ -8116,9 +8204,9 @@ alias EMRBITBLT* PEMRBITBLT;
 
 struct LOGBRUSH
 {
-	UINT lbStyle;
-	COLORREF lbColor;
-	LONG lbHatch;
+    UINT lbStyle;
+    COLORREF lbColor;
+    LONG lbHatch;
 }
 
 alias LOGBRUSH TAGLOGBRUSH;
@@ -8127,9 +8215,9 @@ alias LOGBRUSH* PLOGBRUSH;
 
 struct EMRCREATEBRUSHINDIRECT
 {
-	EMR emr;
-	DWORD ihBrush;
-	LOGBRUSH lb;
+    EMR emr;
+    DWORD ihBrush;
+    LOGBRUSH lb;
 }
 
 alias EMRCREATEBRUSHINDIRECT TAGEMRCREATEBRUSHINDIRECT;
@@ -8140,16 +8228,16 @@ alias LONG LCSGAMUTMATCH;
 
 struct LOGCOLORSPACE
 {
-	DWORD lcsSignature;
-	DWORD lcsVersion;
-	DWORD lcsSize;
-	LCSCSTYPE lcsCSType;
-	LCSGAMUTMATCH lcsIntent;
-	CIEXYZTRIPLE lcsEndpoints;
-	DWORD lcsGammaRed;
-	DWORD lcsGammaGreen;
-	DWORD lcsGammaBlue;
-	TCHAR[1 + MAX_PATH-1] lcsFilename;
+    DWORD lcsSignature;
+    DWORD lcsVersion;
+    DWORD lcsSize;
+    LCSCSTYPE lcsCSType;
+    LCSGAMUTMATCH lcsIntent;
+    CIEXYZTRIPLE lcsEndpoints;
+    DWORD lcsGammaRed;
+    DWORD lcsGammaGreen;
+    DWORD lcsGammaBlue;
+    TCHAR[1 + MAX_PATH-1] lcsFilename;
 }
 
 alias LOGCOLORSPACE* LPLOGCOLORSPACE;
@@ -8160,9 +8248,9 @@ alias LOGCOLORSPACE* PLOGCOLORSPACE;
 
 struct EMRCREATECOLORSPACE
 {
-	EMR emr;
-	DWORD ihCS;
-	LOGCOLORSPACE lcs;
+    EMR emr;
+    DWORD ihCS;
+    LOGCOLORSPACE lcs;
 }
 
 alias EMRCREATECOLORSPACE TAGEMRCREATECOLORSPACE;
@@ -8171,13 +8259,13 @@ alias EMRCREATECOLORSPACE* PEMRCREATECOLORSPACE;
 
 struct EMRCREATEDIBPATTERNBRUSHPT
 {
-	EMR emr;
-	DWORD ihBrush;
-	DWORD iUsage;
-	DWORD offBmi;
-	DWORD cbBmi;
-	DWORD offBits;
-	DWORD cbBits;
+    EMR emr;
+    DWORD ihBrush;
+    DWORD iUsage;
+    DWORD offBmi;
+    DWORD cbBmi;
+    DWORD offBits;
+    DWORD cbBits;
 }
 
 alias EMRCREATEDIBPATTERNBRUSHPT TAGEMRCREATEDIBPATTERNBRUSHPT;
@@ -8186,13 +8274,13 @@ alias EMRCREATEDIBPATTERNBRUSHPT PEMRCREATEDIBPATTERNBRUSHPT;
 
 struct EMRCREATEMONOBRUSH
 {
-	EMR emr;
-	DWORD ihBrush;
-	DWORD iUsage;
-	DWORD offBmi;
-	DWORD cbBmi;
-	DWORD offBits;
-	DWORD cbBits;
+    EMR emr;
+    DWORD ihBrush;
+    DWORD iUsage;
+    DWORD offBmi;
+    DWORD cbBmi;
+    DWORD offBits;
+    DWORD cbBits;
 }
 
 alias EMRCREATEMONOBRUSH TAGEMRCREATEMONOBRUSH;
@@ -8201,10 +8289,10 @@ alias EMRCREATEMONOBRUSH* PEMRCREATEMONOBRUSH;
 
 struct PALETTEENTRY
 {
-	ubyte peRed;
-	ubyte peGreen;
-	ubyte peBlue;
-	ubyte peFlags;
+    ubyte peRed;
+    ubyte peGreen;
+    ubyte peBlue;
+    ubyte peFlags;
 }
 
 alias PALETTEENTRY* LPPALETTEENTRY;
@@ -8214,9 +8302,9 @@ alias PALETTEENTRY* PPALETTEENTRY;
 
 struct LOGPALETTE
 {
-	ushort palVersion;
-	ushort palNumEntries;
-	PALETTEENTRY[1 + 0] palPalEntry;
+    ushort palVersion;
+    ushort palNumEntries;
+    PALETTEENTRY[1 + 0] palPalEntry;
 }
 
 alias LOGPALETTE* LPLOGPALETTE;
@@ -8226,9 +8314,9 @@ alias LOGPALETTE* PLOGPALETTE;
 
 struct EMRCREATEPALETTE
 {
-	EMR emr;
-	DWORD ihPal;
-	LOGPALETTE lgpl;
+    EMR emr;
+    DWORD ihPal;
+    LOGPALETTE lgpl;
 }
 
 alias EMRCREATEPALETTE TAGEMRCREATEPALETTE;
@@ -8237,9 +8325,9 @@ alias EMRCREATEPALETTE* PEMRCREATEPALETTE;
 
 struct LOGPEN
 {
-	UINT lopnStyle;
-	POINT lopnWidth;
-	COLORREF lopnColor;
+    UINT lopnStyle;
+    POINT lopnWidth;
+    COLORREF lopnColor;
 }
 
 alias LOGPEN TAGLOGPEN;
@@ -8248,9 +8336,9 @@ alias LOGPEN* PLOGPEN;
 
 struct EMRCREATEPEN
 {
-	EMR emr;
-	DWORD ihPen;
-	LOGPEN lopn;
+    EMR emr;
+    DWORD ihPen;
+    LOGPEN lopn;
 }
 
 alias EMRCREATEPEN TAGEMRCREATEPEN;
@@ -8259,8 +8347,8 @@ alias EMRCREATEPEN* PEMRCREATEPEN;
 
 struct EMRELLIPSE
 {
-	EMR emr;
-	RECTL rclBox;
+    EMR emr;
+    RECTL rclBox;
 }
 
 alias EMRELLIPSE TAGEMRELLIPSE;
@@ -8272,10 +8360,10 @@ alias EMRELLIPSE* PEMRRECTANGLE;
 
 struct EMREOF
 {
-	EMR emr;
-	DWORD nPalEntries;
-	DWORD offPalEntries;
-	DWORD nSizeLast;
+    EMR emr;
+    DWORD nPalEntries;
+    DWORD offPalEntries;
+    DWORD nSizeLast;
 }
 
 alias EMREOF TAGEMREOF;
@@ -8284,8 +8372,8 @@ alias EMREOF* PEMREOF;
 
 struct EMREXCLUDECLIPRECT
 {
-	EMR emr;
-	RECTL rclClip;
+    EMR emr;
+    RECTL rclClip;
 }
 
 alias EMREXCLUDECLIPRECT TAGEMREXCLUDECLIPRECT;
@@ -8297,16 +8385,16 @@ alias EMREXCLUDECLIPRECT* PEMRINTERSECTCLIPRECT;
 
 struct PANOSE
 {
-	ubyte bFamilyType;
-	ubyte bSerifStyle;
-	ubyte bWeight;
-	ubyte bProportion;
-	ubyte bContrast;
-	ubyte bStrokeVariation;
-	ubyte bArmStyle;
-	ubyte bLetterform;
-	ubyte bMidline;
-	ubyte bXHeight;
+    ubyte bFamilyType;
+    ubyte bSerifStyle;
+    ubyte bWeight;
+    ubyte bProportion;
+    ubyte bContrast;
+    ubyte bStrokeVariation;
+    ubyte bArmStyle;
+    ubyte bLetterform;
+    ubyte bMidline;
+    ubyte bXHeight;
 }
 
 alias PANOSE TAGPANOSE;
@@ -8315,16 +8403,16 @@ alias PANOSE* PPANOSE;
 
 struct EXTLOGFONT
 {
-	LOGFONT elfLogFont;
-	BCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
-	BCHAR[1 + LF_FACESIZE-1] elfStyle;
-	DWORD elfVersion;
-	DWORD elfStyleSize;
-	DWORD elfMatch;
-	DWORD elfReserved;
-	ubyte[1 + ELF_VENDOR_SIZE-1] elfVendorId;
-	DWORD elfCulture;
-	PANOSE elfPanose;
+    LOGFONT elfLogFont;
+    BCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
+    BCHAR[1 + LF_FACESIZE-1] elfStyle;
+    DWORD elfVersion;
+    DWORD elfStyleSize;
+    DWORD elfMatch;
+    DWORD elfReserved;
+    ubyte[1 + ELF_VENDOR_SIZE-1] elfVendorId;
+    DWORD elfCulture;
+    PANOSE elfPanose;
 }
 
 alias EXTLOGFONT TAGEXTLOGFONT;
@@ -8333,9 +8421,9 @@ alias EXTLOGFONT* PEXTLOGFONT;
 
 struct EMREXTCREATEFONTINDIRECTW
 {
-	EMR emr;
-	DWORD ihFont;
-	EXTLOGFONT elfw;
+    EMR emr;
+    DWORD ihFont;
+    EXTLOGFONT elfw;
 }
 
 alias EMREXTCREATEFONTINDIRECTW TAGEMREXTCREATEFONTINDIRECTW;
@@ -8344,13 +8432,13 @@ alias EMREXTCREATEFONTINDIRECTW* PEMREXTCREATEFONTINDIRECTW;
 
 struct EXTLOGPEN
 {
-	UINT elpPenStyle;
-	UINT elpWidth;
-	UINT elpBrushStyle;
-	COLORREF elpColor;
-	LONG elpHatch;
-	DWORD elpNumEntries;
-	DWORD[1 + 0] elpStyleEntry;
+    UINT elpPenStyle;
+    UINT elpWidth;
+    UINT elpBrushStyle;
+    COLORREF elpColor;
+    LONG elpHatch;
+    DWORD elpNumEntries;
+    DWORD[1 + 0] elpStyleEntry;
 }
 
 alias EXTLOGPEN TAGEXTLOGPEN;
@@ -8359,13 +8447,13 @@ alias EXTLOGPEN* PEXTLOGPEN;
 
 struct EMREXTCREATEPEN
 {
-	EMR emr;
-	DWORD ihPen;
-	DWORD offBmi;
-	DWORD cbBmi;
-	DWORD offBits;
-	DWORD cbBits;
-	EXTLOGPEN elp;
+    EMR emr;
+    DWORD ihPen;
+    DWORD offBmi;
+    DWORD cbBmi;
+    DWORD offBits;
+    DWORD cbBits;
+    EXTLOGPEN elp;
 }
 
 alias EMREXTCREATEPEN TAGEMREXTCREATEPEN;
@@ -8374,10 +8462,10 @@ alias EMREXTCREATEPEN* PEMREXTCREATEPEN;
 
 struct EMREXTFLOODFILL
 {
-	EMR emr;
-	POINTL ptlStart;
-	COLORREF crColor;
-	DWORD iMode;
+    EMR emr;
+    POINTL ptlStart;
+    COLORREF crColor;
+    DWORD iMode;
 }
 
 alias EMREXTFLOODFILL TAGEMREXTFLOODFILL;
@@ -8386,10 +8474,10 @@ alias EMREXTFLOODFILL* PEMREXTFLOODFILL;
 
 struct EMREXTSELECTCLIPRGN
 {
-	EMR emr;
-	DWORD cbRgnData;
-	DWORD iMode;
-	ubyte[1 + 0] RgnData;
+    EMR emr;
+    DWORD cbRgnData;
+    DWORD iMode;
+    ubyte[1 + 0] RgnData;
 }
 
 alias EMREXTSELECTCLIPRGN TAGEMREXTSELECTCLIPRGN;
@@ -8398,12 +8486,12 @@ alias EMREXTSELECTCLIPRGN* PEMREXTSELECTCLIPRGN;
 
 struct EMRTEXT
 {
-	POINTL ptlReference;
-	DWORD nChars;
-	DWORD offString;
-	DWORD fOptions;
-	RECTL rcl;
-	DWORD offDx;
+    POINTL ptlReference;
+    DWORD nChars;
+    DWORD offString;
+    DWORD fOptions;
+    RECTL rcl;
+    DWORD offDx;
 }
 
 alias EMRTEXT TAGEMRTEXT;
@@ -8412,12 +8500,12 @@ alias EMRTEXT* PEMRTEXT;
 
 struct EMREXTTEXTOUTA
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD iGraphicsMode;
-	FLOAT exScale;
-	FLOAT eyScale;
-	EMRTEXT emrtext;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD iGraphicsMode;
+    FLOAT exScale;
+    FLOAT eyScale;
+    EMRTEXT emrtext;
 }
 
 alias EMREXTTEXTOUTA TAGEMREXTTEXTOUTA;
@@ -8429,8 +8517,8 @@ alias EMREXTTEXTOUTA* PEMREXTTEXTOUTW;
 
 struct EMRFILLPATH
 {
-	EMR emr;
-	RECTL rclBounds;
+    EMR emr;
+    RECTL rclBounds;
 }
 
 alias EMRFILLPATH TAGEMRFILLPATH;
@@ -8445,11 +8533,11 @@ alias EMRFILLPATH* PEMRSTROKEPATH;
 
 struct EMRFILLRGN
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cbRgnData;
-	DWORD ihBrush;
-	ubyte[1 + 0] RgnData;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cbRgnData;
+    DWORD ihBrush;
+    ubyte[1 + 0] RgnData;
 }
 
 alias EMRFILLRGN TAGEMRFILLRGN;
@@ -8458,10 +8546,10 @@ alias EMRFILLRGN* PEMRFILLRGN;
 
 struct EMRFORMAT
 {
-	DWORD dSignature;
-	DWORD nVersion;
-	DWORD cbData;
-	DWORD offData;
+    DWORD dSignature;
+    DWORD nVersion;
+    DWORD cbData;
+    DWORD offData;
 }
 
 alias EMRFORMAT TAGEMRFORMAT;
@@ -8470,8 +8558,8 @@ alias EMRFORMAT* PEMRFORMAT;
 
 struct SIZE
 {
-	LONG cx;
-	LONG cy;
+    LONG cx;
+    LONG cy;
 }
 
 alias SIZE* LPSIZE;
@@ -8485,12 +8573,12 @@ alias SIZE* LPSIZEL;
 
 struct EMRFRAMERGN
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cbRgnData;
-	DWORD ihBrush;
-	SIZEL szlStroke;
-	ubyte[1 + 0] RgnData;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cbRgnData;
+    DWORD ihBrush;
+    SIZEL szlStroke;
+    ubyte[1 + 0] RgnData;
 }
 
 alias EMRFRAMERGN TAGEMRFRAMERGN;
@@ -8499,9 +8587,9 @@ alias EMRFRAMERGN* PEMRFRAMERGN;
 
 struct EMRGDICOMMENT
 {
-	EMR emr;
-	DWORD cbData;
-	ubyte[1 + 0] Data;
+    EMR emr;
+    DWORD cbData;
+    ubyte[1 + 0] Data;
 }
 
 alias EMRGDICOMMENT TAGEMRGDICOMMENT;
@@ -8510,10 +8598,10 @@ alias EMRGDICOMMENT* PEMRGDICOMMENT;
 
 struct EMRINVERTRGN
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cbRgnData;
-	ubyte[1 + 0] RgnData;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cbRgnData;
+    ubyte[1 + 0] RgnData;
 }
 
 alias EMRINVERTRGN TAGEMRINVERTRGN;
@@ -8525,8 +8613,8 @@ alias EMRINVERTRGN* PEMRPAINTRGN;
 
 struct EMRLINETO
 {
-	EMR emr;
-	POINTL ptl;
+    EMR emr;
+    POINTL ptl;
 }
 
 alias EMRLINETO TAGEMRLINETO;
@@ -8538,29 +8626,29 @@ alias EMRLINETO* PEMRMOVETOEX;
 
 struct EMRMASKBLT
 {
-	EMR emr;
-	RECTL rclBounds;
-	LONG xDest;
-	LONG yDest;
-	LONG cxDest;
-	LONG cyDest;
-	DWORD dwRop;
-	LONG xSrc;
-	LONG ySrc;
-	XFORM xformSrc;
-	COLORREF crBkColorSrc;
-	DWORD iUsageSrc;
-	DWORD offBmiSrc;
-	DWORD cbBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
-	LONG xMask;
-	LONG yMask;
-	DWORD iUsageMask;
-	DWORD offBmiMask;
-	DWORD cbBmiMask;
-	DWORD offBitsMask;
-	DWORD cbBitsMask;
+    EMR emr;
+    RECTL rclBounds;
+    LONG xDest;
+    LONG yDest;
+    LONG cxDest;
+    LONG cyDest;
+    DWORD dwRop;
+    LONG xSrc;
+    LONG ySrc;
+    XFORM xformSrc;
+    COLORREF crBkColorSrc;
+    DWORD iUsageSrc;
+    DWORD offBmiSrc;
+    DWORD cbBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
+    LONG xMask;
+    LONG yMask;
+    DWORD iUsageMask;
+    DWORD offBmiMask;
+    DWORD cbBmiMask;
+    DWORD offBitsMask;
+    DWORD cbBitsMask;
 }
 
 alias EMRMASKBLT TAGEMRMASKBLT;
@@ -8569,9 +8657,9 @@ alias EMRMASKBLT* PEMRMASKBLT;
 
 struct EMRMODIFYWORLDTRANSFORM
 {
-	EMR emr;
-	XFORM xform;
-	DWORD iMode;
+    EMR emr;
+    XFORM xform;
+    DWORD iMode;
 }
 
 alias EMRMODIFYWORLDTRANSFORM TAGEMRMODIFYWORLDTRANSFORM;
@@ -8580,8 +8668,8 @@ alias EMRMODIFYWORLDTRANSFORM PEMRMODIFYWORLDTRANSFORM;
 
 struct EMROFFSETCLIPRGN
 {
-	EMR emr;
-	POINTL ptlOffset;
+    EMR emr;
+    POINTL ptlOffset;
 }
 
 alias EMROFFSETCLIPRGN TAGEMROFFSETCLIPRGN;
@@ -8590,27 +8678,27 @@ alias EMROFFSETCLIPRGN* PEMROFFSETCLIPRGN;
 
 struct EMRPLGBLT
 {
-	EMR emr;
-	RECTL rclBounds;
-	POINTL[1 + 2] aptlDest;
-	LONG xSrc;
-	LONG ySrc;
-	LONG cxSrc;
-	LONG cySrc;
-	XFORM xformSrc;
-	COLORREF crBkColorSrc;
-	DWORD iUsageSrc;
-	DWORD offBmiSrc;
-	DWORD cbBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
-	LONG xMask;
-	LONG yMask;
-	DWORD iUsageMask;
-	DWORD offBmiMask;
-	DWORD cbBmiMask;
-	DWORD offBitsMask;
-	DWORD cbBitsMask;
+    EMR emr;
+    RECTL rclBounds;
+    POINTL[1 + 2] aptlDest;
+    LONG xSrc;
+    LONG ySrc;
+    LONG cxSrc;
+    LONG cySrc;
+    XFORM xformSrc;
+    COLORREF crBkColorSrc;
+    DWORD iUsageSrc;
+    DWORD offBmiSrc;
+    DWORD cbBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
+    LONG xMask;
+    LONG yMask;
+    DWORD iUsageMask;
+    DWORD offBmiMask;
+    DWORD cbBmiMask;
+    DWORD offBitsMask;
+    DWORD cbBitsMask;
 }
 
 alias EMRPLGBLT TAGEMRPLGBLT;
@@ -8619,11 +8707,11 @@ alias EMRPLGBLT* PEMRPLGBLT;
 
 struct EMRPOLYDRAW
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cptl;
-	POINTL[1 + 0] aptl;
-	ubyte[1 + 0] abTypes;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cptl;
+    POINTL[1 + 0] aptl;
+    ubyte[1 + 0] abTypes;
 }
 
 alias EMRPOLYDRAW TAGEMRPOLYDRAW;
@@ -8632,11 +8720,11 @@ alias EMRPOLYDRAW* PEMRPOLYDRAW;
 
 struct EMRPOLYDRAW16
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cpts;
-	POINTS[1 + 0] apts;
-	ubyte[1 + 0] abTypes;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cpts;
+    POINTS[1 + 0] apts;
+    ubyte[1 + 0] abTypes;
 }
 
 alias EMRPOLYDRAW16 TAGEMRPOLYDRAW16;
@@ -8645,10 +8733,10 @@ alias EMRPOLYDRAW16* PEMRPOLYDRAW16;
 
 struct EMRPOLYLINE
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cptl;
-	POINTL[1 + 0] aptl;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cptl;
+    POINTL[1 + 0] aptl;
 }
 
 alias EMRPOLYLINE TAGEMRPOLYLINE;
@@ -8669,10 +8757,10 @@ alias EMRPOLYLINE* PEMRPOLYLINETO;
 
 struct EMRPOLYLINE16
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD cpts;
-	POINTL[1 + 0] apts;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD cpts;
+    POINTL[1 + 0] apts;
 }
 
 alias EMRPOLYLINE16 TAGEMRPOLYLINE16;
@@ -8693,12 +8781,12 @@ alias EMRPOLYLINE16* PEMRPOLYLINETO16;
 
 struct EMRPOLYPOLYLINE
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD nPolys;
-	DWORD cptl;
-	DWORD[1 + 0] aPolyCounts;
-	POINTL[1 + 0] aptl;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD nPolys;
+    DWORD cptl;
+    DWORD[1 + 0] aPolyCounts;
+    POINTL[1 + 0] aptl;
 }
 
 alias EMRPOLYPOLYLINE TAGEMRPOLYPOLYLINE;
@@ -8710,12 +8798,12 @@ alias EMRPOLYPOLYLINE* PEMRPOLYPOLYGON;
 
 struct EMRPOLYPOLYLINE16
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD nPolys;
-	DWORD cpts;
-	DWORD[1 + 0] aPolyCounts;
-	POINTS[1 + 0] apts;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD nPolys;
+    DWORD cpts;
+    DWORD[1 + 0] aPolyCounts;
+    POINTS[1 + 0] apts;
 }
 
 alias EMRPOLYPOLYLINE16 TAGEMRPOLYPOLYLINE16;
@@ -8727,13 +8815,13 @@ alias EMRPOLYPOLYLINE16* PEMRPOLYPOLYGON16;
 
 struct EMRPOLYTEXTOUTA
 {
-	EMR emr;
-	RECTL rclBounds;
-	DWORD iGraphicsMode;
-	FLOAT exScale;
-	FLOAT eyScale;
-	LONG cStrings;
-	EMRTEXT[1 + 0] aemrtext;
+    EMR emr;
+    RECTL rclBounds;
+    DWORD iGraphicsMode;
+    FLOAT exScale;
+    FLOAT eyScale;
+    LONG cStrings;
+    EMRTEXT[1 + 0] aemrtext;
 }
 
 alias EMRPOLYTEXTOUTA TAGEMRPOLYTEXTOUTA;
@@ -8745,9 +8833,9 @@ alias EMRPOLYTEXTOUTA* PEMRPOLYTEXTOUTW;
 
 struct EMRRESIZEPALETTE
 {
-	EMR emr;
-	DWORD ihPal;
-	DWORD cEntries;
+    EMR emr;
+    DWORD ihPal;
+    DWORD cEntries;
 }
 
 alias EMRRESIZEPALETTE TAGEMRRESIZEPALETTE;
@@ -8756,8 +8844,8 @@ alias EMRRESIZEPALETTE* PEMRRESIZEPALETTE;
 
 struct EMRRESTOREDC
 {
-	EMR emr;
-	LONG iRelative;
+    EMR emr;
+    LONG iRelative;
 }
 
 alias EMRRESTOREDC TAGEMRRESTOREDC;
@@ -8766,9 +8854,9 @@ alias EMRRESTOREDC* PEMRRESTOREDC;
 
 struct EMRROUNDRECT
 {
-	EMR emr;
-	RECTL rclBox;
-	SIZEL szlCorner;
+    EMR emr;
+    RECTL rclBox;
+    SIZEL szlCorner;
 }
 
 alias EMRROUNDRECT TAGEMRROUNDRECT;
@@ -8777,11 +8865,11 @@ alias EMRROUNDRECT* PEMRROUNDRECT;
 
 struct EMRSCALEVIEWPORTEXTEX
 {
-	EMR emr;
-	LONG xNum;
-	LONG xDenom;
-	LONG yNum;
-	LONG yDenom;
+    EMR emr;
+    LONG xNum;
+    LONG xDenom;
+    LONG yNum;
+    LONG yDenom;
 }
 
 alias EMRSCALEVIEWPORTEXTEX TAGEMRSCALEVIEWPORTEXTEX;
@@ -8793,8 +8881,8 @@ alias EMRSCALEVIEWPORTEXTEX* PEMRSCALEWINDOWEXTEX;
 
 struct EMRSELECTCOLORSPACE
 {
-	EMR emr;
-	DWORD ihCS;
+    EMR emr;
+    DWORD ihCS;
 }
 
 alias EMRSELECTCOLORSPACE TAGEMRSELECTCOLORSPACE;
@@ -8806,8 +8894,8 @@ alias EMRSELECTCOLORSPACE* PEMRDELETECOLORSPACE;
 
 struct EMRSELECTOBJECT
 {
-	EMR emr;
-	DWORD ihObject;
+    EMR emr;
+    DWORD ihObject;
 }
 
 alias EMRSELECTOBJECT TAGEMRSELECTOBJECT;
@@ -8819,8 +8907,8 @@ alias EMRSELECTOBJECT* PEMRDELETEOBJECT;
 
 struct EMRSELECTPALETTE
 {
-	EMR emr;
-	DWORD ihPal;
+    EMR emr;
+    DWORD ihPal;
 }
 
 alias EMRSELECTPALETTE TAGEMRSELECTPALETTE;
@@ -8829,8 +8917,8 @@ alias EMRSELECTPALETTE* PEMRSELECTPALETTE;
 
 struct EMRSETARCDIRECTION
 {
-	EMR emr;
-	DWORD iArcDirection;
+    EMR emr;
+    DWORD iArcDirection;
 }
 
 alias EMRSETARCDIRECTION TAGEMRSETARCDIRECTION;
@@ -8839,8 +8927,8 @@ alias EMRSETARCDIRECTION* PEMRSETARCDIRECTION;
 
 struct EMRSETBKCOLOR
 {
-	EMR emr;
-	COLORREF crColor;
+    EMR emr;
+    COLORREF crColor;
 }
 
 alias EMRSETBKCOLOR TAGEMRSETTEXTCOLOR;
@@ -8852,8 +8940,8 @@ alias EMRSETBKCOLOR* PEMRSETTEXTCOLOR;
 
 struct EMRSETCOLORADJUSTMENT
 {
-	EMR emr;
-	COLORADJUSTMENT ColorAdjustment;
+    EMR emr;
+    COLORADJUSTMENT ColorAdjustment;
 }
 
 alias EMRSETCOLORADJUSTMENT TAGEMRSETCOLORADJUSTMENT;
@@ -8862,21 +8950,21 @@ alias EMRSETCOLORADJUSTMENT* PEMRSETCOLORADJUSTMENT;
 
 struct EMRSETDIBITSTODEVICE
 {
-	EMR emr;
-	RECTL rclBounds;
-	LONG xDest;
-	LONG yDest;
-	LONG xSrc;
-	LONG ySrc;
-	LONG cxSrc;
-	LONG cySrc;
-	DWORD offBmiSrc;
-	DWORD cbBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
-	DWORD iUsageSrc;
-	DWORD iStartScan;
-	DWORD cScans;
+    EMR emr;
+    RECTL rclBounds;
+    LONG xDest;
+    LONG yDest;
+    LONG xSrc;
+    LONG ySrc;
+    LONG cxSrc;
+    LONG cySrc;
+    DWORD offBmiSrc;
+    DWORD cbBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
+    DWORD iUsageSrc;
+    DWORD iStartScan;
+    DWORD cScans;
 }
 
 alias EMRSETDIBITSTODEVICE TAGEMRSETDIBITSTODEVICE;
@@ -8885,8 +8973,8 @@ alias EMRSETDIBITSTODEVICE* PEMRSETDIBITSTODEVICE;
 
 struct EMRSETMAPPERFLAGS
 {
-	EMR emr;
-	DWORD dwFlags;
+    EMR emr;
+    DWORD dwFlags;
 }
 
 alias EMRSETMAPPERFLAGS TAGEMRSETMAPPERFLAGS;
@@ -8895,8 +8983,8 @@ alias EMRSETMAPPERFLAGS* PEMRSETMAPPERFLAGS;
 
 struct EMRSETMITERLIMIT
 {
-	EMR emr;
-	FLOAT eMiterLimit;
+    EMR emr;
+    FLOAT eMiterLimit;
 }
 
 alias EMRSETMITERLIMIT TAGEMRSETMITERLIMIT;
@@ -8905,11 +8993,11 @@ alias EMRSETMITERLIMIT* PEMRSETMITERLIMIT;
 
 struct EMRSETPALETTEENTRIES
 {
-	EMR emr;
-	DWORD ihPal;
-	DWORD iStart;
-	DWORD cEntries;
-	PALETTEENTRY[1 + 0] aPalEntries;
+    EMR emr;
+    DWORD ihPal;
+    DWORD iStart;
+    DWORD cEntries;
+    PALETTEENTRY[1 + 0] aPalEntries;
 }
 
 alias EMRSETPALETTEENTRIES TAGEMRSETPALETTEENTRIES;
@@ -8918,9 +9006,9 @@ alias EMRSETPALETTEENTRIES* PEMRSETPALETTEENTRIES;
 
 struct EMRSETPIXELV
 {
-	EMR emr;
-	POINTL ptlPixel;
-	COLORREF crColor;
+    EMR emr;
+    POINTL ptlPixel;
+    COLORREF crColor;
 }
 
 alias EMRSETPIXELV TAGEMRSETPIXELV;
@@ -8929,8 +9017,8 @@ alias EMRSETPIXELV* PEMRSETPIXELV;
 
 struct EMRSETVIEWPORTEXTEX
 {
-	EMR emr;
-	SIZEL szlExtent;
+    EMR emr;
+    SIZEL szlExtent;
 }
 
 alias EMRSETVIEWPORTEXTEX TAGEMRSETVIEWPORTEXTEX;
@@ -8942,8 +9030,8 @@ alias EMRSETVIEWPORTEXTEX* PEMRSETWINDOWEXTEX;
 
 struct EMRSETVIEWPORTORGEX
 {
-	EMR emr;
-	POINTL ptlOrigin;
+    EMR emr;
+    POINTL ptlOrigin;
 }
 
 alias EMRSETVIEWPORTORGEX TAGEMRSETVIEWPORTORGEX;
@@ -8958,8 +9046,8 @@ alias EMRSETVIEWPORTORGEX* PEMRSETBRUSHORGEX;
 
 struct EMRSETWORLDTRANSFORM
 {
-	EMR emr;
-	XFORM xform;
+    EMR emr;
+    XFORM xform;
 }
 
 alias EMRSETWORLDTRANSFORM TAGEMRSETWORLDTRANSFORM;
@@ -8968,24 +9056,24 @@ alias EMRSETWORLDTRANSFORM* PEMRSETWORLDTRANSFORM;
 
 struct EMRSTRETCHBLT
 {
-	EMR emr;
-	RECTL rclBounds;
-	LONG xDest;
-	LONG yDest;
-	LONG cxDest;
-	LONG cyDest;
-	DWORD dwRop;
-	LONG xSrc;
-	LONG ySrc;
-	XFORM xformSrc;
-	COLORREF crBkColorSrc;
-	DWORD iUsageSrc;
-	DWORD offBmiSrc;
-	DWORD cbBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
-	LONG cxSrc;
-	LONG cySrc;
+    EMR emr;
+    RECTL rclBounds;
+    LONG xDest;
+    LONG yDest;
+    LONG cxDest;
+    LONG cyDest;
+    DWORD dwRop;
+    LONG xSrc;
+    LONG ySrc;
+    XFORM xformSrc;
+    COLORREF crBkColorSrc;
+    DWORD iUsageSrc;
+    DWORD offBmiSrc;
+    DWORD cbBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
+    LONG cxSrc;
+    LONG cySrc;
 }
 
 alias EMRSTRETCHBLT TAGEMRSTRETCHBLT;
@@ -8994,22 +9082,22 @@ alias EMRSTRETCHBLT* PEMRSTRETCHBLT;
 
 struct EMRSTRETCHDIBITS
 {
-	EMR emr;
-	RECTL rclBounds;
-	LONG xDest;
-	LONG yDest;
-	LONG xSrc;
-	LONG ySrc;
-	LONG cxSrc;
-	LONG cySrc;
-	DWORD offBmiSrc;
-	DWORD cbBmiSrc;
-	DWORD offBitsSrc;
-	DWORD cbBitsSrc;
-	DWORD iUsageSrc;
-	DWORD dwRop;
-	LONG cxDest;
-	LONG cyDest;
+    EMR emr;
+    RECTL rclBounds;
+    LONG xDest;
+    LONG yDest;
+    LONG xSrc;
+    LONG ySrc;
+    LONG cxSrc;
+    LONG cySrc;
+    DWORD offBmiSrc;
+    DWORD cbBmiSrc;
+    DWORD offBitsSrc;
+    DWORD cbBitsSrc;
+    DWORD iUsageSrc;
+    DWORD dwRop;
+    LONG cxDest;
+    LONG cyDest;
 }
 
 alias EMRSTRETCHDIBITS TAGEMRSTRETCHDIBITS;
@@ -9018,7 +9106,7 @@ alias EMRSTRETCHDIBITS* PEMRSTRETCHDIBITS;
 
 struct EMRABORTPATH
 {
-	EMR emr;
+    EMR emr;
 }
 
 alias EMRABORTPATH TEMRABORTPATH;
@@ -9052,8 +9140,8 @@ alias EMRABORTPATH* PEMRREALIZEPALETTE;
 
 struct EMRSELECTCLIPPATH
 {
-	EMR emr;
-	DWORD iMode;
+    EMR emr;
+    DWORD iMode;
 }
 
 alias EMRSELECTCLIPPATH TAGEMRSELECTCLIPPATH;
@@ -9083,9 +9171,9 @@ alias EMRSELECTCLIPPATH* PEMRENABLEICM;
 
 struct NMHDR
 {
-	HWND hwndFrom;
-	UINT idFrom;
-	UINT code;
+    HWND hwndFrom;
+    UINT idFrom;
+    UINT code;
 }
 
 alias NMHDR TAGNMHDR;
@@ -9094,9 +9182,9 @@ alias NMHDR* PNMHDR;
 
 struct ENCORRECTTEXT
 {
-	NMHDR nmhdr;
-	CHARRANGE chrg;
-	ushort seltyp;
+    NMHDR nmhdr;
+    CHARRANGE chrg;
+    ushort seltyp;
 }
 
 alias ENCORRECTTEXT _ENCORRECTTEXT;
@@ -9105,10 +9193,10 @@ alias ENCORRECTTEXT* PENCORRECTTEXT;
 
 struct ENDROPFILES
 {
-	NMHDR nmhdr;
-	HANDLE hDrop;
-	LONG cp;
-	WINBOOL fProtected;
+    NMHDR nmhdr;
+    HANDLE hDrop;
+    LONG cp;
+    WINBOOL fProtected;
 }
 
 alias ENDROPFILES _ENDROPFILES;
@@ -9117,9 +9205,9 @@ alias ENDROPFILES* PENDROPFILES;
 
 struct ENSAVECLIPBOARD
 {
-	NMHDR nmhdr;
-	LONG cObjectCount;
-	LONG cch;
+    NMHDR nmhdr;
+    LONG cObjectCount;
+    LONG cch;
 }
 
 alias ENSAVECLIPBOARD TENSAVECLIPBOARD;
@@ -9127,10 +9215,10 @@ alias ENSAVECLIPBOARD* PENSAVECLIPBOARD;
 
 struct ENOLEOPFAILED
 {
-	NMHDR nmhdr;
-	LONG iob;
-	LONG lOper;
-	HRESULT hr;
+    NMHDR nmhdr;
+    LONG iob;
+    LONG lOper;
+    HRESULT hr;
 }
 
 alias ENOLEOPFAILED TENOLEOPFAILED;
@@ -9138,21 +9226,21 @@ alias ENOLEOPFAILED* PENOLEOPFAILED;
 
 struct ENHMETAHEADER
 {
-	DWORD iType;
-	DWORD nSize;
-	RECTL rclBounds;
-	RECTL rclFrame;
-	DWORD dSignature;
-	DWORD nVersion;
-	DWORD nBytes;
-	DWORD nRecords;
-	ushort nHandles;
-	ushort sReserved;
-	DWORD nDescription;
-	DWORD offDescription;
-	DWORD nPalEntries;
-	SIZEL szlDevice;
-	SIZEL szlMillimeters;
+    DWORD iType;
+    DWORD nSize;
+    RECTL rclBounds;
+    RECTL rclFrame;
+    DWORD dSignature;
+    DWORD nVersion;
+    DWORD nBytes;
+    DWORD nRecords;
+    ushort nHandles;
+    ushort sReserved;
+    DWORD nDescription;
+    DWORD offDescription;
+    DWORD nPalEntries;
+    SIZEL szlDevice;
+    SIZEL szlMillimeters;
 }
 
 alias ENHMETAHEADER* LPENHMETAHEADER;
@@ -9162,9 +9250,9 @@ alias ENHMETAHEADER* PENHMETAHEADER;
 
 struct ENHMETARECORD
 {
-	DWORD iType;
-	DWORD nSize;
-	DWORD[1 + 0] dParm;
+    DWORD iType;
+    DWORD nSize;
+    DWORD[1 + 0] dParm;
 }
 
 alias ENHMETARECORD* LPENHMETARECORD;
@@ -9174,11 +9262,11 @@ alias ENHMETARECORD* PENHMETARECORD;
 
 struct ENPROTECTED
 {
-	NMHDR nmhdr;
-	UINT msg;
-	WPARAM wParam;
-	LPARAM lParam;
-	CHARRANGE chrg;
+    NMHDR nmhdr;
+    UINT msg;
+    WPARAM wParam;
+    LPARAM lParam;
+    CHARRANGE chrg;
 }
 
 alias ENPROTECTED _ENPROTECTED;
@@ -9187,13 +9275,13 @@ alias ENPROTECTED* PENPROTECTED;
 
 struct SERVICE_STATUS
 {
-	DWORD dwServiceType;
-	DWORD dwCurrentState;
-	DWORD dwControlsAccepted;
-	DWORD dwWin32ExitCode;
-	DWORD dwServiceSpecificExitCode;
-	DWORD dwCheckPoint;
-	DWORD dwWaitHint;
+    DWORD dwServiceType;
+    DWORD dwCurrentState;
+    DWORD dwControlsAccepted;
+    DWORD dwWin32ExitCode;
+    DWORD dwServiceSpecificExitCode;
+    DWORD dwCheckPoint;
+    DWORD dwWaitHint;
 }
 
 alias SERVICE_STATUS* LPSERVICE_STATUS;
@@ -9203,9 +9291,9 @@ alias SERVICE_STATUS* PSERVICESTATUS;
 
 struct ENUM_SERVICE_STATUS
 {
-	LPTSTR lpServiceName;
-	LPTSTR lpDisplayName;
-	SERVICE_STATUS ServiceStatus;
+    LPTSTR lpServiceName;
+    LPTSTR lpDisplayName;
+    SERVICE_STATUS ServiceStatus;
 }
 
 alias ENUM_SERVICE_STATUS* LPENUM_SERVICE_STATUS;
@@ -9213,47 +9301,60 @@ alias ENUM_SERVICE_STATUS _ENUM_SERVICE_STATUS;
 alias ENUM_SERVICE_STATUS TENUMSERVICESTATUS;
 alias ENUM_SERVICE_STATUS* PENUMSERVICESTATUS;
 
-struct ENUMLOGFONT
-{
-	LOGFONT elfLogFont;
-	BCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
-	BCHAR[1 + LF_FACESIZE-1] elfStyle;
+struct ENUMLOGFONTA {
+  LOGFONTA elfLogFont;
+  BYTE     elfFullName[LF_FULLFACESIZE];
+  BYTE     elfStyle[LF_FACESIZE];
 }
-
+struct ENUMLOGFONTW {
+  LOGFONTW elfLogFont;
+  WCHAR   elfFullName[LF_FULLFACESIZE];
+  WCHAR   elfStyle[LF_FACESIZE];
+}
+struct ENUMLOGFONTEXA {
+    LOGFONTA  elfLogFont;
+    BYTE  elfFullName[LF_FULLFACESIZE];
+    BYTE  elfStyle[LF_FACESIZE];
+    BYTE  elfScript[LF_FACESIZE];
+}
+struct ENUMLOGFONTEXW {
+    LOGFONTW  elfLogFont;
+    WCHAR  elfFullName[LF_FULLFACESIZE];
+    WCHAR  elfStyle[LF_FACESIZE];
+    WCHAR  elfScript[LF_FACESIZE];
+}
+version(Win32SansUnicode){
+    alias ENUMLOGFONTA ENUMLOGFONT;
+    alias ENUMLOGFONTEXA ENUMLOGFONTEX;
+}else {
+    alias ENUMLOGFONTW ENUMLOGFONT;
+    alias ENUMLOGFONTEXW ENUMLOGFONTEX;
+}
 alias ENUMLOGFONT TAGENUMLOGFONT;
 alias ENUMLOGFONT TENUMLOGFONT;
 alias ENUMLOGFONT* PENUMLOGFONT;
-
-struct ENUMLOGFONTEX
-{
-	LOGFONT elfLogFont;
-	BCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
-	BCHAR[1 + LF_FACESIZE-1] elfStyle;
-	BCHAR[1 + LF_FACESIZE-1] elfScript;
-}
-
 alias ENUMLOGFONTEX TAGENUMLOGFONTEX;
 alias ENUMLOGFONTEX TENUMLOGFONTEX;
 alias ENUMLOGFONTEX* PENUMLOGFONTEX;
 
 struct EVENTLOGRECORD
 {
-	DWORD Length;
-	DWORD Reserved;
-	DWORD RecordNumber;
-	DWORD TimeGenerated;
-	DWORD TimeWritten;
-	DWORD EventID;
-	ushort EventType;
-	ushort NumStrings;
-	ushort EventCategory;
-	ushort ReservedFlags;
-	DWORD ClosingRecordNumber;
-	DWORD StringOffset;
-	DWORD UserSidLength;
-	DWORD UserSidOffset;
-	DWORD DataLength;
-	DWORD DataOffset;
+    DWORD Length;
+    DWORD Reserved;
+    DWORD RecordNumber;
+    DWORD TimeGenerated;
+    DWORD TimeWritten;
+    DWORD EventID;
+    ushort EventType;
+    ushort NumStrings;
+    ushort EventCategory;
+    ushort ReservedFlags;
+    DWORD ClosingRecordNumber;
+    DWORD StringOffset;
+    DWORD UserSidLength;
+    DWORD UserSidOffset;
+    DWORD DataLength;
+    DWORD DataOffset;
 }
 
 alias EVENTLOGRECORD _EVENTLOGRECORD;
@@ -9262,11 +9363,11 @@ alias EVENTLOGRECORD* PEVENTLOGRECORD;
 
 struct EVENTMSG
 {
-	UINT message;
-	UINT paramL;
-	UINT paramH;
-	DWORD time;
-	HWND hwnd;
+    UINT message;
+    UINT paramL;
+    UINT paramH;
+    DWORD time;
+    HWND hwnd;
 }
 
 alias EVENTMSG TAGEVENTMSG;
@@ -9275,8 +9376,8 @@ alias EVENTMSG* PEVENTMSG;
 
 struct EXCEPTION_POINTERS
 {
-	PEXCEPTION_RECORD ExceptionRecord;
-	PCONTEXT ContextRecord;
+    PEXCEPTION_RECORD ExceptionRecord;
+    PCONTEXT ContextRecord;
 }
 
 alias EXCEPTION_POINTERS* LPEXCEPTION_POINTERS;
@@ -9287,9 +9388,9 @@ alias EXCEPTION_POINTERS* PEXCEPTIONPOINTERS;
 
 struct EXT_BUTTON
 {
-	ushort idCommand;
-	ushort idsHelp;
-	ushort fsStyle;
+    ushort idCommand;
+    ushort idsHelp;
+    ushort fsStyle;
 }
 
 alias EXT_BUTTON* LPEXT_BUTTON;
@@ -9299,12 +9400,12 @@ alias EXT_BUTTON* PEXTBUTTON;
 
 struct FILTERKEYS
 {
-	UINT cbSize;
-	DWORD dwFlags;
-	DWORD iWaitMSec;
-	DWORD iDelayMSec;
-	DWORD iRepeatMSec;
-	DWORD iBounceMSec;
+    UINT cbSize;
+    DWORD dwFlags;
+    DWORD iWaitMSec;
+    DWORD iDelayMSec;
+    DWORD iRepeatMSec;
+    DWORD iBounceMSec;
 }
 
 alias FILTERKEYS TAGFILTERKEYS;
@@ -9313,12 +9414,12 @@ alias FILTERKEYS* PFILTERKEYS;
 
 struct FIND_NAME_BUFFER
 {
-	UCHAR length;
-	UCHAR access_control;
-	UCHAR frame_control;
-	UCHAR[1 + 5] destination_addr;
-	UCHAR[1 + 5] source_addr;
-	UCHAR[1 + 17] routing_info;
+    UCHAR length;
+    UCHAR access_control;
+    UCHAR frame_control;
+    UCHAR[1 + 5] destination_addr;
+    UCHAR[1 + 5] source_addr;
+    UCHAR[1 + 17] routing_info;
 }
 
 alias FIND_NAME_BUFFER _FIND_NAME_BUFFER;
@@ -9327,9 +9428,9 @@ alias FIND_NAME_BUFFER* PFINDNAMEBUFFER;
 
 struct FIND_NAME_HEADER
 {
-	ushort node_count;
-	UCHAR reserved;
-	UCHAR unique_group;
+    ushort node_count;
+    UCHAR reserved;
+    UCHAR unique_group;
 }
 
 alias FIND_NAME_HEADER _FIND_NAME_HEADER;
@@ -9338,17 +9439,17 @@ alias FIND_NAME_HEADER* PFINDNAMEHEADER;
 
 struct FINDREPLACE
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HINST hInstance;
-	DWORD Flags;
-	LPTSTR lpstrFindWhat;
-	LPTSTR lpstrReplaceWith;
-	ushort wFindWhatLen;
-	ushort wReplaceWithLen;
-	LPARAM lCustData;
-	LPFRHOOKPROC lpfnHook;
-	LPCTSTR lpTemplateName;
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINST hInstance;
+    DWORD Flags;
+    LPTSTR lpstrFindWhat;
+    LPTSTR lpstrReplaceWith;
+    ushort wFindWhatLen;
+    ushort wReplaceWithLen;
+    LPARAM lCustData;
+    LPFRHOOKPROC lpfnHook;
+    LPCTSTR lpTemplateName;
 }
 
 alias FINDREPLACE* LPFINDREPLACE;
@@ -9357,8 +9458,8 @@ alias FINDREPLACE* PFINDREPLACE;
 
 struct TFINDTEXT
 {
-	CHARRANGE chrg;
-	LPSTR lpstrText;
+    CHARRANGE chrg;
+    LPSTR lpstrText;
 }
 
 alias TFINDTEXT _FINDTEXT;
@@ -9366,9 +9467,9 @@ alias TFINDTEXT* PFINDTEXT;
 
 struct FINDTEXTEX
 {
-	CHARRANGE chrg;
-	LPSTR lpstrText;
-	CHARRANGE chrgText;
+    CHARRANGE chrg;
+    LPSTR lpstrText;
+    CHARRANGE chrgText;
 }
 
 alias FINDTEXTEX _FINDTEXTEX;
@@ -9377,11 +9478,11 @@ alias FINDTEXTEX* PFINDTEXTEX;
 
 struct FMS_GETDRIVEINFO
 {
-	DWORD dwTotalSpace;
-	DWORD dwFreeSpace;
-	TCHAR[1 + 259] szPath;
-	TCHAR[1 + 13] szVolume;
-	TCHAR[1 + 127] szShare;
+    DWORD dwTotalSpace;
+    DWORD dwFreeSpace;
+    TCHAR[1 + 259] szPath;
+    TCHAR[1 + 13] szVolume;
+    TCHAR[1 + 127] szShare;
 }
 
 alias FMS_GETDRIVEINFO _FMS_GETDRIVEINFO;
@@ -9390,10 +9491,10 @@ alias FMS_GETDRIVEINFO* PFMSGETDRIVEINFO;
 
 struct FMS_GETFILESEL
 {
-	FILETIME ftTime;
-	DWORD dwSize;
-	ubyte bAttr;
-	TCHAR[1 + 259] szName;
+    FILETIME ftTime;
+    DWORD dwSize;
+    ubyte bAttr;
+    TCHAR[1 + 259] szName;
 }
 
 alias FMS_GETFILESEL _FMS_GETFILESEL;
@@ -9402,10 +9503,10 @@ alias FMS_GETFILESEL* PFMSGETFILESEL;
 
 struct FMS_LOAD
 {
-	DWORD dwSize;
-	TCHAR[1 + MENU_TEXT_LEN-1] szMenuName;
-	HMENU hMenu;
-	UINT wMenuDelta;
+    DWORD dwSize;
+    TCHAR[1 + MENU_TEXT_LEN-1] szMenuName;
+    HMENU hMenu;
+    UINT wMenuDelta;
 }
 
 alias FMS_LOAD _FMS_LOAD;
@@ -9414,12 +9515,12 @@ alias FMS_LOAD* PFMSLOAD;
 
 struct FMS_TOOLBARLOAD
 {
-	DWORD dwSize;
-	LPEXT_BUTTON lpButtons;
-	ushort cButtons;
-	ushort cBitmaps;
-	ushort idBitmap;
-	HBITMAP hBitmap;
+    DWORD dwSize;
+    LPEXT_BUTTON lpButtons;
+    ushort cButtons;
+    ushort cBitmaps;
+    ushort idBitmap;
+    HBITMAP hBitmap;
 }
 
 alias FMS_TOOLBARLOAD _FMS_TOOLBARLOAD;
@@ -9428,7 +9529,7 @@ alias FMS_TOOLBARLOAD* PFMSTOOLBARLOAD;
 
 struct FOCUS_EVENT_RECORD
 {
-	WINBOOL bSetFocus;
+    WINBOOL bSetFocus;
 }
 
 alias FOCUS_EVENT_RECORD _FOCUS_EVENT_RECORD;
@@ -9437,10 +9538,10 @@ alias FOCUS_EVENT_RECORD* PFOCUSEVENTRECORD;
 
 struct FORM_INFO_1
 {
-	DWORD Flags;
-	LPTSTR pName;
-	SIZEL Size;
-	RECTL ImageableArea;
+    DWORD Flags;
+    LPTSTR pName;
+    SIZEL Size;
+    RECTL ImageableArea;
 }
 
 alias FORM_INFO_1 _FORM_INFO_1;
@@ -9449,11 +9550,11 @@ alias FORM_INFO_1* PFORMINFO1;
 
 struct FORMAT_PARAMETERS
 {
-	MEDIA_TYPE MediaType;
-	DWORD StartCylinderNumber;
-	DWORD EndCylinderNumber;
-	DWORD StartHeadNumber;
-	DWORD EndHeadNumber;
+    MEDIA_TYPE MediaType;
+    DWORD StartCylinderNumber;
+    DWORD EndCylinderNumber;
+    DWORD StartHeadNumber;
+    DWORD EndHeadNumber;
 }
 
 alias FORMAT_PARAMETERS _FORMAT_PARAMETERS;
@@ -9462,30 +9563,50 @@ alias FORMAT_PARAMETERS* PFORMATPARAMETERS;
 
 struct FORMATRANGE
 {
-	HDC _hdc;
-	HDC hdcTarget;
-	RECT rc;
-	RECT rcPage;
-	CHARRANGE chrg;
+    HDC _hdc;
+    HDC hdcTarget;
+    RECT rc;
+    RECT rcPage;
+    CHARRANGE chrg;
 }
 
 alias FORMATRANGE _FORMATRANGE;
 alias FORMATRANGE TFORMATRANGE;
 alias FORMATRANGE* PFORMATRANGE;
 
-struct GCP_RESULTS
+struct GCP_RESULTSA
 {
-	DWORD lStructSize;
-	LPTSTR lpOutString;
-	UINT* lpOrder;
-	INT* lpDx;
-	INT* lpCaretPos;
-	LPTSTR lpClass;
-	UINT* lpGlyphs;
-	UINT nGlyphs;
-	UINT nMaxFit;
+    DWORD   lStructSize;
+    LPSTR   lpOutString;
+    UINT  * lpOrder;
+    int   * lpDx;
+    int   * lpCaretPos;
+    LPSTR   lpClass;
+    LPWSTR  lpGlyphs;
+    UINT    nGlyphs;
+    int     nMaxFit;
 }
 
+struct GCP_RESULTSW
+{
+    DWORD   lStructSize;
+    LPWSTR  lpOutString;
+    UINT  * lpOrder;
+    int   * lpDx;
+    int   * lpCaretPos;
+    LPSTR   lpClass;
+    LPWSTR  lpGlyphs;
+    UINT    nGlyphs;
+    int     nMaxFit;
+}
+version(Win32SansUnicode)
+{
+    alias GCP_RESULTSA GCP_RESULTS;
+}
+else
+{
+    alias GCP_RESULTSW GCP_RESULTS;
+}
 alias GCP_RESULTS* LPGCP_RESULTS;
 alias GCP_RESULTS TAGGCP_RESULTS;
 alias GCP_RESULTS TGCPRESULTS;
@@ -9493,10 +9614,10 @@ alias GCP_RESULTS* PGCPRESULTS;
 
 struct GENERIC_MAPPING
 {
-	ACCESS_MASK GenericRead;
-	ACCESS_MASK GenericWrite;
-	ACCESS_MASK GenericExecute;
-	ACCESS_MASK GenericAll;
+    ACCESS_MASK GenericRead;
+    ACCESS_MASK GenericWrite;
+    ACCESS_MASK GenericExecute;
+    ACCESS_MASK GenericAll;
 }
 
 alias GENERIC_MAPPING* PGENERIC_MAPPING;
@@ -9506,11 +9627,11 @@ alias GENERIC_MAPPING* PGENERICMAPPING;
 
 struct GLYPHMETRICS
 {
-	UINT gmBlackBoxX;
-	UINT gmBlackBoxY;
-	POINT gmptGlyphOrigin;
-	int gmCellIncX;
-	int gmCellIncY;
+    UINT gmBlackBoxX;
+    UINT gmBlackBoxY;
+    POINT gmptGlyphOrigin;
+    int gmCellIncX;
+    int gmCellIncY;
 }
 
 alias GLYPHMETRICS* LPGLYPHMETRICS;
@@ -9520,7 +9641,7 @@ alias GLYPHMETRICS* PGLYPHMETRICS;
 
 struct HANDLETABLE
 {
-	HGDIOBJ[1 + 0] objectHandle;
+    HGDIOBJ[1 + 0] objectHandle;
 }
 
 alias HANDLETABLE TAGHANDLETABLE;
@@ -9529,24 +9650,25 @@ alias HANDLETABLE* LPHANDLETABLE;
 
 struct HD_HITTESTINFO
 {
-	POINT pt;
-	UINT flags;
-	int iItem;
+    POINT pt;
+    UINT flags;
+    int iItem;
 }
 
 alias HD_HITTESTINFO _HD_HITTESTINFO;
 alias HD_HITTESTINFO THDHITTESTINFO;
+alias HD_HITTESTINFO  HDHITTESTINFO;
 alias HD_HITTESTINFO* PHDHITTESTINFO;
 
 struct HD_ITEM
 {
-	UINT mask;
-	int cxy;
-	LPTSTR pszText;
-	HBITMAP hbm;
-	int cchTextMax;
-	int fmt;
-	LPARAM lParam;
+    UINT mask;
+    int cxy;
+    LPTSTR pszText;
+    HBITMAP hbm;
+    int cchTextMax;
+    int fmt;
+    LPARAM lParam;
 }
 
 alias HD_ITEM _HD_ITEM;
@@ -9555,13 +9677,13 @@ alias HD_ITEM* PHDITEM;
 
 struct WINDOWPOS
 {
-	HWND _hwnd;
-	HWND hwndInsertAfter;
-	int x;
-	int y;
-	int cx;
-	int cy;
-	UINT flags;
+    HWND _hwnd;
+    HWND hwndInsertAfter;
+    int x;
+    int y;
+    int cx;
+    int cy;
+    UINT flags;
 }
 
 alias WINDOWPOS* LPWINDOWPOS;
@@ -9571,20 +9693,21 @@ alias WINDOWPOS* PWINDOWPOS;
 
 struct HD_LAYOUT
 {
-	RECT* prc;
-	WINDOWPOS* pwpos;
+    RECT* prc;
+    WINDOWPOS* pwpos;
 }
 
 alias HD_LAYOUT _HD_LAYOUT;
 alias HD_LAYOUT THDLAYOUT;
+alias HD_LAYOUT  HDLAYOUT;
 alias HD_LAYOUT* PHDLAYOUT;
 
 struct HD_NOTIFY
 {
-	NMHDR hdr;
-	int iItem;
-	int iButton;
-	HD_ITEM* pitem;
+    NMHDR hdr;
+    int iItem;
+    int iButton;
+    HD_ITEM* pitem;
 }
 
 alias HD_NOTIFY _HD_NOTIFY;
@@ -9593,12 +9716,12 @@ alias HD_NOTIFY* PHDNOTIFY;
 
 struct HELPINFO
 {
-	UINT cbSize;
-	int iContextType;
-	int iCtrlId;
-	HANDLE hItemHandle;
-	DWORD dwContextId;
-	POINT MousePos;
+    UINT cbSize;
+    int iContextType;
+    int iCtrlId;
+    HANDLE hItemHandle;
+    DWORD dwContextId;
+    POINT MousePos;
 }
 
 alias HELPINFO* LPHELPINFO;
@@ -9608,25 +9731,38 @@ alias HELPINFO* PHELPINFO;
 
 struct HELPWININFO
 {
-	int wStructSize;
-	int x;
-	int y;
-	int dx;
-	int dy;
-	int wMax;
-	TCHAR[1 + 1] rgchMember;
+    int wStructSize;
+    int x;
+    int y;
+    int dx;
+    int dy;
+    int wMax;
+    TCHAR[1 + 1] rgchMember;
 }
 
 alias HELPWININFO THELPWININFO;
 alias HELPWININFO* PHELPWININFO;
 
-struct HIGHCONTRAST
+struct HIGHCONTRASTA
 {
-	UINT cbSize;
-	DWORD dwFlags;
-	LPTSTR lpszDefaultScheme;
+    UINT             cbSize;
+    DWORD            dwFlags;
+    LPSTR            lpszDefaultScheme;
 }
-
+struct HIGHCONTRASTW
+{
+    UINT             cbSize;
+    DWORD            dwFlags;
+    LPWSTR           lpszDefaultScheme;
+}
+version(Win32SansUnicode)
+{
+    alias HIGHCONTRASTA HIGHCONTRAST;
+}
+else
+{
+    alias HIGHCONTRASTW HIGHCONTRAST;
+}
 alias HIGHCONTRAST* LPHIGHCONTRAST;
 alias HIGHCONTRAST TAGHIGHCONTRAST;
 alias HIGHCONTRAST THIGHCONTRAST;
@@ -9634,8 +9770,8 @@ alias HIGHCONTRAST* PHIGHCONTRAST;
 
 struct HSZPAIR
 {
-	HSZ hszSvc;
-	HSZ hszTopic;
+    HSZ hszSvc;
+    HSZ hszTopic;
 }
 
 alias HSZPAIR TAGHSZPAIR;
@@ -9644,11 +9780,11 @@ alias HSZPAIR* PHSZPAIR;
 
 struct ICONINFO
 {
-	WINBOOL fIcon;
-	DWORD xHotspot;
-	DWORD yHotspot;
-	HBITMAP hbmMask;
-	HBITMAP hbmColor;
+    WINBOOL fIcon;
+    DWORD xHotspot;
+    DWORD yHotspot;
+    HBITMAP hbmMask;
+    HBITMAP hbmColor;
 }
 
 alias ICONINFO _ICONINFO;
@@ -9657,11 +9793,11 @@ alias ICONINFO* PICONINFO;
 
 struct ICONMETRICS
 {
-	UINT cbSize;
-	int iHorzSpacing;
-	int iVertSpacing;
-	int iTitleWrap;
-	LOGFONT lfFont;
+    UINT cbSize;
+    int iHorzSpacing;
+    int iVertSpacing;
+    int iTitleWrap;
+    LOGFONT lfFont;
 }
 
 alias ICONMETRICS* LPICONMETRICS;
@@ -9671,11 +9807,11 @@ alias ICONMETRICS* PICONMETRICS;
 
 struct IMAGEINFO
 {
-	HBITMAP hbmImage;
-	HBITMAP hbmMask;
-	int Unused1;
-	int Unused2;
-	RECT rcImage;
+    HBITMAP hbmImage;
+    HBITMAP hbmMask;
+    int Unused1;
+    int Unused2;
+    RECT rcImage;
 }
 
 alias IMAGEINFO _IMAGEINFO;
@@ -9684,23 +9820,23 @@ alias IMAGEINFO* PIMAGEINFO;
 
 align(1) struct KEY_EVENT_RECORD
 {
-	WINBOOL bKeyDown;
-	ushort wRepeatCount;
-	ushort wVirtualKeyCode;
-	ushort wVirtualScanCode;
+    WINBOOL bKeyDown;
+    ushort wRepeatCount;
+    ushort wVirtualKeyCode;
+    ushort wVirtualScanCode;
 
-	union
-	{
-		struct
-		{
-			WCHAR UnicodeChar;
-			DWORD dwControlKeyState;
-		}
-		struct
-		{
-			char AsciiChar;
-		}
-	}
+    union
+    {
+        struct
+        {
+            WCHAR UnicodeChar;
+            DWORD dwControlKeyState;
+        }
+        struct
+        {
+            char AsciiChar;
+        }
+    }
 }
 
 alias KEY_EVENT_RECORD _KEY_EVENT_RECORD;
@@ -9709,10 +9845,10 @@ alias KEY_EVENT_RECORD* PKEYEVENTRECORD;
 
 struct MOUSE_EVENT_RECORD
 {
-	COORD dwMousePosition;
-	DWORD dwButtonState;
-	DWORD dwControlKeyState;
-	DWORD dwEventFlags;
+    COORD dwMousePosition;
+    DWORD dwButtonState;
+    DWORD dwControlKeyState;
+    DWORD dwEventFlags;
 }
 
 alias MOUSE_EVENT_RECORD _MOUSE_EVENT_RECORD;
@@ -9721,7 +9857,7 @@ alias MOUSE_EVENT_RECORD* PMOUSEEVENTRECORD;
 
 struct WINDOW_BUFFER_SIZE_RECORD
 {
-	COORD dwSize;
+    COORD dwSize;
 }
 
 alias WINDOW_BUFFER_SIZE_RECORD _WINDOW_BUFFER_SIZE_RECORD;
@@ -9730,7 +9866,7 @@ alias WINDOW_BUFFER_SIZE_RECORD* PWINDOWBUFFERSIZERECORD;
 
 struct MENU_EVENT_RECORD
 {
-	UINT dwCommandId;
+    UINT dwCommandId;
 }
 
 alias MENU_EVENT_RECORD* PMENU_EVENT_RECORD;
@@ -9740,31 +9876,31 @@ alias MENU_EVENT_RECORD* PMENUEVENTRECORD;
 
 struct INPUT_RECORD
 {
-	ushort EventType;
+    ushort EventType;
 
-	union
-	{
-		struct
-		{
-			KEY_EVENT_RECORD KeyEvent;
-		}
-		struct
-		{
-			MOUSE_EVENT_RECORD MouseEvent;
-		}
-		struct
-		{
-			WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
-		}
-		struct
-		{
-			MENU_EVENT_RECORD MenuEvent;
-		}
-		struct
-		{
-			FOCUS_EVENT_RECORD FocusEvent;
-		}
-	}
+    union
+    {
+        struct
+        {
+            KEY_EVENT_RECORD KeyEvent;
+        }
+        struct
+        {
+            MOUSE_EVENT_RECORD MouseEvent;
+        }
+        struct
+        {
+            WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
+        }
+        struct
+        {
+            MENU_EVENT_RECORD MenuEvent;
+        }
+        struct
+        {
+            FOCUS_EVENT_RECORD FocusEvent;
+        }
+    }
 }
 
 alias INPUT_RECORD* PINPUT_RECORD;
@@ -9774,14 +9910,14 @@ alias INPUT_RECORD* PINPUTRECORD;
 
 struct SYSTEMTIME
 {
-	ushort wYear;
-	ushort wMonth;
-	ushort wDayOfWeek;
-	ushort wDay;
-	ushort wHour;
-	ushort wMinute;
-	ushort wSecond;
-	ushort wMilliseconds;
+    ushort wYear;
+    ushort wMonth;
+    ushort wDayOfWeek;
+    ushort wDay;
+    ushort wHour;
+    ushort wMinute;
+    ushort wSecond;
+    ushort wMilliseconds;
 }
 
 alias SYSTEMTIME* LPSYSTEMTIME;
@@ -9791,19 +9927,19 @@ alias SYSTEMTIME* PSYSTEMTIME;
 
 struct JOB_INFO_1
 {
-	DWORD JobId;
-	LPTSTR pPrinterName;
-	LPTSTR pMachineName;
-	LPTSTR pUserName;
-	LPTSTR pDocument;
-	LPTSTR pDatatype;
-	LPTSTR pStatus;
-	DWORD Status;
-	DWORD Priority;
-	DWORD Position;
-	DWORD TotalPages;
-	DWORD PagesPrinted;
-	SYSTEMTIME Submitted;
+    DWORD JobId;
+    LPTSTR pPrinterName;
+    LPTSTR pMachineName;
+    LPTSTR pUserName;
+    LPTSTR pDocument;
+    LPTSTR pDatatype;
+    LPTSTR pStatus;
+    DWORD Status;
+    DWORD Priority;
+    DWORD Position;
+    DWORD TotalPages;
+    DWORD PagesPrinted;
+    SYSTEMTIME Submitted;
 }
 
 alias JOB_INFO_1 _JOB_INFO_1;
@@ -9812,7 +9948,7 @@ alias JOB_INFO_1* PJOBINFO1;
 
 struct SID_IDENTIFIER_AUTHORITY
 {
-	ubyte[1 + 5] Value;
+    ubyte[1 + 5] Value;
 }
 
 alias SID_IDENTIFIER_AUTHORITY* LPSID_IDENTIFIER_AUTHORITY;
@@ -9823,10 +9959,10 @@ alias SID_IDENTIFIER_AUTHORITY* PSIDIDENTIFIERAUTHORITY;
 
 struct SID
 {
-	ubyte Revision;
-	ubyte SubAuthorityCount;
-	SID_IDENTIFIER_AUTHORITY IdentifierAuthority;
-	DWORD[1 + ANYSIZE_ARRAY-1] SubAuthority;
+    ubyte Revision;
+    ubyte SubAuthorityCount;
+    SID_IDENTIFIER_AUTHORITY IdentifierAuthority;
+    DWORD[1 + ANYSIZE_ARRAY-1] SubAuthority;
 }
 
 alias SID _SID;
@@ -9839,13 +9975,13 @@ alias SECURITY_DESCRIPTOR_CONTROL* PSECURITYDESCRIPTORCONTROL;
 
 struct SECURITY_DESCRIPTOR
 {
-	ubyte Revision;
-	ubyte Sbz1;
-	SECURITY_DESCRIPTOR_CONTROL Control;
-	PSID Owner;
-	PSID Group;
-	PACL Sacl;
-	PACL Dacl;
+    ubyte Revision;
+    ubyte Sbz1;
+    SECURITY_DESCRIPTOR_CONTROL Control;
+    PSID Owner;
+    PSID Group;
+    PACL Sacl;
+    PACL Dacl;
 }
 
 alias SECURITY_DESCRIPTOR* PSECURITY_DESCRIPTOR;
@@ -9855,29 +9991,29 @@ alias SECURITY_DESCRIPTOR* PSECURITYDESCRIPTOR;
 
 struct JOB_INFO_2
 {
-	DWORD JobId;
-	LPTSTR pPrinterName;
-	LPTSTR pMachineName;
-	LPTSTR pUserName;
-	LPTSTR pDocument;
-	LPTSTR pNotifyName;
-	LPTSTR pDatatype;
-	LPTSTR pPrintProcessor;
-	LPTSTR pParameters;
-	LPTSTR pDriverName;
-	LPDEVMODE pDevMode;
-	LPTSTR pStatus;
-	PSECURITY_DESCRIPTOR pSecurityDescriptor;
-	DWORD Status;
-	DWORD Priority;
-	DWORD Position;
-	DWORD StartTime;
-	DWORD UntilTime;
-	DWORD TotalPages;
-	DWORD Size;
-	SYSTEMTIME Submitted;
-	DWORD Time;
-	DWORD PagesPrinted;
+    DWORD JobId;
+    LPTSTR pPrinterName;
+    LPTSTR pMachineName;
+    LPTSTR pUserName;
+    LPTSTR pDocument;
+    LPTSTR pNotifyName;
+    LPTSTR pDatatype;
+    LPTSTR pPrintProcessor;
+    LPTSTR pParameters;
+    LPTSTR pDriverName;
+    LPDEVMODE pDevMode;
+    LPTSTR pStatus;
+    PSECURITY_DESCRIPTOR pSecurityDescriptor;
+    DWORD Status;
+    DWORD Priority;
+    DWORD Position;
+    DWORD StartTime;
+    DWORD UntilTime;
+    DWORD TotalPages;
+    DWORD Size;
+    SYSTEMTIME Submitted;
+    DWORD Time;
+    DWORD PagesPrinted;
 }
 
 alias JOB_INFO_2 _JOB_INFO_2;
@@ -9886,9 +10022,9 @@ alias JOB_INFO_2* PJOBINFO2;
 
 struct KERNINGPAIR
 {
-	ushort wFirst;
-	ushort wSecond;
-	int iKernAmount;
+    ushort wFirst;
+    ushort wSecond;
+    int iKernAmount;
 }
 
 alias KERNINGPAIR* LPKERNINGPAIR;
@@ -9898,8 +10034,8 @@ alias KERNINGPAIR* PKERNINGPAIR;
 
 struct LANA_ENUM
 {
-	UCHAR length;
-	UCHAR[1 + MAX_LANA-1] lana;
+    UCHAR length;
+    UCHAR[1 + MAX_LANA-1] lana;
 }
 
 alias LANA_ENUM _LANA_ENUM;
@@ -9908,23 +10044,23 @@ alias LANA_ENUM* PLANAENUM;
 
 struct LDT_ENTRY
 {
-	ushort LimitLow;
-	ushort BaseLow;
+    ushort LimitLow;
+    ushort BaseLow;
 
-	union
-	{
-		struct
-		{
-			ubyte BaseMid;
-			ubyte Flags1;
-			ubyte Flags2;
-			ubyte BaseHi;
-		}
-		struct
-		{
-			int flag0;
-		}
-	}
+    union
+    {
+        struct
+        {
+            ubyte BaseMid;
+            ubyte Flags1;
+            ubyte Flags2;
+            ubyte BaseHi;
+        }
+        struct
+        {
+            int flag0;
+        }
+    }
 }
 
 alias LDT_ENTRY* LPLDT_ENTRY;
@@ -9957,9 +10093,9 @@ enum : DWORD {
 
 struct LOCALESIGNATURE
 {
-	DWORD[1 + 3] lsUsb;
-	DWORD[1 + 1] lsCsbDefault;
-	DWORD[1 + 1] lsCsbSupported;
+    DWORD[1 + 3] lsUsb;
+    DWORD[1 + 1] lsCsbDefault;
+    DWORD[1 + 1] lsCsbSupported;
 }
 
 alias LOCALESIGNATURE TAGLOCALESIGNATURE;
@@ -9968,7 +10104,7 @@ alias LOCALESIGNATURE* PLOCALESIGNATURE;
 
 struct LOCALGROUP_MEMBERS_INFO_0
 {
-	PSID lgrmi0_sid;
+    PSID lgrmi0_sid;
 }
 
 alias LOCALGROUP_MEMBERS_INFO_0 _LOCALGROUP_MEMBERS_INFO_0;
@@ -9977,7 +10113,7 @@ alias LOCALGROUP_MEMBERS_INFO_0* PLOCALGROUPMEMBERSINFO0;
 
 struct LOCALGROUP_MEMBERS_INFO_3
 {
-	LPWSTR lgrmi3_domainandname;
+    LPWSTR lgrmi3_domainandname;
 }
 
 alias LOCALGROUP_MEMBERS_INFO_3 _LOCALGROUP_MEMBERS_INFO_3;
@@ -9993,8 +10129,8 @@ alias LUID* PLUID;
 
 struct LUID_AND_ATTRIBUTES
 {
-	LUID Luid;
-	DWORD Attributes;
+    LUID Luid;
+    DWORD Attributes;
 }
 
 alias LUID_AND_ATTRIBUTES _LUID_AND_ATTRIBUTES;
@@ -10007,12 +10143,12 @@ alias LUID_AND_ATTRIBUTES_ARRAY* PLUIDANDATTRIBUTESARRAY;
 
 struct LV_COLUMN
 {
-	UINT mask;
-	int fmt;
-	int cx;
-	LPTSTR pszText;
-	int cchTextMax;
-	int iSubItem;
+    UINT mask;
+    int fmt;
+    int cx;
+    LPTSTR pszText;
+    int cchTextMax;
+    int iSubItem;
 }
 
 alias LV_COLUMN _LV_COLUMN;
@@ -10021,15 +10157,15 @@ alias LV_COLUMN* PLVCOLUMN;
 
 struct LV_ITEM
 {
-	UINT mask;
-	int iItem;
-	int iSubItem;
-	UINT state;
-	UINT stateMask;
-	LPTSTR pszText;
-	int cchTextMax;
-	int iImage;
-	LPARAM lParam;
+    UINT mask;
+    int iItem;
+    int iSubItem;
+    UINT state;
+    UINT stateMask;
+    LPTSTR pszText;
+    int cchTextMax;
+    int iImage;
+    LPARAM lParam;
 }
 
 alias LV_ITEM _LV_ITEM;
@@ -10038,8 +10174,8 @@ alias LV_ITEM* PLVITEM;
 
 struct LV_DISPINFO
 {
-	NMHDR hdr;
-	LV_ITEM item;
+    NMHDR hdr;
+    LV_ITEM item;
 }
 
 alias LV_DISPINFO TAGLV_DISPINFO;
@@ -10048,11 +10184,11 @@ alias LV_DISPINFO* PLVDISPINFO;
 
 struct LV_FINDINFO
 {
-	UINT flags;
-	LPCTSTR psz;
-	LPARAM lParam;
-	POINT pt;
-	UINT vkDirection;
+    UINT flags;
+    LPCTSTR psz;
+    LPARAM lParam;
+    POINT pt;
+    UINT vkDirection;
 }
 
 alias LV_FINDINFO _LV_FINDINFO;
@@ -10061,9 +10197,9 @@ alias LV_FINDINFO* PLVFINDINFO;
 
 struct LV_HITTESTINFO
 {
-	POINT pt;
-	UINT flags;
-	int iItem;
+    POINT pt;
+    UINT flags;
+    int iItem;
 }
 
 alias LV_HITTESTINFO _LV_HITTESTINFO;
@@ -10072,9 +10208,9 @@ alias LV_HITTESTINFO* PLVHITTESTINFO;
 
 struct LV_KEYDOWN
 {
-	NMHDR hdr;
-	ushort wVKey;
-	UINT flags;
+    NMHDR hdr;
+    ushort wVKey;
+    UINT flags;
 }
 
 alias LV_KEYDOWN TAGLV_KEYDOWN;
@@ -10083,10 +10219,10 @@ alias LV_KEYDOWN* PLVKEYDOWN;
 
 struct MAT2
 {
-	FIXED eM11;
-	FIXED eM12;
-	FIXED eM21;
-	FIXED eM22;
+    FIXED eM11;
+    FIXED eM12;
+    FIXED eM21;
+    FIXED eM22;
 }
 
 alias MAT2 _MAT2;
@@ -10095,15 +10231,15 @@ alias MAT2* PMAT2;
 
 struct MDICREATESTRUCT
 {
-	LPCTSTR szClass;
-	LPCTSTR szTitle;
-	HANDLE hOwner;
-	int x;
-	int y;
-	int cx;
-	int cy;
-	DWORD style;
-	LPARAM lParam;
+    LPCTSTR szClass;
+    LPCTSTR szTitle;
+    HANDLE hOwner;
+    int x;
+    int y;
+    int cx;
+    int cy;
+    DWORD style;
+    LPARAM lParam;
 }
 
 alias MDICREATESTRUCT* LPMDICREATESTRUCT;
@@ -10113,12 +10249,12 @@ alias MDICREATESTRUCT* PMDICREATESTRUCT;
 
 struct MEASUREITEMSTRUCT
 {
-	UINT CtlType;
-	UINT CtlID;
-	UINT itemID;
-	UINT itemWidth;
-	UINT itemHeight;
-	DWORD itemData;
+    UINT CtlType;
+    UINT CtlID;
+    UINT itemID;
+    UINT itemWidth;
+    UINT itemHeight;
+    DWORD itemData;
 }
 
 alias MEASUREITEMSTRUCT* LPMEASUREITEMSTRUCT;
@@ -10128,13 +10264,13 @@ alias MEASUREITEMSTRUCT* PMEASUREITEMSTRUCT;
 
 struct MEMORY_BASIC_INFORMATION
 {
-	PVOID BaseAddress;
-	PVOID AllocationBase;
-	DWORD AllocationProtect;
-	DWORD RegionSize;
-	DWORD State;
-	DWORD Protect;
-	DWORD _Type;
+    PVOID BaseAddress;
+    PVOID AllocationBase;
+    DWORD AllocationProtect;
+    DWORD RegionSize;
+    DWORD State;
+    DWORD Protect;
+    DWORD _Type;
 }
 
 alias MEMORY_BASIC_INFORMATION* PMEMORY_BASIC_INFORMATION;
@@ -10144,14 +10280,14 @@ alias MEMORY_BASIC_INFORMATION* PMEMORYBASICINFORMATION;
 
 struct MEMORYSTATUS
 {
-	DWORD dwLength;
-	DWORD dwMemoryLoad;
-	DWORD dwTotalPhys;
-	DWORD dwAvailPhys;
-	DWORD dwTotalPageFile;
-	DWORD dwAvailPageFile;
-	DWORD dwTotalVirtual;
-	DWORD dwAvailVirtual;
+    DWORD dwLength;
+    DWORD dwMemoryLoad;
+    DWORD dwTotalPhys;
+    DWORD dwAvailPhys;
+    DWORD dwTotalPageFile;
+    DWORD dwAvailPageFile;
+    DWORD dwTotalVirtual;
+    DWORD dwAvailVirtual;
 }
 
 alias MEMORYSTATUS* LPMEMORYSTATUS;
@@ -10161,9 +10297,9 @@ alias MEMORYSTATUS* PMEMORYSTATUS;
 
 struct MENUEX_TEMPLATE_HEADER
 {
-	ushort wVersion;
-	ushort wOffset;
-	DWORD dwHelpId;
+    ushort wVersion;
+    ushort wOffset;
+    DWORD dwHelpId;
 }
 
 alias MENUEX_TEMPLATE_HEADER TMENUXTEMPLATEHEADER;
@@ -10171,34 +10307,65 @@ alias MENUEX_TEMPLATE_HEADER* PMENUXTEMPLATEHEADER;
 
 struct MENUEX_TEMPLATE_ITEM
 {
-	DWORD dwType;
-	DWORD dwState;
-	UINT uId;
-	ubyte bResInfo;
-	WCHAR[1 + 0] szText;
-	DWORD dwHelpId;
+    DWORD dwType;
+    DWORD dwState;
+    UINT uId;
+    ubyte bResInfo;
+    WCHAR[1 + 0] szText;
+    DWORD dwHelpId;
 }
 
 alias MENUEX_TEMPLATE_ITEM TMENUEXTEMPLATEITEM;
 alias MENUEX_TEMPLATE_ITEM* PMENUEXTEMPLATEITEM;
 
-struct MENUITEMINFO
+/*
+* Feature in Windows.  The hbmpItem field requires Windows 4.10
+* or greater.  On Windows NT 4.0, passing in a larger struct size
+* in the cbSize field does nothing.  On Windows 95, the MENUITEMINFO
+* calls fail when the struct size is too large.  The fix is to ensure
+* that the correct struct size is used for the Windows platform.
+*/
+struct MENUITEMINFOA
 {
-	UINT cbSize;
-	UINT fMask;
-	UINT fType;
-	UINT fState;
-	UINT wID;
-	HMENU hSubMenu;
-	HBITMAP hbmpChecked;
-	HBITMAP hbmpUnchecked;
-	DWORD dwItemData;
-	LPTSTR dwTypeData;
-	UINT cch;
+    UINT    cbSize;
+    UINT    fMask;
+    UINT    fType;          // used if MIIM_TYPE
+    UINT    fState;         // used if MIIM_STATE
+    UINT    wID;            // used if MIIM_ID
+    HMENU   hSubMenu;       // used if MIIM_SUBMENU
+    HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
+    HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
+    DWORD   dwItemData;     // used if MIIM_DATA
+    LPSTR   dwTypeData;     // used if MIIM_TYPE
+    UINT    cch;            // used if MIIM_TYPE
+    HBITMAP hbmpItem;
 }
-
-alias MENUITEMINFO* LPMENUITEMINFO;
-alias MENUITEMINFO* LPCMENUITEMINFO;
+alias MENUITEMINFOA* PMENUITEMINFOA, LPMENUITEMINFOA;
+struct MENUITEMINFOW
+{
+    UINT    cbSize;
+    UINT    fMask;
+    UINT    fType;          // used if MIIM_TYPE
+    UINT    fState;         // used if MIIM_STATE
+    UINT    wID;            // used if MIIM_ID
+    HMENU   hSubMenu;       // used if MIIM_SUBMENU
+    HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
+    HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
+    DWORD   dwItemData;     // used if MIIM_DATA
+    LPWSTR  dwTypeData;     // used if MIIM_TYPE
+    UINT    cch;            // used if MIIM_TYPE
+    HBITMAP hbmpItem;
+}   alias MENUITEMINFOW* PMENUITEMINFOW, LPMENUITEMINFOW;
+version(Win32SansUnicode)
+{
+    alias MENUITEMINFOA MENUITEMINFO;
+}
+else
+{
+    alias MENUITEMINFOW MENUITEMINFO;
+}
+alias MENUITEMINFO * LPMENUITEMINFO;
+alias MENUITEMINFO * LPCMENUITEMINFO;
 alias MENUITEMINFO TAGMENUITEMINFO;
 alias MENUITEMINFO TMENUITEMINFO;
 alias MENUITEMINFO TMENUITEMINFOA;
@@ -10206,9 +10373,9 @@ alias MENUITEMINFO* PMENUITEMINFO;
 
 struct MENUITEMTEMPLATE
 {
-	ushort mtOption;
-	ushort mtID;
-	WCHAR[1 + 0] mtString;
+    ushort mtOption;
+    ushort mtID;
+    WCHAR[1 + 0] mtString;
 }
 
 alias MENUITEMTEMPLATE TMENUITEMTEMPLATE;
@@ -10216,8 +10383,8 @@ alias MENUITEMTEMPLATE* PMENUITEMTEMPLATE;
 
 struct MENUITEMTEMPLATEHEADER
 {
-	ushort versionNumber;
-	ushort offset;
+    ushort versionNumber;
+    ushort offset;
 }
 
 alias MENUITEMTEMPLATEHEADER TMENUITEMTEMPLATEHEADER;
@@ -10233,10 +10400,10 @@ alias MENUTEMPLATE* PMENUTEMPLATE;
 
 struct METAFILEPICT
 {
-	LONG mm;
-	LONG xExt;
-	LONG yExt;
-	HMETAFILE hMF;
+    LONG mm;
+    LONG xExt;
+    LONG yExt;
+    HMETAFILE hMF;
 }
 
 alias METAFILEPICT* LPMETAFILEPICT;
@@ -10246,13 +10413,13 @@ alias METAFILEPICT* PMETAFILEPICT;
 
 align(1) struct METAHEADER
 {
-	ushort mtType;
-	ushort mtHeaderSize;
-	ushort mtVersion;
-	DWORD mtSize;
-	ushort mtNoObjects;
-	DWORD mtMaxRecord;
-	ushort mtNoParameters;
+    ushort mtType;
+    ushort mtHeaderSize;
+    ushort mtVersion;
+    DWORD mtSize;
+    ushort mtNoObjects;
+    DWORD mtMaxRecord;
+    ushort mtNoParameters;
 }
 
 alias METAHEADER TAGMETAHEADER;
@@ -10261,9 +10428,9 @@ alias METAHEADER* PMETAHEADER;
 
 struct METARECORD
 {
-	DWORD rdSize;
-	ushort rdFunction;
-	ushort[1 + 0] rdParm;
+    DWORD rdSize;
+    ushort rdFunction;
+    ushort[1 + 0] rdParm;
 }
 
 alias METARECORD* LPMETARECORD;
@@ -10273,11 +10440,11 @@ alias METARECORD* PMETARECORD;
 
 struct MINIMIZEDMETRICS
 {
-	UINT cbSize;
-	int iWidth;
-	int iHorzGap;
-	int iVertGap;
-	int iArrange;
+    UINT cbSize;
+    int iWidth;
+    int iHorzGap;
+    int iVertGap;
+    int iArrange;
 }
 
 alias MINIMIZEDMETRICS* LPMINIMIZEDMETRICS;
@@ -10287,11 +10454,11 @@ alias MINIMIZEDMETRICS* PMINIMIZEDMETRICS;
 
 struct MINMAXINFO
 {
-	POINT ptReserved;
-	POINT ptMaxSize;
-	POINT ptMaxPosition;
-	POINT ptMinTrackSize;
-	POINT ptMaxTrackSize;
+    POINT ptReserved;
+    POINT ptMaxSize;
+    POINT ptMaxPosition;
+    POINT ptMinTrackSize;
+    POINT ptMaxTrackSize;
 }
 
 alias MINMAXINFO TAGMINMAXINFO;
@@ -10300,26 +10467,26 @@ alias MINMAXINFO* PMINMAXINFO;
 
 struct MODEMDEVCAPS
 {
-	DWORD dwActualSize;
-	DWORD dwRequiredSize;
-	DWORD dwDevSpecificOffset;
-	DWORD dwDevSpecificSize;
-	DWORD dwModemProviderVersion;
-	DWORD dwModemManufacturerOffset;
-	DWORD dwModemManufacturerSize;
-	DWORD dwModemModelOffset;
-	DWORD dwModemModelSize;
-	DWORD dwModemVersionOffset;
-	DWORD dwModemVersionSize;
-	DWORD dwDialOptions;
-	DWORD dwCallSetupFailTimer;
-	DWORD dwInactivityTimeout;
-	DWORD dwSpeakerVolume;
-	DWORD dwSpeakerMode;
-	DWORD dwModemOptions;
-	DWORD dwMaxDTERate;
-	DWORD dwMaxDCERate;
-	ubyte[1 + 0] abVariablePortion;
+    DWORD dwActualSize;
+    DWORD dwRequiredSize;
+    DWORD dwDevSpecificOffset;
+    DWORD dwDevSpecificSize;
+    DWORD dwModemProviderVersion;
+    DWORD dwModemManufacturerOffset;
+    DWORD dwModemManufacturerSize;
+    DWORD dwModemModelOffset;
+    DWORD dwModemModelSize;
+    DWORD dwModemVersionOffset;
+    DWORD dwModemVersionSize;
+    DWORD dwDialOptions;
+    DWORD dwCallSetupFailTimer;
+    DWORD dwInactivityTimeout;
+    DWORD dwSpeakerVolume;
+    DWORD dwSpeakerMode;
+    DWORD dwModemOptions;
+    DWORD dwMaxDTERate;
+    DWORD dwMaxDCERate;
+    ubyte[1 + 0] abVariablePortion;
 }
 
 alias MODEMDEVCAPS* LPMODEMDEVCAPS;
@@ -10329,18 +10496,18 @@ alias MODEMDEVCAPS MODEMDEVCAPS_TAG;
 
 struct MODEMSETTINGS
 {
-	DWORD dwActualSize;
-	DWORD dwRequiredSize;
-	DWORD dwDevSpecificOffset;
-	DWORD dwDevSpecificSize;
-	DWORD dwCallSetupFailTimer;
-	DWORD dwInactivityTimeout;
-	DWORD dwSpeakerVolume;
-	DWORD dwSpeakerMode;
-	DWORD dwPreferredModemOptions;
-	DWORD dwNegotiatedModemOptions;
-	DWORD dwNegotiatedDCERate;
-	ubyte[1 + 0] abVariablePortion;
+    DWORD dwActualSize;
+    DWORD dwRequiredSize;
+    DWORD dwDevSpecificOffset;
+    DWORD dwDevSpecificSize;
+    DWORD dwCallSetupFailTimer;
+    DWORD dwInactivityTimeout;
+    DWORD dwSpeakerVolume;
+    DWORD dwSpeakerMode;
+    DWORD dwPreferredModemOptions;
+    DWORD dwNegotiatedModemOptions;
+    DWORD dwNegotiatedDCERate;
+    ubyte[1 + 0] abVariablePortion;
 }
 
 alias MODEMSETTINGS* LPMODEMSETTINGS;
@@ -10350,21 +10517,21 @@ alias MODEMSETTINGS MODEMSETTINGS_TAG;
 
 struct MONCBSTRUCT
 {
-	UINT cb;
-	DWORD dwTime;
-	HANDLE hTask;
-	DWORD dwRet;
-	UINT wType;
-	UINT wFmt;
-	HCONV hConv;
-	HSZ hsz1;
-	HSZ hsz2;
-	HDDEDATA hData;
-	DWORD dwData1;
-	DWORD dwData2;
-	CONVCONTEXT cc;
-	DWORD cbData;
-	DWORD[1 + 7] Data;
+    UINT cb;
+    DWORD dwTime;
+    HANDLE hTask;
+    DWORD dwRet;
+    UINT wType;
+    UINT wFmt;
+    HCONV hConv;
+    HSZ hsz1;
+    HSZ hsz2;
+    HDDEDATA hData;
+    DWORD dwData1;
+    DWORD dwData2;
+    CONVCONTEXT cc;
+    DWORD cbData;
+    DWORD[1 + 7] Data;
 }
 
 alias MONCBSTRUCT TAGMONCBSTRUCT;
@@ -10373,14 +10540,14 @@ alias MONCBSTRUCT* PMONCBSTRUCT;
 
 struct MONCONVSTRUCT
 {
-	UINT cb;
-	WINBOOL fConnect;
-	DWORD dwTime;
-	HANDLE hTask;
-	HSZ hszSvc;
-	HSZ hszTopic;
-	HCONV hConvClient;
-	HCONV hConvServer;
+    UINT cb;
+    WINBOOL fConnect;
+    DWORD dwTime;
+    HANDLE hTask;
+    HSZ hszSvc;
+    HSZ hszTopic;
+    HCONV hConvClient;
+    HCONV hConvServer;
 }
 
 alias MONCONVSTRUCT TAGMONCONVSTRUCT;
@@ -10389,10 +10556,10 @@ alias MONCONVSTRUCT* PMONCONVSTRUCT;
 
 struct MONERRSTRUCT
 {
-	UINT cb;
-	UINT wLastError;
-	DWORD dwTime;
-	HANDLE hTask;
+    UINT cb;
+    UINT wLastError;
+    DWORD dwTime;
+    HANDLE hTask;
 }
 
 alias MONERRSTRUCT TAGMONERRSTRUCT;
@@ -10401,12 +10568,12 @@ alias MONERRSTRUCT* PMONERRSTRUCT;
 
 struct MONHSZSTRUCT
 {
-	UINT cb;
-	WINBOOL fsAction;
-	DWORD dwTime;
-	HSZ hsz;
-	HANDLE hTask;
-	TCHAR[1 + 0] str;
+    UINT cb;
+    WINBOOL fsAction;
+    DWORD dwTime;
+    HSZ hsz;
+    HANDLE hTask;
+    TCHAR[1 + 0] str;
 }
 
 alias MONHSZSTRUCT TAGMONHSZSTRUCT;
@@ -10415,7 +10582,7 @@ alias MONHSZSTRUCT* PMONHSZSTRUCT;
 
 struct MONITOR_INFO_1
 {
-	LPTSTR pName;
+    LPTSTR pName;
 }
 
 alias MONITOR_INFO_1 _MONITOR_INFO_1;
@@ -10424,9 +10591,9 @@ alias MONITOR_INFO_1* PMONITORINFO1;
 
 struct MONITOR_INFO_2
 {
-	LPTSTR pName;
-	LPTSTR pEnvironment;
-	LPTSTR pDLLName;
+    LPTSTR pName;
+    LPTSTR pEnvironment;
+    LPTSTR pDLLName;
 }
 
 alias MONITOR_INFO_2 _MONITOR_INFO_2;
@@ -10435,18 +10602,18 @@ alias MONITOR_INFO_2* PMONITORINFO2;
 
 struct MONLINKSTRUCT
 {
-	UINT cb;
-	DWORD dwTime;
-	HANDLE hTask;
-	WINBOOL fEstablished;
-	WINBOOL fNoData;
-	HSZ hszSvc;
-	HSZ hszTopic;
-	HSZ hszItem;
-	UINT wFmt;
-	WINBOOL fServer;
-	HCONV hConvServer;
-	HCONV hConvClient;
+    UINT cb;
+    DWORD dwTime;
+    HANDLE hTask;
+    WINBOOL fEstablished;
+    WINBOOL fNoData;
+    HSZ hszSvc;
+    HSZ hszTopic;
+    HSZ hszItem;
+    UINT wFmt;
+    WINBOOL fServer;
+    HCONV hConvServer;
+    HCONV hConvClient;
 }
 
 alias MONLINKSTRUCT TAGMONLINKSTRUCT;
@@ -10455,14 +10622,14 @@ alias MONLINKSTRUCT* PMONLINKSTRUCT;
 
 struct MONMSGSTRUCT
 {
-	UINT cb;
-	HWND hwndTo;
-	DWORD dwTime;
-	HANDLE hTask;
-	UINT wMsg;
-	WPARAM wParam;
-	LPARAM lParam;
-	DDEML_MSG_HOOK_DATA dmhd;
+    UINT cb;
+    HWND hwndTo;
+    DWORD dwTime;
+    HANDLE hTask;
+    UINT wMsg;
+    WPARAM wParam;
+    LPARAM lParam;
+    DDEML_MSG_HOOK_DATA dmhd;
 }
 
 alias MONMSGSTRUCT TAGMONMSGSTRUCT;
@@ -10471,10 +10638,10 @@ alias MONMSGSTRUCT* PMONMSGSTRUCT;
 
 struct MOUSEHOOKSTRUCT
 {
-	POINT pt;
-	HWND hwnd;
-	UINT wHitTestCode;
-	DWORD dwExtraInfo;
+    POINT pt;
+    HWND hwnd;
+    UINT wHitTestCode;
+    DWORD dwExtraInfo;
 }
 
 alias MOUSEHOOKSTRUCT* LPMOUSEHOOKSTRUCT;
@@ -10484,13 +10651,13 @@ alias MOUSEHOOKSTRUCT* PMOUSEHOOKSTRUCT;
 
 struct MOUSEKEYS
 {
-	DWORD cbSize;
-	DWORD dwFlags;
-	DWORD iMaxSpeed;
-	DWORD iTimeToMaxSpeed;
-	DWORD iCtrlSpeed;
-	DWORD dwReserved1;
-	DWORD dwReserved2;
+    DWORD cbSize;
+    DWORD dwFlags;
+    DWORD iMaxSpeed;
+    DWORD iTimeToMaxSpeed;
+    DWORD iCtrlSpeed;
+    DWORD dwReserved1;
+    DWORD dwReserved2;
 }
 
 alias MOUSEKEYS TMOUSEKEYS;
@@ -10498,12 +10665,12 @@ alias MOUSEKEYS* PMOUSEKEYS;
 
 struct MSG
 {
-	HWND hwnd;
-	UINT message;
-	WPARAM wParam;
-	LPARAM lParam;
-	DWORD time;
-	POINT pt;
+    HWND hwnd;
+    UINT message;
+    WPARAM wParam;
+    LPARAM lParam;
+    DWORD time;
+    POINT pt;
 }
 
 alias MSG* LPMSG;
@@ -10517,16 +10684,16 @@ alias MSGBOXCALLBACK TMSGBOXCALLBACK;
 
 struct MSGBOXPARAMS
 {
-	UINT cbSize;
-	HWND hwndOwner;
-	HINST hInstance;
-	LPCSTR lpszText;
-	LPCSTR lpszCaption;
-	DWORD dwStyle;
-	LPCSTR lpszIcon;
-	DWORD dwContextHelpId;
-	MSGBOXCALLBACK lpfnMsgBoxCallback;
-	DWORD dwLanguageId;
+    UINT cbSize;
+    HWND hwndOwner;
+    HINST hInstance;
+    LPCSTR lpszText;
+    LPCSTR lpszCaption;
+    DWORD dwStyle;
+    LPCSTR lpszIcon;
+    DWORD dwContextHelpId;
+    MSGBOXCALLBACK lpfnMsgBoxCallback;
+    DWORD dwLanguageId;
 }
 
 alias MSGBOXPARAMS* LPMSGBOXPARAMS;
@@ -10536,10 +10703,10 @@ alias MSGBOXPARAMS* PMSGBOXPARAMS;
 
 struct MSGFILTER
 {
-	NMHDR nmhdr;
-	UINT msg;
-	WPARAM wParam;
-	LPARAM lParam;
+    NMHDR nmhdr;
+    UINT msg;
+    WPARAM wParam;
+    LPARAM lParam;
 }
 
 alias MSGFILTER _MSGFILTER;
@@ -10548,9 +10715,9 @@ alias MSGFILTER* PMSGFILTER;
 
 struct MULTIKEYHELP
 {
-	DWORD mkSize;
-	TCHAR mkKeylist;
-	TCHAR[1 + 0] szKeyphrase;
+    DWORD mkSize;
+    TCHAR mkKeylist;
+    TCHAR[1 + 0] szKeyphrase;
 }
 
 alias MULTIKEYHELP TAGMULTIKEYHELP;
@@ -10559,9 +10726,9 @@ alias MULTIKEYHELP* PMULTIKEYHELP;
 
 struct NAME_BUFFER
 {
-	UCHAR[1 + NCBNAMSZ-1] name;
-	UCHAR name_num;
-	UCHAR name_flags;
+    UCHAR[1 + NCBNAMSZ-1] name;
+    UCHAR name_num;
+    UCHAR name_flags;
 }
 
 alias NAME_BUFFER _NAME_BUFFER;
@@ -10571,21 +10738,21 @@ alias _NCB* P_NCB;
 
 struct NCB
 {
-	UCHAR ncb_command;
-	UCHAR ncb_retcode;
-	UCHAR ncb_lsn;
-	UCHAR ncb_num;
-	PUCHAR ncb_buffer;
-	ushort ncb_length;
-	UCHAR[1 + NCBNAMSZ-1] ncb_callname;
-	UCHAR[1 + NCBNAMSZ-1] ncb_name;
-	UCHAR ncb_rto;
-	UCHAR ncb_sto;
-	POINTER ncb_post;
-	UCHAR ncb_lana_num;
-	UCHAR ncb_cmd_cplt;
-	UCHAR[1 + 9] ncb_reserve;
-	HANDLE ncb_event;
+    UCHAR ncb_command;
+    UCHAR ncb_retcode;
+    UCHAR ncb_lsn;
+    UCHAR ncb_num;
+    PUCHAR ncb_buffer;
+    ushort ncb_length;
+    UCHAR[1 + NCBNAMSZ-1] ncb_callname;
+    UCHAR[1 + NCBNAMSZ-1] ncb_name;
+    UCHAR ncb_rto;
+    UCHAR ncb_sto;
+    POINTER ncb_post;
+    UCHAR ncb_lana_num;
+    UCHAR ncb_cmd_cplt;
+    UCHAR[1 + 9] ncb_reserve;
+    HANDLE ncb_event;
 }
 
 alias NCB _NCB;
@@ -10594,8 +10761,8 @@ alias NCB* PNCB;
 
 struct NCCALCSIZE_PARAMS
 {
-	RECT[1 + 2] rgrc;
-	PWINDOWPOS lppos;
+    RECT[1 + 2] rgrc;
+    PWINDOWPOS lppos;
 }
 
 alias NCCALCSIZE_PARAMS _NCCALCSIZE_PARAMS;
@@ -10604,17 +10771,17 @@ alias NCCALCSIZE_PARAMS* PNCCALCSIZEPARAMS;
 
 struct NDDESHAREINFO
 {
-	LONG lRevision;
-	LPTSTR lpszShareName;
-	LONG lShareType;
-	LPTSTR lpszAppTopicList;
-	LONG fSharedFlag;
-	LONG fService;
-	LONG fStartAppFlag;
-	LONG nCmdShow;
-	LONG[1 + 1] qModifyId;
-	LONG cNumItems;
-	LPTSTR lpszItemList;
+    LONG lRevision;
+    LPTSTR lpszShareName;
+    LONG lShareType;
+    LPTSTR lpszAppTopicList;
+    LONG fSharedFlag;
+    LONG fService;
+    LONG fStartAppFlag;
+    LONG nCmdShow;
+    LONG[1 + 1] qModifyId;
+    LONG cNumItems;
+    LPTSTR lpszItemList;
 }
 
 alias NDDESHAREINFO _NDDESHAREINFO;
@@ -10623,14 +10790,14 @@ alias NDDESHAREINFO* PNDDESHAREINFO;
 
 struct NETRESOURCE
 {
-	DWORD dwScope;
-	DWORD dwType;
-	DWORD dwDisplayType;
-	DWORD dwUsage;
-	LPTSTR lpLocalName;
-	LPTSTR lpRemoteName;
-	LPTSTR lpComment;
-	LPTSTR lpProvider;
+    DWORD dwScope;
+    DWORD dwType;
+    DWORD dwDisplayType;
+    DWORD dwUsage;
+    LPTSTR lpLocalName;
+    LPTSTR lpRemoteName;
+    LPTSTR lpComment;
+    LPTSTR lpProvider;
 }
 
 alias NETRESOURCE* LPNETRESOURCE;
@@ -10642,141 +10809,228 @@ alias NETRESOURCE* PNETRESOURCEA;
 
 struct NEWCPLINFO
 {
-	DWORD dwSize;
-	DWORD dwFlags;
-	DWORD dwHelpContext;
-	LONG lData;
-	HICON hIcon;
-	TCHAR[1 + 31] szName;
-	TCHAR[1 + 63] szInfo;
-	TCHAR[1 + 127] szHelpFile;
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwHelpContext;
+    LONG lData;
+    HICON hIcon;
+    TCHAR[1 + 31] szName;
+    TCHAR[1 + 63] szInfo;
+    TCHAR[1 + 127] szHelpFile;
 }
 
 alias NEWCPLINFO TAGNEWCPLINFO;
 alias NEWCPLINFO TNEWCPLINFO;
 alias NEWCPLINFO* PNEWCPLINFO;
 
-struct NEWTEXTMETRIC
-{
-	LONG tmHeight;
-	LONG tmAscent;
-	LONG tmDescent;
-	LONG tmInternalLeading;
-	LONG tmExternalLeading;
-	LONG tmAveCharWidth;
-	LONG tmMaxCharWidth;
-	LONG tmWeight;
-	LONG tmOverhang;
-	LONG tmDigitizedAspectX;
-	LONG tmDigitizedAspectY;
-	BCHAR tmFirstChar;
-	BCHAR tmLastChar;
-	BCHAR tmDefaultChar;
-	BCHAR tmBreakChar;
-	ubyte tmItalic;
-	ubyte tmUnderlined;
-	ubyte tmStruckOut;
-	ubyte tmPitchAndFamily;
-	ubyte tmCharSet;
-	DWORD ntmFlags;
-	UINT ntmSizeEM;
-	UINT ntmCellHeight;
-	UINT ntmAvgWidth;
+struct NEWTEXTMETRICA {
+    LONG   tmHeight;
+    LONG   tmAscent;
+    LONG   tmDescent;
+    LONG   tmInternalLeading;
+    LONG   tmExternalLeading;
+    LONG   tmAveCharWidth;
+    LONG   tmMaxCharWidth;
+    LONG   tmWeight;
+    LONG   tmOverhang;
+    LONG   tmDigitizedAspectX;
+    LONG   tmDigitizedAspectY;
+    BYTE  tmFirstChar;
+    BYTE  tmLastChar;
+    BYTE  tmDefaultChar;
+    BYTE  tmBreakChar;
+    BYTE   tmItalic;
+    BYTE   tmUnderlined;
+    BYTE   tmStruckOut;
+    BYTE   tmPitchAndFamily;
+    BYTE   tmCharSet;
+    DWORD  ntmFlags;
+    UINT   ntmSizeEM;
+    UINT   ntmCellHeight;
+    UINT   ntmAvgWidth;
+}
+struct NEWTEXTMETRICW {
+    LONG   tmHeight;
+    LONG   tmAscent;
+    LONG   tmDescent;
+    LONG   tmInternalLeading;
+    LONG   tmExternalLeading;
+    LONG   tmAveCharWidth;
+    LONG   tmMaxCharWidth;
+    LONG   tmWeight;
+    LONG   tmOverhang;
+    LONG   tmDigitizedAspectX;
+    LONG   tmDigitizedAspectY;
+    WCHAR  tmFirstChar;
+    WCHAR  tmLastChar;
+    WCHAR  tmDefaultChar;
+    WCHAR  tmBreakChar;
+    BYTE   tmItalic;
+    BYTE   tmUnderlined;
+    BYTE   tmStruckOut;
+    BYTE   tmPitchAndFamily;
+    BYTE   tmCharSet;
+    DWORD  ntmFlags;
+    UINT   ntmSizeEM;
+    UINT   ntmCellHeight;
+    UINT   ntmAvgWidth;
 }
 
-alias NEWTEXTMETRIC TAGNEWTEXTMETRIC;
+struct NEWTEXTMETRICEXA
+{
+    NEWTEXTMETRICA  ntmentm;
+    FONTSIGNATURE  ntmeFontSignature;
+}
+struct NEWTEXTMETRICEXW
+{
+    NEWTEXTMETRICW  ntmentm;
+    FONTSIGNATURE  ntmeFontSignature;
+}
+
+version(Win32SansUnicode)
+{
+    alias NEWTEXTMETRICA NEWTEXTMETRIC;
+    alias NEWTEXTMETRICEXA NEWTEXTMETRICEX;
+}
+else
+{
+    alias NEWTEXTMETRICW NEWTEXTMETRIC;
+    alias NEWTEXTMETRICEXW NEWTEXTMETRICEX;
+}
 alias NEWTEXTMETRIC TNEWTEXTMETRIC;
 alias NEWTEXTMETRIC* PNEWTEXTMETRIC;
-
-struct NEWTEXTMETRICEX
-{
-	NEWTEXTMETRIC ntmentm;
-	FONTSIGNATURE ntmeFontSignature;
-}
-
+alias NEWTEXTMETRIC* LPNEWTEXTMETRIC;
+alias NEWTEXTMETRIC TAGNEWTEXTMETRIC;
 alias NEWTEXTMETRICEX TAGNEWTEXTMETRICEX;
 alias NEWTEXTMETRICEX TNEWTEXTMETRICEX;
 alias NEWTEXTMETRICEX* PNEWTEXTMETRICEX;
 
 struct NM_LISTVIEW
 {
-	NMHDR hdr;
-	int iItem;
-	int iSubItem;
-	UINT uNewState;
-	UINT uOldState;
-	UINT uChanged;
-	POINT ptAction;
-	LPARAM lParam;
+    NMHDR hdr;
+    int iItem;
+    int iSubItem;
+    UINT uNewState;
+    UINT uOldState;
+    UINT uChanged;
+    POINT ptAction;
+    LPARAM lParam;
 }
 
 alias NM_LISTVIEW TAGNM_LISTVIEW;
 alias NM_LISTVIEW TNMLISTVIEW;
 alias NM_LISTVIEW* PNMLISTVIEW;
 
-struct TV_ITEM
+struct TVITEMA
 {
-	UINT mask;
-	HTREEITEM hItem;
-	UINT state;
-	UINT stateMask;
-	LPTSTR pszText;
-	int cchTextMax;
-	int iImage;
-	int iSelectedImage;
-	int cChildren;
-	LPARAM lParam;
+    UINT      mask;
+    HTREEITEM hItem;
+    UINT      state;
+    UINT      stateMask;
+    LPSTR     pszText;
+    int       cchTextMax;
+    int       iImage;
+    int       iSelectedImage;
+    int       cChildren;
+    LPARAM    lParam;
 }
-
-alias TV_ITEM* LPTV_ITEM;
-alias TV_ITEM _TV_ITEM;
-alias TV_ITEM TTVITEM;
-alias TV_ITEM* PTVITEM;
-
-struct NM_TREEVIEW
+struct TVITEMW
 {
-	NMHDR hdr;
-	UINT action;
-	TV_ITEM itemOld;
-	TV_ITEM itemNew;
-	POINT ptDrag;
+    UINT      mask;
+    HTREEITEM hItem;
+    UINT      state;
+    UINT      stateMask;
+    LPWSTR    pszText;
+    int       cchTextMax;
+    int       iImage;
+    int       iSelectedImage;
+    int       cChildren;
+    LPARAM    lParam;
 }
+version(Win32SansUnicode)
+{
+    alias TVITEMA TVITEM;
+}
+else
+{
+    alias TVITEMW TVITEM;
+}
+alias TVITEM* LPTVITEM;
+alias TVITEM* LPTV_ITEM;
+alias TVITEM _TV_ITEM;
+alias TVITEM TTVITEM;
+alias TVITEM TV_ITEM;
+alias TVITEM* PTVITEM;
 
+struct NMTREEVIEW
+{
+    NMHDR hdr;
+    UINT action;
+    TVITEM itemOld;
+    TVITEM itemNew;
+    POINT ptDrag;
+}
+alias NMTREEVIEW* PNMTREEVIEW;
+alias NMTREEVIEW* LPNMTREEVIEW;
+alias NMTREEVIEW  NM_TREEVIEW;
 alias NM_TREEVIEW* LPNM_TREEVIEW;
 alias NM_TREEVIEW _NM_TREEVIEW;
 alias NM_TREEVIEW TNMTREEVIEW;
-alias NM_TREEVIEW* PNMTREEVIEW;
 
 struct NM_UPDOWNW
 {
-	NMHDR hdr;
-	int iPos;
-	int iDelta;
+    NMHDR hdr;
+    int iPos;
+    int iDelta;
 }
 
 alias NM_UPDOWNW _NM_UPDOWN;
 alias NM_UPDOWNW TNMUPDOWN;
 alias NM_UPDOWNW* PNMUPDOWN;
+alias NM_UPDOWNW NMUPDOWN;
 
-struct NONCLIENTMETRICS
-{
-	UINT cbSize;
-	int iBorderWidth;
-	int iScrollWidth;
-	int iScrollHeight;
-	int iCaptionWidth;
-	int iCaptionHeight;
-	LOGFONT lfCaptionFont;
-	int iSmCaptionWidth;
-	int iSmCaptionHeight;
-	LOGFONT lfSmCaptionFont;
-	int iMenuWidth;
-	int iMenuHeight;
-	LOGFONT lfMenuFont;
-	LOGFONT lfStatusFont;
-	LOGFONT lfMessageFont;
+struct NONCLIENTMETRICSA {
+    int cbSize;
+    int iBorderWidth;
+    int iScrollWidth;
+    int iScrollHeight;
+    int iCaptionWidth;
+    int iCaptionHeight;
+    LOGFONTA lfCaptionFont;
+    int iSmCaptionWidth;
+    int iSmCaptionHeight;
+    LOGFONTA lfSmCaptionFont;
+    int iMenuWidth;
+    int iMenuHeight;
+    LOGFONTA lfMenuFont;
+    LOGFONTA lfStatusFont;
+    LOGFONTA lfMessageFont;
 }
-
+struct NONCLIENTMETRICSW {
+    int cbSize;
+    int iBorderWidth;
+    int iScrollWidth;
+    int iScrollHeight;
+    int iCaptionWidth;
+    int iCaptionHeight;
+    LOGFONTW lfCaptionFont;
+    int iSmCaptionWidth;
+    int iSmCaptionHeight;
+    LOGFONTW lfSmCaptionFont;
+    int iMenuWidth;
+    int iMenuHeight;
+    LOGFONTW lfMenuFont;
+    LOGFONTW lfStatusFont;
+    LOGFONTW lfMessageFont;
+}
+version(Win32SansUnicode)
+{
+    alias NONCLIENTMETRICSA NONCLIENTMETRICS;
+}
+else
+{
+    alias NONCLIENTMETRICSW NONCLIENTMETRICS;
+}
 alias NONCLIENTMETRICS* LPNONCLIENTMETRICS;
 alias NONCLIENTMETRICS TAGNONCLIENTMETRICS;
 alias NONCLIENTMETRICS TNONCLIENTMETRICS;
@@ -10784,12 +11038,12 @@ alias NONCLIENTMETRICS* PNONCLIENTMETRICS;
 
 struct SERVICE_ADDRESS
 {
-	DWORD dwAddressType;
-	DWORD dwAddressFlags;
-	DWORD dwAddressLength;
-	DWORD dwPrincipalLength;
-	ubyte* lpAddress;
-	ubyte* lpPrincipal;
+    DWORD dwAddressType;
+    DWORD dwAddressFlags;
+    DWORD dwAddressLength;
+    DWORD dwPrincipalLength;
+    ubyte* lpAddress;
+    ubyte* lpPrincipal;
 }
 
 alias SERVICE_ADDRESS _SERVICE_ADDRESS;
@@ -10798,8 +11052,8 @@ alias SERVICE_ADDRESS* PSERVICEADDRESS;
 
 struct SERVICE_ADDRESSES
 {
-	DWORD dwAddressCount;
-	SERVICE_ADDRESS[1 + 0] Addresses;
+    DWORD dwAddressCount;
+    SERVICE_ADDRESS[1 + 0] Addresses;
 }
 
 alias SERVICE_ADDRESSES* LPSERVICE_ADDRESSES;
@@ -10810,27 +11064,28 @@ alias SERVICE_ADDRESSES* PSERVICEADDRESSES;
 align(1) struct __GUID
 {
 
-	union
-	{
-		struct
-		{
-			uint Data1;
-			ushort Data2;
-			ushort Data3;
-			ubyte[1 + 7] Data4;
-		}
-		struct
-		{
-			uint D1;
-			ushort D2;
-			ushort D3;
-			ubyte[1 + 7] D4;
-		}
-	}
+    union
+    {
+        struct
+        {
+            uint Data1;
+            ushort Data2;
+            ushort Data3;
+            ubyte[1 + 7] Data4;
+        }
+        struct
+        {
+            uint D1;
+            ushort D2;
+            ushort D3;
+            ubyte[1 + 7] D4;
+        }
+    }
 }
 
 alias __GUID* LPGUID;
 alias __GUID _GUID;
+alias __GUID GUID;
 alias __GUID TGUID;
 alias __GUID* PGUID;
 alias __GUID __CLSID;
@@ -10840,16 +11095,16 @@ alias __CLSID* PCLSID;
 
 struct SERVICE_INFO
 {
-	LPGUID lpServiceType;
-	LPTSTR lpServiceName;
-	LPTSTR lpComment;
-	LPTSTR lpLocale;
-	DWORD dwDisplayHint;
-	DWORD dwVersion;
-	DWORD dwTime;
-	LPTSTR lpMachineName;
-	LPSERVICE_ADDRESSES lpServiceAddress;
-	BLOB ServiceSpecificInfo;
+    LPGUID lpServiceType;
+    LPTSTR lpServiceName;
+    LPTSTR lpComment;
+    LPTSTR lpLocale;
+    DWORD dwDisplayHint;
+    DWORD dwVersion;
+    DWORD dwTime;
+    LPTSTR lpMachineName;
+    LPSERVICE_ADDRESSES lpServiceAddress;
+    BLOB ServiceSpecificInfo;
 }
 
 alias SERVICE_INFO _SERVICE_INFO;
@@ -10858,8 +11113,8 @@ alias SERVICE_INFO* PSERVICEINFO;
 
 struct NS_SERVICE_INFO
 {
-	DWORD dwNameSpace;
-	SERVICE_INFO ServiceInfo;
+    DWORD dwNameSpace;
+    SERVICE_INFO ServiceInfo;
 }
 
 alias NS_SERVICE_INFO _NS_SERVICE_INFO;
@@ -10868,12 +11123,12 @@ alias NS_SERVICE_INFO* PNSSERVICEINFO;
 
 struct NUMBERFMT
 {
-	UINT NumDigits;
-	UINT LeadingZero;
-	UINT Grouping;
-	LPTSTR lpDecimalSep;
-	LPTSTR lpThousandSep;
-	UINT NegativeOrder;
+    UINT NumDigits;
+    UINT LeadingZero;
+    UINT Grouping;
+    LPTSTR lpDecimalSep;
+    LPTSTR lpThousandSep;
+    UINT NegativeOrder;
 }
 
 alias NUMBERFMT _NUMBERFMT;
@@ -10882,12 +11137,12 @@ alias NUMBERFMT* PNUMBERFMT;
 
 struct OFSTRUCT
 {
-	ubyte cBytes;
-	ubyte fFixedDisk;
-	ushort nErrCode;
-	ushort Reserved1;
-	ushort Reserved2;
-	char[1 + OFS_MAXPATHNAME-1] szPathName;
+    ubyte cBytes;
+    ubyte fFixedDisk;
+    ushort nErrCode;
+    ushort Reserved1;
+    ushort Reserved2;
+    char[1 + OFS_MAXPATHNAME-1] szPathName;
 }
 
 alias OFSTRUCT* LPOFSTRUCT;
@@ -10897,26 +11152,26 @@ alias OFSTRUCT* POFSTRUCT;
 
 struct OPENFILENAME
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HINST hInstance;
-	LPCTSTR lpstrFilter;
-	LPTSTR lpstrCustomFilter;
-	DWORD nMaxCustFilter;
-	DWORD nFilterIndex;
-	LPTSTR lpstrFile;
-	DWORD nMaxFile;
-	LPTSTR lpstrFileTitle;
-	DWORD nMaxFileTitle;
-	LPCTSTR lpstrInitialDir;
-	LPCTSTR lpstrTitle;
-	DWORD Flags;
-	ushort nFileOffset;
-	ushort nFileExtension;
-	LPCTSTR lpstrDefExt;
-	DWORD lCustData;
-	LPOFNHOOKPROC lpfnHook;
-	LPCTSTR lpTemplateName;
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINST hInstance;
+    LPCTSTR lpstrFilter;
+    LPTSTR lpstrCustomFilter;
+    DWORD nMaxCustFilter;
+    DWORD nFilterIndex;
+    LPTSTR lpstrFile;
+    DWORD nMaxFile;
+    LPTSTR lpstrFileTitle;
+    DWORD nMaxFileTitle;
+    LPCTSTR lpstrInitialDir;
+    LPCTSTR lpstrTitle;
+    DWORD Flags;
+    ushort nFileOffset;
+    ushort nFileExtension;
+    LPCTSTR lpstrDefExt;
+    DWORD lCustData;
+    LPOFNHOOKPROC lpfnHook;
+    LPCTSTR lpTemplateName;
 }
 
 alias OPENFILENAME* LPOPENFILENAME;
@@ -10928,9 +11183,9 @@ alias OPENFILENAME* POFN;
 
 struct OFNOTIFY
 {
-	NMHDR hdr;
-	LPOPENFILENAME lpOFN;
-	LPTSTR pszFile;
+    NMHDR hdr;
+    LPOPENFILENAME lpOFN;
+    LPTSTR pszFile;
 }
 
 alias OFNOTIFY* LPOFNOTIFY;
@@ -10938,98 +11193,197 @@ alias OFNOTIFY _OFNOTIFY;
 alias OFNOTIFY TOFNOTIFY;
 alias OFNOTIFY* POFNOTIFY;
 
-struct OSVERSIONINFO
+struct OSVERSIONINFOA
 {
-	DWORD dwOSVersionInfoSize;
-	DWORD dwMajorVersion;
-	DWORD dwMinorVersion;
-	DWORD dwBuildNumber;
-	DWORD dwPlatformId;
-	TCHAR[1 + 127] szCSDVersion;
+    DWORD dwOSVersionInfoSize;
+    DWORD dwMajorVersion;
+    DWORD dwMinorVersion;
+    DWORD dwBuildNumber;
+    DWORD dwPlatformId;
+    CHAR szCSDVersion[ 128 ];
 }
+alias OSVERSIONINFOA* POSVERSIONINFOA, LPOSVERSIONINFOA;
 
+struct OSVERSIONINFOW
+{
+    DWORD dwOSVersionInfoSize;
+    DWORD dwMajorVersion;
+    DWORD dwMinorVersion;
+    DWORD dwBuildNumber;
+    DWORD dwPlatformId;
+    WCHAR szCSDVersion[ 128 ];
+}
+alias OSVERSIONINFOW* POSVERSIONINFOW, LPOSVERSIONINFOW;
+version(Win32SansUnicode)
+{
+    alias OSVERSIONINFOA OSVERSIONINFO;
+}
+else
+{
+    alias OSVERSIONINFOW OSVERSIONINFO;
+}
 alias OSVERSIONINFO* LPOSVERSIONINFO;
 alias OSVERSIONINFO _OSVERSIONINFO;
 alias OSVERSIONINFO TOSVERSIONINFO;
 alias OSVERSIONINFO* POSVERSIONINFO;
 
-struct TEXTMETRIC
-{
-	LONG tmHeight;
-	LONG tmAscent;
-	LONG tmDescent;
-	LONG tmInternalLeading;
-	LONG tmExternalLeading;
-	LONG tmAveCharWidth;
-	LONG tmMaxCharWidth;
-	LONG tmWeight;
-	LONG tmOverhang;
-	LONG tmDigitizedAspectX;
-	LONG tmDigitizedAspectY;
-	BCHAR tmFirstChar;
-	BCHAR tmLastChar;
-	BCHAR tmDefaultChar;
-	BCHAR tmBreakChar;
-	ubyte tmItalic;
-	ubyte tmUnderlined;
-	ubyte tmStruckOut;
-	ubyte tmPitchAndFamily;
-	ubyte tmCharSet;
-}
 
+struct TEXTMETRICA {
+    align(1):
+    LONG tmHeight;
+    LONG tmAscent;
+    LONG tmDescent;
+    LONG tmInternalLeading;
+    LONG tmExternalLeading;
+    LONG tmAveCharWidth;
+    LONG tmMaxCharWidth;
+    LONG tmWeight;
+    LONG tmOverhang;
+    LONG tmDigitizedAspectX;
+    LONG tmDigitizedAspectY;
+
+    BYTE tmFirstChar;
+    BYTE tmLastChar;
+    BYTE tmDefaultChar;
+    BYTE tmBreakChar;
+
+    BYTE tmItalic;
+    BYTE tmUnderlined;
+    BYTE tmStruckOut;
+    BYTE tmPitchAndFamily;
+    BYTE tmCharSet;
+}
+struct TEXTMETRICW {
+    align(1):
+    LONG tmHeight;
+    LONG tmAscent;
+    LONG tmDescent;
+    LONG tmInternalLeading;
+    LONG tmExternalLeading;
+    LONG tmAveCharWidth;
+    LONG tmMaxCharWidth;
+    LONG tmWeight;
+    LONG tmOverhang;
+    LONG tmDigitizedAspectX;
+    LONG tmDigitizedAspectY;
+
+    WCHAR tmFirstChar;
+    WCHAR tmLastChar;
+    WCHAR tmDefaultChar;
+    WCHAR tmBreakChar;
+
+    BYTE tmItalic;
+    BYTE tmUnderlined;
+    BYTE tmStruckOut;
+    BYTE tmPitchAndFamily;
+    BYTE tmCharSet;
+}
+version(Win32SansUnicode)
+{
+    alias TEXTMETRICA TEXTMETRIC;
+}
+else
+{
+    alias TEXTMETRICW TEXTMETRIC;
+}
 alias TEXTMETRIC* LPTEXTMETRIC;
 alias TEXTMETRIC TAGTEXTMETRIC;
 alias TEXTMETRIC TTEXTMETRIC;
 alias TEXTMETRIC* PTEXTMETRIC;
 
-struct OUTLINETEXTMETRIC
+struct OUTLINETEXTMETRICA
 {
-	UINT otmSize;
-	TEXTMETRIC otmTextMetrics;
-	ubyte otmFiller;
-	PANOSE otmPanoseNumber;
-	UINT otmfsSelection;
-	UINT otmfsType;
-	int otmsCharSlopeRise;
-	int otmsCharSlopeRun;
-	int otmItalicAngle;
-	UINT otmEMSquare;
-	int otmAscent;
-	int otmDescent;
-	UINT otmLineGap;
-	UINT otmsCapEmHeight;
-	UINT otmsXHeight;
-	RECT otmrcFontBox;
-	int otmMacAscent;
-	int otmMacDescent;
-	UINT otmMacLineGap;
-	UINT otmusMinimumPPEM;
-	POINT otmptSubscriptSize;
-	POINT otmptSubscriptOffset;
-	POINT otmptSuperscriptSize;
-	POINT otmptSuperscriptOffset;
-	UINT otmsStrikeoutSize;
-	int otmsStrikeoutPosition;
-	int otmsUnderscoreSize;
-	int otmsUnderscorePosition;
-	PSTR otmpFamilyName;
-	PSTR otmpFaceName;
-	PSTR otmpStyleName;
-	PSTR otmpFullName;
+    UINT       otmSize;
+    TEXTMETRICA otmTextMetrics;
+    BYTE       otmFiller;
+    PANOSE     otmPanoseNumber;
+    UINT       otmfsSelection;
+    UINT       otmfsType;
+    int        otmsCharSlopeRise;
+    int        otmsCharSlopeRun;
+    int        otmItalicAngle;
+    UINT       otmEMSquare;
+    int        otmAscent;
+    int        otmDescent;
+    UINT       otmLineGap;
+    UINT       otmsCapEmHeight;
+    UINT       otmsXHeight;
+    RECT       otmrcFontBox;
+    int        otmMacAscent;
+    int        otmMacDescent;
+    UINT       otmMacLineGap;
+    UINT       otmusMinimumPPEM;
+    POINT      otmptSubscriptSize;
+    POINT      otmptSubscriptOffset;
+    POINT      otmptSuperscriptSize;
+    POINT      otmptSuperscriptOffset;
+    UINT       otmsStrikeoutSize;
+    int        otmsStrikeoutPosition;
+    int        otmsUnderscoreSize;
+    int        otmsUnderscorePosition;
+    PSTR       otmpFamilyName;
+    PSTR       otmpFaceName;
+    PSTR       otmpStyleName;
+    PSTR       otmpFullName;
+}
+struct OUTLINETEXTMETRICW
+{
+    UINT       otmSize;
+    TEXTMETRICW otmTextMetrics;
+    BYTE       otmFiller;
+    PANOSE     otmPanoseNumber;
+    UINT       otmfsSelection;
+    UINT       otmfsType;
+    int        otmsCharSlopeRise;
+    int        otmsCharSlopeRun;
+    int        otmItalicAngle;
+    UINT       otmEMSquare;
+    int        otmAscent;
+    int        otmDescent;
+    UINT       otmLineGap;
+    UINT       otmsCapEmHeight;
+    UINT       otmsXHeight;
+    RECT       otmrcFontBox;
+    int        otmMacAscent;
+    int        otmMacDescent;
+    UINT       otmMacLineGap;
+    UINT       otmusMinimumPPEM;
+    POINT      otmptSubscriptSize;
+    POINT      otmptSubscriptOffset;
+    POINT      otmptSuperscriptSize;
+    POINT      otmptSuperscriptOffset;
+    UINT       otmsStrikeoutSize;
+    int        otmsStrikeoutPosition;
+    int        otmsUnderscoreSize;
+    int        otmsUnderscorePosition;
+    PSTR       otmpFamilyName;
+    PSTR       otmpFaceName;
+    PSTR       otmpStyleName;
+    PSTR       otmpFullName;
 }
 
 alias OUTLINETEXTMETRIC* LPOUTLINETEXTMETRIC;
 alias OUTLINETEXTMETRIC _OUTLINETEXTMETRIC;
 alias OUTLINETEXTMETRIC TOUTLINETEXTMETRIC;
 alias OUTLINETEXTMETRIC* POUTLINETEXTMETRIC;
+version(Win32SansUnicode)
+{
+    alias OUTLINETEXTMETRICA OUTLINETEXTMETRIC;
+    alias OUTLINETEXTMETRICA* LPOUTLINETEXTMETRICA;
+}
+else
+{
+    alias OUTLINETEXTMETRICW OUTLINETEXTMETRIC;
+    alias OUTLINETEXTMETRICW* LPOUTLINETEXTMETRICW;
+}
 
 struct OVERLAPPED
 {
-	DWORD Internal;
-	DWORD InternalHigh;
-	DWORD Offset;
-	DWORD OffsetHigh;
-	HANDLE hEvent;
+    DWORD Internal;
+    DWORD InternalHigh;
+    DWORD Offset;
+    DWORD OffsetHigh;
+    HANDLE hEvent;
 }
 
 alias OVERLAPPED* LPOVERLAPPED;
@@ -11039,20 +11393,20 @@ alias OVERLAPPED* POVERLAPPED;
 
 struct TPAGESETUPDLG
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HGLOBAL hDevMode;
-	HGLOBAL hDevNames;
-	DWORD Flags;
-	POINT ptPaperSize;
-	RECT rtMinMargin;
-	RECT rtMargin;
-	HINST hInstance;
-	LPARAM lCustData;
-	LPPAGESETUPHOOK lpfnPageSetupHook;
-	LPPAGEPAINTHOOK lpfnPagePaintHook;
-	LPCTSTR lpPageSetupTemplateName;
-	HGLOBAL hPageSetupTemplate;
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HGLOBAL hDevMode;
+    HGLOBAL hDevNames;
+    DWORD Flags;
+    POINT ptPaperSize;
+    RECT rtMinMargin;
+    RECT rtMargin;
+    HINST hInstance;
+    LPARAM lCustData;
+    LPPAGESETUPHOOK lpfnPageSetupHook;
+    LPPAGEPAINTHOOK lpfnPagePaintHook;
+    LPCTSTR lpPageSetupTemplateName;
+    HGLOBAL hPageSetupTemplate;
 }
 
 alias TPAGESETUPDLG* LPPAGESETUPDLG;
@@ -11063,12 +11417,12 @@ alias TPAGESETUPDLG* PPSD;
 
 struct PAINTSTRUCT
 {
-	HDC hdc;
-	WINBOOL fErase;
-	RECT rcPaint;
-	WINBOOL fRestore;
-	WINBOOL fIncUpdate;
-	ubyte[1 + 31] rgbReserved;
+    HDC hdc;
+    WINBOOL fErase;
+    RECT rcPaint;
+    WINBOOL fRestore;
+    WINBOOL fIncUpdate;
+    ubyte[1 + 31] rgbReserved;
 }
 
 alias PAINTSTRUCT* LPPAINTSTRUCT;
@@ -11078,16 +11432,16 @@ alias PAINTSTRUCT* PPAINTSTRUCT;
 
 struct PARAFORMAT
 {
-	UINT cbSize;
-	DWORD dwMask;
-	ushort wNumbering;
-	ushort wReserved;
-	LONG dxStartIndent;
-	LONG dxRightIndent;
-	LONG dxOffset;
-	ushort wAlignment;
-	SHORT cTabCount;
-	LONG[1 + MAX_TAB_STOPS-1] rgxTabs;
+    UINT cbSize;
+    DWORD dwMask;
+    ushort wNumbering;
+    ushort wReserved;
+    LONG dxStartIndent;
+    LONG dxRightIndent;
+    LONG dxOffset;
+    ushort wAlignment;
+    SHORT cTabCount;
+    LONG[1 + MAX_TAB_STOPS-1] rgxTabs;
 }
 
 alias PARAFORMAT _PARAFORMAT;
@@ -11096,7 +11450,7 @@ alias PARAFORMAT* PPARAFORMAT;
 
 struct PERF_COUNTER_BLOCK
 {
-	DWORD ByteLength;
+    DWORD ByteLength;
 }
 
 alias PERF_COUNTER_BLOCK _PERF_COUNTER_BLOCK;
@@ -11105,16 +11459,16 @@ alias PERF_COUNTER_BLOCK* PPERFCOUNTERBLOCK;
 
 struct PERF_COUNTER_DEFINITION
 {
-	DWORD ByteLength;
-	DWORD CounterNameTitleIndex;
-	LPWSTR CounterNameTitle;
-	DWORD CounterHelpTitleIndex;
-	LPWSTR CounterHelpTitle;
-	DWORD DefaultScale;
-	DWORD DetailLevel;
-	DWORD CounterType;
-	DWORD CounterSize;
-	DWORD CounterOffset;
+    DWORD ByteLength;
+    DWORD CounterNameTitleIndex;
+    LPWSTR CounterNameTitle;
+    DWORD CounterHelpTitleIndex;
+    LPWSTR CounterHelpTitle;
+    DWORD DefaultScale;
+    DWORD DetailLevel;
+    DWORD CounterType;
+    DWORD CounterSize;
+    DWORD CounterOffset;
 }
 
 alias PERF_COUNTER_DEFINITION _PERF_COUNTER_DEFINITION;
@@ -11123,20 +11477,20 @@ alias PERF_COUNTER_DEFINITION* PPERFCOUNTERDEFINITION;
 
 struct PERF_DATA_BLOCK
 {
-	WCHAR[1 + 3] Signature;
-	DWORD LittleEndian;
-	DWORD Version;
-	DWORD Revision;
-	DWORD TotalByteLength;
-	DWORD HeaderLength;
-	DWORD NumObjectTypes;
-	DWORD DefaultObject;
-	SYSTEMTIME SystemTime;
-	LARGE_INTEGER PerfTime;
-	LARGE_INTEGER PerfFreq;
-	LARGE_INTEGER PerfTime100nSec;
-	DWORD SystemNameLength;
-	DWORD SystemNameOffset;
+    WCHAR[1 + 3] Signature;
+    DWORD LittleEndian;
+    DWORD Version;
+    DWORD Revision;
+    DWORD TotalByteLength;
+    DWORD HeaderLength;
+    DWORD NumObjectTypes;
+    DWORD DefaultObject;
+    SYSTEMTIME SystemTime;
+    LARGE_INTEGER PerfTime;
+    LARGE_INTEGER PerfFreq;
+    LARGE_INTEGER PerfTime100nSec;
+    DWORD SystemNameLength;
+    DWORD SystemNameOffset;
 }
 
 alias PERF_DATA_BLOCK _PERF_DATA_BLOCK;
@@ -11145,12 +11499,12 @@ alias PERF_DATA_BLOCK* PPERFDATABLOCK;
 
 struct PERF_INSTANCE_DEFINITION
 {
-	DWORD ByteLength;
-	DWORD ParentObjectTitleIndex;
-	DWORD ParentObjectInstance;
-	DWORD UniqueID;
-	DWORD NameOffset;
-	DWORD NameLength;
+    DWORD ByteLength;
+    DWORD ParentObjectTitleIndex;
+    DWORD ParentObjectInstance;
+    DWORD UniqueID;
+    DWORD NameOffset;
+    DWORD NameLength;
 }
 
 alias PERF_INSTANCE_DEFINITION _PERF_INSTANCE_DEFINITION;
@@ -11159,20 +11513,20 @@ alias PERF_INSTANCE_DEFINITION PPERFINSTANCEDEFINITION;
 
 struct PERF_OBJECT_TYPE
 {
-	DWORD TotalByteLength;
-	DWORD DefinitionLength;
-	DWORD HeaderLength;
-	DWORD ObjectNameTitleIndex;
-	LPWSTR ObjectNameTitle;
-	DWORD ObjectHelpTitleIndex;
-	LPWSTR ObjectHelpTitle;
-	DWORD DetailLevel;
-	DWORD NumCounters;
-	DWORD DefaultCounter;
-	DWORD NumInstances;
-	DWORD CodePage;
-	LARGE_INTEGER PerfTime;
-	LARGE_INTEGER PerfFreq;
+    DWORD TotalByteLength;
+    DWORD DefinitionLength;
+    DWORD HeaderLength;
+    DWORD ObjectNameTitleIndex;
+    LPWSTR ObjectNameTitle;
+    DWORD ObjectHelpTitleIndex;
+    LPWSTR ObjectHelpTitle;
+    DWORD DetailLevel;
+    DWORD NumCounters;
+    DWORD DefaultCounter;
+    DWORD NumInstances;
+    DWORD CodePage;
+    LARGE_INTEGER PerfTime;
+    LARGE_INTEGER PerfFreq;
 }
 
 alias PERF_OBJECT_TYPE _PERF_OBJECT_TYPE;
@@ -11181,13 +11535,13 @@ alias PERF_OBJECT_TYPE* PPERFOBJECTTYPE;
 
 struct POLYTEXT
 {
-	int x;
-	int y;
-	UINT n;
-	LPCTSTR lpstr;
-	UINT uiFlags;
-	RECT rcl;
-	int* pdx;
+    int x;
+    int y;
+    UINT n;
+    LPCTSTR lpstr;
+    UINT uiFlags;
+    RECT rcl;
+    int* pdx;
 }
 
 alias POLYTEXT _POLYTEXT;
@@ -11196,7 +11550,7 @@ alias POLYTEXT* PPOLYTEXT;
 
 struct PORT_INFO_1
 {
-	LPTSTR pName;
+    LPTSTR pName;
 }
 
 alias PORT_INFO_1 _PORT_INFO_1;
@@ -11205,11 +11559,11 @@ alias PORT_INFO_1* PPORTINFO1;
 
 struct PORT_INFO_2
 {
-	LPSTR pPortName;
-	LPSTR pMonitorName;
-	LPSTR pDescription;
-	DWORD fPortType;
-	DWORD Reserved;
+    LPSTR pPortName;
+    LPSTR pMonitorName;
+    LPSTR pDescription;
+    DWORD fPortType;
+    DWORD Reserved;
 }
 
 alias PORT_INFO_2 _PORT_INFO_2;
@@ -11218,7 +11572,7 @@ alias PORT_INFO_2* PPORTINFO2;
 
 struct PREVENT_MEDIA_REMOVAL
 {
-	ubyte PreventMediaRemoval;
+    ubyte PreventMediaRemoval;
 }
 
 alias PREVENT_MEDIA_REMOVAL _PREVENT_MEDIA_REMOVAL;
@@ -11227,25 +11581,25 @@ alias PREVENT_MEDIA_REMOVAL* PPREVENTMEDIAREMOVAL;
 
 align(1) struct TPRINTDLG
 {
-	DWORD lStructSize;
-	HWND hwndOwner;
-	HANDLE hDevMode;
-	HANDLE hDevNames;
-	HDC hDC;
-	DWORD Flags;
-	ushort nFromPage;
-	ushort nToPage;
-	ushort nMinPage;
-	ushort nMaxPage;
-	ushort nCopies;
-	HINST hInstance;
-	DWORD lCustData;
-	LPPRINTHOOKPROC lpfnPrintHook;
-	LPSETUPHOOKPROC lpfnSetupHook;
-	LPCTSTR lpPrintTemplateName;
-	LPCTSTR lpSetupTemplateName;
-	HANDLE hPrintTemplate;
-	HANDLE hSetupTemplate;
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HANDLE hDevMode;
+    HANDLE hDevNames;
+    HDC hDC;
+    DWORD Flags;
+    ushort nFromPage;
+    ushort nToPage;
+    ushort nMinPage;
+    ushort nMaxPage;
+    ushort nCopies;
+    HINST hInstance;
+    DWORD lCustData;
+    LPPRINTHOOKPROC lpfnPrintHook;
+    LPSETUPHOOKPROC lpfnSetupHook;
+    LPCTSTR lpPrintTemplateName;
+    LPCTSTR lpSetupTemplateName;
+    HANDLE hPrintTemplate;
+    HANDLE hSetupTemplate;
 }
 
 alias TPRINTDLG* LPPRINTDLG;
@@ -11256,9 +11610,9 @@ alias TPRINTDLG* PPD;
 
 struct PRINTER_DEFAULTS
 {
-	LPTSTR pDatatype;
-	LPDEVMODE pDevMode;
-	ACCESS_MASK DesiredAccess;
+    LPTSTR pDatatype;
+    LPDEVMODE pDevMode;
+    ACCESS_MASK DesiredAccess;
 }
 
 alias PRINTER_DEFAULTS _PRINTER_DEFAULTS;
@@ -11267,10 +11621,10 @@ alias PRINTER_DEFAULTS* PPRINTERDEFAULTS;
 
 struct PRINTER_INFO_1
 {
-	DWORD Flags;
-	LPTSTR pDescription;
-	LPTSTR pName;
-	LPTSTR pComment;
+    DWORD Flags;
+    LPTSTR pDescription;
+    LPTSTR pName;
+    LPTSTR pComment;
 }
 
 alias PRINTER_INFO_1* LPPRINTER_INFO_1;
@@ -11281,27 +11635,27 @@ alias PRINTER_INFO_1* PPRINTERINFO1;
 
 struct PRINTER_INFO_2
 {
-	LPTSTR pServerName;
-	LPTSTR pPrinterName;
-	LPTSTR pShareName;
-	LPTSTR pPortName;
-	LPTSTR pDriverName;
-	LPTSTR pComment;
-	LPTSTR pLocation;
-	LPDEVMODE pDevMode;
-	LPTSTR pSepFile;
-	LPTSTR pPrintProcessor;
-	LPTSTR pDatatype;
-	LPTSTR pParameters;
-	PSECURITY_DESCRIPTOR pSecurityDescriptor;
-	DWORD Attributes;
-	DWORD Priority;
-	DWORD DefaultPriority;
-	DWORD StartTime;
-	DWORD UntilTime;
-	DWORD Status;
-	DWORD cJobs;
-	DWORD AveragePPM;
+    LPTSTR pServerName;
+    LPTSTR pPrinterName;
+    LPTSTR pShareName;
+    LPTSTR pPortName;
+    LPTSTR pDriverName;
+    LPTSTR pComment;
+    LPTSTR pLocation;
+    LPDEVMODE pDevMode;
+    LPTSTR pSepFile;
+    LPTSTR pPrintProcessor;
+    LPTSTR pDatatype;
+    LPTSTR pParameters;
+    PSECURITY_DESCRIPTOR pSecurityDescriptor;
+    DWORD Attributes;
+    DWORD Priority;
+    DWORD DefaultPriority;
+    DWORD StartTime;
+    DWORD UntilTime;
+    DWORD Status;
+    DWORD cJobs;
+    DWORD AveragePPM;
 }
 
 alias PRINTER_INFO_2 _PRINTER_INFO_2;
@@ -11310,7 +11664,7 @@ alias PRINTER_INFO_2* PPRINTERINFO2;
 
 struct PRINTER_INFO_3
 {
-	PSECURITY_DESCRIPTOR pSecurityDescriptor;
+    PSECURITY_DESCRIPTOR pSecurityDescriptor;
 }
 
 alias PRINTER_INFO_3 _PRINTER_INFO_3;
@@ -11319,9 +11673,9 @@ alias PRINTER_INFO_3* PPRINTERINFO3;
 
 struct PRINTER_INFO_4
 {
-	LPTSTR pPrinterName;
-	LPTSTR pServerName;
-	DWORD Attributes;
+    LPTSTR pPrinterName;
+    LPTSTR pServerName;
+    DWORD Attributes;
 }
 
 alias PRINTER_INFO_4 _PRINTER_INFO_4;
@@ -11330,11 +11684,11 @@ alias PRINTER_INFO_4* PPRINTERINFO4;
 
 struct PRINTER_INFO_5
 {
-	LPTSTR pPrinterName;
-	LPTSTR pPortName;
-	DWORD Attributes;
-	DWORD DeviceNotSelectedTimeout;
-	DWORD TransmissionRetryTimeout;
+    LPTSTR pPrinterName;
+    LPTSTR pPortName;
+    DWORD Attributes;
+    DWORD DeviceNotSelectedTimeout;
+    DWORD TransmissionRetryTimeout;
 }
 
 alias PRINTER_INFO_5 _PRINTER_INFO_5;
@@ -11343,23 +11697,23 @@ alias PRINTER_INFO_5* PPRINTERINFO5;
 
 struct PRINTER_NOTIFY_INFO_DATA
 {
-	ushort _Type;
-	ushort Field;
-	DWORD Reserved;
-	DWORD Id;
+    ushort _Type;
+    ushort Field;
+    DWORD Reserved;
+    DWORD Id;
 
-	union
-	{
-		struct
-		{
-			DWORD[1 + 1] adwData;
-		}
-		struct
-		{
-			DWORD cbBuf;
-			LPVOID pBuf;
-		}
-	}
+    union
+    {
+        struct
+        {
+            DWORD[1 + 1] adwData;
+        }
+        struct
+        {
+            DWORD cbBuf;
+            LPVOID pBuf;
+        }
+    }
 }
 
 alias PRINTER_NOTIFY_INFO_DATA _PRINTER_NOTIFY_INFO_DATA;
@@ -11368,10 +11722,10 @@ alias PRINTER_NOTIFY_INFO_DATA* PPRINTERNOTIFYINFODATA;
 
 struct PRINTER_NOTIFY_INFO
 {
-	DWORD Version;
-	DWORD Flags;
-	DWORD Count;
-	PRINTER_NOTIFY_INFO_DATA[1 + 0] aData;
+    DWORD Version;
+    DWORD Flags;
+    DWORD Count;
+    PRINTER_NOTIFY_INFO_DATA[1 + 0] aData;
 }
 
 alias PRINTER_NOTIFY_INFO _PRINTER_NOTIFY_INFO;
@@ -11380,12 +11734,12 @@ alias PRINTER_NOTIFY_INFO* PPRINTERNOTIFYINFO;
 
 struct PRINTER_NOTIFY_OPTIONS_TYPE
 {
-	ushort _Type;
-	ushort Reserved0;
-	DWORD Reserved1;
-	DWORD Reserved2;
-	DWORD Count;
-	PWORD pFields;
+    ushort _Type;
+    ushort Reserved0;
+    DWORD Reserved1;
+    DWORD Reserved2;
+    DWORD Count;
+    PWORD pFields;
 }
 
 alias PRINTER_NOTIFY_OPTIONS_TYPE* PPRINTER_NOTIFY_OPTIONS_TYPE;
@@ -11395,10 +11749,10 @@ alias PRINTER_NOTIFY_OPTIONS_TYPE* PPRINTERNOTIFYOPTIONSTYPE;
 
 struct PRINTER_NOTIFY_OPTIONS
 {
-	DWORD Version;
-	DWORD Flags;
-	DWORD Count;
-	PPRINTER_NOTIFY_OPTIONS_TYPE pTypes;
+    DWORD Version;
+    DWORD Flags;
+    DWORD Count;
+    PPRINTER_NOTIFY_OPTIONS_TYPE pTypes;
 }
 
 alias PRINTER_NOTIFY_OPTIONS _PRINTER_NOTIFY_OPTIONS;
@@ -11407,7 +11761,7 @@ alias PRINTER_NOTIFY_OPTIONS* PPRINTERNOTIFYOPTIONS;
 
 struct PRINTPROCESSOR_INFO_1
 {
-	LPTSTR pName;
+    LPTSTR pName;
 }
 
 alias PRINTPROCESSOR_INFO_1 _PRINTPROCESSOR_INFO_1;
@@ -11416,9 +11770,9 @@ alias PRINTPROCESSOR_INFO_1* PPRINTPROCESSORINFO1;
 
 struct PRIVILEGE_SET
 {
-	DWORD PrivilegeCount;
-	DWORD Control;
-	LUID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Privilege;
+    DWORD PrivilegeCount;
+    DWORD Control;
+    LUID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Privilege;
 }
 
 alias PRIVILEGE_SET* LPPRIVILEGE_SET;
@@ -11429,16 +11783,16 @@ alias PRIVILEGE_SET* PPRIVILEGESET;
 
 struct PROCESS_HEAPENTRY
 {
-	PVOID lpData;
-	DWORD cbData;
-	ubyte cbOverhead;
-	ubyte iRegionIndex;
-	ushort wFlags;
-	DWORD dwCommittedSize;
-	DWORD dwUnCommittedSize;
-	LPVOID lpFirstBlock;
-	LPVOID lpLastBlock;
-	HANDLE hMem;
+    PVOID lpData;
+    DWORD cbData;
+    ubyte cbOverhead;
+    ubyte iRegionIndex;
+    ushort wFlags;
+    DWORD dwCommittedSize;
+    DWORD dwUnCommittedSize;
+    LPVOID lpFirstBlock;
+    LPVOID lpLastBlock;
+    HANDLE hMem;
 }
 
 alias PROCESS_HEAPENTRY* LPPROCESS_HEAP_ENTRY;
@@ -11448,10 +11802,10 @@ alias PROCESS_HEAPENTRY* PPROCESSHEAPENTRY;
 
 struct PROCESS_INFORMATION
 {
-	HANDLE hProcess;
-	HANDLE hThread;
-	DWORD dwProcessId;
-	DWORD dwThreadId;
+    HANDLE hProcess;
+    HANDLE hThread;
+    DWORD dwProcessId;
+    DWORD dwThreadId;
 }
 
 alias PROCESS_INFORMATION* LPPROCESS_INFORMATION;
@@ -11464,49 +11818,49 @@ alias LPFNPSPCALLBACK TFNPSPCALLBACK;
 struct PROPSHEETPAGE_U1
 {
 
-	union
-	{
-		struct
-		{
-			LPCTSTR pszTemplate;
-		}
-		struct
-		{
-			LPCDLGTEMPLATE pResource;
-		}
-	}
+    union
+    {
+        struct
+        {
+            LPCTSTR pszTemplate;
+        }
+        struct
+        {
+            LPCDLGTEMPLATE pResource;
+        }
+    }
 }
 
 
 struct PROPSHEETPAGE_U2
 {
 
-	union
-	{
-		struct
-		{
-			HICON hIcon;
-		}
-		struct
-		{
-			LPCTSTR pszIcon;
-		}
-	}
+    union
+    {
+        struct
+        {
+            HICON hIcon;
+        }
+        struct
+        {
+            LPCTSTR pszIcon;
+        }
+    }
 }
 
 
 struct PROPSHEETPAGE
 {
-	DWORD dwSize;
-	DWORD dwFlags;
-	HINST hInstance;
-	PROPSHEETPAGE_U1 u1;
-	PROPSHEETPAGE_U2 u2;
-	LPCTSTR pszTitle;
-	DLGPROC pfnDlgProc;
-	LPARAM lParam;
-	LPFNPSPCALLBACK pfnCallback;
-	UINT* pcRefParent;
+    DWORD dwSize;
+    DWORD dwFlags;
+    HINST hInstance;
+    PROPSHEETPAGE_U1 u1;
+    PROPSHEETPAGE_U2 u2;
+    LPCTSTR pszTitle;
+    DLGPROC pfnDlgProc;
+    LPARAM lParam;
+    LPFNPSPCALLBACK pfnCallback;
+    UINT* pcRefParent;
 }
 
 alias PROPSHEETPAGE* LPPROPSHEETPAGE;
@@ -11524,66 +11878,66 @@ alias EMPTYRECORD* HPROPSHEETPAGE;
 struct PROPSHEETHEADER_U1
 {
 
-	union
-	{
-		struct
-		{
-			HICON hIcon;
-		}
-		struct
-		{
-			LPCTSTR pszIcon;
-		}
-	}
+    union
+    {
+        struct
+        {
+            HICON hIcon;
+        }
+        struct
+        {
+            LPCTSTR pszIcon;
+        }
+    }
 }
 
 
 struct PROPSHEETHEADER_U2
 {
 
-	union
-	{
-		struct
-		{
-			UINT nStartPage;
-		}
-		struct
-		{
-			LPCTSTR pStartPage;
-		}
-	}
+    union
+    {
+        struct
+        {
+            UINT nStartPage;
+        }
+        struct
+        {
+            LPCTSTR pStartPage;
+        }
+    }
 }
 
 
 struct PROPSHEETHEADER_U3
 {
 
-	union
-	{
-		struct
-		{
-			LPCPROPSHEETPAGE ppsp;
-		}
-		struct
-		{
-			HPROPSHEETPAGE* phpage;
-		}
-	}
+    union
+    {
+        struct
+        {
+            LPCPROPSHEETPAGE ppsp;
+        }
+        struct
+        {
+            HPROPSHEETPAGE* phpage;
+        }
+    }
 }
 
 
 struct PROPSHEETHEADER
 {
-	DWORD dwSize;
-	DWORD dwFlags;
-	HWND hwndParent;
-	HINST hInstance;
-	PROPSHEETHEADER_U1 u1;
-	LPCTSTR pszCaption;
-	UINT nPages;
-	PROPSHEETHEADER_U2 u2;
-	PROPSHEETHEADER_U3 u3;
-	PFNPROPSHEETCALLBACK pfnCallback;
+    DWORD dwSize;
+    DWORD dwFlags;
+    HWND hwndParent;
+    HINST hInstance;
+    PROPSHEETHEADER_U1 u1;
+    LPCTSTR pszCaption;
+    UINT nPages;
+    PROPSHEETHEADER_U2 u2;
+    PROPSHEETHEADER_U3 u3;
+    PFNPROPSHEETCALLBACK pfnCallback;
 }
 
 alias PROPSHEETHEADER* LPPROPSHEETHEADER;
@@ -11600,14 +11954,14 @@ alias LPFNADDPROPSHEETPAGES TFNADDPROPSHEETPAGES;
 
 struct PROTOCOL_INFO
 {
-	DWORD dwServiceFlags;
-	INT iAddressFamily;
-	INT iMaxSockAddr;
-	INT iMinSockAddr;
-	INT iSocketType;
-	INT iProtocol;
-	DWORD dwMessageSize;
-	LPTSTR lpProtocol;
+    DWORD dwServiceFlags;
+    INT iAddressFamily;
+    INT iMaxSockAddr;
+    INT iMinSockAddr;
+    INT iSocketType;
+    INT iProtocol;
+    DWORD dwMessageSize;
+    LPTSTR lpProtocol;
 }
 
 alias PROTOCOL_INFO _PROTOCOL_INFO;
@@ -11616,9 +11970,9 @@ alias PROTOCOL_INFO* PPROTOCOLINFO;
 
 struct PROVIDOR_INFO_1
 {
-	LPTSTR pName;
-	LPTSTR pEnvironment;
-	LPTSTR pDLLName;
+    LPTSTR pName;
+    LPTSTR pEnvironment;
+    LPTSTR pDLLName;
 }
 
 alias PROVIDOR_INFO_1 _PROVIDOR_INFO_1;
@@ -11627,8 +11981,8 @@ alias PROVIDOR_INFO_1* PPROVIDORINFO1;
 
 struct PSHNOTIFY
 {
-	NMHDR hdr;
-	LPARAM lParam;
+    NMHDR hdr;
+    LPARAM lParam;
 }
 
 alias PSHNOTIFY* LPPSHNOTIFY;
@@ -11638,8 +11992,8 @@ alias PSHNOTIFY* PPSHNOTIFY;
 
 struct PUNCTUATION
 {
-	UINT iSize;
-	LPSTR szPunctuation;
+    UINT iSize;
+    LPSTR szPunctuation;
 }
 
 alias PUNCTUATION _PUNCTUATION;
@@ -11648,15 +12002,15 @@ alias PUNCTUATION* PPUNCTUATION;
 
 struct QUERY_SERVICE_CONFIG
 {
-	DWORD dwServiceType;
-	DWORD dwStartType;
-	DWORD dwErrorControl;
-	LPTSTR lpBinaryPathName;
-	LPTSTR lpLoadOrderGroup;
-	DWORD dwTagId;
-	LPTSTR lpDependencies;
-	LPTSTR lpServiceStartName;
-	LPTSTR lpDisplayName;
+    DWORD dwServiceType;
+    DWORD dwStartType;
+    DWORD dwErrorControl;
+    LPTSTR lpBinaryPathName;
+    LPTSTR lpLoadOrderGroup;
+    DWORD dwTagId;
+    LPTSTR lpDependencies;
+    LPTSTR lpServiceStartName;
+    LPTSTR lpDisplayName;
 }
 
 alias QUERY_SERVICE_CONFIG* LPQUERY_SERVICE_CONFIG;
@@ -11666,9 +12020,9 @@ alias QUERY_SERVICE_CONFIG* PQUERYSERVICECONFIG;
 
 struct QUERY_SERVICE_LOCK_STATUS
 {
-	DWORD fIsLocked;
-	LPTSTR lpLockOwner;
-	DWORD dwLockDuration;
+    DWORD fIsLocked;
+    LPTSTR lpLockOwner;
+    DWORD dwLockDuration;
 }
 
 alias QUERY_SERVICE_LOCK_STATUS* LPQUERY_SERVICE_LOCK_STATUS;
@@ -11678,10 +12032,10 @@ alias QUERY_SERVICE_LOCK_STATUS* PQUERYSERVICELOCKSTATUS;
 
 struct RASAMB
 {
-	DWORD dwSize;
-	DWORD dwError;
-	TCHAR[1 + NETBIOS_NAME_LEN+1-1] szNetBiosError;
-	ubyte bLana;
+    DWORD dwSize;
+    DWORD dwError;
+    TCHAR[1 + NETBIOS_NAME_LEN+1-1] szNetBiosError;
+    ubyte bLana;
 }
 
 alias RASAMB _RASAMB;
@@ -11690,11 +12044,11 @@ alias RASAMB* PRASAMB;
 
 struct RASCONN
 {
-	DWORD dwSize;
-	HRASCONN hrasconn;
-	TCHAR[1 + RAS_MaxEntryName+1-1] szEntryName;
-	char[1 + RAS_MaxDeviceType+1-1] szDeviceType;
-	char[1 + RAS_MaxDeviceName+1-1] szDeviceName;
+    DWORD dwSize;
+    HRASCONN hrasconn;
+    TCHAR[1 + RAS_MaxEntryName+1-1] szEntryName;
+    char[1 + RAS_MaxDeviceType+1-1] szDeviceType;
+    char[1 + RAS_MaxDeviceName+1-1] szDeviceName;
 }
 
 alias RASCONN _RASCONN;
@@ -11703,11 +12057,11 @@ alias RASCONN* PRASCONN;
 
 struct RASCONNSTATUS
 {
-	DWORD dwSize;
-	RASCONNSTATE rasconnstate;
-	DWORD dwError;
-	TCHAR[1 + RAS_MaxDeviceType+1-1] szDeviceType;
-	TCHAR[1 + RAS_MaxDeviceName+1-1] szDeviceName;
+    DWORD dwSize;
+    RASCONNSTATE rasconnstate;
+    DWORD dwError;
+    TCHAR[1 + RAS_MaxDeviceType+1-1] szDeviceType;
+    TCHAR[1 + RAS_MaxDeviceName+1-1] szDeviceName;
 }
 
 alias RASCONNSTATUS _RASCONNSTATUS;
@@ -11716,10 +12070,10 @@ alias RASCONNSTATUS* PRASCONNSTATUS;
 
 struct RASDIALEXTENSIONS
 {
-	DWORD dwSize;
-	DWORD dwfOptions;
-	HWND hwndParent;
-	DWORD reserved;
+    DWORD dwSize;
+    DWORD dwfOptions;
+    HWND hwndParent;
+    DWORD reserved;
 }
 
 alias RASDIALEXTENSIONS _RASDIALEXTENSIONS;
@@ -11728,13 +12082,13 @@ alias RASDIALEXTENSIONS* PRASDIALEXTENSIONS;
 
 struct RASDIALPARAMS
 {
-	DWORD dwSize;
-	TCHAR[1 + RAS_MaxEntryName+1-1] szEntryName;
-	TCHAR[1 + RAS_MaxPhoneNumber+1-1] szPhoneNumber;
-	TCHAR[1 + (RAS_MaxCallbackNumber+1)-1] szCallbackNumber;
-	TCHAR[1 + (UNLEN+1)-1] szUserName;
-	TCHAR[1 + (PWLEN+1)-1] szPassword;
-	TCHAR[1 + (DNLEN+1)-1] szDomain;
+    DWORD dwSize;
+    TCHAR[1 + RAS_MaxEntryName+1-1] szEntryName;
+    TCHAR[1 + RAS_MaxPhoneNumber+1-1] szPhoneNumber;
+    TCHAR[1 + (RAS_MaxCallbackNumber+1)-1] szCallbackNumber;
+    TCHAR[1 + (UNLEN+1)-1] szUserName;
+    TCHAR[1 + (PWLEN+1)-1] szPassword;
+    TCHAR[1 + (DNLEN+1)-1] szDomain;
 }
 
 alias RASDIALPARAMS _RASDIALPARAMS;
@@ -11743,8 +12097,8 @@ alias RASDIALPARAMS* PRASDIALPARAMS;
 
 struct RASENTRYNAME
 {
-	DWORD dwSize;
-	TCHAR[1 + (RAS_MaxEntryName+1)-1] szEntryName;
+    DWORD dwSize;
+    TCHAR[1 + (RAS_MaxEntryName+1)-1] szEntryName;
 }
 
 alias RASENTRYNAME _RASENTRYNAME;
@@ -11753,9 +12107,9 @@ alias RASENTRYNAME* PRASENTRYNAME;
 
 struct RASPPPIP
 {
-	DWORD dwSize;
-	DWORD dwError;
-	TCHAR[1 + (RAS_MaxIpAddress+1)-1] szIpAddress;
+    DWORD dwSize;
+    DWORD dwError;
+    TCHAR[1 + (RAS_MaxIpAddress+1)-1] szIpAddress;
 }
 
 alias RASPPPIP _RASPPPIP;
@@ -11764,9 +12118,9 @@ alias RASPPPIP* PRASPPPIP;
 
 struct RASPPPIPX
 {
-	DWORD dwSize;
-	DWORD dwError;
-	TCHAR[1 + (RAS_MaxIpxAddress+1)-1] szIpxAddress;
+    DWORD dwSize;
+    DWORD dwError;
+    TCHAR[1 + (RAS_MaxIpxAddress+1)-1] szIpxAddress;
 }
 
 alias RASPPPIPX _RASPPPIPX;
@@ -11775,12 +12129,12 @@ alias RASPPPIPX* PRASPPPIPX;
 
 struct RASPPPNBF
 {
-	DWORD dwSize;
-	DWORD dwError;
-	DWORD dwNetBiosError;
-	TCHAR[1 + (NETBIOS_NAME_LEN+1)-1] szNetBiosError;
-	TCHAR[1 + (NETBIOS_NAME_LEN+1)-1] szWorkstationName;
-	ubyte bLana;
+    DWORD dwSize;
+    DWORD dwError;
+    DWORD dwNetBiosError;
+    TCHAR[1 + (NETBIOS_NAME_LEN+1)-1] szNetBiosError;
+    TCHAR[1 + (NETBIOS_NAME_LEN+1)-1] szWorkstationName;
+    ubyte bLana;
 }
 
 alias RASPPPNBF _RASPPPNBF;
@@ -11789,9 +12143,9 @@ alias RASPPPNBF* PRASPPPNBF;
 
 struct RASTERIZER_STATUS
 {
-	int nSize;
-	int wFlags;
-	int nLanguageID;
+    int nSize;
+    int wFlags;
+    int nLanguageID;
 }
 
 alias RASTERIZER_STATUS* LPRASTERIZER_STATUS;
@@ -11801,9 +12155,9 @@ alias RASTERIZER_STATUS* PRASTERIZERSTATUS;
 
 struct REASSIGN_BLOCKS
 {
-	ushort Reserved;
-	ushort Count;
-	DWORD[1 + 0] BlockNumber;
+    ushort Reserved;
+    ushort Count;
+    DWORD[1 + 0] BlockNumber;
 }
 
 alias REASSIGN_BLOCKS _REASSIGN_BLOCKS;
@@ -11812,9 +12166,9 @@ alias REASSIGN_BLOCKS* PREASSIGNBLOCKS;
 
 struct REMOTE_NAME_INFO
 {
-	LPTSTR lpUniversalName;
-	LPTSTR lpConnectionName;
-	LPTSTR lpRemainingPath;
+    LPTSTR lpUniversalName;
+    LPTSTR lpConnectionName;
+    LPTSTR lpRemainingPath;
 }
 
 alias REMOTE_NAME_INFO _REMOTE_NAME_INFO;
@@ -11823,8 +12177,8 @@ alias REMOTE_NAME_INFO* PREMOTENAMEINFO;
 
 struct REPASTESPECIAL
 {
-	DWORD dwAspect;
-	DWORD dwParam;
+    DWORD dwAspect;
+    DWORD dwParam;
 }
 
 alias REPASTESPECIAL _REPASTESPECIAL;
@@ -11833,8 +12187,8 @@ alias REPASTESPECIAL* PREPASTESPECIAL;
 
 struct REQRESIZE
 {
-	NMHDR nmhdr;
-	RECT rc;
+    NMHDR nmhdr;
+    RECT rc;
 }
 
 alias REQRESIZE _REQRESIZE;
@@ -11843,21 +12197,22 @@ alias REQRESIZE* PREQRESIZE;
 
 struct RGNDATAHEADER
 {
-	DWORD dwSize;
-	DWORD iType;
-	DWORD nCount;
-	DWORD nRgnSize;
-	RECT rcBound;
+    DWORD dwSize;
+    DWORD iType;
+    DWORD nCount;
+    DWORD nRgnSize;
+    RECT rcBound;
 }
 
 alias RGNDATAHEADER _RGNDATAHEADER;
 alias RGNDATAHEADER TRGNDATAHEADER;
 alias RGNDATAHEADER* PRGNDATAHEADER;
+alias RGNDATAHEADER* LPRGNDATAHEADER;
 
 struct RGNDATA
 {
-	RGNDATAHEADER rdh;
-	char[1 + 0] Buffer;
+    RGNDATAHEADER rdh;
+    char[1 + 0] Buffer;
 }
 
 alias RGNDATA* LPRGNDATA;
@@ -11867,13 +12222,13 @@ alias RGNDATA* PRGNDATA;
 
 struct SCROLLINFO
 {
-	UINT cbSize;
-	UINT fMask;
-	int nMin;
-	int nMax;
-	UINT nPage;
-	int nPos;
-	int nTrackPos;
+    UINT cbSize;
+    UINT fMask;
+    int nMin;
+    int nMax;
+    UINT nPage;
+    int nPos;
+    int nTrackPos;
 }
 
 alias SCROLLINFO* LPSCROLLINFO;
@@ -11884,9 +12239,9 @@ alias SCROLLINFO* PSCROLLINFO;
 
 struct SECURITY_ATTRIBUTES
 {
-	DWORD nLength;
-	LPVOID lpSecurityDescriptor;
-	WINBOOL bInheritHandle;
+    DWORD nLength;
+    LPVOID lpSecurityDescriptor;
+    WINBOOL bInheritHandle;
 }
 
 alias SECURITY_ATTRIBUTES* LPSECURITY_ATTRIBUTES;
@@ -11900,9 +12255,9 @@ alias SECURITY_INFORMATION* PSECURITYINFORMATION;
 
 struct SELCHANGE
 {
-	NMHDR nmhdr;
-	CHARRANGE chrg;
-	ushort seltyp;
+    NMHDR nmhdr;
+    CHARRANGE chrg;
+    ushort seltyp;
 }
 
 alias SELCHANGE _SELCHANGE;
@@ -11911,12 +12266,12 @@ alias SELCHANGE* PSELCHANGE;
 
 struct SERIALKEYS
 {
-	DWORD cbSize;
-	DWORD dwFlags;
-	LPSTR lpszActivePort;
-	LPSTR lpszPort;
-	DWORD iBaudRate;
-	DWORD iPortState;
+    DWORD cbSize;
+    DWORD dwFlags;
+    LPSTR lpszActivePort;
+    LPSTR lpszPort;
+    DWORD iBaudRate;
+    DWORD iPortState;
 }
 
 alias SERIALKEYS* LPSERIALKEYS;
@@ -11926,8 +12281,8 @@ alias SERIALKEYS* PSERIALKEYS;
 
 struct SERVICE_TABLE_ENTRY
 {
-	LPTSTR lpServiceName;
-	LPSERVICE_MAIN_FUNCTION lpServiceProc;
+    LPTSTR lpServiceName;
+    LPSERVICE_MAIN_FUNCTION lpServiceProc;
 }
 
 alias SERVICE_TABLE_ENTRY* LPSERVICE_TABLE_ENTRY;
@@ -11937,11 +12292,11 @@ alias SERVICE_TABLE_ENTRY* PSERVICETABLEENTRY;
 
 struct SERVICE_TYPE_VALUE_ABS
 {
-	DWORD dwNameSpace;
-	DWORD dwValueType;
-	DWORD dwValueSize;
-	LPTSTR lpValueName;
-	PVOID lpValue;
+    DWORD dwNameSpace;
+    DWORD dwValueType;
+    DWORD dwValueSize;
+    LPTSTR lpValueName;
+    PVOID lpValue;
 }
 
 alias SERVICE_TYPE_VALUE_ABS _SERVICE_TYPE_VALUE_ABS;
@@ -11950,9 +12305,9 @@ alias SERVICE_TYPE_VALUE_ABS* PSERVICETYPEVALUEABS;
 
 struct SERVICE_TYPE_INFO_ABS
 {
-	LPTSTR lpTypeName;
-	DWORD dwValueCount;
-	SERVICE_TYPE_VALUE_ABS[1 + 0] Values;
+    LPTSTR lpTypeName;
+    DWORD dwValueCount;
+    SERVICE_TYPE_VALUE_ABS[1 + 0] Values;
 }
 
 alias SERVICE_TYPE_INFO_ABS _SERVICE_TYPE_INFO_ABS;
@@ -11961,12 +12316,12 @@ alias SERVICE_TYPE_INFO_ABS* PSERVICETYPEINFOABS;
 
 struct SESSION_BUFFER
 {
-	UCHAR lsn;
-	UCHAR state;
-	UCHAR[1 + NCBNAMSZ-1] local_name;
-	UCHAR[1 + NCBNAMSZ-1] remote_name;
-	UCHAR rcvs_outstanding;
-	UCHAR sends_outstanding;
+    UCHAR lsn;
+    UCHAR state;
+    UCHAR[1 + NCBNAMSZ-1] local_name;
+    UCHAR[1 + NCBNAMSZ-1] remote_name;
+    UCHAR rcvs_outstanding;
+    UCHAR sends_outstanding;
 }
 
 alias SESSION_BUFFER _SESSION_BUFFER;
@@ -11975,10 +12330,10 @@ alias SESSION_BUFFER* PSESSIONBUFFER;
 
 struct SESSION_HEADER
 {
-	UCHAR sess_name;
-	UCHAR num_sess;
-	UCHAR rcv_dg_outstanding;
-	UCHAR rcv_any_outstanding;
+    UCHAR sess_name;
+    UCHAR num_sess;
+    UCHAR rcv_dg_outstanding;
+    UCHAR rcv_any_outstanding;
 }
 
 alias SESSION_HEADER _SESSION_HEADER;
@@ -11987,7 +12342,7 @@ alias SESSION_HEADER* PSESSIONHEADER;
 
 struct SET_PARTITION_INFORMATION
 {
-	ubyte PartitionType;
+    ubyte PartitionType;
 }
 
 alias SET_PARTITION_INFORMATION _SET_PARTITION_INFORMATION;
@@ -11998,32 +12353,49 @@ enum { SHCONTF_FOLDERS = 32, SHCONTF_NONFOLDERS = 64, SHCONTF_INCLUDEHIDDEN = 12
 alias SHCONTF TAGSHCONTF;
 alias SHCONTF TSHCONTF;
 
-struct SHFILEINFO
+struct SHFILEINFOA
 {
-	HICON hIcon;
-	int iIcon;
-	DWORD dwAttributes;
-	char[1 + MAX_PATH-1] szDisplayName;
-	char[1 + 79] szTypeName;
+    HICON hIcon;
+    int iIcon;
+    DWORD dwAttributes;
+    CHAR[MAX_PATH] szDisplayName;
+    CHAR[80] szTypeName;
+}
+struct SHFILEINFOW
+{
+    HICON hIcon;
+    int iIcon;
+    DWORD dwAttributes;
+    WCHAR[MAX_PATH] szDisplayName;
+    WCHAR[80] szTypeName;
+}
+version(Win32SansUnicode)
+{
+    alias SHFILEINFOA SHFILEINFO;
+}
+else
+{
+    alias SHFILEINFOW SHFILEINFO;
 }
 
 alias SHFILEINFO _SHFILEINFO;
 alias SHFILEINFO TSHFILEINFO;
 alias SHFILEINFO* PSHFILEINFO;
+
 alias ushort FILEOP_FLAGS;
 alias FILEOP_FLAGS TFILEOPFLAGS;
 alias FILEOP_FLAGS* PFILEOPFLAGS;
 
 struct SHFILEOPSTRUCT
 {
-	HWND hwnd;
-	UINT wFunc;
-	LPCSTR pFrom;
-	LPCSTR pTo;
-	FILEOP_FLAGS fFlags;
-	WINBOOL fAnyOperationsAborted;
-	LPVOID hNameMappings;
-	LPCSTR lpszProgressTitle;
+    HWND hwnd;
+    UINT wFunc;
+    LPCSTR pFrom;
+    LPCSTR pTo;
+    FILEOP_FLAGS fFlags;
+    WINBOOL fAnyOperationsAborted;
+    LPVOID hNameMappings;
+    LPCSTR lpszProgressTitle;
 }
 
 alias SHFILEOPSTRUCT* LPSHFILEOPSTRUCT;
@@ -12037,10 +12409,10 @@ alias SHGNO TSHGDN;
 
 struct SHNAMEMAPPING
 {
-	LPSTR pszOldPath;
-	LPSTR pszNewPath;
-	int cchOldPath;
-	int cchNewPath;
+    LPSTR pszOldPath;
+    LPSTR pszNewPath;
+    int cchOldPath;
+    int cchNewPath;
 }
 
 alias SHNAMEMAPPING* LPSHNAMEMAPPING;
@@ -12050,8 +12422,8 @@ alias SHNAMEMAPPING* PSHNAMEMAPPING;
 
 struct SID_AND_ATTRIBUTES
 {
-	PSID Sid;
-	DWORD Attributes;
+    PSID Sid;
+    DWORD Attributes;
 }
 
 alias SID_AND_ATTRIBUTES _SID_AND_ATTRIBUTES;
@@ -12064,7 +12436,7 @@ alias SID_AND_ATTRIBUTES_ARRAY* PSIDANDATTRIBUTESARRAY;
 
 struct SINGLE_LIST_ENTRY
 {
-	_SINGLE_LIST_ENTRY* Next;
+    _SINGLE_LIST_ENTRY* Next;
 }
 
 alias SINGLE_LIST_ENTRY _SINGLE_LIST_ENTRY;
@@ -12073,18 +12445,18 @@ alias SINGLE_LIST_ENTRY* PSINGLELISTENTRY;
 
 struct SOUNDSENTRY
 {
-	UINT cbSize;
-	DWORD dwFlags;
-	DWORD iFSTextEffect;
-	DWORD iFSTextEffectMSec;
-	DWORD iFSTextEffectColorBits;
-	DWORD iFSGrafEffect;
-	DWORD iFSGrafEffectMSec;
-	DWORD iFSGrafEffectColor;
-	DWORD iWindowsEffect;
-	DWORD iWindowsEffectMSec;
-	LPTSTR lpszWindowsEffectDLL;
-	DWORD iWindowsEffectOrdinal;
+    UINT cbSize;
+    DWORD dwFlags;
+    DWORD iFSTextEffect;
+    DWORD iFSTextEffectMSec;
+    DWORD iFSTextEffectColorBits;
+    DWORD iFSGrafEffect;
+    DWORD iFSGrafEffectMSec;
+    DWORD iFSGrafEffectColor;
+    DWORD iWindowsEffect;
+    DWORD iWindowsEffectMSec;
+    LPTSTR lpszWindowsEffectDLL;
+    DWORD iWindowsEffectOrdinal;
 }
 
 alias SOUNDSENTRY* LPSOUNDSENTRY;
@@ -12094,24 +12466,24 @@ alias SOUNDSENTRY* PSOUNDSENTRY;
 
 struct STARTUPINFO
 {
-	DWORD cb;
-	LPTSTR lpReserved;
-	LPTSTR lpDesktop;
-	LPTSTR lpTitle;
-	DWORD dwX;
-	DWORD dwY;
-	DWORD dwXSize;
-	DWORD dwYSize;
-	DWORD dwXCountChars;
-	DWORD dwYCountChars;
-	DWORD dwFillAttribute;
-	DWORD dwFlags;
-	ushort wShowWindow;
-	ushort cbReserved2;
-	LPBYTE lpReserved2;
-	HANDLE hStdInput;
-	HANDLE hStdOutput;
-	HANDLE hStdError;
+    DWORD cb;
+    LPTSTR lpReserved;
+    LPTSTR lpDesktop;
+    LPTSTR lpTitle;
+    DWORD dwX;
+    DWORD dwY;
+    DWORD dwXSize;
+    DWORD dwYSize;
+    DWORD dwXCountChars;
+    DWORD dwYCountChars;
+    DWORD dwFillAttribute;
+    DWORD dwFlags;
+    ushort wShowWindow;
+    ushort cbReserved2;
+    LPBYTE lpReserved2;
+    HANDLE hStdInput;
+    HANDLE hStdOutput;
+    HANDLE hStdError;
 }
 
 alias STARTUPINFO* LPSTARTUPINFO;
@@ -12121,8 +12493,8 @@ alias STARTUPINFO* PSTARTUPINFO;
 
 struct STICKYKEYS
 {
-	DWORD cbSize;
-	DWORD dwFlags;
+    DWORD cbSize;
+    DWORD dwFlags;
 }
 
 alias STICKYKEYS* LPSTICKYKEYS;
@@ -12132,23 +12504,23 @@ alias STICKYKEYS* PSTICKYKEYS;
 
 struct STRRET
 {
-	UINT uType;
+    UINT uType;
 
-	union
-	{
-		struct
-		{
-			LPWSTR pOleStr;
-		}
-		struct
-		{
-			UINT uOffset;
-		}
-		struct
-		{
-			char[1 + MAX_PATH-1] cStr;
-		}
-	}
+    union
+    {
+        struct
+        {
+            LPWSTR pOleStr;
+        }
+        struct
+        {
+            UINT uOffset;
+        }
+        struct
+        {
+            char[1 + MAX_PATH-1] cStr;
+        }
+    }
 }
 
 alias STRRET* LPSTRRET;
@@ -12158,8 +12530,8 @@ alias STRRET* PSTRRET;
 
 struct STYLEBUF
 {
-	DWORD dwStyle;
-	char[1 + 31] szDescription;
+    DWORD dwStyle;
+    char[1 + 31] szDescription;
 }
 
 alias STYLEBUF* LPSTYLEBUF;
@@ -12169,8 +12541,8 @@ alias STYLEBUF* PSTYLEBUF;
 
 struct STYLESTRUCT
 {
-	DWORD styleOld;
-	DWORD styleNew;
+    DWORD styleOld;
+    DWORD styleNew;
 }
 
 alias STYLESTRUCT* LPSTYLESTRUCT;
@@ -12180,9 +12552,9 @@ alias STYLESTRUCT* PSTYLESTRUCT;
 
 struct SYSTEM_AUDIT_ACE
 {
-	ACE_HEADER Header;
-	ACCESS_MASK Mask;
-	DWORD SidStart;
+    ACE_HEADER Header;
+    ACCESS_MASK Mask;
+    DWORD SidStart;
 }
 
 alias SYSTEM_AUDIT_ACE _SYSTEM_AUDIT_ACE;
@@ -12192,33 +12564,33 @@ alias SYSTEM_AUDIT_ACE* PSYSTEMAUDITACE;
 struct SYSTEM_INFO_U
 {
 
-	union
-	{
-		struct
-		{
-			DWORD dwOemId;
-		}
-		struct
-		{
-			ushort wProcessorArchitecture;
-			ushort wReserved;
-		}
-	}
+    union
+    {
+        struct
+        {
+            DWORD dwOemId;
+        }
+        struct
+        {
+            ushort wProcessorArchitecture;
+            ushort wReserved;
+        }
+    }
 }
 
 
 struct SYSTEM_INFO
 {
-	SYSTEM_INFO_U u;
-	DWORD dwPageSize;
-	LPVOID lpMinimumApplicationAddress;
-	LPVOID lpMaximumApplicationAddress;
-	DWORD dwActiveProcessorMask;
-	DWORD dwNumberOfProcessors;
-	DWORD dwProcessorType;
-	DWORD dwAllocationGranularity;
-	ushort wProcessorLevel;
-	ushort wProcessorRevision;
+    SYSTEM_INFO_U u;
+    DWORD dwPageSize;
+    LPVOID lpMinimumApplicationAddress;
+    LPVOID lpMaximumApplicationAddress;
+    DWORD dwActiveProcessorMask;
+    DWORD dwNumberOfProcessors;
+    DWORD dwProcessorType;
+    DWORD dwAllocationGranularity;
+    ushort wProcessorLevel;
+    ushort wProcessorRevision;
 }
 
 alias SYSTEM_INFO* LPSYSTEM_INFO;
@@ -12228,12 +12600,12 @@ alias SYSTEM_INFO* PSYSTEMINFO;
 
 struct SYSTEM_POWER_STATUS
 {
-	ubyte ACLineStatus;
-	ubyte BatteryFlag;
-	ubyte BatteryLifePercent;
-	ubyte Reserved1;
-	DWORD BatteryLifeTime;
-	DWORD BatteryFullLifeTime;
+    ubyte ACLineStatus;
+    ubyte BatteryFlag;
+    ubyte BatteryLifePercent;
+    ubyte Reserved1;
+    DWORD BatteryLifeTime;
+    DWORD BatteryFullLifeTime;
 }
 
 alias SYSTEM_POWER_STATUS _SYSTEM_POWER_STATUS;
@@ -12243,7 +12615,7 @@ alias EMPTYRECORD* LPSYSTEM_POWER_STATUS;
 
 struct TAPE_ERASE
 {
-	ULONG _Type;
+    ULONG _Type;
 }
 
 alias TAPE_ERASE _TAPE_ERASE;
@@ -12252,17 +12624,17 @@ alias TAPE_ERASE* PTAPEERASE;
 
 struct TAPE_GET_DRIVE_PARAMETERS
 {
-	ubyte ECC;
-	ubyte Compression;
-	ubyte DataPadding;
-	ubyte ReportSetmarks;
-	ULONG DefaultBlockSize;
-	ULONG MaximumBlockSize;
-	ULONG MinimumBlockSize;
-	ULONG MaximumPartitionCount;
-	ULONG FeaturesLow;
-	ULONG FeaturesHigh;
-	ULONG EOTWarningZoneSize;
+    ubyte ECC;
+    ubyte Compression;
+    ubyte DataPadding;
+    ubyte ReportSetmarks;
+    ULONG DefaultBlockSize;
+    ULONG MaximumBlockSize;
+    ULONG MinimumBlockSize;
+    ULONG MaximumPartitionCount;
+    ULONG FeaturesLow;
+    ULONG FeaturesHigh;
+    ULONG EOTWarningZoneSize;
 }
 
 alias TAPE_GET_DRIVE_PARAMETERS _TAPE_GET_DRIVE_PARAMETERS;
@@ -12271,11 +12643,11 @@ alias TAPE_GET_DRIVE_PARAMETERS* PTAPEGETDRIVEPARAMETERS;
 
 struct TAPE_GET_MEDIA_PARAMETERS
 {
-	LARGE_INTEGER Capacity;
-	LARGE_INTEGER Remaining;
-	DWORD BlockSize;
-	DWORD PartitionCount;
-	ubyte WriteProtected;
+    LARGE_INTEGER Capacity;
+    LARGE_INTEGER Remaining;
+    DWORD BlockSize;
+    DWORD PartitionCount;
+    ubyte WriteProtected;
 }
 
 alias TAPE_GET_MEDIA_PARAMETERS _TAPE_GET_MEDIA_PARAMETERS;
@@ -12284,10 +12656,10 @@ alias TAPE_GET_MEDIA_PARAMETERS* PTAPEGETMEDIAPARAMETERS;
 
 struct TAPE_GET_POSITION
 {
-	ULONG _Type;
-	ULONG Partition;
-	ULONG OffsetLow;
-	ULONG OffsetHigh;
+    ULONG _Type;
+    ULONG Partition;
+    ULONG OffsetLow;
+    ULONG OffsetHigh;
 }
 
 alias TAPE_GET_POSITION _TAPE_GET_POSITION;
@@ -12296,7 +12668,7 @@ alias TAPE_GET_POSITION* PTAPEGETPOSITION;
 
 struct TAPE_PREPARE
 {
-	ULONG Operation;
+    ULONG Operation;
 }
 
 alias TAPE_PREPARE _TAPE_PREPARE;
@@ -12305,11 +12677,11 @@ alias TAPE_PREPARE* PTAPEPREPARE;
 
 struct TAPE_SET_DRIVE_PARAMETERS
 {
-	ubyte ECC;
-	ubyte Compression;
-	ubyte DataPadding;
-	ubyte ReportSetmarks;
-	ULONG EOTWarningZoneSize;
+    ubyte ECC;
+    ubyte Compression;
+    ubyte DataPadding;
+    ubyte ReportSetmarks;
+    ULONG EOTWarningZoneSize;
 }
 
 alias TAPE_SET_DRIVE_PARAMETERS _TAPE_SET_DRIVE_PARAMETERS;
@@ -12318,7 +12690,7 @@ alias TAPE_SET_DRIVE_PARAMETERS* PTAPESETDRIVEPARAMETERS;
 
 struct TAPE_SET_MEDIA_PARAMETERS
 {
-	ULONG BlockSize;
+    ULONG BlockSize;
 }
 
 alias TAPE_SET_MEDIA_PARAMETERS _TAPE_SET_MEDIA_PARAMETERS;
@@ -12327,10 +12699,10 @@ alias TAPE_SET_MEDIA_PARAMETERS* PTAPESETMEDIAPARAMETERS;
 
 struct TAPE_SET_POSITION
 {
-	ULONG Method;
-	ULONG Partition;
-	ULONG OffsetLow;
-	ULONG OffsetHigh;
+    ULONG Method;
+    ULONG Partition;
+    ULONG OffsetLow;
+    ULONG OffsetHigh;
 }
 
 alias TAPE_SET_POSITION _TAPE_SET_POSITION;
@@ -12339,8 +12711,8 @@ alias TAPE_SET_POSITION* PTAPESETPOSITION;
 
 struct TAPE_WRITE_MARKS
 {
-	ULONG _Type;
-	ULONG Count;
+    ULONG _Type;
+    ULONG Count;
 }
 
 alias TAPE_WRITE_MARKS _TAPE_WRITE_MARKS;
@@ -12349,22 +12721,27 @@ alias TAPE_WRITE_MARKS* PTAPEWRITEMARKS;
 
 struct TBADDBITMAP
 {
-	HINST hInst;
-	UINT nID;
+    HINST hInst;
+    UINT nID;
 }
 
 alias TBADDBITMAP* LPTBADDBITMAP;
 alias TBADDBITMAP TTBADDBITMAP;
 alias TBADDBITMAP* PTBADDBITMAP;
 
-struct TBBUTTON
-{
-	int iBitmap;
-	int idCommand;
-	ubyte fsState;
-	ubyte fsStyle;
-	DWORD dwData;
-	int iString;
+struct TBBUTTON {
+    align(2):
+    int     iBitmap;
+    int     idCommand;
+    BYTE    fsState;
+    BYTE    fsStyle;
+//#ifdef _WIN64
+//    BYTE     bReserved[6]     // padding for alignment
+//#elif defined(_WIN32)
+//    BYTE     bReserved[2]     // padding for alignment
+//#endif
+    DWORD_PTR   dwData;
+    INT_PTR     iString;
 }
 
 alias TBBUTTON* LPTBBUTTON;
@@ -12375,11 +12752,11 @@ alias TBBUTTON* PTBBUTTON;
 
 struct TBNOTIFY
 {
-	NMHDR hdr;
-	int iItem;
-	TBBUTTON tbButton;
-	int cchText;
-	LPTSTR pszText;
+    NMHDR hdr;
+    int iItem;
+    TBBUTTON tbButton;
+    int cchText;
+    LPTSTR pszText;
 }
 
 alias TBNOTIFY* LPTBNOTIFY;
@@ -12388,9 +12765,9 @@ alias TBNOTIFY* PTBNOTIFY;
 
 struct TBSAVEPARAMS
 {
-	HKEY hkr;
-	LPCTSTR pszSubKey;
-	LPCTSTR pszValueName;
+    HKEY hkr;
+    LPCTSTR pszSubKey;
+    LPCTSTR pszValueName;
 }
 
 alias TBSAVEPARAMS TTBSAVEPARAMS;
@@ -12398,23 +12775,24 @@ alias TBSAVEPARAMS* PTBSAVEPARAMS;
 
 struct TC_HITTESTINFO
 {
-	POINT pt;
-	UINT flags;
+    POINT pt;
+    UINT flags;
 }
 
+alias TC_HITTESTINFO TCHITTESTINFO;
 alias TC_HITTESTINFO _TC_HITTESTINFO;
 alias TC_HITTESTINFO TTCHITTESTINFO;
 alias TC_HITTESTINFO* PTCHITTESTINFO;
 
 struct TC_ITEM
 {
-	UINT mask;
-	UINT lpReserved1;
-	UINT lpReserved2;
-	LPTSTR pszText;
-	int cchTextMax;
-	int iImage;
-	LPARAM lParam;
+    UINT mask;
+    UINT lpReserved1;
+    UINT lpReserved2;
+    LPTSTR pszText;
+    int cchTextMax;
+    int iImage;
+    LPARAM lParam;
 }
 
 alias TC_ITEM _TC_ITEM;
@@ -12423,12 +12801,12 @@ alias TC_ITEM* PTCITEM;
 
 struct TC_ITEMHEADER
 {
-	UINT mask;
-	UINT lpReserved1;
-	UINT lpReserved2;
-	LPTSTR pszText;
-	int cchTextMax;
-	int iImage;
+    UINT mask;
+    UINT lpReserved1;
+    UINT lpReserved2;
+    LPTSTR pszText;
+    int cchTextMax;
+    int iImage;
 }
 
 alias TC_ITEMHEADER _TC_ITEMHEADER;
@@ -12437,9 +12815,9 @@ alias TC_ITEMHEADER* PTCITEMHEADER;
 
 struct TC_KEYDOWN
 {
-	NMHDR hdr;
-	ushort wVKey;
-	UINT flags;
+    NMHDR hdr;
+    ushort wVKey;
+    UINT flags;
 }
 
 alias TC_KEYDOWN _TC_KEYDOWN;
@@ -12448,8 +12826,8 @@ alias TC_KEYDOWN* PTCKEYDOWN;
 
 struct TEXTRANGE
 {
-	CHARRANGE chrg;
-	LPSTR lpstrText;
+    CHARRANGE chrg;
+    LPSTR lpstrText;
 }
 
 alias TEXTRANGE _TEXTRANGE;
@@ -12458,13 +12836,13 @@ alias TEXTRANGE* PTEXTRANGE;
 
 struct TIME_ZONE_INFORMATION
 {
-	LONG Bias;
-	WCHAR[1 + 31] StandardName;
-	SYSTEMTIME StandardDate;
-	LONG StandardBias;
-	WCHAR[1 + 31] DaylightName;
-	SYSTEMTIME DaylightDate;
-	LONG DaylightBias;
+    LONG Bias;
+    WCHAR[1 + 31] StandardName;
+    SYSTEMTIME StandardDate;
+    LONG StandardBias;
+    WCHAR[1 + 31] DaylightName;
+    SYSTEMTIME DaylightDate;
+    LONG DaylightBias;
 }
 
 alias TIME_ZONE_INFORMATION* LPTIME_ZONE_INFORMATION;
@@ -12474,8 +12852,8 @@ alias TIME_ZONE_INFORMATION* PTIMEZONEINFORMATION;
 
 struct TOGGLEKEYS
 {
-	DWORD cbSize;
-	DWORD dwFlags;
+    DWORD cbSize;
+    DWORD dwFlags;
 }
 
 alias TOGGLEKEYS TAGTOGGLEKEYS;
@@ -12484,8 +12862,8 @@ alias TOGGLEKEYS* PTOGGLEKEYS;
 
 struct TOKEN_SOURCE
 {
-	char[1 + 7] SourceName;
-	LUID SourceIdentifier;
+    char[1 + 7] SourceName;
+    LUID SourceIdentifier;
 }
 
 alias TOKEN_SOURCE _TOKEN_SOURCE;
@@ -12494,10 +12872,10 @@ alias TOKEN_SOURCE* PTOKENSOURCE;
 
 struct TOKEN_CONTROL
 {
-	LUID TokenId;
-	LUID AuthenticationId;
-	LUID ModifiedId;
-	TOKEN_SOURCE TokenSource;
+    LUID TokenId;
+    LUID AuthenticationId;
+    LUID ModifiedId;
+    TOKEN_SOURCE TokenSource;
 }
 
 alias TOKEN_CONTROL _TOKEN_CONTROL;
@@ -12506,7 +12884,7 @@ alias TOKEN_CONTROL* PTOKENCONTROL;
 
 struct TOKEN_DEFAULT_DACL
 {
-	PACL DefaultDacl;
+    PACL DefaultDacl;
 }
 
 alias TOKEN_DEFAULT_DACL _TOKEN_DEFAULT_DACL;
@@ -12515,8 +12893,8 @@ alias TOKEN_DEFAULT_DACL* PTOKENDEFAULTDACL;
 
 struct TOKEN_GROUPS
 {
-	DWORD GroupCount;
-	SID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Groups;
+    DWORD GroupCount;
+    SID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Groups;
 }
 
 alias TOKEN_GROUPS* PTOKEN_GROUPS;
@@ -12527,7 +12905,7 @@ alias TOKEN_GROUPS* PTOKENGROUPS;
 
 struct TOKEN_OWNER
 {
-	PSID Owner;
+    PSID Owner;
 }
 
 alias TOKEN_OWNER _TOKEN_OWNER;
@@ -12536,7 +12914,7 @@ alias TOKEN_OWNER* PTOKENOWNER;
 
 struct TOKEN_PRIMARY_GROUP
 {
-	PSID PrimaryGroup;
+    PSID PrimaryGroup;
 }
 
 alias TOKEN_PRIMARY_GROUP _TOKEN_PRIMARY_GROUP;
@@ -12545,8 +12923,8 @@ alias TOKEN_PRIMARY_GROUP* PTOKENPRIMARYGROUP;
 
 struct TOKEN_PRIVILEGES
 {
-	DWORD PrivilegeCount;
-	LUID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Privileges;
+    DWORD PrivilegeCount;
+    LUID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Privileges;
 }
 
 alias TOKEN_PRIVILEGES* PTOKEN_PRIVILEGES;
@@ -12557,16 +12935,16 @@ alias TOKEN_PRIVILEGES* PTOKENPRIVILEGES;
 
 struct TOKEN_STATISTICS
 {
-	LUID TokenId;
-	LUID AuthenticationId;
-	LARGE_INTEGER ExpirationTime;
-	TOKEN_TYPE TokenType;
-	SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
-	DWORD DynamicCharged;
-	DWORD DynamicAvailable;
-	DWORD GroupCount;
-	DWORD PrivilegeCount;
-	LUID ModifiedId;
+    LUID TokenId;
+    LUID AuthenticationId;
+    LARGE_INTEGER ExpirationTime;
+    TOKEN_TYPE TokenType;
+    SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
+    DWORD DynamicCharged;
+    DWORD DynamicAvailable;
+    DWORD GroupCount;
+    DWORD PrivilegeCount;
+    LUID ModifiedId;
 }
 
 alias TOKEN_STATISTICS _TOKEN_STATISTICS;
@@ -12575,45 +12953,77 @@ alias TOKEN_STATISTICS* PTOKENSTATISTICS;
 
 struct TOKEN_USER
 {
-	SID_AND_ATTRIBUTES User;
+    SID_AND_ATTRIBUTES User;
 }
 
 alias TOKEN_USER _TOKEN_USER;
 alias TOKEN_USER TTOKENUSER;
 alias TOKEN_USER* PTOKENUSER;
 
-struct TOOLINFO
+struct TOOLINFOA
 {
-	UINT cbSize;
-	UINT uFlags;
-	HWND hwnd;
-	UINT uId;
-	RECT rect;
-	HINST hinst;
-	LPTSTR lpszText;
+    UINT cbSize;
+    UINT uFlags;
+    HWND hwnd;
+    UINT uId;
+    RECT rect;
+    HINST hinst;
+    LPSTR lpszText;
 }
-
+struct TOOLINFOW
+{
+    UINT cbSize;
+    UINT uFlags;
+    HWND hwnd;
+    UINT uId;
+    RECT rect;
+    HINST hinst;
+    LPWSTR lpszText;
+}
+version(Win32SansUnicode)
+{
+    alias TOOLINFOA TOOLINFO;
+}
+else
+{
+    alias TOOLINFOW TOOLINFO;
+}
 alias TOOLINFO* LPTOOLINFO;
 alias TOOLINFO TTOOLINFO;
 alias TOOLINFO* PTOOLINFO;
 
-struct TOOLTIPTEXT
+struct TOOLTIPTEXTA
 {
-	NMHDR hdr;
-	LPTSTR lpszText;
-	char[1 + 79] szText;
-	HINST hinst;
-	UINT uFlags;
+    NMHDR hdr;
+    LPSTR lpszText;
+    CHAR[80] szText;
+    HINST hinst;
+    UINT uFlags;
 }
-
+struct TOOLTIPTEXTW
+{
+    NMHDR hdr;
+    LPWSTR lpszText;
+    WCHAR[80] szText;
+    HINST hinst;
+    UINT uFlags;
+}
+version(Win32SansUnicode)
+{
+    alias TOOLTIPTEXTA TOOLTIPTEXT;
+}
+else
+{
+    alias TOOLTIPTEXTW TOOLTIPTEXT;
+}
 alias TOOLTIPTEXT* LPTOOLTIPTEXT;
 alias TOOLTIPTEXT TTOOLTIPTEXT;
 alias TOOLTIPTEXT* PTOOLTIPTEXT;
 
 struct TPMPARAMS
 {
-	UINT cbSize;
-	RECT rcExclude;
+    UINT cbSize;
+    RECT rcExclude;
 }
 
 alias TPMPARAMS* LPTPMPARAMS;
@@ -12623,10 +13033,10 @@ alias TPMPARAMS* PTPMPARAMS;
 
 struct TRANSMIT_FILE_BUFFERS
 {
-	PVOID Head;
-	DWORD HeadLength;
-	PVOID Tail;
-	DWORD TailLength;
+    PVOID Head;
+    DWORD HeadLength;
+    PVOID Tail;
+    DWORD TailLength;
 }
 
 alias TRANSMIT_FILE_BUFFERS _TRANSMIT_FILE_BUFFERS;
@@ -12635,9 +13045,9 @@ alias TRANSMIT_FILE_BUFFERS* PTRANSMITFILEBUFFERS;
 
 struct TTHITTESTINFO
 {
-	HWND hwnd;
-	POINT pt;
-	TOOLINFO ti;
+    HWND hwnd;
+    POINT pt;
+    TOOLINFO ti;
 }
 
 alias TTHITTESTINFO* LPHITTESTINFO;
@@ -12647,9 +13057,9 @@ alias TTHITTESTINFO* PTTHITTESTINFO;
 
 struct TTPOLYCURVE
 {
-	ushort wType;
-	ushort cpfx;
-	POINTFX[1 + 0] apfx;
+    ushort wType;
+    ushort cpfx;
+    POINTFX[1 + 0] apfx;
 }
 
 alias TTPOLYCURVE* LPTTPOLYCURVE;
@@ -12659,9 +13069,9 @@ alias TTPOLYCURVE* PTTPOLYCURVE;
 
 struct TTPOLYGONHEADER
 {
-	DWORD cb;
-	DWORD dwType;
-	POINTFX pfxStart;
+    DWORD cb;
+    DWORD dwType;
+    POINTFX pfxStart;
 }
 
 alias TTPOLYGONHEADER* LPTTPOLYGONHEADER;
@@ -12671,8 +13081,8 @@ alias TTPOLYGONHEADER* PTTPOLYGONHEADER;
 
 struct TV_DISPINFO
 {
-	NMHDR hdr;
-	TV_ITEM item;
+    NMHDR hdr;
+    TV_ITEM item;
 }
 
 alias TV_DISPINFO _TV_DISPINFO;
@@ -12681,9 +13091,9 @@ alias TV_DISPINFO* PTVDISPINFO;
 
 struct TV_HITTESTINFO
 {
-	POINT pt;
-	UINT flags;
-	HTREEITEM hItem;
+    POINT pt;
+    UINT flags;
+    HTREEITEM hItem;
 }
 
 alias TV_HITTESTINFO* LPTV_HITTESTINFO;
@@ -12693,21 +13103,22 @@ alias TV_HITTESTINFO* PTVHITTESTINFO;
 
 struct TV_INSERTSTRUCT
 {
-	HTREEITEM hParent;
-	HTREEITEM hInsertAfter;
-	TV_ITEM item;
+    HTREEITEM hParent;
+    HTREEITEM hInsertAfter;
+    TV_ITEM item;
 }
 
 alias TV_INSERTSTRUCT* LPTV_INSERTSTRUCT;
 alias TV_INSERTSTRUCT _TV_INSERTSTRUCT;
 alias TV_INSERTSTRUCT TTVINSERTSTRUCT;
+alias TV_INSERTSTRUCT  TVINSERTSTRUCT;
 alias TV_INSERTSTRUCT* PTVINSERTSTRUCT;
 
 struct TV_KEYDOWN
 {
-	NMHDR hdr;
-	ushort wVKey;
-	UINT flags;
+    NMHDR hdr;
+    ushort wVKey;
+    UINT flags;
 }
 
 alias TV_KEYDOWN _TV_KEYDOWN;
@@ -12716,9 +13127,9 @@ alias TV_KEYDOWN* PTVKEYDOWN;
 
 struct TV_SORTCB
 {
-	HTREEITEM hParent;
-	PFNTVCOMPARE lpfnCompare;
-	LPARAM lParam;
+    HTREEITEM hParent;
+    PFNTVCOMPARE lpfnCompare;
+    LPARAM lParam;
 }
 
 alias TV_SORTCB* LPTV_SORTCB;
@@ -12728,17 +13139,26 @@ alias TV_SORTCB* PTVSORTCB;
 
 struct UDACCEL
 {
-	UINT nSec;
-	UINT nInc;
+    UINT nSec;
+    UINT nInc;
 }
 
 alias UDACCEL TUDACCEL;
 alias UDACCEL* PUDACCEL;
 
-struct ULARGE_INTEGER
+union ULARGE_INTEGER
 {
-	DWORD LowPart;
-	DWORD HighPart;
+    struct
+    {
+        DWORD LowPart;
+        DWORD HighPart;
+    };
+    struct u
+    {
+        DWORD LowPart;
+        DWORD HighPart;
+    };
+    DWORDLONG QuadPart;
 }
 
 alias ULARGE_INTEGER* PULARGE_INTEGER;
@@ -12748,7 +13168,7 @@ alias ULARGE_INTEGER* PULARGEINTEGER;
 
 struct UNIVERSAL_NAME_INFO
 {
-	LPTSTR lpUniversalName;
+    LPTSTR lpUniversalName;
 }
 
 alias UNIVERSAL_NAME_INFO _UNIVERSAL_NAME_INFO;
@@ -12757,9 +13177,9 @@ alias UNIVERSAL_NAME_INFO* PUNIVERSALNAMEINFO;
 
 struct USEROBJECTFLAGS
 {
-	WINBOOL fInherit;
-	WINBOOL fReserved;
-	DWORD dwFlags;
+    WINBOOL fInherit;
+    WINBOOL fReserved;
+    DWORD dwFlags;
 }
 
 alias USEROBJECTFLAGS TAGUSEROBJECTFLAGS;
@@ -12768,10 +13188,10 @@ alias USEROBJECTFLAGS* PUSEROBJECTFLAGS;
 
 struct VALENT
 {
-	LPTSTR ve_valuename;
-	DWORD ve_valuelen;
-	DWORD ve_valueptr;
-	DWORD ve_type;
+    LPTSTR ve_valuename;
+    DWORD ve_valuelen;
+    DWORD ve_valueptr;
+    DWORD ve_type;
 }
 
 alias VALENT TVALENT;
@@ -12782,8 +13202,8 @@ alias VALENT* PVALUE_ENT;
 
 struct VERIFY_INFORMATION
 {
-	LARGE_INTEGER StartingOffset;
-	DWORD Length;
+    LARGE_INTEGER StartingOffset;
+    DWORD Length;
 }
 
 alias VERIFY_INFORMATION _VERIFY_INFORMATION;
@@ -12792,19 +13212,19 @@ alias VERIFY_INFORMATION* PVERIFYINFORMATION;
 
 struct VS_FIXEDFILEINFO
 {
-	DWORD dwSignature;
-	DWORD dwStrucVersion;
-	DWORD dwFileVersionMS;
-	DWORD dwFileVersionLS;
-	DWORD dwProductVersionMS;
-	DWORD dwProductVersionLS;
-	DWORD dwFileFlagsMask;
-	DWORD dwFileFlags;
-	DWORD dwFileOS;
-	DWORD dwFileType;
-	DWORD dwFileSubtype;
-	DWORD dwFileDateMS;
-	DWORD dwFileDateLS;
+    DWORD dwSignature;
+    DWORD dwStrucVersion;
+    DWORD dwFileVersionMS;
+    DWORD dwFileVersionLS;
+    DWORD dwProductVersionMS;
+    DWORD dwProductVersionLS;
+    DWORD dwFileFlagsMask;
+    DWORD dwFileFlags;
+    DWORD dwFileOS;
+    DWORD dwFileType;
+    DWORD dwFileSubtype;
+    DWORD dwFileDateMS;
+    DWORD dwFileDateLS;
 }
 
 alias VS_FIXEDFILEINFO _VS_FIXEDFILEINFO;
@@ -12813,16 +13233,16 @@ alias VS_FIXEDFILEINFO* PVSFIXEDFILEINFO;
 
 struct WIN32_FIND_DATA
 {
-	DWORD dwFileAttributes;
-	FILETIME ftCreationTime;
-	FILETIME ftLastAccessTime;
-	FILETIME ftLastWriteTime;
-	DWORD nFileSizeHigh;
-	DWORD nFileSizeLow;
-	DWORD dwReserved0;
-	DWORD dwReserved1;
-	TCHAR[1 + MAX_PATH-1] cFileName;
-	TCHAR[1 + 13] cAlternateFileName;
+    DWORD dwFileAttributes;
+    FILETIME ftCreationTime;
+    FILETIME ftLastAccessTime;
+    FILETIME ftLastWriteTime;
+    DWORD nFileSizeHigh;
+    DWORD nFileSizeLow;
+    DWORD dwReserved0;
+    DWORD dwReserved1;
+    TCHAR[1 + MAX_PATH-1] cFileName;
+    TCHAR[1 + 13] cAlternateFileName;
 }
 
 alias WIN32_FIND_DATA* LPWIN32_FIND_DATA;
@@ -12864,11 +13284,11 @@ enum {
 
 struct WIN32_STREAM_ID
 {
-	DWORD dwStreamId;
-	DWORD dwStreamAttributes;
-	LARGE_INTEGER Size;
-	DWORD dwStreamNameSize;
-	WCHAR* cStreamName;
+    DWORD dwStreamId;
+    DWORD dwStreamAttributes;
+    LARGE_INTEGER Size;
+    DWORD dwStreamNameSize;
+    WCHAR* cStreamName;
 }
 
 alias WIN32_STREAM_ID _WIN32_STREAM_ID;
@@ -12877,52 +13297,78 @@ alias WIN32_STREAM_ID* PWIN32STREAMID;
 
 struct WINDOWPLACEMENT
 {
-	UINT length;
-	UINT flags;
-	UINT showCmd;
-	POINT ptMinPosition;
-	POINT ptMaxPosition;
-	RECT rcNormalPosition;
+    UINT length;
+    UINT flags;
+    UINT showCmd;
+    POINT ptMinPosition;
+    POINT ptMaxPosition;
+    RECT rcNormalPosition;
 }
 
 alias WINDOWPLACEMENT _WINDOWPLACEMENT;
 alias WINDOWPLACEMENT TWINDOWPLACEMENT;
 alias WINDOWPLACEMENT* PWINDOWPLACEMENT;
 
-struct WNDCLASS
+struct WNDCLASSA
 {
-	UINT style;
-	WNDPROC lpfnWndProc;
-	int cbClsExtra;
-	int cbWndExtra;
-	HANDLE hInstance;
-	HICON hIcon;
-	HCURSOR hCursor;
-	HBRUSH hbrBackground;
-	LPCTSTR lpszMenuName;
-	LPCTSTR lpszClassName;
+    UINT style;
+    WNDPROC lpfnWndProc;
+    int cbClsExtra;
+    int cbWndExtra;
+    HANDLE hInstance;
+    HICON hIcon;
+    HCURSOR hCursor;
+    HBRUSH hbrBackground;
+    LPCTSTR lpszMenuName;
+    LPCTSTR lpszClassName;
 }
 
+alias WNDCLASSA* PWNDCLASSA, LPWNDCLASSA;
+
+struct WNDCLASSW
+{
+    UINT        style;
+    WNDPROC     lpfnWndProc;
+    int         cbClsExtra;
+    int         cbWndExtra;
+    HINSTANCE   hInstance;
+    HICON       hIcon;
+    HCURSOR     hCursor;
+    HBRUSH      hbrBackground;
+    LPCWSTR     lpszMenuName;
+    LPCWSTR     lpszClassName;
+}
+
+alias WNDCLASSW* PWNDCLASSW, LPWNDCLASSW;
+
+version(Win32SansUnicode)
+{
+    alias WNDCLASSA WNDCLASS;
+}
+else
+{
+    alias WNDCLASSW WNDCLASS;
+}
 alias WNDCLASS* LPWNDCLASS;
 alias WNDCLASS _WNDCLASS;
 alias WNDCLASS TWNDCLASS;
-alias WNDCLASS TWNDCLASSA;
+alias WNDCLASS WNDCLASS_T;
 alias WNDCLASS* PWNDCLASS;
 
 struct WNDCLASSEX
 {
-	UINT cbSize;
-	UINT style;
-	WNDPROC lpfnWndProc;
-	int cbClsExtra;
-	int cbWndExtra;
-	HANDLE hInstance;
-	HICON hIcon;
-	HCURSOR hCursor;
-	HBRUSH hbrBackground;
-	LPCTSTR lpszMenuName;
-	LPCTSTR lpszClassName;
-	HANDLE hIconSm;
+    UINT cbSize;
+    UINT style;
+    WNDPROC lpfnWndProc;
+    int cbClsExtra;
+    int cbWndExtra;
+    HANDLE hInstance;
+    HICON hIcon;
+    HCURSOR hCursor;
+    HBRUSH hbrBackground;
+    LPCTSTR lpszMenuName;
+    LPCTSTR lpszClassName;
+    HANDLE hIconSm;
 }
 
 alias WNDCLASSEX* LPWNDCLASSEX;
@@ -12933,11 +13379,11 @@ alias WNDCLASSEX* PWNDCLASSEX;
 
 struct CONNECTDLGSTRUCT
 {
-	DWORD cbStructure;
-	HWND hwndOwner;
-	LPNETRESOURCE lpConnRes;
-	DWORD dwFlags;
-	DWORD dwDevNum;
+    DWORD cbStructure;
+    HWND hwndOwner;
+    LPNETRESOURCE lpConnRes;
+    DWORD dwFlags;
+    DWORD dwDevNum;
 }
 
 alias CONNECTDLGSTRUCT* LPCONNECTDLGSTRUCT;
@@ -12947,11 +13393,11 @@ alias CONNECTDLGSTRUCT* PCONNECTDLGSTRUCT;
 
 struct DISCDLGSTRUCT
 {
-	DWORD cbStructure;
-	HWND hwndOwner;
-	LPTSTR lpLocalName;
-	LPTSTR lpRemoteName;
-	DWORD dwFlags;
+    DWORD cbStructure;
+    HWND hwndOwner;
+    LPTSTR lpLocalName;
+    LPTSTR lpRemoteName;
+    DWORD dwFlags;
 }
 
 alias DISCDLGSTRUCT* LPDISCDLGSTRUCT;
@@ -12962,14 +13408,14 @@ alias DISCDLGSTRUCT* PDISCDLGSTRUCT;
 
 struct NETINFOSTRUCT
 {
-	DWORD cbStructure;
-	DWORD dwProviderVersion;
-	DWORD dwStatus;
-	DWORD dwCharacteristics;
-	DWORD dwHandle;
-	ushort wNetType;
-	DWORD dwPrinters;
-	DWORD dwDrives;
+    DWORD cbStructure;
+    DWORD dwProviderVersion;
+    DWORD dwStatus;
+    DWORD dwCharacteristics;
+    DWORD dwHandle;
+    ushort wNetType;
+    DWORD dwPrinters;
+    DWORD dwDrives;
 }
 
 alias NETINFOSTRUCT* LPNETINFOSTRUCT;
@@ -12979,11 +13425,11 @@ alias NETINFOSTRUCT* PNETINFOSTRUCT;
 
 struct NETCONNECTINFOSTRUCT
 {
-	DWORD cbStructure;
-	DWORD dwFlags;
-	DWORD dwSpeed;
-	DWORD dwDelay;
-	DWORD dwOptDataSize;
+    DWORD cbStructure;
+    DWORD dwFlags;
+    DWORD dwSpeed;
+    DWORD dwDelay;
+    DWORD dwOptDataSize;
 }
 
 alias NETCONNECTINFOSTRUCT* LPNETCONNECTINFOSTRUCT;
@@ -13001,8 +13447,8 @@ alias void (*LPOVERLAPPED_COMPLETION_ROUTINE)(DWORD, DWORD);
 
 struct POINTFLOAT
 {
-	FLOAT x;
-	FLOAT y;
+    FLOAT x;
+    FLOAT y;
 }
 
 alias POINTFLOAT _POINTFLOAT;
@@ -13011,11 +13457,11 @@ alias POINTFLOAT* PPOINTFLOAT;
 
 struct GLYPHMETRICSFLOAT
 {
-	FLOAT gmfBlackBoxX;
-	FLOAT gmfBlackBoxY;
-	POINTFLOAT gmfptGlyphOrigin;
-	FLOAT gmfCellIncX;
-	FLOAT gmfCellIncY;
+    FLOAT gmfBlackBoxX;
+    FLOAT gmfBlackBoxY;
+    POINTFLOAT gmfptGlyphOrigin;
+    FLOAT gmfCellIncX;
+    FLOAT gmfCellIncY;
 }
 
 alias GLYPHMETRICSFLOAT* LPGLYPHMETRICSFLOAT;
@@ -13025,30 +13471,30 @@ alias GLYPHMETRICSFLOAT* PGLYPHMETRICSFLOAT;
 
 struct LAYERPLANEDESCRIPTOR
 {
-	ushort nSize;
-	ushort nVersion;
-	DWORD dwFlags;
-	ubyte iPixelType;
-	ubyte cColorBits;
-	ubyte cRedBits;
-	ubyte cRedShift;
-	ubyte cGreenBits;
-	ubyte cGreenShift;
-	ubyte cBlueBits;
-	ubyte cBlueShift;
-	ubyte cAlphaBits;
-	ubyte cAlphaShift;
-	ubyte cAccumBits;
-	ubyte cAccumRedBits;
-	ubyte cAccumGreenBits;
-	ubyte cAccumBlueBits;
-	ubyte cAccumAlphaBits;
-	ubyte cDepthBits;
-	ubyte cStencilBits;
-	ubyte cAuxBuffers;
-	ubyte iLayerPlane;
-	ubyte bReserved;
-	COLORREF crTransparent;
+    ushort nSize;
+    ushort nVersion;
+    DWORD dwFlags;
+    ubyte iPixelType;
+    ubyte cColorBits;
+    ubyte cRedBits;
+    ubyte cRedShift;
+    ubyte cGreenBits;
+    ubyte cGreenShift;
+    ubyte cBlueBits;
+    ubyte cBlueShift;
+    ubyte cAlphaBits;
+    ubyte cAlphaShift;
+    ubyte cAccumBits;
+    ubyte cAccumRedBits;
+    ubyte cAccumGreenBits;
+    ubyte cAccumBlueBits;
+    ubyte cAccumAlphaBits;
+    ubyte cDepthBits;
+    ubyte cStencilBits;
+    ubyte cAuxBuffers;
+    ubyte iLayerPlane;
+    ubyte bReserved;
+    COLORREF crTransparent;
 }
 
 alias LAYERPLANEDESCRIPTOR* LPLAYERPLANEDESCRIPTOR;
@@ -13058,32 +13504,32 @@ alias LAYERPLANEDESCRIPTOR* PLAYERPLANEDESCRIPTOR;
 
 struct PIXELFORMATDESCRIPTOR
 {
-	ushort nSize;
-	ushort nVersion;
-	DWORD dwFlags;
-	ubyte iPixelType;
-	ubyte cColorBits;
-	ubyte cRedBits;
-	ubyte cRedShift;
-	ubyte cGreenBits;
-	ubyte cGreenShift;
-	ubyte cBlueBits;
-	ubyte cBlueShift;
-	ubyte cAlphaBits;
-	ubyte cAlphaShift;
-	ubyte cAccumBits;
-	ubyte cAccumRedBits;
-	ubyte cAccumGreenBits;
-	ubyte cAccumBlueBits;
-	ubyte cAccumAlphaBits;
-	ubyte cDepthBits;
-	ubyte cStencilBits;
-	ubyte cAuxBuffers;
-	ubyte iLayerType;
-	ubyte bReserved;
-	DWORD dwLayerMask;
-	DWORD dwVisibleMask;
-	DWORD dwDamageMask;
+    ushort nSize;
+    ushort nVersion;
+    DWORD dwFlags;
+    ubyte iPixelType;
+    ubyte cColorBits;
+    ubyte cRedBits;
+    ubyte cRedShift;
+    ubyte cGreenBits;
+    ubyte cGreenShift;
+    ubyte cBlueBits;
+    ubyte cBlueShift;
+    ubyte cAlphaBits;
+    ubyte cAlphaShift;
+    ubyte cAccumBits;
+    ubyte cAccumRedBits;
+    ubyte cAccumGreenBits;
+    ubyte cAccumBlueBits;
+    ubyte cAccumAlphaBits;
+    ubyte cDepthBits;
+    ubyte cStencilBits;
+    ubyte cAuxBuffers;
+    ubyte iLayerType;
+    ubyte bReserved;
+    DWORD dwLayerMask;
+    DWORD dwVisibleMask;
+    DWORD dwDamageMask;
 }
 
 alias PIXELFORMATDESCRIPTOR* LPPIXELFORMATDESCRIPTOR;
@@ -13093,30 +13539,30 @@ alias PIXELFORMATDESCRIPTOR* PPIXELFORMATDESCRIPTOR;
 
 struct USER_INFO_2
 {
-	LPWSTR usri2_name;
-	LPWSTR usri2_password;
-	DWORD usri2_password_age;
-	DWORD usri2_priv;
-	LPWSTR usri2_home_dir;
-	LPWSTR usri2_comment;
-	DWORD usri2_flags;
-	LPWSTR usri2_script_path;
-	DWORD usri2_auth_flags;
-	LPWSTR usri2_full_name;
-	LPWSTR usri2_usr_comment;
-	LPWSTR usri2_parms;
-	LPWSTR usri2_workstations;
-	DWORD usri2_last_logon;
-	DWORD usri2_last_logoff;
-	DWORD usri2_acct_expires;
-	DWORD usri2_max_storage;
-	DWORD usri2_units_per_week;
-	PBYTE usri2_logon_hours;
-	DWORD usri2_bad_pw_count;
-	DWORD usri2_num_logons;
-	LPWSTR usri2_logon_server;
-	DWORD usri2_country_code;
-	DWORD usri2_code_page;
+    LPWSTR usri2_name;
+    LPWSTR usri2_password;
+    DWORD usri2_password_age;
+    DWORD usri2_priv;
+    LPWSTR usri2_home_dir;
+    LPWSTR usri2_comment;
+    DWORD usri2_flags;
+    LPWSTR usri2_script_path;
+    DWORD usri2_auth_flags;
+    LPWSTR usri2_full_name;
+    LPWSTR usri2_usr_comment;
+    LPWSTR usri2_parms;
+    LPWSTR usri2_workstations;
+    DWORD usri2_last_logon;
+    DWORD usri2_last_logoff;
+    DWORD usri2_acct_expires;
+    DWORD usri2_max_storage;
+    DWORD usri2_units_per_week;
+    PBYTE usri2_logon_hours;
+    DWORD usri2_bad_pw_count;
+    DWORD usri2_num_logons;
+    LPWSTR usri2_logon_server;
+    DWORD usri2_country_code;
+    DWORD usri2_code_page;
 }
 
 alias USER_INFO_2* PUSER_INFO_2;
@@ -13126,7 +13572,7 @@ alias USER_INFO_2* PUSERINFO2;
 
 struct USER_INFO_0
 {
-	LPWSTR usri0_name;
+    LPWSTR usri0_name;
 }
 
 alias USER_INFO_0* PUSER_INFO_0;
@@ -13136,35 +13582,35 @@ alias USER_INFO_0* PUSERINFO0;
 
 struct USER_INFO_3
 {
-	LPWSTR usri3_name;
-	LPWSTR usri3_password;
-	DWORD usri3_password_age;
-	DWORD usri3_priv;
-	LPWSTR usri3_home_dir;
-	LPWSTR usri3_comment;
-	DWORD usri3_flags;
-	LPWSTR usri3_script_path;
-	DWORD usri3_auth_flags;
-	LPWSTR usri3_full_name;
-	LPWSTR usri3_usr_comment;
-	LPWSTR usri3_parms;
-	LPWSTR usri3_workstations;
-	DWORD usri3_last_logon;
-	DWORD usri3_last_logoff;
-	DWORD usri3_acct_expires;
-	DWORD usri3_max_storage;
-	DWORD usri3_units_per_week;
-	PBYTE usri3_logon_hours;
-	DWORD usri3_bad_pw_count;
-	DWORD usri3_num_logons;
-	LPWSTR usri3_logon_server;
-	DWORD usri3_country_code;
-	DWORD usri3_code_page;
-	DWORD usri3_user_id;
-	DWORD usri3_primary_group_id;
-	LPWSTR usri3_profile;
-	LPWSTR usri3_home_dir_drive;
-	DWORD usri3_password_expired;
+    LPWSTR usri3_name;
+    LPWSTR usri3_password;
+    DWORD usri3_password_age;
+    DWORD usri3_priv;
+    LPWSTR usri3_home_dir;
+    LPWSTR usri3_comment;
+    DWORD usri3_flags;
+    LPWSTR usri3_script_path;
+    DWORD usri3_auth_flags;
+    LPWSTR usri3_full_name;
+    LPWSTR usri3_usr_comment;
+    LPWSTR usri3_parms;
+    LPWSTR usri3_workstations;
+    DWORD usri3_last_logon;
+    DWORD usri3_last_logoff;
+    DWORD usri3_acct_expires;
+    DWORD usri3_max_storage;
+    DWORD usri3_units_per_week;
+    PBYTE usri3_logon_hours;
+    DWORD usri3_bad_pw_count;
+    DWORD usri3_num_logons;
+    LPWSTR usri3_logon_server;
+    DWORD usri3_country_code;
+    DWORD usri3_code_page;
+    DWORD usri3_user_id;
+    DWORD usri3_primary_group_id;
+    LPWSTR usri3_profile;
+    LPWSTR usri3_home_dir_drive;
+    DWORD usri3_password_expired;
 }
 
 alias USER_INFO_3* PUSER_INFO_3;
@@ -13174,10 +13620,10 @@ alias USER_INFO_3* PUSERINFO3;
 
 struct GROUP_INFO_2
 {
-	LPWSTR grpi2_name;
-	LPWSTR grpi2_comment;
-	DWORD grpi2_group_id;
-	DWORD grpi2_attributes;
+    LPWSTR grpi2_name;
+    LPWSTR grpi2_comment;
+    DWORD grpi2_group_id;
+    DWORD grpi2_attributes;
 }
 
 alias GROUP_INFO_2* PGROUP_INFO_2;
@@ -13186,7 +13632,7 @@ alias GROUP_INFO_2* PGROUPINFO2;
 
 struct LOCALGROUP_INFO_0
 {
-	LPWSTR lgrpi0_name;
+    LPWSTR lgrpi0_name;
 }
 
 alias LOCALGROUP_INFO_0* PLOCALGROUP_INFO_0;
@@ -13196,25 +13642,25 @@ alias LOCALGROUP_INFO_0* PLOCALGROUPINFO0;
 
 struct IMAGE_DOS_HEADER
 {
-	ushort e_magic;
-	ushort e_cblp;
-	ushort e_cp;
-	ushort e_crlc;
-	ushort e_cparhdr;
-	ushort e_minalloc;
-	ushort e_maxalloc;
-	ushort e_ss;
-	ushort e_sp;
-	ushort e_csum;
-	ushort e_ip;
-	ushort e_cs;
-	ushort e_lfarlc;
-	ushort e_ovno;
-	ushort[1 + 3] e_res;
-	ushort e_oemid;
-	ushort e_oeminfo;
-	ushort[1 + 9] e_res2;
-	LONG e_lfanew;
+    ushort e_magic;
+    ushort e_cblp;
+    ushort e_cp;
+    ushort e_crlc;
+    ushort e_cparhdr;
+    ushort e_minalloc;
+    ushort e_maxalloc;
+    ushort e_ss;
+    ushort e_sp;
+    ushort e_csum;
+    ushort e_ip;
+    ushort e_cs;
+    ushort e_lfarlc;
+    ushort e_ovno;
+    ushort[1 + 3] e_res;
+    ushort e_oemid;
+    ushort e_oeminfo;
+    ushort[1 + 9] e_res2;
+    LONG e_lfanew;
 }
 
 alias IMAGE_DOS_HEADER* PIMAGE_DOS_HEADER;
@@ -13225,74 +13671,74 @@ alias TVARIANT* PVARIANT;
 
 struct TVARIANT
 {
-	TVARTYPE vt;
-	ushort wReserved1;
-	ushort wReserved2;
-	ushort wReserved3;
+    TVARTYPE vt;
+    ushort wReserved1;
+    ushort wReserved2;
+    ushort wReserved3;
 
-	union
-	{
-		struct
-		{
-			ubyte bVal;
-		}
-		struct
-		{
-			byte iVal;
-		}
-		struct
-		{
-			int lVal;
-		}
-		struct
-		{
-			float fltVal;
-		}
-		struct
-		{
-			double dblVal;
-		}
-		struct
-		{
-			ushort vbool;
-		}
-		struct
-		{
-			HRESULT scode;
-		}
-		struct
-		{
-			ubyte* pbVal;
-		}
-		struct
-		{
-			byte* piVal;
-		}
-		struct
-		{
-			int* plVal;
-		}
-		struct
-		{
-			float* pfltVal;
-		}
-		struct
-		{
-			double* pdblVal;
-		}
-		struct
-		{
-			ushort* pbool;
-		}
-		struct
-		{
-			HRESULT* pscode;
-		}
-		struct
-		{
-			POINTER byRef;
-		}
-	}
+    union
+    {
+        struct
+        {
+            ubyte bVal;
+        }
+        struct
+        {
+            byte iVal;
+        }
+        struct
+        {
+            int lVal;
+        }
+        struct
+        {
+            float fltVal;
+        }
+        struct
+        {
+            double dblVal;
+        }
+        struct
+        {
+            ushort vbool;
+        }
+        struct
+        {
+            HRESULT scode;
+        }
+        struct
+        {
+            ubyte* pbVal;
+        }
+        struct
+        {
+            byte* piVal;
+        }
+        struct
+        {
+            int* plVal;
+        }
+        struct
+        {
+            float* pfltVal;
+        }
+        struct
+        {
+            double* pdblVal;
+        }
+        struct
+        {
+            ushort* pbool;
+        }
+        struct
+        {
+            HRESULT* pscode;
+        }
+        struct
+        {
+            POINTER byRef;
+        }
+    }
 }
 
 alias TVARIANT VARIANT;
@@ -13301,13 +13747,13 @@ alias TWAVEFORMATEX* PWAVEFORMATEX;
 
 align(1) struct TWAVEFORMATEX
 {
-	ushort wFormatTag;
-	ushort nChannels;
-	DWORD nSamplesPerSec;
-	DWORD nAvgBytesPerSec;
-	ushort nBlockAlign;
-	ushort wBitsPerSample;
-	ushort cbSize;
+    ushort wFormatTag;
+    ushort nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    ushort nBlockAlign;
+    ushort wBitsPerSample;
+    ushort cbSize;
 }
 
 alias CRITICAL_SECTION TRTLCRITICALSECTION;
@@ -13325,9 +13771,9 @@ alias POINTER TFNTHREADSTARTROUTINE;
 
 struct _OBJECT_TYPE_LIST
 {
-	ushort Level;
-	ushort Sbz;
-	PGUID ObjectType;
+    ushort Level;
+    ushort Sbz;
+    PGUID ObjectType;
 }
 
 alias _OBJECT_TYPE_LIST TOBJECTTYPELIST;
@@ -13337,10 +13783,10 @@ alias DWORD AUDIT_EVENT_TYPE;
 
 align(1) struct _BLENDFUNCTION
 {
-	ubyte BlendOp;
-	ubyte BlendFlags;
-	ubyte SourceConstantAlpha;
-	ubyte AlphaFormat;
+    ubyte BlendOp;
+    ubyte BlendFlags;
+    ubyte SourceConstantAlpha;
+    ubyte AlphaFormat;
 }
 
 alias _BLENDFUNCTION TBLENDFUNCTION;
@@ -13351,21 +13797,21 @@ alias HANDLE HMONITOR;
 
 struct tagMONITORINFOEX
 {
-	DWORD  cbSize;
-	RECT   rcMonitor;
-	RECT   rcWork;
-	DWORD  dwFlags;
-	TCHAR  szDevice[CCHDEVICENAME];
+    DWORD  cbSize;
+    RECT   rcMonitor;
+    RECT   rcWork;
+    DWORD  dwFlags;
+    TCHAR  szDevice[CCHDEVICENAME];
 }
 alias tagMONITORINFOEX MONITORINFOEX;
 alias MONITORINFOEX* LPMONITORINFOEX;
 
 struct tagMONITORINFO
 {
-	DWORD  cbSize;
-	RECT   rcMonitor;
-	RECT   rcWork;
-	DWORD  dwFlags;
+    DWORD  cbSize;
+    RECT   rcMonitor;
+    RECT   rcWork;
+    DWORD  dwFlags;
 }
 alias tagMONITORINFO MONITORINFO;
 alias MONITORINFO* LPMONITORINFO;

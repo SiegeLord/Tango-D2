@@ -470,7 +470,7 @@ struct Console
                                 assert (handle_ < 3);
                                 handle = GetStdHandle (id[handle_]);
                                 if (handle is null || handle is INVALID_HANDLE_VALUE)
-                                    handle = CreateFileA (f[handle_].ptr, 
+                                    handle = CreateFileA ( cast(PCHAR) f[handle_].ptr, 
                                              GENERIC_READ | GENERIC_WRITE,  
                                              FILE_SHARE_READ | FILE_SHARE_WRITE, 
                                              null, OPEN_EXISTING, 0, cast(HANDLE) 0);
@@ -515,7 +515,7 @@ struct Console
                                        output.length = i;
 
                                    // convert into output buffer
-                                   i = MultiByteToWideChar (CP_UTF8, 0, cast(char*) src.ptr, i, 
+                                   i = MultiByteToWideChar (CP_UTF8, 0, cast(PCHAR) src.ptr, i, 
                                                             output.ptr, output.length);
                                             
                                    // flush produced output
@@ -575,7 +575,7 @@ struct Console
 
                                    // translate to utf8, directly into dst
                                    i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i, 
-                                                            cast(char*) dst.ptr, dst.length, null, null);
+                                                            cast(PCHAR) dst.ptr, dst.length, null, null);
                                    if (i is 0)
                                        error ();
 

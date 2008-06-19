@@ -120,11 +120,11 @@ struct CodePage
                    wchar[2000] tmp = void;
                    wchar[] wide = (src.length <= tmp.length) ? tmp : new wchar[src.length];
 
-                   len = MultiByteToWideChar (from, 0, src.ptr, src.length, 
+                   len = MultiByteToWideChar (from, 0, cast(PCHAR)src.ptr, src.length, 
                                               wide.ptr, wide.length);
                    if (len)
                        len = WideCharToMultiByte (into, 0, wide.ptr, len, 
-                                                  dst.ptr, dst.length-1, null, null);
+                                                  cast(PCHAR)dst.ptr, dst.length-1, null, null);
                    if (len is 0)
                        throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg);
                    }

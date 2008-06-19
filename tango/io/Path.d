@@ -241,7 +241,7 @@ package struct FS
                 private static wchar[] toString16 (wchar[] tmp, char[] path)
                 {
                         auto i = MultiByteToWideChar (CP_UTF8, 0,
-                                                      path.ptr, path.length,
+                                                      cast(PCHAR)path.ptr, path.length,
                                                       tmp.ptr, tmp.length);
                         return tmp [0..i];
                 }
@@ -255,7 +255,7 @@ package struct FS
                 private static char[] toString (char[] tmp, wchar[] path)
                 {
                         auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length,
-                                                      tmp.ptr, tmp.length, null, null);
+                                                      cast(PCHAR)tmp.ptr, tmp.length, null, null);
                         return tmp [0..i];
                 }
 
