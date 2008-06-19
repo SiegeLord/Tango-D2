@@ -12,7 +12,7 @@
 
 module tango.io.UnicodeFile;
 
-public  import  tango.io.FilePath;
+private import  tango.io.FilePath;
 
 private import  tango.io.FileConduit;
 
@@ -101,7 +101,7 @@ public  import  tango.text.convert.UnicodeBom;
 class UnicodeFile(T)
 {
         private UnicodeBom!(T)  bom;
-        private PathView        path_;
+        private char[]          path_;
 
         /***********************************************************************
         
@@ -111,7 +111,7 @@ class UnicodeFile(T)
 
         ***********************************************************************/
                                   
-        this (PathView path, Encoding encoding)
+        this (char[] path, Encoding encoding)
         {
                 bom = new UnicodeBom!(T)(encoding);
                 path_ = path;
@@ -125,9 +125,9 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        this (char[] path, Encoding encoding)
+        this (FilePath path, Encoding encoding)
         {
-                this (new FilePath(path), encoding);
+                this (path.toString, encoding);
         }
 
         /***********************************************************************
@@ -149,7 +149,18 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        PathView path ()
+        deprecated PathView path ()
+        {
+                return new FilePath (path_);
+        }
+        
+        /***********************************************************************
+
+                Return the associated file path
+
+        ***********************************************************************/
+
+        char[] toString ()
         {
                 return path_;
         }

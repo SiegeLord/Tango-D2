@@ -38,7 +38,19 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void load (FilePath path, void delegate (T[] name, T[] value) dg)
+        deprecated static void load (FilePath path, void delegate (T[] name, T[] value) dg)
+        {
+                load (path.toString, dg);
+        }
+
+        /***********************************************************************
+
+                Load properties from the named file, and pass each of them
+                to the provided delegate.
+
+        ***********************************************************************/
+
+        static void load (char[] path, void delegate (T[] name, T[] value) dg)
         {
                 auto fc = new FileConduit (path);
                 scope (exit)
@@ -91,7 +103,18 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void save (FilePath path, T[][T[]] properties)
+        deprecated static void save (FilePath path, T[][T[]] properties)
+        {
+                save (path.toString, properties);
+        }
+
+        /***********************************************************************
+
+                Write properties to the provided filepath
+
+        ***********************************************************************/
+
+        static void save (char[] path, T[][T[]] properties)
         {
                 auto fc = new FileConduit (path, FileConduit.WriteCreate);
                 scope (exit)

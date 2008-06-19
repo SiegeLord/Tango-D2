@@ -14,7 +14,7 @@ module tango.util.log.AppendFiles;
 
 private import  tango.time.Time;
 
-private import  tango.io.FilePath,
+private import  Path = tango.io.Path,
                 tango.io.FileConduit;
 
 private import  tango.io.model.IFile,
@@ -32,7 +32,7 @@ private import  tango.util.log.Log,
 public class AppendFiles : Filer
 {
         private Mask            mask_;
-        private FilePath[]      paths;
+        private char[][]        paths;
         private int             index;
         private IBuffer         buffer;
         private ulong           maxSize,
@@ -62,15 +62,14 @@ public class AppendFiles : Filer
                 for (int i=0; i < count; ++i)
                     {
                     x[0] = '0' + i;
-
-                    auto p = new FilePath (path);
-                    p.name = p.name ~ x;
+                    auto c = Path.parse (path);
+                    auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
                     paths ~= p;
 
                     // use the most recent file in the set
-                    if (p.exists)
+                    if (Path.exists(p))
                        {
-                       auto modified = p.modified;
+                       auto modified = Path.modified(p);
                        if (modified > mostRecent)
                           {
                           mostRecent = modified;

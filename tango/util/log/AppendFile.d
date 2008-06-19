@@ -39,10 +39,10 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        this (FilePath fp, Appender.Layout how = null)
+        this (char[] fp, Appender.Layout how = null)
         {
                 // Get a unique fingerprint for this instance
-                mask_ = register (fp.toString);
+                mask_ = register (fp);
         
                 // make it shareable for read
                 auto style = FileConduit.WriteAppending;
@@ -58,9 +58,9 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        this (char[] fp, Appender.Layout how = null)
+        deprecated this (FilePath fp, Appender.Layout how = null)
         {
-                this (new FilePath(fp), how);
+                this (fp.toString, how);
         }
 
         /***********************************************************************

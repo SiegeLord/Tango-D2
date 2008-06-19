@@ -60,7 +60,7 @@ int main(char[][] args)
     }
 
     auto props = new Properties!(char);
-    props.load(new FilePath(args[1]), &configReader);
+    props.load(args[1], &configReader);
 
 
     // Enter work directory

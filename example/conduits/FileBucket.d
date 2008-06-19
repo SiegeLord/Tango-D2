@@ -1,7 +1,6 @@
 module FileBucket;
 
-private import  tango.io.FilePath,
-                tango.io.FileConduit;
+private import  tango.io.FileConduit;
 
 private import  tango.core.Exception;
 
@@ -55,7 +54,7 @@ class FileBucket
         }
 
         // basic capacity for each record
-        private FilePath                path;
+        private char[]                  path;
 
         // basic capacity for each record
         private BlockSize               block;
@@ -86,19 +85,6 @@ class FileBucket
 
         /**********************************************************************
 
-                Construct a FileBucket with the provided path and record-
-                size. Selecting a record size that roughly matches the 
-                serialized content will limit 'thrashing'.
-
-        **********************************************************************/
-
-        this (char[] path, BlockSize block)
-        {
-                this (new FilePath(path), block);
-        }
-
-        /**********************************************************************
-
                 Construct a FileBucket with the provided path, record-size,
                 and inital record count. The latter causes records to be 
                 pre-allocated, saving a certain amount of growth activity.
@@ -107,7 +93,7 @@ class FileBucket
 
         **********************************************************************/
 
-        this (FilePath path, BlockSize block, uint initialRecords = 100)
+        this (char[] path, BlockSize block, uint initialRecords = 100)
         {
                 this.path = path;
                 this.block = block;
@@ -138,7 +124,7 @@ class FileBucket
 
         **********************************************************************/
 
-        FilePath getFilePath ()
+        char[] getFilePath ()
         {
                 return path;
         }
@@ -249,7 +235,7 @@ class FileBucket
 
                 private static void eof (FileBucket bucket)
                 {
-                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path.toString()~"'");
+                        throw new IOException ("Unexpected EOF in FileBucket '"~bucket.path~"'");
                 }
 
                 /**************************************************************

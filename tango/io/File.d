@@ -36,7 +36,7 @@ private import  tango.core.Exception;
 
 class File
 {
-        private PathView path_;
+        private char[] path_;
 
         /***********************************************************************
         
@@ -46,7 +46,7 @@ class File
 
         this (char[] path)
         {
-                this (new FilePath (path));
+                path_ = path;
         }
 
         /***********************************************************************
@@ -55,9 +55,9 @@ class File
 
         ***********************************************************************/
                                   
-        this (PathView path)
+        deprecated this (PathView path)
         {
-                path_ = path;
+                this(path.toString);
         }
 
         /***********************************************************************
@@ -79,9 +79,9 @@ class File
 
         ***********************************************************************/
 
-        final PathView path ()
+        deprecated final PathView path ()
         {
-                return path_;
+                return new FilePath(path_);
         }
 
         /***********************************************************************

@@ -88,7 +88,7 @@ class QueueFile
                            }
                         }
 
-                auto length = conduit.path.fileSize;
+                auto length = conduit.length;
                 if (length is 0)
                    {
                    // make some space in the file
