@@ -86,10 +86,10 @@ extern (C) Array _adReverseChar(char[] a)
         {   auto clo = *lo;
             auto chi = *hi;
 
-	    debug(adi) printf("lo = %d, hi = %d\n", lo, hi);
+            debug(adi) printf("lo = %d, hi = %d\n", lo, hi);
             if (clo <= 0x7F && chi <= 0x7F)
             {
-		debug(adi) printf("\tascii\n");
+                debug(adi) printf("\tascii\n");
                 *lo = chi;
                 *hi = clo;
                 lo++;
@@ -109,7 +109,7 @@ extern (C) Array _adReverseChar(char[] a)
             if (lo == hi)
                 break;
 
-	    debug(adi) printf("\tstridelo = %d, stridehi = %d\n", stridelo, stridehi);
+            debug(adi) printf("\tstridelo = %d, stridehi = %d\n", stridelo, stridehi);
             if (stridelo == stridehi)
             {
 
@@ -125,12 +125,12 @@ extern (C) Array _adReverseChar(char[] a)
              */
             memcpy(tmp.ptr, hi, stridehi);
             memcpy(tmplo.ptr, lo, stridelo);
-	    memmove(lo + stridehi, lo + stridelo , (hi - lo) - stridelo);
+            memmove(lo + stridehi, lo + stridelo , (hi - lo) - stridelo);
             memcpy(lo, tmp.ptr, stridehi);
             memcpy(hi + cast(int) stridehi - cast(int) stridelo, tmplo.ptr, stridelo);
 
             lo += stridehi;
-	    hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
+            hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
     return *cast(Array*)(&a);
@@ -218,12 +218,12 @@ extern (C) Array _adReverseWchar(wchar[] a)
             /* Shift the whole array. This is woefully inefficient
              */
             memcpy(tmp.ptr, hi, stridehi * wchar.sizeof);
-	    memcpy(hi + cast(int) stridehi - cast(int) stridelo, lo, stridelo * wchar.sizeof);
+            memcpy(hi + cast(int) stridehi - cast(int) stridelo, lo, stridelo * wchar.sizeof);
             memmove(lo + stridehi, lo + stridelo , (hi - (lo + stridelo)) * wchar.sizeof);
             memcpy(lo, tmp.ptr, stridehi * wchar.sizeof);
 
             lo += stridehi;
-	    hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
+            hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
     return *cast(Array*)(&a);
@@ -489,7 +489,7 @@ extern (C) char[] _adSortChar(char[] a)
 {
     if (a.length > 1)
     {
-	dchar[] da = toUTF32(a);
+        dchar[] da = toUTF32(a);
         da.sort;
         size_t i = 0;
         foreach (dchar d; da)
@@ -511,12 +511,12 @@ extern (C) wchar[] _adSortWchar(wchar[] a)
 {
     if (a.length > 1)
     {
-	dchar[] da = toUTF32(a);
+        dchar[] da = toUTF32(a);
         da.sort;
         size_t i = 0;
         foreach (dchar d; da)
         {   wchar[2] buf;
-	    auto t = toUTF16(buf, d);
+            auto t = toUTF16(buf, d);
             a[i .. i + t.length] = t[];
             i += t.length;
         }
@@ -531,30 +531,17 @@ extern (C) wchar[] _adSortWchar(wchar[] a)
 
 extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
 {
-    debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
+     debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
+
+    if (a1.ptr == a2.ptr)
+        return 1; // equal
     if (a1.length != a2.length)
-        return 0;               // not equal
-    auto sz = ti.tsize();
-    auto p1 = a1.ptr;
-    auto p2 = a2.ptr;
+        return 0; // not equal
 
-/+
-    for (int i = 0; i < a1.length; i++)
-    {
-        printf("%4x %4x\n", (cast(short*)p1)[i], (cast(short*)p2)[i]);
-    }
-+/
-
-    if (sz == 1)
-        // We should really have a ti.isPOD() check for this
-        return (memcmp(p1, p2, a1.length) == 0);
-
-    for (size_t i = 0; i < a1.length; i++)
-    {
-        if (!ti.equals(p1 + i * sz, p2 + i * sz))
-            return 0;           // not equal
-    }
-    return 1;                   // equal
+    // We should really have a ti.isPOD() check for this
+    if (ti.tsize() != 1)
+        return ti.equals(&a1, &a2);
+    return memcmp(a1.ptr, a2.ptr, a1.length) == 0;
 }
 
 unittest
@@ -577,31 +564,22 @@ unittest
 extern (C) int _adCmp(Array a1, Array a2, TypeInfo ti)
 {
     debug(adi) printf("adCmp()\n");
+
+    if (a1.ptr == a2.ptr)
+        return 0;
     auto len = a1.length;
     if (a2.length < len)
         len = a2.length;
-    auto sz = ti.tsize();
-    void *p1 = a1.ptr;
-    void *p2 = a2.ptr;
 
-    if (sz == 1)
-    {   // We should really have a ti.isPOD() check for this
-        auto c = memcmp(p1, p2, len);
-        if (c)
-            return c;
-    }
-    else
-    {
-        for (size_t i = 0; i < len; i++)
-        {
-            auto c = ti.compare(p1 + i * sz, p2 + i * sz);
-            if (c)
-                return c;
-        }
-    }
+    // We should really have a ti.isPOD() check for this
+    if (ti.tsize() != 1)
+        return ti.compare(&a1, &a2);
+    auto c = memcmp(a1.ptr, a2.ptr, len);
+    if (c)
+        return c;
     if (a1.length == a2.length)
         return 0;
-    return (a1.length > a2.length) ? 1 : -1;
+    return a1.length > a2.length ? 1 : -1;
 }
 
 unittest
