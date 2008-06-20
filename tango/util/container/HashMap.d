@@ -270,7 +270,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         
         ************************************************************************/
 
-        final V* opIn (K key)
+        final V* opIn_r (K key)
         {
                 if (count)
                    {
@@ -529,7 +529,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         final V opIndex (K key)
         {
-                auto p = opIn (key);
+                auto p = opIn_r (key);
                 if (p)
                     return *p;
                 throw new NoSuchElementException ("missing or invalid key");
