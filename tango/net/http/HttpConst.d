@@ -49,7 +49,7 @@ struct HttpHeader
         // maximum length for POST parameters (to avoid DOS ...)
         const int MaxPostParamSize             = 4 * 1024;
 
-        const HttpHeaderName Version           = {"HTTP/1.0"};
+        const HttpHeaderName Version           = {"HTTP/1.1"};
         const HttpHeaderName TextHtml          = {"text/html"};
 
         const HttpHeaderName Accept            = {"Accept:"};
