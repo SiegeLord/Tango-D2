@@ -379,10 +379,10 @@ extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
 {
     debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
 
-    if (a1.ptr == a2.ptr)
-        return 1; // equal
     if (a1.length != a2.length)
         return 0; // not equal
+    if (a1.ptr == a2.ptr)
+        return 1; // equal
 
     // We should really have a ti.isPOD() check for this
     if (ti.tsize() != 1)
@@ -411,8 +411,10 @@ extern (C) int _adCmp(Array a1, Array a2, TypeInfo ti)
 {
     debug(adi) printf("adCmp()\n");
 
-    if (a1.ptr == a2.ptr)
+    if (a1.ptr == a2.ptr &&
+        a1.length == a2.length)
         return 0;
+
     auto len = a1.length;
     if (a2.length < len)
         len = a2.length;
