@@ -146,7 +146,7 @@ private class SyncPrint
         /**********************************************************************
 
                 Print a range of raw memory as a hex dump.
-                Characters in range 0x20..0xFE are printed, all others are
+                Characters in range 0x20..0x7E are printed, all others are
                 shown as dots.
 
                 ----
