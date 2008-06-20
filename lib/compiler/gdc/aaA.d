@@ -440,8 +440,7 @@ void _aaDelp(AA aa, TypeInfo keyti, void *pkey)
                     }
 
                     aa.a.nodes--;
-
-                    // Should notify GC that e can be free'd now
+                    gc_free(e);
                     break;
                 }
                 pe = (c < 0) ? &e.left : &e.right;

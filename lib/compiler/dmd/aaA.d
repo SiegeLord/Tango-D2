@@ -439,8 +439,7 @@ void _aaDel(AA aa, TypeInfo keyti, ...)
                     }
 
                     aa.a.nodes--;
-
-                    // Should notify GC that e can be free'd now
+                    gc_free(e);
                     break;
                 }
                 pe = (c < 0) ? &e.left : &e.right;
