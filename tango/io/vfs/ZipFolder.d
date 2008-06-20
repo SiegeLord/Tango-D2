@@ -24,6 +24,7 @@ import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
        VfsFolders, VfsFiles, VfsFilter, VfsStats, VfsFilterInfo,
        VfsInfo, VfsSync;
 import tango.util.PathUtil : patternMatch;
+import Path = tango.io.Path;
 
 debug( ZipFolder )
 {
@@ -287,17 +288,17 @@ class ZipFolder : ZipSubFolder
      * is specified as true, then modification of the archive will be
      * explicitly disallowed.
      */
-    this(char[] path, bool readonly=false)
+    deprecated this(FilePath path, bool readonly=false)
     out { assert( valid ); }
     body
     {
         debug( ZipFolder )
             Stderr.formatln(`ZipFolder("{}", {})`, path, readonly);
-        this(FilePath(path), readonly);
+        this(path.toString, readonly);
     }
 
     /// ditto
-    this(FilePath path, bool readonly=false)
+    this(char[] path, bool readonly=false)
     out { assert( valid ); }
     body
     {
@@ -373,12 +374,13 @@ else
         TempFile tempFile;
         scope(exit) if( tempFile !is null ) delete tempFile;
 
+        auto p = Path.parse (path);
         foreach( file ; this.tree.catalog )
         {
             if( auto zf = cast(ZipFile) file )
                 if( zf.entry.file.zipEntry !is null )
                 {
-                    tempFile = new TempFile(path.path, TempFile.Permanent);
+                    tempFile = new TempFile(p.path, TempFile.Permanent);
                     os = tempFile.output;
                     debug( ZipFolder )
                         Stderr.formatln(" sync: created temp file {}",
@@ -470,13 +472,21 @@ else
      * setting this is to change where the archive will be written to when
      * flushed to disk.
      */
-    final FilePath path() { return _path; }
-    final FilePath path(FilePath v) { return _path = v; } /// ditto
+    //deprecated final FilePath path() { return FilePath(_path); }
+    //deprecated final void path(FilePath v) { return _path = v.toString; } /// ditto
+
+    /**
+     * Allows you to read and specify the path to the archive.  The effect of
+     * setting this is to change where the archive will be written to when
+     * flushed to disk.
+     */
+    final char[] path() { return _path; }
+    final char[] path(char[] v) { return _path = v; } /// ditto
 
 private:
     ZipReader zr;
     Entry* root;
-    FilePath _path;
+    char[] _path;
     bool _readonly;
     bool modified = false;
 
@@ -512,7 +522,7 @@ private:
             this.modified = true;
     }
 
-    void resetArchive(FilePath path, bool readonly=false)
+    void resetArchive(char[] path, bool readonly=false)
     out { assert( valid ); }
     body
     {
@@ -523,9 +533,9 @@ private:
             Stderr.formatln(" .. size of Entry: {0}, {0:x} bytes", Entry.sizeof);
 
         this.path = path;
-        this.readonly = readonly & !path.isWritable;
+        this.readonly = readonly & !Path.isWritable(path);
 
-        zr = new ZipBlockReader(path.toString);
+        zr = new ZipBlockReader(path);
 
         // First, create a root entry
         root = new Entry;
@@ -649,11 +659,11 @@ class ZipSubFolder : VfsFolder, VfsSync
     in
     {
         assert( valid );
-        assert( !FilePath(path).isAbsolute );
+        assert( !Path.parse(path).isAbsolute );
     }
     body
     {
-        auto fp = FilePath(path);
+        auto fp = Path.parse(path);
         auto dir = fp.path;
         auto name = fp.file;
 
@@ -691,7 +701,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     in
     {
         assert( valid );
-        assert( !FilePath(path).isAbsolute );
+        assert( !Path.parse(path).isAbsolute );
     }
     body
     {
@@ -845,7 +855,7 @@ else
 
             if( src[0..len] == dst[0..len] )
                 error(`folders "`~dst~`" and "`~src~`" in archive "`
-                        ~archive.path.toString~`" overlap`);
+                        ~archive.path~`" overlap`);
         }
     }
 
@@ -1639,7 +1649,7 @@ char[] dir_app(char[] dir, char[] name)
     return dir ~ (dir[$-1]!='/' ? "/" : "") ~ name;
 }
 
-void headTail(ref FilePath fp, out char[] head, out char[] tail)
+deprecated void headTail(ref FilePath fp, out char[] head, out char[] tail)
 {
     return headTail(fp.toString, head, tail);
 }
