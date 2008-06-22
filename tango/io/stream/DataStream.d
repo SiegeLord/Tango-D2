@@ -79,7 +79,7 @@ class DataInput : InputFilter, Buffered
                 the array, and the actual number of bytes is returned.
 
                 Note that the size of the array is written as an integer
-                prefixing the array content itself.  Use write(void[]) to 
+                prefixing the array content itself.  Use read(void[]) to 
                 eschew this prefix.
 
         ***********************************************************************/
