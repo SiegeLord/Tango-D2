@@ -133,7 +133,7 @@ class SocketPool(T)
                 
         ***********************************************************************/
         
-        final bool request (Handler send, Handler recv, Log log = null)
+        final bool request (Handler send, Handler recv, Log log)
         {       
                 Time time;
 
@@ -151,7 +151,8 @@ class SocketPool(T)
                          // assume it is offline until it tells us 
                          // otherwise 
                          attempts = 0;
-                         recv (connection.bound);
+                         if (recv)
+                             recv (connection.bound);
 
                          // return borrowed connection
                          connection.done (time);
