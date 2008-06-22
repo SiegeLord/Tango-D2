@@ -58,6 +58,7 @@ class SocketPool(T)
         this (InternetAddress address, Factory factory, bool nagle=true)
         {      
                 this.nagle = nagle;
+                this.online = true;
                 this.factory = factory;
                 this.address = address;
         }
