@@ -99,13 +99,13 @@ struct Stack (V, int Size)
 
         /**********************************************************************
 
-                Push an array of values onto the stack.
+                Push a series of values onto the stack.
 
                 Throws an exception when the stack is full
 
         **********************************************************************/
 
-        void push (V[] value)
+        void pushMore (V[] value...)
         {
                 foreach (v; value)
                          push (v);

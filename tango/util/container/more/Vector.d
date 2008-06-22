@@ -86,13 +86,13 @@ struct Vector (V, int Size)
 
         /**********************************************************************
 
-                Add an array of values to the vector.
+                Add a series of values to the vector.
 
                 Throws an exception when the vector is full
 
         **********************************************************************/
 
-        void add (V[] value)
+        void addMore (V[] value...)
         {
                 foreach (v; value)
                          add (v);
