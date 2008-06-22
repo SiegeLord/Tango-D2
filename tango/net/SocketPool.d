@@ -32,20 +32,22 @@ private import  tango.net.SocketConduit,
 
 *******************************************************************************/
 
-private class SocketPool
+class SocketPool(T)
 { 
-        private alias void delegate (IConduit) Handler;
-        private alias void delegate (char[] msg, ...) Error;
+        public alias void delegate (T) Handler;
+        public alias T delegate (IConduit) Factory;
+        public alias void delegate (char[] msg, ...) Log;
 
         private int                     size, 
                                         count;
         private bool                    nagle,
                                         online;
 
-        private Error                   error;
+        private Factory                 factory;
         private InternetAddress         address;
         private Connection              freelist;
         private TimeSpan                timeout = TimeSpan.seconds(60);
+
 
         /***********************************************************************
 
@@ -53,11 +55,10 @@ private class SocketPool
 
         ***********************************************************************/
 
-        this (InternetAddress address, Error error=null, bool nagle=true)
+        this (InternetAddress address, Factory factory, bool nagle=true)
         {      
-                this.online = true;
-                this.error = error;
                 this.nagle = nagle;
+                this.factory = factory;
                 this.address = address;
         }
 
@@ -131,17 +132,17 @@ private class SocketPool
                 
         ***********************************************************************/
         
-        final bool request (Handler send, Handler recv)
+        final bool request (Handler send, Handler recv, Log log = null)
         {       
                 Time time;
 
                 // get a connection to the server
-                auto connect = borrow (time = Clock.now);
+                auto connection = borrow (time = Clock.now);
 
                 // talk to the server (try a few times if necessary)
                 for (int attempts=3; attempts--;)
                      try {
-                         send (connect.conduit); 
+                         send (connection.bound); 
 
                          // load the reply. Don't retry on
                          // failed reads, since the server is either
@@ -149,23 +150,24 @@ private class SocketPool
                          // assume it is offline until it tells us 
                          // otherwise 
                          attempts = 0;
-                         recv (connect.conduit);
+                         recv (connection.bound);
 
                          // return borrowed connection
-                         connect.done (time);
+                         connection.done (time);
 
                          } catch (IOException x)
                                  {
-                                 if (error)
-                                     error ("IOException on request to server {} - {}", address, x);
+                                 if (log)
+                                     log ("IOException on request to server {} - {}", address, x);
 
                                  // attempt to reconnect?
-                                 if (attempts is 0 || !connect.reset)
+                                 if (attempts is 0 || !connection.reset)
                                     {
                                     // that server is offline
-                                    if (error)
-                                        error ("disabling connection for server {}", address);
                                     close;
+
+                                    if (log)
+                                        log ("disabling connection for server {}", address);
   
                                     // state that we failed
                                     return false;
@@ -190,6 +192,7 @@ private class SocketPool
                 Time            time;
                 SocketPool      parent;   
                 SocketConduit   socket;
+                T               bound;
 
                 /***************************************************************
                 
@@ -214,9 +217,13 @@ private class SocketPool
         
                 final bool reset ()
                 {
-                        try {
-                            socket = new SocketConduit;
+                        // new connection to host
+                        socket = new SocketConduit;
 
+                        // have callee create the binding
+                        bound = parent.factory (socket);
+
+                        try {
                             // apply Nagle settings
                             socket.socket.setNoDelay (parent.nagle is false);
 
@@ -227,22 +234,9 @@ private class SocketPool
                             socket.connect (parent.address);
 
                             return parent.online = true;
-
-                            } catch (Object o)
-                                     if (! Runtime.isHalting && parent.error)
-                                           parent.error ("server {} is unavailable - {}", parent.address, o);
+                            } catch (Object o) {}
+                                     
                         return false;
-                }
-                  
-                /***************************************************************
-
-                        Return the socket belonging to this connection
-
-                ***************************************************************/
-        
-                final SocketConduit conduit ()
-                {
-                        return socket;
                 }
                   
                 /***************************************************************
@@ -285,13 +279,17 @@ debug (SocketPool)
 {
         import tango.io.Stdout;
         import tango.core.Thread;
+        
+        alias SocketPool!(IConduit) Pool;
 
         void main()
         {
+                IConduit create (IConduit c)
+                {       
+                        return c;
+                }
 
-                auto pool = new SocketPool (new InternetAddress("localhost:1111"), &Stdout.formatln);
-
-                void send (Connection c)
+                void send (IConduit c)
                 {
                         Stdout ("sending").newline;
                         int x = 5;
@@ -299,14 +297,15 @@ debug (SocketPool)
                         if (c.write ("hello") is c.Eof)
                             throw new IOException ("failed to write");
                 }
-
+        
                 void recv (IConduit c)
                 {
                 }
 
+                auto pool = new Pool (new InternetAddress("localhost:1111"), &create);
                 while (true)
                       {
-                      if (! pool.request (&send, &recv))
+                      if (! pool.request (&send, &recv, cast(Pool.Log) &Stdout.formatln))
                             Stdout (">>> request failed").newline;
                       Thread.sleep (1);
                       }
