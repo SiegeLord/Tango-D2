@@ -296,14 +296,10 @@ debug (SocketPool)
                             throw new IOException ("failed to write");
                 }
         
-                void recv (IConduit c)
-                {
-                }
-
                 auto pool = new Pool (new InternetAddress("localhost:1111"), &create);
                 while (true)
                       {
-                      if (! pool.request (&send, &recv, cast(Pool.Log) &Stdout.formatln))
+                      if (! pool.request (&send, null, cast(Pool.Log) &Stdout.formatln))
                             Stdout (">>> request failed").newline;
                       Thread.sleep (1);
                       }
