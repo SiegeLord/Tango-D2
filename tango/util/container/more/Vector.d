@@ -30,7 +30,6 @@ struct Vector (V, int Size)
         private uint            depth;
 
         alias slice             opSlice;
-        alias nth               opIndex;
           
         /***********************************************************************
 
@@ -140,17 +139,35 @@ struct Vector (V, int Size)
 
         /**********************************************************************
 
-                Index vector entries, where a zero index represents the
-                oldest vector entry (the top).
+                Index vector entries, as though it were an array
 
                 Throws an exception when the given index is out of range
 
         **********************************************************************/
 
-        V nth (uint i)
+        V opIndex (uint i)
         {
                 if (i < depth)
                     return vector [i];
+
+                return error (__LINE__);
+        }
+
+        /**********************************************************************
+
+                Assign vector entries as though it were an array.
+
+                Throws an exception when the given index is out of range
+
+        **********************************************************************/
+
+        V opIndexAssign (V value, uint i)
+        {
+                if (i < depth)
+                   {
+                   vector[i] = value;
+                   return value;
+                   }
 
                 return error (__LINE__);
         }
