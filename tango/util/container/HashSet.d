@@ -230,7 +230,21 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final uint remove (V element, bool all=false)
+        final uint remove (V element, bool all)
+        {
+                return remove(element) ? 1 : 0;
+        }
+
+        /***********************************************************************
+
+                Remove the provided element. Returns true if found, false
+                otherwise
+                
+                Time complexity: O(1) average; O(n) worst
+
+        ***********************************************************************/
+
+        final bool remove (V element)
         {
                 if (count)
                    {
@@ -252,7 +266,7 @@ class HashSet (V, alias Hash = Container.hash,
                                }
                             else
                                trail.next = n;
-                            return 1;
+                            return true;
                             } 
                          else
                             {
@@ -261,7 +275,7 @@ class HashSet (V, alias Hash = Container.hash,
                             }
                          }
                    }
-                return 0;
+                return false;
         }
 
         /***********************************************************************
@@ -272,7 +286,20 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all=false)
+        final uint replace (V oldElement, V newElement, bool all)
+        {
+                return replace (oldElement, newElement) ? 1 : 0;
+        }
+
+        /***********************************************************************
+
+                Replace the first instance of oldElement with newElement.
+                Returns true if oldElement was found and replaced, false
+                otherwise.
+                
+        ***********************************************************************/
+
+        final bool replace (V oldElement, V newElement)
         {
 
                 if (count && oldElement != newElement)
@@ -280,9 +307,9 @@ class HashSet (V, alias Hash = Container.hash,
                       {
                       remove (oldElement);
                       add (newElement);
-                      return 1;
+                      return true;
                       }
-                return 0;
+                return false;
         }
 
         /***********************************************************************
@@ -323,11 +350,11 @@ class HashSet (V, alias Hash = Container.hash,
 
         ************************************************************************/
 
-        public uint remove (IContainer!(V) e, bool all=false)
+        public uint remove (IContainer!(V) e)
         {
                 uint c;
                 foreach (value; e)
-                         if (remove (value, all))
+                         if (remove (value))
                              ++c;
                 return c;
         }
