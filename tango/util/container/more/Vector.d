@@ -55,6 +55,17 @@ struct Vector (V, int Size)
 
         /***********************************************************************
                 
+                Return remaining unused slots
+
+        ***********************************************************************/
+
+        uint unused ()
+        {
+                return Size - depth;
+        }
+
+        /***********************************************************************
+                
                 Returns a (shallow) clone of this vector
 
         ***********************************************************************/
@@ -208,12 +219,8 @@ struct Vector (V, int Size)
         {
                         int result;
 
-                        for (int i=depth; i--;)
-                            {
-                            auto value = vector [i];
-                            if ((result = dg(value)) != 0)
-                                 break;
-                            }
+                        for (int i=depth; i-- && result is 0;)
+                             result = dg (vector [i]);
                         return result;
         }
 
@@ -227,15 +234,12 @@ struct Vector (V, int Size)
         {
                         int result;
 
-                        for (int i=depth; i--;)
+                        for (int i=depth; i-- && result is 0;)
                             {
                             auto kill = false;
-                            auto value = vector [i];
-                            if ((result = dg(value, kill)) != 0)
-                                 break;
-                            else
-                               if (kill)
-                                   remove (i);
+                            result = dg (vector[i], kill);
+                            if (kill)
+                                remove (i);
                             }
                         return result;
         }

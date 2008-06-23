@@ -56,6 +56,17 @@ struct Stack (V, int Size)
 
         /***********************************************************************
                 
+                Return remaining unused slots
+
+        ***********************************************************************/
+
+        uint unused ()
+        {
+                return Size - depth;
+        }
+
+        /***********************************************************************
+                
                 Returns a (shallow) clone of this stack, on the stack
 
         ***********************************************************************/
@@ -261,12 +272,8 @@ struct Stack (V, int Size)
         {
                         int result;
 
-                        for (int i=depth; i--;)
-                            {
-                            auto value = stack [i];
-                            if ((result = dg(value)) != 0)
-                                 break;
-                            }
+                        for (int i=depth; i-- && result is 0;)
+                             result = dg (stack[i]);
                         return result;
         }
 }
