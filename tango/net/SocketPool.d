@@ -20,6 +20,8 @@ private import  tango.core.Runtime,
 private import  tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
+private import  tango.io.stream.DataStream;
+
 /*******************************************************************************
         
         A pool of socket connections for accessing remote servers. Note 
@@ -59,29 +61,6 @@ class SocketPool(T)
                 this.online = true;
                 this.factory = factory;
                 this.address = address;
-        }
-
-        /***********************************************************************
-
-                Allocate a Connection from a list rather than creating a 
-                new one. Reap old entries as we go.
-
-        ***********************************************************************/
-
-        final synchronized Connection borrow (Time time)
-        {  
-                if (freelist)
-                    do {
-                       auto c = freelist;
-
-                       freelist = c.next;
-                       if (freelist && (time - c.time > timeout))
-                           c.close;
-                       else
-                          return c;
-                       } while (true);
-
-                return new Connection (this);
         }
 
         /***********************************************************************
@@ -139,7 +118,8 @@ class SocketPool(T)
                 // talk to the server (try a few times if necessary)
                 for (int attempts=3; attempts--;)
                      try {
-                         send (connection.bound); 
+                         if (send)
+                             send (connection.bound); 
 
                          // load the reply. Don't retry on
                          // failed reads, since the server is either
@@ -176,6 +156,29 @@ class SocketPool(T)
                 return true;
         }
 
+        /***********************************************************************
+
+                Allocate a Connection from a list rather than creating a 
+                new one. Reap old entries as we go.
+
+        ***********************************************************************/
+
+        private final synchronized Connection borrow (Time time)
+        {  
+                if (freelist)
+                    do {
+                       auto c = freelist;
+
+                       freelist = c.next;
+                       if (freelist && (time - c.time > timeout))
+                           c.close;
+                       else
+                          return c;
+                       } while (true);
+
+                return new Connection (this);
+        }
+
 
         /***********************************************************************
         
@@ -184,7 +187,7 @@ class SocketPool(T)
 
         ***********************************************************************/
 
-        static class Connection
+        private static class Connection
         {
                 Connection      next;   
                 Time            time;
@@ -265,6 +268,51 @@ class SocketPool(T)
                                      this.time = time;
                                      }
                 }
+        }
+}
+
+
+/*******************************************************************************
+        
+        A pool of connected DataOuptut instances, each of which are thread-
+        safe (each connection has its own private output buffer).
+        
+        Note that the connections will timeout after a period of inactivity, 
+        and will subsequently cause a connected host to drop the supporting
+        session.
+
+        The connections are expected to be reasonably long-lived on the 
+        hosting server, since we try to reuse existing sockets
+
+*******************************************************************************/
+
+class DataOutputPool : SocketPool!(DataOutput)
+{ 
+        private bool flip;
+        private int  bufferSize;
+
+        /***********************************************************************
+
+                Create a connection-pool for the specified address
+
+        ***********************************************************************/
+
+        this (InternetAddress addr, int bufferSize=8192, bool flip=false, bool nagle=true)
+        {
+                this.flip = flip;
+                this.bufferSize = bufferSize;
+                super (addr, &factory, nagle);
+        }
+
+        /***********************************************************************
+
+                Wrap the socket with a DataOutput instance
+
+        ***********************************************************************/
+
+        private DataOutput factory (IConduit c)
+        {       
+                return new DataOutput (c, bufferSize, flip);
         }
 }
 
