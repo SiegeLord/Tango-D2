@@ -558,6 +558,7 @@ class Layout(T)
                        case TypeCode.BYTE:
                             return integer (result, *cast(byte*) p, format, ubyte.max);
 
+                       case TypeCode.VOID:
                        case TypeCode.UBYTE:
                             return integer (result, *cast(ubyte*) p, format, ubyte.max, "u");
 
@@ -706,6 +707,7 @@ class Layout(T)
 private enum TypeCode
 {
         EMPTY = 0,
+        VOID = 'v',
         BOOL = 'b',
         UBYTE = 'h',
         BYTE = 'g',
@@ -725,6 +727,10 @@ private enum TypeCode
         CLASS = 'C',
         STRUCT = 'S',
         ENUM = 'E',
+        CONST = 'x',
+        INVARIANT = 'y',
+        DELEGATE = 'D',
+        FUNCTION = 'F',
         POINTER = 'P',
         TYPEDEF = 'T',
         INTERFACE = 'I',
