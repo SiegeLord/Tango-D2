@@ -22,7 +22,7 @@ private import  tango.net.SocketConduit,
 
 /*******************************************************************************
         
-        A pool of socket connections for accessing cluster nodes. Note 
+        A pool of socket connections for accessing remote servers. Note 
         that the entries will timeout after a period of inactivity, and
         will subsequently cause a connected host to drop the supporting
         session.
@@ -127,9 +127,7 @@ class SocketPool(T)
                 the request output since it may be invoked on more than
                 one iteration, where the current attempt fails.
 
-                We return true if the cluster node responds, and false
-                otherwise. Exceptions are thrown if they occured on the 
-                server. 
+                Returns true on success, false otherwise
                 
         ***********************************************************************/
         
