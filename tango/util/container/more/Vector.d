@@ -86,10 +86,10 @@ struct Vector (V, int Size)
 
         **********************************************************************/
 
-        void add (V value)
+        V add (V value)
         {
                 if (depth < vector.length)
-                    vector[depth++] = value;
+                    return vector[depth++] = value;
                 else
                    error (__LINE__);
         }
