@@ -38,8 +38,6 @@ class SocketPool(T)
         public alias T delegate (IConduit) Factory;
         public alias void delegate (char[] msg, ...) Log;
 
-        private int                     size, 
-                                        count;
         private bool                    nagle,
                                         online;
 
