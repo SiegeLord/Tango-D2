@@ -61,7 +61,15 @@ class DocPrinter(T) : IXmlPrinter!(T)
                 {
                         // check for cached output
                         if (node.end)
-                            emit (node.start[0 .. node.end - node.start]);
+                           {
+                           auto p = node.start;
+                           auto l = node.end - p;
+                           // nasty hack to retain whitespace while
+                           // dodging prior EndElement instances
+                           if (*p is '>')
+                               ++p, --l;
+                           emit (p[0 .. l]);
+                           }
                         else
                         switch (node.type)
                                {
@@ -130,5 +138,25 @@ class DocPrinter(T) : IXmlPrinter!(T)
                 }
         
                 printNode (root, 0);
+        }
+}
+
+
+debug (DocPrinter)
+{
+        import tango.io.Stdout;
+        import tango.text.xml.Document;
+
+        void main()
+        {
+                char[] document = "<blah><xml>foo</xml></blah>";
+
+                auto doc = new Document!(char);
+                doc.parse (document);
+
+                void test (char[][] s...){foreach (t; s) Stdout(t).flush;}
+
+                auto print = new DocPrinter!(char);
+                print(doc.root.firstChild.firstChild, &test);
         }
 }
