@@ -47,7 +47,7 @@ abstract class ClusterServer : AbstractServer
 
         **********************************************************************/
 
-        abstract void service (IConduit conduit);
+        abstract void service (SocketConduit conduit);
 
         /**********************************************************************
 

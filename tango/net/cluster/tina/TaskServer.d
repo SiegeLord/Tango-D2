@@ -56,7 +56,7 @@ class TaskServer : ClusterServer
 
         **********************************************************************/
 
-        override void service (IConduit conduit)
+        override void service (SocketConduit conduit)
         {
                 (new TaskThread (this, conduit, cluster)).execute;
         }

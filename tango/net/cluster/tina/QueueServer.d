@@ -64,7 +64,7 @@ class QueueServer : ClusterServer
 
         **********************************************************************/
 
-        override void service (IConduit conduit)
+        override void service (SocketConduit conduit)
         {
                 (new QueueThread (this, conduit, cluster, queue)).execute;
         }

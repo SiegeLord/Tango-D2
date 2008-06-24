@@ -62,7 +62,7 @@ class CacheServer : ClusterServer
 
         **********************************************************************/
 
-        override void service (IConduit conduit)
+        override void service (SocketConduit conduit)
         {
                 (new CacheThread (this, conduit, cluster, cache)).execute;
         }

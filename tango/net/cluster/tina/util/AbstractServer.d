@@ -77,7 +77,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        protected abstract char[] toString();
+        abstract char[] toString ();
 
         /**********************************************************************
 
@@ -101,7 +101,7 @@ class AbstractServer : IServer
 
         **********************************************************************/
 
-        abstract void service (IConduit conduit);
+        abstract void service (SocketConduit conduit);
 
         /**********************************************************************
 
