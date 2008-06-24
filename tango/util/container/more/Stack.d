@@ -17,7 +17,7 @@ private import tango.core.Exception : ArrayBoundsException;
 /******************************************************************************
 
         A stack of the given value-type V, with maximum depth Size. Note
-        that, being a struct, this is a stack-based Stack
+        that this does not generate any heap activity
 
 ******************************************************************************/
 

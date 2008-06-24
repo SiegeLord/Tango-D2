@@ -19,8 +19,7 @@ private extern(C) void memmove (void*, void*, int);
 /******************************************************************************
 
         A vector of the given value-type V, with maximum depth Size. Note
-        that this is a value type, and does no memory allocation of its
-        own 
+        that this does no memory allocation of its own 
 
 ******************************************************************************/
 
@@ -30,6 +29,7 @@ struct Vector (V, int Size)
         private uint            depth;
 
         alias slice             opSlice;
+        alias add               opCatAssign;
           
         /***********************************************************************
 
