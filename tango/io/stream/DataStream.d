@@ -336,3 +336,27 @@ debug (UnitTest)
                 assert (input.getInt is 1024);
         }
 }
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (DataStream)
+{
+        import tango.io.Buffer;
+
+        void main()
+        {
+                auto buf = new Buffer(32);
+
+                auto output = new DataOutput (buf);
+                output.put ("blah blah");
+                output.putInt (1024);
+
+                auto input = new DataInput (buf);
+                assert (input.get(new char[9]) is 9);
+                assert (input.getInt is 1024);
+                input.getInt;
+        }
+}
