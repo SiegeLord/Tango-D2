@@ -496,7 +496,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] encode (char[] text, int flags)
+        static final char[] encode (char[] text, int flags)
         {
                 void[] s;
                 encode ((void[] v) {s ~= v;}, text, flags);
