@@ -1651,6 +1651,7 @@ public class AppendStream : Appender
         }
 }
 
+import tango.core.Thread;
 
 /*******************************************************************************
 
@@ -1672,6 +1673,8 @@ public class LayoutTimer : Appender.Layout
                 char[20] tmp = void;
 
                 dg (event.toMilli (tmp, event.span));
+                dg (" ");
+                dg (Thread.getThis.name);
                 dg (" ");
                 dg (event.levelName);
                 dg (event.name);
