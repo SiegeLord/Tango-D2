@@ -523,9 +523,9 @@ class HttpClient
             if (doRedirect)
                 switch (responseLine.getStatus)
                     {
+                    case HttpResponseCode.Found:
                     case HttpResponseCode.SeeOther:
                     case HttpResponseCode.MovedPermanently:
-                    case HttpResponseCode.MovedTemporarily:
                     case HttpResponseCode.TemporaryRedirect:
                         // drop this connection
                         close;
@@ -639,8 +639,8 @@ class HttpClient
                 switch (status)
                        {
                             // use Get method to complete the Post
+                       case HttpResponseCode.Found:
                        case HttpResponseCode.SeeOther:
-                       case HttpResponseCode.MovedTemporarily:
 
                             // remove POST headers first!
                             headersOut.remove (HttpHeader.ContentLength);
