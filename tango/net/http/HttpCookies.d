@@ -210,7 +210,7 @@ class Cookie : IWritable
                    if (secure)
                        consume (";Secure");
 
-                   if (maxAge > 0)
+                   if (maxAge >= 0)
                        consume (";Max-Age="c), consume (Integer.format (tmp, maxAge));
                    }
         }

@@ -125,7 +125,7 @@ enum HttpResponseCode
         PartialContent               = 206,
         MultipleChoices              = 300,
         MovedPermanently             = 301,
-        MovedTemporarily             = 302,
+        Found                        = 302,
         SeeOther                     = 303,
         NotModified                  = 304,
         UseProxy                     = 305,
@@ -187,7 +187,8 @@ struct HttpResponses
         static HttpStatus PartialContent               = {HttpResponseCode.PartialContent, "PartialContent"};
         static HttpStatus MultipleChoices              = {HttpResponseCode.MultipleChoices, "MultipleChoices"};
         static HttpStatus MovedPermanently             = {HttpResponseCode.MovedPermanently, "MovedPermanently"};
-        static HttpStatus MovedTemporarily             = {HttpResponseCode.MovedTemporarily, "MovedTemporarily"};
+        static HttpStatus Found                        = {HttpResponseCode.Found, "Found"};
+        static HttpStatus TemporaryRedirect            = {HttpResponseCode.TemporaryRedirect, "TemporaryRedirect"};
         static HttpStatus SeeOther                     = {HttpResponseCode.SeeOther, "SeeOther"};
         static HttpStatus NotModified                  = {HttpResponseCode.NotModified, "NotModified"};
         static HttpStatus UseProxy                     = {HttpResponseCode.UseProxy, "UseProxy"};
