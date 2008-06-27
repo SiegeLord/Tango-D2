@@ -133,6 +133,7 @@ version (Win32)
 
         extern  (Windows)
                 {
+                alias closesocket close;
                 int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
                 int WSACleanup();
                 socket_t socket(int af, int type, int protocol);
