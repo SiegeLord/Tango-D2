@@ -153,16 +153,16 @@ class Uri : UriView
                 map['?'] |= ExcScheme | ExcAuthority | ExcPath;
                 map['#'] |= ExcScheme | ExcAuthority | ExcPath;
 
-                // include these as common symbols
-                map['-'] |= IncUser | IncQuery | IncQueryAll;
-                map['_'] |= IncUser | IncQuery | IncQueryAll;
-                map['.'] |= IncUser | IncQuery | IncQueryAll;
-                map['!'] |= IncUser | IncQuery | IncQueryAll;
-                map['~'] |= IncUser | IncQuery | IncQueryAll;
-                map['*'] |= IncUser | IncQuery | IncQueryAll;
-                map['\''] |= IncUser | IncQuery | IncQueryAll;
-                map['('] |= IncUser | IncQuery | IncQueryAll;
-                map[')'] |= IncUser | IncQuery | IncQueryAll;
+                // include these as common (unreserved) symbols
+                map['-'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['_'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['.'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['!'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['~'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['*'] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['\''] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map['('] |= IncUser | IncQuery | IncQueryAll | IncPath;
+                map[')'] |= IncUser | IncQuery | IncQueryAll | IncPath;
 
                 // include these as scheme symbols
                 map['+'] |= IncScheme;
@@ -188,7 +188,6 @@ class Uri : UriView
                 map['+'] |= IncPath;
                 map['$'] |= IncPath;
                 map[','] |= IncPath;
-                map['_'] |= IncPath;
 
                 // include these as query symbols
                 map[';'] |= IncQuery | IncQueryAll;
