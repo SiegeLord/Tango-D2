@@ -821,6 +821,24 @@ else
                 }
 
                 /***************************************************************
+        
+                        Patch the serialization text, causing DocPrinter
+                        to ignore the subtree of this node, and instead
+                        emit the provided text as raw XML output.
+
+                        Warning: this function does *not* copy the provided 
+                        text, and may be removed from future revisions
+
+                ***************************************************************/
+        
+                Node patch (T[] text)
+                {
+                        end = text.ptr + text.length;
+                        start = text.ptr;
+                        return this;
+                }
+        
+                /***************************************************************
                 
                         Append an attribute to this node, The given attribute
                         cannot have an existing parent.
@@ -1012,19 +1030,6 @@ else
                         return node;
                 }
 
-                /***************************************************************
-        
-                        Patch the serialization text
-
-                ***************************************************************/
-        
-                private Node patch (T[] text)
-                {
-                        end = text.ptr + text.length;
-                        start = text.ptr;
-                        return this;
-                }
-        
                 /***************************************************************
                 
                         Duplicate a single node
