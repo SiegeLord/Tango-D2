@@ -66,7 +66,14 @@ struct Container
 
         static uint hash(K) (K k, uint length)
         {
-                return (typeid(K).getHash(&k) & 0x7FFFFFFF) % length;
+                static if (is(K : int) || is(K : uint) || 
+                           is(K : long) || is(K : ulong) || 
+                           is(K : short) || is(K : ushort) ||
+                           is(K : byte) || is(K : ubyte) ||
+                           is(K : char) || is(K : wchar) || is (K : dchar))
+                           return cast(uint) (k % length);
+                else
+                   return (typeid(K).getHash(&k) & 0x7FFFFFFF) % length;
         }
 
         /***********************************************************************
