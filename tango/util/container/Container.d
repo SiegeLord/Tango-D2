@@ -60,7 +60,8 @@ struct Container
 
         /***********************************************************************
 
-                generic hash function, using the default hashing
+                generic hash function, using the default hashing. Thanks
+                to 'mwarning' for the optimization suggestion
 
         ***********************************************************************/
 
