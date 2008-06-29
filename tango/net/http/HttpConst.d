@@ -81,6 +81,7 @@ struct HttpHeader
         const HttpHeaderName IfNoneMatch       = {"If-None-Match:"};
         const HttpHeaderName IfRange           = {"If-Range:"};
         const HttpHeaderName IfUnmodifiedSince = {"If-Unmodified-Since:"};
+        const HttpHeaderName KeepAlive         = {"Keep-Alive:"};
         const HttpHeaderName LastModified      = {"Last-Modified:"};
         const HttpHeaderName Location          = {"Location:"};
         const HttpHeaderName MaxForwards       = {"Max-Forwards:"};
