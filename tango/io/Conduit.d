@@ -16,6 +16,8 @@ private import  tango.core.Exception;
 
 public  import  tango.io.model.IConduit;
 
+private import tango.stdc.stdlib : alloca;
+
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
@@ -193,7 +195,8 @@ class Conduit : IConduit, ISelectable
 
         final OutputStream copy (InputStream src)
         {
-                return transfer (src, this);
+                transfer (src, this);
+                return this;
         }
 
         /***********************************************************************
@@ -215,30 +218,6 @@ class Conduit : IConduit, ISelectable
 
         /***********************************************************************
 
-                Transfer the content of one stream to another. Returns
-                the dst OutputStream, and throws IOException on failure.
-                Queries dst to identify what size of buffer to utilize.
-
-        ***********************************************************************/
-
-        static OutputStream transfer (InputStream src, OutputStream dst)
-        {
-                uint len = 0;
-                auto con = dst.conduit;
-                auto tmp = new byte [con.bufferSize];
-                while ((len = src.read(tmp)) != IConduit.Eof)
-                      {
-                      auto p = tmp.ptr;
-                      for (uint j; len > 0; len -= j, p += j)
-                           if ((j = dst.write (p[0..len])) is IConduit.Eof)
-                                con.error ("Conduit.copy :: Eof while writing to: "~con.toString);
-                      }
-                delete tmp;
-                return dst;
-        }
-
-        /***********************************************************************
-
 
                 Load the bits from a stream, and return them all in an
                 array. The dst array can be provided as an option, which
@@ -251,19 +230,53 @@ class Conduit : IConduit, ISelectable
 
         static void[] load (InputStream src, void[] dst = null)
         {
-                auto chunk = 0;
                 auto index = 0;
+                auto chunk = 256;
                 
-                while (chunk != Eof)
-                      {
-                      if (dst.length - index < 1024)
-                          dst.length = dst.length + 16 * 1024;
+                do {
+                   if (dst.length - index < chunk)
+                       dst.length = dst.length + (chunk * 2);
 
-                      chunk = src.read (dst[index .. $]);
-                      index += chunk;
-                      } 
+                   chunk = src.read (dst[index .. $]);
+                   index += chunk;
+                   } while (chunk != Eof)
 
                 return dst [0 .. index - chunk];
+        }
+
+        /***********************************************************************
+                
+                Low-level data transfer, where max represents the maximum
+                number of bytes to transfer, and tmp represents space for
+                buffering the transfer. Throws IOException on failure.
+
+        ***********************************************************************/
+
+        static size_t transfer (InputStream src, OutputStream dst, size_t max=size_t.max)
+        {
+                byte[8192]      tmp;
+                size_t          done;
+
+                while (max)
+                      {
+                      auto len = max;
+                      if (len > tmp.length)
+                          len = tmp.length;
+
+                      if ((len = src.read(tmp[0 .. len])) is IConduit.Eof)
+                           max = 0;
+                      else
+                         {
+                         max -= len;
+                         done += len;
+                         auto p = tmp.ptr;
+                         for (uint j; len > 0; len -= j, p += j)
+                              if ((j = dst.write (p[0 .. len])) is IConduit.Eof)
+                                   dst.conduit.error ("Conduit.copy :: Eof while writing to: "~dst.conduit.toString);
+                         }
+                      }
+
+                return done;
         }
 }
 
@@ -428,7 +441,8 @@ class OutputFilter : OutputStream
 
         OutputStream copy (InputStream src)
         {
-                return Conduit.transfer (src, this);
+                Conduit.transfer (src, this);
+                return this;
         }
 
         /***********************************************************************
