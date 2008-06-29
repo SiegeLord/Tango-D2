@@ -67,7 +67,8 @@ class CacheMap (K, V, alias Hash = Container.hash,
                 hash = new Map;
                 this.capacity = capacity;
                 hash.buckets (capacity, 0.75);
-                links = (cast(Ref) calloc(capacity, Type.sizeof))[0..capacity];
+                //links = (cast(Ref) calloc(capacity, Type.sizeof))[0..capacity];
+                links.length = capacity;
 
                 // create empty list
                 head = tail = &links[0];
@@ -87,7 +88,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         ~this ()
         {
-                free (links.ptr);
+//                free (links.ptr);
         }
 
         /***********************************************************************
