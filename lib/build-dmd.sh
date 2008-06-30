@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 OLDHOME=$HOME
 export HOME=`pwd`
 
@@ -15,4 +17,3 @@ make clean -fdmd-posix.mak           || goerror
 chmod 644 ../tango/core/*.di         || goerror
 
 export HOME=$OLDHOME
-
