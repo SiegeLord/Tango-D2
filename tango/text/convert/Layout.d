@@ -863,30 +863,30 @@ debug (UnitTest)
         assert( Formatter( "{0:e4}", 0.0001) == "0.1000e-03");
 
         int[] a = [ 51, 52, 53, 54, 55 ];
-        assert( Formatter( "{}", a ) == "[ 51, 52, 53, 54, 55 ]" );
-        assert( Formatter( "{:x}", a ) == "[ 33, 34, 35, 36, 37 ]" );
-        assert( Formatter( "{,-4}", a ) == "[ 51  , 52  , 53  , 54  , 55   ]" );
-        assert( Formatter( "{,4}", a ) == "[   51,   52,   53,   54,   55 ]" );
+        assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
+        assert( Formatter( "{:x}", a ) == "[33, 34, 35, 36, 37]" );
+        assert( Formatter( "{,-4}", a ) == "[51  , 52  , 53  , 54  , 55  ]" );
+        assert( Formatter( "{,4}", a ) == "[  51,   52,   53,   54,   55]" );
         int[][] b = [ [ 51, 52 ], [ 53, 54, 55 ] ];
-        assert( Formatter( "{}", b ) == "[ [ 51, 52 ], [ 53, 54, 55 ] ]" );
+        assert( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
 
         ushort[3] c = [ cast(ushort)51, 52, 53 ];
-        assert( Formatter( "{}", c ) == "[ 51, 52, 53 ]" );
+        assert( Formatter( "{}", c ) == "[51, 52, 53]" );
 
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
-        assert( Formatter( "{}", d ) == "{ 234=>2, 345=>3 }" );
+        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" );
 
         bool[char[]] e;
         e[ "key".dup ] = true;
         e[ "value".dup ] = false;
-        assert( Formatter( "{}", e ) == "{ key=>true, value=>false }" );
+        assert( Formatter( "{}", e ) == "{key => true, value => false}" );
 
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
-        assert( Formatter( "{}", f ) == "{ 1.00=>one, 3.14=>PI }" );
+        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" );
         }
 }
 
