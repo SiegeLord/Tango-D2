@@ -107,11 +107,49 @@ template isFloatingPointType( T )
 /**
  * Evaluates to true if T is a pointer type.
  */
-template isPointerType( T )
+template isPointerType(T)
 {
-    const bool isPointerType = is( typeof(*T) );
+        const isPointerType = false;
 }
 
+template isPointerType(T : T*)
+{
+        const isPointerType = true;
+}
+
+debug(UnitTest) {
+
+    unittest {
+
+        assert(isPointerType!(void*));
+        assert(!isPointerType!(char[]));
+        assert(isPointerType!(char[]*));
+        assert(!isPointerType!(char*[]));
+        assert(isPointerType!(real*));
+        assert(!isPointerType!(uint));
+        
+        class Ham
+        {
+            void* a;
+        }
+        
+        assert(!isPointerType!(Ham));
+        
+        union Eggs
+        {
+            void* a;
+            uint b;
+        };
+        
+        assert(!isPointerType!(Eggs));
+        assert(isPointerType!(Eggs*));
+        
+        struct Bacon {};
+        
+        assert(!isPointerType!(Bacon));
+
+    }
+}
 
 /**
  * Evaluates to true if T is a a pointer, class, interface, or delegate.
