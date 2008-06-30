@@ -2398,7 +2398,8 @@ class CounterOutput : OutputStream
 
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
 
     override OutputStream flush()
@@ -2693,7 +2694,8 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
 
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
 
     override OutputStream flush()
@@ -2914,7 +2916,8 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
 
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
 
     override OutputStream flush()

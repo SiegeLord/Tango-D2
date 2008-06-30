@@ -1751,7 +1751,8 @@ class DummyOutputStream : OutputStream, IConduit.Seek
     override uint write(void[] src) { return IConduit.Eof; }
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
     override OutputStream flush() { return this; }
     override long seek(long offset, Anchor anchor = cast(Anchor)0) { return 0; }
@@ -1921,7 +1922,8 @@ class EventSeekOutputStream : OutputStream, IConduit.Seek
 
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
 
 private:
@@ -2107,7 +2109,8 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
 
     override OutputStream copy(InputStream src)
     {
-        return Conduit.transfer(src, this);
+        Conduit.transfer(src, this);
+        return this;
     }
 
     override OutputStream flush()
