@@ -477,7 +477,8 @@ else
                            auto len = prefix.length + localName.length + 1;
                            
                            // is the prefix already attached to the name?
-                           if (prefix.ptr + prefix.length + 1 is localName.ptr)
+                           if (prefix.ptr + prefix.length + 1 is localName.ptr &&
+                               ':' is *(localName.ptr-1))
                                return prefix.ptr [0 .. len];
        
                            // nope, copy the discrete segments into output
