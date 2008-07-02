@@ -34,6 +34,14 @@ private import  tango.io.protocol.model.IWriter;
 interface HttpParamsView : IWritable
 {
         /**********************************************************************
+
+                Return the number of headers
+
+        **********************************************************************/
+
+        uint size ();
+
+        /**********************************************************************
                 
                 Return the value of the provided header, or null if the
                 header does not exist

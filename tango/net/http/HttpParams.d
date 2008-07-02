@@ -72,6 +72,17 @@ class HttpParams : HttpTokens, HttpParamsView
         }
 
         /**********************************************************************
+
+                Return the number of headers
+
+        **********************************************************************/
+
+        uint size ()
+        {
+                return super.stack.size;
+        }
+
+        /**********************************************************************
                 
                 Read all query parameters. Everything is mapped rather 
                 than being allocated & copied
