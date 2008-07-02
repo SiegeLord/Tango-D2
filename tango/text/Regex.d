@@ -1950,17 +1950,22 @@ private:
         }
 
         char_t  last;
-        bool    have_range_start;
+        bool    have_range_start,
+                first_char = true;
         for ( ; !endOfPattern && peekPattern != ']'; )
         {
             dchar c = readPattern;
             switch ( c )
             {
                 case '-':
+                    if ( first_char ) {
+                        trans.predicate.appendInput(range_t(c));
+                        break;
+                    }
                     if ( !have_range_start )
-                        throw new RegExpException("Missing range start for '-' operator ater \""~Utf.toString(pattern)~"\"");
+                        throw new RegExpException("Missing range start for '-' operator after \""~Utf.toString(pattern)~"\"");
                     else if ( endOfPattern || peekPattern == ']' )
-                        throw new RegExpException("Missing range end for '-' operator ater \""~Utf.toString(pattern)~"\"");
+                        throw new RegExpException("Missing range end for '-' operator after \""~Utf.toString(pattern)~"\"");
                     else {
                         c = readPattern;
                         trans.predicate.appendInput(range_t(last, c));
@@ -1991,6 +1996,7 @@ private:
                     last = c;
                     have_range_start = true;
             }
+            first_char = false;
         }
         if ( !endOfPattern )
             readPattern;
@@ -2653,6 +2659,15 @@ private class TDFA(char_t)
                     renumberCommand(cmd);
                 trans.commands.sort;
                 trans.predicate.compile;
+            }
+        }
+
+        debug
+        {
+            foreach ( ref v; registers )
+            {
+                if ( (v in regNums) !is null )
+                    v = regNums[v];
             }
         }
 
@@ -3346,6 +3361,8 @@ private:
             {
                 if ( te.nfa_state.index != fe.nfa_state.index )
                     continue;
+                if ( fe.tags.length != te.tags.length )
+                    return false;
                 foreach ( tag, findex; fe.tags )
                 {
                     if ( (tag in te.tags) is null )
@@ -3975,10 +3992,58 @@ class RegExpT(char_t)
     {
         char_t[] tmp = input;
         if ( output_buffer.length <= 0 )
-            output_buffer = new char_t[input.length];
+            output_buffer = new char_t[input.length+replacement.length];
         output_buffer.length = 0;
 
         foreach ( r; search(input) )
+        {
+            tmp = pre;
+            if ( tmp.length > last_start_ )
+                output_buffer ~= tmp[last_start_ .. $];
+            output_buffer ~= replacement;
+            tmp = post;
+        }
+        output_buffer ~= tmp;
+        return output_buffer;
+    }
+
+    /**********************************************************************************************
+        Returns a copy of the input with the last match replaced by replacement.
+    **********************************************************************************************/
+    char_t[] replaceLast(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
+    {
+        char_t[] tmp_pre, tmp_post;
+        if ( output_buffer.length <= 0 )
+            output_buffer = new char_t[input.length+replacement.length];
+        output_buffer.length = 0;
+
+        foreach ( r; search(input) ) {
+            tmp_pre = pre;
+            tmp_post = post;
+        }
+
+        if ( tmp_pre !is null || tmp_post !is null ) {
+            output_buffer ~= tmp_pre;
+            output_buffer ~= replacement;
+            output_buffer ~= tmp_post;
+        }
+        else
+            output_buffer ~= input;
+
+        return output_buffer;
+    }
+
+    /**********************************************************************************************
+        Returns a copy of the input with the first match replaced by replacement.
+    **********************************************************************************************/
+    char_t[] replaceFirst(char_t[] input, char_t[] replacement, char_t[] output_buffer=null)
+    {
+        char_t[] tmp = input;
+        if ( output_buffer.length <= 0 )
+            output_buffer = new char_t[input.length+replacement.length];
+        output_buffer.length = 0;
+
+        if ( test(input) )
         {
             tmp = pre;
             if ( tmp.length > last_start_ )
