@@ -18,6 +18,9 @@ usage() {
     echo 'Usage: build-tango.sh <options> identifier
 Options:
   --help: Will print this help text
+  --noinline: Will turn off inlining
+  --norelease: Drops optimzations
+  --debug: Will enable debug info
   --warn: Will enable warnings
   --verbose: Increase verbosity 
   <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
@@ -31,6 +34,8 @@ Options:
 
 UNAME=`uname`
 INLINE="-inline"
+DEBUG=""
+RELEASE="-release -O"
 WARN=""
 VERBOSE=0
 
@@ -100,7 +105,7 @@ compile() {
     if filter $OBJNAME
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $WARN -c $INLINE -release -O -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Posix -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
@@ -165,6 +170,15 @@ do
             ;;
         --warn)
             WARN="-w"
+            ;;
+        --debug)
+            DEBUG="-g -debug"
+            ;;
+        --norelease)
+            RELEASE=""
+            ;;
+        --noinline)
+            INLINE=""
             ;;
         --verbose) 
             VERBOSE=1
