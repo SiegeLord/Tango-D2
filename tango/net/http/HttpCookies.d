@@ -44,8 +44,8 @@ class Cookie : IWritable
                         domain,
                         comment;
         uint            vrsn=1;              // 'version' is a reserved word
-        long            maxAge=-1;
         bool            secure=false;
+        long            maxAge=long.min;
 
         /***********************************************************************
                 
@@ -210,7 +210,7 @@ class Cookie : IWritable
                    if (secure)
                        consume (";Secure");
 
-                   if (maxAge >= 0)
+                   if (maxAge != maxAge.min)
                        consume (";Max-Age="c), consume (Integer.format (tmp, maxAge));
                    }
         }
@@ -224,8 +224,8 @@ class Cookie : IWritable
         Cookie clear ()
         {
                 vrsn = 1;
-                maxAge = -1;
                 secure = false;
+                maxAge = maxAge.min;
                 name = path = domain = comment = null;
                 return this;
         }
