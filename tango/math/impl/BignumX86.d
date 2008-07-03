@@ -23,7 +23,7 @@
  * The code uses techniques described in Agner Fog's superb manuals available
  * at www.agner.org.
  * Not optimal for AMD64, which can do two memory loads per cycle (Intel
- * CPUs can only do one).
+ * CPUs can only do one). Division is far from optimal.
  *
  *  Timing results (cycles per int)
  *         PentiumM Core2
@@ -34,6 +34,7 @@
  *  *        5.0
  *  mulAdd   5.4
  *  div     18.0
+ *
  */
 
 module tango.math.impl.BignumX86;
@@ -177,7 +178,7 @@ unittest
  *  op must be '+' or '-'
  *  Returns final carry or borrow (0 or 1)
  */
-uint multibyteAddSubCarry(char op)(uint[] dest, uint carry)
+uint multibyteIncrement(char op)(uint[] dest, uint carry)
 {
     enum { LASTPARAM = 1*4 } // 0* pushes + return address.
     asm {
