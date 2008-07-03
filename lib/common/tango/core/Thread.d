@@ -3071,11 +3071,10 @@ private:
             push( 0xFFFFFFFF );                                     // EBP
             push( 0x00000000 );                                     // EAX
             push( 0xFFFFFFFF );                                     // FS:[0]
-			//Fix for windows courtesy of Jarret
             version( StackGrowsDown )
             {
                 push( cast(size_t) m_ctxt.bstack );                 // FS:[4]
-                push( cast(size_t) m_pmem + PAGESIZE );             // FS:[8]
+                push( cast(size_t) m_ctxt.bstack - m_size );        // FS:[8]
             }
             else
             {
