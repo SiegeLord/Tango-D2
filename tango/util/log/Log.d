@@ -751,7 +751,7 @@ public class Logger : ILogger
 
         /***********************************************************************
         
-                Set the additive status of this logger. See isAdditive().
+                Set the additive status of this logger. See bool additive().
 
         ***********************************************************************/
 
