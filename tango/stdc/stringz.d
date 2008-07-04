@@ -44,6 +44,8 @@ char* toStringz (char[] s, char[] tmp=null)
  * This is handy for efficiently converting multiple strings at once.
  *
  * Returns a populated slice of dst
+ *
+ * Since: 0.99.7
  */
 
 char*[] toStringz (char[] tmp, char*[] dst, char[][] strings...)
