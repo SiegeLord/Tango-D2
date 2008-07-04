@@ -48,6 +48,8 @@ class Properties(T)
                 Load properties from the named file, and pass each of them
                 to the provided delegate.
 
+                Since: 0.99.7
+
         ***********************************************************************/
 
         static void load (char[] path, void delegate (T[] name, T[] value) dg)
@@ -111,6 +113,8 @@ class Properties(T)
         /***********************************************************************
 
                 Write properties to the provided filepath
+
+                Since: 0.99.7
 
         ***********************************************************************/
 
