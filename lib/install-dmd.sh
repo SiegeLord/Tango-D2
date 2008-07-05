@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # A simple script to install Tango for DMD
-# Copyright (C) 2006-2007  Gregor Richards
+# Copyright (C) 2006-2008  Gregor Richards
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
@@ -18,7 +18,8 @@ usage() {
 Options:
   --prefix: Install to the specified prefix (absolute path), default is /usr/local
   --userlib: Installs libtango-user-dmd.a too. It will also be built if it is missing
-                or older than libtango-base-dmd.a.
+                or older than libtango-base-dmd.a. Note that this is not necessary if
+                you use DSSS or other build tools for the user part of the Tango API
   --altconf: Use an alternate path component for the DMD conf, "bin" is default, "-" will
                 set it to empty. See also --confprefix
   --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
