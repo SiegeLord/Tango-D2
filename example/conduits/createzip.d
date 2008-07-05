@@ -1,6 +1,6 @@
 module createzip;
 
-import tango.io.archive.Zip;
+import tango.io.compress.Zip;
 import tango.io.vfs.FileFolder;
 
 /******************************************************************************
