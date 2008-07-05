@@ -153,7 +153,10 @@ alias DWORD SERVICE_STATUS_HANDLE;
 alias ubyte TBYTE;
 
 version(Win32SansUnicode){
-    alias ubyte  TCHAR;
+    // Strictly speaking this should be ubyte since char is UTF-8, but that
+    // fills code with so many casts that it's just not sensible.
+    // (See also DMD Issue 2193.)
+    alias  char TCHAR;
 }else{
     alias wchar TCHAR;
 }
