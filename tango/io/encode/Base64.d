@@ -250,10 +250,10 @@ body
                     *quadPtr++ = next;
                 if (quadPtr is endPtr)
                 {
-                    *rtnPt++ = ((base64Quad[0] << 2) | (base64Quad[1]) >> 4);
+                    *rtnPt++ = cast(ubyte) (((base64Quad[0] << 2) | (base64Quad[1]) >> 4));
                     if (base64Quad[2] != BASE64_PAD)
                     {
-                        *rtnPt++ = ((base64Quad[1] << 4) | (base64Quad[2] >> 2));
+                        *rtnPt++ = cast(ubyte) (((base64Quad[1] << 4) | (base64Quad[2] >> 2)));
                         encodedLength += 2;
                         break;
                     }
