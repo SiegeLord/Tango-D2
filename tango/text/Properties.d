@@ -8,6 +8,8 @@
 
         author:         Kris
 
+        deprecated:     Please use tango.io.stream.MapStream instead
+
 *******************************************************************************/
 
 module tango.text.Properties;
@@ -52,7 +54,7 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void load (char[] path, void delegate (T[] name, T[] value) dg)
+        deprecated static void load (char[] path, void delegate (T[] name, T[] value) dg)
         {
                 auto fc = new FileConduit (path);
                 scope (exit)
@@ -80,7 +82,7 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void load (InputStream stream, void delegate (T[] name, T[] value) dg)
+        deprecated static void load (InputStream stream, void delegate (T[] name, T[] value) dg)
         {
                 foreach (line; new LineIterator!(T) (stream))
                         {
@@ -118,7 +120,7 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void save (char[] path, T[][T[]] properties)
+        deprecated static void save (char[] path, T[][T[]] properties)
         {
                 auto fc = new FileConduit (path, FileConduit.WriteCreate);
                 scope (exit)
@@ -132,7 +134,7 @@ class Properties(T)
 
         ***********************************************************************/
 
-        static void save (OutputStream stream, T[][T[]] properties)
+        deprecated static void save (OutputStream stream, T[][T[]] properties)
         {
                const T[] equals = " = ";
                 version (Win32)
