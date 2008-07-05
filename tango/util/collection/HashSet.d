@@ -575,3 +575,52 @@ debug (Test)
                          Cout (value).newline;
         }
 }
+
+
+
+debug (HashSet)
+{
+        import tango.io.Stdout;
+        import tango.core.Thread;
+        import tango.time.StopWatch;
+        
+        void main()
+        {
+                // setup for benchmark, with a set of integers. We
+                // use a chunk allocator, and presize the bucket[]
+                auto test = new HashSet!(int);
+                test.buckets = 700_000;
+                const count = 500_000;
+                StopWatch w;
+
+                // benchmark adding
+                w.start;
+                for (int i=count; i--;)
+                     test.add(i);
+                Stdout.formatln ("{} adds: {}/s", test.size, test.size/w.stop);
+
+                // benchmark reading
+                w.start;
+                for (int i=count; i--;)
+                     test.contains(i);
+                Stdout.formatln ("{} lookups: {}/s", test.size, test.size/w.stop);
+
+                // benchmark adding without allocation overhead
+                test.clear;
+                w.start;
+                for (int i=count; i--;)
+                     test.add(i);
+                Stdout.formatln ("{} adds (after clear): {}/s", test.size, test.size/w.stop);
+
+                // benchmark duplication
+                w.start;
+                auto dup = test.duplicate;
+                Stdout.formatln ("{} element dup: {}/s", dup.size, dup.size/w.stop);
+
+                // benchmark iteration
+                w.start;
+                foreach (value; test) {}
+                Stdout.formatln ("{} element iteration: {}/s", test.size, test.size/w.stop);
+                Thread.sleep (3);
+        }
+}
