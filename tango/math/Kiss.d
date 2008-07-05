@@ -8,9 +8,12 @@
 
         author:         Various
 
+        With gratitude to Dr Jurgen A Doornik. See his paper entitled
+        "Conversion of high-period random numbers to floating point"
+        
 *******************************************************************************/
 
-module tango.math.Rand;
+module tango.math.Kiss;
 
 
 version (Win32)
@@ -24,9 +27,9 @@ version (Posix)
 
 /******************************************************************************
 
-        KISS (via George Marsaglia & Paul Hsieh)
+        KISS (from George Marsaglia)
 
-        the idea is to use simple, fast, individually promising
+        The idea is to use simple, fast, individually promising
         generators to get a composite that will be fast, easy to code
         have a very long period and pass all the tests put to it.
         The three components of KISS are
@@ -35,15 +38,20 @@ version (Posix)
                 y(n)=y(n-1)(I+L^13)(I+R^17)(I+L^5),
                 z(n)=2*z(n-1)+z(n-2) +carry mod 2^32
         ---
+
         The y's are a shift register sequence on 32bit binary vectors
         period 2^32-1; The z's are a simple multiply-with-carry sequence
-        with period 2^63+2^32-1.
+        with period 2^63+2^32-1. The period of KISS is thus
+        ---
+                2^32*(2^32-1)*(2^63+2^32-1) > 2^127
+        ---
 
-        The period of KISS is thus 2^32*(2^32-1)*(2^63+2^32-1) > 2^127
-
+        Note that this should be passed by reference, unless you really
+        intend to provide a local copy to a callee
+        
 ******************************************************************************/
 
-struct RandomInteger
+struct Kiss
 {
         private uint kiss_k;
         private uint kiss_m;
@@ -53,15 +61,18 @@ struct RandomInteger
         private uint kiss_w = 8;
         private uint kiss_carry = 0;
         
+        private const double M_RAN_INVM32 = 2.32830643653869628906e-010,
+                             M_RAN_INVM52 = 2.22044604925031308085e-016;
+
         /**********************************************************************
 
                 Creates and seeds a new generator with the current time
 
         **********************************************************************/
 
-        static RandomInteger opCall()
+        static Kiss opCall()
         {
-                RandomInteger rand;
+                Kiss rand;
                 rand.seed;
                 return rand;
         }
@@ -151,83 +162,33 @@ struct RandomInteger
         {
                 return next(max-min) + min;
         }
-}
-
-
-/******************************************************************************
-
-        With much gratitude to Dr Jurgen A Doornik. See his paper entitled
-        "Conversion of high-period random numbers to floating point"
-
-******************************************************************************/
-
-struct RandomDouble
-{
-        RandomInteger source;
-
-        private const double M_RAN_INVM32 = 2.32830643653869628906e-010,
-                             M_RAN_INVM52 = 2.22044604925031308085e-016;
-
+        
         /**********************************************************************
-
-                Creates and seeds a new generator with the current time
-
-        **********************************************************************/
-
-        static RandomDouble opCall()
-        {
-                RandomDouble rand;
-                rand.source.seed;
-                return rand;
-        }
-
-        /**********************************************************************
-
+        
                 Returns a value between 0 and 1, exclusive, using 32 bits
-                of precision
+                of precision (with thanks to Dr Jurgen A Doornik)
 
         **********************************************************************/
 
         double next32 ()
         {
-                return next32 (source.next);
+                return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
 
         /**********************************************************************
 
                 Returns a value between 0 and 1, exclusive, using 52 bits
-                of precision
+                of precision (with thanks to Dr Jurgen A Doornik)
 
         **********************************************************************/
 
         double next52 ()
         {
-                return next52 (source.next, source.next);
-        }
-
-        /**********************************************************************
-        
-                Returns a value between 0 and 1, exclusive
-
-        **********************************************************************/
-
-        double next32 (int random)
-        {
-                return (random * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
-        }
-
-        /**********************************************************************
-
-                Returns a value between 0 and 1, exclusive
-
-        **********************************************************************/
-
-        double next52 (int random1, int random2)
-        {
-                return (random1 * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
-                       (random2 & 0x000FFFFF) * M_RAN_INVM52);
+                return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
+                       (next & 0x000FFFFF) * M_RAN_INVM52);
         }
 }
+
 
 
 /******************************************************************************
@@ -235,14 +196,14 @@ struct RandomDouble
 
 ******************************************************************************/
 
-debug (Rand)
+debug (Kiss)
 {
         import tango.io.Stdout;
         import tango.time.StopWatch;
 
         void main()
         {
-                auto dbl = RandomDouble();
+                auto dbl = Kiss();
                 auto count = 100_000_000;
                 StopWatch w;
 
