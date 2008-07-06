@@ -170,7 +170,7 @@ struct Kiss
 
         **********************************************************************/
 
-        double next32 ()
+        double toReal ()
         {
                 return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
@@ -182,7 +182,7 @@ struct Kiss
 
         **********************************************************************/
 
-        double next52 ()
+        double toRealEx ()
         {
                 return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
                        (next & 0x000FFFFF) * M_RAN_INVM52);
@@ -210,26 +210,26 @@ debug (Kiss)
                 w.start;
                 double v1;
                 for (int i=count; --i;)
-                     v1 = dbl.next32;
-                Stdout.formatln ("{} next32, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.toReal;
+                Stdout.formatln ("{} toReal, {}/s, {:f10}", count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
-                     v1 = dbl.next52;
-                Stdout.formatln ("{} next52, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.toRealEx;
+                Stdout.formatln ("{} toRealEx, {}/s, {:f10}", count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
-                    auto v = dbl.next32;
+                    auto v = dbl.toReal;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("next32 {:f10}", v);
+                       Stdout.formatln ("toReal {:f10}", v);
                        break;
                        }
-                    v = dbl.next52;
+                    v = dbl.toRealEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("next52 {:f10}", v);
+                       Stdout.formatln ("toRealEx {:f10}", v);
                        break;
                        }
                     }
