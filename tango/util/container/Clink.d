@@ -8,6 +8,8 @@
 
         authors:        Kris
 
+        Since:          0.99.7
+
         Based upon Doug Lea's Java collection package
 
 *******************************************************************************/

@@ -8,6 +8,8 @@
 
         authors:        Kris
 
+        Since:          0.99.7
+
 *******************************************************************************/
 
 module tango.util.container.Container;
