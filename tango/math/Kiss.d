@@ -121,7 +121,7 @@ struct Kiss
 
         **********************************************************************/
 
-        uint next ()
+        uint toInt ()
         {
                 kiss_x = kiss_x * 69069 + 1;
                 kiss_y ^= kiss_y << 13;
@@ -144,7 +144,7 @@ struct Kiss
 
         **********************************************************************/
 
-        uint next (uint max)
+        uint toInt (uint max)
         {
                 return next() % max;
         }
@@ -158,7 +158,7 @@ struct Kiss
 
         **********************************************************************/
 
-        uint next (uint min, uint max)
+        uint toInt (uint min, uint max)
         {
                 return next(max-min) + min;
         }
