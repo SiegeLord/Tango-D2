@@ -595,7 +595,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         scope(exit) delete junk;
 
         foreach( ref c ; junk )
-            c = JUNK_CHARS[Kiss().next($)];
+            c = JUNK_CHARS[Kiss().toInt($)];
 
         return prefix~junk~suffix;
     }
