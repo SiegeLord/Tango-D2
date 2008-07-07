@@ -148,7 +148,7 @@ struct Kiss
 
         uint toInt (uint max)
         {
-                return next() % max;
+                return toInt() % max;
         }
 
         /**********************************************************************
@@ -162,7 +162,7 @@ struct Kiss
 
         uint toInt (uint min, uint max)
         {
-                return next(max-min) + min;
+                return toInt(max-min) + min;
         }
         
         /**********************************************************************
@@ -174,7 +174,7 @@ struct Kiss
 
         double toReal ()
         {
-                return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
+                return (toInt() * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
 
         /**********************************************************************
@@ -186,8 +186,8 @@ struct Kiss
 
         double toRealEx ()
         {
-                return (next * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
-                       (next & 0x000FFFFF) * M_RAN_INVM52);
+                return (toInt() * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
+                       (toInt() & 0x000FFFFF) * M_RAN_INVM52);
         }
 }
 
