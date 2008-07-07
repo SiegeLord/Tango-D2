@@ -12,7 +12,7 @@
 
 module tango.net.cluster.tina.Cluster;
 
-private import  tango.math.Random;
+private import  tango.math.random.Kiss;
 
 private import  tango.core.Thread,
                 tango.core.Runtime,
@@ -1479,7 +1479,7 @@ private class NodeSet
                         // is used when scanning the cluster for queued entries
                         foreach (i, n; random)
                                 {
-                                auto j = Random.shared.next (random.length);
+                                auto j = Kiss.shared.toInt (random.length);
                                 auto tmp = random[i];
                                 random[i] = random[j];
                                 random[j] = tmp;

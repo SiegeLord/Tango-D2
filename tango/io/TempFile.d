@@ -11,7 +11,7 @@
 
 module tango.io.TempFile;
 
-import tango.math.Kiss : Kiss;
+import tango.math.random.Kiss : Kiss;
 import tango.io.DeviceConduit : DeviceConduit;
 import tango.io.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath/*, PathView*/;
@@ -595,7 +595,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         scope(exit) delete junk;
 
         foreach( ref c ; junk )
-            c = JUNK_CHARS[Kiss().toInt($)];
+            c = JUNK_CHARS[Kiss.shared.toInt($)];
 
         return prefix~junk~suffix;
     }
