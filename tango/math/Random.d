@@ -86,7 +86,7 @@ class Random
 
         **********************************************************************/
 
-        deprecated this ()
+        this ()
         {
                 this.seed;
         }
@@ -136,7 +136,7 @@ class Random
 
         **********************************************************************/
 
-        final uint next ()
+        deprecated final uint next ()
         {
                 kiss_x = kiss_x * 69069 + 1;
                 kiss_y ^= kiss_y << 13;
@@ -159,7 +159,7 @@ class Random
 
         **********************************************************************/
 
-        final uint next (uint max)
+        deprecated final uint next (uint max)
         {
                 return next() % max;
         }
@@ -173,7 +173,7 @@ class Random
 
         **********************************************************************/
 
-        final uint next (uint min, uint max)
+        deprecated final uint next (uint min, uint max)
         {
                 return next(max-min) + min;
         }
