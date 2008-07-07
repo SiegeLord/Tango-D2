@@ -8,6 +8,8 @@
 
         author:         Various
 
+        Since:          0.99.7
+
         With gratitude to Dr Jurgen A Doornik. See his paper entitled
         "Conversion of high-period random numbers to floating point"
         
