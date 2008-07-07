@@ -65,6 +65,19 @@ struct Kiss
         
         private const double M_RAN_INVM32 = 2.32830643653869628906e-010,
                              M_RAN_INVM52 = 2.22044604925031308085e-016;
+      
+        /**********************************************************************
+
+                A global, shared instance, seeded via startup time
+
+        **********************************************************************/
+
+        public static Kiss shared; 
+
+        static this ()
+        {
+                shared.seed;
+        }
 
         /**********************************************************************
 
@@ -72,7 +85,7 @@ struct Kiss
 
         **********************************************************************/
 
-        static Kiss opCall()
+        static Kiss opCall ()
         {
                 Kiss rand;
                 rand.seed;
