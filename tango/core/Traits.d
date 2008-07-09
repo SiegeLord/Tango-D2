@@ -188,6 +188,9 @@ template isStaticArrayType(T)
 debug (UnitTest) {
 
     unittest {
+        assert(isStaticArrayType!(char[5][2])); 
+        assert(!isDynamicArrayType!(char[5][2])); 
+
         assert(isStaticArrayType!(char[15]));
         assert(!isStaticArrayType!(char[]));
 
