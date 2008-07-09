@@ -65,6 +65,9 @@ OBJ_BASE= \
     adi.obj \
     arraycast.obj \
     arraycat.obj \
+    arraydouble.obj \
+    arrayfloat.obj \
+    arrayreal.obj \
     cast.obj \
     complex.obj \
     cover.obj \
@@ -88,6 +91,7 @@ OBJ_BASE= \
 
 OBJ_UTIL= \
     util\console.obj \
+    util\cpuid.obj \
     util\ctype.obj \
     util\string.obj \
     util\utf.obj

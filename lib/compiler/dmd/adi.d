@@ -373,26 +373,13 @@ extern (C) long _adSortWchar(wchar[] a)
 
 /***************************************
  * Support for array equality test.
+ * Returns:
+ *      1       equal
+ *      0       not equal
  */
 
 extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
 {
-    /+
-     + TODO: Re-enable once the correct TypeInfo is passed:
-     +       http://d.puremagic.com/issues/show_bug.cgi?id=2161
-     +
-    debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
-
-    if (a1.length != a2.length)
-        return 0; // not equal
-    if (a1.ptr == a2.ptr)
-        return 1; // equal
-
-    // We should really have a ti.isPOD() check for this
-    if (ti.tsize() != 1)
-        return ti.equals(&a1, &a2);
-    return memcmp(a1.ptr, a2.ptr, a1.length) == 0;
-    +/
     debug(adi) printf("_adEq(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
     if (a1.length != a2.length)
         return 0; // not equal
@@ -412,6 +399,15 @@ extern (C) int _adEq(Array a1, Array a2, TypeInfo ti)
     return 1; // equal
 }
 
+extern (C) int _adEq2(Array a1, Array a2, TypeInfo ti)
+{
+    debug(adi) printf("_adEq2(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
+    if (a1.length != a2.length)
+        return 0;               // not equal
+    if (!ti.equals(&a1, &a2))
+        return 0;
+    return 1;
+}
 unittest
 {
     debug(adi) printf("array.Eq unittest\n");
@@ -431,30 +427,6 @@ unittest
 
 extern (C) int _adCmp(Array a1, Array a2, TypeInfo ti)
 {
-    /+
-     + TODO: Re-enable once the correct TypeInfo is passed:
-     +       http://d.puremagic.com/issues/show_bug.cgi?id=2161
-     +
-    debug(adi) printf("adCmp()\n");
-
-    if (a1.ptr == a2.ptr &&
-        a1.length == a2.length)
-        return 0;
-
-    auto len = a1.length;
-    if (a2.length < len)
-        len = a2.length;
-
-    // We should really have a ti.isPOD() check for this
-    if (ti.tsize() != 1)
-        return ti.compare(&a1, &a2);
-    auto c = memcmp(a1.ptr, a2.ptr, len);
-    if (c)
-        return c;
-    if (a1.length == a2.length)
-        return 0;
-    return a1.length > a2.length ? 1 : -1;
-    +/
     debug(adi) printf("adCmp()\n");
     auto len = a1.length;
     if (a2.length < len)
@@ -483,6 +455,11 @@ extern (C) int _adCmp(Array a1, Array a2, TypeInfo ti)
     return (a1.length > a2.length) ? 1 : -1;
 }
 
+extern (C) int _adCmp2(Array a1, Array a2, TypeInfo ti)
+{
+    debug(adi) printf("_adCmp2(a1.length = %d, a2.length = %d)\n", a1.length, a2.length);
+    return ti.compare(&a1, &a2);
+}
 unittest
 {
     debug(adi) printf("array.Cmp unittest\n");
