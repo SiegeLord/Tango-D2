@@ -541,6 +541,8 @@ interface ZipWriter
 {
     void finish();
     void putFile(ZipEntryInfo info, char[] path);
+    deprecated void putFile(ZipEntryInfo info, PathView path);
+    void putFile(ZipEntryInfo info, char[] path);
     void putStream(ZipEntryInfo info, InputStream source);
     void putEntry(ZipEntryInfo info, ZipEntry entry);
     void putData(ZipEntryInfo info, void[] data);
@@ -1033,6 +1035,14 @@ class ZipBlockWriter : ZipWriter
         seeker = null;
 
         if( file_output !is null ) delete file_output;
+    }
+
+    /**
+     * Adds a file from the local filesystem to the archive.
+     */
+    deprecated void putFile(ZipEntryInfo info, PathView path)
+    {
+        putFile(info, path.toString);
     }
 
     /// ditto
@@ -1738,6 +1748,27 @@ void createArchive(char[] archive, Method method, char[][] files...)
         zw.putFile(ZipEntryInfo(file), file);
 
     zw.finish;
+}
+
+deprecated void createArchive(PathView archive, Method method, PathView[] files...)
+{
+    scope zw = new ZipBlockWriter(archive.toString);
+    zw.method = method;
+
+    foreach( file ; files )
+        zw.putFile(ZipEntryInfo(file.toString), file.toString);
+
+    zw.finish;
+}
+
+deprecated void extractArchive(FilePath archive, char[] folder)
+{
+    extractArchive(archive, folder);
+}
+
+deprecated void extractArchive(PathView archive, PathView dest)
+{
+        extractArchive (archive.toString, dest.toString);
 }
 
 void extractArchive(char[] archive, char[] dest)
