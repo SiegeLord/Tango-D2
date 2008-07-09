@@ -172,28 +172,29 @@ template isDynamicArrayType( T )
     const bool isDynamicArrayType = is( typeof(T.init[0])[] == T );
 }
 
-
-private template isStaticArrayTypeInst( T )
-{
-    const T isStaticArrayTypeInst = void;
-}
-
-
 /**
  * Evaluates to true if T is a static array type.
  */
-template isStaticArrayType( T )
+template isStaticArrayType(T : T[U], size_t U)
 {
-    static if( is( typeof(T.length) ) && !is( typeof(T) == typeof(T.init) ) )
-    {
-        const bool isStaticArrayType = is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
-    }
-    else
-    {
-        const bool isStaticArrayType = false;
-    }
+    const bool isStaticArrayType = true;
 }
 
+template isStaticArrayType(T)
+{
+    const bool isStaticArrayType = false;
+}
+
+debug (UnitTest) {
+
+    unittest {
+        assert(isStaticArrayType!(char[15]));
+        assert(!isStaticArrayType!(char[]));
+
+        assert(isDynamicArrayType!(char[]));
+        assert(!isDynamicArrayType!(char[15]));    
+    }
+}
 
 /**
  * Evaluates to true if T is an associative array type.
