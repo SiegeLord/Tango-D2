@@ -37,7 +37,13 @@ dmdbugs() {
             echo " >> upgrade if you experience problems."
         fi
 
-        if [ "$DMDVERSIONMIN" -gt "31" ]
+        if [ "$DMDVERSIONMIN" = "32" ]
+        then
+            echo ">> DMD 1.032 is not supported by Tango. You are most likely going"
+            echo " >> to experience problems."
+        fi
+
+        if [ "$DMDVERSIONMIN" -gt "32" ]
         then
             echo ">> This version has not been tested with Tango prior to this release,"
             echo " >> so if you experience any problems, try reverting to DMD 1.031"
