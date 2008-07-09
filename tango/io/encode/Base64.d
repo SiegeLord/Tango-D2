@@ -125,6 +125,7 @@ char[] encode(ubyte[] data, char[] buff)
 in
 {
     assert(data);
+    assert(buff.length >= allocateEncodeSize(data));
 }
 body
 {
@@ -159,6 +160,34 @@ body
     }
 
     return rtn;
+}
+
+/*******************************************************************************
+
+    encodes data and returns as an ASCII base64 string.
+
+    Params:
+    data = what is to be encoded
+
+    Example:
+    ---
+    char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?");
+    Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
+    ---
+
+
+*******************************************************************************/
+
+
+char[] encode(ubyte[] data)
+in
+{
+    assert(data);
+}
+body
+{
+    auto rtn = new char[allocateEncodeSize(data)];
+    return encode(data, rtn);
 }
 
 /*******************************************************************************
@@ -299,7 +328,12 @@ version (Test)
             char[] encoded = new char[allocateEncodeSize(cast(ubyte[])"Hello, how are you today?")];
             char[] result = encode(cast(ubyte[])"Hello, how are you today?", encoded);
             if (result == "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==")
-                return Test.Status.Success;
+            {
+                char[] result2 = encode(cast(ubyte[])"Hello, how are you today?");
+                if (result == "SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==")
+                    return Test.Status.Success;
+            }
+
             return Test.Status.Failure;
         }
 
