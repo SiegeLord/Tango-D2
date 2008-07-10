@@ -15,7 +15,7 @@
         
 *******************************************************************************/
 
-module tango.math.Kiss;
+module tango.math.random.Kiss;
 
 
 version (Win32)
