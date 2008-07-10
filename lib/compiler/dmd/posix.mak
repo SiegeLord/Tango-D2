@@ -69,6 +69,9 @@ OBJ_BASE= \
     alloca.o \
     arraycast.o \
     arraycat.o \
+    arraydouble.o \
+    arrayfloat.o \
+    arrayreal.o \
     cast.o \
     cmath2.o \
     complex.o \
@@ -95,6 +98,7 @@ OBJ_BASE= \
 
 OBJ_UTIL= \
     util/console.o \
+    util/cpuid.o \
     util/ctype.o \
     util/string.o \
     util/utf.o
