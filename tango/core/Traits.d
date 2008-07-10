@@ -117,36 +117,36 @@ template isPointerType(T : T*)
         const isPointerType = true;
 }
 
-debug(UnitTest) {
+debug( UnitTest )
+{
+    unittest
+    {
+        assert( isPointerType!(void*) );
+        assert( !isPointerType!(char[]) );
+        assert( isPointerType!(char[]*) );
+        assert( !isPointerType!(char*[]) );
+        assert( isPointerType!(real*) );
+        assert( !isPointerType!(uint) );
 
-    unittest {
-
-        assert(isPointerType!(void*));
-        assert(!isPointerType!(char[]));
-        assert(isPointerType!(char[]*));
-        assert(!isPointerType!(char*[]));
-        assert(isPointerType!(real*));
-        assert(!isPointerType!(uint));
-        
         class Ham
         {
             void* a;
         }
-        
-        assert(!isPointerType!(Ham));
-        
+
+        assert( !isPointerType!(Ham) );
+
         union Eggs
         {
             void* a;
-            uint b;
+            uint  b;
         };
-        
-        assert(!isPointerType!(Eggs));
-        assert(isPointerType!(Eggs*));
-        
+
+        assert( !isPointerType!(Eggs) );
+        assert( isPointerType!(Eggs*) );
+
         struct Bacon {};
-        
-        assert(!isPointerType!(Bacon));
+
+        assert( !isPointerType!(Bacon) );
 
     }
 }
@@ -175,49 +175,53 @@ template isDynamicArrayType( T )
 /**
  * Evaluates to true if T is a static array type.
  */
-
-version (GNU) {
+version( GNU )
+{
     // GDC should also be able to use the other version, but it probably
     // relies on a frontend fix in one of the latest DMD versions - will
     // remove this when GDC is ready. For now, this code pass the unittests.
-    private template isStaticArrayTypeInst( T ) 
-    { 
-        const T isStaticArrayTypeInst = void; 
-    } 
+    private template isStaticArrayTypeInst( T )
+    {
+        const T isStaticArrayTypeInst = void;
+    }
 
-    template isStaticArrayType( T ) 
-    { 
-        static if( is( typeof(T.length) ) && !is( typeof(T) == typeof(T.init) ) ) 
-        { 
+    template isStaticArrayType( T )
+    {
+        static if( is( typeof(T.length) ) && !is( typeof(T) == typeof(T.init) ) )
+        {
             const bool isStaticArrayType = is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
         }
-        else {
+        else
+        {
             const bool isStaticArrayType = false;
         }
     }
-}else {
-    template isStaticArrayType(T : T[U], size_t U)
+}
+else
+{
+    template isStaticArrayType( T : T[U], size_t U )
     {
         const bool isStaticArrayType = true;
     }
 
-    template isStaticArrayType(T)
+    template isStaticArrayType( T )
     {
         const bool isStaticArrayType = false;
     }
 }
 
-debug (UnitTest) {
+debug( UnitTest )
+{
+    unittest
+    {
+        assert( isStaticArrayType!(char[5][2]) );
+        assert( !isDynamicArrayType!(char[5][2]) );
 
-    unittest {
-        assert(isStaticArrayType!(char[5][2])); 
-        assert(!isDynamicArrayType!(char[5][2])); 
+        assert( isStaticArrayType!(char[15]) );
+        assert( !isStaticArrayType!(char[]) );
 
-        assert(isStaticArrayType!(char[15]));
-        assert(!isStaticArrayType!(char[]));
-
-        assert(isDynamicArrayType!(char[]));
-        assert(!isDynamicArrayType!(char[15]));    
+        assert( isDynamicArrayType!(char[]) );
+        assert( !isDynamicArrayType!(char[15]) );
     }
 }
 
