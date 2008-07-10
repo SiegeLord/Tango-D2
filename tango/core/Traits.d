@@ -175,14 +175,36 @@ template isDynamicArrayType( T )
 /**
  * Evaluates to true if T is a static array type.
  */
-template isStaticArrayType(T : T[U], size_t U)
-{
-    const bool isStaticArrayType = true;
-}
 
-template isStaticArrayType(T)
-{
-    const bool isStaticArrayType = false;
+version (GNU) {
+    // GDC should also be able to use the other version, but it probably
+    // relies on a frontend fix in one of the latest DMD versions - will
+    // remove this when GDC is ready. For now, this code pass the unittests.
+    private template isStaticArrayTypeInst( T ) 
+    { 
+        const T isStaticArrayTypeInst = void; 
+    } 
+
+    template isStaticArrayType( T ) 
+    { 
+        static if( is( typeof(T.length) ) && !is( typeof(T) == typeof(T.init) ) ) 
+        { 
+            const bool isStaticArrayType = is( T == typeof(T[0])[isStaticArrayTypeInst!(T).length] );
+        }
+        else {
+            const bool isStaticArrayType = false;
+        }
+    }
+}else {
+    template isStaticArrayType(T : T[U], size_t U)
+    {
+        const bool isStaticArrayType = true;
+    }
+
+    template isStaticArrayType(T)
+    {
+        const bool isStaticArrayType = false;
+    }
 }
 
 debug (UnitTest) {
