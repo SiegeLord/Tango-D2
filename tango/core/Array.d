@@ -1683,13 +1683,13 @@ version( DDoc )
      *         callable type.
      *
      * Returns:
-     *  The number of unique elements in buf.
+     *  The number of distinct sub-sequences in buf.
      */
-    size_t unique( Elem[] buf, Pred2E pred = Pred2E.init );
+    size_t distinct( Elem[] buf, Pred2E pred = Pred2E.init );
 }
 else
 {
-    template unique_( Elem, Pred = IsEqual!(Elem) )
+    template distinct_( Elem, Pred = IsEqual!(Elem) )
     {
         static assert( isCallableType!(Pred) );
 
@@ -1726,20 +1726,20 @@ else
     }
 
 
-    template unique( Buf )
+    template distinct( Buf )
     {
-        size_t unique( Buf buf )
+        size_t distinct( Buf buf )
         {
-            return unique_!(ElemTypeOf!(Buf)).fn( buf );
+            return distinct_!(ElemTypeOf!(Buf)).fn( buf );
         }
     }
 
 
-    template unique( Buf, Pred )
+    template distinct( Buf, Pred )
     {
-        size_t unique( Buf buf, Pred pred )
+        size_t distinct( Buf buf, Pred pred )
         {
-            return unique_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
+            return distinct_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
         }
     }
 
@@ -1750,7 +1750,7 @@ else
       {
         void test( char[] buf, char[] pat )
         {
-            assert( unique( buf ) == pat.length );
+            assert( distinct( buf ) == pat.length );
             foreach( pos, cur; pat )
             {
                 assert( buf[pos] == cur );
