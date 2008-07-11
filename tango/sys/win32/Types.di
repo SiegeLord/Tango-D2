@@ -6827,28 +6827,53 @@ else{
     alias LOGFONTW* LPLOGFONT;
 }
 
-struct TCHOOSEFONT
-{
-    DWORD lStructSize;
-    HWND hwndOwner;
-    HDC hDC;
-    LPLOGFONT lpLogFont;
-    INT iPointSize;
-    DWORD Flags;
-    DWORD rgbColors;
-    LPARAM lCustData;
+struct CHOOSEFONTA {
+    DWORD        lStructSize;
+    HWND         hwndOwner;
+    HDC          hDC;
+    LPLOGFONTA   lpLogFont;
+    INT          iPointSize;
+    DWORD        Flags;
+    DWORD        rgbColors;
+    LPARAM       lCustData;
     LPCFHOOKPROC lpfnHook;
-    LPCTSTR lpTemplateName;
-    HINST hInstance;
-    LPTSTR lpszStyle;
-    ushort nFontType;
-    ushort ___MISSING_ALIGNMENT__;
-    INT nSizeMin;
-    INT nSizeMax;
+    LPCSTR       lpTemplateName;
+    HINSTANCE    hInstance;
+    LPSTR        lpszStyle;
+    WORD         nFontType;
+    WORD         ___MISSING_ALIGNMENT__;
+    INT          nSizeMin;
+    INT          nSizeMax;
+}alias CHOOSEFONTA* PCHOOSEFONTA, LPCHOOSEFONTA;
+
+struct CHOOSEFONTW {
+    DWORD        lStructSize;
+    HWND         hwndOwner;
+    HDC          hDC;
+    LOGFONTW*    lpLogFont;
+    INT          iPointSize;
+    DWORD        Flags;
+    DWORD        rgbColors;
+    LPARAM       lCustData;
+    LPCFHOOKPROC lpfnHook;
+    LPCWSTR      lpTemplateName;
+    HINSTANCE    hInstance;
+    LPWSTR       lpszStyle;
+    WORD         nFontType;
+    WORD         ___MISSING_ALIGNMENT__;
+    INT          nSizeMin;
+    INT          nSizeMax;
+}alias CHOOSEFONTW* PCHOOSEFONTW, LPCHOOSEFONTW;
+
+version(Win32SansUnicode){
+    alias CHOOSEFONTA CHOOSEFONT;
+}else{
+    alias CHOOSEFONTW CHOOSEFONT;
 }
 
-alias TCHOOSEFONT* LPCHOOSEFONT;
-alias TCHOOSEFONT* PCHOOSEFONT;
+alias CHOOSEFONT* LPCHOOSEFONT;
+alias CHOOSEFONT* PCHOOSEFONT;
+alias CHOOSEFONT TCHOOSEFONT;
 
 struct CIDA
 {
@@ -11583,34 +11608,67 @@ alias PREVENT_MEDIA_REMOVAL _PREVENT_MEDIA_REMOVAL;
 alias PREVENT_MEDIA_REMOVAL TPREVENTMEDIAREMOVAL;
 alias PREVENT_MEDIA_REMOVAL* PPREVENTMEDIAREMOVAL;
 
-align(1) struct TPRINTDLG
-{
-    DWORD lStructSize;
-    HWND hwndOwner;
-    HANDLE hDevMode;
-    HANDLE hDevNames;
-    HDC hDC;
-    DWORD Flags;
-    ushort nFromPage;
-    ushort nToPage;
-    ushort nMinPage;
-    ushort nMaxPage;
-    ushort nCopies;
-    HINST hInstance;
-    DWORD lCustData;
+struct PRINTDLGA {  // pd
+    align(2):
+    DWORD     lStructSize;
+    HWND      hwndOwner;
+    HANDLE    hDevMode;
+    HANDLE    hDevNames;
+    HDC       hDC;
+    DWORD     Flags;
+    WORD      nFromPage;
+    WORD      nToPage;
+    WORD      nMinPage;
+    WORD      nMaxPage;
+    WORD      nCopies;
+    HINSTANCE hInstance;
+    DWORD     lCustData;
     LPPRINTHOOKPROC lpfnPrintHook;
     LPSETUPHOOKPROC lpfnSetupHook;
-    LPCTSTR lpPrintTemplateName;
-    LPCTSTR lpSetupTemplateName;
-    HANDLE hPrintTemplate;
-    HANDLE hSetupTemplate;
+    LPCSTR    lpPrintTemplateName;
+    LPCSTR    lpSetupTemplateName;
+    HANDLE    hPrintTemplate;
+    HANDLE    hSetupTemplate;
+}
+alias PRINTDLGA* PPRINTDLGA;
+alias PRINTDLGA* LPPRINTDLGA;
+struct PRINTDLGW {  // pd
+    align(2):
+    DWORD     lStructSize;
+    HWND      hwndOwner;
+    HANDLE    hDevMode;
+    HANDLE    hDevNames;
+    HDC       hDC;
+    DWORD     Flags;
+    WORD      nFromPage;
+    WORD      nToPage;
+    WORD      nMinPage;
+    WORD      nMaxPage;
+    WORD      nCopies;
+    HINSTANCE hInstance;
+    DWORD     lCustData;
+    LPPRINTHOOKPROC lpfnPrintHook;
+    LPSETUPHOOKPROC lpfnSetupHook;
+    LPCWSTR    lpPrintTemplateName;
+    LPCWSTR    lpSetupTemplateName;
+    HANDLE    hPrintTemplate;
+    HANDLE    hSetupTemplate;
+}
+alias PRINTDLGW* PPRINTDLGW;
+alias PRINTDLGW* LPPRINTDLGW;
+
+version(Win32SansUnicode){
+    alias PRINTDLGA PRINTDLG;
+}else{
+    alias PRINTDLGW PRINTDLG;
 }
 
-alias TPRINTDLG* LPPRINTDLG;
-alias TPRINTDLG* PPRINTDLG;
-alias TPRINTDLG TAGPD;
-alias TPRINTDLG TPD;
-alias TPRINTDLG* PPD;
+
+alias PRINTDLG* LPPRINTDLG;
+alias PRINTDLG* PPRINTDLG;
+alias PRINTDLG TAGPD;
+alias PRINTDLG TPD;
+alias PRINTDLG* PPD;
 
 struct PRINTER_DEFAULTS
 {
