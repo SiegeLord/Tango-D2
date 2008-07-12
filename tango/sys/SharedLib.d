@@ -103,11 +103,35 @@ final class SharedLib {
             mode = Library loading mode. See LoadMode
 
         Returns:
-            A SharedLib instance being a handle to the library, or null if it
-            could not be loaded and SharedLib.throwExceptions is set to false.
-            Otherwise, throws SharedLibException
+            A SharedLib instance being a handle to the library, or throws
+            SharedLibException if it could not be loaded
       */
     static SharedLib load(char[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
+    	return loadImpl(path, mode, true);
+    }
+
+
+
+    /**
+        Loads an OS-specific shared library.
+
+        Note:
+        Please use this function instead of the constructor, which is private.
+
+        Params:
+            path = The path to a shared library to be loaded
+            mode = Library loading mode. See LoadMode
+
+        Returns:
+            A SharedLib instance being a handle to the library, or null if it
+            could not be loaded
+      */
+    static SharedLib loadNoThrow(char[] path, LoadMode mode = LoadMode.Now | LoadMode.Global) {
+    	return loadImpl(path, mode, false);
+    }
+
+
+    private static SharedLib loadImpl(char[] path, LoadMode mode, bool throwExceptions) {
         SharedLib res;
 
         synchronized (mutex) {
@@ -132,7 +156,7 @@ final class SharedLib {
             if (!res.loaded) {
                 version (SharedLibVerbose) Trace.formatln("Loading the SharedLib");
                 try {
-                    res.load_(mode);
+                    res.load_(mode, throwExceptions);
                 } catch (Exception e) {
                     exc = e;
                 }
@@ -180,6 +204,23 @@ final class SharedLib {
         Throws SharedLibException on failure. In this case, the SharedLib object is not deleted.
       */
     void unload() {
+    	return unloadImpl(true);
+    }
+
+
+    /**
+        Unloads the OS-specific shared library associated with this SharedLib instance.
+
+        Note:
+        It's invalid to use the object after unload() has been called, as unload()
+        will delete it if it's not referenced any more.
+      */
+    void unloadNoThrow() {
+    	return unloadImpl(false);
+    }
+
+
+    private void unloadImpl(bool throwExceptions) {
         bool deleteThis = false;
 
         synchronized (this) {
@@ -190,7 +231,7 @@ final class SharedLib {
                 if (--refCnt <= 0) {
                     version (SharedLibVerbose) Trace.formatln("Unloading the SharedLib");
                     try {
-                        unload_();
+                        unload_(throwExceptions);
                     } catch (Exception e) {
                         ++refCnt;
                         throw e;
@@ -225,12 +266,31 @@ final class SharedLib {
             name = The name of the symbol; must be a null-terminated C string
 
         Returns:
-            A pointer to the symbol or null if it's not present in the library
-            and SharedLib.throwExceptions is set to false. Otherwise, throws SharedLibException
+            A pointer to the symbol or throws SharedLibException if it's
+            not present in the library.
       */
     void* getSymbol(char* name) {
+    	return getSymbolImpl(name, true);
+    }
+
+
+    /**
+        Obtains the address of a symbol within the shared library
+
+        Params:
+            name = The name of the symbol; must be a null-terminated C string
+
+        Returns:
+            A pointer to the symbol or null if it's not present in the library.
+      */
+    void* getSymbolNoThrow(char* name) {
+    	return getSymbolImpl(name, false);
+    }
+
+
+    private void* getSymbolImpl(char* name, bool throwExceptions) {
         assert (loaded);
-        return getSymbol_(name);
+        return getSymbol_(name, throwExceptions);
     }
 
 
@@ -247,7 +307,7 @@ final class SharedLib {
         version (Windows) {
             HMODULE handle;
 
-            void load_(LoadMode mode) {
+            void load_(LoadMode mode, bool throwExceptions) {
                 version (Win32SansUnicode)
                          handle = LoadLibraryA((this.path_ ~ \0).ptr);
                     else {
@@ -261,23 +321,23 @@ final class SharedLib {
                             handle = LoadLibraryW (tmp.ptr);
                             }
                     }
-                if (handle is null && SharedLib.throwExceptions) {
+                if (handle is null && throwExceptions) {
                     throw new SharedLibException("Couldn't load shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
                 }
             }
 
-            void* getSymbol_(char* name) {
+            void* getSymbol_(char* name, bool throwExceptions) {
                 // MSDN: "Multiple threads do not overwrite each other's last-error code."
                 auto res = GetProcAddress(handle, name);
-                if (res is null && SharedLib.throwExceptions) {
+                if (res is null && throwExceptions) {
                     throw new SharedLibException("Couldn't load symbol '" ~ fromStringz(name) ~ "' from shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
                 } else {
                     return res;
                 }
             }
 
-            void unload_() {
-                if (0 == FreeLibrary(handle) && SharedLib.throwExceptions) {
+            void unload_(bool throwExceptions) {
+                if (0 == FreeLibrary(handle) && throwExceptions) {
                     throw new SharedLibException("Couldn't unload shared library '" ~ this.path_ ~ "' : " ~ SysError.lastMsg);
                 }
             }
@@ -285,7 +345,7 @@ final class SharedLib {
         else version (Posix) {
             void* handle;
 
-            void load_(LoadMode mode) {
+            void load_(LoadMode mode, bool throwExceptions) {
                 int mode_;
                 if (mode & LoadMode.Now) mode_ |= RTLD_NOW;
                 if (mode & LoadMode.Lazy) mode_ |= RTLD_LAZY;
@@ -293,13 +353,13 @@ final class SharedLib {
                 if (mode & LoadMode.Local) mode_ |= RTLD_LOCAL;
 
                 handle = dlopen((this.path_ ~ \0).ptr, mode_);
-                if (handle is null && SharedLib.throwExceptions) {
+                if (handle is null && throwExceptions) {
                     throw new SharedLibException("Couldn't load shared library: " ~ fromStringz(dlerror()));
                 }
             }
 
-            void* getSymbol_(char* name) {
-                if (SharedLib.throwExceptions) {
+            void* getSymbol_(char* name, bool throwExceptions) {
+                if (throwExceptions) {
                     synchronized (typeof(this).classinfo) { // dlerror need not be reentrant
                         auto err = dlerror();               // clear previous error condition
                         auto res = dlsym(handle, name);     // result of null does NOT indicate error
@@ -316,8 +376,8 @@ final class SharedLib {
                 }
             }
 
-            void unload_() {
-                if (0 != dlclose(handle) && SharedLib.throwExceptions) {
+            void unload_(bool throwExceptions) {
+                if (0 != dlclose(handle) && throwExceptions) {
                     throw new SharedLibException("Couldn't unload shared library: " ~ fromStringz(dlerror()));
                 }
             }
@@ -351,10 +411,6 @@ final class SharedLib {
     static this() {
         mutex = new Object;
     }
-
-
-    /// Set this to false if you don't want SharedLib to throw exceptions in symbol(),  load() and unload()
-    static bool throwExceptions = true;
 }
 
 
