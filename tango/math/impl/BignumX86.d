@@ -123,10 +123,10 @@ asm {
         setc AL; // save carry
         add ECX, 8;
         ja L_unrolled;
-        jz done;
 L2:     // Do the residual 1..7 ints.
    
         sub ECX, 8; 
+        jz done;
 L_residual: 
         shr AL, 1; // get carry from EAX
     }
@@ -150,9 +150,9 @@ done:
 
 unittest
 {
-    uint [] a = new uint[20];
-    uint [] b = new uint[20];
-    uint [] c = new uint[20];
+    uint [] a = new uint[40];
+    uint [] b = new uint[40];
+    uint [] c = new uint[40];
     for (int i=0; i<a.length; ++i)
     {
         if (i&1) a[i]=0x8000_0000 + i;
@@ -177,6 +177,17 @@ unittest
     carry = multibyteAddSub!('-')(a[0..12], a[0..12], b[0..12], 0);
     assert(a[11]==0);
     for (int i=0; i<10; ++i) if (i!=5) assert(a[i]==0); 
+    
+    for (int q=3; q<36;++q) {
+        for (int i=0; i<a.length; ++i)
+        {
+            a[i]=b[i]=c[i]=0;
+        }    
+        a[q-2]=0x040000;
+        b[q-2]=0x040000;
+       carry = multibyteAddSub!('-')(a[0..q], a[0..q], b[0..q], 0);
+       assert(a[q-2]==0);
+    }
 }
 
 /** dest[] += carry, or dest[] -= carry.
