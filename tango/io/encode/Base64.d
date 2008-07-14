@@ -192,6 +192,40 @@ body
 
 /*******************************************************************************
 
+    decodes an ASCCI base64 string and returns it as ubyte[] data. Pre-allocates
+    the size of the array.
+
+    This decoder will ignore non-base64 characters. So:
+    SGVsbG8sIGhvd
+    yBhcmUgeW91IH
+    RvZGF5Pw==
+
+    Is valid.
+
+    Params:
+    data = what is to be decoded
+
+    Example:
+    ---
+    char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
+    Stdout(myDecodeString).newline; // Hello, how are you today?
+    ---
+
+*******************************************************************************/
+
+ubyte[] decode(char[] data)
+in
+{
+    assert(data);
+}
+body
+{
+    auto rtn = new ubyte[data.length];
+    return decode(data, rtn);
+}
+
+/*******************************************************************************
+
     decodes an ASCCI base64 string and returns it as ubyte[] data.
 
     This decoder will ignore non-base64 characters. So:
@@ -342,7 +376,11 @@ version (Test)
             ubyte[1024] decoded;
             ubyte[] result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decoded);
             if (result == cast(ubyte[])"Hello, how are you today?")
-                return Test.Status.Success;
+            {
+                result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
+                if (result == cast(ubyte[])"Hello, how are you today?")
+                    return Test.Status.Success;
+            }
             return Test.Status.Failure;
         }
         
