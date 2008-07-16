@@ -485,7 +485,16 @@ uint multibyteMulAdd(uint [] dest, uint[] src, uint multiplier, uint carry)
     // We also need the number of uops in the loop to be a multiple of 3.
     // The only available execution unit for this is p3 (memory write)
     
-    // The main loop is pipelined and unrolled by 2, so entry to the loop is also complicated.
+    // The main loop is pipelined and unrolled by 2, 
+    //   so entry to the loop is also complicated.
+    
+    // Register usage
+    // EDX:EAX = multiply
+    // EBX = counter
+    // ECX = carry1
+    // EBP = carry2
+    // EDI = dest
+    // ESI = src
     
     version(D_PIC) {
         enum { zero = 0 }
@@ -599,6 +608,156 @@ unittest {
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
+}
+
+/** 
+   Sets result = result[0..left.length] + left * right
+   
+   It is defined in this way to allow cache-efficient multiplication.
+   This function is equivalent to:
+    ----
+    for (int i = 0; i< right.length; ++i) {
+        dest[left.length + i] = multibyteMulAdd(dest[i..left.length+i],
+                left, right[i], 0);
+    }
+    ----
+ */
+void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
+{
+    // Register usage
+    // EDX:EAX = used in multiply
+    // EBX = index
+    // ECX = carry1
+    // EBP = carry2
+    // EDI = end of dest for this pass through the loop. Index for outer loop.
+    // ESI = end of left. never changes
+    // [ESP] = M = right[i] = multiplier for this pass through the loop.
+    // right.length is changed into dest.ptr+dest.length
+    version(D_PIC) {
+        enum { zero = 0 }
+    } else {
+        // use p2 (load unit) instead of the overworked p0 or p1 (ALU units)
+        // when initializing registers to zero.
+        static int zero = 0;
+        // use p3/p4 units 
+        static int storagenop; // write-only
+    }
+    
+    enum { LASTPARAM = 6*4 } // 4* pushes + local + return address.
+    asm {
+        naked;
+        
+        push ESI;
+        push EDI;
+        push EBX;
+        push EBP;
+        push EAX;    // local variable M
+        mov EDI, [ESP + LASTPARAM + 4*5]; // dest.ptr
+        mov EBX, [ESP + LASTPARAM + 4*2]; // left.length
+        align 16;
+        nop;
+        nop;
+        
+        mov ESI, [ESP + LASTPARAM + 4*3];  // left.ptr
+        lea EDI, [EDI + 4*EBX]; // EDI = end of dest for first pass
+        
+        mov EAX, [ESP + LASTPARAM + 4*0]; // right.length
+        lea EAX, [EDI + 4*EAX];
+        mov [ESP + LASTPARAM + 4*0], EAX; // last value for EDI       
+
+        lea ESI, [ESI + 4*EBX]; // ESI = end of left
+        mov EAX, [ESP + LASTPARAM + 4*1]; // right.ptr
+        mov EAX, [EAX];
+        mov [ESP], EAX; // M
+outer_loop:        
+        mov EBP, 0;
+        mov ECX, 0; // ECX = input carry.
+        neg EBX;                // count UP to zero.
+        mov EAX, [ESI+4*EBX];
+        test EBX, 1;
+        jnz L_enter_odd;
+        // Entry point for even length
+        add EBX, 1;
+        mov EBP, ECX; // carry
+        
+        mul int ptr [ESP]; // M
+        mov ECX, 0;
+ 
+        add EBP, EAX;
+        mov EAX, [ESI+4*EBX];
+        adc ECX, EDX;
+
+        mul int ptr [ESP]; // M
+        add [-4+EDI+4*EBX], EBP;
+        mov EBP, zero;
+    
+        adc ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jnl L_done;
+        // -- Inner loop
+L1:
+        mul int ptr [ESP]; // M
+        add [-8+EDI+4*EBX], ECX;
+        mov ECX, zero;
+ 
+        adc EBP, EAX;
+        mov EAX, [ESI+4*EBX];
+        
+        adc ECX, EDX;
+    }
+    version(D_PIC) {} else {
+     asm {
+        mov storagenop, EDX; // make #uops in loop a multiple of 3
+     }
+    }
+    asm {        
+        mul int ptr [ESP];  // M
+        add [-4+EDI+4*EBX], EBP;
+        mov EBP, zero;
+    
+        adc ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jl L1;
+        // -- End inner loop
+L_done:
+        add [-8+EDI+4*EBX], ECX;
+        adc EBP, 0;
+        mov [-4+EDI+4*EBX], EBP;
+        
+        add EDI, 4;
+        cmp EDI, [ESP + LASTPARAM + 4*0]; // is EDI = &dest[$]?
+        jz outer_done;
+        mov EAX, [ESP + LASTPARAM + 4*1]; // right.ptr
+        mov EAX, [EAX+4];                 // get new M
+        mov [ESP], EAX;                   // save new M
+        add int ptr [ESP + LASTPARAM + 4*1], 4; // right.ptr
+        mov EBX, [ESP + LASTPARAM + 4*2]; // left.length
+        jmp outer_loop;
+outer_done:        
+        pop EAX;
+        pop EBP;
+        pop EBX;
+        pop EDI;
+        pop ESI;
+        ret 6*4;
+        
+L_enter_odd:
+        mul int ptr [ESP]; // M
+        mov EBP, zero;   
+        add ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jl L1;
+        jmp L_done;
+     }
 }
 
 /**  dest[] /= divisor.
