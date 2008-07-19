@@ -187,7 +187,7 @@ struct Kiss
 
         double toReal ()
         {
-                return (toInt() * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
+                return ((cast(int) toInt) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
 
         /**********************************************************************
@@ -199,8 +199,8 @@ struct Kiss
 
         double toRealEx ()
         {
-                return (toInt() * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
-                       (toInt() & 0x000FFFFF) * M_RAN_INVM52);
+                return ((cast(int) toInt) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
+                       ((cast(int) toInt) & 0x000FFFFF) * M_RAN_INVM52);
         }
 }
 
