@@ -415,7 +415,7 @@ class HttpClient
             // not closed between calls
             if (socket is null)
                 {
-                socket = new SocketConduit;
+                socket = createSocket;
                 socket.setTimeout (timeout);
                 socket.connect (address);
                 }
@@ -559,39 +559,6 @@ class HttpClient
             // return the input buffer
             return input;
         }
-        /***********************************************************************
-        
-                Make a request for the resource specified via the constructor
-                using the specified timeout period (in micro-seconds), and a
-                user-defined callback for pumping additional data to the host.
-                The callback would be used when uploading data during a 'put'
-                operation (or equivalent). The return value represents the 
-                input buffer, from which all returned headers and content may 
-                be accessed.
-
-                Note that certain request-headers may generated automatically
-                if they are not present. These include a Host header and, in
-                the case of Post, both ContentType & ContentLength for a query
-                type of request. The latter two are *not* produced for Post
-                requests with 'pump' specified ~ when using 'pump' to output
-                additional content, you must explicitly set your own headers.
-
-                Note also that IOException instances may be thrown. These 
-                should be caught by the client to ensure a close() operation
-                is always performed
-                
-        ***********************************************************************/
-
-        private IBuffer open (RequestMethod method, Pump pump, IBuffer input)
-        {
-                try {
-                    this.method = method;
-                    openStart(pump, input);
-                    // user has additional data to send?
-   
-                    return openFinish(pump);
-                    } finally {redirections = 0;}
-        }
 
         /***********************************************************************
         
@@ -674,6 +641,51 @@ class HttpClient
         bool canRepost (uint status)
         {
                 return false;
+        }
+
+        /***********************************************************************
+        
+                Overridable socket factory, for use with HTTPS and so on
+
+        ***********************************************************************/
+
+        protected SocketConduit createSocket ()
+        {
+                return new SocketConduit;
+        }
+
+        /***********************************************************************
+        
+                Make a request for the resource specified via the constructor
+                using the specified timeout period (in micro-seconds), and a
+                user-defined callback for pumping additional data to the host.
+                The callback would be used when uploading data during a 'put'
+                operation (or equivalent). The return value represents the 
+                input buffer, from which all returned headers and content may 
+                be accessed.
+
+                Note that certain request-headers may generated automatically
+                if they are not present. These include a Host header and, in
+                the case of Post, both ContentType & ContentLength for a query
+                type of request. The latter two are *not* produced for Post
+                requests with 'pump' specified ~ when using 'pump' to output
+                additional content, you must explicitly set your own headers.
+
+                Note also that IOException instances may be thrown. These 
+                should be caught by the client to ensure a close() operation
+                is always performed
+                
+        ***********************************************************************/
+
+        private IBuffer open (RequestMethod method, Pump pump, IBuffer input)
+        {
+                try {
+                    this.method = method;
+                    openStart(pump, input);
+                    // user has additional data to send?
+   
+                    return openFinish(pump);
+                    } finally {redirections = 0;}
         }
 }
 
