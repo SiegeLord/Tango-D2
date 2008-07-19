@@ -228,6 +228,7 @@ debug (UnitTest)
         assert (normalize ("../../foo/bar") == "../../foo/bar");
         assert (normalize ("../../../foo/bar") == "../../../foo/bar");
         assert (normalize ("d/") == "d/");
+        assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
 
 version (Windows) {
         assert (normalize ("\\foo\\..\\john") == "/john");
