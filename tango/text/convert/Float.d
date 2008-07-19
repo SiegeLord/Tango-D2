@@ -392,8 +392,8 @@ NumType parse(T) (T[] src, uint* ate=null)
 T[] truncate(T) (T[] s)
 {
         auto tmp = s;
-        auto i = tmp.length;
-        foreach (idx, c; tmp)
+        int i = tmp.length;
+        foreach (int idx, T c; tmp)
                  if (c is '.')
                      while (--i >= idx)
                             if (tmp[i] != '0')
@@ -510,6 +510,7 @@ debug (Float)
                 Cout (format(tmp, -0.03333333, 6, 2)).newline;
                 Cout.newline;
 
+                Cout (truncate(format(tmp, 1.0, 6))).newline;
                 Cout (truncate(format(tmp, 30, 6))).newline;
                 Cout (truncate(format(tmp, 3.14159, 6, 0))).newline;
                 Cout (truncate(format(tmp, 3e100, 6, 3))).newline;
