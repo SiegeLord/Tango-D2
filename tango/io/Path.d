@@ -1145,15 +1145,13 @@ struct PathParser
                                          suffix_ = i;
                                  break;
 
-                            version (Win32)
-                            {
-                            case '\\':
-                                 fp[i] = '/';
-                            }
                             case FileConst.PathSeparatorChar:
                                  if (name_ < 0)
                                      name_ = i + 1;
                                  break;
+
+                            case '\\':
+                                 throw new IOException ("unexpected '\\' character in path: "~path);
 
                             version (Win32)
                             {
