@@ -28,6 +28,8 @@ module tango.text.convert.Layout;
 
 private import  tango.core.Exception;
 
+private import  tango.io.model.IConduit : OutputStream;
+
 private import  Utf = tango.text.convert.Utf;
 
 private import  Float  = tango.text.convert.Float,
@@ -143,6 +145,15 @@ class Layout(T)
         public final uint convert (Sink sink, T[] formatStr, ...)
         {
                 return convert (sink, _arguments, _argptr, formatStr);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        public final uint convert (OutputStream output, T[] formatStr, ...)
+        {
+                return convert (cast(Sink) &output.write, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -899,6 +910,8 @@ debug (Layout)
         void main ()
         {
                 auto layout = new Layout!(char);
+
+                layout.convert (Cout.stream, "hi {}", "there\n");
 
                 Cout (layout.sprint (new char[1], "hi")).newline;
                 Cout (layout.sprint (new char[10], "{.4}", "hello")).newline;
