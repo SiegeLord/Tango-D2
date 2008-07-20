@@ -40,6 +40,7 @@ import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
 
 import Path = tango.io.Path;
+import PathUtil = tango.util.PathUtil;
 import Integer = tango.text.convert.Integer;
 
 debug(Zip) import tango.io.Stdout : Stderr;
@@ -1330,9 +1331,13 @@ private:
     void put_local_header(LocalFileHeaderData data,
             char[] file_name)
     {
+        auto f_name = PathUtil.normalize(file_name);
+        auto p = Path.parse(f_name);
+
         // Compute Zip version
         if( data.extract_version == data.extract_version.max )
         {
+
             ushort zipver = 10;
             void minver(ushort v) { zipver = v>zipver ? v : zipver; }
 
@@ -1347,8 +1352,7 @@ private:
                 }
 
                 // File is a folder
-                if( file_name.length > 0 && file_name[$-1] == '/'
-                        || file_name[$-1] == '\\' )
+                if( f_name.length > 0 && f_name[$-1] == '/' )
                     // Is a directory, not a real file
                     minver(20);
             }
@@ -1368,7 +1372,9 @@ private:
 
         LocalFileHeader header;
         header.data = data;
-        header.file_name = file_name;
+        if (p.isAbsolute)
+            f_name = f_name[p.root.length+1..$]; 
+        header.file_name = Path.native(f_name);
 
         // Write out the header and the filename
         auto header_pos = seeker.seek(0, IConduit.Seek.Anchor.Current);
@@ -1380,7 +1386,7 @@ private:
         assert( header_pos <= int.max );
         Entry entry;
         entry.data.fromLocal(header.data);
-        entry.filename = file_name;
+        entry.filename = header.file_name;
         entry.header_position = header_pos;
         entry.data.relative_offset_of_local_header = cast(int) header_pos;
         entries ~= entry;
@@ -1778,9 +1784,11 @@ void extractArchive(char[] archive, char[] dest)
     foreach( entry ; zr )
     {
         // Skip directories
-        if( entry.info.name[$-1] == '/' ) continue;
+        if( entry.info.name[$-1] == '/' ||
+            entry.info.name[$-1] == '\\') continue;
 
         auto path = Path.join(dest, entry.info.name);
+        path = Path.native(path);
         scope fout = new FileConduit(path, FileConduit.WriteCreate);
         fout.output.copy(entry.open);
     }
