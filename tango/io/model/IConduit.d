@@ -13,8 +13,6 @@
 
 module tango.io.model.IConduit;
 
-public import tango.io.model.IBuffer;
-
 /*******************************************************************************
 
         Conduits provide virtualized access to external content, and 
