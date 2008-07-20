@@ -639,7 +639,7 @@ struct Time
                 $(I Property.) Retrieves the date component.
 
                 Returns: A new Time instance with the same date as 
-                         this instance, but with the time trucated.
+                         this instance, but with the time truncated.
 
         **********************************************************************/
 
