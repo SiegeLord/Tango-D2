@@ -14,7 +14,7 @@
         numbers.
 
         Layout can be customized via configuring various handlers and
-        associated meta-date. This is utilized to plug in text.locale
+        associated meta-data. This is utilized to plug in text.locale
         for handling custom formats, date/time and culture-specific
         conversions.
 
@@ -28,12 +28,12 @@ module tango.text.convert.Layout;
 
 private import  tango.core.Exception;
 
-private import  tango.io.model.IConduit : OutputStream;
-
 private import  Utf = tango.text.convert.Utf;
 
 private import  Float  = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
+
+private import  tango.io.model.IConduit : OutputStream;
 
 /*******************************************************************************
 
