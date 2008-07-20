@@ -16,6 +16,8 @@ module tango.util.PathUtil;
 
 private import  tango.core.Exception;
 
+private extern (C) void memmove (void* dst, void* src, uint bytes);
+
 /*******************************************************************************
 
     Normalizes a path component as specified in section 5.2 of RFC 2396.
@@ -33,6 +35,10 @@ private import  tango.core.Exception;
     considered valid if it can be joined with a path such that it can
     be fully normalized.
 
+    The input path is copied into either the provided buffer, or a heap
+    allocated array if no buffer was provided. Normalization modifies
+    this copy before returning the relevant slice.
+
     Throws: IllegalArgumentException if the root separator is followed by ..
 
     Examples:
@@ -42,9 +48,9 @@ private import  tango.core.Exception;
 
 *******************************************************************************/
 
-char[] normalize(char[] path)
+char[] normalize(char[] path, char[] buf = null)
 {
-
+    uint end;
 version (Windows) {
     /*
        Internal helper to patch slashes
@@ -59,13 +65,22 @@ version (Windows) {
         return path;
     }
 }
+    /*
+       Internal helper to truncate the path, avoids heap usage.
+    */
+    void truncate(char[] path, char[] slice1, char[] slice2) {
+        memmove(path.ptr, slice1.ptr, slice1.length);
+        memmove(path.ptr + slice1.length, slice2.ptr, slice2.length);
+        assert (end > slice1.length+slice2.length);
+        end = slice1.length+slice2.length;
+    }
 
     /*
        Internal helper that finds a slash followed by a dot
     */
     int findSlashDot(char[] path, int start) {
-        assert(start < path.length);
-        foreach(i, c; path[start..$-1]) 
+        assert(start < end);
+        foreach(i, c; path[start..end-1]) 
             if (c == '/') 
                 if (path[start+i+1] == '.') 
                     return i + start + 1;
@@ -77,7 +92,7 @@ version (Windows) {
        Internal helper that finds a slash starting at the back
     */
     int findSlash(char[] path, int start) {
-        assert(start < path.length);
+        assert(start < end);
 
         if (start < 0)
             return -1;
@@ -93,22 +108,23 @@ version (Windows) {
     /*
         Internal helper that recursively shortens all segments with dots.
     */
-    char[] removeDots(char[] path, int start) {
-        assert (start < path.length);
+    void removeDots(char[] path, int start) {
+        assert (start < end);
         assert (path[start] == '.');
-        if (start + 1 == path.length) {
+        if (start + 1 == end) {
             // path ends with /., remove
-            return path[0..start - 1];
+            end = start - 1;
+            return;
         }
         else if (path[start+1] == '/') {
             // remove all subsequent './'
             do {
-                path = path[0..start] ~ path[start+2..$];
-            } while (start + 2 < path.length && path[start..start+2] == "./");
+                truncate(path, path[0..start], path[start+2..end]);
+            } while (start + 2 < end && path[start..start+2] == "./");
             int idx = findSlashDot(path, start - 1);
             if (idx < 0) {
                 // no more /., return path
-                return path;
+                return;
             }
             return removeDots(path, idx);
         }
@@ -126,14 +142,16 @@ else {
             }
 }
             int idx = findSlash(path, start - 2);
-            if (start + 2 == path.length) {
+            if (start + 2 == end) {
                 // path ends with /..
                 if (idx < 0) {
                     // no more slashes in front of /.., resolves to empty path
-                    return "";
+                    end = 0;
+                    return;
                 }
                 // remove /.. and preceding segment and return
-                return path[0..idx];
+                end = idx;
+                return;
             }
             else if (path[start+2] == '/') {
                 // found /../ sequence
@@ -144,31 +162,31 @@ else {
                     idx = findSlashDot(path, start+4);
                     if (idx < 0) {
                         // no more /., path fully shortened
-                        return path;
+                        return;
                     }
                     return removeDots(path, idx);
                 }
-                path = path[0..idx < 0 ? 0 : idx + 1] ~ path[start+3..$];
+                truncate(path, path[0..idx < 0 ? 0 : idx + 1], path[start+3..end]);
                 idx = findSlashDot(path, idx < 0 ? 0 : idx);
                 if (idx < 0) {
                     // no more /., path fully shortened
-                    return path;
+                    return;
                 }
                 // examine next /.
                 return removeDots(path, idx);
             }
         }
         else {
-            if (findSlash(path, path.length - 1) < start)
+            if (findSlash(path, end - 1) < start)
                 // segment is filename that starts with ., and at the end
-                return path;
+                return;
             else {
                 // not at end
                 int idx = findSlashDot(path, start);
                 if (idx > -1) 
                     return removeDots(path, idx);
                 else
-                    return path;
+                    return;
             }
         }
         assert(false, "PathUtil :: invalid code path");
@@ -177,22 +195,30 @@ else {
     if (path.length == 0)
         return path;
 
-    char[] normpath = path.dup;
+    char[] normpath;
+    if (buf is null) {
+        normpath = path.dup;
+    }
+    else {
+        normpath = buf; 
+        normpath[0..path.length] = path;
+    }
+
 version (Windows) {
     normpath = normalizeSlashes(normpath);
 }
+    end = normpath.length;
 
     // if path starts with ./, remove all subsequent instances
-    while (normpath.length > 1 && normpath[0] == '.' &&
-        normpath[1] == '/') {
-        normpath = normpath[2..$];
+    while (end > 1 && normpath[0] == '.' && normpath[1] == '/') {
+        truncate(normpath, normpath[0..0], normpath[2..end]);
     }
     int idx = findSlashDot(normpath, 0);
     if (idx > -1) {
-        normpath = removeDots(normpath, idx);
+        removeDots(normpath, idx);
     }
 
-    return normpath;
+    return normpath[0..end];
 }
 
 
@@ -202,20 +228,13 @@ debug (UnitTest)
     unittest
     {
         assert (normalize ("") == "");
-        assert (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess",
-                normalize ("/home/../john/../.tango/.htaccess"));
-        assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf",
-                normalize ("/home/../john/../.tango/foo.conf"));
-        assert (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf",
-                normalize ("/home/john/.tango/foo.conf"));
-        assert (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess", 
-                normalize ("/foo/bar/.htaccess"));
-        assert (normalize ("foo/bar/././.") == "foo/bar", 
-                normalize ("foo/bar/././."));
-        assert (normalize ("././foo/././././bar") == "foo/bar", 
-                normalize ("././foo/././././bar"));
-        assert (normalize ("/foo/../john") == "/john", 
-                normalize("/foo/../john"));
+        assert (normalize ("/home/../john/../.tango/.htaccess") == "/.tango/.htaccess");
+        assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf");
+        assert (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf");
+        assert (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess");
+        assert (normalize ("foo/bar/././.") == "foo/bar");
+        assert (normalize ("././foo/././././bar") == "foo/bar");
+        assert (normalize ("/foo/../john") == "/john");
         assert (normalize ("foo/../john") == "john");
         assert (normalize ("foo/bar/..") == "foo");
         assert (normalize ("foo/bar/../john") == "foo/john");
