@@ -62,7 +62,6 @@ SIMPLE_EXAMPLES =\
 	text/formatindex	\
 	text/formatspec		\
 	text/localetime		\
-	text/properties		\
 	text/token
 
 REFERENCE_EXAMPLES =		\
