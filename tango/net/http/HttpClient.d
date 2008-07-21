@@ -93,6 +93,7 @@ class HttpClient
         private IBuffer                 tmp,
                                         input,
                                         output;
+        private LineIterator!(char)     line;
         private SocketConduit           socket;
         private RequestMethod           method;
         private InternetAddress         address;
@@ -303,6 +304,7 @@ class HttpClient
                 headersIn.reset;
                 headersOut.reset;
                 paramsOut.reset;
+                redirections = 0;
         }
 
         /***********************************************************************
@@ -499,7 +501,10 @@ class HttpClient
             output.flush;
 
             // Token for initial parsing of input header lines
-            auto line = new LineIterator!(char) (input);
+            if (line is null)
+                line = new LineIterator!(char) (input);
+            else
+                line.set(input);
 
             // skip any blank lines
             while (line.next && line.get.length is 0) 
