@@ -149,6 +149,11 @@ class Layout(T)
 
         /**********************************************************************
 
+            Tentative convert using an OutputStream as sink - may still be
+            removed.
+
+            Since: 0.99.7
+
         **********************************************************************/
 
         public final uint convert (OutputStream output, T[] formatStr, ...)
