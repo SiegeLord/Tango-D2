@@ -169,7 +169,7 @@ struct FileSystem
                                 if (len)
                                    {
                                    dir[len-1] = '/';                                   
-                                   path = dir;
+                                   path = standard (dir);
                                    }
                                 else
                                    exception ("Failed to get current directory");
