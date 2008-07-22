@@ -14,7 +14,8 @@ module tango.sys.Environment;
 
 private import  tango.sys.Common;
 
-private import  tango.io.FilePath,
+private import  tango.io.Path,
+                tango.io.FilePath,
                 tango.io.FileSystem;
 
 private import  tango.core.Exception;
@@ -90,8 +91,8 @@ struct Environment
                          if (bin.path(FileSystem.getDirectory).exists)
                              return bin;
 
-                // rifle through the path
-                foreach (pe; Text.patterns (get("PATH"), FileConst.SystemPathString))
+                // rifle through the path (after converting to standard format)
+                foreach (pe; Text.patterns (standard(get("PATH")), FileConst.SystemPathString))
                          if (bin.path(pe).exists)
                              version (Windows)
                                       return bin;
