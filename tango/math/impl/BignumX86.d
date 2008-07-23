@@ -75,7 +75,7 @@ unittest
 assert(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
 }
 
-package:
+public:
 /** Multi-byte addition or subtraction
  *    dest[] = src1[] + src2[] + carry (0 or 1).
  * or dest[] = src1[] - src2[] - carry (0 or 1).
@@ -220,10 +220,12 @@ L2:     dec EAX;
     }
 }
 
+enum LogicOp : byte { AND, OR, XOR };
+
 /** Dest[] = src1[] op src2[]
-*   where op == '&' or '|' or '^'
+*   where op == AND,OR, or XOR
 */
-uint multibyteLogical(char op)(uint [] dest, uint [] src1, uint [] src2)
+uint multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
 {
     // PM: 2 cycles/operation. Limited by execution unit p2.
     // (AMD64 could reach 1.5 cycles/operation since it has TWO read ports.
@@ -244,9 +246,9 @@ uint multibyteLogical(char op)(uint [] dest, uint [] src1, uint [] src2)
 L1:
         mov EAX, [EDX+ECX*4];
     }
-    static if (op=='&') asm {        and EAX, [ESI+ECX*4]; }
-    else   if (op=='|') asm {        or  EAX, [ESI+ECX*4]; }
-    else   if (op=='^') asm {        xor EAX, [ESI+ECX*4]; }
+    static if (op == LogicOp.AND) asm {        and EAX, [ESI+ECX*4]; }
+    else   if (op == LogicOp.OR) asm {        or  EAX, [ESI+ECX*4]; }
+    else   if (op == LogicOp.XOR) asm {        xor EAX, [ESI+ECX*4]; }
     asm {
         mov [EDI + ECX *4], EAX;
         add ECX, 1;
@@ -266,17 +268,19 @@ unittest
         
         switch(qqq) {
         case 0:
-            multibyteLogical!('&')(aa[1..3], aa[1..3], bb[0..4]);
+            multibyteLogical!(LogicOp.AND)(aa[1..3], aa[1..3], bb[0..4]);
             assert(aa[1]==0x0202_0203 && aa[2]==0x4050_5050 && aa[3]== 0x8999_999A);
             break;
         case 1:
-            multibyteLogical!('|')(aa[1..2], aa[1..2], bb[0..3]);
+            multibyteLogical!(LogicOp.OR)(aa[1..2], aa[1..2], bb[0..3]);
             assert(aa[1]==0x1F2F_2F2F && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
             break;
         case 2:
-            multibyteLogical!('^')(aa[1..2], aa[1..2], bb[0..3]);
+            multibyteLogical!(LogicOp.XOR)(aa[1..2], aa[1..2], bb[0..3]);
             assert(aa[1]==0x1D2D_2D2C && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
             break;
+        default:
+            assert(0);
         }
         
         assert(aa[0]==0xF0FF_FFFF);

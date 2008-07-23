@@ -4,7 +4,6 @@
 
 module tango.math.impl.BiguintCore;
 
-
 version(D_InlineAsm_X86) { 
 import tango.math.impl.BignumX86;
 }
@@ -186,8 +185,8 @@ body {
 uint addSimple(uint [] result, uint [] left, uint [] right)
 in {
     assert(result.length==left.length+1 || result.length==left.length);
-//    assert(result.length >= left.length && result.length >= right.length);
     assert(left.length >= right.length);
+    assert(right.length>0);
 }
 body {
     uint carry = multibyteAddSub!('+')(result[0..right.length],
@@ -195,7 +194,7 @@ body {
     if (right.length < left.length) {
         result[right.length..left.length] = left[right.length .. $];            
         carry = multibyteIncrement!('+')(result[right.length..$], carry);
-    }else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
+    } else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
     return carry;
 }
 
@@ -243,7 +242,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
         return mulSimple(result, x, y);
     }
     uint half = (x.length >> 1) + (x.length & 1);
-    assert(y.length>=half, "asymmetric Karatsuba");
+    assert(y.length>half, "asymmetric Karatsuba");
     
     // Karatsuba multiply uses the following result:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 + N * mid
@@ -273,7 +272,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     } else  {
         assert(!(carry_y && !carry_x));
         mulKaratsuba(mid, xsum, ysum, newscratchbuff);    
-       }
+    }
     // MID = resultlo*resulthi - LO - HI.
     // low half of result gets x0 * y0. High half gets x1 * y1
    
@@ -346,10 +345,14 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
         uint chunksize =  y.length + (x.length % y.length);
         // We make the buffer a bit bigger so we have space for the partial sums.
         uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(chunksize) + y.length * 2];
-        uint [] partial = scratchbuff[$-y.length*2 .. $];
-        mulKaratsuba(result[0 .. y.length + chunksize], x[0 .. chunksize], y, scratchbuff);        
+        if (y.length == half) {
+            chunksize = x.length - y.length;
+            mulKaratsuba(result[0 .. y.length + chunksize], y, x[0 .. chunksize], scratchbuff);
+        } else {
+            mulKaratsuba(result[0 .. y.length + chunksize], x[0 .. chunksize], y, scratchbuff);
+        }
         uint done = chunksize;
-        
+        uint [] partial = scratchbuff[$-y.length*2 .. $];
         while (done < x.length) {
             chunksize = (done + y.length <= x.length) ? y.length :  x.length - done;
             mulKaratsuba(partial[0 .. y.length + chunksize], x[done .. done+chunksize], y, scratchbuff);
