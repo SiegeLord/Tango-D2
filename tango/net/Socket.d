@@ -1668,7 +1668,7 @@ unittest
 
 *******************************************************************************/
 
-class IPv4Address: Address
+class IPv4Address : Address
 {
         protected:
         char[8] _port;
@@ -1850,7 +1850,8 @@ class IPv4Address: Address
         {
                 char[64] tmp;
 
-                return ntohl(inet_addr(convert2C (addr, tmp)));
+                synchronized (IPv4Address.classinfo)
+                              return ntohl(inet_addr(convert2C (addr, tmp)));
         }
 }
 
