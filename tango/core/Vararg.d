@@ -23,46 +23,38 @@ else
     alias void* va_list;
 
 
-    template va_start( T )
+    /**
+     * This function initializes the supplied argument pointer for subsequent
+     * use by va_arg and va_end.
+     *
+     * Params:
+     *  ap      = The argument pointer to initialize.
+     *  paramn  = The identifier of the rightmost parameter in the function
+     *            parameter list.
+     */
+    void va_start(T) ( out va_list ap, inout T parmn )
     {
-        /**
-         * This function initializes the supplied argument pointer for subsequent
-         * use by va_arg and va_end.
-         *
-         * Params:
-         *  ap      = The argument pointer to initialize.
-         *  paramn  = The identifier of the rightmost parameter in the function
-         *            parameter list.
-         */
-        void va_start( out va_list ap, inout T parmn )
-        {
-            ap = cast(va_list) ( cast(void*) &parmn + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
-        }
+        ap = cast(va_list) ( cast(void*) &parmn + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
     }
 
-
-    template va_arg( T )
+    /**
+     * This function returns the next argument in the sequence referenced by
+     * the supplied argument pointer.  The argument pointer will be adjusted
+     * to point to the next arggument in the sequence.
+     *
+     * Params:
+     *  ap  = The argument pointer.
+     *
+     * Returns:
+     *  The next argument in the sequence.  The result is undefined if ap
+     *  does not point to a valid argument.
+     */
+    T va_arg(T) ( inout va_list ap )
     {
-        /**
-         * This function returns the next argument in the sequence referenced by
-         * the supplied argument pointer.  The argument pointer will be adjusted
-         * to point to the next arggument in the sequence.
-         *
-         * Params:
-         *  ap  = The argument pointer.
-         *
-         * Returns:
-         *  The next argument in the sequence.  The result is undefined if ap
-         *  does not point to a valid argument.
-         */
-        T va_arg( inout va_list ap )
-        {
-            T arg = *cast(T*) ap;
-            ap = cast(va_list) ( cast(void*) ap + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
-            return arg;
-        }
+        T arg = *cast(T*) ap;
+        ap = cast(va_list) ( cast(void*) ap + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
+        return arg;
     }
-
 
     /**
      * This function cleans up any resources allocated by va_start.  It is
