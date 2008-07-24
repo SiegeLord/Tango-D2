@@ -2251,15 +2251,8 @@ void dosToTime(ushort dostime, ushort dosdate, out Time time)
     mon = (dosdate & 0b0000000_1111_00000) >> 5;
     year=((dosdate & 0b1111111_0000_00000) >> 9) + 1980;
 
-    // This code sucks.
-    scope cal = new Gregorian;
-    time = Time.epoch
-        + TimeSpan.days(cal.getDaysInYear(year, 0))
-        + TimeSpan.days(cal.getDaysInMonth(year, mon, 0))
-        + TimeSpan.days(day)
-        + TimeSpan.hours(hour)
-        + TimeSpan.minutes(min)
-        + TimeSpan.seconds(sec);
+    // This code rules!
+    time = Gregorian.generic.toTime(year, mon, day, hour, min, sec);
 }
 
 void timeToDos(Time time, out ushort dostime, out ushort dosdate)
@@ -2268,22 +2261,21 @@ void timeToDos(Time time, out ushort dostime, out ushort dosdate)
     if( time == Time.min )
         time = WallClock.now;
 
-    // *muttering angrily*
-    scope cal = new Gregorian;
-
-    if( cal.getYear(time) < 1980 )
+    // *muttering happily*
+    auto date = Gregorian.generic.toDate(time);
+    if( date.year < 1980 )
         ZipException.tooold;
 
-    auto span = time.span;
+    auto tod = time.time();
     dostime = cast(ushort) (
-        (span.seconds / 2)
-      | (span.minutes << 5)
-      | (span.hours   << 11));
+        (tod.seconds / 2)
+      | (tod.minutes << 5)
+      | (tod.hours   << 11));
 
     dosdate = cast(ushort) (
-        (cal.getDayOfMonth(time))
-      | (cal.getMonth(time) << 5)
-      |((cal.getYear(time) - 1980) << 9));
+        (date.day)
+      | (date.month << 5)
+      | ((date.year - 1980) << 9));
 }
 
 // ************************************************************************** //
