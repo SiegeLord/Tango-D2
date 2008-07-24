@@ -13031,6 +13031,7 @@ struct TOOLINFOA
     RECT rect;
     HINST hinst;
     LPSTR lpszText;
+    void* lpReserved; // ver >= 5.01
 }
 struct TOOLINFOW
 {
@@ -13041,6 +13042,7 @@ struct TOOLINFOW
     RECT rect;
     HINST hinst;
     LPWSTR lpszText;
+    void* lpReserved; // ver >= 5.01
 }
 version(Win32SansUnicode)
 {
