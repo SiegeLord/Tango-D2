@@ -178,7 +178,7 @@ class Document(T) : package PullParser!(T)
 
         ***********************************************************************/
         
-        private final Document collect ()
+        final Document reset ()
         {
                 root.lastChild_ = 
                 root.firstChild_ = null;
@@ -215,8 +215,8 @@ version(d)
         
         final void parse(T[] xml)
         {
-                collect;
-                reset (xml);
+                reset;
+                super.reset (xml);
                 auto cur = root;
                 uint defNamespace;
 
