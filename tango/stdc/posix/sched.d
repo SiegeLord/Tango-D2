@@ -8,6 +8,7 @@
  */
 module tango.stdc.posix.sched;
 
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.time;
 public import tango.stdc.posix.sys.types;
 

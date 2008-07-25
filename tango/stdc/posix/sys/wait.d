@@ -8,6 +8,7 @@
  */
 module tango.stdc.posix.sys.wait;
 
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for id_t, pid_t
 public import tango.stdc.posix.signal;    // for siginfo_t (XSI)
 //public import tango.stdc.posix.resource; // for rusage (XSI)

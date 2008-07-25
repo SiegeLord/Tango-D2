@@ -8,6 +8,7 @@
  */
 module tango.stdc.posix.sys.mman;
 
+private import tango.stdc.posix.config;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for off_t, mode_t
 

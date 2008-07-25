@@ -8,4 +8,5 @@
  */
 module tango.stdc.posix.inttypes;
 
+private import tango.stdc.posix.config;
 public import tango.stdc.inttypes;

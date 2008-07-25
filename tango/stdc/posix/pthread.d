@@ -8,6 +8,7 @@
  */
 module tango.stdc.posix.pthread;
 
+private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types;
 public import tango.stdc.posix.sched;
 public import tango.stdc.posix.time;
