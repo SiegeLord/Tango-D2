@@ -533,8 +533,12 @@ class Thread
      * Throws:
      *  ThreadException if the operation fails.
      *  Any exception not handled by the joined thread.
+     *
+     * Returns:
+     *  Any exception not handled by this thread if rethrow = false, null
+     *  otherwise.
      */
-    final void join( bool rethrow = true )
+    final Object join( bool rethrow = true )
     {
         version( Win32 )
         {
@@ -557,10 +561,13 @@ class Thread
             //       on object destruction.
             volatile m_addr = m_addr.init;
         }
-        if( rethrow && m_unhandled )
+        if( m_unhandled )
         {
-            throw m_unhandled;
+            if( rethrow )
+                throw m_unhandled;
+            return m_unhandled;
         }
+        return null;
     }
 
 
@@ -2612,8 +2619,12 @@ class Fiber
      *
      * Throws:
      *  Any exception not handled by the joined thread.
+     *
+     * Returns:
+     *  Any exception not handled by this fiber if rethrow = false, null
+     *  otherwise.
      */
-    final void call( bool rethrow = true )
+    final Object call( bool rethrow = true )
     in
     {
         assert( m_state == State.HOLD );
@@ -2648,10 +2659,10 @@ class Fiber
             Object obj  = m_unhandled;
             m_unhandled = null;
             if( rethrow )
-            {
                 throw obj;
-            }
+            return obj;
         }
+        return null;
     }
 
 
