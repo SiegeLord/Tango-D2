@@ -76,11 +76,11 @@ version( linux )
 {
     static if( __USE_LARGEFILE64 )
     {
-        private alias _pad_t uint;
+        private alias uint _pad_t;
     }
     else
     {
-        private alias _pad_t ushort;
+        private alias ushort _pad_t;
     }
 
     struct stat_t
