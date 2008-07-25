@@ -2112,7 +2112,7 @@ class ThreadGroup
         Thread t = new Thread( fn );
 
         t.start();
-        synchronized
+        synchronized( this )
         {
             m_all[t] = t;
         }
@@ -2135,7 +2135,7 @@ class ThreadGroup
         Thread t = new Thread( dg );
 
         t.start();
-        synchronized
+        synchronized( this )
         {
             m_all[t] = t;
         }
@@ -2159,7 +2159,7 @@ class ThreadGroup
     }
     body
     {
-        synchronized
+        synchronized( this )
         {
             m_all[t] = t;
         }
@@ -2183,7 +2183,7 @@ class ThreadGroup
     }
     body
     {
-        synchronized
+        synchronized( this )
         {
             m_all.remove( t );
         }
@@ -2195,7 +2195,7 @@ class ThreadGroup
      */
     final int opApply( int delegate( inout Thread ) dg )
     {
-        synchronized
+        synchronized( this )
         {
             int ret = 0;
 
@@ -2225,7 +2225,7 @@ class ThreadGroup
      */
     final void joinAll( bool rethrow = true )
     {
-        synchronized
+        synchronized( this )
         {
             // NOTE: This loop relies on the knowledge that m_all uses the
             //       Thread object for both the key and the mapped value.
