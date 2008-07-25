@@ -117,65 +117,66 @@ else
 }
 
 
+
+version( SPARC ) enum: int
+{
+    SO_DEBUG =       0x0001,
+    SO_BROADCAST =   0x0020,
+    SO_REUSEADDR =   0x0004,
+    SO_LINGER =      0x0080,
+    SO_DONTLINGER =  ~SO_LINGER,
+    SO_OOBINLINE =   0x0100,
+    SO_SNDBUF =      0x1001,
+    SO_RCVBUF =      0x1002,
+    SO_ACCEPTCONN =  0x8000,
+    SO_DONTROUTE =   0x0010,
+    SO_TYPE =        0x1008,
+}
+else version( SPARC64 ) enum: int
+{
+    SO_DEBUG =       0x0001,
+    SO_BROADCAST =   0x0020,
+    SO_REUSEADDR =   0x0004,
+    SO_LINGER =      0x0080,
+    SO_DONTLINGER =  ~SO_LINGER,
+    SO_OOBINLINE =   0x0100,
+    SO_SNDBUF =      0x1001,
+    SO_RCVBUF =      0x1002,
+    SO_ACCEPTCONN =  0x8000,
+    SO_DONTROUTE =   0x0010,
+    SO_TYPE =        0x1008,
+}
+else version( MIPS ) enum: int
+{
+    SO_DEBUG =       0x0001,
+    SO_BROADCAST =   0x0020,
+    SO_REUSEADDR =   0x0004,
+    SO_LINGER =      0x0080,
+    SO_DONTLINGER =  ~SO_LINGER,
+    SO_OOBINLINE =   0x0100,
+    SO_SNDBUF =      0x1001,
+    SO_RCVBUF =      0x1002,
+    SO_ACCEPTCONN =  0x1009,
+    SO_DONTROUTE =   0x0010,
+    SO_TYPE =        0x1008,
+}
+else enum: int //x86, X86_64, PPC, PPC64, ARM...
+{
+    SO_DEBUG =       1,
+    SO_BROADCAST =   6,
+    SO_REUSEADDR =   2,
+    SO_LINGER =      13,
+    SO_DONTLINGER =  ~SO_LINGER,
+    SO_OOBINLINE =   10,
+    SO_SNDBUF =      7,
+    SO_RCVBUF =      8,
+    SO_ACCEPTCONN =  30,
+    SO_DONTROUTE =   5,
+    SO_TYPE =        3,
+}
+
 enum: int
 {
-    version( SPARC )
-    {
-        SO_DEBUG =       0x0001,
-        SO_BROADCAST =   0x0020,
-        SO_REUSEADDR =   0x0004,
-        SO_LINGER =      0x0080,
-        SO_DONTLINGER =  ~SO_LINGER,
-        SO_OOBINLINE =   0x0100,
-        SO_SNDBUF =      0x1001,
-        SO_RCVBUF =      0x1002,
-        SO_ACCEPTCONN =  0x8000,
-        SO_DONTROUTE =   0x0010,
-        SO_TYPE =        0x1008,
-    }
-    else version( SPARC64 )
-    {
-        SO_DEBUG =       0x0001,
-        SO_BROADCAST =   0x0020,
-        SO_REUSEADDR =   0x0004,
-        SO_LINGER =      0x0080,
-        SO_DONTLINGER =  ~SO_LINGER,
-        SO_OOBINLINE =   0x0100,
-        SO_SNDBUF =      0x1001,
-        SO_RCVBUF =      0x1002,
-        SO_ACCEPTCONN =  0x8000,
-        SO_DONTROUTE =   0x0010,
-        SO_TYPE =        0x1008,
-    }
-    else version( MIPS )
-    {
-        SO_DEBUG =       0x0001,
-        SO_BROADCAST =   0x0020,
-        SO_REUSEADDR =   0x0004,
-        SO_LINGER =      0x0080,
-        SO_DONTLINGER =  ~SO_LINGER,
-        SO_OOBINLINE =   0x0100,
-        SO_SNDBUF =      0x1001,
-        SO_RCVBUF =      0x1002,
-        SO_ACCEPTCONN =  0x1009,
-        SO_DONTROUTE =   0x0010,
-        SO_TYPE =        0x1008,
-    }
-    else //x86, X86_64, PPC, PPC64, ARM...
-    {
-        SO_DEBUG =       1,
-        SO_BROADCAST =   6,
-        SO_REUSEADDR =   2,
-        SO_LINGER =      13,
-        SO_DONTLINGER =  ~SO_LINGER,
-        SO_OOBINLINE =   10,
-        SO_SNDBUF =      7,
-        SO_RCVBUF =      8,
-        SO_ACCEPTCONN =  30,
-        SO_DONTROUTE =   5,
-        SO_TYPE =        3,
-    }
-
     TCP_NODELAY =    1,
 
     IP_MULTICAST_LOOP =  34,
