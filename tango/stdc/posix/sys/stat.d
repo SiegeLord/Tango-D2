@@ -74,95 +74,63 @@ mode_t umask(mode_t);
 
 version( linux )
 {
-  static if( __USE_LARGEFILE64 )
-  {
-        struct stat_t
-        {
-            dev_t       st_dev;
-            uint        __pad1;
-            ino_t       __st_ino;
-            mode_t      st_mode;
-            nlink_t     st_nlink;
-            uid_t       st_uid;
-            gid_t       st_gid;
-            dev_t       st_rdev;
-            uint        __pad2;
-            off64_t     st_size;
-            blksize_t   st_blksize;
-            blkcnt64_t  st_blocks;
-
-          static if( false /*__USE_MISC*/ ) // true if _BSD_SOURCE || _SVID_SOURCE
-          {
-            timespec    st_atim;
-            timespec    st_mtim;
-            timespec    st_ctim;
-            alias st_atim.tv_sec st_atime;
-            alias st_mtim.tv_sec st_mtime;
-            alias st_ctim.tv_sec st_ctime;
-          }
-          else
-          {
-            time_t      st_atime;
-            c_ulong     st_atimensec;
-            time_t      st_mtime;
-            c_ulong     st_mtimensec;
-            time_t      st_ctime;
-            c_ulong     st_ctimensec;
-          }
-            ino64_t     st_ino;
-        }
+    static if( __USE_LARGEFILE64 )
+    {
+        private alias _pad_t uint;
     }
     else
     {
-        struct stat_t
-        {
-            dev_t       st_dev;
-            ushort      __pad1;
-          static if( __USE_FILE_OFFSET64 )
-          {
-            ino_t       __st_ino;
-          }
-          else
-          {
-            ino_t       st_ino;
-          }
-            mode_t      st_mode;
-            nlink_t     st_nlink;
-            uid_t       st_uid;
-            gid_t       st_gid;
-            dev_t       st_rdev;
-            ushort      __pad2;
-            off_t       st_size;
-            blksize_t   st_blksize;
-            blkcnt_t    st_blocks;
-          static if( false /*__USE_MISC*/ ) // true if _BSD_SOURCE || _SVID_SOURCE
-          {
-            timespec    st_atim;
-            timespec    st_mtim;
-            timespec    st_ctim;
-            alias st_atim.tv_sec st_atime;
-            alias st_mtim.tv_sec st_mtime;
-            alias st_ctim.tv_sec st_ctime;
-          }
-          else
-          {
-            time_t      st_atime;
-            c_ulong     st_atimensec;
-            time_t      st_mtime;
-            c_ulong     st_mtimensec;
-            time_t      st_ctime;
-            c_ulong     st_ctimensec;
-          }
-          static if( __USE_FILE_OFFSET64 )
-          {
-            ino_t       st_ino;
-          }
-          else
-          {
-            c_ulong     __unused4;
-            c_ulong     __unused5;
-          }
-        }
+        private alias _pad_t ushort;
+    }
+
+    struct stat_t
+    {
+        dev_t       st_dev;
+        _pad_t      __pad1;
+      static if( __USE_FILE_OFFSET64 )
+      {
+        ino_t       __st_ino;
+      }
+      else
+      {
+        ino_t       st_ino;
+      }
+        mode_t      st_mode;
+        nlink_t     st_nlink;
+        uid_t       st_uid;
+        gid_t       st_gid;
+        dev_t       st_rdev;
+        _pad_t      __pad2;
+        off_t       st_size;
+        blksize_t   st_blksize;
+        blkcnt_t    st_blocks;
+      static if( false /*__USE_MISC*/ ) // true if _BSD_SOURCE || _SVID_SOURCE
+      {
+        timespec    st_atim;
+        timespec    st_mtim;
+        timespec    st_ctim;
+        alias st_atim.tv_sec st_atime;
+        alias st_mtim.tv_sec st_mtime;
+        alias st_ctim.tv_sec st_ctime;
+      }
+      else
+      {
+        time_t      st_atime;
+        c_ulong     st_atimensec;
+        time_t      st_mtime;
+        c_ulong     st_mtimensec;
+        time_t      st_ctime;
+        c_ulong     st_ctimensec;
+      }
+      static if( __USE_FILE_OFFSET64 )
+      {
+        ino_t       st_ino;
+      }
+      else
+      {
+        c_ulong     __unused4;
+        c_ulong     __unused5;
+      }
     }
 
     const S_IRUSR   = 0400;
@@ -333,12 +301,39 @@ else version( freebsd )
 
 int    chmod(char*, mode_t);
 int    fchmod(int, mode_t);
-int    fstat(int, stat_t*);
-int    lstat(char*, stat_t*);
+//int    fstat(int, stat_t*);
+//int    lstat(char*, stat_t*);
 int    mkdir(char*, mode_t);
 int    mkfifo(char*, mode_t);
-int    stat(char*, stat_t*);
+//int    stat(char*, stat_t*);
 mode_t umask(mode_t);
+
+version( linux )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    int   fstat64(int, stat_t*);
+    alias fstat64 fstat;
+
+    int   lstat64(char*, stat_t*);
+    alias lstat64 lstat;
+
+    int   stat64(char*, stat_t*);
+    alias stat64 stat;
+  }
+  else
+  {
+    int   fstat(int, stat_t*);
+    int   lstat(char*, stat_t*);
+    int   stat(char*, stat_t*);
+  }
+}
+else
+{
+    int   fstat(int, stat_t*);
+    int   lstat(char*, stat_t*);
+    int   stat(char*, stat_t*);
+}
 
 //
 // Typed Memory Objects (TYM)

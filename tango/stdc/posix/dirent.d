@@ -61,7 +61,15 @@ version( linux )
         // Managed by OS
     }
 
-    dirent* readdir(DIR*);
+    static if( __USE_LARGEFILE64 )
+    {
+        dirent* readdir64(DIR*);
+        alias   readdir64 readdir;
+    }
+    else
+    {
+        dirent* readdir(DIR*);
+    }
 }
 else version( darwin )
 {
@@ -113,26 +121,26 @@ else version( freebsd )
     align(4)
     struct dirent
     {
-		uint d_fileno;
-		ushort d_reclen;
-		ubyte d_type;
-		ubyte d_namelen;
-		char d_name[256];
+        uint      d_fileno;
+        ushort    d_reclen;
+        ubyte     d_type;
+        ubyte     d_namelen;
+        char[256] d_name;
     }
 
-	struct _telldir;
+    struct _telldir;
     struct DIR
     {
-        int dd_fd;
-		c_long dd_loc;
-		c_long dd_size;
-		char* dd_buf;
-		int dd_len;
-		c_long dd_seek;
-		c_long dd_rewind;
-		int dd_flags;
-		void* dd_lock;
-		_telldir* dd_td;
+        int       dd_fd;
+        c_long    dd_loc;
+        c_long    dd_size;
+        char*     dd_buf;
+        int       dd_len;
+        c_long    dd_seek;
+        c_long    dd_rewind;
+        int       dd_flags;
+        void*     dd_lock;
+        _telldir* dd_td;
     }
 
     dirent* readdir(DIR*);
@@ -154,7 +162,26 @@ void    rewinddir(DIR*);
 int readdir_r(DIR*, dirent*, dirent**);
 */
 
-int readdir_r(DIR*, dirent*, dirent**);
+version( linux )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    int   readdir_r64(DIR*, dirent*, dirent**);
+    alias readdir_r64 readdir_r;
+  }
+  else
+  {
+    int readdir_r(DIR*, dirent*, dirent**);
+  }
+}
+else version( darwin )
+{
+    int readdir_r(DIR*, dirent*, dirent**);
+}
+else version( freebsd )
+{
+    int readdir_r(DIR*, dirent*, dirent**);
+}
 
 //
 // XOpen (XSI)

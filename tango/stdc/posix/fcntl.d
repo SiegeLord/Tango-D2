@@ -118,6 +118,20 @@ version( linux )
         off_t   l_len;
         pid_t   l_pid;
     }
+
+    static if( __USE_LARGEFILE64 )
+    {
+        int   creat64(char*, mode_t);
+        alias creat64 creat;
+
+        int   open64(char*, int, ...);
+        alias open64 open;
+    }
+    else
+    {
+        int   creat(char*, mode_t);
+        int   open(char*, int, ...);
+    }
 }
 else version( darwin )
 {
@@ -162,6 +176,9 @@ else version( darwin )
         short   l_type;
         short   l_whence;
     }
+
+    int creat(char*, mode_t);
+    int open(char*, int, ...);
 }
 else version( freebsd )
 {
@@ -206,11 +223,14 @@ else version( freebsd )
         short   l_type;
         short   l_whence;
     }
+
+    int creat(char*, mode_t);
+    int open(char*, int, ...);
 }
 
-int creat(char*, mode_t);
+//int creat(char*, mode_t);
 int fcntl(int, int, ...);
-int open(char*, int, ...);
+//int open(char*, int, ...);
 
 //
 // Advisory Information (ADV)

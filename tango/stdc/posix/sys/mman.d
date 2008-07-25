@@ -98,8 +98,18 @@ int munmap(void*, size_t);
 
 version( linux )
 {
-    void* mmap(void*, size_t, int, int, int, off_t);
+    //void* mmap(void*, size_t, int, int, int, off_t);
     int   munmap(void*, size_t);
+
+  static if( __USE_LARGEFILE64 )
+  {
+    void* mmap64(void*, size_t, int, int, int, off_t);
+    alias mmap64 mmap;
+  }
+  else
+  {
+    void* mmap(void*, size_t, int, int, int, off_t);
+  }
 }
 else version( darwin )
 {

@@ -190,7 +190,7 @@ version( linux )
     void   lcong48(ushort[7]);
     c_long lrand48();
     char*  mktemp(char*); // LEGACY
-    int    mkstemp(char*);
+    //int    mkstemp(char*);
     c_long mrand48();
     c_long nrand48(ushort[3]);
     int    posix_openpt(int);
@@ -204,6 +204,16 @@ version( linux )
     void   srand48(c_long);
     void   srandom(uint);
     int    unlockpt(int);
+
+  static if( __USE_LARGEFILE64 )
+  {
+    int    mkstemp64(char*);
+    alias  mkstemp64 mkstemp;
+  }
+  else
+  {
+    int    mkstemp(char*);
+  }
 }
 else version( darwin )
 {

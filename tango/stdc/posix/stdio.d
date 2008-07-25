@@ -86,6 +86,39 @@ int    vsprintf(char*, char*, va_list);
 int    vsscanf(char*, char*, va_list arg);
 */
 
+version( linux )
+{
+    static if( __USE_LARGEFILE64 )
+    {
+        int   fgetpos64(FILE*, fpos_t *);
+        alias fgetpos64 fgetpos;
+
+        FILE* fopen64(char*, char*);
+        alias fopen64 fopen;
+
+        FILE* freopen64(char*, char*, FILE*);
+        alias freopen64 freopen;
+
+        int   fseek64(FILE*, c_long, int);
+        alias fseek64 fseek;
+
+        int   fsetpos64(FILE*, fpos_t *);
+        alias fsetpos64 fsetpos;
+
+        FILE* tmpfile64();
+        alias tmpfile64 tmpfile;
+    }
+    else
+    {
+        int   fgetpos(FILE*, fpos_t *);
+        FILE* fopen(char*, char*);
+        FILE* freopen(char*, char*, FILE*);
+        int   fseek(FILE*, c_long, int);
+        int   fsetpos(FILE*, fpos_t *);
+        FILE* tmpfile();
+    }
+}
+
 //
 // C Extension (CX)
 //
@@ -104,13 +137,38 @@ FILE*  popen(char*, char*);
 version( linux )
 {
     const L_ctermid = 9;
+
+  static if( __USE_FILE_OFFSET64 )
+  {
+    int   fseeko64(FILE*, off_t, int);
+    alias fseeko64 fseeko;
+  }
+  else
+  {
+    int   fseeko(FILE*, off_t, int);
+  }
+
+  static if( __USE_LARGEFILE64 )
+  {
+    off_t ftello64(FILE*);
+    alias ftello64 ftello;
+  }
+  else
+  {
+    off_t ftello(FILE*);
+  }
+}
+else
+{
+    int   fseeko(FILE*, off_t, int);
+    off_t ftello(FILE*);
 }
 
 char*  ctermid(char*);
 FILE*  fdopen(int, char*);
 int    fileno(FILE*);
-int    fseeko(FILE*, off_t, int);
-off_t  ftello(FILE*);
+//int    fseeko(FILE*, off_t, int);
+//off_t  ftello(FILE*);
 char*  gets(char*);
 FILE*  popen(char*, char*);
 
