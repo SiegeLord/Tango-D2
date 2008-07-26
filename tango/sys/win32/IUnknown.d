@@ -20,32 +20,32 @@ class IUnknown
 {
     HRESULT QueryInterface( REFIID iid, out IUnknown obj )
     {
-	if ( iid == &IID_IUnknown )
-	{
-	    AddRef();
-	    obj = this;
-	    return S_OK;
-	}
-	else
-	{
-	    obj = null;
-	    return E_NOINTERFACE;
-	}
+    	if ( iid == &IID_IUnknown )
+    	{
+    	    AddRef();
+    	    obj = this;
+    	    return S_OK;
+    	}
+    	else
+    	{
+    	    obj = null;
+    	    return E_NOINTERFACE;
+    	}
     }
 
     ULONG AddRef()
     {
-	return ++m_count;
+	    return ++m_count;
     }
 
     ULONG Release()
     {
-	if( --m_count == 0 )
-	{
-	    // free object
-	    return 0;
-	}
-	return m_count;
+    	if( --m_count == 0 )
+    	{
+    	    // free object
+    	    return 0;
+    	}
+    	return m_count;
     }
 
 private:
