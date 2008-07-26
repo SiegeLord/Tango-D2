@@ -50,13 +50,13 @@
         ---
         char[4096] buf = void;
 
-        log.warn (log.format (buf, "a very long warning: {}", someLongWarning);
+        log.warn (log.format (buf, "a very long warning: {}", someLongWarning));
         ---
 
         To avoid overhead when constructing argument passed to formatted 
         messages, you should check to see whether a logger is active or not:
         ---
-        if (log.enabled (log.Level.Warn))
+        if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
         
@@ -470,13 +470,13 @@ private struct Snapshot
         ---
         char[4096] buf = void;
 
-        log.warn (log.format (buf, "a very long warning: {}", someLongWarning);
+        log.warn (log.format (buf, "a very long warning: {}", someLongWarning));
         ---
 
         To avoid overhead when constructing argument passed to formatted 
         messages, you should check to see whether a logger is active or not:
         ---
-        if (log.enabled (log.Level.Warn))
+        if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
         
