@@ -20,7 +20,7 @@ private import tango.core.Exception;
 
         Convert text to and from Windows 'code pages'. This is non-portable,
         and will be unlikely to operate even across all Windows platforms.
-        
+
 *******************************************************************************/
 
 struct CodePage
@@ -39,7 +39,7 @@ struct CodePage
                              return false;
                 return true;
         }
-        
+
 
         /**********************************************************************
 
@@ -54,7 +54,7 @@ struct CodePage
 
                       or a region-specific codepage
 
-                returns: a slice of the provided output buffer 
+                returns: a slice of the provided output buffer
                          representing converted text
 
                 Note that the input must be utf8 encoded. Note also
@@ -65,7 +65,7 @@ struct CodePage
         **********************************************************************/
 
         static char[] into (char[] src, char[] dst, uint page=0)
-        {  
+        {
                 return convert (src, dst, CP_UTF8, page);
         }
 
@@ -83,7 +83,7 @@ struct CodePage
 
                       or a region-specific codepage
 
-                returns: a slice of the provided output buffer 
+                returns: a slice of the provided output buffer
                          representing converted text
 
                 Note that the input will be utf8 encoded. Note also
@@ -94,7 +94,7 @@ struct CodePage
         **********************************************************************/
 
         static char[] from (char[] src, char[] dst, uint page=0)
-        {       
+        {
                 return convert (src, dst, page, CP_UTF8);
         }
 
@@ -102,13 +102,13 @@ struct CodePage
         /**********************************************************************
 
                 Internal conversion routine; we avoid heap activity for
-                strings of short and medium length. A zero is appended 
+                strings of short and medium length. A zero is appended
                 to the dst array in order to simplify C API conversions
 
         **********************************************************************/
 
         private static char[] convert (char[] src, char[] dst, uint from, uint into)
-        {       
+        {
                 uint len = 0;
 
                 // sanity check
@@ -116,14 +116,15 @@ struct CodePage
 
                 // got some input?
                 if (src.length > 0)
-                   {    
+                   {
                    wchar[2000] tmp = void;
                    wchar[] wide = (src.length <= tmp.length) ? tmp : new wchar[src.length];
+                   scope (exit) if (wide !is tmp) delete wide;
 
-                   len = MultiByteToWideChar (from, 0, cast(PCHAR)src.ptr, src.length, 
+                   len = MultiByteToWideChar (from, 0, cast(PCHAR)src.ptr, src.length,
                                               wide.ptr, wide.length);
                    if (len)
-                       len = WideCharToMultiByte (into, 0, wide.ptr, len, 
+                       len = WideCharToMultiByte (into, 0, wide.ptr, len,
                                                   cast(PCHAR)dst.ptr, dst.length-1, null, null);
                    if (len is 0)
                        throw new IllegalArgumentException ("CodePage.convert :: "~SysError.lastMsg);
