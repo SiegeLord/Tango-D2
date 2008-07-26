@@ -2,7 +2,7 @@ module tango.sys.win32.Types;
 
 /*
     Module:     Windows Types
-    Author:     Trevor Parscal
+    Author:     Trevor Parscal, Frank Benoit
 */
 
 /+ Aliases, Types, and Constants +/
@@ -116,6 +116,7 @@ alias wchar* LPWORD;
 alias wchar* LPWSTR;
 alias wchar* NWPSTR;
 alias WINBOOL* PWINBOOL;
+alias ubyte BOOLEAN;
 alias ubyte* PBOOLEAN;
 alias ubyte* PBYTE;
 alias PCHAR PCCH;
@@ -6444,7 +6445,7 @@ alias BLOB _BLOB;
 alias BLOB TBLOB;
 alias BLOB* PBLOB;
 
-struct SHITEMID
+align(1) struct SHITEMID
 {
     USHORT cb;
     ubyte[1 + 0] abID;
@@ -6532,7 +6533,7 @@ alias BY_HANDLE_FILE_INFORMATION* PBYHANDLEFILEINFORMATION;
 struct FIXED
 {
     ushort fract;
-    int value;
+    short value;
 }
 
 alias FIXED _FIXED;
@@ -6844,7 +6845,9 @@ struct CHOOSEFONTA {
     WORD         ___MISSING_ALIGNMENT__;
     INT          nSizeMin;
     INT          nSizeMax;
-}alias CHOOSEFONTA* PCHOOSEFONTA, LPCHOOSEFONTA;
+}
+alias CHOOSEFONTA* PCHOOSEFONTA;
+alias CHOOSEFONTA* LPCHOOSEFONTA;
 
 struct CHOOSEFONTW {
     DWORD        lStructSize;
@@ -6863,7 +6866,9 @@ struct CHOOSEFONTW {
     WORD         ___MISSING_ALIGNMENT__;
     INT          nSizeMin;
     INT          nSizeMax;
-}alias CHOOSEFONTW* PCHOOSEFONTW, LPCHOOSEFONTW;
+}
+alias CHOOSEFONTW* PCHOOSEFONTW;
+alias CHOOSEFONTW* LPCHOOSEFONTW;
 
 version(Win32SansUnicode){
     alias CHOOSEFONTA CHOOSEFONT;
@@ -7065,9 +7070,10 @@ struct COMPAREITEMSTRUCT
     UINT CtlID;
     HWND hwndItem;
     UINT itemID1;
-    DWORD itemData1;
+    ULONG_PTR itemData1;
     UINT itemID2;
-    DWORD itemData2;
+    ULONG_PTR itemData2;
+    DWORD dwLocaleId;
 }
 
 alias COMPAREITEMSTRUCT TAGCOMPAREITEMSTRUCT;
@@ -7250,25 +7256,26 @@ alias LIST_ENTRY _LIST_ENTRY;
 alias LIST_ENTRY TLISTENTRY;
 alias LIST_ENTRY* PLISTENTRY;
 
-struct CRITICAL_SECTION_DEBUG
+align(1) struct CRITICAL_SECTION_DEBUG
 {
-    ushort _Type;
-    ushort CreatorBackTraceIndex;
+    WORD _Type;
+    WORD CreatorBackTraceIndex;
     _CRITICAL_SECTION* CriticalSection;
     LIST_ENTRY ProcessLocksList;
     DWORD EntryCount;
     DWORD ContentionCount;
-    DWORD Depth;
-    PVOID[1 + 4] OwnerBackTrace;
+    DWORD Flags;
+    WORD   CreatorBackTraceIndexHigh;
+    WORD   SpareWORD  ;
 }
 
 alias CRITICAL_SECTION_DEBUG* LPCRITICAL_SECTION_DEBUG;
-alias CRITICAL_SECTION_DEBUG PCRITICAL_SECTION_DEBUG;
+alias CRITICAL_SECTION_DEBUG* PCRITICAL_SECTION_DEBUG;
 alias CRITICAL_SECTION_DEBUG _CRITICAL_SECTION_DEBUG;
 alias CRITICAL_SECTION_DEBUG TCRITICALSECTIONDEBUG;
 alias CRITICAL_SECTION_DEBUG* PCRITICALSECTIONDEBUG;
 
-struct CRITICAL_SECTION
+align(1) struct CRITICAL_SECTION
 {
     PCRITICAL_SECTION_DEBUG DebugInfo;
     LONG LockCount;
@@ -7284,12 +7291,13 @@ alias CRITICAL_SECTION _CRITICAL_SECTION;
 alias CRITICAL_SECTION TCRITICALSECTION;
 alias CRITICAL_SECTION* PCRITICALSECTION;
 
+alias ubyte SECURITY_CONTEXT_TRACKING_MODE;
 struct SECURITY_QUALITY_OF_SERVICE
 {
     DWORD Length;
     SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
-    WINBOOL ContextTrackingMode;
-    ubyte EffectiveOnly;
+    SECURITY_CONTEXT_TRACKING_MODE ContextTrackingMode;
+    BOOLEAN EffectiveOnly;
 }
 
 alias SECURITY_QUALITY_OF_SERVICE* PSECURITY_QUALITY_OF_SERVICE;
@@ -7487,7 +7495,7 @@ enum : DWORD {
 struct DDEADVISE
 {
     ushort flag0;
-    int cfFormat;
+    short cfFormat;
 }
 
 alias DDEADVISE TDDEADVISE;
@@ -7504,7 +7512,7 @@ enum : DWORD {
 struct DDEDATA
 {
     ushort flag0;
-    int cfFormat;
+    short  cfFormat;
     ubyte[1 + 0] Value;
 }
 
@@ -7525,7 +7533,7 @@ enum : DWORD {
 struct DDELN
 {
     ushort flag0;
-    int cfFormat;
+    short cfFormat;
 }
 
 alias DDELN TDDELN;
@@ -7556,7 +7564,7 @@ alias DDEML_MSG_HOOK_DATA* PDDEMLMSGHOOKDATA;
 struct DDEPOKE
 {
     ushort flag0;
-    int cfFormat;
+    short cfFormat;
     ubyte[1 + 0] Value;
 }
 
@@ -7573,7 +7581,7 @@ enum : DWORD {
 struct DDEUP
 {
     ushort flag0;
-    int cfFormat;
+    short cfFormat;
     ubyte[1 + 0] rgb;
 }
 
@@ -7931,9 +7939,14 @@ struct DISK_PERFORMANCE
     LARGE_INTEGER BytesWritten;
     LARGE_INTEGER ReadTime;
     LARGE_INTEGER WriteTime;
+    LARGE_INTEGER IdleTime;
     DWORD ReadCount;
     DWORD WriteCount;
     DWORD QueueDepth;
+    DWORD SplitCount;
+    LARGE_INTEGER QueryTime;
+    DWORD StorageDeviceNumber;
+    WCHAR StorageManagerName[8];
 }
 
 alias DISK_PERFORMANCE _DISK_PERFORMANCE;
@@ -7944,11 +7957,11 @@ align(1) struct DLGITEMTEMPLATE
 {
     DWORD style;
     DWORD dwExtendedStyle;
-    int x;
-    int y;
-    int cx;
-    int cy;
-    ushort id;
+    short x;
+    short y;
+    short cx;
+    short cy;
+    WORD id;
 }
 
 alias DLGITEMTEMPLATE* LPDLGITEMTEMPLATE;
@@ -7959,11 +7972,11 @@ align(1) struct DLGTEMPLATE
 {
     DWORD style;
     DWORD dwExtendedStyle;
-    ushort cdit;
-    int x;
-    int y;
-    int cx;
-    int cy;
+    WORD cdit;
+    short x;
+    short y;
+    short cx;
+    short cy;
 }
 
 alias DLGTEMPLATE* LPDLGTEMPLATE;
@@ -8222,6 +8235,7 @@ struct EMRBITBLT
     COLORREF crBkColorSrc;
     DWORD iUsageSrc;
     DWORD offBmiSrc;
+    DWORD cbBmiSrc;
     DWORD offBitsSrc;
     DWORD cbBitsSrc;
 }
@@ -8254,7 +8268,7 @@ alias EMRCREATEBRUSHINDIRECT* PEMRCREATEBRUSHINDIRECT;
 alias LONG LCSCSTYPE;
 alias LONG LCSGAMUTMATCH;
 
-struct LOGCOLORSPACE
+struct LOGCOLORSPACEA
 {
     DWORD lcsSignature;
     DWORD lcsVersion;
@@ -8265,7 +8279,26 @@ struct LOGCOLORSPACE
     DWORD lcsGammaRed;
     DWORD lcsGammaGreen;
     DWORD lcsGammaBlue;
-    TCHAR[1 + MAX_PATH-1] lcsFilename;
+    CHAR[1 + MAX_PATH-1] lcsFilename;
+}
+struct LOGCOLORSPACEW
+{
+    DWORD lcsSignature;
+    DWORD lcsVersion;
+    DWORD lcsSize;
+    LCSCSTYPE lcsCSType;
+    LCSGAMUTMATCH lcsIntent;
+    CIEXYZTRIPLE lcsEndpoints;
+    DWORD lcsGammaRed;
+    DWORD lcsGammaGreen;
+    DWORD lcsGammaBlue;
+    WCHAR[1 + MAX_PATH-1] lcsFilename;
+}
+version(Win32SansUnicode) {
+    alias LOGCOLORSPACEA LOGCOLORSPACE;
+}
+else {
+    alias LOGCOLORSPACEW LOGCOLORSPACE;
 }
 
 alias LOGCOLORSPACE* LPLOGCOLORSPACE;
@@ -8274,11 +8307,10 @@ alias LOGCOLORSPACE TLOGCOLORSPACE;
 alias LOGCOLORSPACE TLOGCOLORSPACEA;
 alias LOGCOLORSPACE* PLOGCOLORSPACE;
 
-struct EMRCREATECOLORSPACE
-{
-    EMR emr;
-    DWORD ihCS;
-    LOGCOLORSPACE lcs;
+struct EMRCREATECOLORSPACE {
+    EMR            emr;
+    DWORD          ihCS;
+    LOGCOLORSPACEA lcs;
 }
 
 alias EMRCREATECOLORSPACE TAGEMRCREATECOLORSPACE;
@@ -8432,8 +8464,8 @@ alias PANOSE* PPANOSE;
 struct EXTLOGFONT
 {
     LOGFONT elfLogFont;
-    BCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
-    BCHAR[1 + LF_FACESIZE-1] elfStyle;
+    TCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
+    TCHAR[1 + LF_FACESIZE-1] elfStyle;
     DWORD elfVersion;
     DWORD elfStyleSize;
     DWORD elfMatch;
@@ -8788,7 +8820,7 @@ struct EMRPOLYLINE16
     EMR emr;
     RECTL rclBounds;
     DWORD cpts;
-    POINTL[1 + 0] apts;
+    POINTS[1 + 0] apts;
 }
 
 alias EMRPOLYLINE16 TAGEMRPOLYLINE16;
@@ -9252,7 +9284,7 @@ struct ENOLEOPFAILED
 alias ENOLEOPFAILED TENOLEOPFAILED;
 alias ENOLEOPFAILED* PENOLEOPFAILED;
 
-struct ENHMETAHEADER
+align(2) struct ENHMETAHEADER
 {
     DWORD iType;
     DWORD nSize;
@@ -9269,6 +9301,14 @@ struct ENHMETAHEADER
     DWORD nPalEntries;
     SIZEL szlDevice;
     SIZEL szlMillimeters;
+//#if (WINVER >= 0x0400)
+    DWORD cbPixelFormat;
+    DWORD offPixelFormat;
+    DWORD bOpenGL;
+//#endif /* WINVER >= 0x0400 */
+//#if (WINVER >= 0x0500)
+    SIZEL szlMicrometers;
+//#endif /* WINVER >= 0x0500 */
 }
 
 alias ENHMETAHEADER* LPENHMETAHEADER;
@@ -9491,6 +9531,7 @@ struct TFINDTEXT
 }
 
 alias TFINDTEXT _FINDTEXT;
+alias TFINDTEXT FINDTEXT;
 alias TFINDTEXT* PFINDTEXT;
 
 struct FINDTEXTEX
@@ -9658,8 +9699,8 @@ struct GLYPHMETRICS
     UINT gmBlackBoxX;
     UINT gmBlackBoxY;
     POINT gmptGlyphOrigin;
-    int gmCellIncX;
-    int gmCellIncY;
+    short gmCellIncX;
+    short gmCellIncY;
 }
 
 alias GLYPHMETRICS* LPGLYPHMETRICS;
@@ -9697,6 +9738,14 @@ struct HD_ITEM
     int cchTextMax;
     int fmt;
     LPARAM lParam;
+    // _WIN32_IE >= 0x300
+    int iImage;
+    int iOrder;
+    // _WIN32_IE >= 0x500
+    UINT type;
+    void* pvFilter;
+    // _WIN32_WINNT >= 0x600
+    //UINT state;
 }
 
 alias HD_ITEM _HD_ITEM;
@@ -10063,7 +10112,7 @@ alias KERNINGPAIR* PKERNINGPAIR;
 struct LANA_ENUM
 {
     UCHAR length;
-    UCHAR[1 + MAX_LANA-1] lana;
+    UCHAR[1 + MAX_LANA] lana;
 }
 
 alias LANA_ENUM _LANA_ENUM;
@@ -10151,7 +10200,10 @@ alias int FXPT16DOT16;
 alias FXPT16DOT16* LPFXPT16DOT16;
 alias FXPT16DOT16 TFXPT16DOT16;
 alias FXPT16DOT16* PFXPT16DOT16;
-alias LARGE_INTEGER LUID;
+struct LUID {
+    DWORD LowPart;
+    LONG  HighPart;
+}
 alias LUID TLUID;
 alias LUID* PLUID;
 
@@ -10169,32 +10221,104 @@ alias LUID_AND_ATTRIBUTES_ARRAY* PLUID_AND_ATTRIBUTES_ARRAY;
 alias LUID_AND_ATTRIBUTES_ARRAY TLUIDANDATTRIBUTESARRAY;
 alias LUID_AND_ATTRIBUTES_ARRAY* PLUIDANDATTRIBUTESARRAY;
 
-struct LV_COLUMN
-{
+struct LVCOLUMNA {
     UINT mask;
     int fmt;
     int cx;
-    LPTSTR pszText;
+    LPSTR pszText;
     int cchTextMax;
     int iSubItem;
+    int iImage;
+    //if (_WIN32_IE >= 0x0300)
+    int iOrder;
+    //endif
+    //if (_WIN32_WINNT >= 0x0600)
+    //int cxMin;
+    //int cxDefault;
+    //int cxIdeal;
+    //endif
 }
-
+struct LVCOLUMNW {
+    UINT mask;
+    int fmt;
+    int cx;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iSubItem;
+    int iImage;
+    //if (_WIN32_IE >= 0x0300)
+    int iOrder;
+    //endif
+    //if (_WIN32_WINNT >= 0x0600)
+    //int cxMin;
+    //int cxDefault;
+    //int cxIdeal;
+    //endif
+}
+version(Win32SansUnicode){
+    alias LVCOLUMNA LVCOLUMN;
+}else{
+    alias LVCOLUMNW LVCOLUMN;
+}
+alias LVCOLUMN* LPLVCOLUMN;
+alias LVCOLUMN LV_COLUMN;
 alias LV_COLUMN _LV_COLUMN;
 alias LV_COLUMN TLVCOLUMN;
 alias LV_COLUMN* PLVCOLUMN;
 
-struct LV_ITEM
-{
-    UINT mask;
-    int iItem;
-    int iSubItem;
-    UINT state;
-    UINT stateMask;
-    LPTSTR pszText;
-    int cchTextMax;
-    int iImage;
+struct LVITEMA {
+    UINT   mask;
+    int    iItem;
+    int    iSubItem;
+    UINT   state;
+    UINT   stateMask;
+    LPSTR  pszText;
+    int    cchTextMax;
+    int    iImage;
     LPARAM lParam;
+//if (_WIN32_IE >= 0x0300)
+    int iIndent;
+//endif
+//if (_WIN32_WINNT >= 0x560)
+    int iGroupId;
+    UINT cColumns; // tile view columns
+    PUINT puColumns;
+//endif
+//if (_WIN32_WINNT >= 0x0600)
+//    int* piColFmt;
+//    int iGroup;
+//endif
 }
+struct LVITEMW {
+    UINT   mask;
+    int    iItem;
+    int    iSubItem;
+    UINT   state;
+    UINT   stateMask;
+    LPWSTR  pszText;
+    int    cchTextMax;
+    int    iImage;
+    LPARAM lParam;
+//if (_WIN32_IE >= 0x0300)
+    int iIndent;
+//endif
+//if (_WIN32_WINNT >= 0x560)
+    int iGroupId;
+    UINT cColumns; // tile view columns
+    PUINT puColumns;
+//endif
+//if (_WIN32_WINNT >= 0x0600)
+//    int* piColFmt;
+//    int iGroup;
+//endif
+}
+version(Win32SansUnicode){
+    alias LVITEMA LVITEM;
+}else{
+    alias LVITEMW LVITEM;
+}
+alias LVITEM* LPLVITEM;
+alias LVITEM LV_ITEM;
 
 alias LV_ITEM _LV_ITEM;
 alias LV_ITEM TLVITEM;
@@ -10223,18 +10347,24 @@ alias LV_FINDINFO _LV_FINDINFO;
 alias LV_FINDINFO TLVFINDINFO;
 alias LV_FINDINFO* PLVFINDINFO;
 
-struct LV_HITTESTINFO
+struct LVHITTESTINFO
 {
     POINT pt;
     UINT flags;
     int iItem;
+    int iSubItem;
+//#if _WIN32_WINNT >= 0x0600
+//    int iGroup;
+//#endif
 }
+
+alias LVHITTESTINFO LV_HITTESTINFO;
 
 alias LV_HITTESTINFO _LV_HITTESTINFO;
 alias LV_HITTESTINFO TLVHITTESTINFO;
 alias LV_HITTESTINFO* PLVHITTESTINFO;
 
-struct LV_KEYDOWN
+align(2) struct LV_KEYDOWN
 {
     NMHDR hdr;
     ushort wVKey;
@@ -10992,6 +11122,52 @@ alias TVITEM TTVITEM;
 alias TVITEM TV_ITEM;
 alias TVITEM* PTVITEM;
 
+struct TVITEMEXA {
+    UINT      mask;
+    HTREEITEM hItem;
+    UINT      state;
+    UINT      stateMask;
+    LPSTR     pszText;
+    int       cchTextMax;
+    int       iImage;
+    int       iSelectedImage;
+    int       cChildren;
+    LPARAM    lParam;
+    int       iIntegral;
+//#if (_WIN32_IE >= 0x0600)
+//    UINT      uStateEx;
+//    HWND      hwnd;
+//    int       iExpandedImage;
+//#endif
+}
+struct TVITEMEXW {
+    UINT      mask;
+    HTREEITEM hItem;
+    UINT      state;
+    UINT      stateMask;
+    LPWSTR    pszText;
+    int       cchTextMax;
+    int       iImage;
+    int       iSelectedImage;
+    int       cChildren;
+    LPARAM    lParam;
+    int       iIntegral;
+//#if (_WIN32_IE >= 0x0600)
+//    UINT      uStateEx;
+//    HWND      hwnd;
+//    int       iExpandedImage;
+//#endif
+}
+version(Win32SansUnicode)
+{
+    alias TVITEMEXA TVITEMEX;
+}
+else
+{
+    alias TVITEMEXW TVITEMEX;
+}
+alias TVITEMEX * LPTVITEMEX;
+
 struct NMTREEVIEW
 {
     NMHDR hdr;
@@ -11035,6 +11211,10 @@ struct NONCLIENTMETRICSA {
     LOGFONTA lfMenuFont;
     LOGFONTA lfStatusFont;
     LOGFONTA lfMessageFont;
+//if (WINVER >= 0x0600)
+//  int iPaddedBorderWidth;
+//endif 
+
 }
 struct NONCLIENTMETRICSW {
     int cbSize;
@@ -11052,6 +11232,9 @@ struct NONCLIENTMETRICSW {
     LOGFONTW lfMenuFont;
     LOGFONTW lfStatusFont;
     LOGFONTW lfMessageFont;
+//if (WINVER >= 0x0600)
+//  int iPaddedBorderWidth;
+//endif 
 }
 version(Win32SansUnicode)
 {
@@ -11202,6 +11385,11 @@ struct OPENFILENAME
     DWORD lCustData;
     LPOFNHOOKPROC lpfnHook;
     LPCTSTR lpTemplateName;
+//if (_WIN32_WINNT >= 0x0500)
+  void *        pvReserved;
+  DWORD         dwReserved;
+  DWORD         FlagsEx;
+//endif // (_WIN32_WINNT >= 0x0500)
 }
 
 alias OPENFILENAME* LPOPENFILENAME;
@@ -11258,7 +11446,6 @@ alias OSVERSIONINFO TOSVERSIONINFO;
 alias OSVERSIONINFO* POSVERSIONINFO;
 
 struct TEXTMETRICA {
-    align(1):
     LONG tmHeight;
     LONG tmAscent;
     LONG tmDescent;
@@ -11283,7 +11470,6 @@ struct TEXTMETRICA {
     BYTE tmCharSet;
 }
 struct TEXTMETRICW {
-    align(1):
     LONG tmHeight;
     LONG tmAscent;
     LONG tmDescent;
@@ -11438,6 +11624,7 @@ struct TPAGESETUPDLG
     HGLOBAL hPageSetupTemplate;
 }
 
+alias TPAGESETUPDLG PAGESETUPDLG;
 alias TPAGESETUPDLG* LPPAGESETUPDLG;
 alias TPAGESETUPDLG* PPAGESETUPDLG;
 alias TPAGESETUPDLG TAGPSD;
@@ -11608,8 +11795,7 @@ alias PREVENT_MEDIA_REMOVAL _PREVENT_MEDIA_REMOVAL;
 alias PREVENT_MEDIA_REMOVAL TPREVENTMEDIAREMOVAL;
 alias PREVENT_MEDIA_REMOVAL* PPREVENTMEDIAREMOVAL;
 
-struct PRINTDLGA {  // pd
-    align(2):
+align(2) struct PRINTDLGA {  // pd
     DWORD     lStructSize;
     HWND      hwndOwner;
     HANDLE    hDevMode;
@@ -11632,8 +11818,7 @@ struct PRINTDLGA {  // pd
 }
 alias PRINTDLGA* PPRINTDLGA;
 alias PRINTDLGA* LPPRINTDLGA;
-struct PRINTDLGW {  // pd
-    align(2):
+align(2) struct PRINTDLGW {  // pd
     DWORD     lStructSize;
     HWND      hwndOwner;
     HANDLE    hDevMode;
@@ -11877,52 +12062,32 @@ alias PROCESS_INFORMATION* PPROCESSINFORMATION;
 extern(Windows){alias UINT (*LPFNPSPCALLBACK)(HWND, UINT, LPVOID);}
 alias LPFNPSPCALLBACK TFNPSPCALLBACK;
 
-struct PROPSHEETPAGE_U1
-{
-
-    union
-    {
-        struct
-        {
-            LPCTSTR pszTemplate;
-        }
-        struct
-        {
-            LPCDLGTEMPLATE pResource;
-        }
-    }
-}
-
-
-struct PROPSHEETPAGE_U2
-{
-
-    union
-    {
-        struct
-        {
-            HICON hIcon;
-        }
-        struct
-        {
-            LPCTSTR pszIcon;
-        }
-    }
-}
-
 
 struct PROPSHEETPAGE
 {
     DWORD dwSize;
     DWORD dwFlags;
     HINST hInstance;
-    PROPSHEETPAGE_U1 u1;
-    PROPSHEETPAGE_U2 u2;
+    union {
+        LPCTSTR pszTemplate;
+        LPCDLGTEMPLATE pResource;
+    }
+    union {
+        HICON hIcon;
+        LPCTSTR pszIcon;
+    }
     LPCTSTR pszTitle;
     DLGPROC pfnDlgProc;
     LPARAM lParam;
     LPFNPSPCALLBACK pfnCallback;
     UINT* pcRefParent;
+//if (_WIN32_IE >= 0x0500)
+    LPCTSTR pszHeaderTitle;
+    LPCTSTR pszHeaderSubTitle;
+//endif
+//if (_WIN32_WINNT >= 0x0501)
+    HANDLE hActCtx;
+//endif
 }
 
 alias PROPSHEETPAGE* LPPROPSHEETPAGE;
@@ -12000,6 +12165,17 @@ struct PROPSHEETHEADER
     PROPSHEETHEADER_U2 u2;
     PROPSHEETHEADER_U3 u3;
     PFNPROPSHEETCALLBACK pfnCallback;
+//if (_WIN32_IE >= 0x0400)
+    union {
+        HBITMAP hbmWatermark;
+        LPCTSTR pszbmWatermark;
+    }
+    HPALETTE hplWatermark;
+    union {
+        HBITMAP hbmHeader; 
+        LPCSTR pszbmHeader;
+    }
+//endif
 }
 
 alias PROPSHEETHEADER* LPPROPSHEETHEADER;
@@ -12171,7 +12347,7 @@ struct RASPPPIP
 {
     DWORD dwSize;
     DWORD dwError;
-    TCHAR[1 + (RAS_MaxIpAddress+1)-1] szIpAddress;
+    TCHAR[RAS_MaxIpAddress+1] szIpAddress;
 }
 
 alias RASPPPIP _RASPPPIP;
@@ -12205,9 +12381,9 @@ alias RASPPPNBF* PRASPPPNBF;
 
 struct RASTERIZER_STATUS
 {
-    int nSize;
-    int wFlags;
-    int nLanguageID;
+    short nSize;
+    short wFlags;
+    short nLanguageID;
 }
 
 alias RASTERIZER_STATUS* LPRASTERIZER_STATUS;
@@ -12334,6 +12510,7 @@ struct SERIALKEYS
     LPSTR lpszPort;
     DWORD iBaudRate;
     DWORD iPortState;
+    UINT  iActive;
 }
 
 alias SERIALKEYS* LPSERIALKEYS;
@@ -12448,7 +12625,7 @@ alias ushort FILEOP_FLAGS;
 alias FILEOP_FLAGS TFILEOPFLAGS;
 alias FILEOP_FLAGS* PFILEOPFLAGS;
 
-struct SHFILEOPSTRUCT
+align(2) struct SHFILEOPSTRUCT
 {
     HWND hwnd;
     UINT wFunc;
@@ -12593,7 +12770,7 @@ alias STRRET* PSTRRET;
 struct STYLEBUF
 {
     DWORD dwStyle;
-    char[1 + 31] szDescription;
+    TCHAR[1 + 31] szDescription;
 }
 
 alias STYLEBUF* LPSTYLEBUF;
@@ -12623,36 +12800,23 @@ alias SYSTEM_AUDIT_ACE _SYSTEM_AUDIT_ACE;
 alias SYSTEM_AUDIT_ACE TSYSTEMAUDITACE;
 alias SYSTEM_AUDIT_ACE* PSYSTEMAUDITACE;
 
-struct SYSTEM_INFO_U
-{
-
-    union
-    {
-        struct
-        {
-            DWORD dwOemId;
-        }
-        struct
-        {
-            ushort wProcessorArchitecture;
-            ushort wReserved;
+struct SYSTEM_INFO {
+    union {
+        DWORD dwOemId;
+        struct {
+            WORD wProcessorArchitecture;
+            WORD wReserved;
         }
     }
-}
-
-
-struct SYSTEM_INFO
-{
-    SYSTEM_INFO_U u;
     DWORD dwPageSize;
     LPVOID lpMinimumApplicationAddress;
     LPVOID lpMaximumApplicationAddress;
-    DWORD dwActiveProcessorMask;
+    DWORD_PTR dwActiveProcessorMask;
     DWORD dwNumberOfProcessors;
     DWORD dwProcessorType;
     DWORD dwAllocationGranularity;
-    ushort wProcessorLevel;
-    ushort wProcessorRevision;
+    WORD wProcessorLevel;
+    WORD wProcessorRevision;
 }
 
 alias SYSTEM_INFO* LPSYSTEM_INFO;
@@ -12677,7 +12841,8 @@ alias EMPTYRECORD* LPSYSTEM_POWER_STATUS;
 
 struct TAPE_ERASE
 {
-    ULONG _Type;
+    DWORD Type;
+    BOOLEAN Immediate;
 }
 
 alias TAPE_ERASE _TAPE_ERASE;
@@ -12730,7 +12895,8 @@ alias TAPE_GET_POSITION* PTAPEGETPOSITION;
 
 struct TAPE_PREPARE
 {
-    ULONG Operation;
+    DWORD    Operation;
+    BOOLEAN  Immediate;
 }
 
 alias TAPE_PREPARE _TAPE_PREPARE;
@@ -12763,8 +12929,8 @@ struct TAPE_SET_POSITION
 {
     ULONG Method;
     ULONG Partition;
-    ULONG OffsetLow;
-    ULONG OffsetHigh;
+    LARGE_INTEGER Offset;
+    BOOLEAN Immediate;
 }
 
 alias TAPE_SET_POSITION _TAPE_SET_POSITION;
@@ -12775,6 +12941,7 @@ struct TAPE_WRITE_MARKS
 {
     ULONG _Type;
     ULONG Count;
+    BOOLEAN Immediate;
 }
 
 alias TAPE_WRITE_MARKS _TAPE_WRITE_MARKS;
@@ -12798,9 +12965,9 @@ struct TBBUTTON {
     BYTE    fsState;
     BYTE    fsStyle;
 //#ifdef _WIN64
-//    BYTE     bReserved[6]     // padding for alignment
+//    BYTE     bReserved[6];     // padding for alignment
 //#elif defined(_WIN32)
-//    BYTE     bReserved[2]     // padding for alignment
+    BYTE     bReserved[2];     // padding for alignment
 //#endif
     DWORD_PTR   dwData;
     INT_PTR     iString;
@@ -12812,14 +12979,32 @@ alias TBBUTTON _TBBUTTON;
 alias TBBUTTON TTBBUTTON;
 alias TBBUTTON* PTBBUTTON;
 
-struct TBNOTIFY
-{
-    NMHDR hdr;
-    int iItem;
+struct NMTOOLBARA {
+    align(2):
+    NMHDR    hdr;
+    int      iItem;
     TBBUTTON tbButton;
-    int cchText;
-    LPTSTR pszText;
+    int      cchText;
+    LPSTR   pszText;
+    RECT     rcButton;
 }
+struct NMTOOLBARW {
+    align(2):
+    NMHDR    hdr;
+    int      iItem;
+    TBBUTTON tbButton;
+    int      cchText;
+    LPWSTR   pszText;
+    RECT     rcButton;
+}
+version(Win32SansUnicode){
+    alias NMTOOLBARA NMTOOLBAR;
+}else{
+    alias NMTOOLBARW NMTOOLBAR;
+}
+alias NMTOOLBAR* LPNMTOOLBAR;
+
+alias NMTOOLBAR TBNOTIFY;
 
 alias TBNOTIFY* LPTBNOTIFY;
 alias TBNOTIFY TTBNOTIFY;
@@ -12875,13 +13060,14 @@ alias TC_ITEMHEADER _TC_ITEMHEADER;
 alias TC_ITEMHEADER TTCITEMHEADER;
 alias TC_ITEMHEADER* PTCITEMHEADER;
 
-struct TC_KEYDOWN
+align(1) struct NMTCKEYDOWN
 {
     NMHDR hdr;
-    ushort wVKey;
+    WORD wVKey;
     UINT flags;
 }
 
+alias NMTCKEYDOWN TC_KEYDOWN;
 alias TC_KEYDOWN _TC_KEYDOWN;
 alias TC_KEYDOWN TTCKEYDOWN;
 alias TC_KEYDOWN* PTCKEYDOWN;
@@ -12986,7 +13172,7 @@ alias TOKEN_PRIMARY_GROUP* PTOKENPRIMARYGROUP;
 struct TOKEN_PRIVILEGES
 {
     DWORD PrivilegeCount;
-    LUID_AND_ATTRIBUTES[1 + ANYSIZE_ARRAY-1] Privileges;
+    LUID_AND_ATTRIBUTES[ANYSIZE_ARRAY] Privileges;
 }
 
 alias TOKEN_PRIVILEGES* PTOKEN_PRIVILEGES;
@@ -13031,7 +13217,12 @@ struct TOOLINFOA
     RECT rect;
     HINST hinst;
     LPSTR lpszText;
-    void* lpReserved; // ver >= 5.01
+//if (_WIN32_IE >= 0x0300)
+    LPARAM lParam;
+//endif
+//if (_WIN32_WINNT >= 0x0501)
+    void *lpReserved;
+//endif
 }
 struct TOOLINFOW
 {
@@ -13042,7 +13233,13 @@ struct TOOLINFOW
     RECT rect;
     HINST hinst;
     LPWSTR lpszText;
-    void* lpReserved; // ver >= 5.01
+//if (_WIN32_IE >= 0x0300)
+    LPARAM lParam;
+//endif
+//if (_WIN32_WINNT >= 0x0501)
+    void *lpReserved;
+//endif
+
 }
 version(Win32SansUnicode)
 {
@@ -13056,22 +13253,32 @@ alias TOOLINFO* LPTOOLINFO;
 alias TOOLINFO TTOOLINFO;
 alias TOOLINFO* PTOOLINFO;
 
-struct TOOLTIPTEXTA
-{
+struct NMTTDISPINFOA {
     NMHDR hdr;
     LPSTR lpszText;
-    CHAR[80] szText;
-    HINST hinst;
+    char szText[80];
+    HINSTANCE hinst;
     UINT uFlags;
+    LPARAM lParam;
 }
-struct TOOLTIPTEXTW
-{
+
+struct NMTTDISPINFOW {
     NMHDR hdr;
     LPWSTR lpszText;
-    WCHAR[80] szText;
-    HINST hinst;
+    WCHAR szText[80];
+    HINSTANCE hinst;
     UINT uFlags;
+    LPARAM lParam;
 }
+version(Win32SansUnicode){
+    alias NMTTDISPINFOA NMTTDISPINFO;
+} else {
+    alias NMTTDISPINFOW NMTTDISPINFO;
+}
+
+
+alias NMTTDISPINFOA TOOLTIPTEXTA;
+alias NMTTDISPINFOW TOOLTIPTEXTW;
 version(Win32SansUnicode)
 {
     alias TOOLTIPTEXTA TOOLTIPTEXT;
@@ -13169,13 +13376,19 @@ struct TVINSERTSTRUCTA
 {
     HTREEITEM hParent;
     HTREEITEM hInsertAfter;
-    TVITEMA item;
+    union {
+        TVITEMEXA itemex;
+        TVITEMA item;
+    }
 }
 struct TVINSERTSTRUCTW
 {
     HTREEITEM hParent;
     HTREEITEM hInsertAfter;
-    TVITEMW item;
+    union {
+        TVITEMEXW itemex;
+        TVITEMW item;
+    }
 }
 version(Win32SansUnicode)
 {
@@ -13192,7 +13405,7 @@ alias TVINSERTSTRUCT _TV_INSERTSTRUCT;
 alias TVINSERTSTRUCT TTVINSERTSTRUCT;
 alias TVINSERTSTRUCT* PTVINSERTSTRUCT;
 
-struct TV_KEYDOWN
+align(2) struct TV_KEYDOWN
 {
     NMHDR hdr;
     ushort wVKey;
@@ -13821,6 +14034,7 @@ struct TVARIANT
 alias TVARIANT VARIANT;
 alias int MMRESULT;
 alias TWAVEFORMATEX* PWAVEFORMATEX;
+alias TWAVEFORMATEX WAVEFORMATEX;
 
 align(1) struct TWAVEFORMATEX
 {
@@ -13872,7 +14086,7 @@ alias _BLENDFUNCTION BLENDFUNCTION;
 
 alias HANDLE HMONITOR;
 
-struct tagMONITORINFOEX
+struct MONITORINFOEX
 {
     DWORD  cbSize;
     RECT   rcMonitor;
@@ -13880,17 +14094,15 @@ struct tagMONITORINFOEX
     DWORD  dwFlags;
     TCHAR  szDevice[CCHDEVICENAME];
 }
-alias tagMONITORINFOEX MONITORINFOEX;
 alias MONITORINFOEX* LPMONITORINFOEX;
 
-struct tagMONITORINFO
+struct MONITORINFO
 {
     DWORD  cbSize;
     RECT   rcMonitor;
     RECT   rcWork;
     DWORD  dwFlags;
 }
-alias tagMONITORINFO MONITORINFO;
 alias MONITORINFO* LPMONITORINFO;
 
 struct WINDOWINFO
