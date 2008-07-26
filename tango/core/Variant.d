@@ -94,6 +94,14 @@ private
             const isObject = false;
     }
 
+    template isInterface(T)
+    {
+        static if( is( T == interface ) )
+            const isInterface = true;
+        else
+            const isInterface = false;
+    }
+
     template isStaticArray(T)
     {
         static if( is( typeof(T.init)[(T).sizeof / typeof(T.init).sizeof] == T ) )
@@ -278,6 +286,10 @@ struct Variant
             {
                 this.value.obj = value;
             }
+            else static if( isInterface!(T) )
+            {
+                this.value.obj = cast(Object) value;
+            }
             else
             {
                 if( T.sizeof <= this.value.data.length )
@@ -365,6 +377,7 @@ struct Variant
         if( type !is typeid(T)
                 // Let D do runtime check itself
                 && !isObject!(T)
+                && !isInterface!(T)
                 // Allow implicit upcasts
                 && !canImplicitCastTo!(T)(type)
           )
@@ -410,6 +423,10 @@ struct Variant
             return cast(T)this.value.ptr;
         }
         else static if( isObject!(T) )
+        {
+            return cast(T)this.value.obj;
+        }
+        else static if( isInterface!(T) )
         {
             return cast(T)this.value.obj;
         }
@@ -613,6 +630,20 @@ debug( UnitTest )
             assert( v.get!(Object) is o );
         }
 
+        // Test interface support
+        {
+            interface A {}
+            interface B : A {}
+            class C : B {}
+            class D : C {}
+
+            A a = new D;
+            Variant v = a;
+            B b = v.get!(B);
+            C c = v.get!(C);
+            D d = v.get!(D);
+        }
+
         // Test doubles and implicit casting
         v = 3.1413;
         assert( v.isA!(double), v.type.toString );
@@ -703,4 +734,3 @@ debug( UnitTest )
         }
     }
 }
-
