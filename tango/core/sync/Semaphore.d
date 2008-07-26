@@ -325,20 +325,25 @@ debug( UnitTest )
                 Thread.yield();
             }
 
-            for( int i = numConsumers * 10; i > 0; --i )
+            for( int i = numConsumers * 1000; i > 0; --i )
             {
                 synchronized( synComplete )
                 {
                     if( numComplete == numConsumers )
                         break;
                 }
+                Thread.yield();
             }
 
             synchronized( synComplete )
             {
                 assert( numComplete == numConsumers );
             }
-            assert( numConsumed == numToProduce );
+
+            synchronized( synConsumed )
+            {
+                assert( numConsumed == numToProduce );
+            }
 
             assert( !semaphore.tryWait() );
             semaphore.notify();
