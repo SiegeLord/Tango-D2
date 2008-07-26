@@ -119,7 +119,6 @@ struct CodePage
                    {
                    wchar[2000] tmp = void;
                    wchar[] wide = (src.length <= tmp.length) ? tmp : new wchar[src.length];
-                   scope (exit) if (wide !is tmp) delete wide;
 
                    len = MultiByteToWideChar (from, 0, cast(PCHAR)src.ptr, src.length,
                                               wide.ptr, wide.length);
