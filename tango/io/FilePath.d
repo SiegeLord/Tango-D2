@@ -1356,7 +1356,7 @@ debug (UnitTest)
                 assert (fp.ext == "bar");
                 assert (fp.isChild);
 
-                fp = new FilePath(r"C:\foo\bar\test.bar");
+                fp = new FilePath(r"C:/foo/bar/test.bar");
                 assert (fp.path == "C:/foo/bar/");
                 fp = new FilePath(r"C:/foo/bar/test.bar");
                 assert (fp.path == r"C:/foo/bar/");
