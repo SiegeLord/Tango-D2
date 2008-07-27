@@ -11,6 +11,7 @@
 
 module tango.io.TempFile;
 
+import Path = tango.io.Path;
 import tango.math.random.Kiss : Kiss;
 import tango.io.DeviceConduit : DeviceConduit;
 import tango.io.FileConduit : FileConduit;
@@ -53,7 +54,7 @@ version( Win32 )
             len = GetTempPathA(len+1, result.ptr);
             if( len == 0 )
                 throw new Exception("could not obtain temporary path");
-            return result[0..len];
+            return Path.standard(result[0..len]);
         }
     }
     else
@@ -86,7 +87,7 @@ version( Win32 )
             len = GetTempPathW(len+1, result.ptr);
             if( len == 0 )
                 throw new Exception("could not obtain temporary path");
-            return toString(result[0..len]);
+            return Path.standard(toString(result[0..len]));
         }
     }
 
@@ -94,7 +95,7 @@ version( Win32 )
     // was introduced in Windows Vista.
     bool reparseSupported()
     {
-        OSVERSIONINFO versionInfo;
+        OSVERSIONINFO versionInfo = void;
         versionInfo.dwOSVersionInfoSize = versionInfo.sizeof;
 
         void e(){throw new Exception("could not determine Windows version");};
