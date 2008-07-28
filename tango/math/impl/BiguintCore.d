@@ -4,11 +4,14 @@
 
 module tango.math.impl.BiguintCore;
 
-version(D_InlineAsm_X86) { 
-import tango.math.impl.BignumX86;
+version(GNU) {
+    // GDC lies about its X86 support
+import tango.math.impl.BignumNoAsm;    
+} else version(D_InlineAsm_X86) { 
+public import tango.math.impl.BignumX86;
+} else {
+import tango.math.impl.BignumNoAsm;
 }
-
-version(D_InlineAsm_X86) {  // For now, some of this code requires asm routines.
 
 private:
 void itoaZeroPadded(char[] output, uint value, int radix = 10) {
@@ -369,5 +372,3 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
        // delete scratchbuff;
     }
 }
-
-} // inline_Asm

@@ -225,7 +225,7 @@ enum LogicOp : byte { AND, OR, XOR };
 /** Dest[] = src1[] op src2[]
 *   where op == AND,OR, or XOR
 */
-uint multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
+void multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
 {
     // PM: 2 cycles/operation. Limited by execution unit p2.
     // (AMD64 could reach 1.5 cycles/operation since it has TWO read ports.
@@ -608,7 +608,7 @@ unittest {
     
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
-    multibyteMulAdd(bb[1..$-1], aa[1..$], 16, 5);
+    multibyteMulAdd(bb[1..$-1], aa[1..$-2], 16, 5);
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
