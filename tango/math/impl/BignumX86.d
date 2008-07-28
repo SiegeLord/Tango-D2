@@ -76,6 +76,11 @@ assert(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
 }
 
 public:
+    
+// Limits for when to switch between multiplication algorithms.
+enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
+
+    
 /** Multi-byte addition or subtraction
  *    dest[] = src1[] + src2[] + carry (0 or 1).
  * or dest[] = src1[] - src2[] - carry (0 or 1).

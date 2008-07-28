@@ -6,11 +6,11 @@ module tango.math.impl.BiguintCore;
 
 version(GNU) {
     // GDC lies about its X86 support
-import tango.math.impl.BignumNoAsm;    
+public import tango.math.impl.BignumNoAsm;    
 } else version(D_InlineAsm_X86) { 
 public import tango.math.impl.BignumX86;
 } else {
-import tango.math.impl.BignumNoAsm;
+public import tango.math.impl.BignumNoAsm;
 }
 
 private:
@@ -129,9 +129,9 @@ int biguintFromDecimal(uint [] data, char [] s) {
             x = 0;
             // Multiply existing number by 10^19, then add y1.
             if (hi>0) {
-                data[hi] = multibyteMul(data[0..hi], data, 1220703125*2, 0); // 5^13*2 = 0x9184_E72A
+                data[hi] = multibyteMul(data[0..hi], data[0..hi], 1220703125*2, 0); // 5^13*2 = 0x9184_E72A
                 ++hi;
-                data[hi] = multibyteMul(data[0..hi], data, 15625*262144, 0); // 5^6*2^18 = 0xF424_0000
+                data[hi] = multibyteMul(data[0..hi], data[0..hi], 15625*262144, 0); // 5^6*2^18 = 0xF424_0000
                 ++hi;
             } else hi = 2;
             uint c = multibyteIncrement!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
@@ -155,7 +155,7 @@ int biguintFromDecimal(uint [] data, char [] s) {
         else {
 
         while (lo>0) {
-            uint c = multibyteMul(data[0..hi], data, 10, 0);
+            uint c = multibyteMul(data[0..hi], data[0..hi], 10, 0);
             if (c!=0) { data[hi]=c; ++hi; }                
             --lo;
         }
@@ -217,7 +217,7 @@ void simpleAddAssign(uint [] result, uint [] right)
 }
 
 // Limits for when to switch between multiplication algorithms.
-const int KARATSUBALIMIT = 18; // Minimum value for which Karatsuba is worthwhile.
+//enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
 const int CACHELIMIT = 8000;   // Half the size of the data cache.
 
 /* Determine how much space is required for the temporaries

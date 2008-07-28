@@ -16,6 +16,9 @@
 module tango.math.impl.BignumNoAsm;
 
 public:
+    // Limits for when to switch between multiplication algorithms.
+enum : int { KARATSUBALIMIT = 10 }; // Minimum value for which Karatsuba is worthwhile.
+
 /** Multi-byte addition or subtraction
  *    dest[] = src1[] + src2[] + carry (0 or 1).
  * or dest[] = src1[] - src2[] - carry (0 or 1).
@@ -27,13 +30,11 @@ uint multibyteAddSub(char op)(uint[] dest, uint [] src1, uint [] src2, uint carr
     ulong c = carry;
     for (uint i = 0; i < src2.length; ++i) {
         static if (op=='+') c = c  + src1[i] + src2[i];
-             else c = cast(ulong)src1[i] - src2[i] - c;
-        dest[i] = c & 0xFFFF_FFFF;
+             else           c = cast(ulong)src1[i] - src2[i] - c;
+        dest[i] = cast(uint)c;
         c = (c>0xFFFF_FFFF);
-//        c >>>=32;
-//        assert(c==0 || c==1);
     }
-    return c;
+    return cast(uint)c;
 }
 
 unittest
@@ -89,7 +90,7 @@ uint multibyteIncrement(char op)(uint[] dest, uint carry)
     static if (op=='+') {
         ulong c = carry;
         c += dest[0];
-        dest[0] = c & 0xFFFF_FFFF;
+        dest[0] = cast(uint)c;
         if (c<=0xFFFF_FFFF) return 0; 
         
         for (uint i = 1; i < dest.length; ++i) {
@@ -100,7 +101,7 @@ uint multibyteIncrement(char op)(uint[] dest, uint carry)
    } else {
        ulong c = carry;
        c = dest[0] - c;
-       dest[0] = c & 0xFFFF_FFFF;
+       dest[0] = cast(uint)c;
        if (c<=0xFFFF_FFFF) return 0;
         for (uint i = 1; i < dest.length; ++i) {
             --dest[i];
@@ -159,7 +160,7 @@ void multibyteShl(uint [] dest, uint [] src, uint numbits)
     ulong c = 0;
     for(int i=0; i<dest.length; ++i){
         c += (cast(ulong)(src[i]) << numbits);
-        dest[i] = c & 0xFFFF_FFFF;
+        dest[i] = cast(uint)c;
         c >>>= 32;
    }
 }
@@ -173,7 +174,7 @@ void multibyteShr(uint [] dest, uint [] src, uint numbits)
     ulong c = 0;
     for(int i=dest.length-1; i>=0; --i){
         c += (src[i] >>numbits) + (cast(ulong)(src[i]) << (64 - numbits));
-        dest[i]= c & 0xFFFF_FFFF;
+        dest[i]= cast(uint)c;
         c >>>= 32;
    }
 }
@@ -202,13 +203,14 @@ unittest
  */
 uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
 {
+    assert(dest.length==src.length);
     ulong c = carry;
     for(int i=0; i<src.length; ++i){
         c += cast(ulong)(src[i]) * multiplier;
-        dest[i] = c & 0xFFFF_FFFF;
+        dest[i] = cast(uint)c;
         c>>=32;
     }
-    return c;
+    return cast(uint)c;
 }
 
 unittest
@@ -224,14 +226,14 @@ unittest
  */
 uint multibyteMulAdd(uint [] dest, uint[] src, uint multiplier, uint carry)
 {
-    assert(dest.length==src.length);
+    assert(dest.length == src.length);
     ulong c = carry;
-    for(int i=0; i<src.length; ++i){
-        c = c + cast(ulong)(src[i]) * multiplier + dest[i];
-        dest[i] = c & 0xFFFF_FFFF;
-        c>>=32;
+    for(int i = 0; i < src.length; ++i){
+        c += cast(ulong)(multiplier) * src[i]  + dest[i];
+        dest[i] = cast(uint)c;
+        c >>= 32;
     }
-    return c;    
+    return cast(uint)c;    
 }
 
 unittest {
@@ -272,12 +274,11 @@ uint multibyteDiv(uint [] dest, uint divisor, uint overflow)
     ulong c = cast(ulong)overflow;
     for(int i=dest.length-1; i>=0; --i){
         c = (c<<32) + cast(ulong)(dest[i]);
-        ulong q = c/divisor;
+        uint q = cast(uint)(c/divisor);
         c -= divisor*q;
         dest[i] = q;
     }
-    return c;
-
+    return cast(uint)c;
 }
 
 unittest {
