@@ -32,6 +32,17 @@ void toHexZeroPadded(char[] output, uint value) {
 }
 
 public:
+    
+// Returns the highest value of i for which left[i]!=right[i],
+// or 0 if left[]==right[]
+int lastDifferentDigit(uint [] left, uint [] right)
+{
+    assert(left.length == right.length);
+    for (int i=left.length; i>0; --i) {
+        if (left[i]!=right[i]) return i;
+    }
+    return 0;
+}
 
 // Converts a big uint to a hexadecimal string.
 //
@@ -71,7 +82,7 @@ int biguintToDecimal(char [] buff, uint [] data){
     // the price of 3 divisions and a shr; this version only gives 27 digits
     // for 3 divisions.
     while(data.length>1) {
-        uint rem = multibyteDiv(data, 10_0000_0000, 0);
+        uint rem = multibyteDivAssign(data, 10_0000_0000, 0);
         itoaZeroPadded(buff[sofar-9 .. sofar], rem);
         sofar -= 9;
         if (data[$-1]==0 && data.length>1) {
@@ -134,8 +145,8 @@ int biguintFromDecimal(uint [] data, char [] s) {
                 data[hi] = multibyteMul(data[0..hi], data[0..hi], 15625*262144, 0); // 5^6*2^18 = 0xF424_0000
                 ++hi;
             } else hi = 2;
-            uint c = multibyteIncrement!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
-            c += multibyteIncrement!('+')(data[1..hi], cast(uint)(y>>32));
+            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
+            c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
             if (c!=0) { data[hi]=c; ++hi; }
             y = 0;
             lo = 0;
@@ -159,9 +170,9 @@ int biguintFromDecimal(uint [] data, char [] s) {
             if (c!=0) { data[hi]=c; ++hi; }                
             --lo;
         }
-            uint c = multibyteIncrement!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
+            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
             if (y>0xFFFF_FFFFL) {
-                c += multibyteIncrement!('+')(data[1..hi], cast(uint)(y>>32));
+                c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
             }
             if (c!=0) { data[hi]=c; ++hi; }
             hi+=2;
@@ -183,11 +194,11 @@ body {
         multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
 
-// add two uints of possibly different lengths. Result must be at least as long
+// add two uints of possibly different lengths. Result must be as long
 // as the larger length.
 uint addSimple(uint [] result, uint [] left, uint [] right)
 in {
-    assert(result.length==left.length+1 || result.length==left.length);
+    assert(result.length == left.length);
     assert(left.length >= right.length);
     assert(right.length>0);
 }
@@ -196,28 +207,30 @@ body {
             left[0..right.length], right, 0);
     if (right.length < left.length) {
         result[right.length..left.length] = left[right.length .. $];            
-        carry = multibyteIncrement!('+')(result[right.length..$], carry);
-    } else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
+        carry = multibyteIncrementAssign!('+')(result[right.length..$], carry);
+    } //else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
     return carry;
 }
 
-
+/*  result must be larger than right.
+*/
 void simpleSubAssign(uint [] result, uint [] right)
 {
+    assert(result.length > right.length);
     uint c = multibyteAddSub!('-')(result[0..right.length], result[0..right.length], right, 0); 
-    if (c) c = multibyteIncrement!('-')(result[right.length .. $], c);
+    if (c) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
     assert(c==0);
 }
 
 void simpleAddAssign(uint [] result, uint [] right)
 {
+   assert(result.length > right.length);
    uint c = multibyteAddSub!('+')(result[0..right.length], result[0..right.length], right, 0);
-   if (c) c = multibyteIncrement!('+')(result[right.length .. $], c);
+   if (c) c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
    assert(c==0);
 }
 
 // Limits for when to switch between multiplication algorithms.
-//enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
 const int CACHELIMIT = 8000;   // Half the size of the data cache.
 
 /* Determine how much space is required for the temporaries
@@ -233,56 +246,48 @@ uint karatsubaRequiredBuffSize(uint xlen)
 * ie 2*y.length > x.length >= y.length.
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
-*
 */
 void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 {
     assert(result.length == x.length + y.length);
-    // half length, round up.
     assert(x.length >= y.length);
-
     if (x.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
-    }
-    uint half = (x.length >> 1) + (x.length & 1);
-    assert(y.length>half, "asymmetric Karatsuba");
-    
+    }    
     // Karatsuba multiply uses the following result:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 + N * mid
     // where mid = (x1+x0)*(y1+y0) - x1y1 - x0y0
     // requiring 3 multiplies of length N, instead of 4.
+
+    // half length, round up.
+    uint half = (x.length >> 1) + (x.length & 1);
+    assert(y.length>half, "Asymmetric Karatsuba");
     
     uint [] x0 = x[0 .. half];
     uint [] x1 = x[half .. $];    
     uint [] y0 = y[0 .. half];
     uint [] y1 = y[half .. $];
-        
-    // Add the high and low parts of x and y. This will generate carries of either 0 or 1.
-     
-    uint carry_x = addSimple(result[0..half], x0, x1);
-    result[half] = carry_x;
-    uint carry_y = addSimple(result[half + 1 .. half * 2 + 1], y0, y1);
-    result[half * 2 + 1] = carry_y;
-    uint [] xsum = result[0 .. half+carry_x];
-    uint [] ysum = result[half+1 .. half*2 + 1 + carry_y];
-
-    uint [] mid = scratchbuff[0 .. ysum.length + xsum.length];
-    uint [] newscratchbuff = scratchbuff[mid.length .. $];
-    
-    if (xsum.length<ysum.length) {
-        assert(carry_y && !carry_x);
-        mulKaratsuba(mid, ysum, xsum, newscratchbuff);
-    } else  {
-        assert(!(carry_y && !carry_x));
-        mulKaratsuba(mid, xsum, ysum, newscratchbuff);    
-    }
-    // MID = resultlo*resulthi - LO - HI.
-    // low half of result gets x0 * y0. High half gets x1 * y1
-   
+    uint [] xsum = result[0 .. half]; // initially use result to store temporaries
+    uint [] ysum = result[half .. half*2];
+    uint [] mid = scratchbuff[0 .. half*2+1];
+    uint [] newscratchbuff = scratchbuff[half*2+2 .. $];
     uint [] resultLow = result[0 .. x0.length + y0.length];
+    uint [] resultHigh = result[x0.length + y0.length .. $];
+        
+    // Add the high and low parts of x and y.
+    // This will generate carries of either 0 or 1.
+    uint carry_x = addSimple(xsum, x0, x1);
+    uint carry_y = addSimple(ysum, y0, y1);
+    
+    mulKaratsuba(mid[0..half*2], xsum, ysum, newscratchbuff);
+    mid[half*2] = carry_x & carry_y;
+    if (carry_x)  simpleAddAssign(mid[half..$], ysum);
+    if (carry_y)  simpleAddAssign(mid[half..$], xsum);
+    
+    // Low half of result gets x0 * y0. High half gets x1 * y1
+   
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
     mid.simpleSubAssign(resultLow);
-    uint [] resultHigh = result[x0.length + y0.length .. $];
     mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
     mid.simpleSubAssign(resultHigh);
     

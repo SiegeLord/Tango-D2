@@ -199,7 +199,7 @@ unittest
  *  op must be '+' or '-'
  *  Returns final carry or borrow (0 or 1)
  */
-uint multibyteIncrement(char op)(uint[] dest, uint carry)
+uint multibyteIncrementAssign(char op)(uint[] dest, uint carry)
 {
     enum { LASTPARAM = 1*4 } // 0* pushes + return address.
     asm {
@@ -778,7 +778,7 @@ L_enter_odd:
  * Based on public domain code by Eric Bainville. 
  * (http://www.bealto.com/) Used with permission.
  */
-uint multibyteDiv(uint [] dest, uint divisor, uint overflow)
+uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
 {
     // Timing: limited by a horrible dependency chain.
     // Pentium M: 18 cycles/op, 8 resource stalls/op.
@@ -890,7 +890,7 @@ unittest {
     uint [] aa = new uint[101];
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
     uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
-    uint r = multibyteDiv(aa, 0x8EFD_FCFB, overflow);
+    uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
     for (int i=0; i<aa.length-1; ++i) assert(aa[i] == 0x8765_4321 * (i+3));
     assert(r==0x33FF_7461);
 

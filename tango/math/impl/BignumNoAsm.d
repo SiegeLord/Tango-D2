@@ -85,7 +85,7 @@ unittest
  *  op must be '+' or '-'
  *  Returns final carry or borrow (0 or 1)
  */
-uint multibyteIncrement(char op)(uint[] dest, uint carry)
+uint multibyteIncrementAssign(char op)(uint[] dest, uint carry)
 {
     static if (op=='+') {
         ulong c = carry;
@@ -119,8 +119,8 @@ enum LogicOp : byte { AND, OR, XOR };
 void multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
 {
     for (int i=0; i<dest.length;++i) {
-        static if (op==LogicOp.AND) dest[i] = src1[i] & src2[i];
-        else static if (op==LogicOp.OR) dest[i] = src1[i] | src2[i];
+        static if (op == LogicOp.AND) dest[i] = src1[i] & src2[i];
+        else static if (op == LogicOp.OR) dest[i] = src1[i] | src2[i];
         else dest[i] = src1[i] ^ src2[i];
     }
 }
@@ -269,13 +269,13 @@ void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
 /**  dest[] /= divisor.
  * overflow is the initial remainder, and must be in the range 0..divisor-1.
  */
-uint multibyteDiv(uint [] dest, uint divisor, uint overflow)
+uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
 {
     ulong c = cast(ulong)overflow;
-    for(int i=dest.length-1; i>=0; --i){
+    for(int i = dest.length-1; i>=0; --i){
         c = (c<<32) + cast(ulong)(dest[i]);
         uint q = cast(uint)(c/divisor);
-        c -= divisor*q;
+        c -= divisor * q;
         dest[i] = q;
     }
     return cast(uint)c;
@@ -285,7 +285,7 @@ unittest {
     uint [] aa = new uint[101];
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
     uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
-    uint r = multibyteDiv(aa, 0x8EFD_FCFB, overflow);
+    uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
     for (int i=aa.length-1; i>=0; --i) { assert(aa[i] == 0x8765_4321 * (i+3)); }
     assert(r==0x33FF_7461);
 
