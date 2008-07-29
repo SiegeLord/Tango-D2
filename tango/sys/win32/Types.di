@@ -13609,8 +13609,8 @@ struct WNDCLASSA
     HICON hIcon;
     HCURSOR hCursor;
     HBRUSH hbrBackground;
-    LPCTSTR lpszMenuName;
-    LPCTSTR lpszClassName;
+    LPCSTR lpszMenuName;
+    LPCSTR lpszClassName;
 }
 
 alias WNDCLASSA* PWNDCLASSA, LPWNDCLASSA;
