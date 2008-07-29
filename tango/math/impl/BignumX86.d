@@ -46,7 +46,9 @@ module tango.math.impl.BignumX86;
 */
 
 private:
-version(D_InlineAsm_X86) {
+version(GNU) {
+    // GDC is a filthy liar. It can't actually do inline asm.
+} else version(D_InlineAsm_X86) {
 /* Duplicate string s, with n times, substituting index for '@'.
  *
  * Each instance of '@' in s is replaced by 0,1,...n-1. This is a helper
