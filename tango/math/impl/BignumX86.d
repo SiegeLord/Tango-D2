@@ -4,13 +4,15 @@
  * All functions operate on arrays of uints, stored LSB first.
  * If there is a destination array, it will be the first parameter.
  * Currently, all of these functions are subject to change, and are
- * intended for internal use only.
+ * intended for internal use only. 
+ * The symbol [#] indicates an array of machine words which is to be
+ * interpreted as a multi-byte number.
  *
- * Author: Don Clugston
- * Date: May 2008.
- *
- * License: Public Domain
- *
+ * Copyright: Copyright (C) 2008 Don Clugston.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Don Clugston
+ */
+/**
  * In simple terms, there are 3 modern x86 microarchitectures:
  * (a) the P6 family (Pentium Pro, PII, PIII, PM, Core), produced by Intel;
  * (b) the K6, Athlon, and AMD64 families, produced by AMD; and
@@ -84,8 +86,8 @@ enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is wort
 
     
 /** Multi-byte addition or subtraction
- *    dest[] = src1[] + src2[] + carry (0 or 1).
- * or dest[] = src1[] - src2[] - carry (0 or 1).
+ *    dest[#] = src1[#] + src2[#] + carry (0 or 1).
+ * or dest[#] = src1[#] - src2[#] - carry (0 or 1).
  * Returns carry or borrow (0 or 1).
  * Set op == '+' for addition, '-' for subtraction.
  */
@@ -197,7 +199,7 @@ unittest
     }
 }
 
-/** dest[] += carry, or dest[] -= carry.
+/** dest[#] += carry, or dest[#] -= carry.
  *  op must be '+' or '-'
  *  Returns final carry or borrow (0 or 1)
  */
@@ -229,7 +231,7 @@ L2:     dec EAX;
 
 enum LogicOp : byte { AND, OR, XOR };
 
-/** Dest[] = src1[] op src2[]
+/** Dest[#] = src1[#] op src2[#]
 *   where op == AND,OR, or XOR
 */
 void multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
@@ -294,7 +296,7 @@ unittest
     }
 }
     
-/** dest[] = src[] << numbits
+/** dest[#] = src[#] << numbits
  *  numbits must be in the range 1..31
  */
 void multibyteShl(uint [] dest, uint [] src, uint numbits)
@@ -341,7 +343,7 @@ L_last:
      }
 }
 
-/** dest[] = src[] >> numbits
+/** dest[#] = src[#] >> numbits
  *  numbits must be in the range 1..31
  */
 void multibyteShr(uint [] dest, uint [] src, uint numbits)
@@ -409,7 +411,7 @@ unittest
 	    && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
-/** dest[] = src[] * multiplier + carry.
+/** dest[#] = src[#] * multiplier + carry.
  * Returns carry.
  */
 uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
@@ -480,7 +482,7 @@ unittest
 }
 
 /**
- * dest[] += src[] * multiplier + carry(0..FFFF_FFFF).
+ * dest[#] += src[#] * multiplier + carry(0..FFFF_FFFF).
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
 uint multibyteMulAdd(uint [] dest, uint[] src, uint multiplier, uint carry)
@@ -622,7 +624,7 @@ unittest {
 }
 
 /** 
-   Sets result = result[0..left.length] + left * right
+   Sets result[#] = result[0..left.length] + left[#] * right[#]
    
    It is defined in this way to allow cache-efficient multiplication.
    This function is equivalent to:
@@ -771,7 +773,7 @@ L_enter_odd:
      }
 }
 
-/**  dest[] /= divisor.
+/**  dest[#] /= divisor.
  * overflow is the initial remainder, and must be in the range 0..divisor-1.
  * divisor must not be a power of 2 (use right shift for that case;
  * A division by zero will occur if divisor is a power of 2).

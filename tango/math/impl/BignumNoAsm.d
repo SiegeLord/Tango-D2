@@ -1,5 +1,5 @@
 /** Arbitrary precision arithmetic ('bignum') for processors with no asm support
-  *
+ *
  * All functions operate on arrays of uints, stored LSB first.
  * If there is a destination array, it will be the first parameter.
  * Currently, all of these functions are subject to change, and are
@@ -7,10 +7,9 @@
  * This module is intended only to assist development of high-speed routines
  * on currently unsupported processors.
  *
- * Author: Don Clugston
- * Date: May 2008.
- *
- * License: Public Domain
+ * Copyright: Copyright (C) 2008 Don Clugston.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Don Clugston
  */
 
 module tango.math.impl.BignumNoAsm;

@@ -1,5 +1,8 @@
 /** Fundamental operations for arbitrary-precision arithmetic
  *
+ * Copyright: Copyright (C) 2008 Don Clugston.  All rights reserved.
+ * License:   BSD style: $(LICENSE)
+ * Authors:   Don Clugston
  */
 
 module tango.math.impl.BiguintCore;
