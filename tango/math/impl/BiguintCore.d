@@ -9,44 +9,14 @@ module tango.math.impl.BiguintCore;
 
 version(GNU) {
     // GDC lies about its X86 support
-public import tango.math.impl.BignumNoAsm;    
+private import tango.math.impl.BignumNoAsm;    
 } else version(D_InlineAsm_X86) { 
-public import tango.math.impl.BignumX86;
+private import tango.math.impl.BignumX86;
 } else {
-public import tango.math.impl.BignumNoAsm;
-}
-
-private:
-void itoaZeroPadded(char[] output, uint value, int radix = 10) {
-    int x = output.length - 1;
-    for( ; x>=0; --x) {
-        output[x]= value % radix + '0';
-        value /= radix;
-    }
-}
-
-void toHexZeroPadded(char[] output, uint value) {
-    int x = output.length - 1;
-    const char [] hexDigits = "0123456789ABCDEF";
-    for( ; x>=0; --x) {        
-        output[x] = hexDigits[value & 0xF];
-        value >>>= 4;        
-    }
+private import tango.math.impl.BignumNoAsm;
 }
 
 public:
-    
-// Returns the highest value of i for which left[i]!=right[i],
-// or 0 if left[]==right[]
-int lastDifferentDigit(uint [] left, uint [] right)
-{
-    assert(left.length == right.length);
-    for (int i=left.length; i>0; --i) {
-        if (left[i]!=right[i]) return i;
-    }
-    return 0;
-}
-
 // Converts a big uint to a hexadecimal string.
 //
 // Optionally, a separator character (eg, an underscore) may be added between
@@ -184,8 +154,197 @@ int biguintFromDecimal(uint [] data, char [] s) {
     return hi;
 }
 
+public:
+
+/** General unsigned subtraction routine for bigints.
+ *  Sets result = x - y. If the result is negative, negative will be true.
+ *
+ *  The length of y must not be larger than the length of x.
+ */
+uint [] biguintSubtract(uint[] x, uint[] y, bool *negative)
+{
+    if (x.length == y.length) {
+        // There's a possibility of cancellation, if x and y are almost equal.
+        int last = lastDifferentDigit(x, y);
+        uint [] result = new uint[last+1];
+        if (x[last] < y[last]) { // we know result is negative
+            multibyteAddSub!('-')(result[0..last+1], y[0..last+1], x[0..last+1], 0);
+            *negative = true;
+        } else { // positive or zero result
+            multibyteAddSub!('-')(result[0..last+1], x[0..last+1], y[0..last+1], 0);
+            *negative = false;
+        }
+        return result;
+    }
+    // Lengths are different
+    uint [] large, small;
+    if (x.length < y.length) {
+        *negative = true;
+        large = y; small = x;
+//        return biguintSubDifferentLength(y, x);
+    } else {
+        *negative = false;
+        large = x; small = y;
+  //      return biguintSubDifferentLength(x, y);
+    }
+    // result.length will be equal to larger length, or could decrease by 1.
+    
+    uint [] result = new uint[large.length];
+    uint carry = multibyteAddSub!('-')(result[0..small.length], large[0..small.length], small, 0);
+    result[small.length..$-1] = large[small.length..$];
+    if (carry) {
+        multibyteIncrementAssign!('-')(result[small.length..$-1], carry);
+        if (result[$-1]==0) return result[0..$-1];
+    }
+    return result;
+}
+
+// return a+b
+uint [] biguintAdd(uint[] a, uint [] b) {
+    uint [] x, y;
+    if (a.length<b.length) { x = b; y = a; } else {x = a; y = b; }
+    // now we know x.length > y.length
+    // create result. add 1 in case it overflows
+    uint [] result = new uint[x.length + 1];
+    
+    uint carry = multibyteAddSub!('+')(result[0..y.length], x[0..y.length], y, 0);
+    if (x.length != y.length){
+        result[y.length..$-1]= x[y.length..$];
+        carry  = multibyteIncrementAssign!('+')(result[y.length..$-1], carry);
+    }
+    if (carry) {
+        result[$-1] = carry;
+        return result;
+    } else return result[0..$-1];
+}
+
+
+/** return x+y
+ */
+uint [] biguintAddInt(uint[] x, ulong y)
+{
+    uint hi = cast(uint)(y >>> 32);
+    uint lo = cast(uint)(y& 0xFFFF_FFFF);
+    uint len = x.length;
+    if (x.length < 2 && hi!=0) ++len;
+    uint [] result = new uint[len+1];
+    result[0..x.length] = x[]; 
+    if (x.length < 2 && hi!=0) { result[1]=hi; hi=0; }
+    uint carry = multibyteIncrementAssign!('+')(result[0..$-1], lo);
+    if (hi!=0) carry += multibyteIncrementAssign!('+')(result[1..$-1], hi);
+    if (carry) {
+        result[$-1] = carry;
+        return result;
+    } else return result[0..$-1];
+}
+    
+/** General unsigned multiply routine for bigints.
+ *  Sets result = x*y.
+ *
+ *  The length of y must not be larger than the length of x.
+ *  Different algorithms are used, depending on the lengths of x and y.
+ * 
+ */
+void biguintMul(uint[] result, uint[] x, uint[] y)
+{
+    assert( result.length == x.length + y.length );
+    assert( y.length > 0 );
+    assert( x.length >= y.length);
+    if (y.length <= KARATSUBALIMIT) {
+        // Small multiplier, we'll just use the asm classic multiply.
+        if (y.length==1) { // Trivial case, no cache effects to worry about
+            result[x.length] = multibyteMul(result[0..x.length], x, y[0], 0);
+            return;
+        }
+        if (x.length * y.length < CACHELIMIT) return mulSimple(result, x, y);
+        
+        // If x is so big that it won't fit into the cache, we divide it into chunks            
+        // Every chunk must be greater than y.length.
+        // We make the first chunk shorter, if necessary, to ensure this.
+        
+        uint chunksize = CACHELIMIT/y.length;
+        uint residual  =  x.length % chunksize;
+        if (residual < y.length) { chunksize -= y.length; }
+        // Use schoolbook multiply.
+        mulSimple(result[0 .. chunksize + y.length], x[0..chunksize], y);
+        uint done = chunksize;        
+    
+        while (done < x.length) {            
+            // result[done .. done+ylength] already has a value.
+            chunksize = (done + (CACHELIMIT/y.length) < x.length) ? (CACHELIMIT/y.length) :  x.length - done;
+            uint [KARATSUBALIMIT] partial;
+            partial[0..y.length] = result[done..done+y.length];
+            mulSimple(result[done..done+chunksize+y.length], x[done..done+chunksize], y);
+            simpleAddAssign(result[done..done+chunksize + y.length], partial[0..y.length]);
+            done += chunksize;
+        }
+        return;
+    }
+    
+    uint half = (x.length >> 1) + (x.length & 1);
+    if (y.length <= half) {
+        // UNBALANCED MULTIPLY
+        // Use school multiply to cut into Karatsuba-sized squares,
+        // unless y is so small that Karatsuba isn't worthwhile.
+        // unbalanced case - use school multiply to cut into chunks, each sized 
+        // y.length * y.length. Use Karatsuba on each chunk.
+        // TODO: It _might_ be better to use non-square chunks (and have fewer chunks).
+        
+        // The first chunk is bigger, since it also needs to cover the leftover bits.
+        uint chunksize =  y.length + (x.length % y.length);
+        // We make the buffer a bit bigger so we have space for the partial sums.
+        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(chunksize) + y.length * 2];
+        if (y.length == half) {
+            chunksize = x.length - y.length;
+            mulKaratsuba(result[0 .. y.length + chunksize], y, x[0 .. chunksize], scratchbuff);
+        } else {
+            mulKaratsuba(result[0 .. y.length + chunksize], x[0 .. chunksize], y, scratchbuff);
+        }
+        uint done = chunksize;
+        uint [] partial = scratchbuff[$-y.length*2 .. $];
+        while (done < x.length) {
+            chunksize = (done + y.length <= x.length) ? y.length :  x.length - done;
+            mulKaratsuba(partial[0 .. y.length + chunksize], x[done .. done+chunksize], y, scratchbuff);
+            result[done + y.length .. done + y.length + chunksize] 
+                = partial[y.length .. y.length + chunksize];
+            simpleAddAssign(result[done .. y.length + chunksize], partial[0 .. y.length]);
+            done += y.length;
+        }
+        delete scratchbuff;
+    } else {
+        // Balanced. Use Karatsuba directly.
+        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(x.length)];
+        mulKaratsuba(result, x, y, scratchbuff);
+        delete scratchbuff;
+    }
+}
+
+// return x/y
+uint[] biguintDivInt(uint [] x, uint y) {
+    uint [] result = new uint[x.length];
+    if ((y&(-y))==y) {
+        // perfect power of 2
+        uint b = 0;
+        for (;y!=0; y>>=1) {
+            ++b;
+        }
+        multibyteShr(result, x, b);
+    } else {
+        result[] = x[];
+        uint rem = multibyteDivAssign(result, y, 0);
+    }
+    if (result[$-1]==0 && result.length>1) {
+        return result[0..$-1];
+    } else return result;
+}
+
+
 private:
-// classic 'schoolbook' multiplication.
+// ------------------------
+// These in-place functions are only for internal use; they are incompatible
+// with COW.
+
+// Classic 'schoolbook' multiplication.
 void mulSimple(uint[] result, uint [] left, uint[] right)
 in {    
     assert(result.length == left.length + right.length);
@@ -196,6 +355,7 @@ body {
     if (right.length>1)
         multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
+
 
 // add two uints of possibly different lengths. Result must be as long
 // as the larger length.
@@ -224,6 +384,7 @@ void simpleSubAssign(uint [] result, uint [] right)
     if (c) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
     assert(c==0);
 }
+
 
 void simpleAddAssign(uint [] result, uint [] right)
 {
@@ -298,85 +459,34 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     result[half..$].simpleAddAssign(mid);
 }
 
-public:
-    
-/** General unsigned multiply routine for bigints.
- *  Sets result = x*y.
- *
- *  The length of y must not be larger than the length of x.
- *  Different algorithms are used, depending on the lengths of x and y.
- * 
- */
-void biguintMul(uint[] result, uint[] x, uint[] y)
-{
-    assert( result.length == x.length + y.length );
-    assert( y.length > 0 );
-    assert( x.length >= y.length);
-    if (y.length <= KARATSUBALIMIT) {
-        // Small multiplier, we'll just use the asm classic multiply.
-        if (y.length==1) { // Trivial case, no cache effects to worry about
-            result[x.length] = multibyteMul(result[0..x.length], x, y[0], 0);
-            return;
-        }
-        if (x.length * y.length < CACHELIMIT) return mulSimple(result, x, y);
-        
-        // If x is so big that it won't fit into the cache, we divide it into chunks            
-        // Every chunk must be greater than y.length.
-        // We make the first chunk shorter, if necessary, to ensure this.
-        
-        uint chunksize = CACHELIMIT/y.length;
-        uint residual  =  x.length % chunksize;
-        if (residual < y.length) { chunksize -= y.length; }
-        // Use schoolbook multiply.
-        mulSimple(result[0 .. chunksize + y.length], x[0..chunksize], y);
-        uint done = chunksize;        
-    
-        while (done < x.length) {            
-            // result[done .. done+ylength] already has a value.
-            chunksize = (done + (CACHELIMIT/y.length) < x.length) ? (CACHELIMIT/y.length) :  x.length - done;
-            uint [KARATSUBALIMIT] partial;
-            partial[0..y.length] = result[done..done+y.length];
-            mulSimple(result[done..done+chunksize+y.length], x[done..done+chunksize], y);
-            simpleAddAssign(result[done..done+chunksize + y.length], partial[0..y.length]);
-            done += chunksize;
-        }
-        return;
-    }
-    
-    uint half = (x.length >> 1) + (x.length & 1);
-    if (y.length <= half) {
-        // UNBALANCED MULTIPLY
-        // Use school multiply to cut into Karatsuba-sized squares,
-        // unless y is so small that Karatsuba isn't worthwhile.
-        // unbalanced case - use school multiply to cut into chunks, each sized 
-        // y.length * y.length. Use Karatsuba on each chunk.
-        // TODO: It _might_ be better to use non-square chunks (and have fewer chunks).
-        
-        // The first chunk is bigger, since it also needs to cover the leftover bits.
-        uint chunksize =  y.length + (x.length % y.length);
-        // We make the buffer a bit bigger so we have space for the partial sums.
-        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(chunksize) + y.length * 2];
-        if (y.length == half) {
-            chunksize = x.length - y.length;
-            mulKaratsuba(result[0 .. y.length + chunksize], y, x[0 .. chunksize], scratchbuff);
-        } else {
-            mulKaratsuba(result[0 .. y.length + chunksize], x[0 .. chunksize], y, scratchbuff);
-        }
-        uint done = chunksize;
-        uint [] partial = scratchbuff[$-y.length*2 .. $];
-        while (done < x.length) {
-            chunksize = (done + y.length <= x.length) ? y.length :  x.length - done;
-            mulKaratsuba(partial[0 .. y.length + chunksize], x[done .. done+chunksize], y, scratchbuff);
-            result[done + y.length .. done + y.length + chunksize] 
-                = partial[y.length .. y.length + chunksize];
-            simpleAddAssign(result[done .. y.length + chunksize], partial[0 .. y.length]);
-            done += y.length;
-        }
-       //delete scratchbuff;
-    } else {
-        // Balanced. Use Karatsuba directly.
-        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(x.length)];
-        mulKaratsuba(result, x, y, scratchbuff);
-       // delete scratchbuff;
+private:
+void itoaZeroPadded(char[] output, uint value, int radix = 10) {
+    int x = output.length - 1;
+    for( ; x>=0; --x) {
+        output[x]= value % radix + '0';
+        value /= radix;
     }
 }
+
+void toHexZeroPadded(char[] output, uint value) {
+    int x = output.length - 1;
+    const char [] hexDigits = "0123456789ABCDEF";
+    for( ; x>=0; --x) {        
+        output[x] = hexDigits[value & 0xF];
+        value >>>= 4;        
+    }
+}
+
+private:
+    
+// Returns the highest value of i for which left[i]!=right[i],
+// or 0 if left[]==right[]
+int lastDifferentDigit(uint [] left, uint [] right)
+{
+    assert(left.length == right.length);
+    for (int i=left.length-1; i>0; --i) {
+        if (left[i]!=right[i]) return i;
+    }
+    return 0;
+}
+
