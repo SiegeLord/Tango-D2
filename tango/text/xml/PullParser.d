@@ -90,7 +90,7 @@ class PullParser(Ch = char)
                    {
                    while (*++p <= 32)
                           if (p >= text.end)                                      
-                              return doEndOfStream;
+                              return endOfInput;
                    text.point = p;
                    }
                 
@@ -134,7 +134,7 @@ class PullParser(Ch = char)
                       text.point = p;
                       return type = XmlTokenType.Data;
                       }
-                   return XmlTokenType.Done;
+                   return endOfInput;
                    }
 
                 switch (p[1])
@@ -147,7 +147,7 @@ class PullParser(Ch = char)
 
                             // check if we ran past the end
                             if (q >= e)
-                                return XmlTokenType.Done;
+                                return endOfInput;
 
                             text.point = q;
                             if (*q != ':') 
@@ -180,25 +180,25 @@ else
                             if (text[2..4] == "--") 
                                {
                                text.point += 4;
-                               return doComment();
+                               return doComment;
                                }       
                             else 
                                if (text[2..9] == "[CDATA[") 
                                   {
                                   text.point += 9;
-                                  return doCData();
+                                  return doCData;
                                   }
                                else 
                                   if (text[2..9] == "DOCTYPE") 
                                      {
                                      text.point += 9;
-                                     return doDoctype();
+                                     return doDoctype;
                                      }
-                            return doUnexpected("!");
+                            return doUnexpected("!", p);
 
                        case '\?':
                             text.point += 2;
-                            return doPI();
+                            return doPI;
 
                        case '/':
                             p += 2;
@@ -224,8 +224,8 @@ else
                             while (*q <= 32) 
                                    ++q;
 
-                            if (q >= text.end)
-                                return doUnexpectedEOF;
+                            if (q >= e)
+                                return endOfInput;
 
                             if (*q is '>')
                                {
@@ -233,7 +233,7 @@ else
                                --depth;
                                return type = XmlTokenType.EndElement;
                                }
-                            return doUnexpected(">");
+                            return doExpected(">", q);
                        }
 
                return XmlTokenType.Done;
@@ -252,7 +252,7 @@ else
                 while (*q > 63 || text.attributeName[*q])
                        ++q;
                 if (q >= e)
-                    return doUnexpectedEOF;
+                    return endOfInput;
 
                 if (*q is ':')
                    {
@@ -261,8 +261,6 @@ else
 
                    while (*q > 63 || text.attributeName[*q])
                           ++q;
-                   if (q >= e)
-                       return doUnexpectedEOF;
 
                    localName = p[0 .. q - p];
                    }
@@ -276,14 +274,14 @@ else
                    {
                    while (*++q <= 32) {}
                    if (q >= e)
-                       return doUnexpectedEOF;
+                       return endOfInput;
                    }
 
                 if (*q is '=')
                    {
                    while (*++q <= 32) {}
                    if (q >= e)
-                       return doUnexpectedEOF;
+                       return endOfInput;
 
                    auto quote = *q;
                    switch (quote)
@@ -299,14 +297,14 @@ else
                                   text.point = q + 1;   //Skip end quote
                                   return type = XmlTokenType.Attribute;
                                   }
-                               return doUnexpectedEOF; 
+                               return endOfInput; 
 
                           default: 
-                               return doUnexpected("\' or \"");
+                               return doExpected("\' or \"", q);
                           }
                    }
                 
-                return doUnexpected (q[0..1]);
+                return doUnexpected (q[0..1], q);
         }
 
         /***********************************************************************
@@ -321,7 +319,7 @@ else
                    text.point += 2;
                    return type = XmlTokenType.EndEmptyElement;
                    }
-                return doUnexpected("/>");               
+                return doExpected("/>", text.point);               
        }
         
         /***********************************************************************
@@ -335,7 +333,7 @@ else
                 while (text.good)
                       {
                       if (! text.forwardLocate('-')) 
-                            return doUnexpectedEOF;
+                            return endOfInput;
 
                       if (text[0..3] == "-->") 
                          {
@@ -347,7 +345,7 @@ else
                       ++text.point;
                       }
 
-                return doUnexpectedEOF;
+                return endOfInput;
         }
         
         /***********************************************************************
@@ -361,7 +359,7 @@ else
                 while (text.good)
                       {
                       if (! text.forwardLocate(']')) 
-                            return doUnexpectedEOF;
+                            return endOfInput;
                 
                       if (text[0..3] == "]]>") 
                          {
@@ -373,7 +371,7 @@ else
                       ++text.point;
                       }
 
-                return doUnexpectedEOF;
+                return endOfInput;
         }
         
         /***********************************************************************
@@ -389,7 +387,7 @@ else
                 while (text.good)
                       {
                       if (! text.forwardLocate('\?')) 
-                            return doUnexpectedEOF;
+                            return endOfInput;
 
                       if (text.point[1] == '>') 
                          {
@@ -399,7 +397,7 @@ else
                          }
                       ++text.point;
                       }
-                return doUnexpectedEOF;
+                return endOfInput;
         }
         
         /***********************************************************************
@@ -432,7 +430,7 @@ else
                       }
 
                 if (! text.good)
-                      return doUnexpectedEOF;
+                      return endOfInput;
                 return XmlTokenType.Doctype;
         }
         
@@ -440,37 +438,49 @@ else
         
         ***********************************************************************/
 
-        private XmlTokenType doUnexpectedEOF()
+        private XmlTokenType endOfInput ()
         {
-                return error ("Unexpected EOF");
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
+                if (depth)
+                    error ("Unexpected EOF");
 
-        private XmlTokenType doUnexpected(char[] msg = null)
-        {
-                return error ("Unexpected event " ~ msg ~ " " ~ Integer.toString(type));
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private XmlTokenType doEndOfStream()
-        {
                 return XmlTokenType.Done;
         }
-              
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doUnexpected (char[] msg, Ch* p)
+        {
+                return position ("parse error :: unexpected  " ~ msg, p);
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType doExpected (char[] msg, Ch* p)
+        {
+                return position ("parse error :: expected  " ~ msg ~ " instead of " ~ *p, p);
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
+        private XmlTokenType position (char[] msg, Ch* p)
+        {
+                return error (msg ~ " at position " ~ Integer.toString(p-text.text.ptr));
+        }
+
         /***********************************************************************
         
         ***********************************************************************/
 
         private XmlTokenType error (char[] msg)
         {
-                errMsg = msg;
                 err = true;
+                errMsg = msg;
                 throw new XmlException (msg);
         }
 
