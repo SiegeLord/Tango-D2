@@ -6,13 +6,14 @@
  * intended for internal use only.
  * This module is intended only to assist development of high-speed routines
  * on currently unsupported processors.
+ * The X86 asm version is about 30 times faster than the D version(DMD).
  *
  * Copyright: Copyright (C) 2008 Don Clugston.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
  */
 
-module tango.math.impl.BignumNoAsm;
+module tango.math.internal.BignumNoAsm;
 
 public:
     // Limits for when to switch between multiplication algorithms.

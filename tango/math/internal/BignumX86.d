@@ -39,7 +39,7 @@
  *
  */
 
-module tango.math.impl.BignumX86;
+module tango.math.internal.BignumX86;
 
 /*  
   Naked asm is used throughout, because:

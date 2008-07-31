@@ -5,15 +5,17 @@
  * Authors:   Don Clugston
  */
 
-module tango.math.impl.BiguintCore;
+module tango.math.internal.BiguintCore;
 
-version(GNU) {
+version(TangoBignumNoAsm) {
+private import tango.math.internal.BignumNoAsm;    
+} else version(GNU) {
     // GDC lies about its X86 support
-private import tango.math.impl.BignumNoAsm;    
+private import tango.math.internal.BignumNoAsm;    
 } else version(D_InlineAsm_X86) { 
-private import tango.math.impl.BignumX86;
+private import tango.math.internal.BignumX86;
 } else {
-private import tango.math.impl.BignumNoAsm;
+private import tango.math.internal.BignumNoAsm;
 }
 
 public:
@@ -293,7 +295,7 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
         // The first chunk is bigger, since it also needs to cover the leftover bits.
         uint chunksize =  y.length + (x.length % y.length);
         // We make the buffer a bit bigger so we have space for the partial sums.
-        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(chunksize) + y.length * 2];
+        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(y.length+ chunksize) + y.length * 2+1];
         if (y.length == half) {
             chunksize = x.length - y.length;
             mulKaratsuba(result[0 .. y.length + chunksize], y, x[0 .. chunksize], scratchbuff);
@@ -307,7 +309,7 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
             mulKaratsuba(partial[0 .. y.length + chunksize], x[done .. done+chunksize], y, scratchbuff);
             result[done + y.length .. done + y.length + chunksize] 
                 = partial[y.length .. y.length + chunksize];
-            simpleAddAssign(result[done .. y.length + chunksize], partial[0 .. y.length]);
+            simpleAddAssign(result[done .. done + y.length+chunksize], partial[0 .. y.length]);
             done += y.length;
         }
         delete scratchbuff;
@@ -390,8 +392,10 @@ void simpleAddAssign(uint [] result, uint [] right)
 {
    assert(result.length > right.length);
    uint c = multibyteAddSub!('+')(result[0..right.length], result[0..right.length], right, 0);
-   if (c) c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
-   assert(c==0);
+   if (c) {
+       c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
+       assert(c==0);
+   }
 }
 
 // Limits for when to switch between multiplication algorithms.
@@ -402,12 +406,15 @@ const int CACHELIMIT = 8000;   // Half the size of the data cache.
  */
 uint karatsubaRequiredBuffSize(uint xlen)
 {
-    return xlen <= KARATSUBALIMIT ? 0 : xlen * 2;
+    uint half = (xlen >> 1) + (xlen & 1);
+    return xlen <= KARATSUBALIMIT ? 0 : 2*half+1 + karatsubaRequiredBuffSize(half);
 }
 
+//uint lastleftover = 0;
 /* Sets result = x*y, using Karatsuba multiplication.
 * Valid only for balanced multiplies, and x must be longer than y.
 * ie 2*y.length > x.length >= y.length.
+* It is efficient only if sqrt(2)*y.length > x.length >= y.length
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
 */
@@ -434,7 +441,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     uint [] xsum = result[0 .. half]; // initially use result to store temporaries
     uint [] ysum = result[half .. half*2];
     uint [] mid = scratchbuff[0 .. half*2+1];
-    uint [] newscratchbuff = scratchbuff[half*2+2 .. $];
+    uint [] newscratchbuff = scratchbuff[half*2+1 .. $];
     uint [] resultLow = result[0 .. x0.length + y0.length];
     uint [] resultHigh = result[x0.length + y0.length .. $];
         
