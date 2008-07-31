@@ -19,9 +19,6 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
-version = a;
-version = b;
-
 /*******************************************************************************
 
 *******************************************************************************/
@@ -92,8 +89,8 @@ class PullParser(Ch = char)
                 if (*p <= 32) 
                    {
                    while (*++p <= 32)
-                   if (p >= text.end)                                      
-                       return doEndOfStream;
+                          if (p >= text.end)                                      
+                              return doEndOfStream;
                    text.point = p;
                    }
                 
@@ -123,60 +120,36 @@ class PullParser(Ch = char)
 
         private XmlTokenType doMain()
         {
+                auto e = text.end;
                 auto p = text.point;
+
                 if (*p != '<') 
                    {
-version (a)
-{
                    auto q = p;
-                   if (p < text.end)
-                       while (*++p != '<') {}
+                   while (*++p != '<') {}
 
-                   if (p < text.end)
+                   if (p < e)
                       {
                       rawValue = q [0 .. p - q];
                       text.point = p;
                       return type = XmlTokenType.Data;
                       }
                    return XmlTokenType.Done;
-}
-else
-{
-                   auto q = p;
-                   while (*++p != '<') 
-                         {}
-                   if (p < text.end)
-                      {
-                      rawValue = q [0 .. p - q];
-                      text.point = p;
-                      return type = XmlTokenType.Data;
-                      }
-                   return XmlTokenType.Done;
-}
                    }
 
                 switch (p[1])
                        {
                        default:
+                            // scan new element name
                             auto q = ++p;
-version (b)
-{
                             while (*q > 63 || text.name[*q]) 
                                    ++q;
-}
-else
-{
-                            while (q < text.end)
-                                  {
-                                  auto c = *q;
-                                  if (c > 63 || text.name[c])
-                                      ++q;
-                                  else
-                                     break;
-                                  }                        
-}
-                            text.point = q;
 
+                            // check if we ran past the end
+                            if (q >= e)
+                                return XmlTokenType.Done;
+
+                            text.point = q;
                             if (*q != ':') 
                                {
                                prefix = null;
@@ -201,7 +174,6 @@ else
                                localName = p [0 .. q - p];
 }
                                }
-
                             return type = XmlTokenType.StartElement;
 
                        case '!':
@@ -240,6 +212,7 @@ else
                                p = ++q;
                                while (*q > 63 || text.attributeName[*q])
                                       ++q;
+
                                localName = p[0 .. q - p];
                                }
                             else 
@@ -514,7 +487,7 @@ else
         
         ***********************************************************************/
 
-        final Ch[] name()
+        final Ch[] nameFoo()
         {
                 if (prefix.length)
                     return prefix ~ ":" ~ localName;
