@@ -497,7 +497,7 @@ else
         
         ***********************************************************************/
 
-        final Ch[] nameFoo()
+        final Ch[] name()
         {
                 if (prefix.length)
                     return prefix ~ ":" ~ localName;
