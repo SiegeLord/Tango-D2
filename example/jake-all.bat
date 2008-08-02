@@ -73,6 +73,15 @@
 @jake text\xmldom.d -I.. -op
 @jake text\xmlsax.d -I.. -op
 
+@rem ###########################################################################
+@rem # VFS EXAMPLES
+@rem ###########################################################################
+
+@jake vfs\vfscan.d -I.. -op
+@jake vfs\vfscanregex.d -I.. -op
+@jake vfs\vfshuffle.d -I.. -op
+@jake vfs\vfszip.d -I.. -op -L"zlib;libbz2"
+
 @rem FINI
 
 @del *.map
