@@ -1521,7 +1521,7 @@ private:
         this.open_dg = open_dg;
         with( info )
         {
-            name = header.file_name.dup;
+            name = Path.standard(header.file_name.dup);
             dosToTime(header.data.modification_file_time,
                       header.data.modification_file_date,
                       modified);
