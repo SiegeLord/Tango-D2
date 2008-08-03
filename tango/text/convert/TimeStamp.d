@@ -402,11 +402,11 @@ int iso8601(T) (T[] src, inout Time value)
 
 private bool time(T) (inout TimeOfDay time, inout T* p)
 {
-        return ((time.hours = parseInt(p)) > 0   &&
-                 *p++ == ':'                     &&
-                (time.minutes = parseInt(p)) > 0 &&
-                 *p++ == ':'                     &&
-                (time.seconds = parseInt(p)) > 0);
+        return ((time.hours = parseInt(p)) >= 0   &&
+                 *p++ == ':'                      &&
+                (time.minutes = parseInt(p)) >= 0 &&
+                 *p++ == ':'                      &&
+                (time.seconds = parseInt(p)) >= 0);
 }
 
 
