@@ -113,7 +113,7 @@ class FilePath : PathView
 
         this (char[] filepath = null)
         {
-                set (filepath);
+                set (filepath, true);
         }
         
         /***********************************************************************
@@ -427,22 +427,28 @@ class FilePath : PathView
 
         FilePath set (FilePath path)
         {
-                return set (path.toString);
+                return set (path.toString, false);
         }
 
         /***********************************************************************
 
-                Reset the content of this path, and reparse. 
+                Reset the content of this path, and reparse. There's an
+                optional boolean flag to convert the path into standard
+                form, before parsing (converting '\' into '/')
 
         ***********************************************************************/
 
-        final FilePath set (char[] path)
+        final FilePath set (char[] path, bool convert = false)
         {
                 p.end_ = path.length;
 
                 expand (p.end_);
                 if (p.end_)
-                    p.fp[0 .. p.end_] = path;
+                   {
+                   p.fp[0 .. p.end_] = path;
+                   if (convert)
+                       .standard (p.fp [0 .. p.end_]);
+                   }
 
                 p.fp[p.end_] = '\0';
                 return parse;
@@ -619,7 +625,7 @@ class FilePath : PathView
 
         private final FilePath parse ()
         {
-                p.parse (p.fp, p.end_, true);
+                p.parse (p.fp, p.end_);
                 return this;
         }
 
@@ -920,7 +926,7 @@ class FilePath : PathView
         final FilePath rename (char[] dst)
         {
                 FS.rename (cString, dst~'\0');
-                return this.set (dst);
+                return this.set (dst, true);
         }
 
         /***********************************************************************

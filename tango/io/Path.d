@@ -159,7 +159,18 @@ package struct FS
 
         static void exception (char[] filename)
         {
-                throw new IOException (filename[0..$-1] ~ ": " ~ SysError.lastMsg);
+                exception (filename[0..$-1] ~ ": ", SysError.lastMsg);
+        }
+
+        /***********************************************************************
+
+                Throw an IO exception 
+
+        ***********************************************************************/
+
+        static void exception (char[] prefix, char[] error)
+        {
+                throw new IOException (prefix ~ error);
         }
 
         /***********************************************************************
@@ -933,7 +944,7 @@ struct PathParser
 
         PathParser parse (char[] path)
         {
-                return parse (path, path.length, false);
+                return parse (path, path.length);
         }
 
         /***********************************************************************
@@ -1141,7 +1152,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (char[] path, uint end, bool mutate)
+        package PathParser parse (char[] path, uint end)
         {
                 end_ = end;
                 fp = path;
@@ -1157,17 +1168,15 @@ struct PathParser
                                          suffix_ = i;
                                  break;
 
-                            case '\\':
-                                 if (mutate is false)
-                                     throw new IOException ("unexpected '\\' character in path: "~path);
-                                 else
-                                    fp[i] = '/';
-                                    // fall through!
-
                             case FileConst.PathSeparatorChar:
                                  if (name_ < 0)
                                      name_ = i + 1;
                                  break;
+
+                            // Windows file separators are illegal. Use
+                            // standard() or equivalent to convert first
+                            case '\\':
+                                 FS.exception ("unexpected '\\' character in path: ", path);
 
                             version (Win32)
                             {
