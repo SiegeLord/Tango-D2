@@ -15,7 +15,7 @@ import Path = tango.io.Path;
 import tango.math.random.Kiss : Kiss;
 import tango.io.DeviceConduit : DeviceConduit;
 import tango.io.FileConduit : FileConduit;
-import tango.io.FilePath : FilePath/*, PathView*/;
+import tango.io.FilePath : FilePath;
 import tango.stdc.stringz : toStringz, toString16z;
 
 /******************************************************************************
@@ -23,7 +23,7 @@ import tango.stdc.stringz : toStringz, toString16z;
 
 version( Win32 )
 {
-    import tango.sys.Common : DWORD, LONG;
+    import tango.sys.Common : DWORD, LONG, MAX_PATH, PCHAR, CP_UTF8;
 
     enum : DWORD { FILE_FLAG_OPEN_REPARSE_POINT = 0x00200000 }
 
@@ -38,10 +38,10 @@ version( Win32 )
             HANDLE, INVALID_HANDLE_VALUE,
             GetTempPathA, SetFilePointer, GetLastError, ERROR_SUCCESS;
 
-        HANDLE CreateFile(FilePath fn, DWORD da, DWORD sm,
+        HANDLE CreateFile(char[] fn, DWORD da, DWORD sm,
                 LPSECURITY_ATTRIBUTES sa, DWORD cd, DWORD faa, HANDLE tf)
         {
-            return CreateFileA(fn.cString.ptr, da, sm, sa, cd, faa, tf);
+            return CreateFileA(toStringz(fn), da, sm, sa, cd, faa, tf);
         }
 
         char[] GetTempPath()
@@ -60,6 +60,7 @@ version( Win32 )
     else
     {
         import tango.sys.Common :
+            MultiByteToWideChar, WideCharToMultiByte,
             GetVersionExW, OSVERSIONINFO,
             CreateFileW, GENERIC_READ, GENERIC_WRITE,
             CREATE_NEW, FILE_ATTRIBUTE_NORMAL, FILE_FLAG_DELETE_ON_CLOSE,
@@ -68,13 +69,16 @@ version( Win32 )
             HANDLE, INVALID_HANDLE_VALUE,
             GetTempPathW, SetFilePointer, GetLastError, ERROR_SUCCESS;
 
-        import tango.text.convert.Utf : toString, toString16;
-
-        HANDLE CreateFile(FilePath fn, DWORD da, DWORD sm,
+        HANDLE CreateFile(char[] fn, DWORD da, DWORD sm,
                 LPSECURITY_ATTRIBUTES sa, DWORD cd, DWORD faa, HANDLE tf)
         {
-            return CreateFileW(toString16(fn.cString).ptr,
-                    da, sm, sa, cd, faa, tf);
+                // convert into output buffer
+                wchar[MAX_PATH+1] tmp = void;
+                assert (fn.length < tmp.length);
+                auto i = MultiByteToWideChar (CP_UTF8, 0, cast(PCHAR) fn.ptr, 
+                                              fn.length, tmp.ptr, tmp.length);
+                tmp[i] = 0;
+                return CreateFileW(tmp.ptr, da, sm, sa, cd, faa, tf);
         }
 
         char[] GetTempPath()
@@ -87,7 +91,11 @@ version( Win32 )
             len = GetTempPathW(len+1, result.ptr);
             if( len == 0 )
                 throw new Exception("could not obtain temporary path");
-            return Path.standard(toString(result[0..len]));
+
+            auto dir = new char [len * 3];
+            auto i = WideCharToMultiByte (CP_UTF8, 0, result.ptr, len, 
+                                          cast(PCHAR) dir.ptr, dir.length, null, null);
+            return Path.standard (dir[0..i]);
         }
     }
 
@@ -285,7 +293,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
     static const Style Permanent = {Transience.Permanent};
 
     // Path to the temporary file
-    private /*PathView*/ FilePath _path;
+    private char[] _path;
 
     // Style we've opened with
     private Style _style;
@@ -302,13 +310,13 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
     ///
     this(char[] prefix, Style style = Style.init)
     {
-        this(FilePath(prefix), style);
+        create (prefix, style);
     }
 
-    ///
-    this(FilePath prefix, Style style = Style.init)
+    /// deprecated: please use char[] version instead
+    deprecated this(FilePath prefix, Style style = Style.init)
     {
-        create(prefix.dup, style);
+        this (prefix.toString.dup, style);
     }
 
     ~this()
@@ -318,12 +326,12 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
 
     /**************************************************************************
      *
-     * Returns a PathView to the temporary file.  Please note that depending
+     * Returns the path of the temporary file.  Please note that depending
      * on your platform, the returned path may or may not actually exist if
      * you specified a transient file.
      *
      **************************************************************************/
-    /*PathView*/ FilePath path()
+    char[] path()
     {
         return _path;
     }
@@ -340,8 +348,8 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
 
     override char[] toString()
     {
-        if( path.toString.length > 0 )
-            return path.toString;
+        if( path.length > 0 )
+            return path;
         else
             return "<TempFile>";
     }
@@ -378,11 +386,11 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         create(tempPath, style);
     }
 
-    private void create(FilePath prefix, Style style)
+    private void create(char[] prefix, Style style)
     {
         for( size_t i=0; i<style.attempts; ++i )
         {
-            if( create_path(prefix.dup.append(randomName), style) )
+            if( create_path(Path.join(prefix, randomName), style) )
                 return;
         }
 
@@ -401,16 +409,16 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         /*
          * Returns the path to the temporary directory.
          */
-        public static FilePath tempPath()
+        public static char[] tempPath()
         {
-            return FilePath(GetTempPath()).dup;
+            return GetTempPath;
         }
 
         /*
          * Creates a new temporary file at the given path, with the specified
          * style.
          */
-        private bool create_path(FilePath path, Style style)
+        private bool create_path(char[] path, Style style)
         {
             // TODO: Check permissions directly and throw an exception;
             // otherwise, we could spin trying to make a file when it's
@@ -479,24 +487,24 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
         /*
          * Returns the path to the temporary directory.
          */
-        public static FilePath tempPath()
+        public static char[] tempPath()
         {
             // Check for TMPDIR; failing that, use /tmp
             if( auto tmpdir = Environment.get("TMPDIR") )
-                return FilePath(tmpdir).dup;
+                return tmpdir.dup;
             else
-                return FilePath("/tmp/").dup;
+                return "/tmp/";
         }
 
         /*
          * Creates a new temporary file at the given path, with the specified
          * style.
          */
-        private bool create_path(FilePath path, Style style)
+        private bool create_path(char[] path, Style style)
         {
             // Check suitability
             {
-                auto parent = path.path;
+                auto parent = Path.parse(path).path;
                 auto parentz = toStringz(parent);
 
                 // Make sure we have write access
@@ -527,7 +535,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
                 auto flags = O_LARGEFILE | O_CREAT | O_EXCL
                     | O_NOFOLLOW | O_RDWR;
 
-                auto pathz = path.cString.ptr;
+                auto pathz = toStringz(path);
 
                 handle = open(pathz, flags, 0600);
                 if( handle is -1 )
@@ -578,7 +586,7 @@ class TempFile : DeviceConduit, DeviceConduit.Seek
          * created.  The returned path is safe to mutate.
          *
          **********************************************************************/
-        FilePath tempPath();
+        char[] tempPath();
     }
     else
     {
