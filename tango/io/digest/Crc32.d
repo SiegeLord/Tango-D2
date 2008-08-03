@@ -77,7 +77,7 @@ final class Crc32 : Digest
         }
 
         /** */
-        override void update (void[] input)
+        override Crc32 update (void[] input)
         {
                 uint r = result; // DMD optimization
                 foreach (ubyte value; cast(ubyte[]) input)
@@ -97,6 +97,7 @@ final class Crc32 : Digest
                         r ^= table[i];
                 }
                 result = r;
+                return this;
         }
 
         /** The Crc32 digestSize is 4 */

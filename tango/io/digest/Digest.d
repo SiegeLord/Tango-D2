@@ -63,7 +63,7 @@ abstract class Digest
                  
         *********************************************************************/
     
-        abstract void update(void[] data);
+        abstract Digest update (void[] data);
     
         /********************************************************************
 

@@ -214,7 +214,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        void update (void[] input)
+        MerkleDamgard update (void[] input)
         {
                 auto block = blockSize();
                 uint i = bytes & (block-1);
@@ -234,6 +234,7 @@ package class MerkleDamgard : Digest
 
                    buffer[0..data.length-i] = data[i..data.length];
                    }
+                return this;
         }
 
         /***********************************************************************
