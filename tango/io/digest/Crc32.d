@@ -46,6 +46,18 @@ final class Crc32 : Digest
                         uint value = i;
                         for (int j = 8; j > 0; j--)
                         {
+                                version (Gim)
+                                {
+                                if (value & 1) 
+                                   {
+                                   value >>>= 1;
+                                   value ^= polynomial;
+                                   }
+                                else
+                                   value >>>= 1;
+                                }
+                                else
+                                {
                                 if (value & 1) {
                                         value &= 0xFFFFFFFE;
                                         value /= 2;
@@ -57,6 +69,7 @@ final class Crc32 : Digest
                                         value &= 0xFFFFFFFE;
                                         value /= 2;
                                         value &= 0x7FFFFFFF;
+                                }
                                 }
                         }
                         table[i] = value;
@@ -71,9 +84,16 @@ final class Crc32 : Digest
                 {
                         auto i = cast(ubyte) r;// & 0xff;
                         i ^= value;
+                        version (Gim)
+                        {
+                        r >>>= 8;
+                        }
+                        else
+                        {
                         r &= 0xFFFFFF00;
                         r /= 0x100;
                         r &= 16777215;
+                        }
                         r ^= table[i];
                 }
                 result = r;
