@@ -1289,7 +1289,7 @@ class Socket
 
         ***********************************************************************/
 
-        static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, timeval* tv)
+        package static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, timeval* tv)
         in
         {
                 //make sure none of the SocketSet's are the same object
