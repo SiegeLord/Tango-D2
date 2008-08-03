@@ -21,7 +21,7 @@ private import tango.stdc.stdlib : alloca;
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
-        Only the conduit-specific read(), write(), fileHandle() and 
+        Only the conduit-specific read(), write(), and 
         bufferSize() need to be implemented for a concrete conduit 
         implementation. See FileConduit for an example.
 
@@ -38,7 +38,7 @@ private import tango.stdc.stdlib : alloca;
 
 *******************************************************************************/
 
-class Conduit : IConduit, ISelectable
+class Conduit : IConduit
 {
         /***********************************************************************
         
@@ -55,17 +55,6 @@ class Conduit : IConduit, ISelectable
         ***********************************************************************/
 
         abstract uint bufferSize ();
-
-        /***********************************************************************
-
-                Models a handle-oriented device. We need to revisit this
-
-                TODO: figure out how to avoid exposing this in the general
-                case
-
-        ***********************************************************************/
-
-        abstract Handle fileHandle ();
 
         /***********************************************************************
 
@@ -456,5 +445,6 @@ class OutputFilter : OutputStream
                 host.close;
         }
 }
+
 
 

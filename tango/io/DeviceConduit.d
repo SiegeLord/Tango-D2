@@ -26,7 +26,7 @@ private import  tango.core.Exception;
 
 *******************************************************************************/
 
-class DeviceConduit : Conduit
+class DeviceConduit : Conduit, ISelectable
 {
         /// expose in superclass definition also
         public alias Conduit.error error;
@@ -91,7 +91,7 @@ class DeviceConduit : Conduit
 
                 ***************************************************************/
 
-                final override Handle fileHandle ()
+                final Handle fileHandle ()
                 {
                         return cast(Handle) handle;
                 }
@@ -238,5 +238,6 @@ class DeviceConduit : Conduit
                 }
         }
 }
+
 
 

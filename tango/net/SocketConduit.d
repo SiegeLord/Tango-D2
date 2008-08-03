@@ -29,7 +29,7 @@ private import  tango.net.Socket;
         
 *******************************************************************************/
 
-class SocketConduit : Conduit
+class SocketConduit : Conduit, ISelectable
 {
         private timeval                 tv;
         private SocketSet               ss;
@@ -116,7 +116,7 @@ class SocketConduit : Conduit
 
         ***********************************************************************/
 
-        override Handle fileHandle ()
+        Handle fileHandle ()
         {
                 return cast(Handle) socket_.fileHandle;
         }
@@ -362,4 +362,5 @@ else
                 freelist = s;
         }
 }
+
 
