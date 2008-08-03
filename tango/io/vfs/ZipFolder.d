@@ -435,12 +435,12 @@ else
         {
             debug( ZipFolder )
                 Stderr(" sync: destroying temp file").newline;
-            auto tempFilePath = tempFile.path.dup;
-            delete tempFile;
+
             debug( ZipFolder )
                 Stderr.formatln(" sync: renaming {} to {}",
-                        tempFilePath, path);
-            tempFilePath.rename(path);
+                        tempFile, path);
+
+            Path.rename (tempFile.path, path);
         }
 
         // Finally, re-open the archive so that we have all the nicely
