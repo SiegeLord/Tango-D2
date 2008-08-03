@@ -10,19 +10,19 @@
 
         A more direct route to the file-system than FilePath, but with 
         the potential overhead of heap activity. Use this if you don't
-        need path editing or extraction features. For example, if all
-        you want is to see if some path exists, using this module might 
-        be a more convenient option than FilePath:
+        need path editing features. For example, if all you want is to 
+        see if some path exists, using this module would likely be more 
+        convenient than FilePath. For example:
         ---
         if (exists ("some/file/path")) 
             ...
         ---
 
-        These functions can be less efficient than FilePath because they 
+        These functions may be less efficient than FilePath because they 
         may have to attach a null to the filename for each underlying O/S
         call. Use Path when you need pedestrian access to the file-system, 
-        and are not manipulating the path components. Use FilePath for other
-        scenarios.
+        and are not manipulating the path components. Use FilePath where
+        path editing or mutation is desired.
 
         We encourage the use of "scoped import" with this module, such as
         ---
@@ -903,9 +903,12 @@ package struct FS
         & compatible with the approach taken with the Uri class.
 
         Note that patterns of adjacent '.' separators are treated specially
-        in that they will be assigned to the name instead of the suffix. In
-        addition, a '.' at the start of a name signifies it does not belong
-        to the suffix i.e. ".file" is a name rather than a suffix.
+        in that they will be assigned to the name where there is no distinct
+        suffix. In addition, a '.' at the start of a name signifies it does 
+        not belong to the suffix i.e. ".file" is a name rather than a suffix.
+        Patterns of intermediate '.' characters will otherwise be assigned
+        to the suffix, such that "file....suffix" includes the dots within
+        the suffix itself [see ext() for a suffix without dots].
 
         Note also that normalization of path-separators occurs by default. 
         This means that the use of '\' characters will be converted into
@@ -917,9 +920,10 @@ struct PathParser
 {       
         package char[]  fp;                     // filepath with trailing
         package int     end_,                   // before any trailing 0
+                        ext_,                   // after rightmost '.'
                         name_,                  // file/dir name
                         folder_,                // path before name
-                        suffix_;                // after rightmost '.'
+                        suffix_;                // including leftmost '.'
 
         /***********************************************************************
 
@@ -1027,7 +1031,7 @@ struct PathParser
 
                 Ext is the tail of the filename, rightward of the rightmost
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
-                patterns of adjacent separators are treated specially; for
+                patterns of adjacent separators are treated specially - for
                 example, ".." will wind up with no ext at all
 
         ***********************************************************************/
@@ -1036,7 +1040,15 @@ struct PathParser
         {
                 auto x = suffix;
                 if (x.length)
-                    x = x [1..$];
+                   {
+                   if (ext_ is 0)
+                       foreach (c; x)
+                                if (c is '.')
+                                    ++ext_;
+                                else
+                                   break;
+                   x = x [ext_ .. $];
+                   }
                 return x;
         }
 

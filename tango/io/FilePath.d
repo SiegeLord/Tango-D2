@@ -13,13 +13,11 @@
 
         author:         Kris
 
-        FilePath combined a means of efficiently editing and extracting 
-        path components and of accessing the underlying file system.
+        FilePath provides a means to efficiently edit path components and 
+        of accessing the underlying file system.
 
-        Use module Path.d instead when you need only pedestrian access to 
-        the file-system, and are not manipulating the path components. Use 
-        FilePath for other scenarios, since it will often be notably more 
-        efficient
+        Use module Path.d instead when you need pedestrian access to the
+        file-system, and are not mutating the path components themselves
 
 *******************************************************************************/
 
@@ -50,20 +48,15 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         & compatible with the approach taken with the Uri class.
 
         FilePath is designed to be transformed, thus each mutating method
-        modifies the internal content. There is a read-only base-class
-        called PathView, which can be used to provide a view into the
-        content as desired.
+        modifies the internal content. 
 
         Note that patterns of adjacent '.' separators are treated specially
-        in that they will be assigned to the name instead of the suffix. In
-        addition, a '.' at the start of a name signifies it does not belong
-        to the suffix i.e. ".file" is a name rather than a suffix.
-
-        Note also that normalization of path-separators occurs by default. 
-        This means that the use of '\' characters will be converted into
-        '/' instead while parsing. To mutate the path into an O/S native
-        version, use the native() method. To obtain a copy instead, use the 
-        path.dup.native sequence
+        in that they will be assigned to the name where there is no distinct
+        suffix. In addition, a '.' at the start of a name signifies it does 
+        not belong to the suffix i.e. ".file" is a name rather than a suffix.
+        Patterns of intermediate '.' characters will otherwise be assigned
+        to the suffix, such that "file....suffix" includes the dots within
+        the suffix itself [see ext() for a suffix without dots].
 
 *******************************************************************************/
 
