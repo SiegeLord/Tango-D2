@@ -709,7 +709,7 @@ class Buffer : IBuffer
                               compress;
                           else
                              // no more space in the buffer?
-                             if (writable is 0)
+                             if (writable is 0 && expand(0) is 0)
                                  error ("Token is too large to fit within buffer");
 
                           // read another chunk of data
@@ -1111,6 +1111,24 @@ class Buffer : IBuffer
                    memcpy (&data[extent], src, size);
                    extent += size;
                    }
+        }
+
+        /***********************************************************************
+
+                Expand existing buffer space
+
+                Returns:
+                Available space, without any expansion
+
+                Remarks:
+                Make some additional room in the buffer, of at least the 
+                given size. This can be used by subclasses as appropriate
+                                     
+        ***********************************************************************/
+
+        protected uint expand (uint size)
+        {
+                return writable;
         }
 
         /***********************************************************************
@@ -1517,7 +1535,7 @@ class GrowBuffer : Buffer
                        error (underflow);
 
                    if (size + index > dimension)
-                       makeRoom (size);
+                       expand (size);
 
                    // populate tail of buffer with new content
                    do {
@@ -1542,7 +1560,7 @@ class GrowBuffer : Buffer
         override IBuffer append (void *src, uint length)        
         {               
                 if (length > writable)
-                    makeRoom (length);
+                    expand (length);
 
                 copy (src, length);
                 return this;
@@ -1560,7 +1578,7 @@ class GrowBuffer : Buffer
         override uint fill (InputStream src)
         {
                 if (writable <= increment/8)
-                    makeRoom (increment);
+                    expand (increment);
 
                 return write (&src.read);
         } 
@@ -1584,17 +1602,24 @@ class GrowBuffer : Buffer
 
         /***********************************************************************
 
-                make some room in the buffer
-                        
+                Expand existing buffer space
+
+                Returns:
+                Available space after adjustment
+
+                Remarks:
+                Make some additional room in the buffer, of at least the 
+                given size. This can be used by subclasses as appropriate
+                                     
         ***********************************************************************/
 
-        private uint makeRoom (uint size)
+        override uint expand (uint size)
         {
                 if (size < increment)
                     size = increment;
 
                 dimension += size;
                 data.length = dimension;               
-                return writable();
+                return writable;
         }
 }
