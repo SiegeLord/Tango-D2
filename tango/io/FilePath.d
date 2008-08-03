@@ -613,13 +613,13 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Parse the path spec
+                Parse the path spec, and mutate '\' into '/' as necessary
 
         ***********************************************************************/
 
         private final FilePath parse ()
         {
-                p.parse (p.fp, p.end_);
+                p.parse (p.fp, p.end_, true);
                 return this;
         }
 
@@ -1351,7 +1351,7 @@ debug (UnitTest)
 
                 fp = new FilePath(r"C:/foo/bar/test.bar");
                 assert (fp.path == "C:/foo/bar/");
-                fp = new FilePath(r"C:/foo/bar/test.bar");
+                fp = new FilePath(r"C:\foo\bar\test.bar");
                 assert (fp.path == r"C:/foo/bar/");
 
                 fp = new FilePath("");

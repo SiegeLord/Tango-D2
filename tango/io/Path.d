@@ -933,7 +933,7 @@ struct PathParser
 
         PathParser parse (char[] path)
         {
-                return parse (path, path.length);
+                return parse (path, path.length, false);
         }
 
         /***********************************************************************
@@ -1141,7 +1141,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (char[] path, uint end)
+        package PathParser parse (char[] path, uint end, bool mutate)
         {
                 end_ = end;
                 fp = path;
@@ -1157,13 +1157,17 @@ struct PathParser
                                          suffix_ = i;
                                  break;
 
+                            case '\\':
+                                 if (mutate is false)
+                                     throw new IOException ("unexpected '\\' character in path: "~path);
+                                 else
+                                    fp[i] = '/';
+                                    // fall through!
+
                             case FileConst.PathSeparatorChar:
                                  if (name_ < 0)
                                      name_ = i + 1;
                                  break;
-
-                            case '\\':
-                                 throw new IOException ("unexpected '\\' character in path: "~path);
 
                             version (Win32)
                             {
