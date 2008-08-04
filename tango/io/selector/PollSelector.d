@@ -120,6 +120,8 @@ version (Posix)
 
         /**
          * Associate a conduit to the selector and track specific I/O events.
+         * If a conduit is already associated, modify the events and
+         * attachment.
          *
          * Params:
          * conduit      = conduit that will be associated to the selector;
@@ -147,12 +149,23 @@ version (Posix)
         body
         {
             debug (selector)
-                Stdout.format("--- PollSelector.register(handle={0}, events=0x{1:x})\n",
+                Stdout.formatln("--- PollSelector.register(handle={0}, events=0x{1:x})",
                               cast(int) conduit.fileHandle(), cast(uint) events);
 
-            // We make sure that the conduit is not already registered to
-            // the Selector
-            if ((conduit.fileHandle() in _keys) is null)
+            PollSelectionKey* current = (conduit.fileHandle() in _keys);
+
+            if (current !is null)
+            {
+                debug (selector)
+                    Stdout.formatln("--- Adding pollfd in index {0} (of {1})",
+                                  current.index, _count);
+
+                (*current).events = events;
+                (*current).attachment = attachment;
+
+                _pfds[current.index].events = cast(short) events;
+            }
+            else
             {
                 if (_count == _pfds.length)
                     _pfds.length = _pfds.length + 1;
@@ -163,66 +176,6 @@ version (Posix)
 
                 _keys[conduit.fileHandle()] = new PollSelectionKey(conduit, events, _count, attachment);
                 _count++;
-            }
-            else
-            {
-                throw new RegisteredConduitException(__FILE__, __LINE__);
-            }
-        }
-
-        /**
-         * Modify the events that are being tracked or the 'attachment' field
-         * for an already registered conduit.
-         *
-         * Params:
-         * conduit      = conduit that will be associated to the selector;
-         *                must be a valid conduit (i.e. not null and open).
-         * events       = bit mask of Event values that represent the events
-         *                that will be tracked for the conduit.
-         * attachment   = optional object with application-specific data that
-         *                will be available when an event is triggered for the
-         *                conduit
-         *
-         * Remarks:
-         * The 'attachment' member of the SelectionKey will always be
-         * overwritten, even if it's null.
-         *
-         * Throws:
-         * UnregisteredConduitException if the conduit had not been previously
-         * registered to the selector.
-         *
-         * Examples:
-         * ---
-         * selector.reregister(conduit, Event.Write, object);
-         * ---
-         */
-        public void reregister(ISelectable conduit, Event events, Object attachment = null)
-        in
-        {
-            assert(conduit !is null && conduit.fileHandle() >= 0);
-        }
-        body
-        {
-            debug (selector)
-                Stdout.format("--- PollSelector.reregister(handle={0}, events=0x{1:x})",
-                              cast(int) conduit.fileHandle(), cast(uint) events);
-
-            PollSelectionKey* current = (conduit.fileHandle() in _keys);
-
-            if (current !is null)
-            {
-                debug (selector)
-                    Stdout.format("--- Adding pollfd in index {0} (of {1})\n",
-                                  current.index, _count);
-
-                (*current).events = events;
-                (*current).attachment = attachment;
-
-                _pfds[current.index].events = cast(short) events;
-            }
-            else
-            {
-                throw new UnregisteredConduitException(__FILE__, __LINE__);
             }
         }
 
@@ -248,7 +201,7 @@ version (Posix)
                 try
                 {
                     debug (selector)
-                        Stdout.format("--- PollSelector.unregister(handle={0})\n",
+                        Stdout.formatln("--- PollSelector.unregister(handle={0})",
                                       cast(int) conduit.fileHandle());
 
                     PollSelectionKey* removed = (conduit.fileHandle() in _keys);
@@ -256,13 +209,15 @@ version (Posix)
                     if (removed !is null)
                     {
                         debug (selector)
-                            Stdout.format("--- Removing pollfd in index {0} (of {1})\n",
+                            Stdout.formatln("--- Removing pollfd in index {0} (of {1})",
                                           removed.index, _count);
 
-                        for (uint i = removed.index + 1; i > 0 && i < _count; i++)
-                        {
-                            _pfds[i - 1] = _pfds[i];
-                        }
+                        //
+                        // instead of doing an O(n) remove, move the last
+                        // element to the removed slot
+                        //
+                        _pfds[removed.index] = _pfds[_count - 1];
+                        _keys[cast(ISelectable.Handle)_pfds[removed.index].fd].index = removed.index;
                         _count--;
 
                         _keys.remove(conduit.fileHandle());
@@ -270,7 +225,7 @@ version (Posix)
                     else
                     {
                         debug (selector)
-                            Stdout.format("--- PollSelector.unregister(handle={0}): conduit was not found\n",
+                            Stdout.formatln("--- PollSelector.unregister(handle={0}): conduit was not found",
                                           cast(int) conduit.fileHandle());
                         throw new UnregisteredConduitException(__FILE__, __LINE__);
                     }
@@ -278,7 +233,7 @@ version (Posix)
                 catch (Exception e)
                 {
                     debug (selector)
-                        Stdout.format("--- Exception inside PollSelector.unregister(handle={0}): {1}",
+                        Stdout.formatln("--- Exception inside PollSelector.unregister(handle={0}): {1}",
                                       cast(int) conduit.fileHandle(), e.toString());
 
                     throw new UnregisteredConduitException(__FILE__, __LINE__);
@@ -313,7 +268,7 @@ version (Posix)
             int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
             debug (selector)
-                Stdout.format("--- PollSelector.select({0} ms): waiting on {1} handles\n",
+                Stdout.formatln("--- PollSelector.select({0} ms): waiting on {1} handles",
                               to, _count);
 
             // We run the call to poll() inside a loop in case the system call
@@ -339,7 +294,7 @@ version (Posix)
                             if (pfd.revents != 0)
                             {
                                 debug (selector)
-                                    Stdout.format("--- Found events 0x{0:x} for handle {1} (index {2})\n",
+                                    Stdout.formatln("--- Found events 0x{0:x} for handle {1} (index {2})",
                                                   cast(uint) pfd.revents, cast(int) pfd.fd, i);
 
                                 // Find the key whose handle received an event
@@ -363,7 +318,7 @@ version (Posix)
                                 else
                                 {
                                     debug (selector)
-                                        Stdout.format("--- Handle {0} was not found in the Selector\n",
+                                        Stdout.formatln("--- Handle {0} was not found in the Selector",
                                                       cast(int) pfd.fd);
                                 }
                             }

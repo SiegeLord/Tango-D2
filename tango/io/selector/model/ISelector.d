@@ -36,10 +36,9 @@ enum Event: uint
  * their association to a selector. Each key keeps a reference to a registered
  * conduit and the events that are to be tracked for it. The 'events' member
  * of the key can take two meanings, depending on where it's used. If used
- * with the registration methods of the selector (register(), reregister()) it
- * represents the events we want to track; if used within a foreach cycle
- * on an ISelectionSet it represents the events that have been detected for a
- * conduit.
+ * with the register() method of the selector it represents the events we want
+ * to track; if used within a foreach cycle on an ISelectionSet it represents
+ * the events that have been detected for a conduit.
  *
  * The SelectionKey can also hold an optional object via the 'attachment'
  * member. This member is very convenient to keep application-specific data
@@ -216,8 +215,9 @@ interface ISelectionSet
  * in the 'maxEvents' argument. The amount of conduits that the selector can
  * manage will be incremented dynamically if necessary.
  *
- * To add, modify or remove conduit registrations to the selector you use
- * the register(), reregister() and unregister() methods respectively.
+ * To add or modify conduit registrations in the selector, use the register()
+ * method.  To remove conduit registrations from the selector, use the
+ * unregister() method.
  *
  * To wait for events from the conduits you need to call any of the select()
  * methods. The selector cannot be modified from another thread while
@@ -262,7 +262,7 @@ interface ISelectionSet
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
- *                 selector.reregister(key.conduit, Event.Write, key.attachment);
+ *                 selector.register(key.conduit, Event.Write, key.attachment);
  *             }
  *             else
  *             {
@@ -277,7 +277,7 @@ interface ISelectionSet
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.print("Sent 'MESSAGE' to peer\n");
- *                 selector.reregister(key.conduit, Event.Read, key.attachment);
+ *                 selector.register(key.conduit, Event.Read, key.attachment);
  *             }
  *             else
  *             {
@@ -324,6 +324,8 @@ interface ISelector
 
     /**
      * Associate a conduit to the selector and track specific I/O events.
+     * If the conduit is already part of the selector, modify the events or
+     * atachment.
      *
      * Params:
      * conduit      = conduit that will be associated to the selector;
@@ -345,33 +347,13 @@ interface ISelector
     public abstract void register(ISelectable conduit, Event events,
                                   Object attachment = null);
 
+
     /**
-     * Modify the events that are being tracked or the 'attachment' field
-     * for an already registered conduit.
-     *
-     * Params:
-     * conduit      = conduit that will be associated to the selector;
-     *                must be a valid conduit (i.e. not null and open).
-     * events       = bit mask of Event values that represent the events that
-     *                will be tracked for the conduit.
-     * attachment   = optional object with application-specific data that will
-     *                be available when an event is triggered for the conduit
-     *
-     * Remarks:
-     * The 'attachment' member of the SelectionKey will always be overwritten,
-     * even if it's null.
-     *
-     * Examples:
-     * ---
-     * ISelector selector;
-     * SocketConduit conduit;
-     * MyClass object;
-     *
-     * selector.reregister(conduit, Event.Write, object);
-     * ---
+     * Deprecated, use register instead
      */
-    public abstract void reregister(ISelectable conduit, Event events,
-                                    Object attachment = null);
+    deprecated public abstract void reregister(ISelectable conduit, Event
+            events, Object attachment = null);
+
     /**
      * Remove a conduit from the selector.
      *
@@ -384,6 +366,7 @@ interface ISelector
      * if this happens.
      */
     public abstract void unregister(ISelectable conduit);
+
 
     /**
      * Wait indefinitely for I/O events from the registered conduits.

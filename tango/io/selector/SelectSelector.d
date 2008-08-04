@@ -152,8 +152,20 @@ public class SelectSelector: AbstractSelector
         _selectedExceptionSet = null;
     }
 
+    private HandleSet allocateSet(ref HandleSet set, ref HandleSet selectedSet)
+    {
+        if(set is null)
+        {
+            set = new HandleSet(_size);
+            selectedSet = new HandleSet(_size);
+        }
+        return set;
+    }
+
     /**
      * Associate a conduit to the selector and track specific I/O events.
+     * If a conduit is already associated with the selector, the events and
+     * attachment are upated.
      *
      * Params:
      * conduit      = conduit that will be associated to the selector;
@@ -184,96 +196,6 @@ public class SelectSelector: AbstractSelector
 
         debug (selector)
             Stdout.format("--- SelectSelector.register(handle={0}, events=0x{1:x})\n",
-                   cast(int) handle, cast(uint) events);
-
-        // We make sure that the conduit is not already registered to
-        // the Selector
-        SelectionKey* key = (conduit.fileHandle() in _keys);
-
-        if (key is null)
-        {
-            // Keep record of the Conduits for whom we're tracking events.
-            _keys[handle] = new SelectionKey(conduit, events, attachment);
-
-            if ((events & Event.Read) || (events & Event.Hangup))
-            {
-                if (_readSet is null)
-                {
-                    _readSet = new HandleSet(_size);
-                    _selectedReadSet = new HandleSet(_size);
-                }
-                _readSet.set(handle);
-            }
-
-            if (events & Event.Write)
-            {
-                if (_writeSet is null)
-                {
-                    _writeSet = new HandleSet(_size);
-                    _selectedWriteSet = new HandleSet(_size);
-                }
-                _writeSet.set(handle);
-            }
-
-            if (events & Event.Error)
-            {
-                if (_exceptionSet is null)
-                {
-                    _exceptionSet = new HandleSet(_size);
-                    _selectedExceptionSet = new HandleSet(_size);
-                }
-                _exceptionSet.set(handle);
-            }
-
-            version (Posix)
-            {
-                if (handle > _maxfd)
-                    _maxfd = handle;
-            }
-        }
-        else
-        {
-            throw new RegisteredConduitException(__FILE__, __LINE__);
-        }
-    }
-
-    /**
-     * Modify the events that are being tracked or the 'attachment' field
-     * for an already registered conduit.
-     *
-     * Params:
-     * conduit      = conduit that will be associated to the selector;
-     *                must be a valid conduit (i.e. not null and open).
-     * events       = bit mask of Event values that represent the events
-     *                that will be tracked for the conduit.
-     * attachment   = optional object with application-specific data that
-     *                will be available when an event is triggered for the
-     *                conduit
-     *
-     * Remarks:
-     * The 'attachment' member of the SelectionKey will always be
-     * overwritten, even if it's null.
-     *
-     * Throws:
-     * UnregisteredConduitException if the conduit had not been previously
-     * registered to the selector.
-     *
-     * Examples:
-     * ---
-     * selector.reregister(conduit, Event.Write, object);
-     * ---
-     */
-    public void reregister(ISelectable conduit, Event events, Object attachment = null)
-    in
-    {
-        assert(conduit !is null && conduit.fileHandle() >= 0);
-    }
-    body
-    {
-        ISelectable.Handle handle = conduit.fileHandle();
-
-        debug (selector)
-            Stdout.format("--- SelectSelector.reregister(handle={0}, events=0x{1:x})\n",
                           cast(int) handle, cast(uint) events);
 
         SelectionKey *key = (handle in _keys);
@@ -281,12 +203,7 @@ public class SelectSelector: AbstractSelector
         {
             if ((events & Event.Read) || (events & Event.Hangup))
             {
-                if (_readSet is null)
-                {
-                    _readSet = new HandleSet(_size);
-                    _selectedReadSet = new HandleSet(_size);
-                }
-                _readSet.set(handle);
+                allocateSet(_readSet, _selectedReadSet).set(handle);
             }
             else if (_readSet !is null)
             {
@@ -295,12 +212,7 @@ public class SelectSelector: AbstractSelector
 
             if ((events & Event.Write))
             {
-                if (_writeSet is null)
-                {
-                    _writeSet = new HandleSet(_size);
-                    _selectedWriteSet = new HandleSet(_size);
-                }
-                _writeSet.set(handle);
+                allocateSet(_writeSet, _selectedWriteSet).set(handle);
             }
             else if (_writeSet !is null)
             {
@@ -309,12 +221,7 @@ public class SelectSelector: AbstractSelector
 
             if (events & Event.Error)
             {
-                if (_exceptionSet is null)
-                {
-                    _exceptionSet = new HandleSet(_size);
-                    _selectedExceptionSet = new HandleSet(_size);
-                }
-                _exceptionSet.set(handle);
+                allocateSet(_exceptionSet, _selectedExceptionSet).set(handle);
             }
             else if (_exceptionSet !is null)
             {
@@ -332,7 +239,29 @@ public class SelectSelector: AbstractSelector
         }
         else
         {
-            throw new UnregisteredConduitException(__FILE__, __LINE__);
+            // Keep record of the Conduits for whom we're tracking events.
+            _keys[handle] = new SelectionKey(conduit, events, attachment);
+
+            if ((events & Event.Read) || (events & Event.Hangup))
+            {
+                allocateSet(_readSet, _selectedReadSet).set(handle);
+            }
+
+            if (events & Event.Write)
+            {
+                allocateSet(_writeSet, _selectedWriteSet).set(handle);
+            }
+
+            if (events & Event.Error)
+            {
+                allocateSet(_exceptionSet, _selectedExceptionSet).set(handle);
+            }
+
+            version (Posix)
+            {
+                if (handle > _maxfd)
+                    _maxfd = handle;
+            }
         }
     }
 

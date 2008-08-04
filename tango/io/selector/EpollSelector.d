@@ -66,7 +66,7 @@ version (linux)
      *             if (count != IConduit.Eof)
      *             {
      *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
-     *                 selector.reregister(key.conduit, Event.Write, key.attachment);
+     *                 selector.register(key.conduit, Event.Write, key.attachment);
      *             }
      *             else
      *             {
@@ -81,7 +81,7 @@ version (linux)
      *             if (count != IConduit.Eof)
      *             {
      *                 Stdout("Sent 'MESSAGE' to peer");
-     *                 selector.reregister(key.conduit, Event.Read, key.attachment);
+     *                 selector.register(key.conduit, Event.Read, key.attachment);
      *             }
      *             else
      *             {
@@ -195,6 +195,8 @@ version (linux)
 
         /**
          * Associate a conduit to the selector and track specific I/O events.
+         * If a conduit is already associated, changes the events and
+         * attachment.
          *
          * Params:
          * conduit      = conduit that will be associated to the selector;
@@ -222,63 +224,6 @@ version (linux)
         }
         body
         {
-            epoll_event     event;
-            SelectionKey    key = new SelectionKey(conduit, events, attachment);
-
-            event.events = events;
-            // We associate the selection key to the epoll_event to be able to
-            // retrieve it efficiently when we get events for this handle.
-            event.data.ptr = cast(void*) key;
-
-            if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) == 0)
-            {
-                // We keep the keys in a map to make sure that the key is not
-                // garbage collected while there is still a reference to it in
-                // an epoll_event. This also allows to to efficiently find the
-                // key corresponding to a handle in methods where this
-                // association is not provided automatically.
-                _keys[conduit.fileHandle()] = key;
-            }
-            else
-            {
-                checkErrno(__FILE__, __LINE__);
-            }
-        }
-
-        /**
-         * Modify the events that are being tracked or the 'attachment' field
-         * for an already registered conduit.
-         *
-         * Params:
-         * conduit      = conduit that will be associated to the selector;
-         *                must be a valid conduit (i.e. not null and open).
-         * events       = bit mask of Event values that represent the events
-         *                that will be tracked for the conduit.
-         * attachment   = optional object with application-specific data that
-         *                will be available when an event is triggered for the
-         *                conduit
-         *
-         * Remarks:
-         * The 'attachment' member of the SelectionKey will always be
-         * overwritten, even if it's null.
-         *
-         * Throws:
-         * UnregisteredConduitException if the conduit had not been previously
-         * registered to the selector; SelectorException if there are not
-         * enough resources to modify the conduit registration.
-         *
-         * Examples:
-         * ---
-         * selector.reregister(conduit, Event.Write, object);
-         * ---
-         */
-        public void reregister(ISelectable conduit, Event events, Object attachment = null)
-        in
-        {
-            assert(conduit !is null && conduit.fileHandle() >= 0);
-        }
-        body
-        {
             SelectionKey* key = (conduit.fileHandle() in _keys);
 
             if (key !is null)
@@ -298,7 +243,27 @@ version (linux)
             }
             else
             {
-                throw new UnregisteredConduitException(__FILE__, __LINE__);
+                epoll_event     event;
+                SelectionKey    newkey = new SelectionKey(conduit, events, attachment);
+
+                event.events = events;
+                // We associate the selection key to the epoll_event to be able to
+                // retrieve it efficiently when we get events for this handle.
+                event.data.ptr = cast(void*) newkey;
+
+                if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) == 0)
+                {
+                    // We keep the keys in a map to make sure that the key is not
+                    // garbage collected while there is still a reference to it in
+                    // an epoll_event. This also allows to to efficiently find the
+                    // key corresponding to a handle in methods where this
+                    // association is not provided automatically.
+                    _keys[conduit.fileHandle()] = newkey;
+                }
+                else
+                {
+                    checkErrno(__FILE__, __LINE__);
+                }
             }
         }
 

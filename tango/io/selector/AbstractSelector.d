@@ -38,8 +38,9 @@ version (Windows)
  * in the 'maxEvents' argument. The amount of conduits that the selector can
  * manage will be incremented dynamically if necessary.
  *
- * To add, modify or remove conduit registrations to the selector you use
- * the register(), reregister() and unregister() methods respectively.
+ * To add or modify conduit registrations in the selector, use the register()
+ * method.  To remove conduit registrations from the selector, use the
+ * unregister() method.
  *
  * To wait for events from the conduits you need to call any of the select()
  * methods. The selector cannot be modified from another thread while
@@ -86,7 +87,7 @@ version (Windows)
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout.format("Received '{0}' from peer\n", buffer[0..count]);
- *                 selector.reregister(key.conduit, Event.Write, key.attachment);
+ *                 selector.register(key.conduit, Event.Write, key.attachment);
  *             }
  *             else
  *             {
@@ -101,7 +102,7 @@ version (Windows)
  *             if (count != IConduit.Eof)
  *             {
  *                 Stdout("Sent 'MESSAGE' to peer\n");
- *                 selector.reregister(key.conduit, Event.Read, key.attachment);
+ *                 selector.register(key.conduit, Event.Read, key.attachment);
  *             }
  *             else
  *             {
@@ -192,31 +193,13 @@ abstract class AbstractSelector: ISelector
                                   Object attachment);
 
     /**
-     * Modify the events that are being tracked or the 'attachment' field
-     * for an already registered conduit.
-     *
-     * Params:
-     * conduit      = conduit that will be associated to the selector
-     * events       = bit mask of Event values that represent the events that
-     *                will be tracked for the conduit.
-     * attachment   = optional object with application-specific data that will
-     *                be available when an event is triggered for the conduit
-     *
-     * Remarks:
-     * The 'attachment' member of the SelectionKey will always be overwritten,
-     * even if it's null.
-     *
-     * Examples:
-     * ---
-     * AbstractSelector selector;
-     * SocketConduit conduit;
-     * MyClass object;
-     *
-     * selector.reregister(conduit, Event.Write, object);
-     * ---
+     * Deprecated, use register instead
      */
-    public abstract void reregister(ISelectable conduit, Event events,
-                                    Object attachment);
+    deprecated public final void reregister(ISelectable conduit, Event events,
+            Object attachment = null)
+    {
+        register(conduit, events, attachment);
+    }
 
     /**
      * Remove a conduit from the selector.
