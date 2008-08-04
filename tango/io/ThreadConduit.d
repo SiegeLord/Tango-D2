@@ -12,7 +12,7 @@ module tango.io.ThreadConduit;
 private import tango.core.sync.Condition;
 private import tango.core.Exception;
 
-public import tango.io.model.IConduit;
+public import tango.io.Conduit;
 
 /**
  * Conduit to support a data stream between 2 threads.  One creates a
@@ -35,7 +35,7 @@ public import tango.io.model.IConduit;
  * tc.close();
  * t.join();
  */
-class ThreadConduit : IConduit
+class ThreadConduit : Conduit
 {
     private bool _closed;
     private uint _readIdx, _writeIdx;
@@ -59,22 +59,6 @@ class ThreadConduit : IConduit
     }
 
     /**
-     * Implements IConduit.input (covariant)
-     */
-    ThreadConduit input()
-    {
-        return this;
-    }
-
-    /**
-     * Implements IConduit.output (covariant)
-     */
-    ThreadConduit output()
-    {
-        return this;
-    }
-
-    /**
      * Implements IConduit.bufferSize
      *
      * Returns the appropriate buffer size that should be used to buffer the
@@ -90,7 +74,7 @@ class ThreadConduit : IConduit
     /**
      * Implements IConduit.toString
      *
-     * Returns "<thread conduit>"
+     * Returns "&lt;thread conduit&gt;"
      */
     char[] toString()
     {
@@ -101,7 +85,7 @@ class ThreadConduit : IConduit
      * Returns true if there is data left to be read, and the write end isn't
      * closed.
      */
-    bool isAlive()
+    override bool isAlive()
     {
         synchronized(_mutex)
         {
@@ -151,30 +135,6 @@ class ThreadConduit : IConduit
             _closed = true;
             _condition.notifyAll();
         }
-    }
-
-    /**
-     * Throw an IOException with the given message.
-     */
-    void error(char[] msg)
-    {
-        throw new IOException(msg);
-    }
-
-    /**
-     * Implements InputStream.conduit and OutputStream.conduit (covariant)
-     */
-    ThreadConduit conduit()
-    {
-        return this;
-    }
-
-    /**
-     * Close the write end of the conduit.  Same as detach()
-     */
-    void close()
-    {
-        detach();
     }
 
     /**
@@ -229,36 +189,6 @@ class ThreadConduit : IConduit
             _condition.notifyAll();
             return result;
         }
-    }
-
-    /**
-     * Implements InputStream.load
-     *
-     * Load the bits from a stream, and return them all in an array. The dst
-     * array can be provided as an option, which will be expanded as necessary
-     * to consume the input.
-     *
-     * Returns an array representing the content, and throws IOException on
-     * error
-     */
-    void[] load(void[] dst = null)
-    {
-        //
-        // copied from Conduit.load
-        //
-        auto chunk = 0;
-        auto index = 0;
-
-        while (chunk != Eof)
-        {
-            if (dst.length - index < 1024)
-                dst.length = dst.length + 16 * 1024;
-
-            chunk = read (dst[index .. $]);
-            index += chunk;
-        } 
-
-        return dst [0 .. index - chunk];
     }
 
     /**
@@ -323,39 +253,5 @@ class ThreadConduit : IConduit
             _condition.notifyAll();
             return result;
         }
-    }
-
-    /**
-     * Implements OutputStream.copy
-     *
-     * Transfer the content of another stream to this one. Returns a reference
-     * to this class, and throws IOException on failure.
-     */
-    ThreadConduit copy(InputStream src)
-    {
-        //
-        // copied from Conduit
-        //
-        uint len = 0;
-        auto tmp = new void [bufferSize];
-        while ((len = src.read(tmp)) != IConduit.Eof)
-        {
-            auto p = tmp.ptr;
-            for (uint j; len > 0; len -= j, p += j)
-                if ((j = write (p[0..len])) is IConduit.Eof)
-                    error ("ThreadConduit.copy :: Eof while writing to: "~toString);
-        }
-        delete tmp;
-        return this;
-    }
-
-    /**
-     * Implements OutputStream.flush
-     *
-     * Since there is no callable sink, this is a noop.
-     */
-    ThreadConduit flush()
-    {
-        return this;
     }
 }
