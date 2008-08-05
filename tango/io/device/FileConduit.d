@@ -4,27 +4,27 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004      
-                        Outback release: December 2006
+        version:        Mar 2004: Initial release     
+                        Dec 2006: Outback release
                         
-        author:         $(UL Kris)
-                        $(UL John Reimer)
-                        $(UL Anders F Bjorklund (Darwin patches))
-                        $(UL Chris Sauls (Win95 file support))
+        author:         Kris, 
+                        John Reimer, 
+                        Anders F Bjorklund (Darwin patches),
+                        Chris Sauls (Win95 file support)
 
 *******************************************************************************/
 
-module tango.io.FileConduit;
+module tango.io.device.FileConduit;
 
 private import  tango.sys.Common;
 
 public  import  tango.io.FilePath;
 
-private import  tango.io.DeviceConduit;
-
 private import  stdc = tango.stdc.stringz;
 
 private import  Utf = tango.text.convert.Utf;
+
+private import  tango.io.device.DeviceConduit;
 
 /*******************************************************************************
 

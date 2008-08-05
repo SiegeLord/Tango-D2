@@ -15,7 +15,7 @@ module tango.util.log.AppendFile;
 private import  tango.util.log.Log;
 
 private import  tango.io.Buffer,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 private import  tango.io.model.IFile,
                 tango.io.model.IConduit;

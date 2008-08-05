@@ -1,4 +1,4 @@
-import tango.io.FileConduit;
+import tango.io.device.FileConduit;
 import tango.io.FilePath;
 import tango.io.FileScan;
 import tango.io.MappedBuffer;

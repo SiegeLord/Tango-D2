@@ -20,7 +20,7 @@ private import tango.stdc.stringz : fromStringz;
 
 private import tango.core.Exception : IOException;
 
-private import tango.io.Conduit : InputFilter, OutputFilter;
+private import tango.io.device.Conduit : InputFilter, OutputFilter;
 
 private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 

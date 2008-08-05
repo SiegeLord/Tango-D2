@@ -13,7 +13,7 @@
 module tango.io.stream.SnoopStream;
 
 private import  tango.io.Console,
-                tango.io.Conduit;
+                tango.io.device.Conduit;
 
 private import  tango.text.convert.Format;
 

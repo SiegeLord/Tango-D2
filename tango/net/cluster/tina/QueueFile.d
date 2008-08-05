@@ -13,7 +13,7 @@
 module tango.net.cluster.tina.QueueFile;
 
 private import  tango.io.FilePath,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 private import  tango.util.log.model.ILogger;
 

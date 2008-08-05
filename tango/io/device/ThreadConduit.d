@@ -1,18 +1,23 @@
-/**
- * copyright:      Copyright (c) 2008 Steven Schveighoffer. All rights reserved
- *
- * license:        BSD style: $(LICENSE)
- *
- * version:        Initial release: June 2008
- *
- * author:         schveiguy
- */
-module tango.io.ThreadConduit;
+/*******************************************************************************
 
-private import tango.core.sync.Condition;
+        copyright:      Copyright (c) 2008 Steven Schveighoffer. 
+                        All rights reserved
+
+        license:        BSD style: $(LICENSE)
+
+        version:        Jun 2008: Initial release
+
+        author:         schveiguy
+
+*******************************************************************************/
+
+module tango.io.device.ThreadConduit;
+
 private import tango.core.Exception;
 
-public import tango.io.Conduit;
+private import tango.io.device.Conduit;
+
+private import tango.core.sync.Condition;
 
 /**
  * Conduit to support a data stream between 2 threads.  One creates a

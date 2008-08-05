@@ -14,7 +14,7 @@ module tango.io.vfs.FileFolder;
 
 private import tango.util.PathUtil;
 
-private import tango.io.FileConduit;
+private import tango.io.device.FileConduit;
 
 private import Path = tango.io.Path;
 

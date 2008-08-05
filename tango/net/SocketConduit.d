@@ -14,7 +14,7 @@
 
 module tango.net.SocketConduit;
 
-public  import  tango.io.Conduit;
+public  import  tango.io.device.Conduit;
 
 private import  tango.net.Socket;
 

@@ -15,7 +15,7 @@ module tango.util.log.AppendFiles;
 private import  tango.time.Time;
 
 private import  Path = tango.io.Path,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 private import  tango.io.model.IFile,
                 tango.io.model.IBuffer;

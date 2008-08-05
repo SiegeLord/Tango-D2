@@ -1,6 +1,6 @@
 module build_tango;
 
-import tango.io.FileConduit;
+import tango.io.device.FileConduit;
 import tango.io.FileScan;
 import tango.io.Stdout;
 import tango.sys.Process;

@@ -17,7 +17,7 @@ module tango.io.Console;
 private import  tango.sys.Common;
 
 private import  tango.io.Buffer,
-                tango.io.DeviceConduit;
+                tango.io.device.DeviceConduit;
 
 
 version (Posix)

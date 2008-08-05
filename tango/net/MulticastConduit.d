@@ -13,7 +13,7 @@
 
 module tango.net.MulticastConduit;
 
-public  import  tango.io.Conduit;
+public  import  tango.io.device.Conduit;
 
 private import  tango.net.DatagramConduit,
                 tango.net.InternetAddress;

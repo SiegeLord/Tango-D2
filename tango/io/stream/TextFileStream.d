@@ -12,7 +12,7 @@
 
 module tango.io.stream.TextFileStream;
 
-public  import tango.io.FileConduit;
+public  import tango.io.device.FileConduit;
 
 private import tango.io.Buffer;
 

@@ -14,7 +14,7 @@
 
 module tango.io.vfs.ZipFolder;
 
-import tango.io.FileConduit : FileConduit;
+import tango.io.device.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath;
 import tango.io.TempFile : TempFile;
 import tango.io.compress.Zip : ZipReader, ZipBlockReader,
@@ -1695,7 +1695,7 @@ unittest
 
 // Dependencies
 private:
-import tango.io.Conduit : Conduit;
+import tango.io.device.Conduit : Conduit;
 
 /*******************************************************************************
 
@@ -1711,7 +1711,7 @@ import tango.io.Conduit : Conduit;
 
 //module tangox.io.stream.DummyStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**
@@ -1772,7 +1772,7 @@ class DummyOutputStream : OutputStream, IConduit.Seek
 
 //module tangox.io.stream.EventStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**
@@ -1951,7 +1951,7 @@ private:
 
 //module tangox.io.stream.WrapStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**

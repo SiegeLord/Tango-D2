@@ -12,7 +12,7 @@
 
 module tango.io.stream.DigestStream;
 
-private import tango.io.Conduit;
+private import tango.io.device.Conduit;
 
 private import tango.io.digest.Digest;
 

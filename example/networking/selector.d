@@ -20,7 +20,7 @@ private
     import tango.io.selector.Selector;
     import tango.io.selector.SelectSelector;
     import tango.io.selector.SelectorException;
-    import tango.io.Conduit;
+    import tango.io.device.Conduit;
     import tango.net.Socket;
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;

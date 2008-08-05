@@ -16,7 +16,7 @@ module tango.text.Properties;
 
 private import  tango.io.Buffer,
                 tango.io.FilePath,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 private import  tango.io.model.IFile;
 

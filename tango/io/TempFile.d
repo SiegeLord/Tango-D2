@@ -13,8 +13,8 @@ module tango.io.TempFile;
 
 import Path = tango.io.Path;
 import tango.math.random.Kiss : Kiss;
-import tango.io.DeviceConduit : DeviceConduit;
-import tango.io.FileConduit : FileConduit;
+import tango.io.device.DeviceConduit : DeviceConduit;
+import tango.io.device.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath;
 import tango.stdc.stringz : toStringz, toString16z;
 

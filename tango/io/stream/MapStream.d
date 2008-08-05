@@ -15,7 +15,7 @@
 module tango.io.stream.MapStream;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit;
+                tango.io.device.Conduit;
 
 private import  Text = tango.text.Util;
 

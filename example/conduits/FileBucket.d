@@ -1,6 +1,6 @@
 module FileBucket;
 
-private import  tango.io.FileConduit;
+private import  tango.io.device.FileConduit;
 
 private import  tango.core.Exception;
 

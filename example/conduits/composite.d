@@ -1,7 +1,7 @@
 
 private import  tango.io.protocol.Reader,
                 tango.io.protocol.Writer,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 /*******************************************************************************
 

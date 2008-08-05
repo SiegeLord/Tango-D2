@@ -1,5 +1,5 @@
 private import  tango.io.Console,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 /*******************************************************************************
 

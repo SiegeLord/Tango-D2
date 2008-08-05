@@ -1,5 +1,5 @@
 
-private import  tango.io.FileConduit;
+private import  tango.io.device.FileConduit;
 
 private import  tango.io.protocol.Reader,
                 tango.io.protocol.Writer;

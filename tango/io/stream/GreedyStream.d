@@ -12,7 +12,7 @@
 
 module tango.io.stream.GreedyStream;
 
-private import tango.io.Conduit;
+private import tango.io.device.Conduit;
 
 
 /*******************************************************************************

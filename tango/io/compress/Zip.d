@@ -28,7 +28,7 @@ TODO
 
 import tango.core.ByteSwap : ByteSwap;
 import tango.io.Buffer : Buffer;
-import tango.io.FileConduit : FileConduit;
+import tango.io.device.FileConduit : FileConduit;
 import tango.io.FilePath : FilePath, PathView;
 import tango.io.MappedBuffer : MappedBuffer;
 import tango.io.compress.ZlibStream : ZlibInput, ZlibOutput;
@@ -2285,7 +2285,7 @@ void timeToDos(Time time, out ushort dostime, out ushort dosdate)
 // Dependencies
 private:
 
-import tango.io.Conduit : Conduit;
+import tango.io.device.Conduit : Conduit;
 
 /*******************************************************************************
 
@@ -2301,7 +2301,7 @@ import tango.io.Conduit : Conduit;
 
 //module tangox.io.stream.CounterStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**
@@ -2430,7 +2430,7 @@ private:
 
 //module tangox.io.stream.SliceStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**
@@ -2758,7 +2758,7 @@ private:
 
 //module tangox.io.stream.WrapStream;
 
-//import tango.io.Conduit : Conduit;
+//import tango.io.device.Conduit : Conduit;
 //import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 
 /**

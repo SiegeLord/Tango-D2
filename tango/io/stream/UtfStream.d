@@ -17,7 +17,7 @@
 module tango.io.stream.UtfStream;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit;
+                tango.io.device.Conduit;
 
 private import Utf = tango.text.convert.Utf;
 

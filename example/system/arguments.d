@@ -4,7 +4,7 @@
 
 import tango.util.Arguments;
 import tango.io.Stdout;
-import tango.io.FileConduit;
+import tango.io.device.FileConduit;
 import tango.text.stream.LineIterator;
 
 void usage()

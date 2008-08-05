@@ -16,7 +16,7 @@
 module tango.io.stream.TypedStream;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit;
+                tango.io.device.Conduit;
 
 /*******************************************************************************
 

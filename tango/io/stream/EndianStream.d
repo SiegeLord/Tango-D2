@@ -16,7 +16,7 @@
 module tango.io.stream.EndianStream;
 
 private import  tango.io.Buffer,
-                tango.io.Conduit;
+                tango.io.device.Conduit;
 
 private import  tango.core.ByteSwap;
 

@@ -14,7 +14,7 @@ module tango.io.stream.DataStream;
 
 private import tango.io.Buffer;
 
-private import tango.io.Conduit;
+private import tango.io.device.Conduit;
 
 private import tango.core.ByteSwap;
 

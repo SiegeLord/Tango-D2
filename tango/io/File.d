@@ -14,7 +14,7 @@
 module tango.io.File;
 
 private import  tango.io.FilePath,
-                tango.io.FileConduit;
+                tango.io.device.FileConduit;
 
 private import  tango.core.Exception;
 

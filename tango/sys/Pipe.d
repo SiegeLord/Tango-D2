@@ -8,7 +8,7 @@ module tango.sys.Pipe;
 
 private import tango.sys.Common;
 private import tango.io.Buffer;
-private import tango.io.DeviceConduit;
+private import tango.io.device.DeviceConduit;
 
 private import tango.core.Exception;
 

@@ -4,19 +4,19 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: May 2005
+        version:        May 2005: Initial release
 
         author:         Kris
 
 *******************************************************************************/
 
-module tango.io.DeviceConduit;
+module tango.io.device.DeviceConduit;
 
 private import  tango.sys.Common;
 
-public  import  tango.io.Conduit;
-
 private import  tango.core.Exception;
+
+public  import  tango.io.device.Conduit;
 
 /*******************************************************************************
 

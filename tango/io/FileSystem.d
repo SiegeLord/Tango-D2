@@ -32,7 +32,7 @@ version (Posix)
         private import tango.stdc.string;
         private import tango.stdc.posix.unistd;
 
-        private import tango.io.FileConduit;
+        private import tango.io.device.FileConduit;
         private import Integer = tango.text.convert.Integer;
         }
 

@@ -18,7 +18,7 @@ private import  tango.io.Buffer;
 
 private import  tango.core.Exception;
 
-public  import  tango.io.FileConduit;
+public  import  tango.io.device.FileConduit;
 
 /*******************************************************************************
 

@@ -21,7 +21,7 @@ module tango.io.model.IConduit;
         and are implemented via classes such as FileConduit & SocketConduit. 
         
         Additional kinds of conduit are easy to construct: one either 
-        subclasses tango.io.Conduit, or implements tango.io.model.IConduit. 
+        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit. 
         A conduit typically reads and writes from/to an IBuffer in large 
         chunks, typically the entire buffer. Alternatively, one can invoke 
         input.read(dst[]) and/or output.write(src[]) directly.

@@ -12,7 +12,7 @@
 
 module tango.io.stream.DataFileStream;
 
-private import tango.io.FileConduit;
+private import tango.io.device.FileConduit;
 
 private import tango.io.stream.DataStream;
 
