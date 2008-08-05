@@ -252,7 +252,7 @@ abstract class AbstractSelector: ISelector
      */
     public int select(double timeout)
     {
-            return select(TimeSpan.interval(timeout));
+            return select(TimeSpan.fromInterval(timeout));
     }
 
     /**

@@ -62,7 +62,7 @@ struct WallClock
                         TIME_ZONE_INFORMATION tz = void;
 
                         auto tmp = GetTimeZoneInformation (&tz);
-                        return TimeSpan.minutes(-tz.Bias);
+                        return TimeSpan.fromMinutes(-tz.Bias);
                 }
 
                 /***************************************************************
@@ -129,7 +129,7 @@ struct WallClock
                                    break; 
                               } 
 
-                       return TimeSpan.minutes(bias); 
+                       return TimeSpan.fromMinutes(bias); 
                }
         }
 
@@ -164,10 +164,10 @@ struct WallClock
                                 {
                                 timezone_t tz = void;
                                 gettimeofday (null, &tz);
-                                return TimeSpan.minutes(-tz.tz_minuteswest);
+                                return TimeSpan.fromMinutes(-tz.tz_minuteswest);
                                 }
                              else
-                                return TimeSpan.seconds(-timezone);
+                                return TimeSpan.fromSeconds(-timezone);
                 }
 
                 /***************************************************************
@@ -230,8 +230,8 @@ struct WallClock
                         t.tm_sec  = dt.time.seconds;
 
                         auto seconds = mktime (&t);
-                        return Time.epoch1970 + TimeSpan.seconds(seconds) 
-                                              + TimeSpan.millis(dt.time.millis);
+                        return Time.epoch1970 + TimeSpan.fromSeconds(seconds) 
+                                              + TimeSpan.fromMillis(dt.time.millis);
                 }
         }
 

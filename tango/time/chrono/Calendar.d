@@ -436,7 +436,7 @@ public abstract class Calendar
                 //
                 for(int m = 0; m < nMonths; m++)
                         nDays += getDaysInMonth(year, m + 1, era);
-                return t + TimeSpan.days(nDays);
+                return t + TimeSpan.fromDays(nDays);
         }
 
         /**
@@ -467,6 +467,6 @@ public abstract class Calendar
 
         package static long getTimeTicks (uint hour, uint minute, uint second) 
         {
-                return (TimeSpan.hours(hour) + TimeSpan.minutes(minute) + TimeSpan.seconds(second)).ticks;
+                return (TimeSpan.fromHours(hour) + TimeSpan.fromMinutes(minute) + TimeSpan.fromSeconds(second)).ticks;
         }
 }

@@ -48,7 +48,7 @@ class SocketPool(T)
         private Factory                 factory;
         private InternetAddress         address;
         private Connection              freelist;
-        private TimeSpan                timeout = TimeSpan.seconds(60);
+        private TimeSpan                timeout = TimeSpan.fromSeconds(60);
 
 
         /***********************************************************************

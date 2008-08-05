@@ -710,8 +710,8 @@ package struct FS
                         static Time convert (timeval* tv)
                         {
                                 return Time.epoch1970 +
-                                       TimeSpan.seconds(tv.tv_sec) +
-                                       TimeSpan.micros(tv.tv_usec);
+                                       TimeSpan.fromSeconds(tv.tv_sec) +
+                                       TimeSpan.fromMicros(tv.tv_usec);
                         }
 
                         stat_t stats = void;

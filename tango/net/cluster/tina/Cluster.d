@@ -1006,7 +1006,7 @@ private class ConnectionPool
         private bool            noDelay;
         private InternetAddress address;
         private PoolConnection  freelist;
-        private TimeSpan        timeout = TimeSpan.seconds(60);
+        private TimeSpan        timeout = TimeSpan.fromSeconds(60);
 
         /***********************************************************************
         

@@ -363,7 +363,7 @@ struct TimeSpan
          * Params: value = The number of nanoseconds.
          * Returns: A TimeSpan representing the given number of nanoseconds.
          */
-        static TimeSpan nanos(long value)
+        static TimeSpan fromNanos(long value)
         {
                 return TimeSpan(value / NanosecondsPerTick);
         }
@@ -374,7 +374,7 @@ struct TimeSpan
          * Params: value = The number of microseconds.
          * Returns: A TimeSpan representing the given number of microseconds.
          */
-        static TimeSpan micros(long value)
+        static TimeSpan fromMicros(long value)
         {
                 return TimeSpan(TicksPerMicrosecond * value);
         }
@@ -385,7 +385,7 @@ struct TimeSpan
          * Params: value = The number of milliseconds.
          * Returns: A TimeSpan representing the given number of milliseconds.
          */
-        static TimeSpan millis(long value)
+        static TimeSpan fromMillis(long value)
         {
                 return TimeSpan(TicksPerMillisecond * value);
         }
@@ -396,7 +396,7 @@ struct TimeSpan
          * Params: value = The number of seconds.
          * Returns: A TimeSpan representing the given number of seconds.
          */
-        static TimeSpan seconds(long value)
+        static TimeSpan fromSeconds(long value)
         {
                 return TimeSpan(TicksPerSecond * value);
         }
@@ -407,7 +407,7 @@ struct TimeSpan
          * Params: value = The number of minutes.
          * Returns: A TimeSpan representing the given number of minutes.
          */
-        static TimeSpan minutes(long value)
+        static TimeSpan fromMinutes(long value)
         {
                 return TimeSpan(TicksPerMinute * value);
         }
@@ -418,7 +418,7 @@ struct TimeSpan
          * Params: value = The number of hours.
          * Returns: A TimeSpan representing the given number of hours.
          */
-        static TimeSpan hours(long value)
+        static TimeSpan fromHours(long value)
         {
                 return TimeSpan(TicksPerHour * value);
         }
@@ -429,7 +429,7 @@ struct TimeSpan
          * Params: value = The number of days.
          * Returns: A TimeSpan representing the given number of days.
          */
-        static TimeSpan days(long value)
+        static TimeSpan fromDays(long value)
         {
                 return TimeSpan(TicksPerDay * value);
         }
@@ -442,7 +442,7 @@ struct TimeSpan
          * Params: value = The interval to convert in seconds.
          * Returns: A TimeSpan representing the given interval.
          */
-        static TimeSpan interval(double sec)
+        static TimeSpan fromInterval(double sec)
         {
                 return TimeSpan(cast(long)(sec * TicksPerSecond + .1));
         }
@@ -759,10 +759,10 @@ struct TimeOfDay
          */
         TimeSpan span ()
         {
-                return TimeSpan.hours(hours) +
-                       TimeSpan.minutes(minutes) + 
-                       TimeSpan.seconds(seconds) + 
-                       TimeSpan.millis(millis);
+                return TimeSpan.fromHours(hours) +
+                       TimeSpan.fromMinutes(minutes) + 
+                       TimeSpan.fromSeconds(seconds) + 
+                       TimeSpan.fromMillis(millis);
         }
 
         /**
@@ -828,21 +828,21 @@ debug (UnitTest)
                 assert(TimeSpan.min >= TimeSpan.min);
                 assert(TimeSpan.min <= TimeSpan.min);
 
-                assert (TimeSpan.seconds(50).seconds is 50);
-                assert (TimeSpan.seconds(5000).seconds is 5000);
-                assert (TimeSpan.minutes(50).minutes is 50);
-                assert (TimeSpan.minutes(5000).minutes is 5000);
-                assert (TimeSpan.hours(23).hours is 23);
-                assert (TimeSpan.hours(5000).hours is 5000);
-                assert (TimeSpan.days(6).days is 6);
-                assert (TimeSpan.days(5000).days is 5000);
+                assert (TimeSpan.fromSeconds(50).seconds is 50);
+                assert (TimeSpan.fromSeconds(5000).seconds is 5000);
+                assert (TimeSpan.fromMinutes(50).minutes is 50);
+                assert (TimeSpan.fromMinutes(5000).minutes is 5000);
+                assert (TimeSpan.fromHours(23).hours is 23);
+                assert (TimeSpan.fromHours(5000).hours is 5000);
+                assert (TimeSpan.fromDays(6).days is 6);
+                assert (TimeSpan.fromDays(5000).days is 5000);
 
-                assert (TimeSpan.seconds(50).time.seconds is 50);
-                assert (TimeSpan.seconds(5000).time.seconds is 5000 % 60);
-                assert (TimeSpan.minutes(50).time.minutes is 50);
-                assert (TimeSpan.minutes(5000).time.minutes is 5000 % 60);
-                assert (TimeSpan.hours(23).time.hours is 23);
-                assert (TimeSpan.hours(5000).time.hours is 5000 % 24);
+                assert (TimeSpan.fromSeconds(50).time.seconds is 50);
+                assert (TimeSpan.fromSeconds(5000).time.seconds is 5000 % 60);
+                assert (TimeSpan.fromMinutes(50).time.minutes is 50);
+                assert (TimeSpan.fromMinutes(5000).time.minutes is 5000 % 60);
+                assert (TimeSpan.fromHours(23).time.hours is 23);
+                assert (TimeSpan.fromHours(5000).time.hours is 5000 % 24);
 
                 auto tod = TimeOfDay (25, 2, 3, 4);
                 tod = tod.span.time;

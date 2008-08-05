@@ -281,7 +281,7 @@ public class Hebrew : Calendar {
     auto days = getStartOfYear(year) - DaysToOneAD + day - 1;
     for (int i = 1; i <= month; i++)
       days += MonthDays[yearType][i - 1];
-    return Time((days * TimeSpan.TicksPerDay) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
+    return Time((days * TimeSpan.TicksPerDay) + getTimeTicks(hour, minute, second)) + TimeSpan.fromMillis(millisecond);
   }
 
 }

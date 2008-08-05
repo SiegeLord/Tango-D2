@@ -33,7 +33,7 @@ class Telnet
         protected Socket socket;
 
         /// The number of milliseconds to wait for socket communication or connection.
-        protected TimeSpan timeout = TimeSpan.millis(5000);
+        protected TimeSpan timeout = TimeSpan.fromMillis(5000);
 
         /// provided by host
         abstract void exception (char[] msg);

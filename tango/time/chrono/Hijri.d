@@ -43,7 +43,7 @@ public class Hijri : Calendar {
    * Returns: A Time set to the specified date and time.
    */
   public override Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
-    return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.TicksPerDay + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
+    return Time((daysSinceJan1(year, month, day) - 1) * TimeSpan.TicksPerDay + getTimeTicks(hour, minute, second)) + TimeSpan.fromMillis(millisecond);
   }
 
   /**

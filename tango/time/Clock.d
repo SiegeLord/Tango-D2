@@ -241,8 +241,8 @@ struct Clock
 
                         auto seconds = timegm (&t);
                         return Time.epoch1970 + 
-                               TimeSpan.seconds(seconds) + 
-                               TimeSpan.millis(dt.time.millis);
+                               TimeSpan.fromSeconds(seconds) + 
+                               TimeSpan.fromMillis(dt.time.millis);
                 }
 
                 /***************************************************************
@@ -254,8 +254,8 @@ struct Clock
                 package static Time convert (inout timeval tv)
                 {
                         return Time.epoch1970 + 
-                               TimeSpan.seconds(tv.tv_sec) + 
-                               TimeSpan.micros(tv.tv_usec);
+                               TimeSpan.fromSeconds(tv.tv_sec) + 
+                               TimeSpan.fromMicros(tv.tv_usec);
                 }
 
                 /***************************************************************

@@ -89,7 +89,7 @@ class Gregorian : Calendar
         */
         override Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era)
         {
-                return Time (getDateTicks(year, month, day, era) + getTimeTicks(hour, minute, second)) + TimeSpan.millis(millisecond);
+                return Time (getDateTicks(year, month, day, era) + getTimeTicks(hour, minute, second)) + TimeSpan.fromMillis(millisecond);
         }
 
         /**
@@ -470,7 +470,7 @@ debug(Gregorian)
                 output(t);
                 for(int i = 0; i < 366 + 365; i++)
                 {
-                        t -= TimeSpan.days(1);
+                        t -= TimeSpan.fromDays(1);
                         output(t);
                 }
         }
@@ -483,7 +483,7 @@ debug(UnitTest)
                 //
                 // check Gregorian date handles positive time.
                 //
-                Time t = Time.epoch + TimeSpan.days(365);
+                Time t = Time.epoch + TimeSpan.fromDays(365);
                 Date d = Gregorian.generic.toDate(t);
                 assert(d.year == 2);
                 assert(d.month == 1);
@@ -498,7 +498,7 @@ debug(UnitTest)
                 //
                 // check that it handles negative time
                 //
-                t = Time.epoch - TimeSpan.days(366);
+                t = Time.epoch - TimeSpan.fromDays(366);
                 d = Gregorian.generic.toDate(t);
                 assert(d.year == 1);
                 assert(d.month == 1);
@@ -511,7 +511,7 @@ debug(UnitTest)
                 // check that addMonths works properly, add 15 months to
                 // 2/3/2004, 04:05:06.007008, then subtract 15 months again.
                 //
-                t = Gregorian.generic.toTime(2004, 2, 3, 4, 5, 6, 7) + TimeSpan.micros(8);
+                t = Gregorian.generic.toTime(2004, 2, 3, 4, 5, 6, 7) + TimeSpan.fromMicros(8);
                 d = Gregorian.generic.toDate(t);
                 assert(d.year == 2004);
                 assert(d.month == 2);

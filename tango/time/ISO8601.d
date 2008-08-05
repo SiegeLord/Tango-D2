@@ -857,11 +857,11 @@ size_t parseIntLimited(T)(inout T* p, size_t max, out int i) {
 bool DTyear(int year) { return year >= -10000 && year <= 9999; }
 
 void addMonths(inout FullDate d, int n) { d.val = Gregorian.generic.addMonths(d.val, n-1); } // -1 due to initial being 1
-void addDays  (inout FullDate d, int n) { d.val += TimeSpan.days   (n-1); } // ditto
-void addHours (inout FullDate d, int n) { d.val += TimeSpan.hours  (n); }
-void addMins  (inout FullDate d, int n) { d.val += TimeSpan.minutes(n); }
-void addSecs  (inout FullDate d, int n) { d.val += TimeSpan.seconds(n); }
-void addMs    (inout FullDate d, int n) { d.val += TimeSpan.millis (n); }
+void addDays  (inout FullDate d, int n) { d.val += TimeSpan.fromDays   (n-1); } // ditto
+void addHours (inout FullDate d, int n) { d.val += TimeSpan.fromHours  (n); }
+void addMins  (inout FullDate d, int n) { d.val += TimeSpan.fromMinutes(n); }
+void addSecs  (inout FullDate d, int n) { d.val += TimeSpan.fromSeconds(n); }
+void addMs    (inout FullDate d, int n) { d.val += TimeSpan.fromMillis (n); }
 
 // years and secs always just get the DT value
 int years (FullDate d) { return Gregorian.generic.getYear      (d.val); }
