@@ -200,7 +200,7 @@ version(d)
         
         final Document header (T[] encoding = null)
         {
-                if (encoding)
+                if (encoding.length)
                     encoding = `xml version="1.0" encoding="`~encoding~`"`;
                 else
                    encoding = `xml version="1.0" encoding="UTF-8"`;
