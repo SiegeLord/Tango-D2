@@ -198,10 +198,14 @@ version(d)
 
         ***********************************************************************/
         
-        final Document header (T[] encoding = "UTF-8")
+        final Document header (T[] encoding = null)
         {
-                root.prepend (root.create(XmlNodeType.PI, 
-                              `xml version="1.0" encoding="`~encoding~`"`));
+                if (encoding)
+                    encoding = `xml version="1.0" encoding="`~encoding~`"`;
+                else
+                   encoding = `xml version="1.0" encoding="UTF-8"`;
+
+                root.prepend (root.create(XmlNodeType.PI, encoding));
                 return this;
         }
 
