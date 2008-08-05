@@ -81,7 +81,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                case XmlNodeType.Element:
                                     emit ("\r\n", spaces[0..indent], "<", node.name(tmp));
                                     foreach (attr; node.attributes)
-                                             emit (` `, attr.name, `="`, attr.rawValue, `"`);  
+                                             emit (` `, attr.name(tmp), `="`, attr.rawValue, `"`);  
 
                                     auto value = rawValue (node);
                                     if (node.hasChildren)
