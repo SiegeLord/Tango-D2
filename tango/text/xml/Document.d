@@ -90,7 +90,7 @@ version=discrete;
         set = doc.query.descendant.attribute("attrib1");
 
         // select elements with one parent and a matching text value
-        set = doc.query[].filter((doc.Node n) {return n.hasData("value);});
+        set = doc.query[].filter((doc.Node n) {return n.hasData("value");});
         ---
 
         Note that path queries are temporal - they do not retain content
