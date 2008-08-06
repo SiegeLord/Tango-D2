@@ -156,6 +156,46 @@ T[] format(T) (T[] output, Time t)
 
 /******************************************************************************
 
+        ISO-8601 format :: "2006-01-31T14:49:30Z"
+
+        Throws an exception where the supplied time is invalid
+
+******************************************************************************/
+
+T[] format8601(T, U=Time) (T[] output, U t)
+{return format!(T)(output, cast(Time) t);}
+
+T[] format8601(T) (T[] output, Time t)
+{
+        T[] convert (T[] tmp, long i)
+        {
+                return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
+        }
+
+
+        assert (output.length >= 29);
+        if (t is t.max)
+            throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
+
+        // convert time to field values
+        auto time = t.time;
+        auto date = Gregorian.generic.toDate (t);
+
+        // use the featherweight formatter ...
+        T[20] tmp = void;
+        return Util.layout (output, cast(T[]) "%0-%1-%2T%3%:%4:%5Z", 
+                            convert (tmp[0..4], date.year),
+                            convert (tmp[4..6], date.month),
+                            convert (tmp[6..8], date.day),
+                            convert (tmp[8..10], time.hours),
+                            convert (tmp[10..12], time.minutes),
+                            convert (tmp[12..14], time.seconds)
+                           );
+}
+
+
+/******************************************************************************
+
       Parse provided input and return a UTC epoch time. A return value 
       of Time.max indicated a parse-failure.
 
