@@ -107,8 +107,8 @@ class ChunkInput : LineIterator!(char)
 {
         private alias void delegate(char[] line) Headers;
 
-        private Headers headers;
-        private uint    available;
+        private Headers         headers;
+        private uint            available;
 
         /***********************************************************************
 
@@ -119,23 +119,8 @@ class ChunkInput : LineIterator!(char)
 
         this (InputStream stream, Headers headers = null)
         {
-                set(stream);
+                set (stream);
                 this.headers = headers;
-        }
-
-        /***********************************************************************
-
-                Read and parse another chunk size
-
-        ***********************************************************************/
-
-        private final uint nextChunk ()
-        {
-                char[] tmp;
-
-                if ((tmp = super.next).ptr)
-                     return cast(uint) Integer.parse (tmp, 16);
-                return 0;
         }
 
         /***********************************************************************
@@ -146,9 +131,9 @@ class ChunkInput : LineIterator!(char)
 
         override ChunkInput set (InputStream stream)
         {
-            super.set(stream);
-            available = nextChunk;
-            return this;
+                super.set (stream);
+                available = nextChunk;
+                return this;
         }
 
         /***********************************************************************
@@ -181,6 +166,21 @@ class ChunkInput : LineIterator!(char)
                    }
                 
                 return read;
+        }
+
+        /***********************************************************************
+
+                Read and parse another chunk size
+
+        ***********************************************************************/
+
+        private final uint nextChunk ()
+        {
+                char[] tmp;
+
+                if ((tmp = super.next).ptr)
+                     return cast(uint) Integer.parse (tmp, 16);
+                return 0;
         }
 }
 
