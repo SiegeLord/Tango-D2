@@ -84,7 +84,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         ***********************************************************************/
 
-        final StreamIterator set (InputStream stream)
+        StreamIterator set (InputStream stream)
         {
                 assert (stream);
                 input = Buffer.share (stream);

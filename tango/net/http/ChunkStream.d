@@ -20,6 +20,7 @@ private import  tango.io.Buffer,
                 tango.io.device.Conduit;
 
 private import  tango.text.stream.LineIterator;
+private import  tango.text.stream.StreamIterator;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -118,8 +119,7 @@ class ChunkInput : LineIterator!(char)
 
         this (InputStream stream, Headers headers = null)
         {
-                super (stream);
-                available = nextChunk;
+                set(stream);
                 this.headers = headers;
         }
 
@@ -136,6 +136,19 @@ class ChunkInput : LineIterator!(char)
                 if ((tmp = super.next).ptr)
                      return cast(uint) Integer.parse (tmp, 16);
                 return 0;
+        }
+
+        /***********************************************************************
+
+                Reset ChunkInput to a new InputStream
+
+        ***********************************************************************/
+
+        override ChunkInput set (InputStream stream)
+        {
+            super.set(stream);
+            available = nextChunk;
+            return this;
         }
 
         /***********************************************************************
