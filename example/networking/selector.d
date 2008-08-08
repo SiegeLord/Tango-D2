@@ -112,7 +112,7 @@ void testSelector(ISelector selector)
 
     try
     {
-        TimeSpan            timeout         = TimeSpan.seconds(1);
+        TimeSpan            timeout         = TimeSpan.fromSeconds(1);
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         ServerSocket        serverSocket    = new ServerSocket(addr, 5);
         SocketConduit       clientSocket;
@@ -138,6 +138,7 @@ void testSelector(ISelector selector)
 
             if (eventCount > 0)
             {
+                ISelectable[] removeThese;
                 foreach (SelectionKey selectionKey; selector.selectedSet())
                 {
                     debug (selector)
@@ -177,7 +178,7 @@ void testSelector(ISelector selector)
                                 debug (selector)
                                     log.trace(sprint("[{0}] Received {1} from client ({2} bytes)",
                                                      i, buffer[0..count], count));
-                                selector.reregister(selectionKey.conduit, Event.Write);
+                                selector.register(selectionKey.conduit, Event.Write);
                                 receiveCount++;
                             }
                             else
@@ -185,8 +186,13 @@ void testSelector(ISelector selector)
                                 debug (selector)
                                     log.trace(sprint("[{0}] Handle {1} was closed; removing it from Selector",
                                                      i, cast(int) selectionKey.conduit.fileHandle()));
-                                selector.unregister(selectionKey.conduit);
-                                (cast(SocketConduit) selectionKey.conduit).close();
+                                // note, we cannot unregister because we are
+                                // in the middle of a foreach loop.  Delay
+                                // unregistering and closing until after the
+                                // loop is done.
+                                //selector.unregister(selectionKey.conduit);
+                                //(cast(SocketConduit) selectionKey.conduit).close();
+                                removeThese ~= selectionKey.conduit;
                                 failedReceiveCount++;
                                 continue;
                             }
@@ -204,7 +210,7 @@ void testSelector(ISelector selector)
                             debug (selector)
                                 log.trace(sprint("[{0}] Sent PONG to client ({1} bytes)", i, count));
 
-                            selector.reregister(selectionKey.conduit, Event.Read);
+                            selector.register(selectionKey.conduit, Event.Read);
                             sendCount++;
                         }
                         else
@@ -212,8 +218,10 @@ void testSelector(ISelector selector)
                             debug (selector)
                                 log.trace(sprint("[{0}] Handle {1} was closed; removing it from Selector",
                                                  i, selectionKey.conduit.fileHandle()));
-                            selector.unregister(selectionKey.conduit);
-                            (cast(SocketConduit) selectionKey.conduit).close();
+                            // note, see comment above
+                            //selector.unregister(selectionKey.conduit);
+                            //(cast(SocketConduit) selectionKey.conduit).close();
+                            removeThese ~= selectionKey.conduit;
                             failedSendCount++;
                             continue;
                         }
@@ -245,8 +253,10 @@ void testSelector(ISelector selector)
                             log.trace(sprint("[{0}] Unregistering handle {1} from Selector",
                                              i, cast(int) selectionKey.conduit.fileHandle()));
                         }
-                        selector.unregister(selectionKey.conduit);
-                        (cast(Conduit) selectionKey.conduit).close();
+                        // note, see comment above
+                        //selector.unregister(selectionKey.conduit);
+                        //(cast(Conduit) selectionKey.conduit).close();
+                        removeThese ~= selectionKey.conduit;
 
                         if (selectionKey.conduit !is serverSocket)
                         {
@@ -257,6 +267,11 @@ void testSelector(ISelector selector)
                             break;
                         }
                     }
+                }
+                foreach(c; removeThese)
+                {
+                    selector.unregister(c);
+                    (cast(Conduit) c).close();
                 }
             }
             else
