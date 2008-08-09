@@ -149,11 +149,9 @@ class LinkedList (V, alias Reap = Container.reap,
 
         final Iterator iterator ()
         {
-                assert (list);
-
                 Iterator i = void;
                 i.mutation = mutation;
-                i.node = *(i.hook = &list);
+                i.node = list ? *(i.hook = &list) : null;
                 i.prior = null;
                 i.owner = this;
                 return i;
