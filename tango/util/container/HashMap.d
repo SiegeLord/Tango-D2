@@ -50,7 +50,7 @@ private import tango.core.Exception : NoSuchElementException;
         bool add (K key, V element)
         bool opIndexAssign (V element, K key)
         V    opIndex (K key)
-        V*   opIn (K key)
+        V*   opIn_r (K key)
 
         uint size ()
         bool isEmpty ()
