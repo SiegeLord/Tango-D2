@@ -50,7 +50,7 @@ private import tango.core.Exception : NoSuchElementException;
         bool replacePair (K key, V oldElement, V newElement)
         bool opIndexAssign (V element, K key)
         V    opIndex (K key)
-        V*   opIn (K key)
+        V*   opIn_r (K key)
 
         uint size ()
         bool isEmpty ()
@@ -314,7 +314,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        final V* opIn (K key)
+        final V* opIn_r (K key)
         {
                 if (count)
                    {
@@ -512,7 +512,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         final V opIndex (K key)
         {
-                auto p = opIn (key);
+                auto p = opIn_r (key);
                 if (p)
                     return *p;
                 throw new NoSuchElementException ("missing or invalid key");
@@ -921,9 +921,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
 debug (SortedMap)
 {
         import tango.io.Stdout;
-        import tango.math.Random;
         import tango.core.Thread;
         import tango.time.StopWatch;
+        import tango.math.random.Kiss;
 
         void main()
         {
@@ -979,7 +979,7 @@ debug (SortedMap)
                 
                 auto keys = new int[count];
                 foreach (ref vv; keys)
-                         vv = Random.shared.next(int.max);
+                         vv = Kiss.shared.toInt(int.max);
 
                 // benchmark adding
                 w.start;
