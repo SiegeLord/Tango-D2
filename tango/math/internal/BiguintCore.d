@@ -183,11 +183,9 @@ uint [] biguintSubtract(uint[] x, uint[] y, bool *negative)
     if (x.length < y.length) {
         *negative = true;
         large = y; small = x;
-//        return biguintSubDifferentLength(y, x);
     } else {
         *negative = false;
         large = x; small = y;
-  //      return biguintSubDifferentLength(x, y);
     }
     // result.length will be equal to larger length, or could decrease by 1.
     
@@ -239,7 +237,7 @@ uint [] biguintAddInt(uint[] x, ulong y)
         return result;
     } else return result[0..$-1];
 }
-    
+
 /** General unsigned multiply routine for bigints.
  *  Sets result = x*y.
  *
@@ -284,33 +282,68 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
     }
     
     uint half = (x.length >> 1) + (x.length & 1);
-    if (y.length <= half) {
+    if (2*y.length*y.length <= x.length*x.length) {
         // UNBALANCED MULTIPLY
-        // Use school multiply to cut into Karatsuba-sized squares,
-        // unless y is so small that Karatsuba isn't worthwhile.
-        // unbalanced case - use school multiply to cut into chunks, each sized 
-        // y.length * y.length. Use Karatsuba on each chunk.
-        // TODO: It _might_ be better to use non-square chunks (and have fewer chunks).
-        
-        // The first chunk is bigger, since it also needs to cover the leftover bits.
-        uint chunksize =  y.length + (x.length % y.length);
-        // We make the buffer a bit bigger so we have space for the partial sums.
-        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(y.length+ chunksize) + y.length * 2+1];
-        if (y.length == half) {
-            chunksize = x.length - y.length;
-            mulKaratsuba(result[0 .. y.length + chunksize], y, x[0 .. chunksize], scratchbuff);
-        } else {
-            mulKaratsuba(result[0 .. y.length + chunksize], x[0 .. chunksize], y, scratchbuff);
+        // Use school multiply to cut into quasi-squares of Karatsuba-size
+        // or larger. The ratio of the two sides of the 'square' must be 
+        // between 1.414:1 and 1:1. Use Karatsuba on each chunk. 
+        //
+        // For maximum performance, we want the ratio to be as close to 
+        // 1:1 as possible. To achieve this, we can either pad x or y.
+        // The best choice depends on the modulus x%y.
+       
+        uint numchunks = x.length / y.length;
+        uint chunksize = y.length;
+        uint extra =  x.length % y.length;
+        uint maxchunk = chunksize + extra;
+        bool paddingY; // true = we're padding Y, false = we're padding X.
+        // padding Y will mean we have 
+        if (extra*extra*2 < y.length*y.length) {
+            // The leftover bit is small enough that it should be incorporated
+            // in the existing chunks.            
+            // Make all the chunks a tiny bit bigger
+            // (We're padding y with zeros)
+            chunksize += extra / cast(double)numchunks;
+            extra = x.length - chunksize*numchunks;
+            // there will probably be a few left over.
+            // Every chunk will either have size chunksize, or chunksize+1.
+            maxchunk = chunksize + 1;
+            paddingY = true;
+            assert(chunksize + extra + chunksize *(numchunks-1) == x.length );
+        } else  {
+            // the extra bit is large enough that it's worth making a new chunk.
+            // (This means we're padding x with zeros, when doing the first one).
+            maxchunk = chunksize;
+            ++numchunks;
+            paddingY = false;
+            assert(extra + chunksize *(numchunks-1) == x.length );
         }
-        uint done = chunksize;
-        uint [] partial = scratchbuff[$-y.length*2 .. $];
+        // We make the buffer a bit bigger so we have space for the partial sums.
+        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(maxchunk) + maxchunk * 2];
+        uint [] partial = scratchbuff[$ - maxchunk * 2 .. $];
+        
+        uint done; // how much of X have we done so far?
+        double residual = 0;
+        if (paddingY) {
+            // If the first chunk is bigger, do it first. We're padding y. 
+          mulKaratsuba(result[0 .. y.length + chunksize + (extra>0?1:0)], x[0 .. chunksize + (extra>0?1:0)], y, scratchbuff);
+          done = chunksize + (extra>0?1:0);
+          if (extra) --extra;
+        } else { // Begin with the extra bit.
+            mulKaratsuba(result[0 .. y.length + extra], y, x[0..extra], scratchbuff);
+            done = extra;
+            extra = 0;
+        }
+        auto basechunksize = chunksize;
         while (done < x.length) {
-            chunksize = (done + y.length <= x.length) ? y.length :  x.length - done;
-            mulKaratsuba(partial[0 .. y.length + chunksize], x[done .. done+chunksize], y, scratchbuff);
+            chunksize = basechunksize + (extra>0? 1:0);
+            if (extra) --extra;
+             mulKaratsuba(partial[0 .. y.length + chunksize], 
+                       x[done .. done+chunksize], y, scratchbuff);
             result[done + y.length .. done + y.length + chunksize] 
                 = partial[y.length .. y.length + chunksize];
             simpleAddAssign(result[done .. done + y.length+chunksize], partial[0 .. y.length]);
-            done += y.length;
+            done += chunksize;
         }
         delete scratchbuff;
     } else {
@@ -350,7 +383,7 @@ private:
 void mulSimple(uint[] result, uint [] left, uint[] right)
 in {    
     assert(result.length == left.length + right.length);
-    assert(right.length>1);
+//    assert(right.length>1);
 }
 body {
     result[left.length] = multibyteMul(result[0..left.length], left, right[0], 0);
@@ -376,6 +409,23 @@ body {
     } //else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
     return carry;
 }
+
+uint subSimple(uint [] result, uint [] left, uint [] right)
+in {
+    assert(result.length == left.length);
+    assert(left.length >= right.length);
+    assert(right.length>0);
+}
+body {
+    uint carry = multibyteAddSub!('-')(result[0..right.length],
+            left[0..right.length], right, 0);
+    if (right.length < left.length) {
+        result[right.length..left.length] = left[right.length .. $];            
+        carry = multibyteIncrementAssign!('-')(result[right.length..$], carry);
+    } //else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
+    return carry;
+}
+
 
 /*  result must be larger than right.
 */
@@ -410,10 +460,9 @@ uint karatsubaRequiredBuffSize(uint xlen)
     return xlen <= KARATSUBALIMIT ? 0 : 2*half+1 + karatsubaRequiredBuffSize(half);
 }
 
-//uint lastleftover = 0;
 /* Sets result = x*y, using Karatsuba multiplication.
-* Valid only for balanced multiplies, and x must be longer than y.
-* ie 2*y.length > x.length >= y.length.
+* x must be longer or equal to y.
+* Valid only for balanced multiplies, where x is not shorter than y.
 * It is efficient only if sqrt(2)*y.length > x.length >= y.length
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
@@ -424,15 +473,22 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     assert(x.length >= y.length);
     if (x.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
-    }    
+    }
+    // Must be almost square.
+    assert(2 * y.length * y.length >= x.length * x.length, "Asymmetric Karatsuba");
+        
     // Karatsuba multiply uses the following result:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 + N * mid
     // where mid = (x1+x0)*(y1+y0) - x1y1 - x0y0
     // requiring 3 multiplies of length N, instead of 4.
+    
+    // TODO: Knuth's variant is superior:
+    // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 - N * mid
+    // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
+    // since then the lengths cannot exceed length N.
 
     // half length, round up.
     uint half = (x.length >> 1) + (x.length & 1);
-    assert(y.length>half, "Asymmetric Karatsuba");
     
     uint [] x0 = x[0 .. half];
     uint [] x1 = x[half .. $];    
@@ -459,9 +515,29 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
    
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
     mid.simpleSubAssign(resultLow);
-    mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
+
+    if (2 * y1.length * y1.length < x1.length * x1.length) {
+        // an asymmetric situation has been created.
+        // Worst case is if x:y = 1.414 : 1, then x1:y1 = 2.41 : 1.
+        // Applying one schoolbook multiply gives us two pieces each 1.2:1
+        if (y1.length <= KARATSUBALIMIT) {
+            mulSimple(resultHigh, x1, y1);
+        } else {
+            // divide x1 in two, then use schoolbook multiply on the two pieces.
+            // Note that this will be smaller than y1, except when x1 = 2*y1 + 1.
+            uint quarter = (x1.length >> 1) + (x1.length & 1);
+            bool ysmaller = (quarter >= y1.length);
+            mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller?x1[0..quarter]: y1, 
+                ysmaller?y1:x1[0..quarter], newscratchbuff);
+            // Save the part which will be overwritten.
+            newscratchbuff[0..y1.length] = resultHigh[quarter..quarter+y1.length];
+            mulKaratsuba(resultHigh[quarter..$], ysmaller?x1[quarter..$]: y1, 
+                ysmaller?y1:x1[quarter..$], newscratchbuff[y1.length..$]);
+            resultHigh[quarter..$].simpleAddAssign(newscratchbuff[0..y1.length]);                
+        }
+    } else mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
     mid.simpleSubAssign(resultHigh);
-    
+        
     // result += MID
     result[half..$].simpleAddAssign(mid);
 }
