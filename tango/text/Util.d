@@ -1129,78 +1129,6 @@ T[] unescape(T) (T[] src, T[] dst = null)
 
 /******************************************************************************
 
-        Convert entity chars to normal ones: &amp; => ; for example.
-        
-******************************************************************************/
-
-T[] unentity (T) (T[] src, T[] dst = null)
-{
-        int delta;
-        auto s = src.ptr;
-        auto len = src.length;
-
-        // take a peek first to see if there's anything
-        if ((delta = indexOf (s, '&', len)) < len)
-           {
-           // make some room if not enough provided
-           if (dst.length < src.length)
-               dst.length = src.length;
-           auto d = dst.ptr;
-
-           // copy segments over, a chunk at a time
-           do {
-              d [0 .. delta] = s [0 .. delta];
-              len -= delta;
-              s += delta;
-              d += delta;
-
-              // translate entity
-              auto token = 0;
-
-              switch (s[1])
-                     {
-                      case 'a':
-                           if (len > 4 && s[1..5] == "amp;")
-                               *d++ = '&', token = 5;
-                           else
-                           if (len > 5 && s[1..6] == "apos;")
-                               *d++ = '\'', token = 6;
-                           break;
-                           
-                      case 'g':
-                           if (len > 3 && s[1..4] == "gt;")
-                               *d++ = '>', token = 4;
-                           break;
-                           
-                      case 'l':
-                           if (len > 3 && s[1..4] == "lt;")
-                               *d++ = '<', token = 4;
-                           break;
-                           
-                      case 'q':
-                           if (len > 5 && s[1..6] == "quot;")
-                               *d++ = '"', token = 6;
-                           break;
-
-                      default:
-                           break;
-                     }
-
-              if (token is 0)
-                  *d++ = '&', token = 1;
-              s += token, len -= token;
-              } while ((delta = indexOf (s, '&', len)) < len);
-
-           // copy tail too
-           d [0 .. len] = s [0 .. len];
-           return dst [0 .. (d + len) - dst.ptr];
-           }
-        return src;
-}
-
-
-/******************************************************************************
-
         jhash() -- hash a variable-length key into a 32-bit value
 
           k     : the key (the unaligned variable-length array of bytes)
@@ -1717,14 +1645,6 @@ else
         assert (unescape ("\\tx") == "\tx");
         assert (unescape ("\\v\\vx") == "\v\vx");
         assert (unescape ("abc\\t\\a\\bc") == "abc\t\a\bc");
-
-        assert (unentity ("abc") == "abc");
-        assert (unentity ("abc&") == "abc&");
-        assert (unentity ("abc&lt;") == "abc<");
-        assert (unentity ("abc&gt;goo") == "abc>goo");
-        assert (unentity ("&amp;") == "&");
-        assert (unentity ("&quot;&apos;") == "\"'");
-        assert (unentity ("&q&s") == "&q&s");
         }
 }
 
