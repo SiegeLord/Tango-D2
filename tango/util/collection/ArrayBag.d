@@ -51,7 +51,7 @@ private import  tango.util.collection.impl.CLCell,
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
 **/
 
-public class ArrayBag(T) : BagCollection!(T)
+deprecated public class ArrayBag(T) : BagCollection!(T)
 {
         alias CLCell!(T[]) CLCellT;
 

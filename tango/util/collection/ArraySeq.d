@@ -49,7 +49,7 @@ private import  tango.util.collection.impl.SeqCollection,
  *
 **/
 
-public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
+deprecated public class ArraySeq(T) : SeqCollection!(T), Sortable!(T)
 {
         alias SeqCollection!(T).remove     remove;
         alias SeqCollection!(T).removeAll  removeAll;

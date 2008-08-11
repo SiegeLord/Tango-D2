@@ -45,7 +45,7 @@ private import  tango.util.collection.impl.LLCell,
 ********************************************************************************/
 
 
-public class HashMap(K, V) : MapCollection!(K, V), HashParams
+deprecated public class HashMap(K, V) : MapCollection!(K, V), HashParams
 {
         alias LLCell!(V)                LLCellT;
         alias LLPair!(K, V)             LLPairT;

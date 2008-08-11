@@ -39,7 +39,7 @@ private import  tango.util.collection.impl.RBPair,
 **/
 
 
-public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
+deprecated public class TreeMap(K, T) : MapCollection!(K, T), SortedKeys!(K, T)
 {
         alias RBCell!(T)                RBCellT;
         alias RBPair!(K, T)             RBPairT;

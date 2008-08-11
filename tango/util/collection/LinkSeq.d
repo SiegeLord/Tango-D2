@@ -35,7 +35,7 @@ private import  tango.util.collection.impl.LLCell,
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
 **/
 
-public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
+deprecated public class LinkSeq(T) : SeqCollection!(T), Sortable!(T)
 {
         alias LLCell!(T) LLCellT;
 

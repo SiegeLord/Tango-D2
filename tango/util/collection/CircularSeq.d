@@ -26,7 +26,7 @@ private import  tango.util.collection.impl.CLCell,
  * methods defined in interfaces.
  * author: Doug Lea
 **/
-public class CircularSeq(T) : SeqCollection!(T)
+deprecated public class CircularSeq(T) : SeqCollection!(T)
 {
         alias CLCell!(T) CLCellT;
 

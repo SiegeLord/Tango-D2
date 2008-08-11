@@ -29,7 +29,7 @@ private import  tango.util.collection.impl.RBCell,
  * author: Doug Lea
 **/
 
-public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
+deprecated public class TreeBag(T) : BagCollection!(T), SortedValues!(T)
 {
         alias RBCell!(T)        RBCellT;
         alias Comparator!(T)    ComparatorT;

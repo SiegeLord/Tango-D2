@@ -33,7 +33,7 @@ private import  tango.util.collection.impl.LLCell,
  * Linked lists of (key, element) pairs
  * author: Doug Lea
 **/
-public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
+deprecated public class LinkMap(K, T) : MapCollection!(K, T) // , IReadable, IWritable
 {
         alias LLCell!(T)               LLCellT;
         alias LLPair!(K, T)            LLPairT;

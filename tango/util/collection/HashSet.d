@@ -36,7 +36,7 @@ private import  tango.util.collection.impl.LLCell,
  * <P> For an introduction to this package see <A HREF="index.html"> Overview </A>.
 **/
 
-public class HashSet(T) : SetCollection!(T), HashParams
+deprecated public class HashSet(T) : SetCollection!(T), HashParams
 {
         private alias LLCell!(T) LLCellT;
 
