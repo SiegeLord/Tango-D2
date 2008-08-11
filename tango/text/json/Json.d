@@ -19,33 +19,36 @@ private import tango.text.json.JsonParser;
 
 private import Float = tango.text.convert.Float;
 
-
-
-/**
- * Enumerates the seven acceptable JSON value types.
- */
-/**
- * Represents a JSON value that is one of the seven types specified by the enum
- * Type.
- */
-/**
- * Represents a single JSON Object.
- */
-
 /*******************************************************************************
+
+        Parse JSON text into a set of inter-related structures. Typical usage 
+        is as follows:
+        ---
+        auto p = new Json!(char);
+        auto v = p.parse (`{"t": true, "n":null, "array":["world", [4, 5]]}`);    
+        ---   
+
+        Converting back to text format employs a delegate:
+        ---
+        v.print ((char[] s) {Stdout(s);}); 
+        ---
 
 *******************************************************************************/
 
 class Json(T) : private JsonParser!(T)
 {
+                     /// use these types for external references
         public alias JsonValue*  Value;
         public alias NameValue*  Attribute;
         public alias JsonObject* Composite;
 
+                    /// enumerates the seven acceptable JSON value types
         public enum Type {Null, String, RawString, Number, Object, Array, True, False};
 
         /***********************************************************************
         
+                Construct a json instance
+
         ***********************************************************************/
         
         this ()
@@ -55,11 +58,12 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Parse the given text and return a resultant Value type 
+
         ***********************************************************************/
         
         public Value parse (T[] json)
         {
-
                 nesting = 0;
                 attrib.reset;
                 values.reset;
@@ -326,7 +330,9 @@ class Json(T) : private JsonParser!(T)
         }
 
         /***********************************************************************
-        
+
+                Represents a single json Object        
+
         ***********************************************************************/
         
         struct JsonObject
@@ -419,6 +425,9 @@ class Json(T) : private JsonParser!(T)
         
         /***********************************************************************
         
+                Represents a json value that is one of the seven types 
+                specified via the Json.Type enum 
+
         ***********************************************************************/
         
         struct JsonValue
