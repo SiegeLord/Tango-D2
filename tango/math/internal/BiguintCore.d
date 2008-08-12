@@ -4,7 +4,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
  */
-
+ 
 module tango.math.internal.BiguintCore;
 
 version(TangoBignumNoAsm) {
@@ -160,8 +160,6 @@ public:
 
 /** General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
- *
- *  The length of y must not be larger than the length of x.
  */
 uint [] biguintSubtract(uint[] x, uint[] y, bool *negative)
 {
@@ -202,7 +200,7 @@ uint [] biguintSubtract(uint[] x, uint[] y, bool *negative)
 // return a+b
 uint [] biguintAdd(uint[] a, uint [] b) {
     uint [] x, y;
-    if (a.length<b.length) { x = b; y = a; } else {x = a; y = b; }
+    if (a.length<b.length) { x = b; y = a; } else { x = a; y = b; }
     // now we know x.length > y.length
     // create result. add 1 in case it overflows
     uint [] result = new uint[x.length + 1];
@@ -236,6 +234,21 @@ uint [] biguintAddInt(uint[] x, ulong y)
         result[$-1] = carry;
         return result;
     } else return result[0..$-1];
+}
+
+/** Return x-y..
+ *  x must be greater than y.
+ */  
+uint [] biguintSubInt(uint[] x, ulong y)
+{
+    uint hi = cast(uint)(y >>> 32);
+    uint lo = cast(uint)(y& 0xFFFF_FFFF);
+    uint [] result = new uint[x.length];
+    result[] = x[];
+    multibyteIncrementAssign!('-')(result[], lo);
+    if (hi) multibyteIncrementAssign!('-')(result[1..$], hi);
+    if (result[$-1]==0) return result[0..$-1];
+    else return result; 
 }
 
 /** General unsigned multiply routine for bigints.
@@ -290,15 +303,13 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
         //
         // For maximum performance, we want the ratio to be as close to 
         // 1:1 as possible. To achieve this, we can either pad x or y.
-        // The best choice depends on the modulus x%y.
-       
+        // The best choice depends on the modulus x%y.       
         uint numchunks = x.length / y.length;
         uint chunksize = y.length;
         uint extra =  x.length % y.length;
         uint maxchunk = chunksize + extra;
         bool paddingY; // true = we're padding Y, false = we're padding X.
-        // padding Y will mean we have 
-        if (extra*extra*2 < y.length*y.length) {
+        if (extra * extra * 2 < y.length*y.length) {
             // The leftover bit is small enough that it should be incorporated
             // in the existing chunks.            
             // Make all the chunks a tiny bit bigger
@@ -319,15 +330,15 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
             assert(extra + chunksize *(numchunks-1) == x.length );
         }
         // We make the buffer a bit bigger so we have space for the partial sums.
-        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(maxchunk) + maxchunk * 2];
-        uint [] partial = scratchbuff[$ - maxchunk * 2 .. $];
-        
+        uint [] scratchbuff = new uint[karatsubaRequiredBuffSize(maxchunk) + y.length];
+        uint [] partial = scratchbuff[$ - y.length .. $];
         uint done; // how much of X have we done so far?
         double residual = 0;
         if (paddingY) {
             // If the first chunk is bigger, do it first. We're padding y. 
-          mulKaratsuba(result[0 .. y.length + chunksize + (extra>0?1:0)], x[0 .. chunksize + (extra>0?1:0)], y, scratchbuff);
-          done = chunksize + (extra>0?1:0);
+          mulKaratsuba(result[0 .. y.length + chunksize + (extra > 0 ? 1 : 0 )], 
+                        x[0 .. chunksize + (extra>0?1:0)], y, scratchbuff);
+          done = chunksize + (extra > 0 ? 1 : 0);
           if (extra) --extra;
         } else { // Begin with the extra bit.
             mulKaratsuba(result[0 .. y.length + extra], y, x[0..extra], scratchbuff);
@@ -336,13 +347,12 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
         }
         auto basechunksize = chunksize;
         while (done < x.length) {
-            chunksize = basechunksize + (extra>0? 1:0);
+            chunksize = basechunksize + (extra > 0 ? 1 : 0);
             if (extra) --extra;
-             mulKaratsuba(partial[0 .. y.length + chunksize], 
+            partial[] = result[done .. done+y.length];
+            mulKaratsuba(result[done .. done + y.length + chunksize], 
                        x[done .. done+chunksize], y, scratchbuff);
-            result[done + y.length .. done + y.length + chunksize] 
-                = partial[y.length .. y.length + chunksize];
-            simpleAddAssign(result[done .. done + y.length+chunksize], partial[0 .. y.length]);
+            simpleAddAssign(result[done .. done + y.length + chunksize], partial);
             done += chunksize;
         }
         delete scratchbuff;
@@ -383,12 +393,11 @@ private:
 void mulSimple(uint[] result, uint [] left, uint[] right)
 in {    
     assert(result.length == left.length + right.length);
-//    assert(right.length>1);
+    assert(right.length>1);
 }
 body {
     result[left.length] = multibyteMul(result[0..left.length], left, right[0], 0);
-    if (right.length>1)
-        multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
+    multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
 
 
@@ -406,7 +415,7 @@ body {
     if (right.length < left.length) {
         result[right.length..left.length] = left[right.length .. $];            
         carry = multibyteIncrementAssign!('+')(result[right.length..$], carry);
-    } //else if (result.length==left.length+1) { result[$-1] = carry; carry=0; }
+    }
     return carry;
 }
 
@@ -456,8 +465,7 @@ const int CACHELIMIT = 8000;   // Half the size of the data cache.
  */
 uint karatsubaRequiredBuffSize(uint xlen)
 {
-    uint half = (xlen >> 1) + (xlen & 1);
-    return xlen <= KARATSUBALIMIT ? 0 : 2*half+1 + karatsubaRequiredBuffSize(half);
+    return xlen <= KARATSUBALIMIT ? 0 : 2*xlen - KARATSUBALIMIT + 2*uint.sizeof*8;
 }
 
 /* Sets result = x*y, using Karatsuba multiplication.
@@ -536,6 +544,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
             resultHigh[quarter..$].simpleAddAssign(newscratchbuff[0..y1.length]);                
         }
     } else mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
+    
     mid.simpleSubAssign(resultHigh);
         
     // result += MID
