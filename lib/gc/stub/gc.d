@@ -67,6 +67,11 @@ extern (C) void gc_collect()
 
 }
 
+extern (C) void gc_minimize()
+{
+
+}
+
 extern (C) uint gc_getAttr( void* p )
 {
     return 0;
@@ -110,6 +115,11 @@ extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
 }
 
 extern (C) size_t gc_extend( void* p, size_t mx, size_t sz )
+{
+    return 0;
+}
+
+extern (C) size_t gc_reserve( size_t sz )
 {
     return 0;
 }
