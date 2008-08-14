@@ -67,11 +67,14 @@ OBJ_BASE= \
     aApplyR.o \
     adi.o \
     alloca.o \
+    arraybyte.o \
     arraycast.o \
     arraycat.o \
     arraydouble.o \
     arrayfloat.o \
+    arrayint.o \
     arrayreal.o \
+    arrayshort.o \
     cast.o \
     cmath2.o \
     complex.o \

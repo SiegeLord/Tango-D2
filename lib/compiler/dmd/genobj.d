@@ -767,7 +767,7 @@ class TypeInfo_Struct : TypeInfo
         return h;
     }
 
-    int equals(void *p2, void *p1)
+    int equals(void *p1, void *p2)
     {   int c;
 
         if (p1 == p2)
@@ -782,7 +782,7 @@ class TypeInfo_Struct : TypeInfo
         return c;
     }
 
-    int compare(void *p2, void *p1)
+    int compare(void *p1, void *p2)
     {
         int c = 0;
 
@@ -793,7 +793,7 @@ class TypeInfo_Struct : TypeInfo
             {   if (!p2)
                     c = 1;
                 else if (xopCmp)
-                    c = (*xopCmp)(p1, p2);
+		    c = (*xopCmp)(p2, p1);
                 else
                     // BUG: relies on the GC not moving objects
                     c = memcmp(p1, p2, init.length);

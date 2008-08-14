@@ -63,11 +63,14 @@ OBJ_BASE= \
     aApply.obj \
     aApplyR.obj \
     adi.obj \
+    arraybyte.obj \
     arraycast.obj \
     arraycat.obj \
     arraydouble.obj \
     arrayfloat.obj \
+    arrayint.obj \
     arrayreal.obj \
+    arrayshort.obj \
     cast.obj \
     complex.obj \
     cover.obj \
