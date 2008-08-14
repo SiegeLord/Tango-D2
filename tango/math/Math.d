@@ -546,7 +546,7 @@ unittest {
 creal cos(creal z)
 {
   creal cs = expi(z.re);
-  return cs.re * cosh(z.im) + cs.im * sinh(z.im) * 1i;
+  return cs.re * cosh(z.im) - cs.im * sinh(z.im) * 1i;
 }
 
 /** ditto */
