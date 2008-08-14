@@ -161,7 +161,7 @@ public:
 /** General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
  */
-uint [] biguintSubtract(uint[] x, uint[] y, bool *negative)
+uint [] biguintSub(uint[] x, uint[] y, bool *negative)
 {
     if (x.length == y.length) {
         // There's a possibility of cancellation, if x and y are almost equal.
@@ -251,6 +251,21 @@ uint [] biguintSubInt(uint[] x, ulong y)
     else return result; 
 }
 
+/** return x*y.
+ *  y must not be zero.
+ */
+uint [] biguintMulInt(uint [] x, ulong y)
+{
+    uint hi = cast(uint)(y >>> 32);
+    uint lo = cast(uint)(y & 0xFFFF_FFFF);
+    uint [] result = new uint[x.length+1+(hi!=0)];
+    result[x.length] = multibyteMul(result[0..x.length], x, lo, 0);
+    if (hi!=0) {
+        result[x.length+1] = multibyteMulAdd(result[1..x.length+1], x, hi, 0);
+    }
+    return result;
+}
+
 /** General unsigned multiply routine for bigints.
  *  Sets result = x*y.
  *
@@ -269,7 +284,7 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
             result[x.length] = multibyteMul(result[0..x.length], x, y[0], 0);
             return;
         }
-        if (x.length * y.length < CACHELIMIT) return mulSimple(result, x, y);
+        if (x.length + y.length < CACHELIMIT) return mulSimple(result, x, y);
         
         // If x is so big that it won't fit into the cache, we divide it into chunks            
         // Every chunk must be greater than y.length.
@@ -471,7 +486,8 @@ uint karatsubaRequiredBuffSize(uint xlen)
 /* Sets result = x*y, using Karatsuba multiplication.
 * x must be longer or equal to y.
 * Valid only for balanced multiplies, where x is not shorter than y.
-* It is efficient only if sqrt(2)*y.length > x.length >= y.length
+* It is efficient only if sqrt(2)*y.length > x.length >= y.length.
+* Karatsuba multiplication is O(n^1.59), whereas schoolbook is O(n^2)
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
 */
@@ -490,10 +506,6 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     // where mid = (x1+x0)*(y1+y0) - x1y1 - x0y0
     // requiring 3 multiplies of length N, instead of 4.
     
-    // TODO: Knuth's variant is superior:
-    // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 - N * mid
-    // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
-    // since then the lengths cannot exceed length N.
 
     // half length, round up.
     uint half = (x.length >> 1) + (x.length & 1);
@@ -509,8 +521,13 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     uint [] resultLow = result[0 .. x0.length + y0.length];
     uint [] resultHigh = result[x0.length + y0.length .. $];
         
+    
     // Add the high and low parts of x and y.
     // This will generate carries of either 0 or 1.
+    // TODO: Knuth's variant would save the extra two additions:
+    // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 - N * mid
+    // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
+    // since then the lengths cannot exceed length N.
     uint carry_x = addSimple(xsum, x0, x1);
     uint carry_y = addSimple(ysum, y0, y1);
     
@@ -518,7 +535,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     mid[half*2] = carry_x & carry_y;
     if (carry_x)  simpleAddAssign(mid[half..$], ysum);
     if (carry_y)  simpleAddAssign(mid[half..$], xsum);
-    
+        
     // Low half of result gets x0 * y0. High half gets x1 * y1
    
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
@@ -532,7 +549,6 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
             mulSimple(resultHigh, x1, y1);
         } else {
             // divide x1 in two, then use schoolbook multiply on the two pieces.
-            // Note that this will be smaller than y1, except when x1 = 2*y1 + 1.
             uint quarter = (x1.length >> 1) + (x1.length & 1);
             bool ysmaller = (quarter >= y1.length);
             mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller?x1[0..quarter]: y1, 
@@ -581,4 +597,3 @@ int lastDifferentDigit(uint [] left, uint [] right)
     }
     return 0;
 }
-

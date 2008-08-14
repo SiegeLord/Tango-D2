@@ -83,7 +83,6 @@ public:
     
 // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
-
     
 /** Multi-byte addition or subtraction
  *    dest[#] = src1[#] + src2[#] + carry (0 or 1).
@@ -827,8 +826,7 @@ kinv1:
         shl     EAX, CL;
         dec     EAX;
         ror     EAX, CL ; //ecx bits at msb
-        push    EAX;
-        
+        push    EAX; // MASK        
         
         // Then divide 2^(32+cx) by divisor (edx already ok)
         xor     EAX, EAX;
