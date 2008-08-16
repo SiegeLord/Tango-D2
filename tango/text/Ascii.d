@@ -118,7 +118,7 @@ int compare (char[] s1, char[] s2)
 /******************************************************************************
 
         Return the index position of a text pattern within src, or
-        pattern.length upon failure.
+        src.length upon failure.
 
         This is a case-insensitive search (with thanks to Nietsnie)
         
