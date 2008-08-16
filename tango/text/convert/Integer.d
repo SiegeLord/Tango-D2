@@ -34,9 +34,11 @@ private import tango.core.Exception;
         whereupon it must match the prefix (where present). When
         radix is set to zero, conversion will default to decimal.
 
-        Throws an exception where the input text is not parsable
+        Throws: IllegalArgumentException where the input text is not parsable
         in its entirety.
-        
+
+        See_also: the low level functions parse() and convert()
+
 ******************************************************************************/
 
 int toInt(T, U=uint) (T[] digits, U radix=0)
@@ -52,16 +54,18 @@ int toInt(T) (T[] digits, uint radix=0)
 
 /******************************************************************************
 
-        Parse an integer value from the provided 'digits' string.       
-        
-        The string is inspected for a sign and an optional radix 
-        prefix. A radix may be provided as an argument instead, 
+        Parse an integer value from the provided 'digits' string.
+
+        The string is inspected for a sign and an optional radix
+        prefix. A radix may be provided as an argument instead,
         whereupon it must match the prefix (where present). When
         radix is set to zero, conversion will default to decimal.
 
-        Throws an exception where the input text is not parsable
+        Throws: IllegalArgumentException where the input text is not parsable
         in its entirety.
-        
+
+        See_also: the low level functions parse() and convert()
+
 ******************************************************************************/
 
 long toLong(T, U=uint) (T[] digits, U radix=0)
@@ -332,6 +336,8 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
         A non-null 'ate' will return the number of characters used
         to construct the returned value.
 
+        Throws: none. The 'ate' param should be checked for valid input.
+
 ******************************************************************************/
 
 long parse(T, U=uint) (T[] digits, U radix=0, uint* ate=null)
@@ -358,6 +364,8 @@ long parse(T) (T[] digits, uint radix=0, uint* ate=null)
 
         Returns the value and updates 'ate' with the number of
         characters consumed.
+
+        Throws: none. The 'ate' param should be checked for valid input.
 
 ******************************************************************************/
 
