@@ -15,9 +15,7 @@ private {
 
     version (Windows) {
         import tango.sys.Common : SysError;
-
-        alias void* HINSTANCE, HMODULE;
-        alias int BOOL;
+        import tango.sys.win32.Types : HINSTANCE, HMODULE, BOOL;
 
         extern (Windows) {
             void* GetProcAddress(HINSTANCE, char*);
