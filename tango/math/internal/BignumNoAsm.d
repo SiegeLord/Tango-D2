@@ -155,7 +155,7 @@ unittest
 /** dest[] = src[] << numbits
  *  numbits must be in the range 1..31
  */
-void multibyteShl(uint [] dest, uint [] src, uint numbits)
+uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 {
     ulong c = 0;
     for(int i=0; i<dest.length; ++i){
@@ -163,6 +163,7 @@ void multibyteShl(uint [] dest, uint [] src, uint numbits)
         dest[i] = cast(uint)c;
         c >>>= 32;
    }
+   return cast(uint)c;
 }
 
 

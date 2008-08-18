@@ -18,145 +18,56 @@ private import tango.math.internal.BignumX86;
 private import tango.math.internal.BignumNoAsm;
 }
 
+private:
+uint [1] BIGINTZERO = [0];
 public:
-// Converts a big uint to a hexadecimal string.
-//
-// Optionally, a separator character (eg, an underscore) may be added between
-// every 8 digits.
-// buff.length must be data.length*8 if separator is zero,
-// or data.length*9 if separator is non-zero. It will be completely filled.
-char [] biguintToHex(char [] buff, uint [] data, char separator=0)
+
+// return 1 if x>y, -1 if x<y, 0 if equal
+int biguintCompare(uint [] x, uint []y)
 {
-    int x=0;
-    for (int i=data.length - 1; i>=0; --i) {
-        toHexZeroPadded(buff[x..x+8], data[i]);
-        x+=8;
-        if (separator) {
-            if (i>0) buff[x]='_';
-            ++x;
-        }
-    }
-    return buff;
+    uint k = lastDifferentDigit(x, y);
+    if (x[k] == y[k]) return 0;
+    return x[k] > y[k] ? 1 : -1;
 }
 
-/** Convert a big uint into a decimal string.
- *
- * Params:
- *  data    The biguint to be converted. Will be destroyed.
- *  buff    The destination buffer for the decimal string. Must be
- *          large enough to store the result, including leading zeros.
- *          Will be filled starting from the end.
- *
- * Ie, buff.length must be (data.length*32)/log2(10) = 9.63296 * data.length.
- * Returns:
- *    the lowest index of buff which was used.
- */
-int biguintToDecimal(char [] buff, uint [] data){
-    int sofar = buff.length;
-    // Might be better to divide by (10^38/2^32) since that gives 38 digits for
-    // the price of 3 divisions and a shr; this version only gives 27 digits
-    // for 3 divisions.
-    while(data.length>1) {
-        uint rem = multibyteDivAssign(data, 10_0000_0000, 0);
-        itoaZeroPadded(buff[sofar-9 .. sofar], rem);
-        sofar -= 9;
-        if (data[$-1]==0 && data.length>1) {
-            data.length = data.length - 1;
-        }
-    }
-    itoaZeroPadded(buff[sofar-10 .. sofar], data[0]);
-    sofar-=10;
-    // and strip off the leading zeros
-    while(sofar!= buff.length-1 && buff[sofar] == '0') sofar++;    
-    return sofar;
-}
-
-/** Convert a decimal string into a big uint.
- *
- * Params:
- *  data    The biguint to be receive the result. Must be large enough to 
- *          store the result.
- *  s       The decimal string. May contain 0..9, or _. Will be preserved.
- *
- * The required length for the destination buffer is slightly less than
- *  1 + s.length/log2(10) = 1 + s.length/3.3219.
- *
- * Returns:
- *    the highest index of data which was used.
- */
-int biguintFromDecimal(uint [] data, char [] s) {
-    // Convert to base 1e19 = 10_000_000_000_000_000_000.
-    // (this is the largest power of 10 that will fit into a long).
-    // The length will be less than 1 + s.length/log2(10) = 1 + s.length/3.3219.
-    // 485 bits will only just fit into 146 decimal digits.
-    uint lo = 0;
-    uint x = 0;
-    ulong y = 0;
-    uint hi = 0;
-    data[0] = 0; // initially number is 0.
-   
-    for (int i= (s[0]=='-' || s[0]=='+')? 1 : 0; i<s.length; ++i) {            
-        if (s[i] == '_') continue;
-        x *= 10;
-        x += s[i] - '0';
-        ++lo;
-        if (lo==9) {
-            y = x;
-            x = 0;
-        }
-        if (lo==18) {
-            y *= 10_0000_0000;
-            y += x;
-            x = 0;
-        }
-        if (lo==19) {
-            y *= 10;
-            y += x;
-            x = 0;
-            // Multiply existing number by 10^19, then add y1.
-            if (hi>0) {
-                data[hi] = multibyteMul(data[0..hi], data[0..hi], 1220703125*2, 0); // 5^13*2 = 0x9184_E72A
-                ++hi;
-                data[hi] = multibyteMul(data[0..hi], data[0..hi], 15625*262144, 0); // 5^6*2^18 = 0xF424_0000
-                ++hi;
-            } else hi = 2;
-            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
-            c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
-            if (c!=0) { data[hi]=c; ++hi; }
-            y = 0;
-            lo = 0;
-        }
-    }
-    // Now set y = all remaining digits.
-    if (lo>=18) {        
-    } else if (lo>=9) {
-        for (int k=9; k<lo; ++k) y*=10;
-        y+=x;
+// return x >> y
+uint [] biguintShr(uint[] x, ulong y)
+{
+    assert(y>0);
+    uint bits = cast(uint)y & 31;
+    if ((y>>5) >= x.length) return BIGINTZERO;
+    uint words = cast(uint)(y >> 5);
+    if (bits==0) {
+        return x[words..$];
     } else {
-        for (int k=0; k<lo; ++k) y*=10;
-        y+=x;
+        uint [] result = new uint[x.length - words];
+        multibyteShr(result, x[words..$], bits);
+        if (result.length>1 && result[$-1]==0) return result[0..$-1];
+        else return result;
     }
-    if (y!=0) {
-        if (hi==0)  { *cast(ulong *)(&data[hi]) = y; hi=2; }
-        else {
-
-        while (lo>0) {
-            uint c = multibyteMul(data[0..hi], data[0..hi], 10, 0);
-            if (c!=0) { data[hi]=c; ++hi; }                
-            --lo;
-        }
-            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
-            if (y>0xFFFF_FFFFL) {
-                c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
-            }
-            if (c!=0) { data[hi]=c; ++hi; }
-            hi+=2;
-        }
-    }    
-    return hi;
 }
 
-public:
+// return x << y
+uint [] biguintShl(uint[] x, ulong y)
+{
+    assert(y>0);
+    if (x.length==1 && x[0]==0) return x;
+    uint bits = cast(uint)y & 31;
+    assert ((y>>5) < cast(ulong)(uint.max));
+    uint words = cast(uint)(y >> 5);
+    uint [] result = new uint[x.length + words+1];
+    result[0..words] = 0;
+    if (bits==0) {
+        result[words..words+x.length] = x[];
+        return result[0..words+x.length];
+    } else {
+        uint c = multibyteShl(result[words..words+x.length], x, bits);
+        if (c==0) return result[0..words+x.length];
+        result[$-1] = c;
+        return result;
+    }
+}
+
 
 /** General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
@@ -197,7 +108,7 @@ uint [] biguintSub(uint[] x, uint[] y, bool *negative)
     return result;
 }
 
-// return a+b
+// return a + b
 uint [] biguintAdd(uint[] a, uint [] b) {
     uint [] x, y;
     if (a.length<b.length) { x = b; y = a; } else { x = a; y = b; }
@@ -398,6 +309,144 @@ uint[] biguintDivInt(uint [] x, uint y) {
     } else return result;
 }
 
+public:
+// Converts a big uint to a hexadecimal string.
+//
+// Optionally, a separator character (eg, an underscore) may be added between
+// every 8 digits.
+// buff.length must be data.length*8 if separator is zero,
+// or data.length*9 if separator is non-zero. It will be completely filled.
+char [] biguintToHex(char [] buff, uint [] data, char separator=0)
+{
+    int x=0;
+    for (int i=data.length - 1; i>=0; --i) {
+        toHexZeroPadded(buff[x..x+8], data[i]);
+        x+=8;
+        if (separator) {
+            if (i>0) buff[x]='_';
+            ++x;
+        }
+    }
+    return buff;
+}
+
+/** Convert a big uint into a decimal string.
+ *
+ * Params:
+ *  data    The biguint to be converted. Will be destroyed.
+ *  buff    The destination buffer for the decimal string. Must be
+ *          large enough to store the result, including leading zeros.
+ *          Will be filled starting from the end.
+ *
+ * Ie, buff.length must be (data.length*32)/log2(10) = 9.63296 * data.length.
+ * Returns:
+ *    the lowest index of buff which was used.
+ */
+int biguintToDecimal(char [] buff, uint [] data){
+    int sofar = buff.length;
+    // Might be better to divide by (10^38/2^32) since that gives 38 digits for
+    // the price of 3 divisions and a shr; this version only gives 27 digits
+    // for 3 divisions.
+    while(data.length>1) {
+        uint rem = multibyteDivAssign(data, 10_0000_0000, 0);
+        itoaZeroPadded(buff[sofar-9 .. sofar], rem);
+        sofar -= 9;
+        if (data[$-1]==0 && data.length>1) {
+            data.length = data.length - 1;
+        }
+    }
+    itoaZeroPadded(buff[sofar-10 .. sofar], data[0]);
+    sofar-=10;
+    // and strip off the leading zeros
+    while(sofar!= buff.length-1 && buff[sofar] == '0') sofar++;    
+    return sofar;
+}
+
+/** Convert a decimal string into a big uint.
+ *
+ * Params:
+ *  data    The biguint to be receive the result. Must be large enough to 
+ *          store the result.
+ *  s       The decimal string. May contain 0..9, or _. Will be preserved.
+ *
+ * The required length for the destination buffer is slightly less than
+ *  1 + s.length/log2(10) = 1 + s.length/3.3219.
+ *
+ * Returns:
+ *    the highest index of data which was used.
+ */
+int biguintFromDecimal(uint [] data, char [] s) {
+    // Convert to base 1e19 = 10_000_000_000_000_000_000.
+    // (this is the largest power of 10 that will fit into a long).
+    // The length will be less than 1 + s.length/log2(10) = 1 + s.length/3.3219.
+    // 485 bits will only just fit into 146 decimal digits.
+    uint lo = 0;
+    uint x = 0;
+    ulong y = 0;
+    uint hi = 0;
+    data[0] = 0; // initially number is 0.
+   
+    for (int i= (s[0]=='-' || s[0]=='+')? 1 : 0; i<s.length; ++i) {            
+        if (s[i] == '_') continue;
+        x *= 10;
+        x += s[i] - '0';
+        ++lo;
+        if (lo==9) {
+            y = x;
+            x = 0;
+        }
+        if (lo==18) {
+            y *= 10_0000_0000;
+            y += x;
+            x = 0;
+        }
+        if (lo==19) {
+            y *= 10;
+            y += x;
+            x = 0;
+            // Multiply existing number by 10^19, then add y1.
+            if (hi>0) {
+                data[hi] = multibyteMul(data[0..hi], data[0..hi], 1220703125*2, 0); // 5^13*2 = 0x9184_E72A
+                ++hi;
+                data[hi] = multibyteMul(data[0..hi], data[0..hi], 15625*262144, 0); // 5^6*2^18 = 0xF424_0000
+                ++hi;
+            } else hi = 2;
+            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
+            c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
+            if (c!=0) { data[hi]=c; ++hi; }
+            y = 0;
+            lo = 0;
+        }
+    }
+    // Now set y = all remaining digits.
+    if (lo>=18) {        
+    } else if (lo>=9) {
+        for (int k=9; k<lo; ++k) y*=10;
+        y+=x;
+    } else {
+        for (int k=0; k<lo; ++k) y*=10;
+        y+=x;
+    }
+    if (y!=0) {
+        if (hi==0)  { *cast(ulong *)(&data[hi]) = y; hi=2; }
+        else {
+
+        while (lo>0) {
+            uint c = multibyteMul(data[0..hi], data[0..hi], 10, 0);
+            if (c!=0) { data[hi]=c; ++hi; }                
+            --lo;
+        }
+            uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
+            if (y>0xFFFF_FFFFL) {
+                c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
+            }
+            if (c!=0) { data[hi]=c; ++hi; }
+            hi+=2;
+        }
+    }    
+    return hi;
+}
+
 
 private:
 // ------------------------
@@ -464,9 +513,10 @@ void simpleSubAssign(uint [] result, uint [] right)
 
 void simpleAddAssign(uint [] result, uint [] right)
 {
-   assert(result.length > right.length);
+   assert(result.length >= right.length);
    uint c = multibyteAddSub!('+')(result[0..right.length], result[0..right.length], right, 0);
    if (c) {
+   assert(result.length > right.length);
        c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
        assert(c==0);
    }
@@ -495,11 +545,11 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 {
     assert(result.length == x.length + y.length);
     assert(x.length >= y.length);
-    if (x.length <= KARATSUBALIMIT) {
+    if (y.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
     }
     // Must be almost square.
-    assert(2 * y.length * y.length >= x.length * x.length, "Asymmetric Karatsuba");
+    assert(2 * y.length * y.length > (x.length-1) * (x.length-1), "Asymmetric Karatsuba");
         
     // Karatsuba multiply uses the following result:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 + N * mid
@@ -527,7 +577,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     // TODO: Knuth's variant would save the extra two additions:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 - N * mid
     // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
-    // since then the lengths cannot exceed length N.
+    // since then mid.length cannot exceed length N.
     uint carry_x = addSimple(xsum, x0, x1);
     uint carry_y = addSimple(ysum, y0, y1);
     
@@ -535,7 +585,6 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     mid[half*2] = carry_x & carry_y;
     if (carry_x)  simpleAddAssign(mid[half..$], ysum);
     if (carry_y)  simpleAddAssign(mid[half..$], xsum);
-        
     // Low half of result gets x0 * y0. High half gets x1 * y1
    
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
@@ -554,18 +603,21 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
             mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller?x1[0..quarter]: y1, 
                 ysmaller?y1:x1[0..quarter], newscratchbuff);
             // Save the part which will be overwritten.
+            bool ysmaller2 = ((x1.length -quarter) >= y1.length);
             newscratchbuff[0..y1.length] = resultHigh[quarter..quarter+y1.length];
-            mulKaratsuba(resultHigh[quarter..$], ysmaller?x1[quarter..$]: y1, 
-                ysmaller?y1:x1[quarter..$], newscratchbuff[y1.length..$]);
+            mulKaratsuba(resultHigh[quarter..$], ysmaller2?x1[quarter..$]: y1, 
+                ysmaller2?y1:x1[quarter..$], newscratchbuff[y1.length..$]);
+
             resultHigh[quarter..$].simpleAddAssign(newscratchbuff[0..y1.length]);                
         }
     } else mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
-    
-    mid.simpleSubAssign(resultHigh);
         
+    mid.simpleSubAssign(resultHigh);
+
     // result += MID
     result[half..$].simpleAddAssign(mid);
 }
+
 
 private:
 void itoaZeroPadded(char[] output, uint value, int radix = 10) {

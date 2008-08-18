@@ -297,8 +297,9 @@ unittest
     
 /** dest[#] = src[#] << numbits
  *  numbits must be in the range 1..31
+ *  Returns the overflow
  */
-void multibyteShl(uint [] dest, uint [] src, uint numbits)
+uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 {
     // Timing: Optimal for P6 family.
     // 2.0 cycles/int on PPro..PM (limited by execution port p0)
@@ -332,9 +333,10 @@ L_odd:
         sub EBX, 2;
         jg L_even;
 L_last:
-        shl EAX, CL;
+        mov EDX, 0;
+        shld EAX, EDX, CL;
         mov [EDI], EAX;
-
+        mov EAX, EDX;
         pop EBX;
         pop EDI;
         pop ESI;
