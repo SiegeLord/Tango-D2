@@ -648,8 +648,14 @@ version( none )
         delete headers;
         delete cd_data;
 
-        if( file_source !is null )  delete file_source;
-        if( mm_source !is null )    delete mm_source;
+        if( file_source !is null )  
+          {
+          file_source.close;
+          delete file_source;
+          }
+
+        if( mm_source !is null )    
+            delete mm_source;
     }
 
     /**
