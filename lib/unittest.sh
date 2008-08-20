@@ -57,7 +57,7 @@ bool tangoUnitTester()
     foreach ( m; ModuleInfo )  // _moduleinfo_array )
     {
         if ( m.unitTest) {
-            Stdout.format ("{}. Executing unittests in '{}' ", countTotal, m.name);
+            Stdout.format ("{}. Executing unittests in '{}' ", countTotal, m.name).flush;
             countTotal++;
             try {
                m.unitTest();
