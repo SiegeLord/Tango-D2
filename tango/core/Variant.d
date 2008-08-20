@@ -8,6 +8,7 @@
 module tango.core.Variant;
 
 private import tango.core.Vararg : va_list;
+private import tango.core.Traits;
 
 private
 {
@@ -70,22 +71,6 @@ private
             const isAtomicType = false;
     }
 
-    template isArray(T)
-    {
-        static if( is( T U : U[] ) )
-            const isArray = true;
-        else
-            const isArray = false;
-    }
-
-    template isPointer(T)
-    {
-        static if( is( T U : U* ) )
-            const isPointer = true;
-        else
-            const isPointer = false;
-    }
-
     template isObject(T)
     {
         static if( is( T : Object ) )
@@ -100,14 +85,6 @@ private
             const isInterface = true;
         else
             const isInterface = false;
-    }
-
-    template isStaticArray(T)
-    {
-        static if( is( typeof(T.init)[(T).sizeof / typeof(T.init).sizeof] == T ) )
-            const isStaticArray = true;
-        else
-            const isStaticArray = false;
     }
 
     bool isAny(T,argsT...)(T v, argsT args)
@@ -193,7 +170,7 @@ private
 
     template storageT(T)
     {
-        static if( isStaticArray!(T) )
+        static if( isStaticArrayType!(T) )
             alias typeof(T.dup) storageT;
         else
             alias T storageT;
@@ -240,7 +217,7 @@ struct Variant
     {
         Variant _this;
 
-        static if( isStaticArray!(T) )
+        static if( isStaticArrayType!(T) )
             _this = value.dup;
 
         else
@@ -261,7 +238,7 @@ struct Variant
      */
     Variant opAssign(T)(T value)
     {
-        static if( isStaticArray!(T) )
+        static if( isStaticArrayType!(T) )
         {
             return (*this = value.dup);
         }
@@ -273,12 +250,12 @@ struct Variant
             {
                 mixin("this.value._"~T.stringof~"=value;");
             }
-            else static if( isArray!(T) )
+            else static if( isDynamicArrayType!(T) )
             {
                 this.value.arr = (cast(void*)value.ptr)
                     [0 .. value.length];
             }
-            else static if( isPointer!(T) )
+            else static if( isPointerType!(T) )
             {
                 this.value.ptr = cast(void*)value;
             }
@@ -413,12 +390,12 @@ struct Variant
                     throw new VariantTypeMismatchException(type,typeid(T));
             }
         }
-        else static if( isArray!(T) )
+        else static if( isDynamicArrayType!(T) )
         {
             return (cast(typeof(T[0])*)this.value.arr.ptr)
                 [0 .. this.value.arr.length];
         }
-        else static if( isPointer!(T) )
+        else static if( isPointerType!(T) )
         {
             return cast(T)this.value.ptr;
         }
