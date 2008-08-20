@@ -126,7 +126,8 @@ class PullParser(Ch = char)
                 if (*p != '<') 
                    {
                    auto q = p;
-                   while (*++p != '<') {}
+                   if (p < e)
+                       while (*++p != '<') {}
 
                    if (p < e)
                       {
