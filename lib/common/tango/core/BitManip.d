@@ -29,7 +29,7 @@ version( DDoc )
      *	The return value is undefined if v is zero.
      * Example:
      * ---
-     * import std.intrinsic;
+     * import tango.core.BitManip;
      *
      * int main()
      * {
@@ -84,7 +84,7 @@ version( DDoc )
      *
      * Example:
      * ---
-    import std.intrinsic;
+    import tango.core.BitManip;
 
     int main()
     {
