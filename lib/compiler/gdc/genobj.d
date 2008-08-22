@@ -798,12 +798,7 @@ class TypeInfo_Struct : TypeInfo
             {   if (!p2)
                     c = 1;
                 else if (xopCmp)
-                {
-                    version (GNU) // GDC and DMD use different calling conventions
-                        c = (*xopCmp)(p1, p2);
-                    else
-                        c = (*xopCmp)(p2, p1);
-                }
+                    c = (*xopCmp)(p1, p2);
                 else
                     // BUG: relies on the GC not moving objects
                     c = memcmp(p1, p2, init.length);
