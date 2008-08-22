@@ -111,47 +111,6 @@ uint multibyteIncrementAssign(char op)(uint[] dest, uint carry)
     }
 }
 
-enum LogicOp : byte { AND, OR, XOR };
-
-/** Dest[] = src1[] op src2[]
-*   where op == AND,OR, or XOR
-*/
-void multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
-{
-    for (int i=0; i<dest.length;++i) {
-        static if (op == LogicOp.AND) dest[i] = src1[i] & src2[i];
-        else static if (op == LogicOp.OR) dest[i] = src1[i] | src2[i];
-        else dest[i] = src1[i] ^ src2[i];
-    }
-}
-
-unittest
-{
-    uint [] bb = [0x0F0F_0F0F, 0xF0F0_F0F0, 0x0F0F_0F0F, 0xF0F0_F0F0];
-    for (int qqq=0; qqq<3; ++qqq) {
-        uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];    
-        
-        switch(qqq) {
-        case 0:
-            multibyteLogical!(LogicOp.AND)(aa[1..3], aa[1..3], bb[0..4]);
-            assert(aa[1]==0x0202_0203 && aa[2]==0x4050_5050 && aa[3]== 0x8999_999A);
-            break;
-        case 1:
-            multibyteLogical!(LogicOp.OR)(aa[1..2], aa[1..2], bb[0..3]);
-            assert(aa[1]==0x1F2F_2F2F && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
-            break;
-        case 2:
-            multibyteLogical!(LogicOp.XOR)(aa[1..2], aa[1..2], bb[0..3]);
-            assert(aa[1]==0x1D2D_2D2C && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
-            break;
-        default:
-            assert(0);
-        }
-        
-        assert(aa[0]==0xF0FF_FFFF);
-    }
-}
-
 /** dest[] = src[] << numbits
  *  numbits must be in the range 1..31
  */
@@ -225,14 +184,21 @@ unittest
  * dest[] += src[] * multiplier + carry(0..FFFF_FFFF).
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
-uint multibyteMulAdd(uint [] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
 {
     assert(dest.length == src.length);
     ulong c = carry;
     for(int i = 0; i < src.length; ++i){
-        c += cast(ulong)(multiplier) * src[i]  + dest[i];
-        dest[i] = cast(uint)c;
-        c >>= 32;
+        static if(op=='+') {
+            c += cast(ulong)(multiplier) * src[i]  + dest[i];
+            dest[i] = cast(uint)c;
+            c >>= 32;
+        } else {
+            c += cast(ulong)multiplier * src[i];
+            ulong t = cast(ulong)dest[i] - cast(uint)c;
+            dest[i] = cast(uint)t;
+            c = cast(uint)((c>>32) - (t>>32));                
+        }
     }
     return cast(uint)c;    
 }
@@ -241,7 +207,7 @@ unittest {
     
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
-    multibyteMulAdd(bb[1..$-1], aa[1..$-2], 16, 5);
+    multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
@@ -262,7 +228,7 @@ unittest {
 void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
 {
     for (int i = 0; i< right.length; ++i) {
-        dest[left.length + i] = multibyteMulAdd(dest[i..left.length+i],
+        dest[left.length + i] = multibyteMulAdd!('+')(dest[i..left.length+i],
                 left, right[i], 0);
     }
 }

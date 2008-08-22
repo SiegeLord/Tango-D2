@@ -24,7 +24,7 @@ private import tango.math.internal.BiguintCore;
 struct BigInt
 {
 private:
-	uint[] data; // In D2 this would be invariant(uint)[]
+	uint[] data = [0]; // In D2 this would be invariant(uint)[]
 	bool sign;
     static uint [] ZERO = [0];
     static uint [] ONE = [1];
@@ -72,7 +72,7 @@ public:
         return *this;
     }
     ///
-    BigInt opSub(T:BigInt)(BigInt y) {
+    BigInt opSub(T: BigInt)(T y) {
         return addsubInternal(*this, y, this.sign == y.sign);
     }        
     ///
@@ -89,7 +89,8 @@ public:
     BigInt opMulAssign(T: int)(T y) {
         *this = mulInternal(*this, cast(ulong)(y<0? -y: y), sign!=(y<0));
         return *this;
-    }    
+    }
+    ///    
     BigInt opMul(T:BigInt)(T y) {
         return mulInternal(*this, y);
     }
@@ -98,15 +99,33 @@ public:
         *this = mulInternal(*this, y);
         return *this;        
     }
-    
+    ///
+    BigInt opDivAssign(T: BigInt)(T y) {
+        *this = divInternal(*this, y);
+        return *this;
+    }    
+    ///
+    BigInt opDiv(T: BigInt)(T y) {
+        *this = divInternal(*this, y);
+        return *this;
+    }    
     ///
     BigInt opDiv(T:int)(T x) {
         assert(x!=0);
         BigInt r;
         uint u = x < 0 ? -x : x;
         r.data = biguintDivInt(data, u);
-        r.sign = r.isZero()? false : this.sign ^ (x<0);
+        r.sign = r.isZero()? false : this.sign != (x<0);
         return *this;        
+    }
+    ///
+    int opMod(T:int)(T y) {
+        assert(y!=0);
+        uint u = y < 0 ? -y : y;
+        int rem = biguintModInt(data, u);
+        // x%y always has the same sign as x.
+        // This is not the same as mathematical mod.
+        return sign? -rem : rem; 
     }
     ///
     BigInt opDivAssign(T: int)(T x) {
@@ -120,8 +139,19 @@ public:
     ///
     BigInt opNeg() { negate(); return *this; }
     ///
-    BigInt opPos() { return *this; }
-    
+    BigInt opPos() { return *this; }    
+    ///
+    BigInt opPostInc() {
+        BigInt old = *this;
+        *this = addsubInternal(*this, 1, false);
+        return old;
+    }
+    ///
+    BigInt opPostDec() {
+        BigInt old = *this;
+        *this = addsubInternal(*this, 1, true);
+        return old;
+    }
     ///
     BigInt opShr(T:int)(T y) {
         BigInt r;
@@ -197,8 +227,10 @@ public:
         biguintToHex(buff[start..$], data,'_');
         return buff;
     }
+    invariant() { assert(data.length==1 || data[$-1]!=0); }
 private:
     void negate() { if (!isZero()) sign = !sign; }
+
     bool isZero() { return data.length==1 && data[0]==0; }
     bool isNegative() { return sign; }
 private:
@@ -256,10 +288,18 @@ private:
         } else {
             biguintMul(r.data, x.data, y.data);
         }
-        // the highest element could be zero, in which case we need to reduce the length
+        // the highest element could be zero, 
+        // in which case we need to reduce the length
         if (r.data.length > 1 && r.data[$-1] == 0) {
             r.data = r.data[0..$-1];
         }
+        return r;
+    }
+    static BigInt divInternal(BigInt x, BigInt y) {
+        if (x.isZero()) return x;
+        BigInt r;
+        r.sign = x.sign ^ y.sign;
+        r.data = biguintDiv(x.data, y.data);
         return r;
     }
     static BigInt mulInternal(BigInt x, ulong y, bool negResult)
@@ -272,6 +312,9 @@ private:
         }
         r.sign = negResult;
         r.data = biguintMulInt(x.data, y);
+        if (r.data.length > 1 && r.data[$-1] == 0) {
+            r.data = r.data[0..$-1];
+        }
         return r;
     }
 }

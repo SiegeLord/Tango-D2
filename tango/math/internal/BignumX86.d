@@ -21,22 +21,21 @@
  * This code has been optimised for the Intel P6 family, except that it only
  * uses the basic instruction set (doesn't use MMX, SSE, SSE2)
  * Generally the code remains near-optimal for Core2, after translating
- * EAX-> RAX, etc, since all these CPUs use essentially the same pipeline.
- * The code uses techniques described in Agner Fog's superb manuals available
- * at www.agner.org.
+ * EAX-> RAX, etc, since all these CPUs use essentially the same pipeline, and
+ * are typically limited by memory access.
+ * The code uses techniques described in Agner Fog's superb Pentium manuals
+ * available at www.agner.org.
  * Not optimal for AMD64, which can do two memory loads per cycle (Intel
  * CPUs can only do one). Division is far from optimal.
  *
  *  Timing results (cycles per int)
  *         PentiumM Core2
  *  +,-      2.25   2.25
- *  &,|,^    2.0    2.0
  *  <<,>>    2.0    2.0
  *  cmp      2.0    2.0
  *  *        5.0
  *  mulAdd   5.4
  *  div     18.0
- *
  */
 
 module tango.math.internal.BignumX86;
@@ -227,73 +226,6 @@ L2:     dec EAX;
         ret 2*4;
     }
 }
-
-enum LogicOp : byte { AND, OR, XOR };
-
-/** Dest[#] = src1[#] op src2[#]
-*   where op == AND,OR, or XOR
-*/
-void multibyteLogical(LogicOp op)(uint [] dest, uint [] src1, uint [] src2)
-{
-    // PM: 2 cycles/operation. Limited by execution unit p2.
-    // (AMD64 could reach 1.5 cycles/operation since it has TWO read ports.
-    // On Core2, we could use SSE2 with 128-bit reads).
-    enum { LASTPARAM = 3*4 } // 2* pushes + return address.
-    asm {
-        naked;
-        push EDI;
-        push ESI;        
-        mov EDI, [ESP + LASTPARAM + 4*5]; // dest.ptr
-        mov ECX, [ESP + LASTPARAM + 4*4]; // dest.length;
-        mov EDX, [ESP + LASTPARAM + 4*3]; // src1.ptr;
-        mov ESI, [ESP + LASTPARAM + 4*1]; // src2.ptr
-        lea EDI, [EDI + 4*ECX]; // EDI = end of dest.
-        lea EDX, [EDX + 4*ECX]; // EDX = end of src1.
-        lea ESI, [ESI + 4*ECX]; // ESI = end of src2.
-        neg ECX;
-L1:
-        mov EAX, [EDX+ECX*4];
-    }
-    static if (op == LogicOp.AND) asm {        and EAX, [ESI+ECX*4]; }
-    else   if (op == LogicOp.OR) asm {        or  EAX, [ESI+ECX*4]; }
-    else   if (op == LogicOp.XOR) asm {        xor EAX, [ESI+ECX*4]; }
-    asm {
-        mov [EDI + ECX *4], EAX;
-        add ECX, 1;
-        jl L1;
-        
-        pop ESI;
-        pop EDI;
-        ret 6*4;
-    } 
-}
-
-unittest
-{
-    uint [] bb = [0x0F0F_0F0F, 0xF0F0_F0F0, 0x0F0F_0F0F, 0xF0F0_F0F0];
-    for (int qqq=0; qqq<3; ++qqq) {
-        uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];    
-        
-        switch(qqq) {
-        case 0:
-            multibyteLogical!(LogicOp.AND)(aa[1..3], aa[1..3], bb[0..4]);
-            assert(aa[1]==0x0202_0203 && aa[2]==0x4050_5050 && aa[3]== 0x8999_999A);
-            break;
-        case 1:
-            multibyteLogical!(LogicOp.OR)(aa[1..2], aa[1..2], bb[0..3]);
-            assert(aa[1]==0x1F2F_2F2F && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
-            break;
-        case 2:
-            multibyteLogical!(LogicOp.XOR)(aa[1..2], aa[1..2], bb[0..3]);
-            assert(aa[1]==0x1D2D_2D2C && aa[2]==0x4555_5556 && aa[3]== 0x8999_999A);
-            break;
-        default:
-            assert(0);
-        }
-        
-        assert(aa[0]==0xF0FF_FFFF);
-    }
-}
     
 /** dest[#] = src[#] << numbits
  *  numbits must be in the range 1..31
@@ -316,6 +248,9 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         mov ECX, EAX; // numbits;
 
         mov EAX, [-4+ESI + 4*EBX];
+        mov EDX, 0;
+        shld EDX, EAX, CL;
+        push EDX; // Save return value
         cmp EBX, 1;
         jz L_last;
         mov EDX, [-4+ESI + 4*EBX];
@@ -333,10 +268,9 @@ L_odd:
         sub EBX, 2;
         jg L_even;
 L_last:
-        mov EDX, 0;
-        shld EAX, EDX, CL;
+        shl EAX, CL;
         mov [EDI], EAX;
-        mov EAX, EDX;
+        pop EAX; // pop return value
         pop EBX;
         pop EDI;
         pop ESI;
@@ -407,9 +341,11 @@ unittest
 	    && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteShl(aa[1..4], aa[1..$], 4);
+    uint r = multibyteShl(aa[1..4], aa[1..$], 4);
 	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 
-	    && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+	    && aa[2]==0x5555_5561);
+        assert(aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
+    assert(r==8);
 }
 
 /** dest[#] = src[#] * multiplier + carry.
@@ -483,11 +419,31 @@ unittest
 }
 
 /**
- * dest[#] += src[#] * multiplier + carry(0..FFFF_FFFF).
+ * dest[#] += src[#] * multiplier OP carry(0..FFFF_FFFF).
+ * where op == '+' or '-'
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
-uint multibyteMulAdd(uint [] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
 {
+    static if (op=='-') {
+      /* This is equivalent to:
+        ---
+        uint [] tmp = new uint[src.length];
+        uint c = multibyteMul(tmp, src, multiplier, carry);
+        return c + multibyteAddSub!('-')(dest, dest, tmp, 0);
+        ---
+      */
+        ulong c = carry;
+        for (int i = 0; i < src.length; i++) {
+            c += cast(ulong)multiplier * src[i];
+            ulong t = cast(ulong)dest[i] - cast(uint)c;
+            dest[i] = cast(uint)t;
+            c = cast(uint)((c>>32) - (t>>32));        
+        }
+        return cast(uint)c;  
+   } else {
+
+
     // Timing: This is the most time-critical bignum function.
     // Pentium M: 5.4 cycles/operation, still has 2 resource stalls + 1 load block/iteration
     
@@ -612,13 +568,14 @@ L_enter_odd:
         jmp L_done;
 
      }
+ }// op=='+'
 }
 
 unittest {
     
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
-    multibyteMulAdd(bb[1..$-1], aa[1..$-2], 16, 5);
+    multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );

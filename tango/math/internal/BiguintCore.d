@@ -19,13 +19,13 @@ private import tango.math.internal.BignumNoAsm;
 }
 
 private:
-uint [1] BIGINTZERO = [0];
+/*invariant */ uint [1] BIGINTZERO = [0];
 public:
 
 // return 1 if x>y, -1 if x<y, 0 if equal
 int biguintCompare(uint [] x, uint []y)
 {
-    uint k = lastDifferentDigit(x, y);
+    uint k = highestDifferentDigit(x, y);
     if (x[k] == y[k]) return 0;
     return x[k] > y[k] ? 1 : -1;
 }
@@ -68,7 +68,6 @@ uint [] biguintShl(uint[] x, ulong y)
     }
 }
 
-
 /** General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
  */
@@ -76,7 +75,7 @@ uint [] biguintSub(uint[] x, uint[] y, bool *negative)
 {
     if (x.length == y.length) {
         // There's a possibility of cancellation, if x and y are almost equal.
-        int last = lastDifferentDigit(x, y);
+        int last = highestDifferentDigit(x, y);
         uint [] result = new uint[last+1];
         if (x[last] < y[last]) { // we know result is negative
             multibyteAddSub!('-')(result[0..last+1], y[0..last+1], x[0..last+1], 0);
@@ -85,6 +84,7 @@ uint [] biguintSub(uint[] x, uint[] y, bool *negative)
             multibyteAddSub!('-')(result[0..last+1], x[0..last+1], y[0..last+1], 0);
             *negative = false;
         }
+        if (result.length >1 && result[$-1]==0) return result[0..$-1];
         return result;
     }
     // Lengths are different
@@ -100,11 +100,11 @@ uint [] biguintSub(uint[] x, uint[] y, bool *negative)
     
     uint [] result = new uint[large.length];
     uint carry = multibyteAddSub!('-')(result[0..small.length], large[0..small.length], small, 0);
-    result[small.length..$-1] = large[small.length..$];
+    result[small.length..$] = large[small.length..$];
     if (carry) {
         multibyteIncrementAssign!('-')(result[small.length..$-1], carry);
-        if (result[$-1]==0) return result[0..$-1];
     }
+    if (result.length >1 && result[$-1]==0) return result[0..$-1];
     return result;
 }
 
@@ -172,7 +172,7 @@ uint [] biguintMulInt(uint [] x, ulong y)
     uint [] result = new uint[x.length+1+(hi!=0)];
     result[x.length] = multibyteMul(result[0..x.length], x, lo, 0);
     if (hi!=0) {
-        result[x.length+1] = multibyteMulAdd(result[1..x.length+1], x, hi, 0);
+        result[x.length+1] = multibyteMulAdd!('+')(result[1..x.length+1], x, hi, 0);
     }
     return result;
 }
@@ -294,6 +294,7 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
 uint[] biguintDivInt(uint [] x, uint y) {
     uint [] result = new uint[x.length];
     if ((y&(-y))==y) {
+        assert(y!=0);
         // perfect power of 2
         uint b = 0;
         for (;y!=0; y>>=1) {
@@ -307,6 +308,31 @@ uint[] biguintDivInt(uint [] x, uint y) {
     if (result[$-1]==0 && result.length>1) {
         return result[0..$-1];
     } else return result;
+}
+
+// return x%y
+uint biguintModInt(uint [] x, uint y) {
+    assert(y!=0);
+    if (y&(-y)==y) { // perfect power of 2        
+        return x[0]&(y-1);   
+    } else {
+        // horribly inefficient - malloc, copy, & store are unnecessary.
+        uint [] wasteful = new uint[x.length];
+        wasteful[] = x[];
+        uint rem = multibyteDivAssign(wasteful, y, 0);
+        delete wasteful;
+        return rem;
+    }   
+}
+
+uint [] biguintDiv(uint [] x, uint [] y)
+{
+    if (y.length > x.length) return BIGINTZERO;
+    if (y.length == 1) return biguintDivInt(x, y[0]);
+    uint [] result = new uint[x.length - y.length + 1];
+    schoolbookDivMod(result, null, x, y);
+    if (result.length>1 && result[$-1]==0) result=result[0..$-1];
+    return result;
 }
 
 public:
@@ -385,6 +411,7 @@ int biguintFromDecimal(uint [] data, char [] s) {
     ulong y = 0;
     uint hi = 0;
     data[0] = 0; // initially number is 0.
+    data[1]=0;    
    
     for (int i= (s[0]=='-' || s[0]=='+')? 1 : 0; i<s.length; ++i) {            
         if (s[i] == '_') continue;
@@ -413,13 +440,16 @@ int biguintFromDecimal(uint [] data, char [] s) {
             } else hi = 2;
             uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
             c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
-            if (c!=0) { data[hi]=c; ++hi; }
+            if (c!=0) {
+                data[hi]=c;
+                ++hi;
+            }
             y = 0;
             lo = 0;
         }
     }
     // Now set y = all remaining digits.
-    if (lo>=18) {        
+    if (lo>=18) {
     } else if (lo>=9) {
         for (int k=9; k<lo; ++k) y*=10;
         y+=x;
@@ -428,22 +458,24 @@ int biguintFromDecimal(uint [] data, char [] s) {
         y+=x;
     }
     if (y!=0) {
-        if (hi==0)  { *cast(ulong *)(&data[hi]) = y; hi=2; }
-        else {
-
-        while (lo>0) {
-            uint c = multibyteMul(data[0..hi], data[0..hi], 10, 0);
-            if (c!=0) { data[hi]=c; ++hi; }                
-            --lo;
-        }
+        if (hi==0)  {
+            *cast(ulong *)(&data[hi]) = y;
+            hi=2;
+        } else {
+            while (lo>0) {
+                uint c = multibyteMul(data[0..hi], data[0..hi], 10, 0);
+                if (c!=0) { data[hi]=c; ++hi; }                
+                --lo;
+            }
             uint c = multibyteIncrementAssign!('+')(data[0..hi], cast(uint)(y&0xFFFF_FFFF));
             if (y>0xFFFF_FFFFL) {
                 c += multibyteIncrementAssign!('+')(data[1..hi], cast(uint)(y>>32));
             }
             if (c!=0) { data[hi]=c; ++hi; }
-            hi+=2;
+          //  hi+=2;
         }
-    }    
+    }
+    if (hi>1 && data[hi-1]==0) --hi;
     return hi;
 }
 
@@ -618,8 +650,67 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     result[half..$].simpleAddAssign(mid);
 }
 
+import std.intrinsic;
+
+
+/* Knuth's Algorithm D, as presented in "Hacker's Delight"
+* given u and v, calculates  quotient  = u/v, remainder = u%v.
+*/
+//import tango.stdc.stdio;
+
+// given u and v, calculates  quotient  = u/v, remainder = u%v.
+void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v) {
+    assert(quotient.length == u.length - v.length + 1);
+    assert(remainder==null || remainder.length == v.length);
+    assert(v.length > 1);
+    assert(u.length >= v.length);
+    assert(v[$-1]!=0);
+
+    // Normalize by shifting v left just enough so that
+    // its high-order bit is on, and shift u left the
+    // same amount.
+   
+    uint [] vn = new uint[v.length];
+    uint [] un = new uint[u.length + 1];
+    // How much to left shift v, so that its MSB is set.
+    uint s = 31 - bsr(v[$-1]);
+    multibyteShl(vn, v, s);   
+    un[$-1] = multibyteShl(un[0..$-1], u, s);
+    for (int j = u.length - v.length; j >= 0; j--) {
+        // Compute estimate qhat of quotient[j].
+        ulong bigqhat, rhat;
+        bigqhat = ( (cast(ulong)(un[j+v.length])<<32) + un[j+v.length-1])/vn[$-1];
+        rhat = ((cast(ulong)(un[j+v.length])<<32) + un[j+v.length-1]) - bigqhat*vn[$-1];
+again:
+        if (bigqhat & 0xFFFF_FFFF_0000_0000L 
+            || bigqhat*vn[$-2] > 0x1_0000_0000L*rhat + un[j+v.length-2]) {
+            --bigqhat;
+            rhat += vn[$-1];
+            if (rhat < 0x1_0000_0000L) goto again;
+        }
+        assert(bigqhat < 0x1_0000_0000L);
+        uint qhat = cast(uint)bigqhat;
+
+        // Multiply and subtract.
+        uint carry = multibyteMulAdd!('-')(un[j..j+v.length], vn, qhat, 0);
+
+        if (un[j+v.length] < carry) {
+            // If we subtracted too much, add back
+            --qhat;
+            carry -= multibyteAddSub!('+')(un[j..j+v.length],un[j..j+v.length], vn, 0);
+        }
+        quotient[j] = qhat;
+        un[j+v.length] = un[j+v.length] - carry;
+        assert(un[j+v.length] == 0);
+    }
+    // Unnormalize remainder, if required.
+    if (remainder != null) {
+         multibyteShr(remainder, un, s);
+    }
+}
 
 private:
+// TODO: Replace with a library call
 void itoaZeroPadded(char[] output, uint value, int radix = 10) {
     int x = output.length - 1;
     for( ; x>=0; --x) {
@@ -641,7 +732,7 @@ private:
     
 // Returns the highest value of i for which left[i]!=right[i],
 // or 0 if left[]==right[]
-int lastDifferentDigit(uint [] left, uint [] right)
+int highestDifferentDigit(uint [] left, uint [] right)
 {
     assert(left.length == right.length);
     for (int i=left.length-1; i>0; --i) {
