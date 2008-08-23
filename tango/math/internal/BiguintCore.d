@@ -335,6 +335,17 @@ uint [] biguintDiv(uint [] x, uint [] y)
     return result;
 }
 
+uint [] biguintMod(uint [] x, uint [] y)
+{
+    if (y.length > x.length) return x;
+    if (y.length == 1) return biguintDivInt(x, y[0]);
+    uint [] result = new uint[x.length - y.length + 1];
+    uint [] rem = new uint[y.length];
+    schoolbookDivMod(result, rem, x, y);
+    while (rem.length>1 && rem[$-1]==0) rem = rem[0..$-1];
+    return rem;
+}
+
 public:
 // Converts a big uint to a hexadecimal string.
 //

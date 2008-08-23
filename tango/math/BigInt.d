@@ -106,8 +106,7 @@ public:
     }    
     ///
     BigInt opDiv(T: BigInt)(T y) {
-        *this = divInternal(*this, y);
-        return *this;
+        return divInternal(*this, y);
     }    
     ///
     BigInt opDiv(T:int)(T x) {
@@ -116,7 +115,15 @@ public:
         uint u = x < 0 ? -x : x;
         r.data = biguintDivInt(data, u);
         r.sign = r.isZero()? false : this.sign != (x<0);
-        return *this;        
+        return r;
+    }
+    ///
+    BigInt opDivAssign(T: int)(T x) {
+        assert(x!=0);
+        uint u = x < 0 ? -x : x;
+        data = biguintDivInt(data, u);
+        sign = isZero()? false : sign ^ (x<0);
+        return *this;
     }
     ///
     int opMod(T:int)(T y) {
@@ -128,14 +135,24 @@ public:
         return sign? -rem : rem; 
     }
     ///
-    BigInt opDivAssign(T: int)(T x) {
-        assert(x!=0);
-        uint u = x < 0 ? -x : x;
-    	data = biguintDivInt(data, u);
-        sign = isZero()? false : sign ^ (x<0);
+    BigInt opModAssign(T:int)(T y) {
+        assert(y!=0);
+        uint u = y < 0 ? -y : y;
+        int rem = biguintModInt(data, u);
+        // x%y always has the same sign as x.
+        // This is not the same as mathematical mod.
+        assignUint(rem);
         return *this;
     }
-    
+    ///
+    BigInt opModAssign(T: BigInt)(T y) {
+        *this = modInternal(*this, y);
+        return *this;
+    }    
+    ///
+    BigInt opMod(T: BigInt)(T y) {
+        return modInternal(*this, y);
+    }    
     ///
     BigInt opNeg() { negate(); return *this; }
     ///
@@ -293,6 +310,13 @@ private:
         if (r.data.length > 1 && r.data[$-1] == 0) {
             r.data = r.data[0..$-1];
         }
+        return r;
+    }
+    static BigInt modInternal(BigInt x, BigInt y) {
+        if (x.isZero()) return x;
+        BigInt r;
+        r.sign = x.sign;
+        r.data = biguintMod(x.data, y.data);
         return r;
     }
     static BigInt divInternal(BigInt x, BigInt y) {
