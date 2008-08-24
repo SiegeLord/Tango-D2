@@ -81,9 +81,12 @@ version (Windows) {
     int findSlashDot(char[] path, int start) {
         assert(start < end);
         foreach(i, c; path[start..end-1]) 
-            if (c == '/') 
+            if (c == '/') {
+                if (path[start+i+1] == '/')
+                    truncate(path, path[0..start+i+1], path[start+i+2..end]);
                 if (path[start+i+1] == '.') 
                     return i + start + 1;
+            }
 
         return -1;
     }
@@ -248,6 +251,7 @@ debug (UnitTest)
         assert (normalize ("../../../foo/bar") == "../../../foo/bar");
         assert (normalize ("d/") == "d/");
         assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
+        assert (normalize ("/home//john") == "/home/john");
 
 version (Windows) {
         assert (normalize ("\\foo\\..\\john") == "/john");
