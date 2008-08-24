@@ -615,10 +615,10 @@ debug( UnitTest )
             class D : C {}
 
             A a = new D;
-            Variant v = a;
-            B b = v.get!(B);
-            C c = v.get!(C);
-            D d = v.get!(D);
+            Variant v2 = a;
+            B b = v2.get!(B);
+            C c = v2.get!(C);
+            D d = v2.get!(D);
         }
 
         // Test doubles and implicit casting
