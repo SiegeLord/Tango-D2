@@ -23,8 +23,8 @@ class JsonParser(T)
 {
         public enum Token
                {
-               Name, String, Number, BeginObject, EndObject, 
-               BeginArray, EndArray, True, False, Null, Empty 
+               Empty, Name, String, Number, BeginObject, EndObject, 
+               BeginArray, EndArray, True, False, Null 
                }
 
         private enum State {Object, Array};
@@ -173,19 +173,15 @@ class JsonParser(T)
                 while (p < e && *p <= 32)
                        ++p;
 
-                if(*p != '"') 
-                    expected("\" in member name");
-                
-                curLoc = ++p;
+                if (*p != '"')
+                    expected ("\" before member name");
+
+                curLoc = p+1;
                 curType = Token.Name;
-                
-                while (p < e) 
-                      {
-                      if (*p is '"') 
-                          if (*(p-1) != '\\')
-                              break;
-                      ++p;
-                      }
+
+                while (++p < e) 
+                       if (*p is '"' && !escaped(p))
+                           break;
 
                 if (p < e) 
                     curLen = p - curLoc;
@@ -257,7 +253,7 @@ class JsonParser(T)
 
                 curLoc = p;
                 curType = Token.Number;
-                
+
                 while (p < e)
                       {
                       auto c = *p;
@@ -285,19 +281,12 @@ class JsonParser(T)
                 auto p = str.ptr;
                 auto e = str.end;
 
-                if (*p != '"') 
-                    expected ("\" in string");
-
-                curLoc = ++p;
+                curLoc = p+1;
                 curType = Token.String;
                 
-                while (p < e) 
-                      {
-                      if (*p is '"') 
-                          if (*(p-1) != '\\')
-                              break;
-                      ++p;
-                      }
+                while (++p < e) 
+                       if (*p is '"' && !escaped(p))
+                           break;
 
                 if (p < e) 
                     curLen = p - curLoc;
@@ -370,6 +359,19 @@ class JsonParser(T)
                        ++p;
 
                 return parseValue (*(str.ptr = p));
+        }
+
+        /***********************************************************************
+        
+        ***********************************************************************/
+        
+        private int escaped (T* p)
+        {
+                int i;
+
+                while (*--p is '\\')
+                       ++i;
+                return i & 1;
         }
 }
 
