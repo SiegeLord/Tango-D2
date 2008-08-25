@@ -425,25 +425,6 @@ unittest
  */
 uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
 {
-    static if (op=='-') {
-      /* This is equivalent to:
-        ---
-        uint [] tmp = new uint[src.length];
-        uint c = multibyteMul(tmp, src, multiplier, carry);
-        return c + multibyteAddSub!('-')(dest, dest, tmp, 0);
-        ---
-      */
-        ulong c = carry;
-        for (int i = 0; i < src.length; i++) {
-            c += cast(ulong)multiplier * src[i];
-            ulong t = cast(ulong)dest[i] - cast(uint)c;
-            dest[i] = cast(uint)t;
-            c = cast(uint)((c>>32) - (t>>32));        
-        }
-        return cast(uint)c;  
-   } else {
-
-
     // Timing: This is the most time-critical bignum function.
     // Pentium M: 5.4 cycles/operation, still has 2 resource stalls + 1 load block/iteration
     
@@ -466,6 +447,7 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     // EDI = dest
     // ESI = src
     
+    const char [] OP = (op=='+')? "add" : "sub";
     version(D_PIC) {
         enum { zero = 0 }
     } else {
@@ -477,6 +459,7 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     }
     
     enum { LASTPARAM = 5*4 } // 4* pushes + return address.
+mixin("        
     asm {
         naked;
         
@@ -509,8 +492,7 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
         adc ECX, EDX;
 
         mul int ptr [ESP+LASTPARAM];
-
-        add [-4+EDI+4*EBX], EBP;
+" ~ OP ~ " [-4+EDI+4*EBX], EBP;
         mov EBP, zero;
     
         adc ECX, EAX;
@@ -522,7 +504,7 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
         // Main loop
 L1:
         mul int ptr [ESP+LASTPARAM];
-        add [-8+EDI+4*EBX], ECX;
+        " ~ OP ~ " [-8+EDI+4*EBX], ECX;
         mov ECX, zero;
  
         adc EBP, EAX;
@@ -537,7 +519,7 @@ L1:
     }
     asm {        
         mul int ptr [ESP+LASTPARAM];
-        add [-4+EDI+4*EBX], EBP;
+        " ~ OP ~ " [-4+EDI+4*EBX], EBP;
         mov EBP, zero;
     
         adc ECX, EAX;
@@ -546,8 +528,7 @@ L1:
         adc EBP, EDX;    
         add EBX, 2;
         jl L1;
-L_done:
-        add [-8+EDI+4*EBX], ECX;
+L_done: " ~ OP ~ " [-8+EDI+4*EBX], ECX;
         mov EAX, EBP; // get final carry
         adc EAX, 0;
         pop EBP;
@@ -566,9 +547,7 @@ L_enter_odd:
         add EBX, 2;
         jl L1;
         jmp L_done;
-
-     }
- }// op=='+'
+     } ");
 }
 
 unittest {
