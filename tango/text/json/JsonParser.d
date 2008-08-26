@@ -170,7 +170,7 @@ class JsonParser(T)
                 if(*p is ',') 
                     ++p;
                 
-                while (p < e && *p <= 32)
+                while (*p <= 32) 
                        ++p;
 
                 if (*p != '"')
@@ -233,43 +233,13 @@ class JsonParser(T)
                             return match ("true", Token.True);
 
                        case 'f':
-                            return match ("false", Token.False);
+                            return match ("false", Token.False); 
 
                        default:
                             break;
                        }
 
                 return parseNumber;
-        }
-        
-        /***********************************************************************
-        
-        ***********************************************************************/
-        
-        private bool parseNumber ()
-        {
-                auto p = str.ptr;
-                auto e = str.end;
-
-                curLoc = p;
-                curType = Token.Number;
-
-                while (p < e)
-                      {
-                      auto c = *p;
-                      if ((c >= '0' && c <= '9') || c is '.' || c is 'e') 
-                           ++p;
-                      else
-                         break;
-                      }                 
-
-                if (p < e) 
-                    curLen = p - curLoc;
-                else
-                   unexpectedEOF ("after number");
-
-                str.ptr = p;
-                return true;
         }
         
         /***********************************************************************
@@ -294,6 +264,35 @@ class JsonParser(T)
                    unexpectedEOF ("in string");
 
                 str.ptr = p + 1;
+                return true;
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+        
+        private bool parseNumber ()
+        {
+                auto p = str.ptr;
+                auto e = str.end;
+                auto c = *(curLoc = p);
+
+                curType = Token.Number;
+
+                while (c >= '0' && c <= '9') c = *++p;                 
+
+                if (c is '.')
+                    while (c = *++p, c >= '0' && c <= '9') {}                 
+
+                if (c is 'e')
+                    while (c = *++p, c >= '0' && c <= '9') {}
+
+                if (p < e) 
+                    curLen = p - curLoc;
+                else
+                   unexpectedEOF ("after number");
+
+                str.ptr = p;
                 return true;
         }
         
