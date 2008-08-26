@@ -24,7 +24,7 @@ class JsonParser(T)
         public enum Token
                {
                Empty, Name, String, Number, BeginObject, EndObject, 
-               BeginArray, EndArray, True, False, Null 
+               BeginArray, EndArray, True, False, Null
                }
 
         private enum State {Object, Array};
@@ -68,7 +68,7 @@ class JsonParser(T)
                 auto p = str.ptr;
                 auto e = str.end;
 
-                while (p < e && *p <= 32) 
+                while (*p <= 32 && p < e) 
                        ++p; 
 
                 if ((str.ptr = p) >= e) 
@@ -79,14 +79,11 @@ class JsonParser(T)
 
                 switch (curType)
                        {
-                       default:                
-                            break;
-
                        case Token.Name:
                             return parseMemberValue;
 
-                       case Token.Empty:
-                            return start (*p);
+                       default:                
+                            break;
                        }
 
                 return parseMemberName;
@@ -114,12 +111,24 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        void reset (T[] json = null)
+        bool reset (T[] json = null)
         {
                 state.clear;
                 str.reset (json);
                 curType = Token.Empty;
                 curState = State.Object;
+
+                if (json.length)
+                   {
+                   auto p = str.ptr;
+                   auto e = str.end;
+
+                   while (*p <= 32 && p < e) 
+                          ++p; 
+                   if (p < e)
+                       return start (*(str.ptr = p));
+                   }
+                return false;
         }
 
         /***********************************************************************

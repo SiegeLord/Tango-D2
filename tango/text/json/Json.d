@@ -71,11 +71,9 @@ class Json(T) : private JsonParser!(T)
                 foreach (ref p; arrays)
                          p.index = 0;
 
-                super.reset (json);
-
                 auto v = values.allocate.reset;
 
-                if (super.next)
+                if (super.reset (json))
                     if (curType is Token.BeginObject)
                         v.set (parseObject);
                     else
