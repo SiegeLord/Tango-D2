@@ -19,59 +19,264 @@ private import tango.math.internal.BignumNoAsm;
 }
 
 private:
-/*invariant */ uint [1] BIGINTZERO = [0];
-public:
+const uint [] ZERO = [0];
+const uint [] ONE = [1];
+const uint [] TWO = [2];
+const uint [] TEN = [10];
+public:       
 
+// BigUint performs the memory management and wraps the low-level calls.
+struct BigUint {
+private:
+    invariant() { assert(data.length==1 || data[$-1]!=0); }
+    uint [] data = ZERO; 
+public:
+    static BigUint opCall(uint []x) {
+       BigUint a;
+       a.data=x;
+       return a;
+    }
+    void opAssign(uint u) {
+        if (u==0) data = ZERO;
+        else if (u==1) data = ONE;
+        else if (u==2) data = TWO;
+        else if (u==10) data = TEN;
+        else {
+            data = new uint[1];
+            data[0] = u;
+        }
+    }
+    
 // return 1 if x>y, -1 if x<y, 0 if equal
-int biguintCompare(uint [] x, uint []y)
+static int compare(BigUint x, BigUint y)
 {
-    uint k = highestDifferentDigit(x, y);
-    if (x[k] == y[k]) return 0;
-    return x[k] > y[k] ? 1 : -1;
+    if (x.data.length!=y.data.length) return x.data.length - y.data.length;
+    uint k = highestDifferentDigit(x.data, y.data);
+    if (x.data[k] == y.data[k]) return 0;
+    return x.data[k] > y.data[k] ? 1 : -1;
 }
 
+int opEquals(BigUint y) {
+       return y.data[] == data[];
+}
+
+bool isZero() { return data.length==1 && data[0]==0; }
+
+/// BUG: For testing only, this will be removed eventually
+int numBytes() {
+    return data.length * uint.sizeof;
+}
+
+// the extra bytes are added to the start of the string
+char [] toDecimalString(int frontExtraBytes)
+{
+    uint predictlength = 20+20*(data.length/2); // just over 19
+    char [] buff = new char[frontExtraBytes + predictlength];
+    int sofar = biguintToDecimal(buff, data.dup);       
+    return buff[sofar-frontExtraBytes..$];
+}
+
+char [] toHexString(int frontExtraBytes)
+{
+    int len = data.length*9 + frontExtraBytes;
+    char [] buff = new char[len];
+    biguintToHex(buff[frontExtraBytes..$], data,'_');
+    return buff;
+}
+
+void fromDecimalString(char [] s)
+{
+    uint predictlength = (18*2 + 2* s.length)/19;
+    data = new uint[predictlength];
+    uint hi = biguintFromDecimal(data, s);
+    data.length = hi;
+}
+
+// //////////////////////
+//
+// All of these static member functions create a new BigUint.
+
 // return x >> y
-uint [] biguintShr(uint[] x, ulong y)
+static BigUint shr(BigUint x, ulong y)
 {
     assert(y>0);
     uint bits = cast(uint)y & 31;
-    if ((y>>5) >= x.length) return BIGINTZERO;
+    if ((y>>5) >= x.data.length) return BigUint(ZERO);
     uint words = cast(uint)(y >> 5);
     if (bits==0) {
-        return x[words..$];
+        return BigUint(x.data[words..$]);
     } else {
-        uint [] result = new uint[x.length - words];
-        multibyteShr(result, x[words..$], bits);
-        if (result.length>1 && result[$-1]==0) return result[0..$-1];
-        else return result;
+        uint [] result = new uint[x.data.length - words];
+        multibyteShr(result, x.data[words..$], bits);
+        if (result.length>1 && result[$-1]==0) return BigUint(result[0..$-1]);
+        else return BigUint(result);
     }
 }
 
 // return x << y
-uint [] biguintShl(uint[] x, ulong y)
+static BigUint shl(BigUint x, ulong y)
 {
     assert(y>0);
-    if (x.length==1 && x[0]==0) return x;
+    if (x.data.length==1 && x.data[0]==0) return x;
     uint bits = cast(uint)y & 31;
     assert ((y>>5) < cast(ulong)(uint.max));
     uint words = cast(uint)(y >> 5);
-    uint [] result = new uint[x.length + words+1];
+    uint [] result = new uint[x.data.length + words+1];
     result[0..words] = 0;
     if (bits==0) {
-        result[words..words+x.length] = x[];
-        return result[0..words+x.length];
+        result[words..words+x.data.length] = x.data[];
+        return BigUint(result[0..words+x.data.length]);
     } else {
-        uint c = multibyteShl(result[words..words+x.length], x, bits);
-        if (c==0) return result[0..words+x.length];
+        uint c = multibyteShl(result[words..words+x.data.length], x.data, bits);
+        if (c==0) return BigUint(result[0..words+x.data.length]);
         result[$-1] = c;
-        return result;
+        return BigUint(result);
     }
 }
+
+    static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
+        BigUint r;
+        if (wantSub) { // perform a subtraction
+            if (x.data.length > 2) {
+                r.data = subInt(x.data, y);                
+            } else { // could change sign!
+                ulong xx = x.data[0];
+                if (x.data.length > 1) xx+= (cast(ulong)x.data[1]) << 32;
+                ulong d;
+                if (xx <= y) {
+                    d = y - xx;
+                    *sign = !*sign;
+                } else {
+                    d = xx - y;
+                }
+                if (d==0) {
+                    r = 0;
+                    return r;
+                }
+                r.data = new uint[ d>uint.max ? 2: 1];
+                r.data[0] = cast(uint)(d & 0xFFFF_FFFF);
+                if (d>uint.max) r.data[1] = cast(uint)(d>>32);
+            }
+        } else {
+            r.data = addInt(x.data, y);
+        }
+        return r;
+    }
+
+    static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
+        BigUint r;
+        if (wantSub) { // perform a subtraction
+            r.data = sub(x.data, y.data, sign);
+            if (r.isZero()) { *sign = false; }
+        } else {
+            r.data = add(x.data, y.data);
+        }
+        return r;
+    }
+
+
+/** return x*y.
+ *  y must not be zero.
+ */
+static BigUint mulInt(BigUint x, ulong y)
+{
+    uint hi = cast(uint)(y >>> 32);
+    uint lo = cast(uint)(y & 0xFFFF_FFFF);
+    uint [] result = new uint[x.data.length+1+(hi!=0)];
+    result[x.data.length] = multibyteMul(result[0..x.data.length], x.data, lo, 0);
+    if (hi!=0) {
+        result[x.data.length+1] = multibyteMulAdd!('+')(result[1..x.data.length+1],
+            x.data, hi, 0);
+    }
+    if (result.length > 1 && result[$-1] == 0) {
+            result = result[0..$-1];
+    }
+    return BigUint(result);
+}
+
+static BigUint mul(BigUint x, BigUint y)
+{
+    uint len = x.data.length + y.data.length;
+    BigUint r;
+    r.data = new uint[len];
+    if (y.data.length > x.data.length) {
+        mulInternal(r.data, y.data, x.data);
+    } else {
+        mulInternal(r.data, x.data, y.data);
+    }
+    // the highest element could be zero, 
+    // in which case we need to reduce the length
+    if (r.data.length > 1 && r.data[$-1] == 0) {
+        r.data = r.data[0..$-1];
+    }
+    return r;
+}
+
+// return x/y
+static BigUint divInt(BigUint x, uint y) {
+    uint [] result = new uint[x.data.length];
+    if ((y&(-y))==y) {
+        assert(y!=0);
+        // perfect power of 2
+        uint b = 0;
+        for (;y!=0; y>>=1) {
+            ++b;
+        }
+        multibyteShr(result, x.data, b);
+    } else {
+        result[] = x.data[];
+        uint rem = multibyteDivAssign(result, y, 0);
+    }
+    if (result[$-1]==0 && result.length>1) {
+        return BigUint(result[0..$-1]);
+    } else return BigUint(result);
+}
+
+// return x%y
+static uint modInt(BigUint x, uint y) {
+    assert(y!=0);
+    if (y&(-y)==y) { // perfect power of 2        
+        return x.data[0]&(y-1);   
+    } else {
+        // horribly inefficient - malloc, copy, & store are unnecessary.
+        uint [] wasteful = new uint[x.data.length];
+        wasteful[] = x.data[];
+        uint rem = multibyteDivAssign(wasteful, y, 0);
+        delete wasteful;
+        return rem;
+    }   
+}
+
+static BigUint div(BigUint x, BigUint y)
+{
+    if (y.data.length > x.data.length) return BigUint(ZERO);
+    if (y.data.length == 1) return divInt(x, y.data[0]);
+    uint [] result = new uint[x.data.length - y.data.length + 1];
+    schoolbookDivMod(result, null, x.data, y.data);
+    if (result.length>1 && result[$-1]==0) result=result[0..$-1];
+    return BigUint(result);
+}
+
+static BigUint mod(BigUint x, BigUint y)
+{
+    if (y.data.length > x.data.length) return x;
+    if (y.data.length == 1) return divInt(x, y.data[0]);
+    uint [] result = new uint[x.data.length - y.data.length + 1];
+    uint [] rem = new uint[y.data.length];
+    schoolbookDivMod(result, rem, x.data, y.data);
+    while (rem.length>1 && rem[$-1]==0) rem = rem[0..$-1];
+    return BigUint(rem);
+}
+
+} // end BigUint
+
+private:
+
 
 /** General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
  */
-uint [] biguintSub(uint[] x, uint[] y, bool *negative)
+uint [] sub(uint[] x, uint[] y, bool *negative)
 {
     if (x.length == y.length) {
         // There's a possibility of cancellation, if x and y are almost equal.
@@ -109,7 +314,7 @@ uint [] biguintSub(uint[] x, uint[] y, bool *negative)
 }
 
 // return a + b
-uint [] biguintAdd(uint[] a, uint [] b) {
+uint [] add(uint[] a, uint [] b) {
     uint [] x, y;
     if (a.length<b.length) { x = b; y = a; } else { x = a; y = b; }
     // now we know x.length > y.length
@@ -126,11 +331,10 @@ uint [] biguintAdd(uint[] a, uint [] b) {
         return result;
     } else return result[0..$-1];
 }
-
-
+    
 /** return x+y
  */
-uint [] biguintAddInt(uint[] x, ulong y)
+uint [] addInt(uint[] x, ulong y)
 {
     uint hi = cast(uint)(y >>> 32);
     uint lo = cast(uint)(y& 0xFFFF_FFFF);
@@ -147,10 +351,10 @@ uint [] biguintAddInt(uint[] x, ulong y)
     } else return result[0..$-1];
 }
 
-/** Return x-y..
+/** Return x-y.
  *  x must be greater than y.
  */  
-uint [] biguintSubInt(uint[] x, ulong y)
+uint [] subInt(uint[] x, ulong y)
 {
     uint hi = cast(uint)(y >>> 32);
     uint lo = cast(uint)(y& 0xFFFF_FFFF);
@@ -162,21 +366,6 @@ uint [] biguintSubInt(uint[] x, ulong y)
     else return result; 
 }
 
-/** return x*y.
- *  y must not be zero.
- */
-uint [] biguintMulInt(uint [] x, ulong y)
-{
-    uint hi = cast(uint)(y >>> 32);
-    uint lo = cast(uint)(y & 0xFFFF_FFFF);
-    uint [] result = new uint[x.length+1+(hi!=0)];
-    result[x.length] = multibyteMul(result[0..x.length], x, lo, 0);
-    if (hi!=0) {
-        result[x.length+1] = multibyteMulAdd!('+')(result[1..x.length+1], x, hi, 0);
-    }
-    return result;
-}
-
 /** General unsigned multiply routine for bigints.
  *  Sets result = x*y.
  *
@@ -184,7 +373,7 @@ uint [] biguintMulInt(uint [] x, ulong y)
  *  Different algorithms are used, depending on the lengths of x and y.
  * 
  */
-void biguintMul(uint[] result, uint[] x, uint[] y)
+void mulInternal(uint[] result, uint[] x, uint[] y)
 {
     assert( result.length == x.length + y.length );
     assert( y.length > 0 );
@@ -290,63 +479,8 @@ void biguintMul(uint[] result, uint[] x, uint[] y)
     }
 }
 
-// return x/y
-uint[] biguintDivInt(uint [] x, uint y) {
-    uint [] result = new uint[x.length];
-    if ((y&(-y))==y) {
-        assert(y!=0);
-        // perfect power of 2
-        uint b = 0;
-        for (;y!=0; y>>=1) {
-            ++b;
-        }
-        multibyteShr(result, x, b);
-    } else {
-        result[] = x[];
-        uint rem = multibyteDivAssign(result, y, 0);
-    }
-    if (result[$-1]==0 && result.length>1) {
-        return result[0..$-1];
-    } else return result;
-}
 
-// return x%y
-uint biguintModInt(uint [] x, uint y) {
-    assert(y!=0);
-    if (y&(-y)==y) { // perfect power of 2        
-        return x[0]&(y-1);   
-    } else {
-        // horribly inefficient - malloc, copy, & store are unnecessary.
-        uint [] wasteful = new uint[x.length];
-        wasteful[] = x[];
-        uint rem = multibyteDivAssign(wasteful, y, 0);
-        delete wasteful;
-        return rem;
-    }   
-}
-
-uint [] biguintDiv(uint [] x, uint [] y)
-{
-    if (y.length > x.length) return BIGINTZERO;
-    if (y.length == 1) return biguintDivInt(x, y[0]);
-    uint [] result = new uint[x.length - y.length + 1];
-    schoolbookDivMod(result, null, x, y);
-    if (result.length>1 && result[$-1]==0) result=result[0..$-1];
-    return result;
-}
-
-uint [] biguintMod(uint [] x, uint [] y)
-{
-    if (y.length > x.length) return x;
-    if (y.length == 1) return biguintDivInt(x, y[0]);
-    uint [] result = new uint[x.length - y.length + 1];
-    uint [] rem = new uint[y.length];
-    schoolbookDivMod(result, rem, x, y);
-    while (rem.length>1 && rem[$-1]==0) rem = rem[0..$-1];
-    return rem;
-}
-
-public:
+private:
 // Converts a big uint to a hexadecimal string.
 //
 // Optionally, a separator character (eg, an underscore) may be added between
@@ -595,7 +729,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     assert(2 * y.length * y.length > (x.length-1) * (x.length-1), "Asymmetric Karatsuba");
         
     // Karatsuba multiply uses the following result:
-    // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 + N * mid
+    // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 + N * mid
     // where mid = (x1+x0)*(y1+y0) - x1y1 - x0y0
     // requiring 3 multiplies of length N, instead of 4.
     
@@ -618,7 +752,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     // Add the high and low parts of x and y.
     // This will generate carries of either 0 or 1.
     // TODO: Knuth's variant would save the extra two additions:
-    // (Nx1 + x0)*(Ny1 + y0) = (N*N) x1y1 + x0y0 - N * mid
+    // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 - N * mid
     // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
     // since then mid.length cannot exceed length N.
     uint carry_x = addSimple(xsum, x0, x1);
