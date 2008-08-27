@@ -154,6 +154,10 @@ class SerialConduit : DeviceConduit
                     if(r is null) r = rest(path.name, "ttyS");
                     if(r.length == 0) return false;
                     return isInRange(r, '0', '9');
+                } else version (darwin) { // untested
+                    auto r = rest(path.name, "cu");
+                    if(r.length == 0) return false;
+                    return true;
                 } else version(freebsd) { // untested
                     auto r = rest(path.name, "cuaa");
                     if(r is null) r = rest(path.name, "cuad");
