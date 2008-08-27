@@ -23,27 +23,49 @@ private import tango.math.internal.BiguintCore;
  */
 struct BigInt
 {
-    // BigInt adds signed arithmetic to BigUint.
 private:
-	BigUint data;
-	bool sign;
+	BigUint data;     // BigInt adds signed arithmetic to BigUint.
+	bool sign = false;
 public:
+    /// Construct a BigInt from a decimal or hexadecimal string.
+    /// The number must be in the form of a D decimal or hex literal:
+    /// It may have a leading + or - sign; followed by "0x" if hexadecimal.
+    /// Underscores are permitted.
+    static BigInt opCall(char [] s) {
+        BigInt r;
+        if (s[0] == '-') {
+            r.sign = true;
+            s = s[1..$];
+        } else if (s[0]=='+') {
+            s = s[1..$];
+        }
+        auto q = 0X3;
+        bool ok;
+        if (s.length>2 && (s[0..2]=="0x" || s[0..2]=="0X")) {
+            ok = r.data.fromHexString(s[2..$]);
+        } else {
+            ok = r.data.fromDecimalString(s);
+        }
+        assert(ok);
+        return r;
+    }
     ///
     void opAssign(T:int)(T x) {
-        data = (x>=0) ? x : -x;
-        sign = (x<0);
+        data = (x < 0) ? -x : x;
+        sign = (x < 0);
     }
     ///
     BigInt opAdd(T: int)(T y) {
+        ulong u = cast(ulong)(y < 0 ? -y : y);
         BigInt r;
         r.sign = sign;
-        r.data = BigUint.addOrSubInt(data, cast(ulong)(y<0? -y: y), sign!=(y<0), &r.sign);
+        r.data = BigUint.addOrSubInt(data, u, sign!=(y<0), &r.sign);
         return r;
     }    
     ///
     BigInt opAddAssign(T: int)(T y) {
-         data = BigUint.addOrSubInt(data, cast(ulong)(y<0? -y: y),
-         sign!=(y<0), &sign);
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        data = BigUint.addOrSubInt(data, u, sign!=(y<0), &sign);
         return *this;
     }    
     ///
@@ -60,14 +82,16 @@ public:
     }    
     ///
     BigInt opSub(T: int)(T y) {
+        ulong u = cast(ulong)(y < 0 ? -y : y);
         BigInt r;
         r.sign = sign;
-        r.data = BigUint.addOrSubInt(data, cast(ulong)(y<0? -y: y), sign==(y<0), &r.sign);
+        r.data = BigUint.addOrSubInt(data, u, sign == (y<0), &r.sign);
         return r;
     }        
     ///
     BigInt opSubAssign(T: int)(T y) {
-        data = BigUint.addOrSubInt(data, cast(ulong)(y<0? -y: y), sign==(y<0), &sign);
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        data = BigUint.addOrSubInt(data, u, sign == (y<0), &sign);
         return *this;
     }
     ///
@@ -84,11 +108,13 @@ public:
     }    
     ///
     BigInt opMul(T: int)(T y) {
-        return mulInternal(*this, cast(ulong)(y<0? -y: y), sign!=(y<0));
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        return mulInternal(*this, u, sign != (y<0));
     }
     ///    
     BigInt opMulAssign(T: int)(T y) {
-        *this = mulInternal(*this, cast(ulong)(y<0? -y: y), sign!=(y<0));
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        *this = mulInternal(*this, u, sign != (y<0));
         return *this;
     }
     ///    
@@ -101,21 +127,12 @@ public:
         return *this;        
     }
     ///
-    BigInt opDivAssign(T: BigInt)(T y) {
-        *this = divInternal(*this, y);
-        return *this;
-    }    
-    ///
-    BigInt opDiv(T: BigInt)(T y) {
-        return divInternal(*this, y);
-    }    
-    ///
     BigInt opDiv(T:int)(T y) {
         assert(y!=0, "Division by zero");
         BigInt r;
         uint u = y < 0 ? -y : y;
         r.data = BigUint.divInt(data, u);
-        r.sign = r.isZero()? false : this.sign != (y<0);
+        r.sign = r.isZero()? false : sign != (y<0);
         return r;
     }
     ///
@@ -126,6 +143,15 @@ public:
         sign = data.isZero()? false : sign ^ (y<0);
         return *this;
     }
+    ///
+    BigInt opDivAssign(T: BigInt)(T y) {
+        *this = divInternal(*this, y);
+        return *this;
+    }    
+    ///
+    BigInt opDiv(T: BigInt)(T y) {
+        return divInternal(*this, y);
+    }    
     ///
     int opMod(T:int)(T y) {
         assert(y!=0);
@@ -145,16 +171,19 @@ public:
         return *this;
     }
     ///
+    BigInt opMod(T: BigInt)(T y) {
+        return modInternal(*this, y);
+    }    
+    ///
     BigInt opModAssign(T: BigInt)(T y) {
         *this = modInternal(*this, y);
         return *this;
     }    
     ///
-    BigInt opMod(T: BigInt)(T y) {
-        return modInternal(*this, y);
-    }    
-    ///
-    BigInt opNeg() { negate(); return *this; }
+    BigInt opNeg() {
+        negate();
+        return *this;
+    }
     ///
     BigInt opPos() { return *this; }    
     ///
@@ -215,18 +244,10 @@ public:
         else buff = buff[1..$];
         return buff;
     }
-    /// BUG: For testing only, this will be removed eventually
-    void fromDecimalString(char [] s) {
-        // Convert to base 10_000_000_000_000_000_000.
-        // (this is the largest power of 10 that will fit into a long).
-        // The length will be less than 1 + s.length/log2(10) = 1 + s.length/3.3219.
-        // 485 bits will only just fit into 146 decimal digits.
-        if (s[0]=='-') { sign=true; s=s[1..$]; }
-        else sign = false;
-        data.fromDecimalString(s);
-    }
+    /// Convert to a hexadecimal string, with an underscore every
+    /// 8 characters.
     char [] toHex() {
-        char [] buff = data.toHexString(1);
+        char [] buff = data.toHexString(1, '_');
         if (isNegative()) buff[0] = '-';
         else buff = buff[1..$];
         return buff;
@@ -246,7 +267,7 @@ private:
     static BigInt mulInternal(BigInt x, BigInt y) {
         BigInt r;        
         r.data = BigUint.mul(x.data, y.data);
-        r.sign = x.sign ^ y.sign;
+        r.sign = r.isZero() ? false : x.sign ^ y.sign;
         return r;
     }
     
@@ -276,4 +297,18 @@ private:
         r.data = BigUint.mulInt(x.data, y);
         return r;
     }
+}
+
+debug(UnitTest)
+{
+unittest {
+    // Radix conversion
+    assert( BigInt("-1_234_567_890_123_456_789").toDecimalString 
+        == "-1234567890123456789");
+    assert( BigInt("0x1234567890123456789").toHex == "123_45678901_23456789");
+    assert( BigInt("0x00000000000000000000000000000000000A234567890123456789").toHex
+        == "A23_45678901_23456789");
+    assert( BigInt("0x000_00_000000_000_000_000000000000_000000_").toHex == "0");
+
+}
 }

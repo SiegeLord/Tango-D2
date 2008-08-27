@@ -1,5 +1,7 @@
 /** Fundamental operations for arbitrary-precision arithmetic
  *
+ * These functions are for internal use only.
+ *
  * Copyright: Copyright (C) 2008 Don Clugston.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
@@ -25,7 +27,7 @@ const uint [] TWO = [2];
 const uint [] TEN = [10];
 public:       
 
-// BigUint performs the memory management and wraps the low-level calls.
+// BigUint performs memory management and wraps the low-level calls.
 struct BigUint {
 private:
     invariant() { assert(data.length==1 || data[$-1]!=0); }
@@ -37,10 +39,10 @@ public:
        return a;
     }
     void opAssign(uint u) {
-        if (u==0) data = ZERO;
-        else if (u==1) data = ONE;
-        else if (u==2) data = TWO;
-        else if (u==10) data = TEN;
+        if (u == 0) data = ZERO;
+        else if (u == 1) data = ONE;
+        else if (u == 2) data = TWO;
+        else if (u == 10) data = TEN;
         else {
             data = new uint[1];
             data[0] = u;
@@ -60,9 +62,8 @@ int opEquals(BigUint y) {
        return y.data[] == data[];
 }
 
-bool isZero() { return data.length==1 && data[0]==0; }
+bool isZero() { return data.length == 1 && data[0] == 0; }
 
-/// BUG: For testing only, this will be removed eventually
 int numBytes() {
     return data.length * uint.sizeof;
 }
@@ -76,20 +77,73 @@ char [] toDecimalString(int frontExtraBytes)
     return buff[sofar-frontExtraBytes..$];
 }
 
-char [] toHexString(int frontExtraBytes)
+char [] toHexString(int frontExtraBytes, char separator = 0)
 {
-    int len = data.length*9 + frontExtraBytes;
+    int len = data.length*8 + frontExtraBytes + (separator? (data.length-1): 0);
     char [] buff = new char[len];
-    biguintToHex(buff[frontExtraBytes..$], data,'_');
-    return buff;
+    biguintToHex(buff[frontExtraBytes..$], data, separator);
+    // Strip leading zeros.
+    int z = frontExtraBytes;
+    while (z< buff.length-1 && buff[z]=='0') ++z;
+    return buff[z-frontExtraBytes..$];
 }
 
-void fromDecimalString(char [] s)
+// return false if invalid character found
+bool fromHexString(char [] s)
 {
-    uint predictlength = (18*2 + 2* s.length)/19;
+    //Strip leading zeros
+    int firstNonZero = 0;    
+    while ((firstNonZero < s.length -1) && 
+        (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
+            ++firstNonZero;
+    }    
+    int len = (s.length - firstNonZero + 15)>>4;
+    data = new uint[len+1];
+    uint part = 0;
+    uint sofar = 0;
+    uint partcount = 0;
+    assert(s.length>0);
+    for (int i = s.length - 1; i>=firstNonZero; --i) {
+        assert(i>=0);
+        char c = s[i];
+        if (s[i]=='_') continue;
+        uint x = (c>='0' && c<='9')? c - '0' : c>='A' && c<='F'? c-'A'+10 :
+            c>='a' && c<='f' ? c-'a' + 10 : 100;
+        if (x==100) return false;
+        part >>= 4;
+        part |= (x<<(32-4));
+        ++partcount;
+        if (partcount==8) {
+            data[sofar] = part;
+            ++sofar;
+            partcount = 0;
+            part = 0;
+        }
+    }
+    if (part) {
+        for (;partcount!=8; ++partcount) part >>= 4;
+        data[sofar]=part;
+        ++sofar;
+    }
+    if (sofar==0) { data = ZERO; }
+    else data = data[0..sofar];
+    return true;
+}
+
+// return true if OK; false if erroneous characters found
+bool fromDecimalString(char [] s)
+{
+    //Strip leading zeros
+    int firstNonZero = 0;    
+    while ((firstNonZero < s.length -1) && 
+        (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
+            ++firstNonZero;
+    }    
+    uint predictlength = (18*2 + 2* (s.length-firstNonZero))/19;
     data = new uint[predictlength];
-    uint hi = biguintFromDecimal(data, s);
+    uint hi = biguintFromDecimal(data, s[firstNonZero..$]);
     data.length = hi;
+    return true;
 }
 
 // //////////////////////
@@ -134,48 +188,54 @@ static BigUint shl(BigUint x, ulong y)
     }
 }
 
-    static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
-        BigUint r;
-        if (wantSub) { // perform a subtraction
-            if (x.data.length > 2) {
-                r.data = subInt(x.data, y);                
-            } else { // could change sign!
-                ulong xx = x.data[0];
-                if (x.data.length > 1) xx+= (cast(ulong)x.data[1]) << 32;
-                ulong d;
-                if (xx <= y) {
-                    d = y - xx;
-                    *sign = !*sign;
-                } else {
-                    d = xx - y;
-                }
-                if (d==0) {
-                    r = 0;
-                    return r;
-                }
-                r.data = new uint[ d>uint.max ? 2: 1];
-                r.data[0] = cast(uint)(d & 0xFFFF_FFFF);
-                if (d>uint.max) r.data[1] = cast(uint)(d>>32);
+// If wantSub is false, return x+y
+// If wantSub is true, return x-y, and negating sign if x<y
+static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
+    BigUint r;
+    if (wantSub) { // perform a subtraction
+        if (x.data.length > 2) {
+            r.data = subInt(x.data, y);                
+        } else { // could change sign!
+            ulong xx = x.data[0];
+            if (x.data.length > 1) xx+= (cast(ulong)x.data[1]) << 32;
+            ulong d;
+            if (xx <= y) {
+                d = y - xx;
+                *sign = !*sign;
+            } else {
+                d = xx - y;
             }
-        } else {
-            r.data = addInt(x.data, y);
+            if (d==0) {
+                r = 0;
+                return r;
+            }
+            r.data = new uint[ d > uint.max ? 2: 1];
+            r.data[0] = cast(uint)(d & 0xFFFF_FFFF);
+            if (d > uint.max) r.data[1] = cast(uint)(d>>32);
         }
-        return r;
+    } else {
+        r.data = addInt(x.data, y);
     }
+    return r;
+}
 
-    static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
-        BigUint r;
-        if (wantSub) { // perform a subtraction
-            r.data = sub(x.data, y.data, sign);
-            if (r.isZero()) { *sign = false; }
-        } else {
-            r.data = add(x.data, y.data);
+// If wantSub is false, return x+y
+// If wantSub is true, return x-y, and negating sign if x<y
+static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
+    BigUint r;
+    if (wantSub) { // perform a subtraction
+        r.data = sub(x.data, y.data, sign);
+        if (r.isZero()) {
+            *sign = false;
         }
-        return r;
+    } else {
+        r.data = add(x.data, y.data);
     }
+    return r;
+}
 
 
-/** return x*y.
+/*  return x*y.
  *  y must not be zero.
  */
 static BigUint mulInt(BigUint x, ulong y)
@@ -194,6 +254,8 @@ static BigUint mulInt(BigUint x, ulong y)
     return BigUint(result);
 }
 
+/*  return x*y.
+ */
 static BigUint mul(BigUint x, BigUint y)
 {
     uint len = x.data.length + y.data.length;
@@ -247,6 +309,7 @@ static uint modInt(BigUint x, uint y) {
     }   
 }
 
+// return x/y
 static BigUint div(BigUint x, BigUint y)
 {
     if (y.data.length > x.data.length) return BigUint(ZERO);
@@ -257,6 +320,7 @@ static BigUint div(BigUint x, BigUint y)
     return BigUint(result);
 }
 
+// return x%y
 static BigUint mod(BigUint x, BigUint y)
 {
     if (y.data.length > x.data.length) return x;
@@ -273,7 +337,7 @@ static BigUint mod(BigUint x, BigUint y)
 private:
 
 
-/** General unsigned subtraction routine for bigints.
+/*  General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
  */
 uint [] sub(uint[] x, uint[] y, bool *negative)
@@ -332,7 +396,7 @@ uint [] add(uint[] a, uint [] b) {
     } else return result[0..$-1];
 }
     
-/** return x+y
+/*  return x+y
  */
 uint [] addInt(uint[] x, ulong y)
 {
@@ -366,7 +430,7 @@ uint [] subInt(uint[] x, ulong y)
     else return result; 
 }
 
-/** General unsigned multiply routine for bigints.
+/*  General unsigned multiply routine for bigints.
  *  Sets result = x*y.
  *
  *  The length of y must not be larger than the length of x.
@@ -494,7 +558,7 @@ char [] biguintToHex(char [] buff, uint [] data, char separator=0)
         toHexZeroPadded(buff[x..x+8], data[i]);
         x+=8;
         if (separator) {
-            if (i>0) buff[x]='_';
+            if (i>0) buff[x] = separator;
             ++x;
         }
     }
