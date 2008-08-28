@@ -6808,7 +6808,7 @@ struct LOGFONTW
     ubyte lfClipPrecision;
     ubyte lfQuality;
     ubyte lfPitchAndFamily;
-    WCHAR lfFaceName[LF_FACESIZE];
+    WCHAR lfFaceName[LF_FACESIZE] = 0;
 };
 
 alias LOGFONTW  TLOGFONTW;
@@ -8464,8 +8464,8 @@ alias PANOSE* PPANOSE;
 struct EXTLOGFONT
 {
     LOGFONT elfLogFont;
-    TCHAR[1 + LF_FULLFACESIZE-1] elfFullName;
-    TCHAR[1 + LF_FACESIZE-1] elfStyle;
+    TCHAR[1 + LF_FULLFACESIZE-1] elfFullName = 0;
+    TCHAR[1 + LF_FACESIZE-1] elfStyle = 0;
     DWORD elfVersion;
     DWORD elfStyleSize;
     DWORD elfMatch;
