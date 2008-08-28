@@ -53,7 +53,7 @@ public static SyncPrint Trace;
 
 static this()
 {
-        Trace = new SyncPrint (Cerr.stream, Cerr, !Cerr.redirected);
+        Trace = new SyncPrint (Cerr.stream, !Cerr.redirected);
 }
 
 /*******************************************************************************
@@ -81,9 +81,9 @@ private class SyncPrint
 
         **********************************************************************/
 
-        this (OutputStream output, Object mutex, bool flush=false)
+        this (OutputStream output, bool flush=false)
         {
-                this.mutex = mutex;
+                this.mutex = cast(Object) output;
                 this.output = output;
                 this.flushLines = flush;
                 this.convert = new Layout!(char);
