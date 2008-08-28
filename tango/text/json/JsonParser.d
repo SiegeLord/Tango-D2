@@ -293,7 +293,7 @@ class JsonParser(T)
                 if (c is '.')
                     while (c = *++p, c >= '0' && c <= '9') {}                 
 
-                if (c is 'e')
+                if (c is 'e' || c is 'E')
                     while (c = *++p, c >= '0' && c <= '9') {}
 
                 if (p < e) 
