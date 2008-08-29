@@ -586,6 +586,7 @@ body
             }
 
             newb.nodes = aa.nodes;
+            newb.keyti = aa.keyti;
         }
 
         *paa.a = newb;
