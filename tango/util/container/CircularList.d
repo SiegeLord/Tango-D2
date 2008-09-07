@@ -153,7 +153,6 @@ class CircularList (V, alias Reap = Container.reap,
                 i.owner = this;
                 i.cell = list;
                 i.head = list;
-                assert (list);
                 return i;
         }
 
@@ -1090,6 +1089,9 @@ debug (CircularList)
         {
                 // usage examples ...
                 auto list = new CircularList!(char[]);
+                foreach (value; list)
+                         Stdout (value).newline;
+
                 list.add ("foo");
                 list.add ("bar");
                 list.add ("wumpus");
