@@ -37,9 +37,9 @@ struct shmid_ds
     time_t      shm_ctime;
 }
 
-void* shmat(int, void*, int);
+void* shmat(int, in void*, int);
 int   shmctl(int, int, shmid_ds*);
-int   shmdt(void*);
+int   shmdt(in void*);
 int   shmget(key_t, size_t, int);
 */
 
@@ -70,9 +70,9 @@ version( linux )
         c_ulong     __unused5;
     }
 
-    void* shmat(int, void*, int);
+    void* shmat(int, in void*, int);
     int   shmctl(int, int, shmid_ds*);
-    int   shmdt(void*);
+    int   shmdt(in void*);
     int   shmget(key_t, size_t, int);
 }
 else version( freebsd )
@@ -100,9 +100,9 @@ else version( freebsd )
         c_ulong     __unused5;
     }
 
-    void* shmat(int, void*, int);
+    void* shmat(int, in void*, int);
     int   shmctl(int, int, shmid_ds*);
-    int   shmdt(void*);
+    int   shmdt(in void*);
     int   shmget(key_t, size_t, int);
 }
 else version( darwin )

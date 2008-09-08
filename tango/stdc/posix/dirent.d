@@ -25,7 +25,7 @@ struct dirent
 }
 
 int     closedir(DIR*);
-DIR*    opendir(char*);
+DIR*    opendir(in char*);
 dirent* readdir(DIR*);
 void    rewinddir(DIR*);
 */
@@ -151,7 +151,7 @@ else
 }
 
 int     closedir(DIR*);
-DIR*    opendir(char*);
+DIR*    opendir(in char*);
 //dirent* readdir(DIR*);
 void    rewinddir(DIR*);
 

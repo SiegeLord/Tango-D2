@@ -19,14 +19,14 @@ extern (C):
 // Required (defined in tango.stdc.time)
 //
 /*
-char* asctime(tm*);
+char* asctime(in tm*);
 clock_t clock();
-char* ctime(time_t*);
+char* ctime(in time_t*);
 double difftime(time_t, time_t);
-tm* gmtime(time_t*);
-tm* localtime(time_t*);
+tm* gmtime(in time_t*);
+tm* localtime(in time_t*);
 time_t mktime(tm*);
-size_t strftime(char*, size_t, char*, tm*);
+size_t strftime(char*, size_t, in char*, in tm*);
 time_t time(time_t*);
 */
 
@@ -63,7 +63,7 @@ int clock_getcpuclockid(pid_t, clockid_t*);
 // Clock Selection (CS)
 //
 /*
-int clock_nanosleep(clockid_t, int, timespec*, timespec*);
+int clock_nanosleep(clockid_t, int, in timespec*, timespec*);
 */
 
 //
@@ -103,13 +103,13 @@ timer_t
 
 int clock_getres(clockid_t, timespec*);
 int clock_gettime(clockid_t, timespec*);
-int clock_settime(clockid_t, timespec*);
-int nanosleep(timespec*, timespec*);
+int clock_settime(clockid_t, in timespec*);
+int nanosleep(in timespec*, timespec*);
 int timer_create(clockid_t, sigevent*, timer_t*);
 int timer_delete(timer_t);
 int timer_gettime(timer_t, itimerspec*);
 int timer_getoverrun(timer_t);
-int timer_settime(timer_t, int, itimerspec*, itimerspec*);
+int timer_settime(timer_t, int, in itimerspec*, itimerspec*);
 */
 
 version( linux )
@@ -139,17 +139,17 @@ version( linux )
 
     int clock_getres(clockid_t, timespec*);
     //int clock_gettime(clockid_t, timespec*);
-    //int clock_settime(clockid_t, timespec*);
-    int nanosleep(timespec*, timespec*);
+    //int clock_settime(clockid_t, in timespec*);
+    int nanosleep(in timespec*, timespec*);
     int timer_create(clockid_t, sigevent*, timer_t*);
     int timer_delete(timer_t);
     int timer_gettime(timer_t, itimerspec*);
     int timer_getoverrun(timer_t);
-    int timer_settime(timer_t, int, itimerspec*, itimerspec*);
+    int timer_settime(timer_t, int, in itimerspec*, itimerspec*);
 }
 else version( darwin )
 {
-    int nanosleep(timespec*, timespec*);
+    int nanosleep(in timespec*, timespec*);
 }
 else version( freebsd )
 {
@@ -178,13 +178,13 @@ else version( freebsd )
 
     int clock_getres(clockid_t, timespec*);
     int clock_gettime(clockid_t, timespec*);
-    int clock_settime(clockid_t, timespec*);
-    int nanosleep(timespec*, timespec*);
+    int clock_settime(clockid_t, in timespec*);
+    int nanosleep(in timespec*, timespec*);
     int timer_create(clockid_t, sigevent*, timer_t*);
     int timer_delete(timer_t);
     int timer_gettime(timer_t, itimerspec*);
     int timer_getoverrun(timer_t);
-    int timer_settime(timer_t, int, itimerspec*, itimerspec*);
+    int timer_settime(timer_t, int, in itimerspec*, itimerspec*);
 }
 
 
@@ -192,32 +192,32 @@ else version( freebsd )
 // Thread-Safe Functions (TSF)
 //
 /*
-char* asctime_r(tm*, char*);
-char* ctime_r(time_t*, char*);
-tm*   gmtime_r(time_t*, tm*);
-tm*   localtime_r(time_t*, tm*);
+char* asctime_r(in tm*, char*);
+char* ctime_r(in time_t*, char*);
+tm*   gmtime_r(in time_t*, tm*);
+tm*   localtime_r(in time_t*, tm*);
 */
 
 version( linux )
 {
-    char* asctime_r(tm*, char*);
-    char* ctime_r(time_t*, char*);
-    tm*   gmtime_r(time_t*, tm*);
-    tm*   localtime_r(time_t*, tm*);
+    char* asctime_r(in tm*, char*);
+    char* ctime_r(in time_t*, char*);
+    tm*   gmtime_r(in time_t*, tm*);
+    tm*   localtime_r(in time_t*, tm*);
 }
 else version( darwin )
 {
-    char* asctime_r(tm*, char*);
-    char* ctime_r(time_t*, char*);
-    tm*   gmtime_r(time_t*, tm*);
-    tm*   localtime_r(time_t*, tm*);
+    char* asctime_r(in tm*, char*);
+    char* ctime_r(in time_t*, char*);
+    tm*   gmtime_r(in time_t*, tm*);
+    tm*   localtime_r(in time_t*, tm*);
 }
 else version( freebsd )
 {
-    char* asctime_r(tm*, char*);
-    char* ctime_r(time_t*, char*);
-    tm*   gmtime_r(time_t*, tm*);
-    tm*   localtime_r(time_t*, tm*);
+    char* asctime_r(in tm*, char*);
+    char* ctime_r(in time_t*, char*);
+    tm*   gmtime_r(in time_t*, tm*);
+    tm*   localtime_r(in time_t*, tm*);
 }
 
 //
@@ -229,8 +229,8 @@ getdate_err
 int daylight;
 int timezone;
 
-tm* getdate(char*);
-char* strptime(char*, char*, tm*);
+tm* getdate(in char*);
+char* strptime(in char*, in char*, tm*);
 */
 
 version( linux )
@@ -238,18 +238,18 @@ version( linux )
     extern int      daylight;
     extern c_long   timezone;
 
-    tm*   getdate(char*);
-    char* strptime(char*, char*, tm*);
+    tm*   getdate(in char*);
+    char* strptime(in char*, in char*, tm*);
 }
 else version( darwin )
 {
     extern c_long timezone;
 
-    tm*   getdate(char *);
-    char* strptime(char*, char*, tm*);
+    tm*   getdate(in char*);
+    char* strptime(in char*, in char*, tm*);
 }
 else version( freebsd )
 {
-    //tm*   getdate(char *);
-    char* strptime(char*, char*, tm*);
+    //tm*   getdate(in char*);
+    char* strptime(in char*, in char*, tm*);
 }

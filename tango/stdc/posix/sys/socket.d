@@ -106,8 +106,8 @@ SHUT_RDWR
 SHUT_WR
 
 int     accept(int, sockaddr*, socklen_t*);
-int     bind(int, sockaddr*, socklen_t);
-int     connect(int, sockaddr*, socklen_t);
+int     bind(int, in sockaddr*, socklen_t);
+int     connect(int, in sockaddr*, socklen_t);
 int     getpeername(int, sockaddr*, socklen_t*);
 int     getsockname(int, sockaddr*, socklen_t*);
 int     getsockopt(int, int, int, void*, socklen_t*);
@@ -115,10 +115,10 @@ int     listen(int, int);
 ssize_t recv(int, void*, size_t, int);
 ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
 ssize_t recvmsg(int, msghdr*, int);
-ssize_t send(int, void*, size_t, int);
-ssize_t sendmsg(int, msghdr*, int);
-ssize_t sendto(int, void*, size_t, int, sockaddr*, socklen_t);
-int     setsockopt(int, int, int, void*, socklen_t);
+ssize_t send(int, in void*, size_t, int);
+ssize_t sendmsg(int, in msghdr*, int);
+ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
+int     setsockopt(int, int, int, in void*, socklen_t);
 int     shutdown(int, int);
 int     socket(int, int, int);
 int     sockatmark(int);
@@ -264,8 +264,8 @@ version( linux )
     }
 
     int     accept(int, sockaddr*, socklen_t*);
-    int     bind(int, sockaddr*, socklen_t);
-    int     connect(int, sockaddr*, socklen_t);
+    int     bind(int, in sockaddr*, socklen_t);
+    int     connect(int, in sockaddr*, socklen_t);
     int     getpeername(int, sockaddr*, socklen_t*);
     int     getsockname(int, sockaddr*, socklen_t*);
     int     getsockopt(int, int, int, void*, socklen_t*);
@@ -273,10 +273,10 @@ version( linux )
     ssize_t recv(int, void*, size_t, int);
     ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
     ssize_t recvmsg(int, msghdr*, int);
-    ssize_t send(int, void*, size_t, int);
-    ssize_t sendmsg(int, msghdr*, int);
-    ssize_t sendto(int, void*, size_t, int, sockaddr*, socklen_t);
-    int     setsockopt(int, int, int, void*, socklen_t);
+    ssize_t send(int, in void*, size_t, int);
+    ssize_t sendmsg(int, in msghdr*, int);
+    ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
+    int     setsockopt(int, int, int, in void*, socklen_t);
     int     shutdown(int, int);
     int     socket(int, int, int);
     int     sockatmark(int);
@@ -413,8 +413,8 @@ else version( darwin )
     }
 
     int     accept(int, sockaddr*, socklen_t*);
-    int     bind(int, sockaddr*, socklen_t);
-    int     connect(int, sockaddr*, socklen_t);
+    int     bind(int, in sockaddr*, socklen_t);
+    int     connect(int, in sockaddr*, socklen_t);
     int     getpeername(int, sockaddr*, socklen_t*);
     int     getsockname(int, sockaddr*, socklen_t*);
     int     getsockopt(int, int, int, void*, socklen_t*);
@@ -422,10 +422,10 @@ else version( darwin )
     ssize_t recv(int, void*, size_t, int);
     ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
     ssize_t recvmsg(int, msghdr*, int);
-    ssize_t send(int, void*, size_t, int);
-    ssize_t sendmsg(int, msghdr*, int);
-    ssize_t sendto(int, void*, size_t, int, sockaddr*, socklen_t);
-    int     setsockopt(int, int, int, void*, socklen_t);
+    ssize_t send(int, in void*, size_t, int);
+    ssize_t sendmsg(int, in msghdr*, int);
+    ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
+    int     setsockopt(int, int, int, in void*, socklen_t);
     int     shutdown(int, int);
     int     socket(int, int, int);
     int     sockatmark(int);
@@ -564,8 +564,8 @@ else version( freebsd )
     }
 
     int     accept(int, sockaddr*, socklen_t*);
-    int     bind(int, sockaddr*, socklen_t);
-    int     connect(int, sockaddr*, socklen_t);
+    int     bind(int, in sockaddr*, socklen_t);
+    int     connect(int, in sockaddr*, socklen_t);
     int     getpeername(int, sockaddr*, socklen_t*);
     int     getsockname(int, sockaddr*, socklen_t*);
     int     getsockopt(int, int, int, void*, socklen_t*);
@@ -573,10 +573,10 @@ else version( freebsd )
     ssize_t recv(int, void*, size_t, int);
     ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
     ssize_t recvmsg(int, msghdr*, int);
-    ssize_t send(int, void*, size_t, int);
-    ssize_t sendmsg(int, msghdr*, int);
-    ssize_t sendto(int, void*, size_t, int, sockaddr*, socklen_t);
-    int     setsockopt(int, int, int, void*, socklen_t);
+    ssize_t send(int, in void*, size_t, int);
+    ssize_t sendmsg(int, in msghdr*, int);
+    ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
+    int     setsockopt(int, int, int, in void*, socklen_t);
     int     shutdown(int, int);
     int     socket(int, int, int);
     int     sockatmark(int);

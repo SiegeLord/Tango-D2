@@ -229,24 +229,24 @@ else version( freebsd )
 // Range Memory Locking (MLR)
 //
 /*
-int mlock(void*, size_t);
-int munlock(void*, size_t);
+int mlock(in void*, size_t);
+int munlock(in void*, size_t);
 */
 
 version( linux )
 {
-    int mlock(void*, size_t);
-    int munlock(void*, size_t);
+    int mlock(in void*, size_t);
+    int munlock(in void*, size_t);
 }
 else version( darwin )
 {
-    int mlock(void*, size_t);
-    int munlock(void*, size_t);
+    int mlock(in void*, size_t);
+    int munlock(in void*, size_t);
 }
 else version( freebsd )
 {
-    int mlock(void*, size_t);
-    int munlock(void*, size_t);
+    int mlock(in void*, size_t);
+    int munlock(in void*, size_t);
 }
 
 //
@@ -269,24 +269,24 @@ else version( freebsd )
 // Shared Memory Objects (SHM)
 //
 /*
-int shm_open(char*, int, mode_t);
-int shm_unlink(char*);
+int shm_open(in char*, int, mode_t);
+int shm_unlink(in char*);
 */
 
 version( linux )
 {
-    int shm_open(char*, int, mode_t);
-    int shm_unlink(char*);
+    int shm_open(in char*, int, mode_t);
+    int shm_unlink(in char*);
 }
 else version( darwin )
 {
-    int shm_open(char*, int, mode_t);
-    int shm_unlink(char*);
+    int shm_open(in char*, int, mode_t);
+    int shm_unlink(in char*);
 }
 else version( freebsd )
 {
-    int shm_open(char*, int, mode_t);
-    int shm_unlink(char*);
+    int shm_open(in char*, int, mode_t);
+    int shm_unlink(in char*);
 }
 
 //
@@ -302,7 +302,7 @@ struct posix_typed_mem_info
     size_t posix_tmi_length;
 }
 
-int posix_mem_offset(void*, size_t, off_t *, size_t *, int *);
+int posix_mem_offset(in void*, size_t, off_t *, size_t *, int *);
 int posix_typed_mem_get_info(int, struct posix_typed_mem_info *);
-int posix_typed_mem_open(char*, int, int);
+int posix_typed_mem_open(in char*, int, int);
 */

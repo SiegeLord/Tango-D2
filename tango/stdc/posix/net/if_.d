@@ -24,7 +24,7 @@ struct if_nameindex // renamed to if_nameindex_t
 
 IF_NAMESIZE
 
-uint            if_nametoindex(char*);
+uint            if_nametoindex(in char*);
 char*           if_indextoname(uint, char*);
 if_nameindex_t* if_nameindex();
 void            if_freenameindex(if_nameindex_t*);
@@ -40,7 +40,7 @@ version( linux )
 
     const IF_NAMESIZE = 16;
 
-    uint            if_nametoindex(char*);
+    uint            if_nametoindex(in char*);
     char*           if_indextoname(uint, char*);
     if_nameindex_t* if_nameindex();
     void            if_freenameindex(if_nameindex_t*);
@@ -55,7 +55,7 @@ else version( darwin )
 
     const IF_NAMESIZE = 16;
 
-    uint            if_nametoindex(char*);
+    uint            if_nametoindex(in char*);
     char*           if_indextoname(uint, char*);
     if_nameindex_t* if_nameindex();
     void            if_freenameindex(if_nameindex_t*);
@@ -70,7 +70,7 @@ else version( freebsd )
 
     const IF_NAMESIZE = 16;
 
-    uint            if_nametoindex(char*);
+    uint            if_nametoindex(in char*);
     char*           if_indextoname(uint, char*);
     if_nameindex_t* if_nameindex();
     void            if_freenameindex(if_nameindex_t*);

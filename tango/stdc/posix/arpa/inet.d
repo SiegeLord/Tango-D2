@@ -32,10 +32,11 @@ uint16_t htons(uint16_t);
 uint32_t ntohl(uint32_t);
 uint16_t ntohs(uint16_t);
 
-in_addr_t inet_addr(char*);
+in_addr_t inet_addr(in char*);
 char*     inet_ntoa(in_addr);
-char*     inet_ntop(int, void*, char*, socklen_t);
-int       inet_pton(int, char*, void*);
+// per spec: const char* inet_ntop(int, const void*, char*, socklen_t);
+char*     inet_ntop(int, in void*, char*, socklen_t);
+int       inet_pton(int, in char*, void*);
 */
 
 version( linux )
@@ -55,10 +56,10 @@ version( linux )
     uint32_t ntohl(uint32_t);
     uint16_t ntohs(uint16_t);
 
-    in_addr_t inet_addr(char*);
+    in_addr_t inet_addr(in char*);
     char*     inet_ntoa(in_addr);
-    char*     inet_ntop(int, void*, char*, socklen_t);
-    int       inet_pton(int, char*, void*);
+    char*     inet_ntop(int, in void*, char*, socklen_t);
+    int       inet_pton(int, in char*, void*);
 }
 else version( darwin )
 {
@@ -77,10 +78,10 @@ else version( darwin )
     uint32_t ntohl(uint32_t);
     uint16_t ntohs(uint16_t);
 
-    in_addr_t inet_addr(char*);
+    in_addr_t inet_addr(in char*);
     char*     inet_ntoa(in_addr);
-    char*     inet_ntop(int, void*, char*, socklen_t);
-    int       inet_pton(int, char*, void*);
+    char*     inet_ntop(int, in void*, char*, socklen_t);
+    int       inet_pton(int, in char*, void*);
 }
 else version( freebsd )
 {
@@ -99,10 +100,10 @@ else version( freebsd )
     uint32_t ntohl(uint32_t);
     uint16_t ntohs(uint16_t);
 
-    in_addr_t inet_addr(char*);
+    in_addr_t inet_addr(in char*);
     char*     inet_ntoa(in_addr);
-    char*     inet_ntop(int, void*, char*, socklen_t);
-    int       inet_pton(int, char*, void*);
+    char*     inet_ntop(int, in void*, char*, socklen_t);
+    int       inet_pton(int, in char*, void*);
 }
 
 //

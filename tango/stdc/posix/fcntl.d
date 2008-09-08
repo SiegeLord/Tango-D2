@@ -62,9 +62,9 @@ struct flock
     pid_t   l_pid;
 }
 
-int creat(char*, mode_t);
+int creat(in char*, mode_t);
 int fcntl(int, int, ...);
-int open(char*, int, ...);
+int open(in char*, int, ...);
 */
 version( linux )
 {
@@ -121,16 +121,16 @@ version( linux )
 
     static if( __USE_LARGEFILE64 )
     {
-        int   creat64(char*, mode_t);
+        int   creat64(in char*, mode_t);
         alias creat64 creat;
 
-        int   open64(char*, int, ...);
+        int   open64(in char*, int, ...);
         alias open64 open;
     }
     else
     {
-        int   creat(char*, mode_t);
-        int   open(char*, int, ...);
+        int   creat(in char*, mode_t);
+        int   open(in char*, int, ...);
     }
 }
 else version( darwin )
@@ -177,8 +177,8 @@ else version( darwin )
         short   l_whence;
     }
 
-    int creat(char*, mode_t);
-    int open(char*, int, ...);
+    int creat(in char*, mode_t);
+    int open(in char*, int, ...);
 }
 else version( freebsd )
 {
@@ -224,13 +224,13 @@ else version( freebsd )
         short   l_whence;
     }
 
-    int creat(char*, mode_t);
-    int open(char*, int, ...);
+    int creat(in char*, mode_t);
+    int open(in char*, int, ...);
 }
 
-//int creat(char*, mode_t);
+//int creat(in char*, mode_t);
 int fcntl(int, int, ...);
-//int open(char*, int, ...);
+//int open(in char*, int, ...);
 
 //
 // Advisory Information (ADV)

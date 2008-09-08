@@ -23,8 +23,8 @@ RTLD_LOCAL
 
 int   dlclose(void*);
 char* dlerror();
-void* dlopen(char*, int);
-void* dlsym(void*, char*);
+void* dlopen(in char*, int);
+void* dlsym(void*, in char*);
 */
 
 version( linux )
@@ -36,8 +36,8 @@ version( linux )
 
     int   dlclose(void*);
     char* dlerror();
-    void* dlopen(char*, int);
-    void* dlsym(void*, char*);
+    void* dlopen(in char*, int);
+    void* dlsym(void*, in char*);
 }
 else version( darwin )
 {
@@ -48,8 +48,8 @@ else version( darwin )
 
     int   dlclose(void*);
     char* dlerror();
-    void* dlopen(char*, int);
-    void* dlsym(void*, char*);
+    void* dlopen(in char*, int);
+    void* dlsym(void*, in char*);
 }
 else version( freebsd )
 {
@@ -60,6 +60,6 @@ else version( freebsd )
 
     int   dlclose(void*);
     char* dlerror();
-    void* dlopen(char*, int);
-    void* dlsym(void*, char*);
+    void* dlopen(in char*, int);
+    void* dlsym(void*, in char*);
 }

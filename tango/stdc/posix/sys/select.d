@@ -34,7 +34,7 @@ void FD_ZERO(fd_set* fdset);
 
 FD_SETSIZE
 
-int  pselect(int, fd_set*, fd_set*, fd_set*, timespec*, sigset_t*);
+int  pselect(int, fd_set*, fd_set*, fd_set*, in timespec*, in sigset_t*);
 int  select(int, fd_set*, fd_set*, fd_set*, timeval*);
 */
 
@@ -118,7 +118,7 @@ version( linux )
          __result; }))
      +/
 
-    int pselect(int, fd_set*, fd_set*, fd_set*, timespec*, sigset_t*);
+    int pselect(int, fd_set*, fd_set*, fd_set*, in timespec*, in sigset_t*);
     int select(int, fd_set*, fd_set*, fd_set*, timeval*);
 }
 else version( darwin )
@@ -143,7 +143,7 @@ else version( freebsd )
 		const uint FD_SETSIZE = 1024;
 		const uint _NFDBITS = c_ulong.sizeof * 8;
 	}
-	struct fd_set 
+	struct fd_set
 	{
 		c_ulong fds_bits[((FD_SETSIZE + (_NFDBITS - 1)) / _NFDBITS)];
 	}

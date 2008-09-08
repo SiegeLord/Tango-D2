@@ -36,7 +36,7 @@ IPC_RMID
 IPC_SET
 IPC_STAT
 
-key_t ftok(char*, int);
+key_t ftok(in char*, int);
 */
 
 version( linux )
@@ -66,7 +66,7 @@ version( linux )
     const IPC_SET       = 1;
     const IPC_STAT      = 2;
 
-    key_t ftok(char*, int);
+    key_t ftok(in char*, int);
 }
 else version( darwin )
 {
@@ -95,5 +95,5 @@ else version( freebsd )
     const IPC_SET       = 1;
     const IPC_STAT      = 2;
 
-    key_t ftok(char*, int);
+    key_t ftok(in char*, int);
 }

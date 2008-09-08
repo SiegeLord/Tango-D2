@@ -23,7 +23,7 @@ struct utimbuf
     time_t  modtime;
 }
 
-int utime(char*, utimbuf*);
+int utime(in char*, in utimbuf*);
 */
 
 version( linux )
@@ -34,7 +34,7 @@ version( linux )
         time_t  modtime;
     }
 
-    int utime(char*, utimbuf*);
+    int utime(in char*, in utimbuf*);
 }
 else version( darwin )
 {
@@ -44,7 +44,7 @@ else version( darwin )
         time_t  modtime;
     }
 
-    int utime(char*, utimbuf*);
+    int utime(in char*, in utimbuf*);
 }
 else version( freebsd )
 {
@@ -54,5 +54,5 @@ else version( freebsd )
         time_t  modtime;
     }
 
-    int utime(char*, utimbuf*);
+    int utime(in char*, in utimbuf*);
 }

@@ -142,14 +142,14 @@ version( linux )
 /*
 int  getcontext(ucontext_t*);
 void makecontext(ucontext_t*, void function(), int, ...);
-int  setcontext(ucontext_t*);
-int  swapcontext(ucontext_t*, ucontext_t*);
+int  setcontext(in ucontext_t*);
+int  swapcontext(ucontext_t*, in ucontext_t*);
 */
 
 static if( is( typeof( ucontext_t ) ) )
 {
     int  getcontext(ucontext_t*);
     void makecontext(ucontext_t*, void function(), int, ...);
-    int  setcontext(ucontext_t*);
-    int  swapcontext(ucontext_t*, ucontext_t*);
+    int  setcontext(in ucontext_t*);
+    int  swapcontext(ucontext_t*, in ucontext_t*);
 }

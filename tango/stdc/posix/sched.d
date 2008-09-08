@@ -34,8 +34,8 @@ SCHED_OTHER
 
 int sched_getparam(pid_t, sched_param*);
 int sched_getscheduler(pid_t);
-int sched_setparam(pid_t, sched_param*);
-int sched_setscheduler(pid_t, int, sched_param*);
+int sched_setparam(pid_t, in sched_param*);
+int sched_setscheduler(pid_t, int, in sched_param*);
 */
 
 version( linux )
@@ -80,8 +80,8 @@ else version( freebsd )
 
 int sched_getparam(pid_t, sched_param*);
 int sched_getscheduler(pid_t);
-int sched_setparam(pid_t, sched_param*);
-int sched_setscheduler(pid_t, int, sched_param*);
+int sched_setparam(pid_t, in sched_param*);
+int sched_setscheduler(pid_t, int, in sched_param*);
 
 //
 // Thread (THR)

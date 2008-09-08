@@ -62,13 +62,13 @@ S_TYPEISMQ(buf)
 S_TYPEISSEM(buf)
 S_TYPEISSHM(buf)
 
-int    chmod(char*, mode_t);
+int    chmod(in char*, mode_t);
 int    fchmod(int, mode_t);
 int    fstat(int, stat*);
-int    lstat(char*, stat*);
-int    mkdir(char*, mode_t);
-int    mkfifo(char*, mode_t);
-int    stat(char*, stat*);
+int    lstat(in char*, stat*);
+int    mkdir(in char*, mode_t);
+int    mkfifo(in char*, mode_t);
+int    stat(in char*, stat*);
 mode_t umask(mode_t);
 */
 
@@ -299,13 +299,13 @@ else version( freebsd )
     extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
 
-int    chmod(char*, mode_t);
+int    chmod(in char*, mode_t);
 int    fchmod(int, mode_t);
 //int    fstat(int, stat_t*);
-//int    lstat(char*, stat_t*);
-int    mkdir(char*, mode_t);
-int    mkfifo(char*, mode_t);
-//int    stat(char*, stat_t*);
+//int    lstat(in char*, stat_t*);
+int    mkdir(in char*, mode_t);
+int    mkfifo(in char*, mode_t);
+//int    stat(in char*, stat_t*);
 mode_t umask(mode_t);
 
 version( linux )
@@ -315,24 +315,24 @@ version( linux )
     int   fstat64(int, stat_t*);
     alias fstat64 fstat;
 
-    int   lstat64(char*, stat_t*);
+    int   lstat64(in char*, stat_t*);
     alias lstat64 lstat;
 
-    int   stat64(char*, stat_t*);
+    int   stat64(in char*, stat_t*);
     alias stat64 stat;
   }
   else
   {
     int   fstat(int, stat_t*);
-    int   lstat(char*, stat_t*);
-    int   stat(char*, stat_t*);
+    int   lstat(in char*, stat_t*);
+    int   stat(in char*, stat_t*);
   }
 }
 else
 {
     int   fstat(int, stat_t*);
-    int   lstat(char*, stat_t*);
-    int   stat(char*, stat_t*);
+    int   lstat(in char*, stat_t*);
+    int   stat(in char*, stat_t*);
 }
 
 //
@@ -355,7 +355,7 @@ S_IFDIR
 S_IFLNK
 S_IFSOCK
 
-int mknod(char*, mode_t, dev_t);
+int mknod(in 3char*, mode_t, dev_t);
 */
 
 version( linux )
@@ -369,7 +369,7 @@ version( linux )
     const S_IFLNK   = 0120000;
     const S_IFSOCK  = 0140000;
 
-    int mknod(char*, mode_t, dev_t);
+    int mknod(in char*, mode_t, dev_t);
 }
 else version( darwin )
 {
@@ -382,7 +382,7 @@ else version( darwin )
     const S_IFLNK   = 0120000;
     const S_IFSOCK  = 0140000;
 
-    int mknod(char*, mode_t, dev_t);
+    int mknod(in char*, mode_t, dev_t);
 }
 else version( freebsd )
 {
@@ -395,5 +395,5 @@ else version( freebsd )
     const S_IFLNK   = 0120000;
     const S_IFSOCK  = 0140000;
 
-    int mknod(char*, mode_t, dev_t);
+    int mknod(in char*, mode_t, dev_t);
 }

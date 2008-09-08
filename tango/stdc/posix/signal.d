@@ -243,16 +243,16 @@ SI_ASYNCIO
 SI_MESGQ
 
 int kill(pid_t, int);
-int sigaction(int, sigaction_t*, sigaction_t*);
+int sigaction(int, in sigaction_t*, sigaction_t*);
 int sigaddset(sigset_t*, int);
 int sigdelset(sigset_t*, int);
 int sigemptyset(sigset_t*);
 int sigfillset(sigset_t*);
-int sigismember( sigset_t*, int);
+int sigismember(in sigset_t*, int);
 int sigpending(sigset_t*);
-int sigprocmask(int,  sigset_t*, sigset_t*);
-int sigsuspend(sigset_t*);
-int sigwait(sigset_t*, int*);
+int sigprocmask(int, in sigset_t*, sigset_t*);
+int sigsuspend(in sigset_t*);
+int sigwait(in sigset_t*, int*);
 */
 
 version( linux )
@@ -365,16 +365,16 @@ version( linux )
     }
 
     int kill(pid_t, int);
-    int sigaction(int, sigaction_t*, sigaction_t*);
+    int sigaction(int, in sigaction_t*, sigaction_t*);
     int sigaddset(sigset_t*, int);
     int sigdelset(sigset_t*, int);
     int sigemptyset(sigset_t*);
     int sigfillset(sigset_t*);
-    int sigismember( sigset_t*, int);
+    int sigismember(in sigset_t*, int);
     int sigpending(sigset_t*);
-    int sigprocmask(int,  sigset_t*, sigset_t*);
-    int sigsuspend(sigset_t*);
-    int sigwait(sigset_t*, int*);
+    int sigprocmask(int, in sigset_t*, sigset_t*);
+    int sigsuspend(in sigset_t*);
+    int sigwait(in sigset_t*, int*);
 }
 else version( darwin )
 {
@@ -417,20 +417,20 @@ else version( darwin )
     //SI_MESGQ
 
     int kill(pid_t, int);
-    int sigaction(int, sigaction_t*, sigaction_t*);
+    int sigaction(int, in sigaction_t*, sigaction_t*);
     int sigaddset(sigset_t*, int);
     int sigdelset(sigset_t*, int);
     int sigemptyset(sigset_t*);
     int sigfillset(sigset_t*);
-    int sigismember( sigset_t*, int);
+    int sigismember(in sigset_t*, int);
     int sigpending(sigset_t*);
-    int sigprocmask(int,  sigset_t*, sigset_t*);
-    int sigsuspend(sigset_t*);
-    int sigwait(sigset_t*, int*);
+    int sigprocmask(int, in sigset_t*, sigset_t*);
+    int sigsuspend(in sigset_t*);
+    int sigwait(in sigset_t*, int*);
 }
 else version( freebsd )
 {
-	union sigval 
+	union sigval
 	{
 		int sival_int;
 		void* sival_ptr;
@@ -442,7 +442,7 @@ else version( freebsd )
 	{
 		uint __bits[4];
 	}
-	
+
 	struct siginfo_t
 	{
 		int si_signo;
@@ -487,19 +487,19 @@ else version( freebsd )
 	}
 
 	int kill(pid_t, int);
-	int sigaction(int, sigaction_t*, sigaction_t);
+	int sigaction(int, in sigaction_t*, sigaction_t);
 	int sigaddset(sigset_t*, int);
 	int sigdelset(sigset_t*, int);
 	int sigemptyset(sigset_t *);
 	int sigfillset(sigset_t *);
-	int sigismember(sigset_t *, int);
+	int sigismember(in sigset_t *, int);
 	int sigpending(sigset_t *);
-	int sigprocmask(int, sigset_t*, sigset_t*);
-	int sigsuspend(sigset_t *);
-	int sigwait(sigset_t*, int*);
+	int sigprocmask(int, in sigset_t*, sigset_t*);
+	int sigsuspend(in sigset_t *);
+	int sigwait(in sigset_t*, int*);
 }
 
-	
+
 //
 // XOpen (XSI)
 //
@@ -585,7 +585,7 @@ sigfn_t bsd_signal(int sig, sigfn_t func);
 sigfn_t sigset(int sig, sigfn_t func);
 
 int killpg(pid_t, int);
-int sigaltstack(stack_t*, stack_t*);
+int sigaltstack(in stack_t*, stack_t*);
 int sighold(int);
 int sigignore(int);
 int siginterrupt(int, int);
@@ -697,7 +697,7 @@ version( linux )
     sigfn_t sigset(int sig, sigfn_t func);
 
     int killpg(pid_t, int);
-    int sigaltstack(stack_t*, stack_t*);
+    int sigaltstack(in stack_t*, stack_t*);
     int sighold(int);
     int sigignore(int);
     int siginterrupt(int, int);
@@ -757,9 +757,9 @@ struct sigevent
     pthread_attr_t* sigev_notify_attributes;
 }
 
-int sigqueue(pid_t, int, sigval);
-int sigtimedwait( sigset_t*, siginfo_t*, timespec*);
-int sigwaitinfo( sigset_t*, siginfo_t*);
+int sigqueue(pid_t, int, in sigval);
+int sigtimedwait(in sigset_t*, siginfo_t*, in timespec*);
+int sigwaitinfo(in sigset_t*, siginfo_t*);
 */
 
 version( linux )
@@ -794,9 +794,9 @@ version( linux )
         } _sigev_un_t _sigev_un;
     }
 
-    int sigqueue(pid_t, int, sigval);
-    int sigtimedwait( sigset_t*, siginfo_t*, timespec*);
-    int sigwaitinfo( sigset_t*, siginfo_t*);
+    int sigqueue(pid_t, int, in sigval);
+    int sigtimedwait(in sigset_t*, siginfo_t*, in timespec*);
+    int sigwaitinfo(in sigset_t*, siginfo_t*);
 }
 
 //
@@ -804,21 +804,21 @@ version( linux )
 //
 /*
 int pthread_kill(pthread_t, int);
-int pthread_sigmask(int,  sigset_t*, sigset_t*);
+int pthread_sigmask(int, in sigset_t*, sigset_t*);
 */
 
 version( linux )
 {
     int pthread_kill(pthread_t, int);
-    int pthread_sigmask(int,  sigset_t*, sigset_t*);
+    int pthread_sigmask(int, in sigset_t*, sigset_t*);
 }
 else version( darwin )
 {
     int pthread_kill(pthread_t, int);
-    int pthread_sigmask(int,  sigset_t*, sigset_t*);
+    int pthread_sigmask(int, in sigset_t*, sigset_t*);
 }
 else version( freebsd )
 {
     int pthread_kill(pthread_t, int);
-    int pthread_sigmask(int,  sigset_t*, sigset_t*);
+    int pthread_sigmask(int, in sigset_t*, sigset_t*);
 }

@@ -46,44 +46,44 @@ int    fflush(FILE*);
 int    fgetc(FILE*);
 int    fgetpos(FILE*, fpos_t *);
 char*  fgets(char*, int, FILE*);
-FILE*  fopen(char*, char*);
-int    fprintf(FILE*, char*, ...);
+FILE*  fopen(in char*, in char*);
+int    fprintf(FILE*, in char*, ...);
 int    fputc(int, FILE*);
-int    fputs(char*, FILE*);
+int    fputs(in char*, FILE*);
 size_t fread(void *, size_t, size_t, FILE*);
-FILE*  freopen(char*, char*, FILE*);
-int    fscanf(FILE*, char*, ...);
+FILE*  freopen(in char*, in char*, FILE*);
+int    fscanf(FILE*, in char*, ...);
 int    fseek(FILE*, c_long, int);
-int    fsetpos(FILE*, fpos_t *);
+int    fsetpos(FILE*, in fpos_t*);
 c_long ftell(FILE*);
-size_t fwrite(void *, size_t, size_t, FILE*);
+size_t fwrite(in void *, size_t, size_t, FILE*);
 int    getc(FILE*);
 int    getchar();
 char*  gets(char*);
-void   perror(char*);
-int    printf(char*, ...);
+void   perror(in char*);
+int    printf(in char*, ...);
 int    putc(int, FILE*);
 int    putchar(int);
-int    puts(char*);
-int    remove(char*);
-int    rename(char*, char*);
+int    puts(in char*);
+int    remove(in char*);
+int    rename(in char*, in char*);
 void   rewind(FILE*);
-int    scanf(char*, ...);
+int    scanf(in char*, ...);
 void   setbuf(FILE*, char*);
 int    setvbuf(FILE*, char*, int, size_t);
-int    snprintf(char*, size_t, char*, ...);
-int    sprintf(char*, char*, ...);
-int    sscanf(char*, char*, int ...);
+int    snprintf(char*, size_t, in char*, ...);
+int    sprintf(char*, in char*, ...);
+int    sscanf(in char*, in char*, int ...);
 FILE*  tmpfile();
 char*  tmpnam(char*);
 int    ungetc(int, FILE*);
-int    vfprintf(FILE*, char*, va_list);
-int    vfscanf(FILE*, char*, va_list);
-int    vprintf(char*, va_list);
-int    vscanf(char*, va_list);
-int    vsnprintf(char*, size_t, char*, va_list);
-int    vsprintf(char*, char*, va_list);
-int    vsscanf(char*, char*, va_list arg);
+int    vfprintf(FILE*, in char*, va_list);
+int    vfscanf(FILE*, in char*, va_list);
+int    vprintf(in char*, va_list);
+int    vscanf(in char*, va_list);
+int    vsnprintf(char*, size_t, in char*, va_list);
+int    vsprintf(char*, in char*, va_list);
+int    vsscanf(in char*, in char*, va_list arg);
 */
 
 version( linux )
@@ -93,16 +93,16 @@ version( linux )
         int   fgetpos64(FILE*, fpos_t *);
         alias fgetpos64 fgetpos;
 
-        FILE* fopen64(char*, char*);
+        FILE* fopen64(in char*, in char*);
         alias fopen64 fopen;
 
-        FILE* freopen64(char*, char*, FILE*);
+        FILE* freopen64(in char*, in char*, FILE*);
         alias freopen64 freopen;
 
         int   fseek64(FILE*, c_long, int);
         alias fseek64 fseek;
 
-        int   fsetpos64(FILE*, fpos_t *);
+        int   fsetpos64(FILE*, in fpos_t*);
         alias fsetpos64 fsetpos;
 
         FILE* tmpfile64();
@@ -111,10 +111,10 @@ version( linux )
     else
     {
         int   fgetpos(FILE*, fpos_t *);
-        FILE* fopen(char*, char*);
-        FILE* freopen(char*, char*, FILE*);
+        FILE* fopen(in char*, in char*);
+        FILE* freopen(in char*, in char*, FILE*);
         int   fseek(FILE*, c_long, int);
-        int   fsetpos(FILE*, fpos_t *);
+        int   fsetpos(FILE*, in fpos_t*);
         FILE* tmpfile();
     }
 }
@@ -126,12 +126,12 @@ version( linux )
 L_ctermid
 
 char*  ctermid(char*);
-FILE*  fdopen(int, char*);
+FILE*  fdopen(int, in char*);
 int    fileno(FILE*);
 int    fseeko(FILE*, off_t, int);
 off_t  ftello(FILE*);
 char*  gets(char*);
-FILE*  popen(char*, char*);
+FILE*  popen(in char*, in char*);
 */
 
 version( linux )
@@ -165,12 +165,12 @@ else
 }
 
 char*  ctermid(char*);
-FILE*  fdopen(int, char*);
+FILE*  fdopen(int, in char*);
 int    fileno(FILE*);
 //int    fseeko(FILE*, off_t, int);
 //off_t  ftello(FILE*);
 char*  gets(char*);
-FILE*  popen(char*, char*);
+FILE*  popen(in char*, in char*);
 
 //
 // Thread-Safe Functions (TSF)
@@ -203,12 +203,12 @@ version( linux )
 P_tmpdir
 va_list (defined in tango.stdc.stdarg)
 
-char*  tempnam(char*, char*);
+char*  tempnam(in char*, in char*);
 */
 
 version( linux )
 {
     const P_tmpdir  = "/tmp";
 
-    char*  tempnam(char*, char*);
+    char*  tempnam(in char*, in char*);
 }

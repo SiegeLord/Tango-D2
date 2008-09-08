@@ -24,20 +24,20 @@ int     optind;
 int     opterr;
 int     optopt;
 
-int     access(char*, int);
+int     access(in char*, int);
 uint    alarm(uint);
-int     chdir(char*);
-int     chown(char*, uid_t, gid_t);
+int     chdir(in char*);
+int     chown(in char*, uid_t, gid_t);
 int     close(int);
 size_t  confstr(int, char*, size_t);
 int     dup(int);
 int     dup2(int, int);
-int     execl(char*, char*, ...);
-int     execle(char*, char*, ...);
-int     execlp(char*, char*, ...);
-int     execv(char*, char**);
-int     execve(char*, char**, char**);
-int     execvp(char*, char**);
+int     execl(in char*, in char*, ...);
+int     execle(in char*, in char*, ...);
+int     execlp(in char*, in char*, ...);
+int     execv(in char*, in char**);
+int     execve(in char*, in char**, in char**);
+int     execvp(in char*, in char**);
 void    _exit(int);
 int     fchown(int, uid_t, gid_t);
 pid_t   fork();
@@ -51,20 +51,20 @@ int     getgroups(int, gid_t *);
 int     gethostname(char*, size_t);
 char*   getlogin();
 int     getlogin_r(char*, size_t);
-int     getopt(int, char**, char*);
+int     getopt(int, in char**, in char*);
 pid_t   getpgrp();
 pid_t   getpid();
 pid_t   getppid();
 uid_t   getuid();
 int     isatty(int);
-int     link(char*, char*);
+int     link(in char*, in char*);
 //off_t   lseek(int, off_t, int);
-c_long  pathconf(char*, int);
+c_long  pathconf(in char*, int);
 int     pause();
 int     pipe(int[2]);
 ssize_t read(int, void*, size_t);
-ssize_t readlink(char*, char*, size_t);
-int     rmdir(char*);
+ssize_t readlink(in char*, char*, size_t);
+int     rmdir(in char*);
 int     setegid(gid_t);
 int     seteuid(uid_t);
 int     setgid(gid_t);
@@ -72,14 +72,14 @@ int     setpgid(pid_t, pid_t);
 pid_t   setsid();
 int     setuid(uid_t);
 uint    sleep(uint);
-int     symlink(char*, char*);
+int     symlink(in char*, in char*);
 c_long  sysconf(int);
 pid_t   tcgetpgrp(int);
 int     tcsetpgrp(int, pid_t);
 char*   ttyname(int);
 int     ttyname_r(int, char*, size_t);
-int     unlink(char*);
-ssize_t write(int, void*, size_t);
+int     unlink(in char*);
+ssize_t write(int, in void*, size_t);
 
 version( linux )
 {
@@ -466,7 +466,7 @@ int fdatasync(int);
 // XOpen (XSI)
 //
 /*
-char*      crypt(char*, char*);
+char*      crypt(in char*, in char*);
 char*      ctermid(char*);
 void       encrypt(char[64], int);
 int        fchdir(int);
@@ -474,17 +474,17 @@ c_long     gethostid();
 pid_t      getpgid(pid_t);
 pid_t      getsid(pid_t);
 char*      getwd(char*); // LEGACY
-int        lchown(char*, uid_t, gid_t);
+int        lchown(in char*, uid_t, gid_t);
 int        lockf(int, int, off_t);
 int        nice(int);
 ssize_t    pread(int, void*, size_t, off_t);
-ssize_t    pwrite(int, void*, size_t, off_t);
+ssize_t    pwrite(int, in void*, size_t, off_t);
 pid_t      setpgrp();
 int        setregid(gid_t, gid_t);
 int        setreuid(uid_t, uid_t);
-void       swab(void*, void*, ssize_t);
+void       swab(in void*, void*, ssize_t);
 void       sync();
-int        truncate(char*, off_t);
+int        truncate(in char*, off_t);
 useconds_t ualarm(useconds_t, useconds_t);
 int        usleep(useconds_t);
 pid_t      vfork();
@@ -492,7 +492,7 @@ pid_t      vfork();
 
 version( linux )
 {
-    char*      crypt(char*, char*);
+    char*      crypt(in char*, in char*);
     char*      ctermid(char*);
     void       encrypt(char[64], int);
     int        fchdir(int);
@@ -500,17 +500,17 @@ version( linux )
     pid_t      getpgid(pid_t);
     pid_t      getsid(pid_t);
     char*      getwd(char*); // LEGACY
-    int        lchown(char*, uid_t, gid_t);
+    int        lchown(in char*, uid_t, gid_t);
     //int        lockf(int, int, off_t);
     int        nice(int);
     //ssize_t    pread(int, void*, size_t, off_t);
-    //ssize_t    pwrite(int, void*, size_t, off_t);
+    //ssize_t    pwrite(int, in void*, size_t, off_t);
     pid_t      setpgrp();
     int        setregid(gid_t, gid_t);
     int        setreuid(uid_t, uid_t);
-    void       swab(void*, void*, ssize_t);
+    void       swab(in void*, void*, ssize_t);
     void       sync();
-    //int        truncate(char*, off_t);
+    //int        truncate(in char*, off_t);
     useconds_t ualarm(useconds_t, useconds_t);
     int        usleep(useconds_t);
     pid_t      vfork();
@@ -523,23 +523,23 @@ version( linux )
     ssize_t    pread64(int, void*, size_t, off_t);
     alias      pread64 pread;
 
-    ssize_t    pwrite64(int, void*, size_t, off_t);
+    ssize_t    pwrite64(int, in void*, size_t, off_t);
     alias      pwrite64 pwrite;
 
-    int        truncate64(char*, off_t);
+    int        truncate64(in char*, off_t);
     alias      truncate64 truncate;
   }
   else
   {
     int        lockf(int, int, off_t);
     ssize_t    pread(int, void*, size_t, off_t);
-    ssize_t    pwrite(int, void*, size_t, off_t);
-    int        truncate(char*, off_t);
+    ssize_t    pwrite(int, in void*, size_t, off_t);
+    int        truncate(in char*, off_t);
   }
 }
 else version (darwin)
 {
-    char*      crypt(char*, char*);
+    char*      crypt(in char*, in char*);
     char*      ctermid(char*);
     void       encrypt(char[64], int);
     int        fchdir(int);
@@ -547,24 +547,24 @@ else version (darwin)
     pid_t      getpgid(pid_t);
     pid_t      getsid(pid_t);
     char*      getwd(char*); // LEGACY
-    int        lchown(char*, uid_t, gid_t);
+    int        lchown(in char*, uid_t, gid_t);
     int        lockf(int, int, off_t);
     int        nice(int);
     ssize_t    pread(int, void*, size_t, off_t);
-    ssize_t    pwrite(int, void*, size_t, off_t);
+    ssize_t    pwrite(int, in void*, size_t, off_t);
     pid_t      setpgrp();
     int        setregid(gid_t, gid_t);
     int        setreuid(uid_t, uid_t);
-    void       swab(void*, void*, ssize_t);
+    void       swab(in void*, void*, ssize_t);
     void       sync();
-    int        truncate(char*, off_t);
+    int        truncate(in char*, off_t);
     useconds_t ualarm(useconds_t, useconds_t);
     int        usleep(useconds_t);
     pid_t      vfork();
 }
 else version (freebsd)
 {
-    char*      crypt(char*, char*);
+    char*      crypt(in char*, in char*);
     //char*      ctermid(char*);
     void       encrypt(char*, int);
     int        fchdir(int);
@@ -572,17 +572,17 @@ else version (freebsd)
     int        getpgid(pid_t);
     int        getsid(pid_t);
     char*      getwd(char*); // LEGACY
-    int        lchown(char*, uid_t, gid_t);
+    int        lchown(in char*, uid_t, gid_t);
     int        lockf(int, int, off_t);
     int        nice(int);
     ssize_t    pread(int, void*, size_t, off_t);
-    ssize_t    pwrite(int, void*, size_t, off_t);
+    ssize_t    pwrite(int, in void*, size_t, off_t);
     int        setpgrp(pid_t, pid_t);
     int        setregid(gid_t, gid_t);
     int        setreuid(uid_t, uid_t);
-    void       swab(void*, void*, ssize_t);
+    void       swab(in void*, void*, ssize_t);
     void       sync();
-    int        truncate(char*, off_t);
+    int        truncate(in char*, off_t);
     useconds_t ualarm(useconds_t, useconds_t);
     int        usleep(useconds_t);
     pid_t      vfork();

@@ -26,8 +26,8 @@ struct iovec
 ssize_t // from tango.stdc.posix.sys.types
 size_t  // from tango.stdc.posix.sys.types
 
-ssize_t readv(int, iovec*, int);
-ssize_t writev(int, iovec*, int);
+ssize_t readv(int, in iovec*, int);
+ssize_t writev(int, in iovec*, int);
 */
 
 version( linux )
@@ -38,8 +38,8 @@ version( linux )
         size_t iov_len;
     }
 
-    ssize_t readv(int, iovec*, int);
-    ssize_t writev(int, iovec*, int);
+    ssize_t readv(int, in iovec*, int);
+    ssize_t writev(int, in iovec*, int);
 }
 else version( darwin )
 {
@@ -49,8 +49,8 @@ else version( darwin )
         size_t iov_len;
     }
 
-    ssize_t readv(int, iovec*, int);
-    ssize_t writev(int, iovec*, int);
+    ssize_t readv(int, in iovec*, int);
+    ssize_t writev(int, in iovec*, int);
 }
 else version( freebsd )
 {
@@ -60,6 +60,6 @@ else version( freebsd )
         size_t iov_len;
     }
 
-    ssize_t readv(int, iovec*, int);
-    ssize_t writev(int, iovec*, int);
+    ssize_t readv(int, in iovec*, int);
+    ssize_t writev(int, in iovec*, int);
 }

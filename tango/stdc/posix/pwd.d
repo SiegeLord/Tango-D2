@@ -26,7 +26,7 @@ struct passwd
     char*   pw_shell;
 }
 
-passwd* getpwnam(char*);
+passwd* getpwnam(in char*);
 passwd* getpwuid(uid_t);
 */
 
@@ -77,30 +77,30 @@ else version( freebsd )
     }
 }
 
-passwd* getpwnam(char*);
+passwd* getpwnam(in char*);
 passwd* getpwuid(uid_t);
 
 //
 // Thread-Safe Functions (TSF)
 //
 /*
-int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
+int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
 int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 */
 
 version( linux )
 {
-    int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
+    int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
 else version( darwin )
 {
-    int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
+    int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
 else version( freebsd )
 {
-    int getpwnam_r(char*, passwd*, char*, size_t, passwd**);
+    int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
 //

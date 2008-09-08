@@ -33,37 +33,37 @@ void    _Exit(int);
 void    abort();
 int     abs(int);
 int     atexit(void function());
-double  atof(char*);
-int     atoi(char*);
-c_long  atol(char*);
-long    atoll(char*);
-void*   bsearch(void*, void*, size_t, size_t, int function(void*, void*));
+double  atof(in char*);
+int     atoi(in char*);
+c_long  atol(in char*);
+long    atoll(in char*);
+void*   bsearch(in void*, in void*, size_t, size_t, int function(in void*, in void*));
 void*   calloc(size_t, size_t);
 div_t   div(int, int);
 void    exit(int);
 void    free(void*);
-char*   getenv(char*);
+char*   getenv(in char*);
 c_long  labs(c_long);
 ldiv_t  ldiv(c_long, c_long);
 long    llabs(long);
 lldiv_t lldiv(long, long);
 void*   malloc(size_t);
-int     mblen(char*, size_t);
-size_t  mbstowcs(wchar_t*, char*, size_t);
-int     mbtowc(wchar_t*, char*, size_t);
-void    qsort(void*, size_t, size_t, int function(void*, void*));
+int     mblen(in char*, size_t);
+size_t  mbstowcs(wchar_t*, in char*, size_t);
+int     mbtowc(wchar_t*, in char*, size_t);
+void    qsort(void*, size_t, size_t, int function(in void*, in void*));
 int     rand();
 void*   realloc(void*, size_t);
 void    srand(uint);
-double  strtod(char*, char**);
-float   strtof(char*, char**);
-c_long  strtol(char*, char**, int);
-real    strtold(char*, char**);
-long    strtoll(char*, char**, int);
-c_ulong strtoul(char*, char**, int);
-ulong   strtoull(char*, char**, int);
-int     system(char*);
-size_t  wcstombs(char*, wchar_t*, size_t);
+double  strtod(in char*, char**);
+float   strtof(in char*, char**);
+c_long  strtol(in char*, char**, int);
+real    strtold(in char*, char**);
+long    strtoll(in char*, char**, int);
+c_ulong strtoul(in char*, char**, int);
+ulong   strtoull(in char*, char**, int);
+int     system(in char*);
+size_t  wcstombs(char*, in wchar_t*, size_t);
 int     wctomb(char*, wchar_t);
 */
 
@@ -83,21 +83,21 @@ version( linux )
 // C Extension (CX)
 //
 /*
-int setenv(char*, char*, int);
-int unsetenv(char*);
+int setenv(in char*, in char*, int);
+int unsetenv(in char*);
 */
 
 version( linux )
 {
-    int setenv(char*, char*, int);
-    int unsetenv(char*);
+    int setenv(in char*, in char*, int);
+    int unsetenv(in char*);
 
     void* valloc(size_t); // LEGACY non-standard
 }
 else version( darwin )
 {
-    int setenv(char*, char*, int);
-    int unsetenv(char*);
+    int setenv(in char*, in char*, int);
+    int unsetenv(in char*);
 
     void* valloc(size_t); // LEGACY non-standard
 }
@@ -135,13 +135,14 @@ WIFSTOPPED  (defined in tango.stdc.posix.sys.wait)
 WSTOPSIG    (defined in tango.stdc.posix.sys.wait)
 WTERMSIG    (defined in tango.stdc.posix.sys.wait)
 
-c_long a64l(char*);
+c_long a64l(in char*);
 double drand48();
 char*  ecvt(double, int, int *, int *); // LEGACY
 double erand48(ushort[3]);
 char*  fcvt(double, int, int *, int *); // LEGACY
 char*  gcvt(double, int, char*); // LEGACY
-int    getsubopt(char**, char**, char**);
+// per spec: int getsubopt(char** char* const*, char**);
+int    getsubopt(char**, in char**, char**);
 int    grantpt(int);
 char*  initstate(uint, char*, size_t);
 c_long jrand48(ushort[3]);
@@ -156,10 +157,10 @@ int    posix_openpt(int);
 char*  ptsname(int);
 int    putenv(char*);
 c_long random();
-char*  realpath(char*, char*);
+char*  realpath(in char*, char*);
 ushort seed48(ushort[3]);
-void   setkey(char*);
-char*  setstate(char*);
+void   setkey(in char*);
+char*  setstate(in char*);
 void   srand48(c_long);
 void   srandom(uint);
 int    unlockpt(int);
@@ -176,13 +177,13 @@ version( linux )
     //WSTOPSIG    (defined in tango.stdc.posix.sys.wait)
     //WTERMSIG    (defined in tango.stdc.posix.sys.wait)
 
-    c_long a64l(char*);
+    c_long a64l(in char*);
     double drand48();
     char*  ecvt(double, int, int *, int *); // LEGACY
     double erand48(ushort[3]);
     char*  fcvt(double, int, int *, int *); // LEGACY
     char*  gcvt(double, int, char*); // LEGACY
-    int    getsubopt(char**, char**, char**);
+    int    getsubopt(char**, in char**, char**);
     int    grantpt(int);
     char*  initstate(uint, char*, size_t);
     c_long jrand48(ushort[3]);
@@ -197,10 +198,10 @@ version( linux )
     char*  ptsname(int);
     int    putenv(char*);
     c_long random();
-    char*  realpath(char*, char*);
+    char*  realpath(in char*, char*);
     ushort seed48(ushort[3]);
-    void   setkey(char*);
-    char*  setstate(char*);
+    void   setkey(in char*);
+    char*  setstate(in char*);
     void   srand48(c_long);
     void   srandom(uint);
     int    unlockpt(int);
@@ -226,13 +227,13 @@ else version( darwin )
     //WSTOPSIG    (defined in tango.stdc.posix.sys.wait)
     //WTERMSIG    (defined in tango.stdc.posix.sys.wait)
 
-    c_long a64l(char*);
+    c_long a64l(in char*);
     double drand48();
     char*  ecvt(double, int, int *, int *); // LEGACY
     double erand48(ushort[3]);
     char*  fcvt(double, int, int *, int *); // LEGACY
     char*  gcvt(double, int, char*); // LEGACY
-    int    getsubopt(char**, char**, char**);
+    int    getsubopt(char**, in char**, char**);
     int    grantpt(int);
     char*  initstate(uint, char*, size_t);
     c_long jrand48(ushort[3]);
@@ -247,10 +248,10 @@ else version( darwin )
     char*  ptsname(int);
     int    putenv(char*);
     c_long random();
-    char*  realpath(char*, char*);
+    char*  realpath(in char*, char*);
     ushort seed48(ushort[3]);
-    void   setkey(char*);
-    char*  setstate(char*);
+    void   setkey(in char*);
+    char*  setstate(in char*);
     void   srand48(c_long);
     void   srandom(uint);
     int    unlockpt(int);
@@ -266,13 +267,13 @@ else version( freebsd )
     //WSTOPSIG    (defined in tango.stdc.posix.sys.wait)
     //WTERMSIG    (defined in tango.stdc.posix.sys.wait)
 
-    c_long a64l(char*);
+    c_long a64l(in char*);
     double drand48();
     //char*  ecvt(double, int, int *, int *); // LEGACY
     double erand48(ushort[3]);
     //char*  fcvt(double, int, int *, int *); // LEGACY
     //char*  gcvt(double, int, char*); // LEGACY
-    int    getsubopt(char**, char**, char**);
+    int    getsubopt(char**, in char**, char**);
     int    grantpt(int);
     char*  initstate(uint, char*, size_t);
     c_long jrand48(ushort[3]);
@@ -287,10 +288,10 @@ else version( freebsd )
     char*  ptsname(int);
     int    putenv(char*);
     c_long random();
-    char*  realpath(char*, char*);
+    char*  realpath(in char*, char*);
     ushort seed48(ushort[3]);
-    void   setkey(char*);
-    char*  setstate(char*);
+    void   setkey(in char*);
+    char*  setstate(in char*);
     void   srand48(c_long);
     void   srandom(uint);
     int    unlockpt(int);
