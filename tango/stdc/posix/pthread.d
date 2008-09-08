@@ -83,43 +83,85 @@ int pthread_setcanceltype(int, int*);
 int pthread_setspecific(pthread_key_t, in void*);
 void pthread_testcancel();
 */
-
-enum
+version( linux )
 {
-    PTHREAD_CANCEL_ENABLE,
-    PTHREAD_CANCEL_DISABLE
+    enum
+    {
+        PTHREAD_CANCEL_ENABLE,
+        PTHREAD_CANCEL_DISABLE
+    }
+
+    enum
+    {
+        PTHREAD_CANCEL_DEFERRED,
+        PTHREAD_CANCEL_ASYNCHRONOUS
+    }
+
+    const PTHREAD_CANCELED = cast(void*) -1;
+
+    //const pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
+
+    enum
+    {
+        PTHREAD_CREATE_JOINABLE,
+        PTHREAD_CREATE_DETACHED
+    }
+
+    enum
+    {
+        PTHREAD_INHERIT_SCHED,
+        PTHREAD_EXPLICIT_SCHED
+    }
+
+    //const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
+
+    const PTHREAD_ONCE_INIT = 0;
+
+    enum
+    {
+        PTHREAD_PROCESS_PRIVATE,
+        PTHREAD_PROCESS_SHARED
+    }
 }
-
-enum
+else version( darwin )
 {
-    PTHREAD_CANCEL_DEFERRED,
-    PTHREAD_CANCEL_ASYNCHRONOUS
-}
+    enum
+    {
+        PTHREAD_CANCEL_ENABLE   = 1,
+        PTHREAD_CANCEL_DISABLE  = 0
+    }
 
-const PTHREAD_CANCELED = cast(void*) -1;
+    enum
+    {
+        PTHREAD_CANCEL_DEFERRED     = 2,
+        PTHREAD_CANCEL_ASYNCHRONOUS = 0
+    }
 
-//const pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
+    const PTHREAD_CANCELED = cast(void*) -1;
 
-enum
-{
-    PTHREAD_CREATE_JOINABLE,
-    PTHREAD_CREATE_DETACHED
-}
+    //const pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
 
-enum
-{
-    PTHREAD_INHERIT_SCHED,
-    PTHREAD_EXPLICIT_SCHED
-}
+    enum
+    {
+        PTHREAD_CREATE_JOINABLE = 1,
+        PTHREAD_CREATE_DETACHED = 2
+    }
 
-//const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
+    enum
+    {
+        PTHREAD_INHERIT_SCHED   = 1,
+        PTHREAD_EXPLICIT_SCHED  = 2
+    }
 
-const PTHREAD_ONCE_INIT = 0;
+    //const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
 
-enum
-{
-    PTHREAD_PROCESS_PRIVATE,
-    PTHREAD_PROCESS_SHARED
+    const PTHREAD_ONCE_INIT = 0;
+
+    enum
+    {
+        PTHREAD_PROCESS_PRIVATE = 2,
+        PTHREAD_PROCESS_SHARED  = 1
+    }
 }
 
 int pthread_atfork(void function(), void function(), void function());
