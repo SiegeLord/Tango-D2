@@ -322,31 +322,6 @@ template isArrayType(T)
     const isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
 }
 
-template isPointerType(T)
-{
-    /*
-     * You might think these first two tests are redundant.  You'd be wrong.
-     * The linux compilers, for whatever reason, seem to think that objects
-     * and arrays are implicitly castable to void*, whilst the Windows one
-     * doesn't.  Don't ask me; just nod and smile...
-     */
-    static if( is( T : Object ) )
-        const isPointerType = false;
-    else static if( is( T : void[] ) )
-        const isPointerType = false;
-    else static if( is( T : void* ) )
-        const isPointerType = true;
-    else
-        const isPointerType = false;
-}
-
-static assert( isPointerType!(char*) );
-static assert( isPointerType!(void*) );
-static assert( !isPointerType!(char[]) );
-static assert( !isPointerType!(void[]) );
-static assert( !isPointerType!(typeof("abc")) );
-static assert( !isPointerType!(Object) );
-
 /*
  * Determines which signed integer type of T and U is larger.
  */
