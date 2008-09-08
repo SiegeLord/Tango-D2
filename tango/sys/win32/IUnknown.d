@@ -16,7 +16,18 @@ private
 }
 
 
-class IUnknown
+interface IUnknown
+{
+    HRESULT QueryInterface(IID* riid, void** pvObject);
+    ULONG AddRef();
+    ULONG Release();
+}
+
+
+/**
+ * This implementation may be mixed into COM classes to avoid code duplication.
+ */
+template IUnknownImpl()
 {
     HRESULT QueryInterface( REFIID iid, out IUnknown obj )
     {
