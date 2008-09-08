@@ -305,40 +305,40 @@ else
 
 alias int fpos_t;
 
-int remove(char* filename);
-int rename(char* from, char* to);
+int remove(in char* filename);
+int rename(in char* from, in char* to);
 
 FILE* tmpfile();
 char* tmpnam(char* s);
 
 int   fclose(FILE* stream);
 int   fflush(FILE* stream);
-FILE* fopen(char* filename, char* mode);
-FILE* freopen(char* filename, char* mode, FILE* stream);
+FILE* fopen(in char* filename, in char* mode);
+FILE* freopen(in char* filename, in char* mode, FILE* stream);
 
 void setbuf(FILE* stream, char* buf);
 int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
 
-int fprintf(FILE* stream, char* format, ...);
-int fscanf(FILE* stream, char* format, ...);
-int sprintf(char* s, char* format, ...);
-int sscanf(char* s, char* format, ...);
-int vfprintf(FILE* stream, char* format, va_list arg);
-int vfscanf(FILE* stream, char* format, va_list arg);
-int vsprintf(char* s, char* format, va_list arg);
-int vsscanf(char* s, char* format, va_list arg);
-int vprintf(char* format, va_list arg);
-int vscanf(char* format, va_list arg);
-int printf(char* format, ...);
-int scanf(char* format, ...);
+int fprintf(FILE* stream, in char* format, ...);
+int fscanf(FILE* stream, in char* format, ...);
+int sprintf(char* s, in char* format, ...);
+int sscanf(in char* s, in char* format, ...);
+int vfprintf(FILE* stream, in char* format, va_list arg);
+int vfscanf(FILE* stream, in char* format, va_list arg);
+int vsprintf(char* s, in char* format, va_list arg);
+int vsscanf(in char* s, in char* format, va_list arg);
+int vprintf(in char* format, va_list arg);
+int vscanf(in char* format, va_list arg);
+int printf(in char* format, ...);
+int scanf(in char* format, ...);
 
 int fgetc(FILE* stream);
 int fputc(int c, FILE* stream);
 
 char* fgets(char* s, int n, FILE* stream);
-int   fputs(char* s, FILE* stream);
+int   fputs(in char* s, FILE* stream);
 char* gets(char* s);
-int   puts(char* s);
+int   puts(in char* s);
 
 extern (D)
 {
@@ -351,10 +351,10 @@ extern (D)
 int ungetc(int c, FILE* stream);
 
 size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
-size_t fwrite(void* ptr, size_t size, size_t nmemb, FILE* stream);
+size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
 
 int fgetpos(FILE* stream, fpos_t * pos);
-int fsetpos(FILE* stream, fpos_t* pos);
+int fsetpos(FILE* stream, in fpos_t* pos);
 
 int    fseek(FILE* stream, c_long offset, int whence);
 c_long ftell(FILE* stream);
@@ -368,10 +368,10 @@ version( Win32 )
     int  feof(FILE* stream)     { return stream._flag&_IOEOF;                       }
     int  ferror(FILE* stream)   { return stream._flag&_IOERR;                       }
   }
-    int   _snprintf(char*,size_t,char*,...);
+    int   _snprintf(char* s, size_t n, in char* fmt, ...);
     alias _snprintf snprintf;
 
-    int   _vsnprintf(char* s, size_t n, char* format, va_list arg);
+    int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
     alias _vsnprintf vsnprintf;
 }
 else version( linux )
@@ -382,8 +382,8 @@ else version( linux )
     int  ferror(FILE* stream);
     int  fileno(FILE *);
 
-    int  snprintf(char* s, size_t n, char* format, ...);
-    int  vsnprintf(char* s, size_t n, char* format, va_list arg);
+    int  snprintf(char* s, size_t n, in char* format, ...);
+    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 }
 else version( darwin )
 {
@@ -393,8 +393,8 @@ else version( darwin )
     int  ferror(FILE*);
     int  fileno(FILE*);
 
-    int  snprintf(char*, size_t, char*, ...);
-    int  vsnprintf(char*, size_t, char*, va_list);
+    int  snprintf(char* s, size_t n, in char* format, ...);
+    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 }
 else version( freebsd )
 {
@@ -404,34 +404,34 @@ else version( freebsd )
     int  ferror(FILE*);
     int  fileno(FILE*);
 
-    int  snprintf(char*, size_t, char*, ...);
-    int  vsnprintf(char*, size_t, char*, va_list);
+    int  snprintf(char* s, size_t n, in char* format, ...);
+    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 }
 else
 {
     static assert( false );
 }
 
-void perror(char* s);
+void perror(in char* s);
 
-int fwprintf(FILE* stream, wchar_t* format, ...);
-int fwscanf(FILE* stream, wchar_t* format, ...);
-int swprintf(wchar_t* s, size_t n, wchar_t* format, ...);
-int swscanf(wchar_t* s, wchar_t* format, ...);
-int vfwprintf(FILE* stream, wchar_t* format, va_list arg);
-int vfwscanf(FILE* stream, wchar_t* format, va_list arg);
-int vswprintf(wchar_t* s, size_t n, wchar_t* format, va_list arg);
-int vswscanf(wchar_t* s, wchar_t* format, va_list arg);
-int vwprintf(wchar_t* format, va_list arg);
-int vwscanf(wchar_t* format, va_list arg);
-int wprintf(wchar_t* format, ...);
-int wscanf(wchar_t* format, ...);
+int fwprintf(FILE* stream, in wchar_t* format, ...);
+int fwscanf(FILE* stream, in wchar_t* format, ...);
+int swprintf(wchar_t* s, size_t n, in wchar_t* format, ...);
+int swscanf(in wchar_t* s, in wchar_t* format, ...);
+int vfwprintf(FILE* stream, in wchar_t* format, va_list arg);
+int vfwscanf(FILE* stream, in wchar_t* format, va_list arg);
+int vswprintf(wchar_t* s, size_t n, in wchar_t* format, va_list arg);
+int vswscanf(in wchar_t* s, in wchar_t* format, va_list arg);
+int vwprintf(in wchar_t* format, va_list arg);
+int vwscanf(in wchar_t* format, va_list arg);
+int wprintf(in wchar_t* format, ...);
+int wscanf(in wchar_t* format, ...);
 
 wint_t fgetwc(FILE* stream);
 wint_t fputwc(wchar_t c, FILE* stream);
 
 wchar_t* fgetws(wchar_t* s, int n, FILE* stream);
-int      fputws(wchar_t* s, FILE* stream);
+int      fputws(in wchar_t* s, FILE* stream);
 
 extern (D)
 {

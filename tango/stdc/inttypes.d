@@ -246,7 +246,7 @@ version( VerboseC )
 
 intmax_t  imaxabs(intmax_t j);
 imaxdiv_t imaxdiv(intmax_t numer, intmax_t denom);
-intmax_t  strtoimax(char* nptr, char** endptr, int base);
-uintmax_t strtoumax(char* nptr, char** endptr, int base);
-intmax_t  wcstoimax(wchar_t* nptr, wchar_t** endptr, int base);
-uintmax_t wcstoumax(wchar_t* nptr, wchar_t** endptr, int base);
+intmax_t  strtoimax(in char* nptr, char** endptr, int base);
+uintmax_t strtoumax(in char* nptr, char** endptr, int base);
+intmax_t  wcstoimax(in wchar_t* nptr, wchar_t** endptr, int base);
+uintmax_t wcstoumax(in wchar_t* nptr, wchar_t** endptr, int base);

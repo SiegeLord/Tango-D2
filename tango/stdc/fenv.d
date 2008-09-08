@@ -122,11 +122,11 @@ int fetestexcept(int excepts);
 int feholdexcept(fenv_t* envp);
 
 void fegetexceptflag(fexcept_t* flagp, int excepts);
-void fesetexceptflag(fexcept_t* flagp, int excepts);
+void fesetexceptflag(in fexcept_t* flagp, int excepts);
 
 int fegetround();
 int fesetround(int round);
 
 void fegetenv(fenv_t* envp);
-void fesetenv(fenv_t* envp);
-void feupdateenv(fenv_t* envp);
+void fesetenv(in fenv_t* envp);
+void feupdateenv(in fenv_t* envp);

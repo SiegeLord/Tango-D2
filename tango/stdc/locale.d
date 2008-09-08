@@ -51,5 +51,5 @@ const LC_TELEPHONE      = 10;
 const LC_MEASUREMENT    = 11;
 const LC_IDENTIFICATION = 12;
 
-char*  setlocale( int category, char* locale );
+char*  setlocale(int category, in char* locale);
 lconv* localeconv();

@@ -60,7 +60,7 @@ else version( darwin )
 else version( freebsd )
 {
 	clock_t CLOCKS_PER_SEC = 128;
-}	 
+}
 else
 {
     clock_t CLOCKS_PER_SEC = 1000000;
@@ -70,12 +70,12 @@ clock_t clock();
 double  difftime(time_t time1, time_t time0);
 time_t  mktime(tm* timeptr);
 time_t  time(time_t* timer);
-char*   asctime(tm* timeptr);
-char*   ctime(time_t* timer);
-tm*     gmtime(time_t* timer);
-tm*     localtime(time_t* timer);
-size_t  strftime(char* s, size_t maxsize, char* format, tm* timeptr);
-size_t  wcsftime(wchar_t* s, size_t maxsize, wchar_t* format, tm* timeptr);
+char*   asctime(in tm* timeptr);
+char*   ctime(in time_t* timer);
+tm*     gmtime(in time_t* timer);
+tm*     localtime(in time_t* timer);
+size_t  strftime(char* s, size_t maxsize, in char* format, in tm* timeptr);
+size_t  wcsftime(wchar_t* s, size_t maxsize, in wchar_t* format, in tm* timeptr);
 
 version( Win32 )
 {

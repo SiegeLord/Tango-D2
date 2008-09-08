@@ -662,9 +662,9 @@ double  copysign(double x, double y);
 float   copysignf(float x, float y);
 real    copysignl(real x, real y);
 
-double  nan(char* tagp);
-float   nanf(char* tagp);
-real    nanl(char* tagp);
+double  nan(in char* tagp);
+float   nanf(in char* tagp);
+real    nanl(in char* tagp);
 
 double  nextafter(double x, double y);
 float   nextafterf(float x, float y);
