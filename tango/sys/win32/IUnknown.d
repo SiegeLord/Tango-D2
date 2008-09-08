@@ -18,7 +18,7 @@ private
 
 interface IUnknown
 {
-    HRESULT QueryInterface(IID* riid, void** pvObject);
+    HRESULT QueryInterface( REFIID iid, out IUnknown obj );
     ULONG AddRef();
     ULONG Release();
 }
