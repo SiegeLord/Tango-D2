@@ -833,7 +833,7 @@ else version( D_InlineAsm_X86 )
                 {
                     mov EAX, val;
                     lock; // lock always needed to make this op atomic
-                    inc [EAX];
+                    inc short ptr [EAX];
                     mov AX, [EAX];
                 }
             }
@@ -848,7 +848,7 @@ else version( D_InlineAsm_X86 )
                 {
                     mov EAX, val;
                     lock; // lock always needed to make this op atomic
-                    inc [EAX];
+                    inc int ptr [EAX];
                     mov EAX, [EAX];
                 }
             }
@@ -870,7 +870,7 @@ else version( D_InlineAsm_X86 )
                     {
                         mov RAX, val;
                         lock; // lock always needed to make this op atomic
-                        inc [RAX];
+                        inc qword ptr [RAX];
                         mov RAX, [RAX];
                     }
                 }
@@ -945,7 +945,7 @@ else version( D_InlineAsm_X86 )
                 {
                     mov EAX, val;
                     lock; // lock always needed to make this op atomic
-                    dec [EAX];
+                    dec short ptr [EAX];
                     mov AX, [EAX];
                 }
             }
@@ -960,7 +960,7 @@ else version( D_InlineAsm_X86 )
                 {
                     mov EAX, val;
                     lock; // lock always needed to make this op atomic
-                    dec [EAX];
+                    dec int ptr [EAX];
                     mov EAX, [EAX];
                 }
             }
@@ -982,7 +982,7 @@ else version( D_InlineAsm_X86 )
                     {
                         mov RAX, val;
                         lock; // lock always needed to make this op atomic
-                        dec [RAX];
+                        dec qword ptr [RAX];
                         mov RAX, [RAX];
                     }
                 }
