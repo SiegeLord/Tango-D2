@@ -325,7 +325,7 @@ debug( UnitTest )
                 Thread.yield();
             }
 
-            for( int i = numConsumers * 1000; i > 0; --i )
+            for( int i = numConsumers * 10000; i > 0; --i )
             {
                 synchronized( synComplete )
                 {
