@@ -60,7 +60,28 @@ class Mutex :
                 throw new SyncException( "Unable to initialize mutex" );
         }
         m_proxy.link = this;
+        // NOTE: With DMD this can be "this.__monitor = &m_proxy".
         (cast(void**) this)[1] = &m_proxy;
+    }
+
+
+    /**
+     * Initializes a mutex object and sets it as the monitor for o.
+     *
+     * In:
+     *  o must not already have a monitor.
+     */
+    this( Object o )
+    in
+    {
+        // NOTE: With DMD this can be "o.__monitor is null".
+        assert( (cast(void**) o)[1] is null );
+    }
+    body
+    {
+        this();
+        // NOTE: With DMD this can be "o.__monitor = &m_proxy".
+        (cast(void**) o)[1] = &m_proxy;
     }
 
 
