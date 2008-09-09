@@ -261,7 +261,6 @@ OBJ_BASE = \
     cmain.o \
     critical.o \
     dgccmain2.o \
-    gcc/builtins.o \
     genobj.o \
     invariant.o \
     lifetime.o \
@@ -286,15 +285,15 @@ OBJ_MEM = @D_MEM_MODULES@
 MAIN_OBJS = $(subst ti_,typeinfo/ti_,$(TI))
 
 # This should not be linked into a shared library.
-CMAIN_OBJS = 
-ZLIB_OBJS = 
-GC_OBJS = 
+CMAIN_OBJS =
+ZLIB_OBJS =
+GC_OBJS =
 
 # Removed threadsem for Tango
 GCC_OBJS = gcc/config.o gcc/unwind.o gcc/deh.o gcc/cbridge_time.o
 
 # std.c.linux.linux, std.loader, gcc.cbridge*
-WINDOWS_OBJS = 
+WINDOWS_OBJS =
 CONFIG_D_FRAGMENTS = config/config-head frag-ac frag-gen frag-math config/config-mid config/config-tail
 CONFIG_UNIX_FRAGMENTS = config/unix-head frag-unix config/unix-mid
 
@@ -393,7 +392,7 @@ config.h: stamp-h1
 stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h1
 	cd $(top_builddir) && $(SHELL) ./config.status config.h
-$(srcdir)/config.h.in:  $(am__configure_deps) 
+$(srcdir)/config.h.in:  $(am__configure_deps)
 	cd $(top_srcdir) && $(AUTOHEADER)
 	rm -f stamp-h1
 	touch $@
@@ -407,7 +406,7 @@ phobos-ver-syms: $(top_builddir)/config.status $(srcdir)/phobos-ver-syms.in
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-minimal$(EXEEXT): $(minimal_OBJECTS) $(minimal_DEPENDENCIES) 
+minimal$(EXEEXT): $(minimal_OBJECTS) $(minimal_DEPENDENCIES)
 	@rm -f minimal$(EXEEXT)
 	$(LINK) $(minimal_OBJECTS) $(minimal_LDADD) $(LIBS)
 
