@@ -971,7 +971,7 @@ class GC
             // 2) base of memory pool is aligned on PAGESIZE boundary
             if (cast(size_t)p & (size - 1) & (PAGESIZE - 1))
                 size = 0;
-            return size ? size - SENTINAL_EXTRA : 0;
+            return size ? size - SENTINEL_EXTRA : 0;
         }
         else
         {
@@ -2925,7 +2925,7 @@ version (SENTINEL)
 
     size_t* sentinel_size(void *p)  { return &(cast(size_t *)p)[-2]; }
     size_t* sentinel_pre(void *p)   { return &(cast(size_t *)p)[-1]; }
-    ubyte* sentinel_post(void *p) { return &(cast(ubyte *)p)[sentinel_size(p)]; }
+    ubyte* sentinel_post(void *p) { return &(cast(ubyte *)p)[*sentinel_size(p)]; }
 
 
     void sentinel_init(void *p, size_t size)
