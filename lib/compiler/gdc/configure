@@ -576,7 +576,7 @@ PACKAGE_VERSION='version-unused'
 PACKAGE_STRING='libphobos version-unused'
 PACKAGE_BUGREPORT=''
 
-ac_unique_file="gcc/builtins.d"
+ac_unique_file="gcc/builtins.di"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
