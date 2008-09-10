@@ -204,6 +204,7 @@ install-data-local: $(D_PREREQ_SRCS) libgphobos.a
 	for i in gcc; do \
 		$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$$i; \
 		for f in $(srcdir)/$$i/*.[hd]; do $(INSTALL_HEADER) $$f $(DESTDIR)$(gdc_include_dir)/$$i; done; \
+		for f in $(srcdir)/$$i/*.di; do $(INSTALL_HEADER) $$f $(DESTDIR)$(gdc_include_dir)/$$i; done; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/$(MULTISUBDIR)/gcc
 	$(INSTALL_HEADER) $(config_d_src) $(DESTDIR)$(gdc_include_dir)/$(host_alias)/$(MULTISUBDIR)/gcc
@@ -214,7 +215,7 @@ clean-local:
 	rm -f $(ALL_PHOBOS_OBJS) $(CMAIN_OBJS)
 	rm -f $(ALL_PHOBOS_OBJS:.o=.t.o)
 	rm -f unittest.o
-	rm -f unittest$(EXEEXT) testgc$(EXEEXT)
+	rm -f unittest$(EXEEXT) testgc$(EXEEXT)ava
 	rm -f config/gen_config1.o config/gen_unix.o config/gen_math.o
 	rm -f gen_config1$(EXEEXT) gen_unix$(EXEEXT) gen_math$(EXEEXT)
 	rm -f frag-gen frag-math frag-unix
