@@ -146,7 +146,7 @@ int  setcontext(in ucontext_t*);
 int  swapcontext(ucontext_t*, in ucontext_t*);
 */
 
-static if( is( typeof( ucontext_t ) ) )
+static if( is( ucontext_t ) )
 {
     int  getcontext(ucontext_t*);
     void makecontext(ucontext_t*, void function(), int, ...);
