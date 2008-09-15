@@ -2363,7 +2363,7 @@ private
             obj.m_unhandled = o;
         }
 
-        static if( is( typeof( ucontext_t ) ) )
+        static if( is( ucontext_t ) )
           obj.m_ucur = &obj.m_utxt;
 
         obj.m_state = Fiber.State.TERM;
@@ -2450,7 +2450,7 @@ private
                 ret;
             }
         }
-        else static if( is( typeof( ucontext_t ) ) )
+        else static if( is( ucontext_t ) )
         {
             Fiber   cfib = Fiber.getThis();
             void*   ucur = cfib.m_ucur;
@@ -2635,14 +2635,14 @@ class Fiber
     {
         Fiber   cur = getThis();
 
-        static if( is( typeof( ucontext_t ) ) )
+        static if( is( ucontext_t ) )
           m_ucur = cur ? &cur.m_utxt : &Fiber.sm_utxt;
 
         setThis( this );
         this.switchIn();
         setThis( cur );
 
-        static if( is( typeof( ucontext_t ) ) )
+        static if( is( ucontext_t ) )
           m_ucur = null;
 
         // NOTE: If the fiber has terminated then the stack pointers must be
@@ -2738,7 +2738,7 @@ class Fiber
         assert( cur, "Fiber.yield() called with no active fiber" );
         assert( cur.m_state == State.EXEC );
 
-        static if( is( typeof( ucontext_t ) ) )
+        static if( is( ucontext_t ) )
           cur.m_ucur = &cur.m_utxt;
 
         cur.m_state = State.HOLD;
@@ -2768,7 +2768,7 @@ class Fiber
         assert( cur, "Fiber.yield() called with no active fiber" );
         assert( cur.m_state == State.EXEC );
 
-        static if( is( typeof( ucontext_t ) ) )
+        static if( is( ucontext_t ) )
           cur.m_ucur = &cur.m_utxt;
 
         cur.m_unhandled = obj;
@@ -2823,7 +2823,7 @@ class Fiber
             status = pthread_key_create( &sm_this, null );
             assert( status == 0 );
 
-          static if( is( typeof( ucontext_t ) ) )
+          static if( is( ucontext_t ) )
           {
             status = getcontext( &sm_utxt );
             assert( status == 0 );
@@ -3142,7 +3142,7 @@ private:
 
             assert( cast(uint) pstack & 0x0f == 0 );
         }
-        else static if( is( typeof( ucontext_t ) ) )
+        else static if( is( ucontext_t ) )
         {
             getcontext( &m_utxt );
             m_utxt.uc_stack.ss_sp   = m_ctxt.bstack;
@@ -3159,7 +3159,7 @@ private:
     size_t          m_size;
     void*           m_pmem;
 
-    static if( is( typeof( ucontext_t ) ) )
+    static if( is( ucontext_t ) )
     {
         // NOTE: The static ucontext instance is used to represent the context
         //       of the main application thread.
