@@ -859,7 +859,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     result[half..$].simpleAddAssign(mid);
 }
 
-import std.intrinsic;
+import tango.core.BitManip : bsr;
 
 
 /* Knuth's Algorithm D, as presented in "Hacker's Delight"
