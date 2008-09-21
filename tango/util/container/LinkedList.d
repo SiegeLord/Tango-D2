@@ -606,8 +606,9 @@ class LinkedList (V, alias Reap = Container.reap,
                 else
                    {
                    auto p = cellAt (index - 1);
-                   decrement (p.next);
+                   auto t = p.next;
                    p.detachNext;
+                   decrement (t);
                    }
                 return this;
         }
