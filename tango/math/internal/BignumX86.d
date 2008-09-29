@@ -29,13 +29,17 @@
  * CPUs can only do one). Division is far from optimal.
  *
  *  Timing results (cycles per int)
- *         PentiumM Core2
- *  +,-      2.25   2.25
- *  <<,>>    2.0    2.0
- *  cmp      2.0    2.0
- *  *        5.0
- *  mulAdd   5.4
- *  div     18.0
+ *             PentiumM Core2
+ *  +,-         2.25   2.25
+ *  <<,>>       2.0    2.0
+ *  *           5.0
+ *  mulAdd      5.4
+ *  div        18.0
+ *  mulAcc(32)  6.3
+ *
+ * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
+ * function call overhead.
+ * The timing for Div is quite unpredictable.
  */
 
 module tango.math.internal.BignumX86;
@@ -604,10 +608,6 @@ void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
         push EAX;    // local variable M
         mov EDI, [ESP + LASTPARAM + 4*5]; // dest.ptr
         mov EBX, [ESP + LASTPARAM + 4*2]; // left.length
-        align 16;
-        nop;
-        nop;
-        
         mov ESI, [ESP + LASTPARAM + 4*3];  // left.ptr
         lea EDI, [EDI + 4*EBX]; // EDI = end of dest for first pass
         
@@ -679,7 +679,6 @@ L_done:
         add [-8+EDI+4*EBX], ECX;
         adc EBP, 0;
         mov [-4+EDI+4*EBX], EBP;
-        
         add EDI, 4;
         cmp EDI, [ESP + LASTPARAM + 4*0]; // is EDI = &dest[$]?
         jz outer_done;
@@ -835,5 +834,69 @@ unittest {
     assert(r==0x33FF_7461);
 
 }
+
+version(TangoPerformanceTest) {
+import tango.stdc.stdio;
+int clock() { asm { rdtsc; } }
+
+uint [2000] X1;
+uint [2000] Y1;
+uint [4000] Z1;
+
+void testPerformance()
+{
+    // The performance results at the top of this file were obtained using
+    // a Windows device driver to access the CPU performance counters.
+    // The code below is less accurate but more widely usable.
+    // The value for division is quite inconsistent.
+    for (int i=0; i<X1.length; ++i) { X1[i]=i; Y1[i]=i; Z1[i]=i; }
+    int t, t0;    
+    multibyteShr(Z1[0..2000], X1[0..2000], 7);
+    t0 = clock();
+    multibyteShr(Z1[0..1000], X1[0..1000], 7);
+    t = clock();
+    multibyteShr(Z1[0..2000], X1[0..2000], 7);
+    auto shrtime = (clock() - t) - (t - t0);
+    t0 = clock();
+    multibyteAddSub!('+')(Z1[0..1000], X1[0..1000], Y1[0..1000], 0);
+    t = clock();
+    multibyteAddSub!('+')(Z1[0..2000], X1[0..2000], Y1[0..2000], 0);
+    auto addtime = (clock() - t) - (t-t0);
+    t0 = clock();
+    multibyteMul(Z1[0..1000], X1[0..1000], 7, 0);
+    t = clock();
+    multibyteMul(Z1[0..2000], X1[0..2000], 7, 0);
+    auto multime = (clock() - t) - (t - t0);
+    multibyteMulAdd!('+')(Z1[0..2000], X1[0..2000], 217, 0);
+    t0 = clock();
+    multibyteMulAdd!('+')(Z1[0..1000], X1[0..1000], 217, 0);
+    t = clock();
+    multibyteMulAdd!('+')(Z1[0..2000], X1[0..2000], 217, 0);
+    auto muladdtime = (clock() - t) - (t - t0);        
+    multibyteMultiplyAccumulate(Z1[0..64], X1[0..32], Y1[0..32]);
+    t = clock();
+    multibyteMultiplyAccumulate(Z1[0..64], X1[0..32], Y1[0..32]);
+    auto accumtime = clock() - t;
+    t0 = clock();
+    multibyteDivAssign(Z1[0..2000], 217, 0);
+    t = clock();
+    multibyteDivAssign(Z1[0..1000], 37, 0);
+    auto divtime = (t - t0) - (clock() - t);
+    
+    printf("-- BigInt asm performance (cycles/int) --\n");    
+    printf("Add:        %.2f\n", addtime/1000.0);
+    printf("Shr:        %.2f\n", shrtime/1000.0);
+    printf("Mul:        %.2f\n", multime/1000.0);
+    printf("MulAdd:     %.2f\n", muladdtime/1000.0);
+    printf("Div:        %.2f\n", divtime/1000.0);
+    printf("MulAccum32: %.2f*n*n (total %d)\n\n", accumtime/(32.0*32.0), accumtime);
+}
+
+static this()
+{
+    testPerformance();
+}
+}
+
 
 } // version(D_InlineAsm_X86)

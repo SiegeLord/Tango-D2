@@ -20,7 +20,16 @@ private import tango.math.internal.BignumX86;
 private import tango.math.internal.BignumNoAsm;
 }
 
+// private import tango.core.Cpuid;
+static this()
+{
+    CACHELIMIT = 8000; // tango.core.Cpuid.datacache[0].size/2;
+}
+
 private:
+// Limits for when to switch between multiplication algorithms.
+const int CACHELIMIT;   // Half the size of the data cache.
+
 const uint [] ZERO = [0];
 const uint [] ONE = [1];
 const uint [] TWO = [2];
@@ -763,8 +772,6 @@ void simpleAddAssign(uint [] result, uint [] right)
    }
 }
 
-// Limits for when to switch between multiplication algorithms.
-const int CACHELIMIT = 8000;   // Half the size of the data cache.
 
 /* Determine how much space is required for the temporaries
  * when performing a Karatsuba multiplication. 
