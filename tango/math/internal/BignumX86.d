@@ -29,13 +29,13 @@
  * CPUs can only do one). Division is far from optimal.
  *
  *  Timing results (cycles per int)
- *             PentiumM Core2
- *  +,-         2.25   2.25
- *  <<,>>       2.0    2.0
- *  *           5.0
- *  mulAdd      5.4
- *  div        18.0
- *  mulAcc(32)  6.3
+ *             PentiumM Core2 AMDK7
+ *  +,-         2.25   2.25   1.52
+ *  <<,>>       2.0    2.0    5.0
+ *  *           5.0           4.8
+ *  mulAdd      5.4           4.9
+ *  div        18.0          22.4
+ *  mulAcc(32)  6.3           5.35
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
