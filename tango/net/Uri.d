@@ -600,8 +600,9 @@ class Uri : UriView
         {
                 char    c;
                 int     i, 
-                        mark, 
-                        len = uri.length;
+                        mark;
+                auto    prefix = path;
+                auto    len = uri.length;
 
                 reset;
 
@@ -624,7 +625,7 @@ class Uri : UriView
                 else
                    if (relative && uri[0] != '/')
                       {
-                      uri = toLastSlash(path) ~ uri;
+                      uri = toLastSlash(prefix) ~ uri;
                       query = fragment = null;
                       len = uri.length;
                       }
@@ -822,9 +823,10 @@ class Uri : UriView
 
         private final char[] toLastSlash (char[] path)
         {
-                for (char*p = path.ptr+path.length; --p >= path.ptr;)
-                     if (*p is '/')
-                         return path [0 .. (p-path.ptr)+1];
+                if (path.ptr)
+                    for (auto p = path.ptr+path.length; --p >= path.ptr;)
+                         if (*p is '/')
+                             return path [0 .. (p-path.ptr)+1];
                 return path;
         }
 
