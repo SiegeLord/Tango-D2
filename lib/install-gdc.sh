@@ -150,7 +150,7 @@ then
     if [ ! -e $PREFIX/include/d/$GDC_VER/gcc ]
     then
         mkdir $PREFIX/include/d/$GDC_VER/gcc || die "Failed to create $PREFIX/include/d/$GDC_VER/gcc" 9
-        cp -pRvf compiler/gdc/gcc/builtins.d $PREFIX/include/d/$GDC_VER/gcc/builtins.di || die "Failed to install gcc internals." 10
+        cp -pRvf compiler/gdc/gcc/builtins.di $PREFIX/include/d/$GDC_VER/gcc/builtins.di || die "Failed to install gcc internals." 10
     fi
 fi
 
