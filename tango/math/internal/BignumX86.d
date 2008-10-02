@@ -33,7 +33,7 @@
  *             PentiumM Core2 AMDK7 P4
  *  +,-         2.25   2.25   1.52  15.6
  *  <<,>>       2.0    2.0    5.0   6.6
- *    (<< MMX)  3.0
+ *    (<< MMX)  1.7
  *  *           5.0           4.8   15
  *  mulAdd      5.4           4.9   19
  *  div        18.0          22.4   32
@@ -41,7 +41,8 @@
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
- * The timing for Div is quite unpredictable.
+ * The timing for Div is quite unpredictable, but it's probably too slow
+ * to be useful.
  */
 
 module tango.math.internal.BignumX86;
@@ -286,13 +287,14 @@ L_last:
 
 /** dest[#] = src[#] >> numbits
  *  numbits must be in the range 1..31
- * This version uses MMX. Slow on Intel machines because of the EMMS instruction.
+ * This version uses MMX.
  */
 uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 {
     // Timing:
-    // 1.5 cycles/int on PM
+    // PM: 1.5 cycles/int
     enum { LASTPARAM = 4*4 } // 3* pushes + return address.
+
     asm {
         naked;
         push ESI;
@@ -301,7 +303,7 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
         mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
         mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
-        mov ECX, EAX; // numbits;
+        align   16;
 
         lea EDI, [EDI + 4*EBX]; // EDI = end of dest
         lea ESI, [ESI + 4*EBX]; // ESI = end of src
@@ -311,67 +313,57 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 // MM1, MM2: carry
 // MM3: num bits = bits to shift left
 // MM4 = ECX = 64-numbits = bits to shift right
+// EAX = 32-numbits = bits to shift single int right.
         
-        movd MM3, ECX;
-        xor ECX, 63;
-        inc ECX;        
-        movd MM4, ECX ; // 64-numbits
+        movd MM3, EAX; // numbits
+        xor EAX, 63;
+        inc EAX;        
+        movd MM4, EAX ; // 64-numbits
         
-        pxor MM1, MM1;  // input carry is zero
-        
+        pxor MM1, MM1;  // input carry is zero        
         test EBX, 1;
         jz not_odd;
-        xor EAX, 31;
-        inc EAX;
-        movd MM4, EAX; // 32-numbits
-        // Deal with the first word.
+        
+        // Deal with the first int
+        and EAX, 31; // EAX = 32-numbits
+        movd MM2, EAX; // 32-numbits
         movd MM1, [ESI+4*EBX];
         movd MM0, [ESI+4*EBX];
         psllq MM0, MM3;
-        psrlq MM1, MM4;
+        psrlq MM1, MM2;
         movd [ESI+4*EBX], MM0;
-        movd MM4, ECX;
-        movq MM2, MM1;
         add EBX, 1;
+        movd EAX, MM1; // carry, in case length was 1
         jz L_last;
         // EBX is now even. Carry is in MM1
 not_odd:        
+        test EBX, 2;        
+        jnz L_onceeven;
         movq MM2, MM1;
-        test EBX, 2;
-        
-        jz L_twiceeven;
-        
-        movq    MM0, [ESI + 4*EBX];
-        movq    MM1, [ESI + 4*EBX];
-        psllq   MM0, MM3;
-        psrlq   MM1, MM4;
-        por     MM0, MM2;
-        movq    [EDI +4*EBX], MM0;
-        movq MM2, MM1;
-        
-        add EBX, 2;        
-        jz L_last;
-        
         // EBX is now doubleeven
-        align   16;
-L_twiceeven: // here MM2 is the carry
-        movq    MM0, [ESI + 4*EBX];
-        movq    MM1, [ESI + 4*EBX];
-        psllq   MM0, MM3;
+        add EBX, 2; // TRICK
+        
+        // in this loop: 4*p2. 2*p3, 6*p01. Index is p01 + p1
+        // Expect 14uops/4 ints = 1.25/int, but
+L_twiceeven:      // here MM2 is the carry
+        movq    MM0, [ESI + 4*EBX-8];
+        movq    MM1, [ESI + 4*EBX-8]; 
         psrlq   MM1, MM4;
-        por     MM0, MM2;
-        movq    [EDI +4*EBX], MM0;
-L_onceeven:        // here MM1 is the carry
-        movq    MM0, [ESI + 4*EBX + 8];
         psllq   MM0, MM3;
-        movq    MM2, [ESI + 4*EBX + 8];
+        por     MM0, MM2;
+        movq    [EDI +4*EBX-8], MM0;
+L_onceeven:        // here MM1 is the carry
+        movq    MM0, [ESI + 4*EBX];
+        movq    MM2, [ESI + 4*EBX];
         psrlq   MM2, MM4;
+        psllq   MM0, MM3;
         por     MM0, MM1;
-        movq    [EDI + 4*EBX + 8], MM0;
+        movq    [EDI + 4*EBX], MM0;
         add EBX, 4;
-        jnz L_twiceeven;
-L_last:
-        movd EAX, MM2;
+        jl L_twiceeven;
+                       
+        movd EAX, MM2;  // MM2 is final carry
+L_last: 
         emms;  // NOTE: costs 6 cycles on Intel CPUs
         pop EBX;
         pop EDI;
