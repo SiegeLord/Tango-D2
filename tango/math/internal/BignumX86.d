@@ -27,15 +27,17 @@
  * available at www.agner.org.
  * Not optimal for AMD64, which can do two memory loads per cycle (Intel
  * CPUs can only do one). Division is far from optimal.
+ * Performance is dreadful on P4.
  *
  *  Timing results (cycles per int)
- *             PentiumM Core2 AMDK7
- *  +,-         2.25   2.25   1.52
- *  <<,>>       2.0    2.0    5.0
- *  *           5.0           4.8
- *  mulAdd      5.4           4.9
- *  div        18.0          22.4
- *  mulAcc(32)  6.3           5.35
+ *             PentiumM Core2 AMDK7 P4
+ *  +,-         2.25   2.25   1.52  15.6
+ *  <<,>>       2.0    2.0    5.0   6.6
+ *    (<< MMX)  3.0
+ *  *           5.0           4.8   15
+ *  mulAdd      5.4           4.9   19
+ *  div        18.0          22.4   32
+ *  mulAcc(32)  6.3           5.35  20.0
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
@@ -235,11 +237,11 @@ L2:     dec EAX;
  *  numbits must be in the range 1..31
  *  Returns the overflow
  */
-uint multibyteShl(uint [] dest, uint [] src, uint numbits)
+uint multibyteShlNoMMX(uint [] dest, uint [] src, uint numbits)
 {
     // Timing: Optimal for P6 family.
     // 2.0 cycles/int on PPro..PM (limited by execution port p0)
-    // Terrible performance on AMD64, which has 7 cycles for SHLD!!
+    // 5.0 cycles/int on Athlon, which has 7 cycles for SHLD!!
     enum { LASTPARAM = 4*4 } // 3* pushes + return address.
     asm {
         naked;
@@ -280,6 +282,102 @@ L_last:
         pop ESI;
         ret 4*4;
      }
+}
+
+/** dest[#] = src[#] >> numbits
+ *  numbits must be in the range 1..31
+ * This version uses MMX. Slow on Intel machines because of the EMMS instruction.
+ */
+uint multibyteShl(uint [] dest, uint [] src, uint numbits)
+{
+    // Timing:
+    // 1.5 cycles/int on PM
+    enum { LASTPARAM = 4*4 } // 3* pushes + return address.
+    asm {
+        naked;
+        push ESI;
+        push EDI;
+        push EBX;
+        mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
+        mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
+        mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
+        mov ECX, EAX; // numbits;
+
+        lea EDI, [EDI + 4*EBX]; // EDI = end of dest
+        lea ESI, [ESI + 4*EBX]; // ESI = end of src
+        neg EBX;                // count UP to zero.
+// Register usage
+// MM0 : scratch
+// MM1, MM2: carry
+// MM3: num bits = bits to shift left
+// MM4 = ECX = 64-numbits = bits to shift right
+        
+        movd MM3, ECX;
+        xor ECX, 63;
+        inc ECX;        
+        movd MM4, ECX ; // 64-numbits
+        
+        pxor MM1, MM1;  // input carry is zero
+        
+        test EBX, 1;
+        jz not_odd;
+        xor EAX, 31;
+        inc EAX;
+        movd MM4, EAX; // 32-numbits
+        // Deal with the first word.
+        movd MM1, [ESI+4*EBX];
+        movd MM0, [ESI+4*EBX];
+        psllq MM0, MM3;
+        psrlq MM1, MM4;
+        movd [ESI+4*EBX], MM0;
+        movd MM4, ECX;
+        movq MM2, MM1;
+        add EBX, 1;
+        jz L_last;
+        // EBX is now even. Carry is in MM1
+not_odd:        
+        movq MM2, MM1;
+        test EBX, 2;
+        
+        jz L_twiceeven;
+        
+        movq    MM0, [ESI + 4*EBX];
+        movq    MM1, [ESI + 4*EBX];
+        psllq   MM0, MM3;
+        psrlq   MM1, MM4;
+        por     MM0, MM2;
+        movq    [EDI +4*EBX], MM0;
+        movq MM2, MM1;
+        
+        add EBX, 2;        
+        jz L_last;
+        
+        // EBX is now doubleeven
+        align   16;
+L_twiceeven: // here MM2 is the carry
+        movq    MM0, [ESI + 4*EBX];
+        movq    MM1, [ESI + 4*EBX];
+        psllq   MM0, MM3;
+        psrlq   MM1, MM4;
+        por     MM0, MM2;
+        movq    [EDI +4*EBX], MM0;
+L_onceeven:        // here MM1 is the carry
+        movq    MM0, [ESI + 4*EBX + 8];
+        psllq   MM0, MM3;
+        movq    MM2, [ESI + 4*EBX + 8];
+        psrlq   MM2, MM4;
+        por     MM0, MM1;
+        movq    [EDI + 4*EBX + 8], MM0;
+        add EBX, 4;
+        jnz L_twiceeven;
+L_last:
+        movd EAX, MM2;
+        emms;  // NOTE: costs 6 cycles on Intel CPUs
+        pop EBX;
+        pop EDI;
+        pop ESI;
+        ret 4*4;
+   }
 }
 
 /** dest[#] = src[#] >> numbits
@@ -332,24 +430,29 @@ L_last:
      }
 }
 
+//import tango.stdc.stdio;
 unittest
 {
     uint [] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-2], aa, 4);
-	assert(aa[0]==0x6122_2222 && aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
-	assert(aa[3]==0xBCCC_CCCD);
+    assert(aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
+    assert(aa[0]==0x6122_2222);
+    assert(aa[3]==0xBCCC_CCCD);
 
     aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-1], aa, 4);
-	assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
-	    && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
+    assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
+        && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+//    printf("%x %x %x %x %x\n", aa[0], aa[1], aa[2], aa[3], aa[4]);
     uint r = multibyteShl(aa[1..4], aa[1..$], 4);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 
-	    && aa[2]==0x5555_5561);
+//    printf("%x %x %x %x %x\n", aa[0], aa[1], aa[2], aa[3], aa[4]);
+    assert(aa[0] == 0xF0FF_FFFF
+        && aa[2]==0x5555_5561);    
         assert(aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
     assert(r==8);
+        assert(aa[1]==0x2222_2230);
 }
 
 /** dest[#] = src[#] * multiplier + carry.
@@ -419,7 +522,7 @@ unittest
 {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteMul(aa[1..4], aa[1..4], 16, 0);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+    assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
 /**
@@ -559,9 +662,9 @@ unittest {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
     multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
-	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
+    assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
-	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
+        && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
 }
 
 /** 
@@ -811,7 +914,7 @@ Lc:
         mov     [EDI - 4], ESI;
         lea     EDI, [EDI - 4];
         dec     int ptr [ESP + LASTPARAM + 4*1+LOCALS]; // len
-        jnz	L2;
+        jnz    L2;
         
         pop EAX; // discard kinv
         pop EAX; // discard mask
@@ -851,12 +954,12 @@ void testPerformance()
     // The value for division is quite inconsistent.
     for (int i=0; i<X1.length; ++i) { X1[i]=i; Y1[i]=i; Z1[i]=i; }
     int t, t0;    
-    multibyteShr(Z1[0..2000], X1[0..2000], 7);
+    multibyteShl(Z1[0..2000], X1[0..2000], 7);
     t0 = clock();
-    multibyteShr(Z1[0..1000], X1[0..1000], 7);
+    multibyteShl(Z1[0..1000], X1[0..1000], 7);
     t = clock();
-    multibyteShr(Z1[0..2000], X1[0..2000], 7);
-    auto shrtime = (clock() - t) - (t - t0);
+    multibyteShl(Z1[0..2000], X1[0..2000], 7);
+    auto shltime = (clock() - t) - (t - t0);
     t0 = clock();
     multibyteAddSub!('+')(Z1[0..1000], X1[0..1000], Y1[0..1000], 0);
     t = clock();
@@ -885,7 +988,7 @@ void testPerformance()
     
     printf("-- BigInt asm performance (cycles/int) --\n");    
     printf("Add:        %.2f\n", addtime/1000.0);
-    printf("Shr:        %.2f\n", shrtime/1000.0);
+    printf("Shl:        %.2f\n", shltime/1000.0);
     printf("Mul:        %.2f\n", multime/1000.0);
     printf("MulAdd:     %.2f\n", muladdtime/1000.0);
     printf("Div:        %.2f\n", divtime/1000.0);
