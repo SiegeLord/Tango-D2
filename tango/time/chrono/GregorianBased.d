@@ -21,7 +21,7 @@ private import tango.time.chrono.Gregorian;
 
 
 
-private class GregorianBased : Gregorian {
+class GregorianBased : Gregorian {
 
   private EraRange[] eraRanges_;
   private int maxYear_, minYear_;
