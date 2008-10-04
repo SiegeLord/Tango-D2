@@ -16,28 +16,28 @@ module tango.math.random.Twister;
 
 /*******************************************************************************
 
-	Wrapper for the Mersenne twister.
+        Wrapper for the Mersenne twister.
         
-	The Mersenne twister is a pseudorandom number generator linked to
+        The Mersenne twister is a pseudorandom number generator linked to
         CR developed in 1997 by Makoto Matsumoto and Takuji Nishimura that
         is based on a matrix linear recurrence over a finite binary field
         F2. It provides for fast generation of very high quality pseudorandom
         numbers, having been designed specifically to rectify many of the 
-	flaws found in older algorithms.
+        flaws found in older algorithms.
         
-	Mersenne Twister has the following desirable properties:
+        Mersenne Twister has the following desirable properties:
         ---
         1. It was designed to have a period of 2^19937 - 1 (the creators
            of the algorithm proved this property).
            
         2. It has a very high order of dimensional equidistribution.
-	   This implies that there is negligible serial correlation between
+           This implies that there is negligible serial correlation between
            successive values in the output sequence.
            
-	3. It passes numerous tests for statistical randomness, including
+        3. It passes numerous tests for statistical randomness, including
            the stringent Diehard tests.
            
-	4. It is fast.
+        4. It is fast.
         ---
 
 *******************************************************************************/
@@ -48,14 +48,14 @@ struct Twister
                 {
                 N          = 624,
                 M          = 397,
-		MATRIX_A   = 0x9908b0df,        // constant vector a 
-		UPPER_MASK = 0x80000000,        //  most significant w-r bits 
-		LOWER_MASK = 0x7fffffff,        // least significant r bits
+                MATRIX_A   = 0x9908b0df,        // constant vector a 
+                UPPER_MASK = 0x80000000,        //  most significant w-r bits 
+                LOWER_MASK = 0x7fffffff,        // least significant r bits
                 }
 
         private uint[N] mt;                     // the array for the state vector  
-	private	uint mti=mt.length+1;           // mti==mt.length+1 means mt[] is not initialized 
-	private	uint vLastRand;                 // The most recent random uint returned. 
+        private uint mti=mt.length+1;           // mti==mt.length+1 means mt[] is not initialized 
+        private uint vLastRand;                 // The most recent random uint returned. 
 
         /**********************************************************************
 
@@ -88,21 +88,21 @@ struct Twister
                 
         **********************************************************************/
 
-	uint toInt (uint max)
+        uint toInt (uint max)
         {
-		return toInt % max;
-	}
-	
+                return toInt % max;
+        }
+        
         /**********************************************************************
 
                 Returns X such that min <= X < max
                 
         **********************************************************************/
 
-	uint toInt (uint min, uint max)
+        uint toInt (uint min, uint max)
         {
                 return (toInt % (max-min)) + min;
-	}
+        }
 
         /**********************************************************************
 
@@ -110,44 +110,44 @@ struct Twister
 
         **********************************************************************/
 
-	uint toInt (bool pAddEntropy = false)
+        uint toInt (bool pAddEntropy = false)
         {
-		uint y;
-		static uint mag01[2] =[0, MATRIX_A];
+                uint y;
+                static uint mag01[2] =[0, MATRIX_A];
 
-		if (mti >= mt.length) { 
-			int kk;
+                if (mti >= mt.length) { 
+                        int kk;
 
-			if (pAddEntropy || mti > mt.length)   
-			{
-				seed (5489UL, pAddEntropy); 
-			}
+                        if (pAddEntropy || mti > mt.length)   
+                        {
+                                seed (5489UL, pAddEntropy); 
+                        }
 
-			for (kk=0;kk<mt.length-M;kk++)
-			{
-				y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-				mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 1UL];
-			}
-			for (;kk<mt.length-1;kk++) {
-				y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-				mt[kk] = mt[kk+(M-mt.length)] ^ (y >> 1) ^ mag01[y & 1UL];
-			}
-			y = (mt[mt.length-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
-			mt[mt.length-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 1UL];
+                        for (kk=0;kk<mt.length-M;kk++)
+                        {
+                                y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
+                                mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 1UL];
+                        }
+                        for (;kk<mt.length-1;kk++) {
+                                y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
+                                mt[kk] = mt[kk+(M-mt.length)] ^ (y >> 1) ^ mag01[y & 1UL];
+                        }
+                        y = (mt[mt.length-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
+                        mt[mt.length-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 1UL];
 
-			mti = 0;
-		}
+                        mti = 0;
+                }
 
-		y = mt[mti++];
+                y = mt[mti++];
 
-		y ^= (y >> 11);
-		y ^= (y << 7)  &  0x9d2c5680UL;
-		y ^= (y << 15) &  0xefc60000UL;
-		y ^= (y >> 18);
+                y ^= (y >> 11);
+                y ^= (y << 7)  &  0x9d2c5680UL;
+                y ^= (y << 15) &  0xefc60000UL;
+                y ^= (y >> 18);
 
-		vLastRand = y;
-		return y;
-	}
+                vLastRand = y;
+                return y;
+        }
 
         /**********************************************************************
 
@@ -155,10 +155,10 @@ struct Twister
                 
         **********************************************************************/
 
-	double toReal ()
+        double toReal ()
         {
-		return toInt*(1.0/cast(double)uint.max);
-	}
+                return toInt*(1.0/cast(double)uint.max);
+        }
 
         /**********************************************************************
 
@@ -166,10 +166,10 @@ struct Twister
 
         **********************************************************************/
 
-	double toReal1 ()
+        double toReal1 ()
         {
-		return toInt*(1.0/(cast(double)uint.max+1.0));
-	}
+                return toInt*(1.0/(cast(double)uint.max+1.0));
+        }
 
         /**********************************************************************
 
@@ -177,10 +177,10 @@ struct Twister
 
         **********************************************************************/
 
-	double toReal2 ()
+        double toReal2 ()
         {
-		return ((cast(double)toInt) + 0.5)*(1.0/(cast(double)uint.max+1.0));
-	}
+                return ((cast(double)toInt) + 0.5)*(1.0/(cast(double)uint.max+1.0));
+        }
 
         /**********************************************************************
 
@@ -188,26 +188,26 @@ struct Twister
 
         **********************************************************************/
 
-	double toRealEx ()
-	{
-		uint a=toInt >> 5, b=toInt >> 6;
-		return(a*67108864.0+b)*(1.0/9007199254740992.0);
-	}
-	
+        double toRealEx ()
+        {
+                uint a=toInt >> 5, b=toInt >> 6;
+                return(a*67108864.0+b)*(1.0/9007199254740992.0);
+        }
+        
         /**********************************************************************
 
                 initializes the generator with a seed 
 
         **********************************************************************/
 
-	void seed (uint s, bool pAddEntropy = false)
+        void seed (uint s, bool pAddEntropy = false)
         {
-		mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) this : 0)) & 0xffffffffUL;
-		for (mti=1; mti<mt.length; mti++){
-			mt[mti] = (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
-			mt[mti] &= 0xffffffffUL;
-		}
-	}
+                mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) this : 0)) & 0xffffffffUL;
+                for (mti=1; mti<mt.length; mti++){
+                        mt[mti] = (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
+                        mt[mti] &= 0xffffffffUL;
+                }
+        }
 
         /**********************************************************************
 
@@ -216,42 +216,42 @@ struct Twister
                 
         **********************************************************************/
 
-	void init (uint[] init_key, bool pAddEntropy = false)
+        void init (uint[] init_key, bool pAddEntropy = false)
         {
                 int i, j, k;
-		i=1;
-		j=0;
+                i=1;
+                j=0;
                 
-		seed (19650218UL, pAddEntropy);
-		for (k = (mt.length > init_key.length ? mt.length : init_key.length); k; k--)	{
-			mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ init_key[j] + j; 
-			mt[i] &=  0xffffffffUL; 
-			i++;
-			j++;
+                seed (19650218UL, pAddEntropy);
+                for (k = (mt.length > init_key.length ? mt.length : init_key.length); k; k--)   {
+                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ init_key[j] + j; 
+                        mt[i] &=  0xffffffffUL; 
+                        i++;
+                        j++;
 
-			if (i >= mt.length){
-				mt[0] = mt[mt.length-1];
-				i=1;
-			}
+                        if (i >= mt.length){
+                                mt[0] = mt[mt.length-1];
+                                i=1;
+                        }
 
-			if (j >= init_key.length){
-				j=0;
-			}
-		}
+                        if (j >= init_key.length){
+                                j=0;
+                        }
+                }
 
-		for (k=mt.length-1; k; k--)	{
-			mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))- i; 
-			mt[i] &=  0xffffffffUL; 
-			i++;
+                for (k=mt.length-1; k; k--)     {
+                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))- i; 
+                        mt[i] &=  0xffffffffUL; 
+                        i++;
 
-			if (i>=mt.length){
-				mt[0] = mt[mt.length-1];
-				i=1;
-			}
-		}
-		mt[0] |=  0x80000000UL; 
-		mti=0;
-	}
+                        if (i>=mt.length){
+                                mt[0] = mt[mt.length-1];
+                                i=1;
+                        }
+                }
+                mt[0] |=  0x80000000UL; 
+                mti=0;
+        }
 }
 
 
