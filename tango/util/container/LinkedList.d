@@ -80,7 +80,8 @@ class LinkedList (V, alias Reap = Container.reap,
         // use this type for Allocator configuration
         private alias Slink!(V) Type;
         
-        private alias Type      *Ref;
+        private alias Type*     Ref;
+        private alias V*        VRef;
 
         private alias Heap!(Type) Alloc;
 
@@ -159,27 +160,12 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return an iterator which filters on the provided value
-                
-        ***********************************************************************/
-
-        final IteratorMatch iterator (V value)
-        {
-                IteratorMatch m = void;
-                m.host = iterator;
-                m.match = value;
-                return m;
-        }
-        
-        /***********************************************************************
-
 
         ***********************************************************************/
 
         final int opApply (int delegate(ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply (dg);
+                return iterator.opApply (dg);
         }
 
         /***********************************************************************
@@ -920,28 +906,6 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                foreach support for iterators
-                
-        ***********************************************************************/
-
-        private struct Freach
-        {
-                bool delegate(ref V) next;
-                
-                int opApply (int delegate(ref V value) dg)
-                {
-                        V   value;
-                        int result;
-
-                        while (next (value))
-                               if ((result = dg(value)) != 0)
-                                    break;
-                        return result;
-                }               
-        }
-        
-        /***********************************************************************
-
                 Iterator with no filtering
 
         ***********************************************************************/
@@ -954,16 +918,44 @@ class LinkedList (V, alias Reap = Container.reap,
                 LinkedList      owner;
                 uint            mutation;
 
+                bool valid ()
+                {
+                        return owner.mutation is mutation;
+                }               
+
                 bool next (ref V v)
                 {
-                        if (node is null)
-                            return false;
-
-                        prior = hook;
-                        v = node.value;
-                        node = *(hook = &node.next);
-                        return true;
+                        auto n = next;
+                        return (n) ? v = *n, true : false;
                 }
+                
+                V* next ()
+                {
+                        V* r;
+                        if (node)
+                           {
+                           prior = hook;
+                           r = &node.value;
+                           node = *(hook = &node.next);
+                           }
+                        return r;
+                }
+
+                int opApply (int delegate(ref V value) dg)
+                {
+                        int result;
+
+                        auto n = node;
+                        while (n)
+                              {
+                              prior = hook;
+                              if ((result = dg(n.value)) != 0)
+                                   break;
+                              n = *(hook = &n.next);
+                              }
+                        node = n;
+                        return result;
+                }                               
 
                 bool remove ()
                 {
@@ -979,53 +971,6 @@ class LinkedList (V, alias Reap = Container.reap,
                            return true;
                            }
                         return false;
-                }
-                
-                bool valid ()
-                {
-                        return owner.mutation is mutation;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
-                }
-        }
-
-        /***********************************************************************
-
-                Iterator with value filtering
-                
-        ***********************************************************************/
-
-        private struct IteratorMatch
-        {
-                Iterator host;
-                V        match;
-
-                bool next (ref V v)
-                {
-                        while (host.next (v))
-                               if (match == v)
-                                   return true;
-                        return false;
-                }
-
-                void remove ()
-                {
-                        host.remove;
-                }
-               
-                bool valid ()
-                {
-                        return host.valid;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
                 }
         }
 }
@@ -1054,16 +999,16 @@ debug (LinkedList)
                          Stdout (value).newline;
 
                 // explicit generic iteration   
-                foreach (value; set.iterator.freach)
+                foreach (value; set.iterator) //.freach)
                          Stdout.formatln ("{}", value);
 
                 // generic filtered iteration 
-                foreach (value; set.iterator("foo").freach)
-                         Stdout (value).newline;
+                //foreach (value; set.iterator("foo").freach)
+                //         Stdout (value).newline;
 
                 // generic iteration with optional remove
                 auto s = set.iterator;
-                foreach (value; s.freach)
+                foreach (value; s)///.freach)
                          if (value == "foo")
                              s.remove;
 
@@ -1115,8 +1060,19 @@ debug (LinkedList)
                 w.start;
                 auto xx = test.iterator;
                 int ii;
-                while (xx.next(ii)) {} //foreach (value; test) {}
+                while (xx.next()) {} //foreach (value; test) {}
                 Stdout.formatln ("{} element iteration: {}/s", test.size, test.size/w.stop);
+
+                // benchmark iteration
+                w.start;
+                foreach (v; test) {} //foreach (value; test) {}
+                Stdout.formatln ("{} foreach iteration: {}/s", test.size, test.size/w.stop);
+
+
+                // benchmark iteration
+                w.start;             
+                foreach (ref iii; test.iterator) {} //foreach (value; test) {}
+                Stdout.formatln ("{} foreach iteration: {}/s", test.size, test.size/w.stop);
 
                 test.check;
         }
