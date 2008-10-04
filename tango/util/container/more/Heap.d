@@ -193,7 +193,8 @@ template MaxHeap(T)
         alias Heap!(T, false) MaxHeap;
 }
 
-
+debug (UnitTest)
+{
 unittest
 {
         MinHeap!(uint) h;
@@ -265,5 +266,4 @@ unittest
         assert (h.pop is 2, "cloned heap shares data with original heap");
         assert (h.pop is 1, "cloned heap shares data with original heap");
 }
-
-void main(){}
+}
