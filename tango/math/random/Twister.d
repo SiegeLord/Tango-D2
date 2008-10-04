@@ -79,6 +79,7 @@ struct Twister
         static Twister opCall ()
         {
                 Twister rand;
+                rand.seed (cast(uint) &rand);
                 return rand;
         }
 
