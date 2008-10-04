@@ -19,6 +19,8 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
+version = d;
+
 /*******************************************************************************
 
 *******************************************************************************/
@@ -127,8 +129,11 @@ class PullParser(Ch = char)
                    {
                    auto q = p;
                    if (p < e)
+version(d){
+                       while (*++p != '<' && p != e) {}
+}else{
                        while (*++p != '<') {}
-
+}
                    if (p < e)
                       {
                       rawValue = q [0 .. p - q];
