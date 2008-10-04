@@ -150,7 +150,7 @@ else version( darwin )
 }
 else version( freebsd )
 {
-	    //SIGABRT (defined in tango.stdc.signal)
+    //SIGABRT (defined in tango.stdc.signal)
     const SIGALRM   = 14;
     const SIGBUS    = 10;
     const SIGCHLD   = 20;
@@ -430,73 +430,65 @@ else version( darwin )
 }
 else version( freebsd )
 {
-	union sigval
-	{
-		int sival_int;
-		void* sival_ptr;
-		int sigval_int;
-		void* sigval_ptr;
-	}
+    struct sigset_t
+    {
+        uint __bits[4];
+    }
 
-	struct sigset_t
-	{
-		uint __bits[4];
-	}
+    struct siginfo_t
+    {
+        int si_signo;
+        int si_errno;
+        int si_code;
+        pid_t si_pid;
+        uid_t si_uid;
+        int si_status;
+        void* si_addr;
+        sigval si_value;
+        union __reason
+        {
+            struct __fault
+            {
+                int _trapno;
+            }
+            __fault _fault;
+            struct __timer
+            {
+                int _timerid;
+                int _overrun;
+            }
+            __timer _timer;
+            struct __mesgq
+            {
+                int _mqd;
+            }
+            __mesgq _mesgq;
+            struct __poll
+            {
+                c_long _band;
+            }
+            __poll _poll;
+            struct ___spare___
+            {
+                c_long __spare1__;
+                int[7] __spare2__;
+            }
+            ___spare___ __spare__;
+        }
+        __reason _reason;
+    }
 
-	struct siginfo_t
-	{
-		int si_signo;
-		int si_errno;
-		int si_code;
-		pid_t si_pid;
-		uid_t si_uid;
-		int si_status;
-		void* si_addr;
-		sigval si_value;
-		union __reason
-		{
-			struct __fault
-			{
-				int _trapno;
-			}
-			__fault _fault;
-			struct __timer
-			{
-				int _timerid;
-				int _overrun;
-			}
-			__timer _timer;
-			struct __mesgq
-			{
-				int _mqd;
-			}
-			__mesgq _mesgq;
-			struct __poll
-			{
-				c_long _band;
-			}
-			__poll _poll;
-			struct ___spare___
-			{
-				c_long __spare1__;
-				int[7] __spare2__;
-			}
-			___spare___ __spare__;
-		}
-		__reason _reason;
-	}
-
-	int kill(pid_t, int);
-	int sigaction(int, in sigaction_t*, sigaction_t);
-	int sigaddset(sigset_t*, int);
-	int sigdelset(sigset_t*, int);
-	int sigemptyset(sigset_t *);
-	int sigfillset(sigset_t *);
-	int sigismember(in sigset_t *, int);
-	int sigpending(sigset_t *);
-	int sigprocmask(int, in sigset_t*, sigset_t*);
-	int sigsuspend(in sigset_t *);
-	int sigwait(in sigset_t*, int*);
+    int kill(pid_t, int);
+    int sigaction(int, in sigaction_t*, sigaction_t);
+    int sigaddset(sigset_t*, int);
+    int sigdelset(sigset_t*, int);
+    int sigemptyset(sigset_t *);
+    int sigfillset(sigset_t *);
+    int sigismember(in sigset_t *, int);
+    int sigpending(sigset_t *);
+    int sigprocmask(int, in sigset_t*, sigset_t*);
+    int sigsuspend(in sigset_t *);
+    int sigwait(in sigset_t*, int*);
 }
 
 
@@ -798,7 +790,28 @@ version( linux )
     int sigtimedwait(in sigset_t*, siginfo_t*, in timespec*);
     int sigwaitinfo(in sigset_t*, siginfo_t*);
 }
+else version( freebsd )
+{
+    struct sigevent
+    {
+        int             sigev_notify;
+        int             sigev_signo;
+        sigval          sigev_value;
+        union  _sigev_un
+        {
+            lwpid_t _threadid;
+            struct _sigev_thread {
+                void function(sigval) _function;
+                void* _attribute;
+            }
+            c_long[8] __spare__;
+        }
+    }
 
+    int sigqueue(pid_t, int, in sigval);
+    int sigtimedwait(in sigset_t*, siginfo_t*, in timespec*);
+    int sigwaitinfo(in sigset_t*, siginfo_t*);
+}
 //
 // Threads (THR)
 //

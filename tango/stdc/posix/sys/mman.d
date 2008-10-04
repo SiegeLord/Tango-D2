@@ -170,9 +170,9 @@ else version( darwin )
     const MS_INVALIDATE = 0x0002;
     const MS_SYNC       = 0x0010;
 
-    int	msync(void*, size_t, int);
+    int msync(void*, size_t, int);
 }
-else version( darwin )
+else version( freebsd )
 {
     const MAP_SHARED    = 0x0001;
     const MAP_PRIVATE   = 0x0002;
@@ -181,11 +181,11 @@ else version( darwin )
 
     const MAP_FAILED    = cast(void*)-1;
 
-	const MS_SYNC       = 0x0000;
+    const MS_SYNC       = 0x0000;
     const MS_ASYNC      = 0x0001;
     const MS_INVALIDATE = 0x0002;
 
-    int	msync(void*, size_t, int);
+    int msync(void*, size_t, int);
 }
 
 //
