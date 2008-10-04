@@ -35,9 +35,8 @@ struct Heap (T, bool Min)
         void push (T t)
         {
                 while (heap.length <= next)
-                {
-                        heap.length = 2 * heap.length + 32;
-                }
+                       heap.length = 2 * heap.length + 32;
+
                 heap[next] = t;
                 fixup (next);
                 next++;
@@ -46,10 +45,9 @@ struct Heap (T, bool Min)
         /** Inserts all elements in the given array into the heap. */
         void push (T[] array)
         {
-                while (heap.length < next + array.length)
-                {
-                        heap.length = 2 * heap.length + 32;
-                }
+                if (heap.length < next + array.length)
+                    heap.length = next + array.length + 32;
+                
                 foreach (t; array) push (t);
         }
 
