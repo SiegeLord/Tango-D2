@@ -223,7 +223,7 @@ class IOException : PlatformException
 /**
  * The basic exception thrown by the tango.io.vfs package.
  */
-private class VfsException : IOException
+class VfsException : IOException
 {
     this( char[] msg )
     {
@@ -234,7 +234,7 @@ private class VfsException : IOException
 /**
  * The basic exception thrown by the tango.io.cluster package.
  */
-private class ClusterException : IOException
+class ClusterException : IOException
 {
     this( char[] msg )
     {

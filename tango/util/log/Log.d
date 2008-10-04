@@ -1275,7 +1275,7 @@ private class Hierarchy : Logger.Context
 
 *******************************************************************************/
 
-private struct LogEvent
+package struct LogEvent
 {
         private char[]          msg_,
                                 name_;

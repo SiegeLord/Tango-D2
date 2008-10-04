@@ -31,14 +31,14 @@ struct VfsFilterInfo
 alias VfsFilterInfo* VfsInfo;
 
 // return false to exclude something
-public alias bool delegate(VfsInfo) VfsFilter;
+alias bool delegate(VfsInfo) VfsFilter;
 
 
 /*******************************************************************************
 
 *******************************************************************************/
 
-private struct VfsStats
+struct VfsStats
 {
         ulong   bytes;                  // byte count of files
         uint    files,                  // number of files
