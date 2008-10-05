@@ -28,7 +28,6 @@ private import tango.util.container.model.IContainer;
 
         ---
         Iterator iterator ()
-        IteratorMatch iterator (V value)
         uint opApply (int delegate(ref V value) dg)
 
         CircularList add (V element)
@@ -153,23 +152,10 @@ class CircularList (V, alias Reap = Container.reap,
                 i.owner = this;
                 i.cell = list;
                 i.head = list;
+                i.bump = &Iterator.fore;
                 return i;
         }
 
-        /***********************************************************************
-
-                Return an iterator which filters on the provided value
-                
-        ***********************************************************************/
-
-        final IteratorMatch iterator (V value)
-        {
-                IteratorMatch m = void;
-                m.host = iterator;
-                m.match = value;
-                return m;
-        }
-        
         /***********************************************************************
 
 
@@ -177,8 +163,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         final int opApply (int delegate(ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply (dg);
+                return iterator.opApply (dg);
         }
 
         /***********************************************************************
@@ -937,76 +922,104 @@ class CircularList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                foreach support for iterators
-                
-        ***********************************************************************/
-
-        private struct Freach
-        {
-                bool delegate(ref V) next;
-                
-                int opApply (int delegate(ref V value) dg)
-                {
-                        V   value;
-                        int result;
-
-                        while (next (value))
-                               if ((result = dg(value)) != 0)
-                                    break;
-                        return result;
-                }               
-        }
-        
-        /***********************************************************************
-
                 Iterator with no filtering
 
         ***********************************************************************/
 
         private struct Iterator
         {
-                Ref             cell,
-                                head,
-                                prior;
-                CircularList    owner;
-                uint            mutation;
+                Ref function(Ref) bump;
+                Ref               cell,
+                                  head,
+                                  prior;
+                CircularList      owner;
+                uint              mutation;
 
-                bool prev (ref V v)
+                /***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/
+
+                bool valid ()
                 {
-                        if (cell is null)
-                            return false;
+                        return owner.mutation is mutation;
+                }               
 
-                        prior = cell;
-                        v = cell.value;
-                        cell = cell.prev;
-                        if (cell is head)
-                            cell = null;
-                        return true;
-                }
+                /***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/
 
                 bool next (ref V v)
                 {
-                        if (cell is null)
-                            return false;
+                        auto n = next;
+                        return (n) ? v = *n, true : false;
+                }
+                
+                /***************************************************************
 
-                        prior = cell;
-                        v = cell.value;
-                        cell = cell.next;
-                        if (cell is head)
-                            cell = null;
-                        return true;
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
+                V* next ()
+                {
+                        V* r;
+
+                        if (cell)
+                           {
+                           prior = cell;
+                           r = &cell.value;
+                           cell = bump (cell);
+                           if (cell is head)
+                               cell = null;
+                           }
+                        return r;
                 }
 
-                void remove ()
+                /***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/
+
+                int opApply (int delegate(ref V value) dg)
+                {
+                        int result;
+
+                        auto c = cell;
+                        while (c)
+                              {
+                              prior = c;
+                              if ((c = bump(c)) is head)
+                                   c = null;
+                              if ((result = dg(prior.value)) != 0)
+                                   break;
+                              }
+                        cell = c;
+                        return result;
+                }                               
+
+                /***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/
+
+                bool remove ()
                 {
                         if (prior)
                            {
-                           auto next = prior.next;
-                           if (prior is owner.list)
+                           auto next = bump (prior);
+                           if (prior is head)
                                if (prior is next)
                                    owner.list = null;
                            else
-                              owner.list = next;
+                              head = next;
 
                            prior.unlink;
                            owner.decrement (prior);
@@ -1014,62 +1027,40 @@ class CircularList (V, alias Reap = Container.reap,
 
                            // ignore this change
                            ++mutation;
+                           return true;
                            }
-                }
-                
-                bool valid ()
-                {
-                        return owner.mutation is mutation;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
-                }
-                
-                Freach reverse()
-                {
-                        cell = cell.prev;
-                        head = head.prev;
-                        Freach f = {&prev};
-                        return f;
-                }
-        }
-
-        /***********************************************************************
-
-                Iterator with value filtering
-                
-        ***********************************************************************/
-
-        private struct IteratorMatch
-        {
-                Iterator host;
-                V        match;
-
-                bool next (ref V v)
-                {
-                        while (host.next (v))
-                               if (match == v)
-                                   return true;
                         return false;
                 }
 
-                void remove ()
+                /***************************************************************
+
+                ***************************************************************/
+
+                Iterator reverse ()
                 {
-                        host.remove;
+                        if (bump is &fore)
+                            bump = &back;
+                        else
+                           bump = &fore;
+                        return *this;
                 }
-               
-                bool valid ()
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                private static Ref fore (Ref p)
                 {
-                        return host.valid;
+                        return p.next;
                 }
-                
-                Freach freach()
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                private static Ref back (Ref p)
                 {
-                        Freach f = {&next};
-                        return f;
+                        return p.prev;
                 }
         }
 }
@@ -1101,27 +1092,19 @@ debug (CircularList)
                          Stdout (value).newline;
 
                 // explicit generic iteration   
-                foreach (value; list.iterator.freach)
-                         Stdout.formatln ("> {}", value);
-
-                // generic filtered iteration 
-                foreach (value; list.iterator("foo").freach)
-                         Stdout (value).newline;
-
-                // generic filtered iteration 
                 foreach (value; list.iterator.reverse)
-                         Stdout.formatln ("< {}", value);
+                         Stdout.formatln ("> {}", value);
 
                 // generic iteration with optional remove
                 auto s = list.iterator;
-                foreach (value; s.freach)
-                        {} // s.remove;
+                foreach (value; s)
+                         {} //s.remove;
 
                 // incremental iteration, with optional remove
                 char[] v;
                 auto iterator = list.iterator;
                 while (iterator.next(v))
-                      {} //iterator.remove;
+                       {}//iterator.remove;
                 
                 // incremental iteration, with optional failfast
                 auto it = list.iterator;

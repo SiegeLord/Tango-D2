@@ -152,20 +152,6 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return an iterator which filters on the provided key
-                
-        ***********************************************************************/
-
-        final IteratorMatch iterator (V value)
-        {
-                IteratorMatch m = void;
-                m.host = iterator;
-                m.match = value;
-                return m;
-        }
-        
-        /***********************************************************************
-
                 Return the number of elements contained
                 
         ***********************************************************************/
@@ -209,8 +195,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         
         final int opApply (int delegate (ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply ((ref K k, ref V v) {return dg(v);});
+                return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
 
 
@@ -220,8 +205,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         
         final int opApply (int delegate (ref K key, ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply (dg);
+                return iterator.opApply (dg);
         }
 
         /***********************************************************************
@@ -840,74 +824,93 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 SortedMap       owner;
                 uint            mutation;
 
+                /***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/
+
+                bool valid ()
+                {
+                        return owner.mutation is mutation;
+                }               
+
+                /***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
                 bool next (ref K k, ref V v)
                 {
-                        if (node is null)
-                            return false;
+                        auto n = next (k);
+                        return (n) ? v = *n, true : false;
+                }
+                
+                /***************************************************************
 
-                        prior = node;
-                        k = node.value;
-                        v = node.attribute;
-                        node = node.successor;
-                        return true;
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
+                V* next (ref K k)
+                {
+                        V* r;
+
+                        if (node)
+                           {
+                           prior = node;
+                           k = node.value;
+                           r = &node.attribute;
+                           node = node.successor;
+                           }
+                        return r;
                 }
 
-                void remove ()
+                /***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/
+
+                int opApply (int delegate(ref K key, ref V value) dg)
+                {
+                        int result;
+
+                        auto n = node;
+                        while (n)
+                              {
+                              prior = n;
+                              auto next = n.successor;
+                              if ((result = dg(n.value, n.attribute)) != 0)
+                                   break;
+                              n = next;
+                              }
+                        node = n;
+                        return result;
+                }                               
+
+                /***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/
+
+                bool remove ()
                 {
                         if (prior)
                            {
                            owner.remove (prior);
+
                            // ignore this change
                            ++mutation;
+                           return true;
                            }
+
                         prior = null;
-                }
-                
-                bool valid ()
-                {
-                        return owner.mutation is mutation;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
-                }
-        }
-
-        /***********************************************************************
-
-                Iterator with key filtering
-                
-        ***********************************************************************/
-
-        private struct IteratorMatch
-        {
-                Iterator host;
-                V        match;
-
-                bool next (ref K k, ref V v)
-                {
-                        while (host.next (k, v))
-                               if (match == v)
-                                   return true;
                         return false;
-                }
-
-                void remove ()
-                {
-                        host.remove;
-                }
-               
-                bool valid ()
-                {
-                        return host.valid;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
                 }
         }
 }
@@ -937,18 +940,10 @@ debug (SortedMap)
                 foreach (key, value; map)
                          Stdout.formatln ("{}:{}", key, value);
 
-                // explicit generic iteration
-                foreach (key, value; map.iterator.freach)
-                         Stdout.formatln ("{}:{}", key, value);
-
-                // generic filtered iteration 
-                foreach (key, value; map.iterator(2).freach)
-                         Stdout.formatln ("{}:{}", key, value);
-
                 // generic iteration with optional remove
                 auto s = map.iterator;
-                foreach (key, value; s.freach)
-                        {} // s.remove;
+                foreach (key, value; s)
+                         s.remove;
 
                 // incremental iteration, with optional remove
                 char[] k;

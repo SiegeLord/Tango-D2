@@ -136,8 +136,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         final int opApply (int delegate(ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply (dg);
+                return iterator.opApply (dg);
         }
 
         /***********************************************************************
@@ -217,7 +216,7 @@ class HashSet (V, alias Hash = Container.hash,
                    {
                    clone.buckets (buckets);
 
-                   foreach (value; iterator.freach)
+                   foreach (value; iterator)
                             clone.add (value);
                    }
                 return clone;
@@ -678,28 +677,6 @@ class HashSet (V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                foreach support for iterators
-                
-        ***********************************************************************/
-
-        private struct Freach
-        {
-                bool delegate(ref V) next;
-                
-                int opApply (int delegate(ref V value) dg)
-                {
-                        V   value;
-                        int result;
-
-                        while (next (value))
-                               if ((result = dg(value)) != 0)
-                                    break;
-                        return result;
-                }               
-        }
-        
-        /***********************************************************************
-
                 Iterator with no filtering
 
         ***********************************************************************/
@@ -713,38 +690,97 @@ class HashSet (V, alias Hash = Container.hash,
                 HashSet owner;
                 uint    mutation;
 
+                /***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/
+
+                bool valid ()
+                {
+                        return owner.mutation is mutation;
+                }               
+
+                /***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
                 bool next (ref V v)
+                {
+                        auto n = next;
+                        return (n) ? v = *n, true : false;
+                }
+                
+                /***************************************************************
+
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
+                V* next ()
                 {
                         while (cell is null)
                                if (row < table.length)
                                    cell = table [row++];
                                else
-                                  return false;
+                                  return null;
   
                         prior = cell;
-                        v = cell.value;
                         cell = cell.next;
-                        return true;
+                        return &prior.value;
                 }
 
-                void remove ()
+                /***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/
+
+                int opApply (int delegate(ref V value) dg)
+                {
+                        int result;
+
+                        auto c = cell;
+                        loop: while (true)
+                              {
+                              while (c is null)
+                                     if (row < table.length)
+                                         c = table [row++];
+                                     else
+                                        break loop;
+  
+                              prior = c;
+                              c = c.next;
+                              if ((result = dg(prior.value)) != 0)
+                                   break loop;
+                              }
+
+                        cell = c;
+                        return result;
+                }                               
+
+                /***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/
+
+                bool remove ()
                 {
                         if (prior)
                             if (owner.remove (prior, row-1))
-                                // ignore this change
-                                ++mutation;
+                               {
+                               // ignore this change
+                               ++mutation;
+                               return true;
+                               }
+
                         prior = null;
-                }
-                
-                bool valid ()
-                {
-                        return owner.mutation is mutation;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
+                        return false;
                 }
         }
 }
@@ -774,12 +810,12 @@ debug (HashSet)
                          Stdout (value).newline;
 
                 // explicit generic iteration
-                foreach (value; set.iterator.freach)
+                foreach (value; set.iterator)
                          Stdout (value).newline;
 
                 // generic iteration with optional remove
                 auto s = set.iterator;
-                foreach (value; s.freach)
+                foreach (value; s)
                         {} // s.remove;
 
                 // incremental iteration, with optional remove

@@ -28,7 +28,6 @@ private import tango.util.container.model.IContainer;
 
         ---
 	Iterator iterator ()
-        IteratorMatch iterator (V value)
         int opApply (int delegate(ref V value) dg)
 
         V head ()
@@ -906,7 +905,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Iterator with no filtering
+                List iterator
 
         ***********************************************************************/
 
@@ -918,10 +917,23 @@ class LinkedList (V, alias Reap = Container.reap,
                 LinkedList      owner;
                 uint            mutation;
 
+                /***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/
+
                 bool valid ()
                 {
                         return owner.mutation is mutation;
                 }               
+
+                /***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/
 
                 bool next (ref V v)
                 {
@@ -929,6 +941,13 @@ class LinkedList (V, alias Reap = Container.reap,
                         return (n) ? v = *n, true : false;
                 }
                 
+                /***************************************************************
+
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
                 V* next ()
                 {
                         V* r;
@@ -941,6 +960,12 @@ class LinkedList (V, alias Reap = Container.reap,
                         return r;
                 }
 
+                /***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/
+
                 int opApply (int delegate(ref V value) dg)
                 {
                         int result;
@@ -949,13 +974,20 @@ class LinkedList (V, alias Reap = Container.reap,
                         while (n)
                               {
                               prior = hook;
+                              hook = &n.next;
                               if ((result = dg(n.value)) != 0)
                                    break;
-                              n = *(hook = &n.next);
+                              n = *hook;
                               }
                         node = n;
                         return result;
                 }                               
+
+                /***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/
 
                 bool remove ()
                 {
@@ -966,6 +998,7 @@ class LinkedList (V, alias Reap = Container.reap,
                            owner.decrement (p);
                            hook = prior;
                            prior = null;
+
                            // ignore this change
                            ++mutation;
                            return true;
@@ -999,16 +1032,12 @@ debug (LinkedList)
                          Stdout (value).newline;
 
                 // explicit generic iteration   
-                foreach (value; set.iterator) //.freach)
+                foreach (value; set.iterator)
                          Stdout.formatln ("{}", value);
-
-                // generic filtered iteration 
-                //foreach (value; set.iterator("foo").freach)
-                //         Stdout (value).newline;
 
                 // generic iteration with optional remove
                 auto s = set.iterator;
-                foreach (value; s)///.freach)
+                foreach (value; s)
                          if (value == "foo")
                              s.remove;
 
@@ -1060,19 +1089,19 @@ debug (LinkedList)
                 w.start;
                 auto xx = test.iterator;
                 int ii;
-                while (xx.next()) {} //foreach (value; test) {}
+                while (xx.next()) {}
                 Stdout.formatln ("{} element iteration: {}/s", test.size, test.size/w.stop);
 
                 // benchmark iteration
                 w.start;
-                foreach (v; test) {} //foreach (value; test) {}
+                foreach (v; test) {}
                 Stdout.formatln ("{} foreach iteration: {}/s", test.size, test.size/w.stop);
 
 
                 // benchmark iteration
                 w.start;             
-                foreach (ref iii; test.iterator) {} //foreach (value; test) {}
-                Stdout.formatln ("{} foreach iteration: {}/s", test.size, test.size/w.stop);
+                foreach (ref iii; test) {} 
+                Stdout.formatln ("{} pointer iteration: {}/s", test.size, test.size/w.stop);
 
                 test.check;
         }

@@ -30,7 +30,6 @@ private import tango.core.Exception : NoSuchElementException;
 
         ---
         Iterator iterator ()
-        IteratorMatch iterator (V value)
         int opApply (int delegate(ref V value) dg)
         int opApply (int delegate(ref K key, ref V value) dg)
 
@@ -146,27 +145,12 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Return an iterator which filters on the provided key
-                
-        ***********************************************************************/
-
-        final IteratorMatch iterator (V value)
-        {
-                IteratorMatch m = void;
-                m.host = iterator;
-                m.match = value;
-                return m;
-        }
-        
-        /***********************************************************************
-
 
         ***********************************************************************/
 
         final int opApply (int delegate(ref K key, ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply (dg);
+                return iterator.opApply (dg);
         }
 
         /***********************************************************************
@@ -176,8 +160,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         final int opApply (int delegate(ref V value) dg)
         {
-                auto freach = iterator.freach;
-                return freach.opApply ((ref K k, ref V v) {return dg(v);});
+                return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
 
         /***********************************************************************
@@ -369,7 +352,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                    {
                    clone.buckets (buckets);
 
-                   foreach (key, value; iterator.freach)
+                   foreach (key, value; iterator)
                             clone.add (key, value);
                    }
                 return clone;
@@ -966,29 +949,6 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                foreach support for iterators
-                
-        ***********************************************************************/
-
-        private struct Freach
-        {
-                bool delegate(ref K, ref V) next;
-                
-                int opApply (int delegate(ref K key, ref V value) dg)
-                {
-                        K   key;
-                        V   value;
-                        int result;
-
-                        while (next (key, value))
-                               if ((result = dg(key, value)) != 0)
-                                    break;
-                        return result;
-                }               
-        }
-        
-        /***********************************************************************
-
                 Iterator with no filtering
 
         ***********************************************************************/
@@ -1002,75 +962,99 @@ class HashMap (K, V, alias Hash = Container.hash,
                 HashMap owner;
                 uint    mutation;
 
+                /***************************************************************
+
+                        Did the container change underneath us?
+
+                ***************************************************************/
+
+                bool valid ()
+                {
+                        return owner.mutation is mutation;
+                }               
+
+                /***************************************************************
+
+                        Accesses the next value, and returns false when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
                 bool next (ref K k, ref V v)
+                {
+                        auto n = next (k);
+                        return (n) ? v = *n, true : false;
+                }
+                
+                /***************************************************************
+
+                        Return a pointer to the next value, or null when
+                        there are no further values to traverse
+
+                ***************************************************************/
+
+                V* next (ref K k)
                 {
                         while (cell is null)
                                if (row < table.length)
                                    cell = table [row++];
                                else
-                                  return false;
+                                  return null;
   
                         prior = cell;
                         k = cell.key;
-                        v = cell.value;
                         cell = cell.next;
-                        return true;
+                        return &prior.value;
+
                 }
 
-                void remove ()
+                /***************************************************************
+
+                        Foreach support
+
+                ***************************************************************/
+
+                int opApply (int delegate(ref K key, ref V value) dg)
+                {
+                        int result;
+
+                        auto c = cell;
+                        loop: while (true)
+                              {
+                              while (c is null)
+                                     if (row < table.length)
+                                         c = table [row++];
+                                     else
+                                        break loop;
+  
+                              prior = c;
+                              c = c.next;
+                              if ((result = dg(prior.key, prior.value)) != 0)
+                                   break loop;
+                              }
+
+                        cell = c;
+                        return result;
+                }                               
+
+                /***************************************************************
+
+                        Remove value at the current iterator location
+
+                ***************************************************************/
+
+                bool remove ()
                 {
                         if (prior)
                             if (owner.removeNode (prior, &table[row-1]))
-                                // ignore this change
-                                ++mutation;
+                               {
+                               // ignore this change
+                               ++mutation;
+                               return true;
+                               }
+
                         prior = null;
-                }
-                
-                bool valid ()
-                {
-                        return owner.mutation is mutation;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
-                }
-        }
-
-        /***********************************************************************
-
-                Iterator with value filtering
-                
-        ***********************************************************************/
-
-        private struct IteratorMatch
-        {
-                Iterator host;
-                V        match;
-
-                bool next (ref K k, ref V v)
-                {
-                        while (host.next (k, v))
-                               if (match == v)
-                                   return true;
                         return false;
-                }
-
-                void remove ()
-                {
-                        host.remove;
-                }
-               
-                bool valid ()
-                {
-                        return host.valid;
-                }
-                
-                Freach freach()
-                {
-                        Freach f = {&next};
-                        return f;
                 }
         }
 }
@@ -1099,16 +1083,12 @@ debug (HashMap)
                          Stdout.formatln ("{}:{}", key, value);
 
                 // explicit generic iteration
-                foreach (key, value; map.iterator.freach)
-                         Stdout.formatln ("{}:{}", key, value);
-
-                // generic filtered iteration 
-                foreach (key, value; map.iterator(2).freach)
+                foreach (key, value; map.iterator)
                          Stdout.formatln ("{}:{}", key, value);
 
                 // generic iteration with optional remove
                 auto s = map.iterator;
-                foreach (key, value; s.freach)
+                foreach (key, value; s)
                         {} // s.remove;
 
                 // incremental iteration, with optional remove
