@@ -185,7 +185,7 @@ class Layout(T)
 
         public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
-                return munge (result, null, ti, arg);
+                return dispatch (result, null, ti, arg);
         }
 
         /**********************************************************************
@@ -507,7 +507,7 @@ class Layout(T)
                                    }
                                 else
                                    // the standard processing
-                                   process (munge(result, format, _ti, _arg));
+                                   process (dispatch (result, format, _ti, _arg));
                       }
 
                       
@@ -550,7 +550,7 @@ class Layout(T)
 
         ***********************************************************************/
 
-        private T[] munge (T[] result, T[] format, TypeInfo type, Arg p)
+        private T[] dispatch (T[] result, T[] format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -640,10 +640,10 @@ class Layout(T)
                             break;
 
                        case TypeCode.ENUM:
-                            return munge (result, format, (cast(TypeInfo_Enum) type).base, p);
+                            return dispatch (result, format, (cast(TypeInfo_Enum) type).base, p);
 
                        case TypeCode.TYPEDEF:
-                            return munge (result, format, (cast(TypeInfo_Typedef) type).base, p);
+                            return dispatch (result, format, (cast(TypeInfo_Typedef) type).base, p);
 
                        default:
                             return unknown (result, format, type, p);
