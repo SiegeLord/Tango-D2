@@ -29,7 +29,8 @@ private import tango.core.Exception : NoSuchElementException;
         RedBlack trees of (key, value) pairs
 
         ---
-        Iterator iterator ()
+        Iterator iterator (bool forward)
+        Iterator iterator (K key, bool forward)
         int opApply (int delegate (ref V value) dg)
         int opApply (int delegate (ref K key, ref V value) dg)
 
@@ -49,6 +50,7 @@ private import tango.core.Exception : NoSuchElementException;
         uint replace (V oldElement, V newElement, bool all)
         bool replacePair (K key, V oldElement, V newElement)
         bool opIndexAssign (V element, K key)
+        K    nearbyKey (K key, bool greater)
         V    opIndex (K key)
         V*   opIn_r (K key)
 
@@ -140,13 +142,31 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final Iterator iterator ()
+        final Iterator iterator (bool forward = true)
         {
                 Iterator i = void;
-                i.node = tree ? tree.leftmost : null;
+                i.node = tree ? (forward ? tree.leftmost : tree.rightmost) : null;
+                i.bump = forward ? &Iterator.fore : &Iterator.back;
                 i.mutation = mutation;
                 i.owner = this;
                 i.prior = null;
+                return i;
+        }
+      
+        /***********************************************************************
+
+                Return an iterator which return all elements matching 
+                or greater/lesser than the key in argument. The second
+                argument dictates traversal direction.
+
+                Return a generic iterator for contained elements
+                
+        ***********************************************************************/
+
+        final Iterator iterator (K key, bool forward)
+        {
+                Iterator i = iterator (forward);
+                i.node = tree ? tree.findFirst(key, cmp, forward) : null;
                 return i;
         }
 
@@ -287,6 +307,31 @@ class SortedMap (K, V, alias Reap = Container.reap,
                       }
                    }
                 return false;
+        }
+
+        /***********************************************************************
+
+                Return the value of the key exactly matching the provided
+                key or, if none, the key just after/before it based on the
+                setting of the second argument
+    
+                param: key a key
+                param: after indicates whether to look beyond or before
+                       the given key, where there is no exact match
+                Throws: NoSUchElementException if none found
+                Returns: a pointer to the value, or null if not present
+             
+        ***********************************************************************/
+        K nearbyKey (K key, bool after)
+        {
+                if (count)
+                   {
+                   auto p = tree.findFirst (key, cmp, after);
+                   if (p)
+                       return p.value;
+                   }
+            
+                throw new NoSuchElementException ("Element not found");
         }
 
         /***********************************************************************
@@ -790,39 +835,17 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                foreach support for iterators
-                
-        ***********************************************************************/
-
-        private struct Freach
-        {
-                bool delegate(ref K, ref V) next;
-                
-                int opApply (int delegate(ref K key, ref V value) dg)
-                {
-                        K   key;
-                        V   value;
-                        int result;
-
-                        while (next (key, value))
-                               if ((result = dg(key, value)) != 0)
-                                    break;
-                        return result;
-                }               
-        }
-        
-        /***********************************************************************
-
                 Iterator with no filtering
 
         ***********************************************************************/
 
         private struct Iterator
         {
-                Ref             node,
-                                prior;
-                SortedMap       owner;
-                uint            mutation;
+                Ref function(Ref) bump;
+                Ref               node,
+                                  prior;
+                SortedMap         owner;
+                uint              mutation;
 
                 /***************************************************************
 
@@ -864,7 +887,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                            prior = node;
                            k = node.value;
                            r = &node.attribute;
-                           node = node.successor;
+                           node = bump (node);
                            }
                         return r;
                 }
@@ -883,7 +906,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                         while (n)
                               {
                               prior = n;
-                              auto next = n.successor;
+                              auto next = bump (n);
                               if ((result = dg(n.value, n.attribute)) != 0)
                                    break;
                               n = next;
@@ -911,6 +934,37 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                         prior = null;
                         return false;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                Iterator reverse ()
+                {
+                        if (bump is &fore)
+                            bump = &back;
+                        else
+                           bump = &fore;
+                        return *this;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                private static Ref fore (Ref p)
+                {
+                        return p.successor;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                private static Ref back (Ref p)
+                {
+                        return p.predecessor;
                 }
         }
 }
@@ -940,10 +994,14 @@ debug (SortedMap)
                 foreach (key, value; map)
                          Stdout.formatln ("{}:{}", key, value);
 
+                // explicit iteration
+                foreach (key, value; map.iterator("foo", false))
+                         Stdout.formatln ("{}:{}", key, value);
+
                 // generic iteration with optional remove
                 auto s = map.iterator;
                 foreach (key, value; s)
-                         s.remove;
+                        {} // s.remove;
 
                 // incremental iteration, with optional remove
                 char[] k;

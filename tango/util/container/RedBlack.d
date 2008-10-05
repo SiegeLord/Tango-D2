@@ -6,7 +6,7 @@
 
         version:        Apr 2008: Initial release
 
-        authors:        Kris
+        authors:        Kris, tsalm
 
         Since:          0.99.7
 
@@ -264,6 +264,56 @@ struct RedBlack (V, A = AttributeDummy)
         }
 
 
+        /**
+         * Return node of subtree matching "value" 
+         * or, if none found, the one just after or before  
+         * if it doesn't exist, return null
+         * Uses Comparator cmp to find and to check equality.
+        **/
+        Ref findFirst (V value, Compare!(V) cmp, bool after = true)
+        {
+                auto t = this;
+                auto tLower = this;
+                auto tGreater  = this;
+            
+                for (;;)
+                    {
+                    auto diff = cmp (value, t.value);
+                    if (diff is 0)
+                        return t;
+                   else
+                      if (diff < 0)
+                         {
+                         tGreater = t;
+                         t = t.left;
+                         }
+                      else
+                         {
+                         tLower = t;
+                         t = t.right;
+                         }
+                   if (t is null)
+                       break;
+                   }
+    
+                if (after)
+                   { 
+                   if (cmp (value, tGreater.value) > 0)
+                       return null;
+                   else 
+                      if (cmp (value , tGreater.value) < 0)
+                          return tGreater;
+                   }
+                else
+                   {
+                   if (cmp (value, tLower.value) < 0)
+                       return null;
+                   else 
+                      if (cmp (value , tLower.value) > 0)
+                          return tLower;
+                   }
+        }
+        
         /**
          * Return number of nodes of current subtree containing value.
          * Uses Comparator cmp to find and to check equality.
