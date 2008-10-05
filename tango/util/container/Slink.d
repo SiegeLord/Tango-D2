@@ -29,11 +29,15 @@ private import tango.util.container.model.IContainer;
         Still, Slink is made `public' so that you can use it to build other
         kinds of containers
         
+        Note that when K is specified, support for keys are enabled. When
+        Identity is stipulated as 'true', those keys are compared using an
+        identity-comparison instead of equality (using 'is').
+
 *******************************************************************************/
 
 private typedef int KeyDummy;
 
-struct Slink (V, K=KeyDummy)
+struct Slink (V, K=KeyDummy, bool Identity = false)
 {
         alias Slink!(V, K)      Type;
         alias Type              *Ref;
@@ -66,53 +70,83 @@ struct Slink (V, K=KeyDummy)
 
                 final Ref findKey (K key)
                 {
-                        for (auto p=this; p; p = p.next)
-                            if (key == p.key)
-                                return p;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next)
+                                if (key is p.key)
+                                    return p;
+                        else
+                           for (auto p=this; p; p = p.next)
+                                if (key == p.key)
+                                    return p;
                         return null;
                 }
 
                 final Ref findPair (K key, V value)
                 {
-                        for (auto p=this; p; p = p.next)
-                             if (key == p.key && value == p.value)
-                                 return p;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next)
+                                if (key is p.key && value == p.value)
+                                    return p;
+                        else
+                           for (auto p=this; p; p = p.next)
+                                if (key == p.key && value == p.value)
+                                    return p;
                         return null;
                 }
 
-                final int indexKey(K key)
+                final int indexKey (K key)
                 {
                         int i = 0;
-                        for (auto p=this; p; p = p.next, ++i)
-                             if (key == p.key)
-                                 return i;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next, ++i)
+                                if (key is p.key)
+                                    return i;
+                        else
+                           for (auto p=this; p; p = p.next, ++i)
+                                if (key == p.key)
+                                    return i;
                         return -1;
                 }
 
-                final int indexPair(K key, V value)
+                final int indexPair (K key, V value)
                 {
                         int i = 0;
-                        for (auto p=this; p; p = p.next, ++i)
-                             if (key == p.key && value == p.value)
-                                 return i;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next, ++i)
+                                if (key is p.key && value == p.value)
+                                    return i;
+                        else
+                           for (auto p=this; p; p = p.next, ++i)
+                                if (key == p.key && value == p.value)
+                                    return i;
                         return -1;
                 }
 
-                final int countKey(K key)
+                final int countKey (K key)
                 {
                         int c = 0;
-                        for (auto p=this; p; p = p.next)
-                             if (key == p.key)
-                                 ++c;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next)
+                                if (key is p.key)
+                                    ++c;
+                        else
+                           for (auto p=this; p; p = p.next)
+                                if (key == p.key)
+                                    ++c;
                         return c;
                 }
 
-                final int countPair(K key, V value)
+                final int countPair (K key, V value)
                 {
                         int c = 0;
-                        for (auto p=this; p; p = p.next)
-                             if (key == p.key && value == p.value)
-                                 ++c;
+                        static if (Identity == true)
+                           for (auto p=this; p; p = p.next)
+                                if (key is p.key && value == p.value)
+                                    ++c;
+                        else
+                           for (auto p=this; p; p = p.next)
+                                if (key == p.key && value == p.value)
+                                    ++c;
                         return c;
                 }
         }
