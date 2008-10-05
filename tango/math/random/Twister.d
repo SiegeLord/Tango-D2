@@ -44,8 +44,8 @@ module tango.math.random.Twister;
 
 struct Twister
 {
-        public alias natural toInt;
-        public alias decimal toReal;
+        public alias natural  toInt;
+        public alias fraction toReal;
         
         private enum : uint                     // Period parameters
                 {
@@ -181,7 +181,7 @@ struct Twister
 
         **********************************************************************/
 
-        double decimal ()
+        double fraction ()
         {
                 return natural*(1.0/(cast(double)uint.max+1.0));
         }
@@ -192,7 +192,7 @@ struct Twister
 
         **********************************************************************/
 
-        double decimalEx ()
+        double fractionEx ()
         {
                 uint a = natural >> 5, b = natural >> 6;
                 return(a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
@@ -278,26 +278,26 @@ debug (Twister)
                 w.start;
                 double v1;
                 for (int i=count; --i;)
-                     v1 = dbl.decimal;
-                Stdout.formatln ("{} decimal, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.fraction;
+                Stdout.formatln ("{} fraction, {}/s, {:f10}", count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
-                     v1 = dbl.decimalEx;
-                Stdout.formatln ("{} decimalEx, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.fractionEx;
+                Stdout.formatln ("{} fractionEx, {}/s, {:f10}", count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
-                    auto v = dbl.decimal;
+                    auto v = dbl.fraction;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("decimal {:f10}", v);
+                       Stdout.formatln ("fraction {:f10}", v);
                        break;
                        }
-                    v = dbl.decimalEx;
+                    v = dbl.fractionEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("decimalEx {:f10}", v);
+                       Stdout.formatln ("fractionEx {:f10}", v);
                        break;
                        }
                     }

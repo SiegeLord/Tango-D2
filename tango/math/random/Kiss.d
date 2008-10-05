@@ -55,8 +55,8 @@ version (Posix)
 
 struct Kiss
 {
-        public alias natural toInt;
-        public alias decimal toReal;
+        public alias natural  toInt;
+        public alias fraction toReal;
         
         private uint kiss_k;
         private uint kiss_m;
@@ -188,7 +188,7 @@ struct Kiss
 
         **********************************************************************/
 
-        double decimal ()
+        double fraction ()
         {
                 return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
@@ -200,7 +200,7 @@ struct Kiss
 
         **********************************************************************/
 
-        double decimalEx ()
+        double fractionEx ()
         {
                 return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
                        ((cast(int) natural) & 0x000FFFFF) * M_RAN_INVM52);
@@ -228,26 +228,26 @@ debug (Kiss)
                 w.start;
                 double v1;
                 for (int i=count; --i;)
-                     v1 = dbl.decimal;
-                Stdout.formatln ("{} decimal, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.fraction;
+                Stdout.formatln ("{} fraction, {}/s, {:f10}", count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
-                     v1 = dbl.decimalEx;
-                Stdout.formatln ("{} decimalEx, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.fractionEx;
+                Stdout.formatln ("{} fractionEx, {}/s, {:f10}", count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
-                    auto v = dbl.decimal;
+                    auto v = dbl.fraction;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("decimal {:f10}", v);
+                       Stdout.formatln ("fraction {:f10}", v);
                        break;
                        }
-                    v = dbl.decimalEx;
+                    v = dbl.fractionEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("decimalEx {:f10}", v);
+                       Stdout.formatln ("fractionEx {:f10}", v);
                        break;
                        }
                     }
