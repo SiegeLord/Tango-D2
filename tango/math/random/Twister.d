@@ -14,6 +14,15 @@
 
 module tango.math.random.Twister;
 
+
+version (Win32)
+         private extern(Windows) int QueryPerformanceCounter (ulong *);
+
+version (Posix)
+        {
+        private import tango.stdc.posix.sys.time;
+        }
+        
 /*******************************************************************************
 
         Wrapper for the Mersenne twister.
@@ -70,7 +79,7 @@ struct Twister
 
         static this ()
         {
-                shared.seed (cast(uint) &shared);
+                shared.seed;
         }
 
         /**********************************************************************
@@ -82,7 +91,7 @@ struct Twister
         static Twister opCall ()
         {
                 Twister rand;
-                rand.seed (cast(uint) &rand);
+                rand.seed;
                 return rand;
         }
 
@@ -198,6 +207,29 @@ struct Twister
                 return(a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
         }
         
+        /**********************************************************************
+
+                Seed the generator with current time
+
+        **********************************************************************/
+
+        void seed ()
+        {
+                ulong s;
+
+                version (Posix)
+                        {
+                        timeval tv;
+
+                        gettimeofday (&tv, null);
+                        s = tv.tv_usec;
+                        }
+                version (Win32)
+                         QueryPerformanceCounter (&s);
+
+                return seed (cast(uint) s);
+        }
+
         /**********************************************************************
 
                 initializes the generator with a seed 
