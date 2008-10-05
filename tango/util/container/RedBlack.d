@@ -298,20 +298,18 @@ struct RedBlack (V, A = AttributeDummy)
     
                 if (after)
                    { 
-                   if (cmp (value, tGreater.value) > 0)
-                       return null;
-                   else 
-                      if (cmp (value , tGreater.value) < 0)
-                          return tGreater;
+                   if (cmp (value, tGreater.value) <= 0)
+                       if (cmp (value, tGreater.value) < 0)
+                           return tGreater;
                    }
                 else
                    {
-                   if (cmp (value, tLower.value) < 0)
-                       return null;
-                   else 
-                      if (cmp (value , tLower.value) > 0)
-                          return tLower;
+                   if (cmp (value, tLower.value) >= 0)
+                       if (cmp (value, tLower.value) > 0)
+                           return tLower;
                    }
+
+                return null;
         }
         
         /**
