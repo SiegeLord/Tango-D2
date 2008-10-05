@@ -145,7 +145,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         final Iterator iterator (bool forward = true)
         {
                 Iterator i = void;
-                i.node = tree ? (forward ? tree.leftmost : tree.rightmost) : null;
+                i.node = count ? (forward ? tree.leftmost : tree.rightmost) : null;
                 i.bump = forward ? &Iterator.fore : &Iterator.back;
                 i.mutation = mutation;
                 i.owner = this;
@@ -166,7 +166,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         final Iterator iterator (K key, bool forward)
         {
                 Iterator i = iterator (forward);
-                i.node = tree ? tree.findFirst(key, cmp, forward) : null;
+                i.node = count ? tree.findFirst(key, cmp, forward) : null;
                 return i;
         }
 
@@ -318,10 +318,11 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 param: key a key
                 param: after indicates whether to look beyond or before
                        the given key, where there is no exact match
-                Throws: NoSUchElementException if none found
-                Returns: a pointer to the value, or null if not present
+                throws: NoSuchElementException if none found
+                returns: a pointer to the value, or null if not present
              
         ***********************************************************************/
+
         K nearbyKey (K key, bool after)
         {
                 if (count)
@@ -330,8 +331,43 @@ class SortedMap (K, V, alias Reap = Container.reap,
                    if (p)
                        return p.value;
                    }
-            
-                throw new NoSuchElementException ("Element not found");
+
+                noSuchElement ("no such key");
+                assert (0);
+        }
+
+        /***********************************************************************
+        
+                Return the first key of the map
+
+                throws: NoSuchElementException where the map is empty
+                     
+        ***********************************************************************/
+
+        K firstKey ()
+        {
+                if (count)
+                    return tree.leftmost.value;
+
+                noSuchElement ("no such key");
+                assert (0);
+        }
+
+        /***********************************************************************
+        
+                Return the last key of the map
+
+                throws: NoSuchElementException where the map is empty
+                     
+        ***********************************************************************/
+
+        K lastKey ()
+        {
+                if (count)
+                    return tree.rightmost.value;
+
+                noSuchElement ("no such key");
+                assert (0);
         }
 
         /***********************************************************************
@@ -544,7 +580,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 auto p = opIn_r (key);
                 if (p)
                     return *p;
-                throw new NoSuchElementException ("missing or invalid key");
+
+                noSuchElement ("missing or invalid key");
+                assert (0);
         }
 
         /***********************************************************************
@@ -643,6 +681,17 @@ class SortedMap (K, V, alias Reap = Container.reap,
                          }
                    }
                 return this;
+        }
+
+            
+        /***********************************************************************
+
+                 
+        ***********************************************************************/
+
+        private void noSuchElement (char[] msg)
+        {
+                throw new NoSuchElementException (msg);
         }
 
         /***********************************************************************
