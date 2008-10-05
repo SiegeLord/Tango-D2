@@ -287,19 +287,19 @@ else
                                   break;
         
                              case XmlTokenType.PI:
-                                  cur.pi (super.rawValue, p[0..text.point-p]);
+                                  cur.pi_ (super.rawValue, p[0..text.point-p]);
                                   break;
         
                              case XmlTokenType.Comment:
-                                  cur.comment (super.rawValue);
+                                  cur.comment_ (super.rawValue);
                                   break;
         
                              case XmlTokenType.CData:
-                                  cur.cdata (super.rawValue);
+                                  cur.cdata_ (super.rawValue);
                                   break;
         
                              case XmlTokenType.Doctype:
-                                  cur.doctype (super.rawValue);
+                                  cur.doctype_ (super.rawValue);
                                   break;
         
                              case XmlTokenType.Done:
@@ -576,26 +576,14 @@ version(discrete)
         
                 /***************************************************************
         
-                        Creates a child Element
-
-                        Returns a reference to the child
+                        Attaches a child Element, and returns a reference 
+                        to the child
 
                 ***************************************************************/
         
                 Node element (T[] prefix, T[] local, T[] value = null)
                 {
-                        auto node = create (XmlNodeType.Element, null);
-                        append (node.set (prefix, local));
-version(discrete)
-{
-                        if (value.length)
-                            node.data (value);
-}
-else
-{
-                        node.rawValue = value;
-}
-                        return node;
+                        return element_ (prefix, local, value).mutate;
                 }
         
                 /***************************************************************
@@ -605,10 +593,8 @@ else
                 ***************************************************************/
         
                 Node attribute (T[] prefix, T[] local, T[] value = null)
-                {
-                        auto node = create (XmlNodeType.Attribute, value);
-                        attrib (node.set (prefix, local));
-                        return this;
+                { 
+                        return attribute_ (prefix, local, value).mutate;
                 }
         
                 /***************************************************************
@@ -619,8 +605,7 @@ else
         
                 Node data (T[] data)
                 {
-                        append (create (XmlNodeType.Data, data));
-                        return this;
+                        return data_ (data).mutate;
                 }
         
                 /***************************************************************
@@ -631,8 +616,7 @@ else
         
                 Node cdata (T[] cdata)
                 {
-                        append (create (XmlNodeType.CData, cdata));
-                        return this;
+                        return cdata_ (cdata).mutate;
                 }
         
                 /***************************************************************
@@ -643,31 +627,7 @@ else
         
                 Node comment (T[] comment)
                 {
-                        append (create (XmlNodeType.Comment, comment));
-                        return this;
-                }
-        
-                /***************************************************************
-        
-                        Attaches a PI node, and returns the host
-
-                ***************************************************************/
-        
-                Node pi (T[] pi, T[] patch)
-                {
-                        append (create(XmlNodeType.PI, pi).patch(patch));
-                        return this;
-                }
-        
-                /***************************************************************
-        
-                        Attaches a PI node, and returns the host
-
-                ***************************************************************/
-        
-                Node pi (T[] text)
-                {
-                        return pi (text, null);
+                        return comment_ (comment).mutate;
                 }
         
                 /***************************************************************
@@ -678,10 +638,20 @@ else
         
                 Node doctype (T[] doctype)
                 {
-                        append (create (XmlNodeType.Doctype, doctype));
-                        return this;
+                        return doctype_ (doctype).mutate;
                 }
         
+                /***************************************************************
+        
+                        Attaches a PI node, and returns the host
+
+                ***************************************************************/
+        
+                Node pi (T[] pi)
+                {
+                        return pi_ (pi, null).mutate;
+                }
+
                 /***************************************************************
                 
                         Detach this node from its parent and siblings
@@ -827,19 +797,97 @@ else
 
                 /***************************************************************
         
-                        Patch the serialization text, causing DocPrinter
-                        to ignore the subtree of this node, and instead
-                        emit the provided text as raw XML output.
-
-                        Warning: this function does *not* copy the provided 
-                        text, and may be removed from future revisions
+                        Attaches a child Element, and returns a reference 
+                        to the child
 
                 ***************************************************************/
         
-                Node patch (T[] text)
+                private Node element_ (T[] prefix, T[] local, T[] value = null)
                 {
-                        end = text.ptr + text.length;
-                        start = text.ptr;
+                        auto node = create (XmlNodeType.Element, null);
+                        append (node.set (prefix, local));
+version(discrete)
+{
+                        if (value.length)
+                            node.data_ (value);
+}
+else
+{
+                        node.rawValue = value;
+}
+                        return node;
+                }
+        
+                /***************************************************************
+        
+                        Attaches an Attribute, and returns the host
+
+                ***************************************************************/
+        
+                private Node attribute_ (T[] prefix, T[] local, T[] value = null)
+                { 
+                        auto node = create (XmlNodeType.Attribute, value);
+                        attrib (node.set (prefix, local));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a Data node, and returns the host
+
+                ***************************************************************/
+        
+                private Node data_ (T[] data)
+                {
+                        append (create (XmlNodeType.Data, data));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a CData node, and returns the host
+
+                ***************************************************************/
+        
+                private Node cdata_ (T[] cdata)
+                {
+                        append (create (XmlNodeType.CData, cdata));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a Comment node, and returns the host
+
+                ***************************************************************/
+        
+                private Node comment_ (T[] comment)
+                {
+                        append (create (XmlNodeType.Comment, comment));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a PI node, and returns the host
+
+                ***************************************************************/
+        
+                private Node pi_ (T[] pi, T[] patch)
+                {
+                        append (create(XmlNodeType.PI, pi).patch(patch));
+                        return this;
+                }
+        
+                /***************************************************************
+        
+                        Attaches a Doctype node, and returns the host
+
+                ***************************************************************/
+        
+                private Node doctype_ (T[] doctype)
+                {
+                        append (create (XmlNodeType.Doctype, doctype));
                         return this;
                 }
         
@@ -1018,6 +1066,24 @@ else
                         return this;
                 }
 
+                /***************************************************************
+        
+                        Patch the serialization text, causing DocPrinter
+                        to ignore the subtree of this node, and instead
+                        emit the provided text as raw XML output.
+
+                        Warning: this function does *not* copy the provided 
+                        text, and may be removed from future revisions
+
+                ***************************************************************/
+        
+                private Node patch (T[] text)
+                {
+                        end = text.ptr + text.length;
+                        start = text.ptr;
+                        return this;
+                }
+        
                 /***************************************************************
 
                         purge serialization cache for this node and its
