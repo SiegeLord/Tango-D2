@@ -55,6 +55,9 @@ version (Posix)
 
 struct Kiss
 {
+        public alias natural toInt;
+        public alias decimal toReal;
+        
         private uint kiss_k;
         private uint kiss_m;
         private uint kiss_x = 1;
@@ -136,7 +139,7 @@ struct Kiss
 
         **********************************************************************/
 
-        uint toInt ()
+        uint natural ()
         {
                 kiss_x = kiss_x * 69069 + 1;
                 kiss_y ^= kiss_y << 13;
@@ -159,9 +162,9 @@ struct Kiss
 
         **********************************************************************/
 
-        uint toInt (uint max)
+        uint natural (uint max)
         {
-                return toInt() % max;
+                return natural % max;
         }
 
         /**********************************************************************
@@ -173,34 +176,34 @@ struct Kiss
 
         **********************************************************************/
 
-        uint toInt (uint min, uint max)
+        uint natural (uint min, uint max)
         {
-                return toInt(max-min) + min;
+                return (natural % (max-min)) + min;
         }
         
         /**********************************************************************
         
-                Returns a value between 0 and 1, exclusive, using 32 bits
+                Returns a value in the range [0, 1) using 32 bits
                 of precision (with thanks to Dr Jurgen A Doornik)
 
         **********************************************************************/
 
-        double toReal ()
+        double decimal ()
         {
-                return ((cast(int) toInt) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
+                return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2));
         }
 
         /**********************************************************************
 
-                Returns a value between 0 and 1, exclusive, using 52 bits
+                Returns a value in the range [0, 1) using 52 bits
                 of precision (with thanks to Dr Jurgen A Doornik)
 
         **********************************************************************/
 
-        double toRealEx ()
+        double decimalEx ()
         {
-                return ((cast(int) toInt) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
-                       ((cast(int) toInt) & 0x000FFFFF) * M_RAN_INVM52);
+                return ((cast(int) natural) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + 
+                       ((cast(int) natural) & 0x000FFFFF) * M_RAN_INVM52);
         }
 }
 
@@ -225,26 +228,26 @@ debug (Kiss)
                 w.start;
                 double v1;
                 for (int i=count; --i;)
-                     v1 = dbl.toReal;
-                Stdout.formatln ("{} toReal, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.decimal;
+                Stdout.formatln ("{} decimal, {}/s, {:f10}", count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
-                     v1 = dbl.toRealEx;
-                Stdout.formatln ("{} toRealEx, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.decimalEx;
+                Stdout.formatln ("{} decimalEx, {}/s, {:f10}", count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
-                    auto v = dbl.toReal;
+                    auto v = dbl.decimal;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("toReal {:f10}", v);
+                       Stdout.formatln ("decimal {:f10}", v);
                        break;
                        }
-                    v = dbl.toRealEx;
+                    v = dbl.decimalEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("toRealEx {:f10}", v);
+                       Stdout.formatln ("decimalEx {:f10}", v);
                        break;
                        }
                     }

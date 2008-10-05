@@ -44,6 +44,9 @@ module tango.math.random.Twister;
 
 struct Twister
 {
+        public alias natural toInt;
+        public alias decimal toReal;
+        
         private enum : uint                     // Period parameters
                 {
                 N          = 624,
@@ -89,9 +92,9 @@ struct Twister
                 
         **********************************************************************/
 
-        uint toInt (uint max)
+        uint natural (uint max)
         {
-                return toInt % max;
+                return natural % max;
         }
         
         /**********************************************************************
@@ -100,9 +103,9 @@ struct Twister
                 
         **********************************************************************/
 
-        uint toInt (uint min, uint max)
+        uint natural (uint min, uint max)
         {
-                return (toInt % (max-min)) + min;
+                return (natural % (max-min)) + min;
         }
 
         /**********************************************************************
@@ -111,7 +114,7 @@ struct Twister
 
         **********************************************************************/
 
-        uint toInt (bool pAddEntropy = false)
+        uint natural (bool pAddEntropy = false)
         {
                 uint y;
                 static uint mag01[2] =[0, MATRIX_A];
@@ -152,35 +155,35 @@ struct Twister
 
         /**********************************************************************
 
-                generates a random number on [0,1]-real-interval
+                generates a random number on [0,1] interval
                 
         **********************************************************************/
 
-        double toReal ()
+        double inclusive ()
         {
-                return toInt*(1.0/cast(double)uint.max);
+                return natural*(1.0/cast(double)uint.max);
         }
 
         /**********************************************************************
 
-                generates a random number on [0,1)-real-interval 
+                generates a random number on (0,1) interval 
 
         **********************************************************************/
 
-        double toReal1 ()
+        double exclusive ()
         {
-                return toInt*(1.0/(cast(double)uint.max+1.0));
+                return ((cast(double)natural) + 0.5)*(1.0/(cast(double)uint.max+1.0));
         }
 
         /**********************************************************************
 
-                generates a random number on (0,1)-real-interval 
+                generates a random number on [0,1) interval 
 
         **********************************************************************/
 
-        double toReal2 ()
+        double decimal ()
         {
-                return ((cast(double)toInt) + 0.5)*(1.0/(cast(double)uint.max+1.0));
+                return natural*(1.0/(cast(double)uint.max+1.0));
         }
 
         /**********************************************************************
@@ -189,10 +192,10 @@ struct Twister
 
         **********************************************************************/
 
-        double toRealEx ()
+        double decimalEx ()
         {
-                uint a=toInt >> 5, b=toInt >> 6;
-                return(a*67108864.0+b)*(1.0/9007199254740992.0);
+                uint a = natural >> 5, b = natural >> 6;
+                return(a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
         }
         
         /**********************************************************************
@@ -275,26 +278,26 @@ debug (Twister)
                 w.start;
                 double v1;
                 for (int i=count; --i;)
-                     v1 = dbl.toReal;
-                Stdout.formatln ("{} toReal, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.decimal;
+                Stdout.formatln ("{} decimal, {}/s, {:f10}", count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
-                     v1 = dbl.toRealEx;
-                Stdout.formatln ("{} toRealEx, {}/s, {:f10}", count, count/w.stop, v1);
+                     v1 = dbl.decimalEx;
+                Stdout.formatln ("{} decimalEx, {}/s, {:f10}", count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
-                    auto v = dbl.toReal;
+                    auto v = dbl.decimal;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("toReal {:f10}", v);
+                       Stdout.formatln ("decimal {:f10}", v);
                        break;
                        }
-                    v = dbl.toRealEx;
+                    v = dbl.decimalEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("toRealEx {:f10}", v);
+                       Stdout.formatln ("decimalEx {:f10}", v);
                        break;
                        }
                     }
