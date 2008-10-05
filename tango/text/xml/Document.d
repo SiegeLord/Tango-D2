@@ -393,23 +393,24 @@ else
         
         private struct NodeImpl
         {
-                public XmlNodeType      type;
-                public uint             index;
-                public T[]              prefix;
-                public T[]              localName;
-                public T[]              rawValue;
-                public Document         document;
+                public void*            user;           // open for usage
+                public XmlNodeType      type;           // node type
+                public uint             index;          // sibling index
+                public T[]              prefix;         // namespace
+                public T[]              localName;      // name
+                public T[]              rawValue;       // data value
+                public Document         document;       // owning document
                 
-                package Node            parent_,
-                                        prevSibling_,
-                                        nextSibling_,
-                                        firstChild_,
-                                        lastChild_,
-                                        firstAttr_,
-                                        lastAttr_;
+                package Node            parent_,        // host
+                                        prevSibling_,   // prior
+                                        nextSibling_,   // next
+                                        firstChild_,    // head
+                                        lastChild_,     // tail
+                                        firstAttr_,     // head
+                                        lastAttr_;      // tail
 
-                package T*              end,
-                                        start;
+                package T*              end,            // slice of the  ...
+                                        start;          // original xml text 
 
                 /***************************************************************
                 
