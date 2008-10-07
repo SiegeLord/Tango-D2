@@ -71,26 +71,34 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                 final Ref findKey (K key)
                 {
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key is p.key)
                                     return p;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key == p.key)
                                     return p;
+                        }
                         return null;
                 }
 
                 final Ref findPair (K key, V value)
                 {
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key is p.key && value == p.value)
                                     return p;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key == p.key && value == p.value)
                                     return p;
+                        }
                         return null;
                 }
 
@@ -98,13 +106,17 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                 {
                         int i = 0;
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next, ++i)
                                 if (key is p.key)
                                     return i;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next, ++i)
                                 if (key == p.key)
                                     return i;
+                        }
                         return -1;
                 }
 
@@ -112,13 +124,17 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                 {
                         int i = 0;
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next, ++i)
                                 if (key is p.key && value == p.value)
                                     return i;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next, ++i)
                                 if (key == p.key && value == p.value)
                                     return i;
+                        }
                         return -1;
                 }
 
@@ -126,13 +142,17 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                 {
                         int c = 0;
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key is p.key)
                                     ++c;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key == p.key)
                                     ++c;
+                        }
                         return c;
                 }
 
@@ -140,13 +160,17 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                 {
                         int c = 0;
                         static if (Identity == true)
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key is p.key && value == p.value)
                                     ++c;
+                        }
                         else
+                        {
                            for (auto p=this; p; p = p.next)
                                 if (key == p.key && value == p.value)
                                     ++c;
+                        }
                         return c;
                 }
         }
