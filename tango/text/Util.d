@@ -282,7 +282,7 @@ T[] substitute(T) (T[] source, T[] match, T[] replacement)
 
 ******************************************************************************/
 
-T[] count(T) (T[] source, T[] match)
+uint count(T) (T[] source, T[] match)
 {
         uint c;
 
