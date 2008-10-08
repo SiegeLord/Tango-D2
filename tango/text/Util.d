@@ -72,7 +72,8 @@
         combine (dst, prefix, postfix, content...)  // combine lotsa stuff
         repeat (source, count, output)              // repeat source 
         replace (source, match, replacement)        // replace chars
-        substitute (source, match, replacement)     // replace patterns
+        substitute (source, match, replacement)     // replace/remove matches
+        count (source, match)                       // count instances
         contains (source, match)                    // has char?
         containsPattern (source, match)             // has pattern?
         locate (source, match, start)               // find char
@@ -261,7 +262,8 @@ T[] replace(T) (T[] source, T match, T replacement)
 
 /******************************************************************************
 
-        Replace all instances of one array with another 
+        Substitute all instances of match from source. Set replacement
+        to null in order to remove instead of replace
 
 ******************************************************************************/
 
@@ -272,6 +274,21 @@ T[] substitute(T) (T[] source, T[] match, T[] replacement)
         foreach (s; patterns (source, match, replacement))
                     output ~= s;
         return output;
+}
+
+/******************************************************************************
+
+        Count all instances of match within source 
+
+******************************************************************************/
+
+T[] count(T) (T[] source, T[] match)
+{
+        uint c;
+
+        foreach (s; patterns (source, match))
+                    ++c;
+        return c;
 }
 
 /******************************************************************************
