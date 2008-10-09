@@ -57,8 +57,8 @@ doc : $(ALL_DOCS)
 
 ######################################################
 
+#	find . -name "*.di" | xargs $(RM)
 clean :
-	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	make -C $(DIR_CC) -fposix.mak clean
