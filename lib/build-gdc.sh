@@ -62,7 +62,7 @@ MAKE=`which gmake`
 if [ ! -e "$MAKE" ]
 then
     MAKE=`which make`
-    if [ ! `$MAKE --version | grep 'GNU Make'` ]
+    if [ ! "`$MAKE --version | grep 'GNU Make'`" ]
     then
         echo 'No supported build tool found.'
         exit 1
