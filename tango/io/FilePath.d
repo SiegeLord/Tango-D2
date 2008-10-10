@@ -48,7 +48,8 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         & compatible with the approach taken with the Uri class.
 
         FilePath is designed to be transformed, thus each mutating method
-        modifies the internal content. 
+        modifies the internal content. See module Path.d for a lightweight
+        immutable variation.
 
         Note that patterns of adjacent '.' separators are treated specially
         in that they will be assigned to the name where there is no distinct
@@ -56,7 +57,10 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
         not belong to the suffix i.e. ".file" is a name rather than a suffix.
         Patterns of intermediate '.' characters will otherwise be assigned
         to the suffix, such that "file....suffix" includes the dots within
-        the suffix itself [see ext() for a suffix without dots].
+        the suffix itself. See method ext() for a suffix without dots.
+
+        Note that Win32 '\' characters are converted to '/' by default via
+        the FilePath constructor.
 
 *******************************************************************************/
 
@@ -108,6 +112,8 @@ class FilePath : PathView
                 comparison. We also noted a large proportion interacting with
                 C-oriented OS calls, implying the postfix of a null terminator.
                 Thus, FilePath combines both as a single operation.
+
+                Note that Win32 '\' characters are normalized to '/' instead.
 
         ***********************************************************************/
 

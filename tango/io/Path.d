@@ -8,18 +8,17 @@
 
         author:         Kris
 
-        A more direct route to the file-system than FilePath, but with 
-        the potential overhead of heap activity. Use this if you don't
-        need path editing features. For example, if all you want is to 
-        see if some path exists, using this module would likely be more 
-        convenient than FilePath. For example:
+        A more direct route to the file-system than FilePath. Use this 
+        if you don't need path editing features. For example, if all you 
+        want is to check some path exists, using this module would likely 
+        be more convenient than FilePath. For example:
         ---
         if (exists ("some/file/path")) 
             ...
         ---
 
         These functions may be less efficient than FilePath because they 
-        may have to attach a null to the filename for each underlying O/S
+        generally attach a null to the filename for each underlying O/S
         call. Use Path when you need pedestrian access to the file-system, 
         and are not manipulating the path components. Use FilePath where
         path editing or mutation is desired.
@@ -32,8 +31,8 @@
             ...
         ---
 
-        Also residing here is a lightweight path-parser, which splits a filepath
-        into constituent components. See PathParser below:
+        Also residing here is a lightweight path-parser, which splits a 
+        filepath into constituent components. See PathParser below:
         ---
         auto p = Path.parse ("some/file/path");
         auto path = p.path;
@@ -43,8 +42,8 @@
         ...
         ---
 
-        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file
-        support.
+        Compile with -version=Win32SansUnicode to enable Win95 & Win32s 
+        file support.
 
 *******************************************************************************/
 
@@ -919,11 +918,15 @@ package struct FS
         not belong to the suffix i.e. ".file" is a name rather than a suffix.
         Patterns of intermediate '.' characters will otherwise be assigned
         to the suffix, such that "file....suffix" includes the dots within
-        the suffix itself [see ext() for a suffix without dots].
+        the suffix itself. See method ext() for a suffix without dots.
 
-        Note also that normalization of path-separators occurs by default. 
-        This means that the use of '\' characters will be converted into
-        '/' instead while parsing. 
+        Note also that normalization of path-separators does *not* occur by 
+        default. This means that usage of '\' characters should be explicitly
+        converted beforehand into '/' instead (an exception is thrown in those
+        cases where '\' is present). On-the-fly conversion is avoided because
+        (a) the provided path is considered immutable and (b) we avoid taking
+        a copy of the original path. Module FilePath exists at a higher level, 
+        without such contraints.
 
 *******************************************************************************/
 
@@ -1148,7 +1151,8 @@ struct PathParser
 
         /***********************************************************************
 
-                Parse the path spec with explicit end point
+                Parse the path spec with explicit end point. A '\' is 
+                considered illegal in the path.
 
         ***********************************************************************/
 
