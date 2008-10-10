@@ -82,13 +82,13 @@ public:
 	/// Note that some CPUs have programmable vendorIDs.
 	char[] vendor()		{return vendorID;}
 	/// Returns processor string, for display purposes only
-	char[] processor()		{return processorName;}
+	char[] processor()		{return processorName;}    
 	
 	/// The data caches. If there are fewer than 5 physical caches levels,
 	/// the remaining levels are set to uint.max (== entire memory space)
 	CacheInfo[5] datacache;
-	/// Does it have an x87 FPU?
-	bool x87()          {return (features&FPU_BIT)!=0;}
+	/// Does it have an x87 FPU on-chip?
+	bool x87onChip()          {return (features&FPU_BIT)!=0;}
     /// Is MMX supported?
     bool mmx()			{return (features&MMX_BIT)!=0;}
     /// Is SSE supported?
@@ -153,10 +153,12 @@ public:
     /// The major 32-bit x86 microarchitecture 'dynasties' have been:
     /// (1) Intel P6 (PentiumPro, PII, PIII, PM, Core, Core2).
     /// (2) AMD Athlon (K7, K8, K10).
-    /// (3) Intel NetBurst (Pentium 4, PentiumD).
-    /// (4) In-order (Pentium1, PMMX, Atom)
-    /// (5) Other cores, mostly in-order (Nx586, AMD K5, K6, Centaur C3,
-    ///       Cyrix, Transmeta, etc)
+    /// (3) Intel NetBurst (Pentium 4, Pentium D).
+    /// (4) In-order Pentium (Pentium1, PMMX)
+    /// Other early CPUs (Nx586, AMD K5, K6, Centaur C3, Transmeta,
+    ///   Cyrix, Rise) were mostly in-order.
+    /// Intel Atom and Centaur Isaiah are recent CPUs which do not fit
+    /// into existing categories.
     ///
     /// Within each dynasty, the optimisation techniques are largely
     /// identical (eg, use instruction pairing for group 4). Major
@@ -170,25 +172,27 @@ public:
     bool preferPentium1() { return family < 6 || (family==6 && !probablyIntel); }
 
 private:	
+public:
+    /// Processor type (vendor-dependent).
+    /// This should be visible ONLY for display purposes.
+    uint stepping, model, family;
+    uint numCacheLevels = 1;
+    private:
 	bool probablyIntel; // true = _probably_ an Intel processor, might be faking
 	bool probablyAMD; // true = _probably_ an AMD processor
-	/// Processor type (vendor-dependent).
-	/// This should be visible ONLY for display purposes.
-	uint stepping, model, family;
 	char [12] vendorID;
 	char [] processorName;
 	char [48] processorNameBuffer;
-	uint numCacheLevels = 1;
 	uint features = 0;     // mmx, sse, sse2, hyperthreading, etc
-	uint miscfeatures = 0; // popcnt, sse3, etc.
-	uint amdfeatures = 0;  // 3dnow!, mmxext, etc
+	uint miscfeatures = 0; // sse3, etc.
+	uint amdfeatures = 0;  // 3DNow!, mmxext, etc
 	uint amdmiscfeatures = 0; // sse4a, sse5, svm, etc
 	uint maxCores = 1;
 	uint maxThreads = 1;
 	// Note that this may indicate multi-core rather than hyperthreading.
     bool hyperThreadingBit()	{ return (features&HTT_BIT)!=0;}
     
-    // feature flags
+    // feature flags CPUID1_EDX
     enum : uint
     {
     	FPU_BIT = 1,
@@ -203,20 +207,44 @@ private:
 	    HTT_BIT = 1<<28,
 	    IA64_BIT = 1<<30
     }
-    // feature flags misc   
+    // feature flags misc CPUID1_ECX
     enum : uint
     {
 	    SSE3_BIT = 1,
+        PCLMULQDQ_BIT = 1<<1, // from AVX
 	    MWAIT_BIT = 1<<3,
 	    SSSE3_BIT = 1<<9,
+        FMA_BIT = 1<<12,     // from AVX
 	    CMPXCHG16B_BIT = 1<<13,
 	    SSE41_BIT = 1<<19,
 	    SSE42_BIT = 1<<20,
-	    POPCNT_BIT = 1<<23
+	    POPCNT_BIT = 1<<23,
+        AES_BIT = 1<<25, // AES instructions from AVX
+        OSXSAVE_BIT = 1<<27, // Used for AVX
+        AVX_BIT = 1<<28
     }
 /+    
     // Does it have Cyrix MMX extensions? (This works, but who cares?)
-    bool has6x86MMX()			{return ((features&FXSR_BIT)==0) && ((amdfeatures&FXR_OR_CYRIXMMX_BIT)!=0);}
+    bool has6x86MMX()			{return ((features&FXSR_BIT)==0)
+        && ((amdfeatures&FXR_OR_CYRIXMMX_BIT)!=0);}    
+version(X86_64) {    
+    bool hasAVXinHardware() {
+        // This only indicates hardware support, not OS support.
+        return (miscfeatures&AVX_BIT) && (miscfeatures&OSXSAVE_BIT);
+    }
+    // Is AVX supported (in both hardware & OS)?
+    bool Avx() {
+        if (!hasAVXinHardware()) return false;
+        // Check for OS support
+        uint xfeatures;
+        asm {mov ECX, 0; xgetbv; mov xfeatures, EAX; }
+        return (xfeatures&0x6)==6;
+    }
+    bool hasAvxFma() {
+        if (!AVX()) return false;
+        return (features&FMA_BIT)!=0;        
+    }
+}
 +/    
     // AMD feature flags
     enum : uint
@@ -287,7 +315,8 @@ void getcacheinfoCPUID2()
 				if (x==0x49 && family==0xF && model==0x6) level=2;
 				datacache[level].size=sizes[i];
 				datacache[level].associativity=ways[i];
-				if (level ==3 || x==0x2C || (x>=0x48 && x<=0x80) || x==0x86 || x==0x87
+				if (level == 3 || x==0x2C || (x>=0x48 && x<=0x80) 
+                    || x==0x86 || x==0x87
 					|| (x>=0x66 && x<=0x68) || (x>=0x39 && x<=0x3E)	){
 					datacache[level].lineSize = 64;
 				} else datacache[level].lineSize = 32;
