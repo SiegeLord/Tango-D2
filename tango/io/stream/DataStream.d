@@ -8,15 +8,24 @@
 
         author:         Kris
 
+        These classes represent a simple means of reading and writing
+        discrete data types as binary values, with an option to invert
+        the endian order of numeric values.
+
+        Arrays are treated as untyped byte streams, with an optional
+        length-prefix, and should otherwise be explicitly managed at
+        the application level. We'll add additional support for arrays
+        and aggregates in future.
+
 *******************************************************************************/
 
 module tango.io.stream.DataStream;
 
 private import tango.io.Buffer;
 
-private import tango.io.device.Conduit;
-
 private import tango.core.ByteSwap;
+
+private import tango.io.device.Conduit;
 
 /*******************************************************************************
 
@@ -24,16 +33,17 @@ private import tango.core.ByteSwap;
         such as a file:
         ---
         auto input = new DataInput (new FileInput("path"));
-        auto x = input.readInt;
-        auto y = input.readDouble;
-        input.read (new char[10]);
+        auto x = input.getInt;
+        auto y = input.getDouble;
+        auto l = input.read (buffer);           // read raw data directly
+        auto s = cast(char[]) input.get;        // read length, allocate space
         input.close;
         ---
 
 *******************************************************************************/
 
 class DataInput : InputFilter, Buffered
-{       
+{
         private bool    flip;
         private IBuffer input;
 
@@ -217,9 +227,10 @@ class DataInput : InputFilter, Buffered
         such as a file:
         ---
         auto output = new DataOutput (new FileOutput("path"));
-        output.writeInt (1024);
-        output.writeDouble (3.14159);
-        output.write ("hello world");
+        output.putInt (1024);
+        output.putDouble (3.14159);
+        output.put ("string with length prefix");
+        output.write ("raw array, no prefix");
         output.flush.close;
         ---
 
@@ -236,7 +247,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        this (OutputStream stream, uint buffer=uint.max, bool flip = false)
+        this (OutputStream stream, uint buffer=uint.max, bool flip=false)
         {
                 this.flip = flip;
                 super (output = Buffer.share (stream, buffer));
