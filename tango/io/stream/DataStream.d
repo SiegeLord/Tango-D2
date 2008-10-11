@@ -95,6 +95,34 @@ class DataInput : InputFilter, Buffered
 
         /***********************************************************************
 
+                Read an array back from the source, with the assumption
+                it has been written using DataOutput.put() or otherwise
+                prefixed with an integer representing the total number
+                of bytes within the array content. That's *bytes*, not
+                elements.
+
+                An array of the appropriate size is allocated either via
+                the provided delegate, or from the heap, populated and
+                returned to the caller. Casting the return value to an
+                appropriate type will adjust the number of elements as
+                required:
+                ---
+                auto text = cast(char[]) input.get;
+                ---
+                
+
+        ***********************************************************************/
+
+        final void[] get (void[] delegate(uint bytes) dg = null)
+        {
+                auto len = getInt;
+                auto dst = (dg ? dg(len) : new void[len]);
+                input.readExact (dst.ptr, len);
+                return dst;
+        }
+
+        /***********************************************************************
+
         ***********************************************************************/
 
         final bool getBool ()
@@ -355,8 +383,7 @@ debug (DataStream)
                 output.putInt (1024);
 
                 auto input = new DataInput (buf);
-                assert (input.get(new char[9]) is 9);
+                assert (input.get.length is 9);
                 assert (input.getInt is 1024);
-                input.getInt;
         }
 }
