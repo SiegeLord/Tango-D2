@@ -171,13 +171,12 @@ public:
     /// Does this CPU perform better on Pentium I code than Pentium Pro code?
     bool preferPentium1() { return family < 6 || (family==6 && !probablyIntel); }
 
-private:	
 public:
     /// Processor type (vendor-dependent).
     /// This should be visible ONLY for display purposes.
     uint stepping, model, family;
     uint numCacheLevels = 1;
-    private:
+private:
 	bool probablyIntel; // true = _probably_ an Intel processor, might be faking
 	bool probablyAMD; // true = _probably_ an AMD processor
 	char [12] vendorID;
@@ -268,7 +267,9 @@ version(X86_64) {
     	SSE5_BIT = 1<<11
     }
 
-version(D_InlineAsm_X86) {
+version(GNU) {
+    // GDC is a filthy liar. It can't actually do inline asm.
+} else version(D_InlineAsm_X86) {
 // Note that this code will also work for Itanium, after changing the
 // register names in the asm code.
 
