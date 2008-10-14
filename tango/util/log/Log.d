@@ -135,8 +135,8 @@ alias ILogger.Level Level;
 
         Manager for routing Logger calls to the default hierarchy. Note 
         that you may have multiple hierarchies per application, but must
-        access the hierarchy directly for getRootLogger() and getLogger()
-        methods within each additional instance.
+        access the hierarchy directly for root() and lookup() methods within 
+        each additional instance.
 
 *******************************************************************************/
 
