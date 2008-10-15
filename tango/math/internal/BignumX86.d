@@ -33,7 +33,7 @@
  *              PM     AMDK7 P4   Core2 
  *  +,-         2.25   1.52  15.6 2.25   
  *  <<,>>       2.0    5.0   6.6  2.0
- *    (<< MMX)  1.75   1.2
+ *    (<< MMX)  1.73   1.2
  *  *           5.0    4.3   15
  *  mulAdd      5.4    4.9   19
  *  div        18.0    22.4  32
@@ -300,67 +300,84 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         push ESI;
         push EDI;
         push EBX;
+        align   16;
         mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
         mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
-        align   16;
         mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
-        lea EDI, [EDI + 4*EBX]; // EDI = end of dest
-        lea ESI, [ESI + 4*EBX]; // ESI = end of src
-        neg EBX;                // count UP to zero.
+
 // Register usage
 // MM0 : scratch
 // MM1, MM2: carry
 // MM3: num bits = bits to shift left
 // MM4 = ECX = 64-numbits = bits to shift right
 // EAX = 32-numbits = bits to shift single int right.
-        
         movd MM3, EAX; // numbits
         xor EAX, 63;
         inc EAX;        
         movd MM4, EAX ; // 64-numbits
         
         pxor MM1, MM1;  // input carry is zero        
-        test EBX, 1;
-        jz not_odd;
         
-        // Deal with the first int
+        // Get the carry
+        
         and EAX, 31; // EAX = 32-numbits
         movd MM2, EAX; // 32-numbits
-        movd MM1, [ESI+4*EBX];
-        movd MM0, [ESI+4*EBX];
-        psllq MM0, MM3;
+        movd MM1, [ESI+4*EBX-4];                
         psrlq MM1, MM2;
-        movd [ESI+4*EBX], MM0;
-        add EBX, 1;
-        movd EAX, MM1; // carry, in case length was 1
-        jz L_last;
-        // EBX is now even. Carry is in MM1
-not_odd:        
-        test EBX, 2;        
-        jnz L_onceeven;
-        movq MM2, MM1;
-        // EBX is now doubleeven
-        add EBX, 2; // TRICK
+        movd EAX, MM1; // final carry
+        test EBX, 1;
+        jnz L_odd;
         
-L_twiceeven:      // here MM2 is the carry
-        movq    MM0, [ESI + 4*EBX-8];
-        psllq   MM0, MM3;
-        movq    MM1, [ESI + 4*EBX-8]; 
+        movq MM2, [ESI+4*EBX-8];
+        psllq MM2, MM3;    
+        sub EBX, 2;
+        jle L_last;
+        jmp L_even;        
+L_odd:
+         // deal with odd lengths       
+        movd MM1, [ESI+4*EBX-4];
+        movd MM0, [ESI+4*EBX-8];        
+        psllq MM1, MM3;
+        psrlq MM0, MM2;
+        por MM1, MM0;
+        movd [EDI+4*EBX-4], MM1;
+        sub EBX, 1;
+        movq MM0, MM1;
+
+        movq    MM1, [ESI + 4*EBX-8];
+        movq    MM2, [ESI + 4*EBX-8];
         psrlq   MM1, MM4;
-        por     MM0, MM2;
-        movq    [EDI +4*EBX-8], MM0;
-L_onceeven:        // here MM1 is the carry
-        movq    MM0, [ESI + 4*EBX];
-        psllq   MM0, MM3;
-        movq    MM2, [ESI + 4*EBX];
         por     MM0, MM1;
-        movq    [EDI + 4*EBX], MM0;
-        psrlq   MM2, MM4;
-        add EBX, 4;
-        jl L_twiceeven;
-                       
-        movd EAX, MM2;  // MM2 is final carry
-L_last: 
+        movd    [EDI +4*EBX], MM0;
+        
+        psllq   MM2, MM3;
+        sub EBX, 2;
+        jle L_last;
+L_even: // It's either singly or doubly even
+        movq MM1, MM2;
+        add EBX, 2;
+        test EBX, 2;
+        jz L_onceeven;
+        sub EBX, 2;
+        
+ L_twiceeven:      // here MM2 is the carry
+        movq    MM0, [ESI + 4*EBX-8];
+        psrlq   MM0, MM4;
+        movq    MM1, [ESI + 4*EBX-8];
+        psllq   MM1, MM3;
+        por     MM2, MM0;
+        movq    [EDI +4*EBX], MM2;
+L_onceeven:        // here MM1 is the carry
+        movq    MM0, [ESI + 4*EBX-16];
+        psrlq   MM0, MM4;
+        movq    MM2, [ESI + 4*EBX-16];
+        por     MM1, MM0;
+        movq    [EDI +4*EBX-8], MM1;        
+        psllq   MM2, MM3;
+        sub EBX, 4;
+        jg L_twiceeven;
+L_last:        
+        movq    [EDI +4*EBX], MM2;
         emms;  // NOTE: costs 6 cycles on Intel CPUs
         pop EBX;
         pop EDI;
@@ -434,14 +451,21 @@ unittest
         && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-//    printf("%x %x %x %x %x\n", aa[0], aa[1], aa[2], aa[3], aa[4]);
-    uint r = multibyteShl(aa[1..4], aa[1..$], 4);
-//    printf("%x %x %x %x %x\n", aa[0], aa[1], aa[2], aa[3], aa[4]);
+    uint r = multibyteShl(aa[2..4], aa[2..4], 4);
+    assert(aa[0] == 0xF0FF_FFFF && aa[1]==0x1222_2223
+        && aa[2]==0x5555_5560 && aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
+    assert(r==8);
+        
+    aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+    r = multibyteShl(aa[1..4], aa[1..4], 4);    
     assert(aa[0] == 0xF0FF_FFFF
         && aa[2]==0x5555_5561);    
         assert(aa[3]==0x9999_99A4 && aa[4]==0xBCCC_CCCD);
     assert(r==8);
         assert(aa[1]==0x2222_2230);
+        
+    aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+    r = multibyteShl(aa[0..4], aa[1..5], 31);    
 }
 
 /** dest[#] = src[#] * multiplier + carry.

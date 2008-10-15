@@ -890,8 +890,15 @@ void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v) 
     uint [] un = new uint[u.length + 1];
     // How much to left shift v, so that its MSB is set.
     uint s = 31 - bsr(v[$-1]);
-    multibyteShl(vn, v, s);   
-    un[$-1] = multibyteShl(un[0..$-1], u, s);
+    if (s!=0) {
+        multibyteShl(vn, v, s);        
+        un[$-1] = multibyteShl(un[0..$-1], u, s);
+    } else {
+        vn[] = v[];
+        un[0..$-1] = u[];
+        un[$-1] = 0;
+    }
+    
     for (int j = u.length - v.length; j >= 0; j--) {
         // Compute estimate qhat of quotient[j].
         ulong bigqhat, rhat;
@@ -921,8 +928,11 @@ again:
     }
     // Unnormalize remainder, if required.
     if (remainder != null) {
-         multibyteShr(remainder, un, s);
+        if (s == 0) remainder[] = un[0..$-1];
+        else multibyteShr(remainder, un, s);
     }
+    delete un;
+    delete vn;
 }
 
 private:
