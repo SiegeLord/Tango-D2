@@ -33,7 +33,7 @@
  *              PM     AMDK7 P4   Core2 
  *  +,-         2.25   1.52  15.6 2.25   
  *  <<,>>       2.0    5.0   6.6  2.0
- *    (<< MMX)  1.73   1.2
+ *    (<< MMX)  1.73   1.2   5.3
  *  *           5.0    4.3   15
  *  mulAdd      5.4    4.9   19
  *  div        18.0    22.4  32
@@ -292,7 +292,7 @@ L_last:
 uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 {
     // Timing:
-    // K7 1.2/int. PM 1.7/int
+    // K7 1.2/int. PM 1.75/int P4 5.3/int
     enum { LASTPARAM = 4*4 } // 3* pushes + return address.
 
     asm {
@@ -318,8 +318,7 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         
         pxor MM1, MM1;  // input carry is zero        
         
-        // Get the carry
-        
+        // Get the carry        
         and EAX, 31; // EAX = 32-numbits
         movd MM2, EAX; // 32-numbits
         movd MM1, [ESI+4*EBX-4];                
@@ -332,26 +331,26 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         psllq MM2, MM3;    
         sub EBX, 2;
         jle L_last;
-        jmp L_even;        
-L_odd:
-         // deal with odd lengths       
-        movd MM1, [ESI+4*EBX-4];
-        movd MM0, [ESI+4*EBX-8];        
-        psllq MM1, MM3;
-        psrlq MM0, MM2;
-        por MM1, MM0;
-        movd [EDI+4*EBX-4], MM1;
-        sub EBX, 1;
-        movq MM0, MM1;
-
-        movq    MM1, [ESI + 4*EBX-8];
-        movq    MM2, [ESI + 4*EBX-8];
-        psrlq   MM1, MM4;
-        por     MM0, MM1;
-        movd    [EDI +4*EBX], MM0;
+        jmp L_even;
         
+L_length1:
+        // length 1 is a special case
+        movd MM1, [ESI];
+        psllq MM1, MM3;
+        movd [EDI], MM1;
+        jmp L_alldone;        
+L_odd:
+        cmp EBX, 1;
+        jz L_length1;
+    
+         // deal with odd lengths
+        movq MM1, [ESI+4*EBX-8];
+        psrlq MM1, MM2;
+        
+        movd    [EDI +4*EBX-4], MM1;
+        movq    MM2, [ESI + 4*EBX-12];
         psllq   MM2, MM3;
-        sub EBX, 2;
+        sub EBX, 3;
         jle L_last;
 L_even: // It's either singly or doubly even
         movq MM1, MM2;
@@ -360,6 +359,7 @@ L_even: // It's either singly or doubly even
         jz L_onceeven;
         sub EBX, 2;
         
+        // MAIN LOOP -- 128 bytes per iteration
  L_twiceeven:      // here MM2 is the carry
         movq    MM0, [ESI + 4*EBX-8];
         psrlq   MM0, MM4;
@@ -378,6 +378,7 @@ L_onceeven:        // here MM1 is the carry
         jg L_twiceeven;
 L_last:        
         movq    [EDI +4*EBX], MM2;
+L_alldone:        
         emms;  // NOTE: costs 6 cycles on Intel CPUs
         pop EBX;
         pop EDI;
