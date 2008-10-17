@@ -18,31 +18,32 @@
  * (b) the K6, Athlon, and AMD64 families, produced by AMD; and
  * (c) the Pentium 4, produced by Marketing.
  *
- * This code has been optimised for the Intel P6 family, except that it only
- * uses the basic instruction set (doesn't use MMX, SSE, SSE2)
- * Generally the code remains near-optimal for Core2, after translating
+ * This code has been optimised for the Intel P6 family.
+ * Generally the code remains near-optimal for Intel Core2, after translating
  * EAX-> RAX, etc, since all these CPUs use essentially the same pipeline, and
  * are typically limited by memory access.
  * The code uses techniques described in Agner Fog's superb Pentium manuals
  * available at www.agner.org.
- * Not optimal for AMD64, which can do two memory loads per cycle (Intel
- * CPUs can only do one). Division is far from optimal.
- * Performance is dreadful on P4.
+ * Not optimised for AMD, which can do two memory loads per cycle (Intel
+ * CPUs can only do one). Despite this, performance is superior on AMD.
+ * Performance is dreadful on P4. 
  *
  *  Timing results (cycles per int)
- *              PM     AMDK7 P4   Core2 
- *  +,-         2.25   1.52  15.6 2.25   
- *  <<,>>       2.0    5.0   6.6  2.0
- *    (<< MMX)  1.73   1.2   5.3
- *  *           5.0    4.3   15
- *  mulAdd      5.4    4.9   19
- *  div        18.0    22.4  32
- *  mulAcc(32)  6.3    5.35  20.0
+ *              --Intel Pentium--  --AMD--
+ *              PM     P4   Core2   K7 
+ *  +,-         2.25  15.6   2.25   1.5
+ *  <<,>>       2.0    6.6   2.0    5.0
+ *    (<< MMX)  1.7    5.3   1.5    1.2
+ *  *           5.0   15.0   4.0    4.3
+ *  mulAdd      5.4   19.0   4.9    4.9
+ *  div        18.0   32.0  32.0   22.4
+ *  mulAcc(32)  6.3   20.0   5.4    5.35
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
  * The timing for Div is quite unpredictable, but it's probably too slow
- * to be useful.
+ * to be useful. On 64-bit processors, these times should
+ * halve if run in 64-bit mode, except for the MMX functions.
  */
 
 module tango.math.internal.BignumX86;
@@ -292,7 +293,7 @@ L_last:
 uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 {
     // Timing:
-    // K7 1.2/int. PM 1.75/int P4 5.3/int
+    // K7 1.2/int. PM 1.7/int P4 5.3/int
     enum { LASTPARAM = 4*4 } // 3* pushes + return address.
 
     asm {
@@ -300,30 +301,22 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         push ESI;
         push EDI;
         push EBX;
-        align   16;
         mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
+        align   16;
         mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
         mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
 
-// Register usage
-// MM0 : scratch
-// MM1, MM2: carry
-// MM3: num bits = bits to shift left
-// MM4 = ECX = 64-numbits = bits to shift right
-// EAX = 32-numbits = bits to shift single int right.
-        movd MM3, EAX; // numbits
+        movd MM3, EAX; // numbits = bits to shift left
         xor EAX, 63;
         inc EAX;        
-        movd MM4, EAX ; // 64-numbits
+        movd MM4, EAX ; // 64-numbits = bits to shift right
         
-        pxor MM1, MM1;  // input carry is zero        
-        
-        // Get the carry        
+        // Get the return value into EAX
         and EAX, 31; // EAX = 32-numbits
         movd MM2, EAX; // 32-numbits
         movd MM1, [ESI+4*EBX-4];                
         psrlq MM1, MM2;
-        movd EAX, MM1; // final carry
+        movd EAX, MM1;  // EAX = return value
         test EBX, 1;
         jnz L_odd;
         
