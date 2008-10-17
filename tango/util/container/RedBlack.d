@@ -18,6 +18,8 @@ module tango.util.container.RedBlack;
 
 private import tango.util.container.model.IContainer;
 
+private typedef int AttributeDummy;
+
 /*******************************************************************************
 
         RedBlack implements basic capabilities of Red-Black trees,
@@ -33,8 +35,6 @@ private import tango.util.container.model.IContainer;
         Doug Lea
 
 *******************************************************************************/
-
-private typedef int AttributeDummy;
 
 struct RedBlack (V, A = AttributeDummy)
 {
