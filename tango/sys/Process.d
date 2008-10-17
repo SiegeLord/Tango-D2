@@ -25,6 +25,8 @@ version (Posix)
     private import tango.stdc.posix.fcntl;
     private import tango.stdc.posix.unistd;
     private import tango.stdc.posix.sys.wait;
+
+    private extern (C) extern char** environ;
 }
 
 version (Windows)
@@ -159,6 +161,7 @@ class Process
     private PipeConduit     _stdout;
     private PipeConduit     _stderr;
     private bool            _running = false;
+    private bool            _copyEnv = false;
 
     version (Windows)
     {
@@ -170,7 +173,8 @@ class Process
     }
 
     /**
-     * Constructor (variadic version).
+     * Constructor (variadic version).  Note that by default, the environment
+     * will not be copied.
      *
      * Params:
      * args     = array of strings with the process' arguments.  If there is
@@ -192,6 +196,30 @@ class Process
             _args = splitArgs(args[0]);
         else
             _args = args;
+    }
+
+    /**
+     * Constructor (variadic version, with environment copy).
+     *
+     * Params:
+     * copyEnv  = if true, the environment is copied from the current process.
+     * args     = array of strings with the process' arguments.  If there is
+     *            exactly one argument, it is considered to contain the entire
+     *            command line including parameters.  If you pass only one
+     *            argument, spaces that are not intended to separate
+     *            parameters should be embedded in quotes.  The arguments can
+     *            also be empty.
+     *
+     * Examples:
+     * ---
+     * auto p = new Process(true, "myprogram", "first argument", "second", "third");
+     * auto p = new Process(true, "myprogram \"first argument\" second third");
+     * ---
+     */
+    public this(bool copyEnv, char[][] args ...)
+    {
+        _copyEnv = copyEnv;
+        this(args);
     }
 
     /**
@@ -304,13 +332,13 @@ class Process
     /**
      * Set the process' executable filename.
      */
-    public void programName(char[] name)
+    public char[] programName(char[] name)
     {
         if (_args.length == 0)
         {
             _args.length = 1;
         }
-        _args[0] = name;
+        return _args[0] = name;
     }
 
     /**
@@ -328,18 +356,41 @@ class Process
      * The first element of the array must be the name of the process'
      * executable.
      *
+     * Returns: the arugments that were set.
+     *
      * Examples:
      * ---
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public void args(char[][] args ...)
+    public char[][] args(char[][] args ...)
     {
-        _args = args;
+        return _args = args;
+    }
+
+    /**
+     * If true, the environment from the current process will be copied to the
+     * child process.
+     */
+    public bool copyEnv()
+    {
+        return _copyEnv;
+    }
+
+    /**
+     * Set the copyEnv flag.  If set to true, then the environment will be
+     * copied from the current process.  If set to false, then the environment
+     * is set from the env field.
+     */
+    public bool copyEnv(bool b)
+    {
+        return _copyEnv = b;
     }
 
     /**
      * Return an associative array with the process' environment variables.
+     *
+     * Note that if copyEnv is set to true, this value is ignored.
      */
     public char[][char[]] env()
     {
@@ -350,11 +401,14 @@ class Process
      * Set the process' environment variables from the associative array
      * received by the method.
      *
+     * This also clears the copyEnv flag.
+     *
      * Params:
      * env  = associative array of strings containing the environment
      *        variables for the process. The variable name should be the key
      *        used for each entry.
      *
+     * Returns: the env set.
      * Examples:
      * ---
      * char[][char[]] env;
@@ -365,9 +419,10 @@ class Process
      * p.env = env;
      * ---
      */
-    public void env(char[][char[]] env)
+    public char[][char[]] env(char[][char[]] env)
     {
-        _env = env;
+        _copyEnv = false;
+        return _env = env;
     }
 
     /**
@@ -414,10 +469,12 @@ class Process
      * Params:
      * dir  = a string with the working directory; null if the working
      *         directory is the current directory.
+     *
+     * Returns: the directory set.
      */
-    public void workDir(char[] dir)
+    public char[] workDir(char[] dir)
     {
-        _workDir = dir;
+        return _workDir = dir;
     }
 
     /**
@@ -501,6 +558,8 @@ class Process
      * manipulated through the stdin, stdout and
      * stderr member PipeConduit's.
      *
+     * This also clears the copyEnv flag
+     *
      * Params:
      * command  = string with the process' command line; arguments that have
      *            embedded whitespace must be enclosed in inside double-quotes (").
@@ -526,6 +585,7 @@ class Process
     body
     {
         _args = splitArgs(command);
+        _copyEnv = false;
         _env = env;
 
         executeInternal();
@@ -538,6 +598,8 @@ class Process
      * Once the process is executed successfully, its input and output can be
      * manipulated through the stdin, stdout and
      * stderr member PipeConduit's.
+     *
+     * This also clears the copyEnv flag
      *
      * Params:
      * args     = array of strings with the process' arguments; the first
@@ -577,6 +639,7 @@ class Process
     {
         _args = args;
         _env = env;
+        _copyEnv = false;
 
         executeInternal();
     }
@@ -769,7 +832,7 @@ class Process
               // file)
               if (CreateProcessA(null, command.ptr, null, null, true,
                     CREATE_NO_WINDOW,
-                    (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
+                    (_copyEnv ? null : toNullEndedBuffer(_env).ptr),
                     toStringz(_workDir), &startup, _info))
               {
                 CloseHandle(_info.hThread);
@@ -791,7 +854,7 @@ class Process
               // file)
               if (CreateProcessW(null, toString16(command).ptr, null, null, true,
                     CREATE_NO_WINDOW,
-                    (_env.length > 0 ? toNullEndedBuffer(_env).ptr : null),
+                    (_copyEnv ? null : toNullEndedBuffer(_env).ptr),
                     toString16z(toString16(_workDir)), &startup, _info))
               {
                 CloseHandle(_info.hThread);
@@ -895,7 +958,7 @@ class Process
                         // Convert the arguments and the environment variables to
                         // the format expected by the execv() family of functions.
                         argptr = toNullEndedArray(_args);
-                        envptr = (_env.length > 0 ? toNullEndedArray(_env) : null);
+                        envptr = (_copyEnv ? null : toNullEndedArray(_env));
 
                         // Switch to the working directory if it has been set.
                         if (_workDir.length > 0)
@@ -1418,11 +1481,7 @@ class Process
                 dest ~= key ~ '=' ~ value ~ '\0';
             }
 
-            if (dest.length > 0)
-            {
-                dest ~= '\0';
-            }
-
+            dest ~= '\0';
             return dest;
         }
     }
@@ -1472,10 +1531,7 @@ class Process
                 dest ~= (key ~ '=' ~ value ~ '\0').ptr;
             }
 
-            if (dest.length > 0)
-            {
-                dest ~= null;
-            }
+            dest ~= null;
             return dest;
         }
 
@@ -1514,7 +1570,7 @@ class Process
                     path ~= filename;
                     path ~= '\0';
 
-                    rc = execve(path.ptr, argv.ptr, (envp.length > 0 ? envp.ptr : null));
+                    rc = execve(path.ptr, argv.ptr, (envp.length == 0 ? environ : envp.ptr));
                     // If the process execution failed because of an error
                     // other than ENOENT (No such file or directory) we
                     // abort the loop.
@@ -1531,7 +1587,7 @@ class Process
                                     (argv[0])[0 .. strlen(argv[0])],
                                     argv.length, (envp.length > 0 ? "envp" : "null"));
 
-                rc = execve(argv[0], argv.ptr, (envp.length > 0 ? envp.ptr : null));
+                rc = execve(argv[0], argv.ptr, (envp.length == 0 ? environ : envp.ptr));
             }
             return rc;
         }
