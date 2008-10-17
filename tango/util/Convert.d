@@ -480,7 +480,7 @@ template TN(T)
         const TN = ctfe_trim(T.stringof);
 }
 
-// Picks an appropriate toUtf* method from t.text.convert.Utf.
+// Picks an appropriate toString* method from t.text.convert.Utf.
 template toString_(T)
 {
     static if( is( T == char[] ) )
