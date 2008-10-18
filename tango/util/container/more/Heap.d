@@ -17,7 +17,11 @@ private import tango.core.Exception;
   * 
   * No opApply is provided, since most people would expect this to return the contents in sorted order,
   * not do significant heap allocation, not modify the collection, and complete in linear time. This
-  * combination is not possible with a heap. */
+  * combination is not possible with a heap. 
+  *
+  * Note: always pass by reference when modifying a heap. 
+  *
+*/
 
 struct Heap (T, bool Min)
 {
@@ -82,6 +86,13 @@ struct Heap (T, bool Min)
         void clear ()
         {
                 next = 0;
+        }
+
+        /** reset this heap, and use the provided host for value elements */
+        void clear (T[] host)
+        {
+                this.heap = host;
+                clear;
         }
 
         /** Get the reserved capacity of this heap. */
@@ -177,19 +188,29 @@ struct Heap (T, bool Min)
 }
 
 
-/** A minheap implementation. This will have the smallest item as the top of the heap. */
+/** A minheap implementation. This will have the smallest item as the top of the heap. 
+  *
+  * Note: always pass by reference when modifying a heap. 
+  *
+*/
 
 template MinHeap(T)
 {
         alias Heap!(T, true) MinHeap;
 }
 
-/** A maxheap implementation. This will have the largest item as the top of the heap. */
+/** A maxheap implementation. This will have the largest item as the top of the heap. 
+  *
+  * Note: always pass by reference when modifying a heap. 
+  *
+*/
 
 template MaxHeap(T)
 {
         alias Heap!(T, false) MaxHeap;
 }
+
+
 
 debug (UnitTest)
 {
