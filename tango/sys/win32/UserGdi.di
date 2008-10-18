@@ -1201,7 +1201,7 @@ extern(Windows)
 	int ToAsciiEx(UINT, UINT, PBYTE, LPWORD, UINT, HKL);
 	int ToUnicode(UINT, UINT, PBYTE, LPWSTR, int, UINT);
 	DWORD OemKeyScan(ushort);
-	void keybd_event(ubyte, ubyte, DWORD);
+	void keybd_event(ubyte, ubyte, DWORD, POINTER);
 	void mouse_event(DWORD, DWORD, DWORD, DWORD);
 	WINBOOL GetInputState();
 	DWORD GetQueueStatus(UINT);
