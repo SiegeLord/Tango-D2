@@ -302,12 +302,12 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         push EDI;
         push EBX;
         mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
-        align   16;
         mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
         mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
 
         movd MM3, EAX; // numbits = bits to shift left
         xor EAX, 63;
+        align   16;
         inc EAX;        
         movd MM4, EAX ; // 64-numbits = bits to shift right
         
@@ -318,34 +318,21 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
         psrlq MM1, MM2;
         movd EAX, MM1;  // EAX = return value
         test EBX, 1;
-        jnz L_odd;
-        
-        movq MM2, [ESI+4*EBX-8];
-        psllq MM2, MM3;    
-        sub EBX, 2;
-        jle L_last;
-        jmp L_even;
-        
-L_length1:
-        // length 1 is a special case
-        movd MM1, [ESI];
-        psllq MM1, MM3;
-        movd [EDI], MM1;
-        jmp L_alldone;        
+        jz L_even;
 L_odd:
         cmp EBX, 1;
         jz L_length1;
     
          // deal with odd lengths
         movq MM1, [ESI+4*EBX-8];
-        psrlq MM1, MM2;
-        
+        psrlq MM1, MM2;        
         movd    [EDI +4*EBX-4], MM1;
-        movq    MM2, [ESI + 4*EBX-12];
-        psllq   MM2, MM3;
-        sub EBX, 3;
-        jle L_last;
+        sub EBX, 1;
 L_even: // It's either singly or doubly even
+        movq    MM2, [ESI + 4*EBX - 8];
+        psllq   MM2, MM3;
+        sub EBX, 2;
+        jle L_last;
         movq MM1, MM2;
         add EBX, 2;
         test EBX, 2;
@@ -377,13 +364,104 @@ L_alldone:
         pop EDI;
         pop ESI;
         ret 4*4;
+        
+L_length1:
+        // length 1 is a special case
+        movd MM1, [ESI];
+        psllq MM1, MM3;
+        movd [EDI], MM1;
+        jmp L_alldone;        
+   }
+}
+
+void multibyteShr(uint [] dest, uint [] src, uint numbits)
+{
+    enum { LASTPARAM = 4*4 } // 3* pushes + return address.
+    asm {
+        naked;
+        push ESI;
+        push EDI;
+        push EBX;
+        mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
+        mov EBX, [ESP + LASTPARAM + 4*2]; //dest.length;
+align 16;
+        mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
+        lea EDI, [EDI + 4*EBX]; // EDI = end of dest
+        lea ESI, [ESI + 4*EBX]; // ESI = end of src
+        neg EBX;                // count UP to zero.
+        
+        movd MM3, EAX; // numbits = bits to shift right
+        xor EAX, 63;
+        inc EAX;        
+        movd MM4, EAX ; // 64-numbits = bits to shift left
+        
+        test EBX, 1;
+        jz L_even;
+L_odd:
+         // deal with odd lengths
+        and EAX, 31; // EAX = 32-numbits
+        movd MM2, EAX; // 32-numbits
+        cmp EBX, -1;
+        jz L_length1;
+    
+        movq MM0, [ESI+4*EBX];
+        psrlq MM0, MM3;        
+        movd    [EDI +4*EBX], MM0;
+        add EBX, 1;        
+L_even: 
+        movq    MM2, [ESI + 4*EBX];
+        psrlq   MM2, MM3;
+        
+        movq MM1, MM2;
+        add EBX, 4;
+        cmp EBX, -2+4;        
+        jz L_last;
+        // It's either singly or doubly even
+        sub EBX, 2;
+        test EBX, 2;
+        jnz L_onceeven;
+        add EBX, 2;
+        
+        // MAIN LOOP -- 128 bytes per iteration
+ L_twiceeven:      // here MM2 is the carry
+        movq    MM0, [ESI + 4*EBX-8];
+        psllq   MM0, MM4;
+        movq    MM1, [ESI + 4*EBX-8];
+        psrlq   MM1, MM3;
+        por     MM2, MM0;
+        movq    [EDI +4*EBX-16], MM2;
+L_onceeven:        // here MM1 is the carry
+        movq    MM0, [ESI + 4*EBX];
+        psllq   MM0, MM4;
+        movq    MM2, [ESI + 4*EBX];
+        por     MM1, MM0;
+        movq    [EDI +4*EBX-8], MM1;        
+        psrlq   MM2, MM3;
+        add EBX, 4;
+        jl L_twiceeven;
+L_last:     
+        movq    [EDI +4*EBX-16], MM2;
+L_alldone:        
+        emms;  // NOTE: costs 6 cycles on Intel CPUs
+        pop EBX;
+        pop EDI;
+        pop ESI;
+        ret 4*4;
+        
+L_length1:
+        // length 1 is a special case
+        movd MM1, [ESI+4*EBX];
+        psrlq MM1, MM3;        
+        movd    [EDI +4*EBX], MM1;
+        jmp L_alldone;        
+
    }
 }
 
 /** dest[#] = src[#] >> numbits
  *  numbits must be in the range 1..31
  */
-void multibyteShr(uint [] dest, uint [] src, uint numbits)
+void multibyteShrNoMMX(uint [] dest, uint [] src, uint numbits)
 {
     // Timing: Optimal for P6 family.
     // 2.0 cycles/int on PPro..PM (limited by execution port p0)
@@ -433,16 +511,24 @@ L_last:
 //import tango.stdc.stdio;
 unittest
 {
+
     uint [] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+    multibyteShr(aa[0..$-1], aa, 4);
+//    printf("%x %x %x %x %x\n", aa[0],aa[1],aa[2],aa[3],aa[4]);
+    assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
+        && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
+
+    aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+    multibyteShr(aa[2..$-1], aa[2..$-1], 4);
+    assert(aa[0] == 0x1222_2223 && aa[1]==0x4555_5556
+        && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
+
+    aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteShr(aa[0..$-2], aa, 4);
     assert(aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
     assert(aa[0]==0x6122_2222);
     assert(aa[3]==0xBCCC_CCCD);
 
-    aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteShr(aa[0..$-1], aa, 4);
-    assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
-        && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     uint r = multibyteShl(aa[2..4], aa[2..4], 4);
@@ -968,6 +1054,11 @@ void testPerformance()
     multibyteShl(Z1[0..2000], X1[0..2000], 7);
     auto shltime = (clock() - t) - (t - t0);
     t0 = clock();
+    multibyteShr(Z1[0..1000], X1[0..1000], 7);
+    t = clock();
+    multibyteShr(Z1[0..2000], X1[0..2000], 7);
+    auto shrtime = (clock() - t) - (t - t0);
+    t0 = clock();
     multibyteAddSub!('+')(Z1[0..1000], X1[0..1000], Y1[0..1000], 0);
     t = clock();
     multibyteAddSub!('+')(Z1[0..2000], X1[0..2000], Y1[0..2000], 0);
@@ -996,6 +1087,7 @@ void testPerformance()
     printf("-- BigInt asm performance (cycles/int) --\n");    
     printf("Add:        %.2f\n", addtime/1000.0);
     printf("Shl:        %.2f\n", shltime/1000.0);
+    printf("Shr:        %.2f\n", shrtime/1000.0);
     printf("Mul:        %.2f\n", multime/1000.0);
     printf("MulAdd:     %.2f\n", muladdtime/1000.0);
     printf("Div:        %.2f\n", divtime/1000.0);
