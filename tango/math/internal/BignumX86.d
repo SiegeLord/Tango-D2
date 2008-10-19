@@ -35,9 +35,9 @@
  *  <<,>>       2.0    6.6   2.0    5.0
  *    (<< MMX)  1.7    5.3   1.5    1.2
  *  *           5.0   15.0   4.0    4.3
- *  mulAdd      5.4   19.0   4.9    4.9
+ *  mulAdd      5.4   19.0   4.9    4.0
  *  div        18.0   32.0  32.0   22.4
- *  mulAcc(32)  6.3   20.0   5.4    5.35
+ *  mulAcc(32)  6.4   20.0   5.4    4.9
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
@@ -705,9 +705,9 @@ mixin("
 L1:
         mul int ptr [ESP+LASTPARAM];
         " ~ OP ~ " [-8+EDI+4*EBX], ECX;
-        mov ECX, zero;
  
         adc EBP, EAX;
+        mov ECX, zero;
         mov EAX, [ESI+4*EBX];
         
         adc ECX, EDX;
@@ -796,9 +796,10 @@ void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
     enum { LASTPARAM = 6*4 } // 4* pushes + local + return address.
     asm {
         naked;
-        
+          
         push ESI;
         push EDI;
+        align 16;
         push EBX;
         push EBP;
         push EAX;    // local variable M
@@ -847,11 +848,10 @@ outer_loop:
 L1:
         mul int ptr [ESP]; // M
         add [-8+EDI+4*EBX], ECX;
-        mov ECX, zero;
- 
+   
         adc EBP, EAX;
+        mov ECX, zero;
         mov EAX, [ESI+4*EBX];
-        
         adc ECX, EDX;
     }
     version(D_PIC) {} else {
@@ -860,6 +860,7 @@ L1:
      }
     }
     asm {        
+    
         mul int ptr [ESP];  // M
         add [-4+EDI+4*EBX], EBP;
         mov EBP, zero;
@@ -1054,9 +1055,9 @@ void testPerformance()
     multibyteShl(Z1[0..2000], X1[0..2000], 7);
     auto shltime = (clock() - t) - (t - t0);
     t0 = clock();
-    multibyteShr(Z1[0..1000], X1[0..1000], 7);
+    multibyteShr(Z1[2..1002], X1[4..1004], 13);
     t = clock();
-    multibyteShr(Z1[0..2000], X1[0..2000], 7);
+    multibyteShr(Z1[2..2002], X1[4..2004], 13);
     auto shrtime = (clock() - t) - (t - t0);
     t0 = clock();
     multibyteAddSub!('+')(Z1[0..1000], X1[0..1000], Y1[0..1000], 0);
