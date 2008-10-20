@@ -10,7 +10,8 @@
 
         Standard, global formatters for console output. If you don't need
         formatted output or unicode translation, consider using the module
-        tango.io.Console directly
+        tango.io.Console directly. If you need to format, but not output
+        to console, consider tango.text.convert.Format instead.
 
         Stdout & Stderr expose this style of usage:
         ---
@@ -68,7 +69,15 @@
         Note that Stdout is a shared entity, so every usage of it will
         be affected by the above example. For applications supporting 
         multiple regions, create multiple Locale instances instead and 
-        cache them in an appropriate manner
+        cache them in an appropriate manner.
+
+        Stdout.layout can also be used for formatting without outputting
+        to the console such as in the following example:
+        ---
+        char[] str = Stdout.layout.convert("{} and {}", 42, "abc");
+        //str is "42 and abc"
+        ---
+        This can be useful if you already have Stdout imported.
 
         Note also that the output-stream in use is exposed by these
         global instances ~ this can be leveraged, for instance, to copy a
