@@ -35,9 +35,9 @@
  *  <<,>>       2.0    6.6   2.0    5.0
  *    (<< MMX)  1.7    5.3   1.5    1.2
  *  *           5.0   15.0   4.0    4.3
- *  mulAdd      5.4   19.0   4.9    4.0
- *  div        18.0   32.0  32.0   22.4
- *  mulAcc(32)  6.4   20.0   5.4    4.9
+ *  mulAdd      5.7   19.0   4.9    4.0
+ *  div        30.0   32.0  32.0   22.4
+ *  mulAcc(32)  6.5   20.0   5.4    4.9
  *
  * mulAcc(32) is multiplyAccumulate() for a 32*32 multiply. Thus it includes
  * function call overhead.
@@ -1034,7 +1034,7 @@ unittest {
 
 version(TangoPerformanceTest) {
 import tango.stdc.stdio;
-int clock() { asm { rdtsc; } }
+int clock() { asm { push EBX; xor EAX, EAX; cpuid; pop EBX; rdtsc; } }
 
 uint [2000] X1;
 uint [2000] Y1;
