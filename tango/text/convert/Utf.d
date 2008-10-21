@@ -118,16 +118,16 @@ char[] toString (wchar[] input, char[] output=null, uint* ate=null)
                 else
                    if (b < 0x0800)
                       {
-                      pOut[0] = 0xc0 | ((b >> 6) & 0x3f);
-                      pOut[1] = 0x80 | (b & 0x3f);
+                      pOut[0] = cast(wchar)(0xc0 | ((b >> 6) & 0x3f));
+                      pOut[1] = cast(wchar)(0x80 | (b & 0x3f));
                       pOut += 2;
                       }
                    else
                       if (b < 0xd800 || b > 0xdfff)
                          {
-                         pOut[0] = 0xe0 | ((b >> 12) & 0x3f);
-                         pOut[1] = 0x80 | ((b >> 6)  & 0x3f);
-                         pOut[2] = 0x80 | (b & 0x3f);
+                         pOut[0] = cast(wchar)(0xe0 | ((b >> 12) & 0x3f));
+                         pOut[1] = cast(wchar)(0x80 | ((b >> 6)  & 0x3f));
+                         pOut[2] = cast(wchar)(0x80 | (b & 0x3f));
                          pOut += 3;
                          }
                       else
@@ -174,14 +174,14 @@ wchar[] toString16 (char[] input, wchar[] output=null, uint* ate=null)
                     if (b < 0xe0)
                        {
                        b &= 0x1f;
-                       b = (b << 6) | (*++pIn & 0x3f);
+                       b = cast(wchar)((b << 6) | (*++pIn & 0x3f));
                        }
                     else
                        if (b < 0xf0)
                           {
                           b &= 0x0f;
-                          b = (b << 6) | (pIn[1] & 0x3f);
-                          b = (b << 6) | (pIn[2] & 0x3f);
+                          b = cast(wchar)((b << 6) | (pIn[1] & 0x3f));
+                          b = cast(wchar)((b << 6) | (pIn[2] & 0x3f));
                           pIn += 2;
                           }
                        else
@@ -276,25 +276,25 @@ char[] toString (dchar[] input, char[] output=null, uint* ate=null)
                 else
                    if (b < 0x0800)
                       {
-                      pOut[0] = 0xc0 | ((b >> 6) & 0x3f);
-                      pOut[1] = 0x80 | (b & 0x3f);
+                      pOut[0] = cast(wchar)(0xc0 | ((b >> 6) & 0x3f));
+                      pOut[1] = cast(wchar)(0x80 | (b & 0x3f));
                       pOut += 2;
                       }
                    else
                       if (b < 0x10000)
                          {
-                         pOut[0] = 0xe0 | ((b >> 12) & 0x3f);
-                         pOut[1] = 0x80 | ((b >> 6)  & 0x3f);
-                         pOut[2] = 0x80 | (b & 0x3f);
+                         pOut[0] = cast(wchar)(0xe0 | ((b >> 12) & 0x3f));
+                         pOut[1] = cast(wchar)(0x80 | ((b >> 6)  & 0x3f));
+                         pOut[2] = cast(wchar)(0x80 | (b & 0x3f));
                          pOut += 3;
                          }
                       else
                          if (b < 0x110000)
                             {
-                            pOut[0] = 0xf0 | ((b >> 18) & 0x3f);
-                            pOut[1] = 0x80 | ((b >> 12) & 0x3f);
-                            pOut[2] = 0x80 | ((b >> 6)  & 0x3f);
-                            pOut[3] = 0x80 | (b & 0x3f);
+                            pOut[0] = cast(wchar)(0xf0 | ((b >> 18) & 0x3f));
+                            pOut[1] = cast(wchar)(0x80 | ((b >> 12) & 0x3f));
+                            pOut[2] = cast(wchar)(0x80 | ((b >> 6)  & 0x3f));
+                            pOut[3] = cast(wchar)(0x80 | (b & 0x3f));
                             pOut += 4;
                             }
                          else
@@ -448,8 +448,8 @@ wchar[] toString16 (dchar[] input, wchar[] output=null, uint* ate=null)
                 else
                    if (b < 0x110000)
                       {
-                      pOut[0] = 0xd800 | (((b - 0x10000) >> 10) & 0x3ff);
-                      pOut[1] = 0xdc00 | ((b - 0x10000) & 0x3ff);
+                      pOut[0] = cast(wchar)(0xd800 | (((b - 0x10000) >> 10) & 0x3ff));
+                      pOut[1] = cast(wchar)(0xdc00 | ((b - 0x10000) & 0x3ff));
                       pOut += 2;
                       }
                    else

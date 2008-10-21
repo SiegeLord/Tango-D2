@@ -547,7 +547,7 @@ char[] longToString (char[] buffer, long value, int digits, char[] negativeSign)
            {
            while (--digits >= 0 || uv != 0)
                  {
-                 buffer[--n] = uv % 10 + '0';
+                 buffer[--n] = cast(char)(uv % 10 + '0');
                  uv /= 10;
                  }
            }
@@ -556,7 +556,7 @@ char[] longToString (char[] buffer, long value, int digits, char[] negativeSign)
            uint v = cast(uint) uv;
            while (--digits >= 0 || v != 0)
                  {
-                 buffer[--n] = v % 10 + '0';
+                 buffer[--n] = cast(char)(v % 10 + '0');
                  v /= 10;
                  }
            }
@@ -584,7 +584,7 @@ char[] longToHexString (char[] buffer, ulong value, int digits, char format)
         while (--digits >= 0 || value != 0)
               {
               auto v = cast(uint) value & 0xF;
-              buffer[--n] = (v < 10) ? v + '0' : v + format - ('X' - 'A' + 10);
+              buffer[--n] = cast(char)((v < 10) ? v + '0' : v + format - ('X' - 'A' + 10));
               value >>= 4;
               }
 
@@ -603,7 +603,7 @@ char[] longToBinString (char[] buffer, ulong value, int digits)
         int n = buffer.length;
         while (--digits >= 0 || value != 0)
               {
-              buffer[--n] = (value & 1) + '0';
+              buffer[--n] = cast(char)((value & 1) + '0');
               value >>= 1;
               }
 
@@ -1039,7 +1039,7 @@ private struct Number
 
                 while (value != 0)
                       {
-                      buffer[--n] = value % 10 + '0';
+                      buffer[--n] = cast(char)(value % 10 + '0');
                       value /= 10;
                       }
 
