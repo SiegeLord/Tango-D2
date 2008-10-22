@@ -1036,8 +1036,8 @@ version(TangoPerformanceTest) {
 import tango.stdc.stdio;
 int clock() { asm { push EBX; xor EAX, EAX; cpuid; pop EBX; rdtsc; } }
 
-uint [2000] X1;
-uint [2000] Y1;
+uint [2200] X1;
+uint [2200] Y1;
 uint [4000] Z1;
 
 void testPerformance()
