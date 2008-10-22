@@ -628,11 +628,12 @@ class PrivateKey
         the same.
         
     *******************************************************************************/
-
-
-    int opEquals(PrivateKey obj)
+    override int opEquals(Object obj)
     {
-        return EVP_PKEY_cmp_parameters(obj._evpKey, this._evpKey);
+        auto pk = cast(PrivateKey)obj;
+        if (pk !is null)
+            return EVP_PKEY_cmp_parameters(pk._evpKey, this._evpKey);
+        return 0;
     }
 
     /*******************************************************************************
@@ -644,8 +645,6 @@ class PrivateKey
             AES 256bit encryption, with this as the key.
         
     *******************************************************************************/
-
-
     char[] pemFormat(char[] pass = null)
     {
         char[] rtn = null;
@@ -1101,9 +1100,12 @@ class Certificate
             
     *******************************************************************************/
 
-    int opEquals(Certificate obj)
+    override int opEquals(Object obj)
     {
-        return !X509_cmp(obj._cert, this._cert);
+        auto c = cast(Certificate)obj;
+        if (c !is null)
+            return !X509_cmp(c._cert, this._cert);
+        return 0;
     }
 
     /*******************************************************************************
@@ -1174,11 +1176,11 @@ class Certificate
 
 version (Test)
 {
-    import tetra.util.Test;
+    import util.Test;
     import tango.io.Stdout;
 
     auto t1 = TimeSpan.zero;
-    auto t2 = TimeSpan.days(365); // can't set this up in delegate ..??
+    auto t2 = TimeSpan.fromDays(365); // can't set this up in delegate ..??
     unittest
     {
         Test.Status _pkeyGenTest(inout char[][] messages)
