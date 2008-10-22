@@ -1099,7 +1099,7 @@ else
                            node.end = null;
                            } while ((node = node.parent_) !is null);
 
-                        return node;
+                        return this;
                 }
 
                 /***************************************************************
@@ -1927,3 +1927,26 @@ interface IXmlPrinter(T)
 
 
 
+debug (Document)
+{
+        import tango.io.Stdout;
+        import tango.text.xml.DocPrinter;
+
+        void main()
+        {
+                auto doc = new Document!(char);
+
+                // attach an xml header
+                doc.header;
+
+                // attach an element with some attributes, plus 
+                // a child element with an attached data value
+                doc.root.element   (null, "element")
+                        .attribute (null, "attrib1", "value")
+                        .attribute (null, "attrib2")
+                        .element   (null, "child", "value");
+
+                auto print = new DocPrinter!(char);
+                Stdout(print(doc)).newline;
+        }
+}
