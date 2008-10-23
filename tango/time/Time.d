@@ -467,14 +467,6 @@ struct TimeSpan
         calendar, but for an example, the beginning of December 31, 1 BC 
         in the Gregorian calendar is Time.epoch - TimeSpan.days(1).
 
-        Note: common system epochs are provided to allow calculation of time
-        in other time systems.  For example, to convert a Time myTime to Unix
-        time (number of seconds elapsed since 1/1/1970), you can write$(CLN)
-
-        --------
-        auto unixTime = (myTime - Time.epoch1970).seconds;
-        --------
-
 ******************************************************************************/
 
 struct Time 
@@ -673,6 +665,26 @@ struct Time
         TimeSpan span () 
         {
                 return TimeSpan (ticks_);
+        }
+
+        /**********************************************************************
+
+                $(I Property.) Retrieves a TimeSpan that corresponds to Unix
+                time (time since 1/1/1970).  Use the TimeSpan accessors to get
+                the time in seconds, milliseconds, etc.
+
+                Returns: A TimeSpan representing this Time as Unix time.
+
+                -------------------------------------
+                auto unixTime = Clock.now.unix.seconds;
+                auto javaTime = Clock.now.unix.milliseconds;
+                -------------------------------------
+
+        **********************************************************************/
+
+        TimeSpan unix()
+        {
+                return TimeSpan(ticks_ - epoch1970.ticks_);
         }
 }
 
