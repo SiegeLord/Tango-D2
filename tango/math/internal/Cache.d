@@ -267,9 +267,13 @@ version(X86_64) {
     	SSE5_BIT = 1<<11
     }
 
-version(GNU) {
+version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(D_InlineAsm_X86) {
+    version = Really_D_InlineAsm_X86;
+}
+
+version(Really_D_InlineAsm_X86) {
 // Note that this code will also work for Itanium, after changing the
 // register names in the asm code.
 
