@@ -1337,7 +1337,7 @@ private class XmlPath(T)
         struct NodeSet
         {
                 private XmlPath host;
-                public  Node[]  nodes;
+                public  Node[]  nodes;  /// array of selected nodes
                
                 /***************************************************************
         
