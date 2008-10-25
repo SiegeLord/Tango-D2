@@ -524,6 +524,13 @@ version(discrete)
         
                 void value (T[] val)
                 {
+version(discrete)
+{
+                        if (type is XmlNodeType.Element)
+                            foreach (child; children)
+                                     if (child.type is XmlNodeType.Data)
+                                         return child.value (val);
+}
                         rawValue = val; 
                         mutate;
                 }
