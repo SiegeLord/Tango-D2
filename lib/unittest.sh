@@ -90,7 +90,7 @@ EOF
         -version=UnitTest $EXE.d tango/core/*.d tango/core/sync/*.d tango/io/digest/*.d \
         tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d \
         tango/io/vfs/*.d tango/io/vfs/model/*.d \
-        tango/io/stream/*.d tango/math/*.d \
+        tango/io/stream/*.d tango/math/*.d tango/math/random/*.d \
         tango/io/compress/*.d tango/net/ftp/*.d tango/net/http/*.d tango/net/*.d \
         tango/net/model/*.d tango/stdc/stringz.d tango/sys/*.d tango/text/convert/*.d \
         tango/text/locale/Collation.d tango/text/locale/Convert.d tango/text/locale/Core.d \
