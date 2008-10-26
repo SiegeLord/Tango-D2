@@ -133,20 +133,20 @@ struct Twister
 
                         if (pAddEntropy || mti > mt.length)   
                         {
-                                seed (5489UL, pAddEntropy); 
+                                seed (5489U, pAddEntropy); 
                         }
 
                         for (kk=0;kk<mt.length-M;kk++)
                         {
                                 y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-                                mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 1UL];
+                                mt[kk] = mt[kk+M] ^ (y >> 1) ^ mag01[y & 1U];
                         }
                         for (;kk<mt.length-1;kk++) {
                                 y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-                                mt[kk] = mt[kk+(M-mt.length)] ^ (y >> 1) ^ mag01[y & 1UL];
+                                mt[kk] = mt[kk+(M-mt.length)] ^ (y >> 1) ^ mag01[y & 1U];
                         }
                         y = (mt[mt.length-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
-                        mt[mt.length-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 1UL];
+                        mt[mt.length-1] = mt[M-1] ^ (y >> 1) ^ mag01[y & 1U];
 
                         mti = 0;
                 }
@@ -154,8 +154,8 @@ struct Twister
                 y = mt[mti++];
 
                 y ^= (y >> 11);
-                y ^= (y << 7)  &  0x9d2c5680UL;
-                y ^= (y << 15) &  0xefc60000UL;
+                y ^= (y << 7)  &  0x9d2c5680U;
+                y ^= (y << 15) &  0xefc60000U;
                 y ^= (y >> 18);
 
                 vLastRand = y;
@@ -238,10 +238,10 @@ struct Twister
 
         void seed (uint s, bool pAddEntropy = false)
         {
-                mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) this : 0)) & 0xffffffffUL;
+                mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) this : 0)) & 0xffffffffU;
                 for (mti=1; mti<mt.length; mti++){
-                        mt[mti] = (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
-                        mt[mti] &= 0xffffffffUL;
+                        mt[mti] = (1812433253U * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
+                        mt[mti] &= 0xffffffffU;
                 }
         }
 
@@ -258,10 +258,10 @@ struct Twister
                 i=1;
                 j=0;
                 
-                seed (19650218UL, pAddEntropy);
+                seed (19650218U, pAddEntropy);
                 for (k = (mt.length > init_key.length ? mt.length : init_key.length); k; k--)   {
-                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ init_key[j] + j; 
-                        mt[i] &=  0xffffffffUL; 
+                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525U))+ init_key[j] + j; 
+                        mt[i] &=  0xffffffffU; 
                         i++;
                         j++;
 
@@ -276,8 +276,8 @@ struct Twister
                 }
 
                 for (k=mt.length-1; k; k--)     {
-                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))- i; 
-                        mt[i] &=  0xffffffffUL; 
+                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941U))- i; 
+                        mt[i] &=  0xffffffffU; 
                         i++;
 
                         if (i>=mt.length){
@@ -285,7 +285,7 @@ struct Twister
                                 i=1;
                         }
                 }
-                mt[0] |=  0x80000000UL; 
+                mt[0] |=  0x80000000U; 
                 mti=0;
         }
 }
