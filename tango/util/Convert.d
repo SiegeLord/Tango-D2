@@ -211,7 +211,7 @@ typedef int Missing;
 char ctfe_upper(char c)
 {
     if( 'a' <= c && c <= 'z' )
-        return (c - 'a') + 'A';
+        return cast(char)((c - 'a') + 'A');
     else
         return c;
 }
