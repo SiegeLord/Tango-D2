@@ -61,7 +61,7 @@ public class AppendFiles : Filer
 
                 for (int i=0; i < count; ++i)
                     {
-                    x[0] = '0' + i;
+                    x[0] = cast(char)('0' + i);
                     auto c = Path.parse (path);
                     auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
                     paths ~= p;

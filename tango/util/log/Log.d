@@ -1400,7 +1400,7 @@ package struct LogEvent
 
                 int len = s.length;
                 do {
-                   s[--len] = ms % 10 + '0';
+                   s[--len] = cast(char)(ms % 10 + '0');
                    ms /= 10;
                    } while (ms && len);
                 return s[len..s.length];                

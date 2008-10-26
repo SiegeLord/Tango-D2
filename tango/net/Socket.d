@@ -81,7 +81,7 @@ version (Tango)
         {
                 int j = tmp.length;
                 do {
-                   tmp[--j] = i % 10 + '0';
+                   tmp[--j] = cast(char)(i % 10 + '0');
                    } while (i /= 10);
 
                 return tmp [j .. $];
