@@ -72,6 +72,19 @@ version=discrete;
         Stdout(print(doc)).newline;
         ---
 
+        Note that the document root includes all nodes in the tree,
+        and not just elements. Use doc.trunk to address the topmost
+        element instead. For example, adding an interior sibling to
+        the prior illustration:
+        ---
+        doc.trunk.element (null, "sibling");
+        ---
+
+        Printing the name of the root element:
+        ---
+        Stdout.formatln ("trunk is '{}'", doc.trunk.name);
+        ---
+        
         XPath examples:
         ---
         auto doc = new Document!(char);
@@ -130,7 +143,7 @@ class Document(T) : package PullParser!(T)
 {
         public alias NodeImpl*  Node;
 
-        public  Node            root;
+        public  Node            root;           /// root of the document tree
         private NodeImpl[]      list;
         private NodeImpl[][]    lists;
         private int             index,
@@ -169,6 +182,29 @@ class Document(T) : package PullParser!(T)
         final XmlPath!(T).NodeSet query ()
         {
                 return xpath.start (root);
+        }
+
+        /***********************************************************************
+        
+                Return the topmost element node, which is generally the
+                root of the element tree.
+
+                Returns null where there are no top-level element nodes
+
+        ***********************************************************************/
+        
+        final Node trunk ()
+        {
+                if (root)
+                   {
+                   auto node = root.lastChild;
+                   while (node)
+                          if (node.type is XmlNodeType.Element)
+                              return node;
+                          else
+                             node = node.prevSibling;
+                   }
+                return null;
         }
 
         /***********************************************************************
@@ -1953,6 +1989,10 @@ debug (Document)
                         .attribute (null, "attrib2")
                         .element   (null, "child", "value");
 
+                // attach a sibling to the interior elements
+                doc.trunk.element  (null, "sibling");
+
+                // emit the result
                 auto print = new DocPrinter!(char);
                 Stdout(print(doc)).newline;
         }
