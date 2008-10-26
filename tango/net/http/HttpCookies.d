@@ -680,7 +680,7 @@ class CookieParser : StreamIterator!(char)
         {
                 foreach (int i, char c; src)
                          if (c >= 'A' && c <= 'Z')
-                             src[i] = c + ('a' - 'A');
+                             src[i] = cast(char)(c + ('a' - 'A'));
                 return src;
         }
 

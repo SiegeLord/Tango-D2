@@ -940,7 +940,7 @@ private:
 void itoaZeroPadded(char[] output, uint value, int radix = 10) {
     int x = output.length - 1;
     for( ; x>=0; --x) {
-        output[x]= value % radix + '0';
+        output[x]= cast(char)(value % radix + '0');
         value /= radix;
     }
 }
