@@ -225,13 +225,13 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            assert (dst.length > decimals + 7);
 
            // emit first digit, and decimal point
-           *p++ = toDigit (x, count);
+           *p++ = cast(T)toDigit (x, count);
            if (decimals)
                *p++ = '.';
 
            // emit rest of mantissa
            while (decimals-- > 0)
-                  *p++ = toDigit (x, count);
+                  *p++ = cast(T)toDigit (x, count);
 
            // emit exponent, if non zero
            if (exp)
@@ -241,20 +241,20 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
 
               if (exp >= 1000)
                  {
-                 *p++ = (exp/1000) + '0';
+                 *p++ = cast(T)((exp/1000) + '0');
                  exp %= 1000;
-                 *p++ = (exp/100) + '0';
+                 *p++ = cast(T)((exp/100) + '0');
                  exp %= 100;
                  }
               else
                  if (exp >= 100)
                     {
-                    *p++ = (exp/100) + '0';
+                    *p++ = cast(T)((exp/100) + '0');
                     exp %= 100;
                     }
 
-              *p++ = (exp/10) + '0';
-              *p++ = (exp%10) + '0';
+              *p++ = cast(T)((exp/10) + '0');
+              *p++ = cast(T)((exp%10) + '0');
               }
            }
         else
@@ -267,7 +267,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            else
               // emit all digits to the left of point
               for (; exp >= 0; --exp)
-                     *p++ = toDigit (x, count);
+                     *p++ = cast(T)toDigit (x, count);
 
            // emit point
            if (decimals)
@@ -280,7 +280,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            // output remaining digits, if any. Trailing
            // zeros are also returned from toDigit()
            while (decimals-- > 0)
-                  *p++ = toDigit (x, count);
+                  *p++ = cast(T)toDigit (x, count);
            }
 
         return dst [0..(p - dst.ptr)];

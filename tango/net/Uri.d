@@ -554,7 +554,7 @@ class Uri : UriView
                              i += 2;
                           }
 
-                       *p = c;
+                       *p = cast(char)c;
                        }
 
                    // return a slice from the decoded input
@@ -840,7 +840,7 @@ class Uri : UriView
         {
                 foreach (inout char c; src)
                          if (c >= 'A' && c <= 'Z')
-                             c = c + ('a' - 'A');
+                             c = cast(char)(c + ('a' - 'A'));
                 return src;
         }
 }

@@ -524,7 +524,7 @@ T[] itoa(T) (T[] output, uint value, int radix = 10)
         T* p = output.ptr + output.length;
 
         do {
-           *--p = value % radix + '0';
+           *--p = cast(T)(value % radix + '0');
            } while (value /= radix);
         return output[p-output.ptr .. $];
 }
