@@ -736,9 +736,8 @@ class ZipSubFolder : VfsFolder, VfsSync
                 // the ZipSubFolderEntry do the last lookup.)
                 return new ZipSubFolderEntry(archive, curent, ht);
         }
-        while( true );
-
-        assert(false);
+        while( true )
+        //assert(false);
     }
 
     ///

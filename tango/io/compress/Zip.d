@@ -495,8 +495,6 @@ private
             case 8:     return Method.Deflate;
             default:    return Method.Unsupported;
         }
-
-        assert(false);
     }
 
     ushort fromMethod(Method method)
@@ -508,8 +506,6 @@ private
             default:
                 assert(false, "unsupported compression method");
         }
-
-        assert(false);
     }
 
     /* NOTE: This doesn't actually appear to work.  Using the default magic
@@ -682,8 +678,6 @@ version( none )
             default:
                 assert(false);
         }
-
-        assert(false);
     }
 
     /**
