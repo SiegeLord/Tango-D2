@@ -23,6 +23,36 @@ private import tango.text.xml.Document;
 
 class DocPrinter(T) : IXmlPrinter!(T)
 {
+        private bool quick = true;
+        private uint indentation = 2;
+
+        /***********************************************************************
+        
+                Sets the number of spaces used when increasing indentation
+                levels. Use a value of zero to disable explicit formatting
+
+        ***********************************************************************/
+        
+        final DocPrinter indent (uint indentation)
+        {       
+                this.indentation = indentation;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Enable or disable use of cached document snippets. These
+                represent document branches that remain unaltered, and
+                can be emitted verbatim instead of traversing the tree
+                        
+        ***********************************************************************/
+        
+        final DocPrinter fast (bool yes)
+        {       
+                this.quick = yes;
+                return this;
+        }
+
         /***********************************************************************
         
                 Generate a text representation of the document tree
@@ -60,7 +90,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                 void printNode (Node node, uint indent)
                 {
                         // check for cached output
-                        if (node.end)
+                        if (node.end && quick)
                            {
                            auto p = node.start;
                            auto l = node.end - p;
@@ -79,7 +109,10 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                     break;
         
                                case XmlNodeType.Element:
-                                    emit ("\r\n", spaces[0..indent], "<", node.name(tmp));
+                                    if (indentation > 0)
+                                        emit ("\r\n", spaces[0..indent]);
+                                    emit ("<", node.name(tmp));
+
                                     foreach (attr; node.attributes)
                                              emit (` `, attr.name(tmp), `="`, attr.rawValue, `"`);  
 
@@ -90,10 +123,10 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                        if (value.length)
                                            emit (value);
                                        foreach (child; node.children)
-                                                printNode (child, indent + 2);
+                                                printNode (child, indent + indentation);
                                         
                                        // inhibit newline if we're closing Data
-                                       if (node.lastChild_.type != XmlNodeType.Data)
+                                       if (node.lastChild_.type != XmlNodeType.Data && indentation > 0)
                                            emit ("\r\n", spaces[0..indent]);
                                        emit ("</", node.name(tmp), ">");
                                        }
@@ -156,7 +189,7 @@ debug (DocPrinter)
 
                 void test (char[][] s...){foreach (t; s) Stdout(t).flush;}
 
-                auto print = new DocPrinter!(char);
-                print(doc.root.firstChild.firstChild, &test);
+                auto p = new DocPrinter!(char);
+                p (doc.root, &test);
         }
 }
