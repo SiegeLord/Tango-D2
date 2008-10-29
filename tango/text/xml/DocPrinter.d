@@ -47,7 +47,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                         
         ***********************************************************************/
         
-        final DocPrinter fast (bool yes)
+        final DocPrinter cache (bool yes)
         {       
                 this.quick = yes;
                 return this;
