@@ -144,6 +144,7 @@ else {
                 throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can't be followed by ..");
             }
 }
+            
             int idx = findSlash(path, start - 2);
             if (start + 2 == end) {
                 // path ends with /..
@@ -155,6 +156,9 @@ else {
                 // remove /.. and preceding segment and return
                 end = idx;
                 return;
+            }
+            else if (path[start+2] == '.') {
+                throw new IllegalArgumentException("PathUtil :: Invalid path, found more than 2 dots.");
             }
             else if (path[start+2] == '/') {
                 // found /../ sequence
@@ -252,6 +256,15 @@ debug (UnitTest)
         assert (normalize ("d/") == "d/");
         assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
         assert (normalize ("/home//john") == "/home/john");
+
+        bool threedots = false;
+        try {
+            normalize("/foo/.../bar");
+        }
+        catch (IllegalArgumentException iae) {
+            threedots = true;
+        }
+        assert (threedots);
 
 version (Windows) {
         assert (normalize ("\\foo\\..\\john") == "/john");
