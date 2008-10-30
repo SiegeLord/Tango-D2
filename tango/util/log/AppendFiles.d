@@ -149,9 +149,6 @@ public class AppendFiles : Filer
                 if (++index >= paths.length)
                     index = 0;
                 
-                // reset file size
-                fileSize = 0;
-
                 // close any existing conduit
                 close;
 
@@ -161,8 +158,15 @@ public class AppendFiles : Filer
                 auto conduit = new FileConduit (paths[index], style);
 
                 buffer = configure (conduit);
+
+                // reset file size
                 if (reset)
-                    conduit.truncate;
+                   {
+                   fileSize = 0;
+                   conduit.truncate;
+                   }
+                else
+                   fileSize = cast(ulong) conduit.length;
         }
 }
 
