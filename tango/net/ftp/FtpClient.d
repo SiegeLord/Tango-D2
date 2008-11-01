@@ -596,7 +596,7 @@ class FTPConnection : Telnet
 
                 return listener;
             }
-        assert (false);
+        // assert (false);
     }
 
     /// Prepare a data socket for use.

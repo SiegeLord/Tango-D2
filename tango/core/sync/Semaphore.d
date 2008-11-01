@@ -177,7 +177,7 @@ class Semaphore
         }
 
         // -w trip
-        return false;
+        //return false;
     }
 
 
@@ -242,7 +242,7 @@ class Semaphore
         }
 
         // -w trip
-        return false;
+        //return false;
     }
 
 
