@@ -35,9 +35,9 @@ class DataFileInput : DataInput
 
         ***********************************************************************/
 
-        this (FileConduit file, uint buffer=uint.max, bool flip=false)
+        this (FileConduit file, uint buffer=uint.max)
         {
-                super (conduit = file, buffer, flip);
+                super (conduit = file, buffer);
         }
 
         /***********************************************************************
@@ -85,9 +85,9 @@ class DataFileOutput : DataOutput
 
         ***********************************************************************/
 
-        this (FileConduit file, uint buffer=uint.max, bool flip = false)
+        this (FileConduit file, uint buffer=uint.max)
         {
-                super (conduit = file, buffer, flip);
+                super (conduit = file, buffer);
         }
 
         /***********************************************************************

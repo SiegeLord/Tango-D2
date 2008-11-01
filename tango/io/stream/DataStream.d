@@ -44,8 +44,18 @@ private import tango.io.device.Conduit;
 
 class DataInput : InputFilter, Buffered
 {
-        private bool    flip;
-        private IBuffer input;
+        public enum
+        {
+                Native,
+                Network,
+                Little
+        }
+
+        private bool            flip;
+        private IBuffer         input;
+        private Allocate        allocator;
+
+        private alias void[] delegate (uint) Allocate;
 
         /***********************************************************************
 
@@ -53,10 +63,10 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        this (InputStream stream, uint buffer=uint.max, bool flip=false)
+        this (InputStream stream, uint buffer=uint.max)
         {
-                this.flip = flip;
                 super (input = Buffer.share (stream, buffer));
+                allocator = (uint bytes){return new void[bytes];};
         }
 
         /***********************************************************************
@@ -68,6 +78,33 @@ class DataInput : InputFilter, Buffered
         final IBuffer buffer ()
         {
                 return input;
+        }
+
+        /***********************************************************************
+
+                Set the array allocator
+
+        ***********************************************************************/
+
+        final DataInput allocate (Allocate allocate)
+        {
+                allocator = allocate;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Extended ctor with explicit endian translation
+
+        ***********************************************************************/
+
+        final DataInput endian (int e)
+        {
+                version (BigEndian)
+                         flip = e is Little;
+                   else
+                      flip = e is Network;
+                return this;
         }
 
         /***********************************************************************
@@ -123,10 +160,10 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final void[] get (void[] delegate(uint bytes) dg = null)
+        final void[] get ()
         {
                 auto len = getInt;
-                auto dst = (dg ? dg(len) : new void[len]);
+                auto dst = allocator (len);
                 input.readExact (dst.ptr, len);
                 return dst;
         }
@@ -238,6 +275,13 @@ class DataInput : InputFilter, Buffered
 
 class DataOutput : OutputFilter, Buffered
 {       
+        public enum
+        {
+                Native,
+                Network,
+                Little
+        }
+
         private bool    flip;
         private IBuffer output;
 
@@ -247,9 +291,8 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        this (OutputStream stream, uint buffer=uint.max, bool flip=false)
+        this (OutputStream stream, uint buffer=uint.max)
         {
-                this.flip = flip;
                 super (output = Buffer.share (stream, buffer));
         }
 
@@ -262,6 +305,21 @@ class DataOutput : OutputFilter, Buffered
         final IBuffer buffer ()
         {
                 return output;
+        }
+
+        /***********************************************************************
+
+                Extended ctor with explicit endian translation
+
+        ***********************************************************************/
+
+        final DataOutput endian (int e)
+        {
+                version (BigEndian)
+                         flip = e is Little;
+                   else
+                      flip = e is Network;
+                return this;
         }
 
         /***********************************************************************
@@ -384,10 +442,11 @@ debug (UnitTest)
 debug (DataStream)
 {
         import tango.io.Buffer;
+        import tango.io.Stdout;
 
         void main()
         {
-                auto buf = new Buffer(32);
+                auto buf = new Buffer(64);
 
                 auto output = new DataOutput (buf);
                 output.put ("blah blah");
