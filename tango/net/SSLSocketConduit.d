@@ -10,14 +10,18 @@
 
 module tango.net.SSLSocketConduit;
 
-import tango.net.SocketConduit;
-import tango.net.Socket;
-import tango.net.C.OpenSSL;
-import tango.net.PKI;
-import tango.io.FilePath;
-import tango.stdc.stringz;
-import tango.time.Time;
-import tango.core.Thread;
+private import tango.time.Time;
+
+private import tango.io.FilePath;
+
+private import tango.core.Thread;
+
+private import tango.stdc.stringz;
+
+private import tango.net.PKI,
+               tango.net.Socket,
+               tango.net.c.OpenSSL,
+               tango.net.SocketConduit;
 
 /*******************************************************************************
     

@@ -10,11 +10,11 @@
 
 module tango.net.SSLServerSocket;
 
-import tango.net.SSLSocketConduit;
-import tango.net.SocketConduit;
-import tango.net.InternetAddress;
-import tango.net.ServerSocket;
-import tango.net.PKI;
+private import tango.net.PKI,
+               tango.net.ServerSocket,
+               tango.net.SocketConduit,
+               tango.net.InternetAddress,
+               tango.net.SSLSocketConduit;
 
 /*******************************************************************************
 

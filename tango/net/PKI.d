@@ -14,7 +14,7 @@ private import tango.time.Time;
 
 private import tango.stdc.stringz;
 
-private import tango.net.C.OpenSSL;
+private import tango.net.c.OpenSSL;
 
 /*******************************************************************************
 

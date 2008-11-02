@@ -8,17 +8,21 @@
 
 *******************************************************************************/
 
-module tango.net.C.OpenSSL;
+module tango.net.c.OpenSSL;
 
-import tango.sys.SharedLib;
-import tango.stdc.stdio;
-import tango.io.FileSystem;
-import tango.stdc.stringz;
-import tango.core.sync.ReadWriteMutex;
-import tango.core.sync.Mutex;
-import tango.core.Thread;
-import Integer = tango.text.convert.Integer;
-import tango.io.Stdout;
+private import tango.sys.SharedLib;
+
+private import tango.stdc.stdio;
+private import tango.stdc.stringz;
+
+private import tango.io.Stdout;
+private import tango.io.FileSystem;
+
+private import tango.core.Thread;
+private import tango.core.sync.Mutex;
+private import tango.core.sync.ReadWriteMutex;
+
+private import Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 
@@ -26,9 +30,6 @@ import tango.io.Stdout;
     OpenSSL libraries (libssl.so/libssl32.dll and libcrypto.so/libeay32.dll) 
 
 *******************************************************************************/
-
-
-
 
 /*
    XXX TODO XXX
