@@ -290,7 +290,6 @@ class SocketPool(T)
 
 class DataOutputPool : SocketPool!(DataOutput)
 { 
-        private bool flip;
         private int  bufferSize;
 
         /***********************************************************************
@@ -299,9 +298,8 @@ class DataOutputPool : SocketPool!(DataOutput)
 
         ***********************************************************************/
 
-        this (InternetAddress addr, int bufferSize=8192, bool flip=false, bool nagle=true)
+        this (InternetAddress addr, int bufferSize=8192, bool nagle=true)
         {
-                this.flip = flip;
                 this.bufferSize = bufferSize;
                 super (addr, &factory, nagle);
         }
@@ -314,7 +312,7 @@ class DataOutputPool : SocketPool!(DataOutput)
 
         private DataOutput factory (IConduit c)
         {       
-                return new DataOutput (c, bufferSize, flip);
+                return (new DataOutput (c, bufferSize)).endian(DataOutput.Little);
         }
 }
 
