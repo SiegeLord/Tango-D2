@@ -600,7 +600,7 @@ private struct XmlIterator(Ch)
         
         final Ch[] opSlice(size_t x, size_t y)
         in {
-                if ((point+y) >= end || y < x)
+                if ((point+y) > end || y < x)
                      assert(false);                  
            }
         body
