@@ -1706,8 +1706,6 @@ public class AppendStream : Appender
         }
 }
 
-import tango.core.Thread;
-
 /*******************************************************************************
 
         A simple layout comprised only of time(ms), level, name, and message
@@ -1729,8 +1727,8 @@ public class LayoutTimer : Appender.Layout
 
                 dg (event.toMilli (tmp, event.span));
                 dg (" ");
-                dg (Thread.getThis.name);
-                dg (" ");
+//                dg (Thread.getThis.name);
+//                dg (" ");
                 dg (event.levelName);
                 dg (event.name);
                 dg (event.host.context.label);
