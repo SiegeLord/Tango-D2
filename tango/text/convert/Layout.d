@@ -199,43 +199,59 @@ class Layout(T)
 
                 version (GNU)
                         {
+                        union ArgU {int i; byte b; long l; short s; void[] a;
+                                    real r; float f; double d;
+                                    cfloat cf; cdouble cd; creal cr;}
+
                         Arg[64] arglist = void;
-                        int[64] intargs = void;
-                        byte[64] byteargs = void;
-                        long[64] longargs = void;
-                        short[64] shortargs = void;
-                        void[][64] voidargs = void;
-                        real[64] realargs = void;
-                        float[64] floatargs = void;
-                        double[64] doubleargs = void;
+                        ArgU[64] storedArgs = void;
         
                         foreach (i, arg; arguments)
                                 {
                                 static if (is(typeof(args.ptr)))
                                     arglist[i] = args.ptr;
                                 else
-                                    arglist[i] = args;
+                                   arglist[i] = args;
+
                                 /* Since floating point types don't live on
                                  * the stack, they must be accessed by the
                                  * correct type. */
                                 bool converted = false;
                                 switch (arg.classinfo.name[9])
                                        {
-                                       case TypeCode.FLOAT:
-                                            floatargs[i] = va_arg!(float)(args);
-                                            arglist[i] = &floatargs[i];
+                                       case TypeCode.FLOAT, TypeCode.IFLOAT:
+                                            storedArgs[i].f = va_arg!(float)(args);
+                                            arglist[i] = &(storedArgs[i].f);
+                                            converted = true;
+                                            break;
+                                        
+                                       case TypeCode.CFLOAT:
+                                            storedArgs[i].cf = va_arg!(cfloat)(args);
+                                            arglist[i] = &(storedArgs[i].cf);
                                             converted = true;
                                             break;
         
-                                       case TypeCode.DOUBLE:
-                                            doubleargs[i] = va_arg!(double)(args);
-                                            arglist[i] = &doubleargs[i];
+                                       case TypeCode.DOUBLE, TypeCode.IDOUBLE:
+                                            storedArgs[i].d = va_arg!(double)(args);
+                                            arglist[i] = &(storedArgs[i].d);
+                                            converted = true;
+                                            break;
+                                        
+                                       case TypeCode.CDOUBLE:
+                                            storedArgs[i].cd = va_arg!(cdouble)(args);
+                                            arglist[i] = &(storedArgs[i].cd);
                                             converted = true;
                                             break;
         
-                                       case TypeCode.REAL:
-                                            realargs[i] = va_arg!(real)(args);
-                                            arglist[i] = &realargs[i];
+                                       case TypeCode.REAL, TypeCode.IREAL:
+                                            storedArgs[i].r = va_arg!(real)(args);
+                                            arglist[i] = &(storedArgs[i].r);
+                                            converted = true;
+                                            break;
+
+                                       case TypeCode.CREAL:
+                                            storedArgs[i].cr = va_arg!(creal)(args);
+                                            arglist[i] = &(storedArgs[i].cr);
                                             converted = true;
                                             break;
         
@@ -247,24 +263,25 @@ class Layout(T)
                                    switch (arg.tsize)
                                           {
                                           case 1:
-                                               byteargs[i] = va_arg!(byte)(args);
-                                               arglist[i] = &byteargs[i];
+                                               storedArgs[i].b = va_arg!(byte)(args);
+                                               arglist[i] = &(storedArgs[i].b);
                                                break;
                                           case 2:
-                                               shortargs[i] = va_arg!(short)(args);
-                                               arglist[i] = &shortargs[i];
+                                               storedArgs[i].s = va_arg!(short)(args);
+                                               arglist[i] = &(storedArgs[i].s);
                                                break;
                                           case 4:
-                                               intargs[i] = va_arg!(int)(args);
-                                               arglist[i] = &intargs[i];
+                                               storedArgs[i].i = va_arg!(int)(args);
+                                               arglist[i] = &(storedArgs[i].i);
                                                break;
                                           case 8:
-                                               longargs[i] = va_arg!(long)(args);
-                                               arglist[i] = &longargs[i];
+                                               storedArgs[i].l = va_arg!(long)(args);
+                                               arglist[i] = &(storedArgs[i].l);
                                                break;
                                           case 16:
-                                               voidargs[i] = va_arg!(void[])(args);
-                                               arglist[i] = &voidargs[i];
+                                               assert((void[]).sizeof==16,"Structure size not supported");
+                                               storedArgs[i].a = va_arg!(void[])(args);
+                                               arglist[i] = &(storedArgs[i].a);
                                                break;
                                           default:
                                                assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
@@ -287,13 +304,13 @@ class Layout(T)
         /**********************************************************************
 
                 Parse the format-string, emitting formatted args and text
-                fragments as we go.
+                fragments as we go
 
         **********************************************************************/
 
         private uint parse (T[] layout, TypeInfo[] ti, Arg[] args, Sink sink)
         {
-                T[384] result = void;
+                T[512] result = void;
                 int length, nextIndex;
 
 
@@ -520,32 +537,6 @@ class Layout(T)
                 return length;
         }
 
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private void error (char[] msg)
-        {
-                throw new IllegalArgumentException (msg);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private uint spaces (Sink sink, int count)
-        {
-                uint ret;
-
-                static const T[32] Spaces = ' ';
-                while (count > Spaces.length)
-                      {
-                      ret += sink (Spaces);
-                      count -= Spaces.length;
-                      }
-                return ret + sink (Spaces[0..count]);
-        }
-
         /***********************************************************************
 
         ***********************************************************************/
@@ -598,6 +589,24 @@ class Layout(T)
 
                        case TypeCode.FLOAT:
                             return floater (result, *cast(float*) p, format);
+
+                       case TypeCode.IFLOAT:
+                            return imaginary (result, *cast(ifloat*) p, format);
+
+                       case TypeCode.IDOUBLE:
+                            return imaginary (result, *cast(idouble*) p, format);
+
+                       case TypeCode.IREAL:
+                           return imaginary (result, *cast(ireal*) p, format);
+
+                       case TypeCode.CFLOAT:
+                            return complex (result, *cast(cfloat*) p, format);
+
+                       case TypeCode.CDOUBLE:
+                            return complex (result, *cast(cdouble*) p, format);
+
+                       case TypeCode.CREAL:
+                            return complex (result, *cast(creal*) p, format);
 
                        case TypeCode.DOUBLE:
                             return floater (result, *cast(double*) p, format);
@@ -654,6 +663,8 @@ class Layout(T)
 
         /**********************************************************************
 
+                handle "unknown-type" errors
+
         **********************************************************************/
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
@@ -663,6 +674,8 @@ class Layout(T)
 
         /**********************************************************************
 
+                Format an integer value
+
         **********************************************************************/
 
         protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T[] def="d")
@@ -671,10 +684,13 @@ class Layout(T)
                     format = def;
                 if (format[0] != 'd')
                     v &= mask;
+
                 return Integer.format (output, v, format);
         }
 
         /**********************************************************************
+
+                format a floating-point value. Defaults to 2 decimal places
 
         **********************************************************************/
 
@@ -683,16 +699,7 @@ class Layout(T)
                 T    style = 'f';
                 uint places = 2;
 
-                parseGeneric (format, places, style);
-                return Float.format (output, v, places, (style is 'e' || style is 'E') ? 0 : 10);
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
-        private bool parseGeneric (T[] format, ref uint width, ref T style)
-        {
+                // extract formatting style and decimal-places
                 if (format.length)
                    {
                    uint number;
@@ -706,12 +713,77 @@ class Layout(T)
                              break;
 
                    if (p - format.ptr > 1)
-                      {
-                      width = number;
-                      return true;
-                      }
+                       places = number;
                    }
-                return false;
+
+                return Float.format (output, v, places, 
+                                    (style is 'e' || style is 'E') ? 0 : 10);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private void error (char[] msg)
+        {
+                throw new IllegalArgumentException (msg);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private uint spaces (Sink sink, int count)
+        {
+                uint ret;
+
+                static const T[32] Spaces = ' ';
+                while (count > Spaces.length)
+                      {
+                      ret += sink (Spaces);
+                      count -= Spaces.length;
+                      }
+                return ret + sink (Spaces[0..count]);
+        }
+
+        /**********************************************************************
+
+                format an imaginary value
+
+        **********************************************************************/
+
+        private T[] imaginary (T[] result, ireal val, T[] format)
+        {
+                return floatingTail (result, val.im, format, "*1i");
+        }
+        
+        /**********************************************************************
+
+                format a complex value
+
+        **********************************************************************/
+
+        private T[] complex (T[] result, creal val, T[] format)
+        {
+                static T[] plus = "+";
+
+                auto len = floatingTail (result, val.re, format, val.im > 0.0 ? plus : null).length;
+                return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];
+        }
+
+        /**********************************************************************
+
+                formats a floating-point value, and appends a tail to it
+
+        **********************************************************************/
+
+        private T[] floatingTail (T[] result, real val, T[] format, T[] tail)
+        {
+                assert (result.length > tail.length);
+
+                auto len = floater (result[0..$-tail.length], val, format).length;
+                result [len .. len + tail.length] = tail;
+                return result [0 .. len + tail.length];
         }
 }
 
@@ -750,6 +822,12 @@ private enum TypeCode
         POINTER = 'P',
         TYPEDEF = 'T',
         INTERFACE = 'I',
+        CFLOAT = 'q',
+        CDOUBLE = 'r',
+        CREAL = 'c',
+        IFLOAT = 'o',
+        IDOUBLE = 'p',
+        IREAL = 'j'  
 }
 
 
@@ -762,6 +840,7 @@ debug (UnitTest)
 {
         unittest
         {
+        new Layout!(dchar);
         auto Formatter = new Layout!(char);
 
         assert( Formatter( "abc" ) == "abc" );
@@ -877,6 +956,17 @@ debug (UnitTest)
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
         assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
         assert( Formatter( "{0:e4}", 0.0001) == "0.1000e-03");
+
+        assert( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
+        assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
+        assert( Formatter( "{0:e4}", 0.0001*1i) == "0.1000e-03*1i");
+
+        assert( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001+1i) == "0.1000e-03+1.0000*1i");
+        assert( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001-1i) == "0.1000e-03-1.0000*1i");
 
         int[] a = [ 51, 52, 53, 54, 55 ];
         assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
