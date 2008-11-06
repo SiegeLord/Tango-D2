@@ -9,12 +9,15 @@
  
 module tango.math.internal.BiguintCore;
 
-version(TangoBignumNoAsm) {
-private import tango.math.internal.BignumNoAsm;    
-} else version(GNU) {
-    // GDC lies about its X86 support
-private import tango.math.internal.BignumNoAsm;    
-} else version(D_InlineAsm_X86) { 
+version(GNU){
+    // GDC is a filthy liar. It can't actually do inline asm.
+} else version(TangoBignumNoAsm) {
+
+} else version(D_InlineAsm_X86) {
+    version = Really_D_InlineAsm_X86;
+}
+
+version(Really_D_InlineAsm_X86) { 
 private import tango.math.internal.BignumX86;
 } else {
 private import tango.math.internal.BignumNoAsm;
@@ -197,8 +200,8 @@ static BigUint shl(BigUint x, ulong y)
     }
 }
 
-// If wantSub is false, return x+y
-// If wantSub is true, return x-y, and negating sign if x<y
+// If wantSub is false, return x+y, leaving sign unchanged
+// If wantSub is true, return x-y, negating sign if x<y
 static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
     BigUint r;
     if (wantSub) { // perform a subtraction
@@ -228,8 +231,8 @@ static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
     return r;
 }
 
-// If wantSub is false, return x+y
-// If wantSub is true, return x-y, and negating sign if x<y
+// If wantSub is false, return x+y, leaving sign unchanged.
+// If wantSub is true, return x-y, negating sign if x<y
 static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
     BigUint r;
     if (wantSub) { // perform a subtraction
@@ -405,7 +408,7 @@ uint [] add(uint[] a, uint [] b) {
     } else return result[0..$-1];
 }
     
-/*  return x+y
+/*  return x + y
  */
 uint [] addInt(uint[] x, ulong y)
 {
@@ -415,7 +418,7 @@ uint [] addInt(uint[] x, ulong y)
     if (x.length < 2 && hi!=0) ++len;
     uint [] result = new uint[len+1];
     result[0..x.length] = x[]; 
-    if (x.length < 2 && hi!=0) { result[1]=hi; hi=0; }
+    if (x.length < 2 && hi!=0) { result[1]=hi; hi=0; }	
     uint carry = multibyteIncrementAssign!('+')(result[0..$-1], lo);
     if (hi!=0) carry += multibyteIncrementAssign!('+')(result[1..$-1], hi);
     if (carry) {
@@ -772,7 +775,6 @@ void simpleAddAssign(uint [] result, uint [] right)
    }
 }
 
-
 /* Determine how much space is required for the temporaries
  * when performing a Karatsuba multiplication. 
  */
@@ -786,18 +788,21 @@ uint karatsubaRequiredBuffSize(uint xlen)
 * Valid only for balanced multiplies, where x is not shorter than y.
 * It is efficient only if sqrt(2)*y.length > x.length >= y.length.
 * Karatsuba multiplication is O(n^1.59), whereas schoolbook is O(n^2)
+* The maximum allowable length of x and y is uint.max; but performance is appalling
+* long before that length is reached.
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
 */
 void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 {
-    assert(result.length == x.length + y.length);
     assert(x.length >= y.length);
+	assert(result.length<uint.max, "Operands too large");
+    assert(result.length == x.length + y.length);
     if (y.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
     }
     // Must be almost square.
-    assert(2 * y.length * y.length > (x.length-1) * (x.length-1), "Asymmetric Karatsuba");
+    assert(2L * y.length * y.length > (x.length-1) * (x.length-1), "Asymmetric Karatsuba");
         
     // Karatsuba multiply uses the following result:
     // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 + N * mid
@@ -838,7 +843,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
     mid.simpleSubAssign(resultLow);
 
-    if (2 * y1.length * y1.length < x1.length * x1.length) {
+    if (2L * y1.length * y1.length < x1.length * x1.length) {
         // an asymmetric situation has been created.
         // Worst case is if x:y = 1.414 : 1, then x1:y1 = 2.41 : 1.
         // Applying one schoolbook multiply gives us two pieces each 1.2:1
@@ -848,13 +853,13 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
             // divide x1 in two, then use schoolbook multiply on the two pieces.
             uint quarter = (x1.length >> 1) + (x1.length & 1);
             bool ysmaller = (quarter >= y1.length);
-            mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller?x1[0..quarter]: y1, 
-                ysmaller?y1:x1[0..quarter], newscratchbuff);
+            mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller ? x1[0..quarter] : y1, 
+                ysmaller ? y1 : x1[0..quarter], newscratchbuff);
             // Save the part which will be overwritten.
             bool ysmaller2 = ((x1.length -quarter) >= y1.length);
-            newscratchbuff[0..y1.length] = resultHigh[quarter..quarter+y1.length];
-            mulKaratsuba(resultHigh[quarter..$], ysmaller2?x1[quarter..$]: y1, 
-                ysmaller2?y1:x1[quarter..$], newscratchbuff[y1.length..$]);
+            newscratchbuff[0..y1.length] = resultHigh[quarter..quarter + y1.length];
+            mulKaratsuba(resultHigh[quarter..$], ysmaller2 ? x1[quarter..$] : y1, 
+                ysmaller2 ? y1 : x1[quarter..$], newscratchbuff[y1.length..$]);
 
             resultHigh[quarter..$].simpleAddAssign(newscratchbuff[0..y1.length]);                
         }
