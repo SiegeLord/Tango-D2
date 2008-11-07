@@ -47,16 +47,20 @@ INSTALLED=0
 BASELIB64=0
 PREFIX=
 VERBOSE=0
+USERPREFIX=0
+VERIFY=0
 
 # Default values
 defaultdmd() {
     UNINSTALL=0
-    VERIFY=0
     ASPHOBOS=0
     CONF="bin"
     LIB="lib"
     INCL="include"
-    PREFIX="/usr/local"
+    if [ "$USERPREFIX" = "0" ]
+    then
+        PREFIX="/usr/local"
+    fi
     CONFPREFIX="$PREFIX"
     LIBPREFIX="$PREFIX"
     INCLPREFIX="$PREFIX"
@@ -66,31 +70,34 @@ defaultdmd() {
 
 defaultgdc() {
     UNINSTALL=0
-    VERIFY=0
     ASPHOBOS=1 # Using libgphobos name for now
     CONF="bin"
     LIB="lib"
     INCL="include"
 
-    LIBPREFIX="`${CROSS}gdc -print-file-name=libgphobos.a`"
-    LIBPREFIX="`readlink -f $LIBPREFIX`"
-    LIBPREFIX="`dirname $LIBPREFIX`/.."
-
-    # If we have which, use it to get the prefix
-    which ${CROSS}gdc >& /dev/null
-    if [ "$?" = "0" ]
+    if [ "$USERPREFIX" = "0" ]
     then
-        PREFIX="`which ${CROSS}gdc`"
-        PREFIX="`dirname $PREFIX`/.."
+        LIBPREFIX="`${CROSS}gdc -print-file-name=libgphobos.a`"
+        LIBPREFIX="`readlink -f $LIBPREFIX`"
+        LIBPREFIX="`dirname $LIBPREFIX`/.."
+
+        # If we have which, use it to get the prefix
+        which ${CROSS}gdc >& /dev/null
+        if [ "$?" = "0" ]
+        then
+            PREFIX="`which ${CROSS}gdc`"
+            PREFIX="`dirname $PREFIX`/.."
+        else
+            PREFIX="$LIBPREFIX"
+        fi
+
+        if [ -e "$LIB_PREFIX/lib64" ]
+        then
+            BASELIB64=1
+        fi
     else
-        PREFIX="$LIBPREFIX"
+        LIBPREFIX="$PREFIX"
     fi
-
-    if [ -e "$LIB_PREFIX/lib64" ]
-    then
-        BASELIB64=1
-    fi
-
 
     CONFPREFIX="$PREFIX"
     INCLPREFIX="$PREFIX"
@@ -194,7 +201,7 @@ backupgdc() {
     if [ -e "$LIBPREFIX/$LIB/libgphobos.a" -a \
          ! -e "$LIBPREFIX/$LIB/libgphobos.a.phobos" ]
     then
-        echo "Backing up libgphobos.a to libgphobos.a.phobos"
+        if [ "$VERBOSE" = "1" ]; then echo "Backing up libgphobos.a to libgphobos.a.phobos"; fi
         mv -f $LIBPREFIX/$LIB/libgphobos.a $LIBPREFIX/$LIB/libgphobos.a.phobos
         mv -f $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos
         if [ "$BASELIB_64" = "1" ]
@@ -214,17 +221,18 @@ dmdtest() {
         then
             if [ ! "$DMDVERSIONMIN" -gt 21 ]
             then
-                echo 'Your version of DMD have no support for -defaultlib flag, using libphobos.a'
+                if [ "$VERBOSE" = "1" ]; then echo "Your version of DMD have no support for -defaultlib flag, using libphobos.a"; fi
                 ASPHOBOS="1"
             fi
         fi
     fi
 
-    return 1
+    return 0
 }
 
 gdctest() {
-    return 1
+    # TODO Should test for GDC version since GDC 0.24 and older really isn't usable anymore
+    return 0
 }
 
 # Create dmd.conf
@@ -246,35 +254,35 @@ EOF
 configdmd() {
     if [ ! -e "$CONFPREFIX/$CONF/dmd.conf" ]
     then
-        echo "Could not find dmd.conf in $CONFPREFIX/$CONF, create a new one."
+        if [ "$VERBOSE" = "1" ]; then echo "Could not find dmd.conf in $CONFPREFIX/$CONF, create a new one."; fi
         create_dmd_conf
     else
         # Is it a phobos conf ?
         if [ ! "`grep '\-version=Tango' $CONFPREFIX/$CONF/dmd.conf`" ]
         then
-            echo 'Backing up dmd.conf to dmd.conf.phobos, creating new dmd.conf'
+            if [ "$VERBOSE" = "1" ]; then echo "Backing up dmd.conf to dmd.conf.phobos, creating new dmd.conf"; fi
             mv $CONFPREFIX/$CONF/dmd.conf $CONFPREFIX/$CONF/dmd.conf.phobos
             create_dmd_conf
         elif [ "$ASPHOBOS" = "1" ]
         then
             if [ "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
             then
-                echo 'Removing and re-creating dmd.conf'
+                if [ "$VERBOSE" = "1" ]; then echo "Removing and re-creating dmd.conf"; fi
                 rm -rf $CONFPREFIX/$CONF/dmd.conf
                 create_dmd_conf
             fi
         else
             if [ ! "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
             then
-                echo 'Appending -defaultlib switch to DFLAGS'
+                if [ "$VERBOSE" = "1" ]; then echo "Appending -defaultlib switch to DFLAGS"; fi
                 sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
                 if [ ! "`grep '\-debuglib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
                 then
-                    echo 'Appending -debuglib switch to DFLAGS'
+                    if [ "$VERBOSE" = "1" ]; then echo "Appending -debuglib switch to DFLAGS"; fi
                     sed -i.bak -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
                 fi
             else
-                echo 'Found Tango enabled dmd.conf, assume it is working and leave it as is'
+                if [ "$VERBOSE" = "1" ]; then echo "Found Tango enabled dmd.conf, assume it is working and leave it as is"; fi
             fi
         fi
     fi
@@ -283,7 +291,7 @@ configdmd() {
     then
         if [ ! "`grep '\-L\-ltango\-user\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
         then
-            echo 'Appending user library to dmd.conf'
+            if [ "$VERBOSE" = "1" ]; then echo "Appending user library to dmd.conf"; fi
             sed -i.bak -e 's/^DFLAGS=.*$/& -L-ltango-user-dmd/' $CONFPREFIX/$CONF/dmd.conf
         fi
     fi
@@ -326,7 +334,7 @@ verifygdc() {
 }
 
 verify() {
-    echo 'Verifying installation.'
+    if [ "$VERBOSE" = "1" ]; then echo "Verifying installation."; fi
     if [ ! -e "$INCLPREFIX/$INCL/d/object.di" ]
     then
         die "object.di not properly installed to $INCLPREFIX/$INCL/d" 9
@@ -335,7 +343,7 @@ verify() {
     then
         die "$BASELIB not properly installed to $LIBPREFIX/$LIB" 10
     fi
-    echo 'Installation OK.'
+    if [ "$VERBOSE" = "1" ]; then echo "Installation OK."; fi
 }
 
 install() {
@@ -357,8 +365,13 @@ install() {
             if [ "$ASPHOBOS" = "1" ]
             then
                 BASELIB="libphobos.a"
-                if [ "$VERBOSE" = "1" ]; then echo "Copy libtango-base-dmd.a to libphobos.a"; fi
-                cp -pv libtango-base-dmd.a libphobos.a
+                if [ "$VERBOSE" = "1" ]
+                then 
+                    echo "Copy libtango-base-dmd.a to libphobos.a"
+                    cp -pv libtango-base-dmd.a libphobos.a
+                else
+                    cp -p libtango-base-dmd.a libphobos.a
+                fi
             fi
         fi
 
@@ -392,20 +405,20 @@ install() {
         then
             if [ "$VERIFY" = "1" ]
             then
-                echo "Not veryfying uninstall."
+                if [ "$VERBOSE" = "1" ]; then echo "Not veryfying uninstall"; fi
                 VERIFY=0
             fi
 
             uninstall$1
-            die "Uninstall complete!" 0
+            if [ "$VERBOSE" = "1" ]; then echo "Uninstall complete!"; fi
+            exit 0
         fi
 
         # Build missing libs
         if [ ! -e $BASELIBNAME ]
         then
-            echo '$BASELIBNAME not found, trying to build it.'
-            ./build-$1.sh || die "Failed to build $BASELIBNAME, try running build-$1.sh 
-        manually." 4
+            if [ "$VERBOSE" = "1" ]; then echo "$BASELIBNAME not found, trying to build it."; fi
+            ./build-$1.sh || die "Failed to build $BASELIBNAME, try running build-$1.sh manually." 4
         fi
 
         if [ "$USERLIB" = "1" ]
@@ -413,41 +426,56 @@ install() {
             if [ "$BASELIBNAME" -nt "$USERLIBNAME" ]
             then
                 if [ "$VERBOSE" = "1" ]
-                then
-                    echo '$USERLIBNAME not found or older than $BASELIBNAME, trying
-                         to build it.'
+                then 
+                    echo "$USERLIBNAME not found or older than $BASELIBNAME, trying to build it."
+                    ./build-tango.sh --verbose $1 || die "Failed to build $USERLIBNAME, try running ./build-tango.sh $1 manually." 4
+                else
+                    ./build-tango.sh $1 || die "Failed to build $USERLIBNAME, try running ./build-tango.sh $1 manually." 4
                 fi
-                ./build-tango.sh --release $1 || die "Failed to build $USERLIBNAME, try running 
-                ./build-tango.sh $1 manually." 4
             fi
         fi
 
         backup$1
-
-        echo 'Copying files...'
-        echo "Creating directories $INCLPREFIX/$INCL/d, $LIBPREFIX/$LIB and $CONFPREFIX/$CONF
-              if they don't exist."
-        mkdir -p $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
-        mkdir -p $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
-        mkdir -p $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
-
-        echo "Installing $BASELIBNAME to $LIBPREFIX/$LIB"
-        cp -pRvf $BASELIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy base library." 7
-        echo "Installing object.di to $INCLPREFIX/$INCL/d/"
-        cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source." 8
+        if [ "$VERBOSE" = "1" ]
+        then
+            echo "Copying files..."
+            echo "Creating directories $INCLPREFIX/$INCL/d, $LIBPREFIX/$LIB and $CONFPREFIX/$CONF"
+            echo "  if they don't exist."
+            mkdir -pv $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
+            mkdir -pv $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
+            mkdir -pv $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
+            echo "Installing $BASELIBNAME to $LIBPREFIX/$LIB"
+            cp -pRvf $BASELIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy base library." 7
+            echo "Installing object.di to $INCLPREFIX/$INCL/d/"
+            cp -pRvf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source." 8
+        else
+            mkdir -p $INCLPREFIX/$INCL/d || die "Failed to create $INCL/d (maybe you need root privileges?)" 5
+            mkdir -p $LIBPREFIX/$LIB/ || die "Failed to create $LIBPREFIX/$LIB (maybe you need root privileges?)" 5
+            mkdir -p $CONFPREFIX/$CONF/ || die "Failed to create $CONFPREFIX/$CONF" 5
+            cp -pRf $BASELIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy base library." 7
+            cp -pRf ../object.di $INCLPREFIX/$INCL/d/object.di || die "Failed to copy source." 8
+        fi
 
         if [ "$USERLIB" = "1" ]
         then
-            if [ "$VERBOSE" = "1" ]; then echo "Installing $USERLIBNAME to $LIBPREFIX/$LIB"; fi
-            cp -pRvf $USERLIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy user library." 8
+            if [ "$VERBOSE" = "1" ]
+            then 
+                echo "Installing $USERLIBNAME to $LIBPREFIX/$LIB"
+                cp -pRvf $USERLIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy user library." 8
+            else
+                cp -pRf $USERLIBNAME $LIBPREFIX/$LIB/ || die "Failed to copy user library." 8
+            fi
             cd ..
+            if [ "$VERBOSE" = "1" ]; then echo "Installing import files to $INCLPREFIX/$INCL/d/"; fi
             for file in `find tango -name '*.di' -o -name '*.d'`
             do
                 if [ ! -e `dirname $INCLPREFIX/$INCL/d/$file` ]
                 then
-                    mkdir -v `dirname $INCLPREFIX/$INCL/d/$file`
+                    if [ "$VERBOSE" = "1" ]; then mkdir -pv `dirname $INCLPREFIX/$INCL/d/$file`;
+                    else mkdir -p `dirname $INCLPREFIX/$INCL/d/$file`; fi
                 fi
-                cp $file -pRvf $INCLPREFIX/$INCL/d/$file
+                if [ "$VERBOSE" = "1" ]; then cp $file -pRvf $INCLPREFIX/$INCL/d/$file;
+                else cp $file -pRf $INCLPREFIX/$INCL/d/$file; fi
             done
         fi
 
@@ -462,7 +490,8 @@ install() {
 
     fi
 
-    die "Done installing Tango for $1!" 0
+    if [ "$VERBOSE" = "1" ]; then echo "Done installing Tango for $1!"; fi 
+    exit 0
 }
 
 while [ "$#" != "0" ]
@@ -479,6 +508,7 @@ do
             CONFPREFIX="$PREFIX"
             LIBPREFIX="$PREFIX"
             INCLPREFIX="$PREFIX"
+            USERPREFIX=1
             ;;
         --altconf)
             shift
