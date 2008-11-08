@@ -203,7 +203,10 @@ backupgdc() {
     then
         if [ "$VERBOSE" = "1" ]; then echo "Backing up libgphobos.a to libgphobos.a.phobos"; fi
         mv -f $LIBPREFIX/$LIB/libgphobos.a $LIBPREFIX/$LIB/libgphobos.a.phobos
-        mv -f $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos
+        if [ -e "$PREFIX/include/d/$GDC_VER/object.d" ]
+        then
+            mv -f $PREFIX/include/d/$GDC_VER/object.d $PREFIX/include/d/$GDC_VER/object.d.phobos
+        fi
         if [ "$BASELIB_64" = "1" ]
         then
             if [ -e "$LIBPREFIX/lib64/libgphobos.a" ]
