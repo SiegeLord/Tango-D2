@@ -324,7 +324,9 @@ class BzipInput : InputFilter
 
     uint read(void[] dst)
     {
-        check_valid();
+        if( !bzs_valid )
+            return IConduit.Eof;
+
         scope(failure) kill_bzs();
 
         bool finished = false;
