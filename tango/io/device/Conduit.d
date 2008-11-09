@@ -16,8 +16,6 @@ private import  tango.core.Exception;
 
 public  import  tango.io.model.IConduit;
 
-private import tango.stdc.stdlib : alloca;
-
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
