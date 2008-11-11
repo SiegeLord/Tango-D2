@@ -164,6 +164,10 @@ struct LocalFileHeader
      */
     bool agrees_with(FileHeader h)
     {
+        // NOTE: extra_field used to be compared with h.extra_field, but this caused
+        // an assertion in certain archives. I found a mention of these fields being
+        // allowed to be different, so I think it in general is wrong to include in
+        // this sanity check. larsivi 20081111
         if( data.extract_version != h.data.extract_version
                 || data.general_flags != h.data.general_flags
                 || data.compression_method != h.data.compression_method
@@ -172,10 +176,9 @@ struct LocalFileHeader
                 || data.crc_32 != h.data.crc_32
                 || data.compressed_size != h.data.compressed_size
                 || data.uncompressed_size != h.data.uncompressed_size
-                || file_name != h.file_name
-                || extra_field != h.extra_field )
+                || file_name != h.file_name )
             return false;
-
+        
         // We need a separate check for the sizes and crc32, since these will
         // be zero if a trailing descriptor was used.
         if( !h.usingDataDescriptor && (
