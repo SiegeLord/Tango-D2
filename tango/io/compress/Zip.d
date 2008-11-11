@@ -638,11 +638,14 @@ version( none )
      */
     void close()
     {
+        // NOTE: Originally more of the GC allocated data in this class were
+        // explicitly deleted here, such as cd_data - this caused segfaults
+        // and have been removed as they were not necessary from correctness
+        // point of view, and the memory usage win is questionable.
         state = State.Done;
         source = null;
         seeker = null;
         delete headers;
-        delete cd_data;
 
         if( file_source !is null )  
           {
