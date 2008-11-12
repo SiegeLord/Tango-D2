@@ -240,7 +240,10 @@ class SocketConduit : Conduit, ISelectable
                 a non-zero value.
 
                 Returns the number of bytes read from the socket, or
-                IConduit.Eof where there's no more content available
+                IConduit.Eof where there's no more content available.
+
+                If the underlying socket is a blocking socket, Eof will 
+                only be returned once the socket has closed.
 
                 Note that a timeout is equivalent to Eof. Isolating
                 a timeout condition can be achieved via hadTimeout()
