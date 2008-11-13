@@ -22,6 +22,10 @@ private import tango.math.internal.BignumX86;
 } else {
 private import tango.math.internal.BignumNoAsm;
 }
+version(build){// bud/build won't link properly without this.
+    static import tango.math.internal.BignumX86;
+}
+
 
 // private import tango.core.Cpuid;
 static this()
@@ -327,7 +331,7 @@ static BigUint div(BigUint x, BigUint y)
     if (y.data.length > x.data.length) return BigUint(ZERO);
     if (y.data.length == 1) return divInt(x, y.data[0]);
     uint [] result = new uint[x.data.length - y.data.length + 1];
-    schoolbookDivMod(result, null, x.data, y.data);
+    divModInternal(result, null, x.data, y.data);
     if (result.length>1 && result[$-1]==0) result=result[0..$-1];
     return BigUint(result);
 }
@@ -339,7 +343,7 @@ static BigUint mod(BigUint x, BigUint y)
     if (y.data.length == 1) return divInt(x, y.data[0]);
     uint [] result = new uint[x.data.length - y.data.length + 1];
     uint [] rem = new uint[y.data.length];
-    schoolbookDivMod(result, rem, x.data, y.data);
+    divModInternal(result, rem, x.data, y.data);
     while (rem.length>1 && rem[$-1]==0) rem = rem[0..$-1];
     return BigUint(rem);
 }
@@ -408,7 +412,7 @@ uint [] add(uint[] a, uint [] b) {
     } else return result[0..$-1];
 }
     
-/*  return x + y
+/**  return x + y
  */
 uint [] addInt(uint[] x, ulong y)
 {
@@ -442,7 +446,7 @@ uint [] subInt(uint[] x, ulong y)
     else return result; 
 }
 
-/*  General unsigned multiply routine for bigints.
+/**  General unsigned multiply routine for bigints.
  *  Sets result = x*y.
  *
  *  The length of y must not be larger than the length of x.
@@ -554,7 +558,6 @@ void mulInternal(uint[] result, uint[] x, uint[] y)
         delete scratchbuff;
     }
 }
-
 
 private:
 // Converts a big uint to a hexadecimal string.
@@ -873,20 +876,13 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 
 import tango.core.BitManip : bsr;
 
-
-/* Knuth's Algorithm D, as presented in "Hacker's Delight"
-* given u and v, calculates  quotient  = u/v, remainder = u%v.
-*/
-//import tango.stdc.stdio;
-
-// given u and v, calculates  quotient  = u/v, remainder = u%v.
-void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v) {
+void divModInternal(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
+{
     assert(quotient.length == u.length - v.length + 1);
     assert(remainder==null || remainder.length == v.length);
     assert(v.length > 1);
     assert(u.length >= v.length);
-    assert(v[$-1]!=0);
-
+    
     // Normalize by shifting v left just enough so that
     // its high-order bit is on, and shift u left the
     // same amount.
@@ -903,15 +899,37 @@ void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v) 
         un[0..$-1] = u[];
         un[$-1] = 0;
     }
+    schoolbookDivMod(quotient, remainder, un, vn);
+    // Unnormalize remainder, if required.
+    if (remainder != null) {
+        if (s == 0) remainder[] = un[0..$-1];
+        else multibyteShr(remainder, un, s);
+    }
+    delete un;
+    delete vn;
+
+}
+
+/* Knuth's Algorithm D, as presented in "Hacker's Delight"
+* Given u and v, calculates  quotient  = u/v, remainder = u%v.
+* u and v must be normalized.
+*/
+void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] un, uint [] vn)
+{
+    assert(quotient.length == un.length - vn.length);
+    assert(remainder==null || remainder.length == vn.length);
+    assert(vn.length > 1);
+    assert(un.length >= vn.length);
+    assert((vn[$-1]&0x8000_0000)!=0);
     
-    for (int j = u.length - v.length; j >= 0; j--) {
+    for (int j = un.length - vn.length-1; j >= 0; j--) {
         // Compute estimate qhat of quotient[j].
         ulong bigqhat, rhat;
-        bigqhat = ( (cast(ulong)(un[j+v.length])<<32) + un[j+v.length-1])/vn[$-1];
-        rhat = ((cast(ulong)(un[j+v.length])<<32) + un[j+v.length-1]) - bigqhat*vn[$-1];
+        bigqhat = ( (cast(ulong)(un[j+vn.length])<<32) + un[j+vn.length-1])/vn[$-1];
+        rhat = ((cast(ulong)(un[j+vn.length])<<32) + un[j+vn.length-1]) - bigqhat*vn[$-1];
 again:
         if (bigqhat & 0xFFFF_FFFF_0000_0000L 
-            || bigqhat*vn[$-2] > 0x1_0000_0000L*rhat + un[j+v.length-2]) {
+            || bigqhat*vn[$-2] > 0x1_0000_0000L*rhat + un[j+vn.length-2]) {
             --bigqhat;
             rhat += vn[$-1];
             if (rhat < 0x1_0000_0000L) goto again;
@@ -920,24 +938,17 @@ again:
         uint qhat = cast(uint)bigqhat;
 
         // Multiply and subtract.
-        uint carry = multibyteMulAdd!('-')(un[j..j+v.length], vn, qhat, 0);
+        uint carry = multibyteMulAdd!('-')(un[j..j+vn.length], vn, qhat, 0);
 
-        if (un[j+v.length] < carry) {
+        if (un[j+vn.length] < carry) {
             // If we subtracted too much, add back
             --qhat;
-            carry -= multibyteAddSub!('+')(un[j..j+v.length],un[j..j+v.length], vn, 0);
+            carry -= multibyteAddSub!('+')(un[j..j+vn.length],un[j..j+vn.length], vn, 0);
         }
         quotient[j] = qhat;
-        un[j+v.length] = un[j+v.length] - carry;
-        assert(un[j+v.length] == 0);
+        un[j+vn.length] = un[j+vn.length] - carry;
+        assert(un[j+vn.length] == 0);
     }
-    // Unnormalize remainder, if required.
-    if (remainder != null) {
-        if (s == 0) remainder[] = un[0..$-1];
-        else multibyteShr(remainder, un, s);
-    }
-    delete un;
-    delete vn;
 }
 
 private:
