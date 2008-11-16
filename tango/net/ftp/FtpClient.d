@@ -333,14 +333,6 @@ class FTPConnection : Telnet {
 		return supportedFeatures_;
 	}
 
-	private int toInt(char[] s) {
-		return cast(int) toLong(s);
-	}
-
-	private long toLong(char[] s) {
-		return Integer.parse(s);
-	}
-
 	void exception(char[] message) {
 		throw new FtpException(message);
 	}
@@ -560,7 +552,7 @@ class FTPConnection : Telnet {
 			end_pos++;
 		}
 
-		return toInt(response.message[0 .. end_pos]);
+		return cast(int) Integer.parse((response.message[0 .. end_pos]));
 	}
 
 	public void type(FtpFormat format) {
@@ -837,7 +829,7 @@ class FTPConnection : Telnet {
 			assert(remote !is null);
 
 			uint address = remote.addr();
-			uint port = toInt(response.message);
+			uint port = cast(int) Integer.parse(((response.message)));
 
 			connect_to = new IPv4Address(address, cast(ushort) port);
 		}
@@ -856,7 +848,7 @@ class FTPConnection : Telnet {
 			assert(remote !is null);
 
 			uint address = remote.addr();
-			uint port = toInt(r.match(1));
+			uint port = cast(int) Integer.parse(((r.match(1))));
 
 			connect_to = new IPv4Address(address, cast(ushort) port);
 		} else {
@@ -874,8 +866,8 @@ class FTPConnection : Telnet {
 			     address = r.match(1) ~ "." ~ r.match(2) ~ "." ~ r.match(3) ~ "." ~ r.match(
 			    	 4);
 			uint
-			port = (toInt(r.match(5)) << 8) + (r.match(7).length > 0 ? toInt(
-				r.match(7)) : 0);
+			port = (((cast(int) Integer.parse(r.match(5))) << 8) + (r.match(7).length > 0 ? cast(int) Integer.parse(
+				r.match(7)) : 0));
 
 			// Okay, we've got it!
 			connect_to = new IPv4Address(address, port);
@@ -1275,7 +1267,7 @@ class FTPConnection : Telnet {
 			parse_word();
 
 			// Size in bytes, this one is good.
-			info.size = toLong(parse_word());
+			info.size = Integer.parse((parse_word()));
 
 			// Make sure we still have enough space.
 			if(pos + 13 >= line.length)
@@ -1312,7 +1304,7 @@ class FTPConnection : Telnet {
 			else if(dir_or_size[0] == '<')
 				info.type = FtpFileType.dir;
 			else
-				info.size = toLong(dir_or_size);
+				info.size = Integer.parse((dir_or_size));
 
 			info.name = line[pos .. line.length];
 			break;
@@ -1389,7 +1381,7 @@ class FTPConnection : Telnet {
 
 			// Size, mime, etc...
 			if("size" in info.facts)
-				info.size = toLong(info.facts["size"]);
+				info.size = Integer.parse((info.facts["size"]));
 			if("media-type" in info.facts)
 				info.mime = info.facts["media-type"];
 
