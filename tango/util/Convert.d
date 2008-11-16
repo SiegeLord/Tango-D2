@@ -129,6 +129,11 @@ version( DDoc )
      * The rules for converting to a user-defined type are much the same,
      * except it makes use of the "fromUtf8", "fromUtf16", "fromUtf32" and
      * "fromString" static methods.
+     *
+     * Note: This module contains imports to other Tango modules that needs
+     * semantic analysis to be discovered. If your build tool doesn't do this
+     * properly, causing compile or link time problems, import the relevant 
+     * module explicitly.
      */
     D to(D,S)(S value);
     D to(D,S)(S value, D default_); /// ditto
