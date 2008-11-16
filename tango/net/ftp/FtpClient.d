@@ -5,7 +5,7 @@
  *                  UWB, bobef
  * Based upon prior FtpClient.d 
  * License:         BSD style: $(LICENSE)
- * Initial realse:  August 8, 2008  
+ * Initial release:  August 8, 2008  
  */
 
 module tango.net.ftp.FtpClient;
@@ -30,25 +30,36 @@ private {
 	import tango.io.device.FileConduit;
 }
 
-/// An FTP progress delegate.
-///
-/// You may need to add the restart position to this, and use SIZE to determine
-/// percentage completion.  This only represents the number of bytes
-/// transferred.
-///
-/// Params:
-///    pos =                 the current offset into the stream
+/******************************************************************************
+    An FTP progress delegate.
+   
+    You may need to add the restart position to this, and use SIZE to determine
+    percentage completion.  This only represents the number of bytes
+    transferred.
+   
+    Params:
+       pos =                 the current offset into the stream
+******************************************************************************/
 alias void delegate(in size_t pos) FtpProgress;
 
-/// The format of data transfer.
+/******************************************************************************
+    The format of data transfer.
+******************************************************************************/
 enum FtpFormat {
-	/// Indicates ASCII NON PRINT format (line ending conversion to CRLF.)
+	/**********************************************************************
+	    Indicates ASCII NON PRINT format (line ending conversion to CRLF.)
+	**********************************************************************/
 	ascii,
-	/// Indicates IMAGE format (8 bit binary octets.)
+	/**********************************************************************
+	    Indicates IMAGE format (8 bit binary octets.)
+	**********************************************************************/
 	image,
 }
 
-///A FtpAddress structure that contains all that is needed to access a FTPConnection; Contributed by Bobef
+/******************************************************************************
+    A FtpAddress structure that contains all 
+    that is needed to access a FTPConnection; Contributed by Bobef
+******************************************************************************/
 struct FtpAddress {
 	static FtpAddress* opCall(char[] str) {
 		if(str.length == 0)
@@ -103,123 +114,185 @@ struct FtpAddress {
 	char[] pass = "anonymous@anonymous";
 	uint port = 21;
 }
-
-/// A server response, consisting of a code and a potentially multi-line message.
+/******************************************************************************
+    A server response, consisting of a code and a potentially multi-line 
+    message.
+******************************************************************************/
 struct FtpResponse {
-	/// The response code.
-	///
-	/// The digits in the response code can be used to determine status
-	/// programatically.
-	///
-	/// First Digit (status):
-	///    1xx =             a positive, but preliminary, reply
-	///    2xx =             a positive reply indicating completion
-	///    3xx =             a positive reply indicating incomplete status
-	///    4xx =             a temporary negative reply
-	///    5xx =             a permanent negative reply
-	///
-	/// Second Digit (subject):
-	///    x0x =             condition based on syntax
-	///    x1x =             informational
-	///    x2x =             connection
-	///    x3x =             authentication/process
-	///    x5x =             file system
+	/**********************************************************************
+	    The response code.
+	   
+	    The digits in the response code can be used to determine status
+	    programatically.
+	   
+	    First Digit (status):
+	       1xx =             a positive, but preliminary, reply
+	       2xx =             a positive reply indicating completion
+	       3xx =             a positive reply indicating incomplete status
+	       4xx =             a temporary negative reply
+	       5xx =             a permanent negative reply
+	   
+	    Second Digit (subject):
+	       x0x =             condition based on syntax
+	       x1x =             informational
+	       x2x =             connection
+	       x3x =             authentication/process
+	       x5x =             file system
+	**********************************************************************/
 	char[3] code = "000";
-
-	/// The message from the server.
-	///
-	/// With some responses, the message may contain parseable information.
-	/// For example, this is true of the 257 response.
+	
+	/*********************************************************************
+	    The message from the server.
+	   
+	    With some responses, the message may contain parseable information.
+	    For example, this is true of the 257 response.
+	**********************************************************************/
 	char[] message = null;
 }
 
-/// Active or passive connection mode.
+/******************************************************************************
+    Active or passive connection mode.
+******************************************************************************/
 enum FtpConnectionType {
-	/// Active - server connects to client on open port.
+	/**********************************************************************
+	    Active - server connects to client on open port.
+	**********************************************************************/
 	active,
-	/// Passive - server listens for a connection from the client.
+	/**********************************************************************
+	    Passive - server listens for a connection from the client.
+	**********************************************************************/
 	passive,
 }
 
-/// Detail about the data connection.
-///
-/// This is used to properly send PORT and PASV commands.
+/******************************************************************************
+    Detail about the data connection.
+   
+    This is used to properly send PORT and PASV commands.
+******************************************************************************/
 struct FtpConnectionDetail {
-	/// The type to be used.
+	/**********************************************************************
+	    The type to be used.
+	**********************************************************************/
 	FtpConnectionType type = FtpConnectionType.passive;
-
-	/// The address to give the server.
+	
+	/**********************************************************************
+	    The address to give the server.
+	**********************************************************************/
 	Address address = null;
-
-	/// The address to actually listen on.
+      
+	/**********************************************************************
+	    The address to actually listen on.
+	**********************************************************************/
 	Address listen = null;
 }
 
-/// A supported feature of an FTP server.
+/******************************************************************************
+    A supported feature of an FTP server.
+******************************************************************************/
 struct FtpFeature {
-	/// The command which is supported, e.g. SIZE.
+	/**********************************************************************
+	    The command which is supported, e.g. SIZE.
+	**********************************************************************/
 	char[] command = null;
-	/// Parameters for this command; e.g. facts for MLST.
+	/**********************************************************************
+	    Parameters for this command; e.g. facts for MLST.
+	**********************************************************************/
 	char[] params = null;
 }
 
-/// The type of a file in an FTP listing.
+/******************************************************************************
+    The type of a file in an FTP listing.
+******************************************************************************/
 enum FtpFileType {
-	/// An unknown file or type (no type fact.)
+	/**********************************************************************
+	    An unknown file or type (no type fact.)
+	**********************************************************************/
 	unknown,
-	/// A regular file, or similar.
+	/**********************************************************************
+	    A regular file, or similar.
+	**********************************************************************/
 	file,
-	/// The current directory (e.g. ., but not necessarily.)
+	/**********************************************************************
+	    The current directory (e.g. ., but not necessarily.)
+	**********************************************************************/
 	cdir,
-	/// A parent directory (usually "..".)
+	/**********************************************************************
+	    A parent directory (usually "..".)
+	**********************************************************************/
 	pdir,
-	/// Any other type of directory.
+	/**********************************************************************
+	    Any other type of directory.
+	**********************************************************************/
 	dir,
-	/// Another type of file.  Consult the "type" fact.
+	/**********************************************************************
+	    Another type of file.  Consult the "type" fact.
+	**********************************************************************/
 	other,
 }
 
-/// Information about a file in an FTP listing.
+/******************************************************************************
+    Information about a file in an FTP listing.
+******************************************************************************/
 struct FtpFileInfo {
-	/// The filename.
+        /**********************************************************************
+	    The filename.
+        **********************************************************************/
 	char[] name = null;
-	/// Its type.
+        /**********************************************************************
+	    Its type.
+        **********************************************************************/
 	FtpFileType type = FtpFileType.unknown;
-	/// Size in bytes (8 bit octets), or -1 if not available.
-	long size = -1;
-	/// Modification time, if available.
+        /**********************************************************************
+	    Size in bytes (8 bit octets), or ulong.max if not available.
+        **********************************************************************/
+	ulong size = ulong.max;
+        /**********************************************************************
+	    Modification time, if available.
+        **********************************************************************/
 	Time modify = Time.max;
-	/// Creation time, if available (not often.)
+        /**********************************************************************
+	    Creation time, if available (not often.)
+        **********************************************************************/
 	Time create = Time.max;
-	/// The file's mime type, if known.
+        /**********************************************************************
+	    The file's mime type, if known.
+        **********************************************************************/
 	char[] mime = null;
-	/// An associative array of all facts returned by the server, lowercased.
+        /***********************************************************************
+	    An associative array of all facts returned by the server, lowercased.
+        ***********************************************************************/
 	char[][char[]] facts;
 }
 
 class FtpException: Exception {
 	char[3] responseCode_ = "000";
-
-	/// Construct an FtpException based on a message and code.
-	///
-	/// Params:
-	///    message =         the exception message
-	///    code =            the code (5xx for fatal errors)
+        
+        /***********************************************************************
+	    Construct an FtpException based on a message and code.
+	   
+	    Params:
+	       message =         the exception message
+	       code =            the code (5xx for fatal errors)
+        ***********************************************************************/
 	this(char[] message, char[3] code = "420") {
 		this.responseCode_[] = code;
 		super(message);
 	}
-
-	/// Construct an FtpException based on a response.
-	///
-	/// Params:
-	///    r =               the server response
+    
+        /***********************************************************************
+	    Construct an FtpException based on a response.
+	   
+	    Params:
+	       r =               the server response
+        ***********************************************************************/
 	this(FtpResponse r) {
 		this.responseCode_[] = r.code;
 		super(r.message);
 	}
-
-	/// A string representation of the error.
+        
+        /***********************************************************************
+	    A string representation of the error.
+        ***********************************************************************/
 	char[] toString() {
 		char[] buffer = new char[this.msg.length + 4];
 
@@ -242,11 +315,11 @@ class FTPConnection : Telnet {
 
 	public TimeSpan timeout() {
             return timeout_;
-    }
+        }
 
 	public void timeout(TimeSpan t) {
 		timeout_ = t;
-    }
+        }
 
 	public TimeSpan shutdownTime() {
        	return timeout_ + timeout_;
@@ -676,11 +749,13 @@ class FTPConnection : Telnet {
 		return path;
 	}
 
-	/// Get a data socket from the server.
-	///
-	/// This sends PASV/PORT as necessary.
-	///
-	/// Returns:             the data socket or a listener
+        /*******************************************************************************
+	    Get a data socket from the server.
+	   
+	    This sends PASV/PORT as necessary.
+	   
+	    Returns:             the data socket or a listener
+        *******************************************************************************/
 	protected SocketConduit getDataSocket() {
 		//make sure no open data connection and if open data connection then kill
 		if(dataSocket_ !is null)
@@ -742,10 +817,12 @@ class FTPConnection : Telnet {
 			return listener;
 		}
 	}
-
-	/// Send a PASV and initiate a connection.
-	///
-	/// Returns:             a connected socket
+        
+        /*******************************************************************************
+	    Send a PASV and initiate a connection.
+	   
+	    Returns:             a connected socket
+        *******************************************************************************/
 	public SocketConduit connectPassive() {
 		Address connect_to = null;
 
@@ -843,12 +920,14 @@ class FTPConnection : Telnet {
 		return this.isSupported(command);
 	}
 
-	/// Prepare a data socket for use.
-	///
-	/// This modifies the socket in some cases.
-	///
-	/// Params:
-	///    data =            the data listener socket
+        /*******************************************************************************
+	    Prepare a data socket for use.
+	   
+	    This modifies the socket in some cases.
+	   
+	    Params:
+	       data =            the data listener socket
+        ********************************************************************************/
 	protected void prepareDataSocket(inout SocketConduit data) {
 		switch(this.inf_.type) {
 		default:
@@ -1389,15 +1468,17 @@ class FTPConnection : Telnet {
 		this.put(path, file, progress, format);
 	}
 
-	/// Store data from a stream on the server.
-	///
-	/// Calling this function will change the current data transfer format.
-	///
-	/// Params:
-	///    path =            the path to the remote file
-	///    stream =          data to store, or null for a blank file
-	///    progress =        a delegate to call with progress information
-	///    format =          what format to send the data in
+        /********************************************************************************
+	    Store data from a stream on the server.
+	   
+	    Calling this function will change the current data transfer format.
+	   
+	    Params:
+	       path =            the path to the remote file
+	       stream =          data to store, or null for a blank file
+	       progress =        a delegate to call with progress information
+	       format =          what format to send the data in
+        ********************************************************************************/
 	public void put(char[] path, InputStream stream = null,
 	                FtpProgress progress = null, FtpFormat format = FtpFormat.image)
 	in {
@@ -1417,15 +1498,17 @@ class FTPConnection : Telnet {
 		this.finishDataCommand(data);
 	}
 
-	/// Append data to a file on the server.
-	///
-	/// Calling this function will change the current data transfer format.
-	///
-	/// Params:
-	///    path =            the path to the remote file
-	///    stream =          data to append to the file
-	///    progress =        a delegate to call with progress information
-	///    format =          what format to send the data in
+        /********************************************************************************
+	    Append data to a file on the server.
+	   
+	    Calling this function will change the current data transfer format.
+	   
+	    Params:
+	       path =            the path to the remote file
+	       stream =          data to append to the file
+	       progress =        a delegate to call with progress information
+	       format =          what format to send the data in
+        ********************************************************************************/
 	public void append(char[] path, InputStream stream,
 	                   FtpProgress progress = null, FtpFormat format = FtpFormat.image)
 	in {
@@ -1445,10 +1528,12 @@ class FTPConnection : Telnet {
 		this.finishDataCommand(data);
 	}
 
-	/// Seek to a byte offset for the next transfer.
-	///
-	/// Params:
-	///    offset =          the number of bytes to seek forward
+        /*********************************************************************************
+	    Seek to a byte offset for the next transfer.
+	   
+	    Params:
+	       offset =          the number of bytes to seek forward
+        **********************************************************************************/
 	public void restartSeek(size_t offset) {
 		char[16] tmp;
 		this.sendCommand("REST", Integer.format(tmp, cast(long) offset));
@@ -1457,13 +1542,15 @@ class FTPConnection : Telnet {
 		// Set this for later use.
 		this.restartPos_ = offset;
 	}
-
-	/// Allocate space for a file.
-	///
-	/// After calling this, append() or put() should be the next command.
-	///
-	/// Params:
-	///    bytes =           the number of bytes to allocate
+        
+        /**********************************************************************************
+	    Allocate space for a file.
+	   
+	    After calling this, append() or put() should be the next command.
+	   
+	    Params:
+	       bytes =           the number of bytes to allocate
+        ***********************************************************************************/
 	public void allocate(long bytes)
 	in {
 		assert(bytes > 0);
@@ -1478,15 +1565,17 @@ class FTPConnection : Telnet {
 			exception(response);
 	}
 
-	/// Retrieve a remote file's contents into a local file.
-	///
-	/// Calling this function will change the current data transfer format.
-	///
-	/// Params:
-	///    path =            the path to the remote file
-	///    local_file =      the path to the local file
-	///    progress =        a delegate to call with progress information
-	///    format =          what format to read the data in
+        /**********************************************************************************
+	    Retrieve a remote file's contents into a local file.
+	   
+	    Calling this function will change the current data transfer format.
+	   
+	    Params:
+	       path =            the path to the remote file
+	       local_file =      the path to the local file
+	       progress =        a delegate to call with progress information
+	       format =          what format to read the data in
+        **********************************************************************************/
 	public void get(char[] path, char[] local_file,
 	                FtpProgress progress = null, FtpFormat format = FtpFormat.image)
 	in {
@@ -1516,15 +1605,17 @@ class FTPConnection : Telnet {
 		this.get(path, file, progress, format);
 	}
 
-	/// Retrieve a remote file's contents into a local file.
-	///
-	/// Calling this function will change the current data transfer format.
-	///
-	/// Params:
-	///    path =            the path to the remote file
-	///    stream =          stream to write the data to
-	///    progress =        a delegate to call with progress information
-	///    format =          what format to read the data in
+        /**********************************************************************************
+	    Retrieve a remote file's contents into a local file.
+	   
+	    Calling this function will change the current data transfer format.
+	   
+	    Params:
+	       path =            the path to the remote file
+	       stream =          stream to write the data to
+	       progress =        a delegate to call with progress information
+	       format =          what format to read the data in
+        ***********************************************************************************/
 	public void get(char[] path, OutputStream stream,
 	                FtpProgress progress = null, FtpFormat format = FtpFormat.image)
 	in {
