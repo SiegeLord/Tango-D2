@@ -15,7 +15,7 @@ private {
 	import tango.net.ftp.FtpClient;
 	import tango.io.vfs.model.Vfs;
 	import tango.io.vfs.FileFolder;
-	import tango.io.Conduit;
+	import tango.io.device.Conduit;
 	import tango.text.Util;
 	import tango.time.Time;
 }

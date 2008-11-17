@@ -49,6 +49,27 @@ class DataFileInput : DataInput
 
         final long seek (long offset, Anchor anchor = Anchor.Begin)
         {
+                if(anchor == Anchor.Current)
+                {
+                        //
+                        // handle this special, because we know this is
+                        // buffered, we should take into account the buffer
+                        // position when seeking
+                        //
+                        offset -= buffer.readable;
+                        auto bpos = offset + buffer.limit;
+                        if(bpos >= 0 && bpos < buffer.limit)
+                        {
+                                //
+                                // the new position is within the current
+                                // buffer, skip to that position.
+                                //
+                                buffer.skip(cast(int)bpos - cast(int)buffer.position);
+                                return conduit.position - buffer.readable;
+                        }
+                        // else, position is outside the buffer, do a real
+                        // seek, using the adjusted position.
+                }
                 host.clear;
                 return conduit.seek (offset, anchor);
         }
