@@ -105,6 +105,9 @@ extern (C)
     const int MD5_LBLOCK = MD5_CBLOCK / 4;
     const int MD5_DIGEST_LENGTH = 16;
 
+    const int EVP_MAX_BLOCK_LENGTH = 32;
+    const int EVP_MAX_IV_LENGTH = 16;
+
     struct MD5_CTX
     {
         uint A;
@@ -115,6 +118,30 @@ extern (C)
         uint Nh;
         uint[MD5_LBLOCK] data;
         uint num;
+    };
+
+    struct EVP_CIPHER_CTX
+    {
+        void *cipher;
+        void *engine;
+        int encrypt;
+        int buf_len;
+
+        ubyte[EVP_MAX_IV_LENGTH] oiv;
+        ubyte[EVP_MAX_IV_LENGTH] iv;
+        ubyte buf[EVP_MAX_BLOCK_LENGTH];
+        int num;
+
+        void *ap_data;
+        int key_len;
+        version (X86_64)
+            ulong flags;
+        else
+            uint flags;
+        void *cipher_data;
+        int final_used;
+        int block_mask;
+        ubyte[EVP_MAX_BLOCK_LENGTH] finalv;
     };
 
     struct BIO 
@@ -282,6 +309,15 @@ extern (C)
     typedef void function(MD5_CTX *c) tMD5_Init;
     typedef void function(MD5_CTX *c, void *data, size_t len) tMD5_Update;
     typedef void function(ubyte *md, MD5_CTX *c) tMD5_Final;
+    typedef int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte *iv) tEVP_EncryptInit_ex;
+    typedef int function(EVP_CIPHER_CTX *ctx, EVP_CIPHER *type, void *impl, ubyte *key, ubyte*iv) tEVP_DecryptInit_ex;
+    typedef int function(EVP_CIPHER_CTX *ctx, ubyte *outv, int *outl, ubyte *inv, int inl) tEVP_EncryptUpdate;
+    typedef int function(EVP_CIPHER_CTX *ctx, ubyte *outv, int *outl, ubyte *inv, int inl) tEVP_DecryptUpdate;
+    typedef int function(EVP_CIPHER_CTX *ctx, ubyte *outv, int *outl) tEVP_EncryptFinal_ex;
+    typedef int function(EVP_CIPHER_CTX *ctx, ubyte *outv, int *outl) tEVP_DecryptFinal_ex;
+    typedef int function(EVP_CIPHER_CTX *ctx) tEVP_CIPHER_CTX_block_size;
+    typedef EVP_CIPHER *function() tEVP_aes_128_cbc;
+    typedef int function(EVP_CIPHER_CTX *ctx) tEVP_CIPHER_CTX_cleanup;
 
     struct CRYPTO_dynlock_value
     {
@@ -471,6 +507,15 @@ tRSA_verify RSA_verify;
 tMD5_Init MD5_Init;
 tMD5_Update MD5_Update;
 tMD5_Final MD5_Final;
+tEVP_EncryptInit_ex EVP_EncryptInit_ex;
+tEVP_DecryptInit_ex EVP_DecryptInit_ex;
+tEVP_EncryptUpdate EVP_EncryptUpdate;
+tEVP_DecryptUpdate EVP_DecryptUpdate;
+tEVP_EncryptFinal_ex EVP_EncryptFinal_ex;
+tEVP_DecryptFinal_ex EVP_DecryptFinal_ex;
+tEVP_aes_128_cbc EVP_aes_128_cbc;
+tEVP_CIPHER_CTX_block_size EVP_CIPHER_CTX_block_size;
+tEVP_CIPHER_CTX_cleanup EVP_CIPHER_CTX_cleanup;
 
 int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x)
 {
@@ -783,6 +828,15 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(MD5_Init, "MD5_Init", ssllib);
         bindFunc(MD5_Update, "MD5_Update", ssllib);
         bindFunc(MD5_Final, "MD5_Final", ssllib);
+        bindFunc(EVP_EncryptInit_ex, "EVP_EncryptInit_ex", ssllib);
+        bindFunc(EVP_DecryptInit_ex, "EVP_DecryptInit_ex", ssllib);
+        bindFunc(EVP_EncryptUpdate, "EVP_EncryptUpdate", ssllib);
+        bindFunc(EVP_DecryptUpdate,  "EVP_DecryptUpdate", ssllib);
+        bindFunc(EVP_EncryptFinal_ex, "EVP_EncryptFinal_ex", ssllib);
+        bindFunc(EVP_DecryptFinal_ex, "EVP_DecryptFinal_ex", ssllib);
+        bindFunc(EVP_aes_128_cbc, "EVP_aes_128_cbc", ssllib);
+        bindFunc(EVP_CIPHER_CTX_block_size, "EVP_CIPHER_CTX_block_size", ssllib);
+        bindFunc(EVP_CIPHER_CTX_cleanup, "EVP_CIPHER_CTX_cleanup", ssllib);
     }
 }
 
