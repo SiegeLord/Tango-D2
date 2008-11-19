@@ -16,27 +16,30 @@ die() {
 usage() {
     echo 'Usage: install.sh [[option <argument>] ...] <compilername> 
 Options:
-  --prefix: Install to the specified prefix (absolute path), default is /usr/local
-  --userlib: Installs libtango-user-*.a too. It will also be built if it is missing
-                or older than libtango-base-*.a. Note that this is not necessary if
-                you use DSSS or other build tools for the user part of the Tango API
-  --altconf: Use an alternate path component for the DMD conf, "bin" is default, "-" will
-                set it to empty. See also --confprefix
-  --altlib: Use an alternate path component for the library files, "lib" is default, "-" will
-                set it to empty.
-  --altincl: Use an alternate path component for import files, "include" is default, "-" will
-                set it to empty (will install at PREFIX!)
-  --confprefix: Use a specific prefix for where DMD binary resides, otherwise PREFIX is used
-                (absolute path). Note that this combined with --altconf can be used to put
-                dmd.conf somewhere else than together with the binary, either your $HOME or
-                /etc. Note that together with the DMD binary seems most stable.
-  --libprefix: Use a specific prefix for where libs should be installed, otherwise PREFIX is
-                used (absolute path).
-  --inclprefix: Use a specific prefix for where imports should be installed, otherwise
-                PREFIX is used (absolute path).
+  --prefix: Install to the specified prefix (absolute path), default is 
+                /usr/local
+  --userlib: Installs libtango-user-*.a too. It will also be built if it is 
+                missing or older than libtango-base-*.a. Note that this is 
+                not necessary if you use DSSS or other build tools for the 
+                user part of the Tango API
+  --altconf: Use an alternate path component for the DMD conf, "bin" is 
+                default, "-" will set it to empty. See also --confprefix
+  --altlib: Use an alternate path component for the library files, "lib" is 
+                default, "-" will set it to empty.
+  --altincl: Use an alternate path component for import files, "include" is 
+                default, "-" will set it to empty (will install at PREFIX!)
+  --confprefix: Use a specific prefix for where DMD binary resides, otherwise 
+                PREFIX is used (absolute path). Note that this combined with 
+                --altconf can be used to put dmd.conf somewhere else than 
+                together with the binary, either your $HOME or /etc. Note that
+                together with the DMD binary seems most stable.
+  --libprefix: Use a specific prefix for where libs should be installed, 
+                otherwise PREFIX is used (absolute path).
+  --inclprefix: Use a specific prefix for where imports should be installed, 
+                otherwise PREFIX is used (absolute path).
   --uninstall: Uninstall Tango, switch back to standard Phobos.
-  --as-phobos: This will install libtango-base-*.a as lib*phobos.a as per old style. This is
-                default for older DMD installations.
+  --as-phobos: This will install libtango-base-*.a as lib*phobos.a as per old 
+               style. This is default for older DMD installations.
   --verify: Will verify installation.
   --verbose: Will produce various progress output
   --help: Will print this help text.'
