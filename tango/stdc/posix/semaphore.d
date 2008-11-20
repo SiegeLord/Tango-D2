@@ -55,6 +55,53 @@ else version( darwin )
     alias int sem_t;
 
     const SEM_FAILED    = cast(sem_t*) null;
+    // mach_port based semaphores (the working anonymous semaphores)
+    alias uint mach_port_t;
+    alias mach_port_t semaphore_t;
+    alias mach_port_t thread_t;
+    alias mach_port_t task_t;
+    alias int kern_return_t;
+    enum KERN_RETURN: kern_return_t{
+        SUCCESS=0,
+        ABORTED=14,
+        OPERATION_TIMED_OUT=49
+    }
+    kern_return_t   semaphore_signal        (semaphore_t semaphore);
+    kern_return_t   semaphore_signal_all    (semaphore_t semaphore);
+    kern_return_t   semaphore_signal_thread (semaphore_t semaphore,
+                                             thread_t thread);
+    
+    kern_return_t   semaphore_wait          (semaphore_t semaphore);
+    kern_return_t   semaphore_timedwait     (semaphore_t semaphore, 
+                     timespec wait_time);
+    
+    kern_return_t   semaphore_wait_signal   (semaphore_t wait_semaphore,
+                                             semaphore_t signal_semaphore);
+    
+    kern_return_t semaphore_timedwait_signal(semaphore_t wait_semaphore,
+                                                     semaphore_t signal_semaphore,
+                                                     timespec wait_time);
+    kern_return_t semaphore_destroy(task_t task,
+                              semaphore_t semaphore);
+    kern_return_t semaphore_create(task_t task,
+                           semaphore_t *semaphore,
+                           int policy,
+                           int value);
+   alias int sync_policy_t;
+   
+   task_t mach_task_self();// returns the task port of the current  thread
+   /*
+    *   These options define the wait ordering of the synchronizers
+    */
+   enum MACH_SYNC_POLICY{
+       SYNC_POLICY_FIFO=0x0,
+       SYNC_POLICY_FIXED_PRIORITY=0x1,
+       SYNC_POLICY_REVERSED=0x2,
+       SYNC_POLICY_ORDER_MASK=0x3,
+       SYNC_POLICY_LIFO=(SYNC_POLICY_FIFO|SYNC_POLICY_REVERSED),
+       SYNC_POLICY_MAX=0x7
+   }
+
 }
 else version( freebsd )
 {

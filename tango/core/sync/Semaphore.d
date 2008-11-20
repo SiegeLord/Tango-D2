@@ -62,6 +62,15 @@ class Semaphore
             if( m_hndl == m_hndl.init )
                 throw new SyncException( "Unable to create semaphore" );
         }
+        else version( darwin ){
+            creatingTask=mach_task_self();
+            auto rc=semaphore_create(creatingTask,
+                                   &m_hndl,
+                                   MACH_SYNC_POLICY.SYNC_POLICY_FIFO,
+                                   count);
+            if( rc )
+                throw new SyncException( "Unable to create semaphore" );
+        }
         else version( Posix )
         {
             int rc = sem_init( &m_hndl, 0, count );
@@ -78,7 +87,12 @@ class Semaphore
             BOOL rc = CloseHandle( m_hndl );
             assert( rc, "Unable to destroy semaphore" );
         }
-        else version( Posix )
+		else version(darwin)
+		{
+            auto rc=semaphore_destroy(creatingTask, m_hndl);
+            assert( !rc, "Unable to destroy semaphore" );
+        }
+		else version( Posix )
         {
             int rc = sem_destroy( &m_hndl );
             assert( !rc, "Unable to destroy semaphore" );
@@ -104,6 +118,13 @@ class Semaphore
         {
             DWORD rc = WaitForSingleObject( m_hndl, INFINITE );
             if( rc != WAIT_OBJECT_0 )
+                throw new SyncException( "Unable to wait for semaphore" );
+        }
+        else version(darwin){
+            auto rc=semaphore_wait(m_hndl);
+            if (rc==KERN_RETURN.ABORTED)
+                throw new SyncException( "Unable to wait for semaphore (abort)" ); // wait again
+            if (rc!=0)
                 throw new SyncException( "Unable to wait for semaphore" );
         }
         else version( Posix )
@@ -158,6 +179,22 @@ class Semaphore
                 throw new SyncException( "Unable to wait for semaphore" );
             }
         }
+        else version(darwin){
+            timespec t;
+
+            adjTimespec( t, period );
+            auto rc=semaphore_timedwait(m_hndl,t);
+            if (rc==0){
+                return true;
+            } else if (rc==KERN_RETURN.OPERATION_TIMED_OUT){
+                return false;
+            } else if (rc==KERN_RETURN.ABORTED) {
+                // wait again???
+                throw new SyncException( "Unable to wait for semaphore (abort)" );
+            } else {
+                throw new SyncException( "Unable to wait for semaphore" );
+            }
+        }
         else version( Posix )
         {
             timespec t;
@@ -195,6 +232,9 @@ class Semaphore
             if( !ReleaseSemaphore( m_hndl, 1, null ) )
                 throw new SyncException( "Unable to notify semaphore" );
         }
+        else version(darwin){
+            semaphore_signal(m_hndl);
+        }
         else version( Posix )
         {
             int rc = sem_post( &m_hndl );
@@ -228,6 +268,9 @@ class Semaphore
                 throw new SyncException( "Unable to wait for semaphore" );
             }
         }
+        else version(darwin){
+            return wait(0.0);
+        }
         else version( Posix )
         {
             while( true )
@@ -250,6 +293,10 @@ private:
     version( Win32 )
     {
         HANDLE  m_hndl;
+    }
+    else version(darwin){
+        task_t creatingTask;
+        semaphore_t m_hndl;
     }
     else version( Posix )
     {
@@ -313,7 +360,7 @@ debug( UnitTest )
                 semaphore.notify();
                 Thread.yield();
             }
-
+            Thread.sleep(1.0);
             synchronized( synProduced )
             {
                 allProduced = true;
