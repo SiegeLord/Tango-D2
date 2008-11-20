@@ -392,9 +392,9 @@ else version( darwin )
 
     //SA_NOCLDSTOP (CX|XSI)
 
-    //SIG_BLOCK
-    //SIG_UNBLOCK
-    //SIG_SETMASK
+    const SIG_BLOCK=1;
+    const SIG_UNBLOCK=2;
+    const SIG_SETMASK=3;
 
     struct siginfo_t
     {
