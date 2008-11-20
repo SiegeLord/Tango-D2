@@ -474,6 +474,20 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 /***************************************************************
 
+                        Set the file size to be the specified length. The 
+                        file must be writable for this to succeed. 
+
+                ***************************************************************/
+
+                void truncate (ulong size)
+                {
+                        auto s = seek (size);
+                        assert (s is size);
+                        truncate;
+                }               
+
+                /***************************************************************
+
                         Set the file seek position to the specified offset
                         from the given anchor. 
 
@@ -569,8 +583,20 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 void truncate ()
                 {
+                        truncate (position);
+                }               
+
+                /***************************************************************
+
+                        Set the file size to be the specified length. The 
+                        file must be writable for this to succeed.
+
+                ***************************************************************/
+
+                void truncate (ulong size)
+                {
                         // set filesize to be current seek-position
-                        if (posix.ftruncate (handle, cast(size_t) position) is -1)
+                        if (posix.ftruncate (handle, cast(size_t) size) is -1)
                             error;
                 }               
 
