@@ -37,6 +37,22 @@ else
 
 gc_t _gc;
 
+private int _termCleanupLevel=1;
+
+/// sets the cleanup level done by gc
+/// (0: none, 1: fullCollect, 2: fullCollectNoStack (might crash daemonThreads))
+/// result !=0 if the value was invalid
+extern (C) int gc_setTermCleanupLevel(int cLevel){
+    if (cLevel<0 || cLevel>2) return cLevel;
+    _termCleanupLevel=cLevel;
+    return 0;
+}
+
+/// returns the cleanup level done by gc
+extern (C) int gc_getTermCleanupLevel(){
+    return _termCleanupLevel;
+}
+
 extern (C) void thread_init();
 
 extern (C) void gc_init()
@@ -61,18 +77,27 @@ extern (C) void gc_init()
 
 extern (C) void gc_term()
 {
-    // NOTE: There may be daemons threads still running when this routine is
-    //       called.  If so, cleaning memory out from under then is a good
-    //       way to make them crash horribly.  This probably doesn't matter
-    //       much since the app is supposed to be shutting down anyway, but
-    //       I'm disabling cleanup for now until I can think about it some
-    //       more.
-    //
-    // NOTE: Due to popular demand, this has been re-enabled.  It still has
-    //       the problems mentioned above though, so I guess we'll see.
-    _gc.fullCollectNoStack(); // not really a 'collect all' -- still scans
-                              // static data area, roots, and ranges.
-    _gc.Dtor();
+    if (_termCleanupLevel<1) {
+        // no cleanup
+    } else if (_termCleanupLevel==2){
+        // a more complete cleanup
+        // NOTE: There may be daemons threads still running when this routine is
+        //       called.  If so, cleaning memory out from under then is a good
+        //       way to make them crash horribly.
+        //       Often this probably doesn't matter much since the app is
+        //       supposed to be shutting down anyway, but for example tests might
+        //       crash (and be considerd failed even if the test was ok).
+        //       thus this is not the default and should be enabled by 
+        //       I'm disabling cleanup for now until I can think about it some
+        //       more.
+        //
+        _gc.fullCollectNoStack(); // not really a 'collect all' -- still scans
+                                  // static data area, roots, and ranges.
+        _gc.Dtor();
+    } else {
+        // default (safe) clenup
+        _gc.fullCollect(); 
+    }
 }
 
 extern (C) void gc_enable()
