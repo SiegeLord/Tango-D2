@@ -20,6 +20,8 @@ private
 {
     import tango.core.Exception;
 
+    extern (C) void  _d_monitorenter(Object);
+    extern (C) void  _d_monitorexit(Object);
 
     //
     // exposed by compiler runtime
@@ -48,6 +50,16 @@ private
         else
         {
             return rt_stackTop();
+        }
+    }
+
+    version(D_InlineAsm_X86){
+        uint getEBX(){
+            uint retVal;
+            asm{
+                mov retVal,EBX;
+            }
+            return retVal;
         }
     }
 }
@@ -246,7 +258,12 @@ else version( Posix )
         //
         // used to track the number of suspended threads
         //
-        sem_t   suspendCount;
+        version(darwin){
+            semaphore_t suspendCount;
+            task_t rootMatchTask;
+        } else {
+            sem_t   suspendCount;
+        }
 
 
         extern (C) void thread_suspendHandler( int sig )
@@ -298,7 +315,11 @@ else version( Posix )
                 status = sigdelset( &sigres, SIGUSR2 );
                 assert( status == 0 );
 
-                status = sem_post( &suspendCount );
+                version (darwin){
+                    status=semaphore_signal( suspendCount );
+                } else {
+                    status = sem_post( &suspendCount );
+                }
                 assert( status == 0 );
 
                 sigsuspend( &sigres );
@@ -334,7 +355,15 @@ else version( Posix )
         }
         body
         {
-
+            version(Posix){
+                int status;
+                version (darwin){
+                    status=semaphore_signal( suspendCount );
+                } else {
+                    status = sem_post( &suspendCount );
+                }
+                assert( status == 0 );
+            }
         }
     }
 }
@@ -516,6 +545,7 @@ class Thread
         //       and causing memory to be collected that is still in use.
         synchronized( slock )
         {
+            volatile multiThreadedFlag = true;
             version( Win32 )
             {
                 m_hndl = cast(HANDLE) _beginthreadex( null, m_sz, &thread_entryPoint, cast(void*) this, 0, &m_addr );
@@ -526,11 +556,9 @@ class Thread
             {
                 m_isRunning = true;
                 scope( failure ) m_isRunning = false;
-
                 if( pthread_create( &m_addr, &attr, &thread_entryPoint, cast(void*) this ) != 0 )
                     throw new ThreadException( "Error creating thread" );
             }
-            multiThreadedFlag = true;
             add( this );
         }
     }
@@ -685,7 +713,6 @@ class Thread
             return m_isRunning;
         }
     }
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Thread Priority Actions
@@ -1584,7 +1611,15 @@ extern (C) void thread_init()
         status = sigaction( SIGUSR2, &sigusr2, null );
         assert( status == 0 );
 
-        status = sem_init( &suspendCount, 0, 0 );
+        version(darwin){
+            rootMatchTask=mach_task_self();
+            status=semaphore_create(rootMatchTask,
+                                   &suspendCount,
+                                   MACH_SYNC_POLICY.SYNC_POLICY_FIFO,
+                                   0);
+        } else {
+            status = sem_init( &suspendCount, 0, 0 );
+        }
         assert( status == 0 );
 
         status = pthread_key_create( &Thread.sm_this, null );
@@ -1713,7 +1748,6 @@ extern (C) bool thread_needLock()
 // Used for suspendAll/resumeAll below
 private uint suspendDepth = 0;
 
-
 /**
  * Suspend all threads but the calling thread for "stop the world" garbage
  * collection runs.  This function may be called multiple times, and must
@@ -1793,7 +1827,14 @@ extern (C) void thread_suspendAll()
                 //       to simply loop on sem_wait at the end, but I'm not
                 //       convinced that this would be much faster than the
                 //       current approach.
-                sem_wait( &suspendCount );
+                version (darwin){
+                    auto status=semaphore_wait(suspendCount);
+                    assert(status==0);
+                } else {
+                    sem_wait( &suspendCount );
+                    // shouldn't the return be checked and maybe a loop added for further interrupts
+                    // as in Semaphore.d ?
+                }
             }
             else if( !t.m_lock )
             {
@@ -1822,11 +1863,10 @@ extern (C) void thread_suspendAll()
             suspend( Thread.getThis() );
         return;
     }
-    synchronized( Thread.slock )
+    _d_monitorenter(Thread.slock);
     {
         if( ++suspendDepth > 1 )
             return;
-
         // NOTE: I'd really prefer not to check isRunning within this loop but
         //       not doing so could be problematic if threads are termianted
         //       abnormally and a new thread is created with the same thread
@@ -1914,6 +1954,14 @@ body
                     }
                     throw new ThreadException( "Unable to resume thread" );
                 }
+                version (darwin){
+                    auto status=semaphore_wait(suspendCount);
+                    assert(status==0);
+                } else {
+                    sem_wait( &suspendCount );
+                    // shouldn't the return be checked and maybe a loop added for further interrupts
+                    // as in Semaphore.d ?
+                }
             }
             else if( !t.m_lock )
             {
@@ -1930,14 +1978,16 @@ body
             resume( Thread.getThis() );
         return;
     }
-    synchronized( Thread.slock )
+
     {
+        scope(exit) _d_monitorexit(Thread.slock);
         if( --suspendDepth > 0 )
             return;
-
-        for( Thread t = Thread.sm_tbeg; t; t = t.next )
         {
-            resume( t );
+            for( Thread t = Thread.sm_tbeg; t; t = t.next )
+            {
+                resume( t );
+            }
         }
     }
 }
@@ -1970,7 +2020,7 @@ body
     if( curStackTop && Thread.sm_tbeg )
     {
         thisThread  = Thread.getThis();
-        if( !thisThread.m_lock )
+        if( thisThread && (!thisThread.m_lock) )
         {
             oldStackTop = thisThread.m_curr.tstack;
             thisThread.m_curr.tstack = curStackTop;
@@ -1981,7 +2031,7 @@ body
     {
         if( curStackTop && Thread.sm_tbeg )
         {
-            if( !thisThread.m_lock )
+            if( thisThread && (!thisThread.m_lock) )
             {
                 thisThread.m_curr.tstack = oldStackTop;
             }
@@ -2298,7 +2348,6 @@ private
             version = AsmPPC_Posix;
     }
 
-
     version( Posix )
     {
         import tango.stdc.posix.unistd;   // for sysconf
@@ -2318,10 +2367,8 @@ private
             import tango.stdc.posix.ucontext;
         }
     }
-
     const size_t PAGESIZE;
 }
-
 
 static this()
 {
@@ -2347,7 +2394,6 @@ static this()
             PAGESIZE = 4096;
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Fiber Entry Point and Context Switch
@@ -2442,6 +2488,7 @@ private
                 mov  EBP, ESP;
                 push EAX;
                 push EBX;
+                push ECX;
                 push ESI;
                 push EDI;
 
@@ -2454,6 +2501,7 @@ private
                 // load saved state from new stack
                 pop EDI;
                 pop ESI;
+                pop ECX;
                 pop EBX;
                 pop EAX;
                 pop EBP;
@@ -3120,10 +3168,12 @@ private:
         }
         else version( AsmX86_Posix )
         {
+            push( 0x00000000 );                                     // strange pre EIP
             push( cast(size_t) &fiber_entryPoint );                 // EIP
-            push( 0x00000000 );                                     // EBP
+            push( (cast(size_t)pstack)+8 );                         // EBP
             push( 0x00000000 );                                     // EAX
-            push( 0x00000000 );                                     // EBX
+            push( getEBX() );                                       // EBX used for PIC code
+            push( 0x00000000 );                                     // ECX just to have it aligned...
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
