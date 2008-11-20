@@ -147,7 +147,13 @@ struct GCBits
 
     void zero()
     {
-        memset(data + 1, 0, nwords * uint.sizeof);
+        version(MEMCPY_NON_SIG_SAFE) {
+            uint * d1=data+1,dEnd=d1+nwords;
+            for (;d1!=dEnd;++d1)
+                *d1=0u;
+        } else {
+            memset(data + 1, 0, nwords * uint.sizeof);
+        }
     }
 
     void copy(GCBits *f)
@@ -157,7 +163,13 @@ struct GCBits
     }
     body
     {
-        memcpy(data + 1, f.data + 1, nwords * uint.sizeof);
+        version(MEMCPY_NON_SIG_SAFE) {
+            uint * d1=data+1,d2=f.data+1,dEnd=d1+nwords;
+            for (;d1!=dEnd;++d1,++d2)
+                *d1=*d2;
+        } else {
+            memcpy(data + 1, f.data + 1, nwords * uint.sizeof);
+        }
     }
 
     uint* base()
