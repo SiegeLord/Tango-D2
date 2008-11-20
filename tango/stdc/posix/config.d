@@ -14,7 +14,8 @@ extern (C):
 
 version( linux )
 {
-  version( none /* X86_64 */ )
+  //version( none /* X86_64 */ )
+  version(BIGFILE)
   {
     const bool  __USE_LARGEFILE64   = true;
   }
