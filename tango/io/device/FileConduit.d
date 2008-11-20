@@ -35,7 +35,7 @@ private import  tango.io.device.DeviceConduit;
 version (Win32)
          private extern (Windows) BOOL SetEndOfFile (HANDLE);
      else
-        private extern (C) int ftruncate (int, int);
+        private import tango.stdc.posix.unistd;
 
 
 /*******************************************************************************
@@ -570,7 +570,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
                 void truncate ()
                 {
                         // set filesize to be current seek-position
-                        if (ftruncate (handle, cast(int) position) is -1)
+                        if (posix.ftruncate (handle, cast(size_t) position) is -1)
                             error;
                 }               
 
@@ -583,7 +583,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
                 {
-                        long result = posix.lseek (handle, cast(int) offset, anchor);
+                        long result = posix.lseek (handle, cast(size_t) offset, anchor);
                         if (result is -1)
                             error;
                         return result;
