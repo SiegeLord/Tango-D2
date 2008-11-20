@@ -136,7 +136,7 @@ version( linux )
 }
 else version( darwin )
 {
-    int sem_timedwait(sem_t*, in timespec*);
+    // int sem_timedwait(sem_t*, in timespec*); // not defined, use mach semaphores instead
 }
 else version( freebsd )
 {
