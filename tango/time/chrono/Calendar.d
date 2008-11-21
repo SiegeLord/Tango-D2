@@ -368,6 +368,14 @@ public abstract class Calendar
          * Returns a new Time with the specified number of months added.  If
          * the months are negative, the months are subtracted.
          *
+         * If the target month does not support the day component of the input
+         * time, then an error will be thrown, unless truncateDay is set to
+         * true.  If truncateDay is set to true, then the day is reduced to
+         * the maximum day of that month.
+         *
+         * For example, adding one month to 1/31/2000 with truncateDay set to
+         * true results in 2/28/2000.
+         *
          * The default implementation uses information provided by the
          * calendar to calculate the correct time to add.  Derived classes may
          * override if there is a more optimized method.
@@ -378,11 +386,13 @@ public abstract class Calendar
          * Params: t = A time to add the months to
          * Params: nMonths = The number of months to add.  This can be
          * negative.
+         * Params: truncateDay = Round the day down to the maximum day of the
+         * target month if necessary.
          *
          * Returns: A Time that represents the provided time with the number
          * of months added.
          */
-        Time addMonths(Time t, int nMonths)
+        Time addMonths(Time t, int nMonths, bool truncateDay = false)
         {
                 uint era = getEra(t);
                 uint year = getYear(t);
@@ -394,7 +404,8 @@ public abstract class Calendar
                 // offsets.
                 //
                 nMonths += month - 1;
-                long nDays = cast(int)getDayOfMonth(t) - cast(int)getDayOfYear(t);
+                int origDom = cast(int)getDayOfMonth(t);
+                long nDays = origDom - cast(int)getDayOfYear(t);
                 if(nMonths > 0)
                 {
                         //
@@ -434,6 +445,19 @@ public abstract class Calendar
                 // we now are offset to the resulting year.
                 // Add the rest of the months to get to the day we want.
                 //
+                int newDom = cast(int)getDaysInMonth(year, nMonths + 1, era);
+                if(origDom > newDom)
+                {
+                    //
+                    // error, the resulting day of month is out of range.  See
+                    // if we should truncate
+                    //
+                    if(truncateDay)
+                        nDays -= newDom - origDom;
+                    else
+                        throw new IllegalArgumentException("days out of range");
+
+                }
                 for(int m = 0; m < nMonths; m++)
                         nDays += getDaysInMonth(year, m + 1, era);
                 return t + TimeSpan.fromDays(nDays);

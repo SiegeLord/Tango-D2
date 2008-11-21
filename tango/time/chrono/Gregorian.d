@@ -264,14 +264,24 @@ class Gregorian : Calendar
          * Overridden. Returns a new Time with the specified number of months
          * added.  If the months are negative, the months are subtracted.
          *
+         * If the target month does not support the day component of the input
+         * time, then an error will be thrown, unless truncateDay is set to
+         * true.  If truncateDay is set to true, then the day is reduced to
+         * the maximum day of that month.
+         *
+         * For example, adding one month to 1/31/2000 with truncateDay set to
+         * true results in 2/28/2000.
+         *
          * Params: t = A time to add the months to
          * Params: nMonths = The number of months to add.  This can be
          * negative.
+         * Params: truncateDay = Round the day down to the maximum day of the
+         * target month if necessary.
          *
          * Returns: A Time that represents the provided time with the number
          * of months added.
          */
-        override Time addMonths(Time t, int nMonths)
+        override Time addMonths(Time t, int nMonths, bool truncateDay=false)
         {
                 //
                 // We know all years are 12 months, so use the to/from date
@@ -301,6 +311,15 @@ class Gregorian : Calendar
                         date.era = AD_ERA;
                 }
                 date.month = nMonths + 1;
+                //
+                // truncate the day if necessary
+                //
+                if(truncateDay)
+                {
+                    uint maxday = getDaysInMonth(date.year, date.month, date.era);
+                    if(date.day > maxday)
+                        date.day = maxday;
+                }
                 auto tod = t.ticks % TimeSpan.TicksPerDay;
                 if(tod < 0)
                         tod += TimeSpan.TicksPerDay;
@@ -567,5 +586,29 @@ debug(UnitTest)
                 catch(IllegalArgumentException iae)
                 {
                 }
+
+                try
+                {
+                    t = Gregorian.generic.toTime(2000, 1, 31, 0, 0, 0, 0);
+                    t = Gregorian.generic.addMonths(t, 1);
+                    assert(false, "Did not throw illegal argument exception");
+                }
+                catch(IllegalArgumentException iae)
+                {
+                }
+
+                try
+                {
+                    t = Gregorian.generic.toTime(2000, 1, 31, 0, 0, 0, 0);
+                    t = Gregorian.generic.addMonths(t, 1, true);
+                    assert(Gregorian.generic.getDayOfMonth(t) == 29);
+                }
+                catch(IllegalArgumentException iae)
+                {
+                    assert(false, "Should not throw illegal argument exception");
+                }
+
+
+
         }
 }
