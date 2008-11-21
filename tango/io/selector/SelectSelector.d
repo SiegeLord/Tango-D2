@@ -24,7 +24,7 @@ debug (selector)
 
 version (Windows)
 {
-    import tango.core.Thread;
+    private import tango.core.Thread;
 
     private
     {
@@ -36,6 +36,11 @@ version (Windows)
         extern (Windows) int select(int nfds, fd_set* readfds, fd_set* writefds,
                                     fd_set* errorfds, timeval* timeout);
     }
+}
+
+version (Posix)
+{
+    private import tango.core.BitArray;
 }
 
 
@@ -144,22 +149,22 @@ public class SelectSelector: AbstractSelector
     {
         _size = 0;
         _keys = null;
-        _readSet = null;
-        _writeSet = null;
-        _exceptionSet = null;
-        _selectedReadSet = null;
-        _selectedWriteSet = null;
-        _selectedExceptionSet = null;
+        _readSet = HandleSet.init;
+        _writeSet = HandleSet.init;
+        _exceptionSet = HandleSet.init;
+        _selectedReadSet = HandleSet.init;
+        _selectedWriteSet = HandleSet.init;
+        _selectedExceptionSet = HandleSet.init;
     }
 
-    private HandleSet allocateSet(ref HandleSet set, ref HandleSet selectedSet)
+    private HandleSet *allocateSet(ref HandleSet set, ref HandleSet selectedSet)
     {
-        if(set is null)
+        if(!set.initialized)
         {
-            set = new HandleSet(_size);
-            selectedSet = new HandleSet(_size);
+            set.setup(_size);
+            selectedSet.setup(_size);
         }
-        return set;
+        return &set;
     }
 
     /**
@@ -205,7 +210,7 @@ public class SelectSelector: AbstractSelector
             {
                 allocateSet(_readSet, _selectedReadSet).set(handle);
             }
-            else if (_readSet !is null)
+            else if (_readSet.initialized)
             {
                 _readSet.clear(handle);
             }
@@ -214,7 +219,7 @@ public class SelectSelector: AbstractSelector
             {
                 allocateSet(_writeSet, _selectedWriteSet).set(handle);
             }
-            else if (_writeSet !is null)
+            else if (_writeSet.initialized)
             {
                 _writeSet.clear(handle);
             }
@@ -223,7 +228,7 @@ public class SelectSelector: AbstractSelector
             {
                 allocateSet(_exceptionSet, _selectedExceptionSet).set(handle);
             }
-            else if (_exceptionSet !is null)
+            else if (_exceptionSet.initialized)
             {
                 _exceptionSet.clear(handle);
             }
@@ -234,13 +239,13 @@ public class SelectSelector: AbstractSelector
                     _maxfd = handle;
             }
 
-            (*key).events = events;
-            (*key).attachment = attachment;
+            key.events = events;
+            key.attachment = attachment;
         }
         else
         {
             // Keep record of the Conduits for whom we're tracking events.
-            _keys[handle] = new SelectionKey(conduit, events, attachment);
+            _keys[handle] = SelectionKey(conduit, events, attachment);
 
             if ((events & Event.Read) || (events & Event.Hangup))
             {
@@ -294,15 +299,15 @@ public class SelectSelector: AbstractSelector
 
             if (removed !is null)
             {
-                if (_exceptionSet !is null)
+                if (removed.events & Event.Error)
                 {
                     _exceptionSet.clear(handle);
                 }
-                if (_writeSet !is null)
+                if (removed.events & Event.Write)
                 {
                     _writeSet.clear(handle);
                 }
-                if (_readSet !is null)
+                if ((removed.events & Event.Read) || (removed.events & Event.Hangup))
                 {
                     _readSet.clear(handle);
                 }
@@ -316,9 +321,9 @@ public class SelectSelector: AbstractSelector
                     {
                         while (--_maxfd >= 0)
                         {
-                            if ((_readSet !is null && _readSet.isSet(_maxfd)) ||
-                                (_writeSet !is null && _writeSet.isSet(_maxfd)) ||
-                                (_exceptionSet !is null && _exceptionSet.isSet(_maxfd)))
+                            if (_readSet.isSet(_maxfd) ||
+                                _writeSet.isSet(_maxfd) ||
+                                _exceptionSet.isSet(_maxfd))
                             {
                                 break;
                             }
@@ -370,7 +375,7 @@ public class SelectSelector: AbstractSelector
         debug (selector)
             Stdout.format("--- SelectSelector.select(timeout={0} msec)\n", timeout.millis);
 
-        if (_readSet !is null)
+        if (_readSet.initialized)
         {
             debug (selector)
                 _readSet.dump("_readSet");
@@ -380,7 +385,7 @@ public class SelectSelector: AbstractSelector
 
             readfds = cast(fd_set*) _selectedReadSet.copy(_readSet);
         }
-        if (_writeSet !is null)
+        if (_writeSet.initialized)
         {
             debug (selector)
                 _writeSet.dump("_writeSet");
@@ -390,7 +395,7 @@ public class SelectSelector: AbstractSelector
 
             writefds = cast(fd_set*) _selectedWriteSet.copy(_writeSet);
         }
-        if (_exceptionSet !is null)
+        if (_exceptionSet.initialized)
         {
             debug (selector)
                 _exceptionSet.dump("_exceptionSet");
@@ -477,7 +482,30 @@ public class SelectSelector: AbstractSelector
      */
     public SelectionKey key(ISelectable conduit)
     {
-        return (conduit !is null ? _keys[conduit.fileHandle()] : null);
+        if(conduit !is null)
+        {
+            if(auto k = conduit.fileHandle in _keys)
+            {
+                return *k;
+            }
+        }
+        return SelectionKey.init;
+    }
+
+    /**
+     * Iterate through the currently registered selection keys.  Note that
+     * you should not erase or add any items from the selector while
+     * iterating, although you can register existing conduits again.
+     */
+    int opApply(int delegate(ref SelectionKey) dg)
+    {
+        int result = 0;
+        foreach(v; _keys)
+        {
+            if((result = dg(v)) != 0)
+                break;
+        }
+        return result;
     }
 }
 
@@ -486,13 +514,13 @@ public class SelectSelector: AbstractSelector
  */
 private class SelectSelectionSet: ISelectionSet
 {
-    private SelectionKey[ISelectable.Handle] _keys;
-    private uint _eventCount;
-    private HandleSet _readSet;
-    private HandleSet _writeSet;
-    private HandleSet _exceptionSet;
+    SelectionKey[ISelectable.Handle] _keys;
+    uint _eventCount;
+    HandleSet _readSet;
+    HandleSet _writeSet;
+    HandleSet _exceptionSet;
 
-    protected this(SelectionKey[ISelectable.Handle] keys, uint eventCount,
+    this(SelectionKey[ISelectable.Handle] keys, uint eventCount,
                    HandleSet readSet, HandleSet writeSet, HandleSet exceptionSet)
     {
         _keys = keys;
@@ -502,12 +530,12 @@ private class SelectSelectionSet: ISelectionSet
         _exceptionSet = exceptionSet;
     }
 
-    public uint length()
+    uint length()
     {
         return _eventCount;
     }
 
-    public int opApply(int delegate(inout SelectionKey) dg)
+    int opApply(int delegate(inout SelectionKey) dg)
     {
         int rc = 0;
         ISelectable.Handle handle;
@@ -520,15 +548,15 @@ private class SelectSelectionSet: ISelectionSet
         {
             handle = current.conduit.fileHandle();
 
-            if (_readSet !is null && _readSet.isSet(handle))
+            if (_readSet.isSet(handle))
                 events = Event.Read;
             else
                 events = Event.None;
 
-            if (_writeSet !is null && _writeSet.isSet(handle))
+            if (_writeSet.isSet(handle))
                 events |= Event.Write;
 
-            if (_exceptionSet !is null && _exceptionSet.isSet(handle))
+            if (_exceptionSet.isSet(handle))
                 events |= Event.Error;
 
             // Only invoke the delegate if there is an event for the conduit.
@@ -540,9 +568,8 @@ private class SelectSelectionSet: ISelectionSet
                     Stdout.format("---   Calling foreach delegate with selection key ({0}, 0x{1:x})\n",
                                   cast(int) handle, cast(uint) events);
 
-                if (dg(current) != 0)
+                if ((rc = dg(current)) != 0)
                 {
-                    rc = -1;
                     break;
                 }
             }
@@ -568,43 +595,43 @@ version (Windows)
      * can use the HandleSet without additional conversions by just casting it
      * to a fd_set*.
      */
-    private class HandleSet
+    private struct HandleSet
     {
         /** Default number of handles that will be held in the HandleSet. */
-        public const uint DefaultSize = 63;
+        const uint DefaultSize = 63;
 
-        private uint[] _buffer;
+        uint[] _buffer;
 
         /**
          * Constructor. Sets the initial number of handles that will be held
          * in the HandleSet.
          */
-        public this(uint size = DefaultSize)
+        void setup(uint size = DefaultSize)
         {
             _buffer = new uint[1 + size];
             _buffer[0] = 0;
         }
 
         /**
+         *  return true if this handle set has been initialized.
+         */
+        bool initialized()
+        {
+            return _buffer.length > 0;
+        }
+
+        /**
          * Return the number of handles present in the HandleSet.
          */
-        public uint length()
+        uint length()
         {
             return _buffer[0];
         }
 
         /**
-         * Remove all the handles from the set.
-         */
-        private void reset()
-        {
-            _buffer[0] = 0;
-        }
-
-        /**
          * Add the handle to the set.
          */
-        public void set(ISelectable.Handle handle)
+        void set(ISelectable.Handle handle)
         in
         {
             assert(handle >= 0);
@@ -625,7 +652,7 @@ version (Windows)
         /**
          * Remove the handle from the set.
          */
-        public void clear(ISelectable.Handle handle)
+        void clear(ISelectable.Handle handle)
         {
             for (uint i = 1; i <= _buffer[0]; ++i)
             {
@@ -648,17 +675,16 @@ version (Windows)
         /**
          * Copy the contents of the HandleSet into this instance.
          */
-        private HandleSet copy(HandleSet handleSet)
+        HandleSet copy(HandleSet handleSet)
         {
-            if (handleSet !is null)
+            if(handleSet._buffer.length > _buffer.length)
             {
-                _buffer[] = handleSet._buffer[];
+                _buffer.length = handleSet._buffer[0] + 1;
             }
-            else
-            {
-                _buffer = null;
-            }
-            return this;
+
+
+            _buffer[] = handleSet._buffer[0.._buffer.length];
+            return *this;
         }
 
         /**
@@ -735,46 +761,31 @@ else version (Posix)
      * Everything is stored so that the native select() API can use the
      * HandleSet without additional conversions by casting it to a fd_set*.
      */
-    private class HandleSet
+    private struct HandleSet
     {
         /** Default number of handles that will be held in the HandleSet. */
         const uint DefaultSize     = 1024;
-        /** Number of bits per element held in the _buffer */
-        const uint BitsPerElement = uint.sizeof * 8;
 
-        private uint[] _buffer;
+        BitArray _buffer;
 
         /**
          * Constructor. Sets the initial number of handles that will be held
          * in the HandleSet.
          */
-        protected this(uint size = DefaultSize)
+        void setup(uint size = DefaultSize)
         {
-            uint count;
-
             if (size < 1024)
                 size = 1024;
 
-            count = size / BitsPerElement;
-            if (size % BitsPerElement != 0)
-                count++;
-            _buffer = new uint[count];
+            _buffer.length = size;
         }
 
         /**
-         * Return the number of handles present in the HandleSet.
+         * Return true if the handleset has been initialized
          */
-        public uint length()
+        bool initialized()
         {
-            return _buffer.length;
-        }
-
-        /**
-         * Remove all the handles from the set.
-         */
-        public void reset()
-        {
-            _buffer[] = 0;
+            return _buffer.length > 0;
         }
 
         /**
@@ -783,11 +794,10 @@ else version (Posix)
         public void set(ISelectable.Handle handle)
         {
             // If we added too many sockets we increment the size of the buffer
-            if (cast(uint) handle >= BitsPerElement * _buffer.length)
-            {
-                _buffer.length = cast(uint) handle + 1;
-            }
-            bts(&_buffer[elementOffset(handle)], bitOffset(handle));
+            uint fd = cast(uint)handle;
+            if(fd >= _buffer.length)
+                _buffer.length = fd + 1;
+            _buffer[fd] = true;
         }
 
         /**
@@ -795,56 +805,41 @@ else version (Posix)
          */
         public void clear(ISelectable.Handle handle)
         {
-            btr(&_buffer[elementOffset(handle)], bitOffset(handle));
+            auto fd = cast(uint)handle;
+            if(fd < _buffer.length)
+                _buffer[fd] = false;
         }
 
         /**
          * Copy the contents of the HandleSet into this instance.
          */
-        private HandleSet copy(HandleSet handleSet)
+        HandleSet copy(HandleSet handleSet)
         {
-            if (handleSet !is null)
-            {
-                _buffer[] = handleSet._buffer[];
-            }
-            else
-            {
-                _buffer = null;
-            }
-            return this;
+            if(handleSet._buffer.length > _buffer.length)
+                _buffer.length = handleSet._buffer.length;
+            
+            _buffer[] = handleSet._buffer;
+            return *this;
         }
 
         /**
          * Check whether the handle has been set.
          */
-        public bool isSet(ISelectable.Handle handle)
+        bool isSet(ISelectable.Handle handle)
         {
-            return (bt(&_buffer[elementOffset(handle)], bitOffset(handle)) != 0);
+            auto fd = cast(uint)handle;
+            if(fd < _buffer.length)
+                return _buffer[fd];
+            return false;
         }
 
         /**
          * Cast the current object to a pointer to an fd_set, to be used with the
          * select() system call.
          */
-        public fd_set* opCast()
+        fd_set* opCast()
         {
-            return cast(fd_set*) _buffer;
-        }
-
-        /**
-         * Calculate the offset (in uints) of a handle in the set.
-         */
-        private static uint elementOffset(ISelectable.Handle handle)
-        {
-            return cast(uint) handle / BitsPerElement;
-        }
-
-        /**
-         * Calculate the offset of the bit corresponding to a handle in the set.
-         */
-        private static uint bitOffset(ISelectable.Handle handle)
-        {
-            return cast(uint) handle % BitsPerElement;
+            return cast(fd_set*) _buffer.ptr;
         }
 
         debug (selector)

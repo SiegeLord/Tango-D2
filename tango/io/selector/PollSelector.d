@@ -78,7 +78,7 @@ version (Posix)
 
         /** Map to associate the conduit handles with their selection keys */
         private PollSelectionKey[ISelectable.Handle] _keys;
-        private SelectionKey[] _selectedKeys;
+        //private SelectionKey[] _selectedKeys;
         private pollfd[] _pfds;
         private uint _count = 0;
         private int _eventCount = 0;
@@ -112,7 +112,7 @@ version (Posix)
         public void close()
         {
             _keys = null;
-            _selectedKeys = null;
+            //_selectedKeys = null;
             _pfds = null;
             _count = 0;
             _eventCount = 0;
@@ -160,8 +160,8 @@ version (Posix)
                     Stdout.formatln("--- Adding pollfd in index {0} (of {1})",
                                   current.index, _count);
 
-                (*current).events = events;
-                (*current).attachment = attachment;
+                current.key.events = events;
+                current.key.attachment = attachment;
 
                 _pfds[current.index].events = cast(short) events;
             }
@@ -276,67 +276,7 @@ version (Posix)
             while (true)
             {
                 _eventCount = poll(_pfds.ptr, _count, to);
-                if (_eventCount > 0)
-                {
-                    int i = 0;
-                    PollSelectionKey* key;
-
-                    if (_selectedKeys is null)
-                    {
-                        _selectedKeys = new SelectionKey[16];
-                    }
-
-                    // FIXME: add support for the wakeup() call.
-                    foreach (pollfd pfd; _pfds[0 .. _count])
-                    {
-                        if (i < _eventCount)
-                        {
-                            if (pfd.revents != 0)
-                            {
-                                debug (selector)
-                                    Stdout.formatln("--- Found events 0x{0:x} for handle {1} (index {2})",
-                                                  cast(uint) pfd.revents, cast(int) pfd.fd, i);
-
-                                // Find the key whose handle received an event
-                                key = ((cast(ISelectable.Handle) pfd.fd) in _keys);
-                                if (key !is null)
-                                {
-                                    // Enlarge the array of necessary
-                                    if (i >= _selectedKeys.length)
-                                    {
-                                        // The underlying array worries about
-                                        // incrementing the allocated block
-                                        // efficiently.
-                                        _selectedKeys.length = i + 1;
-                                    }
-
-                                    (*key).events = cast(Event) pfd.revents;
-
-                                    _selectedKeys[i] = *key;
-                                    i++;
-                                }
-                                else
-                                {
-                                    debug (selector)
-                                        Stdout.formatln("--- Handle {0} was not found in the Selector",
-                                                      cast(int) pfd.fd);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    _selectedKeys.length = i;
-                    break;
-                }
-                else if (_eventCount == 0)
-                {
-                    // Timeout
-                    break;
-                }
-                else // if (eventCount < 0)
+                if (_eventCount < 0)
                 {
                     if (errno != EINTR || !_restartInterruptedSystemCall)
                     {
@@ -345,6 +285,11 @@ version (Posix)
                     }
                     debug (selector)
                         Stdout.print("--- Restarting poll() after being interrupted\n");
+                }
+                else
+                {
+                    // Timeout or got a selection.
+                    break;
                 }
             }
             return _eventCount;
@@ -360,7 +305,7 @@ version (Posix)
          */
         public ISelectionSet selectedSet()
         {
-            return (_eventCount > 0 ? new PollSelectionSet(_selectedKeys) : null);
+            return (_eventCount > 0 ? new PollSelectionSet(_pfds, _eventCount, _keys) : null);
         }
 
         /**
@@ -369,11 +314,36 @@ version (Posix)
          *
          * Remarks:
          * If the conduit is not registered to the selector the returned
-         * value will be null. No exception will be thrown by this method.
+         * value will SelectionKey.init. No exception will be thrown by this
+         * method.
          */
         public SelectionKey key(ISelectable conduit)
         {
-            return (conduit !is null ? _keys[conduit.fileHandle()] : null);
+            if(conduit !is null)
+            {
+                if(auto k = (conduit.fileHandle in _keys))
+                {
+                    return k.key;
+                }
+            }
+            return SelectionKey.init;
+        }
+
+        /**
+         * Iterate through the currently registered selection keys.  Note that
+         * you should not erase or add any items from the selector while
+         * iterating, although you can register existing conduits again.
+         */
+        public int opApply(int delegate(ref SelectionKey sk) dg)
+        {
+            int result = 0;
+            foreach(k; _keys)
+            {
+                SelectionKey sk = k.key;
+                if((result = dg(sk)) != 0)
+                    break;
+            }
+            return result;
         }
 
         unittest
@@ -386,31 +356,59 @@ version (Posix)
      */
     private class PollSelectionSet: ISelectionSet
     {
-        private SelectionKey[] _keys;
+        pollfd[] fds;
+        int numSelected;
+        PollSelectionKey[ISelectable.Handle] keys;
 
-        protected this(SelectionKey[] keys)
+
+        this(pollfd[] fds, int numSelected, PollSelectionKey[ISelectable.Handle] keys)
         {
-            _keys = keys;
+            this.fds = fds;
+            this.numSelected = numSelected;
+            this.keys = keys;
         }
 
-        public uint length()
+        uint length()
         {
-            return _keys.length;
+            return numSelected;
         }
 
         /**
          * Iterate over all the Conduits that have received events.
          */
-        public int opApply(int delegate(inout SelectionKey) dg)
+        int opApply(int delegate(inout SelectionKey) dg)
         {
             int rc = 0;
+            int nLeft = numSelected;
 
-            foreach (SelectionKey current; _keys)
+            foreach (pfd; fds)
             {
-                if (dg(current) != 0)
+                //
+                // see if the revent is set
+                //
+                if(pfd.revents != 0)
                 {
-                    rc = -1;
-                    break;
+                    debug (selector)
+                        Stdout.formatln("--- Found events 0x{0:x} for handle {1}",
+                                cast(uint) pfd.revents, cast(int) pfd.fd);
+                    auto k = (cast(ISelectable.Handle)pfd.fd) in keys;
+                    if(k !is null)
+                    {
+                        SelectionKey current = k.key;
+                        current.events = cast(Event)pfd.revents;
+                        if ((rc = dg(current)) != 0)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        debug (selector)
+                            Stdout.formatln("--- Handle {0} was not found in the Selector",
+                                    cast(int) pfd.fd);
+                    }
+                    if(--nLeft == 0)
+                        break;
                 }
             }
             return rc;
@@ -421,9 +419,10 @@ version (Posix)
      * Class that holds the information that the PollSelector needs to deal
      * with each registered Conduit.
      */
-    private class PollSelectionKey: SelectionKey
+    private class PollSelectionKey
     {
-        private uint _index;
+        SelectionKey key;
+        uint index;
 
         public this()
         {
@@ -431,19 +430,9 @@ version (Posix)
 
         public this(ISelectable conduit, Event events, uint index, Object attachment)
         {
-            super(conduit, events, attachment);
+            this.key = SelectionKey(conduit, events, attachment);
 
-            _index = index;
-        }
-
-        public uint index()
-        {
-            return _index;
-        }
-
-        public void index(uint index)
-        {
-            _index = index;
+            this.index = index;
         }
     }
 }

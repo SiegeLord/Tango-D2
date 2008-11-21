@@ -224,17 +224,17 @@ version (linux)
         }
         body
         {
-            SelectionKey* key = (conduit.fileHandle() in _keys);
+            auto key = conduit.fileHandle() in _keys;
 
             if (key !is null)
             {
                 epoll_event event;
 
-                (*key).events = events;
-                (*key).attachment = attachment;
+                key.events = events;
+                key.attachment = attachment;
 
                 event.events = events;
-                event.data.ptr = cast(void*) *key;
+                event.data.ptr = cast(void*) key;
 
                 if (epoll_ctl(_epfd, EPOLL_CTL_MOD, conduit.fileHandle(), &event) != 0)
                 {
@@ -244,24 +244,26 @@ version (linux)
             else
             {
                 epoll_event     event;
-                SelectionKey    newkey = new SelectionKey(conduit, events, attachment);
+                SelectionKey    newkey = SelectionKey(conduit, events, attachment);
 
                 event.events = events;
-                // We associate the selection key to the epoll_event to be able to
-                // retrieve it efficiently when we get events for this handle.
-                event.data.ptr = cast(void*) newkey;
 
-                if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) == 0)
+                // We associate the selection key to the epoll_event to be
+                // able to retrieve it efficiently when we get events for
+                // this handle.
+                // We keep the keys in a map to make sure that the key is not
+                // garbage collected while there is still a reference to it in
+                // an epoll_event. This also allows to to efficiently find the
+                // key corresponding to a handle in methods where this
+                // association is not provided automatically.
+                _keys[conduit.fileHandle()] = newkey;
+                auto x = conduit.fileHandle in _keys;
+                event.data.ptr = cast(void*) x;
+                if (epoll_ctl(_epfd, EPOLL_CTL_ADD, conduit.fileHandle(), &event) != 0)
                 {
-                    // We keep the keys in a map to make sure that the key is not
-                    // garbage collected while there is still a reference to it in
-                    // an epoll_event. This also allows to to efficiently find the
-                    // key corresponding to a handle in methods where this
-                    // association is not provided automatically.
-                    _keys[conduit.fileHandle()] = newkey;
-                }
-                else
-                {
+                    // failed, remove the file descriptor from the keys array,
+                    // and throw an error.
+                    _keys.remove(conduit.fileHandle);
                     checkErrno(__FILE__, __LINE__);
                 }
             }
@@ -359,16 +361,40 @@ version (linux)
         }
 
         /**
-         * Return the selection key resulting from the registration of a
-         * conduit to the selector.
+         * Return the selection key resulting from the registration of a conduit
+         * to the selector.
          *
          * Remarks:
          * If the conduit is not registered to the selector the returned
-         * value will be null. No exception will be thrown by this method.
+         * value will SelectionKey.init. No exception will be thrown by this
+         * method.
          */
         public SelectionKey key(ISelectable conduit)
         {
-            return (conduit !is null ? _keys[conduit.fileHandle()] : null);
+            if(conduit !is null)
+            {
+                if(auto k = conduit.fileHandle in _keys)
+                {
+                    return *k;
+                }
+            }
+            return SelectionKey.init;
+        }
+
+        /**
+         * Iterate through the currently registered selection keys.  Note that
+         * you should not erase or add any items from the selector while
+         * iterating, although you can register existing conduits again.
+         */
+        int opApply(int delegate(ref SelectionKey) dg)
+        {
+            int result = 0;
+            foreach(v; _keys)
+            {
+                if((result = dg(v)) != 0)
+                    break;
+            }
+            return result;
         }
 
         unittest
@@ -409,7 +435,7 @@ version (linux)
                 // Only invoke the delegate if there is an event for the conduit.
                 if (event.events != 0)
                 {
-                    key = cast(SelectionKey) event.data.ptr;
+                    key = *(cast(SelectionKey *)event.data.ptr);
                     key.events = cast(Event) event.events;
 
                     debug (selector)

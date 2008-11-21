@@ -32,7 +32,7 @@ enum Event: uint
 
 
 /**
- * The SelectionKey class holds the information concerning the conduits and
+ * The SelectionKey struct holds the information concerning the conduits and
  * their association to a selector. Each key keeps a reference to a registered
  * conduit and the events that are to be tracked for it. The 'events' member
  * of the key can take two meanings, depending on where it's used. If used
@@ -47,96 +47,30 @@ enum Event: uint
  * See $(LINK $(CODEURL)tango.io.selector.ISelector),
  * $(LINK $(CODEURL)tango.io.selector.ISelectionSet)
  */
-class SelectionKey
+struct SelectionKey
 {
-    private ISelectable _conduit;
-    private Event _events;
-    private Object _attachment;
+    /**
+     * The conduit referred to by the SelectionKey.
+     */
+    ISelectable conduit;
 
     /**
-     * Constructor
+     * The registered (or selected) events as a bit mask of different Event
+     * values.
      */
-    public this()
-    {
-    }
+    Event events;
 
     /**
-     * Constructor
-     *
-     * Params:
-     * conduit      = conduit that will be associated to this SelectionKey
-     * events       = events that will be tracked for the conduit
-     * attachment   = optional object with application-specific data that will
-     *                be available when an event is triggered for the conduit
-     *
-     * Examples:
-     * ---
-     * SocketConduit cond;
-     *
-     * auto key = new SelectionKey(cond, Event.Read | Event.Write);
-     * ---
+     * The attached Object referred to by the SelectionKey.
      */
-    public this(ISelectable conduit, Event events, Object attachment = null)
-    {
-        _conduit = conduit;
-        _events = events;
-        _attachment = attachment;
-    }
-
-    /**
-     * Return the conduit held by the instance.
-     */
-    public ISelectable conduit()
-    {
-        return _conduit;
-    }
-
-    /**
-     * Set the conduit held by the instance
-     */
-    public void conduit(ISelectable conduit)
-    {
-        _conduit = conduit;
-    }
-
-    /**
-     * Return the registered events as a bit mask of different Event values.
-     */
-    public Event events()
-    {
-        return _events;
-    }
-
-    /**
-     * Set the registered events as a bit mask of different Event values.
-     */
-    public void events(Event events)
-    {
-        _events = events;
-    }
-
-    /**
-     * Return the attached Object held by the instance.
-     */
-    public Object attachment()
-    {
-        return _attachment;
-    }
-
-    /**
-     * Set the attached Object held by the instance
-     */
-    public void attachment(Object attachment)
-    {
-        _attachment = attachment;
-    }
+    Object attachment;
 
     /**
      * Check if a Read event has been associated to this SelectionKey.
      */
     public bool isReadable()
     {
-        return ((_events & Event.Read) != 0);
+        return ((events & Event.Read) != 0);
     }
 
     /**
@@ -144,7 +78,7 @@ class SelectionKey
      */
     public bool isUrgentRead()
     {
-        return ((_events & Event.UrgentRead) != 0);
+        return ((events & Event.UrgentRead) != 0);
     }
 
     /**
@@ -152,7 +86,7 @@ class SelectionKey
      */
     public bool isWritable()
     {
-        return ((_events & Event.Write) != 0);
+        return ((events & Event.Write) != 0);
     }
 
     /**
@@ -160,7 +94,7 @@ class SelectionKey
      */
     public bool isError()
     {
-        return ((_events & Event.Error) != 0);
+        return ((events & Event.Error) != 0);
     }
 
     /**
@@ -168,7 +102,7 @@ class SelectionKey
      */
     public bool isHangup()
     {
-        return ((_events & Event.Hangup) != 0);
+        return ((events & Event.Hangup) != 0);
     }
 
     /**
@@ -176,7 +110,7 @@ class SelectionKey
      */
     public bool isInvalidHandle()
     {
-        return ((_events & Event.InvalidHandle) != 0);
+        return ((events & Event.InvalidHandle) != 0);
     }
 }
 
@@ -195,9 +129,10 @@ interface ISelectionSet
     public abstract uint length();
 
     /**
-     * Operator to iterate over a set via a foreach block.
+     * Operator to iterate over a set via a foreach block.  Note that any
+     * modifications to the SelectionKey will be ignored.
      */
-    public abstract int opApply(int delegate(inout SelectionKey) dg);
+    public abstract int opApply(int delegate(ref SelectionKey) dg);
 }
 
 
@@ -437,7 +372,15 @@ interface ISelector
      *
      * Remarks:
      * If the conduit is not registered to the selector the returned
-     * value will be null. No exception will be thrown by this method.
+     * value will SelectionKey.init. No exception will be thrown by this
+     * method.
      */
     public abstract SelectionKey key(ISelectable conduit);
+
+    /**
+     * Iterate through the currently registered selection keys.  Note that you
+     * should not erase or add any items from the selector while iterating,
+     * although you can register existing conduits again.
+     */
+    public abstract int opApply(int delegate(ref SelectionKey sk) dg);
 }

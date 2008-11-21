@@ -156,6 +156,37 @@ struct BitArray
         }
     }
 
+    /**
+     * Copy the bits from one array into this array.  This is not a shallow
+     * copy.
+     *
+     * Params:
+     *  rhs = A BitArray with at least the same number of bits as this bit
+     *  array.
+     *
+     * Returns:
+     *  A shallow copy of this array.
+     *
+     *  --------------------
+     *  BitArray ba = [0,1,0,1,0];
+     *  BitArray ba2;
+     *  ba2.length = ba.length;
+     *  ba2[] = ba; // perform the copy
+     *  ba[0] = true;
+     *  assert(ba2[0] == false);
+     */
+    BitArray opSliceAssign(BitArray rhs)
+    in
+    {
+        assert(rhs.len >= len);
+    }
+    body
+    {
+        auto nints = dim;
+        ptr[0..nints] = rhs.ptr[0..nints];
+        return *this;
+    }
+
 
     /**
      * Map BitArray onto target, with numbits being the number of bits in the
@@ -199,6 +230,14 @@ struct BitArray
         assert( b[0] == 0 );
 
         assert( a == b );
+
+        // test opSliceAssign
+        BitArray c;
+        c.length = a.length;
+        c[] = a;
+        assert( c == a );
+        a[0] = 1;
+        assert( c != a );
       }
     }
 
