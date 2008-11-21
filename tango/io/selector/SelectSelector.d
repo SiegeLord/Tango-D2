@@ -815,7 +815,10 @@ else version (Posix)
          */
         HandleSet copy(HandleSet handleSet)
         {
-            if(handleSet._buffer.length > _buffer.length)
+            //
+            // adjust the length if necessary
+            //
+            if(handleSet._buffer.length != _buffer.length)
                 _buffer.length = handleSet._buffer.length;
             
             _buffer[] = handleSet._buffer;
