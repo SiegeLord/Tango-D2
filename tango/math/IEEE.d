@@ -591,18 +591,22 @@ unittest
         [double.min/2.0, .5, -1022],
         [real.infinity,real.infinity,int.max],
         [-real.infinity,-real.infinity,int.min],
-        [real.nan,real.nan,int.min],
-        [-real.nan,-real.nan,int.min],
-    ];
-
+    ];   
+    
     int i;
+    int eptr;
+    real v = frexp(NaN(0xABC), eptr);
+    assert(isIdentical(NaN(0xABC), v));
+    assert(eptr ==int.min);
+    v = frexp(-NaN(0xABC), eptr);
+    assert(isIdentical(-NaN(0xABC), v));
+    assert(eptr ==int.min);
 
     for (i = 0; i < vals.length; i++) {
         real x = vals[i][0];
         real e = vals[i][1];
         int exp = cast(int)vals[i][2];
-        int eptr;
-        real v = frexp(x, eptr);
+        v = frexp(x, eptr);
 //        printf("frexp(%La) = %La, should be %La, eptr = %d, should be %d\n", x, v, e, eptr, exp);
         assert(isIdentical(e, v));
         assert(exp == eptr);
@@ -620,8 +624,7 @@ unittest
         real x = extendedvals[i][0];
         real e = extendedvals[i][1];
         int exp = cast(int)extendedvals[i][2];
-        int eptr;
-        real v = frexp(x, eptr);
+        v = frexp(x, eptr);
         assert(isIdentical(e, v));
         assert(exp == eptr);
 
