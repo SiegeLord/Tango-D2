@@ -175,17 +175,22 @@ struct BitArray
      *  ba[0] = true;
      *  assert(ba2[0] == false);
      */
-    BitArray opSliceAssign(BitArray rhs)
-    in
-    {
-        assert(rhs.len >= len);
-    }
-    body
-    {
-        auto nints = dim;
-        ptr[0..nints] = rhs.ptr[0..nints];
-        return *this;
-    }
+     BitArray opSliceAssign(BitArray rhs)
+     in
+     {
+         assert(rhs.len == len);
+     }
+     body
+     {
+         size_t mDim=len/32;
+         ptr[0..mDim] = rhs.ptr[0..mDim];
+         int rest=cast(int)(len & cast(size_t)31u);
+         if (rest){
+             uint mask=(~0u)<<rest;
+             ptr[mDim]=(rhs.ptr[mDim] & (~mask))|(ptr[mDim] & mask);
+         }
+         return *this;
+     }
 
 
     /**
