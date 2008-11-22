@@ -1474,7 +1474,7 @@ real nextafter(real x, real y)
  *
  *  $(TABLE_SV
  *    $(SVH3 x,      y,         feqrel(x, y)  )
- *    $(SV3  x,      x,         real.mant_dig )
+ *    $(SV3  x,      x,         typeof(x).mant_dig )
  *    $(SV3  x,      &gt;= 2*x, 0 )
  *    $(SV3  x,      &lt;= x/2, 0 )
  *    $(SV3  $(NAN), any,       0 )
@@ -1494,8 +1494,8 @@ int feqrel(X)(X x, X y)
      int a = feqrel(cast(double*)(&x)[MANTISSA_MSB], cast(double*)(&y)[MANTISSA_MSB]);
      if (a != double.mant_dig) return a;
      return double.mant_dig + feqrel(cast(double*)(&x)[MANTISSA_LSB], cast(double*)(&y)[MANTISSA_LSB]);     
-  } else static if (X.mant_dig==64 || X.mant_dig==113 || X.mant_dig==53) {
-      
+  } else static if (X.mant_dig==64 || X.mant_dig==113 
+                 || X.mant_dig==53 || X.mant_dig == 24) {
     if (x == y) return X.mant_dig; // ensure diff!=0, cope with INF.
 
     X diff = fabs(x - y);
@@ -1517,11 +1517,20 @@ int feqrel(X)(X x, X y)
     // they could have 0 or 1 bits in common.
 
  static if (X.mant_dig==64 || X.mant_dig==113) { // real80 or quadruple
-    int bitsdiff = ( ((pa[F.EXPPOS_SHORT]&0x7FFF) + (pb[F.EXPPOS_SHORT]&0x7FFF)-1)>>1) 
+    int bitsdiff = ( ((pa[F.EXPPOS_SHORT] & F.EXPMASK) 
+                     + (pb[F.EXPPOS_SHORT]& F.EXPMASK)
+                     - (0x8000-F.EXPMASK))>>1) 
                 - pd[F.EXPPOS_SHORT];
  } else static if (X.mant_dig==53) { // double
-    int bitsdiff = (( ((pa[F.EXPPOS_SHORT]&0x7FF0) + (pb[F.EXPPOS_SHORT]&0x7FF0)-0x10)>>1) 
-                 - (pd[F.EXPPOS_SHORT]&0x7FF0))>>4;
+    int bitsdiff = (( ((pa[F.EXPPOS_SHORT] & F.EXPMASK)
+                     + (pb[F.EXPPOS_SHORT] & F.EXPMASK)
+                     - (0x8000-F.EXPMASK))>>1) 
+                 - (pd[F.EXPPOS_SHORT] & F.EXPMASK))>>4;
+ } else static if (X.mant_dig == 24) { // float
+     int bitsdiff = (( ((pa[F.EXPPOS_SHORT] & F.EXPMASK)
+                      + (pb[F.EXPPOS_SHORT] & F.EXPMASK)
+                      - (0x8000-F.EXPMASK))>>1) 
+             - (pd[F.EXPPOS_SHORT] & F.EXPMASK))>>7;     
  }
     if (pd[F.EXPPOS_SHORT] == 0)
     {   // Difference is denormal
@@ -1538,10 +1547,9 @@ int feqrel(X)(X x, X y)
     // Avoid out-by-1 errors when factor is almost 2.    
      static if (X.mant_dig==64 || X.mant_dig==113) { // real80 or quadruple    
         return (bitsdiff == 0) ? (pa[F.EXPPOS_SHORT] == pb[F.EXPPOS_SHORT]) : 0;
-     } else static if (X.mant_dig==53) { // double
-        if (bitsdiff == 0 && !((pa[F.EXPPOS_SHORT] ^ pb[F.EXPPOS_SHORT])& F.EXPMASK)) return 1;
-        else return 0;
-     }  
+     } else static if (X.mant_dig == 53 || X.mant_dig == 24) { // double or float
+        return (bitsdiff == 0 && !((pa[F.EXPPOS_SHORT] ^ pb[F.EXPPOS_SHORT])& F.EXPMASK)) ? 1 : 0;
+     }
  } else {
     assert(0, "Unsupported");
  }
@@ -1590,6 +1598,10 @@ unittest
    assert(feqrel(real.infinity,-real.infinity)==0);
    assert(feqrel(-real.max,real.infinity)==0);
    assert(feqrel(real.max,-real.max)==0);
+   
+   // floats
+   assert(feqrel(2.1f, 2.1f)==float.mant_dig);
+   assert(feqrel(1.5f, 1.0f)==1);
 }
 }
 
