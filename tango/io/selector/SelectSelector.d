@@ -692,6 +692,9 @@ version (Windows)
          */
         public bool isSet(ISelectable.Handle handle)
         {
+            if(_buffer.length == 0)
+                return false;
+
             uint* start;
             uint* stop;
 
