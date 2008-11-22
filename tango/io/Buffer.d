@@ -385,6 +385,38 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
+                Retrieve the valid content
+
+                Returns:
+                a void[] slice of the buffer
+
+                Remarks:
+                Return a void[] slice of the buffer, from the current position
+                up to the limit of valid content. The content remains in the
+                buffer for future extraction.
+
+        ***********************************************************************/
+
+        void[] slice ()
+        {
+                return  data [index .. extent];
+        }
+
+        /***********************************************************************
+        
+                Return a void[] slice of the buffer from start to end, where
+                end is exclusive
+
+        ***********************************************************************/
+
+        final void[] opSlice (uint start, uint end)
+        {
+                assert (start <= extent && end <= extent && start <= end);
+                return data [start .. end];
+        }
+
+        /***********************************************************************
+
                 Access buffer content
 
                 Params:
@@ -430,7 +462,7 @@ class Buffer : IBuffer
                    // make some space? This will try to leave as much content
                    // in the buffer as possible, such that entire records may
                    // be aliased directly from within.
-                   if (size > writable)
+                   if (size > (dimension - index))
                       {
                       if (size > dimension)
                           error (underflow);
@@ -618,25 +650,6 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
-                Retrieve the valid content
-
-                Returns:
-                a void[] slice of the buffer
-
-                Remarks:
-                Return a void[] slice of the buffer, from the current position
-                up to the limit of valid content. The content remains in the
-                buffer for future extraction.
-
-        ***********************************************************************/
-
-        void[] slice ()
-        {
-                return  data [index .. extent];
-        }
-
-        /***********************************************************************
-
                 Move the current read location
 
                 Params:
@@ -772,6 +785,25 @@ class Buffer : IBuffer
 
         /***********************************************************************
 
+                Reserve the specified space within the buffer, compressing
+                existing content as necessary to make room
+
+                Returns the current read point, after compression if that
+                was required
+
+        ***********************************************************************/
+
+        final uint reserve (uint space)
+        {       
+                assert (space < dimension);
+
+                if ((dimension - index) < space)
+                     compress;
+                return index;
+        }
+
+        /***********************************************************************
+
                 Write into this buffer
 
                 Params:
@@ -854,8 +886,8 @@ class Buffer : IBuffer
         ***********************************************************************/
 
         IBuffer compress ()
-        {
-                uint r = readable ();
+        {       
+                uint r = readable;
 
                 if (index > 0 && r > 0)
                     // content may overlap ...
@@ -886,13 +918,14 @@ class Buffer : IBuffer
         {
                 if (src is null)
                     return IConduit.Eof;
-
+/+
+                // should not reset here, since we're only filling!
                 if (readable is 0 && canCompress)
                     index = extent = 0;  // same as clear(), without call-chain
                 else
                    if (writable is 0)
                        return 0;
-
++/
                 return write (&src.read);
         }
 
@@ -1320,9 +1353,14 @@ class Buffer : IBuffer
                       if (dst.length > dimension)
                           content = source.read (dst);
                       else
+                         {
+                         if (writable is 0)
+                             index = extent = 0;  // same as clear(), without call-chain
+
                          // keep buffer partially populated
                          if ((content = fill(source)) != IConduit.Eof && content > 0)
                               content = read (dst);
+                         }
                       }
                    else
                       content = IConduit.Eof;
@@ -1621,5 +1659,22 @@ class GrowBuffer : Buffer
                 dimension += size;
                 data.length = dimension;               
                 return writable;
+        }
+}
+
+
+/******************************************************************************
+
+******************************************************************************/
+
+debug (Buffer)
+{
+        void main()
+        {       
+                auto b = new Buffer(6);
+                b.append ("fubar");
+                b.reserve (1);
+                b.slice (5);
+                b.reserve (4);
         }
 }

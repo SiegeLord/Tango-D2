@@ -77,15 +77,6 @@ abstract class IBuffer : IConduit, Buffered
 
         /***********************************************************************
         
-                Return a void[] slice of the buffer up to the limit of
-                valid content.
-
-        ***********************************************************************/
-
-        abstract void[] slice ();
-
-        /***********************************************************************
-        
                 Set the backing array with all content readable. Writing
                 to this will either flush it to an associated conduit, or
                 raise an Eof condition. Use IBuffer.clear() to reset the
@@ -168,6 +159,24 @@ abstract class IBuffer : IConduit, Buffered
         ***********************************************************************/
 
         abstract void consume (void[] src);
+
+        /***********************************************************************
+        
+                Return a void[] slice of the buffer up to the limit of
+                valid content.
+
+        ***********************************************************************/
+
+        abstract void[] slice ();
+
+        /***********************************************************************
+        
+                Return a void[] slice of the buffer from start to end, where
+                end is exclusive
+
+        ***********************************************************************/
+
+        abstract void[] opSlice (uint start, uint end);
 
         /***********************************************************************
 
@@ -360,6 +369,18 @@ abstract class IBuffer : IConduit, Buffered
         ***********************************************************************/
 
         abstract uint writable ();
+
+        /***********************************************************************
+
+                Reserve the specified space within the buffer, compressing
+                existing content as necessary to make room
+
+                Returns the current read point, after compression if that
+                was required
+
+        ***********************************************************************/
+
+        abstract uint reserve (uint space);
 
         /***********************************************************************
         
