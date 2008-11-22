@@ -46,9 +46,10 @@ class DataInput : InputFilter, Buffered
 {
         public enum
         {
-                Native,
-                Network,
-                Little
+                Native  = 0,
+                Network = 1,
+                Big     = 1,
+                Little  = 2
         }
 
         private bool            flip;
@@ -277,9 +278,10 @@ class DataOutput : OutputFilter, Buffered
 {       
         public enum
         {
-                Native,
-                Network,
-                Little
+                Native  = 0,
+                Network = 1,
+                Big     = 1,
+                Little  = 2
         }
 
         private bool    flip;
