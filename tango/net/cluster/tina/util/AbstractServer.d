@@ -38,7 +38,6 @@ class AbstractServer : IServer
         private InternetAddress bind;
         private ServerSocket    server;
         private Logger          logger;
-        private Sprint!(char)   sprint;
         private uint            threads;
         private uint            backlog;
 
@@ -68,7 +67,6 @@ class AbstractServer : IServer
                 this.logger = logger;
                 this.threads = threads;
                 this.backlog = backlog;
-                this.sprint = new Sprint!(char);
         }
 
         /**********************************************************************
@@ -204,7 +202,7 @@ class AbstractServer : IServer
                      createThread (server);
 
                 // indicate what's going on
-                logger.info (sprint ("Server {} started on {} with {} accept threads and {} backlogs",
-                                      this, localAddress, threads, backlog));
+                logger.info ("Server {} started on {} with {} accept threads and {} backlogs",
+                              this, localAddress, threads, backlog);
         }
 }
