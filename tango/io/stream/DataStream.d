@@ -44,7 +44,16 @@ private import tango.io.device.Conduit;
 
 class DataInput : InputFilter, Buffered
 {
-        public enum
+        public alias array      get;            /// old name alias
+        public alias boolean   getBool;         /// ditto
+        public alias int8      getByte;         /// ditto
+        public alias int16     getShort;        /// ditto
+        public alias int32     getInt;          /// ditto
+        public alias int64     getLong;         /// ditto
+        public alias float32   getFloat;        /// ditto
+        public alias float64   getDouble;       /// ditto
+
+        public enum                             /// endian variations
         {
                 Native  = 0,
                 Network = 1,
@@ -131,10 +140,10 @@ class DataInput : InputFilter, Buffered
                 eschew this prefix.
 
         ***********************************************************************/
-
-        final override uint get (void[] dst)
+        
+        final override uint array (void[] dst)
         {
-                auto len = getInt;
+                auto len = int32;
                 if (len > dst.length)
                     conduit.error ("DataInput.readArray :: dst array is too small");
                 input.readExact (dst.ptr, len);
@@ -161,9 +170,9 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final void[] get ()
+        final void[] array ()
         {
-                auto len = getInt;
+                auto len = int32;
                 auto dst = allocator (len);
                 input.readExact (dst.ptr, len);
                 return dst;
@@ -173,7 +182,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final bool getBool ()
+        final bool boolean ()
         {
                 bool x;
                 input.readExact (&x, x.sizeof);
@@ -184,7 +193,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final byte getByte ()
+        final byte int8 ()
         {
                 byte x;
                 input.readExact (&x, x.sizeof);
@@ -195,7 +204,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final short getShort ()
+        final short int16 ()
         {
                 short x;
                 input.readExact (&x, x.sizeof);
@@ -208,7 +217,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final int getInt ()
+        final int int32 ()
         {
                 int x;
                 input.readExact (&x, x.sizeof);
@@ -221,7 +230,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final long getLong ()
+        final long int64 ()
         {
                 long x;
                 input.readExact (&x, x.sizeof);
@@ -234,7 +243,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final float getFloat ()
+        final float float32 ()
         {
                 float x;
                 input.readExact (&x, x.sizeof);
@@ -247,7 +256,7 @@ class DataInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final double getDouble ()
+        final double float64 ()
         {
                 double x;
                 input.readExact (&x, x.sizeof);
@@ -265,18 +274,27 @@ class DataInput : InputFilter, Buffered
         such as a file:
         ---
         auto output = new DataOutput (new FileOutput("path"));
-        output.putInt (1024);
-        output.putDouble (3.14159);
-        output.put ("string with length prefix");
-        output.write ("raw array, no prefix");
-        output.flush.close;
+        output.int32   (1024);
+        output.float64 (3.14159);
+        output.array   ("string with length prefix");
+        output.write   ("raw array, no prefix");
+        output.close;
         ---
 
 *******************************************************************************/
 
 class DataOutput : OutputFilter, Buffered
 {       
-        public enum
+        public alias array      put;            /// old name alias
+        public alias boolean    putBool;        /// ditto
+        public alias int8       putByte;        /// ditto
+        public alias int16      putShort;       /// ditto
+        public alias int32      putInt;         /// ditto
+        public alias int64      putLong;        /// ditto
+        public alias float32    putFloat;       /// ditto
+        public alias float64    putFloat;       /// ditto
+
+        public enum                             /// endian variations
         {
                 Native  = 0,
                 Network = 1,
@@ -332,7 +350,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final uint put (void[] src)
+        final uint array (void[] src)
         {
                 auto len = src.length;
                 putInt (len);
@@ -344,7 +362,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putBool (bool x)
+        final void boolean (bool x)
         {
                 output.append (&x, x.sizeof);
         }
@@ -353,7 +371,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putByte (byte x)
+        final void int8 (byte x)
         {
                 output.append (&x, x.sizeof);
         }
@@ -362,7 +380,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putShort (short x)
+        final void int16 (short x)
         {
                 if (flip)
                     ByteSwap.swap16 (&x, x.sizeof);
@@ -373,7 +391,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putInt (int x)
+        final void int32 (int x)
         {
                 if (flip)
                     ByteSwap.swap32 (&x, x.sizeof);
@@ -384,7 +402,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putLong (long x)
+        final void int64 (long x)
         {
                 if (flip)
                     ByteSwap.swap64 (&x, x.sizeof);
@@ -395,7 +413,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putFloat (float x)
+        final void float32 (float x)
         {
                 if (flip)
                     ByteSwap.swap32 (&x, x.sizeof);
@@ -406,7 +424,7 @@ class DataOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void putDouble (double x)
+        final void float64 (double x)
         {
                 if (flip)
                     ByteSwap.swap64 (&x, x.sizeof);
@@ -427,12 +445,12 @@ debug (UnitTest)
                 auto buf = new Buffer(32);
 
                 auto output = new DataOutput (buf);
-                output.put ("blah blah");
-                output.putInt (1024);
+                output.array ("blah blah");
+                output.int32 (1024);
 
                 auto input = new DataInput (buf);
-                assert (input.get(new char[9]) is 9);
-                assert (input.getInt is 1024);
+                assert (input.array(new char[9]) is 9);
+                assert (input.int32 is 1024);
         }
 }
 
@@ -451,11 +469,11 @@ debug (DataStream)
                 auto buf = new Buffer(64);
 
                 auto output = new DataOutput (buf);
-                output.put ("blah blah");
-                output.putInt (1024);
+                output.array ("blah blah");
+                output.int32 (1024);
 
                 auto input = new DataInput (buf);
-                assert (input.get.length is 9);
-                assert (input.getInt is 1024);
+                assert (input.array.length is 9);
+                assert (input.int32 is 1024);
         }
 }
