@@ -62,9 +62,11 @@ class Sprint(T)
                 Create new Sprint instances with a buffer of the specified
                 size
                 
+                Deprecated - use Stdout.layout.sprint() instead
+
         **********************************************************************/
 
-        this (int size = 256)
+        deprecated this (int size = 256)
         {
                 // Workaround for bug with static ctors in GDC
                 if (global is null)
