@@ -103,7 +103,20 @@ T[] unescape(T) (T[] src, T[] dst = null)
                               T[6]  t = void;
 
                               for (auto i=2; i < 6; ++i)
-                                   v = (v << 4) + s[i] - '0';
+                                  {
+                                  auto c = s[i];
+                                  if (c >= '0' && c <= '9')
+                                     {}
+                                  else
+                                     if (c >= 'a' && c <= 'f')
+                                         c -= 39;
+                                     else
+                                        if (c >= 'A' && c <= 'F')
+                                            c -= 7;
+                                        else
+                                           goto default;
+                                  v = (v << 4) + c - '0';
+                                  }
                               
                               auto c = Utf.fromString32 ((&v)[0..1], t);
                               d [0 .. c.length] = c;
@@ -205,7 +218,20 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
                               T[6]  t = void;
 
                               for (auto i=2; i < 6; ++i)
-                                   v = (v << 4) + s[i] - '0';
+                                  {
+                                  auto c = s[i];
+                                  if (c >= '0' && c <= '9')
+                                     {}
+                                  else
+                                     if (c >= 'a' && c <= 'f')
+                                         c -= 39;
+                                     else
+                                        if (c >= 'A' && c <= 'F')
+                                            c -= 7;
+                                        else
+                                           goto default;
+                                  v = (v << 4) + c - '0';
+                                  }
                               
                               emit (Utf.fromString32 ((&v)[0..1], t));
                               len -= 4;
@@ -343,7 +369,7 @@ debug (JsonEscape)
                 assert (unescape ("abc\\t\\n\\bc") == "abc\t\n\bc");
 
                 assert (unescape ("abc\"\\n\\bc") == "abc\"\n\bc");
-                assert (unescape ("abc\\u0020x") == "abc x", unescape ("abc\\u0020"));
+                assert (unescape ("abc\\u002bx") == "abc+x");
         }
 
 }
