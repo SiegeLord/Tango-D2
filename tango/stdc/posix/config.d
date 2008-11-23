@@ -14,15 +14,15 @@ extern (C):
 
 version( linux )
 {
-  //version( none /* X86_64 */ )
-  version(BIGFILE)
-  {
-    const bool  __USE_LARGEFILE64   = true;
-  }
-  else
-  {
-    const bool  __USE_LARGEFILE64   = false;
-  }
+    //version( none /* X86_64 */ )
+    version(SMALLFILE)
+    {
+      const bool  __USE_LARGEFILE64   = false;
+    }
+    else
+    {
+      const bool  __USE_LARGEFILE64   = true;
+    }
     const bool  __USE_FILE_OFFSET64 = __USE_LARGEFILE64;
     const bool  __REDIRECT          = false;
 }
