@@ -33,10 +33,10 @@ private import tango.io.device.Conduit;
         such as a file:
         ---
         auto input = new DataInput (new FileInput("path"));
-        auto x = input.getInt;
-        auto y = input.getDouble;
+        auto x = input.int32;
+        auto y = input.float64;
         auto l = input.read (buffer);           // read raw data directly
-        auto s = cast(char[]) input.get;        // read length, allocate space
+        auto s = cast(char[]) input.array;      // read length, allocate space
         input.close;
         ---
 
