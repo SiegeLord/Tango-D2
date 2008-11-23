@@ -188,7 +188,6 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-
                 Load the bits from a stream, and return them all in an
                 array. The dst array can be provided as an option, which
                 will be expanded as necessary to consume the input.
@@ -198,13 +197,12 @@ class Conduit : IConduit
                 
         ***********************************************************************/
 
-        final void[] load (void[] dst = null)
+        void[] load (void[] dst = null)
         {
                 return load (this, dst);
         }
 
         /***********************************************************************
-
 
                 Load the bits from a stream, and return them all in an
                 array. The dst array can be provided as an option, which
