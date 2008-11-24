@@ -69,7 +69,7 @@ class TaskThread : ClusterThread
                    switch (cmd)
                           {
                           case ProtocolWriter.Command.Call:
-                               logger.trace (sprint ("{} executing remote call '{}'", client, task.toString)); 
+                               logger.trace ("{} executing remote call '{}'", client, task.toString); 
                                task.execute;
 
                                writer.put (ProtocolWriter.Command.OK, channel, element, task); 

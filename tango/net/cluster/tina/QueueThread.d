@@ -59,7 +59,7 @@ class QueueThread : ClusterThread
                 switch (cmd)
                        {
                        case ProtocolWriter.Command.AddQueue:
-                            logger.trace (sprint ("{} add queue entry on channel '{}'", client, channel)); 
+                            logger.trace ("{} add queue entry on channel '{}'", client, channel); 
         
                             if (queue.put (channel, content))
                                 writer.success;
@@ -68,7 +68,7 @@ class QueueThread : ClusterThread
                             break;
         
                        case ProtocolWriter.Command.RemoveQueue:
-                            logger.trace (sprint ("{} remove queue entry on channel '{}'", client, channel)); 
+                            logger.trace ("{} remove queue entry on channel '{}'", client, channel); 
         
                             writer.reply (queue.get (channel));
                             break;

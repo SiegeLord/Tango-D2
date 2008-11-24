@@ -22,8 +22,6 @@ private import  tango.io.Buffer,
 package import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-private import  tango.text.convert.Sprint;
-
 package import  tango.net.cluster.tina.Cluster,
                 tango.net.cluster.tina.ProtocolReader,
                 tango.net.cluster.tina.ProtocolWriter;
@@ -45,7 +43,6 @@ class ClusterThread
         protected Logger          logger;
         protected char[]          client;
         protected Thread          thread;
-        protected Sprint!(char)   sprint;
         protected Cluster         cluster;
         protected IConduit        conduit;
 
@@ -80,9 +77,6 @@ class ClusterThread
                 // grab a thread to execute within
                 thread = new Thread (&run);
 
-                // make a formatter for this thread
-                sprint = new Sprint!(char);
-                
                 // save state
                 logger = server.getLogger;
                 this.conduit = conduit;
@@ -108,7 +102,7 @@ class ClusterThread
 
         private void run ()
         {
-                logger.info (sprint ("{} starting service handler", client));
+                logger.info ("{} starting service handler", client);
                 
                 try {
                     while (true)
@@ -123,8 +117,8 @@ class ClusterThread
                               dispatch;
                               } catch (Object x)
                                       {
-                                      logger.error (sprint ("{} cluster request error '{}'", client, x));
-                                      writer.exception (sprint ("cluster request error '{}'", x.toString));
+                                      logger.error ("{} cluster request error '{}'", client, x);
+                                      writer.exception ("cluster request error '{}'", x.toString);
                                       }
 
                           // send response back to client
@@ -133,13 +127,13 @@ class ClusterThread
 
                     } catch (IOException x)
                              if (! Runtime.isHalting)
-                                   logger.trace (sprint ("{} cluster socket exception '{}'", client, x));
+                                   logger.trace ("{} cluster socket exception '{}'", client, x);
 
                       catch (Object x)
-                             logger.fatal (sprint ("{} cluster runtime exception '{}'", client, x));
+                             logger.fatal ("{} cluster runtime exception '{}'", client, x);
 
                 // log our halt status
-                logger.info (sprint ("{} halting service handler", client));
+                logger.info ("{} halting service handler", client);
 
                 // make sure we close the conduit
                 conduit.detach;

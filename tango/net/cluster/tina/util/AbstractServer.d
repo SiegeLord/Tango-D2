@@ -21,8 +21,6 @@ protected import  tango.net.ServerSocket,
 
 protected import  tango.io.model.IConduit;
 
-protected import  tango.text.convert.Sprint;
-
 protected import  tango.net.cluster.tina.util.model.IServer;
 
 /******************************************************************************

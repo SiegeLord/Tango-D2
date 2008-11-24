@@ -17,8 +17,6 @@ private import  tango.io.FilePath,
 
 private import  tango.util.log.model.ILogger;
 
-private import  tango.text.convert.Sprint;
-
 private import  tango.net.cluster.model.IChannel;
 
 version (Posix)
@@ -46,7 +44,6 @@ class QueueFile
                                 depth,          // stack depth
                                 insert;         // file insert position
         private void[]          buffer;         // read buffer
-        private Sprint!(char)   sprint;         // formatting buffer
         private Header          current;        // top-of-stack info
         private FileConduit     conduit;        // the file itself
         private IChannel        channel_;       // the channel we're using
@@ -71,7 +68,6 @@ class QueueFile
 
                 this.log = log;
                 limit    = max;
-                sprint   = new Sprint!(char);
                 buffer   = new void [1024 * 8];
                 conduit  = new FileConduit (name, FileConduit.ReadWriteOpen);
 
@@ -83,7 +79,7 @@ class QueueFile
                         f.l_start = f.l_len = f.l_whence = 0;
                         if (fcntl (conduit.fileHandle, F_SETLK, &f) is -1)
                            {
-                           log.error (sprint("failed to lock queue file '{}'; it may already be in use", name));
+                           log.error ("failed to lock queue file '{}'; it may already be in use", name);
                            conduit.error;
                            }
                         }
@@ -93,7 +89,7 @@ class QueueFile
                    {
                    // make some space in the file
                    min = (min + buffer.length - 1) / buffer.length;
-                   log.trace (sprint("initializing queue '{}' to {} KB", name, (min * buffer.length)/1024));
+                   log.trace ("initializing queue '{}' to {} KB", name, (min * buffer.length)/1024);
 
                    while (min-- > 0)
                           write (buffer.ptr, buffer.length);
@@ -113,7 +109,7 @@ class QueueFile
                             // a corrupted header?
                             if (checksum(tmp) != tmp.check)
                                {
-                               log.warn (sprint("invalid header located in queue '{}'; truncating", name));
+                               log.warn ("invalid header located in queue '{}'; truncating", name);
                                break;
                                }
 
@@ -126,8 +122,8 @@ class QueueFile
                             conduit.seek (insert);
 
                             debug
-                              log.trace (sprint("open: depth {}, prior {}, size {}, insert {}", 
-                                                       depth, tmp.prior, tmp.size, insert));
+                              log.trace ("open: depth {}, prior {}, size {}, insert {}", 
+                                          depth, tmp.prior, tmp.size, insert);
                             }  
                          else
                             break;
@@ -211,8 +207,8 @@ class QueueFile
                 chunk.check = checksum (chunk);
 
                 debug
-                  log.trace (sprint("push: data {}, prior {}, size {}, insert {}, filepos {}", 
-                             data.length, chunk.prior, chunk.size, insert, conduit.position));
+                  log.trace ("push: data {}, prior {}, size {}, insert {}, filepos {}", 
+                             data.length, chunk.prior, chunk.size, insert, conduit.position);
 
                 // write msg header and content
                 write (&chunk, chunk.sizeof);
@@ -358,7 +354,7 @@ version (QueueFile)
                 w.start;
                 for (int i=10_000; i--;)
                      z.push(test);
-                z.log.info (z.sprint("{} push/s", 10_000/w.stop));
+                z.log.info ("{} push/s", 10_000/w.stop);
                 popAll(z);
         }
 
@@ -384,6 +380,6 @@ version (QueueFile)
 
                 w.start;
                 while (z.pop !is null) ++i;
-                z.log.info (z.sprint("{}, {} pop/s",i, i/w.stop));
+                z.log.info ("{}, {} pop/s",i, i/w.stop);
         }       
 }

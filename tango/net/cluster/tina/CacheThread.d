@@ -69,7 +69,7 @@ class CacheThread : ClusterThread
                 switch (cmd)
                        {
                        case ProtocolWriter.Command.Add:
-                            logger.trace (sprint ("{} add cache entry '{}' on channel '{}'", client, element, channel)); 
+                            logger.trace ("{} add cache entry '{}' on channel '{}'", client, element, channel); 
                                 
                             // return the content if we can't put it in the cache
                             if (cache.put (channel, element, content, Time(time)))
@@ -79,19 +79,19 @@ class CacheThread : ClusterThread
                             break;
  
                        case ProtocolWriter.Command.Copy:
-                            logger.trace (sprint ("{} copy cache entry '{}' on channel '{}'", client, element, channel)); 
+                            logger.trace ("{} copy cache entry '{}' on channel '{}'", client, element, channel); 
 
                             writer.reply (cache.get (channel, element)); 
                             break;
   
                        case ProtocolWriter.Command.Remove:
-                            logger.trace (sprint ("{} remove cache entry '{}' on channel '{}'", client, element, channel)); 
+                            logger.trace ("{} remove cache entry '{}' on channel '{}'", client, element, channel); 
 
                             writer.reply (cache.extract (channel, element));
                             break;
   
                        case ProtocolWriter.Command.Load:
-                            logger.trace (sprint ("{} loading cache entry '{}' on channel '{}'", client, element, channel)); 
+                            logger.trace ("{} loading cache entry '{}' on channel '{}'", client, element, channel); 
 
                             load (cmd, channel, element);
                             break;
@@ -150,7 +150,7 @@ class CacheThread : ClusterThread
                               }
                            }
                         else
-                           writer.exception (sprint ("invalid remote cache-loader '{}'", msg.toString)).flush;
+                           writer.exception ("invalid remote cache-loader '{}'", msg.toString).flush;
  
                         } finally 
                                 // ensure we unlock this one!
