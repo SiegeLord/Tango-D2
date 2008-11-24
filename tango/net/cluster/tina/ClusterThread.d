@@ -118,7 +118,7 @@ class ClusterThread
                               } catch (Object x)
                                       {
                                       logger.error ("{} cluster request error '{}'", client, x);
-                                      writer.exception ("cluster request error {} :: "~x.toString);
+                                      writer.exception ("cluster request error :: "~x.toString);
                                       }
 
                           // send response back to client
