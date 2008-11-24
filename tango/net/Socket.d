@@ -1775,7 +1775,10 @@ class IPv4Address : Address
                 {
                         NetHost ih = new NetHost;
                         if(!ih.getHostByName(addr))
-                                exception ("Unable to resolve '"~addr~"': ");
+                          {
+                          char[16] tmp = void;
+                          exception ("Unable to resolve "~addr~":"~.toString(tmp, port));
+                          }
                         uiaddr = ih.addrList[0];
                 }
                 sin.sin_addr = htonl(uiaddr);
