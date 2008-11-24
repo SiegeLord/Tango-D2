@@ -224,6 +224,56 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         /***********************************************************************
 
+                Add a new element to the set. Does not add if there is an
+                equivalent already present. Returns true where an element
+                is added, false where it already exists (and was possibly
+                updated). This variation invokes the given retain function
+                when the key does not already exist. You would typically
+                use that to duplicate a char[], or whatever is required.
+                
+                Time complexity: O(1) average; O(n) worst.
+                
+        ***********************************************************************/
+
+        final bool add (K key, V element, K function(K) retain)
+        {
+                if (table is null)
+                    resize (Container.defaultInitialBuckets);
+
+                auto hd = &table [Hash (key, table.length)];
+                auto node = *hd;
+                
+                if (node is null)
+                   {
+                   *hd = heap.allocate.set (retain(key), element, null);
+                   increment;
+                   }
+                else
+                   {
+                   auto p = node.findKey (key);
+                   if (p)
+                      {
+                      if (element != p.value)
+                         {
+                         p.value = element;
+                         mutate;
+                         }
+                      return false;
+                      }
+                   else
+                      {
+                      *hd = heap.allocate.set (retain(key), element, node);
+                      increment;
+
+                      // we only check load factor on add to nonempty bin
+                      checkLoad; 
+                      }
+                   }
+                return true;
+        }
+
+        /***********************************************************************
+
                 Return the element associated with key
 
                 param: a key
