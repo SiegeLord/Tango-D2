@@ -588,11 +588,24 @@ void divModInternal(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
     schoolbookDivMod(quotient, remainder, un, vn);
     // Unnormalize remainder, if required.
     if (remainder != null) {
-        if (s == 0) remainder[] = un[0..$-1];
-        else multibyteShr(remainder, un, s);
+        if (s == 0) remainder[] = un[0..vn.length];
+        else multibyteShr(remainder, un[0..vn.length+1], s);
     }
     delete un;
     delete vn;
+}
+
+debug(UnitTest)
+{
+unittest {
+    uint [] u = [0, 0xFFFF_FFFE, 0x8000_0000];
+    uint [] v = [0xFFFF_FFFF, 0x8000_0000];
+    uint [] q = new uint[u.length - v.length + 1];
+    uint [] r = new uint[2];
+    divModInternal(q, r, u, v);
+    assert(q[]==[0xFFFF_FFFFu, 0]);
+    assert(r[]==[0xFFFF_FFFFu, 0x7FFF_FFFF]);    
+}
 }
 
 private:
@@ -861,8 +874,7 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     uint [] mid = scratchbuff[0 .. half*2+1];
     uint [] newscratchbuff = scratchbuff[half*2+1 .. $];
     uint [] resultLow = result[0 .. x0.length + y0.length];
-    uint [] resultHigh = result[x0.length + y0.length .. $];
-        
+    uint [] resultHigh = result[x0.length + y0.length .. $];       
     
     // Add the high and low parts of x and y.
     // This will generate carries of either 0 or 1.
@@ -910,10 +922,12 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
     result[half..$].simpleAddAssign(mid);
 }
 
-/* Knuth's Algorithm D, as presented in "Hacker's Delight"
-* Given u and v, calculates  quotient  = u/v, remainder = u%v.
-* u and v must be normalized.
-*/
+/* Knuth's Algorithm D, as presented in 
+ * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).
+ * Given u and v, calculates  quotient  = u/v, remainder = u%v.
+ * v must be normalized.
+ * The most significant words of quotient and remainder may be zero.
+ */
 void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
 {
     assert(quotient.length == u.length - v.length);
@@ -921,6 +935,7 @@ void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
     assert(v.length > 1);
     assert(u.length >= v.length);
     assert((v[$-1]&0x8000_0000)!=0);
+    assert((u[$-1]&0x8000_0000)==0);
     
     for (int j = u.length - v.length-1; j >= 0; j--) {
         // Compute estimate qhat of quotient[j].
@@ -930,13 +945,12 @@ void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
         rhat = ((cast(ulong)(u[j+v.length]) << 32) + u[j+v.length-1]) 
                - bigqhat * v[$-1];
 again:
-        if (bigqhat & 0xFFFF_FFFF_0000_0000L 
+        if ((bigqhat & 0xFFFF_FFFF_0000_0000L) 
             || bigqhat*v[$-2] > 0x1_0000_0000L * rhat + u[j+v.length-2]) {
             --bigqhat;
             rhat += v[$-1];
             if (rhat < 0x1_0000_0000L) goto again;
         }
-        assert(bigqhat < 0x1_0000_0000L);
         uint qhat = cast(uint)bigqhat;
 
         // Multiply and subtract.
@@ -949,7 +963,6 @@ again:
         }
         quotient[j] = qhat;
         u[j+v.length] = u[j+v.length] - carry;
-        assert(u[j+v.length] == 0);
     }
 }
 
