@@ -150,6 +150,12 @@ class ModuleInfo
     void function() dtor;
     void function() unitTest;
 
+    version(GNU){}
+    else{
+        void* xgetMembers;
+        void function() ictor;
+    }
+    
     static int opApply( int delegate( inout ModuleInfo ) );
 }
 
