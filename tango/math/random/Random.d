@@ -1202,13 +1202,13 @@ debug(UnitTest){
                 version (GNU){
                     printf("WARNING tango.math.Random statistic is strange: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
                 } else {
-                    printf("WARNING tango.math.Random statistic is strange: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof,a.length,cast(real)minV,meanV,cast(real)maxV);
+                    printf("WARNING tango.math.Random statistic is strange: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
                 }
             } else if (alwaysPrint) {
                 version (GNU){
                     printf("tango.math.Random statistic: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
                 } else {
-                    printf("tango.math.Random statistic: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof,a.length,cast(real)minV,meanV,cast(real)maxV);
+                    printf("tango.math.Random statistic: %.*s[%d] %Lg %Lg %Lg\n\0",cast(int)T.stringof.length,T.stringof.ptr,a.length,cast(real)minV,meanV,cast(real)maxV);
                 }
             }
             return printM;
