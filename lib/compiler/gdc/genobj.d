@@ -103,8 +103,8 @@ class Object
         // BUG: this prevents a compacting GC from working, needs to be fixed
         //return cast(int)cast(void*)this - cast(int)cast(void*)o;
 
-        //throw new Exception("need opCmp for class " ~ this.classinfo.name);
-        return this !is o;
+        throw new Exception("need opCmp for class " ~ this.classinfo.name);
+        //return ((cast(void*)this<cast(void*)o)?-1:((cast(void*)this==cast(void*)o)?0:1));
     }
 
     /**
