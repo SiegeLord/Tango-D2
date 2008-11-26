@@ -28,7 +28,7 @@
       // another way to do all the previous in one go:
       r(i)(f)(rv)(ar);
       // unfortunetely one cannot use directly ar0...
-      // unifrom distribution 0..10
+      // uniform distribution 0..10
       i=r.uniformR(10);
       f=r.uniformR(10.0f);
       rv=r.uniformR(10.0L);
@@ -63,15 +63,15 @@
       // but this is different from
       r.normalSource!(real)()(i)(r)(ar);
       r.normalD(2.0L)(i)(r)(ar);
-      // as the source generates numbers of its type that then are simply casted to
+      // as the source generates numbers of its type that then are simply cast to
       // the type needed.
       // Uniform distribution (as its creation for different types has no overhead)
-      // never cast, so that (for example) bounds exclusion for floats is really
+      // is never cast, so that (for example) bounds exclusion for floats is really
       // guaranteed.
       // For the other distribution using a distribution of different type than
       // the variable should be done with care, as underflow/overflow might ensue.
       //
-      // some utility functions are also available
+      // Some utility functions are also available
       int i2=r.uniform!(int)();
       int i2=r.randomize(i); // both i and i2 are initialized to the same value
       float f2=r.normalSigma(3.0f);
@@ -83,7 +83,7 @@
       distribution, the hard parametrization (to find xLast) can be done
       automatically
     - several distributions available "out of the box"
-    quality:
+    Quality:
     - the default Source (KISS99) passes all statistical tests 
       (P. L'Ecuyer and R. Simard, ACM Transactions on Mathematical Software (2007),
       33, 4, Article 22)
@@ -95,14 +95,14 @@
       (Thomas et al. Gaussian random number generators. Acm Comput Surv (2007)
       vol. 39 (4) pp. 11))
     - Ziggurat method, a very fast and accurate method was used for both Normal and
-      exp distribued numbers.
+      exp distributed numbers.
     - gamma distribued numbers uses a method recently proposed by Marsaglia and
       Tsang. The method is very fast, and should be good.
-      My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might loose
+      My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might lose
       a couple of bits of precision in some cases, but it is unclear if this
       might become visible in (*very* extensive) tests or not.
     - the basic source can be easily be changed with something else
-    efficiency:
+    Efficiency:
     - very fast methods have been used, and some effort has been put into
       optimizing some of them, but not all, but the interface has been choosen
       so that close to optimal implementation can be provided through the same
@@ -110,17 +110,15 @@
     - Normal and Exp sources allocated only upon request: no memory waste, but
       a (*very* small) speed hit, that can be avoided by storing the source in
       a variable and using it (not going through the RandomG)
-    annoyances:
-    - I have put quite some functionality in a single module, maybe some might
-      prefer to split it up
+    Annoyances:
     - I have added two "next" methods to RandomG for backward compatibility
-      reasons, and replaced the .hared instance from Random has been
+      reasons, and the .shared instance from Random has been
       replaced by the "rand" object. The idea behind this is that RandomG is
       a template and rand it should be shared across all templates.
       If the name rand is considered bad one could change it. 
       I kept .shared static method that returns rand, so this remain a dropin
       replacement of the old random.
-    - you cannot initialize a static array directly, this because randomize is
+    - You cannot initialize a static array directly, this because randomize is
       declared like this:
         U randomize(U)(ref U a) { }
       and a static array cannot be passed by reference. Removing the ref would
