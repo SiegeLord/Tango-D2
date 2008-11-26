@@ -31,11 +31,13 @@ version(build){// bud/build won't link properly without this.
 static this()
 {
     CACHELIMIT = 8000; // tango.core.Cpuid.datacache[0].size/2;
+    FASTDIVLIMIT = 100;
 }
 
 private:
-// Limits for when to switch between multiplication algorithms.
+// Limits for when to switch between algorithms.
 const int CACHELIMIT;   // Half the size of the data cache.
+const int FASTDIVLIMIT; // crossover to recursive division
 
 const uint [] ZERO = [0];
 const uint [] ONE = [1];
@@ -585,7 +587,12 @@ void divModInternal(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
         un[0..$-1] = u[];
         un[$-1] = 0;
     }
-    schoolbookDivMod(quotient, remainder, un, vn);
+    if (quotient.length<FASTDIVLIMIT) {
+        schoolbookDivMod(quotient, un, vn);
+    } else {
+        fastDivMod(quotient, un, vn);        
+    }
+    
     // Unnormalize remainder, if required.
     if (remainder != null) {
         if (s == 0) remainder[] = un[0..vn.length];
@@ -765,7 +772,7 @@ in {
     assert(right.length>1);
 }
 body {
-    result[left.length] = multibyteMul(result[0..left.length], left, right[0], 0);
+    result[left.length] = multibyteMul(result[0..left.length], left, right[0], 0);   
     multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
 
@@ -805,14 +812,14 @@ body {
 }
 
 
-/*  result must be larger than right.
+/*  Returns carry if result was less than right.
 */
-void simpleSubAssign(uint [] result, uint [] right)
+uint simpleSubAssign(uint [] result, uint [] right)
 {
-    assert(result.length > right.length);
+    assert(result.length >= right.length);
     uint c = multibyteAddSub!('-')(result[0..right.length], result[0..right.length], right, 0); 
-    if (c) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
-    assert(c==0);
+    if (c && result.length > right.length) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
+    return c;
 }
 
 
@@ -924,18 +931,19 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 
 /* Knuth's Algorithm D, as presented in 
  * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).
- * Given u and v, calculates  quotient  = u/v, remainder = u%v.
- * v must be normalized.
- * The most significant words of quotient and remainder may be zero.
+ * Given u and v, calculates  quotient  = u/v, u = u%v.
+ * v must be normalized (ie, the MSB of v must be 1).
+ * The most significant words of quotient and u may be zero.
+ * u[0..v.length] holds the remainder.
  */
-void schoolbookDivMod(uint [] quotient, uint[] remainder, uint [] u, uint [] v)
+void schoolbookDivMod(uint [] quotient, uint [] u, in uint [] v)
 {
     assert(quotient.length == u.length - v.length);
-    assert(remainder == null || remainder.length == v.length);
+//    assert(remainder == null || remainder.length == v.length);
     assert(v.length > 1);
     assert(u.length >= v.length);
     assert((v[$-1]&0x8000_0000)!=0);
-    assert((u[$-1]&0x8000_0000)==0);
+//    assert((u[$-1]&0x8000_0000)==0);
     
     for (int j = u.length - v.length-1; j >= 0; j--) {
         // Compute estimate qhat of quotient[j].
@@ -996,4 +1004,106 @@ int highestDifferentDigit(uint [] left, uint [] right)
         if (left[i]!=right[i]) return i;
     }
     return 0;
+}
+
+/* Calculate quotient and remainder of u and v using fast recursive division.
+  v must be normalised, and must be at least half as long as u.
+  Given u and v, v normalised, calculates  quotient  = u/v, u = u%v.
+  Algorithm is described in 
+  - C. Burkinel and J. Ziegler, "Fast Recursive Division", MPI-I-98-1-022, 
+    Max-Planck Institute fuer Informatik, (Oct 1998).
+  - R.P. Brent and P. Zimmermann, "Modern Computer Arithmetic", 
+    Version 0.2, p. 26, (June 2008).
+    
+    u[0..v.length] is the remainder. u[v.length..$] is corrupted.
+    scratch is temporary storage space, must be at least as long as quotient.
+*/
+void recursiveDivMod(uint[] quotient, uint[] u, in uint[] v,
+        uint[] scratch)
+in {
+    assert(quotient.length == u.length - v.length);
+    assert(u.length <= 2 * v.length, "Asymmetric division"); // use base-case division to get it to this situation
+    assert(v.length > 1);
+    assert(u.length >= v.length);
+    assert((v[$ - 1] & 0x8000_0000) != 0);
+    assert(scratch.length >= quotient.length);
+}
+body {
+    if(quotient.length < FASTDIVLIMIT) {
+        return schoolbookDivMod(quotient, u, v);
+    }
+    uint k = quotient.length >> 1;
+    uint h = k + v.length;
+
+    recursiveDivMod(quotient[k .. $], u[2 * k .. $], v[k .. $], scratch);
+    adjustRemainder(quotient[k .. $], u[k .. h], v, k,
+            scratch[0 .. quotient.length]);
+    recursiveDivMod(quotient[0 .. k], u[k .. h], v[k .. $], scratch);
+    adjustRemainder(quotient[0 .. k], u[0 .. v.length], v, k,
+            scratch[0 .. 2 * k]);
+}
+
+// rem -= quot * v[0..k].
+// If would make rem negative, decrease quot until rem is >=0.
+// Needs (quot.length * k) scratch space to store the result of the multiply. 
+void adjustRemainder(uint[] quot, uint[] rem, in uint[] v, int k,
+        uint[] scratch) {
+    assert(rem.length == v.length);
+    mulInternal(scratch, quot, v[0 .. k]);
+    uint carry = simpleSubAssign(rem, scratch);
+    while(carry) {
+        multibyteIncrementAssign!('-')(quot, 1); // quot--
+        carry -= multibyteAddSub!('+')(rem, rem, v, 0);
+    }
+}
+
+void fastDivMod(uint [] quotient, uint [] u, in uint [] v)
+{
+    assert(quotient.length == u.length - v.length);
+    assert(v.length > 1);
+    assert(u.length >= v.length);
+    assert((v[$-1] & 0x8000_0000)!=0);
+    uint [] scratch = new uint[v.length];
+
+    // Perform block schoolbook division, with 'v.length' blocks.
+    uint m = u.length - v.length;
+    while (m > v.length) {
+         recursiveDivMod(quotient[m-v.length..m], 
+            u[m - v.length..m + v.length], v, scratch);
+        m -= v.length;
+    }
+    recursiveDivMod(quotient[0..m], u[0..m + v.length], v, scratch);
+    delete scratch;
+}
+
+debug(UnitTest)
+{
+import tango.stdc.stdio;
+
+void printBiguint(uint [] data)
+{
+    char [] buff = new char[data.length*9];
+    printf("%.*s\n", biguintToHex(buff, data, '_'));
+}
+
+unittest{
+  uint [] a, b;
+  a = new uint[43];
+  b = new uint[179];
+  for (int i=0; i<a.length; ++i) a[i] = 0x1234_B6E9 + i;
+  for (int i=0; i<b.length; ++i) b[i] = 0x1BCD_8763 - i*546;
+  
+  a[$-1] |= 0x8000_0000;
+  uint [] r = new uint[a.length];
+  uint [] q = new uint[b.length-a.length+1];
+ 
+  divModInternal(q, r, b, a);
+  q = q[0..$-1];
+  uint [] r1 = r.dup;
+  uint [] q1 = q.dup;  
+  fastDivMod(q, b, a);
+  r = b[0..a.length];
+  assert(r[]==r1[]);
+  assert(q[]==q1[]);
+}
 }

@@ -34,7 +34,7 @@ BUGS:	Currently only works on x86 CPUs.
 
 module tango.math.internal.Cache;
 
-// If optimizing for a particular processor, it is better
+// If optimizing for a particular processor, it is generally better
 // to identify based on features rather than model. NOTE: Normally
 // it's only worthwhile to optimise for the latest Intel and AMD CPU,
 // with a backup for other CPUs.
@@ -64,7 +64,7 @@ struct CacheInfo
     /// Size of the cache, in kilobytes, per CPU.
     /// For L1 unified (data + code) caches, this size is half the physical size.
     /// (we don't halve it for larger sizes, since normally
-    /// data size >> code sizefor critical loops).
+    /// data size is much greater than code size for critical loops).
 	uint size;
     /// Number of ways of associativity, eg:
     /// 1 = direct mapped
@@ -157,8 +157,9 @@ public:
     /// (4) In-order Pentium (Pentium1, PMMX)
     /// Other early CPUs (Nx586, AMD K5, K6, Centaur C3, Transmeta,
     ///   Cyrix, Rise) were mostly in-order.
-    /// Intel Atom and Centaur Isaiah are recent CPUs which do not fit
-    /// into existing categories.
+	/// Some new processors do not fit into the existing categories:
+    /// Intel Atom 230/330 (family 6, model 0x1C) is an in-order core.
+	/// Centaur Isiah = VIA Nano (family 6, model F) is an out-of-order core.
     ///
     /// Within each dynasty, the optimisation techniques are largely
     /// identical (eg, use instruction pairing for group 4). Major
@@ -169,7 +170,7 @@ public:
     /// Does this CPU perform better on Pentium4 code than PentiumPro..Core2 code?
     bool preferPentium4() { return probablyIntel && family == 0xF; }
     /// Does this CPU perform better on Pentium I code than Pentium Pro code?
-    bool preferPentium1() { return family < 6 || (family==6 && !probablyIntel); }
+    bool preferPentium1() { return family < 6 || (family==6 && model < 0xF && !probablyIntel); }
 
 public:
     /// Processor type (vendor-dependent).
@@ -223,9 +224,6 @@ private:
         AVX_BIT = 1<<28
     }
 /+    
-    // Does it have Cyrix MMX extensions? (This works, but who cares?)
-    bool has6x86MMX()			{return ((features&FXSR_BIT)==0)
-        && ((amdfeatures&FXR_OR_CYRIXMMX_BIT)!=0);}    
 version(X86_64) {    
     bool hasAVXinHardware() {
         // This only indicates hardware support, not OS support.
@@ -245,7 +243,7 @@ version(X86_64) {
     }
 }
 +/    
-    // AMD feature flags
+    // AMD feature flags CPUID80000001_EDX
     enum : uint
     {
 	    AMD_MMX_BIT = 1<<22,
@@ -257,7 +255,7 @@ version(X86_64) {
 	    AMD_3DNOW_EXT_BIT = 1<<30,
 	    AMD_3DNOW_BIT = 1<<31
     }
-    // AMD misc feature flags
+    // AMD misc feature flags CPUID80000001_ECX
     enum : uint
     {
     	LAHFSAHF_BIT = 1,
@@ -507,7 +505,7 @@ void cpuidX86()
 	family = ((fbase == 0xF) || (fbase == 0)) ? fbase + (a >> 20) & 0xFF : fbase;
 	model = ((fbase == 0xF) || (fbase == 6 && probablyIntel) ) ?
 	     mbase + ((a >> 12) & 0xF0) : mbase;
-	
+	     
 	if (!probablyIntel && max_extended_cpuid >= 0x8000_0008) {
 		// determine max number of cores for AMD
 		asm {
