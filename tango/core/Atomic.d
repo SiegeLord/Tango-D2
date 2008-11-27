@@ -283,8 +283,9 @@ else version( D_InlineAsm_X86 )
             pragma( msg, "tango.core.Atomic: using IA-32 inline asm" );
         }
 
+        version(darwin){}
+        else { version = Has64BitCAS; }
         version = Has32BitOps;
-        version = Has64BitCAS;
     }
     version( X86_64 )
     {
