@@ -122,10 +122,13 @@ class Semaphore
         }
         else version(darwin){
             auto rc=semaphore_wait(m_hndl);
-            if (rc==KERN_RETURN.ABORTED)
-                throw new SyncException( "Unable to wait for semaphore (abort)" ); // wait again
-            if (rc!=0)
+            if (rc==KERN_RETURN.ABORTED){
+                if( errno != EINTR )
+                    throw new SyncException( "Unable to wait for semaphore (abort)" );
+                // wait again
+            } else if (rc!=0) {
                 throw new SyncException( "Unable to wait for semaphore" );
+            }
         }
         else version( Posix )
         {
@@ -189,8 +192,9 @@ class Semaphore
             } else if (rc==KERN_RETURN.OPERATION_TIMED_OUT){
                 return false;
             } else if (rc==KERN_RETURN.ABORTED) {
-                // wait again???
-                throw new SyncException( "Unable to wait for semaphore (abort)" );
+                if( errno != EINTR )
+                    throw new SyncException( "Unable to wait for semaphore (abort)" );
+                return false; // wait can be too short, wait is not resumed
             } else {
                 throw new SyncException( "Unable to wait for semaphore" );
             }
