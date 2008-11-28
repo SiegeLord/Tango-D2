@@ -103,6 +103,31 @@ template isFloatingPointType( T )
                                      isImaginaryType!(T);
 }
 
+/**
+ * complex type for the given type
+ */
+template ComplexTypeOf(T){
+    static if(is(T==float)||is(T==ifloat)||is(T==cfloat)){
+        alias cfloat ComplexTypeOf;
+    } else static if(is(T==double)|| is(T==idouble)|| is(T==cdouble)){
+        alias cdouble ComplexTypeOf;
+    } else static if(is(T==real)|| is(T==ireal)|| is(T==creal)){
+        alias creal ComplexTypeOf;
+    } else static assert(0,"unsupported type in ComplexTypeOf "~T.stringof);
+}
+
+/**
+ * real type for the given type
+ */
+template RealTypeOf(T){
+    static if(is(T==float)|| is(T==ifloat)|| is(T==cfloat)){
+        alias float RealTypeOf;
+    } else static if(is(T==double)|| is(T==idouble)|| is(T==cdouble)){
+        alias double RealTypeOf;
+    } else static if(is(T==real)|| is(T==ireal)|| is(T==creal)){
+        alias real RealTypeOf;
+    } else static assert(0,"unsupported type in RealTypeOf "~T.stringof);
+}
 
 /**
  * Evaluates to true if T is a pointer type.
@@ -311,4 +336,48 @@ template BaseTypeTupleOf( T )
         alias Base BaseTypeTupleOf;
     else
         static assert( false, "Argument is not a class or interface." );
+}
+
+/**
+ * Strips the []'s off of a type.
+ */
+template BaseTypeOfArrays(T)
+{
+    static if( is( T S : S[]) ) {
+        alias BaseTypeOfArrays!(S)  BaseTypeOfArrays;
+    }
+    else {
+        alias T BaseTypeOfArrays;
+    }
+}
+
+/**
+ * strips one [] off a type
+ */
+template ElementTypeOfArray(T:T[])
+{
+    alias T ElementTypeOfArray;
+}
+
+/**
+ * Count the []'s on an array type
+ */
+template rankOfArray(T) {
+    static if(is(T S : S[])) {
+        const uint rankOfArray = 1 + rankOfArray!(S);
+    } else {
+        const uint rankOfArray = 0;
+    }
+}
+
+debug( UnitTest )
+{
+    static assert( is(BaseTypeOfArrays!(real[][])==real) );
+    static assert( is(BaseTypeOfArrays!(real[2][3])==real) );
+    static assert( is(ElementTypeOfArray!(real[])==real) );
+    static assert( is(ElementTypeOfArray!(real[][])==real[]) );
+    static assert( is(ElementTypeOfArray!(real[2][])==real[2]) );
+    static assert( is(ElementTypeOfArray!(real[2][2])==real[2]) );
+    static assert( rankOfArray!(real[][])==2 );
+    static assert( rankOfArray!(real[2][])==2 );
 }
