@@ -635,15 +635,18 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (is(T==uint)||is(T==int)){
-                for (size_t i=0;i<a.length;++i)
-                    a[i]=cast(T)(source.next);
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr)
+                    *aPtr=cast(T)(source.next);
             } else static if (is(T==ulong)||is(T==long)){
-                for (size_t i=0;i<a.length;++i)
-                    a[i]=cast(T)(source.nextL);
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr)
+                    *aPtr=cast(T)(source.nextL);
             } else static if (is(T==float)|| is(T==double)|| is(T==real)) {
                 // optimize more? not so easy with guaranteed full mantissa initialization
-                foreach(ref el;a){
-                    el=uniform!(T,boundCheck)();
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
+                    *aPtr=uniform!(T,boundCheck)();
                 }
             } else static assert(T.stringof~" type not supported by randomizeUniform");
         } else {
@@ -662,22 +665,24 @@ final class RandomG(SourceT=DefaultEngine)
         static if (is(U S:S[])){
             static if (is(T==uint) || is(T==int) || is(T==char) || is(T==byte) || is(T==ubyte)){
                 uint d=uint.max/cast(uint)to,dTo=(cast(uint)to)*d;
-                foreach (ref el;a){
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     uint nV=source.next;
                     if (nV<dTo){
-                        el=cast(T)(nV % cast(uint)to);
+                        *aPtr=cast(T)(nV % cast(uint)to);
                     } else {
                         for (int i=0;i<1000;++i) {
                             nV=source.next;
                             if (nV<dTo) break;
                         }
                         assert(nV<dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
-                        el=cast(T)(nV % cast(uint)to);
+                        *aPtr=cast(T)(nV % cast(uint)to);
                     }
                 }
             } else static if (is(T==ulong) || is(T==long)){
                 ulong d=ulong.max/cast(ulong)to,dTo=(cast(ulong)to)*d;
-                foreach (ref el;a){
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     ulong nV=source.nextL;
                     if (nV<dTo){
                         el=cast(T)(nV % cast(ulong)to);
@@ -691,8 +696,9 @@ final class RandomG(SourceT=DefaultEngine)
                     }
                 }
             } else static if (is(T==float) || is(T==double) || is(T==real)){
-                foreach (ref el;a){
-                    el=uniformR!(T,boundCheck)(cast(T)to);
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
+                    *aPtr=uniformR!(T,boundCheck)(cast(T)to);
                 }
             } else static assert(0,T.stringof~" unsupported type for uniformR distribution");
         } else {
@@ -717,25 +723,28 @@ final class RandomG(SourceT=DefaultEngine)
         static if (is(U S:S[])){
             static if (is(T==uint)||is(T==ulong)){
                 T d=cast(T)to-cast(T)from;
-                foreach (ref el;a) {
-                    el=from+uniformR!(d)();
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
+                    *aPtr=from+uniformR!(d)();
                 }
             } else if (is(T==char) || is(T==byte) || is(T==ubyte)){
                 int d=cast(int)to-cast(int)from;
-                foreach (ref el;a) {
-                    el=cast(T)(uniformR!(d)+cast(int)from);
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
+                    *aPtr=cast(T)(uniformR!(d)+cast(int)from);
                 }
             } else static if (is(T==float) || is(T==double) || is(T==real)){
-                foreach (ref el;a) {
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     T res=cast(T)from+(cast(T)to-cast(T)from)*uniform!(T,false);
                     static if (boundCheck){
                         if (res!=cast(T)from && res!=cast(T)to){
-                            el=res;
+                            *aPtr=res;
                         } else {
-                            el=uniformR2!(T,boundCheck)(cast(T)from,cast(T)to);
+                            *aPtr=uniformR2!(T,boundCheck)(cast(T)from,cast(T)to);
                         }
                     } else {
-                        el=res;
+                        *aPtr=res;
                     }
                 }
             } else static assert(0,T.stringof~" unsupported type for uniformR2 distribution");
@@ -756,7 +765,8 @@ final class RandomG(SourceT=DefaultEngine)
         static if (is(U S:S[])){
             static if (is(T==int)|| is(T==byte)){
                 int d=int.max/cast(int)to,dTo=(cast(int)to)*d;
-                foreach(ref el;a){
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     int nV=cast(int)source.next;
                     static if (excludeZero){
                         int isIn=nV<dTo&&nV>-dTo&&nV!=0;
@@ -764,39 +774,41 @@ final class RandomG(SourceT=DefaultEngine)
                         int isIn=nV<dTo&&nV>-dTo;
                     }
                     if (isIn){
-                        el=cast(T)(nV% cast(int)to);
+                        *aPtr=cast(T)(nV% cast(int)to);
                     } else {
                         for (int i=0;i<1000;++i) {
                             nV=cast(int)source.next;
                             if (nV<dTo&&nV>-dTo) break;
                         }
                         assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
-                        el=cast(T)(nV% cast(int)to);
+                        *aPtr=cast(T)(nV% cast(int)to);
                     }
                 }
             } else static if (is(T==long)){
                 long d=long.max/cast(T)to,dTo=(cast(T)to)*d;
                 long nV=cast(long)source.nextL;
-                foreach(ref el;a){
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
                     static if (excludeZero){
                         int isIn=nV<dTo&&nV>-dTo&&nV!=0;
                     } else {
                         int isIn=nV<dTo&&nV>-dTo;
                     }
                     if (isIn){
-                        el=nV% cast(T)to;
+                        *aPtr=nV% cast(T)to;
                     } else {
                         for (int i=0;i<1000;++i) {
                             nV=source.nextL;
                             if (nV<dTo && nV>-dTo) break;
                         }
                         assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
-                        el=nV% cast(T)to;
+                        *aPtr=nV% cast(T)to;
                     }
                 }
             } else static if (is(T==float)||is(T==double)||is(T==real)){
-                foreach (ref el;a){
-                    el=uniformRSymm!(T,boundCheck,excludeZero)(cast(T)to);
+                T* aEnd=a.ptr+a.length;
+                for (T* aPtr=a.ptr;aPtr!=aEnd;++aPtr){
+                    *aPtr=uniformRSymm!(T,boundCheck,excludeZero)(cast(T)to);
                 }
             } else static assert(0,T.stringof~" unsupported type for uniformRSymm distribution");
         } else {
@@ -963,8 +975,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// initializes b with gamma distribued random numbers
         U randomize(U)(ref U b,T a=alpha,T t=theta){
             static if (is(U S:S[])) {
-                foreach (ref el;b){
-                    el=cast(arrayBaseT!(U)) getRandom(a,t);
+                alias arrayBaseT!(U) T;
+                T* bEnd=b.ptr+b.length;
+                for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
+                    *bPtr=cast(arrayBaseT!(U)) getRandom(a,t);
                 }
             } else {
                 b=cast(U) getRandom(a,t);
@@ -974,8 +988,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// maps op on random numbers (of type T) and initializes b with it
         U randomizeOp(U,S)(S delegate(T)op, ref U b,T a=alpha, T t=theta){
             static if(is(U S:S[])){
-                foreach (ref el;b){
-                    el=cast(arrayBaseT!(U))op(getRandom(a,t));
+                alias arrayBaseT!(U) T;
+                T* bEnd=b.ptr+b.length;
+                for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
+                    *bPtr=cast(arrayBaseT!(U))op(getRandom(a,t));
                 }
             } else {
                 b=cast(U)op(getRandom(a));

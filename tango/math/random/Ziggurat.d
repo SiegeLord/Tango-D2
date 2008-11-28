@@ -120,18 +120,55 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         return res;
     }
     /// returns a single value with the probability distribution of the current Ziggurat
+    /// and slightly worse randomness (in the normal case uses only 32 random bits).
+    /// Cannot be 0.
+    T getFastRandom() 
+    {
+        static if (hasNegative){
+            for (int iter=1000;iter!=0;--iter) 
+            { 
+                uint i0=r.uniform!(uint)();
+                uint i=i0 & 0xFFU;
+                const T scaleF=(cast(T)1)/(cast(T)uint.max+1);
+                T u= (cast(T)i0+cast(T)0.5)*scaleF;
+                T x = posBlock[i]*u;
+                if (x<posBlock[i+1]) return ((i0 & 0x100u)?x:-x);
+                if (i == 0) return tailGenerator(r,posBlock[1],x<0);
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*((cast(T)r.uniform!(uint)+cast(T)0.5)*scaleF)) {
+                    return ((i0 & 0x100u)?x:-x);
+                }
+            }
+        } else {
+            for (int iter=1000;iter!=0;--iter) 
+            { 
+                uint i0=r.uniform!(uint);
+                uint i= i0 & 0xFFU;
+                const T scaleF=(cast(T)1)/(cast(T)uint.max+1);
+                T u= (cast(T)i0+cast(T)0.5)*scaleF;
+                T x = posBlock[i]*u;
+                if (x<posBlock[i+1]) return x;
+                if (i == 0) return tailGenerator(r,posBlock[1]);
+                if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)) {
+                    return x;
+                }
+            }
+        }
+        throw new Exception("max nr of iterations in Ziggurat, this should have probability<1.0e-1000");
+    }
+    /// returns a single value with the probability distribution of the current Ziggurat
     T getRandom() 
     {
         static if (hasNegative){
             for (int iter=1000;iter!=0;--iter) 
             { 
-                uint i=r.uniform!(ubyte);
-                T u = r.uniformRSymm!(T)(1);
+                uint i0 = r.uniform!(uint);
+                uint i= i0 & 0xFF;
+                T u = r.uniform!(T)();
                 T x = posBlock[i]*u;
-                if (abs(x)<posBlock[i+1]) return x;
+                if (x<posBlock[i+1]) return ((i0 & 0x100u)?x:-x);
                 if (i == 0) return tailGenerator(r,posBlock[1],x<0);
                 if ((cast(T)probDensityF(x))>fVal[i+1]+(fVal[i]-fVal[i+1])*r.uniform!(T)) {
-                    return x;
+                    return ((i0 & 0x100u)?x:-x);
                 }
             }
         } else {
@@ -153,8 +190,9 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     /// for arrays this might potentially be faster than a naive loop
     U randomize(U)(ref U a){
         static if(is(U S:S[])){
-            foreach (ref el;a){
-                el=cast(arrayBaseT!(U))getRandom();
+            uint aL=a.length;
+            for (uint i=0;i!=aL;++i){
+                a[i]=cast(arrayBaseT!(U))getRandom();
             }
         } else {
             a=cast(U)getRandom();
@@ -167,13 +205,14 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         U randomizeOp2(U)(ref U a){
             static if(is(U S:S[])){
                 alias arrayBaseT!(U) TT;
-                foreach (ref el;a){
+                uint aL=a.length;
+                for (uint i=0;i!=aL;++i){
                     static if(isComplex!(TT)) {
-                        el=cast(TT)(op(getRandom())+1i*op(getRandom()));
+                        a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
                     } else static if (isImaginary!(TT)){
-                        el=cast(TT)(1i*op(getRandom()));
+                        a[i]=cast(TT)(1i*op(getRandom()));
                     } else {
-                        el=cast(TT)op(getRandom());
+                        a[i]=cast(TT)op(getRandom());
                     }
                 }
             } else {
@@ -192,13 +231,14 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     U randomizeOp(U,S)(S delegate(T) op,ref U a){
         static if(is(U S:S[])){
             alias arrayBaseT!(U) TT;
-            foreach (ref el;a){
+            uint aL=a.length;
+            for (uint i=0;i!=aL;++i){
                 static if(isComplex!(TT)) {
-                    el=cast(TT)(op(getRandom())+1i*op(getRandom()));
+                    a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
                 } else static if (isImaginary!(TT)){
-                    el=cast(TT)(1i*op(getRandom()));
+                    a[i]=cast(TT)(1i*op(getRandom()));
                 } else {
-                    el=cast(TT)op(getRandom());
+                    a[i]=cast(TT)op(getRandom());
                 }
             }
         } else {
