@@ -450,18 +450,18 @@ struct BitArray
     {
         if( this.length != rhs.length )
             return 0; // not equal
-        byte* p1 = cast(byte*)this.ptr;
-        byte* p2 = cast(byte*)rhs.ptr;
-        size_t n = this.length / 8;
+        uint* p1 = this.ptr;
+        uint* p2 = rhs.ptr;
+        size_t n = this.length / 32;
         size_t i;
         for( i = 0; i < n; ++i )
         {
             if( p1[i] != p2[i] )
             return 0; // not equal
         }
-        n = this.length & 7;
-        ubyte mask = cast(ubyte)((1 << n) - 1);
-        return (mask == 0) || (p1[i] & mask) == (p2[i] & mask);
+        int rest = cast(int)(this.length & cast(size_t)31u);
+        uint mask = ~((~0u)<<rest);
+        return (rest == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
 
     debug( UnitTest )
@@ -499,25 +499,24 @@ struct BitArray
         auto len = this.length;
         if( rhs.length < len )
             len = rhs.length;
-        ubyte* p1 = cast(ubyte*)this.ptr;
-        ubyte* p2 = cast(ubyte*)rhs.ptr;
-        size_t n = len / 8;
+        uint* p1 = this.ptr;
+        uint* p2 = rhs.ptr;
+        size_t n = len / 32;
         size_t i;
         for( i = 0; i < n; ++i )
         {
-            if( p1[i] != p2[i] )
-            break; // not equal
+            if( p1[i] != p2[i] ){
+                return ((p1[i] < p2[i])?-1:1);
+            }
         }
-        for( size_t j = i * 8; j < len; ++j )
-        {
-            ubyte mask = cast(ubyte)(1 << j);
-            int c;
-
-            c = cast(int)(p1[i] & mask) - cast(int)(p2[i] & mask);
-            if( c )
-                return c;
+        int rest=cast(int)(len & cast(size_t) 31u);
+        if (rest>0) {
+            uint mask=~((~0u)<<rest);
+            uint v1=p1[i] & mask;
+            uint v2=p2[i] & mask;
+            if (v1 != v2) return ((v1<v2)?-1:1);
         }
-        return cast(int)this.len - cast(int)rhs.length;
+        return ((this.length<rhs.length)?-1:((this.length==rhs.length)?0:1));
     }
 
     debug( UnitTest )
@@ -529,6 +528,7 @@ struct BitArray
         BitArray c = [1,0,1,0,1,0,1];
         BitArray d = [1,0,1,1,1];
         BitArray e = [1,0,1,0,1];
+        BitArray f = [1,0,1,0];
 
         assert( a >  b );
         assert( a >= b );
@@ -539,6 +539,7 @@ struct BitArray
         assert( a == e );
         assert( a <= e );
         assert( a >= e );
+        assert( f >  b );
       }
     }
 
