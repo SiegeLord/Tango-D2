@@ -274,70 +274,36 @@ final class RandomG(SourceT=DefaultEngine)
             return cast(T)source.nextL;
         } else static if (is(T==bool)){
             return cast(bool)(source.next & 1u); // check lowest bit
-        } else static if (is(T==float)){
-            static assert(T.mant_dig<32,"float mantissa expected to be at most 32 bit");
-            const T halfT=(cast(T)1)/(cast(T)2);
-            const T fact32=ctfe_powI(halfT,32);
-            const uint minV=1u<<(T.mant_dig-1);
-            uint nV=source.next;
-            if (nV>=minV) {
-                T res=nV*fact32;
-                static if (boundCheck){
-                    if (res!=cast(T)1) return res;
-                    // 1 due to rounding (<3.e-8), 0 impossible
-                    return uniform!(T,boundCheck)();
-                } else {
-                    return res;
-                }
-            } else { // probability 0.00390625 for 24 bit mantissa
-                T scale=fact32;
-                while (nV==0){ // probability 2.3283064365386963e-10
-                    nV=source.next;
-                    scale*=fact32;
-                }
-                T res=nV*scale+source.next*scale*fact32;
-                static if (boundCheck){
-                    if (res!=cast(T)0) return res;
-                    return uniform!(T,boundCheck)(); // 0 due to underflow (<1.e-38), 1 impossible
-                } else {
-                    return res;
-                }
-            }
-        } else static if (is(T==double)||is(T==real)){
-            static if (T.mant_dig>62) {
-                static assert(T.mant_dig<=64,T.stringof~" matissa larger than 64 bits");
+        } else static if (is(T==float)||is(T==double)||is(T==real)){
+            static if (T.mant_dig<30) {
                 const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact8=ctfe_powI(halfT,8);
-                const T fact72=ctfe_powI(halfT,72);
-                ubyte nB=source.nextB;
-                if (nB!=0){
-                    T res=nB*fact8+source.nextL*fact72;
+                const T fact32=ctfe_powI(halfT,32);
+                const uint minV=1u<<(T.mant_dig-1);
+                uint nV=source.next;
+                if (nV>=minV) {
+                    T res=nV*fact32;
                     static if (boundCheck){
                         if (res!=cast(T)1) return res;
-                        // 1 due to rounding (<1.e-16), 0 impossible
+                        // 1 due to rounding (<3.e-8), 0 impossible
                         return uniform!(T,boundCheck)();
                     } else {
                         return res;
                     }
-                } else { // probability 0.00390625
-                    const T fact64=ctfe_powI(halfT,64);
-                    T scale=fact8;
-                    while (nB==0){
-                        nB=source.nextB;
-                        scale*=fact8;
+                } else { // probability 0.00390625 for 24 bit mantissa
+                    T scale=fact32;
+                    while (nV==0){ // probability 2.3283064365386963e-10
+                        nV=source.next;
+                        scale*=fact32;
                     }
-                    T res=((cast(T)nB)+(cast(T)source.nextL)*fact64)*scale;
+                    T res=nV*scale+source.next*scale*fact32;
                     static if (boundCheck){
                         if (res!=cast(T)0) return res;
-                        // 0 due to underflow (<1.e-4932), 1 impossible
-                        return uniform!(T,boundCheck)();
+                        return uniform!(T,boundCheck)(); // 0 due to underflow (<1.e-38), 1 impossible
                     } else {
                         return res;
                     }
                 }
-            } else {
-                static assert(32<T.mant_dig && T.mant_dig<=64,T.stringof~
-                    " mantissa sizes larger than 64 bits or smaller than 32 not suported");
+            } else static if (T.mant_dig<62) {
                 const T halfT=(cast(T)1)/(cast(T)2);
                 const T fact64=ctfe_powI(halfT,64);
                 const ulong minV=1UL<<(T.mant_dig-1);
@@ -371,6 +337,57 @@ final class RandomG(SourceT=DefaultEngine)
                             return res;
                         }
                     }
+                }
+            } else static if (T.mant_dig<=64){
+                const T halfT=(cast(T)1)/(cast(T)2);
+                const T fact8=ctfe_powI(halfT,8);
+                const T fact72=ctfe_powI(halfT,72);
+                ubyte nB=source.nextB;
+                if (nB!=0){
+                    T res=nB*fact8+source.nextL*fact72;
+                    static if (boundCheck){
+                        if (res!=cast(T)1) return res;
+                        // 1 due to rounding (<1.e-16), 0 impossible
+                        return uniform!(T,boundCheck)();
+                    } else {
+                        return res;
+                    }
+                } else { // probability 0.00390625
+                    const T fact64=ctfe_powI(halfT,64);
+                    T scale=fact8;
+                    while (nB==0){
+                        nB=source.nextB;
+                        scale*=fact8;
+                    }
+                    T res=((cast(T)nB)+(cast(T)source.nextL)*fact64)*scale;
+                    static if (boundCheck){
+                        if (res!=cast(T)0) return res;
+                        // 0 due to underflow (<1.e-4932), 1 impossible
+                        return uniform!(T,boundCheck)();
+                    } else {
+                        return res;
+                    }
+                }
+            } else {
+                // (T.mant_dig > 64 bits), not so optimized, but works for any size
+                const T halfT=(cast(T)1)/(cast(T)2);
+                const T fact32=ctfe_powI(halfT,32);
+                uint nL=source.next;
+                T fact=fact32;
+                while (nL==0){
+                    fact*=fact32;
+                    nL=source.next;
+                }
+                T res=nL*fact;
+                for (int rBits=T.mant_dig-1;rBits>0;rBits-=32) {
+                    fact*=fact32;
+                    res+=source.next()*fact;
+                }
+                static if (boundCheck){
+                    if (res!=cast(T)0 && res !=cast(T)1) return res;
+                    return uniform!(T,boundCheck)(); // really unlikely...
+                } else {
+                    return res;
                 }
             }
         } else static if (is(T==cfloat)||is(T==cdouble)||is(T==creal)){
@@ -467,77 +484,39 @@ final class RandomG(SourceT=DefaultEngine)
                 assert(nV<dTo && nV>-dTo,"this is less probable than 1.e-301, something is wrong with the random number generator");
                 return nV%to;
             }
-        } else static if (is(T==float)){
-            static assert(T.mant_dig<32,"float mantissa expected to be at most 32 bit");
-            const T halfT=(cast(T)1)/(cast(T)2);
-            const T fact32=ctfe_powI(halfT,32);
-            const uint minV=1u<<T.mant_dig;
-            uint nV=source.next;
-            if (nV>=minV) {
-                T res=nV*fact32*to;
-                static if (boundCheck){
-                    if (res!=to) return (1-2*cast(int)(nV&1u))*res;
-                    // to due to rounding (~3.e-8), 0 impossible with normal to values
-                    assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
-                    return uniformRSymm(to,iter-1);
-                } else {
-                    return (1-2*cast(int)(nV&1u))*res;
-                }
-            } else { // probability 0.008 for 24 bit mantissa
-                T scale=fact32;
-                while (nV==0){ // probability 2.3283064365386963e-10
-                    nV=source.next;
-                    scale*=fact32;
-                }
-                uint nV2=source.next;
-                T res=(cast(T)nV+cast(T)nV2*fact32)*scale*to;
-                static if (excludeZero){
-                    if (res!=cast(T)0) return (1-2*cast(int)(nV&1u))*res;
-                    assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
-                    return uniformRSymm(to,iter-1); // 0 due to underflow (<1.e-38), 1 impossible
-                } else {
-                    return (1-2*cast(int)(nV&1u))*res;
-                }
-            }
-        } else static if (is(T==double)||is(T==real)){
-            static if (T.mant_dig>62) {
-                static assert(T.mant_dig<=64,T.stringof~" matissa larger than 64 bits");
+        } else static if (is(T==float)||is(T==double)||is(T==real)){
+            static if (T.mant_dig<30){
                 const T halfT=(cast(T)1)/(cast(T)2);
-                const T fact8=ctfe_powI(halfT,8);
-                const T fact72=ctfe_powI(halfT,72);
-                ubyte nB=source.nextB;
-                if (nB!=0){
-                    ulong nL=source.nextL;
-                    T res=to*(nB*fact8+nL*fact72);
+                const T fact32=ctfe_powI(halfT,32);
+                const uint minV=1u<<T.mant_dig;
+                uint nV=source.next;
+                if (nV>=minV) {
+                    T res=nV*fact32*to;
                     static if (boundCheck){
-                        if (res!=to) return (1-2*cast(int)(nL&1UL))*res;
-                        // 1 due to rounding (<1.e-16), 0 impossible with normal to values
-                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        if (res!=to) return (1-2*cast(int)(nV&1u))*res;
+                        // to due to rounding (~3.e-8), 0 impossible with normal to values
+                        assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
                         return uniformRSymm(to,iter-1);
                     } else {
-                        return (1-2*cast(int)(nL&1UL))*res;
+                        return (1-2*cast(int)(nV&1u))*res;
                     }
-                } else { // probability 0.00390625
-                    const T fact64=ctfe_powI(halfT,64);
-                    T scale=fact8;
-                    while (nB==0){
-                        nB=source.nextB;
-                        scale*=fact8;
+                } else { // probability 0.008 for 24 bit mantissa
+                    T scale=fact32;
+                    while (nV==0){ // probability 2.3283064365386963e-10
+                        nV=source.next;
+                        scale*=fact32;
                     }
-                    ulong nL=source.nextL;
-                    T res=((cast(T)nB)+(cast(T)nL)*fact64)*scale*to;
+                    uint nV2=source.next;
+                    T res=(cast(T)nV+cast(T)nV2*fact32)*scale*to;
                     static if (excludeZero){
-                        if (res!=cast(T)0) return (1-2*cast(int)(nL&1UL))*res;
-                        // 0 due to underflow (<1.e-4932), 1 impossible
-                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
-                        return uniformRSymm(to,iter-1);
+                        if (res!=cast(T)0) return (1-2*cast(int)(nV&1u))*res;
+                        assert(iter>0,"error with the generator, probability < 10^(-8*2000)");
+                        return uniformRSymm(to,iter-1); // 0 due to underflow (<1.e-38), 1 impossible
                     } else {
-                        return (1-2*cast(int)(nL&1UL))*res;
+                        return (1-2*cast(int)(nV&1u))*res;
                     }
                 }
-            } else {
-                static assert(32<T.mant_dig && T.mant_dig<=63,T.stringof~
-                    " mantissa sizes larger than 64 bits or smaller than 32 not suported");
+            } else static if (T.mant_dig<62) {
                 const T halfT=(cast(T)1)/(cast(T)2);
                 const T fact64=ctfe_powI(halfT,64);
                 const ulong minV=1UL<<(T.mant_dig);
@@ -576,6 +555,64 @@ final class RandomG(SourceT=DefaultEngine)
                             return (1-2*cast(int)(nV2&1UL))*res;
                         }
                     }
+                }
+            } else static if (T.mant_dig<=64) {
+                const T halfT=(cast(T)1)/(cast(T)2);
+                const T fact8=ctfe_powI(halfT,8);
+                const T fact72=ctfe_powI(halfT,72);
+                ubyte nB=source.nextB;
+                if (nB!=0){
+                    ulong nL=source.nextL;
+                    T res=to*(nB*fact8+nL*fact72);
+                    static if (boundCheck){
+                        if (res!=to) return (1-2*cast(int)(nL&1UL))*res;
+                        // 1 due to rounding (<1.e-16), 0 impossible with normal to values
+                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        return uniformRSymm(to,iter-1);
+                    } else {
+                        return (1-2*cast(int)(nL&1UL))*res;
+                    }
+                } else { // probability 0.00390625
+                    const T fact64=ctfe_powI(halfT,64);
+                    T scale=fact8;
+                    while (nB==0){
+                        nB=source.nextB;
+                        scale*=fact8;
+                    }
+                    ulong nL=source.nextL;
+                    T res=((cast(T)nB)+(cast(T)nL)*fact64)*scale*to;
+                    static if (excludeZero){
+                        if (res!=cast(T)0) return ((nL&1UL)?res:-res);
+                        // 0 due to underflow (<1.e-4932), 1 impossible
+                        assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                        return uniformRSymm(to,iter-1);
+                    } else {
+                        return ((nL&1UL)?res:-res);
+                    }
+                }
+            } else {
+                // (T.mant_dig > 64 bits), not so optimized, but works for any size
+                const T halfT=(cast(T)1)/(cast(T)2);
+                const T fact32=ctfe_powI(halfT,32);
+                uint nL=source.next;
+                T fact=fact32;
+                while (nL==0){
+                    fact*=fact32;
+                    nL=source.next;
+                }
+                T res=nL*fact;
+                for (int rBits=T.mant_dig;rBits>0;rBits-=32) {
+                    fact*=fact32;
+                    nL=source.next();
+                    res+=nL*fact;
+                }
+                static if (boundCheck){
+                    if (res!=to && res!=cast(T)0) return ((nL&1UL)?res:-res);
+                    // 1 due to rounding (<1.e-16), 0 impossible with normal to values
+                    assert(iter>0,"error with the generator, probability < 10^(-16*2000)");
+                    return uniformRSymm(to,iter-1);
+                } else {
+                    return ((nL&1UL)?res:-res);
                 }
             }
         } else static assert(0,T.stringof~" unsupported type for uniformRSymm distribution");
