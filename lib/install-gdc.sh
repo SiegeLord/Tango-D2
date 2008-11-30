@@ -61,14 +61,17 @@ GPHOBOS_DIR="`dirname $GPHOBOS_DIR`"
 
 GPHOBOS_64=0
 
-# If we have which, use it to get the prefix
-which gdc >& /dev/null
-if [ "$?" = "0" ]
+if [ "$SETPREFIX" = "0" ]
 then
-    PREFIX="`which ${CROSS}gdc`"
-    PREFIX="`dirname $PREFIX`/.."
-else
-    PREFIX="$GPHOBOS_DIR/.."
+    # If we have which, use it to get the prefix
+    which gdc >& /dev/null
+    if [ "$?" = "0" ]
+    then
+        PREFIX="`which ${CROSS}gdc`"
+        PREFIX="`dirname $PREFIX`/.."
+    else
+        PREFIX="$GPHOBOS_DIR/.."
+    fi
 fi
 
 # If libgphobos.a isn't installed, make it up
