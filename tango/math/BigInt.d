@@ -181,8 +181,9 @@ public:
     }    
     ///
     BigInt opNeg() {
-        negate();
-        return *this;
+        BigInt r = *this;
+        r.negate();
+        return r;
     }
     ///
     BigInt opPos() { return *this; }    
@@ -228,9 +229,17 @@ public:
        return sign == y.sign && y.data == data;
     }
     ///
-    int opCmp(BigInt y) {
+    int opCmp(T:int)(T y) {
+     //   if (y==0) return sign? -1: 1;
+        if (sign!=(y<0)) return sign ? -1 : 1;
+        int cmp = BigUint.compare(data, y>=0? y: -y);        
+        return sign? -cmp: cmp;
+    }
+    ///
+    int opCmp(T:BigInt)(T y) {
         if (sign!=y.sign) return sign ? -1 : 1;
-        return BigUint.compare(data, y.data);
+        int cmp = BigUint.compare(data, y.data);
+        return sign? -cmp: cmp;
     }
 public:
     /// BUG: For testing only, this will be removed eventually

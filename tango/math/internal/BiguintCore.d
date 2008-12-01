@@ -76,6 +76,14 @@ static int compare(BigUint x, BigUint y)
     return x.data[k] > y.data[k] ? 1 : -1;
 }
 
+//return 1 if x>y, -1 if x<y, 0 if equal
+static int compare(BigUint x, uint y)
+{
+    if (x.data.length!=1) return 1;
+    if (x.data[0]==y) return 0;
+    return x.data[0] > y ? 1: -1;
+}
+
 int opEquals(BigUint y) {
        return y.data[] == data[];
 }
@@ -939,11 +947,9 @@ void mulKaratsuba(uint [] result, uint [] x, uint[] y, uint [] scratchbuff)
 void schoolbookDivMod(uint [] quotient, uint [] u, in uint [] v)
 {
     assert(quotient.length == u.length - v.length);
-//    assert(remainder == null || remainder.length == v.length);
     assert(v.length > 1);
     assert(u.length >= v.length);
     assert((v[$-1]&0x8000_0000)!=0);
-//    assert((u[$-1]&0x8000_0000)==0);
     
     for (int j = u.length - v.length-1; j >= 0; j--) {
         // Compute estimate qhat of quotient[j].
@@ -954,13 +960,12 @@ void schoolbookDivMod(uint [] quotient, uint [] u, in uint [] v)
                - bigqhat * v[$-1];
 again:
         if ((bigqhat & 0xFFFF_FFFF_0000_0000L) 
-            || bigqhat*v[$-2] > 0x1_0000_0000L * rhat + u[j+v.length-2]) {
+            || bigqhat*v[$-2] > ((rhat<<32) + u[j+v.length-2])) {
             --bigqhat;
             rhat += v[$-1];
             if (rhat < 0x1_0000_0000L) goto again;
         }
         uint qhat = cast(uint)bigqhat;
-
         // Multiply and subtract.
         uint carry = multibyteMulAdd!('-')(u[j..j+v.length], v, qhat, 0);
 
