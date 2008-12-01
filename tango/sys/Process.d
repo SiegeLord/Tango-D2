@@ -47,6 +47,50 @@ debug (Process)
 
 
 /**
+ * Redirect flags for processes.  Defined outside process class to cut down on
+ * verbosity.
+ */
+enum Redirect
+{
+    /**
+     * Redirect none of the standard handles
+     */
+    None = 0,
+
+    /**
+     * Redirect the stdout handle to a pipe.
+     */
+    Output = 1,
+
+    /**
+     * Redirect the stderr handle to a pipe.
+     */
+    Error = 2,
+
+    /**
+     * Redirect the stdin handle to a pipe.
+     */
+    Input = 4,
+
+    /**
+     * Redirect all three handles to pipes (default).
+     */
+    All = Output | Error | Input,
+
+    /**
+     * Send stderr to stdout's handle.  Note that the stderr PipeConduit will
+     * be null.
+     */
+    ErrorToOutput = 0x10,
+
+    /**
+     * Send stdout to stderr's handle.  Note that the stdout PipeConduit will
+     * be null.
+     */
+    OutputToError = 0x20,
+}
+
+/**
  * The Process class is used to start external programs and communicate with
  * them via their standard input, output and error streams.
  *
@@ -153,6 +197,7 @@ class Process
     static const uint DefaultStdinBufferSize    = 512;
     static const uint DefaultStdoutBufferSize   = 8192;
     static const uint DefaultStderrBufferSize   = 512;
+    static const Redirect DefaultRedirectFlags  = Redirect.All;
 
     private char[][]        _args;
     private char[][char[]]  _env;
@@ -162,10 +207,12 @@ class Process
     private PipeConduit     _stderr;
     private bool            _running = false;
     private bool            _copyEnv = false;
+    private Redirect        _redirect = DefaultRedirectFlags;
 
     version (Windows)
     {
         private PROCESS_INFORMATION *_info = null;
+        private bool                 _gui = false;
     }
     else
     {
@@ -342,6 +389,15 @@ class Process
     }
 
     /**
+     * Set the process' executable filename, return 'this' for chaining
+     */
+    public Process setProgramName(char[] name)
+    {
+        programName = name;
+        return this;
+    }
+
+    /**
      * Return an array with the process' arguments.
      */
     public char[][] args()
@@ -369,6 +425,26 @@ class Process
     }
 
     /**
+     * Set the process' arguments from the arguments received by the method.
+     *
+     * Remarks:
+     * The first element of the array must be the name of the process'
+     * executable.
+     *
+     * Returns: a reference to this for chaining
+     *
+     * Examples:
+     * ---
+     * p.setArgs("myprogram", "first", "second argument", "third").execute();
+     * ---
+     */
+    public Process setArgs(char[][] args ...)
+    {
+        this.args(args);
+        return this;
+    }
+
+    /**
      * If true, the environment from the current process will be copied to the
      * child process.
      */
@@ -385,6 +461,20 @@ class Process
     public bool copyEnv(bool b)
     {
         return _copyEnv = b;
+    }
+
+    /**
+     * Set the copyEnv flag.  If set to true, then the environment will be
+     * copied from the current process.  If set to false, then the environment
+     * is set from the env field.
+     *
+     * Returns:
+     *   A reference to this for chaining
+     */
+    public Process setCopyEnv(bool b)
+    {
+        _copyEnv = b;
+        return this;
     }
 
     /**
@@ -423,6 +513,35 @@ class Process
     {
         _copyEnv = false;
         return _env = env;
+    }
+
+    /**
+     * Set the process' environment variables from the associative array
+     * received by the method.  Returns a 'this' reference for chaining.
+     *
+     * This also clears the copyEnv flag.
+     *
+     * Params:
+     * env  = associative array of strings containing the environment
+     *        variables for the process. The variable name should be the key
+     *        used for each entry.
+     *
+     * Returns: A reference to this process object
+     * Examples:
+     * ---
+     * char[][char[]] env;
+     *
+     * env["MYVAR1"] = "first";
+     * env["MYVAR2"] = "second";
+     *
+     * p.setEnv(env).execute();
+     * ---
+     */
+    public Process setEnv(char[][char[]] env)
+    {
+        _copyEnv = false;
+        _env = env;
+        return this;
     }
 
     /**
@@ -478,13 +597,130 @@ class Process
     }
 
     /**
+     * Set the working directory for the process.  Returns a 'this' reference
+     * for chaining
+     *
+     * Params:
+     * dir  = a string with the working directory; null if the working
+     *         directory is the current directory.
+     *
+     * Returns: a reference to this process.
+     */
+    public Process setWorkDir(char[] dir)
+    {
+        _workDir = dir;
+        return this;
+    }
+
+    /**
+     * Get the redirect flags for the process.
+     *
+     * The redirect flags are used to determine whether stdout, stderr, or
+     * stdin are redirected.  The flags are an or'd combination of which
+     * standard handles to redirect.  A redirected handle creates a pipe,
+     * whereas a non-redirected handle simply points to the same handle this
+     * process is pointing to.
+     *
+     * You can also redirect stdout or stderr to each other.  The flags to
+     * redirect a handle to a pipe and to redirect it to another handle are
+     * mutually exclusive.  In the case both are specified, the redirect to
+     * the other handle takes precedent.  It is illegal to specify both
+     * redirection from stdout to stderr and from stderr to stdout.  If both
+     * of these are specified, an exception is thrown.
+     * 
+     * If redirected to a pipe, once the process is executed successfully, its
+     * input and output can be manipulated through the stdin, stdout and
+     * stderr member PipeConduit's.  Note that if you redirect for example
+     * stderr to stdout, and you redirect stdout to a pipe, only stdout will
+     * be non-null.
+     */
+    public Redirect redirect()
+    {
+        return _redirect;
+    }
+
+    /**
+     * Set the redirect flags for the process.
+     */
+    public Redirect redirect(Redirect flags)
+    {
+        return _redirect = flags;
+    }
+
+    /**
+     * Set the redirect flags for the process.  Return a reference to this
+     * process for chaining.
+     */
+    public Process setRedirect(Redirect flags)
+    {
+        _redirect = flags;
+        return this;
+    }
+
+    /**
+     * Get the GUI flag.
+     *
+     * This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+     * should be set on CreateProcess.  Although this is a specific windows
+     * flag, it is present on posix systems as a noop for compatibility.
+     *
+     * Without this flag, a console window will be allocated if it doesn't
+     * already exist.
+     */
+    public bool gui()
+    {
+        version(Windows)
+            return _gui;
+        else
+            return false;
+    }
+
+    /**
+     * Set the GUI flag.
+     *
+     * This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+     * should be set on CreateProcess.  Although this is a specific windows
+     * flag, it is present on posix systems as a noop for compatibility.
+     *
+     * Without this flag, a console window will be allocated if it doesn't
+     * already exist.
+     */
+    public bool gui(bool value)
+    {
+        version(Windows)
+            return _gui = value;
+        else
+            return false;
+    }
+
+    /**
+     * Set the GUI flag.  Returns a reference to this process for chaining.
+     *
+     * This flag indicates on Windows systems that the CREATE_NO_WINDOW flag
+     * should be set on CreateProcess.  Although this is a specific windows
+     * flag, it is present on posix systems as a noop for compatibility.
+     *
+     * Without this flag, a console window will be allocated if it doesn't
+     * already exist.
+     */
+    public Process setGui(bool value)
+    {
+        version(Windows)
+        {
+            _gui = value;
+        }
+        return this;
+    }
+
+    /**
      * Return the running process' standard input pipe.
      *
      * Returns: a write-only PipeConduit connected to the child
      *          process' stdin.
      *
      * Remarks:
-     * The stream will be null if no child process has been executed.
+     * The stream will be null if no child process has been executed, or the
+     * standard input stream was not redirected.
      */
     public PipeConduit stdin()
     {
@@ -498,7 +734,8 @@ class Process
      *          process' stdout.
      *
      * Remarks:
-     * The stream will be null if no child process has been executed.
+     * The stream will be null if no child process has been executed, or the
+     * standard output stream was not redirected.
      */
     public PipeConduit stdout()
     {
@@ -512,7 +749,8 @@ class Process
      *          process' stderr.
      *
      * Remarks:
-     * The stream will be null if no child process has been executed.
+     * The stream will be null if no child process has been executed, or the
+     * standard error stream was not redirected.
      */
     public PipeConduit stderr()
     {
@@ -535,19 +773,19 @@ class Process
      * The process must not be running and the provided list of arguments must
      * not be empty. If there was any argument already present in the args
      * member, they will be replaced by the arguments supplied to the method.
+     *
+     * Deprecated: Use constructor or properties to set up process for
+     * execution.
      */
-    public void execute(char[][] args ...)
+    deprecated public void execute(char[] arg1, char[][] args ...)
     in
     {
         assert(!_running);
     }
     body
     {
-        if (args.length > 0 && args[0] !is null)
-        {
-            _args = args;
-        }
-        executeInternal();
+        this._args = arg1 ~ args;
+        execute();
     }
 
     /**
@@ -575,8 +813,11 @@ class Process
      * The process must not be running and the provided list of arguments must
      * not be empty. If there was any argument already present in the args
      * member, they will be replaced by the arguments supplied to the method.
+     *
+     * Deprecated: use properties or the constructor to set these parameters
+     * instead.
      */
-    public void execute(char[] command, char[][char[]] env)
+    deprecated public void execute(char[] command, char[][char[]] env)
     in
     {
         assert(!_running);
@@ -587,8 +828,7 @@ class Process
         _args = splitArgs(command);
         _copyEnv = false;
         _env = env;
-
-        executeInternal();
+        execute();
     }
 
     /**
@@ -618,6 +858,9 @@ class Process
      * not be empty. If there was any argument already present in the args
      * member, they will be replaced by the arguments supplied to the method.
      *
+     * Deprecated:
+     * Use properties or the constructor to set these parameters instead.
+     *
      * Examples:
      * ---
      * auto p = new Process();
@@ -629,7 +872,7 @@ class Process
      * p.execute(args, null);
      * ---
      */
-    public void execute(char[][] args, char[][char[]] env)
+    deprecated public void execute(char[][] args, char[][char[]] env)
     in
     {
         assert(!_running);
@@ -641,7 +884,7 @@ class Process
         _env = env;
         _copyEnv = false;
 
-        executeInternal();
+        execute();
     }
 
     /**
@@ -661,7 +904,7 @@ class Process
      * The process must not be running and the list of arguments must
      * not be empty before calling this method.
      */
-    protected void executeInternal()
+    public void execute()
     in
     {
         assert(!_running);
@@ -686,35 +929,84 @@ class Process
             // Set up members of the STARTUPINFO structure.
             memset(&startup, '\0', STARTUPINFO.sizeof);
             startup.cb = STARTUPINFO.sizeof;
-            startup.dwFlags |= STARTF_USESTDHANDLES;
 
-            // Create the pipes used to communicate with the child process.
-            Pipe pin = new Pipe(DefaultStdinBufferSize, &sa);
-            // Replace stdin with the "read" pipe
-            _stdin = pin.sink;
-            startup.hStdInput = cast(HANDLE) pin.source.fileHandle();
-            // Ensure the write handle to the pipe for STDIN is not inherited.
-            SetHandleInformation(cast(HANDLE) pin.sink.fileHandle(), HANDLE_FLAG_INHERIT, 0);
-            scope(exit)
-                pin.source.close();
+            Pipe pin, pout, perr;
+            if(_redirect != Redirect.None)
+            {
+                if((_redirect & (Redirect.OutputToError | Redirect.ErrorToOutput)) == (Redirect.OutputToError | Redirect.ErrorToOutput))
+                    throw new ProcessCreateException(_args[0], "Illegal redirection flags", __FILE__, __LINE__);
+                //
+                // some redirection is specified, set the flag that indicates
+                startup.dwFlags |= STARTF_USESTDHANDLES;
 
-            Pipe pout = new Pipe(DefaultStdoutBufferSize, &sa);
-            // Replace stdout with the "write" pipe
-            _stdout = pout.source;
-            startup.hStdOutput = cast(HANDLE) pout.sink.fileHandle();
-            // Ensure the read handle to the pipe for STDOUT is not inherited.
-            SetHandleInformation(cast(HANDLE) pout.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
-            scope(exit)
-                pout.sink.close();
+                // Create the pipes used to communicate with the child process.
+                if(_redirect & Redirect.Input)
+                {
+                    pin = new Pipe(DefaultStdinBufferSize, &sa);
+                    // Replace stdin with the "read" pipe
+                    _stdin = pin.sink;
+                    startup.hStdInput = cast(HANDLE) pin.source.fileHandle();
+                    // Ensure the write handle to the pipe for STDIN is not inherited.
+                    SetHandleInformation(cast(HANDLE) pin.sink.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+                }
+                else
+                {
+                    // need to get the local process stdin handle
+                    startup.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+                }
 
-            Pipe perr = new Pipe(DefaultStderrBufferSize, &sa);
-            // Replace stderr with the "write" pipe
-            _stderr = perr.source;
-            startup.hStdError = cast(HANDLE) perr.sink.fileHandle();
-            // Ensure the read handle to the pipe for STDOUT is not inherited.
-            SetHandleInformation(cast(HANDLE) perr.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+                if((_redirect & (Redirect.Output | Redirect.OutputToError)) == Redirect.Output)
+                {
+                    pout = new Pipe(DefaultStdoutBufferSize, &sa);
+                    // Replace stdout with the "write" pipe
+                    _stdout = pout.source;
+                    startup.hStdOutput = cast(HANDLE) pout.sink.fileHandle();
+                    // Ensure the read handle to the pipe for STDOUT is not inherited.
+                    SetHandleInformation(cast(HANDLE) pout.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+                }
+                else
+                {
+                    // need to get the local process stdout handle
+                    startup.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+                }
+
+                if((_redirect & (Redirect.Error | Redirect.ErrorToOutput)) == Redirect.Error)
+                {
+                    perr = new Pipe(DefaultStderrBufferSize, &sa);
+                    // Replace stderr with the "write" pipe
+                    _stderr = perr.source;
+                    startup.hStdError = cast(HANDLE) perr.sink.fileHandle();
+                    // Ensure the read handle to the pipe for STDOUT is not inherited.
+                    SetHandleInformation(cast(HANDLE) perr.source.fileHandle(), HANDLE_FLAG_INHERIT, 0);
+                }
+                else
+                {
+                    // need to get the local process stderr handle
+                    startup.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+                }
+
+                // do redirection from one handle to another
+                if(_redirect & Redirect.ErrorToOutput)
+                {
+                    startup.hStdError = startup.hStdOutput;
+                }
+
+                if(_redirect & Redirect.OutputToError)
+                {
+                    startup.hStdOutput = startup.hStdError;
+                }
+            }
+            
+            // close the unused end of the pipes on scope exit
             scope(exit)
-                perr.sink.close();
+            {
+                if(pin !is null)
+                    pin.source.close();
+                if(pout !is null)
+                    pout.sink.close();
+                if(perr !is null)
+                    perr.sink.close();
+            }
 
             _info = new PROCESS_INFORMATION;
             // Set up members of the PROCESS_INFORMATION structure.
@@ -831,7 +1123,7 @@ class Process
               // started decides to allocate a console (i.e. if you run a batch
               // file)
               if (CreateProcessA(null, command.ptr, null, null, true,
-                    CREATE_NO_WINDOW,
+                    _gui ? CREATE_NO_WINDOW : 0,
                     (_copyEnv ? null : toNullEndedBuffer(_env).ptr),
                     toStringz(_workDir), &startup, _info))
               {
@@ -853,7 +1145,7 @@ class Process
               // started decides to allocate a console (i.e. if you run a batch
               // file)
               if (CreateProcessW(null, toString16(command).ptr, null, null, true,
-                    CREATE_NO_WINDOW,
+                    _gui ? CREATE_NO_WINDOW : 0,
                     (_copyEnv ? null : toNullEndedBuffer(_env).ptr),
                     toString16z(toString16(_workDir)), &startup, _info))
               {
@@ -872,9 +1164,20 @@ class Process
             // from a previous execution.
             cleanPipes();
 
-            Pipe pin = new Pipe(DefaultStdinBufferSize);
-            Pipe pout = new Pipe(DefaultStdoutBufferSize);
-            Pipe perr = new Pipe(DefaultStderrBufferSize);
+            // validate the redirection flags
+            if((_redirect & (Redirect.OutputToError | Redirect.ErrorToOutput)) == (Redirect.OutputToError | Redirect.ErrorToOutput))
+                throw new ProcessCreateException(_args[0], "Illegal redirection flags", __FILE__, __LINE__);
+
+
+            Pipe pin, pout, perr;
+            if(_redirect & Redirect.Input)
+                pin = new Pipe(DefaultStdinBufferSize);
+            if((_redirect & (Redirect.Output | Redirect.OutputToError)) == Redirect.Output)
+                pout = new Pipe(DefaultStdoutBufferSize);
+
+            if((_redirect & (Redirect.Error | Redirect.ErrorToOutput)) == Redirect.Error)
+                perr = new Pipe(DefaultStderrBufferSize);
+
             // This pipe is used to propagate the result of the call to
             // execv*() from the child process to the parent process.
             Pipe pexec = new Pipe(8);
@@ -886,14 +1189,23 @@ class Process
                 if (_pid != 0)
                 {
                     // Parent process
-                    _stdin = pin.sink;
-                    pin.source.close();
+                    if(pin !is null)
+                    {
+                        _stdin = pin.sink;
+                        pin.source.close();
+                    }
 
-                    _stdout = pout.source;
-                    pout.sink.close();
+                    if(pout !is null)
+                    {
+                        _stdout = pout.source;
+                        pout.sink.close();
+                    }
 
-                    _stderr = perr.source;
-                    perr.sink.close();
+                    if(perr !is null)
+                    {
+                        _stderr = perr.source;
+                        perr.sink.close();
+                    }
 
                     pexec.sink.close();
                     scope(exit)
@@ -934,19 +1246,40 @@ class Process
                     // same resource.
 
                     // Replace stdin with the "read" pipe
-                    dup2(pin.source.fileHandle(), STDIN_FILENO);
-                    pin.sink().close();
-                    pin.source.close();
+                    if(pin !is null)
+                    {
+                        dup2(pin.source.fileHandle(), STDIN_FILENO);
+                        pin.sink().close();
+                        pin.source.close();
+                    }
 
                     // Replace stdout with the "write" pipe
-                    dup2(pout.sink.fileHandle(), STDOUT_FILENO);
-                    pout.source.close();
-                    pout.sink.close();
+                    if(pout !is null)
+                    {
+                        dup2(pout.sink.fileHandle(), STDOUT_FILENO);
+                        pout.source.close();
+                        pout.sink.close();
+                    }
 
                     // Replace stderr with the "write" pipe
-                    dup2(perr.sink.fileHandle(), STDERR_FILENO);
-                    perr.source.close();
-                    perr.sink.close();
+                    if(perr !is null)
+                    {
+                        dup2(perr.sink.fileHandle(), STDERR_FILENO);
+                        perr.source.close();
+                        perr.sink.close();
+                    }
+
+                    // Check for redirection from stdout to stderr or vice
+                    // versa
+                    if(_redirect & Redirect.OutputToError)
+                    {
+                        dup2(STDERR_FILENO, STDOUT_FILENO);
+                    }
+
+                    if(_redirect & Redirect.ErrorToOutput)
+                    {
+                        dup2(STDOUT_FILENO, STDERR_FILENO);
+                    }
 
                     // We close the unneeded part of the execv*() notification pipe
                     pexec.source.close();
@@ -1080,7 +1413,7 @@ class Process
 
                     debug (Process)
                         Stdout.formatln("Child process '{0}' ({1}) returned with code {2}\n",
-                                        _args[0], _pid, result.status);
+                                        _args[0], pid, result.status);
                 }
                 else if (rc == WAIT_FAILED)
                 {
@@ -1090,7 +1423,7 @@ class Process
                     debug (Process)
                         Stdout.formatln("Child process '{0}' ({1}) failed "
                                         "with unknown exit status {2}\n",
-                                        _args[0], _pid, result.status);
+                                        _args[0], pid, result.status);
                 }
             }
             else
@@ -1602,7 +1935,12 @@ class ProcessCreateException: ProcessException
 {
     public this(char[] command, char[] file, uint line)
     {
-        super("Could not create process for " ~ command ~ " : " ~ SysError.lastMsg);
+        this(command, SysError.lastMsg, file, line);
+    }
+
+    public this(char[] command, char[] message, char[] file, uint line)
+    {
+        super("Could not create process for " ~ command ~ " : " ~ message);
     }
 }
 
