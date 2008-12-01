@@ -41,7 +41,7 @@ struct Clock
             uint doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
             uint year = dt.date.year;
 
-            if(month > 2 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
+            if(dt.date.month > 2 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
                 doy++;
 
             dt.date.doy = doy;
