@@ -121,13 +121,17 @@ class Semaphore
                 throw new SyncException( "Unable to wait for semaphore" );
         }
         else version(darwin){
-            auto rc=semaphore_wait(m_hndl);
-            if (rc==KERN_RETURN.ABORTED){
-                if( errno != EINTR )
-                    throw new SyncException( "Unable to wait for semaphore (abort)" );
-                // wait again
-            } else if (rc!=0) {
-                throw new SyncException( "Unable to wait for semaphore" );
+            while (true){
+                auto rc=semaphore_wait(m_hndl);
+                if (rc==KERN_RETURN.ABORTED){
+                    if( errno != EINTR )
+                        throw new SyncException( "Unable to wait for semaphore (abort)" );
+                    // wait again
+                } else if (rc!=0) {
+                    throw new SyncException( "Unable to wait for semaphore" );
+                } else {
+                    break;
+                }
             }
         }
         else version( Posix )
