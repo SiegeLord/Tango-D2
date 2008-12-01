@@ -44,22 +44,22 @@ private import  Integer = tango.text.convert.Integer;
 
         ---
         // callback for client reader
-        void sink (char[] content)
+        void sink (void[] content)
         {
-                Stdout.put (content);
+                Stdout.put (cast(char[]) content);
         }
 
         // create client for a GET request
         auto client = new HttpClient (HttpClient.Get, "http://www.yahoo.com");
 
         // make request
-        client.open ();
+        client.open;
 
         // check return status for validity
         if (client.isResponseOK)
            {
            // extract content length
-           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max);
+           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength);
         
            // display all returned headers
            Stdout.put (client.getResponseHeaders);
@@ -70,7 +70,7 @@ private import  Integer = tango.text.convert.Integer;
         else
            Stderr.put (client.getResponse);
 
-        client.close ();
+        client.close;
         ---
 
         See modules HttpGet and HttpPost for simple wrappers instead.
