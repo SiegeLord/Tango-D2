@@ -36,6 +36,16 @@ struct Clock
 {
         // copied from Gregorian.  Used while we rely on OS for toDate.
         package static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        package static void setDoy(ref DateTime dt)
+        {
+            uint doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
+            uint year = dt.date.year;
+
+            if(month > 2 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
+                doy++;
+
+            dt.date.doy = doy;
+        }
 
         version (Win32)
         {
@@ -95,9 +105,7 @@ struct Clock
                         dt.time.millis  = sTime.wMilliseconds;
 
                         // Calculate the day-of-year
-                        dt.date.doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
-                        if (dt.date.year % 4 == 0 && dt.date.year % 100 != 0 && dt.date.month > 2)
-                                dt.date.doy++;
+                        setDoy(dt);
 
                         return dt;
                 }
@@ -222,9 +230,7 @@ struct Clock
                         dt.time.seconds = t.tm_sec;
 
                         // Calculate the day-of-year
-                        dt.date.doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
-                        if (dt.date.year % 4 == 0 && dt.date.year % 100 != 0 && dt.date.month > 2)
-                                dt.date.doy++;
+                        setDoy(dt);
 
                         return dt;
                 }
