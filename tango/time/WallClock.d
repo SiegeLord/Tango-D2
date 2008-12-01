@@ -204,11 +204,14 @@ struct WallClock
                         dt.date.month   = t.tm_mon + 1;
                         dt.date.day     = t.tm_mday;
                         dt.date.dow     = t.tm_wday;
-                        dt.date.doy     = 0;
                         dt.date.era     = 0;
                         dt.time.hours   = t.tm_hour;
                         dt.time.minutes = t.tm_min;
                         dt.time.seconds = t.tm_sec;
+                        dt.date.doy = dt.date.day + Clock.DaysToMonthCommon[dt.date.month - 1];
+                        if (dt.date.year % 4 == 0 && dt.date.year % 100 != 0 && dt.date.month > 2)
+                                dt.date.doy++;
+
                         return dt;
                 }
 

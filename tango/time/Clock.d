@@ -34,6 +34,9 @@ private import  tango.core.Exception;
 
 struct Clock
 {
+        // copied from Gregorian.  Used while we rely on OS for toDate.
+        package static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+
         version (Win32)
         {
                 /***************************************************************
@@ -60,6 +63,7 @@ struct Clock
                         return toDate (now);
                 }
 
+
                 /***************************************************************
 
                         Set fields to represent the provided UTC time. Note 
@@ -84,12 +88,17 @@ struct Clock
                         dt.date.month   = sTime.wMonth;
                         dt.date.day     = sTime.wDay;
                         dt.date.dow     = sTime.wDayOfWeek;
-                        dt.date.doy     = 0;
                         dt.date.era     = 0;
                         dt.time.hours   = sTime.wHour;
                         dt.time.minutes = sTime.wMinute;
                         dt.time.seconds = sTime.wSecond;
                         dt.time.millis  = sTime.wMilliseconds;
+
+                        // Calculate the day-of-year
+                        dt.date.doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
+                        if (dt.date.year % 4 == 0 && dt.date.year % 100 != 0 && dt.date.month > 2)
+                                dt.date.doy++;
+
                         return dt;
                 }
 
@@ -202,16 +211,21 @@ struct Clock
 
                         tm t = void;
                         gmtime_r (&timeval.tv_sec, &t);
-        
+
                         dt.date.year    = t.tm_year + 1900;
                         dt.date.month   = t.tm_mon + 1;
                         dt.date.day     = t.tm_mday;
                         dt.date.dow     = t.tm_wday;
-                        dt.date.doy     = 0;
                         dt.date.era     = 0;
                         dt.time.hours   = t.tm_hour;
                         dt.time.minutes = t.tm_min;
                         dt.time.seconds = t.tm_sec;
+
+                        // Calculate the day-of-year
+                        dt.date.doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
+                        if (dt.date.year % 4 == 0 && dt.date.year % 100 != 0 && dt.date.month > 2)
+                                dt.date.doy++;
+
                         return dt;
                 }
 
