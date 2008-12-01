@@ -8,33 +8,7 @@ module tango.math.random.Ziggurat;
 import tango.math.Bracket:findRoot;
 import tango.math.Math:abs;
 import tango.math.ErrorFunction:erfc;
-
-// ----- templateFu begin --------
-/// is T is a real floating point number
-template isReal(T){
-    const isReal=is(T==float)||is(T==double)||is(T==real);
-}
-/// if T is a complex number
-template isComplex(T){
-    const isComplex=is(T==cfloat)||is(T==creal)||is(T==cdouble);
-}
-
-/// if T is a purely imaginary number
-template isImaginary(T){
-    const isImaginary=is(T==ifloat)|| is(T==idouble)|| is(T==ireal);
-}
-
-/// Strips the []'s off of a type.
-template arrayBaseT(T)
-{
-    static if( is( T S : S[]) ) {
-        alias arrayBaseT!(S)  arrayBaseT;
-    }
-    else {
-        alias T arrayBaseT;
-    }
-}
-// ----- templateFu end --------
+import tango.core.Traits;
 
 /// ziggurat method for decreasing distributions.
 /// Marsaglia, Tsang, Journal of Statistical Software, 2000
@@ -44,7 +18,7 @@ template arrayBaseT(T)
 /// in a class and not used directly).
 /// Call style initialization avoided on purpose (this is a big structure, you don't want to return it)
 struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=true){
-    static assert(isReal!(T),T.stringof~" not acceptable, only floating point variables supported");
+    static assert(isRealType!(T),T.stringof~" not acceptable, only floating point variables supported");
     const int nBlocks=256;
     T[nBlocks+1] posBlock;
     T[nBlocks+1] fVal;
@@ -192,7 +166,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         static if(is(U S:S[])){
             uint aL=a.length;
             for (uint i=0;i!=aL;++i){
-                a[i]=cast(arrayBaseT!(U))getRandom();
+                a[i]=cast(BaseTypeOfArrays!(U))getRandom();
             }
         } else {
             a=cast(U)getRandom();
@@ -204,21 +178,21 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     template randomizeOp2(alias op){
         U randomizeOp2(U)(ref U a){
             static if(is(U S:S[])){
-                alias arrayBaseT!(U) TT;
+                alias BaseTypeOfArrays!(U) TT;
                 uint aL=a.length;
                 for (uint i=0;i!=aL;++i){
-                    static if(isComplex!(TT)) {
+                    static if(isComplexType!(TT)) {
                         a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
-                    } else static if (isImaginary!(TT)){
+                    } else static if (isImaginaryType!(TT)){
                         a[i]=cast(TT)(1i*op(getRandom()));
                     } else {
                         a[i]=cast(TT)op(getRandom());
                     }
                 }
             } else {
-                static if(isComplex!(U)) {
+                static if(isComplexType!(U)) {
                     a=cast(U)(op(getRandom())+1i*op(getRandom()));
-                } else static if (isImaginary!(U)){
+                } else static if (isImaginaryType!(U)){
                     el=cast(U)(1i*op(getRandom()));
                 } else {
                     a=cast(U)op(getRandom());
@@ -230,21 +204,21 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     /// initializes the variable with the result of mapping op on the random numbers (of type T)
     U randomizeOp(U,S)(S delegate(T) op,ref U a){
         static if(is(U S:S[])){
-            alias arrayBaseT!(U) TT;
+            alias BaseTypeOfArrays!(U) TT;
             uint aL=a.length;
             for (uint i=0;i!=aL;++i){
-                static if(isComplex!(TT)) {
+                static if(isComplexType!(TT)) {
                     a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
-                } else static if (isImaginary!(TT)){
+                } else static if (isImaginaryType!(TT)){
                     a[i]=cast(TT)(1i*op(getRandom()));
                 } else {
                     a[i]=cast(TT)op(getRandom());
                 }
             }
         } else {
-            static if(isComplex!(U)) {
+            static if(isComplexType!(U)) {
                 a=cast(U)(op(getRandom())+1i*op(getRandom()));
-            } else static if (isImaginary!(U)){
+            } else static if (isImaginaryType!(U)){
                 el=cast(U)(1i*op(getRandom()));
             } else {
                 a=cast(U)op(getRandom());

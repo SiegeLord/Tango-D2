@@ -138,10 +138,11 @@ import tango.math.random.engines.Sync;
 import tango.math.random.engines.Twister;
 import tango.math.random.NormalSource;
 import tango.math.random.ExpSource;
+import tango.core.Traits;
 
 // ----- templateFu begin --------
 /// compile time integer power
-T ctfe_powI(T)(T x,int p){
+private T ctfe_powI(T)(T x,int p){
     T xx=cast(T)1;
     if (p<0){
         p=-p;
@@ -169,17 +170,6 @@ template isFloat(T){
         const bool isFloat=true;
     } else {
         const bool isFloat=false;
-    }
-}
-
-/// Strips the []'s off of a type.
-template arrayBaseT(T)
-{
-    static if( is( T S : S[]) ) {
-        alias arrayBaseT!(S)  arrayBaseT;
-    }
-    else {
-        alias T arrayBaseT;
     }
 }
 
@@ -655,7 +645,7 @@ final class RandomG(SourceT=DefaultEngine)
     /// more efficient, both from the use of random numbers and speedwise)
     U randomizeUniform(U,bool boundCheck)(ref U a){
         static if (is(U S:S[])){
-            alias arrayBaseT!(U) T;
+            alias BaseTypeOfArrays!(U) T;
             static if (is(T==byte)||is(T==ubyte)||is(T==char)){
                 uint val=source.next; /// begin without value?
                 int rest=4;
@@ -695,9 +685,9 @@ final class RandomG(SourceT=DefaultEngine)
     /// randomizes the given array and returns it (for some types this is potentially
     /// more efficient, both from the use of random numbers and speedwise)
     U randomizeUniformR(U,V,bool boundCheck=true)(ref U a,V to)
-    in { assert((cast(arrayBaseT!(U))to)>0,"empty range");}
+    in { assert((cast(BaseTypeOfArrays!(U))to)>0,"empty range");}
     body {
-        alias arrayBaseT!(U) T;
+        alias BaseTypeOfArrays!(U) T;
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
             static if (is(T==uint) || is(T==int) || is(T==char) || is(T==byte) || is(T==ubyte)){
@@ -747,14 +737,14 @@ final class RandomG(SourceT=DefaultEngine)
     /// more efficient, both from the use of random numbers and speedwise)
     U randomizeUniformR2(U,V,W,bool boundCheck=true)(ref U a,V from, W to)
     in {
-        alias arrayBaseT!(U) T;
+        alias BaseTypeOfArrays!(U) T;
         assert((cast(T)to)>(cast(T)from),"empy range in uniformR2");
         static if (is(T==int) || is(T==long)){
             assert(from>T.min/2&&to<T.max/2," from..to range too big");
         }
     }
     body {
-        alias arrayBaseT!(U) T;
+        alias BaseTypeOfArrays!(U) T;
         static assert(is(V:T),"incompatible a and from type "~U.stringof~" "~V.stringof);
         static assert(is(W:T),"incompatible a and to type "~U.stringof~" "~W.stringof);
         static if (is(U S:S[])){
@@ -793,11 +783,11 @@ final class RandomG(SourceT=DefaultEngine)
     /// randomizes the given variable like uniformRSymm and returns it
     /// (for some types this is potentially more efficient, both from the use of
     /// random numbers and speedwise)
-    U randomizeUniformRSymm(U,V,bool boundCheck=true, bool excludeZero=isFloat!(arrayBaseT!(U)))
+    U randomizeUniformRSymm(U,V,bool boundCheck=true, bool excludeZero=isFloat!(BaseTypeOfArrays!(U)))
         (ref U a,V to)
-    in { assert((cast(arrayBaseT!(U))to)>0,"empty range");}
+    in { assert((cast(BaseTypeOfArrays!(U))to)>0,"empty range");}
     body {
-        alias arrayBaseT!(U) T;
+        alias BaseTypeOfArrays!(U) T;
         static assert(is(V:T),"incompatible a and to type "~U.stringof~" "~V.stringof);
         static if (is(U S:S[])){
             static if (is(T==int)|| is(T==byte)){
@@ -1012,10 +1002,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// initializes b with gamma distribued random numbers
         U randomize(U)(ref U b,T a=alpha,T t=theta){
             static if (is(U S:S[])) {
-                alias arrayBaseT!(U) T;
+                alias BaseTypeOfArrays!(U) T;
                 T* bEnd=b.ptr+b.length;
                 for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
-                    *bPtr=cast(arrayBaseT!(U)) getRandom(a,t);
+                    *bPtr=cast(BaseTypeOfArrays!(U)) getRandom(a,t);
                 }
             } else {
                 b=cast(U) getRandom(a,t);
@@ -1025,10 +1015,10 @@ final class RandomG(SourceT=DefaultEngine)
         /// maps op on random numbers (of type T) and initializes b with it
         U randomizeOp(U,S)(S delegate(T)op, ref U b,T a=alpha, T t=theta){
             static if(is(U S:S[])){
-                alias arrayBaseT!(U) T;
+                alias BaseTypeOfArrays!(U) T;
                 T* bEnd=b.ptr+b.length;
                 for (T* bPtr=b.ptr;bPtr!=bEnd;++bPtr){
-                    *bPtr=cast(arrayBaseT!(U))op(getRandom(a,t));
+                    *bPtr=cast(BaseTypeOfArrays!(U))op(getRandom(a,t));
                 }
             } else {
                 b=cast(U)op(getRandom(a));
@@ -1270,7 +1260,7 @@ debug(UnitTest){
     bool doTests(RandG,Arrays...)(RandG r,real maxmin, real minmax, real expectedMean, real maxOffset,bool alwaysPrint,bool checkB, Arrays arrs){
         bool gFail=false;
         foreach (i,TA;Arrays){
-            alias arrayBaseT!(TA) T;
+            alias BaseTypeOfArrays!(TA) T;
             // all together
             r(arrs[i]);
             bool fail=checkMean!(T)(arrs[i],maxmin,minmax,expectedMean,maxOffset,alwaysPrint,checkB);
