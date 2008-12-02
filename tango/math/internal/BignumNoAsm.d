@@ -16,6 +16,8 @@
 module tango.math.internal.BignumNoAsm;
 
 public:
+alias uint BigDigit; // A Bignum is an array of BigDigits. 
+    
     // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 10 }; // Minimum value for which Karatsuba is worthwhile.
 

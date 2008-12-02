@@ -54,10 +54,12 @@ module tango.math.internal.BignumX86;
   (b) compiler bugs prevent the use of .ptr when a frame pointer is used.
 */
 
-private:
 version(GNU) {
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(D_InlineAsm_X86) {
+
+private:
+
 /* Duplicate string s, with n times, substituting index for '@'.
  *
  * Each instance of '@' in s is replaced by 0,1,...n-1. This is a helper
@@ -87,6 +89,8 @@ assert(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
 }
 
 public:
+    
+alias uint BigDigit; // A Bignum is an array of BigDigits. Usually the machine word size.
     
 // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
