@@ -2729,18 +2729,20 @@ class Fiber
 
 
     /**
-     * Resets this fiber so that it may be re-used.  This routine may only be
+     * Resets this fiber so that it may be re-used with the same function.
+     * This routine may only be
      * called for fibers that have terminated, as doing otherwise could result
      * in scope-dependent functionality that is not executed.  Stack-based
      * classes, for example, may not be cleaned up properly if a fiber is reset
      * before it has terminated.
      *
      * In:
-     *  This fiber must be in state TERM.
+     *  This fiber must be in state TERM, and have a valid function/delegate.
      */
     final void reset()
     in
     {
+        assert( m_call != Call.NO );
         assert( m_state == State.TERM );
         assert( m_ctxt.tstack == m_ctxt.bstack );
     }
@@ -2751,6 +2753,82 @@ class Fiber
         m_unhandled = null;
     }
 
+    /**
+     * Reinitializes a fiber object which is associated with a static
+     * D function.
+     *
+     * Params:
+     *  fn = The thread function.
+     *
+     * In:
+     *  This fiber must be in state TERM.
+     *  fn must not be null.
+     */
+    final void reset( void function() fn )
+    in
+    {
+        assert( fn );
+        assert( m_state == State.TERM );
+        assert( m_ctxt.tstack == m_ctxt.bstack );
+    }
+    body
+    {
+        m_fn    = fn;
+        m_call  = Call.FN;
+        m_state = State.HOLD;
+        initStack();
+        m_unhandled = null;
+    }
+
+
+    /**
+     * reinitializes a fiber object which is associated with a dynamic
+     * D function.
+     *
+     * Params:
+     *  dg = The thread function.
+     *
+     * In:
+     *  This fiber must be in state TERM.
+     *  dg must not be null.
+     */
+    final void reset( void delegate() dg )
+    in
+    {
+        assert( dg );
+        assert( m_state == State.TERM );
+        assert( m_ctxt.tstack == m_ctxt.bstack );
+    }
+    body
+    {
+        m_dg    = dg;
+        m_call  = Call.DG;
+        m_state = State.HOLD;
+        initStack();
+        m_unhandled = null;
+    }
+    
+    /**
+     * Clears the fiber from all references to a previous call (unhandled exceptions, delegate)
+     *
+     * In:
+     *  This fiber must be in state TERM.
+     */
+    final void clear()
+    in
+    {
+        assert( m_state == State.TERM );
+        assert( m_ctxt.tstack == m_ctxt.bstack );
+    }
+    body
+    {
+        m_dg    = null;
+        m_fn    = null;
+        m_call  = Call.NO;
+        m_state = State.TERM;
+        m_unhandled = null;
+    }
+    
 
     ////////////////////////////////////////////////////////////////////////////
     // General Properties

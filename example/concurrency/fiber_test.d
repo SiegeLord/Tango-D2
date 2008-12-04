@@ -804,3 +804,56 @@ unittest
     printf("Thread safety passed!\n");
 }
 
+unittest{
+    printf("Testing fiber reset!\n");
+    int ncalls=1;
+    Fiber sc0 = new Fiber(
+    {
+        for (int i=0;i<ncalls;++i)
+        {
+            Fiber.yield;
+        }
+    });
+
+    for (int i=0;i<ncalls+1;++i){
+        assert(sc0.state==Fiber.State.HOLD);
+        sc0.call();
+    }
+    assert(sc0.state==Fiber.State.TERM);
+    sc0.reset();
+    for (int i=0;i<ncalls+1;++i){
+        assert(sc0.state==Fiber.State.HOLD);
+        sc0.call();
+    }
+    assert(sc0.state==Fiber.State.TERM);
+    sc0.clear();
+    
+    sc0.reset(delegate void(){
+        for (int i=0;i<ncalls+1;++i)
+        {
+            Fiber.yield;
+        }
+    });
+    for (int i=0;i<ncalls+2;++i){
+        assert(sc0.state==Fiber.State.HOLD);
+        sc0.call();
+    }
+    assert(sc0.state==Fiber.State.TERM);
+    sc0.clear();
+    
+    sc0.reset(function void(){
+        for (int i=0;i<1;++i)
+        {
+            Fiber.yield;
+        }
+    });
+    for (int i=0;i<2;++i){
+        assert(sc0.state==Fiber.State.HOLD);
+        sc0.call();
+    }
+    assert(sc0.state==Fiber.State.TERM);
+    
+    
+    printf("Fiber reset passed!\n");
+}
+
