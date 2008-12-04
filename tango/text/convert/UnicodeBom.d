@@ -140,7 +140,7 @@ class UnicodeBom(T) : BomSniffer
                     if (info)
                        {
                        // yep ~ and we got one
-                       setup (info.encoding);
+                       setup (info.encoding, true);
 
                        // strip BOM from content
                        content = content [info.bom.length .. length];
@@ -148,7 +148,7 @@ class UnicodeBom(T) : BomSniffer
                     else
                        // can this encoding be defaulted?
                        if (settings.fallback)
-                           setup (settings.fallback);
+                           setup (settings.fallback, false);
                        else
                           onUnicodeError ("UnicodeBom.decode :: unknown or missing BOM");
                 else
@@ -305,8 +305,9 @@ class UnicodeBom(T) : BomSniffer
 
 class BomSniffer 
 {
-        private Encoding encoder;      // the current encoding
-        private Info*    settings;      // pointer to encoding configuration
+        private bool     found;        // was an encoding discovered?
+        private Encoding encoder;      // the current encoding 
+        private Info*    settings;     // pointer to encoding configuration
 
         private struct  Info
                 {
@@ -350,6 +351,17 @@ class BomSniffer
         
         /***********************************************************************
 
+                Was an encoding located in the text (configured via setup)
+
+        ***********************************************************************/
+
+        final bool encoded ()
+        {
+                return found;
+        }
+
+        /***********************************************************************
+
                 Return the signature (BOM) of the current encoding
 
         ***********************************************************************/
@@ -365,10 +377,11 @@ class BomSniffer
 
         ***********************************************************************/
 
-        final void setup (Encoding encoding)
+        final void setup (Encoding encoding, bool found = false)
         {
                 this.settings = &lookup[encoding];
                 this.encoder = encoding;
+                this.found = found;
         }
         
         /***********************************************************************
