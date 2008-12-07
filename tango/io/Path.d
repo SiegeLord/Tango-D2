@@ -1372,7 +1372,7 @@ void createPath (char[] path)
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
-                             throw new IllegalArgumentException ("Path.create :: file/folder conflict: " ~ segment);
+                             throw new IllegalArgumentException ("Path.createPath :: file/folder conflict: " ~ segment);
         }
 
         foreach (i, char c; path)
