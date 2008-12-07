@@ -1717,7 +1717,7 @@ private class TNFA(char_t)
     }
 
 private:
-    size_t          next_tag,
+    uint            next_tag,
                     cursor,
                     next_cursor;
     List!(trans_t)  transitions;
