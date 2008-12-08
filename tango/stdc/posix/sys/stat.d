@@ -83,27 +83,39 @@ version( linux )
         private alias ushort _pad_t;
     }
 
-    struct stat_t
+    align (4) struct stat_t
     {
-        dev_t       st_dev;
+        dev_t       st_dev;             /* Device.  */
+      version (X86_64) {} else {
         _pad_t      __pad1;
+      }
       static if( __USE_FILE_OFFSET64 )
       {
-        ino_t       __st_ino;
+        ino_t      __st_ino;            /* 32bit file serial number.    */
       }
       else
       {
-        ino_t       st_ino;
+        ino_t       st_ino;             /* File serial number.  */
       }
-        mode_t      st_mode;
+      version (X86_64) {
         nlink_t     st_nlink;
-        uid_t       st_uid;
-        gid_t       st_gid;
+        mode_t      st_mode;
+      } else {
+        mode_t      st_mode;            /* File mode.  */
+        nlink_t     st_nlink;           /* Link count.  */
+      }
+        uid_t       st_uid;             /* User ID of the file's owner. */
+        gid_t       st_gid;             /* Group ID of the file's group.*/
+      version (X86_64) {
+        int         pad0;
         dev_t       st_rdev;
+      } else {
+        dev_t       st_rdev;            /* Device number, if device.  */
         _pad_t      __pad2;
-        off_t       st_size;
-        blksize_t   st_blksize;
-        blkcnt_t    st_blocks;
+      }
+        off_t       st_size;            /* Size of file, in bytes.  */
+        blksize_t   st_blksize;         /* Optimal block size for I/O.  */
+        blkcnt_t    st_blocks;          /* Number 512-byte blocks allocated. */
       static if( false /*__USE_MISC*/ ) // true if _BSD_SOURCE || _SVID_SOURCE
       {
         timespec    st_atim;
@@ -122,9 +134,12 @@ version( linux )
         time_t      st_ctime;
         c_ulong     st_ctimensec;
       }
-      static if( __USE_FILE_OFFSET64 )
+      version (X86_64) {
+        c_long[3]  __unused;
+      }
+      else static if( __USE_FILE_OFFSET64 )
       {
-        ino_t       st_ino;
+        ino64_t     st_ino;             /* File serial number.  */
       }
       else
       {

@@ -14,8 +14,7 @@ extern (C):
 
 version( linux )
 {
-    //version( none /* X86_64 */ )
-    version(SMALLFILE)
+    version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
     {
       const bool  __USE_LARGEFILE64   = false;
     }

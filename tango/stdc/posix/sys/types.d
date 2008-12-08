@@ -38,26 +38,26 @@ version( linux )
 {
   static if( __USE_FILE_OFFSET64 )
   {
-    alias long      blkcnt_t;
-    alias ulong     ino_t;
-    alias long      off_t;
+    alias long      off_t;      // actually C header's off64_t in this mode
+    alias long      blkcnt_t;   // actually C header's blkcnt64_t in this mode
+    alias ulong     ino64_t;
   }
   else
   {
-    alias c_long    blkcnt_t;
-    alias c_ulong   ino_t;
     alias c_long    off_t;
+    alias c_long    blkcnt_t;
   }
-    alias c_long    blksize_t;
     alias ulong     dev_t;
-    alias uint      gid_t;
+    alias c_ulong   ino_t;
     alias uint      mode_t;
     alias c_ulong   nlink_t;
+    alias uint      uid_t;
+    alias uint      gid_t;
+    alias c_long    blksize_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
     alias c_long    ssize_t;
     //time_t (defined in tango.stdc.time)
-    alias uint      uid_t;
 }
 else version( darwin )
 {
