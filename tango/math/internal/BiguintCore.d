@@ -81,7 +81,7 @@ static int compare(BigUint x, ulong y)
 {
     if (x.data.length>2) return 1;
     uint ylo = cast(uint)(y & 0xFFFF_FFFF);
-    uint yhi = y>>32;
+    uint yhi = cast(uint)(y >> 32);
     if (x.data.length==2 && x.data[1]!=yhi) return x.data[1]>yhi ? 1: -1;
     if (x.data[0]==ylo) return 0;
     return x.data[0] > ylo ? 1: -1;
@@ -444,7 +444,7 @@ BigDigit [] addInt(BigDigit[] x, ulong y)
     } else return result[0..$-1];
 }
 
-/** Return x-y.
+/** Return x - y.
  *  x must be greater than y.
  */  
 BigDigit [] subInt(BigDigit[] x, ulong y)
@@ -584,7 +584,7 @@ void divModInternal(BigDigit [] quotient, BigDigit[] remainder, BigDigit [] u, B
     
     // Normalize by shifting v left just enough so that
     // its high-order bit is on, and shift u left the
-    // same amount.
+    // same amount. The highest bit of u will never be set.
    
     BigDigit [] vn = new BigDigit[v.length];
     BigDigit [] un = new BigDigit[u.length + 1];
@@ -622,7 +622,10 @@ unittest {
     uint [] r = new uint[2];
     divModInternal(q, r, u, v);
     assert(q[]==[0xFFFF_FFFFu, 0]);
-    assert(r[]==[0xFFFF_FFFFu, 0x7FFF_FFFF]);    
+    assert(r[]==[0xFFFF_FFFFu, 0x7FFF_FFFF]);
+    u = [0, 0xFFFF_FFFE, 0x8000_0001];
+    v = [0xFFFF_FFFF, 0x8000_0000];
+    divModInternal(q, r, u, v);
 }
 }
 
@@ -957,21 +960,43 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
     assert(v.length > 1);
     assert(u.length >= v.length);
     assert((v[$-1]&0x8000_0000)!=0);
+    assert(u[$-1] < v[$-1]);
     uint vhi = v[$-1];
+    uint vlo = v[$-2];
         
     for (int j = u.length - v.length-1; j >= 0; j--) {
-        // Compute estimate qhat of quotient[j].
-        ulong uu = (cast(ulong)(u[j+v.length]) << 32) | u[j+v.length-1];
-        ulong bigqhat = uu / vhi;
-        ulong rhat =  uu - bigqhat * vhi;        
+        // Compute estimate qhat of quotient[j],
+        // using qhat = (three most significant words of u)/(two most sig words of v).
+        uint qhat;               
+        if (u[j+v.length]==vhi) {
+            // uu/vhi could exceed uint.max (it will be 0x8000_0000 or 0x8000_0001)
+            qhat = uint.max;
+        } else {
+version(Really_D_InlineAsm_X86) {            
+            uint rhatlo;
+            uint *pj = &u[j+v.length-1];
+            asm {
+                mov EAX, pj;
+                mov EDX, [EAX+4];
+                mov EAX, [EAX];
+                div dword ptr [vhi];
+                mov qhat, EAX;
+                mov rhatlo, EDX;
+            }
+            ulong rhat = rhatlo;
+} else {
+            ulong uu = (cast(ulong)(u[j+v.length]) << 32) | u[j+v.length-1];
+            ulong bigqhat = uu / vhi;
+            ulong rhat =  uu - bigqhat * vhi;
+            qhat = cast(uint)bigqhat;
+}            
 again:
-        if ((bigqhat & 0xFFFF_FFFF_0000_0000L) 
-            || bigqhat*v[$-2] > ((rhat<<32) + u[j+v.length-2])) {
-            --bigqhat;
-            rhat += vhi;
-            if (rhat < 0x1_0000_0000L) goto again;
-        }
-        uint qhat = cast(uint)bigqhat;
+            if (cast(ulong)qhat*vlo > ((rhat<<32) + u[j+v.length-2])) {
+                --qhat;
+                rhat += vhi;
+                if (!(rhat & 0xFFFF_FFFF_0000_0000L)) goto again;
+            }
+        } 
         // Multiply and subtract.
         uint carry = multibyteMulAdd!('-')(u[j..j+v.length], v, qhat, 0);
 
@@ -1038,6 +1063,7 @@ in {
     assert(u.length >= v.length);
     assert((v[$ - 1] & 0x8000_0000) != 0);
     assert(scratch.length >= quotient.length);
+    
 }
 body {
     if(quotient.length < FASTDIVLIMIT) {
