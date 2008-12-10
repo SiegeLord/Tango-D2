@@ -949,6 +949,7 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
 
 /* Knuth's Algorithm D, as presented in 
  * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).
+ * and "Modern Computer Arithmetic" 0.2, Exercise 1.8.18.
  * Given u and v, calculates  quotient  = u/v, u = u%v.
  * v must be normalized (ie, the MSB of v must be 1).
  * The most significant words of quotient and u may be zero.
@@ -964,37 +965,48 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
     uint vhi = v[$-1];
     uint vlo = v[$-2];
         
-    for (int j = u.length - v.length-1; j >= 0; j--) {
-        // Compute estimate qhat of quotient[j],
-        // using qhat = (three most significant words of u)/(two most sig words of v).
+    for (int j = u.length - v.length - 1; j >= 0; j--) {
+        // Compute estimate of quotient[j],
+        // qhat = (three most significant words of u)/(two most sig words of v).
         uint qhat;               
-        if (u[j+v.length]==vhi) {
+        if (u[j + v.length] == vhi) {
             // uu/vhi could exceed uint.max (it will be 0x8000_0000 or 0x8000_0001)
             qhat = uint.max;
         } else {
-version(Really_D_InlineAsm_X86) {            
-            uint rhatlo;
-            uint *pj = &u[j+v.length-1];
+            uint ulo = u[j + v.length - 2];
+version(Really_D_InlineAsm_X86) {
+            // This is only 5-10% faster than the non-asm code. 
+            uint *p = &u[j + v.length - 1];
             asm {
-                mov EAX, pj;
+                mov EAX, p;
                 mov EDX, [EAX+4];
                 mov EAX, [EAX];
                 div dword ptr [vhi];
                 mov qhat, EAX;
-                mov rhatlo, EDX;
+                mov ECX, EDX;
+div3by2correction:                
+                mul dword ptr [vlo]; // EDX:EAX = qhat * vlo
+                sub EAX, ulo;
+                sbb EDX, ECX;
+                jbe div3by2done;
+                mov EAX, qhat;
+                dec EAX;
+                mov qhat, EAX;
+                add ECX, dword ptr [vhi];
+                jnc div3by2correction;
+div3by2done:    ;
             }
-            ulong rhat = rhatlo;
 } else {
-            ulong uu = (cast(ulong)(u[j+v.length]) << 32) | u[j+v.length-1];
-            ulong bigqhat = uu / vhi;
-            ulong rhat =  uu - bigqhat * vhi;
-            qhat = cast(uint)bigqhat;
-}            
-again:
-            if (cast(ulong)qhat*vlo > ((rhat<<32) + u[j+v.length-2])) {
-                --qhat;
-                rhat += vhi;
-                if (!(rhat & 0xFFFF_FFFF_0000_0000L)) goto again;
+                ulong uu = (cast(ulong)(u[j+v.length]) << 32) | u[j+v.length-1];
+                ulong bigqhat = uu / vhi;
+                ulong rhat =  uu - bigqhat * vhi;
+                qhat = cast(uint)bigqhat;            
+       again:
+                if (cast(ulong)qhat*vlo > ((rhat<<32) + ulo)) {
+                    --qhat;
+                    rhat += vhi;
+                    if (!(rhat & 0xFFFF_FFFF_0000_0000L)) goto again;
+                }
             }
         } 
         // Multiply and subtract.
@@ -1006,7 +1018,7 @@ again:
             carry -= multibyteAddSub!('+')(u[j..j+v.length],u[j..j+v.length], v, 0);
         }
         quotient[j] = qhat;
-        u[j+v.length] = u[j+v.length] - carry;
+        u[j + v.length] = u[j + v.length] - carry;
     }
 }
 
@@ -1025,7 +1037,7 @@ void toHexZeroPadded(char[] output, uint value) {
     const char [] hexDigits = "0123456789ABCDEF";
     for( ; x>=0; --x) {        
         output[x] = hexDigits[value & 0xF];
-        value >>>= 4;        
+        value >>>= 4;
     }
 }
 
@@ -1106,7 +1118,7 @@ void fastDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
     // Perform block schoolbook division, with 'v.length' blocks.
     uint m = u.length - v.length;
     while (m > v.length) {
-         recursiveDivMod(quotient[m-v.length..m], 
+        recursiveDivMod(quotient[m-v.length..m], 
             u[m - v.length..m + v.length], v, scratch);
         m -= v.length;
     }
