@@ -130,13 +130,17 @@ version(LittleEndian) {
 // They supplement the built-in floating point properties.
 template floatTraits(T) {
  // EXPMASK is a ushort mask to select the exponent portion (without sign)
+ // SIGNMASK is a ushort mask to select the sign bit.
  // POW2MANTDIG = pow(2, real.mant_dig) is the value such that
  //  (smallest_denormal)*POW2MANTDIG == real.min
  // EXPPOS_SHORT is the index of the exponent when represented as a ushort array.
  // SIGNPOS_BYTE is the index of the sign when represented as a ubyte array.
  static if (T.mant_dig == 24) { // float
-    const ushort EXPMASK = 0x7F80;
-    const ushort EXPBIAS = 0x3F00;
+    enum : ushort {
+        EXPMASK = 0x7F80,
+        SIGNMASK = 0x8000,
+        EXPBIAS = 0x3F00
+    }
     const uint EXPMASK_INT = 0x7F80_0000;
     const uint MANTISSAMASK_INT = 0x007F_FFFF;
     const real POW2MANTDIG = 0x1p+24;
@@ -146,8 +150,11 @@ template floatTraits(T) {
       const EXPPOS_SHORT = 0;
     }
  } else static if (T.mant_dig==53) { // double, or real==double
-    const ushort EXPMASK = 0x7FF0;
-    const ushort EXPBIAS = 0x3FE0;
+     enum : ushort {
+         EXPMASK = 0x7FF0,
+         SIGNMASK = 0x8000,
+         EXPBIAS = 0x3FE0
+    }
     const uint EXPMASK_INT = 0x7FF0_0000;
     const uint MANTISSAMASK_INT = 0x000F_FFFF; // for the MSB only
     const real POW2MANTDIG = 0x1p+53;
@@ -159,8 +166,11 @@ template floatTraits(T) {
       const SIGNPOS_BYTE = 0;
     }
  } else static if (T.mant_dig==64) { // real80
-    const ushort EXPMASK = 0x7FFF;
-    const ushort EXPBIAS = 0x3FFE;
+     enum : ushort {
+         EXPMASK = 0x7FFF,
+         SIGNMASK = 0x8000,
+         EXPBIAS = 0x3FFE
+     }
     const real POW2MANTDIG = 0x1p+63;    
 //    const ulong QUIETNANMASK = 0xC000_0000_0000_0000; // Converts a signaling NaN to a quiet NaN.
     version(LittleEndian) {
@@ -171,7 +181,11 @@ template floatTraits(T) {
       const SIGNPOS_BYTE = 0;
     }
  } else static if (real.mant_dig==113){ // quadruple
-    const ushort EXPMASK = 0x7FFF;
+     enum : ushort {
+         EXPMASK = 0x7FFF,
+         SIGNMASK = 0x8000,
+         EXPBIAS = 0x3FFE
+     }
     const real POW2MANTDIG = 0x1p+113;
     version(LittleEndian) {
       const EXPPOS_SHORT = 7;
@@ -181,7 +195,11 @@ template floatTraits(T) {
       const SIGNPOS_BYTE = 0;
     }
  } else static if (real.mant_dig==106) { // doubledouble
-    const ushort EXPMASK = 0x7FF0;
+     enum : ushort {
+         EXPMASK = 0x7FF0,
+         SIGNMASK = 0x8000
+//         EXPBIAS = 0x3FE0
+     }
     const real POW2MANTDIG = 0x1p+53;  // doubledouble denormals are strange
     // and the exponent byte is not unique
     version(LittleEndian) {
@@ -917,13 +935,12 @@ int isNaN(real x)
         ulong*  p = cast(ulong *)&x;
         return (*p & 0x7FF0_0000_0000_0000 == 0x7FF0_0000_0000_0000) && *p & 0x000F_FFFF_FFFF_FFFF;
   } else static if (real.mant_dig==64) {     // real80
-        // Prevent a ridiculous warning (why does (ushort | ushort) get promoted to int???)
-        ushort e = cast(ushort)(F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT]);
+        ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
         ulong*  ps = cast(ulong *)&x;
         return e == F.EXPMASK &&
             *ps & 0x7FFF_FFFF_FFFF_FFFF; // not infinity
   } else static if (real.mant_dig==113) {  // quadruple
-        ushort e = cast(ushort)(F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT]);
+        ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
         ulong*  ps = cast(ulong *)&x;
         return e == F.EXPMASK &&
            (ps[MANTISSA_LSB] | (ps[MANTISSA_MSB]& 0x0000_FFFF_FFFF_FFFF))!=0;
@@ -959,8 +976,7 @@ int isNormal(X)(X x)
     // doubledouble is normal if the least significant part is normal.
         return isNormal((cast(double*)&x)[MANTISSA_LSB]);
     } else {
-        // ridiculous DMD warning
-        ushort e = cast(ushort)(F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT]);
+        ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
         return (e != F.EXPMASK && e!=0);
     }
 }
@@ -1722,8 +1738,7 @@ body {
         if (c) m |= 0x4000_0000_0000_0000L; // shift carry into significand
         if (e) *ul = m | 0x8000_0000_0000_0000L; // set implicit bit...
         else *ul = m; // ... unless exponent is 0 (denormal or zero).
-        // Prevent a ridiculous warning (why does (ushort | ushort) get promoted to int???)
-        ue[4]= cast(ushort)( e | (xe[F.EXPPOS_SHORT]& 0x8000)); // restore sign bit
+        ue[4]=  e | (xe[F.EXPPOS_SHORT]& F.SIGNMASK); // restore sign bit
     } else static if(T.mant_dig == 113) { //quadruple
         // This would be trivial if 'ucent' were implemented...
         ulong *ul = cast(ulong *)&u;
