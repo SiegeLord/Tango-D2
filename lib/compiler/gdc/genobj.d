@@ -1079,7 +1079,7 @@ extern (C) void _moduleCtor()
     _moduleinfo_dtors = new ModuleInfo[_moduleinfo_array.length];
     debug(PRINTF) printf("_moduleinfo_dtors = x%x\n", cast(void *)_moduleinfo_dtors);
     _moduleIndependentCtors();
-    _moduleCtor2(_moduleinfo_array, 0);
+    _moduleCtor2(null,_moduleinfo_array, 0);
 }
 
 extern (C) void _moduleIndependentCtors()
@@ -1097,7 +1097,7 @@ version( DMD ) // TODO: DMD 1.024
 }
 }
 
-void _moduleCtor2(ModuleInfo[] mi, int skip)
+void _moduleCtor2(ModuleInfo from,ModuleInfo[] mi, int skip)
 {
     debug(PRINTF) printf("_moduleCtor2(): %d modules\n", mi.length);
     for (uint i = 0; i < mi.length; i++)
@@ -1117,11 +1117,11 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
             if (m.flags & MIctorstart)
             {   if (skip || m.flags & MIstandalone)
                     continue;
-                    throw new Exception( "Cyclic dependency in module " ~ m.name );
+                    throw new Exception( "Cyclic dependency in module " ~ (from is null ? "*null*" : from.name) ~ " for import " ~ m.name); 
             }
 
             m.flags |= MIctorstart;
-            _moduleCtor2(m.importedModules, 0);
+            _moduleCtor2(m,m.importedModules, 0);
             if (m.ctor)
                 (*m.ctor)();
             m.flags &= ~MIctorstart;
@@ -1135,7 +1135,7 @@ void _moduleCtor2(ModuleInfo[] mi, int skip)
         else
         {
             m.flags |= MIctordone;
-            _moduleCtor2(m.importedModules, 1);
+            _moduleCtor2(m,m.importedModules, 1);
         }
     }
 }
