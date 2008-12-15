@@ -47,6 +47,12 @@ version (GNU)
         alias void* Arg;
         alias va_list ArgList;
         }
+else version(LDC)
+        {
+        private import tango.core.Vararg;
+        alias void* Arg;
+        alias va_list ArgList;
+        }
      else
         {
         alias void* Arg;
@@ -295,7 +301,7 @@ class Layout(T)
                         foreach (i, arg; arguments)
                                 {
                                 arglist[i] = args;
-                                args += (arg.tsize + int.sizeof - 1) & ~ (int.sizeof - 1);
+                                args += (arg.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                                 }
                         }
                 return parse (formatStr, arguments, arglist, sink);
