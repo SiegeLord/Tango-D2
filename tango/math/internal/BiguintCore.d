@@ -949,7 +949,7 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
 
 /* Knuth's Algorithm D, as presented in 
  * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).
- * and "Modern Computer Arithmetic" 0.2, Exercise 1.8.18.
+ * Also described in "Modern Computer Arithmetic" 0.2, Exercise 1.8.18.
  * Given u and v, calculates  quotient  = u/v, u = u%v.
  * v must be normalized (ie, the MSB of v must be 1).
  * The most significant words of quotient and u may be zero.
@@ -975,7 +975,7 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
         } else {
             uint ulo = u[j + v.length - 2];
 version(Really_D_InlineAsm_X86) {
-            // This is only 5-10% faster than the non-asm code. 
+            // Note: This is only ~10% faster than the non-asm code. 
             uint *p = &u[j + v.length - 1];
             asm {
                 mov EAX, p;

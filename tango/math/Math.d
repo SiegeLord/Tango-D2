@@ -69,12 +69,13 @@ module tango.math.Math;
 static import tango.stdc.math;
 private import tango.math.IEEE;
 
-version(DigitalMars)
-{
-    version(D_InlineAsm_X86)
-    {
-        version = DigitalMars_D_InlineAsm_X86;
-    }
+
+version(GNU){
+    // GDC is a filthy liar. It can't actually do inline asm.
+} else version(TangoNoAsm) {
+
+} else version(D_InlineAsm_X86) {
+    version = Really_D_InlineAsm_X86;
 }
 
 /*
@@ -1627,7 +1628,7 @@ in
 }
 body
 {
-  version (DigitalMars_D_InlineAsm_X86) {
+  version (Really_D_InlineAsm_X86) {
       const bool Use_D_InlineAsm_X86 = true;
   } else const bool Use_D_InlineAsm_X86 = false;
   
@@ -1813,7 +1814,7 @@ unittest {
 */
 int rndint(real x)
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         int n;
         asm
@@ -1832,7 +1833,7 @@ int rndint(real x)
 /** ditto */
 long rndlong(real x)
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         long n;
         asm

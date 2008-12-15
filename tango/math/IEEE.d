@@ -51,12 +51,12 @@
  */
 module tango.math.IEEE;
 
-version(DigitalMars)
-{
-    version(D_InlineAsm_X86)
-    {
-        version = DigitalMars_D_InlineAsm_X86;
-    }
+version(GNU){
+    // GDC is a filthy liar. It can't actually do inline asm.
+} else version(TangoNoAsm) {
+
+} else version(D_InlineAsm_X86) {
+    version = Really_D_InlineAsm_X86;
 }
 
 version (X86){
@@ -67,7 +67,7 @@ version (X86_64){
     version = X86_Any;
 }
 
-version (DigitalMars_D_InlineAsm_X86) {
+version (Really_D_InlineAsm_X86) {
     // Don't include this extra dependency unless we need to.
     debug(UnitTest) {
         static import tango.stdc.math;
@@ -657,7 +657,7 @@ unittest
  */
 real ldexp(real n, int exp) /* intrinsic */
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         asm {
             fild exp;
@@ -692,7 +692,7 @@ real ldexp(real n, int exp) /* intrinsic */
  */
 int ilogb(real x)
 {
-        version(DigitalMars_D_InlineAsm_X86)
+        version(Really_D_InlineAsm_X86)
         {
             int y;
             asm {
@@ -774,7 +774,7 @@ unittest {
  */
 real logb(real x)
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         asm {
             fld x;
@@ -811,7 +811,7 @@ unittest {
  */
 real scalbn(real x, int n)
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         asm {
             fild n;
@@ -902,7 +902,7 @@ real fma(float x, float y, float z)
  */
 creal expi(real y)
 {
-    version(DigitalMars_D_InlineAsm_X86)
+    version(Really_D_InlineAsm_X86)
     {
         asm {
             fld y;
