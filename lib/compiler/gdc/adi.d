@@ -58,6 +58,7 @@ private
     extern (C) void* gc_malloc( size_t sz, uint ba = 0 );
     extern (C) void* gc_calloc( size_t sz, uint ba = 0 );
     extern (C) void  gc_free( void* p );
+    extern (C) int printf(char*,...);
 }
 
 
@@ -75,6 +76,7 @@ struct Array
 
 extern (C) Array _adReverseChar(char[] a)
 {
+    bool hadErrors=false;
     if (a.length > 1)
     {
         char[6] tmp;
@@ -98,21 +100,31 @@ extern (C) Array _adReverseChar(char[] a)
             }
 
             uint stridelo = UTF8stride[clo];
+            if (stridelo>6) { // invalid UTF-8 0xFF
+                stridelo=1;
+                hadErrors=true; 
+            }
 
             uint stridehi = 1;
-            while ((chi & 0xC0) == 0x80)
+            while ((chi & 0xC0) == 0x80 && hi >= lo)
             {
                 chi = *--hi;
                 stridehi++;
-                assert(hi >= lo);
             }
-            if (lo == hi)
+            if (lo >= hi){
+                if (lo>hi){
+                    hadErrors=true;
+                }
                 break;
+            }
+            if (stridehi>6){
+                hadErrors=true;
+                stridehi=6;
+            }
 
             debug(adi) printf("\tstridelo = %d, stridehi = %d\n", stridelo, stridehi);
             if (stridelo == stridehi)
             {
-
                 memcpy(tmp.ptr, lo, stridelo);
                 memcpy(lo, hi, stridelo);
                 memcpy(hi, tmp.ptr, stridelo);
@@ -133,6 +145,8 @@ extern (C) Array _adReverseChar(char[] a)
             hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
+    if (hadErrors)
+        throw new Exception("invalid UTF-8 sequence",__FILE__,__LINE__);
     return *cast(Array*)(&a);
 }
 
@@ -170,6 +184,7 @@ unittest
 
 extern (C) Array _adReverseWchar(wchar[] a)
 {
+    bool hadErrors=false;
     if (a.length > 1)
     {
         wchar[2] tmp;
@@ -197,10 +212,13 @@ extern (C) Array _adReverseWchar(wchar[] a)
             {
                 chi = *--hi;
                 stridehi++;
-                assert(hi >= lo);
             }
-            if (lo == hi)
+            if (lo >= hi){
+                if (lo>hi){
+                    hadErrors=true;
+                }
                 break;
+            }
 
             if (stridelo == stridehi)
             {   int stmp;
@@ -226,6 +244,8 @@ extern (C) Array _adReverseWchar(wchar[] a)
             hi = hi - 1 + (cast(int) stridehi - cast(int) stridelo);
         }
     }
+    if (hadErrors)
+        throw new Exception("invalid UTF-16 sequence",__FILE__,__LINE__);
     return *cast(Array*)(&a);
 }
 
