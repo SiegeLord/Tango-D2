@@ -94,6 +94,11 @@ version( DigitalMars )
 {
     void* alloca(size_t size);
 }
+else version( LDC )
+{
+    pragma(alloca)
+        void* alloca(size_t size);
+}
 else version( GNU )
 {
     private import gcc.builtins;

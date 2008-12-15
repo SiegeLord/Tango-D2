@@ -79,7 +79,7 @@ class CacheInvalidator : NetworkClient
 
 *******************************************************************************/
 
-private class InvalidatorPayload : NetworkMessage
+package class InvalidatorPayload : NetworkMessage
 {
         private char[] key_;
 

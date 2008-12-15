@@ -422,7 +422,11 @@ version( linux )
 }
 else version( darwin )
 {
-    struct pthread_spinlock_t;
+    version (LDC)
+        alias void* pthread_spinlock_t;
+        
+    else
+        struct pthread_spinlock_t;
 }
 else version( freebsd )
 {

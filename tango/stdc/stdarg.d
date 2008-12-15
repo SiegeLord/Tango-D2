@@ -13,6 +13,10 @@ version( GNU )
 {
     public import std.c.stdarg;
 }
+else version( LDC )
+{
+    public import ldc.cstdarg;
+}
 else
 {
     alias void* va_list;

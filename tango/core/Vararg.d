@@ -15,6 +15,10 @@ version( GNU )
 {
     public import std.stdarg;
 }
+else version( LDC )
+{
+    public import ldc.vararg;
+}
 else
 {
     /**
