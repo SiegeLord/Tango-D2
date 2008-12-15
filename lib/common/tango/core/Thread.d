@@ -273,7 +273,49 @@ else version( Posix )
         }
         body
         {
-            version( D_InlineAsm_X86 )
+            version( LDC)
+            {
+                version(X86)
+                {
+                    uint eax,ecx,edx,ebx,ebp,esi,edi;
+                    asm
+                    {
+                        mov eax[EBP], EAX      ;
+                        mov ecx[EBP], ECX      ;
+                        mov edx[EBP], EDX      ;
+                        mov ebx[EBP], EBX      ;
+                        mov ebp[EBP], EBP      ;
+                        mov esi[EBP], ESI      ;
+                        mov edi[EBP], EDI      ;
+                    }
+                }
+                else version (X86_64)
+                {
+                    ulong rax,rbx,rcx,rdx,rbp,rsi,rdi,rsp,r10,r11,r12,r13,r14,r15;
+                    asm
+                    {
+                        movq rax[RBP], RAX        ;
+                        movq rbx[RBP], RBX        ;
+                        movq rcx[RBP], RCX        ;
+                        movq rdx[RBP], RDX        ;
+                        movq rbp[RBP], RBP        ;
+                        movq rsi[RBP], RSI        ;
+                        movq rdi[RBP], RDI        ;
+                        movq rsp[RBP], RSP        ;
+                        movq r10[RBP], R10        ;
+                        movq r11[RBP], R11        ;
+                        movq r12[RBP], R12        ;
+                        movq r13[RBP], R13        ;
+                        movq r14[RBP], R14        ;
+                        movq r15[RBP], R15        ;
+                    }
+                }
+                else
+                {
+                    static assert( false, "Architecture not supported." );
+                }
+            }
+            else version( D_InlineAsm_X86 )
             {
                 asm
                 {
@@ -330,7 +372,11 @@ else version( Posix )
                 }
             }
 
-            version( D_InlineAsm_X86 )
+            version( LDC)
+            {
+                // nothing to pop
+            }
+            else version( D_InlineAsm_X86 )
             {
                 asm
                 {
@@ -2347,6 +2393,18 @@ private
         version( Posix )
             version = AsmPPC_Posix;
     }
+    version( LLVM_InlineAsm_X86 ) 
+    {
+        version( Win32 )
+            version = LLVM_AsmX86_Win32;
+        else version( Posix )
+            version = LLVM_AsmX86_Posix;
+    }
+    else version( LLVM_InlineAsm_X86_64 )
+    {
+        version( Posix )
+            version = LLVM_AsmX86_64_Posix;
+    }
 
     version( Posix )
     {
@@ -2357,6 +2415,10 @@ private
         version( AsmX86_Win32 ) {} else
         version( AsmX86_Posix ) {} else
         version( AsmPPC_Posix ) {} else
+        version( LLVM_AsmX86_Win32 ) {} else
+        version( LLVM_AsmX86_Posix ) {} else
+//TODO: Enable when x86-64 Posix supports fibers
+//        version( LLVM_AsmX86_64_Posix ) {} else
         {
             // NOTE: The ucontext implementation requires architecture specific
             //       data definitions to operate so testing for it must be done
@@ -2510,6 +2572,28 @@ private
                 ret;
             }
         }
+        else version( LLVM_AsmX86_Posix )
+        {
+            asm
+            {
+                // clobber registers to save
+                inc EBX;
+                inc ESI;
+                inc EDI;
+
+                // store oldp again with more accurate address
+                mov EAX, oldp;
+                mov [EAX], ESP;
+                // load newp to begin context switch
+                mov ESP, newp;
+            }
+        }
+/+
+        version( LLVM_AsmX86_64_Posix )
+        {
+            //TODO: Fiber implementation here
+        }
++/
         else static if( is( ucontext_t ) )
         {
             Fiber   cfib = Fiber.getThis();
@@ -2521,7 +2605,6 @@ private
         }
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Fiber
@@ -3255,6 +3338,22 @@ private:
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
+        else version( LLVM_AsmX86_Posix )
+        {
+            push( cast(size_t) &fiber_entryPoint );                 // EIP
+            push( 0x00000000 );                                     // newp
+            push( 0x00000000 );                                     // oldp
+            push( 0x00000000 );                                     // EBP
+            push( 0x00000000 );                                     // EBX
+            push( 0x00000000 );                                     // ESI
+            push( 0x00000000 );                                     // EDI
+        }
+//TODO: Implement x86-64 fibers
+/+
+        else version( LLVM_AsmX86_Posix )
+        {
+        }
++/
         else version( AsmPPC_Posix )
         {
             version( StackGrowsDown )

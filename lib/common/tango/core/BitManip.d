@@ -171,6 +171,10 @@ version( DDoc )
      */
     uint outpl( uint port_address, uint value );
 }
+else version( LDC )
+{
+    public import ldc.bitmanip;
+}
 else
 {
     public import std.intrinsic;
