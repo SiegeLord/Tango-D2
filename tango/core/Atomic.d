@@ -270,6 +270,167 @@ version( DDoc )
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// LDC Atomics Implementation
+////////////////////////////////////////////////////////////////////////////////
+
+
+else version( LDC )
+{
+    import ldc.intrinsics;
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Load
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicLoad( msync ms = msync.seq, T )
+    {
+        T atomicLoad(ref T val)
+        {
+            llvm_memory_barrier(
+                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
+                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
+                ms == msync.slb || ms == msync.rel || ms == msync.seq,
+                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
+                false);
+            static if (isPointerType!(T))
+            {
+                return cast(T)llvm_atomic_load_add!(size_t)(cast(size_t*)&val, 0);
+            }
+            else static if (is(T == bool))
+            {
+                return llvm_atomic_load_add!(ubyte)(cast(ubyte*)&val, cast(ubyte)0) ? 1 : 0;
+            }
+            else
+            {
+                return llvm_atomic_load_add!(T)(&val, cast(T)0);
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicStore( msync ms = msync.seq, T )
+    {
+        void atomicStore( ref T val, T newval )
+        {
+            llvm_memory_barrier(
+                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
+                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
+                ms == msync.slb || ms == msync.rel || ms == msync.seq,
+                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
+                false);
+            static if (isPointerType!(T))
+            {
+                llvm_atomic_swap!(size_t)(cast(size_t*)&val, cast(size_t)newval);
+            }
+            else static if (is(T == bool))
+            {
+                llvm_atomic_swap!(ubyte)(cast(ubyte*)&val, newval?1:0);
+            }
+            else
+            {
+                llvm_atomic_swap!(T)(&val, newval);
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Store If
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicStoreIf( msync ms = msync.seq, T )
+    {
+        bool atomicStoreIf( ref T val, T newval, T equalTo )
+        {
+            llvm_memory_barrier(
+                ms == msync.hlb || ms == msync.acq || ms == msync.seq,
+                ms == msync.hsb || ms == msync.acq || ms == msync.seq,
+                ms == msync.slb || ms == msync.rel || ms == msync.seq,
+                ms == msync.ssb || ms == msync.rel || ms == msync.seq,
+                false);
+            T oldval = void;
+            static if (isPointerType!(T))
+            {
+                oldval = cast(T)llvm_atomic_cmp_swap!(size_t)(cast(size_t*)&val, cast(size_t)equalTo, cast(size_t)newval);
+            }
+            else static if (is(T == bool))
+            {
+                oldval = llvm_atomic_cmp_swap!(ubyte)(cast(ubyte*)&val, equalTo?1:0, newval?1:0)?0:1;
+            }
+            else
+            {
+                oldval = llvm_atomic_cmp_swap!(T)(&val, equalTo, newval);
+            }
+            return oldval == equalTo;
+        }
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Increment
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicIncrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicIncrement( ref T val )
+        {
+            static if (isPointerType!(T))
+            {
+                llvm_atomic_load_add!(size_t)(cast(size_t*)&val, 1);
+            }
+            else
+            {
+                llvm_atomic_load_add!(T)(&val, cast(T)1);
+            }
+            return val;
+        }
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Atomic Decrement
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    template atomicDecrement( msync ms = msync.seq, T )
+    {
+        //
+        // NOTE: This operation is only valid for integer or pointer types
+        //
+        static assert( isValidNumericType!(T) );
+
+
+        T atomicDecrement( ref T val )
+        {
+            static if (isPointerType!(T))
+            {
+                llvm_atomic_load_sub!(size_t)(cast(size_t*)&val, 1);
+            }
+            else
+            {
+                llvm_atomic_load_sub!(T)(&val, cast(T)1);
+            }
+            return val;
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // x86 Atomic Function Implementation
 ////////////////////////////////////////////////////////////////////////////////
 
