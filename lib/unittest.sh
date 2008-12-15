@@ -18,8 +18,9 @@ Options:
   --help: This message
   --run-all: Reports result instead of breaking. Do not use this if you want to
          run unittest runner through a debugger.
-  dmd: Builds unittests for dmd
-  gdc: Builds unittests for gdc
+  dmd:    Builds unittests for dmd
+  gdc:    Builds unittests for gdc
+  ldc: Builds unittests for ldc
 
   <none>: Builds unittests for all known compilers.'
   exit 0
@@ -125,6 +126,9 @@ do
         gdc)
             GDC=1
             ;;
+        ldc)
+            LDC=1
+            ;;
         *)
             usage
             ;;
@@ -132,10 +136,11 @@ do
     shift
 done
 
-if [ ! "$DMD" -a ! "$GDC" ]
+if [ ! "$DMD" -a ! "$GDC" -a ! "$LDC" ]
 then
     DMD=1
     GDC=1
+    LDC=1
 fi
 
 if [ "$DMD" = "1" ]
@@ -146,4 +151,7 @@ if [ "$GDC" = "1" ]
 then
     compile gdc runUnitTest_gdc
 fi
-
+if [ "$LDC" = "1" ]
+then
+    compile ldc runUnitTest_ldc
+fi

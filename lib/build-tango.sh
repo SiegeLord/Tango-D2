@@ -23,7 +23,7 @@ Options:
   --debug: Will enable debug info
   --warn: Will enable warnings
   --verbose: Increase verbosity 
-  <identifier> is one of {dmd, gdc, mac} and will build libtango.a,
+  <identifier> is one of {dmd, gdc, ldc, mac} and will build libtango.a,
                 libgtango.a or universal Mac binaries respectively
 
   The script must be called from within lib/ and the resulting
@@ -105,7 +105,11 @@ compile() {
     if filter $OBJNAME
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        if [ "$LDC" = "1" ]; then
+            $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Tango -of$OBJNAME $FILENAME
+        else
+            $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Posix -version=Tango -of$OBJNAME $FILENAME
+        fi
         if [ "$?" != 0 ]
         then
             return 1;
@@ -188,6 +192,9 @@ do
             ;;
         gdc)
             build gdmd libgtango.a libgphobos.a
+            ;;
+        ldc)
+            build ldc libtango-user-ldc.a build-tango.sh
             ;;
         mac)
             # build Universal Binary version of the Tango library
