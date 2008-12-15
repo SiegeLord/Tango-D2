@@ -77,6 +77,14 @@ version(GNU){
 } else version(D_InlineAsm_X86) {
     version = Really_D_InlineAsm_X86;
 }
+else version(LDC)
+{
+    import ldc.intrinsics;
+    version(X86)
+    {
+        version = LDC_X86;
+    }
+}
 
 /*
  * Constants
@@ -299,6 +307,24 @@ unittest
  * Bugs:
  *  Results are undefined if |x| >= $(POWER 2,64).
  */
+version(LDC)
+{
+    alias llvm_cos_f32 cos;
+    alias llvm_cos_f64 cos;
+    version(X86)
+    {
+        alias llvm_cos_f80 cos;
+    }
+    else
+    {
+        real cos(real x)
+        {
+            return tango.stdc.math.cosl(x);
+        }
+    }
+}
+else
+{
 real cos(real x) /* intrinsic */
 {
     version(D_InlineAsm_X86)
@@ -313,6 +339,7 @@ real cos(real x) /* intrinsic */
     {
         return tango.stdc.math.cosl(x);
     }
+}
 }
 
 debug(UnitTest) {
@@ -334,6 +361,24 @@ unittest {
  * Bugs:
  *  Results are undefined if |x| >= $(POWER 2,64).
  */
+version(LDC)
+{
+    alias llvm_sin_f32 sin;
+    alias llvm_sin_f64 sin;
+    version(X86)
+    {
+        alias llvm_sin_f80 sin;
+    }
+    else
+    {
+        real sin(real x)
+        {
+            return tango.stdc.math.sinl(x);
+        }
+    }
+}
+else
+{
 real sin(real x) /* intrinsic */
 {
     version(D_InlineAsm_X86)
@@ -348,6 +393,7 @@ real sin(real x) /* intrinsic */
     {
         return tango.stdc.math.sinl(x);
     }
+}
 }
 
 debug(UnitTest) {
@@ -375,7 +421,11 @@ real tan(real x)
 {
     version (GNU) {
         return tanl(x);
-    } else {
+    }
+    else version(LDC) {
+        return tango.stdc.math.tanl(x);
+    }
+    else {
     asm
     {
         fld x[EBP]      ; // load theta
@@ -583,7 +633,10 @@ real acos(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(acos(NaN(254)), NaN(254)));
+    version(darwin){}
+    else {
+        assert(isIdentical(acos(NaN(254)), NaN(254)));
+    }
 }
 }
 
@@ -606,7 +659,10 @@ real asin(real x)
 debug(UnitTest) {
 unittest {
     // NaN payloads
-    assert(isIdentical(asin(NaN(7249)), NaN(7249)));
+    version(darwin){}
+    else{
+        assert(isIdentical(asin(NaN(7249)), NaN(7249)));
+    }
 }
 }
 
@@ -948,6 +1004,25 @@ creal atanh(creal z)
  *  <tr> <td> +&infin; <td> +&infin; <td> no
  *  )
  */
+version(LDC)
+{
+    alias llvm_sqrt_f32 sqrt;
+    alias llvm_sqrt_f64 sqrt;
+    version(X86)
+    {
+        alias llvm_sqrt_f80 sqrt;
+    }
+    else
+    {
+        real sqrt(real x)
+        {
+            return tango.stdc.math.sqrtl(x);
+        }
+    }
+}
+else
+{
+
 float sqrt(float x) /* intrinsic */
 {
     version(D_InlineAsm_X86)
@@ -994,6 +1069,8 @@ real sqrt(real x) /* intrinsic */ /// ditto
     {
         return tango.stdc.math.sqrtl(x);
     }
+}
+
 }
 
 /** ditto */
@@ -1478,7 +1555,14 @@ real pow(real x, real y)
         }
     }
     }
-    return tango.stdc.math.powl(x, y);
+    version(LDC_X86)
+    {
+        return llvm_pow_f80(x, y);
+    }
+    else
+    {
+        return tango.stdc.math.powl(x, y);
+    }
 }
 
 debug(UnitTest) {
