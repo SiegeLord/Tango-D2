@@ -36,6 +36,7 @@ UNAME=`uname`
 INLINE="-inline"
 DEBUG=""
 RELEASE="-release -O"
+POSIXVERSION="-version=Posix"
 WARN=""
 VERBOSE=0
 
@@ -105,11 +106,7 @@ compile() {
     if filter $OBJNAME
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        if [ "$LDC" = "1" ]; then
-            $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Tango -of$OBJNAME $FILENAME
-        else
-            $DC $WARN -c $INLINE $DEBUG $RELEASE -version=Posix -version=Tango -of$OBJNAME $FILENAME
-        fi
+        $DC $WARN -c $INLINE $DEBUG $RELEASE $POSIXVERSION -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
@@ -194,6 +191,7 @@ do
             build gdmd libgtango.a libgphobos.a
             ;;
         ldc)
+            POSIXVERSION=""
             build ldc libtango-user-ldc.a build-tango.sh
             ;;
         mac)
