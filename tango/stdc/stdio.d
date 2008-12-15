@@ -249,6 +249,24 @@ version( Win32 )
             stdprn = &(*_imp___iob)[4];
         }
     }
+    else version (LDC) {
+        extern FILE[_NFILE]* _imp___iob;
+
+        auto FILE* stdin;
+        auto FILE* stdout;
+        auto FILE* stderr;
+        auto FILE* stdaux;
+        auto FILE* stdprn;
+
+        static this()
+        {
+            stdin  = &(*_imp___iob)[0];
+            stdout = &(*_imp___iob)[1];
+            stderr = &(*_imp___iob)[2];
+            stdaux = &(*_imp___iob)[3];
+            stdprn = &(*_imp___iob)[4];
+        }
+    }
     else
     {
         extern FILE[_NFILE] _iob;
