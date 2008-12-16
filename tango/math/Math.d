@@ -1100,7 +1100,6 @@ creal sqrt(creal z)
     return c;
 }
 
-import tango.stdc.stdio;
 debug(UnitTest) {
 unittest {
     // NaN payloads
@@ -1785,7 +1784,6 @@ body
 debug(UnitTest) {
 unittest
 {
-    debug (math) printf("math.poly.unittest\n");
     real x = 3.1;
     const real pp[] = [56.1L, 32.7L, 6L];
 
