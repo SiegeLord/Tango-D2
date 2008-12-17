@@ -507,7 +507,6 @@ else version (darwin)
                 UDP =     17, // appears to be correct
         }
 }
-// TODO: Doublecheck values
 else version (freebsd)
 {
         enum SocketOption: int
