@@ -25,7 +25,6 @@ private
     import tango.net.SocketConduit;
     import tango.net.ServerSocket;
     import tango.time.Clock;
-    import tango.text.convert.Format;
     import tango.core.Exception;
     import tango.core.Thread;
     import tango.sys.Common;
@@ -45,9 +44,7 @@ const uint      MAX_LENGTH      = 16;
 
 int main(char[][] args)
 {
-    Logger          log     = Log.lookup("selector");
-
-    char[256] buf;
+    Logger log = Log.lookup("selector");
     log.add (new AppendConsole(new LayoutDate));
 
     ISelector selector;
@@ -55,8 +52,8 @@ int main(char[][] args)
     for (int i = 0; i < 1; i++)
     {
         // Testing the SelectSelector
-        log.info(Format.sprint(buf, "Pass {0}: Testing the select-based selector", i + 1));
-        selector = new SelectSelector();
+        log.info("Pass {0}: Testing the select-based selector", i + 1);
+        selector = new SelectSelector;
         testSelector(selector);
     }
 
@@ -65,8 +62,8 @@ int main(char[][] args)
     {
         for (int i = 0; i < 1; i++)
         {
-            log.info(Format.sprint(buf, "Pass {0}: Testing the poll-based selector", i + 1));
-            selector = new PollSelector();
+            log.info("Pass {0}: Testing the poll-based selector", i + 1);
+            selector = new PollSelector;
             testSelector(selector);
         }
     }
@@ -76,8 +73,8 @@ int main(char[][] args)
     {
         for (int i = 0; i < 1; i++)
         {
-            log.info(Format.sprint(buf, "Pass {0}: Testing the epoll-based selector", i + 1));
-            selector = new EpollSelector();
+            log.info("Pass {0}: Testing the epoll-based selector", i + 1);
+            selector = new EpollSelector;
             testSelector(selector);
         }
     }
@@ -91,8 +88,7 @@ int main(char[][] args)
  */
 void testSelector(ISelector selector)
 {
-    Logger          log     = Log.getLogger("selector.server");
-    char[512] buf;
+    Logger log = Log.getLogger("selector.server");
 
     uint        connectCount        = 0;
     uint        receiveCount        = 0;
@@ -129,12 +125,12 @@ void testSelector(ISelector selector)
         while (true)
         {
             debug (selector)
-                log.trace(Format.sprint(buf, "[{0}] Waiting for events from Selector", i));
+                log.trace("[{0}] Waiting for events from Selector", i);
 
             eventCount = selector.select(timeout);
 
             debug (selector)
-                log.trace(Format.sprint(buf, "[{0}] {1} events received from Selector", i, eventCount));
+                log.trace("[{0}] {1} events received from Selector", i, eventCount);
 
             if (eventCount > 0)
             {
@@ -142,18 +138,18 @@ void testSelector(ISelector selector)
                 foreach (SelectionKey selectionKey; selector.selectedSet())
                 {
                     debug (selector)
-                        log.trace(Format.sprint(buf, "[{0}] Event mask for socket {1} is 0x{2:x4}",
-                                        i, cast(int) selectionKey.conduit.fileHandle(),
-                                        cast(uint) selectionKey.events));
+                        log.trace("[{0}] Event mask for socket {1} is 0x{2:x4}",
+                                   i, cast(int) selectionKey.conduit.fileHandle,
+                                   cast(uint) selectionKey.events);
 
-                    if (selectionKey.isReadable())
+                    if (selectionKey.isReadable)
                     {
                         if (selectionKey.conduit is serverSocket)
                         {
                             debug (selector)
-                                log.trace(Format.sprint(buf, "[{0}] New connection from client", i));
+                                log.trace("[{0}] New connection from client", i);
 
-                            clientSocket = serverSocket.accept();
+                            clientSocket = serverSocket.accept;
                             if (clientSocket !is null)
                             {
                                 selector.register(clientSocket, Event.Read);
@@ -162,7 +158,7 @@ void testSelector(ISelector selector)
                             else
                             {
                                 debug (selector)
-                                    log.trace(Format.sprint(buf, "[{0}] New connection attempt failed", i));
+                                    log.trace("[{0}] New connection attempt failed", i);
                                 failedConnectCount++;
                             }
                         }
@@ -170,22 +166,22 @@ void testSelector(ISelector selector)
                         {
                             // Reading from a client socket
                             debug (selector)
-                                log.trace(Format.sprint(buf, "[{0}] Receiving message from client", i));
+                                log.trace("[{0}] Receiving message from client", i);
 
                             count = (cast(SocketConduit) selectionKey.conduit).read(buffer);
                             if (count != IConduit.Eof)
                             {
                                 debug (selector)
-                                    log.trace(Format.sprint(buf, "[{0}] Received {1} from client ({2} bytes)",
-                                                     i, buffer[0..count], count));
+                                    log.trace("[{0}] Received {1} from client ({2} bytes)",
+                                               i, buffer[0..count], count);
                                 selector.register(selectionKey.conduit, Event.Write);
                                 receiveCount++;
                             }
                             else
                             {
                                 debug (selector)
-                                    log.trace(Format.sprint(buf, "[{0}] Handle {1} was closed; removing it from Selector",
-                                                     i, cast(int) selectionKey.conduit.fileHandle()));
+                                    log.trace("[{0}] Handle {1} was closed; removing it from Selector",
+                                                     i, cast(int) selectionKey.conduit.fileHandle);
                                 // note, we cannot unregister because we are
                                 // in the middle of a foreach loop.  Delay
                                 // unregistering and closing until after the
@@ -199,16 +195,16 @@ void testSelector(ISelector selector)
                         }
                     }
 
-                    if (selectionKey.isWritable())
+                    if (selectionKey.isWritable)
                     {
                         debug (selector)
-                            log.trace(Format.sprint(buf, "[{0}] Sending PONG to client", i));
+                            log.trace("[{0}] Sending PONG to client", i);
 
                         count = (cast(SocketConduit) selectionKey.conduit).write("PONG");
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
-                                log.trace(Format.sprint(buf, "[{0}] Sent PONG to client ({1} bytes)", i, count));
+                                log.trace("[{0}] Sent PONG to client ({1} bytes)", i, count);
 
                             selector.register(selectionKey.conduit, Event.Read);
                             sendCount++;
@@ -216,8 +212,8 @@ void testSelector(ISelector selector)
                         else
                         {
                             debug (selector)
-                                log.trace(Format.sprint(buf, "[{0}] Handle {1} was closed; removing it from Selector",
-                                                 i, selectionKey.conduit.fileHandle()));
+                                log.trace("[{0}] Handle {1} was closed; removing it from Selector",
+                                           i, selectionKey.conduit.fileHandle);
                             // note, see comment above
                             //selector.unregister(selectionKey.conduit);
                             //(cast(SocketConduit) selectionKey.conduit).close();
@@ -227,11 +223,11 @@ void testSelector(ISelector selector)
                         }
                     }
 
-                    if (selectionKey.isError() || selectionKey.isHangup() || selectionKey.isInvalidHandle())
+                    if (selectionKey.isError || selectionKey.isHangup || selectionKey.isInvalidHandle)
                     {
                         char[] status;
 
-                        if (selectionKey.isHangup())
+                        if (selectionKey.isHangup)
                         {
                             closeCount++;
                             status = "Hangup";
@@ -239,7 +235,7 @@ void testSelector(ISelector selector)
                         else
                         {
                             errorCount++;
-                            if (selectionKey.isInvalidHandle())
+                            if (selectionKey.isInvalidHandle)
                                 status = "Invalid request";
                             else
                                 status = "Error";
@@ -247,11 +243,11 @@ void testSelector(ISelector selector)
 
                         debug (selector)
                         {
-                            log.trace(Format.sprint(buf, "[{0}] {1} in handle {2} from Selector",
-                                             i, status, cast(int) selectionKey.conduit.fileHandle()));
+                            log.trace("[{0}] {1} in handle {2} from Selector",
+                                       i, status, cast(int) selectionKey.conduit.fileHandle);
 
-                            log.trace(Format.sprint(buf, "[{0}] Unregistering handle {1} from Selector",
-                                             i, cast(int) selectionKey.conduit.fileHandle()));
+                            log.trace("[{0}] Unregistering handle {1} from Selector",
+                                       i, cast(int) selectionKey.conduit.fileHandle);
                         }
                         // note, see comment above
                         //selector.unregister(selectionKey.conduit);
@@ -271,13 +267,13 @@ void testSelector(ISelector selector)
                 foreach(c; removeThese)
                 {
                     selector.unregister(c);
-                    (cast(Conduit) c).close();
+                    (cast(Conduit) c).close;
                 }
             }
             else
             {
                 debug (selector)
-                    log.trace(Format.sprint(buf, "[{0}] No more pending events in Selector; aborting", i));
+                    log.trace("[{0}] No more pending events in Selector; aborting", i);
                 break;
             }
             i++;
@@ -292,25 +288,25 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.socket().detach;
+        serverSocket.socket.detach;
     }
     catch (SelectorException e)
     {
-        log.error(Format.sprint(buf, "Selector exception caught:\n{0}", e.toString()));
+        log.error("Selector exception caught:\n{0}", e.toString);
     }
     catch (Exception e)
     {
-        log.error(Format.sprint(buf, "Exception caught:\n{0}", e.toString()));
+        log.error("Exception caught:\n{0}", e.toString);
     }
 
-    log.info(Format.sprint(buf, "Success: connect={0}; recv={1}; send={2}; close={3}", 
-                    connectCount, receiveCount, sendCount, closeCount));
-    log.info(Format.sprint(buf, "Failure: connect={0}, recv={1}; send={2}; error={3}", 
-                    failedConnectCount, failedReceiveCount, failedSendCount, errorCount));
+    log.info("Success: connect={0}; recv={1}; send={2}; close={3}", 
+              connectCount, receiveCount, sendCount, closeCount);
+    log.info("Failure: connect={0}, recv={1}; send={2}; error={3}", 
+             failedConnectCount, failedReceiveCount, failedSendCount, errorCount);
 
-    log.info(Format.sprint(buf, "Total time: {0} ms", cast(uint) (Clock.now - start).millis));
+    log.info("Total time: {0} ms", cast(uint) (Clock.now - start).millis);
 
-    clientThread.join();
+    clientThread.join;
 
     selector.close;
 }
@@ -321,9 +317,8 @@ void testSelector(ISelector selector)
  */
 void clientThreadFunc()
 {
-    Logger          log     = Log.getLogger("selector.client");
-    char[256] buf;
-    SocketConduit   socket  = new SocketConduit();
+    Logger log = Log.getLogger("selector.client");
+    SocketConduit socket  = new SocketConduit;
 
     Thread.sleep(0.010);      // 10 milliseconds
 
@@ -335,14 +330,14 @@ void clientThreadFunc()
         int i;
 
         debug (selector)
-            log.trace(Format.sprint(buf, "[{0}] Connecting to server", i));
+            log.trace("[{0}] Connecting to server", i);
 
         socket.connect(addr);
 
         for (i = 1; i <= LOOP_COUNT; i++)
         {
             debug (selector)
-                log.trace(Format.sprint(buf, "[{0}] Sending PING to server", i));
+                log.trace("[{0}] Sending PING to server", i);
 
             while (true)
             {
@@ -361,9 +356,9 @@ void clientThreadFunc()
             {
                 debug (selector)
                 {
-                    log.trace(Format.sprint(buf, "[{0}] Sent PING to server ({1} bytes)", i, count));
+                    log.trace("[{0}] Sent PING to server ({1} bytes)", i, count);
 
-                    log.trace(Format.sprint(buf, "[{0}] Receiving message from server", i));
+                    log.trace("[{0}] Receiving message from server", i);
                 }
                 while (true)
                 {
@@ -381,31 +376,31 @@ void clientThreadFunc()
                 if (count != IConduit.Eof)
                 {
                     debug (selector)
-                        log.trace(Format.sprint(buf, "[{0}] Received {1} from server ({2} bytes)",
-                                         i, buffer[0..count], count));
+                        log.trace("[{0}] Received {1} from server ({2} bytes)",
+                                   i, buffer[0..count], count);
                 }
                 else
                 {
                     debug (selector)
-                        log.trace(Format.sprint(buf, "[{0}] Handle was closed; aborting",
-                                         i, socket.fileHandle()));
+                        log.trace("[{0}] Handle was closed; aborting",
+                                   i, socket.fileHandle);
                     break;
                 }
             }
             else
             {
                 debug (selector)
-                    log.trace(Format.sprint(buf, "[{0}] Handle {1} was closed; aborting",
-                                     i, socket.fileHandle()));
+                    log.trace("[{0}] Handle {1} was closed; aborting",
+                               i, socket.fileHandle);
                 break;
             }
         }
-        socket.shutdown();
-        socket.close();
+        socket.shutdown;
+        socket.close;
     }
     catch (Exception e)
     {
-        log.error(Format.sprint(buf, "Exception caught:\n{0}", e.toString()));
+        log.error("Exception caught:\n{0}", e.toString);
     }
     debug (selector)
         log.trace("Leaving thread");
