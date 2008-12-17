@@ -8,7 +8,6 @@ module tango.sys.Process;
 
 private import tango.io.model.IFile;
 private import tango.io.Console;
-private import tango.io.Buffer;
 private import tango.sys.Common;
 private import tango.sys.Pipe;
 private import tango.core.Exception;
