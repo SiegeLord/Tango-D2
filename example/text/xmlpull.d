@@ -7,7 +7,7 @@ void benchmark (int iterations)
 {       
         StopWatch elapsed;
         
-        auto content = cast (char[]) File.read("hamlet.xml");
+        auto content = cast (char[]) (new File).load("hamlet.xml");
         auto parser = new PullParser!(char) (content);
 
         uint j;

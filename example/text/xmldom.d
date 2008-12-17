@@ -22,7 +22,7 @@ void bench (int iterations)
         StopWatch elapsed;
 
         auto doc = new Document!(char);
-       auto content = cast (char[]) File.read("hamlet.xml");
+        auto content = cast (char[]) (new File).load("hamlet.xml");
 
         elapsed.start;
         for (auto i=0; ++i < iterations;)
