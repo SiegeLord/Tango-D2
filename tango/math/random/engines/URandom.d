@@ -11,19 +11,19 @@ version(linux)  { version=has_urandom; }
 version(has_urandom) {
     private import Integer = tango.text.convert.Integer;
     import tango.core.sync.Mutex: Mutex;
-    import tango.io.device.FileConduit; // use stdc read/write?
+    import tango.io.device.File; // use stdc read/write?
 
     /// basic source that takes data from system random device
     /// This is an engine, do not use directly, use RandomG!(Urandom)
     /// should use stdc rad/write?
     struct URandom{
-        static FileConduit.Style readStyle;
+        static File.Style readStyle;
         static Mutex lock;
         static this(){
-            readStyle.access=FileConduit.Access.Read;
-            readStyle.open  =FileConduit.Open.Exists;
-            readStyle.share =FileConduit.Share.Read;
-            readStyle.cache =FileConduit.Cache.None;
+            readStyle.access=File.Access.Read;
+            readStyle.open  =File.Open.Exists;
+            readStyle.share =File.Share.Read;
+            readStyle.cache =File.Cache.None;
 
             lock=new Mutex();
         }
@@ -38,7 +38,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new FileConduit("/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
@@ -53,7 +53,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new FileConduit("/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
@@ -68,7 +68,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new FileConduit("/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
