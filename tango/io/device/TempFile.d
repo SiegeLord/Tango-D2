@@ -562,7 +562,7 @@ class TempFile : Device, Device.Seek
         }
 
         // See DDoc version
-        long seek(long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
+        long seek(long offset, Anchor anchor = Anchor.Begin)
         {
             assert( offset <= int.sizeof );
             long result = lseek(handle, cast(int) offset, anchor);
@@ -578,7 +578,7 @@ class TempFile : Device, Device.Seek
          * Seeks the temporary file's cursor to the given location.
          *
          **********************************************************************/
-        long seek(long offset, Seek.Anchor anchor = Seek.Anchor.Begin);
+        long seek(long offset, Anchor anchor = Anchor.Begin);
 
         /**********************************************************************
          * 
