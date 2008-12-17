@@ -14,7 +14,7 @@ module tango.io.vfs.FileFolder;
 
 private import tango.util.PathUtil;
 
-private import tango.io.device.FileConduit;
+private import tango.io.device.File;
 
 private import Path = tango.io.Path;
 
@@ -462,7 +462,8 @@ private class FolderGroup : VfsFolders
 
         final uint folders ()
         {
-                return members.length;
+                assert (members.length);
+                return members[0].stats.folders;
         }
 
         /***********************************************************************
@@ -715,7 +716,7 @@ private class FileHost : VfsFile
 
         final InputStream input ()
         {
-                return new FileConduit (path.toString);
+                return new File (path.toString);
         }
 
         /***********************************************************************
@@ -726,7 +727,7 @@ private class FileHost : VfsFile
 
         final OutputStream output ()
         {
-                return new FileConduit (path.toString, FileConduit.WriteExisting);
+                return new File (path.toString, File.WriteExisting);
         }
 
         /***********************************************************************
@@ -780,7 +781,7 @@ void main()
         Stdout.formatln ("self.bytes = {}", set.bytes);
         Stdout.formatln ("self.folders = {}", set.folders);
         Stdout.formatln ("self.entries = {}", set.entries);
-
+/+
         set = root.tree;
         Stdout.formatln ("tree.files = {}", set.files);
         Stdout.formatln ("tree.bytes = {}", set.bytes);
@@ -793,7 +794,7 @@ void main()
         auto cat = set.catalog ("s*");
         Stdout.formatln ("cat.files = {}", cat.files);
         Stdout.formatln ("cat.bytes = {}", cat.bytes);
-
++/
         //foreach (file; cat)
         //         Stdout.formatln ("cat.name '{}' '{}'", file.name, file.toString);
 }

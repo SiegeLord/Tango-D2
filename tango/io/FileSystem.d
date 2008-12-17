@@ -13,13 +13,13 @@
 
 module tango.io.FileSystem;
 
-private import  tango.sys.Common;
+private import tango.sys.Common;
 
-private import  tango.io.Path;
+private import tango.io.FilePath;
 
-private import  tango.io.FilePath;
+private import tango.core.Exception;
 
-private import  tango.core.Exception;
+private import tango.io.Path : standard;
 
 version (Win32)
         {
@@ -32,7 +32,7 @@ version (Posix)
         private import tango.stdc.string;
         private import tango.stdc.posix.unistd;
 
-        private import tango.io.device.FileConduit;
+        private import tango.io.device.File;
         private import Integer = tango.text.convert.Integer;
         }
 

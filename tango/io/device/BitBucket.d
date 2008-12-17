@@ -12,7 +12,7 @@
 
 *******************************************************************************/
 
-module tango.io.device.NullConduit;
+module tango.io.device.BitBucket;
 
 private import tango.io.device.Conduit;
 
@@ -25,15 +25,15 @@ private import tango.io.device.Conduit;
 
 *******************************************************************************/
 
-class NullConduit : Conduit
+class BitBucket : Conduit
 {
-        override char[] toString () {return "<null conduit>";} 
+        override char[] toString () {return "<BitBucket>";} 
 
-        override uint bufferSize () { return 0;}
+        override size_t bufferSize () { return 0;}
 
-        override uint read (void[] dst) { return Eof; }
+        override size_t read (void[] dst) { return Eof; }
 
-        override uint write (void[] src) { return src.length; }
+        override size_t write (void[] src) { return src.length; }
 
         override void detach () { }
 }
@@ -43,7 +43,7 @@ class NullConduit : Conduit
 debug(UnitTest)
 {
     unittest{
-        auto a=new NullConduit();
+        auto a=new BitBucket;
         a.write("bla");
         a.flush();
         a.detach();

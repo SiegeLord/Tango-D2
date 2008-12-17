@@ -257,7 +257,7 @@ public abstract class Collection(T) : Dispenser!(T)
                 auto j = buf.length;
                 
                 do {
-                   buf[--j] = i % 10 + '0';
+                   buf[--j] = cast(char) (i % 10 + '0');
                    } while (i /= 10);
                 return buf [j..$];
         }

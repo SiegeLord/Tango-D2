@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-module tango.io.device.ThreadConduit;
+module tango.io.device.ThreadPipe;
 
 private import tango.core.Exception;
 
@@ -21,14 +21,14 @@ private import tango.core.sync.Condition;
 
 /**
  * Conduit to support a data stream between 2 threads.  One creates a
- * ThreadConduit, then uses the OutputStream and the InputStream from it to
+ * ThreadPipe, then uses the OutputStream and the InputStream from it to
  * communicate.  All traffic is automatically synchronized, so one just uses
  * the streams like they were normal device streams.
  *
  * It works by maintaining a circular buffer, where data is written to, and
  * read from, in a FIFO fashion.
  * -----------
- * auto tc = new ThreadConduit;
+ * auto tc = new ThreadPipe;
  * void outFunc()
  * {
  *   Stdout.copy(tc.input);
@@ -36,25 +36,25 @@ private import tango.core.sync.Condition;
  *
  * auto t = new Thread(&outFunc);
  * t.start();
- * tc.output.write("hello, thread!");
+ * tc.write("hello, thread!");
  * tc.close();
  * t.join();
  */
-class ThreadConduit : Conduit
+class ThreadPipe : Conduit
 {
     private bool _closed;
-    private uint _readIdx, _writeIdx;
+    private size_t _readIdx, _writeIdx;
     private void[] _buf;
     private Mutex _mutex;
     private Condition _condition;
 
     /**
-     * Create a new ThreadConduit with the given buffer size.
+     * Create a new ThreadPipe with the given buffer size.
      *
      * Params:
      * bufferSize = the size to allocate the buffer. 
      */
-    this(uint bufferSize=(1024*16))
+    this(size_t bufferSize=(1024*16))
     {
         _buf = new void[bufferSize];
         _closed = false;
@@ -67,11 +67,11 @@ class ThreadConduit : Conduit
      * Implements IConduit.bufferSize
      *
      * Returns the appropriate buffer size that should be used to buffer the
-     * ThreadConduit.  Note that this is simply the buffer size passed in, and
-     * since all the ThreadConduit data is in memory, buffering doesn't make
+     * ThreadPipe.  Note that this is simply the buffer size passed in, and
+     * since all the ThreadPipe data is in memory, buffering doesn't make
      * much sense.
      */
-    uint bufferSize()
+    size_t bufferSize()
     {
         return _buf.length;
     }
@@ -83,7 +83,7 @@ class ThreadConduit : Conduit
      */
     char[] toString()
     {
-        return "<thread conduit>";
+        return "<threadpipe>";
     }
 
     /**
@@ -101,7 +101,7 @@ class ThreadConduit : Conduit
     /**
      * Return the number of bytes remaining to be read in the circular buffer
      */
-    uint remaining()
+    size_t remaining()
     {
         synchronized(_mutex)
         {
@@ -118,7 +118,7 @@ class ThreadConduit : Conduit
      * Note that we leave 1 byte for a marker to know whether the read pointer
      * is ahead or behind the write pointer.
      */
-    uint writable()
+    size_t writable()
     {
         return _buf.length - remaining - 1;
     }
@@ -151,7 +151,7 @@ class ThreadConduit : Conduit
      * Returns the number of bytes read, which may be less than requested in
      * dst. Eof is returned whenever an end-of-flow condition arises.
      */
-    uint read(void[] dst)
+    size_t read(void[] dst)
     {
         //
         // don't block for empty read
@@ -163,7 +163,7 @@ class ThreadConduit : Conduit
             //
             // see if any remaining data is present
             //
-            uint r;
+            size_t r;
             while((r = remaining) == 0 && !_closed)
                 _condition.wait();
 
@@ -182,7 +182,7 @@ class ThreadConduit : Conduit
             //
             if(_readIdx + r >= _buf.length)
             {
-                uint x = _buf.length - _readIdx;
+                size_t x = _buf.length - _readIdx;
                 dst[0..x] = _buf[_readIdx..$];
                 _readIdx = 0;
                 r -= x;
@@ -201,7 +201,7 @@ class ThreadConduit : Conduit
      *
      * Clear any buffered content
      */
-    ThreadConduit clear()
+    ThreadPipe clear()
     {
         synchronized(_mutex)
         {
@@ -224,7 +224,7 @@ class ThreadConduit : Conduit
      * the quantity provided. Eof is returned when an end-of-flow condition
      * arises.
      */
-    uint write(void[] src)
+    size_t write(void[] src)
     {
         //
         // don't block for empty write
@@ -233,7 +233,7 @@ class ThreadConduit : Conduit
             return 0;
         synchronized(_mutex)
         {
-            uint w;
+            size_t w;
             while((w = writable) == 0 && !_closed)
                 _condition.wait();
 

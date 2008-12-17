@@ -670,7 +670,7 @@ debug (Json)
 {
         
 import tango.io.Stdout;
-import tango.io.File;
+import tango.io.device.File;
 import tango.time.StopWatch;
         
 void main()
@@ -716,8 +716,7 @@ void main()
 
         char[] load (char[] file)
         {
-                auto f = new File (file);
-                return cast(char[]) f.read;
+                return cast(char[]) File(file).read;
         }
 
         //test("test1.json", load("test1.json"));

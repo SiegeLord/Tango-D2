@@ -14,8 +14,8 @@ module tango.util.log.AppendFile;
 
 private import  tango.util.log.Log;
 
-private import  tango.io.Buffer,
-                tango.io.device.FileConduit;
+private import  tango.io.stream.Buffer,
+                tango.io.device.File;
 
 private import  tango.io.model.IFile,
                 tango.io.model.IConduit;
@@ -45,22 +45,10 @@ class AppendFile : Filer
                 mask_ = register (fp);
         
                 // make it shareable for read
-                auto style = FileConduit.WriteAppending;
-                style.share = FileConduit.Share.Read;
-                configure (new FileConduit (fp, style));
+                auto style = File.WriteAppending;
+                style.share = File.Share.Read;
+                configure (new File (fp, style));
                 layout (how);
-        }
-
-        /***********************************************************************
-                
-                Create a basic FileAppender to a file with the specified 
-                path, and with the given EventLayout
-
-        ***********************************************************************/
-
-        deprecated this (FilePath fp, Appender.Layout how = null)
-        {
-                this (fp.toString, how);
         }
 
         /***********************************************************************
@@ -108,7 +96,7 @@ class AppendFile : Filer
 
 class Filer : Appender
 {
-        package Buffer          buffer;
+        package Bout            buffer;
         private IConduit        conduit_;
 
         /***********************************************************************
@@ -143,11 +131,11 @@ class Filer : Appender
 
         ***********************************************************************/
 
-        package final Buffer configure (IConduit conduit)
+        package final Bout configure (IConduit conduit)
         {
                 // create a new buffer upon this conduit
                 conduit_ = conduit;
-                return (buffer = new Buffer(conduit));
+                return (buffer = new Bout(conduit));
         }
 }
 

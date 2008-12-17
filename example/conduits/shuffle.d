@@ -1,5 +1,4 @@
-import  tango.io.File,
-        tango.io.Stdout,
+import  tango.io.Stdout,
         tango.io.FilePath,
         tango.io.FileScan;
 

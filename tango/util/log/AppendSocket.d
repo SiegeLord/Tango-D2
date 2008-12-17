@@ -14,9 +14,10 @@ module tango.util.log.AppendSocket;
 
 private import  tango.util.log.Log;
 
-private import  tango.io.Buffer,
-                tango.io.Console;
+private import  tango.io.Console;
 
+private import  tango.io.stream.Buffer;
+                
 private import  tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
@@ -29,7 +30,7 @@ private import  tango.net.SocketConduit,
 public class AppendSocket : Appender
 {
         private Mask            mask_;
-        private IBuffer         buffer;
+        private Bout            buffer;
         private SocketConduit   conduit;
         private InternetAddress address;
         private bool            connected;
@@ -46,7 +47,7 @@ public class AppendSocket : Appender
 
                 this.address = address;
                 this.conduit = new SocketConduit;
-                this.buffer  = new Buffer (conduit);
+                this.buffer  = new Bout (conduit);
 
                 // Get a unique fingerprint for this class
                 mask_ = register (address.toString);

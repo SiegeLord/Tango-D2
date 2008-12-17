@@ -32,7 +32,7 @@ private import  tango.net.http.HttpConst,
                 tango.net.http.HttpTriplet,
                 tango.net.http.HttpCookies;
 
-private import  tango.text.stream.LineIterator;
+private import  tango.io.stream.Lines;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -93,7 +93,7 @@ class HttpClient
         private IBuffer                 tmp,
                                         input,
                                         output;
-        private LineIterator!(char)     line;
+        private Lines!(char)            line;
         private SocketConduit           socket;
         private RequestMethod           method;
         private InternetAddress         address;
@@ -510,7 +510,7 @@ class HttpClient
 
                 // Token for initial parsing of input header lines
                 if (line is null)
-                    line = new LineIterator!(char) (input);
+                    line = new Lines!(char) (input);
                 else
                    line.set(input);
 

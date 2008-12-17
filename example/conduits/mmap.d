@@ -1,7 +1,6 @@
 
 private import  tango.io.Console,
-                tango.io.device.FileConduit,
-                tango.io.MappedBuffer;
+                tango.io.device.FileMap;
 
 /*******************************************************************************
 
@@ -14,10 +13,10 @@ void main (char[][] args)
         if (args.length is 2)
            {
            // open a file for reading
-           auto mmap = new MappedBuffer (new FileConduit (args[1]));
+           auto mmap = new MappedFile (args[1]);
 
            // copy content to console
-           Cout (cast(char[]) mmap.slice) ();
+           Cout (cast(char[]) mmap.map) ();
            }
         else
            Cout ("usage is: mmap filename").newline;

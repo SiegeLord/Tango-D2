@@ -10,7 +10,7 @@
 private import  tango.core.Thread;
 
 private import  tango.io.Console,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
 private import  tango.net.ServerSocket,
                 tango.net.SocketConduit;
@@ -33,7 +33,7 @@ void main(char[][] args)
                 auto stream = server.accept;
 
                 // copy incoming stream to a local file
-                auto file = new FileConduit ("dumpster.log", FileConduit.WriteCreate);
+                auto file = new File ("dumpster.log", File.WriteCreate);
                 file.copy(stream).flush.close;
         }
 
@@ -51,7 +51,7 @@ void main(char[][] args)
            send.connect (new InternetAddress("localhost", 8080));
 
            // send the specified file
-           send.copy (new FileConduit (args[1])).flush.close;
+           send.copy (new File(args[1])).flush.close;
            } 
         else
            Cout ("usage is netcopy filename").newline;

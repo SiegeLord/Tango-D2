@@ -83,7 +83,7 @@
         global instances ~ this can be leveraged, for instance, to copy a
         file to the standard output:
         ---
-        Stdout.copy (new FileConduit ("myfile"));
+        Stdout.copy (new File ("myfile"));
         ---
 
         Note that Stdout is *not* intended to be thread-safe. Use either
@@ -94,10 +94,11 @@
 
 module tango.io.Stdout;
 
-private import  tango.io.Print,
-                tango.io.Console;
+private import tango.io.Console;
 
-private import  tango.text.convert.Layout;
+private import tango.io.stream.Format;
+
+private import tango.text.convert.Layout;
 
 /*******************************************************************************
 
@@ -105,19 +106,21 @@ private import  tango.text.convert.Layout;
 
 *******************************************************************************/
 
+private alias FormatOutput!(char) Output;
+
+public static Output Stdout,      /// global standard output
+                     Stderr;      /// global error output
+
 static this()
 {
         auto layout = new Layout!(char);
 
-        Stdout = new Print!(char) (layout, Cout.stream);
-        Stderr = new Print!(char) (layout, Cerr.stream);
+        Stdout = new Output (layout, Cout.stream);
+        Stderr = new Output (layout, Cerr.stream);
         
         Stdout.flush = !Cout.redirected;
         Stderr.flush = !Cerr.redirected;
 }
-
-public static Print!(char) Stdout,      /// global standard output
-                           Stderr;      /// global error output
 
 
 /******************************************************************************

@@ -6,6 +6,7 @@
 
         version:        Mar 2004: Initial release     
                         Dec 2006: Outback release
+                        Nov 2008: relocated and simplified
                         
         author:         Kris, 
                         John Reimer, 
@@ -14,26 +15,26 @@
 
 *******************************************************************************/
 
-module tango.io.device.FileConduit;
+module tango.io.device.File;
 
-private import  tango.sys.Common;
+private import tango.sys.Common;
 
-public  import  tango.io.FilePath;
+private import tango.io.device.Device;
 
-private import  stdc = tango.stdc.stringz;
-
-private import  Utf = tango.text.convert.Utf;
-
-private import  tango.io.device.DeviceConduit;
+private import stdc = tango.stdc.stringz;
 
 /*******************************************************************************
 
-        Other O/S functions
+        platform-specific functions
 
 *******************************************************************************/
 
 version (Win32)
-         private extern (Windows) BOOL SetEndOfFile (HANDLE);
+        {
+        private import Utf = tango.text.convert.Utf;
+
+        private extern (Windows) BOOL SetEndOfFile (HANDLE);
+        }
      else
         private import tango.stdc.posix.unistd;
 
@@ -41,7 +42,7 @@ version (Win32)
 /*******************************************************************************
 
         Implements a means of reading and writing a generic file. Conduits
-        are the primary means of accessing external data and FileConduit
+        are the primary means of accessing external data, and File
         extends the basic pattern by providing file-specific methods to
         set the file size, seek to a specific file position and so on. 
         
@@ -49,7 +50,7 @@ version (Win32)
         copy a file directly to the console:
         ---
         // open a file for reading
-        auto from = new FileConduit ("test.txt");
+        auto from = new File ("test.txt");
 
         // stream directly to console
         Stdout.copy (from);
@@ -57,68 +58,71 @@ version (Win32)
 
         And here we copy one file to another:
         ---
-        // open another for writing
-        auto to = new FileConduit ("copy.txt", FileConduit.WriteCreate);
+        // open file for reading
+        auto from = new File ("test.txt");
 
-        // copy file
-        to.output.copy (new FileConduit("test.txt"));
+        // open another for writing
+        auto to = new File ("copy.txt", File.WriteCreate);
+
+        // copy file and close
+        to.copy.close;
+        from.close;
         ---
         
         To load a file directly into memory one might do this:
         ---
+        auto file = new File ("test.txt");
+        auto content = file.load;
+        file.close;
+        ---
+
+        A more explicit version with a similar result would be:
+        ---
         // open file for reading
-        auto fc = new FileConduit ("test.txt");
+        auto file = new File ("test.txt");
 
         // create an array to house the entire file
-        auto content = new char[fc.length];
+        auto content = new char [file.length];
 
         // read the file content. Return value is the number of bytes read
-        auto bytesRead = fc.input.read (content);
+        auto bytes = file.read (content);
+        file.close;
         ---
 
-        Conversely, one may write directly to a FileConduit, like so:
+        Conversely, one may write directly to a File like so:
         ---
         // open file for writing
-        auto to = new FileConduit ("text.txt", FileConduit.WriteCreate);
+        auto to = new File ("text.txt", File.WriteCreate);
 
         // write an array of content to it
-        auto bytesWritten = to.output.write (content);
+        auto bytes = to.write (content);
         ---
 
-        FileConduit can just as easily handle random IO. Here we use seek()
-        to relocate the file pointer and, for variation, apply a protocol to
-        perform simple input and output:
+        File can happily handle random I/O. Here we use seek() to
+        relocate the file pointer:
         ---
-        // open a file for reading
-        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
+        // open a file for reading and writing
+        auto file = new File ("random.bin", File.ReadWriteCreate);
 
-        // construct (binary) reader & writer upon this conduit
-        auto read = new Reader (fc);
-        auto write = new Writer (fc);
-
-        int x=10, y=20;
-
-        // write some data, and flush output since protocol IO is buffered
-        write (x) (y) ();
+        // write some data
+        file.write ("testing");
 
         // rewind to file start
-        fc.seek (0);
+        file.seek (0);
 
         // read data back again
-        read (x) (y);
+        char[10] tmp;
+        auto bytes = file.read (tmp);
 
-        fc.close();
+        file.close;
         ---
-
-        See File, FilePath, FileScan, and FileSystem for 
-        additional functionality related to file manipulation. 
 
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.
         
 *******************************************************************************/
 
-class FileConduit : DeviceConduit, DeviceConduit.Seek
+class File : Device, Device.Seek
 {
         /***********************************************************************
         
@@ -245,7 +249,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
         
-                Create a FileConduit for use with open()
+                Create a File for use with open()
 
         ***********************************************************************/
 
@@ -255,7 +259,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
         
-                Create a FileConduit with the provided path and style.
+                Create a File with the provided path and style.
 
         ***********************************************************************/
 
@@ -263,33 +267,6 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
         {
                 open (path, style);
         }
-
-        /***********************************************************************
-        
-                Create a FileConduit with the provided path and style.
-
-                Deprecated: use char[] ctor instead
-
-        ***********************************************************************/
-
-        deprecated this (PathView path, Style style = ReadExisting)
-        {
-                this (path.toString, style);
-        }    
-
-        /***********************************************************************
-        
-                Return the PathView used by this file.
-
-                We're removing PathView here, in favour of toString()
-
-        ***********************************************************************/
-
-        deprecated PathView path ()
-        {
-                // return something useful in the interim
-                return new FilePath (path_);
-        }               
 
         /***********************************************************************
         
@@ -304,7 +281,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         /***********************************************************************
         
-                Return the name of the FilePath used by this file.
+                Return the path used by this file.
 
         ***********************************************************************/
 
@@ -321,7 +298,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         long position ()
         {
-                return seek (0, Seek.Anchor.Current);
+                return seek (0, Anchor.Current);
         }               
 
         /***********************************************************************
@@ -332,11 +309,11 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
         long length ()
         {
-                long    pos,    
-                        ret;
+                long   pos,    
+                       ret;
                         
-                pos = position ();
-                ret = seek (0, Seek.Anchor.End);
+                pos = position;
+                ret = seek (0, Anchor.End);
                 seek (pos);
                 return ret;
         }               
@@ -446,13 +423,13 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                override uint write (void[] src)
+                override size_t write (void[] src)
                 {
                         DWORD written;
 
                         // try to emulate the Unix O_APPEND mode
                         if (appending)
-                            SetFilePointer (handle, 0, null, Seek.Anchor.End);
+                            SetFilePointer (handle, 0, null, Anchor.End);
                         
                         return super.write (src);
                 }
@@ -479,7 +456,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                void truncate (ulong size)
+                void truncate (long size)
                 {
                         auto s = seek (size);
                         assert (s is size);
@@ -493,7 +470,7 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
+                override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
                         LONG high = cast(LONG) (offset >> 32);
                         long result = SetFilePointer (handle, cast(LONG) offset, 
@@ -593,10 +570,10 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                void truncate (ulong size)
+                void truncate (long size)
                 {
                         // set filesize to be current seek-position
-                        if (posix.ftruncate (handle, cast(size_t) size) is -1)
+                        if (posix.ftruncate (handle, cast(off_t) size) is -1)
                             error;
                 }               
 
@@ -607,9 +584,9 @@ class FileConduit : DeviceConduit, DeviceConduit.Seek
 
                 ***************************************************************/
 
-                long seek (long offset, Seek.Anchor anchor = Seek.Anchor.Begin)
+                override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
-                        long result = posix.lseek (handle, cast(size_t) offset, anchor);
+                        long result = posix.lseek (handle, cast(off_t) offset, anchor);
                         if (result is -1)
                             error;
                         return result;

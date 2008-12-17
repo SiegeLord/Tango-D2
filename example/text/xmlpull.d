@@ -1,4 +1,4 @@
-import tango.io.File;
+import tango.io.device.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.PullParser;
@@ -7,7 +7,7 @@ void benchmark (int iterations)
 {       
         StopWatch elapsed;
         
-        auto content = cast (char[]) File("hamlet.xml").read;
+        auto content = cast (char[]) File.read("hamlet.xml");
         auto parser = new PullParser!(char) (content);
 
         uint j;

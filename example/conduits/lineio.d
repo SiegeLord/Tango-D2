@@ -1,8 +1,8 @@
 
 private import  tango.io.Console,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
-private import  tango.text.stream.LineIterator;
+private import  tango.io.stream.Lines;
 
 /*******************************************************************************
 
@@ -18,10 +18,10 @@ void main (char[][] args)
         if (args.length is 2)
            {
            // open a file for reading
-           scope file = new FileConduit (args[1]);
+           scope file = new File (args[1]);
 
            // process file one line at a time
-           foreach (line; new LineIterator!(char)(file))
+           foreach (line; new Lines!(char)(file))
                     Cout (line).newline;
            }
         else

@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.io.device.DeviceConduit;
+module tango.io.device.Device;
 
 private import  tango.sys.Common;
 
@@ -26,7 +26,7 @@ public  import  tango.io.device.Conduit;
 
 *******************************************************************************/
 
-class DeviceConduit : Conduit, ISelectable
+class Device : Conduit, ISelectable
 {
         /// expose in superclass definition also
         public alias Conduit.error error;
@@ -59,7 +59,7 @@ class DeviceConduit : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override uint bufferSize ()
+        override size_t bufferSize ()
         {
                 return 1024 * 16;
         }
@@ -123,7 +123,7 @@ class DeviceConduit : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override uint read (void[] dst)
+                override size_t read (void[] dst)
                 {
                         DWORD read;
                         void *p = dst.ptr;
@@ -147,7 +147,7 @@ class DeviceConduit : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override uint write (void[] src)
+                override size_t write (void[] src)
                 {
                         DWORD written;
 
@@ -211,7 +211,7 @@ class DeviceConduit : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override uint read (void[] dst)
+                override size_t read (void[] dst)
                 {
                         int read = posix.read (handle, dst.ptr, dst.length);
                         if (read == -1)
@@ -229,7 +229,7 @@ class DeviceConduit : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override uint write (void[] src)
+                override size_t write (void[] src)
                 {
                         int written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)

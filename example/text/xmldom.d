@@ -7,7 +7,7 @@
 
 *******************************************************************************/
 
-import tango.io.File;
+import tango.io.device.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
@@ -22,7 +22,7 @@ void bench (int iterations)
         StopWatch elapsed;
 
         auto doc = new Document!(char);
-       auto content = cast (char[]) File("hamlet.xml").read;
+       auto content = cast (char[]) File.read("hamlet.xml");
 
         elapsed.start;
         for (auto i=0; ++i < iterations;)

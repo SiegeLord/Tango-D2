@@ -15,10 +15,9 @@ module tango.util.log.AppendFiles;
 private import  tango.time.Time;
 
 private import  Path = tango.io.Path,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
-private import  tango.io.model.IFile,
-                tango.io.model.IBuffer;
+private import  tango.io.model.IFile;
 
 private import  tango.util.log.Log,
                 tango.util.log.AppendFile;
@@ -34,7 +33,6 @@ public class AppendFiles : Filer
         private Mask            mask_;
         private char[][]        paths;
         private int             index;
-        private IBuffer         buffer;
         private ulong           maxSize,
                                 fileSize;
 
@@ -153,11 +151,11 @@ public class AppendFiles : Filer
                 close;
 
                 // make it shareable for read
-                auto style = FileConduit.WriteAppending;
-                style.share = FileConduit.Share.Read;
-                auto conduit = new FileConduit (paths[index], style);
+                auto style = File.WriteAppending;
+                style.share = File.Share.Read;
+                auto conduit = new File (paths[index], style);
 
-                buffer = configure (conduit);
+                configure (conduit);
 
                 // reset file size
                 if (reset)

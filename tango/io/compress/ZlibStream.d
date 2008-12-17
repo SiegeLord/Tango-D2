@@ -143,7 +143,7 @@ class ZlibInput : InputFilter
         // more.
         if( zs.avail_in == 0 )
         {
-            auto len = host.read(in_chunk);
+            auto len = source.read(in_chunk);
             if( len == IConduit.Eof )
                 return IConduit.Eof;
 
@@ -361,7 +361,7 @@ class ZlibOutput : OutputFilter
             auto out_buffer = out_chunk[0..have];
             do
             {
-                auto w = host.write(out_buffer);
+                auto w = sink.write(out_buffer);
                 if( w == IConduit.Eof )
                     return w;
 
@@ -452,7 +452,7 @@ class ZlibOutput : OutputFilter
             {
                 do
                 {
-                    auto w = host.write(out_buffer);
+                    auto w = sink.write(out_buffer);
                     if( w == IConduit.Eof )
                         return w;
 
@@ -553,7 +553,7 @@ class ZlibException : IOException
 
 debug(UnitTest) {
 
-import tango.io.Buffer : GrowBuffer;
+import tango.io.device.Array : Array;
 
 unittest
 {
@@ -576,7 +576,7 @@ unittest
         0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
         0x01,0x00,0x1f,0xe3,0x22,0x99];
 
-    scope cond_z = new GrowBuffer;
+    scope cond_z = new Array(2048);
     scope comp = new ZlibOutput(cond_z);
     comp.write (message);
     comp.close;

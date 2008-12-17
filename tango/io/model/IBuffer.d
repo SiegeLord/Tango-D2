@@ -95,7 +95,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract IBuffer setContent (void[] data, uint readable);
+        abstract IBuffer setContent (void[] data, size_t readable);
 
         /***********************************************************************
 
@@ -108,7 +108,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract IBuffer append (void* content, uint length);
+        abstract IBuffer append (void* content, size_t length);
 
         /***********************************************************************
 
@@ -176,7 +176,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract void[] opSlice (uint start, uint end);
+        abstract void[] opSlice (size_t start, size_t end);
 
         /***********************************************************************
 
@@ -191,7 +191,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract void[] slice (uint size, bool eat = true);
+        abstract void[] slice (size_t size, bool eat = true);
 
         /***********************************************************************
 
@@ -211,7 +211,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract void[] readExact (void* dst, uint bytes);
+        abstract void[] readExact (void* dst, size_t bytes);
         
         /**********************************************************************
 
@@ -221,7 +221,7 @@ abstract class IBuffer : IConduit, Buffered
 
         **********************************************************************/
 
-        abstract uint fill (void[] dst);
+        abstract size_t fill (void[] dst);
 
         /***********************************************************************
 
@@ -236,7 +236,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint write (uint delegate (void[]) writer);
+        abstract size_t write (size_t delegate (void[]) writer);
 
         /***********************************************************************
 
@@ -252,7 +252,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint read (uint delegate (void[]) reader);
+        abstract size_t read (size_t delegate (void[]) reader);
 
         /***********************************************************************
 
@@ -303,7 +303,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract bool next (uint delegate (void[]));
+        abstract bool next (size_t delegate (void[]));
 
         /***********************************************************************
 
@@ -317,7 +317,7 @@ abstract class IBuffer : IConduit, Buffered
         
         ***********************************************************************/
 
-        abstract uint fill (InputStream src);
+        abstract size_t fill (InputStream src);
 
         /***********************************************************************
 
@@ -328,7 +328,7 @@ abstract class IBuffer : IConduit, Buffered
         
         ***********************************************************************/
 
-        abstract uint drain (OutputStream dst);
+        abstract size_t drain (OutputStream dst);
 
         /***********************************************************************
         
@@ -337,7 +337,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract bool truncate (uint extent);
+        abstract bool truncate (size_t extent);
 
         /***********************************************************************
 
@@ -359,7 +359,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint readable ();               
+        abstract size_t readable ();               
 
         /***********************************************************************
         
@@ -368,7 +368,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint writable ();
+        abstract size_t writable ();
 
         /***********************************************************************
 
@@ -380,7 +380,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint reserve (uint space);
+        abstract size_t reserve (size_t space);
 
         /***********************************************************************
         
@@ -388,7 +388,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint limit ();               
+        abstract size_t limit ();               
 
         /***********************************************************************
         
@@ -396,7 +396,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint capacity ();               
+        abstract size_t capacity ();               
 
         /***********************************************************************
         
@@ -404,7 +404,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint position ();               
+        abstract size_t position ();               
 
         /***********************************************************************
         
@@ -474,7 +474,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint read (void[] dst);
+        abstract size_t read (void[] dst);
 
         /***********************************************************************
 
@@ -493,7 +493,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint write (void[] src);
+        abstract size_t write (void[] src);
 
         /***********************************************************************
         
@@ -563,7 +563,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract uint bufferSize (); 
+        abstract size_t bufferSize (); 
                      
         /***********************************************************************
         

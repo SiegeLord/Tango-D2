@@ -12,6 +12,8 @@
 
 module tango.text.stream.LineIterator;
 
+pragma (msg, "warning - text.stream.LineIterator has been moved to io.stream.Lines");
+
 private import  tango.text.stream.StreamIterator;
 
 /*******************************************************************************
@@ -65,7 +67,7 @@ class LineIterator(T) : StreamIterator!(T)
                 
                 Construct a streaming iterator upon a conduit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit ("myfile")))
+                foreach (line; new LineIterator!(char) (new File ("myfile")))
                          Cout (line).newline;
                 ---
 
@@ -114,21 +116,3 @@ class LineIterator(T) : StreamIterator!(T)
         }
 }
 
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (LineIterator)
-{
-        import tango.io.Buffer;
-        import tango.io.Console;
-
-        void main()
-        {
-                auto lines = new LineIterator!(char)(new Buffer("one\ntwo\r\nthree"));
-                foreach (i, line, delim; lines)
-                         Cout (line) (delim);
-        }
-}

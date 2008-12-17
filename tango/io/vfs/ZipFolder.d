@@ -14,9 +14,9 @@
 
 module tango.io.vfs.ZipFolder;
 
-import tango.io.device.FileConduit : FileConduit;
+import tango.io.device.File : File;
 import tango.io.FilePath : FilePath;
-import tango.io.TempFile : TempFile;
+import tango.io.device.TempFile : TempFile;
 import tango.io.compress.Zip : ZipReader, ZipBlockReader,
        ZipWriter, ZipBlockWriter, ZipEntry, ZipEntryInfo, Method;
 import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
@@ -143,10 +143,12 @@ private
                 return file.zipEntry.open;
             }
             else if( file.tempFile !is null )
-                return new WrapSeekInputStream(file.tempFile.input, 0);
+                return new WrapSeekInputStream(file.tempFile, 0);
 
             else
-                return new DummyInputStream;
+               {
+               return new DummyInputStream;
+               }
         }
 
         /*
@@ -160,7 +162,7 @@ private
         body
         {
             if( file.tempFile !is null )
-                return new WrapSeekOutputStream(file.tempFile.output);
+                return new WrapSeekOutputStream(file.tempFile);
 
             else
             {
@@ -174,7 +176,7 @@ private
                         scope(exit) zi.close;
     
                         file.tempFile = new TempFile;
-                        file.tempFile.output.copy(zi).close;
+                        file.tempFile.copy(zi).close;
 
                         debug( ZipFolder )
                             Stderr.formatln("Entry.openOutput: duplicated"
@@ -288,16 +290,6 @@ class ZipFolder : ZipSubFolder
      * is specified as true, then modification of the archive will be
      * explicitly disallowed.
      */
-    deprecated this(FilePath path, bool readonly=false)
-    out { assert( valid ); }
-    body
-    {
-        debug( ZipFolder )
-            Stderr.formatln(`ZipFolder("{}", {})`, path, readonly);
-        this(path.toString, readonly);
-    }
-
-    /// ditto
     this(char[] path, bool readonly=false)
     out { assert( valid ); }
     body
@@ -381,7 +373,7 @@ else
                 if( zf.entry.file.zipEntry !is null )
                 {
                     tempFile = new TempFile(p.path, TempFile.Permanent);
-                    os = tempFile.output;
+                    os = tempFile;
                     debug( ZipFolder )
                         Stderr.formatln(" sync: created temp file {}",
                                 tempFile.path);
@@ -399,7 +391,7 @@ else
                 delete zr;
             }
 
-            os = new FileConduit(path, FileConduit.WriteCreate);
+            os = new File(path, File.WriteCreate);
         }
 
         // Now, we can create the archive.
@@ -466,14 +458,6 @@ else
      * influenced by whether the file itself is read-only or not.
      */
     final bool readonly() { return _readonly; }
-
-    /**
-     * Allows you to read and specify the path to the archive.  The effect of
-     * setting this is to change where the archive will be written to when
-     * flushed to disk.
-     */
-    //deprecated final FilePath path() { return FilePath(_path); }
-    //deprecated final void path(FilePath v) { return _path = v.toString; } /// ditto
 
     /**
      * Allows you to read and specify the path to the archive.  The effect of
@@ -1648,11 +1632,6 @@ char[] dir_app(char[] dir, char[] name)
     return dir ~ (dir[$-1]!='/' ? "/" : "") ~ name;
 }
 
-deprecated void headTail(ref FilePath fp, out char[] head, out char[] tail)
-{
-    return headTail(fp.toString, head, tail);
-}
-
 void headTail(char[] path, out char[] head, out char[] tail)
 {
     foreach( i,dchar c ; path[1..$] )
@@ -1721,12 +1700,18 @@ import tango.io.device.Conduit : Conduit;
  * conduit, which will likely break code which expects streams to have an
  * underlying conduit.
  */
-class DummyInputStream : InputStream, IConduit.Seek
+class DummyInputStream : InputStream // IConduit.Seek
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     ///
-    this(){}
+    this()
+    {
+        // Should not be using DummyStream! (KB)
+        assert (false);
+    }
+
+    override InputStream input() {return null;}
     override IConduit conduit() { return null; }
     override void close() {}
     override uint read(void[] dst) { return IConduit.Eof; }
@@ -1739,12 +1724,18 @@ class DummyInputStream : InputStream, IConduit.Seek
 }
 
 /// ditto
-class DummyOutputStream : OutputStream, IConduit.Seek
+class DummyOutputStream : OutputStream //, IConduit.Seek
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     ///
-    this(){}
+    this()
+    {
+        // Should not be using DummyStream! (KB)
+        assert (false);
+    }
+
+    override OutputStream output() {return null;}
     override IConduit conduit() { return null; }
     override void close() {}
     override uint write(void[] src) { return IConduit.Eof; }
@@ -1780,7 +1771,7 @@ class DummyOutputStream : OutputStream, IConduit.Seek
  * delegate callbacks which are invoked just before the associated method is
  * complete.
  */
-class EventSeekInputStream : InputStream, IConduit.Seek
+class EventSeekInputStream : InputStream //, IConduit.Seek
 {
     ///
     struct Callbacks
@@ -1791,25 +1782,30 @@ class EventSeekInputStream : InputStream, IConduit.Seek
         void delegate(long, long, Anchor)   seek; ///
     }
 
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     ///
     this(InputStream source, Callbacks callbacks)
     in
     {
         assert( source !is null );
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this.callbacks = callbacks;
     }
 
     override IConduit conduit()
     {
         return source.conduit;
+    }
+
+    InputStream input()
+    {
+        return source;
     }
 
     override void close()
@@ -1848,7 +1844,7 @@ class EventSeekInputStream : InputStream, IConduit.Seek
 
 private:
     InputStream source;
-    IConduit.Seek seeker;
+    InputStream seeker; //IConduit.Seek seeker;
     Callbacks callbacks;
 
     invariant
@@ -1858,7 +1854,7 @@ private:
 }
 
 /// ditto
-class EventSeekOutputStream : OutputStream, IConduit.Seek
+class EventSeekOutputStream : OutputStream //, IConduit.Seek
 {
     ///
     struct Callbacks
@@ -1869,25 +1865,30 @@ class EventSeekOutputStream : OutputStream, IConduit.Seek
         void delegate(long, long, Anchor)   seek; ///
     }
 
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     ///
     this(OutputStream source, Callbacks callbacks)
     in
     {
         assert( source !is null );
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this.callbacks = callbacks;
     }
 
     override IConduit conduit()
     {
         return source.conduit;
+    }
+
+    override OutputStream output()
+    {
+        return source;
     }
 
     override void close()
@@ -1927,7 +1928,7 @@ class EventSeekOutputStream : OutputStream, IConduit.Seek
 
 private:
     OutputStream source;
-    IConduit.Seek seeker;
+    OutputStream seeker; //IConduit.Seek seeker;
     Callbacks callbacks;
 
     invariant
@@ -1961,9 +1962,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class WrapSeekInputStream : InputStream, IConduit.Seek
+class WrapSeekInputStream : InputStream //, IConduit.Seek
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new wrap stream from the given source.
@@ -1972,12 +1973,12 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
     in
     {
         assert( source !is null );
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
     }
 
@@ -1996,6 +1997,11 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
     override IConduit conduit()
     {
         return source.conduit;
+    }
+
+    InputStream input()
+    {
+        return source;
     }
 
     override void close()
@@ -2035,7 +2041,7 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
 
 private:
     InputStream source;
-    IConduit.Seek seeker;
+    InputStream seeker; //IConduit.Seek seeker;
     long _position;
 
     invariant
@@ -2053,9 +2059,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class WrapSeekOutputStream : OutputStream, IConduit.Seek
+class WrapSeekOutputStream : OutputStream//, IConduit.Seek
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new wrap stream from the given source.
@@ -2063,12 +2069,12 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
     this(OutputStream source)
     in
     {
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
     }
 
@@ -2087,6 +2093,11 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
     override IConduit conduit()
     {
         return source.conduit;
+    }
+
+    override OutputStream output()
+    {
+        return source;
     }
 
     override void close()
@@ -2126,7 +2137,7 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
 
 private:
     OutputStream source;
-    IConduit.Seek seeker;
+    OutputStream seeker; //IConduit.Seek seeker;
     long _position;
 
     invariant

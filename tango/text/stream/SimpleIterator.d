@@ -12,6 +12,8 @@
 
 module tango.text.stream.SimpleIterator;
 
+pragma (msg, "warning - text.stream.SimpleIterator has been moved to io.stream.Delimiters");
+
 private import  tango.text.stream.StreamIterator;
 
 /*******************************************************************************
@@ -66,7 +68,7 @@ class SimpleIterator(T) : StreamIterator!(T)
                 
                 Construct a streaming iterator upon a conduit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit ("myfile")))
+                foreach (line; new LineIterator!(char) (new File ("myfile")))
                          Cout (line).newline;
                 ---
 

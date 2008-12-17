@@ -12,6 +12,8 @@
 
 module tango.text.stream.RegexIterator;
 
+pragma (msg, "warning - text.stream.RegexIterator has been moved to io.stream.Patterns");
+
 private import  tango.text.Regex;
     
 private import  tango.text.stream.StreamIterator;
@@ -70,7 +72,7 @@ class RegexIterator : StreamIterator!(char)
                 
                 Construct a streaming iterator upon a conduit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit ("myfile")))
+                foreach (line; new LineIterator!(char) (new File ("myfile")))
                          Cout (line).newline;
                 ---
 

@@ -6,8 +6,7 @@
 
 **************************************************************/
 
-import tango.io.File,
-       tango.io.Stdout,
+import tango.io.Stdout,
        tango.text.Regex;
 
 import  tango.io.vfs.FileFolder;

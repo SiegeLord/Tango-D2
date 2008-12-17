@@ -142,7 +142,7 @@ class BzipOutput : OutputFilter
             auto out_buffer = out_chunk[0..have];
             do
             {
-                auto w = host.write(out_buffer);
+                auto w = sink.write(out_buffer);
                 if( w == IConduit.Eof )
                     return w;
 
@@ -229,7 +229,7 @@ class BzipOutput : OutputFilter
             {
                 do
                 {
-                    auto w = host.write(out_buffer);
+                    auto w = sink.write(out_buffer);
                     if( w == IConduit.Eof )
                         return w;
 
@@ -338,7 +338,7 @@ class BzipInput : InputFilter
         {
             if( bzs.avail_in == 0 )
             {
-                auto len = host.read(in_chunk);
+                auto len = source.read(in_chunk);
                 if( len == IConduit.Eof )
                     return IConduit.Eof;
 
@@ -467,7 +467,7 @@ class BzipClosedException : IOException
 
 debug(UnitTest):
 
-import tango.io.Buffer : GrowBuffer;
+import tango.io.device.Array : Array;
 
 unittest
 {
@@ -504,7 +504,7 @@ unittest
         0xdc, 0x91, 0x4e, 0x14, 0x24, 0x10, 0x26, 0x2f,
         0xaa, 0x80];
 
-    scope cond = new GrowBuffer;
+    scope cond = new Array(1024, 1024);
     scope comp = new BzipOutput(cond);
     comp.write(message);
     comp.close;

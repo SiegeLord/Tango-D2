@@ -14,8 +14,9 @@ module tango.util.log.AppendMail;
 
 private import  tango.util.log.Log;
 
-private import  tango.io.Buffer,
-                tango.net.SocketConduit,
+private import  tango.io.stream.Buffer;
+
+private import  tango.net.SocketConduit,
                 tango.net.InternetAddress;
 
 /*******************************************************************************
@@ -65,19 +66,19 @@ public class AppendMail : Appender
                        conduit.close;
 
                 conduit.connect (server);
-                auto emit = new Buffer (conduit);
+                auto emit = new Bout (conduit);
 
-                emit ("HELO none@anon.org\r\nMAIL FROM:<") 
-                     (from) 
-                     (">\r\nRCPT TO:<") 
-                     (to) 
-                     (">\r\nDATA\r\nSubject: ") 
-                     (subj) 
-                     ("\r\nContent-Type: text/plain; charset=us-ascii\r\n\r\n");
+                emit.append ("HELO none@anon.org\r\nMAIL FROM:<") 
+                    .append (from) 
+                    .append (">\r\nRCPT TO:<") 
+                    .append (to) 
+                    .append (">\r\nDATA\r\nSubject: ") 
+                    .append (subj) 
+                    .append ("\r\nContent-Type: text/plain; charset=us-ascii\r\n\r\n");
                 
                 layout.format (event, &emit.consume);
-                emit ("\r\n.\r\nQUIT\r\n");
-                emit ();
+                emit.append ("\r\n.\r\nQUIT\r\n");
+                emit.flush;
         }
 
         /***********************************************************************

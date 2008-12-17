@@ -1,7 +1,8 @@
-import tango.text.Properties;
+import tango.io.stream.Map;
 import tango.sys.Process;
 import tango.io.FileSystem;
 import tango.io.FilePath;
+import tango.io.device.File;
 import tango.io.model.IFile;
 
 import tango.io.Stdout;
@@ -59,8 +60,11 @@ int main(char[][] args)
         return;
     }
 
-    auto props = new Properties!(char);
-    props.load(args[1], &configReader);
+    auto props = new MapInput!(char)(new File(args[1]));
+    foreach (name, value; props)
+             configReader (name, value);
+    //props.load(args[1], &configReader);
+    props.close;
 
 
     // Enter work directory

@@ -18,6 +18,9 @@ private import  tango.core.Exception;
 public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
+pragma (msg, "warning - io.Buffer functionality has been split into io.stream.Buffer and io.device.Array - use the former for discrete streams, and the latter for combined I/O");
+
+
 /******************************************************************************
 
 ******************************************************************************/
@@ -77,7 +80,7 @@ extern (C)
 
         Alternatively, one might use a formatter to append the buffer:
         ---
-        auto output = new FormatOutput (new Buffer(256));
+        auto output = new TextOutput (new Buffer(256));
         output.format ("now is the time for {} good men {}", 3, foo);
         ---
 
@@ -89,42 +92,43 @@ extern (C)
         such as FileConduit. Each conduit exposes a preferred-size for
         its associated buffers, utilized during buffer construction:
         ---
-        auto file = new FileConduit ("file.name");
+        auto file = new File ("name");
         auto buf = new Buffer (file);
         ---
 
         However, this is typically hidden by higher level constructors
         such as those exposed via the stream wrappers. For example:
         ---
-        auto input = new DataInput (new FileInput("file.name"));
+        auto input = new DataInput (new File ("name"));
         ---
 
         There is indeed a buffer between the resultant stream and the
-        file source, but explicit buffer construction is unecessary in
-        common cases.
+        file, but explicit buffer construction is unecessary in common 
+        cases.
 
         An Iterator is constructed in a similar manner, where you provide
         it an input stream to operate upon. There's a variety of iterators
-        available in the tango.text.stream package, and they are templated
-        for each of utf8, utf16, and utf32. This example uses a line iterator
-        to sweep a text file:
+        available in the tango.io.stream package, and they are templated
+        for each of utf8, utf16, and utf32. This example uses a line-iterator
+        derivative to sweep a text file:
         ---
-        auto lines = new LineInput (new FileInput("file.name"));
+        auto lines = new TextInput (new File ("name"));
         foreach (line; lines)
                  Cout(line).newline;
+        lines.close;
         ---
 
-        Buffers are useful for many purposes within Tango, but there
-        are times when it may be more appropriate to sidestep them. For
-        such cases, all conduit derivatives (such as FileConduit) support
-        direct array-based IO via a pair of read() and write() methods.
+        Buffers are useful for many purposes within Tango, but there are 
+        times when it may be more appropriate to sidestep them. For such 
+        cases, all conduit derivations (such as File) support array-based 
+        I/O via a pair of read() and write() methods.
 
 *******************************************************************************/
 
 class Buffer : IBuffer
 {
-        protected OutputStream  sink;                   // optional data sink
-        protected InputStream   source;                 // optional data source
+        protected OutputStream  boutput;                   // optional data boutput
+        protected InputStream   binput;                 // optional data binput
         protected void[]        data;                   // the raw data buffer
         protected uint          index;                  // current read position
         protected uint          extent;                 // limit of valid content
@@ -456,7 +460,7 @@ class Buffer : IBuffer
         {
                 if (size > readable)
                    {
-                   if (source is null)
+                   if (binput is null)
                        error (underflow);
 
                    // make some space? This will try to leave as much content
@@ -472,7 +476,7 @@ class Buffer : IBuffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(source) is IConduit.Eof)
+                      if (fill(binput) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -576,7 +580,7 @@ class Buffer : IBuffer
         {
                 if (length > writable)
                     // can we write externally?
-                    if (sink)
+                    if (boutput)
                        {
                        flush ();
 
@@ -584,7 +588,7 @@ class Buffer : IBuffer
                        if (length > dimension)
                           {
                           do {
-                             auto written = sink.write (src [0 .. length]);
+                             auto written = boutput.write (src [0 .. length]);
                              if (written is IConduit.Eof)
                                  error (eofWrite);
                              src += written, length -= written;
@@ -684,6 +688,32 @@ class Buffer : IBuffer
                 return slice(size) !is null;
         }
 
+        long seek (long offset, Anchor start = Anchor.Begin)
+        {
+                if (start is Anchor.Current)
+                   {
+                   // handle this specially because we know this is
+                   // buffered - we should take into account the buffer
+                   // position when seeking
+                   offset -= this.readable;
+                   auto bpos = offset + this.limit;
+
+                   if (bpos >= 0 && bpos < this.limit)
+                      {
+                      // the new position is within the current
+                      // buffer, skip to that position.
+                      skip (cast(int) bpos - cast(int) this.position);
+                      return 0;
+                      //return conduit.position - input.readable;
+                      }
+                   // else, position is outside the buffer. Do a real
+                   // seek using the adjusted position.
+                   }
+
+                clear;
+                return binput.seek (offset, start);
+        }
+
         /***********************************************************************
 
                 Iterator support
@@ -714,7 +744,7 @@ class Buffer : IBuffer
         {
                 while (read(scan) is IConduit.Eof)
                        // not found - are we streaming?
-                       if (source)
+                       if (binput)
                           {
                           // did we start at the beginning?
                           if (position && canCompress)
@@ -726,7 +756,7 @@ class Buffer : IBuffer
                                  error ("Token is too large to fit within buffer");
 
                           // read another chunk of data
-                          if (fill(source) is IConduit.Eof)
+                          if (fill(binput) is IConduit.Eof)
                               return false;
                           }
                        else
@@ -1056,8 +1086,8 @@ class Buffer : IBuffer
 
         IBuffer setConduit (IConduit conduit)
         {
-                sink = conduit.output;
-                source = conduit.input;
+                boutput = conduit;
+                binput = conduit;
                 return this;
         }
 
@@ -1066,7 +1096,7 @@ class Buffer : IBuffer
                 Set output stream
 
                 Params:
-                sink = the stream to attach to
+                boutput = the stream to attach to
 
                 Remarks:
                 Sets the external output stream associated with this buffer.
@@ -1077,9 +1107,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final IBuffer output (OutputStream sink)
+        final IBuffer output (OutputStream boutput)
         {
-                this.sink = sink;
+                this.boutput = boutput;
                 return this;
         }
 
@@ -1088,7 +1118,7 @@ class Buffer : IBuffer
                 Set input stream
 
                 Params:
-                source = the stream to attach to
+                binput = the stream to attach to
 
                 Remarks:
                 Sets the external input stream associated with this buffer.
@@ -1099,9 +1129,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final IBuffer input (InputStream source)
+        final IBuffer input (InputStream binput)
         {
-                this.source = source;
+                this.binput = binput;
                 return this;
         }
 
@@ -1189,6 +1219,30 @@ class Buffer : IBuffer
         }
 
 
+        /***********************************************************************
+        
+                Return a buffered output, or null if there's not one already
+                available.
+
+        ***********************************************************************/
+
+        InputBuffer bin ()
+        {
+                return null;
+        }              
+
+        /***********************************************************************
+        
+                Return a buffered output, or null if there's not one already
+                available.
+
+        ***********************************************************************/
+
+        OutputBuffer bout ()
+        {
+                return null;
+        }              
+
         /**********************************************************************/
         /******************** Stream & Conduit Interfaces *********************/
         /**********************************************************************/
@@ -1240,13 +1294,13 @@ class Buffer : IBuffer
 
         override OutputStream flush ()
         {
-                if (sink)
+                if (boutput)
                    {
                    while (readable() > 0)
-                          drain (sink);
+                          drain (boutput);
 
                    // flush the filter chain also
-                   sink.flush;
+                   boutput.flush;
                    }
                 return this;
         }
@@ -1266,8 +1320,8 @@ class Buffer : IBuffer
                 index = extent = 0;
 
                 // clear the filter chain also
-                if (source)
-                    source.clear;
+                if (binput)
+                    binput.clear;
                 return this;
         }
 
@@ -1291,8 +1345,8 @@ class Buffer : IBuffer
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to
                        if (writable is 0)
-                           if (sink)
-                               drain (sink);
+                           if (boutput)
+                               drain (boutput);
                            else
                               error (overflow);
                 return this;
@@ -1347,18 +1401,18 @@ class Buffer : IBuffer
                    index += content;
                    }
                 else
-                   if (source)
+                   if (binput)
                       {
                       // pathological cases read directly from conduit
                       if (dst.length > dimension)
-                          content = source.read (dst);
+                          content = binput.read (dst);
                       else
                          {
                          if (writable is 0)
                              index = extent = 0;  // same as clear(), without call-chain
 
                          // keep buffer partially populated
-                         if ((content = fill(source)) != IConduit.Eof && content > 0)
+                         if ((content = fill(binput)) != IConduit.Eof && content > 0)
                               content = read (dst);
                          }
                       }
@@ -1409,11 +1463,11 @@ class Buffer : IBuffer
 
         final override IConduit conduit ()
         {
-                if (sink)
-                    return sink.conduit;
+                if (boutput)
+                    return boutput.conduit;
                 else
-                   if (source)
-                       return source.conduit;
+                   if (binput)
+                       return binput.conduit;
                 return this;
         }
 
@@ -1457,7 +1511,7 @@ class Buffer : IBuffer
 
         final OutputStream output ()
         {
-                return sink;
+                return boutput;
         }
 
         /***********************************************************************
@@ -1478,12 +1532,12 @@ class Buffer : IBuffer
 
         final InputStream input ()
         {
-                return source;
+                return binput;
         }
 
         /***********************************************************************
 
-                Release external resources
+                Release external rebinputs
 
         ***********************************************************************/
 
@@ -1503,11 +1557,11 @@ class Buffer : IBuffer
 
         override void close ()
         {
-                if (sink)
-                    sink.close;
+                if (boutput)
+                    boutput.close;
                 else
-                   if (source)
-                       source.close;
+                   if (binput)
+                       binput.close;
         }
 }
 
@@ -1569,7 +1623,7 @@ class GrowBuffer : Buffer
         {   
                 if (size > readable)
                    {
-                   if (source is null)
+                   if (binput is null)
                        error (underflow);
 
                    if (size + index > dimension)
@@ -1577,7 +1631,7 @@ class GrowBuffer : Buffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (fill(source) is IConduit.Eof)
+                      if (fill(binput) is IConduit.Eof)
                           error (eofRead);
                       } while (size > readable);
                    }
@@ -1633,7 +1687,7 @@ class GrowBuffer : Buffer
         uint fill (uint size = uint.max)
         {   
                 while (readable < size)
-                       if (fill(source) is IConduit.Eof)
+                       if (fill(binput) is IConduit.Eof)
                            break;
                 return readable;
         }

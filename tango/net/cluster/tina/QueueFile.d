@@ -13,7 +13,7 @@
 module tango.net.cluster.tina.QueueFile;
 
 private import  tango.io.FilePath,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
 private import  tango.util.log.model.ILogger;
 
@@ -45,7 +45,7 @@ class QueueFile
                                 insert;         // file insert position
         private void[]          buffer;         // read buffer
         private Header          current;        // top-of-stack info
-        private FileConduit     conduit;        // the file itself
+        private File            conduit;        // the file itself
         private IChannel        channel_;       // the channel we're using
 
         /**********************************************************************
@@ -69,7 +69,7 @@ class QueueFile
                 this.log = log;
                 limit    = max;
                 buffer   = new void [1024 * 8];
-                conduit  = new FileConduit (name, FileConduit.ReadWriteOpen);
+                conduit  = new File (name, File.ReadWriteOpen);
 
                 // lock the file on Posix, since it has no O/S file locks
                 version (Posix)

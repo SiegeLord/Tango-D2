@@ -27,7 +27,7 @@ private {
     import Timestamp = tango.text.convert.TimeStamp;
     import tango.core.Array;
     import tango.io.device.Conduit;
-    import tango.io.device.FileConduit;
+    import tango.io.device.File;
 }
 
 /******************************************************************************
@@ -1323,7 +1323,7 @@ class FTPConnection : Telnet {
             parse_word();
 
             // Size in bytes, this one is good.
-            info.size = Integer.parse((parse_word()));
+            info.size = cast(ulong) Integer.parse((parse_word()));
 
             // Make sure we still have enough space.
             if(pos + 13 >= line.length)
@@ -1360,7 +1360,7 @@ class FTPConnection : Telnet {
             else if(dir_or_size[0] == '<')
                 info.type = FtpFileType.dir;
             else
-                info.size = Integer.parse((dir_or_size));
+                info.size = cast(ulong) Integer.parse((dir_or_size));
 
             info.name = line[pos .. line.length];
             break;
@@ -1437,7 +1437,7 @@ class FTPConnection : Telnet {
 
             // Size, mime, etc...
             if("size" in info.facts)
-                info.size = Integer.parse((info.facts["size"]));
+                info.size = cast(ulong) Integer.parse((info.facts["size"]));
             if("media-type" in info.facts)
                 info.mime = info.facts["media-type"];
 
@@ -1497,7 +1497,7 @@ class FTPConnection : Telnet {
     }
     body {
         // Open the file for reading...
-        auto file = new FileConduit(local_file);
+        auto file = new File(local_file);
         scope(exit) {
             file.detach();
             delete file;
@@ -1631,14 +1631,14 @@ class FTPConnection : Telnet {
         assert(local_file.length > 0);
     }
     body {
-        FileConduit file = null;
+        File file = null;
 
         // We may either create a new file...
         if(this.restartPos_ == 0)
-            file = new FileConduit(local_file, FileConduit.ReadWriteCreate);
+            file = new File(local_file, File.ReadWriteCreate);
         // Or open an existing file, and seek to the specified position (read: not end, necessarily.)
         else {
-            file = new FileConduit(local_file, FileConduit.ReadWriteExisting);
+            file = new File(local_file, File.ReadWriteExisting);
             file.seek(this.restartPos_);
 
             this.restartPos_ = 0;

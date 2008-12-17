@@ -12,46 +12,16 @@
 
 module tango.io.stream.FileStream;
 
-public import tango.io.device.FileConduit;
+public import tango.io.device.File;
+
+pragma (msg, "warning - io.stream.FileStream is deprecated. Please use io.device.File instead");
 
 /*******************************************************************************
 
-        Trivial wrapper around a FileConduit
+        Trivial wrappers around a File
 
 *******************************************************************************/
 
-class FileInput : FileConduit
-{
-        /***********************************************************************
+alias File FileInput;
 
-                Open a file for reading. Don't forget to use close()
-
-        ***********************************************************************/
-
-        this (char[] path, FileConduit.Style style = FileConduit.ReadExisting)
-        {
-                super (path, style);
-        }
-}
-
-
-/*******************************************************************************
-
-        Trivial wrapper around a FileConduit
-
-*******************************************************************************/
-
-class FileOutput : FileConduit
-{
-        /***********************************************************************
-
-                Open a file for writing. Don't forget to use close()
-
-        ***********************************************************************/
-
-        this (char[] path, FileConduit.Style style = FileConduit.WriteCreate)
-        {
-                super (path, style);
-        }
-}
-
+alias File FileOutput;

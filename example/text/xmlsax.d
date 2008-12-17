@@ -1,6 +1,6 @@
 module xmlsax;
 
-import tango.io.File;
+import tango.io.device.File;
 import tango.io.Stdout;
 import tango.time.StopWatch;
 import tango.text.xml.SaxParser;
@@ -21,7 +21,7 @@ void benchmark (int iterations, SaxParser!(char) parser)
 {       
         StopWatch elapsed;
 
-        auto content = cast(char[]) File("hamlet.xml").read;
+        auto content = cast(char[]) File.read("hamlet.xml");
         parser.setContent(content);
 
         elapsed.start;

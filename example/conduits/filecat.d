@@ -1,5 +1,5 @@
 private import  tango.io.Console,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
 /*******************************************************************************
 
@@ -12,11 +12,11 @@ void main(char[][] args)
         if (args.length > 2)
            {
            // open the file for writing
-           auto dst = new FileConduit (args[1], FileConduit.WriteCreate);
+           auto dst = new File (args[1], File.WriteCreate);
 
            // copy each file onto dst
            foreach (char[] arg; args[2..args.length])
-                    dst.copy (new FileConduit(arg));
+                    dst.copy (new File(arg));
 
            // flush output and close
            dst.close;

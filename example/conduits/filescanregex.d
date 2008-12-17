@@ -6,8 +6,7 @@
 
 **************************************************************/
 
-import tango.io.File,
-       tango.io.Stdout,
+import tango.io.Stdout,
        tango.io.FileScan,
        tango.text.Regex;
 

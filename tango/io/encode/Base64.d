@@ -340,7 +340,7 @@ body
 version (Test)
 {
     import tango.scrapple.util.Test;
-    import tango.io.File;
+    import tango.io.device.File;
     import tango.time.StopWatch;
     import tango.io.Stdout;
 
@@ -387,7 +387,7 @@ version (Test)
         Test.Status speedTest(inout char[][] messages)
         {
             Stdout("Reading...").newline;
-            char[] data = cast(char[])File("blah.b64").read;
+            char[] data = cast(char[])File.read("blah.b64");
             ubyte[] result = new ubyte[data.length];
             auto t1 = new StopWatch();
             Stdout("Decoding..").newline;
@@ -403,7 +403,7 @@ version (Test)
         Test.Status speedTest2(inout char[][] messages)
         {
             Stdout("Reading...").newline;
-//            ubyte[] data = cast(ubyte[])File("blah.txt").read;
+//            ubyte[] data = cast(ubyte[])FileData("blah.txt").read;
             ubyte[] data = cast(ubyte[])"I am a small string, Wee...";
             char[] result = new char[allocateEncodeSize(data)];
             auto t1 = new StopWatch();

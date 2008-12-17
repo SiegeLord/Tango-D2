@@ -389,7 +389,7 @@ version(Test)
 {
     import tetra.util.Test; 
     import tango.io.Stdout;
-    import tango.io.File;
+    import tango.io.device.File;
     extern (C)
     {
         int blah(int booger, void *x)
@@ -423,8 +423,8 @@ version(Test)
                         PrivateKey privateKey;
                         try
                         {
-                            publicCertificate = new Certificate(cast(char[])File("public.pem").read); 
-                            privateKey = new PrivateKey(cast(char[])File("private.pem").read);
+                            publicCertificate = new Certificate(cast(char[])File.read("public.pem")); 
+                            privateKey = new PrivateKey(cast(char[])File.read("private.pem"));
                         }                        
                         catch (Exception ex)
                         {

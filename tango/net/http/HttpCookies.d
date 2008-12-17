@@ -16,11 +16,11 @@ private import  tango.io.Buffer;
 
 private import  tango.stdc.ctype;
 
+private import  tango.io.stream.Iterator;
+
 private import  tango.net.http.HttpHeaders;
 
 private import  tango.io.protocol.model.IWriter;
-
-private import  tango.text.stream.StreamIterator;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -454,7 +454,7 @@ class HttpCookies
 
 *******************************************************************************/
 
-class CookieParser : StreamIterator!(char)
+class CookieParser : Iterator!(char)
 {
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 

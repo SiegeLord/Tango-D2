@@ -19,8 +19,8 @@ module tango.net.http.ChunkStream;
 private import  tango.io.Buffer,
                 tango.io.device.Conduit;
 
-private import  tango.text.stream.LineIterator;
-private import  tango.text.stream.StreamIterator;
+private import  tango.io.stream.Lines;
+//private import  tango.io.stream.Iterator;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -103,7 +103,7 @@ class ChunkOutput : OutputFilter, Buffered
 
 *******************************************************************************/
 
-class ChunkInput : LineIterator!(char)
+class ChunkInput : Lines!(char)
 {
         private alias void delegate(char[] line) Headers;
 

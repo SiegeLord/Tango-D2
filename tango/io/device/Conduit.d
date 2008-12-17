@@ -12,25 +12,25 @@
 
 module tango.io.device.Conduit;
 
-private import  tango.core.Exception;
+private import tango.core.Exception;
 
-public  import  tango.io.model.IConduit;
+public  import tango.io.model.IConduit;
 
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
-        Only the conduit-specific read(), write(), and 
+        Only the conduit-specific read(), write(), detach() and 
         bufferSize() need to be implemented for a concrete conduit 
-        implementation. See FileConduit for an example.
+        implementation. See File for an example.
 
         Conduits provide virtualized access to external content, and
         represent things like files or Internet connections. Conduits
         expose a pair of streams, are modelled by tango.io.model.IConduit, 
-        and are implemented via classes such as FileConduit & SocketConduit. 
+        and are implemented via classes such as File & SocketConduit. 
 
         Additional kinds of conduit are easy to construct: one either
         subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit.
-        A conduit typically reads and writes from/to an IBuffer in large
+        A conduit typically reads and writes from/to a Buffer in large
         chunks, typically the entire buffer. Alternatively, one can invoke
         input.read(dst[]) and/or output.write(src[]) directly.
 
@@ -52,7 +52,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract uint bufferSize ();
+        abstract size_t bufferSize ();
 
         /***********************************************************************
 
@@ -65,7 +65,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract uint read (void[] dst);
+        abstract size_t read (void[] dst);
 
         /***********************************************************************
 
@@ -78,7 +78,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract uint write (void [] src);
+        abstract size_t write (void [] src);
 
         /***********************************************************************
 
@@ -105,7 +105,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final IConduit conduit()
+        final IConduit conduit ()
         {
                 return this;
         }
@@ -116,15 +116,21 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        InputStream clear () {return this;}
+        InputStream clear () 
+        {
+                return this;
+        }
 
         /***********************************************************************
 
-                Write buffered output
+                Emit buffered output
 
         ***********************************************************************/
 
-        OutputStream flush () {return this;}
+        OutputStream flush () 
+        {
+                return this;
+        }
 
         /***********************************************************************
 
@@ -142,8 +148,8 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the current input stream 
-                 
+                Return the input stream 
+
         ***********************************************************************/
         
         final InputStream input ()
@@ -153,7 +159,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the current output stream
+                Return the output stream
 
         ***********************************************************************/
         
@@ -180,7 +186,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final OutputStream copy (InputStream src)
+        OutputStream copy (InputStream src)
         {
                 transfer (src, this);
                 return this;
@@ -203,10 +209,23 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
+        
+                Seek on this stream. Source conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                error (this.toString ~ " does not support seek requests");
+                return 0;
+        }
+
+        /***********************************************************************
 
                 Load the bits from a stream, and return them all in an
                 array. The dst array can be provided as an option, which
-                will be expanded as necessary to consume the input.
+                will be expanded as necessary to consume input.
 
                 Returns an array representing the content, and throws
                 IOException on error
@@ -216,11 +235,11 @@ class Conduit : IConduit
         static void[] load (InputStream src, void[] dst = null)
         {
                 auto index = 0;
-                auto chunk = 256;
+                auto chunk = 8192;
                 
                 do {
-                   if (dst.length - index < chunk)
-                       dst.length = dst.length + (chunk * 2);
+                   if (dst.length - index < 1024)
+                       dst.length = chunk + dst.length + dst.length / 2;
 
                    chunk = src.read (dst[index .. $]);
                    index += chunk;
@@ -239,8 +258,8 @@ class Conduit : IConduit
 
         static size_t transfer (InputStream src, OutputStream dst, size_t max=size_t.max)
         {
-                byte[8192]      tmp;
-                size_t          done;
+                byte[8192] tmp;
+                size_t     done;
 
                 while (max)
                       {
@@ -248,16 +267,17 @@ class Conduit : IConduit
                       if (len > tmp.length)
                           len = tmp.length;
 
-                      if ((len = src.read(tmp[0 .. len])) is IConduit.Eof)
+                      if ((len = src.read(tmp[0 .. len])) is Eof)
                            max = 0;
                       else
                          {
                          max -= len;
                          done += len;
                          auto p = tmp.ptr;
-                         for (uint j; len > 0; len -= j, p += j)
-                              if ((j = dst.write (p[0 .. len])) is IConduit.Eof)
-                                   dst.conduit.error ("Conduit.copy :: Eof while writing to: "~dst.conduit.toString);
+                         for (auto j=0; len > 0; len -= j, p += j)
+                              if ((j = dst.write (p[0 .. len])) is Eof)
+                                   dst.conduit.error ("Conduit.copy :: Eof while writing to: "~
+                                                       dst.conduit.toString);
                          }
                       }
 
@@ -274,7 +294,7 @@ class Conduit : IConduit
 
 class InputFilter : InputStream
 {
-        protected InputStream host;
+        protected InputStream source;
 
         /***********************************************************************
 
@@ -282,10 +302,10 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        this (InputStream host)
+        this (InputStream source)
         {
-                assert (host, "input stream host cannot be null");
-                this.host = host;
+                assert (source, "input stream source cannot be null");
+                this.source = source;
         }
 
         /***********************************************************************
@@ -296,7 +316,7 @@ class InputFilter : InputStream
 
         IConduit conduit ()
         {
-                return host.conduit;
+                return source.conduit;
         }
 
         /***********************************************************************
@@ -310,21 +330,9 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        uint read (void[] dst)
+        size_t read (void[] dst)
         {
-                return host.read (dst);
-        }
-
-        /***********************************************************************
-
-                Clear any buffered content
-
-        ***********************************************************************/
-
-        InputStream clear ()
-        {
-                host.clear;
-                return this;
+                return source.read (dst);
         }
 
         /***********************************************************************
@@ -345,13 +353,48 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
+                Clear any buffered content
+
+        ***********************************************************************/
+
+        InputStream clear ()
+        {
+                source.clear;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                return source.seek (offset, anchor);
+        }
+
+        /***********************************************************************
+
+                Return the upstream host of this filter
+                        
+        ***********************************************************************/
+
+        InputStream input ()
+        {
+                return source;
+        }            
+
+        /***********************************************************************
+
                 Close the input
 
         ***********************************************************************/
 
         void close ()
         {
-                host.close;
+                source.close;
         }
 }
 
@@ -364,7 +407,7 @@ class InputFilter : InputStream
 
 class OutputFilter : OutputStream
 {
-        protected OutputStream host;
+        protected OutputStream sink;
 
         /***********************************************************************
 
@@ -372,10 +415,10 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        this (OutputStream host)
+        this (OutputStream sink)
         {
-                assert (host, "output stream host cannot be null");
-                this.host = host;
+                assert (sink, "output stream cannot be null");
+                this.sink = sink;
         }
 
         /***********************************************************************
@@ -386,7 +429,7 @@ class OutputFilter : OutputStream
 
         IConduit conduit ()
         {
-                return host.conduit;
+                return sink.conduit;
         }
 
         /***********************************************************************
@@ -400,21 +443,9 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        uint write (void[] src)
+        size_t write (void[] src)
         {
-                return host.write (src);
-        }
-
-        /***********************************************************************
-
-                Emit/purge buffered content
-
-        ***********************************************************************/
-
-        OutputStream flush ()
-        {
-                host.flush;
-                return this;
+                return sink.write (src);
         }
 
         /***********************************************************************
@@ -432,15 +463,48 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
+                Emit/purge buffered content
+
+        ***********************************************************************/
+
+        OutputStream flush ()
+        {
+                sink.flush;
+                return this;
+        }
+
+        /***********************************************************************
+        
+                Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                return sink.seek (offset, anchor);
+        }
+
+        /***********************************************************************
+        
+                Return the upstream host of this filter
+                        
+        ***********************************************************************/
+
+        OutputStream output ()
+        {
+                return sink;
+        }              
+
+        /***********************************************************************
+
                 Close the output
 
         ***********************************************************************/
 
         void close ()
         {
-                host.close;
+                sink.close;
         }
 }
-
-
 

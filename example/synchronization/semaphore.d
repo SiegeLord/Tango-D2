@@ -13,7 +13,7 @@ private import tango.core.Exception;
 private import tango.core.Exception;
 private import tango.core.Thread;
 private import tango.io.Console;
-private import tango.text.stream.LineIterator;
+private import tango.io.stream.Lines;
 private import tango.text.convert.Integer;
 private import tango.sys.Process;
 
@@ -230,12 +230,12 @@ void testProcessSemaphore(char[] programName)
 
         debug (semaphore)
         {
-            foreach (line; new LineIterator!(char)(proc.stdout))
+            foreach (line; new Lines!(char)(proc.stdout))
             {
                 childLog.trace(line);
             }
         }
-        foreach (line; new LineIterator!(char)(proc.stderr))
+        foreach (line; new Lines!(char)(proc.stderr))
         {
             Cerr(line).newline;
         }

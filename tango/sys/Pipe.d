@@ -8,7 +8,7 @@ module tango.sys.Pipe;
 
 private import tango.sys.Common;
 private import tango.io.Buffer;
-private import tango.io.device.DeviceConduit;
+private import tango.io.device.Device;
 
 private import tango.core.Exception;
 
@@ -29,16 +29,17 @@ debug (PipeConduit)
  * Each PipeConduit can only read or write, depending on the way it has been
  * created.
  */
-class PipeConduit: DeviceConduit
+
+class PipeConduit : Device
 {
     version (OLD)
     {
-        alias DeviceConduit.fileHandle  fileHandle;
-        alias DeviceConduit.copy        copy;
-        alias DeviceConduit.read        read;
-        alias DeviceConduit.write       write;
-        alias DeviceConduit.close       close;
-        alias DeviceConduit.error       error;
+        alias Device.fileHandle  fileHandle;
+        alias Device.copy        copy;
+        alias Device.read        read;
+        alias Device.write       write;
+        alias Device.close       close;
+        alias Device.error       error;
     }
 
     static const uint DefaultBufferSize = 8 * 1024;

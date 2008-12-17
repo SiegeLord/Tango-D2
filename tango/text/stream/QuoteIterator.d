@@ -12,6 +12,8 @@
 
 module tango.text.stream.QuoteIterator;
 
+pragma (msg, "warning - text.stream.QuoteIterator has been moved to io.stream.Quotes");
+
 private import  tango.text.stream.StreamIterator;
 
 /*******************************************************************************
@@ -67,7 +69,7 @@ class QuoteIterator(T) : StreamIterator!(T)
                 
                 Construct a streaming iterator upon a conduit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit ("myfile")))
+                foreach (line; new LineIterator!(char) (new File ("myfile")))
                          Cout (line).newline;
                 ---
 

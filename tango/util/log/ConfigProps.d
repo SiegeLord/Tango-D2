@@ -15,8 +15,8 @@ module tango.util.log.ConfigProps;
 
 private import  tango.util.log.Log;
 
-private import  tango.io.stream.MapStream,
-                tango.io.stream.FileStream;
+private import  tango.io.stream.Map,
+                tango.io.device.File;
 
 /*******************************************************************************
 
@@ -59,7 +59,7 @@ struct ConfigProps
 
         static void opCall (char[] path)
         {
-                auto input = new MapInput!(char)(new FileInput(path));
+                auto input = new MapInput!(char)(new File(path));
                 scope (exit)
                        input.close;
 

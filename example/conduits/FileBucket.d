@@ -1,6 +1,6 @@
 module FileBucket;
 
-private import  tango.io.device.FileConduit;
+private import  tango.io.device.File;
 
 private import  tango.core.Exception;
 
@@ -60,7 +60,7 @@ class FileBucket
         private BlockSize               block;
 
         // where content is stored
-        private FileConduit             file;
+        private File                    file;
 
         // pointers to file records
         private Record[char[]]          map;
@@ -99,7 +99,7 @@ class FileBucket
                 this.block = block;
 
                 // open a storage file
-                file = new FileConduit (path, FileConduit.ReadWriteCreate);
+                file = new File (path, File.ReadWriteCreate);
 
                 // set initial file size (can be zero)
                 fileSize = initialRecords * block.capacity;

@@ -1996,7 +1996,7 @@ private char[] format (char[] msg, int value)
 
 debug (UnitTest)
 {
-    private import tango.text.stream.LineIterator;
+    private import tango.io.stream.Lines;
 
     unittest
     {
@@ -2024,7 +2024,7 @@ debug (UnitTest)
 
             p.execute();
 
-            foreach (i, line; new LineIterator!(char)(p.stdout))
+            foreach (i, line; new Lines!(char)(p.stdout))
             {
                 if (i == params.length) // echo can add ending new line confusing this test
                     break;

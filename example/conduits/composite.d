@@ -1,7 +1,7 @@
 
 private import  tango.io.protocol.Reader,
                 tango.io.protocol.Writer,
-                tango.io.device.FileConduit;
+                tango.io.device.File;
 
 /*******************************************************************************
 
@@ -67,7 +67,7 @@ void main()
         auto wombat = new Wombat (new Wumpus);
 
         // open a file for IO
-        auto file = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
+        auto file = new File ("random.bin", File.ReadWriteCreate);
 
         // construct reader & writer upon the file, with binary IO
         auto output = new Writer (file);

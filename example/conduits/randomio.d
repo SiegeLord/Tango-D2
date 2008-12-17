@@ -1,5 +1,5 @@
 
-private import  tango.io.device.FileConduit;
+private import  tango.io.device.File;
 
 private import  tango.io.protocol.Reader,
                 tango.io.protocol.Writer;
@@ -14,7 +14,7 @@ private import  tango.io.protocol.Reader,
 void main()
 {
         // open a file for reading
-        auto fc = new FileConduit ("random.bin", FileConduit.ReadWriteCreate);
+        auto fc = new File ("random.bin", File.ReadWriteCreate);
 
         // construct (binary) reader & writer upon this conduit
         auto read  = new Reader (fc);

@@ -18,7 +18,7 @@ module tango.io.model.IConduit;
         Conduits provide virtualized access to external content, and 
         represent things like files or Internet connections. Conduits 
         expose a pair of streams, are modelled by tango.io.model.IConduit, 
-        and are implemented via classes such as FileConduit & SocketConduit. 
+        and are implemented via classes such as File & SocketConduit. 
         
         Additional kinds of conduit are easy to construct: one either 
         subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit. 
@@ -31,28 +31,12 @@ module tango.io.model.IConduit;
 interface IConduit : InputStream, OutputStream
 {
         /***********************************************************************
-
-                Return the input stream
-
-        ***********************************************************************/
-        
-        abstract InputStream input ();
-
-        /***********************************************************************
-
-                Return the output stream
-
-        ***********************************************************************/
-        
-        abstract OutputStream output ();
-
-        /***********************************************************************
         
                 Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
-        abstract uint bufferSize (); 
+        abstract size_t bufferSize (); 
                      
         /***********************************************************************
         
@@ -88,33 +72,12 @@ interface IConduit : InputStream, OutputStream
 
         /***********************************************************************
 
-                Models the ability to seek within a conduit
+                All streams now support seek(), so this is used to signal
+                a seekable conduit instead
 
         ***********************************************************************/
 
-        interface Seek
-        {
-                /***************************************************************
-        
-                        The anchor positions supported by seek()
-
-                ***************************************************************/
-
-                enum Anchor     {
-                                Begin   = 0,
-                                Current = 1,
-                                End     = 2,
-                                };
-
-                /***************************************************************
-                
-                        Move the file position to the given offset from the 
-                        provided anchor point, and return adjusted position.
-
-                ***************************************************************/
-
-                long seek (long offset, Anchor anchor = Anchor.Begin);
-        }
+        interface Seek {}
 }
 
 
@@ -149,10 +112,34 @@ interface ISelectable
 
 interface IOStream 
 {
-        enum : uint 
+        enum : size_t 
         {
-                Eof = uint.max /// the End-of-Flow identifer
+                Eof = size_t.max /// the End-of-Flow identifer
         }
+
+        /***********************************************************************
+        
+                The anchor positions supported by seek()
+
+        ***********************************************************************/
+
+        enum Anchor     {
+                        Begin   = 0,
+                        Current = 1,
+                        End     = 2,
+                        };
+
+        /***********************************************************************
+                
+                Move the stream position to the given offset from the 
+                provided anchor point, and return adjusted position.
+
+                Those conduits which don't support seeking will throw
+                an IOException
+
+        ***********************************************************************/
+
+        long seek (long offset, Anchor anchor = Anchor.Begin);
 
         /***********************************************************************
         
@@ -161,7 +148,6 @@ interface IOStream
         ***********************************************************************/
 
         IConduit conduit ();
-
                           
         /***********************************************************************
         
@@ -192,7 +178,7 @@ interface InputStream : IOStream
 
         ***********************************************************************/
 
-        uint read (void[] dst);               
+        size_t read (void[] dst);               
                         
         /***********************************************************************
 
@@ -214,6 +200,14 @@ interface InputStream : IOStream
         ***********************************************************************/
 
         InputStream clear ();               
+        
+        /***********************************************************************
+        
+                Return the upstream source
+
+        ***********************************************************************/
+
+        InputStream input ();               
 }
 
 
@@ -236,7 +230,7 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        uint write (void[] src);     
+        size_t write (void[] src);     
         
         /***********************************************************************
 
@@ -254,6 +248,75 @@ interface OutputStream : IOStream
         ***********************************************************************/
 
         OutputStream flush ();               
+        
+        /***********************************************************************
+        
+                Return the upstream sink
+
+        ***********************************************************************/
+
+        OutputStream output ();               
 }
 
 
+/*******************************************************************************
+        
+        A buffered input stream
+
+*******************************************************************************/
+
+interface InputBuffer : InputStream
+{
+        alias InputStream.read read;
+
+        void[] slice ();
+
+        size_t read (size_t delegate(void[]) dg);
+
+        bool next (size_t delegate(void[]) scan);
+}
+
+/*******************************************************************************
+        
+        A buffered output stream
+
+*******************************************************************************/
+
+interface OutputBuffer : OutputStream
+{
+        alias OutputStream.write write;
+
+        void[] slice ();
+
+        size_t write (size_t delegate(void[]) dg);
+}
+
+
+/*******************************************************************************
+        
+        Marks a stream that performs read/write mutation, rather than 
+        generic decoration. This is used to identify those stream that
+        should explicitly not share an upstream buffer with downstream
+        siblings.
+        
+        Many streams add simple decoration (such as DataStream) while
+        others are merely template aliases. However, streams such as
+        EndianStream mutate content as it passes through the read and
+        write methods, which must be respected. On one hand we wish
+        to share a single buffer instance, while on the other we must
+        ensure correct data flow through an arbitrary combinations of  
+        streams. 
+
+        There are two stream variations: one which operate directly 
+        upon memory (and thus must have access to a buffer) and another 
+        that prefer to have buffered input (for performance reasons) but 
+        can operate without. EndianStream is an example of the former, 
+        while DataStream represents the latter.
+        
+        In order to sort out who gets what, each stream makes a request
+        for an upstream buffer at construction time. The request has an
+        indication of the intended purpose (array-based access, or not). 
+
+*******************************************************************************/
+
+interface StreamMutator {}

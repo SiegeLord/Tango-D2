@@ -4,9 +4,9 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: Feb 2005 
-        version:        Heavily revised for unicode; November 2005
-                        Outback release: December 2006
+        version:        Feb 2005: Initial release
+                        Nov 2005: Heavily revised for unicode
+                        Dec 2006: Outback release
         
         author:         Kris
 
@@ -16,9 +16,8 @@ module tango.io.Console;
 
 private import  tango.sys.Common;
 
-private import  tango.io.Buffer,
-                tango.io.device.DeviceConduit;
-
+private import  tango.io.stream.Buffer,
+                tango.io.device.Device;
 
 version (Posix)
          private import tango.stdc.posix.unistd;  // needed for isatty()
@@ -30,7 +29,7 @@ version (Posix)
         
         Note that for a while this was templated for each of char, wchar, 
         and dchar. It became clear after some usage that the console is
-        more useful if it sticks to Utf8 only. See ConsoleConduit below
+        more useful if it sticks to Utf8 only. See Console.Conduit below 
         for details.
 
         Redirecting the standard IO handles (via a shell) operates as one 
@@ -56,7 +55,7 @@ struct Console
 
         class Input
         {
-                private Buffer  buffer;
+                private Bin     buffer;
                 private bool    redirect;
 
                 public alias    copyln get;
@@ -70,7 +69,7 @@ struct Console
                 private this (Conduit conduit, bool redirected)
                 {
                         redirect = redirected;
-                        buffer = new Buffer (conduit);
+                        buffer = new Bin (conduit);
                 }
 
                 /**************************************************************
@@ -207,13 +206,13 @@ struct Console
 
         /**********************************************************************
 
-                Console output accepts utf8 only, by default
+                Console output accepts utf8 only
 
         **********************************************************************/
 
         class Output
         {
-                private Buffer  buffer;
+                private Bout    buffer;
                 private bool    redirect;
 
                 public  alias   append opCall;
@@ -228,7 +227,7 @@ struct Console
                 private this (Conduit conduit, bool redirected)
                 {
                         redirect = redirected;
-                        buffer = new Buffer (conduit);
+                        buffer = new Bout (conduit);
                 }
 
                 /**************************************************************
@@ -405,7 +404,7 @@ struct Console
 
         ***********************************************************************/
 
-        class Conduit : DeviceConduit
+        class Conduit : Device
         {
                 private bool redirected = false;
 
@@ -433,8 +432,7 @@ struct Console
 
                         /*******************************************************
 
-                                Create a FileConduit on the provided 
-                                FileDevice. 
+                                Associate this device with a given handle. 
 
                                 This is strictly for adapting existing 
                                 devices such as Stdout and friends
@@ -589,8 +587,7 @@ struct Console
                         {
                         /*******************************************************
 
-                                Create a FileConduit on the provided 
-                                FileDevice. 
+                                Associate this device with a given handle. 
 
                                 This is strictly for adapting existing 
                                 devices such as Stdout and friends

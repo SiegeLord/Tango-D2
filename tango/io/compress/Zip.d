@@ -27,14 +27,14 @@ TODO
 */
 
 import tango.core.ByteSwap : ByteSwap;
-import tango.io.Buffer : Buffer;
-import tango.io.device.FileConduit : FileConduit;
+import tango.io.device.Array : Array;
+import tango.io.device.File : File;
 import tango.io.FilePath : FilePath, PathView;
-import tango.io.MappedBuffer : MappedBuffer;
+import tango.io.device.FileMap : FileMap;
 import tango.io.compress.ZlibStream : ZlibInput, ZlibOutput;
 import tango.io.digest.Crc32 : Crc32;
 import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
-import tango.io.stream.DigestStream : DigestInput;
+import tango.io.stream.Digester : DigestInput;
 import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
@@ -541,7 +541,6 @@ interface ZipWriter
 {
     void finish();
     void putFile(ZipEntryInfo info, char[] path);
-    deprecated void putFile(ZipEntryInfo info, PathView path);
     void putFile(ZipEntryInfo info, char[] path);
     void putStream(ZipEntryInfo info, InputStream source);
     void putEntry(ZipEntryInfo info, ZipEntry entry);
@@ -587,28 +586,22 @@ class ZipBlockReader : ZipReader
      * Creates a ZipBlockReader using the specified file on the local
      * filesystem.
      */
-    deprecated this(PathView path)
-    {
-        this(path.toString);
-    }
-
-    /// ditto
     this(char[] path)
     {
-        file_source = new FileConduit(path);
+        file_source = new File(path);
         this(file_source);
     }
 
 version( none )
 {
     /**
-     * Creates a ZipBlockReader using the provided FileConduit instance.  Where
+     * Creates a ZipBlockReader using the provided File instance.  Where
      * possible, the conduit will be wrapped in a memory-mapped buffer for
-     * optimum performance.  If you do not want the FileConduit memory-mapped,
+     * optimum performance.  If you do not want the File memory-mapped,
      * either cast it to an InputStream first, or pass source.input to the
      * constructor.
      */
-    this(FileConduit source)
+    this(File source)
     {
         // BUG: MappedBuffer doesn't implement IConduit.Seek
         //mm_source = new MappedBuffer(source);
@@ -619,17 +612,18 @@ version( none )
 
     /**
      * Creates a ZipBlockReader using the provided InputStream.  Please note
-     * that this InputStream must also implement the IConduit.Seek interface.
+     * that this InputStream must be attached to a conduit implementing the 
+     * IConduit.Seek interface.
      */
     this(InputStream source)
     in
     {
-        assert( cast(IConduit.Seek) source, "source stream must be seekable" );
+        assert( cast(IConduit.Seek) source.conduit, "source stream must be seekable" );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
     }
 
     bool streamed() { return false; }
@@ -742,7 +736,7 @@ version( none )
 
 private:
     InputStream source;
-    IConduit.Seek seeker;
+    InputStream seeker; //IConduit.Seek seeker;
 
     enum State { Init, Open, Done }
     State state;
@@ -751,8 +745,8 @@ private:
 
     // These should be killed when the reader is closed.
     ubyte[] cd_data;
-    FileConduit file_source = null;
-    MappedBuffer mm_source = null;
+    File file_source = null;
+    FileMap mm_source = null;
 
     /*
      * This function will read the contents of the central directory.  Split
@@ -790,7 +784,7 @@ private:
         // Ok, read the whole damn thing in one go.
         cd_data = new ubyte[eocdr.data.size_of_central_directory];
         long cd_offset = eocdr.data.offset_of_start_of_cd_from_starting_disk;
-        seeker.seek(cd_offset, IConduit.Seek.Anchor.Begin);
+        seeker.seek(cd_offset, seeker.Anchor.Begin);
         readExact(source, cd_data);
 
         // Cake.  Now, we need to break it up into records.
@@ -853,7 +847,7 @@ private:
         // Signature + record + max. comment length
         const max_chunk_len = 4 + EndOfCDRecord.Data.sizeof + ushort.max;
 
-        auto file_len = seeker.seek(0, IConduit.Seek.Anchor.End);
+        auto file_len = seeker.seek(0, seeker.Anchor.End);
         assert( file_len <= size_t.max );
 
         // We're going to need min(max_chunk_len, file_len) bytes.
@@ -864,8 +858,8 @@ private:
 
         // Seek back and read in the chunk.  Don't forget to clean up after
         // ourselves.
-        seeker.seek(-cast(long)chunk_len, IConduit.Seek.Anchor.End);
-        auto chunk_offset = seeker.seek(0, IConduit.Seek.Anchor.Current);
+        seeker.seek(-cast(long)chunk_len, seeker.Anchor.End);
+        auto chunk_offset = seeker.seek(0, seeker.Anchor.Current);
         //Stderr.formatln(" . chunk_offset = {}", chunk_offset);
         auto chunk = new ubyte[chunk_len];
         scope(exit) delete chunk;
@@ -958,7 +952,7 @@ private:
     {
         // Seek to and parse the local file header
         seeker.seek(header.data.relative_offset_of_local_header,
-                IConduit.Seek.Anchor.Begin);
+                seeker.Anchor.Begin);
 
         {
             uint sig;
@@ -975,7 +969,7 @@ private:
 
         // Ok; get a slice stream for the file
         return new SliceSeekInputStream(
-             source, seeker.seek(0, IConduit.Seek.Anchor.Current),
+             source, seeker.seek(0, seeker.Anchor.Current),
              header.data.compressed_size);
     }
 }
@@ -999,32 +993,27 @@ class ZipBlockWriter : ZipWriter
      * Creates a ZipBlockWriter using the specified file on the local
      * filesystem.
      */
-    deprecated this(FilePath path)
-    {
-        this(path.toString);
-    }
-
-    /// ditto
     this(char[] path)
     {
-        file_output = new FileConduit(path, FileConduit.WriteCreate);
+        file_output = new File(path, File.WriteCreate);
         this(file_output);
     }
 
     /**
      * Creates a ZipBlockWriter using the provided OutputStream.  Please note
-     * that this OutputStream must also implement the IConduit.Seek interface.
+     * that this OutputStream must be attached to a conduit implementing the 
+     * IConduit.Seek interface.
      */
     this(OutputStream output)
     in
     {
         assert( output !is null );
-        assert( (cast(IConduit.Seek) output) !is null );
+        assert( (cast(IConduit.Seek) output.conduit) !is null );
     }
     body
     {
         this.output = output;
-        this.seeker = cast(IConduit.Seek) output;
+        this.seeker = output; // cast(IConduit.Seek) output;
 
         // Default to Deflate compression
         method = Method.Deflate;
@@ -1047,15 +1036,9 @@ class ZipBlockWriter : ZipWriter
     /**
      * Adds a file from the local filesystem to the archive.
      */
-    deprecated void putFile(ZipEntryInfo info, PathView path)
-    {
-        putFile(info, path.toString);
-    }
-
-    /// ditto
     void putFile(ZipEntryInfo info, char[] path)
     {
-        scope file = new FileConduit(path);
+        scope file = new File(path);
         scope(exit) file.close();
         putStream(info, file);
     }
@@ -1084,7 +1067,7 @@ class ZipBlockWriter : ZipWriter
     void putData(ZipEntryInfo info, void[] data)
     {
         //scope mc = new MemoryConduit(data);
-        scope mc = new Buffer(data);
+        scope mc = new Array(data);
         scope(exit) mc.close;
         put_compressed(info, mc);
     }
@@ -1098,8 +1081,8 @@ class ZipBlockWriter : ZipWriter
 
 private:
     OutputStream output;
-    IConduit.Seek seeker;
-    FileConduit file_output;
+    OutputStream seeker;
+    File file_output;
 
     Method _method;
 
@@ -1119,7 +1102,7 @@ private:
         if( entries.length > ushort.max )
             ZipException.toomanyentries;
 
-        auto cd_pos = seeker.seek(0, IConduit.Seek.Anchor.Current);
+        auto cd_pos = seeker.seek(0, seeker.Anchor.Current);
         if( cd_pos > uint.max )
             ZipException.toolong;
 
@@ -1135,7 +1118,7 @@ private:
             header.put(output);
         }
 
-        auto cd_len = seeker.seek(0, IConduit.Seek.Anchor.Current) - cd_pos;
+        auto cd_len = seeker.seek(0, seeker.Anchor.Current) - cd_pos;
 
         if( cd_len > uint.max )
             ZipException.cdtoolong;
@@ -1193,7 +1176,7 @@ private:
         debug(Zip) Stderr.formatln("ZipBlockWriter.put_compressed()");
 
         // Write out partial local file header
-        auto header_pos = seeker.seek(0, IConduit.Seek.Anchor.Current);
+        auto header_pos = seeker.seek(0, seeker.Anchor.Current);
         debug(Zip) Stderr.formatln(" . header for {} at {}", info.name, header_pos);
         put_local_header(info, _method);
 
@@ -1270,7 +1253,7 @@ private:
         debug(Zip) Stderr.formatln(" . CRC for \"{}\": 0x{:x8}", info.name, crc);
 
         // Rewind, and patch the header
-        auto final_pos = seeker.seek(0, IConduit.Seek.Anchor.Current);
+        auto final_pos = seeker.seek(0, seeker.Anchor.Current);
         seeker.seek(header_pos);
         patch_local_header(crc, compressed_size, uncompressed_size);
 
@@ -1299,8 +1282,8 @@ private:
 
         // Don't forget we have to seek past the signature, too
         // BUG: .offsetof is broken here
-        /+seeker.seek(LFHD.crc_32.offsetof+4, IConduit.Seek.Anchor.Current);+/
-        seeker.seek(10+4, IConduit.Seek.Anchor.Current);
+        /+seeker.seek(LFHD.crc_32.offsetof+4, seeker.Anchor.Current);+/
+        seeker.seek(10+4, seeker.Anchor.Current);
         write(output, crc_32);
         write(output, compressed_size);
         write(output, uncompressed_size);
@@ -1383,7 +1366,7 @@ private:
         header.file_name = Path.native(f_name);
 
         // Write out the header and the filename
-        auto header_pos = seeker.seek(0, IConduit.Seek.Anchor.Current);
+        auto header_pos = seeker.seek(0, seeker.Anchor.Current);
 
         write(output, LocalFileHeader.signature);
         header.put(output);
@@ -1762,27 +1745,6 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.finish;
 }
 
-deprecated void createArchive(PathView archive, Method method, PathView[] files...)
-{
-    scope zw = new ZipBlockWriter(archive.toString);
-    zw.method = method;
-
-    foreach( file ; files )
-        zw.putFile(ZipEntryInfo(file.toString), file.toString);
-
-    zw.finish;
-}
-
-deprecated void extractArchive(FilePath archive, char[] folder)
-{
-    extractArchive(archive, folder);
-}
-
-deprecated void extractArchive(PathView archive, PathView dest)
-{
-        extractArchive (archive.toString, dest.toString);
-}
-
 void extractArchive(char[] archive, char[] dest)
 {
     scope zr = new ZipBlockReader(archive);
@@ -1795,8 +1757,8 @@ void extractArchive(char[] archive, char[] dest)
 
         auto path = Path.join(dest, entry.info.name);
         path = Path.native(path);
-        scope fout = new FileConduit(path, FileConduit.WriteCreate);
-        fout.output.copy(entry.open);
+        scope fout = new File(path, File.WriteCreate);
+        fout.copy(entry.open);
     }
 }
 
@@ -1839,6 +1801,16 @@ class ZipEntryVerifier : InputStream
     IConduit conduit()
     {
         return source.conduit;
+    }
+
+    InputStream input()
+    {
+        return source;
+    }
+
+    long seek (long ofs, Anchor anchor = Anchor.Begin) 
+    {
+        return source.seek (ofs, anchor);
     }
 
     void close()
@@ -2328,23 +2300,33 @@ class CounterInput : InputStream
     }
     body
     {
-        this.input = input;
+        this.source = input;
     }
 
     override IConduit conduit()
     {
-        return input.conduit;
+        return source.conduit;
+    }
+
+    InputStream input()
+    {
+        return source;
+    }
+
+    long seek (long ofs, Anchor anchor = Anchor.Begin) 
+    {
+        return source.seek (ofs, anchor);
     }
 
     override void close()
     {
-        input.close();
-        input = null;
+        source.close();
+        source = null;
     }
 
     override uint read(void[] dst)
     {
-        auto read = input.read(dst);
+        auto read = source.read(dst);
         if( read != IConduit.Eof )
             _count += read;
         return read;
@@ -2357,7 +2339,7 @@ class CounterInput : InputStream
 
     override InputStream clear()
     {
-        input.clear();
+        source.clear();
         return this;
     }
 
@@ -2365,7 +2347,7 @@ class CounterInput : InputStream
     long count() { return _count; }
 
 private:
-    InputStream input;
+    InputStream source;
     long _count;
 }
 
@@ -2380,23 +2362,33 @@ class CounterOutput : OutputStream
     }
     body
     {
-        this.output = output;
+        this.sink = output;
     }
 
     override IConduit conduit()
     {
-        return output.conduit;
+        return sink.conduit;
+    }
+
+    OutputStream output()
+    {
+        return sink;
+    }
+
+    long seek (long ofs, Anchor anchor = Anchor.Begin) 
+    {
+        return sink.seek (ofs, anchor);
     }
 
     override void close()
     {
-        output.close();
-        output = null;
+        sink.close();
+        sink = null;
     }
 
     override uint write(void[] dst)
     {
-        auto wrote = output.write(dst);
+        auto wrote = sink.write(dst);
         if( wrote != IConduit.Eof )
             _count += wrote;
         return wrote;
@@ -2410,7 +2402,7 @@ class CounterOutput : OutputStream
 
     override OutputStream flush()
     {
-        output.flush();
+        sink.flush();
         return this;
     }
 
@@ -2418,7 +2410,7 @@ class CounterOutput : OutputStream
     long count() { return _count; }
 
 private:
-    OutputStream output;
+    OutputStream sink;
     long _count;
 }
 
@@ -2446,9 +2438,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class SliceSeekInputStream : InputStream, IConduit.Seek
+class SliceSeekInputStream : InputStream
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new slice stream from the given source, covering the content
@@ -2458,14 +2450,14 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
     in
     {
         assert( source !is null );
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
         assert( begin >= 0 );
         assert( length >= 0 );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this.begin = begin;
         this.length = length;
     }
@@ -2517,6 +2509,11 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
         return this;
     }
 
+    InputStream input()
+    {
+        return source;
+    }
+
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
     {
         switch( anchor )
@@ -2544,7 +2541,7 @@ class SliceSeekInputStream : InputStream, IConduit.Seek
 
 private:
     InputStream source;
-    IConduit.Seek seeker;
+    InputStream seeker;
 
     long _position, begin, length;
 
@@ -2587,6 +2584,16 @@ class SliceInputStream : InputStream
     override void close()
     {
         source = null;
+    }
+
+    InputStream input()
+    {
+        return source;
+    }
+
+    long seek (long ofs, Anchor anchor = Anchor.Begin) 
+    {
+        return source.seek (ofs, anchor);
     }
 
     override uint read(void[] dst)
@@ -2638,9 +2645,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class SliceSeekOutputStream : OutputStream, IConduit.Seek
+class SliceSeekOutputStream : OutputStream
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new slice stream from the given source, covering the content
@@ -2649,14 +2656,14 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
     this(OutputStream source, long begin, long length)
     in
     {
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
         assert( begin >= 0 );
         assert( length >= 0 );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this.begin = begin;
         this.length = length;
     }
@@ -2710,6 +2717,11 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
         return this;
     }
 
+    override OutputStream output()
+    {
+        return source;
+    }
+
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
     {
         switch( anchor )
@@ -2737,7 +2749,7 @@ class SliceSeekOutputStream : OutputStream, IConduit.Seek
 
 private:
     OutputStream source;
-    IConduit.Seek seeker;
+    OutputStream seeker;
 
     long _position, begin, length;
 
@@ -2775,9 +2787,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class WrapSeekInputStream : InputStream, IConduit.Seek
+class WrapSeekInputStream : InputStream
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new wrap stream from the given source.
@@ -2786,12 +2798,12 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
     in
     {
         assert( source !is null );
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
     }
 
@@ -2841,6 +2853,11 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
         return this;
     }
 
+    InputStream input()
+    {
+        return source;
+    }
+
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
     {
         seeker.seek(_position, Anchor.Begin);
@@ -2849,7 +2866,7 @@ class WrapSeekInputStream : InputStream, IConduit.Seek
 
 private:
     InputStream source;
-    IConduit.Seek seeker;
+    InputStream seeker;
     long _position;
 
     invariant
@@ -2867,9 +2884,9 @@ private:
  * This stream fully supports seeking, and as such requires that the
  * underlying stream also support seeking.
  */
-class WrapSeekOutputStream : OutputStream, IConduit.Seek
+class WrapSeekOutputStream : OutputStream
 {
-    alias IConduit.Seek.Anchor Anchor;
+    //alias IConduit.Seek.Anchor Anchor;
 
     /**
      * Create a new wrap stream from the given source.
@@ -2877,12 +2894,12 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
     this(OutputStream source)
     in
     {
-        assert( (cast(IConduit.Seek) source) !is null );
+        assert( (cast(IConduit.Seek) source.conduit) !is null );
     }
     body
     {
         this.source = source;
-        this.seeker = cast(IConduit.Seek) source;
+        this.seeker = source; //cast(IConduit.Seek) source;
         this._position = seeker.seek(0, Anchor.Current);
     }
 
@@ -2932,6 +2949,11 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
         return this;
     }
 
+    override OutputStream output()
+    {
+        return source;
+    }
+
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
     {
         seeker.seek(_position, Anchor.Begin);
@@ -2940,7 +2962,7 @@ class WrapSeekOutputStream : OutputStream, IConduit.Seek
 
 private:
     OutputStream source;
-    IConduit.Seek seeker;
+    OutputStream seeker;
     long _position;
 
     invariant

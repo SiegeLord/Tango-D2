@@ -12,13 +12,9 @@
 
 module tango.io.UnicodeFile;
 
-private import  tango.io.FilePath;
+private import tango.io.device.File;
 
-private import  tango.io.device.FileConduit;
-
-private import  tango.core.Exception;
-
-public  import  tango.text.convert.UnicodeBom;
+public  import tango.text.convert.UnicodeBom;
 
 /*******************************************************************************
 
@@ -100,7 +96,7 @@ public  import  tango.text.convert.UnicodeBom;
 
 class UnicodeFile(T)
 {
-        private UnicodeBom!(T)  bom;
+        private UnicodeBom!(T)  bom_;
         private char[]          path_;
 
         /***********************************************************************
@@ -113,21 +109,8 @@ class UnicodeFile(T)
                                   
         this (char[] path, Encoding encoding)
         {
-                bom = new UnicodeBom!(T)(encoding);
+                bom_ = new UnicodeBom!(T)(encoding);
                 path_ = path;
-        }
-
-        /***********************************************************************
-        
-                Construct a UnicodeFile from a text string. The provided 
-                encoding represents the external file encoding, and should
-                be one of the Encoding.xx types 
-
-        ***********************************************************************/
-
-        this (FilePath path, Encoding encoding)
-        {
-                this (path.toString, encoding);
         }
 
         /***********************************************************************
@@ -145,17 +128,6 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
-                Return the associated FilePath instance
-
-        ***********************************************************************/
-
-        deprecated PathView path ()
-        {
-                return new FilePath (path_);
-        }
-        
-        /***********************************************************************
-
                 Return the associated file path
 
         ***********************************************************************/
@@ -169,20 +141,32 @@ class UnicodeFile(T)
 
                 Return the current encoding. This is either the originally
                 specified encoding, or a derived one obtained by inspecting
-                the file content for a BOM. The latter is performed as part
+                the file content for a bom. The latter is performed as part
                 of the read() method.
 
         ***********************************************************************/
 
         Encoding encoding ()
         {
-                return bom.encoding();
+                return bom_.encoding;
         }
         
         /***********************************************************************
 
+                Return the associated bom instance. Use this to find more
+                information about the encoding status
+
+        ***********************************************************************/
+
+        UnicodeBom!(T) bom ()
+        {
+                return bom_;
+        }
+
+        /***********************************************************************
+
                 Return the content of the file. The content is inspected 
-                for a BOM signature, which is stripped. An exception is
+                for a bom signature, which is stripped. An exception is
                 thrown if a signature is present when, according to the
                 encoding type, it should not be. Conversely, An exception
                 is thrown if there is no known signature where the current
@@ -192,7 +176,7 @@ class UnicodeFile(T)
 
         T[] read ()
         {
-                scope conduit = new FileConduit (path_);  
+                scope conduit = new File (path_);  
                 scope (exit)
                        conduit.close;
 
@@ -203,7 +187,7 @@ class UnicodeFile(T)
                 if (conduit.read (content) != content.length)
                     conduit.error ("unexpected eof");
 
-                return bom.decode (content);
+                return bom_.decode (content);
         }
 
         /***********************************************************************
@@ -215,7 +199,7 @@ class UnicodeFile(T)
 
         UnicodeFile write (T[] content, bool writeBom = false)
         {
-                return write (content, FileConduit.ReadWriteCreate, writeBom);  
+                return write (content, File.ReadWriteCreate, writeBom);  
         }
 
         /***********************************************************************
@@ -230,7 +214,7 @@ class UnicodeFile(T)
 
         UnicodeFile append (T[] content)
         {
-                return write (content, FileConduit.WriteAppending, false);  
+                return write (content, File.WriteAppending, false);  
         }
 
         /***********************************************************************
@@ -241,18 +225,18 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        private final UnicodeFile write (T[] content, FileConduit.Style style, bool writeBom)
+        private final UnicodeFile write (T[] content, File.Style style, bool writeBom)
         {       
                 // convert to external representation (may throw an exeption)
-                void[] converted = bom.encode (content);
+                void[] converted = bom_.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                scope conduit = new FileConduit (path_, style);  
+                scope conduit = new File (path_, style);  
                 scope (exit)
                        conduit.close;
 
                 if (writeBom)
-                    conduit.write (bom.signature);
+                    conduit.write (bom_.signature);
 
                 // and write
                 conduit.write (converted);
@@ -260,3 +244,18 @@ class UnicodeFile(T)
         }
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (UnicodeFile)
+{
+        import tango.io.Stdout;
+
+        void main()
+        {
+                auto content = UnicodeFile!(char)("UnicodeFile.d", Encoding.UTF_8).read;
+                Stdout (content).newline;
+        }
+}

@@ -1,7 +1,6 @@
-import tango.io.device.FileConduit;
+import tango.io.device.File;
 import tango.io.FilePath;
 import tango.io.FileScan;
-import tango.io.MappedBuffer;
 import tango.io.Stdout;
 import tango.sys.Environment;
 import tango.text.Util;
@@ -128,7 +127,7 @@ void removeFile( FilePath fp )
 
 void writeFile( FilePath fp, lazy char[] buf )
 {
-    scope fc = new FileConduit( fp.toString, FileConduit.WriteCreate );
+    scope fc = new File( fp.toString, File.WriteCreate );
     scope(exit) fc.close();
     fc.output.write( buf );
 }
@@ -136,10 +135,10 @@ void writeFile( FilePath fp, lazy char[] buf )
 
 void copyFile( FilePath dstFile, char[] srcPath )
 {
-    scope srcFc = new FileConduit( FilePath.padded( srcPath ) ~ dstFile.file,
-                                   FileConduit.ReadExisting );
+    scope srcFc = new File( FilePath.padded( srcPath ) ~ dstFile.file,
+                            File.ReadExisting );
     scope(exit) srcFc.close();
-    scope dstFc = new FileConduit( dstFile.toString, FileConduit.WriteCreate );
+    scope dstFc = new File( dstFile.toString, File.WriteCreate );
     scope(exit) dstFc.close();
     dstFc.copy( srcFc );
 }

@@ -1,6 +1,6 @@
 module build_tango;
 
-import tango.io.device.FileConduit;
+import tango.io.device.File;
 import tango.io.FileScan;
 import tango.io.Stdout;
 import tango.sys.Process;
@@ -12,7 +12,7 @@ void main( char[][] args )
 {
     scope(exit) Stdout.flush;
 
-    auto    outf = new FileConduit( "tango.lsp", FileConduit.ReadWriteCreate );
+    auto    outf = new File( "tango.lsp", File.ReadWriteCreate );
     auto    scan = new FileScan;
     char[]  path = "..\\tango";
     char[]  list = null;

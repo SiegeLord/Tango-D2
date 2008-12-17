@@ -15,8 +15,7 @@ module tango.net.SocketListener;
 private import  tango.core.Thread;
 
 private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit,
-                tango.io.model.IListener;
+                tango.io.model.IConduit;
 
 /******************************************************************************
 
@@ -31,7 +30,7 @@ private import  tango.io.model.IBuffer,
 
 ******************************************************************************/
 
-class SocketListener : IListener
+class SocketListener
 {
         private bool                    quit;
         private Thread                  thread;

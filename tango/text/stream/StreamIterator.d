@@ -12,11 +12,11 @@
 
 module tango.text.stream.StreamIterator;
 
-public  import tango.io.Buffer;
+pragma (msg, "warning - text.stream.StreamIterator has been moved to io.stream.Iterator");
 
-private import Text = tango.text.Util;
+public  import tango.io.stream.BufferStream;
 
-private import tango.io.model.IConduit;
+private import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 /*******************************************************************************
 
@@ -45,18 +45,18 @@ private import tango.io.model.IConduit;
         possible a user could mutate the content through a token slice.
         To enforce the desired read-only aspect, the code would have to
         introduce redundant copying or the compiler would have to support
-        read-only arrays.
+        read-only arrays (now in D2).
 
         See LineIterator, CharIterator, RegexIterator, QuotedIterator,
         and SimpleIterator
 
 *******************************************************************************/
 
-class StreamIterator(T) : InputStream, Buffered
+class StreamIterator(T) : InputFilter 
 {
         protected T[]           slice,
                                 delim;
-        private IBuffer         input;
+        private InputBuffer     input;
 
         /***********************************************************************
 
@@ -73,7 +73,8 @@ class StreamIterator(T) : InputStream, Buffered
         ***********************************************************************/
 
         this (InputStream stream = null)
-        {
+        {       
+                super (this);
                 if (stream)
                     set (stream);
         }
@@ -87,7 +88,7 @@ class StreamIterator(T) : InputStream, Buffered
         StreamIterator set (InputStream stream)
         {
                 assert (stream);
-                input = Buffer.share (stream);
+                super.source = input = BufferInput.create (stream);
                 return this;
         }
 
@@ -100,20 +101,6 @@ class StreamIterator(T) : InputStream, Buffered
         final T[] get ()
         {
                 return slice;
-        }
-
-        /***********************************************************************
-
-                Push one token back into the stream, to be returned by a
-                subsequent call to next()
-
-                Push null to cancel a prior assignment
-
-        ***********************************************************************/
-
-        final deprecated StreamIterator push (T[] token)
-        {
-                assert(false, "StreamIterator.push not supported");
         }
 
         /**********************************************************************
@@ -185,21 +172,21 @@ class StreamIterator(T) : InputStream, Buffered
                 otherwise. Null indicates an end of stream condition. To
                 sweep a conduit for lines using method next():
                 ---
-                auto lines = new LineIterator!(char) (new FileConduit("myfile"));
+                auto lines = new LineIterator!(char) (new File("myfile"));
                 while (lines.next)
                        Cout (lines.get).newline;
                 ---
 
                 Alternatively, we can extract one line from a conduit:
                 ---
-                auto line = (new LineIterator!(char) (new FileConduit("myfile"))).next;
+                auto line = (new LineIterator!(char) (new File("myfile"))).next;
                 ---
 
                 The difference between next() and foreach() is that the
                 latter processes all tokens in one go, whereas the former
                 processes in a piecemeal fashion. To wit:
                 ---
-                foreach (line; new LineIterator!(char) (new FileConduit("myfile")))
+                foreach (line; new LineIterator!(char) (new File("myfile")))
                          Cout(line).newline;
                 ---
                 
@@ -250,7 +237,7 @@ class StreamIterator(T) : InputStream, Buffered
 
         protected final uint notFound ()
         {
-                return IConduit.Eof;
+                return Eof;
         }
 
         /***********************************************************************
@@ -293,96 +280,10 @@ class StreamIterator(T) : InputStream, Buffered
                 if (input.next (&scan))
                     return true;
 
-                auto tmp = input.slice (buffer.readable);
+                auto tmp = input.slice;
                 slice = (cast(T*) tmp.ptr) [0 .. tmp.length/T.sizeof];
                 return false;
         }
-
-
-        /**********************************************************************/
-        /************************ Buffered Interface **************************/
-        /**********************************************************************/
-
-
-        /***********************************************************************
-
-                Return the associated buffer
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return input;
-        }
-
-        /**********************************************************************/
-        /********************** InputStream Interface *************************/
-        /**********************************************************************/
-
-
-        /***********************************************************************
-        
-                Return the host conduit
-
-        ***********************************************************************/
-
-        final IConduit conduit ()
-        {
-                return input.conduit;
-        }
-
-        /***********************************************************************
-        
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
-
-                Returns the number of bytes read, which may be less than
-                requested in dst
-
-        ***********************************************************************/
-
-        uint read (void[] dst)
-        {
-                return input.read (dst);
-        }               
-                        
-        /***********************************************************************
-
-                Load the bits from a stream, and return them all in an
-                array. The dst array can be provided as an option, which
-                will be expanded as necessary to consume the input.
-
-                Returns an array representing the content, and throws
-                IOException on error
-                              
-        ***********************************************************************/
-
-        void[] load (void[] dst = null)
-        {
-                return input.load (dst);
-        }
-
-        /***********************************************************************
-        
-                Clear any buffered content
-
-        ***********************************************************************/
-
-        final InputStream clear ()               
-        {
-                return input.clear;
-        }
-                                  
-        /***********************************************************************
-        
-                Close the input
-
-        ***********************************************************************/
-
-        final void close ()
-        {
-                input.close;
-        }               
 }
 
 

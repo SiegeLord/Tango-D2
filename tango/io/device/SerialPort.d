@@ -8,11 +8,12 @@
 
 *******************************************************************************/
 
-module tango.io.device.SerialConduit;
+module tango.io.device.SerialPort;
 
 private import  tango.core.Array : sort;
+
 private import  tango.core.Exception,
-                tango.io.device.DeviceConduit,
+                tango.io.device.Device,
                 tango.stdc.stringz,
                 tango.sys.Common;
 
@@ -31,9 +32,9 @@ private import  tango.io.FilePath,
 /*******************************************************************************
 
         Enables applications to use a serial port (aka COM-port, ttyS).
-        Usage is similar to that of FileConduit:
+        Usage is similar to that of File:
         ---
-        auto serCond = new SerialConduit("ttyS0");
+        auto serCond = new SerialPort("ttyS0");
         serCond.speed = 38400;
         serCond.write("Hello world!");
         serCond.close();
@@ -41,7 +42,7 @@ private import  tango.io.FilePath,
 
 *******************************************************************************/
 
-class SerialConduit : DeviceConduit
+class SerialPort : Device
 {
     private char[]              str;
     private static char[][]     _ports;
@@ -84,7 +85,7 @@ class SerialConduit : DeviceConduit
 
     ***************************************************************************/
 
-    SerialConduit speed (uint speed)
+    SerialPort speed (uint speed)
     {
         version(Posix) {
             speed_t *baud = speed in baudRates;
