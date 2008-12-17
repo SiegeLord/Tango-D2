@@ -270,12 +270,12 @@ class FormatOutput(T) : OutputFilter
         
 debug (FormatStream)
 {
-        import tango.io.Buffer;
+        import tango.io.device.Array;
         import tango.text.convert.Layout;
 
         void main()
         {
-                auto print = new FormatOutput!(char) (new GrowBuffer);
+                auto print = new FormatOutput!(char) (new Array(1024, 1024));
 
                 for (int i=0;i < 1000; i++)
                      print(i).newline;

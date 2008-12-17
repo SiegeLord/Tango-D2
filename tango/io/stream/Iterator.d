@@ -52,7 +52,7 @@ private import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 class Iterator(T) : InputFilter 
 {
-        private InputBuffer     input;
+        private InputBuffer     source;
         protected T[]           slice,
                                 delim;
 
@@ -86,7 +86,8 @@ class Iterator(T) : InputFilter
         Iterator set (InputStream stream)
         {
                 assert (stream);
-                super.source = input = BufferInput.create (stream);
+                source = BufferInput.create (stream);
+                super.source = source;
                 return this;
         }
 
@@ -275,10 +276,10 @@ class Iterator(T) : InputFilter
 
         private bool consume ()
         {
-                if (input.next (&scan))
+                if (source.next (&scan))
                     return true;
 
-                auto tmp = input.slice;
+                auto tmp = source.slice;
                 slice = (cast(T*) tmp.ptr) [0 .. tmp.length/T.sizeof];
                 return false;
         }

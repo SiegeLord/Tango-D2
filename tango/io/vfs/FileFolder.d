@@ -765,15 +765,15 @@ debug (FileFolder)
 *******************************************************************************/
 
 import tango.io.Stdout;
-import tango.io.Buffer;
+import tango.io.device.Array;
 
 void main()
 {
         auto root = new FileFolder ("d:/d/import/temp", true);
         root.folder("test").create;
-        root.file("test.txt").create(new Buffer("hello"));
+        root.file("test.txt").create(new Array("hello"));
         Stdout.formatln ("test.txt.length = {}", root.file("test.txt").size);
-        
+
         root = new FileFolder ("c:/");
         auto set = root.self;
 

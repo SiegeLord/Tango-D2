@@ -586,7 +586,6 @@ debug (VirtualFolder)
 *******************************************************************************/
 
 import tango.io.Stdout;
-import tango.io.Buffer;
 import tango.io.vfs.FileFolder;
 
 void main()

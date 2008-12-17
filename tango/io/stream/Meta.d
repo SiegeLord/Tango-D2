@@ -21,10 +21,10 @@
 
 module tango.io.stream.Meta;
 
-private import tango.io.Buffer;
-
 private import tango.core.Traits,
                tango.core.ByteSwap;
+
+private import tango.io.stream.Buffer;
 
 private import tango.io.device.Conduit;
 
@@ -44,7 +44,7 @@ private import tango.io.device.Conduit;
 
 *******************************************************************************/
 
-class MetaInput : InputFilter, Buffered
+class MetaInput : InputFilter
 {
         public enum
         {
@@ -54,7 +54,7 @@ class MetaInput : InputFilter, Buffered
         }
 
         private bool            flip;
-        private IBuffer         input;
+        private InputBuffer     input;
         private Allocate        allocator;
 
         private alias void[] delegate (size_t) Allocate;
@@ -65,21 +65,10 @@ class MetaInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        this (InputStream stream, size_t buffer=size_t.max)
+        this (InputStream stream)
         {
-                super (input = Buffer.share (stream, buffer));
+                super (input = BufferInput.create (stream));
                 allocator = (size_t bytes){return new void[bytes];};
-        }
-
-        /***********************************************************************
-        
-                Buffered interface
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return input;
         }
 
         /***********************************************************************
@@ -133,13 +122,13 @@ class MetaInput : InputFilter, Buffered
 
         ***********************************************************************/
 
-        final override size_t get (void[] dst)
+        final size_t get (void[] dst)
         {
                 typeof([].length) len;
                 convert (len);
                 if (len > dst.length)
                     conduit.error ("MetaInput.readArray :: dst array is too small");
-                input.readExact (dst.ptr, len);
+                eat (dst.ptr, len);
                 return len;
         }
 
@@ -168,7 +157,7 @@ class MetaInput : InputFilter, Buffered
                 typeof([].length) len;
                 convert (len);
                 auto dst = allocator (len);
-                input.readExact (dst.ptr, len);
+                eat (dst.ptr, len);
                 return dst;
         }
 
@@ -178,7 +167,7 @@ class MetaInput : InputFilter, Buffered
 
         final void convert(T) (ref T x)
         {
-                input.readExact (&x, T.sizeof);
+                eat (&x, T.sizeof);
                 if (flip)
                    {
                    static if (T.sizeof == 2)
@@ -223,6 +212,16 @@ class MetaInput : InputFilter, Buffered
                                    read(r);     // do the rest of the arguments
             }
         }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private final void eat (void* dst, uint bytes)
+        {
+                auto count = input.read (dst[0..bytes]);
+                assert (count is bytes);
+        }
 }
 
 
@@ -239,7 +238,7 @@ class MetaInput : InputFilter, Buffered
 
 *******************************************************************************/
 
-class MetaOutput : OutputFilter, Buffered
+class MetaOutput : OutputFilter
 {       
         public enum
         {
@@ -248,8 +247,8 @@ class MetaOutput : OutputFilter, Buffered
                 Little
         }
 
-        private bool    flip;
-        private IBuffer output;
+        private bool            flip;
+        private OutputBuffer    output;
 
         /***********************************************************************
 
@@ -257,20 +256,9 @@ class MetaOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        this (OutputStream stream, size_t buffer=size_t.max)
+        this (OutputStream stream)
         {
-                super (output = Buffer.share (stream, buffer));
-        }
-
-        /***********************************************************************
-        
-                Buffered interface
-
-        ***********************************************************************/
-
-        final IBuffer buffer ()
-        {
-                return output;
+                super (output = BufferOutput.create (stream));
         }
 
         /***********************************************************************
@@ -346,24 +334,10 @@ class MetaOutput : OutputFilter, Buffered
 
 *******************************************************************************/
 
-debug (UnitTest)
+debug (Meta)
 {
-        import tango.io.Buffer;
-
-        unittest
-        {
-        }
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-debug (MetaStream)
-{
-        import tango.io.Buffer;
         import tango.io.Stdout;
+        import tango.io.device.Array;
 
         void main()
         {
@@ -385,7 +359,7 @@ debug (MetaStream)
                 }
                 Foo foo;
 
-                auto buf = new Buffer(256);
+                auto buf = new Array(256);
                 auto output = new MetaOutput (buf);
                 output.write ("foob foob", 1024,'c', "foo"d, 3.14, 'z');
 

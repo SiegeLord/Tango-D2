@@ -140,14 +140,14 @@ class DigestOutput : OutputFilter
 debug (DigestStream)
 {
         import tango.io.Stdout;
-        import tango.io.Buffer;
+        import tango.io.device.Array;
         import tango.io.digest.Md5;
         import tango.io.stream.FileStream;
 
         void main()
         {
-                auto output = new DigestOutput(new GrowBuffer, new Md5);
-                output.copy (new FileInput("digeststream.d"));
+                auto output = new DigestOutput(new Array(1024, 1024), new Md5);
+                output.copy (new FileInput("Digester.d"));
 
                 Stdout.formatln ("hex digest:{}", output.digest.hexDigest);
         }

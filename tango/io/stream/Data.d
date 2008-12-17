@@ -424,11 +424,11 @@ class DataOutput : OutputFilter
 
 debug (UnitTest)
 {
-        import tango.io.Buffer;
+        import tango.io.device.Array;
 
         unittest
         {
-                auto buf = new Buffer(32);
+                auto buf = new Array(32);
 
                 auto output = new DataOutput (buf);
                 output.array ("blah blah");

@@ -16,11 +16,10 @@
 
 module tango.net.http.ChunkStream;
 
-private import  tango.io.Buffer,
-                tango.io.device.Conduit;
-
 private import  tango.io.stream.Lines;
-//private import  tango.io.stream.Iterator;
+
+private import  tango.io.stream.Buffer,
+                tango.io.device.Conduit;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -33,9 +32,9 @@ private import  Integer = tango.text.convert.Integer;
 
 *******************************************************************************/
 
-class ChunkOutput : OutputFilter, Buffered
+class ChunkOutput : OutputFilter
 {
-        private IBuffer output;
+        private OutputBuffer output;
 
         /***********************************************************************
 
@@ -45,18 +44,7 @@ class ChunkOutput : OutputFilter, Buffered
 
         this (OutputStream stream)
         {
-                super (output = Buffer.share(stream));
-        }
-
-        /***********************************************************************
-
-                Buffered interface
-
-        ***********************************************************************/
-
-        IBuffer buffer ()
-        {
-                return output;
+                super (output = BufferOutput.create(stream));
         }
 
         /***********************************************************************
@@ -84,7 +72,7 @@ class ChunkOutput : OutputFilter, Buffered
 
         ***********************************************************************/
 
-        final void terminate (void delegate(IBuffer) headers = null)
+        final void terminate (void delegate(OutputBuffer) headers = null)
         {
                 output.append ("0\r\n");
                 if (headers)
@@ -161,7 +149,7 @@ class ChunkInput : Lines!(char)
                 if (read != IConduit.Eof && (available -= read) is 0)
                    {
                    // consume trailing \r\n
-                   super.buffer.skip (2);
+                   super.input.seek (2);
                    available = nextChunk ();
                    }
                 
@@ -192,10 +180,11 @@ class ChunkInput : Lines!(char)
 debug (ChunkStream)
 {
         import tango.io.Console;
+        import tango.io.device.Array;
 
         void main()
         {
-                auto buf = new Buffer(40);
+                auto buf = new Array(40);
                 auto chunk = new ChunkOutput (buf);
                 chunk.write ("hello world");
                 chunk.terminate;

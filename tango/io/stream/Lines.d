@@ -120,14 +120,14 @@ class Lines(T) : Iterator!(T)
 
 *******************************************************************************/
 
-debug (LineIterator)
+debug (Lines)
 {
-        import tango.io.Buffer;
         import tango.io.Console;
+        import tango.io.device.Array;
 
         void main()
         {
-                auto lines = new LineIterator!(char)(new Buffer("one\ntwo\r\nthree"));
+                auto lines = new Lines!(char)(new Array("one\ntwo\r\nthree"));
                 foreach (i, line, delim; lines)
                          Cout (line) (delim);
         }
