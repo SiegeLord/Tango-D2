@@ -46,6 +46,17 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
+                Return the upstream host of this filter
+                        
+        ***********************************************************************/
+
+        InputStream input ()
+        {
+                return host;
+        }            
+
+        /***********************************************************************
+
                 Return the hosting conduit
 
         ***********************************************************************/
@@ -116,6 +127,20 @@ class SnoopInput : InputStream
         }
 
         /***********************************************************************
+        
+                Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        final long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                auto s = host.seek (offset, anchor);
+                trace ("seeking to offset {} from anchor {}", offset, anchor);
+                return s;
+        }
+
+        /***********************************************************************
 
                 Internal trace handler
 
@@ -164,6 +189,17 @@ class SnoopOutput : OutputStream
                 this.host = host;
                 this.snoop = snoop ? snoop : &snooper;
         }
+
+        /***********************************************************************
+        
+                Return the upstream host of this filter
+                        
+        ***********************************************************************/
+
+        OutputStream output ()
+        {
+                return host;
+        }              
 
         /***********************************************************************
 
@@ -233,6 +269,20 @@ class SnoopOutput : OutputStream
         }
 
         /***********************************************************************
+        
+                Seek on this stream. Target conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        final long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                auto s = host.seek (offset, anchor);
+                trace ("seeking to offset {} from anchor {}", offset, anchor);
+                return s;
+        }
+
+        /***********************************************************************
 
                 Internal trace handler
 
@@ -256,3 +306,13 @@ class SnoopOutput : OutputStream
         }
 }
 
+
+
+debug (Snoop)
+{
+        void main()
+        {
+                auto s = new SnoopInput (null);
+                auto o = new SnoopOutput (null);
+        }
+}

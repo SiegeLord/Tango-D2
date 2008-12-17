@@ -16,6 +16,8 @@ private import tango.io.stream.Lines;
 
 private import tango.io.stream.Format;
 
+private import tango.io.model.IConduit;
+
 /*******************************************************************************
 
         
