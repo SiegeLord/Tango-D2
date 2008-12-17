@@ -281,7 +281,7 @@ struct FileSystem
                             char[][] list;
                             int spaces;
 
-                            auto fc = new FileConduit("/etc/mtab");
+                            auto fc = new File("/etc/mtab");
                             scope (exit)
                                    fc.close;
                             
