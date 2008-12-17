@@ -13,10 +13,9 @@
 
 module tango.io.File;
 
-private import  tango.io.FilePath,
-                tango.io.device.FileConduit;
+private import Conduit = tango.io.device.File;
 
-private import  tango.core.Exception;
+pragma (msg, "warning - io.File functionality has migrated to static functions within io.device.File");
 
 /*******************************************************************************
 
@@ -39,25 +38,16 @@ class File
         private char[] path_;
 
         /***********************************************************************
-        
-                Construct a File from a text string
+
+                Call-site shortcut to create a File instance. This 
+                enables the same syntax as struct usage, so may expose
+                a migration path
 
         ***********************************************************************/
 
         this (char[] path)
         {
                 path_ = path;
-        }
-
-        /***********************************************************************
-        
-                Construct a File from the provided FilePath
-
-        ***********************************************************************/
-                                  
-        deprecated this (PathView path)
-        {
-                this(path.toString);
         }
 
         /***********************************************************************
@@ -75,32 +65,21 @@ class File
 
         /***********************************************************************
 
-                Return the path for this file instance
-
-        ***********************************************************************/
-
-        deprecated final PathView path ()
-        {
-                return new FilePath(path_);
-        }
-
-        /***********************************************************************
-
                 Return the content of the file.
 
         ***********************************************************************/
 
         final void[] read ()
         {
-                scope conduit = new FileConduit (path_);  
+                scope conduit = new Conduit.File (path_);  
                 scope (exit)
                        conduit.close;
 
                 // allocate enough space for the entire file
-                auto content = new ubyte [cast(uint) conduit.length];
+                auto content = new ubyte [cast(size_t) conduit.length];
 
                 //read the content
-                if (conduit.input.read (content) != content.length)
+                if (conduit.read (content) != content.length)
                     conduit.error ("unexpected eof");
 
                 return content;
@@ -114,7 +93,7 @@ class File
 
         final File write (void[] content)
         {
-                return write (content, FileConduit.ReadWriteCreate);  
+                return write (content, Conduit.File.ReadWriteCreate);  
         }
 
         /***********************************************************************
@@ -125,7 +104,7 @@ class File
 
         final File append (void[] content)
         {
-                return write (content, FileConduit.WriteAppending);  
+                return write (content, Conduit.File.WriteAppending);  
         }
 
         /***********************************************************************
@@ -134,16 +113,20 @@ class File
 
         ***********************************************************************/
 
-        private File write (void[] content, FileConduit.Style style)
+        private File write (void[] content, Conduit.File.Style style)
         {      
-                scope conduit = new FileConduit (path_, style);  
+                scope conduit = new Conduit.File (path_, style);  
                 scope (exit)
                        conduit.close;
 
-                conduit.output.write (content);
+                conduit.write (content);
                 return this;
         }
 }
+
+/*******************************************************************************
+
+*******************************************************************************/
 
 debug (File)
 {
@@ -151,7 +134,9 @@ debug (File)
 
         void main()
         {
-                auto content = cast(char[]) File("file.d").read;
+                auto x = new File ("");
+
+                auto content = cast(char[]) File("File.d").read;
                 Stdout (content).newline;
         }
 }
