@@ -119,7 +119,7 @@ class DataInput : InputFilter
 
         ***********************************************************************/
         
-        final override uint array (void[] dst)
+        final uint array (void[] dst)
         {
                 auto len = int32;
                 if (len > dst.length)

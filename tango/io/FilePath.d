@@ -285,7 +285,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final override int opEquals (char[] s)
+        final int opEquals (char[] s)
         {
                 return p.opEquals(s);
         }
