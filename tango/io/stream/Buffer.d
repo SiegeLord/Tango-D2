@@ -343,7 +343,7 @@ class BufferInput : InputFilter, InputBuffer
 
                 return this;
         }
-
++/
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes
@@ -352,7 +352,7 @@ class BufferInput : InputFilter, InputBuffer
 
         **********************************************************************/
 
-        final size_t extract (void[] dst)
+        final size_t fill (void[] dst)
         {
                 size_t len = 0;
 
@@ -365,7 +365,7 @@ class BufferInput : InputFilter, InputBuffer
                       }
                 return len;
         }
-+/
+
         /***********************************************************************
 
                 Move the current read location

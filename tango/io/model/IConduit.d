@@ -287,6 +287,8 @@ interface OutputBuffer : OutputStream
         alias OutputStream.write write;
 
         void[] slice ();
+        
+        OutputBuffer append (void[]);
 
         size_t write (size_t delegate(void[]) dg);
 }
