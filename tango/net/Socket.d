@@ -451,23 +451,23 @@ else version (darwin)
 {
         enum SocketOption: int
         {
-                SO_DEBUG        = 0x0001,		/* turn on debugging info recording */
-                SO_BROADCAST    = 0x0020,		/* permit sending of broadcast msgs */
-                SO_REUSEADDR    = 0x0004,		/* allow local address reuse */
-                SO_LINGER       = 0x0080,		/* linger on close if data present */
+                SO_DEBUG        = 0x0001,               /* turn on debugging info recording */
+                SO_BROADCAST    = 0x0020,               /* permit sending of broadcast msgs */
+                SO_REUSEADDR    = 0x0004,               /* allow local address reuse */
+                SO_LINGER       = 0x0080,               /* linger on close if data present */
                 SO_DONTLINGER   = ~(SO_LINGER),
-                SO_OOBINLINE    = 0x0100,		/* leave received OOB data in line */
-                SO_ACCEPTCONN   = 0x0002,		/* socket has had listen() */
-                SO_KEEPALIVE    = 0x0008,		/* keep connections alive */
-                SO_DONTROUTE    = 0x0010,		/* just use interface addresses */
+                SO_OOBINLINE    = 0x0100,               /* leave received OOB data in line */
+                SO_ACCEPTCONN   = 0x0002,               /* socket has had listen() */
+                SO_KEEPALIVE    = 0x0008,               /* keep connections alive */
+                SO_DONTROUTE    = 0x0010,               /* just use interface addresses */
                 SO_TYPE         = 0x1008,               /* get socket type */
 
                 /*
                  * Additional options, not kept in so_options.
                  */
-                SO_SNDBUF       = 0x1001,		/* send buffer size */
-                SO_RCVBUF       = 0x1002,		/* receive buffer size */
-                SO_ERROR        = 0x1007,		/* get error status and clear */
+                SO_SNDBUF       = 0x1001,               /* send buffer size */
+                SO_RCVBUF       = 0x1002,               /* receive buffer size */
+                SO_ERROR        = 0x1007,               /* get error status and clear */
 
                 // OptionLevel.IP settings
                 IP_MULTICAST_TTL = 10,
@@ -498,6 +498,61 @@ else version (darwin)
                 Question: are these correct for Darwin?
 
         ***************************************************************/
+
+        enum SocketOptionLevel
+        {
+                SOCKET =  0xffff,
+                IP =      0,  // appears to be correct
+                TCP =     6,  // appears to be correct
+                UDP =     17, // appears to be correct
+        }
+}
+// TODO: Doublecheck values
+else version (freebsd)
+{
+        enum SocketOption: int
+        {
+                SO_DEBUG        = 0x0001,               /* turn on debugging info recording */
+                SO_BROADCAST    = 0x0020,               /* permit sending of broadcast msgs */
+                SO_REUSEADDR    = 0x0004,               /* allow local address reuse */
+                SO_LINGER       = 0x0080,               /* linger on close if data present */
+                SO_DONTLINGER   = ~(SO_LINGER),
+                SO_OOBINLINE    = 0x0100,               /* leave received OOB data in line */
+                SO_ACCEPTCONN   = 0x0002,               /* socket has had listen() */
+                SO_KEEPALIVE    = 0x0008,               /* keep connections alive */
+                SO_DONTROUTE    = 0x0010,               /* just use interface addresses */
+                SO_TYPE         = 0x1008,               /* get socket type */
+
+                /*
+                 * Additional options, not kept in so_options.
+                 */
+                SO_SNDBUF       = 0x1001,               /* send buffer size */
+                SO_RCVBUF       = 0x1002,               /* receive buffer size */
+                SO_ERROR        = 0x1007,               /* get error status and clear */
+
+                // OptionLevel.IP settings
+                IP_MULTICAST_TTL = 10,
+                IP_MULTICAST_LOOP = 11,
+                IP_ADD_MEMBERSHIP = 12,
+                IP_DROP_MEMBERSHIP = 13,
+
+                // OptionLevel.TCP settings
+                TCP_NODELAY = 0x0001,
+        }
+
+        /***************************************************************
+
+
+        ***************************************************************/
+
+        union linger
+        {
+                struct {
+                       int l_onoff;             // option on/off
+                       int l_linger;            // linger time
+                       };
+                int[2]          array;          // combined
+        }
 
         enum SocketOptionLevel
         {
@@ -663,6 +718,18 @@ else version(BsdSockets)
                         //INET6 =      10,
                 }
         }
+        else version (freebsd)
+        {
+                enum AddressFamily: int
+                {
+                        UNSPEC =     0,
+                        UNIX =       1,
+                        INET =       2,
+                        IPX =        23,
+                        APPLETALK =  16,
+                        //INET6 =      28,
+                }
+        }    
         else version (linux)
         {
                 enum AddressFamily: int
@@ -2182,4 +2249,5 @@ class SocketSet
                 return cast(fd_set*)buf;
         }
 }
+
 

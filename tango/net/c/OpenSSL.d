@@ -854,6 +854,10 @@ void loadOpenSSL()
     {
         char[][] loadPath = [ "/usr/lib/libssl.dylib", "libssl.dylib" ];
     }
+    version (freebsd)
+    {
+        char[][] loadPath = [ "libssl.so.5", "libssl.so" ];
+    }
     if ((ssllib = loadLib(loadPath)) !is null)
     {
 
