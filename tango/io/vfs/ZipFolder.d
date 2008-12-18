@@ -623,7 +623,7 @@ private:
 class ZipSubFolder : VfsFolder, VfsSync
 {
     ///
-    final override char[] name()
+    final char[] name()
     in { assert( valid ); }
     body
     {
@@ -639,7 +639,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override VfsFile file(char[] path)
+    final VfsFile file(char[] path)
     in
     {
         assert( valid );
@@ -681,7 +681,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override VfsFolderEntry folder(char[] path)
+    final VfsFolderEntry folder(char[] path)
     in
     {
         assert( valid );
@@ -725,7 +725,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override VfsFolders self()
+    final VfsFolders self()
     in { assert( valid ); }
     body
     {
@@ -733,7 +733,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override VfsFolders tree()
+    final VfsFolders tree()
     in { assert( valid ); }
     body
     {
@@ -741,7 +741,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -761,7 +761,7 @@ class ZipSubFolder : VfsFolder, VfsSync
     }
 
     ///
-    final override VfsFolder clear()
+    final VfsFolder clear()
     in { assert( valid ); }
     body
     {
@@ -783,7 +783,7 @@ else
     }
 
     ///
-    final override bool writable()
+    final bool writable()
     in { assert( valid ); }
     body
     {
@@ -821,7 +821,7 @@ else
     }
 
     ///
-    final override void verify(VfsFolder folder, bool mounting)
+    final void verify(VfsFolder folder, bool mounting)
     in { assert( valid ); }
     body
     {
@@ -949,7 +949,7 @@ private:
 class ZipFile : VfsFile
 {
     ///
-    final override char[] name()
+    final char[] name()
     in { assert( valid ); }
     body
     {
@@ -967,7 +967,7 @@ class ZipFile : VfsFile
     }
 
     ///
-    final override bool exists()
+    final bool exists()
     in { assert( valid ); }
     body
     {
@@ -977,7 +977,7 @@ class ZipFile : VfsFile
     }
 
     ///
-    final override ulong size()
+    final ulong size()
     in { assert( valid ); }
     body
     {
@@ -991,7 +991,7 @@ class ZipFile : VfsFile
     }
 
     ///
-    final override VfsFile copy(VfsFile source)
+    final VfsFile copy(VfsFile source)
     in { assert( valid ); }
     body
     {
@@ -1013,7 +1013,7 @@ else
     }
 
     ///
-    final override VfsFile move(VfsFile source)
+    final VfsFile move(VfsFile source)
     in { assert( valid ); }
     body
     {
@@ -1035,7 +1035,7 @@ else
     }
 
     ///
-    final override VfsFile create()
+    final VfsFile create()
     in { assert( valid ); }
     out { assert( valid ); }
     body
@@ -1071,7 +1071,7 @@ else
     }
 
     ///
-    final override VfsFile create(InputStream stream)
+    final VfsFile create(InputStream stream)
     in { assert( valid ); }
     body
     {
@@ -1089,7 +1089,7 @@ else
     }
 
     ///
-    final override VfsFile remove()
+    final VfsFile remove()
     in{ assert( valid ); }
     out { assert( valid ); }
     body
@@ -1127,7 +1127,7 @@ else
     }
 
     ///
-    final override InputStream input()
+    final InputStream input()
     in { assert( valid ); }
     body
     {
@@ -1142,7 +1142,7 @@ else
     }
 
     ///
-    final override OutputStream output()
+    final OutputStream output()
     in { assert( valid ); }
     body
     {
@@ -1163,7 +1163,7 @@ else
     }
 
     ///
-    final override VfsFile dup()
+    final VfsFile dup()
     in { assert( valid ); }
     body
     {
@@ -1293,7 +1293,7 @@ private:
 
 class ZipSubFolderEntry : VfsFolderEntry
 {
-    final override VfsFolder open()
+    final VfsFolder open()
     in { assert( valid ); }
     body
     {
@@ -1312,7 +1312,7 @@ class ZipSubFolderEntry : VfsFolderEntry
         }
     }
 
-    final override VfsFolder create()
+    final VfsFolder create()
     in { assert( valid ); }
     body
     {
@@ -1349,7 +1349,7 @@ else
 }
     }
 
-    final override bool exists()
+    final bool exists()
     in { assert( valid ); }
     body
     {
@@ -1405,7 +1405,7 @@ private:
 
 class ZipSubFolderGroup : VfsFolders
 {
-    final override int opApply(int delegate(ref VfsFolder) dg)
+    final int opApply(int delegate(ref VfsFolder) dg)
     in { assert( valid ); }
     body
     {
@@ -1421,7 +1421,7 @@ class ZipSubFolderGroup : VfsFolders
         return result;
     }
 
-    final override uint files()
+    final uint files()
     in { assert( valid ); }
     body
     {
@@ -1433,21 +1433,21 @@ class ZipSubFolderGroup : VfsFolders
         return files;
     }
 
-    final override uint folders()
+    final uint folders()
     in { assert( valid ); }
     body
     {
         return members.length;
     }
 
-    final override uint entries()
+    final uint entries()
     in { assert( valid ); }
     body
     {
         return files + folders;
     }
 
-    final override ulong bytes()
+    final ulong bytes()
     in { assert( valid ); }
     body
     {
@@ -1459,7 +1459,7 @@ class ZipSubFolderGroup : VfsFolders
         return bytes;
     }
 
-    final override VfsFolders subset(char[] pattern)
+    final VfsFolders subset(char[] pattern)
     in { assert( valid ); }
     body
     {
@@ -1472,7 +1472,7 @@ class ZipSubFolderGroup : VfsFolders
         return new ZipSubFolderGroup(archive, set);
     }
 
-    final override VfsFiles catalog(char[] pattern)
+    final VfsFiles catalog(char[] pattern)
     in { assert( valid ); }
     body
     {
@@ -1484,7 +1484,7 @@ class ZipSubFolderGroup : VfsFolders
         );
     }
 
-    final override VfsFiles catalog(VfsFilter filter = null)
+    final VfsFiles catalog(VfsFilter filter = null)
     in { assert( valid ); }
     body
     {
@@ -1535,7 +1535,7 @@ private:
 
 class ZipFileGroup : VfsFiles
 {
-    final override int opApply(int delegate(ref VfsFile) dg)
+    final int opApply(int delegate(ref VfsFile) dg)
     in { assert( valid ); }
     body
     {
@@ -1553,14 +1553,14 @@ class ZipFileGroup : VfsFiles
         return result;
     }
 
-    final override uint files()
+    final uint files()
     in { assert( valid ); }
     body
     {
         return group.length;
     }
 
-    final override ulong bytes()
+    final ulong bytes()
     in { assert( valid ); }
     body
     {
