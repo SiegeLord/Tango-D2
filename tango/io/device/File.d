@@ -124,6 +124,8 @@ version (Win32)
 
 class File : Device, Device.Seek
 {
+        public alias Device.read read;
+
         /***********************************************************************
         
                 Fits into 32 bits ...
@@ -317,6 +319,59 @@ class File : Device, Device.Seek
                 seek (pos);
                 return ret;
         }               
+
+        /***********************************************************************
+
+                Convenience function to return the content of a file
+
+        ***********************************************************************/
+
+        static void[] read (char[] path)
+        {
+                scope file = new File (path);  
+                scope (exit)
+                       file.close;
+
+                // allocate enough space for the entire file
+                auto content = new ubyte [cast(size_t) file.length];
+
+                //read the content
+                if (file.read (content) != file.length)
+                    file.error ("File.read :: unexpected eof");
+
+                return content;
+        }
+
+        /***********************************************************************
+
+                Convenience function to set file content and length to 
+                reflect the given array.
+
+        ***********************************************************************/
+
+        static void write (char[] path, void[] content)
+        {
+                scope file = new File (path, ReadWriteCreate);  
+                scope (exit)
+                       file.close;
+
+                file.write (content);
+        }
+
+        /***********************************************************************
+
+                Convenience function to append content to a file.
+
+        ***********************************************************************/
+
+        static void append (char[] path, void[] content)
+        {
+                scope file = new File (path, WriteAppending);  
+                scope (exit)
+                       file.close;
+
+                file.write (content);
+        }
 
 
         /***********************************************************************
@@ -591,5 +646,17 @@ class File : Device, Device.Seek
                             error;
                         return result;
                 }               
+        }
+}
+
+
+debug (File)
+{
+        void main()
+        {
+                auto foo = File.read("file.d");
+                auto file = new File("file.d");
+                ubyte[10] ff;
+                int f = file.read(ff);
         }
 }
