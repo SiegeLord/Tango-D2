@@ -63,7 +63,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
         {       
                 T[] content;
 
-                print (doc.root, (T[][] s...){foreach(t; s) content ~= t;});
+                print (doc.tree, (T[][] s...){foreach(t; s) content ~= t;});
                 return content;
         }
         

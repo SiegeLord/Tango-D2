@@ -63,7 +63,7 @@ version=discrete;
 
         // attach an element with some attributes, plus 
         // a child element with an attached data value
-        doc.root.element   (null, "element")
+        doc.tree.element   (null, "element")
                 .attribute (null, "attrib1", "value")
                 .attribute (null, "attrib2")
                 .element   (null, "child", "value");
@@ -72,17 +72,17 @@ version=discrete;
         Stdout(print(doc)).newline;
         ---
 
-        Note that the document root includes all nodes in the tree,
-        and not just elements. Use doc.trunk to address the topmost
+        Note that the document tree() includes all nodes in the tree,
+        and not just elements. Use doc.elements to address the topmost
         element instead. For example, adding an interior sibling to
         the prior illustration:
         ---
-        doc.trunk.element (null, "sibling");
+        doc.elements.element (null, "sibling");
         ---
 
-        Printing the name of the root element:
+        Printing the name of the topmost (root) element:
         ---
-        Stdout.formatln ("trunk is '{}'", doc.trunk.name);
+        Stdout.formatln ("first element is '{}'", doc.elements.name);
         ---
         
         XPath examples:
@@ -91,7 +91,7 @@ version=discrete;
 
         // attach an element with some attributes, plus 
         // a child element with an attached data value
-        doc.root.element   (null, "element")
+        doc.tree.element   (null, "element")
                 .attribute (null, "attrib1", "value")
                 .attribute (null, "attrib2")
                 .element   (null, "child", "value");
@@ -143,7 +143,7 @@ class Document(T) : package PullParser!(T)
 {
         public alias NodeImpl*  Node;
 
-        public  Node            root;           /// root of the document tree
+        private Node            root; 
         private NodeImpl[]      list;
         private NodeImpl[][]    lists;
         private int             index,
@@ -186,6 +186,20 @@ class Document(T) : package PullParser!(T)
 
         /***********************************************************************
         
+                Return the root document node, from which all other nodes
+                are descended. 
+
+                Returns null where there are no nodes in the document
+
+        ***********************************************************************/
+        
+        final Node tree ()
+        {
+                return root;
+        }
+
+        /***********************************************************************
+        
                 Return the topmost element node, which is generally the
                 root of the element tree.
 
@@ -193,7 +207,7 @@ class Document(T) : package PullParser!(T)
 
         ***********************************************************************/
         
-        final Node trunk ()
+        final Node elements ()
         {
                 if (root)
                    {
@@ -230,7 +244,7 @@ version(d)
 
         /***********************************************************************
         
-               Add an XML header to the document root
+               Prepend an XML header to the document tree
 
         ***********************************************************************/
         
@@ -249,7 +263,7 @@ version(d)
         
                 Parse the given xml content, which will reuse any existing 
                 node within this document. The resultant tree is retrieved
-                via the document 'root' attribute
+                via the document 'tree' attribute
 
         ***********************************************************************/
         
@@ -1215,7 +1229,7 @@ else
 
         // attach an element with some attributes, plus 
         // a child element with an attached data value
-        doc.root.element   (null, "element")
+        doc.tree.element   (null, "element")
                 .attribute (null, "attrib1", "value")
                 .attribute (null, "attrib2")
                 .element   (null, "child", "value");
@@ -1984,13 +1998,13 @@ debug (Document)
 
                 // attach an element with some attributes, plus 
                 // a child element with an attached data value
-                doc.root.element   (null, "element")
+                doc.tree.element   (null, "element")
                         .attribute (null, "attrib1", "value")
                         .attribute (null, "attrib2")
                         .element   (null, "child", "value");
 
                 // attach a sibling to the interior elements
-                doc.trunk.element  (null, "sibling");
+                doc.elements.element  (null, "sibling");
 
                 // emit the result
                 auto print = new DocPrinter!(char);
