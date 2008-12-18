@@ -16,7 +16,7 @@ void main()
 
         // attach an element with some attributes, plus 
         // a child element with an attached data value
-        doc.root.element   (null, "element")
+        doc.tree.element   (null, "element")
                 .element   (null, "sub")
                 .attribute (null, "attrib1", "value")
                 .attribute (null, "attrib2")
