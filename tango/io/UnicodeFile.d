@@ -174,19 +174,9 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        T[] read ()
+        final T[] read ()
         {
-                scope conduit = new File (path_);  
-                scope (exit)
-                       conduit.close;
-
-                // allocate enough space for the entire file
-                auto content = new ubyte [cast(uint) conduit.length];
-
-                //read the content
-                if (conduit.read (content) != content.length)
-                    conduit.error ("unexpected eof");
-
+                auto content = File.read (path_);
                 return bom_.decode (content);
         }
 
@@ -197,9 +187,21 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        UnicodeFile write (T[] content, bool writeBom = false)
-        {
-                return write (content, File.ReadWriteCreate, writeBom);  
+        final void write (T[] content, bool writeBom)
+        {       
+                // convert to external representation (may throw an exeption)
+                void[] converted = bom_.encode (content);
+
+                // open file after conversion ~ in case of exceptions
+                scope conduit = new File (path_, File.ReadWriteCreate);  
+                scope (exit)
+                       conduit.close;
+
+                if (writeBom)
+                    conduit.write (bom_.signature);
+
+                // and write
+                conduit.write (converted);
         }
 
         /***********************************************************************
@@ -212,35 +214,10 @@ class UnicodeFile(T)
 
         ***********************************************************************/
 
-        UnicodeFile append (T[] content)
+        final void append (T[] content)
         {
-                return write (content, File.WriteAppending, false);  
-        }
-
-        /***********************************************************************
-
-                Internal method to perform writing of content. Note that
-                the encoding must be of the explicit variety by the time
-                we get here.
-
-        ***********************************************************************/
-
-        private final UnicodeFile write (T[] content, File.Style style, bool writeBom)
-        {       
-                // convert to external representation (may throw an exeption)
-                void[] converted = bom_.encode (content);
-
-                // open file after conversion ~ in case of exceptions
-                scope conduit = new File (path_, style);  
-                scope (exit)
-                       conduit.close;
-
-                if (writeBom)
-                    conduit.write (bom_.signature);
-
-                // and write
-                conduit.write (converted);
-                return this;
+                // convert to external representation (may throw an exception)
+                File.append (path_, bom_.encode (content));
         }
 }
 
@@ -254,8 +231,9 @@ debug (UnicodeFile)
         import tango.io.Stdout;
 
         void main()
-        {
-                auto content = UnicodeFile!(char)("UnicodeFile.d", Encoding.UTF_8).read;
+        {       
+                auto file = UnicodeFile!(char)("UnicodeFile.d", Encoding.UTF_8);
+                auto content = file.read;
                 Stdout (content).newline;
         }
 }
