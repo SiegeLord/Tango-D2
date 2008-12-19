@@ -443,11 +443,11 @@ else
 
                 ***************************************************************/
         
-                Node find (T[] prefix, T[] name)
+                Node name (T[] prefix, T[] local)
                 {
                         foreach (node; *this)
                                 {
-                                if (name.ptr && name != node.localName)
+                                if (local.ptr && local != node.localName)
                                     continue;
 
                                 if (prefix.ptr && prefix != node.prefixed)
@@ -460,7 +460,7 @@ else
 
                 /***************************************************************
         
-                        Sweep the data nodes looking for match
+                        Sweep child data nodes looking for match
 
                         Returns a matching node, or null.
 
@@ -468,10 +468,11 @@ else
         
                 Node data (bool delegate(Node) test)
                 {
-                        foreach (child; *this)
-                                 if (child.type is XmlNodeType.Data)
-                                     if (test (child))
-                                         return child;
+                        if (node.type is XmlNodeType.Element)
+                            foreach (child; *this)
+                                     if (child.type is XmlNodeType.Data)
+                                         if (test (child))
+                                             return child;
                         return null;
                 }
 
@@ -481,9 +482,9 @@ else
 
                 ***************************************************************/
         
-                bool hasName (T[] prefix, T[] name)
+                bool hasName (T[] prefix, T[] local)
                 {
-                        return find (prefix, name) != null;
+                        return name (prefix, local) != null;
                 }
 
                 /***************************************************************
