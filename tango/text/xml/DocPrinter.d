@@ -111,10 +111,10 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                case XmlNodeType.Element:
                                     if (indentation > 0)
                                         emit ("\r\n", spaces[0..indent]);
-                                    emit ("<", node.name(tmp));
+                                    emit ("<", node.toString(tmp));
 
                                     foreach (attr; node.attributes)
-                                             emit (` `, attr.name(tmp), `="`, attr.rawValue, `"`);  
+                                             emit (` `, attr.toString(tmp), `="`, attr.rawValue, `"`);  
 
                                     auto value = rawValue (node);
                                     if (node.hasChildren)
@@ -126,13 +126,13 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                                 printNode (child, indent + indentation);
                                         
                                        // inhibit newline if we're closing Data
-                                       if (node.lastChild_.type != XmlNodeType.Data && indentation > 0)
+                                       if (node.lastChild.type != XmlNodeType.Data && indentation > 0)
                                            emit ("\r\n", spaces[0..indent]);
-                                       emit ("</", node.name(tmp), ">");
+                                       emit ("</", node.toString(tmp), ">");
                                        }
                                     else 
                                        if (value.length)
-                                           emit (">", value, "</", node.name(tmp), ">");
+                                           emit (">", value, "</", node.toString(tmp), ">");
                                        else
                                           emit ("/>");      
                                     break;

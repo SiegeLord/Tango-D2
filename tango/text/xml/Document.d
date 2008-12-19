@@ -103,7 +103,7 @@ version=discrete;
         set = doc.query.descendant.attribute("attrib1");
 
         // select elements with one parent and a matching text value
-        set = doc.query[].filter((doc.Node n) {return n.hasData("value");});
+        set = doc.query[].filter((doc.Node n) {return n.children.hasData("value");});
         ---
 
         Note that path queries are temporal - they do not retain content
@@ -216,7 +216,7 @@ class Document(T) : package PullParser!(T)
                           if (node.type is XmlNodeType.Element)
                               return node;
                           else
-                             node = node.prevSibling;
+                             node = node.prev;
                    }
                 return null;
         }
@@ -230,8 +230,7 @@ class Document(T) : package PullParser!(T)
         
         final Document reset ()
         {
-                root.lastChild_ = 
-                root.firstChild_ = null;
+                root.lastChild = root.firstChild = null;
                 freelists = 0;
                 newlist;
                 index = 1;
@@ -281,9 +280,9 @@ version(d)
                              {
                              case XmlTokenType.EndElement:
                              case XmlTokenType.EndEmptyElement:
-                                  assert (cur.parent_);
+                                  assert (cur.host);
                                   cur.end = text.point;
-                                  cur = cur.parent_;                      
+                                  cur = cur.host;                      
                                   break;
         
                              case XmlTokenType.Data:
@@ -306,30 +305,30 @@ else
         
                              case XmlTokenType.StartElement:
                                   auto node = allocate;
-                                  node.parent_ = cur;
-                                  node.prefix = super.prefix;
+                                  node.host = cur;
+                                  node.prefixed = super.prefix;
                                   node.type = XmlNodeType.Element;
                                   node.localName = super.localName;
                                   node.start = p;
                                 
                                   // inline append
-                                  if (cur.lastChild_) 
+                                  if (cur.lastChild) 
                                      {
-                                     cur.lastChild_.nextSibling_ = node;
-                                     node.prevSibling_ = cur.lastChild_;
-                                     cur.lastChild_ = node;
+                                     cur.lastChild.nextSibling = node;
+                                     node.prevSibling = cur.lastChild;
+                                     cur.lastChild = node;
                                      }
                                   else 
                                      {
-                                     cur.firstChild_ = node;
-                                     cur.lastChild_ = node;
+                                     cur.firstChild = node;
+                                     cur.lastChild = node;
                                      }
                                   cur = node;
                                   break;
         
                              case XmlTokenType.Attribute:
                                   auto attr = allocate;
-                                  attr.prefix = super.prefix;
+                                  attr.prefixed = super.prefix;
                                   attr.rawValue = super.rawValue;
                                   attr.localName = super.localName;
                                   attr.type = XmlNodeType.Attribute;
@@ -374,14 +373,14 @@ else
 
                 auto p = &list[index++];
                 p.start = p.end = null;
-                p.document = this;
-                p.parent_ =
-                p.prevSibling_ = 
-                p.nextSibling_ = 
-                p.firstChild_ =
-                p.lastChild_ = 
-                p.firstAttr_ =
-                p.lastAttr_ = null;
+                p.doc = this;
+                p.host =
+                p.prevSibling = 
+                p.nextSibling = 
+                p.firstChild =
+                p.lastChild = 
+                p.firstAttr =
+                p.lastAttr = null;
                 p.rawValue = null;
                 return p;
         }
@@ -405,8 +404,13 @@ else
 
         /***********************************************************************
         
-                Fruct support for nodes. A fruct is a low-overhead 
-                mechanism for capturing context relating to an opApply
+                foreach support for nodes. 
+                
+                A fruct is a low-overhead mechanism for capturing context 
+                relating to an opApply, and we use it here to sweep nodes
+                when testing for various relationships
+
+                See Node.attributes and Node.children
 
         ***********************************************************************/
         
@@ -428,9 +432,71 @@ else
                               {
                               if ((ret = dg (cur)) != 0) 
                                    break;
-                              cur = cur.nextSibling_;
+                              cur = cur.nextSibling;
                               }
                         return ret;
+                }
+
+                /***************************************************************
+                
+                        Locale a node with a matching name and/or prefix
+
+                ***************************************************************/
+        
+                Node find (T[] prefix, T[] name)
+                {
+                        foreach (node; *this)
+                                {
+                                if (name.ptr && name != node.localName)
+                                    continue;
+
+                                if (prefix.ptr && prefix != node.prefixed)
+                                    continue;
+
+                                return node;
+                                }
+                        return null;
+                }
+
+                /***************************************************************
+        
+                        Sweep the data nodes looking for match
+
+                        Returns a matching node, or null.
+
+                ***************************************************************/
+        
+                Node data (bool delegate(Node) test)
+                {
+                        foreach (child; *this)
+                                 if (child.type is XmlNodeType.Data)
+                                     if (test (child))
+                                         return child;
+                        return null;
+                }
+
+                /***************************************************************
+                
+                        Check nodes for a matching name and/or prefix
+
+                ***************************************************************/
+        
+                bool hasName (T[] prefix, T[] name)
+                {
+                        return find (prefix, name) != null;
+                }
+
+                /***************************************************************
+                
+                        Sweep the data nodes looking for match
+
+                        Returns true if found.
+
+                ***************************************************************/
+        
+                bool hasData (T[] text)
+                {
+                        return data ((Node n){return n.rawValue == text;}) != null;
                 }
         }
         
@@ -443,40 +509,57 @@ else
         
         private struct NodeImpl
         {
-                public void*            user;           // open for usage
-                public XmlNodeType      type;           // node type
-                public uint             index;          // sibling index
-                public T[]              prefix;         // namespace
-                public T[]              localName;      // name
-                public T[]              rawValue;       // data value
-                public Document         document;       // owning document
+                public void*            user;           /// open for usage
+                package Document        doc;            // owning document
+                package XmlNodeType     type;           // node type
+                package uint            index;          // sibling index
+                package T[]             prefixed;       // namespace
+                package T[]             localName;      // name
+                package T[]             rawValue;       // data value
                 
-                package Node            parent_,        // host
-                                        prevSibling_,   // prior
-                                        nextSibling_,   // next
-                                        firstChild_,    // head
-                                        lastChild_,     // tail
-                                        firstAttr_,     // head
-                                        lastAttr_;      // tail
+                package Node            host,           // parent node
+                                        prevSibling,    // prior
+                                        nextSibling,    // next
+                                        firstChild,     // head
+                                        lastChild,      // tail
+                                        firstAttr,      // head
+                                        lastAttr;       // tail
 
                 package T*              end,            // slice of the  ...
                                         start;          // original xml text 
 
                 /***************************************************************
                 
+                        Return the hosting document
+
+                ***************************************************************/
+        
+                Document document () 
+                {
+                        return doc;
+                }
+        
+                /***************************************************************
+                
                         Return the parent, which may be null
 
                 ***************************************************************/
         
-                Node parent () {return parent_;}
+                Node parent () 
+                {
+                        return host;
+                }
         
                 /***************************************************************
                 
                         Return the first child, which may be nul
 
                 ***************************************************************/
-        
-                Node firstChild () {return firstChild_;}
+                
+                Node child () 
+                {
+                        return firstChild;
+                }
         
                 /***************************************************************
                 
@@ -484,7 +567,10 @@ else
 
                 ***************************************************************/
         
-                Node lastChild () {return lastChild_;}
+                Node childTail () 
+                {
+                        return lastChild;
+                }
         
                 /***************************************************************
                 
@@ -492,7 +578,10 @@ else
 
                 ***************************************************************/
         
-                Node prevSibling () {return prevSibling_;}
+                Node prev () 
+                {
+                        return prevSibling;
+                }
         
                 /***************************************************************
                 
@@ -500,54 +589,57 @@ else
 
                 ***************************************************************/
         
-                Node nextSibling () {return nextSibling_;}
-        
-                /***************************************************************
-                
-                        Returns whether there are attributes present or not
-
-                ***************************************************************/
-        
-                bool hasAttributes () {return firstAttr_ !is null;}
-                               
-                /***************************************************************
-                
-                        Returns whether there are children present or nor
-
-                ***************************************************************/
-        
-                bool hasChildren () {return firstChild_ !is null;}
-                
-                /***************************************************************
-                
-                        Return the node name, which is a combination of
-                        the prefix:local names
-
-                ***************************************************************/
-        
-                T[] name (T[] output = null)
+                Node next () 
                 {
-                        if (prefix.length)
-                           {
-                           auto len = prefix.length + localName.length + 1;
-                           
-                           // is the prefix already attached to the name?
-                           if (prefix.ptr + prefix.length + 1 is localName.ptr &&
-                               ':' is *(localName.ptr-1))
-                               return prefix.ptr [0 .. len];
-       
-                           // nope, copy the discrete segments into output
-                           if (output.length < len)
-                               output.length = len;
-                           output[0..prefix.length] = prefix;
-                           output[prefix.length] = ':';
-                           output[prefix.length+1 .. len] = localName;
-                           return output[0..len];
-                           }
+                        return nextSibling;
+                }
+        
+                /***************************************************************
+                
+                        Return the namespace prefix of this node (may be null)
 
+                ***************************************************************/
+        
+                T[] prefix ()
+                {
+                        return prefixed;
+                }
+
+                /***************************************************************
+                
+                        Set the namespace prefix of this node (may be null)
+
+                ***************************************************************/
+        
+                Node prefix (T[] replace)
+                {
+                        prefixed = replace;
+                        return this;
+                }
+
+                /***************************************************************
+                
+                        Return the vanilla node name (sans prefix)
+
+                ***************************************************************/
+        
+                T[] name ()
+                {
                         return localName;
                 }
+
+                /***************************************************************
                 
+                        Set the vanilla node name (sans prefix)
+
+                ***************************************************************/
+        
+                Node name (T[] replace)
+                {
+                        localName = replace;
+                        return this;
+                }
+
                 /***************************************************************
                 
                         Return the data content, which may be null
@@ -587,6 +679,37 @@ version(discrete)
                 
                 /***************************************************************
                 
+                        Return the full node name, which is a combination 
+                        of the prefix & local names. Nodes without a prefix 
+                        will return local-name only
+
+                ***************************************************************/
+        
+                T[] toString (T[] output = null)
+                {
+                        if (prefixed.length)
+                           {
+                           auto len = prefixed.length + localName.length + 1;
+                           
+                           // is the prefix already attached to the name?
+                           if (prefixed.ptr + prefixed.length + 1 is localName.ptr &&
+                               ':' is *(localName.ptr-1))
+                               return prefixed.ptr [0 .. len];
+       
+                           // nope, copy the discrete segments into output
+                           if (output.length < len)
+                               output.length = len;
+                           output[0..prefixed.length] = prefixed;
+                           output[prefixed.length] = ':';
+                           output[prefixed.length+1 .. len] = localName;
+                           return output[0..len];
+                           }
+
+                        return localName;
+                }
+                
+                /***************************************************************
+                
                         Return the index of this node, or how many 
                         prior siblings it has
 
@@ -599,13 +722,26 @@ version(discrete)
                 
                 /***************************************************************
                 
-                        Locate the root of this node
+                        Detach this node from its parent and siblings
 
                 ***************************************************************/
         
-                Node root ()
+                Node detach ()
                 {
-                        return document.root;
+                        return remove;
+                }
+
+                /***************************************************************
+        
+                        Return an xpath handle to query this node
+
+                        See also Node.document.query
+
+                ***************************************************************/
+        
+                final XmlPath!(T).NodeSet query ()
+                {
+                        return document.xpath.start (this);
                 }
 
                 /***************************************************************
@@ -616,7 +752,7 @@ version(discrete)
         
                 Visitor children () 
                 {
-                        Visitor v = {firstChild_};
+                        Visitor v = {firstChild};
                         return v;
                 }
         
@@ -628,10 +764,111 @@ version(discrete)
         
                 Visitor attributes () 
                 {
-                        Visitor v = {firstAttr_};
+                        Visitor v = {firstAttr};
                         return v;
                 }
         
+                /***************************************************************
+                
+                        Returns whether there are attributes present or not
+
+                ***************************************************************/
+        
+                bool hasAttributes () 
+                {
+                        return firstAttr !is null;
+                }
+                               
+                /***************************************************************
+                
+                        Returns whether there are children present or nor
+
+                ***************************************************************/
+        
+                bool hasChildren () 
+                {
+                        return firstChild !is null;
+                }
+                
+                /***************************************************************
+                
+                        Duplicate the given sub-tree into place as a child 
+                        of this node. 
+                        
+                        Returns a reference to the subtree
+
+                ***************************************************************/
+        
+                Node copy (Node tree)
+                {
+                        assert (tree);
+                        tree = tree.clone;
+                        tree.migrate (document);
+                        append (tree);
+                        return tree;
+                }
+
+                /***************************************************************
+                
+                        Relocate the given sub-tree into place as a child 
+                        of this node. 
+                        
+                        Returns a reference to the subtree
+
+                ***************************************************************/
+        
+                Node move (Node tree)
+                {
+                        tree.detach;
+                        if (tree.doc is doc)
+                            append (tree);
+                        else
+                           tree = copy (tree);
+                        return tree;
+                }
+
+                /***************************************************************
+                
+                        Deprecated: use node.attributes.find()
+
+                        Sweep the attributes looking for a name match and, 
+                        optionally, a prefix match also.
+
+                        Returns a matching node, or null.
+
+                ***************************************************************/
+        
+                deprecated Node getAttribute (T[] name, T[] value = null)
+                {
+                        foreach (attr; attributes)
+                                {
+                                if (name.ptr && name != attr.localName)
+                                    continue;
+
+                                if (value.ptr && value != attr.rawValue)
+                                    continue;
+
+                                return attr;
+                                }
+                        return null;
+                }
+
+                /***************************************************************
+                
+                        Deprecated: use node.attributes.has()
+
+                        Sweep the attributes looking for a name or value
+                        match. Either may be null
+
+                        Returns true if found.
+
+                ***************************************************************/
+        
+                deprecated bool hasAttribute (T[] name, T[] value = null)
+                {
+                        return getAttribute (name, value) !is null;
+                }
+
                 /***************************************************************
         
                         Attaches a child Element, and returns a reference 
@@ -708,149 +945,6 @@ version(discrete)
                 Node pi (T[] pi)
                 {
                         return pi_ (pi, null).mutate;
-                }
-
-                /***************************************************************
-                
-                        Detach this node from its parent and siblings
-
-                ***************************************************************/
-        
-                Node detach()
-                {
-                        return remove;
-                }
-
-                /***************************************************************
-                
-                        Duplicate the given sub-tree into place as a child 
-                        of this node. 
-                        
-                        Returns a reference to the subtree
-
-                ***************************************************************/
-        
-                Node copy (Node tree)
-                {
-                        assert (tree);
-                        tree = tree.clone;
-                        tree.migrate (document);
-                        append (tree);
-                        return tree;
-                }
-
-                /***************************************************************
-                
-                        Relocate the given sub-tree into place as a child 
-                        of this node. 
-                        
-                        Returns a reference to the subtree
-
-                ***************************************************************/
-        
-                Node move (Node tree)
-                {
-                        tree.detach;
-                        if (tree.document is document)
-                            append (tree);
-                        else
-                           tree = copy (tree);
-                        return tree;
-                }
-
-                /***************************************************************
-        
-                        Return an xpath handle to query this node
-
-                        See also Node.document.query
-
-                ***************************************************************/
-        
-                final XmlPath!(T).NodeSet query ()
-                {
-                        return document.xpath.start (this);
-                }
-
-                /***************************************************************
-                
-                        Sweep the attributes looking for a name or value
-                        match. Either may be null
-
-                        Returns a matching node, or null.
-
-                ***************************************************************/
-        
-                Node getAttribute (T[] name, T[] value = null)
-                {
-                        foreach (attr; attributes)
-                                {
-                                if (name.ptr && name != attr.localName)
-                                    continue;
-
-                                if (value.ptr && value != attr.rawValue)
-                                    continue;
-
-                                return attr;
-                                }
-                        return null;
-                }
-
-                /***************************************************************
-                
-                        Sweep the attributes looking for a name or value
-                        match. Either may be null
-
-                        Returns true if found.
-
-                ***************************************************************/
-        
-                bool hasAttribute (T[] name, T[] value = null)
-                {
-                        return getAttribute (name, value) !is null;
-                }
-
-                /***************************************************************
-        
-                        Sweep the data nodes looking for match
-
-                        Returns a matching node, or null.
-
-                ***************************************************************/
-        
-                Node data (bool delegate(Node) test)
-                {
-                        if (type is XmlNodeType.Element)
-                            foreach (child; children)
-                                     if (child.type is XmlNodeType.Data)
-                                         if (test (child))
-                                             return child;
-                        return null;
-                }
-
-                /***************************************************************
-        
-                        Sweep the data nodes looking for match
-
-                        Returns true if found.
-
-                ***************************************************************/
-        
-                bool hasData (bool delegate(Node) test)
-                {
-                        return data(test) !is null;
-                }
-
-                /***************************************************************
-                
-                        Sweep the data nodes looking for match
-
-                        Returns true if found.
-
-                ***************************************************************/
-        
-                bool hasData (T[] text)
-                {
-                        return hasData ((Node n){return n.rawValue == text;});
                 }
 
                 /***************************************************************
@@ -959,19 +1053,19 @@ else
                 private void attrib (Node node, uint uriID = 0)
                 {
                         assert (node.parent is null);
-                        node.parent_ = this;
+                        node.host = this;
                         node.type = XmlNodeType.Attribute;
         
-                        if (lastAttr_) 
+                        if (lastAttr) 
                            {
-                           lastAttr_.nextSibling_ = node;
-                           node.prevSibling_ = lastAttr_;
-                           node.index = lastAttr_.index + 1;
-                           lastAttr_ = node;
+                           lastAttr.nextSibling = node;
+                           node.prevSibling = lastAttr;
+                           node.index = lastAttr.index + 1;
+                           lastAttr = node;
                            }
                         else 
                            {
-                           firstAttr_ = lastAttr_ = node;
+                           firstAttr = lastAttr = node;
                            node.index = 0;
                            }
                 }
@@ -986,17 +1080,17 @@ else
                 private void append (Node node)
                 {
                         assert (node.parent is null);
-                        node.parent_ = this;
-                        if (lastChild_) 
+                        node.host = this;
+                        if (lastChild) 
                            {
-                           lastChild_.nextSibling_ = node;
-                           node.prevSibling_ = lastChild_;
-                           node.index = lastChild_.index + 1;
-                           lastChild_ = node;
+                           lastChild.nextSibling = node;
+                           node.prevSibling = lastChild;
+                           node.index = lastChild.index + 1;
+                           lastChild = node;
                            }
                         else 
                            {
-                           firstChild_ = lastChild_ = node;                  
+                           firstChild = lastChild = node;                  
                            node.index = 0;
                            }
                 }
@@ -1011,17 +1105,17 @@ else
                 private void prepend (Node node)
                 {
                         assert (node.parent is null);
-                        node.parent_ = this;
-                        if (firstChild_) 
+                        node.host = this;
+                        if (firstChild) 
                            {
-                           firstChild_.prevSibling_ = node;
-                           node.nextSibling_ = firstChild_;
-                           firstChild_ = node;
+                           firstChild.prevSibling = node;
+                           node.nextSibling = firstChild;
+                           firstChild = node;
                            }
                         else 
                            {
-                           firstChild_ = node;
-                           lastChild_ = node;
+                           firstChild = node;
+                           lastChild = node;
                            }
                 }
                 
@@ -1034,7 +1128,7 @@ else
                 private Node set (T[] prefix, T[] local)
                 {
                         this.localName = local;
-                        this.prefix = prefix;
+                        this.prefixed = prefix;
                         return this;
                 }
         
@@ -1060,64 +1154,64 @@ else
         
                 private Node remove()
                 {
-                        if (! parent_) 
+                        if (! host) 
                               return this;
                         
                         mutate;
-                        if (prevSibling_ && nextSibling_) 
+                        if (prevSibling && nextSibling) 
                            {
-                           prevSibling_.nextSibling_ = nextSibling_;
-                           nextSibling_.prevSibling_ = prevSibling_;
-                           prevSibling_ = null;
-                           nextSibling_ = null;
-                           parent_ = null;
+                           prevSibling.nextSibling = nextSibling;
+                           nextSibling.prevSibling = prevSibling;
+                           prevSibling = null;
+                           nextSibling = null;
+                           host = null;
                            }
                         else 
-                           if (nextSibling_)
+                           if (nextSibling)
                               {
-                              debug assert(parent_.firstChild_ == this);
-                              parent_.firstChild_ = nextSibling_;
-                              nextSibling_.prevSibling_ = null;
-                              nextSibling_ = null;
-                              parent_ = null;
+                              debug assert(host.firstChild == this);
+                              parent.firstChild = nextSibling;
+                              nextSibling.prevSibling = null;
+                              nextSibling = null;
+                              host = null;
                               }
                            else 
                               if (type != XmlNodeType.Attribute)
                                  {
-                                 if (prevSibling_)
+                                 if (prevSibling)
                                     {
-                                    debug assert(parent_.lastChild_ == this);
-                                    parent_.lastChild_ = prevSibling_;
-                                    prevSibling_.nextSibling_ = null;
-                                    prevSibling_ = null;
-                                    parent_ = null;
+                                    debug assert(host.lastChild == this);
+                                    host.lastChild = prevSibling;
+                                    prevSibling.nextSibling = null;
+                                    prevSibling = null;
+                                    host = null;
                                     }
                                  else
                                     {
-                                    debug assert(parent_.firstChild_ == this);
-                                    debug assert(parent_.lastChild_ == this);
-                                    parent_.firstChild_ = null;
-                                    parent_.lastChild_ = null;
-                                    parent_ = null;
+                                    debug assert(host.firstChild == this);
+                                    debug assert(host.lastChild == this);
+                                    host.firstChild = null;
+                                    host.lastChild = null;
+                                    host = null;
                                     }
                                  }
                               else
                                  {
-                                 if (prevSibling_)
+                                 if (prevSibling)
                                     {
-                                    debug assert(parent_.lastAttr_ == this);
-                                    parent_.lastAttr_ = prevSibling_;
-                                    prevSibling_.nextSibling_ = null;
-                                    prevSibling_ = null;
-                                    parent_ = null;
+                                    debug assert(host.lastAttr == this);
+                                    host.lastAttr = prevSibling;
+                                    prevSibling.nextSibling = null;
+                                    prevSibling = null;
+                                    host = null;
                                     }
                                  else
                                     {
-                                    debug assert(parent_.firstAttr_ == this);
-                                    debug assert(parent_.lastAttr_ == this);
-                                    parent_.firstAttr_ = null;
-                                    parent_.lastAttr_ = null;
-                                    parent_ = null;
+                                    debug assert(host.firstAttr == this);
+                                    debug assert(host.lastAttr == this);
+                                    host.firstAttr = null;
+                                    host.lastAttr = null;
+                                    host = null;
                                     }
                                  }
 
@@ -1154,7 +1248,7 @@ else
                         auto node = this;
                         do {
                            node.end = null;
-                           } while ((node = node.parent_) !is null);
+                           } while ((node = node.host) !is null);
 
                         return this;
                 }
@@ -1165,9 +1259,9 @@ else
 
                 ***************************************************************/
         
-                private Node dup()
+                private Node dup ()
                 {
-                        return create(type, rawValue.dup).set(prefix.dup, localName.dup);
+                        return create(type, rawValue.dup).set(prefixed.dup, localName.dup);
                 }
 
                 /***************************************************************
@@ -1195,7 +1289,7 @@ else
         
                 private void migrate (Document host)
                 {
-                        this.document = host;
+                        this.doc = host;
                         foreach (attr; attributes)
                                  attr.migrate (host);
                         foreach (child; children)
@@ -1241,7 +1335,7 @@ else
         set = doc.query.descendant.attribute("attrib1");
 
         // select elements with one parent and a matching text value
-        set = doc.query[].filter((doc.Node n) {return n.hasData("value");});
+        set = doc.query[].filter((doc.Node n) {return n.children.hasData("value");});
         ---
 
         Note that path queries are temporal - they do not retain content
@@ -1304,7 +1398,9 @@ else
         Where the delegate returns true if the node passes the filter. An
         example might be selecting all nodes with a specific attribute:
         ---
-        auto set = doc.query.descendant.filter((doc.Node n){return n.hasAttribute("test");});
+        auto set = doc.query.descendant.filter (
+                    (doc.Node n){return n.attributes.hasName (null, "test");}
+                   );
         ---
 
         Obviously this is not as clean and tidy as true XPath notation, but 
@@ -1684,7 +1780,7 @@ private class XmlPath(T)
                                          {
                                          if (child.type is type)
                                              test (filter, child);
-                                         if (child.firstChild_)
+                                         if (child.firstChild)
                                              traverse (child);
                                          }                                                
                         }
@@ -1742,7 +1838,7 @@ private class XmlPath(T)
 
                         void traverse (Node child)
                         {
-                                auto p = child.parent_;
+                                auto p = child.host;
                                 if (p && p.type != XmlNodeType.Document && !set.has(p))
                                    {
                                    test (filter, p);
@@ -1777,12 +1873,12 @@ private class XmlPath(T)
 
                         foreach (node; nodes)
                                 {
-                                auto p = node.nextSibling_;
+                                auto p = node.nextSibling;
                                 while (p)
                                       {
                                       if (p.type is type)
                                           test (filter, p);
-                                      p = p.nextSibling_;
+                                      p = p.nextSibling;
                                       }
                                 }
                         return set.assign (mark);
@@ -1804,12 +1900,12 @@ private class XmlPath(T)
 
                         foreach (node; nodes)
                                 {
-                                auto p = node.prevSibling_;
+                                auto p = node.prevSibling;
                                 while (p)
                                       {
                                       if (p.type is type)
                                           test (filter, p);
-                                      p = p.prevSibling_;
+                                      p = p.prevSibling;
                                       }
                                 }
                         return set.assign (mark);

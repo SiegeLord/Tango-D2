@@ -39,7 +39,7 @@ protected class DocTester(T)
         
         final void validate (Doc doc)
         {     
-                validate (doc.root);  
+                validate (doc.elements);  
         }
         
         /***********************************************************************
@@ -179,13 +179,13 @@ protected class DocTester(T)
                 foreach (attr; node.attributes)
                         {
                         auto name = attr.name (name1);
-                        auto next = attr.nextSibling_;
+                        auto next = attr.nextSibling;
                         while (next !is null)
                               {
                               if (name == next.name(name2))
                                   error ("duplicate attribute name '{}' for element '{}'", 
                                           name, node.name(name2));
-                              next = attr.nextSibling_;
+                              next = attr.nextSibling;
                               }
                         }
         }
