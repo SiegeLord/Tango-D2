@@ -1156,7 +1156,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (char[] path, uint end)
+        package PathParser parse (char[] path, size_t end)
         {
                 end_ = end;
                 fp = path;

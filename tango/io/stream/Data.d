@@ -246,7 +246,7 @@ class DataInput : InputFilter
 
         ***********************************************************************/
 
-        private final void eat (void* dst, uint bytes)
+        private final void eat (void* dst, size_t bytes)
         {
                 auto count = input.read (dst[0..bytes]);
                 assert (count is bytes);
@@ -410,7 +410,7 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        private final void eat (void* src, uint bytes)
+        private final void eat (void* src, size_t bytes)
         {
                 auto count = output.write (src[0..bytes]);
                 assert (count is bytes);

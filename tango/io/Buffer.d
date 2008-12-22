@@ -27,7 +27,7 @@ pragma (msg, "warning - io.Buffer functionality has been split into io.stream.Bu
 
 extern (C)
 {
-        protected void * memcpy (void *dst, void *src, uint);
+        protected void * memcpy (void *dst, void *src, size_t);
 }
 
 /*******************************************************************************
@@ -130,9 +130,9 @@ class Buffer : IBuffer
         protected OutputStream  boutput;                   // optional data boutput
         protected InputStream   binput;                 // optional data binput
         protected void[]        data;                   // the raw data buffer
-        protected uint          index;                  // current read position
-        protected uint          extent;                 // limit of valid content
-        protected uint          dimension;              // maximum extent of content
+        protected size_t        index;                  // current read position
+        protected size_t        extent;                 // limit of valid content
+        protected size_t        dimension;              // maximum extent of content
         protected bool          canCompress = true;     // compress iterator content?
 
 
@@ -187,7 +187,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        this (InputStream stream, uint capacity)
+        this (InputStream stream, size_t capacity)
         {
                 this (capacity);
                 input = stream;
@@ -206,7 +206,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        this (OutputStream stream, uint capacity)
+        this (OutputStream stream, size_t capacity)
         {
                 this (capacity);
                 output = stream;
@@ -224,7 +224,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        this (uint capacity = 0)
+        this (size_t capacity = 0)
         {
                 setContent (new ubyte[capacity], 0);
         }
@@ -268,7 +268,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        this (void[] data, uint readable)
+        this (void[] data, size_t readable)
         {
                 setContent (data, readable);
         }
@@ -290,13 +290,13 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        static IBuffer share (InputStream stream, uint size=uint.max)
+        static IBuffer share (InputStream stream, size_t size = size_t.max)
         {
                 auto b = cast(Buffered) stream;
                 if (b)
                     return b.buffer;
 
-                if (size is uint.max)
+                if (size is size_t.max)
                     size = stream.conduit.bufferSize;
 
                 return new Buffer (stream, size);
@@ -319,13 +319,13 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        static IBuffer share (OutputStream stream, uint size=uint.max)
+        static IBuffer share (OutputStream stream, size_t size = size_t.max)
         {
                 auto b = cast(Buffered) stream;
                 if (b)
                     return b.buffer;
 
-                if (size is uint.max)
+                if (size is size_t.max)
                     size = stream.conduit.bufferSize;
 
                 return new Buffer (stream, size);
@@ -375,7 +375,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IBuffer setContent (void[] data, uint readable)
+        IBuffer setContent (void[] data, size_t readable)
         {
                 this.data = data;
                 this.extent = readable;
@@ -413,7 +413,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final void[] opSlice (uint start, uint end)
+        final void[] opSlice (size_t start, size_t end)
         {
                 assert (start <= extent && end <= extent && start <= end);
                 return data [start .. end];
@@ -456,7 +456,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void[] slice (uint size, bool eat = true)
+        void[] slice (size_t size, bool eat = true)
         {
                 if (size > readable)
                    {
@@ -495,13 +495,13 @@ class Buffer : IBuffer
 
         **********************************************************************/
 
-        uint fill (void[] dst)
+        size_t fill (void[] dst)
         {
-                uint len = 0;
+                size_t len = 0;
 
                 while (len < dst.length)
                       {
-                      uint i = read (dst [len .. $]);
+                      auto i = read (dst [len .. $]);
                       if (i is IConduit.Eof)
                           return (len > 0) ? len : IConduit.Eof;
                       len += i;
@@ -527,7 +527,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        void[] readExact (void* dst, uint bytes)
+        void[] readExact (void* dst, size_t bytes)
         {
                 auto tmp = dst [0 .. bytes];
                 if (fill (tmp) != bytes)
@@ -576,13 +576,13 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        IBuffer append (void* src, uint length)
+        IBuffer append (void* src, size_t length)
         {
                 if (length > writable)
                     // can we write externally?
                     if (boutput)
                        {
-                       flush ();
+                       flush;
 
                        // check for pathological case
                        if (length > dimension)
@@ -740,7 +740,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        bool next (uint delegate (void[]) scan)
+        bool next (size_t delegate (void[]) scan)
         {
                 while (read(scan) is IConduit.Eof)
                        // not found - are we streaming?
@@ -793,7 +793,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint readable ()
+        size_t readable ()
         {
                 return extent - index;
         }
@@ -808,7 +808,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint writable ()
+        size_t writable ()
         {
                 return dimension - extent;
         }
@@ -823,7 +823,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final uint reserve (uint space)
+        final size_t reserve (size_t space)
         {       
                 assert (space < dimension);
 
@@ -852,7 +852,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint write (uint delegate (void[]) dg)
+        size_t write (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -885,9 +885,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint read (uint delegate (void[]) dg)
+        size_t read (size_t delegate (void[]) dg)
         {
-                int count = dg (data [index..extent]);
+                auto count = dg (data [index..extent]);
 
                 if (count != IConduit.Eof)
                    {
@@ -917,7 +917,7 @@ class Buffer : IBuffer
 
         IBuffer compress ()
         {       
-                uint r = readable;
+                auto r = readable;
 
                 if (index > 0 && r > 0)
                     // content may overlap ...
@@ -944,7 +944,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint fill (InputStream src)
+        size_t fill (InputStream src)
         {
                 if (src is null)
                     return IConduit.Eof;
@@ -975,12 +975,12 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final uint drain (OutputStream dst)
+        final size_t drain (OutputStream dst)
         {
                 if (dst is null)
                     return IConduit.Eof;
 
-                uint ret = read (&dst.write);
+                auto ret = read (&dst.write);
                 if (ret is IConduit.Eof)
                     error (eofWrite);
 
@@ -998,7 +998,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        bool truncate (uint length)
+        bool truncate (size_t length)
         {
                 if (length <= data.length)
                    {
@@ -1023,7 +1023,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint limit ()
+        size_t limit ()
         {
                 return extent;
         }
@@ -1043,7 +1043,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint capacity ()
+        size_t capacity ()
         {
                 return dimension;
         }
@@ -1063,7 +1063,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        uint position ()
+        size_t position ()
         {
                 return index;
         }
@@ -1165,7 +1165,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        protected void copy (void *src, uint size)
+        protected void copy (void *src, size_t size)
         {
                 // avoid "out of bounds" test on zero size
                 if (size)
@@ -1189,7 +1189,7 @@ class Buffer : IBuffer
                                      
         ***********************************************************************/
 
-        protected uint expand (uint size)
+        protected size_t expand (size_t size)
         {
                 return writable;
         }
@@ -1365,7 +1365,7 @@ class Buffer : IBuffer
 
         void[] load (void[] dst = null)
         {
-                return slice();
+                return slice;
         }
         
         /***********************************************************************
@@ -1388,9 +1388,9 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        override size_t read (void[] dst)
         {
-                uint content = readable();
+                auto content = readable();
                 if (content)
                    {
                    if (content >= dst.length)
@@ -1439,7 +1439,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        override size_t write (void[] src)
         {
                 append (src.ptr, src.length);
                 return src.length;
@@ -1477,7 +1477,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        final override uint bufferSize ()
+        final override size_t bufferSize ()
         {
                 return 32 * 1024;
         }
@@ -1576,7 +1576,7 @@ class Buffer : IBuffer
 
 class GrowBuffer : Buffer
 {
-        private uint increment;
+        private size_t increment;
 
         alias Buffer.slice  slice;
         alias Buffer.append append; 
@@ -1587,7 +1587,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        this (uint size = 1024, uint increment = 1024)
+        this (size_t size = 1024, size_t increment = 1024)
         {
                 super (size);
 
@@ -1601,7 +1601,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        this (IConduit conduit, uint size = 1024)
+        this (IConduit conduit, size_t size = 1024)
         {
                 this (size, size);
                 setConduit (conduit);
@@ -1619,7 +1619,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        override void[] slice (uint size, bool eat = true)
+        override void[] slice (size_t size, bool eat = true)
         {   
                 if (size > readable)
                    {
@@ -1636,7 +1636,7 @@ class GrowBuffer : Buffer
                       } while (size > readable);
                    }
 
-                uint i = index;
+                auto i = index;
                 if (eat)
                     index += size;
                 return data [i .. i + size];               
@@ -1649,7 +1649,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        override IBuffer append (void *src, uint length)        
+        override IBuffer append (void *src, size_t length)        
         {               
                 if (length > writable)
                     expand (length);
@@ -1667,7 +1667,7 @@ class GrowBuffer : Buffer
         
         ***********************************************************************/
 
-        override uint fill (InputStream src)
+        override size_t fill (InputStream src)
         {
                 if (writable <= increment/8)
                     expand (increment);
@@ -1684,7 +1684,7 @@ class GrowBuffer : Buffer
 
         ***********************************************************************/
 
-        uint fill (uint size = uint.max)
+        size_t fill (size_t size = size_t.max)
         {   
                 while (readable < size)
                        if (fill(binput) is IConduit.Eof)
@@ -1705,7 +1705,7 @@ class GrowBuffer : Buffer
                                      
         ***********************************************************************/
 
-        override uint expand (uint size)
+        override size_t expand (size_t size)
         {
                 if (size < increment)
                     size = increment;

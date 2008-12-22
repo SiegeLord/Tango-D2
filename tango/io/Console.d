@@ -105,7 +105,7 @@ struct Console
 
                 final bool readln (inout char[] content, bool raw=false)
                 {
-                        uint line (void[] input)
+                        size_t line (void[] input)
                         {
                                 auto text = cast(char[]) input;
                                 foreach (i, c; text)
@@ -496,7 +496,7 @@ struct Console
                                 {} 
                              else
                                 {
-                                override uint write (void[] src)
+                                override size_t write (void[] src)
                                 {
                                 if (redirected)
                                     return super.write (src);
@@ -550,7 +550,7 @@ struct Console
                                 {} 
                              else
                                 {
-                                protected override uint read (void[] dst)
+                                protected override size_t read (void[] dst)
                                 {
                                 if (redirected)
                                     return super.read (dst);
