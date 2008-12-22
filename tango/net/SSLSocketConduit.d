@@ -423,8 +423,8 @@ version(Test)
                         PrivateKey privateKey;
                         try
                         {
-                            publicCertificate = new Certificate(cast(char[])File.read("public.pem")); 
-                            privateKey = new PrivateKey(cast(char[])File.read("private.pem"));
+                            publicCertificate = new Certificate(cast(char[])File.get ("public.pem")); 
+                            privateKey = new PrivateKey(cast(char[])File.get ("private.pem"));
                         }                        
                         catch (Exception ex)
                         {

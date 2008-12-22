@@ -387,7 +387,7 @@ version (Test)
         Test.Status speedTest(inout char[][] messages)
         {
             Stdout("Reading...").newline;
-            char[] data = cast(char[])File.read("blah.b64");
+            char[] data = cast(char[])File.get ("blah.b64");
             ubyte[] result = new ubyte[data.length];
             auto t1 = new StopWatch();
             Stdout("Decoding..").newline;

@@ -69,11 +69,16 @@ version (Win32)
         from.close;
         ---
         
-        To load a file directly into memory one might do this:
+        You can use InputStream.load() to load a file directly into memory:
         ---
         auto file = new File ("test.txt");
         auto content = file.load;
         file.close;
+        ---
+
+        Or use a convenience static function within File:
+        ---
+        auto content = File.get ("test.txt");
         ---
 
         A more explicit version with a similar result would be:
@@ -97,6 +102,9 @@ version (Win32)
         // write an array of content to it
         auto bytes = to.write (content);
         ---
+
+        There are equivalent static functions, File.set() and
+        File.append(), which set or append file content respectively
 
         File can happily handle random I/O. Here we use seek() to
         relocate the file pointer:
@@ -330,7 +338,7 @@ class File : Device, Device.Seek
 
         ***********************************************************************/
 
-        static void[] read (char[] path, void[] dst = null)
+        static void[] get (char[] path, void[] dst = null)
         {
                 scope file = new File (path);  
                 scope (exit)
@@ -356,7 +364,7 @@ class File : Device, Device.Seek
 
         ***********************************************************************/
 
-        static void write (char[] path, void[] content)
+        static void set (char[] path, void[] content)
         {
                 scope file = new File (path, ReadWriteCreate);  
                 scope (exit)
@@ -661,9 +669,9 @@ debug (File)
 {
         void main()
         {
-                auto foo = File.read("file.d");
+                auto foo = File.get("file.d");
                 auto file = new File("file.d");
-                ubyte[10] ff;
+                char[10] ff;
                 int f = file.read(ff);
         }
 }

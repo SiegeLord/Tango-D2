@@ -176,7 +176,7 @@ class UnicodeFile(T)
 
         final T[] read ()
         {
-                auto content = File.read (path_);
+                auto content = File.get (path_);
                 return bom_.decode (content);
         }
 

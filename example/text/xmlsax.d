@@ -21,7 +21,7 @@ void benchmark (int iterations, SaxParser!(char) parser)
 {       
         StopWatch elapsed;
 
-        auto content = cast(char[]) (new File).load("hamlet.xml");
+        auto content = cast(char[]) File.get ("hamlet.xml");
         parser.setContent(content);
 
         elapsed.start;
