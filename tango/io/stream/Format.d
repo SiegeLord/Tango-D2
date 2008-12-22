@@ -257,7 +257,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final size_t sink (T[] s)
+        private final uint sink (T[] s)
         {
                 return output.write (s);
         }
