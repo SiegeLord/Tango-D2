@@ -124,7 +124,8 @@ version (Win32)
 
 class File : Device, Device.Seek
 {
-        public alias Device.read read;
+        public alias Device.read  read;
+        public alias Device.write write;
 
         /***********************************************************************
         
@@ -322,30 +323,36 @@ class File : Device, Device.Seek
 
         /***********************************************************************
 
-                Convenience function to return the content of a file
+                Convenience function to return the content of a file.
+                Returns a slice of the provided output buffer, where
+                that has sufficient capacity, and allocates from the
+                heap where the file content is larger.
 
         ***********************************************************************/
 
-        static void[] read (char[] path)
+        static void[] read (char[] path, void[] dst = null)
         {
                 scope file = new File (path);  
                 scope (exit)
                        file.close;
 
                 // allocate enough space for the entire file
-                auto content = new ubyte [cast(size_t) file.length];
+                auto len = cast(size_t) file.length;
+                if (dst.length < len)
+                    dst.length = len;
 
                 //read the content
-                if (file.read (content) != file.length)
+                len = file.read (dst);
+                if (len is file.Eof)
                     file.error ("File.read :: unexpected eof");
 
-                return content;
+                return dst [0 .. len];
         }
 
         /***********************************************************************
 
                 Convenience function to set file content and length to 
-                reflect the given array.
+                reflect the given array
 
         ***********************************************************************/
 
@@ -360,7 +367,7 @@ class File : Device, Device.Seek
 
         /***********************************************************************
 
-                Convenience function to append content to a file.
+                Convenience function to append content to a file
 
         ***********************************************************************/
 
