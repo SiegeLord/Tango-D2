@@ -1714,7 +1714,7 @@ class DummyInputStream : InputStream // IConduit.Seek
     override InputStream input() {return null;}
     override IConduit conduit() { return null; }
     override void close() {}
-    override uint read(void[] dst) { return IConduit.Eof; }
+    override size_t read(void[] dst) { return IConduit.Eof; }
     override InputStream clear() { return this; }
     override void[] load(void[] dst = null)
     {
@@ -1738,7 +1738,7 @@ class DummyOutputStream : OutputStream //, IConduit.Seek
     override OutputStream output() {return null;}
     override IConduit conduit() { return null; }
     override void close() {}
-    override uint write(void[] src) { return IConduit.Eof; }
+    override size_t write(void[] src) { return IConduit.Eof; }
     override OutputStream copy(InputStream src)
     {
         Conduit.transfer(src, this);
@@ -1816,7 +1816,7 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
         if( callbacks.close ) callbacks.close();
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         auto result = source.read(dst);
         if( callbacks.read ) callbacks.read(result, dst);
@@ -1899,7 +1899,7 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
         if( callbacks.close ) callbacks.close();
     }
 
-    override uint write(void[] dst)
+    override size_t write(void[] dst)
     {
         auto result = source.write(dst);
         if( callbacks.write ) callbacks.write(result, dst);
@@ -2010,7 +2010,7 @@ class WrapSeekInputStream : InputStream //, IConduit.Seek
         seeker = null;
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         if( seeker.seek(0, Anchor.Current) != _position )
             seeker.seek(_position, Anchor.Begin);
@@ -2106,7 +2106,7 @@ class WrapSeekOutputStream : OutputStream//, IConduit.Seek
         seeker = null;
     }
 
-    uint write(void[] src)
+    size_t write(void[] src)
     {
         if( seeker.seek(0, Anchor.Current) != _position )
             seeker.seek(_position, Anchor.Begin);
@@ -2146,4 +2146,5 @@ private:
         assert( _position >= 0 );
     }
 }
+
 

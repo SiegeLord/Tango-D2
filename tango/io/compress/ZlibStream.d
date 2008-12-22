@@ -134,7 +134,7 @@ class ZlibInput : InputFilter
 
     ***************************************************************************/ 
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         if( !zs_valid )
             return IConduit.Eof;
@@ -338,7 +338,7 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    override uint write(void[] src)
+    override size_t write(void[] src)
     {
         check_valid();
         scope(failure) kill_zs();

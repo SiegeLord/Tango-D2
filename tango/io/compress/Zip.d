@@ -1823,7 +1823,7 @@ class ZipEntryVerifier : InputStream
         this.source = null;
     }
 
-    uint read(void[] dst)
+    size_t read(void[] dst)
     {
         auto bytes = source.read(dst);
         if( bytes == IConduit.Eof )
@@ -2324,7 +2324,7 @@ class CounterInput : InputStream
         source = null;
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         auto read = source.read(dst);
         if( read != IConduit.Eof )
@@ -2386,7 +2386,7 @@ class CounterOutput : OutputStream
         sink = null;
     }
 
-    override uint write(void[] dst)
+    override size_t write(void[] dst)
     {
         auto wrote = sink.write(dst);
         if( wrote != IConduit.Eof )
@@ -2473,7 +2473,7 @@ class SliceSeekInputStream : InputStream
         seeker = null;
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         // If we're at the end of the slice, return eof
         if( _position >= length )
@@ -2596,7 +2596,7 @@ class SliceInputStream : InputStream
         return source.seek (ofs, anchor);
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         // If we're at the end of the slice, return eof
         if( _length <= 0 )
@@ -2679,7 +2679,7 @@ class SliceSeekOutputStream : OutputStream
         seeker = null;
     }
 
-    uint write(void[] src)
+    size_t write(void[] src)
     {
         // If we're at the end of the slice, return eof
         if( _position >= length )
@@ -2830,7 +2830,7 @@ class WrapSeekInputStream : InputStream
         seeker = null;
     }
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         if( seeker.seek(0, Anchor.Current) != _position )
             seeker.seek(_position, Anchor.Begin);
@@ -2926,7 +2926,7 @@ class WrapSeekOutputStream : OutputStream
         seeker = null;
     }
 
-    uint write(void[] src)
+    size_t write(void[] src)
     {
         if( seeker.seek(0, Anchor.Current) != _position )
             seeker.seek(_position, Anchor.Begin);
@@ -2971,4 +2971,5 @@ private:
         assert( _position >= 0 );
     }
 }
+
 
