@@ -439,7 +439,7 @@ else
 
                 /***************************************************************
                 
-                        Locale a node with a matching name and/or prefix
+                        Locate a node with a matching name and/or prefix
 
                 ***************************************************************/
         
