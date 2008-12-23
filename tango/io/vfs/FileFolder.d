@@ -244,7 +244,7 @@ class FileFolder : VfsFolder
                          else
                             {
                             stats.bytes += info.bytes; 
-                            ++stats.files;
+                           ++stats.files;
                             }
 
                 return folders;         
@@ -462,8 +462,9 @@ private class FolderGroup : VfsFolders
 
         final uint folders ()
         {
-                assert (members.length);
-                return members[0].stats.folders;
+                if (members.length is 1)
+                    return members[0].stats.folders;
+                return members.length;
         }
 
         /***********************************************************************
