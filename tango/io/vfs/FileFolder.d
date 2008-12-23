@@ -315,8 +315,9 @@ class FileFolder : VfsFolder
 
 class FileGroup : VfsFiles
 {
-        private char[][]        group;
-        private VfsStats        stats;
+        private char[][]        group;          // set of filtered filenames
+        private char[][]        hosts;          // set of containing folders
+        private VfsStats        stats;          // stats for contained files
 
         /***********************************************************************
 
@@ -325,7 +326,14 @@ class FileGroup : VfsFiles
         this (FolderGroup host, VfsFilter filter)
         {
                 foreach (folder; host.members)
-                         group ~= folder.files (stats, filter);
+                        {
+                        auto files = folder.files (stats, filter);
+                        if (files.length)
+                           {
+                           group ~= files;
+                           //hosts ~= folder.toString;
+                           }
+                        }
         }
 
         /***********************************************************************
