@@ -17,6 +17,8 @@ module tango.io.stream.Typed;
 
 private import tango.io.stream.Buffer;
 
+private import tango.io.device.Conduit;
+
 /*******************************************************************************
 
         Type T is the target or destination type
@@ -33,7 +35,8 @@ class TypedInput(T) : InputFilter
 
         this (InputStream stream)
         {
-                super (input = BufferInput.create (stream));
+                super (input = cast(Bin)BufferInput.create (stream));
+                assert(input!is null,"cast failed input is null");
         }
         
         /***********************************************************************
@@ -96,7 +99,8 @@ class TypedOutput(T) : OutputFilter
 
         this (OutputStream stream)
         {
-                super (output = BufferOutput.create (stream));
+                super (output = cast(Bout)BufferOutput.create (stream));
+                assert(output!is null,"cast failed output is null");
         }
 
         /***********************************************************************

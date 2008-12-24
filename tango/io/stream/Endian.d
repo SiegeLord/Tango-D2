@@ -19,6 +19,8 @@ private import  tango.core.ByteSwap;
 
 private import  tango.io.stream.Buffer;
 
+private import tango.io.device.Conduit;
+
 /*******************************************************************************
 
         Type T is the element type

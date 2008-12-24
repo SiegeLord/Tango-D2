@@ -20,6 +20,8 @@ private import tango.io.stream.Buffer;
 
 private import Utf = tango.text.convert.Utf;
 
+private import tango.io.device.Conduit;
+
 /*******************************************************************************
 
         Streaming UTF converter. Type T is the target or destination type, 

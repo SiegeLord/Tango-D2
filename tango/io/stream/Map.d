@@ -134,7 +134,8 @@ class MapOutput(T) : OutputFilter
 
         this (OutputStream stream, T[] newline = NL)
         {
-                super (output = BufferOutput.create (stream));
+                super (output = cast(Bout) BufferOutput.create (stream));
+                assert(output!is null,"cast failed output is null");
                 eol = newline;
         }
 
