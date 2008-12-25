@@ -120,6 +120,21 @@ class Lines(T) : Iterator!(T)
 
 *******************************************************************************/
 
+version (UnitTest)
+{
+        private import tango.io.device.Array;
+
+        unittest 
+        {
+                auto p = new Lines!(char) (new Array("blah"));
+        }
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
 debug (Lines)
 {
         import tango.io.Console;

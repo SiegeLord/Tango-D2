@@ -113,3 +113,18 @@ class Quotes(T) : Iterator!(T)
                 return notFound;
         }
 }
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+version (UnitTest)
+{
+        private import tango.io.device.Array;
+
+        unittest 
+        {
+                auto p = new Quotes!(char) (", ", new Array("blah"));
+        }
+}

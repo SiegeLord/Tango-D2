@@ -12,9 +12,9 @@
 
 module tango.io.stream.Iterator;
 
-public  import tango.io.stream.Buffer;
+private import tango.io.stream.Buffer;
 
-private import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
+protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 /*******************************************************************************
 

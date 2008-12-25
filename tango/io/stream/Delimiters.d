@@ -101,3 +101,18 @@ class Delimiters(T) : Iterator!(T)
         }
 }
 
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+version (UnitTest)
+{
+        private import tango.io.device.Array;
+
+        unittest 
+        {
+                auto p = new Delimiters!(char) (", ", new Array("blah"));
+        }
+}

@@ -101,3 +101,18 @@ class Patterns : Iterator!(char)
                 return notFound;
         }
 }
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+version (UnitTest)
+{
+        private import tango.io.device.Array;
+
+        unittest 
+        {
+                auto p = new Patterns ("b.*", new Array("blah"));
+        }
+}
