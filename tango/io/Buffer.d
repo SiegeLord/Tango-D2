@@ -127,7 +127,7 @@ extern (C)
 
 class Buffer : IBuffer
 {
-        protected OutputStream  boutput;                   // optional data boutput
+        protected OutputStream  boutput;                // optional data boutput
         protected InputStream   binput;                 // optional data binput
         protected void[]        data;                   // the raw data buffer
         protected size_t        index;                  // current read position
