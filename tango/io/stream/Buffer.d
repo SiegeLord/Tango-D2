@@ -60,7 +60,6 @@ class BufferInput : InputFilter, InputBuffer
         private size_t        index;                  // current read position
         private size_t        extent;                 // limit of valid content
         private size_t        dimension;              // maximum extent of content
-        private bool          canCompress = true;     // compress iterator content?
 
         /***********************************************************************
 
@@ -111,11 +110,6 @@ class BufferInput : InputFilter, InputBuffer
                 super (source = stream);
         }
 
-        void input (InputStream source)
-        {
-                this.source = source;
-        }
-
         /***********************************************************************
 
                 Attempt to share an upstream Buffer, and create an instance
@@ -133,11 +127,20 @@ class BufferInput : InputFilter, InputBuffer
 
         static InputBuffer create (InputStream stream)
         {
-                InputBuffer buffer;//stream.bin;
-                if (buffer is null)
-                    buffer = new BufferInput (stream, stream.conduit.bufferSize);
-
-                return buffer;
+                auto source = stream;
+                auto conduit = source.conduit;
+                while (cast(StreamMutator) source is null)
+                      {
+                      auto b = cast(InputBuffer) source;
+                      if (b)
+                          return b;
+                      if (source is conduit)
+                          break;
+                      source = source.input;
+                      assert (source);
+                      }
+                      
+                return new BufferInput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
@@ -217,12 +220,8 @@ class BufferInput : InputFilter, InputBuffer
                    // in the buffer as possible, such that entire records may
                    // be aliased directly from within.
                    if (size > (dimension - index))
-                      {
-                      if (size > dimension)
-                          conduit.error (underflow);
-                      if (canCompress)
-                          compress;
-                      }
+                       if (size > dimension)
+                           conduit.error (underflow);
 
                    // populate tail of buffer with new content
                    do {
@@ -459,7 +458,7 @@ class BufferInput : InputFilter, InputBuffer
                 while (read(scan) is Eof)
                       {
                       // did we start at the beginning?
-                      if (position && canCompress)
+                      if (position)
                           // yep - move partial token to start of buffer
                           compress;
                       else
@@ -474,24 +473,6 @@ class BufferInput : InputFilter, InputBuffer
                 return true;
         }
 
-        /***********************************************************************
-
-                Configure the compression strategy for iterators
-
-                Remarks:
-                Iterators will tend to compress the buffered content in
-                order to maximize space for new data. You can disable this
-                behaviour by setting this boolean to false
-
-        ***********************************************************************/
-
-        final bool compress (bool yes)
-        {
-                auto ret = canCompress;
-                canCompress = yes;
-                return ret;
-        }
-        
         /***********************************************************************
 
                 Reserve the specified space within the buffer, compressing
@@ -674,6 +655,17 @@ class BufferInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
+                Set the input stream
+
+        ***********************************************************************/
+
+        final void input (InputStream source)
+        {
+                this.source = source;
+        }
+
+        /***********************************************************************
+
                 Write into this buffer
 
                 Params:
@@ -825,18 +817,6 @@ class BufferOutput : OutputFilter, OutputBuffer
                 super (sink = stream);
         }
 
-        void output (OutputStream sink)
-        {
-                this.sink = sink;
-        }
-
-        final override long seek (long offset, Anchor start = Anchor.Begin)
-        {       
-                // user should explicitly flush beforehand
-                clear;
-                return super.seek (offset, start);
-        }
-
         /***********************************************************************
 
                 Attempts to share an upstream BufferOutput, and creates a new
@@ -854,11 +834,20 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         static OutputBuffer create (OutputStream stream)
         {
-                OutputBuffer buffer;// = stream.bout;
-                if (buffer is null)
-                    buffer = new BufferOutput (stream, stream.conduit.bufferSize);
-
-                return buffer;
+                auto sink = stream;
+                auto conduit = sink.conduit;
+                while (cast(StreamMutator) sink is null)
+                      {
+                      auto b = cast(OutputBuffer) sink;
+                      if (b)
+                          return b;
+                      if (sink is conduit)
+                          break;
+                      sink = sink.output;
+                      assert (sink);
+                      }
+                      
+                return new BufferOutput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
@@ -1176,6 +1165,31 @@ class BufferOutput : OutputFilter, OutputBuffer
         {
                 index = extent = 0;
                 return this;
+        }
+
+        /***********************************************************************
+
+                Set the output stream
+
+        ***********************************************************************/
+
+        final void output (OutputStream sink)
+        {
+                this.sink = sink;
+        }
+
+        /***********************************************************************
+
+                Seek within this stream. Any and all buffered output is 
+                disposed before the upstream is invoked. Use an explicit
+                flush() to emit content prior to seeking
+
+        ***********************************************************************/
+
+        final override long seek (long offset, Anchor start = Anchor.Begin)
+        {       
+                clear;
+                return super.seek (offset, start);
         }
 
         /***********************************************************************

@@ -14,13 +14,12 @@
 
 module tango.io.stream.Map;
 
+private import tango.io.stream.Lines,
+               tango.io.stream.Buffer;
+
 private import Text = tango.text.Util;
 
 private import tango.io.device.Conduit;
-
-private import tango.io.stream.Buffer;
-
-private import tango.io.stream.Lines;
 
 /*******************************************************************************
 
@@ -116,8 +115,7 @@ class MapInput(T) : Lines!(T)
 
 class MapOutput(T) : OutputFilter
 {
-        private T[]          eol;
-        private Bout         output;
+        private T[] eol;
 
         private const T[] prefix = "# ";
         private const T[] equals = " = ";
@@ -134,20 +132,8 @@ class MapOutput(T) : OutputFilter
 
         this (OutputStream stream, T[] newline = NL)
         {
-                super (output = cast(Bout) BufferOutput.create (stream));
-                assert(output!is null,"cast failed output is null");
+                super (BufferOutput.create (stream));
                 eol = newline;
-        }
-
-        /***********************************************************************
-        
-                Buffered interface
-
-        ***********************************************************************/
-
-        final OutputBuffer bout ()
-        {
-                return output;
         }
 
         /***********************************************************************
@@ -158,7 +144,7 @@ class MapOutput(T) : OutputFilter
 
         final MapOutput newline ()
         {
-                output.write (eol);
+                sink.write (eol);
                 return this;
         }
 
@@ -170,9 +156,9 @@ class MapOutput(T) : OutputFilter
 
         final MapOutput comment (T[] text)
         {
-                output.write(prefix);
-                output.write(text);
-                output.write(eol);
+                sink.write (prefix);
+                sink.write (text);
+                sink.write (eol);
                 return this;
         }
 
@@ -184,10 +170,10 @@ class MapOutput(T) : OutputFilter
 
         final MapOutput append (T[] name, T[] value)
         {
-                output.write(name);
-                output.write(equals);
-                output.write(value);
-                output.write(eol);
+                sink.write (name);
+                sink.write (equals);
+                sink.write (value);
+                sink.write (eol);
                 return this;
         }
 
@@ -225,7 +211,7 @@ debug (UnitTest)
                 wchar[][wchar[]] map;
                 map["foo"] = "bar";
                 map["foo2"] = "bar2";
-                output.append (map).flush;
+                output.append(map).flush;
 
                 map = map.init;
                 input.load (map);

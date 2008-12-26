@@ -18,9 +18,9 @@ module tango.io.stream.Utf;
 
 private import tango.io.stream.Buffer;
 
-private import Utf = tango.text.convert.Utf;
-
 private import tango.io.device.Conduit;
+
+private import Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
 
@@ -29,7 +29,7 @@ private import tango.io.device.Conduit;
 
 *******************************************************************************/
 
-class UtfInput(T, S) : InputFilter
+class UtfInput(T, S) : InputFilter, StreamMutator
 {       
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
                     pragma (msg, "Source type must be char, wchar, or dchar");
@@ -59,7 +59,7 @@ class UtfInput(T, S) : InputFilter
                 else
                    {
                    size_t consumed,
-                        produced;
+                          produced;
 
                    size_t reader (void[] src)
                    {
@@ -105,7 +105,7 @@ class UtfInput(T, S) : InputFilter
 
 *******************************************************************************/
 
-class UtfOutput (S, T) : OutputFilter
+class UtfOutput (S, T) : OutputFilter, StreamMutator
 {       
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
                     pragma (msg, "Source type must be char, wchar, or dchar");
@@ -144,7 +144,7 @@ class UtfOutput (S, T) : OutputFilter
                 else
                    {
                    size_t consumed,
-                        produced;
+                          produced;
 
                    size_t writer (void[] dst)
                    {
@@ -186,7 +186,7 @@ class UtfOutput (S, T) : OutputFilter
         
 *******************************************************************************/
         
-debug (UtfStream)
+debug (Utf)
 {
         import tango.io.device.Array;
 

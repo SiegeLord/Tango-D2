@@ -27,16 +27,13 @@ private import tango.io.device.Conduit;
 
 class TypedInput(T) : InputFilter
 {       
-        private Bin input;
-
         /***********************************************************************
 
         ***********************************************************************/
 
         this (InputStream stream)
         {
-                super (input = cast(Bin)BufferInput.create (stream));
-                assert(input!is null,"cast failed input is null");
+                super (BufferInput.create (stream));
         }
         
         /***********************************************************************
@@ -47,7 +44,7 @@ class TypedInput(T) : InputFilter
 
         final override TypedInput clear ()
         {
-                source.clear;
+                super.clear;
                 return this;
         }
 
@@ -60,7 +57,7 @@ class TypedInput(T) : InputFilter
 
         final bool read (inout T x)
         {
-                return input.read((&x)[0..1]) is T.sizeof;
+                return source.read((&x)[0..1]) is T.sizeof;
         }
 
         /***********************************************************************
@@ -74,7 +71,7 @@ class TypedInput(T) : InputFilter
                 T x;
                 int ret;
 
-                while ((input.read((&x)[0..1]) is T.sizeof))
+                while ((source.read((&x)[0..1]) is T.sizeof))
                         if ((ret = dg (x)) != 0)
                              break;
                 return ret;
@@ -91,16 +88,13 @@ class TypedInput(T) : InputFilter
 
 class TypedOutput(T) : OutputFilter
 {       
-        private Bout output;
-
         /***********************************************************************
 
         ***********************************************************************/
 
         this (OutputStream stream)
         {
-                super (output = cast(Bout)BufferOutput.create (stream));
-                assert(output!is null,"cast failed output is null");
+                super (BufferOutput.create (stream));
         }
 
         /***********************************************************************
@@ -109,9 +103,9 @@ class TypedOutput(T) : OutputFilter
 
         ***********************************************************************/
 
-        final void write (T x)
+        final void write (ref T x)
         {
-                output.append (&x, T.sizeof);
+                sink.write ((&x)[0..1]);
         }
 }
 
@@ -123,17 +117,19 @@ class TypedOutput(T) : OutputFilter
 debug (UnitTest)
 {
         import tango.io.Stdout;
+        import tango.io.stream.Utf;
         import tango.io.device.Array;
-        import tango.io.stream.UtfStream;
 
         unittest
         {
+                Array output;
+
                 auto inp = new TypedInput!(char)(new Array("hello world"));
-                auto oot = new TypedOutput!(char)(new Array(20));
+                auto oot = new TypedOutput!(char)(output = new Array(20));
 
                 foreach (x; inp)
                          oot.write (x);
-                assert (oot.output.slice == "hello world");
+                assert (output.slice == "hello world");
 
                 auto xx = new TypedInput!(char)(new UtfInput!(char, dchar)(new Array("hello world"d)));
                 char[] yy;

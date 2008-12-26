@@ -50,7 +50,7 @@ class TextFileInput : TextInput
 
 /*******************************************************************************
        
-        Composes a file with formatted text output. 
+        Composes a file with formatted text output. Output is buffered
 
 *******************************************************************************/
 
@@ -84,6 +84,14 @@ class TextFileOutput : TextOutput
 
 *******************************************************************************/
 
-debug (UnitTest)
+debug (TextFile)
 {
+        import tango.io.Console;
+
+        void main()
+        {
+                auto t = new TextFileInput ("TextFile.d");
+                foreach (line; t)
+                         Cout(line).newline;                  
+        }
 }

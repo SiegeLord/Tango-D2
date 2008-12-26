@@ -15,9 +15,9 @@
 
 module tango.io.stream.Endian;
 
-private import  tango.core.ByteSwap;
+private import tango.core.ByteSwap;
 
-private import  tango.io.stream.Buffer;
+private import tango.io.stream.Buffer;
 
 private import tango.io.device.Conduit;
 
@@ -27,13 +27,10 @@ private import tango.io.device.Conduit;
 
 *******************************************************************************/
 
-class EndianInput(T) : InputFilter
+class EndianInput(T) : InputFilter, StreamMutator
 {       
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
                     pragma (msg, "EndianInput :: type should be of length 2, 4, or 8 bytes");
-
-
-        private InputBuffer input;
 
         /***********************************************************************
 
@@ -41,7 +38,7 @@ class EndianInput(T) : InputFilter
 
         this (InputStream stream)
         {
-                super (input = BufferInput.create (stream));
+                super (BufferInput.create (stream));
         }
         
         /***********************************************************************
@@ -58,7 +55,7 @@ class EndianInput(T) : InputFilter
 
         final override size_t read (void[] dst)
         {
-                auto len = input.read (dst[0 .. dst.length & ~(T.sizeof-1)]);
+                auto len = source.read (dst[0 .. dst.length & ~(T.sizeof-1)]);
                 if (len != Eof)
                    {
                    // the final read may be misaligned ...
@@ -85,7 +82,7 @@ class EndianInput(T) : InputFilter
 
 *******************************************************************************/
 
-class EndianOutput (T) : OutputFilter
+class EndianOutput (T) : OutputFilter, StreamMutator
 {       
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
                     pragma (msg, "EndianOutput :: type should be of length 2, 4, or 8 bytes");
@@ -147,7 +144,7 @@ class EndianOutput (T) : OutputFilter
 debug (UnitTest)
 {
         import tango.io.device.Array;
-
+        
         unittest
         {
                 auto inp = new EndianInput!(dchar)(new Array("hello world"d));
