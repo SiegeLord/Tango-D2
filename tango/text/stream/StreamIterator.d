@@ -14,9 +14,9 @@ module tango.text.stream.StreamIterator;
 
 pragma (msg, "warning - text.stream.StreamIterator has been moved to io.stream.Iterator");
 
-public  import tango.io.stream.BufferStream;
+private import tango.io.stream.Buffer;
 
-private import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
+protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 /*******************************************************************************
 
