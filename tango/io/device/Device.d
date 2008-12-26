@@ -21,14 +21,14 @@ public  import  tango.io.device.Conduit;
 /*******************************************************************************
 
         Implements a means of reading and writing a file device. Conduits
-        are the primary means of accessing external data, and are usually
-        routed through a Buffer.
+        are the primary means of accessing external data, and this one is
+        used as a superclass for the console, for files, sockets etc
 
 *******************************************************************************/
 
 class Device : Conduit, ISelectable
 {
-        /// expose in superclass definition also
+        /// expose superclass definition also
         public alias Conduit.error error;
 
         /***********************************************************************
@@ -76,7 +76,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Gain access to the standard IO handles (console etc).
+                        Allow adjustment of standard IO handles
 
                 ***************************************************************/
 
@@ -171,7 +171,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Gain access to the standard IO handles (console etc).
+                        Allow adjustment of standard IO handles
 
                 ***************************************************************/
 
