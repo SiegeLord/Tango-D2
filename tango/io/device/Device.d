@@ -186,7 +186,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                final override Handle fileHandle ()
+                final Handle fileHandle ()
                 {
                         return cast(Handle) handle;
                 }
