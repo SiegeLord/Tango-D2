@@ -16,7 +16,7 @@ pragma (msg, "warning - text.stream.StreamIterator has been moved to io.stream.I
 
 private import tango.io.stream.Buffer;
 
-protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
+package import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
 /*******************************************************************************
 
