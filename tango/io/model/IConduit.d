@@ -114,7 +114,7 @@ interface IOStream
 {
         enum : size_t 
         {
-                Eof = size_t.max /// the End-of-Flow identifer
+                Eof = -1 /// the End-of-Flow identifer
         }
 
         /***********************************************************************
