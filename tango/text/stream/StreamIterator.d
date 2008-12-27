@@ -64,7 +64,7 @@ class StreamIterator(T) : InputFilter
 
         ***********************************************************************/
 
-        abstract protected uint scan (void[] data);
+        abstract protected size_t scan (void[] data);
 
         /***********************************************************************
 
