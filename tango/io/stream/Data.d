@@ -445,7 +445,7 @@ debug (UnitTest)
 
 *******************************************************************************/
 
-debug (DataStream)
+debug (Data)
 {
         import tango.io.device.Array;
 
