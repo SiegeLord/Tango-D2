@@ -88,7 +88,7 @@ class RegexIterator : StreamIterator!(char)
                 
         ***********************************************************************/
 
-        protected uint scan (void[] data)
+        protected size_t scan (void[] data)
         {
                 auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 

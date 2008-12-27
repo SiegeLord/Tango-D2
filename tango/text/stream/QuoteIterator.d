@@ -85,7 +85,7 @@ class QuoteIterator(T) : StreamIterator!(T)
          
         ***********************************************************************/
 
-        private uint pair (T[] content, T quote)
+        private size_t pair (T[] content, T quote)
         {
                 foreach (int i, T c; content)
                          if (c is quote)
@@ -98,7 +98,7 @@ class QuoteIterator(T) : StreamIterator!(T)
                 
         ***********************************************************************/
 
-        protected uint scan (void[] data)
+        protected size_t scan (void[] data)
         {
                 auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 
