@@ -102,7 +102,7 @@ class SocketConduit : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override uint bufferSize ()
+        override size_t bufferSize ()
         {
                 return 1024 * 8;
         }
@@ -253,9 +253,9 @@ class SocketConduit : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override uint read (void[] dst)
+        override size_t read (void[] dst)
         {
-                return read (dst, (void[] dst){return cast(uint) socket_.receive(dst);});
+                return read (dst, (void[] dst){return cast(size_t) socket_.receive(dst);});
         }
         
         /***********************************************************************
@@ -267,7 +267,7 @@ class SocketConduit : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        override size_t write (void[] src)
         {
                 int count = socket_.send (src);
                 if (count <= 0)
@@ -283,7 +283,7 @@ class SocketConduit : Conduit, ISelectable
 
         ***********************************************************************/
 
-        package final synchronized uint read (void[] dst, uint delegate(void[]) dg)
+        package final synchronized size_t read (void[] dst, size_t delegate(void[]) dg)
         {
                 // reset timeout; we assume there's no thread contention
                 timeout = false;
@@ -321,7 +321,7 @@ else
                    }       
 
                 // invoke the actual read op
-                int count = dg (dst);
+                auto count = dg (dst);
                 if (count <= 0)
                     count = Eof;
                 return count;

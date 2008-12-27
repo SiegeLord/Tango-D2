@@ -64,7 +64,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        override uint read (void[] src)
+        override size_t read (void[] src)
         {
                 return read (src, null);
         }
@@ -81,9 +81,9 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        uint read (void[] dst, Address from)
+        size_t read (void[] dst, Address from)
         {
-                uint reader (void[] dst)
+                size_t reader (void[] dst)
                 {
                         return (dst.length) ? (from ? socket.receiveFrom(dst, from) : socket.receiveFrom(dst)) : 0;
                 }
@@ -102,7 +102,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        override uint write (void[] src)
+        override size_t write (void[] src)
         {
                 return write (src, null);
         }
@@ -117,7 +117,7 @@ class DatagramConduit : SocketConduit
 
         ***********************************************************************/
 
-        uint write (void[] src, Address to)
+        size_t write (void[] src, Address to)
         {
                 int count = Eof;
                 

@@ -208,7 +208,7 @@ class SSLSocketConduit : SocketConduit
 
     *******************************************************************************/
 
-    override uint write(void[] src)
+    override size_t write(void[] src)
     {
         int bytes = BIO_write(sslSocket, src.ptr, src.length);
         if (bytes <= 0)
@@ -226,7 +226,7 @@ class SSLSocketConduit : SocketConduit
     *******************************************************************************/
 
 
-    override uint read(void[] dst)
+    override size_t read(void[] dst)
     {
         timeout = false;
         if (tv.tv_usec | tv.tv_sec)
