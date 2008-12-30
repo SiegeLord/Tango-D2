@@ -382,10 +382,10 @@ ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
                 if (c >= '0' && c <= '9')
                    {}
                 else
-                   if (c >= 'a' && c <= 'f')
+                   if (c >= 'a' && c <= 'z')
                        c -= 39;
                    else
-                      if (c >= 'A' && c <= 'F')
+                      if (c >= 'A' && c <= 'Z')
                           c -= 7;
                       else
                          break;
