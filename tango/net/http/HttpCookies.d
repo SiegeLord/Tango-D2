@@ -507,7 +507,7 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        protected uint scan (void[] data)
+        protected size_t scan (void[] data)
         {      
                 char    c;
                 int     mark,
