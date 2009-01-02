@@ -54,7 +54,7 @@ class ChunkOutput : OutputFilter
 
         ***********************************************************************/
 
-        final override uint write (void[] src)
+        final override size_t write (void[] src)
         {
                 char[8] tmp = void;
                 
@@ -130,7 +130,7 @@ class ChunkInput : Lines!(char)
 
         ***********************************************************************/
 
-        final override uint read (void[] dst)
+        final override size_t read (void[] dst)
         {
                 if (available is 0)
                    {
