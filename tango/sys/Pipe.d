@@ -76,7 +76,7 @@ class PipeConduit : Device
     /**
      * Returns the buffer size for the PipeConduit.
      */
-    public override uint bufferSize()
+    public override size_t bufferSize()
     {
         return _bufferSize;
     }
