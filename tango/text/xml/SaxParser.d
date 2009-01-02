@@ -1216,7 +1216,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
         public void parse(Ch[] content) {
-                this.content = content;
+	        this.setContent(content);
                 doParse();
         }
 
@@ -1229,7 +1229,11 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
         /*******************************************************************************
          *******************************************************************************/
         public void setContent(Ch[] content) {
-                parser = new PullParser!(Ch)(content);
+	        if (!parser) {
+                        parser = new PullParser!(Ch)(content);
+		} else {
+		        parser.reset(content);
+		}
         }
 
         /*******************************************************************************
