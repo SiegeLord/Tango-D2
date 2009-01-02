@@ -84,7 +84,7 @@ class EndianProtocol : NativeProtocol
                 
                 void write (int mask, Swapper mutate)
                 {
-                        uint writer (void[] dst)
+                        size_t writer (void[] dst)
                         {
                                 // cap bytes written
                                 uint len = dst.length & mask;
