@@ -119,7 +119,7 @@ class BzipOutput : OutputFilter
 
     ***************************************************************************/
 
-    uint write(void[] src)
+    size_t write(void[] src)
     {
         check_valid();
         scope(failure) kill_bzs();
@@ -322,7 +322,7 @@ class BzipInput : InputFilter
 
     ***************************************************************************/ 
 
-    uint read(void[] dst)
+    size_t read(void[] dst)
     {
         if( !bzs_valid )
             return IConduit.Eof;
