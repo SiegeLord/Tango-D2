@@ -112,10 +112,7 @@ interface ISelectable
 
 interface IOStream 
 {
-        enum : size_t 
-        {
-                Eof = -1 /// the End-of-Flow identifer
-        }
+                const Eof = -1; /// the End-of-Flow identifer
 
         /***********************************************************************
         
