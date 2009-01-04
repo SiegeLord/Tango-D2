@@ -231,7 +231,7 @@ class SSLSocketConduit : SocketConduit
         timeout = false;
         if (tv.tv_usec | tv.tv_sec)
         {
-            uint rtn = Eof;
+            size_t rtn = Eof;
             // need to switch to nonblocking...
             bool blocking = socket_.blocking;
             if (blocking) socket_.blocking = false;
