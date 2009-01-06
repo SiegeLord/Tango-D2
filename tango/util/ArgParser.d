@@ -266,7 +266,7 @@ class ArgParser{
                     foreach (PrefixCallback cb; bindings[prefix]) {
                         if (argData.length < cb.id.length) continue;
                         
-                        uint cbil = cb.id.length;
+                        size_t cbil = cb.id.length;
 
                         if (cb.id == argData[0..cbil]) {
                             found = true;
@@ -276,7 +276,7 @@ class ArgParser{
 
                     if (found) {
                         // Find the longest matching callback identifier from the candidates.
-                        uint indexLongestMatch = 0;
+                        size_t indexLongestMatch = 0;
 
 						if (candidates.length > 1) {
 							foreach (i, candidate; candidates) {
