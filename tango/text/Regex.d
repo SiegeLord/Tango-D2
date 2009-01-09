@@ -3743,7 +3743,7 @@ class RegExpT(char_t)
             switch ( s.mode )
             {
                 case s.Mode.LOOKUP:
-                    if ( c <= s.LOOKUP_LENGTH )
+                    if ( c < s.LOOKUP_LENGTH )
                     {
                         debug(regex) Stdout.formatln("lookup");
                         auto i = s.lookup[c];
@@ -3757,7 +3757,7 @@ class RegExpT(char_t)
                     break LmainLoop;
 
                 case s.Mode.MIXED:
-                    if ( c <= s.LOOKUP_LENGTH )
+                    if ( c < s.LOOKUP_LENGTH )
                     {
                         debug(regex) Stdout.formatln("mixed");
                         auto i = s.lookup[c];
