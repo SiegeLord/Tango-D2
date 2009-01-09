@@ -6,7 +6,21 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Don Clugston
  */
- 
+/* References:
+  - R.P. Brent and P. Zimmermann, "Modern Computer Arithmetic", 
+    Version 0.2, p. 26, (June 2008).
+  - C. Burkinel and J. Ziegler, "Fast Recursive Division", MPI-I-98-1-022, 
+    Max-Planck Institute fuer Informatik, (Oct 1998).
+  - G. Hanrot, M. Quercia, and P. Zimmermann, "The Middle Product Algorithm, I.",
+    INRIA 4664, (Dec 2002).
+  - M. Bodrato and A. Zanoni, "What about Toom-Cook Matrices Optimality?" http://bodrato.it/papers (2006).
+  - A. Fog, "Optimizing subroutines in assembly language: An optimization guide for x86
+platforms.", www.agner.org/optimize (1998).
+  - A. Fog, "The microarchitecture of Intel and AMD CPU's: An optimization guide for assembly
+programmers and compiler makers.", www.agner.org/optimize (1998).
+  - A. Fog, "Instruction tables: Lists of instruction latencies, throughputs and micro-operation
+breakdowns for Intel and AMD CPU's.", www.agner.org/optimize (1998).
+*/ 
 module tango.math.internal.BiguintCore;
 
 version(GNU){
@@ -54,6 +68,13 @@ private:
        BigUint a;
        a.data=x;
        return a;
+    }
+public: // for development only, will be removed eventually
+    // Equivalent to BigUint[numbytes-$..$]
+    BigUint sliceHighestBytes(uint numbytes) {
+        BigUint x;
+        x.data = data[$-(numbytes>>2)..$];
+        return x;
     }
 public:
     void opAssign(uint u) {
@@ -218,7 +239,7 @@ static BigUint shl(BigUint x, ulong y)
 }
 
 // If wantSub is false, return x+y, leaving sign unchanged
-// If wantSub is true, return x-y, negating sign if x<y
+// If wantSub is true, return abs(x-y), negating sign if x<y
 static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
     BigUint r;
     if (wantSub) { // perform a subtraction
@@ -249,7 +270,7 @@ static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
 }
 
 // If wantSub is false, return x+y, leaving sign unchanged.
-// If wantSub is true, return x-y, negating sign if x<y
+// If wantSub is true, return abs(x-y), negating sign if x<y
 static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
     BigUint r;
     if (wantSub) { // perform a subtraction
@@ -345,7 +366,7 @@ static BigUint div(BigUint x, BigUint y)
     if (y.data.length == 1) return divInt(x, y.data[0]);
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     divModInternal(result, null, x.data, y.data);
-    if (result.length>1 && result[$-1]==0) result=result[0..$-1];
+    if (result.length>1 && result[$-1]==0) result = result[0..$-1];
     return BigUint(result);
 }
 
@@ -460,7 +481,7 @@ BigDigit [] subInt(BigDigit[] x, ulong y)
 }
 
 /**  General unsigned multiply routine for bigints.
- *  Sets result = x*y.
+ *  Sets result = x * y.
  *
  *  The length of y must not be larger than the length of x.
  *  Different algorithms are used, depending on the lengths of x and y.
@@ -571,7 +592,6 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
         delete scratchbuff;
     }
 }
-
 
 import tango.core.BitManip : bsr;
 
