@@ -107152,10 +107152,6 @@ private {
   ,mapping: [ 0x0069 ]
  },
  {
-   code:0x0049
-  ,mapping: [ 0x0131 ]
- },
- {
    code:0x004A
   ,mapping: [ 0x006A ]
  },
@@ -107450,10 +107446,6 @@ private {
  {
    code:0x0130
   ,mapping: [ 0x0069, 0x0307 ]
- },
- {
-   code:0x0130
-  ,mapping: [ 0x0069 ]
  },
  {
    code:0x0132
