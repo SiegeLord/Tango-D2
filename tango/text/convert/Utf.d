@@ -200,7 +200,6 @@ char[] toString(wchar[] input, char[] output = null, uint* ate = null)
 
 wchar[] toString16(char[] input, wchar[] output = null, uint* ate = null)
 {
-    int     produced;
     char*   pIn = input.ptr;
     char*   pMax = pIn + input.length;
     char*   pValid;
@@ -208,12 +207,31 @@ wchar[] toString16(char[] input, wchar[] output = null, uint* ate = null)
     if(ate is null && input.length > output.length)
         output.length = input.length;
 
+    wchar* pOut = output.ptr;
+    wchar* pOutMax = pOut + output.length - 2;
+
     if(input.length)
     {
-        wchar* pOut = output.ptr;
 
         while(pIn < pMax)
         {
+            // about to overflow the output?
+            if(pOut > pOutMax)
+            {
+                // if streaming, just return the unused input
+                if(ate)
+                {
+                    *ate = pIn - input.ptr;
+                    break;
+                }
+
+                // reallocate the output buffer
+                int len = pOut - output.ptr;
+                output.length = len + (len / 2);
+                pOut = output.ptr + len;
+                pOutMax = output.ptr + output.length - 2;
+            }
+
             pValid = pIn;
             dchar b = cast(dchar)*pIn;
 
@@ -290,13 +308,9 @@ wchar[] toString16(char[] input, wchar[] output = null, uint* ate = null)
                 pOut[0] = cast(wchar)(0xd800 | (((b - 0x10000) >> 10) & 0x3ff));
                 pOut[1] = cast(wchar)(0xdc00 | ((b - 0x10000) & 0x3ff));
                 pOut += 2;
-                produced += 2;
             }
             else
-            {
                 *pOut++ = b;
-                ++produced;
-            }
 
             ++pIn;
             assert(pIn <= pMax); // > pMax should already have been handled
@@ -311,7 +325,7 @@ wchar[] toString16(char[] input, wchar[] output = null, uint* ate = null)
         onUnicodeError("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
 
     // return the produced output
-    return output[0 .. produced];
+    return output[0 .. pOut - output.ptr];
 }
 
 
@@ -416,7 +430,6 @@ char[] toString(dchar[] input, char[] output = null, uint* ate = null)
 
 dchar[] toString32(char[] input, dchar[] output = null, uint* ate = null)
 {
-    int     produced;
     char*   pIn = input.ptr;
     char*   pMax = pIn + input.length;
     char*   pValid;
@@ -424,12 +437,30 @@ dchar[] toString32(char[] input, dchar[] output = null, uint* ate = null)
     if(ate is null && input.length > output.length)
         output.length = input.length;
 
+    dchar* pOut = output.ptr;
+    dchar* pOutMax = pOut + output.length - 1;
+
     if(input.length)
     {
-        dchar* pOut = output.ptr;
-
         while(pIn < pMax)
         {
+            // about to overflow the output?
+            if(pOut > pOutMax)
+            {
+                // if streaming, just return the unused input
+                if(ate)
+                {
+                    *ate = pIn - input.ptr;
+                    break;
+                }
+
+                // reallocate the output buffer
+                int len = pOut - output.ptr;
+                output.length = len + (len / 2);
+                pOut = output.ptr + len;
+                pOutMax = output.ptr + output.length - 1;
+            }
+
             pValid = pIn;
             dchar b = cast(dchar)*pIn;
 
@@ -501,7 +532,6 @@ dchar[] toString32(char[] input, dchar[] output = null, uint* ate = null)
                 onUnicodeError("Unicode.toString16 : correctly-encoded but invalid char", pIn - input.ptr);
 
             *pOut++ = b;
-            ++produced;
             ++pIn;
             assert(pIn <= pMax); // > pMax should already have been handled
         }
@@ -515,7 +545,7 @@ dchar[] toString32(char[] input, dchar[] output = null, uint* ate = null)
         onUnicodeError("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
 
     // return the produced output
-    return output[0 .. produced];
+    return output[0 .. pOut - output.ptr];
 }
 
 /*******************************************************************************
