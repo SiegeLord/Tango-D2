@@ -135,7 +135,7 @@ char[] toString(wchar[] input, char[] output = null, uint* ate = null)
 
             // reallocate the output buffer
             int len = pOut - output.ptr;
-            output.length = len + (len / 2);
+            output.length = len + (len / 2)+4;
             pOut = output.ptr + len;
             pMax = output.ptr + output.length - 4;
         }
@@ -227,7 +227,7 @@ wchar[] toString16(char[] input, wchar[] output = null, uint* ate = null)
 
                 // reallocate the output buffer
                 int len = pOut - output.ptr;
-                output.length = len + (len / 2);
+                output.length = len + (len / 2)+2;
                 pOut = output.ptr + len;
                 pOutMax = output.ptr + output.length - 2;
             }
