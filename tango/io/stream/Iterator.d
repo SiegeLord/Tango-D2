@@ -279,8 +279,13 @@ class Iterator(T) : InputFilter
                 if (source.next (&scan))
                     return true;
 
-                auto tmp = source.slice;
-                slice = (cast(T*) tmp.ptr) [0 .. tmp.length/T.sizeof];
+                // consume trailing token
+                source.read ((void[] arr) 
+                            { 
+                            slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
+                            return arr.length; 
+                            }
+                            );
                 return false;
         }
 }
