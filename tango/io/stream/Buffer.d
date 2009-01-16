@@ -145,6 +145,23 @@ class BufferInput : InputFilter, InputBuffer
 
         /***********************************************************************
         
+                Place more data from the source stream into this buffer, and
+                return the number of bytes added. This does not compress the
+                current buffer content, so consider doing that explicitly.
+                
+                Returns: number of bytes added, which will be Eof when there
+                         is not further input available. Zero is also a valid
+                         response, meaning no data was actually added. 
+
+        ***********************************************************************/
+
+        final size_t populate ()
+        {
+                return write (&input.read);
+        }
+
+        /***********************************************************************
+        
                 Return a void[] slice of the buffer from start to end, where
                 end is exclusive
 
@@ -220,8 +237,10 @@ class BufferInput : InputFilter, InputBuffer
                    // in the buffer as possible, such that entire records may
                    // be aliased directly from within.
                    if (size > (dimension - index))
-                       if (size > dimension)
-                           conduit.error (underflow);
+                       if (size <= dimension)
+                           compress;
+                       else
+                          conduit.error (underflow);
 
                    // populate tail of buffer with new content
                    do {
