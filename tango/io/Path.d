@@ -1180,7 +1180,7 @@ struct PathParser
                             // Windows file separators are illegal. Use
                             // standard() or equivalent to convert first
                             case '\\':
-                                 FS.exception ("unexpected '\\' character in path: ", path);
+                                 FS.exception ("unexpected '\\' character in path: ", path[0..end]);
 
                             version (Win32)
                             {
