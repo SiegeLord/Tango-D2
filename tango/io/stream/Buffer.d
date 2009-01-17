@@ -366,11 +366,16 @@ class BufferInput : InputFilter, InputBuffer
 
                 Fill the provided buffer. Returns the number of bytes
                 actually read, which will be less that dst.length when
-                Eof has been reached and IConduit.Eof thereafter
+                Eof has been reached and Eof thereafter.
+
+                Params:
+                dst = where data should be placed 
+                exact = whether to throw an exception when dst is not
+                        filled (an Eof occurs first). Defaults to false
 
         **********************************************************************/
 
-        final size_t fill (void[] dst)
+        final size_t fill (void[] dst, bool exact = false)
         {
                 size_t len = 0;
 
@@ -378,7 +383,11 @@ class BufferInput : InputFilter, InputBuffer
                       {
                       size_t i = read (dst [len .. $]);
                       if (i is Eof)
-                          return (len > 0) ? len : Eof;
+                         {
+                         if (exact && len < dst.length)
+                             conduit.error (eofRead);
+                         return (len > 0) ? len : Eof;
+                         }
                       len += i;
                       }
                 return len;
