@@ -167,7 +167,7 @@ class Document(T) : package PullParser!(T)
                 chunks = nodes;
                 newlist;
                 root = allocate;
-                root.type = XmlNodeType.Document;
+                root.id = XmlNodeType.Document;
         }
 
         /***********************************************************************
@@ -213,7 +213,7 @@ class Document(T) : package PullParser!(T)
                    {
                    auto node = root.lastChild;
                    while (node)
-                          if (node.type is XmlNodeType.Element)
+                          if (node.id is XmlNodeType.Element)
                               return node;
                           else
                              node = node.prev;
@@ -290,7 +290,7 @@ version (discrete)
 {
                                   auto node = allocate;
                                   node.rawValue = super.rawValue;
-                                  node.type = XmlNodeType.Data;
+                                  node.id = XmlNodeType.Data;
                                   cur.append (node);
 }
 else
@@ -307,7 +307,7 @@ else
                                   auto node = allocate;
                                   node.host = cur;
                                   node.prefixed = super.prefix;
-                                  node.type = XmlNodeType.Element;
+                                  node.id = XmlNodeType.Element;
                                   node.localName = super.localName;
                                   node.start = p;
                                 
@@ -331,7 +331,7 @@ else
                                   attr.prefixed = super.prefix;
                                   attr.rawValue = super.rawValue;
                                   attr.localName = super.localName;
-                                  attr.type = XmlNodeType.Attribute;
+                                  attr.id = XmlNodeType.Attribute;
                                   cur.attrib (attr);
                                   break;
         
@@ -468,9 +468,9 @@ else
         
                 Node data (bool delegate(Node) test)
                 {
-                        if (node.type is XmlNodeType.Element)
+                        if (node.id is XmlNodeType.Element)
                             foreach (child; *this)
-                                     if (child.type is XmlNodeType.Data)
+                                     if (child.id is XmlNodeType.Data)
                                          if (test (child))
                                              return child;
                         return null;
@@ -512,7 +512,7 @@ else
         {
                 public void*            user;           /// open for usage
                 package Document        doc;            // owning document
-                package XmlNodeType     type;           // node type
+                package XmlNodeType     id;             // node type
                 package uint            index;          // sibling index
                 package T[]             prefixed;       // namespace
                 package T[]             localName;      // name
@@ -542,6 +542,17 @@ else
         
                 /***************************************************************
                 
+                        Return the node type-id
+
+                ***************************************************************/
+        
+                XmlNodeType type () 
+                {
+                        return id;
+                }
+        
+                /***************************************************************
+                
                         Return the parent, which may be null
 
                 ***************************************************************/
@@ -553,7 +564,7 @@ else
         
                 /***************************************************************
                 
-                        Return the first child, which may be nul
+                        Return the first child, which may be null
 
                 ***************************************************************/
                 
@@ -653,7 +664,7 @@ version(discrete)
 {
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
-                                     if (child.type is XmlNodeType.Data)
+                                     if (child.id is XmlNodeType.Data)
                                          return child.rawValue;
 }
                         return rawValue;
@@ -671,7 +682,7 @@ version(discrete)
 {
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
-                                     if (child.type is XmlNodeType.Data)
+                                     if (child.id is XmlNodeType.Data)
                                          return child.value (val);
 }
                         rawValue = val; 
@@ -1055,7 +1066,7 @@ else
                 {
                         assert (node.parent is null);
                         node.host = this;
-                        node.type = XmlNodeType.Attribute;
+                        node.id = XmlNodeType.Attribute;
         
                         if (lastAttr) 
                            {
@@ -1143,7 +1154,7 @@ else
                 {
                         auto node = document.allocate;
                         node.rawValue = value;
-                        node.type = type;
+                        node.id = type;
                         return node;
                 }
         
@@ -1740,7 +1751,7 @@ private class XmlPath(T)
 
                         foreach (parent; nodes)
                                  foreach (child; parent.children)
-                                          if (child.type is type)
+                                          if (child.id is type)
                                               test (filter, child);
                         return set.assign (mark);
                 }
@@ -1779,7 +1790,7 @@ private class XmlPath(T)
                         {
                                  foreach (child; parent.children)
                                          {
-                                         if (child.type is type)
+                                         if (child.id is type)
                                              test (filter, child);
                                          if (child.firstChild)
                                              traverse (child);
@@ -1810,7 +1821,7 @@ private class XmlPath(T)
                         foreach (node; nodes)
                                 {
                                 auto p = node.parent;
-                                if (p && p.type != XmlNodeType.Document && !set.has(p))
+                                if (p && p.id != XmlNodeType.Document && !set.has(p))
                                    {
                                    test (filter, p);
                                    // continually update our set of nodes, so
@@ -1840,7 +1851,7 @@ private class XmlPath(T)
                         void traverse (Node child)
                         {
                                 auto p = child.host;
-                                if (p && p.type != XmlNodeType.Document && !set.has(p))
+                                if (p && p.id != XmlNodeType.Document && !set.has(p))
                                    {
                                    test (filter, p);
                                    // continually update our set of nodes, so
@@ -1877,7 +1888,7 @@ private class XmlPath(T)
                                 auto p = node.nextSibling;
                                 while (p)
                                       {
-                                      if (p.type is type)
+                                      if (p.id is type)
                                           test (filter, p);
                                       p = p.nextSibling;
                                       }
@@ -1904,7 +1915,7 @@ private class XmlPath(T)
                                 auto p = node.prevSibling;
                                 while (p)
                                       {
-                                      if (p.type is type)
+                                      if (p.id is type)
                                           test (filter, p);
                                       p = p.prevSibling;
                                       }

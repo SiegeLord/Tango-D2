@@ -101,7 +101,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                            emit (p[0 .. l]);
                            }
                         else
-                        switch (node.type)
+                        switch (node.id)
                                {
                                case XmlNodeType.Document:
                                     foreach (n; node.children)
@@ -126,7 +126,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                                 printNode (child, indent + indentation);
                                         
                                        // inhibit newline if we're closing Data
-                                       if (node.lastChild.type != XmlNodeType.Data && indentation > 0)
+                                       if (node.lastChild.id != XmlNodeType.Data && indentation > 0)
                                            emit ("\r\n", spaces[0..indent]);
                                        emit ("</", node.toString(tmp), ">");
                                        }
@@ -190,6 +190,6 @@ debug (DocPrinter)
                 void test (char[][] s...){foreach (t; s) Stdout(t).flush;}
 
                 auto p = new DocPrinter!(char);
-                p (doc.root, &test);
+                p (doc.tree, &test);
         }
 }

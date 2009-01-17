@@ -50,7 +50,7 @@ protected class DocTester(T)
         
         final void validate (Node node)
         {
-                switch (node.type)
+                switch (node.id)
                        {
                        case XmlNodeType.Document:
                             foreach (n; node.children)
