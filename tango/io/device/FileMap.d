@@ -114,7 +114,7 @@ class MappedFile
 
         final ulong length ()
         {
-                return cast(ulong)host.length;
+                return host.length;
         }
 
         /***********************************************************************

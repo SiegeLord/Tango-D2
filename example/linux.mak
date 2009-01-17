@@ -62,10 +62,7 @@ SIMPLE_EXAMPLES =\
 	text/formatindex	\
 	text/formatspec		\
 	text/localetime		\
-	text/token			\
-	vfs/vfscan			\
-	vfs/vfscanregex		\
-	vfs/vfshuffle
+	text/token
 
 REFERENCE_EXAMPLES =		\
 	./reference/chapter4	\
