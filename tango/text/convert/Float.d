@@ -432,9 +432,11 @@ private NumType pow10 (uint exp)
                 1.0e512L,
                 1.0e1024L,
                 1.0e2048L,
+                1.0e4096L,
+                1.0e8192L,
                 ];
 
-        if (exp >= 4096)
+        if (exp >= 16384)
             throw new IllegalArgumentException ("Float.pow10 :: exponent too large");
 
         NumType mult = 1.0;
