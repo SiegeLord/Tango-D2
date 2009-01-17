@@ -87,7 +87,7 @@ static this() {
 void main() {}
 EOF
 
-        rebuild -w -d -g -L-ldl -L-lz -L-lbz2 -debug=UnitTest -debug -full -clean -unittest \
+        rebuild -w -d -g -L-ldl -L-lz -L-lbz2 -debug=UnitTest -debug=DataStream -debug -full -clean -unittest \
         -version=UnitTest $EXE.d tango/core/*.d tango/core/sync/*.d tango/io/digest/*.d \
         tango/io/model/*.d tango/io/protocol/*.d tango/io/selector/*.d tango/io/*.d \
         tango/io/vfs/*.d tango/io/vfs/model/*.d \

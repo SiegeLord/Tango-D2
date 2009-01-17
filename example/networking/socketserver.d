@@ -22,7 +22,7 @@ private import  tango.net.ServerSocket,
 
 void main()
 {
-        const int port = 8080;
+        const int port = 5060;
  
         // thread body for socket-listener
         void run()

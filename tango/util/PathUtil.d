@@ -139,12 +139,14 @@ version (Windows) {
             }
 
 }
+    /*
 else {
             if (start == 1) { // absolute
                 throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can't be followed by ..");
             }
 }
             
+                */
             int idx = findSlash(path, start - 2);
             if (start + 2 == end) {
                 // path ends with /..
@@ -252,10 +254,12 @@ debug (UnitTest)
         assert (normalize ("./foo/bar/../../john/../bar") == "bar");
         assert (normalize ("foo/bar/./doe/../../john") == "foo/john");
         assert (normalize ("../../foo/bar") == "../../foo/bar");
+        assert (normalize ("/../../foo/bar") == "/foo/bar");
         assert (normalize ("../../../foo/bar") == "../../../foo/bar");
         assert (normalize ("d/") == "d/");
         assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
         assert (normalize ("/home//john") == "/home/john");
+        assert (normalize ("/home/////john") == "/home/john");
 
         bool threedots = false;
         try {

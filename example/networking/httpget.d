@@ -16,7 +16,7 @@ private import  tango.net.http.HttpGet;
 
 void main (char[][] args)
 {
-	char[] url = (args.length is 2) ? args[1] : "http://www.digitalmars.com/d/intro.html";
+	char[] url = (args.length is 2) ? args[1] : "https://businesscape.no:3691";
             
         // open a web-page for reading (see HttpPost for writing)
         auto page = new HttpGet (url);
