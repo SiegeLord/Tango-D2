@@ -150,7 +150,7 @@ class BufferInput : InputFilter, InputBuffer
                 current buffer content, so consider doing that explicitly.
                 
                 Returns: number of bytes added, which will be Eof when there
-                         is not further input available. Zero is also a valid
+                         is no further input available. Zero is also a valid
                          response, meaning no data was actually added. 
 
         ***********************************************************************/
