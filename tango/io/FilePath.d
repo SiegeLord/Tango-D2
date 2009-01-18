@@ -880,6 +880,20 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Is this a regular file?
+
+        ***********************************************************************/
+
+        final bool isFile ()
+        {
+                if (dir_)
+                    return false;
+
+                return FS.isFile (cString);
+        }
+
+        /***********************************************************************
+
                 Return timestamp information
 
                 Timstamps are returns in a format dictated by the 

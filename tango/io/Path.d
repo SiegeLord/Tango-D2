@@ -354,7 +354,7 @@ package struct FS
 
                 static bool isWritable (char[] name)
                 {
-                        return (getFlags(name) & FILE_ATTRIBUTE_READONLY) == 0;
+                        return (getFlags(name) & FILE_ATTRIBUTE_READONLY) is 0;
                 }
 
                 /***************************************************************
@@ -366,6 +366,17 @@ package struct FS
                 static bool isFolder (char[] name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) != 0;
+                }
+
+                /***************************************************************
+
+                        Is this a normal file?
+
+                ***************************************************************/
+
+                static bool isFile (char[] name)
+                {
+                        return (getFlags(name) & FILE_ATTRIBUTE_NORMAL) != 0;
                 }
 
                 /***************************************************************
@@ -505,7 +516,7 @@ package struct FS
                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
                                 }
 
-                        if (h == INVALID_HANDLE_VALUE)
+                        if (h is INVALID_HANDLE_VALUE)
                             exception (name);
 
                         if (! CloseHandle (h))
@@ -678,7 +689,7 @@ package struct FS
                 {
                         stat_t stats = void;
 
-                        return (getInfo(name, stats) & O_RDONLY) == 0;
+                        return (getInfo(name, stats) & O_RDONLY) is 0;
                 }
 
                 /***************************************************************
@@ -691,7 +702,20 @@ package struct FS
                 {
                         stat_t stats = void;
 
-                        return (getInfo(name, stats) & S_IFMT) == S_IFDIR;
+                        return (getInfo(name, stats) & S_IFMT) is S_IFDIR;
+                }
+
+                /***************************************************************
+
+                        Is this a normal file?
+
+                ***************************************************************/
+
+                static bool isFile (char[] name)
+                {
+                        stat_t stats = void;
+
+                        return (getInfo(name, stats) & S_IFMT) is S_IFREG;
                 }
 
                 /***************************************************************
@@ -785,7 +809,7 @@ package struct FS
 
                 static void remove (char[] name)
                 {
-                        if (tango.stdc.stdio.remove (name.ptr) == -1)
+                        if (tango.stdc.stdio.remove (name.ptr) is -1)
                             exception (name);
                 }
 
@@ -798,7 +822,7 @@ package struct FS
 
                 static void rename (char[] src, char[] dst)
                 {
-                        if (tango.stdc.stdio.rename (src.ptr, dst.ptr) == -1)
+                        if (tango.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
                             exception (src);
                 }
 
@@ -813,10 +837,10 @@ package struct FS
                         int fd;
 
                         fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
-                        if (fd == -1)
+                        if (fd is -1)
                             exception (name);
 
-                        if (posix.close(fd) == -1)
+                        if (posix.close(fd) is -1)
                             exception (name);
                 }
 
