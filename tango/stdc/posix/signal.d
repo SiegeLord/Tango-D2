@@ -479,7 +479,7 @@ else version( freebsd )
     }
 
     int kill(pid_t, int);
-    int sigaction(int, in sigaction_t*, sigaction_t);
+    int sigaction(int, in sigaction_t*, sigaction_t*);
     int sigaddset(sigset_t*, int);
     int sigdelset(sigset_t*, int);
     int sigemptyset(sigset_t *);
