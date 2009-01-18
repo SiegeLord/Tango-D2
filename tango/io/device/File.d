@@ -336,6 +336,11 @@ class File : Device, Device.Seek
                 that has sufficient capacity, and allocates from the
                 heap where the file content is larger.
 
+                Content size is determined via the file-system, per
+                File.length, although that may be misleading for some
+                *nix systems. An alternative is to use File.load which
+                loads content until an Eof is encountered
+
         ***********************************************************************/
 
         static void[] get (char[] path, void[] dst = null)
