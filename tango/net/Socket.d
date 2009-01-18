@@ -1941,10 +1941,8 @@ unittest
 //a set of sockets for Socket.select()
 class SocketSet
 {
-//        private:
-        private uint nbytes; //Win32: excludes uint.size "count"
+        private uint  nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
-
 
         version(Win32)
         {
@@ -2003,7 +2001,7 @@ class SocketSet
 
         ***********************************************************************/
 
-        this(uint max)
+        this (uint max)
         {
                 version(Win32)
                 {
@@ -2013,10 +2011,11 @@ class SocketSet
                 }
                 else version (Posix)
                 {
-                        if(max <= 32)
-                                nbytes = 32 * uint.sizeof;
+                        if (max <= 32)
+                            nbytes = 32 * uint.sizeof;
                         else
-                                nbytes = max * uint.sizeof;
+                           nbytes = max * uint.sizeof;
+
                         buf = (new byte[nbytes]).ptr;
                         nfdbits = nbytes * 8;
                         //clear(); //new initializes to 0
@@ -2027,6 +2026,28 @@ class SocketSet
                 }
         }
 
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        this (SocketSet o) 
+        {
+                nbytes = o.nbytes;
+                auto size = nbytes;
+                version (Win32) 
+                         size += uint.sizeof;
+
+                version (Posix) 
+                        {
+                        nfdbits = o.nfdbits;
+                        _maxfd = o._maxfd;
+                        }
+                
+                auto b = new byte[size];
+                b[] = o.buf[0..size];
+                buf = b.ptr;
+        }
 
         /***********************************************************************
 
@@ -2049,7 +2070,16 @@ class SocketSet
                 }
         }
 
+        /***********************************************************************
 
+
+        ***********************************************************************/
+        
+        SocketSet dup() 
+        {
+                return new SocketSet (this);
+        }
+        
         /***********************************************************************
 
 
@@ -2071,7 +2101,6 @@ class SocketSet
                         static assert(0);
                 }
         }
-
 
         /***********************************************************************
 
@@ -2107,7 +2136,6 @@ class SocketSet
                 }
         }
 
-
         /***********************************************************************
 
 
@@ -2117,7 +2145,6 @@ class SocketSet
         {
                 add(s.sock);
         }
-
 
         /***********************************************************************
 
@@ -2171,7 +2198,6 @@ class SocketSet
                 }
         }
 
-
         /***********************************************************************
 
 
@@ -2181,7 +2207,6 @@ class SocketSet
         {
                 remove(s.sock);
         }
-
 
         /***********************************************************************
 
@@ -2214,7 +2239,6 @@ class SocketSet
                 }
         }
 
-
         /***********************************************************************
 
 
@@ -2224,7 +2248,6 @@ class SocketSet
         {
                 return isSet(s.sock);
         }
-
 
         /***********************************************************************
 
@@ -2236,7 +2259,6 @@ class SocketSet
         {
                 return nbytes / socket_t.sizeof;
         }
-
 
         /***********************************************************************
 
