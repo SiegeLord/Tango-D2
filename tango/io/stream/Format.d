@@ -90,7 +90,6 @@ class FormatOutput(T) : OutputFilter
         public  alias OutputFilter.flush flush;
 
         private T[]             eol;
-        private OutputStream    output;
         private Layout!(T)      convert;
         private bool            flushLines;
 
@@ -125,9 +124,8 @@ class FormatOutput(T) : OutputFilter
                 assert (convert);
                 assert (output);
 
-                this.eol = eol;
-                this.output = output;
                 this.convert = convert;
+                this.eol = eol;
                 super (output);
         }
 
@@ -139,7 +137,7 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput format (T[] fmt, ...)
         {
-                convert (&sink, _arguments, _argptr, fmt);
+                convert (&emit, _arguments, _argptr, fmt);
                 return this;
         }
 
@@ -151,7 +149,7 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput formatln (T[] fmt, ...)
         {
-                convert (&sink, _arguments, _argptr, fmt);
+                convert (&emit, _arguments, _argptr, fmt);
                 return newline;
         }
 
@@ -171,9 +169,9 @@ class FormatOutput(T) : OutputFilter
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
                 if (_arguments.length is 0)
-                    output.flush;
+                    sink.flush;
                 else
-                   convert (&sink, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                   convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
                          
                 return this;
         }
@@ -186,9 +184,9 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput newline ()
         {
-                output.write (eol);
+                sink.write (eol);
                 if (flushLines)
-                    output.flush;
+                    sink.flush;
                 return this;
         }
 
@@ -213,7 +211,7 @@ class FormatOutput(T) : OutputFilter
 
         final OutputStream stream ()
         {
-                return output;
+                return sink;
         }
 
         /**********************************************************************
@@ -224,7 +222,7 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput stream (OutputStream output)
         {
-                this.output = output;
+                sink = output;
                 return this;
         }
 
@@ -257,9 +255,12 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final uint sink (T[] s)
+        private final uint emit (T[] s)
         {
-                return output.write (s);
+                auto count = sink.write (s);
+                if (count is Eof)
+                    conduit.error ("FormatOutput :: unexpected Eof");
+                return count;
         }
 }
 
@@ -268,10 +269,9 @@ class FormatOutput(T) : OutputFilter
         
 *******************************************************************************/
         
-debug (FormatStream)
+debug (Format)
 {
         import tango.io.device.Array;
-        import tango.text.convert.Layout;
 
         void main()
         {
