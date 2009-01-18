@@ -80,7 +80,7 @@ abstract class ClusterServer : AbstractServer
 
         void enroll (IMessage task)
         {
-                NetworkRegistry.shared.enroll (task);
+                NetworkRegistry.instance.enroll (task);
         }
 
         /**********************************************************************
@@ -186,4 +186,5 @@ abstract class ClusterServer : AbstractServer
                     channel.broadcast (rollcall);
         }
 }
+
 

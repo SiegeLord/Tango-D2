@@ -75,11 +75,11 @@ struct Kiss
 
         **********************************************************************/
 
-        public static Kiss shared; 
+        public static Kiss instance; 
 
         static this ()
         {
-                shared.seed;
+                instance.seed;
         }
 
         /**********************************************************************

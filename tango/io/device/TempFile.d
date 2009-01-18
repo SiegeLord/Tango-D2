@@ -604,7 +604,7 @@ class TempFile : Device, Device.Seek
         scope(exit) delete junk;
 
         foreach( ref c ; junk )
-            c = JUNK_CHARS[Kiss.shared.toInt($)];
+            c = JUNK_CHARS[Kiss.instance.toInt($)];
 
         return prefix~junk~suffix;
     }
@@ -686,4 +686,5 @@ You might want to delete the permanent one afterwards, too. :)")
 
     Stdout("\nDone.").newline;
 }
+
 

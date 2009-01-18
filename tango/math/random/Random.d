@@ -112,11 +112,11 @@
       a variable and using it (not going through the RandomG)
     Annoyances:
     - I have added two "next" methods to RandomG for backward compatibility
-      reasons, and the .shared instance from Random has been
+      reasons, and the .instance from Random has been
       replaced by the "rand" object. The idea behind this is that RandomG is
       a template and rand it should be shared across all templates.
       If the name rand is considered bad one could change it. 
-      I kept .shared static method that returns rand, so this remain a dropin
+      I kept .instance static method that returns rand, so this remain a dropin
       replacement of the old random.
     - You cannot initialize a static array directly, this because randomize is
       declared like this:
@@ -238,7 +238,7 @@ final class RandomG(SourceT=DefaultEngine)
         return uniformR2!(uint)(from,to);
     }
     /// ditto
-    static RandomG!(Sync!(DefaultEngine)) shared(){
+    static RandomG!(Sync!(DefaultEngine)) instance(){
         return rand;
     }
     //-------- Utility functions to quickly get a uniformly distributed random number -----------

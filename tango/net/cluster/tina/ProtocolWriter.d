@@ -114,7 +114,7 @@ class ProtocolWriter
 
                 // is there a payload?
                 if (msg)
-                    NetworkRegistry.shared.freeze (emit, msg);
+                    NetworkRegistry.instance.freeze (emit, msg);
 
                 // go back and write the total number of bytes
                 auto size = buffer.limit;
@@ -196,4 +196,5 @@ class ProtocolWriter
                 emit.flush;
         }
 }
+
 

@@ -1479,7 +1479,7 @@ private class NodeSet
                         // is used when scanning the cluster for queued entries
                         foreach (i, n; random)
                                 {
-                                auto j = Kiss.shared.toInt (random.length);
+                                auto j = Kiss.instance.toInt (random.length);
                                 auto tmp = random[i];
                                 random[i] = random[j];
                                 random[j] = tmp;
@@ -1700,4 +1700,5 @@ private static uint jhash (void* k, uint len, uint init = 0)
 
         return c;
 }
+
 

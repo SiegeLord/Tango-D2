@@ -52,11 +52,11 @@ class Random
 
                 Shared instance:
                 ---
-                auto random = Random.shared.next;
+                auto random = Random.instance.next;
                 ---
 
         **********************************************************************/
-        public static Random shared;
+        public static Random instance;
 
         private uint kiss_k;
         private uint kiss_m;
@@ -70,14 +70,14 @@ class Random
 
                 Create a static and shared instance:
                 ---
-                auto random = Random.shared.next;
+                auto random = Random.instance.next;
                 ---
 
         **********************************************************************/
 
         static this ()
         {
-                shared = new Random;
+                instance = new Random;
         }
 
         /**********************************************************************
@@ -178,4 +178,5 @@ class Random
                 return next(max-min) + min;
         }
 }
+
 

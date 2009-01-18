@@ -71,7 +71,7 @@ class ProtocolReader : Reader
 
         IMessage thaw (IMessage host = null)
         {
-                return thaw (NetworkRegistry.shared, host);                
+                return thaw (NetworkRegistry.instance, host);                
         }
 
         /***********************************************************************
@@ -154,4 +154,5 @@ class ProtocolReader : Reader
                 return content;
         }
 }
+
 

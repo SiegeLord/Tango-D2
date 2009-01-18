@@ -40,7 +40,7 @@ class NetworkClient
 
         static this ()
         {
-                NetworkRegistry.shared.enroll (EmptyMessage = new NetworkMessage);
+                NetworkRegistry.instance.enroll (EmptyMessage = new NetworkMessage);
         }
 
         /***********************************************************************
@@ -159,4 +159,5 @@ class ClusterEmptyException : ClusterException
                 super (msg);
         }
 }
+
 

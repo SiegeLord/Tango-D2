@@ -37,7 +37,7 @@ class NetworkRegistry
 {
         private IMessage[char[]] registry;
 
-        public static NetworkRegistry shared;
+        public static NetworkRegistry instance;
 
         /***********************************************************************
 
@@ -46,7 +46,7 @@ class NetworkRegistry
 
         static this () 
         {
-                shared = new NetworkRegistry;
+                instance = new NetworkRegistry;
         }
 
         /***********************************************************************
@@ -165,6 +165,7 @@ class NetworkRegistry
                 throw new RegistryException (msg ~ guid);
         }
 }
+
 
 
 

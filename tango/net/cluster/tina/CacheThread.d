@@ -44,7 +44,7 @@ class CacheThread : ClusterThread
                 // clone the registry so that we have our own set of 
                 // message templates to act as hosts. This eliminates
                 // allocating hosts on the fly for load() requests
-                registry = NetworkRegistry.shared.dup;
+                registry = NetworkRegistry.instance.dup;
         
                 // retain the cache instance
                 this.cache = cache;
@@ -159,4 +159,5 @@ class CacheThread : ClusterThread
                    writer.success.flush;
         }
 }
+
 

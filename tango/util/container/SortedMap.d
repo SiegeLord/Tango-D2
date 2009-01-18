@@ -1081,7 +1081,7 @@ debug (SortedMap)
                 
                 auto keys = new int[count];
                 foreach (ref vv; keys)
-                         vv = Kiss.shared.toInt(int.max);
+                         vv = Kiss.instance.toInt(int.max);
 
                 // benchmark adding
                 w.start;

@@ -75,11 +75,11 @@ struct Twister
 
         **********************************************************************/
 
-        public static Twister shared; 
+        public static Twister instance; 
 
         static this ()
         {
-                shared.seed;
+                instance.seed;
         }
 
         /**********************************************************************
