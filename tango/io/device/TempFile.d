@@ -126,6 +126,7 @@ else version( Posix )
     import tango.stdc.posix.fcntl : open, O_CREAT, O_EXCL, O_RDWR;
     import tango.stdc.posix.pwd : getpwnam;
     import tango.stdc.posix.unistd : access, getuid, lseek, unlink, W_OK;
+    import tango.stdc.posix.sys.types : off_t;
     import tango.stdc.posix.sys.stat : stat, stat_t;
     
     import tango.sys.Environment : Environment;
