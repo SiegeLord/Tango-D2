@@ -266,6 +266,8 @@ struct Container
         
         struct Chunk(T)
         {
+                static assert (T.sizeof >= (T*).sizeof, "The Chunk allocator can only be used for data sizes of at least " ~ ((T*).sizeof).stringof[0..$-1] ~ " bytes!");
+                
                 private T[]     list;
                 private T[][]   lists;
                 private int     index;
@@ -409,4 +411,5 @@ struct Container
                 }
         }        
 }
+
 
