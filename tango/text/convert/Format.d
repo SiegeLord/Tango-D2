@@ -25,6 +25,6 @@ public Layout!(char) Format;
 
 static this()
 {
-        Format = new Layout!(char);
+        Format = Layout!(char).instance;
 }
 

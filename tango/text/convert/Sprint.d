@@ -52,7 +52,6 @@ private import tango.text.convert.Layout;
 class Sprint(T)
 {
         protected T[]           buffer;
-        static Layout!(T)       global;
         Layout!(T)              layout;
 
         alias format            opCall;
@@ -68,10 +67,7 @@ class Sprint(T)
 
         deprecated this (int size = 256)
         {
-                // Workaround for bug with static ctors in GDC
-                if (global is null)
-                    global = new Layout!(T);
-                this (size, global);
+                this (size, Layout!(T).instance);
         }
         
         /**********************************************************************

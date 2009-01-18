@@ -113,7 +113,7 @@ public static Output Stdout,      /// global standard output
 
 static this()
 {
-        auto layout = new Layout!(char);
+        auto layout = Layout!(char).instance;
 
         Stdout = new Output (layout, Cout.stream);
         Stderr = new Output (layout, Cerr.stream);

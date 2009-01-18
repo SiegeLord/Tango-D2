@@ -640,7 +640,7 @@ struct CharRange(char_t)
     string toString()
     {
         string str;
-        auto layout = new Layout!(char);
+        auto layout = Layout!(char).instance;
         if ( l_ == r_ )
         {
             if ( l_ > 0x20 && l_ < 0x7f )
@@ -1341,7 +1341,7 @@ private class TNFA(char_t)
     **********************************************************************************************/
     void parse(bool unanchored)
     {
-        auto                layout = new Layout!(char);
+        auto                layout = Layout!(char).instance;
         List!(frag_t)       frags       = new List!(frag_t);
         Stack!(Operator)    opStack;
         Stack!(uint)        tagStack;
@@ -2288,7 +2288,7 @@ private class TDFA(char_t)
 
         string toString()
         {
-            auto layout = new Layout!(char);
+            auto layout = Layout!(char).instance;
             return layout.convert("{}<-{}", dst, src==CURRENT_POSITION_REGISTER?"p":layout.convert("{}", src));
         }
 
@@ -2779,7 +2779,7 @@ private:
         string toString()
         {
             string str;
-            auto layout = new Layout!(char);
+            auto layout = Layout!(char).instance;
             str = layout.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
             bool first = true;
             foreach ( k, v; tags ) {
@@ -4092,7 +4092,7 @@ class RegExpT(char_t)
             str_type = "wchar[]";
         static if ( is(char_t == dchar) )
             str_type = "dchar[]";
-        auto layout = new Layout!(char);
+        auto layout = Layout!(char).instance;
 
         if ( lexer )
             code = layout.convert("// {}\nbool {}({} input, out uint token, out {} match", pattern_, func_name, str_type, str_type);

@@ -86,7 +86,7 @@ private class SyncPrint
                 this.mutex = cast(Object) output;
                 this.output = output;
                 this.flushLines = flush;
-                this.convert = new Layout!(char);
+                this.convert = Layout!(char).instance;
         }
 
         /**********************************************************************

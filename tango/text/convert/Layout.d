@@ -70,6 +70,19 @@ class Layout(T)
 {
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
+        
+        public static Layout instance;  /// shared instance
+
+        /**********************************************************************
+
+                create shared instance
+
+        **********************************************************************/
+
+        static this()
+        {
+                instance = new Layout!(T);
+        }
 
         /**********************************************************************
 
@@ -846,8 +859,7 @@ debug (UnitTest)
 {
         unittest
         {
-        new Layout!(dchar);
-        auto Formatter = new Layout!(char);
+        auto Formatter = Layout!(char).instance;
 
         assert( Formatter( "abc" ) == "abc" );
         assert( Formatter( "{0}", 1 ) == "1" );
@@ -1010,7 +1022,7 @@ debug (Layout)
 
         void main ()
         {
-                auto layout = new Layout!(char);
+                auto layout = Layout!(char).instance;
 
                 layout.convert (Cout.stream, "hi {}", "there\n");
 
