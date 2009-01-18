@@ -88,6 +88,7 @@ class BufferInput : InputFilter, InputBuffer
 
         this (InputStream stream)
         {
+                assert (stream);
                 this (stream, stream.conduit.bufferSize);
         }
 
@@ -444,15 +445,19 @@ class BufferInput : InputFilter, InputBuffer
                       // the new position is within the current
                       // buffer, skip to that position.
                       skip (cast(int) bpos - cast(int) position);
+
+                      // see if we can return a valid offset
+                      auto pos = source.seek (0, Anchor.Current);
+                      if (pos != Eof)
+                          return pos - readable;
                       return Eof;
-                      //return conduit.position - input.readable;
                       }
                    // else, position is outside the buffer. Do a real
                    // seek using the adjusted position.
                    }
 
                 clear;
-                return super.seek (offset, start);
+                return source.seek (offset, start);
         }
 
         /***********************************************************************
@@ -823,6 +828,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         this (OutputStream stream)
         {
+                assert (stream);
                 this (stream, stream.conduit.bufferSize);
         }
 
@@ -1370,7 +1376,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
 ******************************************************************************/
 
-debug (BufferStream)
+debug (Buffer)
 {
         void main()
         {
