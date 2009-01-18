@@ -19,8 +19,14 @@
  */
 .text
 .align 2
+#if linux 
+.globl fiber_switchContext 
+.type  fiber_switchContext, @function 
+fiber_switchContext: 
+#else 
 .globl _fiber_switchContext
 _fiber_switchContext:
+#endif
 
     /* Save linkage area */
     mflr        r0
