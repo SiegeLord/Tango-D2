@@ -564,8 +564,8 @@ class TempFile : Device, Device.Seek
         // See DDoc version
         long seek(long offset, Anchor anchor = Anchor.Begin)
         {
-            assert( offset <= int.sizeof );
-            long result = lseek(handle, cast(int) offset, anchor);
+            assert( offset <= uint.max );
+            long result = lseek(handle, cast(off_t) offset, anchor);
             if (result is -1)
                 error();
             return result;
