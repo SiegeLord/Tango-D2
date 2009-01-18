@@ -907,15 +907,18 @@ package struct FS
                               // skip "..." names
                               if (str.length > 3 || str != "..."[0 .. str.length])
                                  {
-                                 if (stat (sfnbuf.ptr, &sbuf))
-                                     exception (folder);
-
                                  FileInfo info = void;
+                                 info.bytes  = 0;
+                                 info.folder = false;
                                  info.name   = str;
                                  info.path   = prefix;
-                                 info.folder = (sbuf.st_mode & S_IFDIR) != 0;
-                                 info.bytes  = cast(ulong) 
-                                               ((sbuf.st_mode & S_IFREG) != 0 ? sbuf.st_size : 0);
+                                 
+                                 if (! stat (sfnbuf.ptr, &sbuf))
+                                    {
+                                    info.folder = (sbuf.st_mode & S_IFDIR) != 0;
+                                    if ((sbuf.st_mode & S_IFREG) != 0)
+                                         info.bytes = sbuf.st_size;
+                                    }
 
                                  if ((ret = dg(info)) != 0)
                                       break;
