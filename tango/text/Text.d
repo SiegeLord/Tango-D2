@@ -93,13 +93,17 @@
                 bool selectPrior (T[] pattern);
                 bool selectPrior (TextView other);
 
+                // format behind current selection
+                Text format (T[] format, ...);
+
                 // append behind current selection
-                Text append (TextView other);
                 Text append (T[] text);
+                Text append (TextView other);
                 Text append (T chr, int count=1);
                 Text append (int value, options);
                 Text append (long value, options);
                 Text append (double value, options);
+                Text append (InputStream source);
 
                 // transcode behind current selection
                 Text encode (char[]);
@@ -133,6 +137,9 @@
 
                 // reserve some space for inserts/additions
                 Text reserve (int extra);
+        
+                // write content to stream
+                Text write (OutputStream sink);
         }
 
         class TextView(T) : UniText
@@ -181,6 +188,10 @@
 
 module tango.text.Text;
 
+private import  tango.io.model.IConduit;
+
+private import  tango.text.convert.Layout;
+
 private import  Util = tango.text.Util;
 
 private import  Utf = tango.text.convert.Utf;
@@ -188,6 +199,7 @@ private import  Utf = tango.text.convert.Utf;
 private import  Float = tango.text.convert.Float;
 
 private import  Integer = tango.text.convert.Integer;
+
 
 /*******************************************************************************
 
@@ -208,6 +220,7 @@ class Text(T) : TextView!(T)
         public  alias set               opAssign;
         public  alias append            opCatAssign;
         private alias TextView!(T)      TextViewT;
+        private alias Layout!(T)        LayoutT;
 
         private T[]                     content;
         private bool                    mutable;
@@ -456,6 +469,24 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
+                Append formatted content to this Text
+
+        ***********************************************************************/
+
+        final Text format (T[] format, ...)
+        {
+                uint emit (T[] s)
+                {
+                        append (s);
+                        return s.length;
+                }
+
+                LayoutT.instance.convert (&emit, _arguments, _argptr, format);
+                return this;
+        }
+
+        /***********************************************************************
+
                 Append text to this Text
 
         ***********************************************************************/
@@ -522,6 +553,18 @@ class Text(T) : TextView!(T)
         {
                 T[64] tmp = void;
                 return append (Float.format(tmp, v, decimals, e));
+        }
+
+        /***********************************************************************
+
+                Append content from input stream at insertion point
+
+        ***********************************************************************/
+
+        final Text append (InputStream source)
+        {
+                T[2048] tmp = void;
+                return append (cast(T[]) source.load (tmp));
         }
 
         /***********************************************************************
@@ -662,7 +705,7 @@ class Text(T) : TextView!(T)
         /***********************************************************************
 
                 Remove the selection from this Text and reset the
-                selection to zero length
+                selection to zero length (at the current position)
 
         ***********************************************************************/
 
@@ -761,7 +804,17 @@ class Text(T) : TextView!(T)
                 return this;
         }
 
+        /***********************************************************************
 
+                Write content to output stream
+
+        ***********************************************************************/
+
+        Text write (OutputStream sink)
+        {
+                sink.write (slice);
+                return this;
+        }
 
         /* ======================== TextView methods ======================== */
 
@@ -1356,13 +1409,23 @@ class UniText
 *******************************************************************************/
 
 debug (UnitTest)
-{
-        //void main() {}
+{       
+        import tango.io.device.Array;
+
+
+        void main() {}
         unittest
         {
         auto s = new Text!(char);
         s = "hello";
 
+        auto array = new Array(1024);
+        s.write (array);
+        assert (array.slice == "hello");
+        s.select (1, 0);
+        assert (s.append(array) == "hhelloello");
+
+        s = "hello";
         s.select ("hello");
         assert (s.selection == "hello");
         s.replace ("1");
@@ -1397,5 +1460,6 @@ debug (UnitTest)
         foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
                  s.append (element);
         assert (s.selection == "almost all cows chew grass");
+        assert (s.clear.format("{}:{}", 1, 2) == "1:2");
         }
 }
