@@ -251,10 +251,9 @@ else version( darwin )
 {
     private
     {
-        // #if defined(__LP64__)
-        // FIXME: what is LP64, is it important enough to be included?
-        version( LP64 )
+        static if ((void*).sizeof>int.sizeof)
         {
+            // version( LP64 )
             const __PTHREAD_SIZE__              = 1168;
             const __PTHREAD_ATTR_SIZE__         = 56;
             const __PTHREAD_MUTEXATTR_SIZE__    = 8;
