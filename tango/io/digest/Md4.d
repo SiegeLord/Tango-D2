@@ -336,7 +336,7 @@ class Md4 : MerkleDamgard
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest 
         {

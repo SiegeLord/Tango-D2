@@ -107,7 +107,7 @@ class Delimiters(T) : Iterator!(T)
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         private import tango.io.device.Array;
 

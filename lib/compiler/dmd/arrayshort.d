@@ -11,7 +11,7 @@
 
 import util.cpuid;
 
-version (Unittest)
+debug(UnitTest)
 {
     /* This is so unit tests will test every CPU variant
      */

@@ -107,7 +107,7 @@ class Patterns : Iterator!(char)
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         private import tango.io.device.Array;
 

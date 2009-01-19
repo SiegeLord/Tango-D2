@@ -320,7 +320,7 @@ private static const uint[8] initial =
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest
         {

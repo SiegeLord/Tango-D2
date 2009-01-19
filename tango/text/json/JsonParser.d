@@ -385,7 +385,7 @@ class JsonParser(T)
 
 
 
-version(UnitTest)
+debug(UnitTest)
 {       
                 const static char[] json = 
                 "{"

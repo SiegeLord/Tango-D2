@@ -330,7 +330,7 @@ private static const ulong[8] initial =
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest
         {

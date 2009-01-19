@@ -82,7 +82,7 @@ final class Sha0 : Sha01
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest 
         {

@@ -844,7 +844,7 @@ private static ulong[1024] table =
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest 
         {

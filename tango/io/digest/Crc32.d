@@ -127,7 +127,7 @@ final class Crc32 : Digest
         }
 }
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest 
         {

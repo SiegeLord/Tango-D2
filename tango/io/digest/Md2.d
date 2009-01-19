@@ -233,7 +233,7 @@ private const ubyte[256] PI =
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest 
         {

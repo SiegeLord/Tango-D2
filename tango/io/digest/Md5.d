@@ -233,7 +233,7 @@ final class Md5 : Md4
 
 *******************************************************************************/
 
-version (UnitTest)
+debug(UnitTest)
 {
         unittest
         {
