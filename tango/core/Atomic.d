@@ -444,8 +444,11 @@ else version( D_InlineAsm_X86 )
             pragma( msg, "tango.core.Atomic: using IA-32 inline asm" );
         }
 
-        version(darwin){}
-        else { version = Has64BitCAS; }
+        version(darwin){
+            extern(C) bool OSAtomicCompareAndSwap64(long oldValue, long newValue, long *theValue);
+            extern(C) bool OSAtomicCompareAndSwap64Barrier(long oldValue, long newValue, long *theValue);
+        }
+        version = Has64BitCAS;
         version = Has32BitOps;
     }
     version( X86_64 )
@@ -914,24 +917,30 @@ else version( D_InlineAsm_X86 )
                     ////////////////////////////////////////////////////////////
                     // 8 Byte StoreIf on 32-Bit Processor
                     ////////////////////////////////////////////////////////////
-
-
-                    volatile asm
-                    {
-                        push EDI;
-                        push EBX;
-                        lea EDI, newval;
-                        mov EBX, [EDI];
-                        mov ECX, 4[EDI];
-                        lea EDI, equalTo;
-                        mov EAX, [EDI];
-                        mov EDX, 4[EDI];
-                        mov EDI, val;
-                        lock; // lock always needed to make this op atomic
-                        cmpxch8b [EDI];
-                        setz AL;
-                        pop EBX;
-                        pop EDI;
+                    version(darwin){
+                        static if(ms==msync.raw){
+                            return OSAtomicCompareAndSwap64(cast(long)equalTo, cast(long)newval,  cast(long*)&val);
+                        } else {
+                            return OSAtomicCompareAndSwap64Barrier(cast(long)equalTo, cast(long)newval,  cast(long*)&val);
+                        }
+                    } else {
+                        volatile asm
+                        {
+                            push EDI;
+                            push EBX;
+                            lea EDI, newval;
+                            mov EBX, [EDI];
+                            mov ECX, 4[EDI];
+                            lea EDI, equalTo;
+                            mov EAX, [EDI];
+                            mov EDX, 4[EDI];
+                            mov EDI, val;
+                            lock; // lock always needed to make this op atomic
+                            cmpxch8b [EDI];
+                            setz AL;
+                            pop EBX;
+                            pop EDI;
+                        }
                     }
                 }
             }
