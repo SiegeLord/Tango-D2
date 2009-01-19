@@ -130,6 +130,19 @@ template RealTypeOf(T){
 }
 
 /**
+ * imaginary type for the given type
+ */
+template ImaginaryTypeOf(T){
+    static if(is(T==float)|| is(T==ifloat)|| is(T==cfloat)){
+        alias ifloat ImaginaryTypeOf;
+    } else static if(is(T==double)|| is(T==idouble)|| is(T==cdouble)){
+        alias idouble ImaginaryTypeOf;
+    } else static if(is(T==real)|| is(T==ireal)|| is(T==creal)){
+        alias ireal ImaginaryTypeOf;
+    } else static assert(0,"unsupported type in ImaginaryTypeOf "~T.stringof);
+}
+
+/**
  * Evaluates to true if T is a pointer type.
  */
 template isPointerType(T)
