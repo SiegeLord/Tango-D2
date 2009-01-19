@@ -109,7 +109,7 @@ class FormatOutput(T) : OutputFilter
 
         this (OutputStream output, T[] eol = Eol)
         {
-                this (new Layout!(T), output, eol);
+                this (Layout!(T).instance, output, eol);
         }
 
         /**********************************************************************
