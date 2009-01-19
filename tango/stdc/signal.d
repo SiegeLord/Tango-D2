@@ -44,5 +44,6 @@ else
     const SIGTERM   = 15; // Termination
 }
 
+/// on posix SIGUSR1 and SIGUSR2 are used by the gc, and should not be used/handled/blocked
 sigfn_t signal(int sig, sigfn_t func);
 int     raise(int sig);

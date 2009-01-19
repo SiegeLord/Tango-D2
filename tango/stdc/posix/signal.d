@@ -1,6 +1,8 @@
 /**
  * D header file for POSIX.
  *
+ * on posix SIGUSR1 and SIGUSR2 are used by the gc, and should not be used/handled/blocked
+ *
  * Copyright: Public Domain
  * License:   Public Domain
  * Authors:   Sean Kelly
