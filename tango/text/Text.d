@@ -80,7 +80,7 @@
                 T[] selection ();
 
                 // get the index and length of the current selection
-                Span selectionSpan ();
+                Span span ();
 
                 // mark a selection
                 Text select (int start=0, int length=int.max);
@@ -359,12 +359,12 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final Span selectionSpan ()
+        final Span span ()
         {
-                Span span;
-                span.begin = selectPoint;
-                span.length = selectLength;
-                return span;
+                Span s;
+                s.begin = selectPoint;
+                s.length = selectLength;
+                return s;
         }
 
         /***********************************************************************
