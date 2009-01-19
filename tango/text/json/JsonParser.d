@@ -419,7 +419,6 @@ unittest
 {
         auto p = new JsonParser!(char)(json);
         assert(p);
-        assert(p.next);
         assert(p.type == p.Token.BeginObject);
         assert(p.next);
         assert(p.type == p.Token.Name);
