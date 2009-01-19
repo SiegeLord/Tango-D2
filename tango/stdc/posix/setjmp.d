@@ -51,6 +51,14 @@ version( linux )
 
         alias int[6] __jmp_buf;
     }
+    else version ( PPC64 )
+    {
+        /*align(16)*/ alias long[64 + (12 * 4)] __jmp_buf;
+    }
+    else version ( PPC )
+    {
+        /*align(16)*/ alias int[64] __jmp_buf;
+    }
     else version ( SPARC )
     {
         alias int[3] __jmp_buf;
