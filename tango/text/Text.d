@@ -1412,8 +1412,7 @@ debug (UnitTest)
 {       
         import tango.io.device.Array;
 
-
-        void main() {}
+        //void main() {}
         unittest
         {
         auto s = new Text!(char);
@@ -1437,7 +1436,6 @@ debug (UnitTest)
         assert (s.append(12345) == "12345");
         assert (s.selection == "12345");
 
-        //s.append ("fubar");
         s ~= "fubar";
         assert (s.selection == "12345fubar");
         assert (s.select('5'));
