@@ -71,17 +71,22 @@ class Layout(T)
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
         
-        public static Layout instance;  /// shared instance
-
         /**********************************************************************
 
-                create shared instance
+                Return shared instance
+                
+                Note that this is not threadsafe, and that static-ctor
+                usage doesn't get invoked appropriately (compiler bug)
 
         **********************************************************************/
 
-        static this()
+        static Layout instance ()
         {
-                instance = new Layout!(T);
+                static Layout common;
+
+                if (common is null)
+                    common = new Layout!(T);
+                return common;
         }
 
         /**********************************************************************

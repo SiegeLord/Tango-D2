@@ -111,8 +111,10 @@ private alias FormatOutput!(char) Output;
 public static Output Stdout,      /// global standard output
                      Stderr;      /// global error output
 
-static this()
+static this ()
 {
+        // note that a static-ctor inside Layout fails 
+        // to be invoked before this is executed (bug)
         auto layout = Layout!(char).instance;
 
         Stdout = new Output (layout, Cout.stream);
