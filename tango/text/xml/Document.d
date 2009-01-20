@@ -841,7 +841,7 @@ version(discrete)
 
                 /***************************************************************
                 
-                        Deprecated: use node.attributes.find()
+                        Deprecated: use node.attributes.name()
 
                         Sweep the attributes looking for a name match and, 
                         optionally, a prefix match also.
@@ -867,7 +867,7 @@ version(discrete)
 
                 /***************************************************************
                 
-                        Deprecated: use node.attributes.has()
+                        Deprecated: use node.attributes.hasName()
 
                         Sweep the attributes looking for a name or value
                         match. Either may be null
