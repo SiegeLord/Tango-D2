@@ -13,10 +13,7 @@ import tango.text.xml.Document;
 
 void main () {
     // load our xml document
-    auto file = new File("xpath.xml");
-    auto xml  = new char[file.length];
-
-    file.input.read(xml);
+    auto xml  = cast(char[])File.get("xpath.xml");
 
     // create document
     auto doc = new Document!(char);
