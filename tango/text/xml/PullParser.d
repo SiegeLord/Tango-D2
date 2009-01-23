@@ -70,6 +70,7 @@ class PullParser(Ch = char)
 
         package XmlIterator!(Ch)        text;
         private bool                    err;
+        private bool                    stream;
         private char[]                  errMsg;
 
         /***********************************************************************
@@ -444,7 +445,7 @@ else
 
         private XmlTokenType endOfInput ()
         {
-                if (depth)
+                if (depth && (stream is false))
                     error ("Unexpected EOF");
 
                 return XmlTokenType.Done;
@@ -481,7 +482,7 @@ else
         
         ***********************************************************************/
 
-        private XmlTokenType error (char[] msg)
+        protected final XmlTokenType error (char[] msg)
         {
                 err = true;
                 errMsg = msg;
@@ -542,6 +543,15 @@ else
         
         ***********************************************************************/
 
+        final void incremental (bool yes = true)
+        {
+                stream = yes;
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+
         private void reset_()
         {
                 err = false;
@@ -586,7 +596,7 @@ else
 
 *******************************************************************************/
 
-private struct XmlIterator(Ch)
+package struct XmlIterator(Ch)
 {
         package Ch*     end;
         package size_t  len;
@@ -738,7 +748,6 @@ private struct XmlIterator(Ch)
 
 debug (UnitTest)
 {
-
 	/***********************************************************************
 	
 	***********************************************************************/
