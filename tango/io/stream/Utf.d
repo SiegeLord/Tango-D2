@@ -58,7 +58,7 @@ class UtfInput(T, S) : InputFilter, StreamMutator
                            return super.read (dst);
                 else
                    {
-                   size_t consumed,
+                   uint   consumed,
                           produced;
 
                    size_t reader (void[] src)
@@ -143,7 +143,7 @@ class UtfOutput (S, T) : OutputFilter, StreamMutator
                            return super.write (src);
                 else
                    {
-                   size_t consumed,
+                   uint   consumed,
                           produced;
 
                    size_t writer (void[] dst)
