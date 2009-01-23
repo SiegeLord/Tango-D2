@@ -460,7 +460,7 @@ private class Connection
                       try {
                           conduit.connect (address);
                           connected = true;
-                          Cout ("connected to ") (host).newline;
+                          debug Cout ("connected to ") (host).newline;
                           } catch (Object o)
                                    Cout ("failed to connect to ") (host) .newline;
         }
