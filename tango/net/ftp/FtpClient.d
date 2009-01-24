@@ -1101,7 +1101,7 @@ class FTPConnection : Telnet {
 
             foreach(char[] line; lines) {
 
-                if(line.length = 0)
+                if(line.length == 0)
                     continue;
                 // Parse each line exactly like MLST does.
                 try {
@@ -1259,8 +1259,8 @@ class FTPConnection : Telnet {
 
         foreach(char[] line; lines) {
 
-            if(line.length = 0)
-                continue
+            if(line.length == 0)
+                continue;
             // If there are no spaces, or if there's only one... skip the line.
             // This is probably like a "total 8" line.
             if(Text.locate(line, ' ') == Text.locatePrior(line, ' '))
