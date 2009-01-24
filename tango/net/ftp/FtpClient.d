@@ -722,7 +722,10 @@ class FTPConnection : Telnet {
             // This is the first line.
             if(response.message.length == 0) {
                 // The first line must have a code and then a space or hyphen.
-                if(single_line.length <= 4) {
+                // #1
+                // Response might be exactly 4 chars e.g. '230-'
+                // (see ftp-stud.fht-esslingen.de or ftp.sunfreeware.com)
+                if(single_line.length < 4) {
                     response.code[] = "500";
                     break;
                 }
@@ -746,7 +749,10 @@ class FTPConnection : Telnet {
             }
 
             // We're done if the line starts like "123 ".  Otherwise we're not.
-            if(single_line.length > 4 && single_line[0 .. 3] == response.code && single_line[3] == ' ')
+            // #1
+            // Response might be exactly 4 chars e.g. '220 '
+            // (see ftp.knoppix.nl)
+            if(single_line.length >= 4 && single_line[0 .. 3] == response.code && single_line[3] == ' ')
                 break;
         }
 
@@ -766,6 +772,12 @@ class FTPConnection : Telnet {
         // Trapse through the response...
         while(pos < response.message.length) {
             if(response.message[pos] == '"') {
+                // #2
+                // Is it the last character?
+                if(pos + 1 == response.message.length)
+                    // then we are done
+                    break;
+                
                 // An escaped quote, keep going.  False alarm.
                 if(response.message[++pos] == '"')
                     path[len++] = response.message[pos];
@@ -1088,6 +1100,9 @@ class FTPConnection : Telnet {
             delete lines;
 
             foreach(char[] line; lines) {
+
+                if(line.length = 0)
+                    continue;
                 // Parse each line exactly like MLST does.
                 try {
                     FtpFileInfo info = this.parseMlstLine(line);
@@ -1243,6 +1258,9 @@ class FTPConnection : Telnet {
         delete lines;
 
         foreach(char[] line; lines) {
+
+            if(line.length = 0)
+                continue
             // If there are no spaces, or if there's only one... skip the line.
             // This is probably like a "total 8" line.
             if(Text.locate(line, ' ') == Text.locatePrior(line, ' '))
@@ -1292,6 +1310,10 @@ class FTPConnection : Telnet {
             // The first character tells us what it is.
             if(line[0] == 'd')
                 info.type = FtpFileType.dir;
+            // #3
+            // Might be a link entry - additional test down below
+            else if (line[0] == 'l')
+                info.type = FtpFileType.other;
             else if(line[0] == '-')
                 info.type = FtpFileType.file;
             else
@@ -1317,13 +1339,33 @@ class FTPConnection : Telnet {
 
             info.facts["UNIX.mode"] = unix_mode;
 
-            // Links, owner, group.  These are hard to translate to MLST facts.
-            parse_word();
-            parse_word();
-            parse_word();
+            // #4
+            // Not only parse lines like
+            //    drwxrwxr-x    2 10490    100          4096 May 20  2005 Acrobat
+            //    lrwxrwxrwx    1 root     other           7 Sep 21  2007 Broker.link -> Acrobat
+            //    -rwxrwxr-x    1 filelib  100           468 Nov  1  1999 Web_Users_Click_Here.html
+            // but also parse lines like 
+            //    d--x--x--x   2 staff        512 Sep 24  2000 dev
+            // (see ftp.sunfreeware.com)
 
-            // Size in bytes, this one is good.
-            info.size = cast(ulong) Integer.parse((parse_word()));
+            // Links, owner.  These are hard to translate to MLST facts.
+            parse_word();
+            parse_word();
+                
+            // Group or size in bytes
+            char[] group_or_size = parse_word();
+            size_t oldpos = pos;
+
+            // Size in bytes or month
+            char[] size_or_month = parse_word();
+            
+            if (! Text.contains ("0123456789", size_or_month[0])) {
+                // Oops, no size here - go back to previous column
+                pos = oldpos;
+                info.size = cast(ulong) Integer.parse(group_or_size);
+            }
+            else                    
+                info.size = cast(ulong) Integer.parse(size_or_month);
 
             // Make sure we still have enough space.
             if(pos + 13 >= line.length)
@@ -1333,6 +1375,18 @@ class FTPConnection : Telnet {
             pos += 13;
 
             info.name = line[pos .. line.length];
+            // #3
+            // Might be a link entry - additional test here
+            if(info.type == FtpFileType.other) {
+                // Is name like 'name -> /some/other/path'?
+                size_t pos2 = Text.locatePattern(info.name, " -> ");
+                if (pos2 != info.name.length) {
+                    // It is a link - split into target and name
+                    info.facts["target"] = info.name[pos2 + 4 .. info.name.length];
+                    info.name = info.name[0 .. pos2];
+                    info.facts["type"] = "link";
+                }
+            }
             break;
 
             // A number; this is DOS format.
@@ -1343,7 +1397,9 @@ class FTPConnection : Telnet {
 
             // The order is 1 MM, 2 DD, 3 YY, 4 HH, 5 MM, 6 P
             auto r = Regex(`(\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)(A|P)M`);
-            if(r.test(line))
+            // #5
+            // wrong test
+            if(!r.test(line))
                 return info;
 
             if(Timestamp.dostime(r.match(0), info.modify) is 0)
@@ -1359,8 +1415,12 @@ class FTPConnection : Telnet {
                 return info;
             else if(dir_or_size[0] == '<')
                 info.type = FtpFileType.dir;
-            else
+            else {
+                // #5
+                // It is a file
                 info.size = cast(ulong) Integer.parse((dir_or_size));
+                info.type = FtpFileType.file;
+            }
 
             info.name = line[pos .. line.length];
             break;
@@ -1652,6 +1712,16 @@ class FTPConnection : Telnet {
         // Now that it's open, we do what we always do.
         this.get(path, file, progress, format);
     }
+
+    /*********************************************************************************
+        Enable UTF8 on servers that don't use this as default. Might need some work
+    *********************************************************************************/
+    public void enableUTF8()
+    {
+        sendCommand("OPTS UTF8 ON");
+        readResponse("200");
+    }
+
 
     /**********************************************************************************
         Retrieve a remote file's contents into a local file.
