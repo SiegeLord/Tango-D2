@@ -644,9 +644,18 @@ static this ()
 
 static ~this()
 {
-        synchronized (Cout)
-                      Cout.flush;
+        // workaround LDC bug for now ...
+        version (LDC)
+                {
+                Cout.flush;
+                Cerr.flush;
+                }
+        else
+           {
+           synchronized (Cout)
+                         Cout.flush;
 
-        synchronized (Cerr)
-                      Cerr.flush;
+           synchronized (Cerr)
+                         Cerr.flush;
+           }
 }
