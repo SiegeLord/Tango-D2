@@ -1,13 +1,14 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2006 Lars Ivar Igesund, Thomas Kühne,
+        copyright:      Copyright (c) 2006-2009 Max Samukha, Thomas Kühne,
                                             Grzegorz Adam Hankiewicz
 
         license:        BSD style: $(LICENSE)
 
         version:        Dec 2006: Initial release
+                        Jan 2009: Replaced normalize
 
-        author:         Lars Ivar Igesund, Thomas Kühne,
+        author:         Max Samukha, Thomas Kühne,
                         Grzegorz Adam Hankiewicz
 
 *******************************************************************************/
@@ -18,28 +19,28 @@ private import  tango.core.Exception;
 
 private extern (C) void memmove (void* dst, void* src, uint bytes);
 
+private enum
+{
+    NodeStackLength = 64
+}
+
 /*******************************************************************************
 
-    Normalizes a path component as specified in section 5.2 of RFC 2396.
+    Normalizes a path component.
 
-    ./ in path is removed
-    /. at the end is removed
-    <segment>/.. at the end is removed
-    <segment>/../ in path is removed
+    . segments are removed
+    <segment>/.. are removed
 
     On Windows, \ will be converted to / prior to normalization.
 
-    Note that any number of ../ segments at the front is ignored,
-    unless it is an absolute path, in which case an exception will
-    be thrown. A relative path with ../ segments at the front is only
-    considered valid if it can be joined with a path such that it can
-    be fully normalized.
+    Multiple consecutive forward slashes are replaced with a single forward slash.
+
+    Note that any number of .. segments at the front is ignored,
+    unless it is an absolute path, in which case they are removed.
 
     The input path is copied into either the provided buffer, or a heap
     allocated array if no buffer was provided. Normalization modifies
     this copy before returning the relevant slice.
-
-    Throws: IllegalArgumentException if the root separator is followed by ..
 
     Examples:
     -----
@@ -47,187 +48,150 @@ private extern (C) void memmove (void* dst, void* src, uint bytes);
     -----
 
 *******************************************************************************/
-
 char[] normalize(char[] path, char[] buf = null)
 {
-    uint end;
-version (Windows) {
-    /*
-       Internal helper to patch slashes
-    */
-    char[] normalizeSlashes(char[] path)
+    // Whether the path is absolute
+    bool isAbsolute;
+    // Current position
+    size_t idx;
+    // Position to move
+    size_t moveTo;
+
+    // Starting positions of regular path segments are pushed on this stack
+    // to avoid backward scanning when .. segments are encountered.
+    size_t[NodeStackLength] nodeStack;
+    size_t nodeStackTop;
+
+    // Moves the path tail starting at the current position to moveTo.
+    // Then sets the current position to moveTo.
+    void move()
     {
-        char to = '/', from = '\\';
+        auto len = path.length - idx;
+        memmove(path.ptr + moveTo, path.ptr + idx, len);
+        path = path[0..moveTo + len];
+        idx = moveTo;
+    }
 
-        foreach (inout c; path)
-                 if (c is from)
-                     c = to;
+    // Checks if the character at the current position is a separator.
+    // If true, normalizes the separator to '/' on Windows and advances the 
+    // current position to the next character.
+    bool isSep(ref size_t i)
+    {
+        char c = path[i];
+        version (Windows)
+        {
+            if (c == '\\')
+                path[i] = '/';
+            else if (c != '/')
+                return false;
+        }
+        else
+        {
+            if (c != '/')
+                return false;
+        }
+        i++;
+        return true;
+    }
+
+    if (buf is null)
+        path = path.dup;
+    else
+        path = buf[0..path.length] = path;
+
+    version (Windows)
+    {
+        // Skip Windows drive specifiers
+        if (path.length >= 2 && path[1] == ':')
+        {
+            auto c = path[0];
+
+            if (c >= 'a' && c <= 'z')
+            {
+                path[0] = c - 32;
+                idx = 2;
+            }
+            else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+                idx = 2;
+        }
+    }
+
+    if (idx == path.length)
         return path;
-    }
-}
-    /*
-       Internal helper to truncate the path, avoids heap usage.
-    */
-    void truncate(char[] path, char[] slice1, char[] slice2) {
-        memmove(path.ptr, slice1.ptr, slice1.length);
-        memmove(path.ptr + slice1.length, slice2.ptr, slice2.length);
-        assert (end > slice1.length+slice2.length);
-        end = slice1.length+slice2.length;
+
+    moveTo = idx;
+    if (isSep(idx))
+    {
+        moveTo++; // preserve root separator.
+        isAbsolute = true;
     }
 
-    /*
-       Internal helper that finds a slash followed by a dot
-    */
-    int findSlashDot(char[] path, int start) {
-        assert(start < end);
-        foreach(i, c; path[start..end-1]) 
-            if (c == '/') {
-                if (path[start+i+1] == '/')
-                    truncate(path, path[0..start+i+1], path[start+i+2..end]);
-                if (path[start+i+1] == '.') 
-                    return i + start + 1;
-            }
+    while (idx < path.length)
+    {
+        // Skip duplicate separators
+        if (isSep(idx))
+            continue;
 
-        return -1;
-    }
-
-    /*
-       Internal helper that finds a slash starting at the back
-    */
-    int findSlash(char[] path, int start) {
-        assert(start < end);
-
-        if (start < 0)
-            return -1;
-
-        for (int i = start; i >= 0; i--) {
-            if (path[i] == '/') {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /*
-        Internal helper that recursively shortens all segments with dots.
-    */
-    void removeDots(char[] path, int start) {
-        assert (start < end);
-        assert (path[start] == '.');
-        if (start + 1 == end) {
-            // path ends with /., remove
-            end = start - 1;
-            return;
-        }
-        else if (path[start+1] == '/') {
-            // remove all subsequent './'
-            do {
-                truncate(path, path[0..start], path[start+2..end]);
-            } while (start + 2 < end && path[start..start+2] == "./");
-            int idx = findSlashDot(path, start - 1);
-            if (idx < 0) {
-                // no more /., return path
-                return;
-            }
-            return removeDots(path, idx);
-        }
-        else if (path[start..start+2] == "..") {
-            // found /.. sequence
-version (Windows) {
-            if (start == 3 && path[1] == '/') { // absolute, X:/..
-                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root can't be followed by ..");
-            }
-
-}
-else {
-            if (start == 1) { // absolute
-                throw new IllegalArgumentException("PathUtil :: Invalid absolute path, root separator can't be followed by ..");
-            }
-}
-            
-            int idx = findSlash(path, start - 2);
-            if (start + 2 == end) {
-                // path ends with /..
-                if (idx < 0) {
-                    // no more slashes in front of /.., resolves to empty path
-                    end = 0;
-                    return;
-                }
-                // remove /.. and preceding segment and return
-                end = idx;
-                return;
-            }
-            else if (path[start+2] == '.') {
-                throw new IllegalArgumentException("PathUtil :: Invalid path, found more than 2 dots.");
-            }
-            else if (path[start+2] == '/') {
-                // found /../ sequence
-                // if no slashes before /../, set path to everything after
-                // if <segment>/../ is ../../, keep
-                // otherwise, remove <segment>/../
-                if (path[idx+1..start-1] == "..") {
-                    idx = findSlashDot(path, start+4);
-                    if (idx < 0) {
-                        // no more /., path fully shortened
-                        return;
+        if (path[idx] == '.')
+        {
+            // leave the current position at the start of the segment
+            auto i = idx + 1;
+            if (i < path.length && path[i] == '.')
+            {
+                i++;
+                if (i == path.length || isSep(i))
+                {
+                    // It is a '..' segment. If the stack is not empty, set 
+                    // moveTo and the current position
+                    // to the start position of the last found regular segment.
+                    if (nodeStackTop > 0)
+                        moveTo = nodeStack[--nodeStackTop];
+                    // If no regular segment start positions on the stack, drop the 
+                    // .. segment if it is absolute path
+                    // or, otherwise, advance moveTo and the current position to 
+                    // the character after the '..' segment
+                    else if (!isAbsolute)
+                    {
+                        if (moveTo != idx)
+                        {
+                            i -= idx - moveTo;
+                            move();
+                        }
+                        moveTo = i;
                     }
-                    return removeDots(path, idx);
+
+                    idx = i;
+                    continue;
                 }
-                truncate(path, path[0..idx < 0 ? 0 : idx + 1], path[start+3..end]);
-                idx = findSlashDot(path, idx < 0 ? 0 : idx);
-                if (idx < 0) {
-                    // no more /., path fully shortened
-                    return;
-                }
-                // examine next /.
-                return removeDots(path, idx);
+            }
+
+            // If it is '.' segment, skip it.
+            if (i == path.length || isSep(i))
+            {
+                idx = i;
+                continue;
             }
         }
-        else {
-            if (findSlash(path, end - 1) < start)
-                // segment is filename that starts with ., and at the end
-                return;
-            else {
-                // not at end
-                int idx = findSlashDot(path, start);
-                if (idx > -1) 
-                    return removeDots(path, idx);
-                else
-                    return;
-            }
-        }
-        assert(false, "PathUtil :: invalid code path");
+
+        // Remove excessive '/', '.' and/or '..' preceeding the segment.
+        if (moveTo != idx)
+            move();
+
+        // Push the start position of the regular segment on the stack
+        assert(nodeStackTop < NodeStackLength);
+        nodeStack[nodeStackTop++] = idx;
+
+        // Skip the regular segment and set moveTo to the position after the segment
+        // (including the trailing '/' if present)
+        for(; idx < path.length && !isSep(idx); idx++) {}
+        moveTo = idx;
     }
 
-    if (path.length == 0)
-        return path;
+    if (moveTo != idx)
+        move();
 
-    char[] normpath;
-    if (buf is null) {
-        normpath = path.dup;
-    }
-    else {
-        normpath = buf; 
-        normpath[0..path.length] = path;
-    }
-
-version (Windows) {
-    normpath = normalizeSlashes(normpath);
+    return path;
 }
-    end = normpath.length;
-
-    // if path starts with ./, remove all subsequent instances
-    while (end > 1 && normpath[0] == '.' && normpath[1] == '/') {
-        truncate(normpath, normpath[0..0], normpath[2..end]);
-    }
-    int idx = findSlashDot(normpath, 0);
-    if (idx > -1) {
-        removeDots(normpath, idx);
-    }
-
-    return normpath[0..end];
-}
-
 
 debug (UnitTest)
 {
@@ -239,11 +203,11 @@ debug (UnitTest)
         assert (normalize ("/home/../john/../.tango/foo.conf") == "/.tango/foo.conf");
         assert (normalize ("/home/john/.tango/foo.conf") == "/home/john/.tango/foo.conf");
         assert (normalize ("/foo/bar/.htaccess") == "/foo/bar/.htaccess");
-        assert (normalize ("foo/bar/././.") == "foo/bar");
+        assert (normalize ("foo/bar/././.") == "foo/bar/");
         assert (normalize ("././foo/././././bar") == "foo/bar");
         assert (normalize ("/foo/../john") == "/john");
         assert (normalize ("foo/../john") == "john");
-        assert (normalize ("foo/bar/..") == "foo");
+        assert (normalize ("foo/bar/..") == "foo/");
         assert (normalize ("foo/bar/../john") == "foo/john");
         assert (normalize ("foo/bar/doe/../../john") == "foo/john");
         assert (normalize ("foo/bar/doe/../../john/../bar") == "foo/bar");
@@ -257,19 +221,24 @@ debug (UnitTest)
         assert (normalize ("/home/john/./foo/bar.txt") == "/home/john/foo/bar.txt");
         assert (normalize ("/home//john") == "/home/john");
 
-        bool threedots = false;
-        try {
-            normalize("/foo/.../bar");
-        }
-        catch (IllegalArgumentException iae) {
-            threedots = true;
-        }
-        assert (threedots);
+        assert (normalize("/../../bar/") == "/bar/");
+        assert (normalize("/../../bar/../baz/./") == "/baz/");
+        assert (normalize("/../../bar/boo/../baz/.bar/.") == "/bar/baz/.bar/");
+        assert (normalize("../..///.///bar/..//..//baz/.//boo/..") == "../../../baz/");
+        assert (normalize("./bar/./..boo/./..bar././/") == "bar/..boo/..bar./");
+        assert (normalize("/bar/..") == "/");
+        assert (normalize("bar/") == "bar/");
+        assert (normalize(".../") == ".../");
+        assert (normalize("///../foo") == "/foo");
+        auto buf = new char[100];
+        auto ret = normalize("foo/bar/./baz", buf);
+        assert (ret.ptr == buf.ptr);
+        assert (ret == "foo/bar/baz");
 
 version (Windows) {
         assert (normalize ("\\foo\\..\\john") == "/john");
         assert (normalize ("foo\\..\\john") == "john");
-        assert (normalize ("foo\\bar\\..") == "foo");
+        assert (normalize ("foo\\bar\\..") == "foo/");
         assert (normalize ("foo\\bar\\..\\john") == "foo/john");
         assert (normalize ("foo\\bar\\doe\\..\\..\\john") == "foo/john");
         assert (normalize ("foo\\bar\\doe\\..\\..\\john\\..\\bar") == "foo/bar");
@@ -279,6 +248,13 @@ version (Windows) {
         assert (normalize ("foo\\bar\\.\\doe\\..\\..\\john") == "foo/john");
         assert (normalize ("..\\..\\foo\\bar") == "../../foo/bar");
         assert (normalize ("..\\..\\..\\foo\\bar") == "../../../foo/bar");
+        assert (normalize(r"C:") == "C:");
+        assert (normalize(r"C") == "C");
+        assert (normalize(r"c:\") == "C:/");
+        assert (normalize(r"C:\..\.\..\..\") == "C:/");
+        assert (normalize(r"c:..\.\boo\") == "C:../boo/");
+        assert (normalize(r"C:..\..\boo\foo\..\.\..\..\bar") == "C:../../../bar");
+        assert (normalize(r"C:boo\..") == "C:");
 }
     }
 }
