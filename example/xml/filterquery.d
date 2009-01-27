@@ -12,12 +12,11 @@ import tango.text.xml.Document;
 ******************************************************************************/
 
 void main () {
-    // load our xml document
-    auto xml  = cast(char[])File.get("xpath.xml");
-
     // create document
     auto doc = new Document!(char);
-    doc.parse(xml);
+
+    // parse our xml
+    doc.parse (cast(char[]) File.get("xpath.xml"));
 
     // get the root element
     auto root = doc.elements;

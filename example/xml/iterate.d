@@ -1,6 +1,5 @@
 import tango.io.device.File;
 import tango.io.Stdout;
-import tango.text.Util;
 import tango.text.xml.Document;
 
 /******************************************************************************
