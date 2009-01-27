@@ -569,6 +569,22 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
+                Clear array content
+
+                Remarks:
+                Reset 'position' and 'limit' to zero. This effectively
+                clears all content from the array.
+
+        ***********************************************************************/
+
+        final override InputStream clear ()
+        {
+                index = extent = 0;
+                return this;
+        }
+
+        /***********************************************************************
+
                 Write into this buffer
 
                 Params:
