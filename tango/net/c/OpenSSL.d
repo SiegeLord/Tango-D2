@@ -14,6 +14,7 @@ private import tango.sys.SharedLib;
 
 private import tango.stdc.stdio;
 private import tango.stdc.stringz;
+private import tango.stdc.config: c_long,c_ulong;
 
 private import tango.io.Stdout;
 private import tango.io.FileSystem;
@@ -37,6 +38,7 @@ private import Integer = tango.text.convert.Integer;
    A lot of unsigned longs and longs were converted to uint and int
 
    These will need to be reversed to support 64bit tango
+   (should use c_long and c_ulong from tango.stdc.config)
 
    XXX TODO XXX
 */
@@ -134,15 +136,17 @@ extern (C)
 
         void *ap_data;
         int key_len;
-        version (X86_64)
-            ulong flags;
-        else
-            uint flags;
+        c_ulong flags;
         void *cipher_data;
         int final_used;
         int block_mask;
         ubyte[EVP_MAX_BLOCK_LENGTH] finalv;
     };
+    
+    // fallback for OpenSSL 0.9.7l 28 Sep 2006 that defines only macros
+    int EVP_CIPHER_CTX_block_size_097l(EVP_CIPHER_CTX *e){
+        return *((cast(int*)e.cipher)+1);
+    }
 
     struct BIO 
     {
@@ -629,6 +633,9 @@ version(Win32)
 {
     static SharedLib eaylib = null;
 }
+version(darwin){
+    static SharedLib cryptolib = null;
+}
 static ReadWriteMutex[] _locks = null;
 
 
@@ -835,7 +842,12 @@ void bindCrypto(SharedLib ssllib)
         bindFunc(EVP_EncryptFinal_ex, "EVP_EncryptFinal_ex", ssllib);
         bindFunc(EVP_DecryptFinal_ex, "EVP_DecryptFinal_ex", ssllib);
         bindFunc(EVP_aes_128_cbc, "EVP_aes_128_cbc", ssllib);
-        bindFunc(EVP_CIPHER_CTX_block_size, "EVP_CIPHER_CTX_block_size", ssllib);
+        try {
+            bindFunc(EVP_CIPHER_CTX_block_size, "EVP_CIPHER_CTX_block_size", ssllib);
+        } catch (Exception e){
+            // openSSL 0.9.7l defines only macros, not the function
+            EVP_CIPHER_CTX_block_size=&EVP_CIPHER_CTX_block_size_097l;
+        }
         bindFunc(EVP_CIPHER_CTX_cleanup, "EVP_CIPHER_CTX_cleanup", ssllib);
     }
 }
@@ -880,7 +892,13 @@ void loadOpenSSL()
         bindFunc(SSL_CTX_set_session_id_context, "SSL_CTX_set_session_id_context", ssllib);
         version(Posix)
         {
-            bindCrypto(ssllib);
+            version(darwin){
+                char[][] loadPathCrypto = [ "/usr/lib/libcrypto.dylib", "libcrypto.dylib" ];
+                cryptolib = loadLib(loadPathCrypto);
+                if (cryptolib !is null) bindCrypto(cryptolib);
+            } else {
+                bindCrypto(ssllib);
+            }
         }
 
         _initOpenSSL();
@@ -905,6 +923,10 @@ void closeOpenSSL()
     CRYPTO_cleanup_all_ex_data();
     if (ssllib)
         ssllib.unload();
+    version(darwin){
+        if (cryptolib)
+            cryptolib.unload();
+    }
     version(Win32)
     {
         if (eaylib)
