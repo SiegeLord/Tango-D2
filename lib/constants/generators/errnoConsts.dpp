@@ -1,0 +1,436 @@
+#include <errno.h>
+xxx start xxx
+module tango.stdc.constants.errnoConsts;
+
+#ifdef E2BIG
+  enum __XYX__E2BIG = E2BIG; // Argument list too long
+#endif
+#ifdef EACCES
+  enum __XYX__EACCES = EACCES; // Permission denied
+#endif
+#ifdef EADDRINUSE
+  enum __XYX__EADDRINUSE = EADDRINUSE; // Address already in use
+#endif
+#ifdef EADDRNOTAVAIL
+  enum __XYX__EADDRNOTAVAIL = EADDRNOTAVAIL; // Can't assign requested address
+#endif
+#ifdef EADV
+  enum __XYX__EADV = EADV; // Advertise error
+#endif
+#ifdef EAFNOSUPPORT
+  enum __XYX__EAFNOSUPPORT = EAFNOSUPPORT; // Address family not supported by protocol family
+#endif
+#ifdef EAGAIN
+  enum __XYX__EAGAIN = EAGAIN; // Resource temporarily unavailable
+#endif
+#ifdef EALREADY
+  enum __XYX__EALREADY = EALREADY; // Operation already in progress
+#endif
+#ifdef EAUTH
+  enum __XYX__EAUTH = EAUTH; // Authentication error
+#endif
+#ifdef EBADE
+  enum __XYX__EBADE = EBADE; // Invalid exchange
+#endif
+#ifdef EBADF
+  enum __XYX__EBADF = EBADF; // Bad file descriptor
+#endif
+#ifdef EBADFD
+  enum __XYX__EBADFD = EBADFD; // File descriptor in bad state
+#endif
+#ifdef EBADMSG
+  enum __XYX__EBADMSG = EBADMSG; // Bad message
+#endif
+#ifdef EBADR
+  enum __XYX__EBADR = EBADR; // Invalid request descriptor
+#endif
+#ifdef EBADRPC
+  enum __XYX__EBADRPC = EBADRPC; // RPC struct is bad
+#endif
+#ifdef EBADRQC
+  enum __XYX__EBADRQC = EBADRQC; // Invalid request code
+#endif
+#ifdef EBADSLT
+  enum __XYX__EBADSLT = EBADSLT; // Invalid slot
+#endif
+#ifdef EBFONT
+  enum __XYX__EBFONT = EBFONT; // Bad font file format
+#endif
+#ifdef EBUSY
+  enum __XYX__EBUSY = EBUSY; // Device busy
+#endif
+#ifdef ECANCELED
+  enum __XYX__ECANCELED = ECANCELED; // Operation canceled
+#endif
+#ifdef ECHILD
+  enum __XYX__ECHILD = ECHILD; // No child processes
+#endif
+#ifdef ECHRNG
+  enum __XYX__ECHRNG = ECHRNG; // Channel number out of range
+#endif
+#ifdef ECOMM
+  enum __XYX__ECOMM = ECOMM; // Communication error on send
+#endif
+#ifdef ECONNABORTED
+  enum __XYX__ECONNABORTED = ECONNABORTED; // Software caused connection abort
+#endif
+#ifdef ECONNREFUSED
+  enum __XYX__ECONNREFUSED = ECONNREFUSED; // Connection refused
+#endif
+#ifdef ECONNRESET
+  enum __XYX__ECONNRESET = ECONNRESET; // Connection reset by peer
+#endif
+#ifdef EDEADLK
+  enum __XYX__EDEADLK = EDEADLK; // Resource deadlock avoided
+#endif
+#ifdef EDEADLOCK
+  enum __XYX__EDEADLOCK = EDEADLOCK; 
+#endif
+#ifdef EDESTADDRREQ
+  enum __XYX__EDESTADDRREQ = EDESTADDRREQ; // Destination address required
+#endif
+#ifdef EDOM
+  enum __XYX__EDOM = EDOM; // Numerical argument out of domain
+#endif
+#ifdef EDOOFUS
+  enum __XYX__EDOOFUS = EDOOFUS; // Programming error
+#endif
+#ifdef EDOTDOT
+  enum __XYX__EDOTDOT = EDOTDOT; // RFS specific error
+#endif
+#ifdef EDQUOT
+  enum __XYX__EDQUOT = EDQUOT; // Disc quota exceeded
+#endif
+#ifdef EEXIST
+  enum __XYX__EEXIST = EEXIST; // File exists
+#endif
+#ifdef EFAULT
+  enum __XYX__EFAULT = EFAULT; // Bad address
+#endif
+#ifdef EFBIG
+  enum __XYX__EFBIG = EFBIG; // File too large
+#endif
+#ifdef EFTYPE
+  enum __XYX__EFTYPE = EFTYPE; // Inappropriate file type or format
+#endif
+#ifdef EHOSTDOWN
+  enum __XYX__EHOSTDOWN = EHOSTDOWN; // Host is down
+#endif
+#ifdef EHOSTUNREACH
+  enum __XYX__EHOSTUNREACH = EHOSTUNREACH; // No route to host
+#endif
+#ifdef EIDRM
+  enum __XYX__EIDRM = EIDRM; // Itendifier removed
+#endif
+#ifdef EILSEQ
+  enum __XYX__EILSEQ = EILSEQ; // Illegal byte sequence
+#endif
+#ifdef EINPROGRESS
+  enum __XYX__EINPROGRESS = EINPROGRESS; // Operation now in progress
+#endif
+#ifdef EINTR
+  enum __XYX__EINTR = EINTR; // Interrupted system call
+#endif
+#ifdef EINVAL
+  enum __XYX__EINVAL = EINVAL; // Invalid argument
+#endif
+#ifdef EIO
+  enum __XYX__EIO = EIO; // Input/output error
+#endif
+#ifdef EISCONN
+  enum __XYX__EISCONN = EISCONN; // Socket is already connected
+#endif
+#ifdef EISDIR
+  enum __XYX__EISDIR = EISDIR; // Is a directory
+#endif
+#ifdef EISNAM
+  enum __XYX__EISNAM = EISNAM; // Is a named type file
+#endif
+#ifdef EKEYEXPIRED
+  enum __XYX__EKEYEXPIRED = EKEYEXPIRED; // Key has expired
+#endif
+#ifdef EKEYREJECTED
+  enum __XYX__EKEYREJECTED = EKEYREJECTED; // Key was rejected by service
+#endif
+#ifdef EKEYREVOKED
+  enum __XYX__EKEYREVOKED = EKEYREVOKED; // Key has been revoked
+#endif
+#ifdef EL2HLT
+  enum __XYX__EL2HLT = EL2HLT; // Level 2 halted
+#endif
+#ifdef EL2NSYNC
+  enum __XYX__EL2NSYNC = EL2NSYNC; // Level 2 not synchronized
+#endif
+#ifdef EL3HLT
+  enum __XYX__EL3HLT = EL3HLT; // Level 3 halted
+#endif
+#ifdef EL3RST
+  enum __XYX__EL3RST = EL3RST; // Level 3 reset
+#endif
+#ifdef ELAST
+  enum __XYX__ELAST = ELAST; // Must be equal largest errno
+#endif
+#ifdef ELIBACC
+  enum __XYX__ELIBACC = ELIBACC; // Can not access a needed shared library
+#endif
+#ifdef ELIBBAD
+  enum __XYX__ELIBBAD = ELIBBAD; // Accessing a corrupted shared library
+#endif
+#ifdef ELIBEXEC
+  enum __XYX__ELIBEXEC = ELIBEXEC; // Cannot exec a shared library directly
+#endif
+#ifdef ELIBMAX
+  enum __XYX__ELIBMAX = ELIBMAX; // Attempting to link in too many shared libraries
+#endif
+#ifdef ELIBSCN
+  enum __XYX__ELIBSCN = ELIBSCN; // .lib section in a.out corrupted
+#endif
+#ifdef ELNRNG
+  enum __XYX__ELNRNG = ELNRNG; // Link number out of range
+#endif
+#ifdef ELOOP
+  enum __XYX__ELOOP = ELOOP; // Too many levels of symbolic links
+#endif
+#ifdef EMEDIUMTYPE
+  enum __XYX__EMEDIUMTYPE = EMEDIUMTYPE; // Wrong medium type
+#endif
+#ifdef EMFILE
+  enum __XYX__EMFILE = EMFILE; // Too many open files
+#endif
+#ifdef EMLINK
+  enum __XYX__EMLINK = EMLINK; // Too many links
+#endif
+#ifdef EMSGSIZE
+  enum __XYX__EMSGSIZE = EMSGSIZE; // Message too long
+#endif
+#ifdef EMULTIHOP
+  enum __XYX__EMULTIHOP = EMULTIHOP; // Multihop attempted
+#endif
+#ifdef ENAMETOOLONG
+  enum __XYX__ENAMETOOLONG = ENAMETOOLONG; // File name too long
+#endif
+#ifdef ENAVAIL
+  enum __XYX__ENAVAIL = ENAVAIL; // No XENIX semaphores available
+#endif
+#ifdef ENEEDAUTH
+  enum __XYX__ENEEDAUTH = ENEEDAUTH; // Need authenticator
+#endif
+#ifdef ENETDOWN
+  enum __XYX__ENETDOWN = ENETDOWN; // Network is down
+#endif
+#ifdef ENETRESET
+  enum __XYX__ENETRESET = ENETRESET; // Network dropped connection on reset
+#endif
+#ifdef ENETUNREACH
+  enum __XYX__ENETUNREACH = ENETUNREACH; // Network is unreachable
+#endif
+#ifdef ENFILE
+  enum __XYX__ENFILE = ENFILE; // Too many open files in system
+#endif
+#ifdef ENOANO
+  enum __XYX__ENOANO = ENOANO; // No anode
+#endif
+#ifdef ENOATTR
+  enum __XYX__ENOATTR = ENOATTR; // Attribute not found
+#endif
+#ifdef ENOBUFS
+  enum __XYX__ENOBUFS = ENOBUFS; // No buffer space available
+#endif
+#ifdef ENOCSI
+  enum __XYX__ENOCSI = ENOCSI; // No CSI structure available
+#endif
+#ifdef ENODATA
+  enum __XYX__ENODATA = ENODATA; // No message available on STREAM
+#endif
+#ifdef ENODEV
+  enum __XYX__ENODEV = ENODEV; // Operation not supported by device
+#endif
+#ifdef ENOENT
+  enum __XYX__ENOENT = ENOENT; // No such file or directory
+#endif
+#ifdef ENOEXEC
+  enum __XYX__ENOEXEC = ENOEXEC; // Exec format error
+#endif
+#ifdef ENOKEY
+  enum __XYX__ENOKEY = ENOKEY; // Required key not available
+#endif
+#ifdef ENOLCK
+  enum __XYX__ENOLCK = ENOLCK; // No locks available
+#endif
+#ifdef ENOLINK
+  enum __XYX__ENOLINK = ENOLINK; // Link has been severed
+#endif
+#ifdef ENOMEDIUM
+  enum __XYX__ENOMEDIUM = ENOMEDIUM; // No medium found
+#endif
+#ifdef ENOMEM
+  enum __XYX__ENOMEM = ENOMEM; // Cannot allocate memory
+#endif
+#ifdef ENOMSG
+  enum __XYX__ENOMSG = ENOMSG; // No message of desired type
+#endif
+#ifdef ENONET
+  enum __XYX__ENONET = ENONET; // Machine is not on the network
+#endif
+#ifdef ENOPKG
+  enum __XYX__ENOPKG = ENOPKG; // Package not installed
+#endif
+#ifdef ENOPROTOOPT
+  enum __XYX__ENOPROTOOPT = ENOPROTOOPT; // Protocol not available
+#endif
+#ifdef ENOSPC
+  enum __XYX__ENOSPC = ENOSPC; // No space left on device
+#endif
+#ifdef ENOSR
+  enum __XYX__ENOSR = ENOSR; // No STREAM resources
+#endif
+#ifdef ENOSTR
+  enum __XYX__ENOSTR = ENOSTR; // Not a STREAM
+#endif
+#ifdef ENOSYS
+  enum __XYX__ENOSYS = ENOSYS; // Function not implemented
+#endif
+#ifdef ENOTBLK
+  enum __XYX__ENOTBLK = ENOTBLK; // Block device required
+#endif
+#ifdef ENOTCONN
+  enum __XYX__ENOTCONN = ENOTCONN; // Socket is not connected
+#endif
+#ifdef ENOTDIR
+  enum __XYX__ENOTDIR = ENOTDIR; // Not a directory
+#endif
+#ifdef ENOTEMPTY
+  enum __XYX__ENOTEMPTY = ENOTEMPTY; // Directory not empty
+#endif
+#ifdef ENOTNAM
+  enum __XYX__ENOTNAM = ENOTNAM; // Not a XENIX named type file
+#endif
+#ifdef ENOTRECOVERABLE
+  enum __XYX__ENOTRECOVERABLE = ENOTRECOVERABLE; // State not recoverable
+#endif
+#ifdef ENOTSOCK
+  enum __XYX__ENOTSOCK = ENOTSOCK; // Socket operation on non-socket
+#endif
+#ifdef ENOTSUP
+  enum __XYX__ENOTSUP = ENOTSUP; // Operation not supported
+#endif
+#ifdef ENOTTY
+  enum __XYX__ENOTTY = ENOTTY; // Inappropriate ioctl for device
+#endif
+#ifdef ENOTUNIQ
+  enum __XYX__ENOTUNIQ = ENOTUNIQ; // Name not unique on network
+#endif
+#ifdef ENXIO
+  enum __XYX__ENXIO = ENXIO; // Device not configured
+#endif
+#ifdef EOPNOTSUPP
+  enum __XYX__EOPNOTSUPP = EOPNOTSUPP; // Operation not supported on socket
+#endif
+#ifdef EOVERFLOW
+  enum __XYX__EOVERFLOW = EOVERFLOW; // Value too large to be stored in data type
+#endif
+#ifdef EOWNERDEAD
+  enum __XYX__EOWNERDEAD = EOWNERDEAD; // Owner died
+#endif
+#ifdef EPERM
+  enum __XYX__EPERM = EPERM; // Operation not permitted
+#endif
+#ifdef EPFNOSUPPORT
+  enum __XYX__EPFNOSUPPORT = EPFNOSUPPORT; // Protocol family not supported
+#endif
+#ifdef EPIPE
+  enum __XYX__EPIPE = EPIPE; // Broken pipe
+#endif
+#ifdef EPROCLIM
+  enum __XYX__EPROCLIM = EPROCLIM; // Too many processes
+#endif
+#ifdef EPROCUNAVAIL
+  enum __XYX__EPROCUNAVAIL = EPROCUNAVAIL; // Bad procedure for program
+#endif
+#ifdef EPROGMISMATCH
+  enum __XYX__EPROGMISMATCH = EPROGMISMATCH; // Program version wrong
+#endif
+#ifdef EPROGUNAVAIL
+  enum __XYX__EPROGUNAVAIL = EPROGUNAVAIL; // RPC prog. not avail
+#endif
+#ifdef EPROTO
+  enum __XYX__EPROTO = EPROTO; // Protocol error
+#endif
+#ifdef EPROTONOSUPPORT
+  enum __XYX__EPROTONOSUPPORT = EPROTONOSUPPORT; // Protocol not supported
+#endif
+#ifdef EPROTOTYPE
+  enum __XYX__EPROTOTYPE = EPROTOTYPE; // Protocol wrong type for socket
+#endif
+#ifdef ERANGE
+  enum __XYX__ERANGE = ERANGE; // Result too large
+#endif
+#ifdef EREMCHG
+  enum __XYX__EREMCHG = EREMCHG; // Remote address changed
+#endif
+#ifdef EREMOTE
+  enum __XYX__EREMOTE = EREMOTE; // Too many levels of remote in path
+#endif
+#ifdef EREMOTEIO
+  enum __XYX__EREMOTEIO = EREMOTEIO; // Remote I/O error
+#endif
+#ifdef ERESTART
+  enum __XYX__ERESTART = ERESTART; // Interrupted system call should be restarted
+#endif
+#ifdef EROFS
+  enum __XYX__EROFS = EROFS; // Read-only file system
+#endif
+#ifdef ERPCMISMATCH
+  enum __XYX__ERPCMISMATCH = ERPCMISMATCH; // RPC version wrong
+#endif
+#ifdef ESHUTDOWN
+  enum __XYX__ESHUTDOWN = ESHUTDOWN; // Can't send after socket shutdown
+#endif
+#ifdef ESOCKTNOSUPPORT
+  enum __XYX__ESOCKTNOSUPPORT = ESOCKTNOSUPPORT; // Socket type not supported
+#endif
+#ifdef ESPIPE
+  enum __XYX__ESPIPE = ESPIPE; // Illegal seek
+#endif
+#ifdef ESRCH
+  enum __XYX__ESRCH = ESRCH; // No such process
+#endif
+#ifdef ESRMNT
+  enum __XYX__ESRMNT = ESRMNT; // Srmount error
+#endif
+#ifdef ESTALE
+  enum __XYX__ESTALE = ESTALE; // Stale NFS file handle
+#endif
+#ifdef ESTRPIPE
+  enum __XYX__ESTRPIPE = ESTRPIPE; // Streams pipe error
+#endif
+#ifdef ETIME
+  enum __XYX__ETIME = ETIME; // STREAM ioctl timeout
+#endif
+#ifdef ETIMEDOUT
+  enum __XYX__ETIMEDOUT = ETIMEDOUT; // Operation timed out
+#endif
+#ifdef ETOOMANYREFS
+  enum __XYX__ETOOMANYREFS = ETOOMANYREFS; // Too many refrences; can't splice
+#endif
+#ifdef ETXTBSY
+  enum __XYX__ETXTBSY = ETXTBSY; // Text file busy
+#endif
+#ifdef EUCLEAN
+  enum __XYX__EUCLEAN = EUCLEAN; // Structure needs cleaning
+#endif
+#ifdef EUNATCH
+  enum __XYX__EUNATCH = EUNATCH; // Protocol driver not attached
+#endif
+#ifdef EUSERS
+  enum __XYX__EUSERS = EUSERS; // Too many users
+#endif
+#ifdef EWOULDBLOCK
+  enum __XYX__EWOULDBLOCK = EWOULDBLOCK; // Operation would block
+#endif
+#ifdef EXDEV
+  enum __XYX__EXDEV = EXDEV; // Cross-device link
+#endif
+#ifdef EXFULL
+  enum __XYX__EXFULL = EXFULL; // Exchange full
+#endif
