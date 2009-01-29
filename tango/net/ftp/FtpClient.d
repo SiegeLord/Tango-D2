@@ -23,7 +23,7 @@ private {
     import Ascii = tango.text.Ascii;
     import Integer = tango.text.convert.Integer;
     import tango.time.chrono.Gregorian;
-    import tango.io.Buffer;
+    import tango.io.device.Array;
     import Timestamp = tango.text.convert.TimeStamp;
     import tango.core.Array;
     import tango.io.device.Conduit;
@@ -796,7 +796,7 @@ class FTPConnection : Telnet {
 
     /*******************************************************************************
         Get a data socket from the server.
-       
+        
         This sends PASV/PORT as necessary.
        
         Returns:             the data socket or a listener
@@ -1090,7 +1090,7 @@ class FTPConnection : Telnet {
 
         // If it passed, parse away!
         if(mlsd_success) {
-            auto listing = new GrowBuffer;
+            auto listing = new Array;
             this.readStream(data, listing);
             this.finishDataCommand(data);
 
@@ -1248,7 +1248,7 @@ class FTPConnection : Telnet {
             data = this.processDataCommand("LIST");
 
         // Read in the stupid non-standardized response.
-        auto listing = new GrowBuffer;
+        auto listing = new Array;
         this.readStream(data, listing);
         this.finishDataCommand(data);
 
