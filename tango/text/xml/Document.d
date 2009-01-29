@@ -267,7 +267,8 @@ version(d)
         ***********************************************************************/
         
         final void parse(T[] xml)
-        {
+        {       
+                assert (xml);
                 reset;
                 super.reset (xml);
                 auto cur = root;
