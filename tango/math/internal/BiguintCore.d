@@ -13,13 +13,14 @@
     Max-Planck Institute fuer Informatik, (Oct 1998).
   - G. Hanrot, M. Quercia, and P. Zimmermann, "The Middle Product Algorithm, I.",
     INRIA 4664, (Dec 2002).
-  - M. Bodrato and A. Zanoni, "What about Toom-Cook Matrices Optimality?" http://bodrato.it/papers (2006).
-  - A. Fog, "Optimizing subroutines in assembly language: An optimization guide for x86
-platforms.", www.agner.org/optimize (1998).
-  - A. Fog, "The microarchitecture of Intel and AMD CPU's: An optimization guide for assembly
-programmers and compiler makers.", www.agner.org/optimize (1998).
-  - A. Fog, "Instruction tables: Lists of instruction latencies, throughputs and micro-operation
-breakdowns for Intel and AMD CPU's.", www.agner.org/optimize (1998).
+  - M. Bodrato and A. Zanoni, "What about Toom-Cook Matrices Optimality?",
+    http://bodrato.it/papers (2006).
+  - A. Fog, "Optimizing subroutines in assembly language", 
+    www.agner.org/optimize (2008).
+  - A. Fog, "The microarchitecture of Intel and AMD CPU's",
+    www.agner.org/optimize (2008).
+  - A. Fog, "Instruction tables: Lists of instruction latencies, throughputs
+    and micro-operation breakdowns for Intel and AMD CPU's.", www.agner.org/optimize (2008).
 */ 
 module tango.math.internal.BiguintCore;
 
@@ -676,9 +677,9 @@ char [] biguintToHex(char [] buff, BigDigit [] data, char separator=0)
  *  data    The biguint to be converted. Will be destroyed.
  *  buff    The destination buffer for the decimal string. Must be
  *          large enough to store the result, including leading zeros.
- *          Will be filled starting from the end.
+ *          Will be filled backwards, starting from buff[$-1].
  *
- * Ie, buff.length must be (data.length*32)/log2(10) = 9.63296 * data.length.
+ * buff.length must be >= (data.length*32)/log2(10) = 9.63296 * data.length.
  * Returns:
  *    the lowest index of buff which was used.
  */
@@ -696,7 +697,7 @@ int biguintToDecimal(char [] buff, BigDigit [] data){
         }
     }
     itoaZeroPadded(buff[sofar-10 .. sofar], data[0]);
-    sofar-=10;
+    sofar -= 10;
     // and strip off the leading zeros
     while(sofar!= buff.length-1 && buff[sofar] == '0') sofar++;    
     return sofar;
@@ -910,16 +911,16 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
     // half length, round up.
     uint half = (x.length >> 1) + (x.length & 1);
     
-    uint [] x0 = x[0 .. half];
-    uint [] x1 = x[half .. $];    
-    uint [] y0 = y[0 .. half];
-    uint [] y1 = y[half .. $];
-    uint [] xsum = result[0 .. half]; // initially use result to store temporaries
-    uint [] ysum = result[half .. half*2];
-    uint [] mid = scratchbuff[0 .. half*2+1];
-    uint [] newscratchbuff = scratchbuff[half*2+1 .. $];
-    uint [] resultLow = result[0 .. x0.length + y0.length];
-    uint [] resultHigh = result[x0.length + y0.length .. $];       
+    BigDigit [] x0 = x[0 .. half];
+    BigDigit [] x1 = x[half .. $];    
+    BigDigit [] y0 = y[0 .. half];
+    BigDigit [] y1 = y[half .. $];
+    BigDigit [] xsum = result[0 .. half]; // initially use result to store temporaries
+    BigDigit [] ysum = result[half .. half*2];
+    BigDigit [] mid = scratchbuff[0 .. half*2+1];
+    BigDigit [] newscratchbuff = scratchbuff[half*2+1 .. $];
+    BigDigit [] resultLow = result[0 .. x0.length + y0.length];
+    BigDigit [] resultHigh = result[x0.length + y0.length .. $];       
     
     // Add the high and low parts of x and y.
     // This will generate carries of either 0 or 1.
@@ -982,6 +983,7 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
     assert(u.length >= v.length);
     assert((v[$-1]&0x8000_0000)!=0);
     assert(u[$-1] < v[$-1]);
+    // BUG: This code only works if BigDigit is uint.
     uint vhi = v[$-1];
     uint vlo = v[$-2];
         
@@ -995,7 +997,7 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
         } else {
             uint ulo = u[j + v.length - 2];
 version(Really_D_InlineAsm_X86) {
-            // Note: This is only ~10% faster than the non-asm code. 
+            // Note: On DMD, this make is only ~10% faster than the non-asm code. 
             uint *p = &u[j + v.length - 1];
             asm {
                 mov EAX, p;
@@ -1015,8 +1017,8 @@ div3by2correction:
                 add ECX, dword ptr [vhi];
                 jnc div3by2correction;
 div3by2done:    ;
-            }
-} else {
+}
+            } else { // version(InlineAsm)
                 ulong uu = (cast(ulong)(u[j+v.length]) << 32) | u[j+v.length-1];
                 ulong bigqhat = uu / vhi;
                 ulong rhat =  uu - bigqhat * vhi;
@@ -1027,7 +1029,7 @@ div3by2done:    ;
                     rhat += vhi;
                     if (!(rhat & 0xFFFF_FFFF_0000_0000L)) goto again;
                 }
-            }
+            } // version(InlineAsm)
         } 
         // Multiply and subtract.
         uint carry = multibyteMulAdd!('-')(u[j..j+v.length], v, qhat, 0);
@@ -1057,7 +1059,7 @@ void toHexZeroPadded(char[] output, uint value) {
     const char [] hexDigits = "0123456789ABCDEF";
     for( ; x>=0; --x) {        
         output[x] = hexDigits[value & 0xF];
-        value >>>= 4;
+        value >>= 4;
     }
 }
 
@@ -1082,7 +1084,7 @@ int highestDifferentDigit(BigDigit [] left, BigDigit [] right)
     Max-Planck Institute fuer Informatik, (Oct 1998).
   - R.P. Brent and P. Zimmermann, "Modern Computer Arithmetic", 
     Version 0.2, p. 26, (June 2008).
-    
+Returns:    
     u[0..v.length] is the remainder. u[v.length..$] is corrupted.
     scratch is temporary storage space, must be at least as long as quotient.
 */
