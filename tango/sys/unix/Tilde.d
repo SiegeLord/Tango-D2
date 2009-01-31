@@ -262,8 +262,8 @@ unittest
         unsetenv("HOME");
 
     // Test user expansion for root. Are there unices without /root?
-    assert(expandTilde("~root") == "/root");
-    assert(expandTilde("~root/") == "/root/");
+    assert(expandTilde("~root") == "/root" || expandTilde("~root") == "/var/root");
+    assert(expandTilde("~root/") == "/root/" || expandTilde("~root") == "/var/root");
     assert(expandTilde("~Idontexist/hey") == "~Idontexist/hey");
     }
 }
