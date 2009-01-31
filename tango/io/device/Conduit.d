@@ -298,13 +298,14 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Attach to the provided stream
+                Attach to the provided stream. The provided source stream 
+                should generally never be null, though some filters have a
+                need to set this lazily
 
         ***********************************************************************/
 
         this (InputStream source)
         {
-                assert (source, "input stream source cannot be null");
                 this.source = source;
         }
 
@@ -401,7 +402,9 @@ class InputFilter : InputStream
 
 /*******************************************************************************
 
-         Base class for output stream filtering  
+         Base class for output stream filtering. The provided sink stream 
+                should generally never be null, though some filters have a
+                need to set this lazily
 
 *******************************************************************************/
 
@@ -417,7 +420,6 @@ class OutputFilter : OutputStream
 
         this (OutputStream sink)
         {
-                assert (sink, "output stream cannot be null");
                 this.sink = sink;
         }
 
