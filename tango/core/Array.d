@@ -11,8 +11,8 @@ module tango.core.Array;
 
 
 private import tango.core.Traits;
-private import tango.stdc.stdlib : alloca, rand;
-
+private import tango.stdc.stdlib : alloca;
+private import tango.math.random.Random: rand;
 
 version( DDoc )
 {
@@ -62,15 +62,15 @@ private
             {
                 static if( size_t.sizeof == 4 )
                 {
-                    val = (((cast(size_t)rand()) << 16) & 0xffff0000u) |
-                          (((cast(size_t)rand()))       & 0x0000ffffu);
+                    val = (((rand.uniform!(size_t)) << 16) & 0xffff0000u) |
+                          (((rand.uniform!(size_t)))         & 0x0000ffffu);
                 }
                 else // assume size_t.sizeof == 8
                 {
-                    val = (((cast(size_t)rand()) << 48) & 0xffff000000000000uL) |
-                          (((cast(size_t)rand()) << 32) & 0x0000ffff00000000uL) |
-                          (((cast(size_t)rand()) << 16) & 0x00000000ffff0000uL) |
-                          (((cast(size_t)rand()))       & 0x000000000000ffffuL);
+                    val = (((rand.uniform!(size_t)) << 48) & 0xffff000000000000uL) |
+                          (((rand.uniform!(size_t)) << 32) & 0x0000ffff00000000uL) |
+                          (((rand.uniform!(size_t)) << 16) & 0x00000000ffff0000uL) |
+                          (((rand.uniform!(size_t)))       & 0x000000000000ffffuL);
                 }
             } while( val > max );
             return val % lim;
@@ -470,7 +470,7 @@ else
                 return buf.length;
             }
 
-            static if( is( alloca ) )
+            static if( is( alloca ) ) // always false, alloca usage should be rethought
             {
                 size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
             }
@@ -657,7 +657,7 @@ else
                 return buf.length;
             }
 
-            static if( is( alloca ) )
+            static if( is( alloca ) ) // always false, alloca usage should be rethought
             {
                 size_t[] func = (cast(size_t*) alloca( (pat.length + 1) * size_t.sizeof ))[0 .. pat.length + 1];
             }
