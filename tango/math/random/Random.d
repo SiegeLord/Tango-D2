@@ -5,11 +5,15 @@
     generator.
     ease of use:
     - shared generator for quick usage available through the "rand" object
+      ---
       int i=rand.uniformR(10); // a random number from [0;10)
+      ---
     - simple Random (non threadsafe) and RandomSync (threadsafe) types to 
       create new generators (for heavy use a good idea is one Random object per thread)
     - several distributions can be requested like this
-        rand.distributionD!(type)(paramForDistribution)
+      ---
+      rand.distributionD!(type)(paramForDistribution)
+      ---
       the type can often be avoided if the parameters make it clear.
       From it single numbers can be generated with .getRandom(), and variables
       initialized either with call style (var) or with .randomize(var).
@@ -17,6 +21,7 @@
       The choice to put all the distribution in a single object that caches them
       has made (for example) the gamma distribution very easy to implement.
     - sample usage:
+      ---
       auto r=new Random();
       int i; float f; real rv; real[100] ar0; real[] ar=ar0[];
       // initialize with uniform distribution
@@ -75,10 +80,13 @@
       int i2=r.uniform!(int)();
       int i2=r.randomize(i); // both i and i2 are initialized to the same value
       float f2=r.normalSigma(3.0f);
+      ---
     flexibility:
     - easily swappable basic source
+      ---
       // a random generator that uses the system provided random generator:
       auto r=RandomG!(Urandom)();
+      ---
     - ziggurat generator can be easily adapted to any decreasing derivable
       distribution, the hard parametrization (to find xLast) can be done
       automatically
@@ -120,7 +128,9 @@
       replacement of the old random.
     - You cannot initialize a static array directly, this because randomize is
       declared like this:
-        U randomize(U)(ref U a) { }
+      ---
+      U randomize(U)(ref U a) { }
+      ---
       and a static array cannot be passed by reference. Removing the ref would
       make arrays initialized, and scalar not, which is much worse.
 
