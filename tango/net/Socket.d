@@ -250,7 +250,7 @@ struct fd_set
 struct sockaddr
 {
         ushort sa_family;
-        char[14] sa_data = [0];
+        char[14] sa_data = 0;
 }
 
 
@@ -1749,7 +1749,7 @@ class IPv4Address : Address
                 ushort sinfamily = AddressFamily.INET;
                 ushort sin_port;
                 uint sin_addr; //in_addr
-                char[8] sin_zero = [0];
+                char[8] sin_zero = 0;
         }
 
         sockaddr_in sin;
