@@ -24,9 +24,6 @@ version (Posix)
     import tango.core.Exception;
 
     private extern (C) int strlen (char *);
-}
-else
-   static assert (0, "tango.sys.unix.Tilde requires version(Posix) declared");
 
 /******************************************************************************
 
@@ -268,4 +265,4 @@ unittest
     }
 }
 }
-
+}
