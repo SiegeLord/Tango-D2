@@ -57,6 +57,12 @@ module tango.math.internal.BignumX86;
 version(GNU) {
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(D_InlineAsm_X86) {
+    version = Really_D_InlineAsm_X86;
+} else version(LLVM_InlineAsm_X86) { 
+        version = Really_D_InlineAsm_X86; 
+}
+
+version(Really_D_InlineAsm_X86) {
 
 private:
 

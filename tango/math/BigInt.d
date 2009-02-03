@@ -202,26 +202,26 @@ public:
     ///
     BigInt opShr(T:int)(T y) {
         BigInt r;
-        r.data = BigUint.shr(data, y);
+        r.data = data.opShr(y);
         r.sign = r.data.isZero()? false : sign;
         return r;
     }
     ///
     BigInt opShrAssign(T:int)(T y) {
-        data = BigUint.shr(data, y);
+        data = data.opShr(y);
         if (data.isZero()) sign = false;
         return *this;
     }
     ///
     BigInt opShl(T:int)(T y) {
         BigInt r;
-        r.data = BigUint.shl(data, y);
+        r.data = data.opShl(y);
         r.sign = sign;
         return r;
     }
     ///
     BigInt opShlAssign(T:int)(T y) {
-        data = BigUint.shl(data, y);
+        data = data.opShl(y);
         return *this;
     }
     ///
@@ -232,13 +232,13 @@ public:
     int opCmp(T:int)(T y) {
      //   if (y==0) return sign? -1: 1;
         if (sign!=(y<0)) return sign ? -1 : 1;
-        int cmp = BigUint.compare(data, y>=0? y: -y);        
+        int cmp = data.opCmp(y>=0? y: -y);        
         return sign? -cmp: cmp;
     }
     ///
     int opCmp(T:BigInt)(T y) {
         if (sign!=y.sign) return sign ? -1 : 1;
-        int cmp = BigUint.compare(data, y.data);
+        int cmp = data.opCmp(y.data);
         return sign? -cmp: cmp;
     }
 public:
@@ -246,7 +246,8 @@ public:
     int numBytes() {
         return data.numBytes();
     }
-    /// BUG: For testing only, this will be removed eventually
+    /// BUG: For testing only, this will be removed eventually 
+    /// (needs formatting options)
     char [] toDecimalString(){
         char [] buff = data.toDecimalString(1);
         if (isNegative()) buff[0] = '-';
@@ -261,10 +262,19 @@ public:
         else buff = buff[1..$];
         return buff;
     }
-private:
+public:
     void negate() { if (!data.isZero()) sign = !sign; }
     bool isZero() { return data.isZero(); }
     bool isNegative() { return sign; }
+package:
+    /// BUG: For testing only, this will be removed eventually
+    BigInt sliceHighestBytes(uint numbytes) {
+        assert(numbytes<=numBytes());
+        BigInt x;
+        x.sign = sign;
+        x.data = data.sliceHighestBytes(numbytes);
+        return x;
+    }
 
 private:    
     static BigInt addsubInternal(BigInt x, BigInt y, bool wantSub) {

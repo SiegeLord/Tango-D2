@@ -30,6 +30,8 @@ version(GNU){
 
 } else version(D_InlineAsm_X86) {
     version = Really_D_InlineAsm_X86;
+} else version(LLVM_InlineAsm_X86) { 
+    version = Really_D_InlineAsm_X86; 
 }
 
 version(Really_D_InlineAsm_X86) { 
@@ -78,6 +80,7 @@ public: // for development only, will be removed eventually
         return x;
     }
 public:
+    ///
     void opAssign(uint u) {
         if (u == 0) data = ZERO;
         else if (u == 1) data = ONE;
@@ -89,24 +92,24 @@ public:
         }
     }
     
-// return 1 if x>y, -1 if x<y, 0 if equal
-static int compare(BigUint x, BigUint y)
+///
+int opCmp(BigUint y)
 {
-    if (x.data.length!=y.data.length) return x.data.length - y.data.length;
-    uint k = highestDifferentDigit(x.data, y.data);
-    if (x.data[k] == y.data[k]) return 0;
-    return x.data[k] > y.data[k] ? 1 : -1;
+    if (data.length != y.data.length) return (data.length > y.data.length) ?  1 : -1;
+    uint k = highestDifferentDigit(data, y.data);
+    if (data[k] == y.data[k]) return 0;
+    return data[k] > y.data[k] ? 1 : -1;
 }
 
-//return 1 if x>y, -1 if x<y, 0 if equal
-static int compare(BigUint x, ulong y)
+///
+int opCmp(ulong y)
 {
-    if (x.data.length>2) return 1;
+    if (data.length>2) return 1;
     uint ylo = cast(uint)(y & 0xFFFF_FFFF);
     uint yhi = cast(uint)(y >> 32);
-    if (x.data.length==2 && x.data[1]!=yhi) return x.data[1]>yhi ? 1: -1;
-    if (x.data[0]==ylo) return 0;
-    return x.data[0] > ylo ? 1: -1;
+    if (data.length==2 && data[1]!=yhi) return data[1]>yhi ? 1: -1;
+    if (data[0]==ylo) return 0;
+    return data[0] > ylo ? 1: -1;
 }
 
 int opEquals(BigUint y) {
@@ -197,43 +200,43 @@ bool fromDecimalString(char [] s)
     return true;
 }
 
-// //////////////////////
+////////////////////////
 //
-// All of these static member functions create a new BigUint.
+// All of these member functions create a new BigUint.
 
 // return x >> y
-static BigUint shr(BigUint x, ulong y)
+BigUint opShr(ulong y)
 {
     assert(y>0);
     uint bits = cast(uint)y & 31;
-    if ((y>>5) >= x.data.length) return BigUint(ZERO);
+    if ((y>>5) >= data.length) return BigUint(ZERO);
     uint words = cast(uint)(y >> 5);
     if (bits==0) {
-        return BigUint(x.data[words..$]);
+        return BigUint(data[words..$]);
     } else {
-        uint [] result = new BigDigit[x.data.length - words];
-        multibyteShr(result, x.data[words..$], bits);
+        uint [] result = new BigDigit[data.length - words];
+        multibyteShr(result, data[words..$], bits);
         if (result.length>1 && result[$-1]==0) return BigUint(result[0..$-1]);
         else return BigUint(result);
     }
 }
 
 // return x << y
-static BigUint shl(BigUint x, ulong y)
+BigUint opShl(ulong y)
 {
     assert(y>0);
-    if (x.data.length==1 && x.data[0]==0) return x;
+    if (data.length==1 && data[0]==0) return *this;
     uint bits = cast(uint)y & 31;
     assert ((y>>5) < cast(ulong)(uint.max));
     uint words = cast(uint)(y >> 5);
-    BigDigit [] result = new BigDigit[x.data.length + words+1];
+    BigDigit [] result = new BigDigit[data.length + words+1];
     result[0..words] = 0;
     if (bits==0) {
-        result[words..words+x.data.length] = x.data[];
-        return BigUint(result[0..words+x.data.length]);
+        result[words..words+data.length] = data[];
+        return BigUint(result[0..words+data.length]);
     } else {
-        uint c = multibyteShl(result[words..words+x.data.length], x.data, bits);
-        if (c==0) return BigUint(result[0..words+x.data.length]);
+        uint c = multibyteShl(result[words..words+data.length], data, bits);
+        if (c==0) return BigUint(result[0..words+data.length]);
         result[$-1] = c;
         return BigUint(result);
     }
