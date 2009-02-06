@@ -68,7 +68,7 @@ private import tango.core.Exception : NoSuchElementException;
 
 class HashMap (K, V, alias Hash = Container.hash, 
                      alias Reap = Container.reap, 
-                     alias Heap = Container.Collect) 
+                     alias Heap = Container.DefaultCollect) 
                      : IContainer!(V)
 {
         // bucket types

@@ -54,7 +54,7 @@ private import tango.util.container.model.IContainer;
 
 class HashSet (V, alias Hash = Container.hash, 
                   alias Reap = Container.reap, 
-                  alias Heap = Container.Collect) 
+                  alias Heap = Container.DefaultCollect) 
                   : IContainer!(V)
 {
         // use this type for Allocator configuration

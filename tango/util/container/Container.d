@@ -5,8 +5,9 @@
         license:        BSD style: $(LICENSE)
 
         version:        Apr 2008: Initial release
+                        Jan 2009: Added GCChunk allocator
 
-        authors:        Kris
+        authors:        Kris, schveiguy
 
         Since:          0.99.7
 
@@ -17,6 +18,7 @@ module tango.util.container.Container;
 private import tango.core.Memory;
 
 private import tango.stdc.stdlib;
+private import tango.stdc.string;
 
 /*******************************************************************************
 
@@ -410,6 +412,306 @@ struct Container
                         return (cast(T*) calloc (chunks, T.sizeof)) [0 .. chunks];
                 }
         }        
+
+        /***********************************************************************
+        
+                GCChunk allocator
+
+                Like the Chunk allocator, this allocates elements in chunks,
+                but allows you to allocate elements that can have GC pointers.
+
+                Tests have shown about a 60% speedup when using the GC chunk
+                allocator for a Hashmap!(int, int).
+        
+        ***********************************************************************/
+        struct GCChunk(T, uint chunkSize)
+        {
+            static if(T.sizeof < (void*).sizeof)
+            {
+                static assert(false, "Error, allocator for " ~ T.stringof ~ " failed to instantiate");
+            }
+
+            /**
+             * This is the form used to link recyclable elements together.
+             */
+            struct element
+            {
+                element *next;
+            }
+
+            /**
+             * A chunk of elements
+             */
+            struct chunk
+            {
+                /**
+                 * The next chunk in the chain
+                 */
+                chunk *next;
+
+                /**
+                 * The previous chunk in the chain.  Required for O(1) removal
+                 * from the chain.
+                 */
+                chunk *prev;
+
+                /**
+                 * The linked list of free elements in the chunk.  This list is
+                 * amended each time an element in this chunk is freed.
+                 */
+                element *freeList;
+
+                /**
+                 * The number of free elements in the freeList.  Used to determine
+                 * whether this chunk can be given back to the GC
+                 */
+                uint numFree;
+
+                /**
+                 * The elements in the chunk.
+                 */
+                T[chunkSize] elems;
+
+                /**
+                 * Allocate a T* from the free list.
+                 */
+                T *allocateFromFree()
+                {
+                    element *x = freeList;
+                    freeList = x.next;
+                    //
+                    // clear the pointer, this clears the element as if it was
+                    // newly allocated
+                    //
+                    x.next = null;
+                    numFree--;
+                    return cast(T*)x;
+                }
+
+                /**
+                 * deallocate a T*, send it to the free list
+                 *
+                 * returns true if this chunk no longer has any used elements.
+                 */
+                bool deallocate(T *t)
+                {
+                    //
+                    // clear the element so the GC does not interpret the element
+                    // as pointing to anything else.
+                    //
+                    memset(t, 0, (T).sizeof);
+                    element *x = cast(element *)t;
+                    x.next = freeList;
+                    freeList = x;
+                    return (++numFree == chunkSize);
+                }
+            }
+
+            /**
+             * The chain of used chunks.  Used chunks have had all their elements
+             * allocated at least once.
+             */
+            chunk *used;
+
+            /**
+             * The fresh chunk.  This is only used if no elements are available in
+             * the used chain.
+             */
+            chunk *fresh;
+
+            /**
+             * The next element in the fresh chunk.  Because we don't worry about
+             * the free list in the fresh chunk, we need to keep track of the next
+             * fresh element to use.
+             */
+            uint nextFresh;
+
+            /**
+             * Allocate a T*
+             */
+            T* allocate()
+            {
+                if(used !is null && used.numFree > 0)
+                {
+                    //
+                    // allocate one element of the used list
+                    //
+                    T* result = used.allocateFromFree();
+                    if(used.numFree == 0)
+                        //
+                        // move used to the end of the list
+                        //
+                        used = used.next;
+                    return result;
+                }
+
+                //
+                // no used elements are available, allocate out of the fresh
+                // elements
+                //
+                if(fresh is null)
+                {
+                    fresh = new chunk;
+                    nextFresh = 0;
+                }
+
+                T* result = &fresh.elems[nextFresh];
+                if(++nextFresh == chunkSize)
+                {
+                    if(used is null)
+                    {
+                        used = fresh;
+                        fresh.next = fresh;
+                        fresh.prev = fresh;
+                    }
+                    else
+                    {
+                        //
+                        // insert fresh into the used chain
+                        //
+                        fresh.prev = used.prev;
+                        fresh.next = used;
+                        fresh.prev.next = fresh;
+                        fresh.next.prev = fresh;
+                        if(fresh.numFree != 0)
+                        {
+                            //
+                            // can recycle elements from fresh
+                            //
+                            used = fresh;
+                        }
+                    }
+                    fresh = null;
+                }
+                return result;
+            }
+
+            T*[] allocate(uint count)
+            {
+                return new T*[count];
+            }
+
+
+            /**
+             * free a T*
+             */
+            void collect(T* t)
+            {
+                //
+                // need to figure out which chunk t is in
+                //
+                chunk *cur = cast(chunk *)GC.addrOf(t);
+
+                if(cur !is fresh && cur.numFree == 0)
+                {
+                    //
+                    // move cur to the front of the used list, it has free nodes
+                    // to be used.
+                    //
+                    if(cur !is used)
+                    {
+                        if(used.numFree != 0)
+                        {
+                            //
+                            // first, unlink cur from its current location
+                            //
+                            cur.prev.next = cur.next;
+                            cur.next.prev = cur.prev;
+
+                            //
+                            // now, insert cur before used.
+                            //
+                            cur.prev = used.prev;
+                            cur.next = used;
+                            used.prev = cur;
+                            cur.prev.next = cur;
+                        }
+                        used = cur;
+                    }
+                }
+
+                if(cur.deallocate(t))
+                {
+                    //
+                    // cur no longer has any elements in use, it can be deleted.
+                    //
+                    if(cur.next is cur)
+                    {
+                        //
+                        // only one element, don't free it.
+                        //
+                    }
+                    else
+                    {
+                        //
+                        // remove cur from list
+                        //
+                        if(used is cur)
+                        {
+                            //
+                            // update used pointer
+                            //
+                            used = used.next;
+                        }
+                        cur.next.prev = cur.prev;
+                        cur.prev.next = cur.next;
+                        delete cur;
+                    }
+                }
+            }
+
+            void collect(T*[] t)
+            {
+                if(t)
+                    delete t;
+            }
+
+            /**
+             * Deallocate all chunks used by this allocator.  Depends on the GC to do
+             * the actual collection
+             */
+            bool collect(bool all = true)
+            {
+                used = null;
+
+                //
+                // keep fresh around
+                //
+                if(fresh !is null)
+                {
+                    nextFresh = 0;
+                    fresh.freeList = null;
+                }
+
+                return true;
+            }
+
+        }
+
+        /***********************************************************************
+
+                aliases to the correct Default allocator depending on how big
+                the type is.  It makes less sense to use a GCChunk allocator
+                if the type is going to be larger than a page (currently there
+                is no way to get the page size from the GC, so we assume 4096
+                bytes).  If not more than one unit can fit into a page, then
+                we use the default GC allocator.
+
+        ***********************************************************************/
+        template DefaultCollect(T)
+        {
+            static if((T).sizeof + ((void*).sizeof * 3) + uint.sizeof >= 4095 / 2)
+            {
+                alias Collect!(T) DefaultCollect;
+            }
+            else
+            {
+                alias GCChunk!(T, (4095 - ((void *).sizeof * 3) - uint.sizeof) / (T).sizeof) DefaultCollect;
+            }
+            // TODO: see if we can automatically figure out whether a type has
+            // any pointers in it, this would allow automatic usage of the
+            // Chunk allocator for added speed.
+        }
 }
 
 

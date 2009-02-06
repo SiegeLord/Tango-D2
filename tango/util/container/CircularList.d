@@ -71,7 +71,7 @@ private import tango.util.container.model.IContainer;
 *******************************************************************************/
 
 class CircularList (V, alias Reap = Container.reap, 
-                       alias Heap = Container.Collect) 
+                       alias Heap = Container.DefaultCollect) 
                        : IContainer!(V)
 {
         // use this type for Allocator configuration
