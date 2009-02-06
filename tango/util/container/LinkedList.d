@@ -962,6 +962,55 @@ class LinkedList (V, alias Reap = Container.reap,
 
                 /***************************************************************
 
+                        Insert a new value before the node about to be
+                        iterated (or after the node that was just iterated).
+
+                ***************************************************************/
+
+                void insert(V value)
+                {
+                        // insert a node previous to the node that we are
+                        // about to iterate.
+                        *hook = owner.heap.allocate.set(value, *hook);
+                        node = *hook;
+                        next();
+
+                        // update the count of the owner, and ignore this
+                        // change in the mutation.
+                        owner.increment;
+                        mutation++;
+                }
+
+                /***************************************************************
+
+                        Insert a new value before the value that was just
+                        iterated.
+
+                        Returns true if the prior node existed and the
+                        insertion worked.  False otherwise.
+
+                ***************************************************************/
+
+                bool insertPrior(V value)
+                {
+                    if(prior)
+                    {
+                        // insert a node previous to the node that we just
+                        // iterated.
+                        *prior = owner.heap.allocate.set(value, *prior);
+                        prior = &(*prior).next;
+
+                        // update the count of the owner, and ignore this
+                        // change in the mutation.
+                        owner.increment;
+                        mutation++;
+                        return true;
+                    }
+                    return false;
+                }
+
+                /***************************************************************
+
                         Foreach support
 
                 ***************************************************************/
@@ -1035,11 +1084,19 @@ debug (LinkedList)
                 foreach (value; set.iterator)
                          Stdout.formatln ("{}", value);
 
-                // generic iteration with optional remove
+                // generic iteration with optional remove and insert
                 auto s = set.iterator;
                 foreach (value; s)
+                {
                          if (value == "foo")
                              s.remove;
+                         if (value == "bar")
+                             s.insertPrior("bloomper");
+                         if (value == "wumpus")
+                             s.insert("rumple");
+                }
+
+                set.check();
 
                 // incremental iteration, with optional remove
                 char[] v;
