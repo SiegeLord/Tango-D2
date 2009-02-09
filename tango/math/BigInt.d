@@ -31,10 +31,12 @@ public:
     /// The number must be in the form of a D decimal or hex literal:
     /// It may have a leading + or - sign; followed by "0x" if hexadecimal.
     /// Underscores are permitted.
+    /// BUG: Should throw a IllegalArgumentException/ConvError if invalid character found
     static BigInt opCall(char [] s) {
         BigInt r;
+        bool neg = false;
         if (s[0] == '-') {
-            r.sign = true;
+            neg = true;
             s = s[1..$];
         } else if (s[0]=='+') {
             s = s[1..$];
@@ -47,6 +49,8 @@ public:
             ok = r.data.fromDecimalString(s);
         }
         assert(ok);
+        if (r.isZero()) neg = false;
+        r.sign = neg;
         return r;
     }
     ///

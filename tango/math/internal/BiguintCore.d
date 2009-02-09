@@ -161,7 +161,7 @@ bool fromHexString(char [] s)
         assert(i>=0);
         char c = s[i];
         if (s[i]=='_') continue;
-        uint x = (c>='0' && c<='9')? c - '0' : c>='A' && c<='F'? c-'A'+10 :
+        uint x = (c>='0' && c<='9') ? c - '0' : c>='A' && c<='F' ? c-'A'+10 :
             c>='a' && c<='f' ? c-'a' + 10 : 100;
         if (x==100) return false;
         part >>= 4;
@@ -189,11 +189,15 @@ bool fromDecimalString(char [] s)
 {
     //Strip leading zeros
     int firstNonZero = 0;    
-    while ((firstNonZero < s.length -1) && 
+    while ((firstNonZero < s.length - 1) && 
         (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
             ++firstNonZero;
-    }    
-    uint predictlength = (18*2 + 2* (s.length-firstNonZero))/19;
+    }
+    if (firstNonZero == s.length - 1) {
+        data = ZERO;
+        return true;
+    }
+    uint predictlength = (18*2 + 2*(s.length-firstNonZero)) / 19;
     data = new BigDigit[predictlength];
     uint hi = biguintFromDecimal(data, s[firstNonZero..$]);
     data.length = hi;

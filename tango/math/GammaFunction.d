@@ -316,7 +316,7 @@ unittest {
  */
 real logGamma(real x)
 {
-    /* Author: Don Clugston. Based on code from the CEPHES library.
+    /* Based on code from the CEPHES library.
      * CEPHES code Copyright 1994 by Stephen L. Moshier
      *
      * For arguments greater than 33, the logarithm of the gamma
