@@ -25,7 +25,19 @@ version (Posix)
     private import tango.stdc.posix.unistd;
     private import tango.stdc.posix.sys.wait;
 
-    private extern (C) extern char** environ;
+    version (darwin)
+    {
+        extern (C) char*** _NSGetEnviron();
+        private char** environ;
+        
+        static this ()
+        {
+            environ = *_NSGetEnviron();
+        }
+    }
+    
+    else
+        private extern (C) extern char** environ;
 }
 
 version (Windows)
