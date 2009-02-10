@@ -376,7 +376,7 @@ package struct FS
 
                 static bool isFile (char[] name)
                 {
-                        return (getFlags(name) & FILE_ATTRIBUTE_NORMAL) != 0;
+                        return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) == 0;
                 }
 
                 /***************************************************************
@@ -1319,6 +1319,19 @@ bool isFolder (char[] name)
 {
         char[512] tmp = void;
         return FS.isFolder (FS.strz(name, tmp));
+}
+
+/*******************************************************************************
+
+        Is this file actually a normal file?
+        Not a directory or (on unix) a device file or link.
+
+*******************************************************************************/
+
+bool isFile (char[] name)
+{
+        char[512] tmp = void;
+        return FS.isFile (FS.strz(name, tmp));
 }
 
 /*******************************************************************************
