@@ -56,13 +56,21 @@ private:
 const int CACHELIMIT;   // Half the size of the data cache.
 const int FASTDIVLIMIT; // crossover to recursive division
 
+// These constants are used by shift operations
+static if (BigDigit.sizeof == int.sizeof) {
+    enum { LG2BIGDIGITBITS = 5, BIGDIGITSHIFTMASK=31 };
+} else static if (BigDigit.sizeof == long.sizeof) {
+    enum { LG2BIGDIGITBITS = 6, BIGDIGITSHIFTMASK=63 };
+} else static assert(0, "Unsupported BigDigit size");
+
 const BigDigit [] ZERO = [0];
 const BigDigit [] ONE = [1];
 const BigDigit [] TWO = [2];
 const BigDigit [] TEN = [10];
+
 public:       
 
-// BigUint performs memory management and wraps the low-level calls.
+/// BigUint performs memory management and wraps the low-level calls.
 struct BigUint {
 private:
     invariant() { assert(data.length==1 || data[$-1]!=0); }
@@ -115,6 +123,11 @@ int opCmp(ulong y)
 int opEquals(BigUint y) {
        return y.data[] == data[];
 }
+
+int opEquals(uint y) {
+     return data.length == 1 && data[0] == y;
+}
+
 
 bool isZero() { return data.length == 1 && data[0] == 0; }
 
@@ -212,9 +225,9 @@ bool fromDecimalString(char [] s)
 BigUint opShr(ulong y)
 {
     assert(y>0);
-    uint bits = cast(uint)y & 31;
-    if ((y>>5) >= data.length) return BigUint(ZERO);
-    uint words = cast(uint)(y >> 5);
+    uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
+    if ((y>>LG2BIGDIGITBITS) >= data.length) return BigUint(ZERO);
+    uint words = cast(uint)(y >> LG2BIGDIGITBITS);
     if (bits==0) {
         return BigUint(data[words..$]);
     } else {
@@ -229,10 +242,10 @@ BigUint opShr(ulong y)
 BigUint opShl(ulong y)
 {
     assert(y>0);
-    if (data.length==1 && data[0]==0) return *this;
-    uint bits = cast(uint)y & 31;
-    assert ((y>>5) < cast(ulong)(uint.max));
-    uint words = cast(uint)(y >> 5);
+    if (isZero()) return *this;
+    uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
+    assert ((y>>LG2BIGDIGITBITS) < cast(ulong)(uint.max));
+    uint words = cast(uint)(y >> LG2BIGDIGITBITS);
     BigDigit [] result = new BigDigit[data.length + words+1];
     result[0..words] = 0;
     if (bits==0) {
@@ -277,8 +290,8 @@ static BigUint addOrSubInt(BigUint x, ulong y, bool wantSub, bool *sign) {
     return r;
 }
 
-// If wantSub is false, return x+y, leaving sign unchanged.
-// If wantSub is true, return abs(x-y), negating sign if x<y
+// If wantSub is false, return x + y, leaving sign unchanged.
+// If wantSub is true, return abs(x - y), negating sign if x<y
 static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
     BigUint r;
     if (wantSub) { // perform a subtraction
@@ -293,11 +306,11 @@ static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
 }
 
 
-/*  return x*y.
- *  y must not be zero.
- */
+//  return x*y.
+//  y must not be zero.
 static BigUint mulInt(BigUint x, ulong y)
 {
+    if (y==0 || x == 0) return BigUint(ZERO);
     uint hi = cast(uint)(y >>> 32);
     uint lo = cast(uint)(y & 0xFFFF_FFFF);
     uint [] result = new BigDigit[x.data.length+1+(hi!=0)];
@@ -316,6 +329,8 @@ static BigUint mulInt(BigUint x, ulong y)
  */
 static BigUint mul(BigUint x, BigUint y)
 {
+    if (y==0 || x == 0) return BigUint(ZERO);
+
     uint len = x.data.length + y.data.length;
     BigUint r;
     r.data = new BigDigit[len];
@@ -336,7 +351,7 @@ static BigUint mul(BigUint x, BigUint y)
 static BigUint divInt(BigUint x, uint y) {
     uint [] result = new BigDigit[x.data.length];
     if ((y&(-y))==y) {
-        assert(y!=0);
+        assert(y!=0, "BigUint division by zero");
         // perfect power of 2
         uint b = 0;
         for (;y!=0; y>>=1) {
@@ -479,7 +494,7 @@ BigDigit [] addInt(BigDigit[] x, ulong y)
 BigDigit [] subInt(BigDigit[] x, ulong y)
 {
     uint hi = cast(uint)(y >>> 32);
-    uint lo = cast(uint)(y& 0xFFFF_FFFF);
+    uint lo = cast(uint)(y & 0xFFFF_FFFF);
     BigDigit [] result = new BigDigit[x.length];
     result[] = x[];
     multibyteIncrementAssign!('-')(result[], lo);
@@ -603,6 +618,7 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
 
 import tango.core.BitManip : bsr;
 
+/// if remainder is null, only calculate quotient.
 void divModInternal(BigDigit [] quotient, BigDigit[] remainder, BigDigit [] u, BigDigit [] v)
 {
     assert(quotient.length == u.length - v.length + 1);
@@ -617,7 +633,7 @@ void divModInternal(BigDigit [] quotient, BigDigit[] remainder, BigDigit [] u, B
     BigDigit [] vn = new BigDigit[v.length];
     BigDigit [] un = new BigDigit[u.length + 1];
     // How much to left shift v, so that its MSB is set.
-    uint s = 31 - bsr(v[$-1]);
+    uint s = BIGDIGITSHIFTMASK - bsr(v[$-1]);
     if (s!=0) {
         multibyteShl(vn, v, s);        
         un[$-1] = multibyteShl(un[0..$-1], u, s);

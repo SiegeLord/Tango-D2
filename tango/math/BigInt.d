@@ -53,6 +53,12 @@ public:
         r.sign = neg;
         return r;
     }
+    static BigInt opCall(int x) {
+        BigInt r;
+        r.data = (x < 0) ? -x : x;
+        r.sign = (x < 0);
+        return r;
+    }
     ///
     void opAssign(T:int)(T x) {
         data = (x < 0) ? -x : x;
