@@ -917,7 +917,7 @@ package struct FS
                                     {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if ((sbuf.st_mode & S_IFREG) != 0)
-                                         info.bytes = sbuf.st_size;
+                                         info.bytes = cast(ulong) sbuf.st_size;
                                     }
 
                                  if ((ret = dg(info)) != 0)

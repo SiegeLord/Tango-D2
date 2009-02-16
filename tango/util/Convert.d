@@ -723,12 +723,8 @@ D toBool(D,S)(S value)
 
 D toIntegerFromInteger(D,S)(S value)
 {
-    static if( (cast(ulong) D.max) >= (cast(ulong) S.max)
-            && (cast(long) D.min) <= (cast(long) S.min) )
-    {
-        return cast(D) value;
-    }
-    else
+    static if( (cast(ulong) D.max) < (cast(ulong) S.max)
+            && (cast(long) D.min) > (cast(long) S.min) )
     {
         mixin convError; // TODO: Overflow error
 
@@ -736,9 +732,8 @@ D toIntegerFromInteger(D,S)(S value)
         {
             throwConvError;
         }
-        else
-            return cast(D) value;
     }
+    return cast(D) value;
 }
 
 D toIntegerFromReal(D,S)(S value)
