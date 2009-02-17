@@ -714,10 +714,29 @@ struct Time
 
 struct TimeOfDay 
 {
-        public uint     hours,
-                        minutes,
-                        seconds,
-                        millis;
+        /**
+         * hours component of the time of day.  This should be between 0 and
+         * 23, inclusive.
+         */
+        public uint     hours;
+
+        /**
+         * minutes component of the time of day.  This should be between 0 and
+         * 59, inclusive.
+         */
+        public uint     minutes;
+
+        /**
+         * seconds component of the time of day.  This should be between 0 and
+         * 59, inclusive.
+         */
+        public uint     seconds;
+
+        /**
+         * milliseconds component of the time of day.  This should be between
+         * 0 and 999, inclusive.
+         */
+        public uint     millis;
 
         /**
          * constructor.
@@ -729,6 +748,15 @@ struct TimeOfDay
          * Returns: a TimeOfDay representing the given time fields.
          */
         static TimeOfDay opCall (uint hours, uint minutes, uint seconds, uint millis=0)
+        in
+        {
+            assert(hours < 24);
+            assert(minutes < 60);
+            assert(seconds < 60);
+            assert(millis < 1000);
+
+        }
+        body
         {
                 TimeOfDay t = void;
                 t.hours   = hours;
