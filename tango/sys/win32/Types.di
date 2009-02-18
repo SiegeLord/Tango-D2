@@ -12627,22 +12627,66 @@ alias ushort FILEOP_FLAGS;
 alias FILEOP_FLAGS TFILEOPFLAGS;
 alias FILEOP_FLAGS* PFILEOPFLAGS;
 
-align(2) struct SHFILEOPSTRUCT
-{
-    HWND hwnd;
-    UINT wFunc;
-    LPCSTR pFrom;
-    LPCSTR pTo;
-    FILEOP_FLAGS fFlags;
-    WINBOOL fAnyOperationsAborted;
-    LPVOID hNameMappings;
-    LPCSTR lpszProgressTitle;
+const FILEOP_FLAGS
+    FOF_MULTIDESTFILES        = 0x0001,
+    FOF_CONFIRMMOUSE          = 0x0002,
+    FOF_SILENT                = 0x0004,
+    FOF_RENAMEONCOLLISION     = 0x0008,
+    FOF_NOCONFIRMATION        = 0x0010,
+    FOF_WANTMAPPINGHANDLE     = 0x0020,
+    FOF_ALLOWUNDO             = 0x0040,
+    FOF_FILESONLY             = 0x0080,
+    FOF_SIMPLEPROGRESS        = 0x0100,
+    FOF_NOCONFIRMMKDIR        = 0x0200,
+    FOF_NOERRORUI             = 0x0400,
+    FOF_NOCOPYSECURITYATTRIBS = 0x0800;
+
+enum : UINT {
+    FO_MOVE = 1,
+    FO_COPY,
+    FO_DELETE,
+    FO_RENAME
 }
 
-alias SHFILEOPSTRUCT* LPSHFILEOPSTRUCT;
-alias SHFILEOPSTRUCT _SHFILEOPSTRUCT;
-alias SHFILEOPSTRUCT TSHFILEOPSTRUCT;
-alias SHFILEOPSTRUCT* PSHFILEOPSTRUCT;
+align(2) struct SHFILEOPSTRUCTA {
+    HWND         hwnd;
+    UINT         wFunc;
+    LPCSTR       pFrom;
+    LPCSTR       pTo;
+    FILEOP_FLAGS fFlags;
+    BOOL         fAnyOperationsAborted;
+    PVOID        hNameMappings;
+    LPCSTR       lpszProgressTitle;
+}
+alias SHFILEOPSTRUCTA* LPSHFILEOPSTRUCTA;
+
+align(2) struct SHFILEOPSTRUCTW {
+    HWND         hwnd;
+    UINT         wFunc;
+    LPCWSTR      pFrom;
+    LPCWSTR      pTo;
+    FILEOP_FLAGS fFlags;
+    BOOL         fAnyOperationsAborted;
+    PVOID        hNameMappings;
+    LPCWSTR      lpszProgressTitle;
+}
+alias SHFILEOPSTRUCTW* LPSHFILEOPSTRUCTW;
+
+version(Win32SansUnicode) {
+    alias SHFILEOPSTRUCTA* LPSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTA _SHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTA TSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTA* PSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTA SHFILEOPSTRUCT;
+}
+else {
+    alias SHFILEOPSTRUCTW* LPSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTW _SHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTW TSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTW* PSHFILEOPSTRUCT;
+    alias SHFILEOPSTRUCTW SHFILEOPSTRUCT;
+}
+
 alias int SHGNO;
 enum { SHGDN_NORMAL = 0, SHGDN_INFOLDER = 1, SHGDN_FORPARSING = 0x8000,  };
 alias SHGNO TAGSHGDN;

@@ -1723,7 +1723,8 @@ extern(Windows)
 	void SHAddToRecentDocs(UINT);
 	LPITEMIDLIST SHBrowseForFolder(LPBROWSEINFO);
 	void SHChangeNotify(LONG, UINT, LPCVOID);
-	int SHFileOperation(LPSHFILEOPSTRUCT);
+    int SHFileOperationA(LPSHFILEOPSTRUCTA);
+    int SHFileOperationW(LPSHFILEOPSTRUCTW);
 	void SHFreeNameMappings(HANDLE);
 	DWORD SHGetFileInfo(LPCTSTR, DWORD, SHFILEINFO*, UINT, UINT);
 	WINBOOL SHGetPathFromIDList(LPCITEMIDLIST, LPTSTR);
@@ -1752,3 +1753,11 @@ extern(Windows)
         HANDLE CreateWaitableTimerW(LPSECURITY_ATTRIBUTES lpTimerAttributes, BOOL bManualReset, LPCWSTR lpTimerName);
         BOOL SetWaitableTimer(HANDLE hTimer, LARGE_INTEGER* pDueTime, LONG lPeriod, PTIMERAPCROUTINE pfnCompletionRoutine, LPVOID lpArgToCompletionRoutine, BOOL fResume);
 }
+
+version(Win32SansUnicode){
+    alias SHFileOperationA SHFileOperation;
+}else{
+    alias SHFileOperationW SHFileOperation;
+}
+
+
