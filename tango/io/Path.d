@@ -730,11 +730,10 @@ package struct FS
 
                 static Stamps timeStamps (char[] name)
                 {
-                        static Time convert (timeval* tv)
+                        static Time convert (typeof(stat_t.st_mtime) secs)
                         {
                                 return Time.epoch1970 +
-                                       TimeSpan.fromSeconds(tv.tv_sec) +
-                                       TimeSpan.fromMicros(tv.tv_usec);
+                                       TimeSpan.fromSeconds(secs);
                         }
 
                         stat_t stats = void;
@@ -742,9 +741,9 @@ package struct FS
 
                         getInfo (name, stats);
 
-                        time.modified = convert (cast(timeval*) &stats.st_mtime);
-                        time.accessed = convert (cast(timeval*) &stats.st_atime);
-                        time.created  = convert (cast(timeval*) &stats.st_ctime);
+                        time.modified = convert (stats.st_mtime);
+                        time.accessed = convert (stats.st_atime);
+                        time.created  = convert (stats.st_ctime);
                         return time;
                 }
 
