@@ -430,9 +430,9 @@ class Process
      * p.args("myprogram", "first", "second argument", "third");
      * ---
      */
-    public char[][] args(char[][] args ...)
+    public char[][] args(char[] progname, char[][] args ...)
     {
-        return _args = args;
+        return _args = progname ~ args;
     }
 
     /**
@@ -449,9 +449,9 @@ class Process
      * p.setArgs("myprogram", "first", "second argument", "third").execute();
      * ---
      */
-    public Process setArgs(char[][] args ...)
+    public Process setArgs(char[] progname, char[][] args ...)
     {
-        this.args(args);
+        this.args(progname, args);
         return this;
     }
 
