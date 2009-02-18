@@ -164,7 +164,7 @@ bool fromHexString(char [] s)
         (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
             ++firstNonZero;
     }    
-    int len = (s.length - firstNonZero + 15)>>4;
+    int len = (s.length - firstNonZero + 15)/4;
     data = new BigDigit[len+1];
     uint part = 0;
     uint sofar = 0;
@@ -749,7 +749,7 @@ int biguintFromDecimal(BigDigit [] data, char [] s) {
     ulong y = 0;
     uint hi = 0;
     data[0] = 0; // initially number is 0.
-    data[1]=0;    
+    data[1] = 0;    
    
     for (int i= (s[0]=='-' || s[0]=='+')? 1 : 0; i<s.length; ++i) {            
         if (s[i] == '_') continue;
@@ -795,7 +795,7 @@ int biguintFromDecimal(BigDigit [] data, char [] s) {
         for (int k=0; k<lo; ++k) y*=10;
         y+=x;
     }
-    if (y!=0) {
+    if (lo!=0) {
         if (hi==0)  {
             *cast(ulong *)(&data[hi]) = y;
             hi=2;
