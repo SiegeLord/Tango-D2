@@ -1000,11 +1000,28 @@ private struct Predicate(char_t)
     }
 
     MatchMode   mode;
+    // data_chr had to be pulled out of the union due to
+    // http://d.puremagic.com/issues/show_bug.cgi?id=2632 --- don't put it back
+    // in until this is resolved!
+    //
+    // Keep in mind that data_str.length can't be modified directly unless the
+    // new length is strictly greater than the old length. This is essentially
+    // because ubyte.sizeof can be less than char_t.sizeof. If you set
+    // data_str.length to anything less than or equal to data_bmp.length,
+    // data_str will not be reallocated: only the length value will change but
+    // nothing will realize that not that much space has actually been
+    // allocated. data_str will be too small and you'll likely get segfaults or
+    // such.
+    //
+    // In short: don't mess with data_str.length. If you have to, remove the
+    // union entirely.
+    //
+    // -- Deewiant
     union {
-        char_t      data_chr;
         ubyte[]     data_bmp;
         string_t    data_str;
     };
+    char_t      data_chr;
 
 
     void compile()
