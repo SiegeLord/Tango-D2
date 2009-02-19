@@ -74,7 +74,8 @@ export MAKETOOL=$MAKE
 OLDHOME=$HOME
 export HOME=`pwd`
 $MAKE clean -fgdc-posix.mak DC="$GDMD" || exit 1
-$MAKE lib doc install -fgdc-posix.mak DC="$GDMD" ADD_CFLAGS="$ADD_CFLAGS" || exit 1
+$MAKE lib doc install -fgdc-posix.mak DC="$GDMD" ADD_CFLAGS="$ADD_CFLAGS" \
+    SYSTEM_VERSION="-version=Posix" || exit 1
 $MAKE clean -fgdc-posix.mak DC="$GDMD" || exit 1
 chmod 644 ../tango/core/*.di || exit 1
 

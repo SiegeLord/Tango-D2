@@ -19,17 +19,18 @@ MD=mkdir -p
 
 ADD_CFLAGS=
 ADD_DFLAGS=
+SYSTEM_VERSION=
 
 CFLAGS=-O $(ADD_CFLAGS)
 #CFLAGS=-g $(ADD_CFLAGS)
 
-DFLAGS=-release -O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+DFLAGS=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 #DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -w -nofloat -version=Posix $(ADD_DFLAGS)
+TFLAGS=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 #TFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
 
-DOCFLAGS=-version=DDoc -version=Posix
+DOCFLAGS=-version=DDoc $(SYSTEM_VERSION)
 
 CC=gcc
 LC=$(AR) -qsv

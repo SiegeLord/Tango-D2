@@ -47,6 +47,7 @@ popd
 OLDHOME=$HOME
 export HOME=`pwd`
 make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
-make lib doc install -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd ADD_CFLAGS="$ADD_CFLAGS" || exit 1
+make lib doc install -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd \
+    ADD_CFLAGS="$ADD_CFLAGS" SYSTEM_VERSION="-version=Posix" || exit 1
 make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
 export HOME=$OLDHOME

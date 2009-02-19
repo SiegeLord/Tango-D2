@@ -34,9 +34,9 @@ Options:
 
 UNAME=`uname`
 INLINE="-inline"
+POSIXFLAG=""
 DEBUG=""
 RELEASE="-release -O"
-POSIXVERSION="-version=Posix"
 WARN=""
 VERBOSE=0
 
@@ -48,6 +48,14 @@ compilerbugs() {
     if [ "$DC" = "dmd" ]
     then
         dmdbugs
+    fi
+}
+
+# Sets up settings for specific compiler versions
+compilersettings() {
+    if [ "$DC" = "dmd" ]
+    then
+        dmdsettings
     fi
 }
 
@@ -106,7 +114,7 @@ compile() {
     if filter $OBJNAME
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $WARN -c $INLINE $DEBUG $RELEASE $POSIXVERSION -version=Tango -of$OBJNAME $FILENAME
+        $DC $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
@@ -130,6 +138,8 @@ build() {
 
     # Check if the compiler used has known bugs
     compilerbugs
+    # Setup compiler specific settings
+    compilersettings
 
     if [ ! -e "$3" ]
     then
@@ -188,10 +198,10 @@ do
             build dmd libtango-user-dmd.a libtango-base-dmd.a
             ;;
         gdc)
+            POSIXFLAG="-version=Posix"
             build gdmd libgtango.a libgphobos.a
             ;;
         ldc)
-            POSIXVERSION=""
             build ldc libtango-user-ldc.a build-tango.sh
             ;;
         mac)

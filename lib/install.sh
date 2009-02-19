@@ -247,12 +247,12 @@ create_dmd_conf() {
     then
         cat > $CONFPREFIX/$CONF/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$INCLPREFIX/$INCL/d -version=Tango -version=Posix -L-L"$LIBPREFIX/$LIB" 
+DFLAGS=-I$INCLPREFIX/$INCL/d -version=Tango $POSIXFLAG -L-L"$LIBPREFIX/$LIB" 
 EOF
     else
         cat > $CONFPREFIX/$CONF/dmd.conf <<EOF
 [Environment]
-DFLAGS=-I$INCLPREFIX/$INCL/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango -version=Posix -L-L"$LIBPREFIX/$LIB"
+DFLAGS=-I$INCLPREFIX/$INCL/d -defaultlib=tango-base-dmd -debuglib=tango-base-dmd -version=Tango $POSIXFLAG -L-L"$LIBPREFIX/$LIB"
 EOF
     fi
 }
@@ -281,14 +281,22 @@ configdmd() {
             if [ ! "`grep '\-defaultlib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
             then
                 if [ "$VERBOSE" = "1" ]; then echo "Appending -defaultlib switch to DFLAGS"; fi
-                sed -i.bak -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
+                sed -i.bak1 -e 's/^DFLAGS=.*$/& -defaultlib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
                 if [ ! "`grep '\-debuglib=tango\-base\-dmd' $CONFPREFIX/$CONF/dmd.conf`" ]
                 then
                     if [ "$VERBOSE" = "1" ]; then echo "Appending -debuglib switch to DFLAGS"; fi
-                    sed -i.bak -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
+                    sed -i.bak2 -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
                 fi
-            else
-                if [ "$VERBOSE" = "1" ]; then echo "Found Tango enabled dmd.conf, assume it is working and leave it as is"; fi
+             elif [ "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a ! $POSIXFLAG ]
+             then
+                 if [ "$VERBOSE" = "1" ]; then echo "Removing -version=Posix due to upgraded DMD."; fi
+                 sed -i.bak3 -e 's/-version=Posix//g' $CONFPREFIX/$CONF/dmd.conf
+             elif [ ! "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a $POSIXFLAG ]
+             then
+                 if [ "$VERBOSE" = "1" ]; then echo "Add missing -version=Posix."; fi
+                 sed -i.bak3 -e 's/^DFLAGS=.*$/& -version=Posix/' $CONFPREFIX/$CONF/dmd.conf
+             else
+                if [ "$VERBOSE" = "1" ]; then echo "Found Tango enabled dmd.conf, leave as it is"; fi
             fi
         fi
     fi
@@ -361,6 +369,7 @@ install() {
 
     default$1
     . $1include
+    $1settings
 
     if [ "$VERBOSE" = "1" ]; then echo "Prefix was set to $PREFIX"; fi
 

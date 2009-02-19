@@ -19,19 +19,20 @@ MD=mkdir -p
 
 ADD_CFLAGS=
 ADD_DFLAGS=
+SYSTEM_VERSION=
 
 CFLAGS=-O -m32 $(ADD_CFLAGS)
 #CFLAGS=-g -m32 $(ADD_CFLAGS)
 
 ### warnings disabled because gcx has issues ###
 
-DFLAGS=-release -O -inline -version=Posix $(ADD_DFLAGS)
+DFLAGS=-release -O -inline $(SYSTEM_VERSION) $(ADD_DFLAGS)
 #DFLAGS=-g -version=Posix $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -version=Posix $(ADD_DFLAGS)
+TFLAGS=-O -inline $(SYSTEM_VERSION) $(ADD_DFLAGS)
 #TFLAGS=-g -version=Posix $(ADD_DFLAGS)
 
-DOCFLAGS=-version=DDoc -version=Posix
+DOCFLAGS=-version=DDoc $(SYSTEM_VERSION) 
 
 CC=gcc
 LC=$(AR) -qsv
