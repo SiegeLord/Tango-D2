@@ -25,7 +25,7 @@ void main()
 
     try
     {
-        auto p = new Process(command, null);
+        auto p = new Process(true, command);
 
         Stdout.formatln("Executing {0}", p.toString());
         p.execute();
