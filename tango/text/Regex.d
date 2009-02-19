@@ -919,57 +919,53 @@ struct CharClass(char_t)
     }
 }
 
-version(RegexUnittests)
+debug(UnitTest)
 {
-import tango.io.Stdout;
 unittest
 {
-    Stdout.formatln("CharClass unittest");
     static CharClass!(char) cc = { parts: [{l_:0,r_:10},{l_:0,r_:6},{l_:5,r_:12},{l_:12,r_:17},{l_:20,r_:100}] };
-    Stdout.formatln("{}", cc.toString);
+    assert(cc.toString, "[(0)-(a)(0)-(6)(5)-(c)(c)-(11)(14)-'d']");
     cc.optimize;
-    Stdout.formatln("optimized: {}", cc.toString);
+    assert(cc.toString,  "[(0)-(11)(14)-'d']");
     cc.negate;
-    Stdout.formatln("negated: {}", cc.toString);
+    assert(cc.toString,  " [(12)-(13)'e'-(ff)]");
     cc.optimize;
-    Stdout.formatln("optimized: {}", cc.toString);
+    assert(cc.toString,  "[(0)-(11)(14)-'d']");
     cc.negate;
-    Stdout.formatln("negated: {}", cc.toString);
-
+    assert(cc.toString,  "[(12)-(13)'e'-(ff)]");
+    
     static CharClass!(char) cc2 = { parts: [] };
-    Stdout.formatln("{}", cc2.toString);
+    assert(cc.toString,  "[]");
     cc2.optimize;
-    Stdout.formatln("optimized: {}", cc2.toString);
+    assert(cc.toString,  "[]");
     cc2.negate;
-    Stdout.formatln("negated: {}", cc2.toString);
+    assert(cc.toString,  "[(0)-(ff)]");
     cc2.optimize;
-    Stdout.formatln("optimized: {}", cc2.toString);
+    assert(cc.toString,  "[(0)-(ff)]");
     cc2.negate;
-    Stdout.formatln("negated: {}", cc2.toString);
-
+    assert(cc.toString,  "[]");
+    
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
-    Stdout.formatln("{}", cc3.toString);
+    assert(cc3.toString, "[(0)-'d'(c8)-(ff)]");
     cc3.negate;
-    Stdout.formatln("negated: {}", cc3.toString);
+    assert(cc.toString,  "['e'-(c7)]");
     cc3.negate;
-    Stdout.formatln("negated: {}", cc3.toString);
-
+    assert(cc.toString,  "[(0)-'d'(c8)-(ff)]");
+    
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
-    Stdout.formatln("{}", cc4.toString);
+    assert(cc.toString,  "[(0)-(c8)'d'-(ff)]");
     cc4.optimize;
-    Stdout.formatln("optimized: {}", cc4.toString);
-
+    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
+    
     static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
-    Stdout.formatln("{}", cc5.toString);
     cc5.optimize;
-    Stdout.formatln("optimized: {}", cc5.toString);
+    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
     cc5.negate;
-    Stdout.formatln("negated: {}", cc5.toString);
+    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
     cc5.optimize;
-    Stdout.formatln("optimized: {}", cc5.toString);
+    assert(cc.toString,  "[(0)-(8)(14)-(1f)(7f)-(9f)(250)-(20a2)(20b6)-(10ffff)]");
     cc5.negate;
-    Stdout.formatln("negated: {}", cc5.toString);
-    assert(0, "control the results for yourself, i'm too lazy to type all those asserts ;)");
+    assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
 }
 }
 
