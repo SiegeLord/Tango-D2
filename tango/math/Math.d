@@ -90,7 +90,8 @@ else version(LDC)
  * Constants
  */
 
-const real E          = 2.7182818284590452354L;  /** e */
+const real E          = 2.7182818284590452354L;  /** e */ // 0x1.5BF0A8B1_45769535_5FF5p+1L
+
 const real LOG2T      = 0x1.a934f0979a3715fcp+1L; /** log<sub>2</sub>10 */ // 3.32193 fldl2t
 const real LOG2E      = 0x1.71547652b82fe178p+0L; /** log<sub>2</sub>e */ // 1.4427 fldl2e
 const real LOG2       = 0x1.34413509f79fef32p-2L; /** log<sub>10</sub>2 */ // 0.30103 fldlg2
@@ -108,6 +109,7 @@ const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
 
 //const real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
 //const real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
+//const real SQRTE   = 1.64872127070012814684865078781416357L; /** &radic;(e) */
 
 const real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
 const real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
@@ -764,7 +766,10 @@ creal acos(creal z)
  */
 real cosh(real x)
 {
-    return tango.stdc.math.coshl(x);
+    //  cosh = (exp(x)+exp(-x))/2.
+    // The naive implementation works correctly. 
+    real y = exp(x);
+    return (y + 1.0/y) * 0.5;
 }
 
 debug(UnitTest) {
@@ -785,7 +790,15 @@ unittest {
  */
 real sinh(real x)
 {
-    return tango.stdc.math.sinhl(x);
+    //  sinh(x) =  (exp(x)-exp(-x))/2;    
+    // Very large arguments could cause an overflow, but
+    // the maximum value of x for which exp(x) + exp(-x)) != exp(x)
+    // is x = 0.5 * (real.mant_dig) * LN2. // = 22.1807 for real80.
+    if (fabs(x) > real.mant_dig * LN2) {
+        return copysign(0.5*exp(fabs(x)), x);
+    }    
+    real y = expm1(x);
+    return 0.5 * y / (y+1) * (y+2);
 }
 
 debug(UnitTest) {
@@ -806,7 +819,12 @@ unittest {
  */
 real tanh(real x)
 {
-    return tango.stdc.math.tanhl(x);
+    //  tanh(x) = (exp(x) - exp(-x))/(exp(x)+exp(-x))
+    if (fabs(x)> real.mant_dig * LN2){
+        return copysign(1, x);        
+    }
+    real y = expm1(2*x);
+    return y/(y + 2);
 }
 
 debug(UnitTest) {
@@ -1133,6 +1151,8 @@ unittest {
 }
 }
 
+public:
+
 /**
  * Calculates e$(SUP x).
  *
@@ -1143,8 +1163,95 @@ unittest {
  *  )
  */
 real exp(real x)
-{
-    return tango.stdc.math.expl(x);
+{    
+    version(Really_D_InlineAsm_X86) {
+        /*  exp() for x87 80-bit reals, IEEE754-2008 conformant.
+         * Author: Don Clugston.
+         * 
+         * exp(x) = 2^(rndint(y))* 2^(y-rndint(y)) where y = LN2*x.
+         * The trick for high performance is to avoid the fscale(28cycles on core2),
+         * frndint(19 cycles), leaving f2xm1(19 cycles) as the only slow instruction.
+         * 
+         * We can do frndint by using fist. BUT we can't use it for huge numbers,
+         * because it will set the Invalid Operation flag is overflow or NaN occurs.
+         * Fortunately, whenever this happens the result would be zero or infinity.
+         * 
+         * We can perform fscale by directly poking into the exponent. BUT this doesn't
+         * work for the (very rare) cases where the result is subnormal. So we fall back
+         * to the slow method in that case.
+         */
+        // parameters always get rounded up to a multiple of 4.
+        enum { SIZEOFREALPARAMETER = (real.sizeof&2)? real.sizeof+2 : real.sizeof }
+        asm {
+            naked;        
+            fld real ptr [ESP+4] ; // x
+            mov AX, [ESP+4+8]; // AX = exponent and sign
+            sub ESP, 12+8; // Create scratch space on the stack 
+            // [ESP,ESP+2] = scratchint
+            // [ESP+4..+6, +8..+10, +10] = scratchreal
+            // set scratchreal mantissa = 1.0
+            mov dword ptr [ESP+8], 0;
+            mov dword ptr [ESP+8+4], 0x80000000;
+            and AX, 0x7FFF; // drop sign bit
+            cmp AX, 0x401D; // avoid InvalidException in fist
+            jae L_extreme;
+            fldl2e;
+            fmul ; // y = x*log2(e)       
+            fist dword ptr [ESP]; // scratchint = rndint(y)
+            fisub dword ptr [ESP]; // y - rndint(y)
+            // and now set scratchreal exponent
+            mov EAX, [ESP];
+            add EAX, 0x3fff;
+            jle short L_subnormal;
+            cmp EAX,0x8000;
+            jge short L_overflow;
+            mov [ESP+8+8],AX;        
+    L_normal:
+            f2xm1;
+            fld1;
+            fadd ; // 2^(y-rndint(z))
+            fld real ptr [ESP+8] ; // 2^rndint(y)
+            add ESP,12+8;        
+            fmulp ST(1), ST;
+            ret SIZEOFREALPARAMETER;
+
+    L_subnormal:
+            // Result will be subnormal.
+            // In this rare case, the simple poking method doesn't work. 
+            // The speed doesn't matter, so use the slow fscale method.                
+            fild dword ptr [ESP];  // scratchint
+            fld1;
+            fscale;
+            fstp real ptr [ESP+8]; // scratchreal = 2^scratchint
+            fstp ST(0),ST;         // drop scratchint
+            jmp L_normal;
+            
+    L_extreme: // Extreme exponent. X is very large positive, very
+            // large negative, infinity, or NaN.
+            fxam;
+            fstsw AX;
+            test AX, 0x0400; // NaN_or_zero, but we already know x!=0 
+            jz L_was_nan;  // if x is NaN, returns x
+            // set scratchreal = real.min
+            // squaring it will return 0, setting underflow flag
+            mov word  ptr [ESP+8+8], 1;
+            test AX, 0x0200;
+            jnz L_waslargenegative;
+    L_overflow:        
+            // Set scratchreal = real.max.
+            // squaring it will create infinity, and set overflow flag.
+            mov word  ptr [ESP+8+8], 0x7FFE;
+    L_waslargenegative:        
+            fstp ST(0), ST;
+            fld real ptr [ESP+8];  // load scratchreal
+            fmul ST(0), ST;        // square it, to create havoc!
+    L_was_nan:
+            add ESP,12+8;
+            ret SIZEOFREALPARAMETER;
+        }
+    } else {       
+        return tango.stdc.math.expl(x);
+    }
 }
 
 debug(UnitTest) {
