@@ -33,6 +33,7 @@ Options:
 }
 
 UNAME=`uname`
+ARCH=""
 INLINE="-inline"
 POSIXFLAG=""
 DEBUG=""
@@ -114,7 +115,7 @@ compile() {
     if filter $OBJNAME
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango -of$OBJNAME $FILENAME
+        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
@@ -205,10 +206,17 @@ do
             build ldc libtango-user-ldc.a build-tango.sh
             ;;
         mac)
+            POSIXFLAG="-version=Posix"
             # build Universal Binary version of the Tango library
-            build powerpc-apple-darwin8-gdmd libgtango.a.ppc libgphobos.a.ppc
-            build i686-apple-darwin8-gdmd libgtango.a.i386 libgphobos.a.i386
-            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386
+            ARCH="-arch ppc"
+            build gdmd libgtango.a.ppc libgphobos.a.ppc
+            ARCH="-arch i386"
+            build gdmd libgtango.a.i386 libgphobos.a.i386   
+            ARCH="-arch ppc64"
+            build gdmd libgtango.a.ppc64 libgphobos.a.ppc64 
+            ARCH="-arch x86_64"
+            build gdmd libgtango.a.x86_64 libgphobos.a.x86_64
+            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 \                                         libgtango.a.ppc64 libgtango.a.x86_64 
             ;;
         *)
             usage
