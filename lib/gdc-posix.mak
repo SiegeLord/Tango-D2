@@ -36,7 +36,8 @@ ALL_DOCS=
 ######################################################
 
 lib : $(ALL_OBJS)
-	$(MAKE) -C compiler/gdc CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	$(MAKE) -C compiler/gdc CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	                                          DFLAGS="-g -frelease -O2 $(ADD_DFLAGS)" CFLAGS="-g -O2 $(ADD_CFLAGS)"
 	$(RM) compiler/gdc/config/*.o compiler/gdc/gcc/configunix.o compiler/gdc/minimal.o
 	$(MAKE) -C gc/basic -fposix.mak lib CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	$(MAKE) -C common/tango -fposix.mak lib CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"

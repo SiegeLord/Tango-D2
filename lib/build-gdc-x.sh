@@ -23,11 +23,12 @@ fi
 $HOST-gdc --help >& /dev/null || die "$HOST-gdc not found on your \$PATH!" 1
 
 HOST_ARCH="`echo $HOST | sed 's/-.*//'`"
-ADD_CFLAGS=
+#ADD_CFLAGS=
 if [ "$HOST_ARCH" = "powerpc" -a ! "`echo $HOST | grep darwin`" ]
 then
     ADD_CFLAGS="-mregnames"
 fi
+#ADD_DFLAGS=
 
 GDC_VER="`$HOST-gdc --version | grep 'gdc' | sed 's/^.*gdc \(pre\-\{0,1\}release \)*\([0-9]*\.[0-9]*\).*$/\2/'`"
 GDC_MAJOR="`echo $GDC_VER | sed 's/\..*//'`"
@@ -48,6 +49,6 @@ OLDHOME=$HOME
 export HOME=`pwd`
 make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
 make lib doc install -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd \
-    ADD_CFLAGS="$ADD_CFLAGS" SYSTEM_VERSION="-version=Posix" || exit 1
+    ADD_CFLAGS="$ADD_CFLAGS" ADD_DFLAGS="$ADD_DFLAGS" SYSTEM_VERSION="-version=Posix" || exit 1
 make clean -fgdc-posix.mak CC=$HOST-gcc DC=$HOST-gdmd || exit 1
 export HOME=$OLDHOME

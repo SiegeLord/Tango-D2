@@ -249,7 +249,7 @@ version( darwin )
             void TIMESPEC_TO_TIMEVAL( timeval* tv, timespec* ts )
             {
                 tv.tv_sec = ts.tv_sec;
-                tv.tv_usec = ts.tv_nsec / 1000;
+                tv.tv_usec = cast(suseconds_t) (ts.tv_nsec / 1000);
             }
         }
     }

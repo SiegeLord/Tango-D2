@@ -44,12 +44,20 @@ LIBS="common/libtango-cc-tango.a gc/libtango-gc-basic.a libgphobos.a"
 
 for lib in $LIBS; do test -r $lib && rm $lib; done
 
+DINC="-q,-nostdinc -I`pwd`/common -I`pwd`/.. -I`pwd`/compiler/gdc"
+
 # Potential additions for later
 #export CFLAGS="-arch ppc -arch ppc64" 
 #export DFLAGS="-arch ppc -arch ppc64" 
-if ./build-gdc-x.sh powerpc-apple-$DARWIN 1>&2
+if ADD_CFLAGS="-m32" ADD_DFLAGS="$DINC -m32" ./build-gdc-x.sh powerpc-apple-$DARWIN 1>&2
 then
     for lib in $LIBS; do mv $lib $lib.ppc; done
+    if ADD_CFLAGS="-m64" ADD_DFLAGS="$DINC -m64" ./build-gdc-x.sh powerpc-apple-$DARWIN 1>&2
+    then
+        for lib in $LIBS; do mv $lib $lib.ppc64; done
+    else
+        FAILED=1
+    fi
 else
     FAILED=1
 fi
@@ -59,9 +67,15 @@ then
     # Potential additions for later
     #export CFLAGS="-arch i386 -arch x86_64" 
     #export DFLAGS="-arch i386 -arch x86_64" 
-    if ./build-gdc-x.sh i686-apple-$DARWIN 1>&2
+    if ADD_CFLAGS="-m32" ADD_DFLAGS="$DINC -m32" ./build-gdc-x.sh i686-apple-$DARWIN 1>&2
     then
         for lib in $LIBS; do mv $lib $lib.i386; done
+        if ADD_CFLAGS="-m64" ADD_DFLAGS="$DINC -m64" ./build-gdc-x.sh i686-apple-$DARWIN 1>&2
+        then
+            for lib in $LIBS; do mv $lib $lib.x86_64; done
+        else
+            FAILED=1
+        fi
     else
         FAILED=1
     fi
@@ -78,5 +92,5 @@ then
     fi
 else
     for lib in $LIBS; do \
-    lipo -create -output $lib $lib.ppc $lib.i386; done
+    lipo -create -output $lib $lib.ppc $lib.ppc64 $lib.i386 $lib.x86_64; done
 fi
