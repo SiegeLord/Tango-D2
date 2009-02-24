@@ -273,7 +273,7 @@ public struct Log
                 Return an instance of the named logger. Names should be
                 hierarchical in nature, using dot notation (with '.') to 
                 separate each name section. For example, a typical name 
-                might be something like "tango.io.Buffer".
+                might be something like "tango.io.Stdout".
 
                 If the logger does not currently exist, it is created and
                 inserted into the hierarchy. A parent will be attached to
