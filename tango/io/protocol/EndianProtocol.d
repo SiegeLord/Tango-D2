@@ -142,7 +142,7 @@ class EndianProtocol : NativeProtocol
 
 debug (UnitTest)
 {
-        import tango.io.Buffer;
+        import tango.io.device.Array;
 
         unittest
         {
@@ -154,7 +154,7 @@ debug (UnitTest)
                 char[] mule;
                 char[] test = "testing testing 123";
                 
-                auto protocol = new EndianProtocol (new Buffer(32));
+                auto protocol = new EndianProtocol (new Array(32));
                 protocol.writeArray (test.ptr, test.length, protocol.Type.Utf8);
                 
                 mule = cast(char[]) protocol.readArray (mule.ptr, mule.length, protocol.Type.Utf8, &alloc);
