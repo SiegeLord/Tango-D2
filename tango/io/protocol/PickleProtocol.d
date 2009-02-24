@@ -34,13 +34,13 @@ version (BigEndian)
 
 debug (UnitTest)
 {
-        import tango.io.Buffer;
+        import tango.io.device.Array;
 
         unittest
         {
                 int test = 0xcc55ff00;
                 
-                auto protocol = new PickleProtocol (new Buffer(32));
+                auto protocol = new PickleProtocol (new Array(32));
                 protocol.write (&test, test.sizeof, protocol.Type.Int);
 
                 auto ptr = protocol.buffer.slice (test.sizeof, false).ptr;
