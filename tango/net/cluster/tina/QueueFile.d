@@ -22,6 +22,13 @@ private import  tango.net.cluster.model.IChannel;
 version (Posix)
          private import tango.stdc.posix.fcntl;
 
+version (GNU) { 
+    version (PPC64) { 
+        extern (C) void memcpy(void*, void*, size_t);
+        version = PPC64_MEMCPY; /* Workaround for GDC bugzilla entry 2688 */
+    }
+}
+
 /******************************************************************************
         
 
@@ -117,7 +124,7 @@ class QueueFile
                             auto content = read (tmp);
 
                             ++depth;
-                            current = tmp;
+                            version (PPC64_MEMCPY) { memcpy(&current, &tmp, Header.sizeof); } else { current = tmp; }
                             insert = insert + tmp.size + tmp.sizeof;
                             conduit.seek (insert);
 
@@ -216,7 +223,7 @@ class QueueFile
 
                 // update refs
                 insert = insert + chunk.sizeof + chunk.size;
-                current = chunk;
+                version (PPC64_MEMCPY) { memcpy(&current, &chunk, Header.sizeof); } else { current = chunk; }
                 ++depth;
 
                 return dirty = true;
@@ -256,7 +263,7 @@ class QueueFile
                       if (current.prior)
                           conduit.error ("queue file is corrupt");
                       else
-                         current = zero;
+                         version (PPC64_MEMCPY) { memcpy(&current, &zero, Header.sizeof); } else { current = zero; }
 
                    // leave file position at insert-point
                    conduit.seek (point);
