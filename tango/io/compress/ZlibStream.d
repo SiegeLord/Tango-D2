@@ -4,11 +4,14 @@
 
     license:    BSD style: $(LICENSE)
 
-    version:    Initial release: July 2007
-
     author:     Daniel Keep
 
-    history:    Added support for "window bits", needed for Zip support.
+    version:    Feb 08: Added support for different stream encodings, removed
+                        old "window bits" ctors.
+                        
+                Dec 07: Added support for "window bits", needed for Zip support.
+                
+                Jul 07: Initial release.
 
 *******************************************************************************/
 
@@ -24,6 +27,8 @@ private import tango.io.device.Conduit : InputFilter, OutputFilter;
 
 private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
+private import tango.text.convert.Integer : toString;
+
 
 /* This constant controls the size of the input/output buffers we use
  * internally.  This should be a fairly sane value (it's suggested by the zlib
@@ -35,7 +40,14 @@ private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
  * parameters getting in the way :)
  */
 
-private const CHUNKSIZE = 256 * 1024;
+private enum { CHUNKSIZE = 256 * 1024 };
+
+/* This constant specifies the default windowBits value.  This is taken from
+ * documentation in zlib.h.  It shouldn't break anything if zlib changes to
+ * a different default.
+ */
+
+private enum { WINDOWBITS_DEFAULT = 15 };
 
 /*******************************************************************************
   
@@ -45,6 +57,35 @@ private const CHUNKSIZE = 256 * 1024;
 
 class ZlibInput : InputFilter
 {
+    /***************************************************************************
+    
+        This enumeration allows you to specify the encoding of the compressed
+        stream.
+    
+    ***************************************************************************/
+
+    enum Encoding : int
+    {
+        /**
+         *  The code should attempt to automatically determine what the encoding
+         *  of the stream should be.  Note that this cannot detect the case
+         *  where the stream was compressed with no encoding.
+         */
+        Guess,
+        /**
+         *  Stream has zlib encoding.
+         */
+        Zlib,
+        /**
+         *  Stream has gzip encoding.
+         */
+        Gzip,
+        /**
+         *  Stream has no encoding.
+         */
+        None
+    }
+
     private
     {
         /* Used to make sure we don't try to perform operations on a dead
@@ -54,7 +95,7 @@ class ZlibInput : InputFilter
         z_stream zs;
         ubyte[] in_chunk;
     }
-
+    
     /***************************************************************************
 
         Constructs a new zlib decompression filter.  You need to pass in the
@@ -71,34 +112,69 @@ class ZlibInput : InputFilter
         specified.  Additionally, the windowBits parameter may be negative to
         indicate that zlib should omit the standard zlib header and trailer,
         with the window size being -windowBits.
+        
+      Params:
+        stream = compressed input stream.
+        
+        encoding =
+            stream encoding.  Defaults to Encoding.Guess, which
+            should be sufficient unless the stream was compressed with
+            no encoding; in this case, you must manually specify
+            Encoding.None.
+            
+        windowBits =
+            the base two logarithm of the window size, and should be in the
+            range 8-15, defaulting to 15 if not specified.
 
     ***************************************************************************/
 
-    this(InputStream stream)
+    this(InputStream stream, Encoding encoding,
+            int windowBits = WINDOWBITS_DEFAULT)
     {
-        super (stream);
-        in_chunk = new ubyte[CHUNKSIZE];
-
-        // Allocate inflate state
-        with( zs )
+        /*
+         * Here's how windowBits works, according to zlib.h:
+         * 
+         * 8 .. 15
+         *      zlib encoding.
+         *      
+         * (8 .. 15) + 16
+         *      gzip encoding.
+         *      
+         * (8 .. 15) + 32
+         *      auto-detect encoding.
+         *      
+         * (8 .. 15) * -1
+         *      raw/no encoding.
+         *      
+         * Since we're going to be playing with the value, we DO care whether
+         * windowBits is in the expected range, so we'll check it.
+         */
+        if( !( 8 <= windowBits && windowBits <= 15 ) )
         {
-            zalloc = null;
-            zfree = null;
-            opaque = null;
-            avail_in = 0;
-            next_in = null;
+            // No compression for you!
+            throw new ZlibException("invalid windowBits argument"
+                ~ .toString(windowBits));
         }
+        
+        switch( encoding )
+        {
+        case Encoding.Zlib:
+            // no-op
+            break;
+            
+        case Encoding.Gzip:
+            windowBits += 16;
+            break;
 
-        auto ret = inflateInit(&zs);
-        if( ret != Z_OK )
-            throw new ZlibException(ret);
-
-        zs_valid = true;
-    }
-
-    /// ditto
-    this(InputStream stream, int windowBits)
-    {
+        case Encoding.Guess:
+            windowBits += 32;
+            break;
+            
+        case Encoding.None:
+            windowBits *= -1;
+            break;
+        }
+        
         super (stream);
         in_chunk = new ubyte[CHUNKSIZE];
 
@@ -118,7 +194,22 @@ class ZlibInput : InputFilter
 
         zs_valid = true;
     }
-
+    
+    /// ditto
+    this(InputStream stream)
+    {
+        // DRK 2009-02-26
+        // Removed unique implementation in favour of passing on to another
+        // constructor.  The specific implementation was because the default
+        // value of windowBits is documented in zlib.h, but not actually
+        // exposed.  Using inflateInit over inflateInit2 ensured we would
+        // never get it wrong.  That said, the default value of 15 is REALLY
+        // unlikely to change: values below that aren't terribly useful, and
+        // values higher than 15 are already used for other purposes.
+        // Also, this leads to less code which is always good.  :D
+        this(stream, Encoding.init);
+    }
+    
     ~this()
     {
         if( zs_valid )
@@ -229,16 +320,6 @@ class ZlibOutput : OutputFilter
 
         This enumeration represents several pre-defined compression levels.
 
-        None instructs zlib to perform no compression whatsoever, and simply
-        store the data stream.  Note that this actually expands the stream
-        slightly to accommodate the zlib stream metadata.
-
-        Fast instructs zlib to perform a minimal amount of compression, Best
-        indicates that you want the maximum level of compression and Normal
-        (the default level) is a compromise between the two.  The exact
-        compression level Normal represents is determined by the underlying
-        zlib library, but is typically level 6.
-
         Any integer between -1 and 9 inclusive may be used as a level,
         although the symbols in this enumeration should suffice for most
         use-cases.
@@ -247,10 +328,50 @@ class ZlibOutput : OutputFilter
 
     enum Level : int
     {
+        /**
+         * Default compression level.  This is selected for a good compromise
+         * between speed and compression, and the exact compression level is
+         * determined by the underlying zlib library.  Should be roughly
+         * equivalent to compression level 6.
+         */
         Normal = -1,
+        /**
+         * Do not perform compression.  This will cause the stream to expand
+         * slightly to accommodate stream metadata.
+         */
         None = 0,
+        /**
+         * Minimal compression; the fastest level which performs at least
+         * some compression.
+         */
         Fast = 1,
+        /**
+         * Maximal compression.
+         */
         Best = 9
+    }
+
+    /***************************************************************************
+    
+        This enumeration allows you to specify what the encoding of the
+        compressed stream should be.
+    
+    ***************************************************************************/
+
+    enum Encoding : int
+    {
+        /**
+         *  Stream should use zlib encoding.
+         */
+        Zlib,
+        /**
+         *  Stream should use gzip encoding.
+         */
+        Gzip,
+        /**
+         *  Stream should use no encoding.
+         */
+        None
     }
 
     private
@@ -280,29 +401,52 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    this(OutputStream stream, Level level = Level.Normal)
+    this(OutputStream stream, Level level, Encoding encoding,
+            int windowBits = WINDOWBITS_DEFAULT)
     {
-        super(stream);
-        out_chunk = new ubyte[CHUNKSIZE];
-
-        // Allocate deflate state
-        with( zs )
+        /*
+         * Here's how windowBits works, according to zlib.h:
+         * 
+         * 8 .. 15
+         *      zlib encoding.
+         *      
+         * (8 .. 15) + 16
+         *      gzip encoding.
+         *      
+         * (8 .. 15) + 32
+         *      auto-detect encoding.
+         *      
+         * (8 .. 15) * -1
+         *      raw/no encoding.
+         *      
+         * Since we're going to be playing with the value, we DO care whether
+         * windowBits is in the expected range, so we'll check it.
+         * 
+         * Also, note that OUR Encoding enum doesn't contain the 'Guess'
+         * member.  I'm still waiting on tango.io.psychic...
+         */
+        if( !( 8 <= windowBits && windowBits <= 15 ) )
         {
-            zalloc = null;
-            zfree = null;
-            opaque = null;
+            // No compression for you!
+            throw new ZlibException("invalid windowBits argument"
+                ~ .toString(windowBits));
         }
-
-        auto ret = deflateInit(&zs, level);
-        if( ret != Z_OK )
-            throw new ZlibException(ret);
-
-        zs_valid = true;
-    }
-
-    /// ditto
-    this(OutputStream stream, Level level, int windowBits)
-    {
+        
+        switch( encoding )
+        {
+        case Encoding.Zlib:
+            // no-op
+            break;
+            
+        case Encoding.Gzip:
+            windowBits += 16;
+            break;
+            
+        case Encoding.None:
+            windowBits *= -1;
+            break;
+        }
+        
         super(stream);
         out_chunk = new ubyte[CHUNKSIZE];
 
@@ -320,6 +464,15 @@ class ZlibOutput : OutputFilter
             throw new ZlibException(ret);
 
         zs_valid = true;
+    }
+    
+    /// ditto
+    this(OutputStream stream, Level level = Level.Normal)
+    {
+        // DRK 2009-02-26
+        // Removed unique implementation in favour of passing on to another
+        // constructor.  See ZlibInput.this(InputStream).
+        this(stream, level, Encoding.init);
     }
 
     ~this()
@@ -512,11 +665,27 @@ class ZlibClosedException : IOException
 
 class ZlibException : IOException
 {
+    /*
+     * Use this if you want to throw an exception that isn't actually
+     * generated by zlib.
+     */
+    this(char[] msg)
+    {
+        super(msg);
+    }
+    
+    /*
+     * code is the error code returned by zlib.  The exception message will
+     * be the name of the error code.
+     */
     this(int code)
     {
         super(codeName(code));
     }
 
+    /*
+     * As above, except that it appends msg as well.
+     */
     this(int code, char* msg)
     {
         super(codeName(code)~": "~fromStringz(msg));
@@ -555,6 +724,26 @@ debug(UnitTest) {
 
 import tango.io.device.Array : Array;
 
+void check_array(char[] FILE=__FILE__, int LINE=__LINE__)(
+        ubyte[] as, ubyte[] bs, lazy char[] msg)
+{
+    assert( as.length == bs.length,
+        FILE ~":"~ toString(LINE) ~ ": " ~ msg()
+        ~ "array lengths differ (" ~ toString(as.length)
+        ~ " vs " ~ toString(bs.length) ~ ")" );
+    
+    foreach( i, a ; as )
+    {
+        auto b = bs[i];
+        
+        assert( a == b,
+            FILE ~":"~ toString(LINE) ~ ": " ~ msg()
+            ~ "arrays differ at " ~ toString(i)
+            ~ " (" ~ toString(cast(int) a)
+            ~ " vs " ~ toString(cast(int) b) ~ ")" );
+    }
+}
+
 unittest
 {
     // One ring to rule them all, one ring to find them,
@@ -562,33 +751,92 @@ unittest
     const char[] message = 
         "Ash nazg durbatulûk, ash nazg gimbatul, "
         "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
+    
+    static assert( message.length == 90 );
 
     // This compressed data was created using Python 2.5's built in zlib
     // module, with the default compression level.
-    const ubyte[] message_z = [
-        0x78,0x9c,0x73,0x2c,0xce,0x50,0xc8,0x4b,
-        0xac,0x4a,0x57,0x48,0x29,0x2d,0x4a,0x4a,
-        0x2c,0x29,0xcd,0x39,0xbc,0x3b,0x5b,0x47,
-        0x21,0x11,0x26,0x9a,0x9e,0x99,0x0b,0x16,
-        0x45,0x12,0x2a,0xc9,0x28,0x4a,0xcc,0x46,
-        0xa8,0x4c,0xcf,0x50,0x48,0x2a,0x2d,0xaa,
-        0x2a,0xcd,0xd5,0xcd,0x2c,0xce,0xc8,0x54,
-        0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
-        0x01,0x00,0x1f,0xe3,0x22,0x99];
-
-    scope cond_z = new Array(2048);
-    scope comp = new ZlibOutput(cond_z);
-    comp.write (message);
-    comp.close;
-
-    assert( comp.written == message_z.length );
-
-    assert( message_z == cast(ubyte[])(cond_z.slice) );
-
-    scope decomp = new ZlibInput(cond_z);
-    auto buffer = new ubyte[256];
-    buffer = buffer[0 .. decomp.read(buffer)];
-
-    assert( cast(ubyte[])message == buffer );
+    {
+        const ubyte[] message_z = [
+            0x78,0x9c,0x73,0x2c,0xce,0x50,0xc8,0x4b,
+            0xac,0x4a,0x57,0x48,0x29,0x2d,0x4a,0x4a,
+            0x2c,0x29,0xcd,0x39,0xbc,0x3b,0x5b,0x47,
+            0x21,0x11,0x26,0x9a,0x9e,0x99,0x0b,0x16,
+            0x45,0x12,0x2a,0xc9,0x28,0x4a,0xcc,0x46,
+            0xa8,0x4c,0xcf,0x50,0x48,0x2a,0x2d,0xaa,
+            0x2a,0xcd,0xd5,0xcd,0x2c,0xce,0xc8,0x54,
+            0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
+            0x01,0x00,0x1f,0xe3,0x22,0x99];
+    
+        scope cond_z = new Array(2048);
+        scope comp = new ZlibOutput(cond_z);
+        comp.write (message);
+        comp.close;
+    
+        assert( comp.written == message_z.length );
+        
+        /+
+        Stdout("message_z:").newline;
+        foreach( b ; cast(ubyte[]) cond_z.slice )
+            Stdout.format("0x{0:x2},", b);
+        Stdout.newline.newline;
+        +/
+    
+        //assert( message_z == cast(ubyte[])(cond_z.slice) );
+        check_array!(__FILE__,__LINE__)
+            ( message_z, cast(ubyte[]) cond_z.slice, "message_z " );
+    
+        scope decomp = new ZlibInput(cond_z);
+        auto buffer = new ubyte[256];
+        buffer = buffer[0 .. decomp.read(buffer)];
+    
+        //assert( cast(ubyte[])message == buffer );
+        check_array!(__FILE__,__LINE__)
+            ( cast(ubyte[]) message, buffer, "message (zlib) " );
+    }
+    
+    // This compressed data was created using the Cygwin gzip program
+    // with default options.  The original file was called "testdata.txt".
+    {
+        const ubyte[] message_gz = [
+            0x1f,0x8b,0x08,0x00,0x80,0x70,0x6f,0x45,
+            0x00,0x03,0x73,0x2c,0xce,0x50,0xc8,0x4b,
+            0xac,0x4a,0x57,0x48,0x29,0x2d,0x4a,0x4a,
+            0x2c,0x29,0xcd,0x39,0xbc,0x3b,0x5b,0x47,
+            0x21,0x11,0x26,0x9a,0x9e,0x99,0x0b,0x16,
+            0x45,0x12,0x2a,0xc9,0x28,0x4a,0xcc,0x46,
+            0xa8,0x4c,0xcf,0x50,0x48,0x2a,0x2d,0xaa,
+            0x2a,0xcd,0xd5,0xcd,0x2c,0xce,0xc8,0x54,
+            0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
+            0x01,0x00,0x45,0x38,0xbc,0x58,0x5a,0x00,
+            0x00,0x00];
+        
+        // Compresses the original message, and outputs the bytes.  You can use
+        // this to test the output of ZlibOutput with gzip.  If you use this,
+        // don't forget to import Stdout somewhere.
+        /+
+        scope comp_gz = new Array(2048);
+        scope comp = new ZlibOutput(comp_gz, ZlibOutput.Level.Normal, ZlibOutput.Encoding.Gzip, WINDOWBITS_DEFAULT);
+        comp.write(message);
+        comp.close;
+        
+        Stdout.format("message_gz ({0} bytes):", comp_gz.slice.length).newline;
+        foreach( b ; cast(ubyte[]) comp_gz.slice )
+            Stdout.format("0x{0:x2},", b);
+        Stdout.newline;
+        +/
+        
+        // We aren't going to test that we can compress to a gzip stream
+        // since gzip itself always adds stuff like the filename, timestamps,
+        // etc.  We'll just make sure we can DECOMPRESS gzip streams.
+        scope decomp_gz = new Array(message_gz.dup);
+        scope decomp = new ZlibInput(decomp_gz);
+        auto buffer = new ubyte[256];
+        buffer = buffer[0 .. decomp.read(buffer)];
+        
+        //assert( cast(ubyte[]) message == buffer );
+        check_array!(__FILE__,__LINE__)
+            ( cast(ubyte[]) message, buffer, "message (gzip) ");
+    }
 }
 }

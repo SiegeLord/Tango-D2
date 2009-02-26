@@ -931,9 +931,9 @@ private:
                 break;
 
             case Method.Deflate:
-                // Wrap in a zlib stream.  -15 means to use a 32KB window, and
-                // not to look for the normal zlib header and trailer.
-                stream = new ZlibInput(stream, -15);
+                // Wrap in a zlib stream.  We want a raw deflate stream,
+                // so force no encoding.
+                stream = new ZlibInput(stream, ZlibInput.Encoding.None);
                 break;
 
             default:
@@ -1226,7 +1226,7 @@ private:
 
                 case Method.Deflate:
                     compress = new ZlibOutput(out_chain,
-                            ZlibOutput.Level.init, -15);
+                            ZlibOutput.Level.init, ZlibOutput.Encoding.None);
                     out_chain = compress;
                     break;
 
