@@ -147,7 +147,9 @@ class CircularList (V, alias Reap = Container.reap,
 
         final Iterator iterator ()
         {
-                Iterator i = void;
+                // used to be Iterator i = void, but that doesn't initialize
+                // fields that are not initialized here.
+                Iterator i;
                 i.mutation = mutation;
                 i.owner = this;
                 i.cell = list;
@@ -1006,7 +1008,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 /***************************************************************
 
-                        Remove value at the current iterator location
+                        Remove value that was just iterated.
 
                 ***************************************************************/
 
@@ -1016,10 +1018,12 @@ class CircularList (V, alias Reap = Container.reap,
                            {
                            auto next = bump (prior);
                            if (prior is head)
+                           {
                                if (prior is next)
                                    owner.list = null;
-                           else
-                              head = next;
+                               else
+                                   head = owner.list = next;
+                           }
 
                            prior.unlink;
                            owner.decrement (prior);
@@ -1065,6 +1069,35 @@ class CircularList (V, alias Reap = Container.reap,
         }
 }
 
+debug (UnitTest)
+{
+    import tango.io.Stdout;
+    unittest
+    {
+        auto list = new CircularList!(int);
+        list.add(1);
+        list.add(2);
+        list.add(3);
+
+        int i = 1;
+        foreach(v; list)
+        {
+            assert(v == i);
+            i++;
+        }
+
+        auto iter = list.iterator;
+        iter.next();
+        iter.remove();                          // delete the first item
+
+        i = 2;
+        foreach(v; list)
+        {
+            assert(v == i);
+            i++;
+        }
+    }
+}
 
 /*******************************************************************************
 
