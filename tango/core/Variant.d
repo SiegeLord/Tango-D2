@@ -309,8 +309,22 @@ struct Variant
      */
     bool isImplicitly(T)()
     {
-        return ( cast(bool)(typeid(T) is type)
-                || canImplicitCastTo!(T)(type) );
+        static if( is( T == class ) || is( T == interface ) )
+        {
+            // Check for classes and interfaces first.
+            if( cast(TypeInfo_Class) type || cast(TypeInfo_Interface) type )
+                return (cast(T) value.obj) !is null;
+
+            else
+                // We're trying to cast TO an object, but we don't have
+                // an object stored.
+                return false;
+        }
+        else
+        {
+            return ( cast(bool)(typeid(T) is type)
+                    || canImplicitCastTo!(T)(type) );
+        }
     }
 
     /**
@@ -619,6 +633,39 @@ debug( UnitTest )
             B b = v2.get!(B);
             C c = v2.get!(C);
             D d = v2.get!(D);
+        }
+
+        // Test class/interface implicit casting
+        {
+            class G {}
+            interface H {}
+            class I : G {}
+            class J : H {}
+            struct K {}
+
+            scope a = new G;
+            scope c = new I;
+            scope d = new J;
+            K e;
+
+            Variant v2 = a;
+            assert( v2.isImplicitly!(Object), v2.type.toString );
+            assert( v2.isImplicitly!(G), v2.type.toString );
+            assert(!v2.isImplicitly!(I), v2.type.toString );
+
+            v2 = c;
+            assert( v2.isImplicitly!(Object), v2.type.toString );
+            assert( v2.isImplicitly!(G), v2.type.toString );
+            assert( v2.isImplicitly!(I), v2.type.toString );
+
+            v2 = d;
+            assert( v2.isImplicitly!(Object), v2.type.toString );
+            assert(!v2.isImplicitly!(G), v2.type.toString );
+            assert( v2.isImplicitly!(H), v2.type.toString );
+            assert( v2.isImplicitly!(J), v2.type.toString );
+
+            v2 = e;
+            assert(!v2.isImplicitly!(Object), v2.type.toString );
         }
 
         // Test doubles and implicit casting
