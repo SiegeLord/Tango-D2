@@ -746,17 +746,21 @@ struct TimeOfDay
          *         millis = number of milliseconds into the second
          *
          * Returns: a TimeOfDay representing the given time fields.
+         *
+         * Note: There is no verification of the range of values, or
+         * normalization made.  So if you pass in larger values than the
+         * maximum value for that field, they will be stored as that value.
+         *
+         * example:
+         * --------------
+         * auto tod = TimeOfDay(100, 100, 100, 10000);
+         * assert(tod.hours == 100);
+         * assert(tod.minutes == 100);
+         * assert(tod.seconds == 100);
+         * assert(tod.millis == 10000);
+         * --------------
          */
         static TimeOfDay opCall (uint hours, uint minutes, uint seconds, uint millis=0)
-        in
-        {
-            assert(hours < 24);
-            assert(minutes < 60);
-            assert(seconds < 60);
-            assert(millis < 1000);
-
-        }
-        body
         {
                 TimeOfDay t = void;
                 t.hours   = hours;
