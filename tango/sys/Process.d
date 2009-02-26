@@ -906,6 +906,9 @@ class Process
      * manipulated through the stdin, stdout and
      * stderr member PipeConduit's.
      *
+     * Returns:
+     * A reference to this process object for chaining.
+     *
      * Throws:
      * ProcessCreateException if the process could not be created
      * successfully; ProcessForkException if the call to the fork()
@@ -915,7 +918,7 @@ class Process
      * The process must not be running and the list of arguments must
      * not be empty before calling this method.
      */
-    public void execute()
+    public Process execute()
     in
     {
         assert(!_running);
@@ -1349,6 +1352,7 @@ class Process
         {
             assert(false, "tango.sys.Process: Unsupported platform");
         }
+        return this;
     }
 
 
