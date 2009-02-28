@@ -14,7 +14,7 @@ module tango.text.stream.StreamIterator;
 
 pragma (msg, "warning - text.stream.StreamIterator has been moved to io.stream.Iterator");
 
-private import tango.io.stream.Buffer;
+private import tango.io.stream.Buffered;
 
 package import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
@@ -88,7 +88,7 @@ class StreamIterator(T) : InputFilter
         StreamIterator set (InputStream stream)
         {
                 assert (stream);
-                super.source = input = BufferInput.create (stream);
+                super.source = input = BufferedInput.create (stream);
                 return this;
         }
 

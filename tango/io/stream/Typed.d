@@ -15,9 +15,9 @@
 
 module tango.io.stream.Typed;
 
-private import tango.io.stream.Buffer;
-
 private import tango.io.device.Conduit;
+
+private import tango.io.stream.Buffered;
 
 /*******************************************************************************
 
@@ -33,7 +33,7 @@ class TypedInput(T) : InputFilter
 
         this (InputStream stream)
         {
-                super (BufferInput.create (stream));
+                super (BufferedInput.create (stream));
         }
         
         /***********************************************************************
@@ -94,7 +94,7 @@ class TypedOutput(T) : OutputFilter
 
         this (OutputStream stream)
         {
-                super (BufferOutput.create (stream));
+                super (BufferedOutput.create (stream));
         }
 
         /***********************************************************************

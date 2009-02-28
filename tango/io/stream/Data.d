@@ -25,7 +25,7 @@ private import tango.core.ByteSwap;
 
 private import tango.io.device.Conduit;
 
-private import tango.io.stream.Buffer;
+private import tango.io.stream.Buffered;
 
 /*******************************************************************************
 
@@ -75,7 +75,7 @@ class DataInput : InputFilter
 
         this (InputStream stream)
         {
-                super (input = BufferInput.create (stream));
+                super (input = BufferedInput.create (stream));
 
                 allocator = (uint bytes){return new void[bytes];};
         }
@@ -299,7 +299,7 @@ class DataOutput : OutputFilter
 
         this (OutputStream stream)
         {
-                super (output = BufferOutput.create (stream));
+                super (output = BufferedOutput.create (stream));
         }
 
         /***********************************************************************

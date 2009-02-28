@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-module tango.io.stream.Buffer;
+module tango.io.stream.Buffered;
 
 private import tango.io.device.Conduit;
 
@@ -19,8 +19,8 @@ private import tango.io.device.Conduit;
 
 ******************************************************************************/
 
-public alias BufferInput  Bin;          /// shorthand alias
-public alias BufferOutput Bout;         /// ditto
+public alias BufferedInput  Bin;        /// shorthand alias
+public alias BufferedOutput Bout;       /// ditto
 
 /******************************************************************************
 
@@ -52,7 +52,7 @@ private static char[] overflow  = "output buffer is full";
 
 *******************************************************************************/
 
-class BufferInput : InputFilter, InputBuffer
+class BufferedInput : InputFilter, InputBuffer
 {
         alias InputFilter.input input;
 
@@ -141,7 +141,7 @@ class BufferInput : InputFilter, InputBuffer
                       assert (source);
                       }
                       
-                return new BufferInput (stream, conduit.bufferSize);
+                return new BufferedInput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
@@ -355,7 +355,7 @@ class BufferInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 /+
-        final BufferInput consume (void* dst, size_t bytes)
+        final BufferedInput consume (void* dst, size_t bytes)
         {
                 if (extract (dst [0 .. bytes]) != bytes)
                     conduit.error (eofRead);
@@ -497,7 +497,7 @@ class BufferInput : InputFilter, InputBuffer
                       else
                          // no more space in the buffer?
                          if (writable is 0)
-                             conduit.error ("BufferInput.next :: input buffer is full");
+                             conduit.error ("BufferedInput.next :: input buffer is full");
 
                       // read another chunk of data
                       if (write(&source.read) is Eof)
@@ -543,7 +543,7 @@ class BufferInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final BufferInput compress ()
+        final BufferedInput compress ()
         {       
                 size_t r = readable;
 
@@ -677,7 +677,7 @@ class BufferInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final override BufferInput clear ()
+        final override BufferedInput clear ()
         {
                 index = extent = 0;
 
@@ -749,7 +749,7 @@ class BufferInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        private final BufferInput set (void[] data, size_t readable)
+        private final BufferedInput set (void[] data, size_t readable)
         {
                 this.data = data;
                 this.extent = readable;
@@ -792,7 +792,7 @@ class BufferInput : InputFilter, InputBuffer
 
 *******************************************************************************/
 
-class BufferOutput : OutputFilter, OutputBuffer
+class BufferedOutput : OutputFilter, OutputBuffer
 {
         alias OutputFilter.output output;
 
@@ -853,7 +853,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Attempts to share an upstream BufferOutput, and creates a new
+                Attempts to share an upstream BufferedOutput, and creates a new
                 instance where there's not a shared one available.
 
                 Params:
@@ -881,7 +881,7 @@ class BufferOutput : OutputFilter, OutputBuffer
                       assert (sink);
                       }
                       
-                return new BufferOutput (stream, conduit.bufferSize);
+                return new BufferedOutput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
@@ -944,7 +944,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferOutput append (void[] src)
+        final BufferedOutput append (void[] src)
         {
                 return append (src.ptr, src.length);
         }
@@ -967,7 +967,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferOutput append (void* src, size_t length)
+        final BufferedOutput append (void* src, size_t length)
         {
                 if (length > writable)
                    {
@@ -1195,7 +1195,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferOutput clear ()
+        final BufferedOutput clear ()
         {
                 index = extent = 0;
                 return this;
@@ -1326,7 +1326,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final BufferOutput set (void[] data, size_t readable)
+        private final BufferedOutput set (void[] data, size_t readable)
         {
                 this.data = data;
                 this.extent = readable;
@@ -1356,7 +1356,7 @@ class BufferOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final BufferOutput compress ()
+        private final BufferedOutput compress ()
         {       
                 size_t r = readable;
 
@@ -1380,7 +1380,7 @@ debug (Buffer)
 {
         void main()
         {
-                auto input = new BufferInput (null);
-                auto output = new BufferOutput (null);
+                auto input = new BufferedInput (null);
+                auto output = new BufferedOutput (null);
         }
 }

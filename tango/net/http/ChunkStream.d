@@ -18,9 +18,9 @@ module tango.net.http.ChunkStream;
 
 private import  tango.io.stream.Lines;
 
-private import  tango.io.stream.Buffer,
-                tango.io.device.Conduit;
-
+private import  tango.io.device.Conduit,
+                tango.io.stream.Buffered;
+                
 private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
@@ -44,7 +44,7 @@ class ChunkOutput : OutputFilter
 
         this (OutputStream stream)
         {
-                super (output = BufferOutput.create(stream));
+                super (output = BufferedOutput.create(stream));
         }
 
         /***********************************************************************

@@ -14,7 +14,7 @@ module tango.util.log.AppendMail;
 
 private import  tango.util.log.Log;
 
-private import  tango.io.stream.Buffer;
+private import  tango.io.stream.Buffered;
 
 private import  tango.net.SocketConduit,
                 tango.net.InternetAddress;

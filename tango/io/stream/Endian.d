@@ -17,9 +17,9 @@ module tango.io.stream.Endian;
 
 private import tango.core.ByteSwap;
 
-private import tango.io.stream.Buffer;
-
 private import tango.io.device.Conduit;
+
+private import tango.io.stream.Buffered;
 
 /*******************************************************************************
 
@@ -38,7 +38,7 @@ class EndianInput(T) : InputFilter, StreamMutator
 
         this (InputStream stream)
         {
-                super (BufferInput.create (stream));
+                super (BufferedInput.create (stream));
         }
         
         /***********************************************************************
@@ -95,7 +95,7 @@ class EndianOutput (T) : OutputFilter, StreamMutator
 
         this (OutputStream stream)
         {
-                super (output = BufferOutput.create (stream));
+                super (output = BufferedOutput.create (stream));
         }
 
         /***********************************************************************

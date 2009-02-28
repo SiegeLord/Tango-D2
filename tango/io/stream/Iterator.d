@@ -12,7 +12,7 @@
 
 module tango.io.stream.Iterator;
 
-private import tango.io.stream.Buffer;
+private import tango.io.stream.Buffered;
 
 protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream;
 
@@ -86,7 +86,7 @@ class Iterator(T) : InputFilter
         Iterator set (InputStream stream)
         {
                 assert (stream);
-                source = BufferInput.create (stream);
+                source = BufferedInput.create (stream);
                 super.source = source;
                 return this;
         }

@@ -16,9 +16,9 @@
 
 module tango.io.stream.Utf;
 
-private import tango.io.stream.Buffer;
-
 private import tango.io.device.Conduit;
+
+private import tango.io.stream.Buffered;
 
 private import Utf = tango.text.convert.Utf;
 
@@ -45,7 +45,7 @@ class UtfInput(T, S) : InputFilter, StreamMutator
 
         this (InputStream stream)
         {
-                super (buffer = BufferInput.create (stream));
+                super (buffer = BufferedInput.create (stream));
         }
         
         /***********************************************************************
@@ -66,8 +66,8 @@ class UtfInput(T, S) : InputFilter, StreamMutator
                         if (src.length < S.sizeof)
                             return Eof;
 
-                        auto output = BufferInput.convert!(T)(dst);
-                        auto input  = BufferInput.convert!(S)(src);
+                        auto output = BufferedInput.convert!(T)(dst);
+                        auto input  = BufferedInput.convert!(S)(src);
 
                         static if (is (T == char))
                                    produced = Utf.toString(input, output, &consumed).length;
@@ -122,7 +122,7 @@ class UtfOutput (S, T) : OutputFilter, StreamMutator
 
         this (OutputStream stream)
         {
-                super (buffer = BufferOutput.create (stream));
+                super (buffer = BufferedOutput.create (stream));
         }
 
         /***********************************************************************
@@ -153,8 +153,8 @@ class UtfOutput (S, T) : OutputFilter, StreamMutator
                         if (dst.length < 4)
                             return Eof;
 
-                        auto input = BufferOutput.convert!(S)(src);
-                        auto output = BufferOutput.convert!(T)(dst);
+                        auto input = BufferedOutput.convert!(S)(src);
+                        auto output = BufferedOutput.convert!(T)(dst);
 
                         static if (is (T == char))
                                    produced = Utf.toString(input, output, &consumed).length;

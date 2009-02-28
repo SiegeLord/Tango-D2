@@ -15,7 +15,7 @@
 module tango.io.stream.Map;
 
 private import tango.io.stream.Lines,
-               tango.io.stream.Buffer;
+               tango.io.stream.Buffered;
 
 private import Text = tango.text.Util;
 
@@ -132,7 +132,7 @@ class MapOutput(T) : OutputFilter
 
         this (OutputStream stream, T[] newline = NL)
         {
-                super (BufferOutput.create (stream));
+                super (BufferedOutput.create (stream));
                 eol = newline;
         }
 

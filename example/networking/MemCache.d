@@ -44,8 +44,7 @@ private import  tango.io.Console;
 private import  tango.core.Thread,
                 tango.core.Exception;
 
-private import  tango.io.stream.Lines,
-                tango.io.stream.Buffer;
+private import  tango.io.stream.Lines;
 
 private import  tango.net.SocketConduit,
                 tango.net.InternetAddress;

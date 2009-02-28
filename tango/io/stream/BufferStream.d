@@ -13,6 +13,6 @@
 
 module tango.io.stream.BufferStream;
 
-public import tango.io.stream.Buffer;
+public import tango.io.stream.Buffered;
 
-pragma (msg, "warning - io.stream.BufferStream has been renamed io.stream.Buffer");
+pragma (msg, "warning - io.stream.BufferStream has been renamed io.stream.Buffered");
