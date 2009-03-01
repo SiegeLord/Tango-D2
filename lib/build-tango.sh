@@ -131,7 +131,7 @@ build() {
     DC=$1
     LIB=$2
 
-    if ! $DC --help >& /dev/null
+    if ! which $DC >& /dev/null
     then
         echo "$DC not found on your \$PATH!"
         return
@@ -203,7 +203,7 @@ do
             build gdmd libgtango.a libgphobos.a
             ;;
         ldc)
-            build ldc libtango-user-ldc.a build-tango.sh
+            build ldmd libtango-user-ldc.a build-tango.sh
             ;;
         mac)
             POSIXFLAG="-version=Posix"
