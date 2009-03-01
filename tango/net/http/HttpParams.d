@@ -14,13 +14,11 @@ module tango.net.http.HttpParams;
 
 private import  tango.time.Time;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.model.IConduit;
 
 private import  tango.net.http.HttpTokens;
 
 private import  tango.io.stream.Delimiters;
-
-private import  tango.io.protocol.model.IWriter;
 
 public  import  tango.net.http.model.HttpParamsView;
 
@@ -61,11 +59,11 @@ class HttpParams : HttpTokens, HttpParamsView
 
         /**********************************************************************
                 
-                Construct output params upon the provided IBuffer
+                Construct output params upon the provided Buffer
 
         **********************************************************************/
 
-        this (IBuffer output)
+        this (OutputBuffer output)
         {
                 this();
                 setOutputBuffer (output);
@@ -89,7 +87,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void parse (IBuffer input)
+        void parse (InputBuffer input)
         {
                 setParsed (true);
                 amp.set (input);
@@ -167,7 +165,7 @@ class HttpParams : HttpTokens, HttpParamsView
         {
                 return super.getDate (name, ret);
         }
-
+/+
         /**********************************************************************
 
                 Output the token list to the provided writer
@@ -178,14 +176,14 @@ class HttpParams : HttpTokens, HttpParamsView
         {
                 super.write (writer);
         }
-
++/
         /**********************************************************************
 
                 Output the param list to the provided consumer
 
         **********************************************************************/
 
-        void produce (void delegate (void[]) consume, char[] eol)
+        void produce (size_t delegate(void[]) consume, char[] eol)
         {       
                 super.produce (consume, eol);
         }

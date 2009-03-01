@@ -14,16 +14,14 @@ module tango.net.http.HttpTokens;
 
 private import  tango.time.Time;
 
-private import  tango.io.Buffer;
+private import  tango.io.device.Array;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.stream.Buffered;
 
 private import  tango.net.http.HttpStack,
                 tango.net.http.HttpConst;
 
 private import  Text = tango.text.Util;
-
-private import  tango.io.protocol.model.IWriter;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -57,12 +55,11 @@ struct HttpToken
 
 ******************************************************************************/
 
-class HttpTokens : IWritable
+class HttpTokens //: IWritable
 {
-        protected HttpStack    stack;
-
-        private IBuffer         input,
-                                output;
+        protected HttpStack     stack;
+        private Array           input;
+        private OutputBuffer    output;
         private bool            parsed;
         private bool            inclusive;
         private char            separator;
@@ -91,7 +88,7 @@ class HttpTokens : IWritable
                 sepString[0] = separator;
 
                 // pre-construct an empty buffer for wrapping char[] parsing
-                input = new Buffer;
+                input = new Array;
         }
 
         /**********************************************************************
@@ -118,7 +115,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        abstract void parse (IBuffer input);
+        abstract void parse (InputBuffer input);
 
         /**********************************************************************
                 
@@ -128,7 +125,7 @@ class HttpTokens : IWritable
 
         void parse (char[] content)
         {
-                input.setContent (content);
+                input.assign (content);
                 parse (input);       
         }
 
@@ -246,7 +243,7 @@ class HttpTokens : IWritable
                             }
                 return result;
         }
-
+/+
         /**********************************************************************
 
                 Output the token list to the provided writer
@@ -257,14 +254,14 @@ class HttpTokens : IWritable
         {
                 produce (&writer.buffer.consume, HttpConst.Eol);
         }
-
++/
         /**********************************************************************
 
                 Output the token list to the provided consumer
 
         **********************************************************************/
 
-        void produce (void delegate (void[]) consume, char[] eol)
+        void produce (size_t delegate(void[]) consume, char[] eol)
         {
                 foreach (Token token; stack)
                         {
@@ -426,7 +423,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        protected void setOutputBuffer (IBuffer output)
+        protected void setOutputBuffer (OutputBuffer output)
         {
                 this.output = output;
         }
@@ -437,7 +434,7 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        protected IBuffer getOutputBuffer ()
+        protected OutputBuffer getOutputBuffer ()
         {
                 return output;
         }
@@ -452,21 +449,24 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        char[] formatTokens (IBuffer dst, char[] delim)
+        char[] formatTokens (OutputBuffer dst, char[] delim)
         {
-                int adjust = 0;
+                bool first = true;
 
                 foreach (Token token; stack)
                         {
                         char[] content = token.toString;
                         if (content.length)
                            {
-                           dst.append(content).append(delim);
-                           adjust = delim.length;
+                           if (first)
+                               first = false;
+                           else
+                              dst.write (delim);
+                           dst.write (content);
                            }
                         }    
 
-                dst.truncate (dst.limit - adjust);
+                //dst.truncate (dst.limit - adjust);
                 return cast(char[]) dst.slice;
         }
 
@@ -479,10 +479,11 @@ class HttpTokens : IWritable
 
         **********************************************************************/
 
-        protected void add (char[] name, void delegate (IBuffer) dg)
+        protected void add (char[] name, void delegate(OutputBuffer) value)
         {
                 // save the buffer write-position
-                int prior = output.limit;
+                //int prior = output.limit;
+                auto prior = output.slice.length;
 
                 // add the name
                 output.append (name);
@@ -492,7 +493,7 @@ class HttpTokens : IWritable
                       output.append (sepString);
                 
                 // add the value
-                dg (output);
+                value (output);
 
                 // map new token onto buffer slice
                 stack.push (cast(char[]) output.slice [prior .. $]);
@@ -506,9 +507,9 @@ class HttpTokens : IWritable
 
         protected void add (char[] name, char[] value)
         {
-                void addValue (IBuffer buffer)
+                void addValue (OutputBuffer buffer)
                 {
-                        buffer.append (value);
+                        buffer.write (value);
                 }
 
                 add (name, &addValue);

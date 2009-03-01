@@ -16,7 +16,7 @@ private import  tango.time.Time;
 
 private import  tango.io.stream.Lines;
 
-private import  tango.io.model.IBuffer;
+private import  tango.io.model.IConduit;
 
 public  import  tango.net.http.HttpConst;
 
@@ -94,7 +94,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        void parse (IBuffer input)
+        void parse (InputBuffer input)
         {
                 setParsed (true);
                 line.set (input);
@@ -242,7 +242,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        this (IBuffer output)
+        this (OutputBuffer output)
         {
                 super ();
                 super.setOutputBuffer (output);
@@ -277,7 +277,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void add (HttpHeaderName name, void delegate (IBuffer) dg)
+        void add (HttpHeaderName name, void delegate(OutputBuffer) dg)
         {
                 super.add (name.value, dg);
         }
@@ -333,7 +333,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        IBuffer getOutputBuffer ()
+        OutputBuffer getOutputBuffer ()
         {
                 return super.getOutputBuffer ();
         }

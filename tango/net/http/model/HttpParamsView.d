@@ -14,9 +14,9 @@ module tango.net.http.model.HttpParamsView;
 
 private import  tango.time.Time;
 
-private import  tango.io.model.IBuffer;
+//private import  tango.io.model.IBuffer;
 
-private import  tango.io.protocol.model.IWriter;
+//private import  tango.io.protocol.model.IWriter;
 
 /******************************************************************************
 
@@ -31,7 +31,7 @@ private import  tango.io.protocol.model.IWriter;
 
 ******************************************************************************/
 
-interface HttpParamsView : IWritable
+interface HttpParamsView //: IWritable
 {
         /**********************************************************************
 
@@ -74,5 +74,5 @@ interface HttpParamsView : IWritable
 
         **********************************************************************/
 
-        void produce (void delegate (void[]) consume, char[] eol);
+        void produce (size_t delegate(void[]) consume, char[] eol);
 }

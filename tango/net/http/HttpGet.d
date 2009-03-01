@@ -12,9 +12,7 @@
 
 module tango.net.http.HttpGet;
 
-public  import  tango.net.Uri;
-
-private import  tango.io.Buffer;
+public import   tango.net.Uri;
 
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;
@@ -35,7 +33,7 @@ private import  tango.net.http.HttpClient,
 
 class HttpGet : HttpClient
 {      
-        private GrowBuffer buffer;
+        alias HttpClient.read read;
 
         /***********************************************************************
         
@@ -45,9 +43,9 @@ class HttpGet : HttpClient
 
         ***********************************************************************/
 
-        this (char[] url, uint pageChunk = 16 * 1024)
+        this (char[] url)
         {
-                this (new Uri(url), pageChunk);
+                this (new Uri(url));
         }
 
         /***********************************************************************
@@ -58,10 +56,9 @@ class HttpGet : HttpClient
 
         ***********************************************************************/
 
-        this (Uri uri, uint pageChunk = 16 * 1024)
+        this (Uri uri)
         {
                 super (HttpClient.Get, uri);
-                buffer = new GrowBuffer (pageChunk, pageChunk);
         }
 
         /***********************************************************************
@@ -70,18 +67,19 @@ class HttpGet : HttpClient
 
         void[] read ()
         {
+                auto buffer = super.open;
                 try {
-                    buffer.clear;
-                    open (buffer);
-                    if (isResponseOK)
-                        buffer.fill (getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max));
-                    } finally {close;}
+                    if (super.isResponseOK)
+                        buffer.load (getResponseHeaders.getInt(HttpHeader.ContentLength, uint.max));
+                    } finally {super.close;}
                 return buffer.slice;
         }
-
-        alias HttpClient.read read;
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
 
 debug (HttpGet)
 {       

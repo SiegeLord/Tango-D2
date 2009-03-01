@@ -12,15 +12,15 @@
 
 module tango.net.http.HttpCookies;
 
-private import  tango.io.Buffer;
-
 private import  tango.stdc.ctype;
+
+private import  tango.io.device.Array;
+
+private import  tango.io.model.IConduit;
 
 private import  tango.io.stream.Iterator;
 
 private import  tango.net.http.HttpHeaders;
-
-private import  tango.io.protocol.model.IWriter;
 
 private import  Integer = tango.text.convert.Integer;
 
@@ -36,7 +36,7 @@ private import  Integer = tango.text.convert.Integer;
 
 *******************************************************************************/
 
-class Cookie : IWritable
+class Cookie //: IWritable
 {
         char[]          name,
                         path,
@@ -166,7 +166,7 @@ class Cookie : IWritable
                 this.secure = secure;
                 return this;
         }
-
+/+
         /***********************************************************************
         
                 Output the cookie as a text stream, via the provided IWriter
@@ -177,14 +177,14 @@ class Cookie : IWritable
         {
                 produce (&writer.buffer.consume);
         }
-
++/
         /***********************************************************************
         
                 Output the cookie as a text stream, via the provided consumer
 
         ***********************************************************************/
 
-        void produce (void delegate(void[]) consume)
+        void produce (size_t delegate(void[]) consume)
         {
                 consume (name);
 
@@ -325,7 +325,7 @@ class CookieStack
 
 *******************************************************************************/
 
-class HttpCookiesView : IWritable
+class HttpCookiesView //: IWritable
 {
         private bool                    parsed;
         private CookieStack             stack;
@@ -348,7 +348,7 @@ class HttpCookiesView : IWritable
                 // create a parser
                 parser = new CookieParser (stack);
         }
-
+/+
         /**********************************************************************
 
                 Output each of the cookies parsed to the provided IWriter.
@@ -359,14 +359,14 @@ class HttpCookiesView : IWritable
         {
                 produce (&writer.buffer.consume, HttpConst.Eol);
         }
-
++/
         /**********************************************************************
 
                 Output the token list to the provided consumer
 
         **********************************************************************/
 
-        void produce (void delegate (void[]) consume, char[] eol = HttpConst.Eol)
+        void produce (size_t delegate(void[]) consume, char[] eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);
@@ -442,7 +442,7 @@ class HttpCookies
         void add (Cookie cookie)
         {
                 // add the cookie header via our callback
-                headers.add (name, (IBuffer buf){cookie.produce (&buf.consume);});        
+                headers.add (name, (OutputBuffer buf){cookie.produce (&buf.write);});        
         }
 }
 
@@ -459,7 +459,7 @@ class CookieParser : Iterator!(char)
         private enum State {Begin, LValue, Equals, RValue, Token, SQuote, DQuote};
 
         private CookieStack       stack;
-        private Buffer            buffer;
+        private Array             array;
         private static bool[128]  charMap;
 
         /***********************************************************************
@@ -497,7 +497,7 @@ class CookieParser : Iterator!(char)
         {
                 super();
                 this.stack = stack;
-                buffer = new Buffer;
+                array = new Array;
         }
 
         /***********************************************************************
@@ -666,7 +666,7 @@ class CookieParser : Iterator!(char)
 
         bool parse (char[] header)
         {
-                super.set (buffer.setContent (header));
+                super.set (array.assign (header));
                 return next.ptr > null;
         }
 

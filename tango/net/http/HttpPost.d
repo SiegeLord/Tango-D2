@@ -14,7 +14,7 @@ module tango.net.http.HttpPost;
 
 public import   tango.net.Uri;
 
-private import  tango.io.Buffer;
+private import  tango.io.model.IConduit;
 
 private import  tango.net.http.HttpClient,
                 tango.net.http.HttpHeaders;
@@ -36,8 +36,6 @@ private import  tango.net.http.HttpClient,
 
 class HttpPost : HttpClient
 {      
-        private GrowBuffer buffer;
-
         /***********************************************************************
         
                 Create a client for the given URL. The argument should be
@@ -46,9 +44,9 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        this (char[] url, uint pageChunk = 16 * 1024)
+        this (char[] url)
         {
-                this (new Uri(url), pageChunk);
+                this (new Uri(url));
         }
 
         /***********************************************************************
@@ -59,10 +57,9 @@ class HttpPost : HttpClient
 
         ***********************************************************************/
 
-        this (Uri uri, uint pageChunk = 16 * 1024)
+        this (Uri uri)
         {
                 super (HttpClient.Post, uri);
-                buffer = new GrowBuffer (pageChunk, pageChunk);
         }
 
         /***********************************************************************
@@ -78,24 +75,6 @@ class HttpPost : HttpClient
 
         /***********************************************************************
         
-                Send content and no query params. The contentLength header
-                will be set to match the provided content, and contentType
-                set to the given type.
-
-        ***********************************************************************/
-
-        void[] write (void[] content, char[] type)
-        {
-                auto headers = getRequestHeaders();
-
-                headers.add    (HttpHeader.ContentType, type);
-                headers.addInt (HttpHeader.ContentLength, content.length);
-                
-                return write (delegate void (IBuffer b){b.append(content);});
-        }
-
-        /***********************************************************************
-        
                 Send raw data via the provided pump, and no query 
                 params. You have full control over headers and so 
                 on via this method.
@@ -104,19 +83,35 @@ class HttpPost : HttpClient
 
         void[] write (Pump pump)
         {
+                auto buffer = super.open (pump);
                 try {
-                    buffer.clear;
-                    open (pump, buffer);
-
                     // check return status for validity
-                    auto status = getStatus();
+                    auto status = super.getStatus;
                     if (status is HttpResponseCode.OK || 
                         status is HttpResponseCode.Created || 
                         status is HttpResponseCode.Accepted)
-                        buffer.fill (getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max));
+                        buffer.load (getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max));
                     } finally {close;}
 
                 return buffer.slice;
+        }
+
+        /***********************************************************************
+        
+                Send content and no query params. The contentLength header
+                will be set to match the provided content, and contentType
+                set to the given type.
+
+        ***********************************************************************/
+
+        void[] write (void[] content, char[] type)
+        {
+                auto headers = super.getRequestHeaders;
+
+                headers.add    (HttpHeader.ContentType, type);
+                headers.addInt (HttpHeader.ContentLength, content.length);
+                
+                return write ((OutputBuffer b){b.append(content);});
         }
 }
 

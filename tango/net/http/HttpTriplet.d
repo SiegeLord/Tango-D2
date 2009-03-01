@@ -14,15 +14,13 @@ module tango.net.http.HttpTriplet;
 
 private import  tango.core.Exception;
 
-private import  tango.io.protocol.model.IWriter;
-
 /******************************************************************************
 
         Class to represent an HTTP response- or request-line 
 
 ******************************************************************************/
 
-class HttpTriplet : IWritable
+class HttpTriplet //: IWritable
 {
         protected char[]        line;
         protected char[][3]     tokens;
@@ -73,7 +71,7 @@ class HttpTriplet : IWritable
         {
                 return line;
         }
-
+/+
         /**********************************************************************
 
                 Output the string via the given writer
@@ -84,7 +82,7 @@ class HttpTriplet : IWritable
         {
                writer(toString).newline();
         }
-
++/
         /**********************************************************************
 
                 throw an exception

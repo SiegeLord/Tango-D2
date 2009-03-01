@@ -20,11 +20,14 @@ module tango.net.http.HttpClient;
 
 private import  tango.time.Time;
                 
-private import  tango.io.Buffer;
-
 private import  tango.net.Uri,
                 tango.net.SocketConduit,
                 tango.net.InternetAddress;
+
+private import  tango.io.device.Array;
+
+private import  tango.io.stream.Lines;
+private import  tango.io.stream.Buffered;
 
 private import  tango.net.http.HttpConst,
                 tango.net.http.HttpParams,  
@@ -32,10 +35,7 @@ private import  tango.net.http.HttpConst,
                 tango.net.http.HttpTriplet,
                 tango.net.http.HttpCookies;
 
-private import  tango.io.stream.Lines;
-
 private import  Integer = tango.text.convert.Integer;
-
 
 /*******************************************************************************
 
@@ -46,7 +46,7 @@ private import  Integer = tango.text.convert.Integer;
         // callback for client reader
         void sink (void[] content)
         {
-                Stdout.put (cast(char[]) content);
+                Stdout (cast(char[]) content);
         }
 
         // create client for a GET request
@@ -62,13 +62,13 @@ private import  Integer = tango.text.convert.Integer;
            auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength);
         
            // display all returned headers
-           Stdout.put (client.getResponseHeaders);
+           Stdout (client.getResponseHeaders);
         
            // display remaining content
            client.read (&sink, length);
            }
         else
-           Stderr.put (client.getResponse);
+           Stderr (client.getResponse);
 
         client.close;
         ---
@@ -80,7 +80,7 @@ private import  Integer = tango.text.convert.Integer;
 class HttpClient
 {       
         // callback for sending PUT content
-        alias void delegate (IBuffer) Pump;
+        alias void delegate (OutputBuffer) Pump;
         
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
@@ -90,9 +90,9 @@ class HttpClient
                         
         // class members; there's a surprising amount of stuff here!
         private Uri                     uri;
-        private IBuffer                 tmp,
-                                        input,
-                                        output;
+        private BufferedInput           input;
+        private BufferedOutput          output;
+        private Array                   tokens;
         private Lines!(char)            line;
         private SocketConduit           socket;
         private RequestMethod           method;
@@ -163,12 +163,13 @@ class HttpClient
 
                 responseLine = new ResponseLine;
                 headersIn    = new HttpHeadersView;
+                tokens       = new Array (1024 * 4);
 
-                tmp          = new Buffer (1024 * 4);
-                output       = new Buffer (1024 * 16);
+                input        = new BufferedInput  (null, 1024 * 16);
+                output       = new BufferedOutput (null, 1024 * 16);
 
-                paramsOut    = new HttpParams  (new Buffer (1024 * 4));
-                headersOut   = new HttpHeaders (new Buffer (1024 * 4));
+                paramsOut    = new HttpParams  (new Array (1024 * 4));
+                headersOut   = new HttpHeaders (new Array (1024 * 4));
                 cookiesOut   = new HttpCookies (headersOut, HttpHeader.Cookie);
 
                 // decode the host name (may take a second or two)
@@ -384,9 +385,9 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (IBuffer buffer = null)
+        InputBuffer open ()
         {
-                return open (method, null, buffer);
+                return open (method, null);
         }
 
         /***********************************************************************
@@ -399,16 +400,16 @@ class HttpClient
                 
         ***********************************************************************/
 
-        IBuffer open (Pump pump, IBuffer buffer = null)
+        InputBuffer open (Pump pump)
         {
-                return open (method, pump, buffer);
+                return open (method, pump);
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        IBuffer openStart (Pump pump, IBuffer input)
+        OutputBuffer openStart (Pump pump)
         {
                 if (++redirections > redirectionLimit)
                     responseLine.error ("too many redirections, or a circular redirection");
@@ -427,14 +428,9 @@ class HttpClient
                    }
 
                 // setup buffers for input and output
-                output.setConduit(socket);
-                if (input)
-                    input.setConduit(socket).clear;
-                else
-                    input = new Buffer(socket);
-
-                // save for read() method
-                this.input = input;
+                output.output (socket);
+                input.input (socket);
+                input.clear;
 
                 // setup a Host header
                 if (headersOut.get (HttpHeader.Host, null) is null)
@@ -445,8 +441,9 @@ class HttpClient
                     headersOut.add (HttpHeader.Connection, "close");
 
                 // attach/extend query parameters if user has added some
-                tmp.clear;
-                auto query = uri.extendQuery (paramsOut.formatTokens(tmp, "&"));
+                // place for
+                tokens.clear;
+                auto query = uri.extendQuery (paramsOut.formatTokens(tokens, "&"));
 
                 // patch request path?
                 auto path = uri.getPath;
@@ -454,21 +451,24 @@ class HttpClient
                     path = "/";
 
                 // format encoded request 
-                output (method.name) (" ");
+                output.append (method.name)
+                      .append (" ");
+
+                // emit path
                 if (encode)
-                    uri.encode (&output.consume, path, uri.IncPath);
+                    uri.encode (&output.write, path, uri.IncPath);
                 else
-                    output (path);
+                    output.append (path);
 
                 // should we emit query as part of request line?
                 if (query.length)
                     if (method != Post)
                        {
-                       output ("?");
+                       output.append("?");
                        if (encode)
-                           uri.encode (&output.consume, query, uri.IncQueryAll);
+                           uri.encode (&output.write, query, uri.IncQueryAll);
                        else
-                           output (query);
+                           output.append (query);
                        }
                     else 
                        if (pump.funcptr is null)
@@ -484,15 +484,17 @@ class HttpClient
                                  query = uri.encode (query, uri.IncQueryAll);
 
                              headersOut.addInt (HttpHeader.ContentLength, query.length);
-                             pump = (IBuffer o){o.append(query);};
+                             pump = (OutputBuffer o){o.append(query);};
                              }
                           }
 
                 // complete the request line, and emit headers too
-                output (" ") (httpVersion) (HttpConst.Eol);
+                output.append (" ")
+                      .append (httpVersion)
+                      .append (HttpConst.Eol);
 
-                headersOut.produce (&output.consume, HttpConst.Eol);
-                output (HttpConst.Eol);
+                headersOut.produce (&output.write, HttpConst.Eol);
+                output.append (HttpConst.Eol);
                 
                 if (pump.funcptr)
                     pump (output);
@@ -503,7 +505,7 @@ class HttpClient
         
         ***********************************************************************/
 
-        IBuffer openFinish (Pump pump)
+        InputBuffer openFinish (Pump pump)
         {
                 // send entire request
                 output.flush;
@@ -559,10 +561,10 @@ class HttpClient
 
                                 // figure out what to do
                                 if (method is Get || method is Head)
-                                    return open (method, pump, input);
+                                    return open (method, pump);
                                 else
                                     if (method is Post)
-                                        return redirectPost (pump, input, responseLine.getStatus);
+                                        return redirectPost (pump, responseLine.getStatus);
                                     else
                                         responseLine.error ("unexpected redirect for method "~method.name);
                            default:
@@ -584,7 +586,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        void read (void delegate (void[]) sink, long len = long.max)
+        void read (void delegate(void[]) sink, long len = long.max)
         {
                 while (len > 0)
                       {
@@ -599,7 +601,7 @@ class HttpClient
                          {
                          sink (content);
                          input.clear;
-                         if (input.fill(input.input) is socket.Eof)
+                         if (input.populate is socket.Eof)
                              break;
                          }
                       }
@@ -614,7 +616,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        IBuffer redirectPost (Pump pump, IBuffer input, int status)
+        InputBuffer redirectPost (Pump pump, int status)
         {
                 switch (status)
                        {
@@ -626,13 +628,13 @@ class HttpClient
                             headersOut.remove (HttpHeader.ContentLength);
                             headersOut.remove (HttpHeader.ContentType);
                             paramsOut.reset;
-                            return open (Get, null, input);
+                            return open (Get, null);
 
                             // try entire Post again, if user say OK
                        case HttpResponseCode.MovedPermanently:
                        case HttpResponseCode.TemporaryRedirect:
                             if (canRepost (status))
-                                return open (this.method, pump, input);
+                                return open (this.method, pump);
                             // fall through!
 
                        default:
@@ -690,14 +692,14 @@ class HttpClient
                 
         ***********************************************************************/
 
-        private IBuffer open (RequestMethod method, Pump pump, IBuffer input)
+        private InputBuffer open (RequestMethod method, Pump pump)
         {
                 try {
                     this.method = method;
-                    openStart(pump, input);
+                    openStart (pump);
                     // user has additional data to send?
    
-                    return openFinish(pump);
+                    return openFinish (pump);
                     } finally {redirections = 0;}
         }
 }
@@ -765,5 +767,47 @@ private class ResponseLine : HttpTriplet
         int getStatus ()
         {
                 return status;
+        }
+}
+
+
+/******************************************************************************
+
+******************************************************************************/
+
+version (Debug)
+{
+        import tango.io.Stdout;
+
+        void main()
+        {
+        // callback for client reader
+        void sink (void[] content)
+        {
+                Stdout (cast(char[]) content);
+        }
+
+        // create client for a GET request
+        auto client = new HttpClient (HttpClient.Get, "http://www.yahoo.com");
+
+        // make request
+        client.open;
+
+        // check return status for validity
+        if (client.isResponseOK)
+           {
+           // extract content length
+           auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength);
+        
+           // display all returned headers
+           Stdout (client.getResponseHeaders);
+        
+           // display remaining content
+           client.read (&sink, length);
+           }
+        else
+           Stderr (client.getResponse);
+
+        client.close;
         }
 }
