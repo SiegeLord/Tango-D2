@@ -742,7 +742,7 @@ class Buffer : IBuffer
 
         bool next (size_t delegate (void[]) scan)
         {
-                while (read(scan) is IConduit.Eof)
+                while (reader(scan) is IConduit.Eof)
                        // not found - are we streaming?
                        if (binput)
                           {
@@ -852,7 +852,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        size_t write (size_t delegate (void[]) dg)
+        size_t writer (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -885,7 +885,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        size_t read (size_t delegate (void[]) dg)
+        size_t reader (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [index..extent]);
 
@@ -956,7 +956,7 @@ class Buffer : IBuffer
                    if (writable is 0)
                        return 0;
 +/
-                return write (&src.read);
+                return writer (&src.read);
         }
 
         /***********************************************************************
@@ -980,7 +980,7 @@ class Buffer : IBuffer
                 if (dst is null)
                     return IConduit.Eof;
 
-                auto ret = read (&dst.write);
+                auto ret = reader (&dst.write);
                 if (ret is IConduit.Eof)
                     error (eofWrite);
 
@@ -1315,13 +1315,15 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override InputStream clear ()
+        override IOStream clear ()
         {
                 index = extent = 0;
 
                 // clear the filter chain also
                 if (binput)
                     binput.clear;
+                if (boutput)
+                    boutput.clear;
                 return this;
         }
 
@@ -1340,7 +1342,7 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override OutputStream copy (InputStream src)
+        override OutputStream copy (InputStream src, size_t max=-1)
         {
                 while (fill(src) != IConduit.Eof)
                        // don't drain until we actually need to
@@ -1363,7 +1365,7 @@ class Buffer : IBuffer
                               
         ***********************************************************************/
 
-        void[] load (void[] dst = null)
+        void[] load (size_t max=-1)
         {
                 return slice;
         }
@@ -1672,7 +1674,7 @@ class GrowBuffer : Buffer
                 if (writable <= increment/8)
                     expand (increment);
 
-                return write (&src.read);
+                return writer (&src.read);
         } 
 
         /***********************************************************************

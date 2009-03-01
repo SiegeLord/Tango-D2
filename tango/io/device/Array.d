@@ -474,7 +474,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         final bool next (size_t delegate (void[]) scan)
         {
-                return read (scan) != IConduit.Eof;
+                return reader (scan) != IConduit.Eof;
         }
 
         /***********************************************************************
@@ -577,7 +577,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override InputStream clear ()
+        final override IOStream clear ()
         {
                 index = extent = 0;
                 return this;
@@ -603,7 +603,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t write (size_t delegate (void[]) dg)
+        final size_t writer (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -636,7 +636,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t read (size_t delegate (void[]) dg)
+        final size_t reader (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [index..extent]);
 

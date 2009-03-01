@@ -13,6 +13,8 @@
 
 module tango.io.stream.Buffered;
 
+public import tango.io.model.IConduit;
+
 private import tango.io.device.Conduit;
 
 /******************************************************************************
@@ -158,7 +160,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final size_t populate ()
         {
-                return write (&input.read);
+                return writer (&input.read);
         }
 
         /***********************************************************************
@@ -245,7 +247,7 @@ class BufferedInput : InputFilter, InputBuffer
 
                    // populate tail of buffer with new content
                    do {
-                      if (write (&source.read) is Eof)
+                      if (writer (&source.read) is Eof)
                           conduit.error (eofRead);
                       } while (size > readable);
                    }
@@ -277,7 +279,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t read (size_t delegate (void[]) dg)
+        final size_t reader (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [index..extent]);
 
@@ -331,38 +333,12 @@ class BufferedInput : InputFilter, InputBuffer
                           index = extent = 0;  // same as clear, without call-chain
 
                       // keep buffer partially populated
-                      if ((content = write(&source.read)) != Eof && content > 0)
+                      if ((content = writer (&source.read)) != Eof && content > 0)
                            content = read (dst);
                       }
                 return content;
         }
 
-        /***********************************************************************
-
-                Copy buffer content into the provided dst
-
-                Params:
-                dst = destination of the content
-                bytes = size of dst
-
-                Returns:
-                A reference to the populated content
-
-                Remarks:
-                Fill the provided array with content. We try to satisfy
-                the request from the buffer content, and read directly
-                from an attached conduit where more is required.
-
-        ***********************************************************************/
-/+
-        final BufferedInput consume (void* dst, size_t bytes)
-        {
-                if (extract (dst [0 .. bytes]) != bytes)
-                    conduit.error (eofRead);
-
-                return this;
-        }
-+/
         /**********************************************************************
 
                 Fill the provided buffer. Returns the number of bytes
@@ -430,6 +406,12 @@ class BufferedInput : InputFilter, InputBuffer
                 return slice(size) !is null;
         }
 
+        /***********************************************************************
+
+                Move the current read location
+
+        ***********************************************************************/
+
         final override long seek (long offset, Anchor start = Anchor.Begin)
         {
                 if (start is Anchor.Current)
@@ -488,7 +470,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final bool next (size_t delegate (void[]) scan)
         {
-                while (read(scan) is Eof)
+                while (reader(scan) is Eof)
                       {
                       // did we start at the beginning?
                       if (position)
@@ -500,7 +482,7 @@ class BufferedInput : InputFilter, InputBuffer
                              conduit.error ("BufferedInput.next :: input buffer is full");
 
                       // read another chunk of data
-                      if (write(&source.read) is Eof)
+                      if (writer(&source.read) is Eof)
                           return false;
                       }
                 return true;
@@ -574,7 +556,7 @@ class BufferedInput : InputFilter, InputBuffer
         {
                 assert (dst);
 
-                size_t ret = read (&dst.write);
+                size_t ret = reader (&dst.write);
                 compress;
                 return ret;
         }
@@ -677,7 +659,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final override BufferedInput clear ()
+        final override IOStream clear ()
         {
                 index = extent = 0;
 
@@ -699,6 +681,55 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
+                Load the bits from a stream, up to an indicated length, and 
+                return them all in an array. The function may consume more
+                than the indicated size where additional data is available
+                during a block read operation, but will not wait for more 
+                than specified. An Eof terminates the operation.
+
+                Returns an array representing the content, and throws
+                IOException on error
+                              
+        ***********************************************************************/
+
+        final override void[] load (size_t max = -1)
+        {
+                load (super.input, super.conduit.bufferSize, max);
+                return slice;
+        }
+                
+        /***********************************************************************
+
+                Import content from the specified conduit, expanding 
+                as necessary up to the indicated maximum or until an 
+                Eof occurs
+
+                Returns the number of bytes contained.
+        
+        ***********************************************************************/
+
+        private size_t load (InputStream src, size_t increment, size_t max)
+        {
+                size_t  len,
+                        count;
+
+                while (count < max)
+                      {
+                      if (writable <= (increment / 8))
+                         {
+                         dimension += increment;
+                         data.length = dimension;               
+                         }
+                      if ((len = writer(&src.read)) is Eof)
+                           break;
+                      else
+                         count += len;
+                      }
+                return count;
+        }       
+
+        /***********************************************************************
+
                 Write into this buffer
 
                 Params:
@@ -717,7 +748,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        private final size_t write (size_t delegate (void[]) dg)
+        private size_t writer (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -995,33 +1026,6 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Consume content from a producer
-
-                Params:
-                The content to consume. This is consumed verbatim, and in
-                raw binary format ~ no implicit conversions are performed.
-
-                Remarks:
-                This is often used in lieu of a Writer, and enables simple
-                classes, such as FilePath and Uri, to emit content directly
-                into a buffer (thus avoiding potential heap activity)
-
-                Examples:
-                ---
-                auto path = new FilePath (somepath);
-
-                path.produce (&buffer.consume);
-                ---
-
-        ***********************************************************************/
-
-        final void consume (void[] x)
-        {
-                append (x);
-        }
-
-        /***********************************************************************
-
                 Available space
 
                 Remarks:
@@ -1125,7 +1129,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         {
                 while (readable > 0)
                       {
-                      auto ret = read (&sink.write);
+                      auto ret = reader (&sink.write);
                       if (ret is Eof)
                           conduit.error (eofWrite);
                       }
@@ -1151,14 +1155,20 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final override OutputStream copy (InputStream src)
+        final override OutputStream copy (InputStream src, size_t max = -1)
         {
-                while (write(&src.read) != Eof)
-                       // don't drain until we actually need to
-                       if (writable is 0)
-                           if (drain(sink) is Eof)
-                               conduit.error (eofWrite);
+                size_t chunk,
+                       copied;
 
+                while (copied < max && (chunk = writer(&src.read)) != Eof)
+                      {
+                      copied += chunk;
+
+                      // don't drain until we actually need to
+                      if (writable is 0)
+                          if (drain(sink) is Eof)
+                              conduit.error (eofWrite);
+                      }
                 return this;
         }
 
@@ -1180,7 +1190,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         {
                 assert (dst);
 
-                size_t ret = read (&dst.write);
+                size_t ret = reader (&dst.write);
                 compress;
                 return ret;
         }
@@ -1195,7 +1205,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferedOutput clear ()
+        final IOStream clear ()
         {
                 index = extent = 0;
                 return this;
@@ -1246,7 +1256,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final size_t write (size_t delegate (void[]) dg)
+        final size_t writer (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -1279,7 +1289,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final size_t read (size_t delegate (void[]) dg)
+        private final size_t reader (size_t delegate (void[]) dg)
         {
                 auto count = dg (data [index..extent]);
 

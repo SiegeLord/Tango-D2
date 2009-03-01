@@ -112,11 +112,11 @@ class Conduit : IConduit
                             
         /***********************************************************************
 
-                clear any buffered input
+                clear any buffered data
 
         ***********************************************************************/
 
-        InputStream clear () 
+        IOStream clear () 
         {
                 return this;
         }
@@ -186,9 +186,9 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        OutputStream copy (InputStream src)
+        OutputStream copy (InputStream src, size_t max = -1)
         {
-                transfer (src, this);
+                transfer (src, this, max);
                 return this;
         }
 
@@ -203,9 +203,9 @@ class Conduit : IConduit
                 
         ***********************************************************************/
 
-        void[] load (void[] dst = null)
+        void[] load (size_t max = -1)
         {
-                return load (this, dst);
+                return load (this, null, max);
         }
 
         /***********************************************************************
@@ -232,31 +232,42 @@ class Conduit : IConduit
                 
         ***********************************************************************/
 
-        static void[] load (InputStream src, void[] dst = null)
+        static void[] load (InputStream src, void[] dst=null, size_t max=-1)
         {
                 auto index = 0;
-                auto chunk = 8192;
-                
-                do {
-                   if (dst.length - index < 1024)
-                       dst.length = chunk + dst.length + dst.length / 2;
+                auto chunk = dst.length;
 
-                   chunk = src.read (dst[index .. $]);
-                   index += chunk;
-                   } while (chunk != Eof)
+                if (chunk < 1024)
+                    chunk = 32 * 1024;
 
-                return dst [0 .. index - chunk];
+                while (max)
+                      {
+                      if (dst.length - index < 1024)
+                          dst.length = chunk + dst.length;
+
+                      auto len = max;
+                      if (len > dst.length)
+                          len = dst.length;
+
+                      if ((len = src.read (dst[index .. index+len])) is Eof)
+                           max = 0;
+                      else
+                         index += len;
+                      }
+
+                return dst [0 .. index];
         }
 
         /***********************************************************************
                 
                 Low-level data transfer, where max represents the maximum
-                number of bytes to transfer, and tmp represents space for
-                buffering the transfer. Throws IOException on failure.
+                number of bytes to transfer. 
+
+                Returns Eof on failure, number of bytes copied on success
 
         ***********************************************************************/
 
-        static size_t transfer (InputStream src, OutputStream dst, size_t max=size_t.max)
+        static size_t transfer (InputStream src, OutputStream dst, size_t max=-1)
         {
                 byte[8192] tmp;
                 size_t     done;
@@ -276,8 +287,7 @@ class Conduit : IConduit
                          auto p = tmp.ptr;
                          for (auto j=0; len > 0; len -= j, p += j)
                               if ((j = dst.write (p[0 .. len])) is Eof)
-                                   dst.conduit.error ("Conduit.copy :: Eof while writing to: "~
-                                                       dst.conduit.toString);
+                                   return Eof;
                          }
                       }
 
@@ -347,9 +357,9 @@ class InputFilter : InputStream
                               
         ***********************************************************************/
 
-        void[] load (void[] dst = null)
+        void[] load (size_t max = -1)
         {
-                return Conduit.load (this, dst);
+                return Conduit.load (this, null, max);
         }
 
         /***********************************************************************
@@ -358,7 +368,7 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        InputStream clear ()
+        IOStream clear ()
         {
                 source.clear;
                 return this;
@@ -457,9 +467,21 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        OutputStream copy (InputStream src)
+        OutputStream copy (InputStream src, size_t max = -1)
         {
-                Conduit.transfer (src, this);
+                Conduit.transfer (src, this, max);
+                return this;
+        }
+
+        /***********************************************************************
+
+                Clear any buffered content
+
+        ***********************************************************************/
+
+        IOStream clear ()
+        {
+                sink.clear;
                 return this;
         }
 

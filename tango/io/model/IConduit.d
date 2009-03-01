@@ -112,7 +112,7 @@ interface ISelectable
 
 interface IOStream 
 {
-                const Eof = -1; /// the End-of-Flow identifer
+        const Eof = -1; /// the End-of-Flow identifer
 
         /***********************************************************************
         
@@ -146,6 +146,14 @@ interface IOStream
 
         IConduit conduit ();
                           
+        /***********************************************************************
+        
+                Clear any buffered content
+
+        ***********************************************************************/
+
+        IOStream clear ();               
+        
         /***********************************************************************
         
                 Close the input
@@ -188,15 +196,7 @@ interface InputStream : IOStream
                               
         ***********************************************************************/
 
-        void[] load (void[] dst = null);
-        
-        /***********************************************************************
-        
-                Clear any buffered content
-
-        ***********************************************************************/
-
-        InputStream clear ();               
+        void[] load (size_t max = -1);
         
         /***********************************************************************
         
@@ -236,7 +236,7 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        OutputStream copy (InputStream src);
+        OutputStream copy (InputStream src, size_t max = -1);
                           
         /***********************************************************************
         
@@ -264,13 +264,11 @@ interface OutputStream : IOStream
 
 interface InputBuffer : InputStream
 {
-        alias InputStream.read read;
-
         void[] slice ();
 
-        size_t read (size_t delegate(void[]) dg);
-
         bool next (size_t delegate(void[]) scan);
+
+        size_t reader (size_t delegate(void[]) consumer);
 }
 
 /*******************************************************************************
@@ -281,13 +279,11 @@ interface InputBuffer : InputStream
 
 interface OutputBuffer : OutputStream
 {
-        alias OutputStream.write write;
-
         void[] slice ();
         
         OutputBuffer append (void[]);
 
-        size_t write (size_t delegate(void[]) dg);
+        size_t writer (size_t delegate(void[]) producer);
 }
 
 

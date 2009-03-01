@@ -236,7 +236,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract size_t write (size_t delegate (void[]) writer);
+        abstract size_t writer (size_t delegate (void[]) writer);
 
         /***********************************************************************
 
@@ -252,7 +252,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract size_t read (size_t delegate (void[]) reader);
+        abstract size_t reader (size_t delegate (void[]) reader);
 
         /***********************************************************************
 
@@ -596,7 +596,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract InputStream clear ();               
+        abstract IOStream clear ();               
 
         /***********************************************************************
         
@@ -613,7 +613,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract OutputStream copy (InputStream src);
+        abstract OutputStream copy (InputStream src, size_t max=-1);
 
         /***********************************************************************
                 

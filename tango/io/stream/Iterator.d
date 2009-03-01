@@ -280,12 +280,11 @@ class Iterator(T) : InputFilter
                     return true;
 
                 // consume trailing token
-                source.read ((void[] arr) 
-                            { 
-                            slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
-                            return arr.length; 
-                            }
-                            );
+                source.reader ((void[] arr) 
+                              { 
+                              slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
+                              return arr.length; 
+                              });
                 return false;
         }
 }
