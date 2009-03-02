@@ -1716,9 +1716,9 @@ class DummyInputStream : InputStream // IConduit.Seek
     override void close() {}
     override size_t read(void[] dst) { return IConduit.Eof; }
     override InputStream clear() { return this; }
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
     override long seek(long offset, Anchor anchor = cast(Anchor)0) { return 0; }
 }
@@ -1739,9 +1739,9 @@ class DummyOutputStream : OutputStream //, IConduit.Seek
     override IConduit conduit() { return null; }
     override void close() {}
     override size_t write(void[] src) { return IConduit.Eof; }
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
     override OutputStream flush() { return this; }
@@ -1830,9 +1830,9 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
         return this;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
@@ -1920,9 +1920,9 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
         return result;
     }
 
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
 
@@ -2028,9 +2028,9 @@ class WrapSeekInputStream : InputStream //, IConduit.Seek
         return this;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
@@ -2117,9 +2117,9 @@ class WrapSeekOutputStream : OutputStream//, IConduit.Seek
         return wrote;
     }
 
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
 

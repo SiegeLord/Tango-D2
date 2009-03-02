@@ -1831,9 +1831,9 @@ class ZipEntryVerifier : InputStream
         return bytes;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
     
     InputStream clear()
@@ -2332,9 +2332,9 @@ class CounterInput : InputStream
         return read;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override InputStream clear()
@@ -2394,9 +2394,9 @@ class CounterOutput : OutputStream
         return wrote;
     }
 
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
 
@@ -2498,9 +2498,9 @@ class SliceSeekInputStream : InputStream
         return read;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override InputStream clear()
@@ -2617,9 +2617,9 @@ class SliceInputStream : InputStream
         return read;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override InputStream clear()
@@ -2705,9 +2705,9 @@ class SliceSeekOutputStream : OutputStream
         return wrote;
     }
 
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
 
@@ -2842,9 +2842,9 @@ class WrapSeekInputStream : InputStream
         return read;
     }
 
-    override void[] load(void[] dst = null)
+    override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, dst);
+        return Conduit.load(this, null, max);
     }
 
     override InputStream clear()
@@ -2937,9 +2937,9 @@ class WrapSeekOutputStream : OutputStream
         return wrote;
     }
 
-    override OutputStream copy(InputStream src)
+    override OutputStream copy(InputStream src, size_t max=-1)
     {
-        Conduit.transfer(src, this);
+        Conduit.transfer(src, this, max);
         return this;
     }
 

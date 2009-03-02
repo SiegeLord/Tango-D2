@@ -94,9 +94,9 @@ class SnoopInput : InputStream
                               
         ***********************************************************************/
 
-        void[] load (void[] dst = null)
+        void[] load (size_t max=-1)
         {
-                auto x = host.load (dst);
+                auto x = host.load (max);
                 trace ("{}: loaded {} bytes", x.length);
                 return x;
         }
@@ -261,9 +261,9 @@ class SnoopOutput : OutputStream
 
         ***********************************************************************/
 
-        final OutputStream copy (InputStream src)
+        final OutputStream copy (InputStream src, size_t max=-1)
         {
-                host.copy (src);
+                host.copy (src, max);
                 trace("{}: copied from {}", host.conduit, src.conduit);
                 return this;
         }
