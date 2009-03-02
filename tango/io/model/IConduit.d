@@ -279,6 +279,8 @@ interface InputBuffer : InputStream
 
 interface OutputBuffer : OutputStream
 {
+        alias append opCall;
+
         void[] slice ();
         
         OutputBuffer append (void[]);
