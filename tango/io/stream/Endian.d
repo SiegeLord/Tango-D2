@@ -27,7 +27,7 @@ private import tango.io.stream.Buffered;
 
 *******************************************************************************/
 
-class EndianInput(T) : InputFilter, StreamMutator
+class EndianInput(T) : InputFilter, InputFilter.Mutator
 {       
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
                     pragma (msg, "EndianInput :: type should be of length 2, 4, or 8 bytes");
@@ -82,7 +82,7 @@ class EndianInput(T) : InputFilter, StreamMutator
 
 *******************************************************************************/
 
-class EndianOutput (T) : OutputFilter, StreamMutator
+class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
 {       
         static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
                     pragma (msg, "EndianOutput :: type should be of length 2, 4, or 8 bytes");

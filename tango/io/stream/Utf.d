@@ -29,7 +29,7 @@ private import Utf = tango.text.convert.Utf;
 
 *******************************************************************************/
 
-class UtfInput(T, S) : InputFilter, StreamMutator
+class UtfInput(T, S) : InputFilter, InputFilter.Mutator
 {       
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
                     pragma (msg, "Source type must be char, wchar, or dchar");
@@ -105,7 +105,7 @@ class UtfInput(T, S) : InputFilter, StreamMutator
 
 *******************************************************************************/
 
-class UtfOutput (S, T) : OutputFilter, StreamMutator
+class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 {       
         static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
                     pragma (msg, "Source type must be char, wchar, or dchar");

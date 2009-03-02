@@ -133,7 +133,7 @@ class BufferedInput : InputFilter, InputBuffer
         {
                 auto source = stream;
                 auto conduit = source.conduit;
-                while (cast(StreamMutator) source is null)
+                while (cast(Mutator) source is null)
                       {
                       auto b = cast(InputBuffer) source;
                       if (b)
@@ -902,7 +902,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         {
                 auto sink = stream;
                 auto conduit = sink.conduit;
-                while (cast(StreamMutator) sink is null)
+                while (cast(Mutator) sink is null)
                       {
                       auto b = cast(OutputBuffer) sink;
                       if (b)

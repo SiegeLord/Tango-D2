@@ -112,7 +112,7 @@ interface ISelectable
 
 interface IOStream 
 {
-        const Eof = -1; /// the End-of-Flow identifer
+        const Eof = -1;         /// the End-of-Flow identifer
 
         /***********************************************************************
         
@@ -120,11 +120,11 @@ interface IOStream
 
         ***********************************************************************/
 
-        enum Anchor     {
-                        Begin   = 0,
-                        Current = 1,
-                        End     = 2,
-                        };
+        enum Anchor {
+                    Begin   = 0,
+                    Current = 1,
+                    End     = 2,
+                    };
 
         /***********************************************************************
                 
@@ -149,7 +149,7 @@ interface IOStream
         /***********************************************************************
         
                 Flush buffered content. For InputStream this is equivalent
-                to merely clearing buffered content
+                to clearing buffered content
 
         ***********************************************************************/
 
@@ -162,6 +162,36 @@ interface IOStream
         ***********************************************************************/
 
         void close ();               
+
+
+        /***********************************************************************
+        
+                Marks a stream that performs read/write mutation, rather than 
+                generic decoration. This is used to identify those stream that
+                should explicitly not share an upstream buffer with downstream
+                siblings.
+        
+                Many streams add simple decoration (such as DataStream) while
+                others are merely template aliases. However, streams such as
+                EndianStream mutate content as it passes through the read and
+                write methods, which must be respected. On one hand we wish
+                to share a single buffer instance, while on the other we must
+                ensure correct data flow through an arbitrary combinations of  
+                streams. 
+
+                There are two stream variations: one which operate directly 
+                upon memory (and thus must have access to a buffer) and another 
+                that prefer to have buffered input (for performance reasons) but 
+                can operate without. EndianStream is an example of the former, 
+                while DataStream represents the latter.
+        
+                In order to sort out who gets what, each stream makes a request
+                for an upstream buffer at construction time. The request has an
+                indication of the intended purpose (array-based access, or not). 
+
+        ***********************************************************************/
+
+        interface Mutator {}
 }
 
 
@@ -282,31 +312,3 @@ interface OutputBuffer : OutputStream
 }
 
 
-/*******************************************************************************
-        
-        Marks a stream that performs read/write mutation, rather than 
-        generic decoration. This is used to identify those stream that
-        should explicitly not share an upstream buffer with downstream
-        siblings.
-        
-        Many streams add simple decoration (such as DataStream) while
-        others are merely template aliases. However, streams such as
-        EndianStream mutate content as it passes through the read and
-        write methods, which must be respected. On one hand we wish
-        to share a single buffer instance, while on the other we must
-        ensure correct data flow through an arbitrary combinations of  
-        streams. 
-
-        There are two stream variations: one which operate directly 
-        upon memory (and thus must have access to a buffer) and another 
-        that prefer to have buffered input (for performance reasons) but 
-        can operate without. EndianStream is an example of the former, 
-        while DataStream represents the latter.
-        
-        In order to sort out who gets what, each stream makes a request
-        for an upstream buffer at construction time. The request has an
-        indication of the intended purpose (array-based access, or not). 
-
-*******************************************************************************/
-
-interface StreamMutator {}
