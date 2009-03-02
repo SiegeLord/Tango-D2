@@ -1836,7 +1836,7 @@ class ZipEntryVerifier : InputStream
         return Conduit.load(this, null, max);
     }
     
-    InputStream clear()
+    override IOStream clear()
     {
         this.source.clear;
         return this;
@@ -2509,7 +2509,7 @@ class SliceSeekInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override InputStream clear()
+    override IOStream clear()
     {
         source.clear();
         return this;
@@ -2628,7 +2628,7 @@ class SliceInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override InputStream clear()
+    override IOStream clear()
     {
         source.clear();
         return this;
@@ -2859,7 +2859,7 @@ class WrapSeekInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override InputStream clear()
+    override IOStream clear()
     {
         source.clear();
         return this;

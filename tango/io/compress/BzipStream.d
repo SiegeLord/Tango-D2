@@ -18,7 +18,7 @@ private import tango.core.Exception : IOException;
 
 private import tango.io.device.Conduit : InputFilter, OutputFilter;
 
-private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
+private import tango.io.model.IConduit : InputStream, OutputStream, IConduit, IOStream;
 
 private
 {
@@ -366,7 +366,7 @@ class BzipInput : InputFilter
 
     ***************************************************************************/ 
 
-    InputStream clear()
+    override IOStream clear()
     {
         check_valid();
 
