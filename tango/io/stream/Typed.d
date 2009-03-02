@@ -42,9 +42,9 @@ class TypedInput(T) : InputFilter
 
         ***********************************************************************/
 
-        final override TypedInput clear ()
+        final override TypedInput flush ()
         {
-                super.clear;
+                super.flush;
                 return this;
         }
 
