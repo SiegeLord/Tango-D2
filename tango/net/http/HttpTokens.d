@@ -59,7 +59,7 @@ class HttpTokens //: IWritable
 {
         protected HttpStack     stack;
         private Array           input;
-        private OutputBuffer    output;
+        private Array           output;
         private bool            parsed;
         private bool            inclusive;
         private char            separator;
@@ -89,6 +89,9 @@ class HttpTokens //: IWritable
 
                 // pre-construct an empty buffer for wrapping char[] parsing
                 input = new Array;
+
+                // construct an array for containing stack tokens
+                output = new Array (4096, 1024);
         }
 
         /**********************************************************************
@@ -140,10 +143,8 @@ class HttpTokens //: IWritable
                 stack.reset;
                 parsed = false;
 
-                // reset output buffer, if it was configured
-                if (output)
-                    output.clear;
-
+                // reset output buffer
+                output.clear;
                 return this;
         }
 
@@ -415,29 +416,6 @@ class HttpTokens //: IWritable
         ****************** these should be exposed carefully ******************
         **********************************************************************/
 
-
-        /**********************************************************************
-                
-                Set the output buffer for adding tokens to. This is used
-                by the various mutating classes.
-
-        **********************************************************************/
-
-        protected void setOutputBuffer (OutputBuffer output)
-        {
-                this.output = output;
-        }
-
-        /**********************************************************************
-                
-                Return the buffer used for output.
-
-        **********************************************************************/
-
-        protected OutputBuffer getOutputBuffer ()
-        {
-                return output;
-        }
 
         /**********************************************************************
                 

@@ -168,8 +168,8 @@ class HttpClient
                 input        = new BufferedInput  (null, 1024 * 16);
                 output       = new BufferedOutput (null, 1024 * 16);
 
-                paramsOut    = new HttpParams  (new Array (1024 * 4));
-                headersOut   = new HttpHeaders (new Array (1024 * 4));
+                paramsOut    = new HttpParams;
+                headersOut   = new HttpHeaders;
                 cookiesOut   = new HttpCookies (headersOut, HttpHeader.Cookie);
 
                 // decode the host name (may take a second or two)

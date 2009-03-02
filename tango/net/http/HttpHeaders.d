@@ -237,15 +237,12 @@ class HttpHeaders : HttpHeadersView
 {
         /**********************************************************************
                 
-                Construct output headers, using the provided buffer as
-                a place to stash the header content.
+                Construct output headers
 
         **********************************************************************/
 
-        this (OutputBuffer output)
+        this ()
         {
-                super ();
-                super.setOutputBuffer (output);
         }
 
         /**********************************************************************
@@ -325,16 +322,5 @@ class HttpHeaders : HttpHeadersView
         bool remove (HttpHeaderName name)
         {
                 return super.remove (name.value);
-        }
-
-        /**********************************************************************
-                
-                Return the output buffer provided during construction.
-
-        **********************************************************************/
-
-        OutputBuffer getOutputBuffer ()
-        {
-                return super.getOutputBuffer ();
         }
 }

@@ -58,18 +58,6 @@ class HttpParams : HttpTokens, HttpParamsView
         }
 
         /**********************************************************************
-                
-                Construct output params upon the provided Buffer
-
-        **********************************************************************/
-
-        this (OutputBuffer output)
-        {
-                this();
-                setOutputBuffer (output);
-        }
-
-        /**********************************************************************
 
                 Return the number of headers
 
