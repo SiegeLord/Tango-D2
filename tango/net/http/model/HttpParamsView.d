@@ -14,10 +14,6 @@ module tango.net.http.model.HttpParamsView;
 
 private import  tango.time.Time;
 
-//private import  tango.io.model.IBuffer;
-
-//private import  tango.io.protocol.model.IWriter;
-
 /******************************************************************************
 
         Maintains a set of query parameters, parsed from an HTTP request.
