@@ -31,7 +31,7 @@ public class LayoutChainsaw : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, void delegate(void[]) dg)
+        void format (LogEvent event, size_t delegate(void[]) dg)
         {
                 char[20] tmp;
                 char[]   threadName;

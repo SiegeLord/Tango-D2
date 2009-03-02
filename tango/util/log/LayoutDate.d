@@ -52,7 +52,7 @@ public class LayoutDate : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, void delegate(void[]) dg)
+        void format (LogEvent event, size_t delegate(void[]) dg)
         {
                 char[] level = event.levelName;
                 
