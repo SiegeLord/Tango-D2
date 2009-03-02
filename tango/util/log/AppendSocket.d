@@ -98,7 +98,7 @@ public class AppendSocket : Appender
                           connected = true;
                           }
 
-                       layout.format (event, &buffer.consume);
+                       layout.format (event, &buffer.write);
                        buffer.flush;
                        return;
                        } catch (Exception e)

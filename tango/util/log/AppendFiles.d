@@ -123,10 +123,10 @@ public class AppendFiles : Filer
                 if (fileSize >= maxSize)
                     nextFile (true);
 
-                void write (void[] content)
+                size_t write (void[] content)
                 {
                         fileSize += content.length;
-                        buffer.append (content);
+                        return buffer.write (content);
                 }
 
                 // write log message and flush it

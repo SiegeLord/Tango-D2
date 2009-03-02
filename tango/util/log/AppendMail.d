@@ -76,7 +76,7 @@ public class AppendMail : Appender
                     .append (subj) 
                     .append ("\r\nContent-Type: text/plain; charset=us-ascii\r\n\r\n");
                 
-                layout.format (event, &emit.consume);
+                layout.format (event, &emit.write);
                 emit.append ("\r\n.\r\nQUIT\r\n");
                 emit.flush;
         }

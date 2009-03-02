@@ -82,7 +82,7 @@ class AppendFile : Filer
 
         final synchronized void append (LogEvent event)
         {
-                layout.format (event, &buffer.consume);
+                layout.format (event, &buffer.write);
                 buffer.append (FileConst.NewlineString)
                       .flush;
         }
