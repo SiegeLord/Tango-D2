@@ -52,6 +52,8 @@ extern (C)
 
 class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 {
+        public alias flush clear;               /// synonym
+
         private void[]  data;                   // the raw data buffer
         private size_t  index;                  // current read position
         private size_t  extent;                 // limit of valid content
@@ -289,10 +291,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 the buffer instance
 
                 Remarks:
-                Set the backing array with all content readable. Writing
-                to this will either flush it to an associated conduit, or
-                raise an Eof condition. Use clear() to reset the content
-                (make it all writable).
+                Set the backing array with all content readable. 
 
         ***********************************************************************/
 
@@ -314,10 +313,8 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 the buffer instance
 
                 Remarks:
-                Set the backing array with some content readable. Writing
-                to this will either flush it to an associated conduit, or
-                raise an Eof condition. Use clear() to reset the content
-                (make it all writable).
+                Set the backing array with some content readable. Use clear() 
+                to reset the content (make it all writable).
 
         ***********************************************************************/
 
@@ -438,9 +435,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 Throws an IOException indicating eof or eob if not.
 
                 Remarks:
-                Append an array to this buffer, and flush to the
-                conduit as necessary. This is often used in lieu of
-                a Writer.
+                Append an array to this buffer
 
         ***********************************************************************/
 
@@ -577,7 +572,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override IOStream clear ()
+        final override Array flush ()
         {
                 index = extent = 0;
                 return this;

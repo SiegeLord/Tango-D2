@@ -56,6 +56,7 @@ private static char[] overflow  = "output buffer is full";
 
 class BufferedInput : InputFilter, InputBuffer
 {
+        alias flush clear;
         alias InputFilter.input input;
 
         private void[]        data;                   // the raw data buffer
@@ -659,12 +660,12 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final override IOStream clear ()
+        final override BufferedInput flush ()
         {
                 index = extent = 0;
 
                 // clear the filter chain also
-                super.clear;
+                super.flush;
                 return this;
         }
 
@@ -1125,7 +1126,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final override OutputStream flush ()
+        final override BufferedOutput flush ()
         {
                 while (readable > 0)
                       {
@@ -1155,7 +1156,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final override OutputStream copy (InputStream src, size_t max = -1)
+        final override BufferedOutput copy (InputStream src, size_t max = -1)
         {
                 size_t chunk,
                        copied;
@@ -1205,7 +1206,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final IOStream clear ()
+        final BufferedOutput clear ()
         {
                 index = extent = 0;
                 return this;

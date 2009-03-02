@@ -19,7 +19,7 @@ import tango.io.FilePath : FilePath;
 import tango.io.device.TempFile : TempFile;
 import tango.io.compress.Zip : ZipReader, ZipBlockReader,
        ZipWriter, ZipBlockWriter, ZipEntry, ZipEntryInfo, Method;
-import tango.io.model.IConduit : IConduit, InputStream, OutputStream, IOStream;
+import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
        VfsFolders, VfsFiles, VfsFilter, VfsStats, VfsFilterInfo,
        VfsInfo, VfsSync;
@@ -1715,7 +1715,7 @@ class DummyInputStream : InputStream // IConduit.Seek
     override IConduit conduit() { return null; }
     override void close() {}
     override size_t read(void[] dst) { return IConduit.Eof; }
-    override IOStream clear() { return this; }
+    override InputStream flush() { return this; }
     override void[] load(size_t max=-1)
     {
         return Conduit.load(this, null, max);
@@ -1738,7 +1738,6 @@ class DummyOutputStream : OutputStream //, IConduit.Seek
     override OutputStream output() {return null;}
     override IConduit conduit() { return null; }
     override void close() {}
-    override IOStream clear() { return this; }
     override size_t write(void[] src) { return IConduit.Eof; }
     override OutputStream copy(InputStream src, size_t max=-1)
     {
@@ -1824,9 +1823,9 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
         return result;
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         if( callbacks.clear ) callbacks.clear();
         return this;
     }
@@ -1900,11 +1899,6 @@ class EventSeekOutputStream : OutputStream //, IConduit.Seek
         if( callbacks.close ) callbacks.close();
     }
 
-    override IOStream clear() 
-    {
-        source.clear();
-        return this;
-    }
     override size_t write(void[] dst)
     {
         auto result = source.write(dst);
@@ -2028,9 +2022,9 @@ class WrapSeekInputStream : InputStream //, IConduit.Seek
         return read;
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         return this;
     }
 
@@ -2104,12 +2098,6 @@ class WrapSeekOutputStream : OutputStream//, IConduit.Seek
     override OutputStream output()
     {
         return source;
-    }
-
-    override IOStream clear() 
-    {
-        source.clear();
-        return this;
     }
 
     override void close()

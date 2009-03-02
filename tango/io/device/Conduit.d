@@ -112,22 +112,11 @@ class Conduit : IConduit
                             
         /***********************************************************************
 
-                clear any buffered data
+                Emit buffered output or reset buffered input
 
         ***********************************************************************/
 
-        IOStream clear () 
-        {
-                return this;
-        }
-
-        /***********************************************************************
-
-                Emit buffered output
-
-        ***********************************************************************/
-
-        OutputStream flush () 
+        IOStream flush () 
         {
                 return this;
         }
@@ -368,9 +357,9 @@ class InputFilter : InputStream
 
         ***********************************************************************/
 
-        IOStream clear ()
+        IOStream flush ()
         {
-                source.clear;
+                source.flush;
                 return this;
         }
 
@@ -475,23 +464,11 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Clear any buffered content
-
-        ***********************************************************************/
-
-        IOStream clear ()
-        {
-                sink.clear;
-                return this;
-        }
-
-        /***********************************************************************
-
                 Emit/purge buffered content
 
         ***********************************************************************/
 
-        OutputStream flush ()
+        IOStream flush ()
         {
                 sink.flush;
                 return this;

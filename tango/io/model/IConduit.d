@@ -148,11 +148,12 @@ interface IOStream
                           
         /***********************************************************************
         
-                Clear any buffered content
+                Flush buffered content. For InputStream this is equivalent
+                to merely clearing buffered content
 
         ***********************************************************************/
 
-        IOStream clear ();               
+        IOStream flush ();               
         
         /***********************************************************************
         
@@ -238,14 +239,6 @@ interface OutputStream : IOStream
 
         OutputStream copy (InputStream src, size_t max = -1);
                           
-        /***********************************************************************
-        
-                Purge buffered content
-
-        ***********************************************************************/
-
-        OutputStream flush ();               
-        
         /***********************************************************************
         
                 Return the upstream sink

@@ -1315,15 +1315,13 @@ class Buffer : IBuffer
 
         ***********************************************************************/
 
-        override IOStream clear ()
+        override InputStream clear ()
         {
                 index = extent = 0;
 
                 // clear the filter chain also
                 if (binput)
-                    binput.clear;
-                if (boutput)
-                    boutput.clear;
+                    binput.flush;
                 return this;
         }
 

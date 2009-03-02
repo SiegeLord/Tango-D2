@@ -596,7 +596,7 @@ abstract class IBuffer : IConduit, Buffered
 
         ***********************************************************************/
 
-        abstract IOStream clear ();               
+        abstract InputStream clear ();               
 
         /***********************************************************************
         

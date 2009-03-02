@@ -25,7 +25,7 @@ private import tango.core.Exception : IOException;
 
 private import tango.io.device.Conduit : InputFilter, OutputFilter;
 
-private import tango.io.model.IConduit : InputStream, OutputStream, IConduit, IOStream;
+private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
 private import tango.text.convert.Integer : toString;
 
@@ -275,7 +275,7 @@ class ZlibInput : InputFilter
 
     ***************************************************************************/ 
 
-    override IOStream clear()
+    override InputStream flush()
     {
         check_valid();
 
@@ -284,7 +284,7 @@ class ZlibInput : InputFilter
         // stream...
         kill_zs();
 
-        super.clear();
+        super.flush();
         return this;
     }
 

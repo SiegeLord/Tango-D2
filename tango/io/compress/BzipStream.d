@@ -18,7 +18,7 @@ private import tango.core.Exception : IOException;
 
 private import tango.io.device.Conduit : InputFilter, OutputFilter;
 
-private import tango.io.model.IConduit : InputStream, OutputStream, IConduit, IOStream;
+private import tango.io.model.IConduit : InputStream, OutputStream, IConduit;
 
 private
 {
@@ -366,7 +366,7 @@ class BzipInput : InputFilter
 
     ***************************************************************************/ 
 
-    override IOStream clear()
+    override InputStream flush()
     {
         check_valid();
 
@@ -374,7 +374,7 @@ class BzipInput : InputFilter
         // so there's really nothing to clear...  For now, just invalidate the
         // stream...
         kill_bzs();
-        super.clear();
+        super.flush();
         return this;
     }
 

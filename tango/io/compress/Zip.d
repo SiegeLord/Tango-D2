@@ -33,7 +33,7 @@ import tango.io.FilePath : FilePath, PathView;
 import tango.io.device.FileMap : FileMap;
 import tango.io.compress.ZlibStream : ZlibInput, ZlibOutput;
 import tango.io.digest.Crc32 : Crc32;
-import tango.io.model.IConduit : IConduit, InputStream, OutputStream, IOStream;
+import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.stream.Digester : DigestInput;
 import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
@@ -1236,7 +1236,7 @@ private:
 
             // All done.
             scope(exit) in_chain.close();
-            scope(success) in_chain.clear();
+            scope(success) in_chain.flush();
             scope(exit) out_chain.close();
 
             out_chain.copy(in_chain).flush;
@@ -1836,9 +1836,9 @@ class ZipEntryVerifier : InputStream
         return Conduit.load(this, null, max);
     }
     
-    override IOStream clear()
+    override InputStream flush()
     {
-        this.source.clear;
+        this.source.flush;
         return this;
     }
 
@@ -2337,9 +2337,9 @@ class CounterInput : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         return this;
     }
 
@@ -2406,13 +2406,7 @@ class CounterOutput : OutputStream
         return this;
     }
 
-    override IOStream clear()
-    {
-        sink.clear();
-        return this;
-    }
-
-    ///
+  ///
     long count() { return _count; }
 
 private:
@@ -2509,9 +2503,9 @@ class SliceSeekInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         return this;
     }
 
@@ -2628,9 +2622,9 @@ class SliceInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         return this;
     }
 
@@ -2726,12 +2720,6 @@ class SliceSeekOutputStream : OutputStream
     override OutputStream output()
     {
         return source;
-    }
-
-    override IOStream clear()
-    {
-        source.clear();
-        return this;
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
@@ -2859,9 +2847,9 @@ class WrapSeekInputStream : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override IOStream clear()
+    override InputStream flush()
     {
-        source.clear();
+        source.flush();
         return this;
     }
 
@@ -2930,12 +2918,6 @@ class WrapSeekOutputStream : OutputStream
     override IConduit conduit()
     {
         return source.conduit;
-    }
-
-    override IOStream clear()
-    {
-        source.clear();
-        return this;
     }
 
     override void close()
