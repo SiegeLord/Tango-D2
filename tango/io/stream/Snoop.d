@@ -107,7 +107,7 @@ class SnoopInput : InputStream
 
         ***********************************************************************/
 
-        final InputStream clear ()
+        final IOStream clear ()
         {
                 host.clear;
                 trace ("{}: cleared", host.conduit);
@@ -243,6 +243,19 @@ class SnoopOutput : OutputStream
         }
 
         /***********************************************************************
+
+                Clear any buffered content
+
+        ***********************************************************************/
+
+        final IOStream clear ()
+        {
+                host.clear;
+                trace ("{}: cleared", host.conduit);
+                return this;
+        }
+
+         /***********************************************************************
 
                 Close the output
 

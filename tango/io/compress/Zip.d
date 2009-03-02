@@ -33,7 +33,7 @@ import tango.io.FilePath : FilePath, PathView;
 import tango.io.device.FileMap : FileMap;
 import tango.io.compress.ZlibStream : ZlibInput, ZlibOutput;
 import tango.io.digest.Crc32 : Crc32;
-import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
+import tango.io.model.IConduit : IConduit, InputStream, OutputStream, IOStream;
 import tango.io.stream.Digester : DigestInput;
 import tango.time.Time : Time, TimeSpan;
 import tango.time.WallClock : WallClock;
@@ -2337,7 +2337,7 @@ class CounterInput : InputStream
         return Conduit.load(this, null, max);
     }
 
-    override InputStream clear()
+    override IOStream clear()
     {
         source.clear();
         return this;
@@ -2403,6 +2403,12 @@ class CounterOutput : OutputStream
     override OutputStream flush()
     {
         sink.flush();
+        return this;
+    }
+
+    override IOStream clear()
+    {
+        sink.clear();
         return this;
     }
 
@@ -2722,6 +2728,12 @@ class SliceSeekOutputStream : OutputStream
         return source;
     }
 
+    override IOStream clear()
+    {
+        source.clear();
+        return this;
+    }
+
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
     {
         switch( anchor )
@@ -2918,6 +2930,12 @@ class WrapSeekOutputStream : OutputStream
     override IConduit conduit()
     {
         return source.conduit;
+    }
+
+    override IOStream clear()
+    {
+        source.clear();
+        return this;
     }
 
     override void close()
