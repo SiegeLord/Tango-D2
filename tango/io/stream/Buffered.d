@@ -56,13 +56,13 @@ private static char[] overflow  = "output buffer is full";
 
 class BufferedInput : InputFilter, InputBuffer
 {
-        alias flush clear;
-        alias InputFilter.input input;
+        alias flush             clear;          /// clear/flush are the same
+        alias InputFilter.input input;          /// access the source 
 
-        private void[]        data;                   // the raw data buffer
-        private size_t        index;                  // current read position
-        private size_t        extent;                 // limit of valid content
-        private size_t        dimension;              // maximum extent of content
+        private void[]        data;             // the raw data buffer
+        private size_t        index;            // current read position
+        private size_t        extent;           // limit of valid content
+        private size_t        dimension;        // maximum extent of content
 
         /***********************************************************************
 
@@ -826,12 +826,12 @@ class BufferedInput : InputFilter, InputBuffer
 
 class BufferedOutput : OutputFilter, OutputBuffer
 {
-        alias OutputFilter.output output;
+        alias OutputFilter.output output;       /// access the sink
 
-        private void[]        data;                   // the raw data buffer
-        private size_t        index;                  // current read position
-        private size_t        extent;                 // limit of valid content
-        private size_t        dimension;              // maximum extent of content
+        private void[]        data;             // the raw data buffer
+        private size_t        index;            // current read position
+        private size_t        extent;           // limit of valid content
+        private size_t        dimension;        // maximum extent of content
 
         /***********************************************************************
 

@@ -52,8 +52,6 @@ extern (C)
 
 class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 {
-        public alias flush clear;               /// synonym
-
         private void[]  data;                   // the raw data buffer
         private size_t  index;                  // current read position
         private size_t  extent;                 // limit of valid content
