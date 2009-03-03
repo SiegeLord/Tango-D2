@@ -565,7 +565,7 @@ class Text(T) : TextView!(T)
 
         final Text append (InputStream source)
         {
-                T[8192/sizeof(T)] tmp = void;
+                T[8192/T.sizeof] tmp = void;
                 while (true) 
                       {
                       auto len = source.read (tmp); 
@@ -573,8 +573,8 @@ class Text(T) : TextView!(T)
                           break; 
 
                       // check to ensure UTF conversion is ok
-                      assert (len & (sizeof(T)-1)) is 0);
-                      append (tmp [0 .. len/sizeof(T)]);
+                      assert ((len & (T.sizeof-1)) is 0);
+                      append (tmp [0 .. len/T.sizeof]);
                       }
                 return this;
         }
