@@ -572,9 +572,20 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override Array flush ()
+        final Array clear ()
         {
                 index = extent = 0;
+                return this;
+        }
+
+        /***********************************************************************
+
+                Emit/purge buffered content
+
+        ***********************************************************************/
+
+        final override Array flush ()
+        {
                 return this;
         }
 

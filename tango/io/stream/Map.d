@@ -201,14 +201,14 @@ debug (UnitTest)
 {
         import tango.io.Stdout;
         import tango.io.device.Array;
-
+        
         unittest
         {
                 auto buf = new Array(200);
-                auto input = new MapInput!(wchar)(buf);
-                auto output = new MapOutput!(wchar)(buf);
+                auto input = new MapInput!(char)(buf);
+                auto output = new MapOutput!(char)(buf);
 
-                wchar[][wchar[]] map;
+                char[][char[]] map;
                 map["foo"] = "bar";
                 map["foo2"] = "bar2";
                 output.append(map).flush;
