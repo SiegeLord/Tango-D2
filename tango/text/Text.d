@@ -564,7 +564,12 @@ class Text(T) : TextView!(T)
         final Text append (InputStream source)
         {
                 T[2048] tmp = void;
-                return append (cast(T[]) source.load (tmp));
+                while(1) {
+                    auto len=source.read(tmp); // stop also on 0?
+                    if (len==source.Eof) break; 
+                    append (tmp[0..len]);
+                }
+                return this;
         }
 
         /***********************************************************************
