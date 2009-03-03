@@ -16,7 +16,7 @@
 #	make unittest
 #		Performs the unittests of the runtime library
 
-LIB_BASE=libtango-rt-dmd
+LIB_BASE=tango-rt-dmd
 LIB_BUILD=
 LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).lib
 LIB_MASK=$(LIB_BASE)*.lib
