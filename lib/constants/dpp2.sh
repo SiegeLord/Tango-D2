@@ -6,4 +6,4 @@ if [ -e $CPP ]
 else
     CPP=`which cpp`
 fi
-$CPP -P -C $* | sed -e '1,/xx*  *start  *xx*/ d' -e '/^# [0-9]{1,} / d' -e 's/__XYX__//g'
+$CPP -P -C $* | sed -e '/^# [0-9]{1,} / d' -e 's/__XYX__//g'

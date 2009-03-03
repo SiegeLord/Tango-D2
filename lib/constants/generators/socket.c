@@ -1,21 +1,25 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#undef const
+tt
 xxx start xxx
-module tango.stdc.constants.socket;
+module tango.stdc.constants.autoConf.socket;
 
 #if (defined(_WINDOWS)||defined(WIN32))
-    enum __XYX__IOCPARM_MASK = IOCPARM_MASK;
-    enum __XYX__IOC_IN       = IOC_IN      ;
-    enum __XYX__FIONBIO      = FIONBIO     ;
-
-    enum __XYX__WSADESCRIPTION_LEN = WSADESCRIPTION_LEN;
-    enum __XYX__WSASYS_STATUS_LEN  = WSASYS_STATUS_LEN ;
-    enum __XYX__WSAEWOULDBLOCK     = WSAEWOULDBLOCK    ;
-    enum __XYX__WSAEINTR           = WSAEINTR          ;
+enum {
+    __XYX__IOCPARM_MASK = IOCPARM_MASK,
+    __XYX__IOC_IN       = IOC_IN      ,
+    __XYX__FIONBIO      = FIONBIO     ,
+    
+    __XYX__WSADESCRIPTION_LEN = WSADESCRIPTION_LEN,
+    __XYX__WSASYS_STATUS_LEN  = WSASYS_STATUS_LEN ,
+    __XYX__WSAEWOULDBLOCK     = WSAEWOULDBLOCK    ,
+    __XYX__WSAEINTR           = WSAEINTR          ,
+}
 #else
-    import tango.stdc.constants.fctl: __XYX__F_GETFL, __XYX__F_SETFL,__XYX__O_NONBLOCK;
-    enum SOCKET_ERROR = -1;
+    import tango.stdc.constants.fcntl: __XYX__F_GETFL, __XYX__F_SETFL,__XYX__O_NONBLOCK;
+    enum {SOCKET_ERROR = -1}
 #endif
 
     enum SocketOption: int
@@ -51,12 +55,14 @@ module tango.stdc.constants.socket;
     
     enum SocketOptionLevel
     {
-        __XYX__SOCKET = SOL_SOCKET,
+        __XYX__SOCKET = SOL_SOCKET    ,
         __XYX__IP     = IPPROTO_IP    ,   
         __XYX__TCP    = IPPROTO_TCP   ,   
         __XYX__UDP    = IPPROTO_UDP   ,   
     }
     
+    enum { __XYX__AF_INET6    = AF_INET6 }
+    enum { __XYX__SOCK_RAW    = SOCK_RAW }
     /***********************************************************************
 
             Protocol
@@ -88,12 +94,12 @@ module tango.stdc.constants.socket;
     
     enum AddressFamily: int
     {
-        __XYX__UNSPEC    = AF_UNSPEC   ;
-        __XYX__UNIX      = AF_UNIX     ;
-        __XYX__INET      = AF_INET     ;
-        __XYX__IPX       = AF_IPX      ;
-        __XYX__APPLETALK = AF_APPLETALK;
+        __XYX__UNSPEC    = AF_UNSPEC   ,
+        __XYX__UNIX      = AF_UNIX     ,
+        __XYX__INET      = AF_INET     ,
+        __XYX__IPX       = AF_IPX      ,
+        __XYX__APPLETALK = AF_APPLETALK,
 #ifdef AF_INET6
-        __XYX__INET6     = AF_INET6    ;
+        __XYX__INET6     = AF_INET6    ,
 #endif
     }

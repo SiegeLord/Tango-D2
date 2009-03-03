@@ -8,5 +8,5 @@ cd generators
 rm -rf $destDir
 mkdir -p $destDir
 for f in *.c ; do
-    ../dpp.sh $* "$f" > "$destDir/${f%.*}.d"
+    ../dpp2.sh $* "$f" > "$destDir/${f%.*}.d"
 done

@@ -7,4 +7,6 @@ On windows just the files in the win directory will be used.
 
 the building directory contains some helpful things to help generating .dpp files.
 
-A .dpp is simply a file that gets precompiled, and then the part before xxx start xxx is discarded along with all occurrences of __XYX__.
+A .c is simply a file that gets precompiled, and then the part before xxx start xxx is discarded along with all occurrences of __XYX__.
+
+http://opengroup.org/onlinepubs/007908799/headix.html
