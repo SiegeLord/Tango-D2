@@ -5,8 +5,6 @@
         author:         Fawzi Mohamed
 *******************************************************************************/
 module tango.math.random.NormalSource;
-import tango.io.protocol.model.IWriter:IWritable,IWriter;
-import tango.io.protocol.model.IReader:IReadable,IReader;
 private import Integer = tango.text.convert.Integer;
 import tango.math.Math:exp,sqrt,log,PI;
 import tango.math.ErrorFunction:erfc;

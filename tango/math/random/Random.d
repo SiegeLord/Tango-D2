@@ -4,135 +4,162 @@
     This is an attempt at having a good flexible and easy to use random number
     generator.
     ease of use:
-    - shared generator for quick usage available through the "rand" object
-      ---
-      int i=rand.uniformR(10); // a random number from [0;10)
-      ---
-    - simple Random (non threadsafe) and RandomSync (threadsafe) types to 
-      create new generators (for heavy use a good idea is one Random object per thread)
-    - several distributions can be requested like this
-      ---
-      rand.distributionD!(type)(paramForDistribution)
-      ---
-      the type can often be avoided if the parameters make it clear.
-      From it single numbers can be generated with .getRandom(), and variables
-      initialized either with call style (var) or with .randomize(var).
-      Utility functions to generate numbers directly are also available.
-      The choice to put all the distribution in a single object that caches them
-      has made (for example) the gamma distribution very easy to implement.
-    - sample usage:
-      ---
-      auto r=new Random();
-      int i; float f; real rv; real[100] ar0; real[] ar=ar0[];
-      // initialize with uniform distribution
-      i=r.uniform!(int);
-      f=r.uniform!(float);
-      rv=r.uniform!(real);
-      foreach (ref el;ar)
-        el=r.uniform!(real);
-      // another way to do all the previous in one go:
-      r(i)(f)(rv)(ar);
-      // unfortunetely one cannot use directly ar0...
-      // uniform distribution 0..10
-      i=r.uniformR(10);
-      f=r.uniformR(10.0f);
-      rv=r.uniformR(10.0L);
-      foreach (ref el;ar)
-        el=r.uniformR(10.0L);
-      // another way to do all the previous in one go:
-      r.uniformRD(10)(i)(f)(r)(ar);
-      // uniform numbers in [5;10)
-      i=r.uniformR2(5,10);
-      // uniform numbers in (5;10)
-      f=r.uniformR2(5.0f,10.0f);
-      rv=r.uniformR2(5.0L,10.0L);
-      foreach (ref el;ar)
-        el=r.uniformR2(5.0L,10.0L);
-      // another way to do all the previous in one go:
-      r.uniformR2D(5.0L,10.0L)(i)(f)(r)(ar);
-      // uniform distribution -10..10
-      i=r.uniformRSymm(10);
-      // well you get it...
-      r.uniformRSymmD(10)(i)(f)(r)(ar);
-      // any distribution can be stored
-      auto r2=r.uniformRSymmD(10);
-      // and used later
-      r2(ar);
-      // complex distributions (normal,exp,gamma) are produced for the requested type
-      r.normalSource!(float)()(f);
-      // with sigma=2
-      r.normalD(2.0f)(f);
-      // and can be used also to initialize other types
-      r.normalSource!(float)()(r)(ar);
-      r.normalD(2.0f)(r)(ar);
-      // but this is different from
-      r.normalSource!(real)()(i)(r)(ar);
-      r.normalD(2.0L)(i)(r)(ar);
-      // as the source generates numbers of its type that then are simply cast to
-      // the type needed.
-      // Uniform distribution (as its creation for different types has no overhead)
-      // is never cast, so that (for example) bounds exclusion for floats is really
-      // guaranteed.
-      // For the other distribution using a distribution of different type than
-      // the variable should be done with care, as underflow/overflow might ensue.
-      //
-      // Some utility functions are also available
-      int i2=r.uniform!(int)();
-      int i2=r.randomize(i); // both i and i2 are initialized to the same value
-      float f2=r.normalSigma(3.0f);
-      ---
+    ($UL
+      ($LI  shared generator for quick usage available through the "rand" object
+            ---
+            int i=rand.uniformR(10); // a random number from [0;10)
+            ---
+      )
+      ($LI  simple Random (non threadsafe) and RandomSync (threadsafe) types to 
+            create new generators (for heavy use a good idea is one Random object per thread)
+      )
+      ($LI  several distributions can be requested like this
+            ---
+            rand.distributionD!(type)(paramForDistribution)
+            ---
+            the type can often be avoided if the parameters make it clear.
+            From it single numbers can be generated with .getRandom(), and variables
+            initialized either with call style (var) or with .randomize(var).
+            Utility functions to generate numbers directly are also available.
+            The choice to put all the distribution in a single object that caches them
+            has made (for example) the gamma distribution very easy to implement.
+      )
+      ($LI  sample usage:
+            ---
+            auto r=new Random();
+            int i; float f; real rv; real[100] ar0; real[] ar=ar0[];
+            // initialize with uniform distribution
+            i=r.uniform!(int);
+            f=r.uniform!(float);
+            rv=r.uniform!(real);
+            foreach (ref el;ar)
+              el=r.uniform!(real);
+            // another way to do all the previous in one go:
+            r(i)(f)(rv)(ar);
+            // unfortunetely one cannot use directly ar0...
+            // uniform distribution 0..10
+            i=r.uniformR(10);
+            f=r.uniformR(10.0f);
+            rv=r.uniformR(10.0L);
+            foreach (ref el;ar)
+              el=r.uniformR(10.0L);
+            // another way to do all the previous in one go:
+            r.uniformRD(10)(i)(f)(r)(ar);
+            // uniform numbers in [5;10)
+            i=r.uniformR2(5,10);
+            // uniform numbers in (5;10)
+            f=r.uniformR2(5.0f,10.0f);
+            rv=r.uniformR2(5.0L,10.0L);
+            foreach (ref el;ar)
+              el=r.uniformR2(5.0L,10.0L);
+            // another way to do all the previous in one go:
+            r.uniformR2D(5.0L,10.0L)(i)(f)(r)(ar);
+            // uniform distribution -10..10
+            i=r.uniformRSymm(10);
+            // well you get it...
+            r.uniformRSymmD(10)(i)(f)(r)(ar);
+            // any distribution can be stored
+            auto r2=r.uniformRSymmD(10);
+            // and used later
+            r2(ar);
+            // complex distributions (normal,exp,gamma) are produced for the requested type
+            r.normalSource!(float)()(f);
+            // with sigma=2
+            r.normalD(2.0f)(f);
+            // and can be used also to initialize other types
+            r.normalSource!(float)()(r)(ar);
+            r.normalD(2.0f)(r)(ar);
+            // but this is different from
+            r.normalSource!(real)()(i)(r)(ar);
+            r.normalD(2.0L)(i)(r)(ar);
+            // as the source generates numbers of its type that then are simply cast to
+            // the type needed.
+            // Uniform distribution (as its creation for different types has no overhead)
+            // is never cast, so that (for example) bounds exclusion for floats is really
+            // guaranteed.
+            // For the other distribution using a distribution of different type than
+            // the variable should be done with care, as underflow/overflow might ensue.
+            //
+            // Some utility functions are also available
+            int i2=r.uniform!(int)();
+            int i2=r.randomize(i); // both i and i2 are initialized to the same value
+            float f2=r.normalSigma(3.0f);
+            ---
+      )
+    )
     flexibility:
-    - easily swappable basic source
-      ---
-      // a random generator that uses the system provided random generator:
-      auto r=RandomG!(Urandom)();
-      ---
-    - ziggurat generator can be easily adapted to any decreasing derivable
-      distribution, the hard parametrization (to find xLast) can be done
-      automatically
-    - several distributions available "out of the box"
-    Quality:
-    - the default Source (KISS99) passes all statistical tests 
-      (P. L'Ecuyer and R. Simard, ACM Transactions on Mathematical Software (2007),
-      33, 4, Article 22)
-    - floating point uniform generator always initializes the full mantissa, the
-      only flaw is a (*very* small) predilection of 0 as least important bit 
-      (IEEE rounds to 0 in case of tie).
-      Using a method that initializes the full mantissa was shown to improve the
-      quality of subsequntly derived normal distribued numbers
-      (Thomas et al. Gaussian random number generators. Acm Comput Surv (2007)
-      vol. 39 (4) pp. 11))
-    - Ziggurat method, a very fast and accurate method was used for both Normal and
-      exp distributed numbers.
-    - gamma distribued numbers uses a method recently proposed by Marsaglia and
-      Tsang. The method is very fast, and should be good.
-      My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might lose
-      a couple of bits of precision in some cases, but it is unclear if this
-      might become visible in (*very* extensive) tests or not.
-    - the basic source can be easily be changed with something else
-    Efficiency:
-    - very fast methods have been used, and some effort has been put into
-      optimizing some of them, but not all, but the interface has been choosen
-      so that close to optimal implementation can be provided through the same
-      interface.
-    - Normal and Exp sources allocated only upon request: no memory waste, but
-      a (*very* small) speed hit, that can be avoided by storing the source in
-      a variable and using it (not going through the RandomG)
+    ($UL
+      ($LI  easily swappable basic source
+            ---
+            // a random generator that uses the system provided random generator:
+            auto r=RandomG!(Urandom)();
+            ---
+            One could also build an engine that can be changed at runtime (that calls
+            a delegate for example), but this adds a little overhead, and changing
+            engine is not something done often, so this is not part of the library.
+      )
+      ($LI  ziggurat generator can be easily adapted to any decreasing derivable
+            distribution, the hard parametrization (to find xLast) can be done
+            automatically
+      )
+      ($LI  several distributions available "out of the box"
+      )
+      )
+      Quality:
+      ($UL
+      ($LI  the default Source combines two surces that pass all statistical tests 
+            (KISS+CMWC)
+            (P. L'Ecuyer and R. Simard, ACM Transactions on Mathematical Software (2007),
+            33, 4, Article 22, for KISS, see CMWC enigine for the other)
+      )
+      ($LI  floating point uniform generator always initializes the full mantissa, the
+            only flaw is a (*very* small) predilection of 0 as least important bit 
+            (IEEE rounds to 0 in case of tie).
+            Using a method that initializes the full mantissa was shown to improve the
+            quality of subsequntly derived normal distribued numbers
+            (Thomas et al. Gaussian random number generators. Acm Comput Surv (2007)
+            vol. 39 (4) pp. 11))
+      )
+      ($LI  Ziggurat method, a very fast and accurate method was used for both Normal and
+            exp distributed numbers.
+      )
+      ($LI  gamma distribued numbers uses a method recently proposed by Marsaglia and
+            Tsang. The method is very fast, and should be good.
+            My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might lose
+            a couple of bits of precision in some cases, but it is unclear if this
+            might become visible in (*very* extensive) tests or not.
+      )
+       the basic source can be easily be changed with something else
+      Efficiency:
+      ($LI  very fast methods have been used, and some effort has been put into
+            optimizing some of them, but not all, but the interface has been choosen
+            so that close to optimal implementation can be provided through the same
+            interface.
+      )
+      ($LI  Normal and Exp sources allocated only upon request: no memory waste, but
+            a (*very* small) speed hit, that can be avoided by storing the source in
+            a variable and using it (not going through the RandomG)
+      )
+    )
     Annoyances:
-    - I have added two "next" methods to RandomG for backward compatibility
-      reasons, and the .instance from Random has been
-      replaced by the "rand" object. The idea behind this is that RandomG is
-      a template and rand it should be shared across all templates.
-      If the name rand is considered bad one could change it. 
-      I kept .instance static method that returns rand, so this remain a dropin
-      replacement of the old random.
-    - You cannot initialize a static array directly, this because randomize is
-      declared like this:
-      ---
-      U randomize(U)(ref U a) { }
-      ---
-      and a static array cannot be passed by reference. Removing the ref would
-      make arrays initialized, and scalar not, which is much worse.
+    ($UL
+      ($LI  I have added two "next" methods to RandomG for backward compatibility
+            reasons, and the .instance from Random has been
+            replaced by the "rand" object. The idea behind this is that RandomG is
+            a template and rand it should be shared across all templates.
+            If the name rand is considered bad one could change it. 
+            I kept .instance static method that returns rand, so this remain a dropin
+            replacement of the old random.
+      )
+      ($LI You cannot initialize a static array directly, this because randomize is
+          declared like this:
+            ---
+            U randomize(U)(ref U a) { }
+            ---
+            and a static array cannot be passed by reference. Removing the ref would
+            make arrays initialized, and scalar not, which is much worse.
+      )
+    )
 
         copyright:      Copyright (c) 2008. Fawzi Mohamed
         license:        BSD style: $(LICENSE)
@@ -148,6 +175,7 @@ import tango.math.random.engines.Sync;
 import tango.math.random.engines.Twister;
 import tango.math.random.NormalSource;
 import tango.math.random.ExpSource;
+import tango.math.Math;
 import tango.core.Traits;
 
 // ----- templateFu begin --------
