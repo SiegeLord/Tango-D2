@@ -132,7 +132,7 @@ class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
                         return len;
                 }
 
-                return output.write (&writer);
+                return output.writer (&writer);
         }
 }
 
