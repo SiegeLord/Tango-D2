@@ -557,18 +557,25 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
-                Append content from input stream at insertion point
+                Append content from input stream at insertion point. Use
+                tango.io.stream.Utf as a wrapper to perform conversion as
+                necessary
 
         ***********************************************************************/
 
         final Text append (InputStream source)
         {
-                T[2048] tmp = void;
-                while(1) {
-                    auto len=source.read(tmp); // stop also on 0?
-                    if (len==source.Eof) break; 
-                    append (tmp[0..len]);
-                }
+                T[8192/sizeof(T)] tmp = void;
+                while (true) 
+                      {
+                      auto len = source.read (tmp); 
+                      if (len is source.Eof) 
+                          break; 
+
+                      // check to ensure UTF conversion is ok
+                      assert (len & (sizeof(T)-1)) is 0);
+                      append (tmp [0 .. len/sizeof(T)]);
+                      }
                 return this;
         }
 
