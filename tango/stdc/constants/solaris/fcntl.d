@@ -1,4 +1,4 @@
-module tango.stdc.constants.linuxIntel.fcntl;
+module tango.stdc.constants.solaris.fcntl;
 version (linux) {
     version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
     {

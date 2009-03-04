@@ -124,10 +124,10 @@ enum{
     CPU_SUBTYPE_XEON = ( (12) + ((0) << 4)) ,
     CPU_SUBTYPE_XEON_MP = ( (12) + ((1) << 4)) ,
 }
-uint extractSubtypeIntelFamily(uint x){
+uint extractSubtypeFamily(uint x){
     return ((x) & 15);
 }
-uint extractCpuSubtypeIntelModel(uint x){
+uint extractCpuSubtypeModel(uint x){
     return ((x) >> 4);
 }
 enum{
@@ -216,8 +216,8 @@ enum{
     CPUFAMILY_POWERPC_G4 = 0x77c184ae ,
     CPUFAMILY_POWERPC_G5 = 0xed76d8aa ,
     CPUFAMILY_INTEL_6_13 = 0xaa33392b ,
-    CPUFAMILY_INTEL_6_14 = 0x73d67300 ,/* "Intel Core Solo" and "Intel Core Duo" (32-bit Pentium-M with SSE3) */
-    CPUFAMILY_INTEL_6_15 = 0x426f69ef ,/* "Intel Core 2 Duo" */
+    CPUFAMILY_INTEL_6_14 = 0x73d67300 ,/* " Core Solo" and " Core Duo" (32-bit Pentium-M with SSE3) */
+    CPUFAMILY_INTEL_6_15 = 0x426f69ef ,/* " Core 2 Duo" */
     CPUFAMILY_INTEL_6_23 = 0x78ea4fbc ,/* Penryn */
     CPUFAMILY_INTEL_6_26 = 0x6b5a4cd2 ,/* Nehalem */
     CPUFAMILY_ARM_9 = 0xe73283ae ,

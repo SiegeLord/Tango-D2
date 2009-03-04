@@ -1,5 +1,5 @@
-module tango.stdc.constants.freebsdIntel.socket;
-    import tango.stdc.constants.freebsdIntel.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.stdc.constants.freebsd.socket;
+    import tango.stdc.constants.freebsd.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum SocketOption: int
     {

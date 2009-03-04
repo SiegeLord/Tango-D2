@@ -16,8 +16,8 @@ version(X86) {
     static assert(0,"unknown cpu family");
 }
 
-version(autoConf){
-    public import tango.stdc.constants.autoConf.fcntl;
+version(autoconf){
+    public import tango.stdc.constants.autoconf.fcntl;
 } else version (windows) {
     version (X86_CPU) {
         static if ((void*).sizeof==4)
@@ -39,16 +39,16 @@ version(autoConf){
     }
 } else version (linux) {
     version (X86_CPU) {
-        public import tango.stdc.constants.linuxIntel.fcntl;
+        public import tango.stdc.constants.linux.fcntl;
     } else version (PPC) {
         pragma(msg,"constants not confirmed, please help out")
         public import tango.stdc.constants.linuxPP.fcntl;
     } else{
-        mixin undefinedConsts!("linux on non X86 or PPC CPU",__FILE__,__LINE__);
+        mixin undefinedConsts!("linux on non X86 CPU",__FILE__,__LINE__);
     }
 } else version (freebsd) {
     version (X86) {
-        public import tango.stdc.constants.freebsdIntel.fcntl;
+        public import tango.stdc.constants.freebsd.fcntl;
     } else {
         mixin undefinedConsts!("freebsd on non X86 ",__FILE__,__LINE__);
     }

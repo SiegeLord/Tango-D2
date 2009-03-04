@@ -1,5 +1,5 @@
-module tango.stdc.constants.solarisIntel.socket;
-    import tango.stdc.constants.solarisIntel.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.stdc.constants.solaris.socket;
+    import tango.stdc.constants.solaris.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum SocketOption: int
     {

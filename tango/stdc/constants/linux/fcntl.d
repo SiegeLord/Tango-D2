@@ -1,4 +1,4 @@
-module tango.stdc.constants.freebsdIntel.fcntl;
+module tango.stdc.constants.linux.fcntl;
 version (linux) {
     version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
     {
