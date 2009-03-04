@@ -238,7 +238,7 @@ class Conduit : IConduit
                       if (len > dst.length)
                           len = dst.length;
 
-                      if ((len = src.read (dst[index .. index+len])) is Eof)
+                      if ((len = src.read (dst[index .. len])) is Eof)
                            max = 0;
                       else
                          index += len;
@@ -508,4 +508,3 @@ class OutputFilter : OutputStream
                 sink.close;
         }
 }
-

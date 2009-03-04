@@ -672,10 +672,14 @@ class File : Device, Device.Seek
 
 debug (File)
 {
+        import tango.io.Stdout;
+
         void main()
         {
                 auto foo = File.get("file.d");
                 auto file = new File("file.d");
+                auto content = cast(char[]) file.load (file);
+                Stdout (content).newline;
                 char[10] ff;
                 int f = file.read(ff);
         }
