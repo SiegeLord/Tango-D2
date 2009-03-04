@@ -1013,7 +1013,8 @@ class FTPConnection : Telnet {
             data.detach();
 
             // This is the actual socket.
-            data.connect(new_data.localAddress());
+            data.socket.sock = new_data.sock;
+
             break;
 
         case FtpConnectionType.passive:
