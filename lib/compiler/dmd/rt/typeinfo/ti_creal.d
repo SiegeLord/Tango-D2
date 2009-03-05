@@ -1,20 +1,20 @@
 
 // creal
 
-module typeinfo.ti_creal;
+module rt.typeinfo.ti_creal;
 
 class TypeInfo_c : TypeInfo
 {
-    char[] toString() { return "creal"; }
+    override char[] toString() { return "creal"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {
         return (cast(uint *)p)[0] + (cast(uint *)p)[1] +
                (cast(uint *)p)[2] + (cast(uint *)p)[3] +
                (cast(uint *)p)[4];
     }
 
-    static int _equals(creal f1, creal f2)
+    static equals_t _equals(creal f1, creal f2)
     {
         return f1 == f2;
     }
@@ -35,22 +35,22 @@ class TypeInfo_c : TypeInfo
         return result;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         return _equals(*cast(creal *)p1, *cast(creal *)p2);
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         return _compare(*cast(creal *)p1, *cast(creal *)p2);
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return creal.sizeof;
     }
 
-    void swap(void *p1, void *p2)
+    override void swap(void *p1, void *p2)
     {
         creal t;
 
@@ -59,7 +59,7 @@ class TypeInfo_c : TypeInfo
         *cast(creal *)p2 = t;
     }
 
-    void[] init()
+    override void[] init()
     {   static creal r;
 
         return (cast(creal *)&r)[0 .. 1];

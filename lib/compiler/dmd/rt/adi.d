@@ -32,6 +32,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
+module rt.adi;
 
 //debug=adi;            // uncomment to turn on debugging printf's
 
@@ -39,7 +40,7 @@ private
 {
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import util.utf;
+    import rt.util.utf;
 
     enum BlkAttr : uint
     {
@@ -145,7 +146,7 @@ extern (C) long _adReverseChar(char[] a)
 
 unittest
 {
-    auto a = "abcd"c;
+    auto a = "abcd"c[];
 
     auto r = a.dup.reverse;
     //writefln(r);
@@ -244,8 +245,8 @@ extern (C) long _adReverseWchar(wchar[] a)
 
 unittest
 {
-    wstring a = "abcd";
-    wstring r;
+    wchar[] a = "abcd";
+    wchar[] r;
 
     r = a.dup.reverse;
     assert(r == "dcba");

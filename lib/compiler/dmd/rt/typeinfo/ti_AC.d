@@ -1,10 +1,10 @@
-module typeinfo.ti_AC;
+module rt.typeinfo.ti_AC;
 
 // Object[]
 
 class TypeInfo_AC : TypeInfo
 {
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {   Object[] s = *cast(Object[]*)p;
         hash_t hash = 0;
 
@@ -16,7 +16,7 @@ class TypeInfo_AC : TypeInfo
         return hash;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         Object[] s1 = *cast(Object[]*)p1;
         Object[] s2 = *cast(Object[]*)p2;
@@ -31,14 +31,14 @@ class TypeInfo_AC : TypeInfo
                 if (o1 is o2 ||
                     (!(o1 is null) && !(o2 is null) && o1.opEquals(o2)))
                     continue;
-                return 0;
+                return false;
             }
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         Object[] s1 = *cast(Object[]*)p1;
         Object[] s2 = *cast(Object[]*)p2;
@@ -78,17 +78,17 @@ class TypeInfo_AC : TypeInfo
         return c;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return (Object[]).sizeof;
     }
 
-    uint flags()
+    override uint flags()
     {
         return 1;
     }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(Object);
     }

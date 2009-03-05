@@ -38,7 +38,7 @@ COPYRIGHT:      Public Domain
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module util.cpuid;
+module rt.util.cpuid;
 
 private import tango.stdc.string : strlen;
 

@@ -12,8 +12,8 @@
 #include <assert.h>
 
 #if _WIN32
-#elif linux
-#define USE_PTHREADS	1
+#elif linux || __APPLE__
+#define USE_PTHREADS    1
 #else
 #endif
 
@@ -42,7 +42,7 @@ typedef struct Monitor
 #endif
 } Monitor;
 
-#define MONPTR(h)	(&((Monitor *)(h)->monitor)->mon)
+#define MONPTR(h)       (&((Monitor *)(h)->monitor)->mon)
 
 static volatile int inited;
 
@@ -55,16 +55,16 @@ static CRITICAL_SECTION _monitor_critsec;
 void _STI_monitor_staticctor()
 {
     if (!inited)
-    {	InitializeCriticalSection(&_monitor_critsec);
-	inited = 1;
+    {   InitializeCriticalSection(&_monitor_critsec);
+        inited = 1;
     }
 }
 
 void _STD_monitor_staticdtor()
 {
     if (inited)
-    {	inited = 0;
-	DeleteCriticalSection(&_monitor_critsec);
+    {   inited = 0;
+        DeleteCriticalSection(&_monitor_critsec);
     }
 }
 
@@ -127,6 +127,13 @@ void _d_monitor_unlock(Object *h)
 
 #if USE_PTHREADS
 
+// PTHREAD_MUTEX_RECURSIVE is what posix says should be supported,
+// but some versions of glibc have only PTHREAD_MUTEX_RECURSIVE_NP 
+// (the np stands for non-portable), when they have the same meaning.
+#ifndef PTHREAD_MUTEX_RECURSIVE
+#define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
+#endif
+
 // Includes attribute fixes from David Friedman's GDC port
 
 static pthread_mutex_t _monitor_critsec;
@@ -136,19 +143,19 @@ void _STI_monitor_staticctor()
 {
     if (!inited)
     {
-	pthread_mutexattr_init(&_monitors_attr);
-	pthread_mutexattr_settype(&_monitors_attr, PTHREAD_MUTEX_RECURSIVE_NP);
-	pthread_mutex_init(&_monitor_critsec, 0);
-	inited = 1;
+        pthread_mutexattr_init(&_monitors_attr);
+        pthread_mutexattr_settype(&_monitors_attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&_monitor_critsec, 0);
+        inited = 1;
     }
 }
 
 void _STD_monitor_staticdtor()
 {
     if (inited)
-    {	inited = 0;
-	pthread_mutex_destroy(&_monitor_critsec);
-	pthread_mutexattr_destroy(&_monitors_attr);
+    {   inited = 0;
+        pthread_mutex_destroy(&_monitor_critsec);
+        pthread_mutexattr_destroy(&_monitors_attr);
     }
 }
 

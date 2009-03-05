@@ -1,18 +1,18 @@
 
 // float
 
-module typeinfo.ti_float;
+module rt.typeinfo.ti_float;
 
 class TypeInfo_f : TypeInfo
 {
-    char[] toString() { return "float"; }
+    override char[] toString() { return "float"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {
         return *cast(uint *)p;
     }
 
-    static int _equals(float f1, float f2)
+    static equals_t _equals(float f1, float f2)
     {
         return f1 == f2 ||
                 (f1 !<>= f1 && f2 !<>= f2);
@@ -32,22 +32,22 @@ class TypeInfo_f : TypeInfo
         return (d1 == d2) ? 0 : ((d1 < d2) ? -1 : 1);
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         return _equals(*cast(float *)p1, *cast(float *)p2);
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         return _compare(*cast(float *)p1, *cast(float *)p2);
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return float.sizeof;
     }
 
-    void swap(void *p1, void *p2)
+    override void swap(void *p1, void *p2)
     {
         float t;
 
@@ -56,7 +56,7 @@ class TypeInfo_f : TypeInfo
         *cast(float *)p2 = t;
     }
 
-    void[] init()
+    override void[] init()
     {   static float r;
 
         return (cast(float *)&r)[0 .. 1];

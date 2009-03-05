@@ -11,13 +11,15 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
+module rt.trace;
+
 private
 {
+    import rt.util.string;
     import tango.stdc.ctype;
     import tango.stdc.stdio;
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import util.string;
 }
 
 extern (C):
@@ -148,7 +150,7 @@ static void stack_free(Stack *s)
 //////////////////////////////////////
 // Qsort() comparison routine for array of pointers to SymPair's.
 
-static int sympair_cmp(void* e1, void* e2)
+static int sympair_cmp(in void* e1, in void* e2)
 {   SymPair** psp1;
     SymPair** psp2;
 
@@ -283,7 +285,7 @@ static void trace_array(Symbol *s)
 //////////////////////////////////////
 // Qsort() comparison routine for array of pointers to Symbol's.
 
-static int symbol_cmp(void* e1, void* e2)
+static int symbol_cmp(in void* e1, in void* e2)
 {   Symbol** ps1;
     Symbol** ps2;
     timer_t diff;
@@ -785,29 +787,57 @@ void _trace_pro_n()
      *  ascii   string
      */
 
-    asm
-    {   naked                           ;
-        pushad                          ;
-        mov     ECX,8*4[ESP]            ;
-        xor     EAX,EAX                 ;
-        mov     AL,[ECX]                ;
-        cmp     AL,0xFF                 ;
-        jne     L1                      ;
-        cmp     byte ptr 1[ECX],0       ;
-        jne     L1                      ;
-        mov     AX,2[ECX]               ;
-        add     8*4[ESP],3              ;
-        add     ECX,3                   ;
-    L1: inc     EAX                     ;
-        inc     ECX                     ;
-        add     8*4[ESP],EAX            ;
-        dec     EAX                     ;
-        push    ECX                     ;
-        push    EAX                     ;
-        call    trace_pro               ;
-        add     ESP,8                   ;
-        popad                           ;
-        ret                             ;
+    version (OSX) { // 16 byte align stack
+        asm {
+            naked               ;
+            pushad              ;
+            mov ECX,8*4[ESP]        ;
+            xor EAX,EAX         ;
+            mov AL,[ECX]        ;
+            cmp AL,0xFF         ;
+            jne L1          ;
+            cmp byte ptr 1[ECX],0   ;
+            jne L1          ;
+            mov AX,2[ECX]       ;
+            add 8*4[ESP],3      ;
+            add ECX,3           ;
+               L1:  inc EAX         ;
+            inc ECX         ;
+            add 8*4[ESP],EAX        ;
+            dec EAX         ;
+            sub ESP,4           ;
+            push    ECX         ;
+            push    EAX         ;
+            call    trace_pro       ;
+            add ESP,12          ;
+            popad               ;
+            ret             ;
+        }
+    } else {
+        asm {
+            naked                           ;
+            pushad                          ;
+            mov     ECX,8*4[ESP]            ;
+            xor     EAX,EAX                 ;
+            mov     AL,[ECX]                ;
+            cmp     AL,0xFF                 ;
+            jne     L1                      ;
+            cmp     byte ptr 1[ECX],0       ;
+            jne     L1                      ;
+            mov     AX,2[ECX]               ;
+            add     8*4[ESP],3              ;
+            add     ECX,3                   ;
+        L1: inc     EAX                     ;
+            inc     ECX                     ;
+            add     8*4[ESP],EAX            ;
+            dec     EAX                     ;
+            push    ECX                     ;
+            push    EAX                     ;
+            call    trace_pro               ;
+            add     ESP,8                   ;
+            popad                           ;
+            ret                             ;
+        }
     }
 }
 
@@ -817,15 +847,30 @@ void _trace_pro_n()
 
 void _trace_epi_n()
 {
-    asm
-    {   naked   ;
-        pushad  ;
+    version (OSX) { // 16 byte align stack
+        asm{
+            naked   ;
+            pushad  ;
+            sub ESP,12  ;
+        }
+        trace_epi();
+        asm {
+            add ESP,12  ;
+            popad   ;
+            ret ;
+        }
     }
-    trace_epi();
-    asm
-    {
-        popad   ;
-        ret     ;
+    else {
+        asm {
+            naked   ;
+            pushad  ;
+        }
+        trace_epi();
+        asm
+        {
+            popad   ;
+            ret     ;
+        }
     }
 }
 

@@ -55,7 +55,7 @@ lib : $(ALL_OBJS)
 	cd $(DIR_GC)
 	make -fwin32.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	cd ..\..
-	$(RM) phobos*.lib
+	$(RM) phobos*.lib $(LIB_TARGET)
 	$(LC) -c -n $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
 
 doc : $(ALL_DOCS)

@@ -31,6 +31,8 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
+module rt.aaA;
+
 private
 {
     import tango.stdc.stdarg;
@@ -584,17 +586,65 @@ body
                 if (e)
                     _aaRehash_x(e);
             }
+            delete aa.b;
 
             newb.nodes = aa.nodes;
             newb.keyti = aa.keyti;
         }
 
         *paa.a = newb;
+        _aaBalance(paa);
     }
     return (*paa).a;
 }
 
+/********************************************
+ * Balance an array.
+ */
 
+void _aaBalance(AA* paa)
+{
+    //printf("_aaBalance()\n");
+    if (paa.a)
+    {
+        aaA*[16] tmp;
+        aaA*[] array = tmp;
+        auto aa = paa.a;
+        foreach (j, e; aa.b)
+        {
+            /* Temporarily store contents of bucket in array[]
+             */
+            size_t k = 0;
+            void addToArray(aaA* e)
+            {
+                while (e)
+                {   addToArray(e.left);
+                    if (k == array.length)
+                        array.length = array.length * 2;
+                    array[k++] = e;
+                    e = e.right;
+                }
+            }
+            addToArray(e);
+            /* The contents of the bucket are now sorted into array[].
+             * Rebuild the tree.
+             */
+            void buildTree(aaA** p, size_t x1, size_t x2)
+            {
+                if (x1 >= x2)
+                    *p = null;
+                else
+                {   auto mid = (x1 + x2) >> 1;
+                    *p = array[mid];
+                    buildTree(&(*p).left, x1, mid);
+                    buildTree(&(*p).right, mid + 1, x2);
+                }
+            }
+            auto p = &aa.b[j];
+            buildTree(p, 0, k);
+        }
+    }
+}
 /********************************************
  * Produce array of N byte keys from aa.
  */

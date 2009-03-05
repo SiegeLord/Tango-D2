@@ -1,33 +1,33 @@
 
 // ubyte
 
-module typeinfo.ti_ubyte;
+module rt.typeinfo.ti_ubyte;
 
 class TypeInfo_h : TypeInfo
 {
-    char[] toString() { return "ubyte"; }
+    override char[] toString() { return "ubyte"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {
         return *cast(ubyte *)p;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         return *cast(ubyte *)p1 == *cast(ubyte *)p2;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         return *cast(ubyte *)p1 - *cast(ubyte *)p2;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return ubyte.sizeof;
     }
 
-    void swap(void *p1, void *p2)
+    override void swap(void *p1, void *p2)
     {
         ubyte t;
 
@@ -39,5 +39,5 @@ class TypeInfo_h : TypeInfo
 
 class TypeInfo_b : TypeInfo_h
 {
-    char[] toString() { return "bool"; }
+    override char[] toString() { return "bool"; }
 }

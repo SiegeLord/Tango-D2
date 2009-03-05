@@ -55,7 +55,7 @@ PREFIX="/usr/local"
 CONFPREFIX="$PREFIX"
 LIBPREFIX="$PREFIX"
 INCLPREFIX="$PREFIX"
-BASELIB="libtango-base-dmd.a"
+BASELIB="libtango-base-dmd*.a"
 
 while [ "$#" != "0" ]
 do

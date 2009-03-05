@@ -21,9 +21,14 @@
  *     distribution.
  */
 
+module rt.deh2;
+
 // Exception handling support for linux
 
 //debug=1;
+debug import tango.stdc.stdio: printf;
+import tango.stdc.stdio: printf;
+import tango.stdc.stdlib: exit;
 
 extern (C)
 {
@@ -187,6 +192,8 @@ extern (Windows) void _d_throw(Object *h)
         if (!regebp)
         {   // if end of call chain
             debug printf("end of call chain\n");
+            printf("unhandled exception\n");
+            exit(1);
             break;
         }
 
@@ -290,18 +297,31 @@ extern (Windows) void _d_throw(Object *h)
 
                 void *blockaddr = phi.finally_code;
 
-                asm
+                version (OSX)
                 {
-                    push        EBX             ;
-                    mov         EBX,blockaddr   ;
-                    push        EBP             ;
-                    mov         EBP,regebp      ;
-                    call        EBX             ;
-                    pop         EBP             ;
-                    pop         EBX             ;
+                    asm {
+                        sub ESP,4       ;
+                        push    EBX     ;
+                        mov EBX,blockaddr   ;
+                        push    EBP     ;
+                        mov EBP,regebp  ;
+                        call    EBX     ;
+                        pop EBP     ;
+                        pop EBX     ;
+                        add ESP,4       ;
+                    }
+                } else {
+                    asm {
+                        push        EBX             ;
+                        mov         EBX,blockaddr   ;
+                        push        EBP             ;
+                        mov         EBP,regebp      ;
+                        call        EBX             ;
+                        pop         EBP             ;
+                        pop         EBX             ;
+                    }
                 }
             }
         }
     }
 }
-

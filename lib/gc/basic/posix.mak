@@ -10,8 +10,10 @@
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=libtango-gc-basic.a
-LIB_MASK=libtango-gc-basic*.a
+LIB_BASE=libtango-gc-basic
+LIB_BUILD=
+LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).a
+LIB_MASK=$(LIB_BASE)*.a
 
 CP=cp -f
 RM=rm -f
@@ -21,16 +23,23 @@ ADD_CFLAGS=
 ADD_DFLAGS=
 SYSTEM_VERSION=
 
-CFLAGS=-O $(ADD_CFLAGS)
-#CFLAGS=-g $(ADD_CFLAGS)
-
-DFLAGS=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
-#DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
-
-TFLAGS=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
-#TFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
-
+CFLAGS_RELEASE=-O $(ADD_CFLAGS)
+CFLAGS_DEBUG=-g $(ADD_CFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../common -I../../..
+DFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../common -I../../..
+TFLAGS_RELEASE=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
+TFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 DOCFLAGS=-version=DDoc $(SYSTEM_VERSION)
+
+ifeq ($(VERSION),debug)
+CFLAGS=$(CFLAGS_DEBUG)
+DFLAGS=$(DFLAGS_DEBUG)
+TFLAGS=$(TFLAGS_DEBUG)
+else
+CFLAGS=$(CFLAGS_RELEASE)
+DFLAGS=$(DFLAGS_RELEASE)
+TFLAGS=$(TFLAGS_RELEASE)
+endif
 
 CC=gcc
 LC=$(AR) -qsv
@@ -39,6 +48,7 @@ DC=dmd
 LIB_DEST=..
 
 .SUFFIXES: .s .S .c .cpp .d .html .o
+.PHONY : lib lib-release lib-debug unittest all doc clean install clean-all
 
 .s.o:
 	$(CC) -c $(CFLAGS) $< -o$@
@@ -60,9 +70,7 @@ LIB_DEST=..
 #	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmd.ddoc $<
 
 targets : lib doc
-all     : lib doc
-lib     : basic.lib
-doc     : basic.doc
+all     : lib-release lib-debug doc
 
 ######################################################
 
@@ -78,14 +86,29 @@ ALL_OBJS= \
 ALL_DOCS=
 
 ######################################################
+unittest :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS) -unittest -debug=UnitTest" \
+		SYSTEM_VERSION="$(SYSTEM_VERSION)"
+lib-release :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
+lib-debug :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 
-basic.lib : $(LIB_TARGET)
+######################################################
+
+lib : $(LIB_TARGET)
 
 $(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
-basic.doc : $(ALL_DOCS)
+doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
@@ -94,6 +117,8 @@ clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
+
+clean-all : clean
 	$(RM) $(LIB_MASK)
 
 install :

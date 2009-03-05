@@ -10,8 +10,10 @@
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=libtango-cc-tango.a
-LIB_MASK=libtango-cc-tango*.a
+LIB_BASE=libtango-cc-tango
+LIB_BUILD=
+LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).a
+LIB_MASK=$(LIB_BASE)*.a
 
 CP=cp -f
 RM=rm -f
@@ -21,14 +23,23 @@ ADD_CFLAGS=
 ADD_DFLAGS=
 SYSTEM_VERSION=
 
-CFLAGS=-O $(ADD_CFLAGS)
-#CFLAGS=-g $(ADD_CFLAGS)
+CFLAGS_RELEASE=-O $(ADD_CFLAGS)
+CFLAGS_DEBUG=-g $(ADD_CFLAGS)
 
-DFLAGS=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
-#DFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../..
+DFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../..
+TFLAGS_RELEASE=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
+TFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 
-TFLAGS=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
-#TFLAGS=-g -w -nofloat -version=Posix $(ADD_DFLAGS)
+ifeq ($(VERSION),debug)
+CFLAGS=$(CFLAGS_DEBUG)
+DFLAGS=$(DFLAGS_DEBUG)
+TFLAGS=$(TFLAGS_DEBUG)
+else
+CFLAGS=$(CFLAGS_RELEASE)
+DFLAGS=$(DFLAGS_RELEASE)
+TFLAGS=$(TFLAGS_RELEASE)
+endif
 
 DOCFLAGS=-version=DDoc $(SYSTEM_VERSION)
 
@@ -41,6 +52,7 @@ LIB_DEST=..
 DOC_DEST=../../../doc/tango
 
 .SUFFIXES: .s .S .c .cpp .d .html .o
+.PHONY : lib lib-release lib-debug unittest all doc clean install clean-all
 
 .s.o:
 	$(CC) -c $(CFLAGS) $< -o$@
@@ -62,11 +74,23 @@ DOC_DEST=../../../doc/tango
 	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
 #	$(DC) -c -o- $(DOCFLAGS) -Df$*.html tango.ddoc $<
 
-targets : lib doc
-all     : lib doc
-tango   : lib
-lib     : tango.lib
-doc     : tango.doc
+all     : lib-release lib-debug doc
+tango   : lib-release lib-debug
+
+######################################################
+unittest :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS) -unittest -debug=UnitTest" \
+		SYSTEM_VERSION="$(SYSTEM_VERSION)"
+lib-release :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
+lib-debug :
+	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fposix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
+		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 
 ######################################################
 
@@ -102,14 +126,13 @@ DOC_CORE= \
 ALL_DOCS=
 
 ######################################################
-
-tango.lib : $(LIB_TARGET)
-
+lib : $(LIB_TARGET)
 $(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ $(ALL_OBJS)
 
-tango.doc : $(ALL_DOCS)
+tango.doc:doc
+doc : $(ALL_DOCS)
 	echo Documentation generated.
 
 ######################################################
@@ -124,6 +147,8 @@ stdc/posix/pthread_darwin.o : stdc/posix/pthread_darwin.d
 clean :
 	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJS)
+
+clean-all: clean
 	$(RM) $(ALL_DOCS)
 	find . -name "$(LIB_MASK)" | xargs $(RM)
 

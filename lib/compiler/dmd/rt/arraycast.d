@@ -25,6 +25,8 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
+module rt.arraycast;
+
 /******************************************
  * Runtime helper to convert dynamic array of one
  * type to dynamic array of another.

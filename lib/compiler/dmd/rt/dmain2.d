@@ -8,13 +8,16 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
+module rt.dmain2;
+
 private
 {
-    import util.console;
+    import rt.util.console;
 
     import tango.stdc.stddef;
     import tango.stdc.stdlib;
     import tango.stdc.string;
+    extern(C) int printf(char*,...);
 }
 
 version( Win32 )
@@ -85,7 +88,7 @@ extern (C) bool rt_trapExceptions = true;
 
 void _d_criticalInit()
 {
-    version (linux)
+    version (Posix)
     {
         _STI_monitor_staticctor();
         _STI_critical_init();
@@ -121,7 +124,7 @@ extern (C) bool rt_init( ExceptionHandler dg = null )
 
 void _d_criticalTerm()
 {
-    version (linux)
+    version (Posix)
     {
         _STD_critical_term();
         _STD_monitor_staticdtor();
@@ -154,6 +157,12 @@ extern (C) bool rt_term( ExceptionHandler dg = null )
     return false;
 }
 
+version (OSX)
+{
+    // The bottom of the stack
+    extern (C) void* __osx_stack_end = cast(void*)0xC0000000;
+}
+
 /***********************************
  * The D main() function supplied by the user's program
  */
@@ -170,7 +179,15 @@ extern (C) int main(int argc, char **argv)
     char[][] args;
     int result;
 
-    version (linux)
+    version (OSX)
+    {/* OSX does not provide a way to get at the top of the
+      * stack, except for the magic value 0xC0000000.
+      * But as far as the gc is concerned, argv is at the top
+      * of the main thread's stack, so save the address of that.
+      */
+    __osx_stack_end = cast(void*)&argv;
+    }
+    version (Posix)
     {
         _STI_monitor_staticctor();
         _STI_critical_init();
@@ -202,7 +219,7 @@ extern (C) int main(int argc, char **argv)
         wargs = null;
         wargc = 0;
     }
-    else version (linux)
+    else version (Posix)
     {
         char[]* am = cast(char[]*) malloc(argc * (char[]).sizeof);
         scope(exit) free(am);
@@ -228,6 +245,7 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Exception e)
             {
+                printf("pippoException\n");
                 while (e)
                 {
                     if (e.file)
@@ -254,7 +272,8 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Object o)
             {
-                // fprintf(stderr, "%.*s\n", o.toString());
+                printf("pippoException\n");
+                //fprintf(stderr, "%.*s\n", o.toString());
                 console (o.toString)("\n");
                 result = EXIT_FAILURE;
             }
@@ -295,7 +314,7 @@ extern (C) int main(int argc, char **argv)
 
     tryExec(&runAll);
 
-    version (linux)
+    version (Posix)
     {
         _STD_critical_term();
         _STD_monitor_staticdtor();

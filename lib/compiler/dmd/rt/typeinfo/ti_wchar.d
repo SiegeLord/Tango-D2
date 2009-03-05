@@ -1,32 +1,32 @@
 
-module typeinfo.ti_wchar;
+module rt.typeinfo.ti_wchar;
 
 
 class TypeInfo_u : TypeInfo
 {
-    char[] toString() { return "wchar"; }
+    override char[] toString() { return "wchar"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {
         return *cast(wchar *)p;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         return *cast(wchar *)p1 == *cast(wchar *)p2;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         return *cast(wchar *)p1 - *cast(wchar *)p2;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return wchar.sizeof;
     }
 
-    void swap(void *p1, void *p2)
+    override void swap(void *p1, void *p2)
     {
         wchar t;
 
@@ -35,7 +35,7 @@ class TypeInfo_u : TypeInfo
         *cast(wchar *)p2 = t;
     }
 
-    void[] init()
+    override void[] init()
     {   static wchar c;
 
         return (cast(wchar *)&c)[0 .. 1];

@@ -1,4 +1,4 @@
-// utf.d
+// Written in the D programming language
 
 /*
  *  Copyright (C) 2003-2004 by Digital Mars, www.digitalmars.com
@@ -22,15 +22,38 @@
  *     distribution.
  */
 
-// Description of UTF-8 at:
-// http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-// http://anubis.dkuug.dk/JTC1/SC2/WG2/docs/n1335
+/********************************************
+ * Encode and decode UTF-8, UTF-16 and UTF-32 strings.
+ *
+ * For Win32 systems, the C wchar_t type is UTF-16 and corresponds to the D
+ * wchar type.
+ * For linux systems, the C wchar_t type is UTF-32 and corresponds to
+ * the D utf.dchar type.
+ *
+ * UTF character support is restricted to (\u0000 &lt;= character &lt;= \U0010FFFF).
+ *
+ * See_Also:
+ *	$(LINK2 http://en.wikipedia.org/wiki/Unicode, Wikipedia)<br>
+ *	$(LINK http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8)<br>
+ *	$(LINK http://anubis.dkuug.dk/JTC1/SC2/WG2/docs/n1335)
+ * Macros:
+ *	WIKI = Phobos/StdUtf
+ */
 
+module rt.util.utf;
 
-module util.utf;
 
 
 extern (C) void onUnicodeError( char[] msg, size_t idx );
+/*******************************
+ * Test if c is a valid UTF-32 character.
+ *
+ * \uFFFE and \uFFFF are considered valid by this function,
+ * as they are permitted for internal use by an application,
+ * but they are not allowed for interchange by the Unicode standard.
+ *
+ * Returns: true if it is, false if not.
+ */
 
 
 bool isValidDchar(dchar c)
@@ -79,28 +102,44 @@ ubyte[256] UTF8stride =
     4,4,4,4,4,4,4,4,5,5,5,5,6,6,0xFF,0xFF,
 ];
 
-uint stride(char[] s, size_t i)
+/**
+ * stride() returns the length of a UTF-8 sequence starting at index i
+ * in string s.
+ * Returns:
+ *	The number of bytes in the UTF-8 sequence or
+ *	0xFF meaning s[i] is not the start of of UTF-8 sequence.
+ */
+uint stride(in char[] s, size_t i)
 {
     return UTF8stride[s[i]];
 }
 
-uint stride(wchar[] s, size_t i)
+/**
+ * stride() returns the length of a UTF-16 sequence starting at index i
+ * in string s.
+ */
+uint stride(in wchar[] s, size_t i)
 {   uint u = s[i];
     return 1 + (u >= 0xD800 && u <= 0xDBFF);
 }
 
-uint stride(dchar[] s, size_t i)
+/**
+ * stride() returns the length of a UTF-32 sequence starting at index i
+ * in string s.
+ * Returns: The return value will always be 1.
+ */
+uint stride(in dchar[] s, size_t i)
 {
     return 1;
 }
 
 /*******************************************
- * Given an index into an array of char's,
- * and assuming that index is at the start of a UTF character,
- * determine the number of UCS characters up to that index.
+ * Given an index i into an array of characters s[],
+ * and assuming that index i is at the start of a UTF character,
+ * determine the number of UCS characters up to that index i.
  */
 
-size_t toUCSindex(char[] s, size_t i)
+size_t toUCSindex(in char[] s, size_t i)
 {
     size_t n;
     size_t j;
@@ -121,7 +160,8 @@ size_t toUCSindex(char[] s, size_t i)
     return n;
 }
 
-size_t toUCSindex(wchar[] s, size_t i)
+/** ditto */
+size_t toUCSindex(in wchar[] s, size_t i)
 {
     size_t n;
     size_t j;
@@ -140,16 +180,17 @@ size_t toUCSindex(wchar[] s, size_t i)
     return n;
 }
 
-size_t toUCSindex(dchar[] s, size_t i)
+/** ditto */
+size_t toUCSindex(in dchar[] s, size_t i)
 {
     return i;
 }
 
 /******************************************
- * Given a UCS index into an array of characters, return the UTF index.
+ * Given a UCS index n into an array of characters s[], return the UTF index.
  */
 
-size_t toUTFindex(char[] s, size_t n)
+size_t toUTFindex(in char[] s, size_t n)
 {
     size_t i;
 
@@ -163,7 +204,8 @@ size_t toUTFindex(char[] s, size_t n)
     return i;
 }
 
-size_t toUTFindex(wchar[] s, size_t n)
+/** ditto */
+size_t toUTFindex(in wchar[] s, size_t n)
 {
     size_t i;
 
@@ -175,14 +217,20 @@ size_t toUTFindex(wchar[] s, size_t n)
     return i;
 }
 
-size_t toUTFindex(dchar[] s, size_t n)
+/** ditto */
+size_t toUTFindex(in dchar[] s, size_t n)
 {
     return n;
 }
 
 /* =================== Decode ======================= */
 
-dchar decode(char[] s, inout size_t idx)
+/***************
+ * Decodes and returns character starting at s[idx]. idx is advanced past the
+ * decoded character. If the character is not well formed, a UtfException is
+ * thrown and idx remains unchanged.
+ */
+dchar decode(in char[] s, inout size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -275,7 +323,7 @@ unittest
 
     debug(utf) printf("utf.decode.unittest\n");
 
-    static char[] s1 = "abcd";
+    static s1 = "abcd"c;
     i = 0;
     c = decode(s1, i);
     assert(c == cast(dchar)'a');
@@ -284,13 +332,13 @@ unittest
     assert(c == cast(dchar)'b');
     assert(i == 2);
 
-    static char[] s2 = "\xC2\xA9";
+    static s2 = "\xC2\xA9"c;
     i = 0;
     c = decode(s2, i);
     assert(c == cast(dchar)'\u00A9');
     assert(i == 2);
 
-    static char[] s3 = "\xE2\x89\xA0";
+    static s3 = "\xE2\x89\xA0"c;
     i = 0;
     c = decode(s3, i);
     assert(c == cast(dchar)'\u2260');
@@ -321,9 +369,9 @@ unittest
     }
 }
 
-/********************************************************/
+/** ditto */
 
-dchar decode(wchar[] s, inout size_t idx)
+dchar decode(in wchar[] s, inout size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -379,9 +427,9 @@ dchar decode(wchar[] s, inout size_t idx)
 	return cast(dchar)u; // dummy return
     }
 
-/********************************************************/
+/** ditto */
 
-dchar decode(dchar[] s, inout size_t idx)
+dchar decode(in dchar[] s, inout size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -404,6 +452,9 @@ dchar decode(dchar[] s, inout size_t idx)
 
 /* =================== Encode ======================= */
 
+/*******************************
+ * Encodes character c and appends it to array s[].
+ */
 void encode(inout char[] s, dchar c)
     in
     {
@@ -456,7 +507,7 @@ unittest
 {
     debug(utf) printf("utf.encode.unittest\n");
 
-    char[] s = "abcd";
+    char[] s = "abcd".dup;
     encode(s, cast(dchar)'a');
     assert(s.length == 5);
     assert(s == "abcda");
@@ -471,7 +522,7 @@ unittest
     assert(s == "abcda\xC2\xA9\xE2\x89\xA0");
 }
 
-/********************************************************/
+/** ditto */
 
 void encode(inout wchar[] s, dchar c)
     in
@@ -497,6 +548,7 @@ void encode(inout wchar[] s, dchar c)
 	s = r;
     }
 
+/** ditto */
 void encode(inout dchar[] s, dchar c)
     in
     {
@@ -580,6 +632,9 @@ char[] toUTF8(char[4] buf, dchar c)
 	assert(0);
     }
 
+/*******************
+ * Encodes string s into UTF-8 and returns the encoded string.
+ */
 char[] toUTF8(char[] s)
     in
     {
@@ -590,7 +645,8 @@ char[] toUTF8(char[] s)
 	return s;
     }
 
-char[] toUTF8(wchar[] s)
+/** ditto */
+char[] toUTF8(in wchar[] s)
 {
     char[] r;
     size_t i;
@@ -616,7 +672,8 @@ char[] toUTF8(wchar[] s)
     return r;
 }
 
-char[] toUTF8(dchar[] s)
+/** ditto */
+char[] toUTF8(in dchar[] s)
 {
     char[] r;
     size_t i;
@@ -664,7 +721,12 @@ wchar[] toUTF16(wchar[2] buf, dchar c)
 	}
     }
 
-wchar[] toUTF16(char[] s)
+/****************
+ * Encodes string s into UTF-16 and returns the encoded string.
+ * toUTF16z() is suitable for calling the 'W' functions in the Win32 API that take
+ * an LPWSTR or LPCWSTR argument.
+ */
+wchar[] toUTF16(in char[] s)
 {
     wchar[] r;
     size_t slen = s.length;
@@ -688,7 +750,9 @@ wchar[] toUTF16(char[] s)
     return r;
 }
 
-wchar* toUTF16z(char[] s)
+alias wchar* wptr;
+/** ditto */
+wptr toUTF16z(in char[] s)
 {
     wchar[] r;
     size_t slen = s.length;
@@ -713,6 +777,7 @@ wchar* toUTF16z(char[] s)
     return r.ptr;
 }
 
+/** ditto */
 wchar[] toUTF16(wchar[] s)
     in
     {
@@ -723,7 +788,8 @@ wchar[] toUTF16(wchar[] s)
 	return s;
     }
 
-wchar[] toUTF16(dchar[] s)
+/** ditto */
+wchar[] toUTF16(in dchar[] s)
 {
     wchar[] r;
     size_t slen = s.length;
@@ -739,7 +805,30 @@ wchar[] toUTF16(dchar[] s)
 
 /* =================== Conversion to UTF32 ======================= */
 
-dchar[] toUTF32(char[] s)
+/*****
+ * Encodes string s into UTF-32 and returns the encoded string.
+ */
+dchar[] toUTF32(in char[] s)
+{
+    dchar[] r;
+    size_t slen = s.length;
+    size_t j = 0;
+
+    r.length = slen;		// r[] will never be longer than s[]
+    for (size_t i = 0; i < slen; )
+    {
+	dchar c = s[i];
+	if (c >= 0x80)
+	    c = decode(s, i);
+	else
+	    i++;		// c is ascii, no need for decode
+	r[j++] = c;
+    }
+    return cast(dchar[])r[0 .. j];
+}
+
+/** ditto */
+dchar[] toUTF32(in wchar[] s)
 {
     dchar[] r;
     size_t slen = s.length;
@@ -758,25 +847,7 @@ dchar[] toUTF32(char[] s)
     return r[0 .. j];
 }
 
-dchar[] toUTF32(wchar[] s)
-{
-    dchar[] r;
-    size_t slen = s.length;
-    size_t j = 0;
-
-    r.length = slen;		// r[] will never be longer than s[]
-    for (size_t i = 0; i < slen; )
-    {
-	dchar c = s[i];
-	if (c >= 0x80)
-	    c = decode(s, i);
-	else
-	    i++;		// c is ascii, no need for decode
-	r[j++] = c;
-    }
-    return r[0 .. j];
-}
-
+/** ditto */
 dchar[] toUTF32(dchar[] s)
     in
     {

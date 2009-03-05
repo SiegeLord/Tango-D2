@@ -23,7 +23,7 @@
  *     distribution.
  * Authors:   Walter Bright, Sean Kelly
  */
-module memory;
+module rt.memory;
 
 
 private
@@ -35,6 +35,13 @@ private
         version( SimpleLibcStackEnd )
         {
             extern (C) extern void* __libc_stack_end;
+        }
+    }
+    version (OSX)
+    {
+        extern (C)
+        {
+    	extern void* __osx_stack_end;	// set by D startup code
         }
     }
 }
@@ -56,12 +63,9 @@ extern (C) void* rt_stackBottom()
     }
     else version( linux )
     {
-        version( SimpleLibcStackEnd )
-        {
+        version( SimpleLibcStackEnd ) {
             return __libc_stack_end;
-        }
-        else
-        {
+        } else {
             // See discussion: http://autopackage.org/forums/viewtopic.php?t=22
                 static void** libc_stack_end;
 
@@ -73,9 +77,9 @@ extern (C) void* rt_stackBottom()
                 }
                 return *libc_stack_end;
         }
-    }
-    else
-    {
+    } else version (darwin) {
+        return __osx_stack_end;
+    } else {
         static assert( false, "Operating system not supported." );
     }
 }
@@ -147,6 +151,9 @@ extern (C) void rt_scanStaticData( scanFn scan )
     else version( linux )
     {
         scan( &__data_start, &_end );
+    }
+    else version( darwin ){
+        // already ranges already added through osxgc.c functions
     }
     else
     {

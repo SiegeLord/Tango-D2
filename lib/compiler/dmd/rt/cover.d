@@ -11,15 +11,21 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Walter Bright, Sean Kelly
  */
+
+module rt.cover;
+
 private
 {
     version( Win32 )
         import tango.sys.win32.UserGdi;
-    else version( linux )
-        import tango.sys.linux.linux;
+    else version( Posix )
+    {
+        import tango.stdc.posix.fcntl;
+        import tango.stdc.posix.unistd;
+    }
     import tango.core.BitManip;
     import tango.stdc.stdio;
-    import util.utf;
+    import rt.util.utf;
 
     struct BitArray
     {
@@ -125,7 +131,7 @@ static ~this()
 
         if( merge )
         {
-            if( !readFile( c.filename ~ ".lst", lstbuf ) )
+            if( !readFile( addExt( baseName( c.filename ), "lst" ), lstbuf ) )
                 break;
             splitLines( lstbuf, lstlines );
 
@@ -154,7 +160,7 @@ static ~this()
             }
         }
 
-        FILE* flst = fopen( (c.filename ~ ".lst").ptr, "wb" );
+        FILE* flst = fopen( (addExt( baseName( c.filename ), "lst\0" )).ptr, "wb" );
 
         if( !flst )
             continue; //throw new Exception( "Error opening file for write: " ~ lstfn );
@@ -206,12 +212,101 @@ char[] appendFN( char[] path, char[] name )
     else
         const char sep = '/';
 
-    char[] dest = path;
+    auto dest = path;
 
     if( dest && dest[$ - 1] != sep )
         dest ~= sep;
     dest ~= name;
     return dest;
+}
+
+
+char[] baseName( char[] name, char[] ext = null )
+{
+    auto i = name.length;
+    for( ; i > 0; --i )
+    {
+        version( Windows )
+        {
+            if( name[i - 1] == ':' || name[i - 1] == '\\' )
+                break;
+        }
+        else version( Posix )
+        {
+            if( name[i - 1] == '/' )
+                break;
+        }
+    }
+    return chomp( name[i .. $], ext ? ext : "" );
+}
+
+
+char[] getExt( char[] name )
+{
+    auto i = name.length;
+
+    while( i > 0 )
+    {
+        if( name[i - 1] == '.' )
+            return name[i .. $];
+        --i;
+        version( Windows )
+        {
+            if( name[i] == ':' || name[i] == '\\' )
+                break;
+        }
+        else version( Posix )
+        {
+            if( name[i] == '/' )
+                break;
+        }
+    }
+    return null;
+}
+
+
+char[] addExt( char[] name, char[] ext )
+{
+    auto  existing = getExt( name );
+
+    if( existing.length == 0 )
+    {
+        if( name.length && name[$ - 1] == '.' )
+            name ~= ext;
+        else
+            name = name ~ "." ~ ext;
+    }
+    else
+    {
+        name = name[0 .. $ - existing.length] ~ ext;
+    }
+    return name;
+}
+
+
+char[] chomp( char[] str, char[] delim = null )
+{
+    if( delim is null )
+    {
+        auto len = str.length;
+
+        if( len )
+        {
+            auto c = str[len - 1];
+
+            if( c == '\r' )
+                --len;
+            else if( c == '\n' && str[--len - 1] == '\r' )
+                --len;
+        }
+        return str[0 .. len];
+    }
+    else if( str.length >= delim.length )
+    {
+        if( str[$ - delim.length .. $] == delim )
+            return str[0 .. $ - delim.length];
+    }
+    return str;
 }
 
 
@@ -249,7 +344,7 @@ bool readFile( char[] name, inout char[] buf )
         buf.length = pos;
         return true;
     }
-    else version( linux )
+    else version( Posix )
     {
         char[]  namez = new char[name.length + 1];
                         namez[0 .. name.length] = name;
@@ -310,17 +405,17 @@ void splitLines( char[] buf, inout char[][] lines )
 }
 
 
-char[] expandTabs( char[] string, int tabsize = 8 )
+char[] expandTabs( char[] str, int tabsize = 8 )
 {
     const dchar LS = '\u2028'; // UTF line separator
     const dchar PS = '\u2029'; // UTF paragraph separator
 
     bool changes = false;
-    char[] result = string;
+    char[] result = str;
     int column;
     int nspaces;
 
-    foreach( size_t i, dchar c; string )
+    foreach( size_t i, dchar c; str )
     {
         switch( c )
         {
@@ -330,9 +425,9 @@ char[] expandTabs( char[] string, int tabsize = 8 )
                 {
                     changes = true;
                     result = null;
-                    result.length = string.length + nspaces - 1;
+                    result.length = str.length + nspaces - 1;
                     result.length = i + nspaces;
-                    result[0 .. i] = string[0 .. i];
+                    result[0 .. i] = str[0 .. i];
                     result[i .. i + nspaces] = ' ';
                 }
                 else

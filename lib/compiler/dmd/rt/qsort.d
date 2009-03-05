@@ -13,6 +13,7 @@
         _adSort() is required.
 */
 
+module rt.qsort;
 
 /*
 **    Sorts an array starting at base, of length nbr_elements, each
@@ -155,4 +156,3 @@ unittest
         assert(a[i] <= a[i + 1]);
     }
 }
-

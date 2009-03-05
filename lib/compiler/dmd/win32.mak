@@ -67,9 +67,6 @@ all: lib doc
 
 include OBJECTDEFS.inc
 
-OBJ_WIN= \
-    rt/deh.obj
-
 ALL_OBJECTS= $(ALL_OBJS) $(OBJ_WIN)
 # $(patsubst %.o,%.obj,$(ALL_OBJS)) $(OBJ_WIN)
 

@@ -53,6 +53,10 @@ extern (C) int gc_getTermCleanupLevel(){
     return _termCleanupLevel;
 }
 
+version (DigitalMars) version(OSX) {
+    extern(C) void _d_osx_image_init();
+}
+
 extern (C) void thread_init();
 
 extern (C) void gc_init()
@@ -70,6 +74,9 @@ extern (C) void gc_init()
         _gc = cast(GC*) tango.stdc.stdlib.calloc(1, GC.sizeof);
     }
     _gc.initialize();
+    version (DigitalMars) version(OSX) {
+        _d_osx_image_init();
+    }
     // NOTE: The GC must initialize the thread library
     //       before its first collection.
     thread_init();

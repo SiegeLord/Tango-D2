@@ -24,7 +24,7 @@
  *     distribution.
  * Authors:   Walter Bright, Sean Kelly
  */
-module lifetime;
+module rt.lifetime;
 
 
 private

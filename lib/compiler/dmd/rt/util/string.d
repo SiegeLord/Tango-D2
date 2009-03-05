@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-module util.string;
+module rt.util.string;
 
 private import tango.stdc.string;
 
@@ -44,7 +44,7 @@ int stringCompare (char[] s1, char[] s2)
     int result = memcmp(s1.ptr, s2.ptr, len);
 
     if (result == 0)
-        result = cast(int)s1.length - cast(int)s2.length;
+        result = (s1.length<s2.length)?-1:((s1.length==s2.length)?0:1);
 
     return result;
 }

@@ -4,9 +4,9 @@
  * Placed into Public Domain
  */
 
-// Identify the compiler used and its various features.
+module rt.compiler;
 
-module compiler;
+// Identify the compiler used and its various features.
 
 const
 {

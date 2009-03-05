@@ -6,7 +6,7 @@
  * Authors:   Sean Kelly
  */
 module tango.core.Runtime;
-
+debug private extern(C) int printf(char*,...);
 
 private
 {
@@ -146,7 +146,6 @@ private:
 // Overridable Callbacks
 ////////////////////////////////////////////////////////////////////////////////
 
-
 /**
  * This routine is called by the runtime to run module unit tests on startup.
  * The user-supplied unit tester will be called if one has been supplied,
@@ -160,11 +159,16 @@ extern (C) bool runModuleUnitTests()
 {
     if( Runtime.sm_moduleUnitTester is null )
     {
+        debug printf("unittest start\n");
         foreach( m; ModuleInfo )
         {
-            if( m.unitTest )
+            if( m.unitTest ) {
+                char[] name=m.name~"\n\0";
+                debug printf(name.ptr);
                 m.unitTest();
+            }
         }
+        debug printf("unittest end\n");
         return true;
     }
     return Runtime.sm_moduleUnitTester();

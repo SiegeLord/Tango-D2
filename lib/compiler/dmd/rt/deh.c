@@ -155,7 +155,8 @@ EXCEPTION_DISPOSITION _d_framehandler(
                     }
 
                     if (_d_isbaseof(ci, pcb->type))
-                    {   // Matched the catch type, so we've found the handler.
+                    {
+                        // Matched the catch type, so we've found the handler.
                         int regebp;
 
                         pti = _d_translate_se_to_d_exception(exception_record);
@@ -409,7 +410,7 @@ void _d_monitor_epilog(void *x, void *y, Object *h)
 
 /* ======================== linux =============================== */
 
-#if linux
+#if linux || __APPLE__
 
 #include        "mars.h"
 

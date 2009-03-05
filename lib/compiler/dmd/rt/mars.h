@@ -102,4 +102,3 @@ void _d_OutOfMemory();
 #if __cplusplus
 }
 #endif
-

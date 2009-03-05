@@ -1,5 +1,5 @@
 
-module typeinfo.ti_Aint;
+module rt.typeinfo.ti_Aint;
 
 private import tango.stdc.string;
 
@@ -7,9 +7,9 @@ private import tango.stdc.string;
 
 class TypeInfo_Ai : TypeInfo
 {
-    char[] toString() { return "int[]"; }
+    override char[] toString() { return "int[]"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {   int[] s = *cast(int[]*)p;
         auto len = s.length;
         auto str = s.ptr;
@@ -26,7 +26,7 @@ class TypeInfo_Ai : TypeInfo
         return hash;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         int[] s1 = *cast(int[]*)p1;
         int[] s2 = *cast(int[]*)p2;
@@ -35,7 +35,7 @@ class TypeInfo_Ai : TypeInfo
                memcmp(cast(void *)s1, cast(void *)s2, s1.length * int.sizeof) == 0;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         int[] s1 = *cast(int[]*)p1;
         int[] s2 = *cast(int[]*)p2;
@@ -56,29 +56,40 @@ class TypeInfo_Ai : TypeInfo
         return 0;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return (int[]).sizeof;
     }
 
-    uint flags()
+    override uint flags()
     {
         return 1;
     }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(int);
     }
+}
+
+unittest
+{
+    int[][] a = [[5,3,8,7], [2,5,3,8,7]];
+    a.sort;
+    assert(a == [[2,5,3,8,7], [5,3,8,7]]);
+
+    a = [[5,3,8,7], [5,3,8]];
+    a.sort;
+    assert(a == [[5,3,8], [5,3,8,7]]);
 }
 
 // uint[]
 
 class TypeInfo_Ak : TypeInfo_Ai
 {
-    char[] toString() { return "uint[]"; }
+    override char[] toString() { return "uint[]"; }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         uint[] s1 = *cast(uint[]*)p1;
         uint[] s2 = *cast(uint[]*)p2;
@@ -99,7 +110,7 @@ class TypeInfo_Ak : TypeInfo_Ai
         return 0;
     }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(uint);
     }
@@ -109,11 +120,10 @@ class TypeInfo_Ak : TypeInfo_Ai
 
 class TypeInfo_Aw : TypeInfo_Ak
 {
-    char[] toString() { return "dchar[]"; }
+    override char[] toString() { return "dchar[]"; }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(dchar);
     }
 }
-

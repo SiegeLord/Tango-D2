@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -v
 cd "`dirname $0`"
 
 while [ "$#" != "0" ]

@@ -1,9 +1,9 @@
-
-
 // Copyright (c) 2002 by Digital Mars
 // All Rights Reserved
 // written by Walter Bright
 // www.digitalmars.com
+
+module rt.obj;
 
 extern (C):
 
@@ -25,4 +25,3 @@ int _d_obj_cmp(Object o1, Object o2)
 {
     return o1.opCmp(o2);
 }
-

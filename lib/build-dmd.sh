@@ -15,8 +15,8 @@ goerror(){
 . dmdinclude
 dmdsettings
 
-make clean -fdmd-posix.mak           || goerror
-make lib doc install -fdmd-posix.mak SYSTEM_VERSION="$POSIXFLAG"  || goerror
+make clean-all -fdmd-posix.mak           || goerror
+make all install -fdmd-posix.mak SYSTEM_VERSION="$POSIXFLAG"  || goerror
 make clean -fdmd-posix.mak           || goerror
 chmod 644 ../tango/core/*.di         || goerror
 

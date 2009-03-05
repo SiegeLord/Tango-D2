@@ -21,17 +21,17 @@
  *     distribution.
  */
 
-module typeinfo.ti_Acreal;
+module rt.typeinfo.ti_Acreal;
 
-private import typeinfo.ti_creal;
+private import rt.typeinfo.ti_creal;
 
 // creal[]
 
 class TypeInfo_Ac : TypeInfo
 {
-    char[] toString() { return "creal[]"; }
+    override char[] toString() { return "creal[]"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {   creal[] s = *cast(creal[]*)p;
         size_t len = s.length;
         creal *str = s.ptr;
@@ -52,7 +52,7 @@ class TypeInfo_Ac : TypeInfo
         return hash;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         creal[] s1 = *cast(creal[]*)p1;
         creal[] s2 = *cast(creal[]*)p2;
@@ -62,14 +62,13 @@ class TypeInfo_Ac : TypeInfo
             return 0;
         for (size_t u = 0; u < len; u++)
         {
-            int c = TypeInfo_c._equals(s1[u], s2[u]);
-            if (c == 0)
-                return 0;
+            if (!TypeInfo_c._equals(s1[u], s2[u]))
+                return false;
         }
-        return 1;
+        return true;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         creal[] s1 = *cast(creal[]*)p1;
         creal[] s2 = *cast(creal[]*)p2;
@@ -90,17 +89,17 @@ class TypeInfo_Ac : TypeInfo
         return 0;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return (creal[]).sizeof;
     }
 
-    uint flags()
+    override uint flags()
     {
         return 1;
     }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(creal);
     }

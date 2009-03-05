@@ -21,6 +21,7 @@ OBJ_BASE= \
     rt/critical.obj \
     rt/dmain2.obj \
     invariant.obj \
+    rt/invariant_.obj \
     rt/lifetime.obj \
     rt/memory.obj \
     rt/memset.obj \
@@ -33,6 +34,7 @@ OBJ_BASE= \
 
 OBJ_POSIX=rt/alloca.obj \
     rt/cmath2.obj \
+    rt/gcosx.obj \
     rt/deh2.obj \
     rt/llmath.obj
 

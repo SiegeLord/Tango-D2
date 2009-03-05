@@ -3,17 +3,16 @@
  * written by Walter Bright
  * www.digitalmars.com
  */
+module rt.invariant_;
 
-private {
-    extern(C) int printf(char*,...);
-}
-void _d_invariant(Object o)
+extern (C) void _d_invariant(Object o)
 {   ClassInfo c;
 
     //printf("__d_invariant(%p)\n", o);
 
     // BUG: needs to be filename/line of caller, not library routine
     assert(o !is null); // just do null check, not invariant check
+
     c = o.classinfo;
     do
     {

@@ -21,17 +21,17 @@
  *     distribution.
  */
 
-module typeinfo.ti_Adouble;
+module rt.typeinfo.ti_Adouble;
 
-private import typeinfo.ti_double;
+private import rt.typeinfo.ti_double;
 
 // double[]
 
 class TypeInfo_Ad : TypeInfo
 {
-    char[] toString() { return "double[]"; }
+    override char[] toString() { return "double[]"; }
 
-    hash_t getHash(void *p)
+    override hash_t getHash(in void* p)
     {   double[] s = *cast(double[]*)p;
         size_t len = s.length;
         auto str = s.ptr;
@@ -49,7 +49,7 @@ class TypeInfo_Ad : TypeInfo
         return hash;
     }
 
-    int equals(void *p1, void *p2)
+    override equals_t equals(in void* p1, in void* p2)
     {
         double[] s1 = *cast(double[]*)p1;
         double[] s2 = *cast(double[]*)p2;
@@ -59,14 +59,13 @@ class TypeInfo_Ad : TypeInfo
             return 0;
         for (size_t u = 0; u < len; u++)
         {
-            int c = TypeInfo_d._equals(s1[u], s2[u]);
-            if (c == 0)
-                return 0;
+            if (!TypeInfo_d._equals(s1[u], s2[u]))
+                return false;
         }
-        return 1;
+        return true;
     }
 
-    int compare(void *p1, void *p2)
+    override int compare(in void* p1, in void* p2)
     {
         double[] s1 = *cast(double[]*)p1;
         double[] s2 = *cast(double[]*)p2;
@@ -87,17 +86,17 @@ class TypeInfo_Ad : TypeInfo
         return 0;
     }
 
-    size_t tsize()
+    override size_t tsize()
     {
         return (double[]).sizeof;
     }
 
-    uint flags()
+    override uint flags()
     {
         return 1;
     }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(double);
     }
@@ -109,7 +108,7 @@ class TypeInfo_Ap : TypeInfo_Ad
 {
     char[] toString() { return "idouble[]"; }
 
-    TypeInfo next()
+    override TypeInfo next()
     {
         return typeid(idouble);
     }
