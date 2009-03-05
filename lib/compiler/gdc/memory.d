@@ -241,6 +241,9 @@ private
     }
     else version( GC_Use_Data_Proc_Maps )
     {
+        private import tango.stdc.posix.fcntl; 
+        private import tango.stdc.posix.unistd; 
+        private import tango.stdc.string; 
         version = GC_Use_Dynamic_Ranges;
     }
     version( GC_Use_Dynamic_Ranges )
@@ -369,13 +372,13 @@ void initStaticDataPtrs()
         void* start;
         void* end;
 
-        p = buf;
+        p = buf.ptr;
         if (fd != -1)
         {
             while ( (count = read(fd, p, buf.sizeof - (p - buf.ptr))) > 0 )
             {
                 e = p + count;
-                p = buf;
+                p = buf.ptr;
                 while (true)
                 {
                     s = p;
@@ -436,7 +439,7 @@ void initStaticDataPtrs()
                     else
                     {
                         count = p - s;
-                        memmove(buf, s, count);
+                        memmove(buf.ptr, s, count);
                         p = buf.ptr + count;
                         break;
                     }
