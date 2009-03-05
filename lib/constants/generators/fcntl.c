@@ -2,7 +2,7 @@
 #undef const
 tt
 xxx start xxx
-module tango.stdc.constants.autoConf.fcntl;
+module tango.stdc.constants.autoconf.fcntl;
 #ifdef linux
 version (linux){
     version(SMALLFILE)  // Note: makes no difference in X86_64 mode.

@@ -7,7 +7,7 @@
 t
 xxx start xxx
 /+ sed -e 's/(cpu_threadtype_t)//g' -e 's/(cpu_subtype_t)//g' -e 's/(cpu_type_t)//g' +/
-module tango.stdc.constants.autoConf.machine;
+module tango.stdc.constants.autoconf.machine;
 
 #ifndef MACHINE_SKIP_ALL
 alias int cpu_type_t;

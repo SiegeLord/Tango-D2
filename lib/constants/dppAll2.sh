@@ -1,6 +1,6 @@
 #!/bin/bash
 # destDir should become ../../common/tango/stdc/constants
-destDir=../../../tango/stdc/constants/autoConf
+destDir=../../../tango/stdc/constants/autoconf
 if [[ -n ${0%/*} ]] ; then
     cd ${0%/*}
 fi

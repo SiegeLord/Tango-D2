@@ -3,7 +3,7 @@
 #undef const
 tt
 xxx start xxx
-module tango.stdc.constants.autoConf.errno;
+module tango.stdc.constants.autoconf.errno;
 
 enum {
 #ifdef E2BIG

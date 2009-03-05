@@ -6,7 +6,7 @@
 #undef const
 tt
 xxx start xxx
-module tango.stdc.constants.autoConf.unistd;
+module tango.stdc.constants.autoconf.unistd;
 /+ http://opengroup.org/onlinepubs/007908799/xsh/unistd.h.html +/
 
 #ifndef UNISTD_SKIP_ALL

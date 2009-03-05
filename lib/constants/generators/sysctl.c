@@ -7,7 +7,7 @@
 #undef const
 tt
 xxxxxx start xxxxxx
-module tango.stdc.constants.autoConf.sysctl;
+module tango.stdc.constants.autoconf.sysctl;
 #ifndef SYSCTL_SKIP_ALL
 enum SysCtl{
 __XYX__CTL_MAXNAME = CTL_MAXNAME , /* largest number of components supported */

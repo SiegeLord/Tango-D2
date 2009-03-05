@@ -4,7 +4,7 @@
 #undef const
 tt
 xxx start xxx
-module tango.stdc.constants.autoConf.socket;
+module tango.stdc.constants.autoconf.socket;
 
 #if (defined(_WINDOWS)||defined(WIN32))
 enum {
@@ -61,8 +61,20 @@ enum {
         __XYX__UDP    = IPPROTO_UDP   ,   
     }
     
-    enum { __XYX__AF_INET6    = AF_INET6 }
-    enum { __XYX__SOCK_RAW    = SOCK_RAW }
+    enum SocketType{
+        __XYX__SOCK_STREAM    = SOCK_STREAM   , /++ sequential, reliable +/
+        __XYX__SOCK_DGRAM     = SOCK_DGRAM    , /++ connectionless unreliable, max length +/
+        __XYX__SOCK_SEQPACKET = SOCK_SEQPACKET, /++ sequential, reliable, max length +/
+#ifdef SOCK_RAW
+        __XYX__SOCK_RAW       = SOCK_RAW      , /++ raw protocol +/
+#endif
+#ifdef SOCK_RDM
+        __XYX__SOCK_RDM       = SOCK_RDM      , /++ reliable messages +/
+#endif
+#ifdef SOCK_PACKET
+        __XYX__SOCK_PACKET    = SOCK_PACKET   , /++ linux specific packets at dev level +/
+#endif
+    }
     /***********************************************************************
 
             Protocol
