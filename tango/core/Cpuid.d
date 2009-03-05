@@ -203,7 +203,7 @@ public:
     }
     version(X86_CPU){
         /// utility method to get information about x86 processors
-        CpuInfoX86 x86(){
+        final CpuInfoX86 x86(){
             if (auto res=cast(CpuInfoX86)this)
                 return res;
             throw new Exception("non x86 cpu",__FILE__,__LINE__);
@@ -211,7 +211,7 @@ public:
     }
     version(PPC){
         /// utility method to get information about PPC processors
-        CpuInfoPpc ppc(){
+        final CpuInfoPpc ppc(){
             if (auto res=cast(CpuInfoPpc)this)
                 return res;
             throw new Exception("non ppc cpu",__FILE__,__LINE__);
@@ -219,7 +219,7 @@ public:
     }
     version(ARM){
         /// utility method to get information about arm processors
-        CpuInfoArm arm(){
+        final CpuInfoArm arm(){
             if (auto res=cast(CpuInfoArm)this)
                 return res;
             throw new Exception("non arm cpu",__FILE__,__LINE__);
@@ -227,7 +227,7 @@ public:
     }
     version(SPARC){
         /// utility method to get information about sparc processors
-        CpuInfoSparc sparc(){
+        final CpuInfoSparc sparc(){
             if (auto res=cast(CpuInfoSparc)this)
                 return res;
             throw new Exception("non sparc cpu",__FILE__,__LINE__);
@@ -256,7 +256,7 @@ public:
 /// AMD K10    --   + isX86_64()
 /// Cyrix 6x86 -- preferPentium1()
 ///    6x86MX  --   + mmx()
-class CpuInfoX86: CpuInfo {
+final class CpuInfoX86: CpuInfo {
 private:
     bool probablyIntel; // true = _probably_ an Intel processor, might be faking
     bool probablyAMD; // true = _probably_ an AMD processor
@@ -871,7 +871,7 @@ version(X86_64) {
     }
 }
 
-class CpuInfoPpc: CpuInfo{
+final class CpuInfoPpc: CpuInfo{
     bool hasfloatingpoint; // Floating Point Instructions
     bool hasaltivec;       // AltiVec Instructions
     bool hasgraphicsops;   // Graphics Operations
@@ -944,7 +944,7 @@ class CpuInfoPpc: CpuInfo{
 }
 
 /// this should be expanded by someone using sparc
-class CpuInfoSparc: CpuInfo{
+final class CpuInfoSparc: CpuInfo{
     this(){ super(); }
     override void clear(){
         super.clear();
