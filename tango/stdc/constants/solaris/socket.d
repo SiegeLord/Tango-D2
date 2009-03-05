@@ -3,29 +3,29 @@ module tango.stdc.constants.solaris.socket;
     enum {SOCKET_ERROR = -1}
     enum SocketOption: int
     {
-        SO_DEBUG = 1 , /* turn on debugging info recording */
-        SO_BROADCAST = 6 , /* permit sending of broadcast msgs */
-        SO_REUSEADDR = 2 , /* allow local address reuse */
-        SO_LINGER = 13 , /* linger on close if data present */
-        SO_DONTLINGER = ~(13),
-        SO_OOBINLINE = 10 , /* leave received OOB data in line */
-        SO_ACCEPTCONN = 30, /* socket has had listen() */
-        SO_KEEPALIVE = 9 , /* keep connections alive */
-        SO_DONTROUTE = 5 , /* just use interface addresses */
-        SO_TYPE = 3 , /* get socket type */
+        SO_DEBUG = 0x0001 , /* turn on debugging info recording */
+        SO_BROADCAST = 0x0020 , /* permit sending of broadcast msgs */
+        SO_REUSEADDR = 0x0004 , /* allow local address reuse */
+        SO_LINGER = 0x0080 , /* linger on close if data present */
+        SO_DONTLINGER = ~(SO_LINGER),
+        SO_OOBINLINE = 0x0100 , /* leave received OOB data in line */
+        SO_ACCEPTCONN = 0x0002, /* socket has had listen() */
+        SO_KEEPALIVE = 0x0008 , /* keep connections alive */
+        SO_DONTROUTE = 0x0010, /* just use interface addresses */
+        SO_TYPE = 0x1008 , /* get socket type */
         /*
          * Additional options, not kept in so_options.
          */
-        SO_SNDBUF = 7, /* send buffer size */
-        SO_RCVBUF = 8, /* receive buffer size */
-        SO_ERROR = 4 , /* get error status and clear */
+        SO_SNDBUF = 0x1001, /* send buffer size */
+        SO_RCVBUF = 0x1002, /* receive buffer size */
+        SO_ERROR = 0x1007 , /* get error status and clear */
         // OptionLevel.IP settings
-        IP_MULTICAST_TTL = 33 ,
-        IP_MULTICAST_LOOP = 34 ,
-        IP_ADD_MEMBERSHIP = 35 ,
-        IP_DROP_MEMBERSHIP = 36,
+        IP_MULTICAST_TTL = 0x11 ,
+        IP_MULTICAST_LOOP = 0x12 ,
+        IP_ADD_MEMBERSHIP = 0x13 ,
+        IP_DROP_MEMBERSHIP = 0x14,
         // OptionLevel.TCP settings
-        TCP_NODELAY = 1 ,
+        TCP_NODELAY = 0x01 ,
     }
     /* Standard well-defined IP protocols.  */
     private enum
@@ -63,9 +63,9 @@ module tango.stdc.constants.solaris.socket;
     enum SocketOptionLevel
     {
         SOCKET = 1,
-        IP = IPPROTO_IP ,
-        TCP = IPPROTO_TCP ,
-        UDP = IPPROTO_UDP ,
+        IP = 0 ,
+        TCP = 6 ,
+        UDP = 17 ,
     }
     enum SocketType{
         SOCK_STREAM = 1 , /++ sequential, reliable +/
