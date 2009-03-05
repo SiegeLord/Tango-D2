@@ -1,26 +1,23 @@
 module tango.stdc.constants.solaris.fcntl;
-version (linux) {
-    version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
-    {
-      const bool  __USE_LARGEFILE64   = false;
-    }
-    else
-    {
-      const bool  __USE_LARGEFILE64   = true;
-    }
-    const bool  __USE_FILE_OFFSET64 = __USE_LARGEFILE64;
-    static if( __USE_FILE_OFFSET64 )
-    {
+version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
+{
+  enum :bool {__USE_LARGEFILE64   = false}
+}
+else
+{
+  enum :bool {__USE_LARGEFILE64   = ((void*).sizeof==4)}
+}
+static if( __USE_LARGEFILE64 )
+{
     enum { F_GETLK = 12 }
     enum { F_SETLK = 13 }
     enum { F_SETLKW = 14 }
-    }
-    else
-    {
+}
+else
+{
     enum { F_GETLK = 5  }
     enum { F_SETLK = 6  }
     enum { F_SETLKW = 7 }
-    }
 }
 enum { F_DUPFD = 0 }
 enum { F_GETFD = 1 }

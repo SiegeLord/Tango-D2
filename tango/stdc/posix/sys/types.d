@@ -36,7 +36,7 @@ uid_t
 
 version( linux )
 {
-  static if( __USE_FILE_OFFSET64 )
+  static if( __USE_LARGEFILE64 )
   {
     alias long      off_t;      // actually C header's off64_t in this mode
     alias long      blkcnt_t;   // actually C header's blkcnt64_t in this mode
@@ -92,7 +92,36 @@ else version( freebsd )
     alias uint      uid_t;
     alias uint      fflags_t;
 }
+else version( solaris )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    alias long		off_t;
+    alias long		blkcnt_t;
+    alias ulong		ino_t;
+  }
+  else
+  {
+    alias c_long	off_t;
+    alias c_long	blkcnt_t;
+	alias c_ulong	ino_t;
+  }
+	alias int		blksize_t;
+    alias c_ulong	dev_t;
+    alias uint		mode_t;
+    alias uint		nlink_t;
+    alias uint      uid_t;
+    alias uint      gid_t;
+    alias int       pid_t;
+    //size_t (defined in tango.stdc.stddef)
+    alias c_long    ssize_t;
+    //time_t (defined in tango.stdc.time)
 
+
+	alias char*		caddr_t;	/* ?<core address> type */
+	alias c_long	daddr_t;	/* <disk address> type */
+	alias short		cnt_t;		/* ?<count> type */
+}
 //
 // XOpen (XSI)
 //
@@ -108,7 +137,7 @@ useconds_t
 
 version( linux )
 {
-  static if( __USE_FILE_OFFSET64 )
+  static if( __USE_LARGEFILE64 )
   {
     alias ulong     fsblkcnt_t;
     alias ulong     fsfilcnt_t;
@@ -143,6 +172,24 @@ else version( freebsd )
     alias c_long    key_t;
     alias c_long    suseconds_t;
     alias uint      useconds_t;
+}
+else version( solaris )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    alias ulong		fsblkcnt_t;
+    alias ulong		fsfilcnt_t;
+  }
+  else
+  {
+    alias c_ulong	fsblkcnt_t;
+    alias c_ulong	fsfilcnt_t;
+  }
+    // clock_t (defined in tango.stdc.time)
+    alias int		id_t;
+    alias int		key_t;
+    alias c_long	suseconds_t;
+    alias uint		useconds_t;
 }
 
 //
@@ -359,6 +406,71 @@ else version( freebsd )
     alias void* pthread_rwlockattr_t;
     alias void* pthread_t;
 }
+else version( solaris )
+{	
+	struct pthread_attr_t {
+		void* __pthread_attrp;
+	}
+	
+	struct pthread_cond_t {
+		struct __pthread_cond_flags {
+			uint8_t[4]	__pthread_cond_flag;
+			uint16_t 	__pthread_cond_type;
+			uint16_t 	__pthread_cond_magic;
+		}
+		private upad64_t __pthread_cond_data;
+	}
+	
+	struct pthread_condattr_t {
+		void* __pthread_condattrp;
+	}
+	
+	alias uint pthread_key_t;
+	
+	struct pthread_mutex_t {
+		struct __pthread_mutex_flags {
+			uint16_t	__pthread_mutex_flag1;
+			uint8_t		__pthread_mutex_flag2;
+			uint8_t		__pthread_mutex_ceiling;
+			uint16_t 	__pthread_mutex_type;
+			uint16_t 	__pthread_mutex_magic;
+		}
+		union __pthread_mutex_lock {
+			struct __pthread_mutex_lock64 {
+				uint8_t	__pthread_mutex_pad[8];
+			}
+			struct __pthread_mutex_lock32 {
+				uint32_t __pthread_ownerpid;
+				uint32_t __pthread_lockword;
+			}
+			private upad64_t __pthread_mutex_owner64;
+		}
+		private upad64_t __pthread_mutex_data;
+	}
+	
+	struct pthread_mutexattr_t {
+		void* __pthread_mutexattrp;
+	}
+	
+	struct pthread_once_t {
+		private upad64_t[4] __pthread_once_pad;
+	}
+	
+	struct pthread_rwlock_t {
+		int32_t		__pthread_rwlock_readers;
+		uint16_t	__pthread_rwlock_type;
+		uint16_t	__pthread_rwlock_magic;
+		pthread_mutex_t	__pthread_rwlock_mutex;
+		pthread_cond_t	__pthread_rwlock_readercv;
+		pthread_cond_t	__pthread_rwlock_writercv;
+	}
+	
+	struct pthread_rwlockattr_t {
+		void* __pthread_rwlockattrp;
+	}
+	
+	alias uint pthread_t;
+}
 
 //
 // Barrier (BAR)
@@ -407,6 +519,21 @@ else version( freebsd )
     alias void* pthread_barrier_t;
     alias void* pthread_barrierattr_t;
 }
+else version ( solaris )
+{
+	struct pthread_barrier_t {
+		uint32_t		__pthread_barrier_count;
+		uint32_t		__pthread_barrier_current;
+		upad64_t		__pthread_barrier_cycle;
+		upad64_t		__pthread_barrier_reserved;
+		pthread_mutex_t	__pthread_barrier_lock;
+		pthread_cond_t	__pthread_barrier_cond;
+	}
+	
+	struct pthread_barrierattr_t {
+		void* __pthread_barrierattrp;
+	}
+}
 
 //
 // Spin (SPN)
@@ -430,6 +557,10 @@ else version( darwin )
 else version( freebsd )
 {
     alias void* pthread_spinlock_t;
+}
+else version ( solaris )
+{
+	alias pthread_mutex_t pthread_spinlock_t;
 }
 
 //

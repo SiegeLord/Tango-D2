@@ -107,6 +107,23 @@ else version( freebsd )
     extern (D) int  WSTOPSIG( int status )     { return status >> 8;                     }
     extern (D) int  WTERMSIG( int status )     { return _WSTATUS( status );              }
 }
+else version( solaris )
+{	
+	const WCONTFLG		= 0177777;
+	
+    const WNOHANG       = 0100;
+    const WUNTRACED     = 0004;
+	const WCONTINUED	= 0010;
+	
+	extern (D) int  WWORD( int status )			{ return (status & 0177777);			}
+    extern (D) int  WEXITSTATUS( int status )   { return (status >> 8) & 0xFF;			}
+    extern (D) int  WIFCONTINUED( int status )  { return WWORD(status) == WCONTFLG;		}
+    extern (D) bool WIFEXITED( int status )     { return (status & 0xFF) == 0;			}
+    extern (D) bool WIFSIGNALED( int status )	{ return (status & 0xFF) > 0 && (status & 0xFF00) == 0; }
+    extern (D) bool WIFSTOPPED( int status )	{ return (status & 0xFF) == 0177 && (status & 0xFF00) != 0; }
+    extern (D) int  WSTOPSIG( int status )		{ return (status >> 8) & 0xFF;			}
+    extern (D) int  WTERMSIG( int status )		{ return status & 0x7F;					}
+}
 else
 {
     static assert( false );

@@ -10,6 +10,10 @@ module tango.stdc.posix.semaphore;
 
 private import tango.stdc.posix.config;
 private import tango.stdc.posix.time;
+version( solaris ) {
+	private import tango.stdc.stdint;
+}
+
 
 extern (C):
 
@@ -112,6 +116,18 @@ else version( freebsd )
 
     const SEM_FAILED = cast(sem_t*) null;
 }
+else version( solaris )
+{
+	struct sem_t
+	{
+		/* this structure must be the same as sema_t in <synch.h> */
+		uint32_t	sem_count;	/* semaphore count */
+		uint16_t	sem_type;
+		uint16_t	sem_magic;
+		upad64_t[3]	sem_pad1;	/* reserved for a mutex_t */
+		upad64_t[2]	sem_pad2;	/* reserved for a cond_t */
+	}
+}
 
 int sem_close(sem_t*);
 int sem_destroy(sem_t*);
@@ -139,6 +155,10 @@ else version( darwin )
     // int sem_timedwait(sem_t*, in timespec*); // not defined, use mach semaphores instead
 }
 else version( freebsd )
+{
+    int sem_timedwait(sem_t*, in timespec*);
+}
+else version( solaris )
 {
     int sem_timedwait(sem_t*, in timespec*);
 }

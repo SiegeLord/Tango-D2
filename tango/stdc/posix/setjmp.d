@@ -76,6 +76,15 @@ version( linux )
     alias _setjmp setjmp; // see XOpen block
     void longjmp(jmp_buf, int);
 }
+else version( solaris )
+{
+	version( X86_64 )		alias long[8] jmp_buf;
+    else version( X86 )		alias int[10] jmp_buf;
+    else version ( SPARC )	alias int[12] jmp_buf;
+	
+	int setjmp(jmp_buf);
+	void longjmp(jmp_buf, int);
+}
 
 //
 // C Extension (CX)
@@ -95,6 +104,15 @@ version( linux )
     alias __sigsetjmp sigsetjmp;
     void siglongjmp(sigjmp_buf, int);
 }
+else version( solaris )
+{
+	version( X86_64 )		alias long[128] sigjmp_buf;
+    else version( X86 )		alias int[128] sigjmp_buf;
+    else version ( SPARC )	alias int[19] sigjmp_buf;
+	
+	int  sigsetjmp(sigjmp_buf, int);
+	void siglongjmp(sigjmp_buf, int);
+}
 
 //
 // XOpen (XSI)
@@ -105,6 +123,11 @@ void _longjmp(jmp_buf, int);
 */
 
 version( linux )
+{
+    int  _setjmp(jmp_buf);
+    void _longjmp(jmp_buf, int);
+}
+else version( solaris )
 {
     int  _setjmp(jmp_buf);
     void _longjmp(jmp_buf, int);

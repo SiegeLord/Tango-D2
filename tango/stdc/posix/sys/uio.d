@@ -63,3 +63,14 @@ else version( freebsd )
     ssize_t readv(int, in iovec*, int);
     ssize_t writev(int, in iovec*, int);
 }
+else version( solaris )
+{
+    struct iovec
+    {
+        void*  iov_base;
+        size_t iov_len;
+    }
+
+    ssize_t readv(int, in iovec*, int);
+    ssize_t writev(int, in iovec*, int);
+}

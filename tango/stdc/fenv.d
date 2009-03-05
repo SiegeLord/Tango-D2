@@ -76,6 +76,25 @@ else version ( freebsd )
 
     alias ushort fexcept_t;
 }
+else version ( solaris )
+{
+	private import tango.stdc.config;
+	
+	struct __fex_handler_struct
+	{
+		int	__mode;
+		void function() handler;
+	}
+	alias __fex_handler_struct[12] __fex_handler_t;
+	
+	struct fenv_t
+	{
+		__fex_handler_t	__handlers;
+		c_ulong	__fsr;
+	}
+	
+	alias int fexcept_t;
+}
 else
 {
     static assert( false );
@@ -114,6 +133,11 @@ else version( freebsd )
 {
     private extern fenv_t __fe_dfl_env;
     fenv_t* FE_DFL_ENV = &__fe_dfl_env;
+}
+else version( solaris )
+{
+	private extern fenv_t __fenv_dfl_env;
+	fenv_t* FE_DFL_ENV = &__fenv_dfl_env;
 }
 else
 {

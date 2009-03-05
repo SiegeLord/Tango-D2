@@ -11,7 +11,6 @@ module tango.core.Thread;
 // this should be true for most architectures
 version = StackGrowsDown;
 
-
 public
 {
 //    import tango.core.TimeSpan;
@@ -199,6 +198,11 @@ else version( Posix )
                 cleanup.push( &thread_cleanupHandler, cast(void*) obj );
             }
             else version( darwin )
+            {
+                pthread_cleanup cleanup = void;
+                cleanup.push( &thread_cleanupHandler, cast(void*) obj );
+            }
+            else version( solaris )
             {
                 pthread_cleanup cleanup = void;
                 cleanup.push( &thread_cleanupHandler, cast(void*) obj );

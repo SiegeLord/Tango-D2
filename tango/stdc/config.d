@@ -28,3 +28,8 @@ else
     alias uint  c_ulong;
   }
 }
+
+version( solaris )
+{
+	alias ulong	upad64_t;
+}

@@ -61,6 +61,10 @@ else version( freebsd )
 {
     clock_t CLOCKS_PER_SEC = 128;
 }
+else version( solaris )
+{
+	clock_t CLOCKS_PER_SEC = 1000000;
+}
 else
 {
     clock_t CLOCKS_PER_SEC = 1000000;
@@ -94,6 +98,10 @@ else version( linux )
     void tzset();
 }
 else version( freebsd )
+{
+    void tzset();
+}
+else version( solaris )
 {
     void tzset();
 }

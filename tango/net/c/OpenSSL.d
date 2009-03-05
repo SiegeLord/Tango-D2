@@ -870,6 +870,10 @@ void loadOpenSSL()
     {
         char[][] loadPath = [ "libssl.so.5", "libssl.so" ];
     }
+    version (solaris)
+    {
+        char[][] loadPath = [ "libssl.so.0.9.8", "libssl.so" ];
+    }
     if ((ssllib = loadLib(loadPath)) !is null)
     {
 

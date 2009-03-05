@@ -97,3 +97,31 @@ else version( freebsd )
 
     key_t ftok(in char*, int);
 }
+else version( solaris )
+{
+	struct ipc_perm
+	{
+		uid_t		uid;	/* owner's user id */
+		gid_t		gid;	/* owner's group id */
+		uid_t		cuid;	/* creator's user id */
+		gid_t		cgid;	/* creator's group id */
+		mode_t		mode;	/* access modes */
+		uint		seq;	/* slot usage sequence number */
+		key_t		key;	/* key */
+	  version(X86_64){} else version(X86) {
+		int[4]		pad; /* reserve area */
+	  }
+	}
+	
+    const IPC_CREAT     = 0001000;
+    const IPC_EXCL      = 0002000;
+    const IPC_NOWAIT    = 0004000;
+
+    const key_t IPC_PRIVATE = 0;
+
+    const IPC_RMID      = 10;
+    const IPC_SET       = 11;
+    const IPC_STAT      = 12;
+
+    key_t ftok(in char*, int);
+}

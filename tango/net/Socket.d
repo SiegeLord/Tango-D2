@@ -187,6 +187,8 @@ version (BsdSockets)
         private const int F_SETFL       = 4;
         version (darwin)
                  private const int O_NONBLOCK = 0x0004;
+		else version (solaris)
+                 private const int O_NONBLOCK = 0x80;
            else
                  private const int O_NONBLOCK = 04000;  // OCTAL! Thx to volcore
 
@@ -561,6 +563,60 @@ else version (freebsd)
                 UDP =     17, // appears to be correct
         }
 }
+else version (solaris)
+{
+        enum SocketOption: int
+        {
+                SO_DEBUG        = 0x0001,               /* turn on debugging info recording */
+                SO_BROADCAST    = 0x0020,               /* permit sending of broadcast msgs */
+                SO_REUSEADDR    = 0x0004,               /* allow local address reuse */
+                SO_LINGER       = 0x0080,               /* linger on close if data present */
+                SO_DONTLINGER   = ~(SO_LINGER),
+                SO_OOBINLINE    = 0x0100,               /* leave received OOB data in line */
+                SO_ACCEPTCONN   = 0x0002,               /* socket has had listen() */
+                SO_KEEPALIVE    = 0x0008,               /* keep connections alive */
+                SO_DONTROUTE    = 0x0010,               /* just use interface addresses */
+                SO_TYPE         = 0x1008,               /* get socket type */
+
+                /*
+                 * Additional options, not kept in so_options.
+                 */
+                SO_SNDBUF       = 0x1001,               /* send buffer size */
+                SO_RCVBUF       = 0x1002,               /* receive buffer size */
+                SO_ERROR        = 0x1007,               /* get error status and clear */
+
+                // OptionLevel.IP settings
+                IP_MULTICAST_TTL = 0x11,
+                IP_MULTICAST_LOOP = 0x12,
+                IP_ADD_MEMBERSHIP = 0x13,
+                IP_DROP_MEMBERSHIP = 0x14,
+
+                // OptionLevel.TCP settings
+                TCP_NODELAY = 0x01,
+        }
+
+        /***************************************************************
+
+
+        ***************************************************************/
+
+        union linger
+        {
+                struct {
+                       int l_onoff;             // option on/off
+                       int l_linger;            // linger time
+                       };
+                int[2]          array;          // combined
+        }
+
+        enum SocketOptionLevel
+        {
+                SOCKET =  0xffff,
+                IP =      0,  // appears to be correct
+                TCP =     6,  // appears to be correct
+                UDP =     17, // appears to be correct
+        }
+}
 else version (linux)
 {
         /***************************************************************
@@ -624,6 +680,7 @@ else version (linux)
                 TCP =     6,  // appears to be correct
                 UDP =     17, // appears to be correct
         }
+
 } // end versioning
 
 /***********************************************************************
@@ -741,6 +798,18 @@ else version(BsdSockets)
                         //INET6 =      10,
                 }
         } // end version
+		else version (solaris)
+		{
+            enum AddressFamily: int
+            {
+                    UNSPEC =     0,
+                    UNIX =       1,
+                    INET =       2,
+                    IPX =        23,
+                    APPLETALK =  16,
+                    INET6 =      26,
+            }
+		}
 }
 
 

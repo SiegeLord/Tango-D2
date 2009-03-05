@@ -14,14 +14,19 @@ extern (C):
 
 version( linux )
 {
-    version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
-    {
-      const bool  __USE_LARGEFILE64   = false;
-    }
+    version = OPTIONAL_LARGEFILE_SUPPORT;
+}
+else version( solaris )
+{
+    version = OPTIONAL_LARGEFILE_SUPPORT;
+}
+
+version( OPTIONAL_LARGEFILE_SUPPORT )
+{
+    version(SMALLFILE)
+      enum {bool  __USE_LARGEFILE64 = false}
     else
-    {
-      const bool  __USE_LARGEFILE64   = true;
-    }
-    const bool  __USE_FILE_OFFSET64 = __USE_LARGEFILE64;
-    const bool  __REDIRECT          = false;
+      enum {bool  __USE_LARGEFILE64 = ((void*).sizeof==4)}
+} else {
+    enum {bool  __USE_LARGEFILE64 = false}
 }

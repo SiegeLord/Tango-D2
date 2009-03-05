@@ -76,7 +76,21 @@ else version( freebsd )
 		int	pw_fields;		/* internal: fields filled in */
     }
 }
-
+else version( solaris )
+{
+	struct passwd
+	{
+		char*	pw_name;
+		char*	pw_passwd;
+		uid_t	pw_uid;
+		gid_t	pw_gid;
+		char*	pw_age;
+		char*	pw_comment;
+		char*	pw_gecos;
+		char*	pw_dir;
+		char*	pw_shell;
+	}
+}
 passwd* getpwnam(in char*);
 passwd* getpwuid(uid_t);
 
@@ -103,6 +117,11 @@ else version( freebsd )
     int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
     int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
 }
+else version( solaris )
+{
+    int getpwnam_r(in char*, passwd*, char*, size_t, passwd**);
+    int getpwuid_r(uid_t, passwd*, char*, size_t, passwd**);
+}
 //
 // XOpen (XSI)
 //
@@ -125,6 +144,12 @@ else version ( darwin )
     void    setpwent();
 }
 else version ( freebsd )
+{
+    void    endpwent();
+    passwd* getpwent();
+    void    setpwent();
+}
+else version ( solaris )
 {
     void    endpwent();
     passwd* getpwent();

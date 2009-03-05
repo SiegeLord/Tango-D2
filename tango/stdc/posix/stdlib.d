@@ -108,6 +108,13 @@ else version( freebsd )
 
     void* valloc(size_t); // LEGACY non-standard
 }
+else version( solaris )
+{
+    int setenv(in char*, in char*, int);
+    int unsetenv(in char*);
+
+    void* valloc(size_t); // LEGACY non-standard
+}
 
 //
 // Thread-Safe Functions (TSF)
@@ -125,6 +132,10 @@ else version( darwin )
     int rand_r(uint*);
 }
 else version( freebsd )
+{
+    int rand_r(uint*);
+}
+else version( solaris )
 {
     int rand_r(uint*);
 }
@@ -264,6 +275,46 @@ else version( darwin )
     int    unlockpt(int);
 }
 else version( freebsd )
+{
+    //WNOHANG     (defined in tango.stdc.posix.sys.wait)
+    //WUNTRACED   (defined in tango.stdc.posix.sys.wait)
+    //WEXITSTATUS (defined in tango.stdc.posix.sys.wait)
+    //WIFEXITED   (defined in tango.stdc.posix.sys.wait)
+    //WIFSIGNALED (defined in tango.stdc.posix.sys.wait)
+    //WIFSTOPPED  (defined in tango.stdc.posix.sys.wait)
+    //WSTOPSIG    (defined in tango.stdc.posix.sys.wait)
+    //WTERMSIG    (defined in tango.stdc.posix.sys.wait)
+
+    c_long a64l(in char*);
+    double drand48();
+    //char*  ecvt(double, int, int *, int *); // LEGACY
+    double erand48(ushort[3]);
+    //char*  fcvt(double, int, int *, int *); // LEGACY
+    //char*  gcvt(double, int, char*); // LEGACY
+    int    getsubopt(char**, in char**, char**);
+    int    grantpt(int);
+    char*  initstate(uint, char*, size_t);
+    c_long jrand48(ushort[3]);
+    char*  l64a(c_long);
+    void   lcong48(ushort[7]);
+    c_long lrand48();
+    char*  mktemp(char*); // LEGACY
+    int    mkstemp(char*);
+    c_long mrand48();
+    c_long nrand48(ushort[3]);
+    int    posix_openpt(int);
+    char*  ptsname(int);
+    int    putenv(char*);
+    c_long random();
+    char*  realpath(in char*, char*);
+    ushort seed48(ushort[3]);
+    void   setkey(in char*);
+    char*  setstate(in char*);
+    void   srand48(c_long);
+    void   srandom(uint);
+    int    unlockpt(int);
+}
+else version( solaris )
 {
     //WNOHANG     (defined in tango.stdc.posix.sys.wait)
     //WUNTRACED   (defined in tango.stdc.posix.sys.wait)

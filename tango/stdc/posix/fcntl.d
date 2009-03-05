@@ -73,7 +73,7 @@ version( linux )
     const F_SETFD       = 2;
     const F_GETFL       = 3;
     const F_SETFL       = 4;
-  static if( __USE_FILE_OFFSET64 )
+  static if( __USE_LARGEFILE64 )
   {
     const F_GETLK       = 12;
     const F_SETLK       = 13;
@@ -226,6 +226,72 @@ else version( freebsd )
 
     int creat(in char*, mode_t);
     int open(in char*, int, ...);
+}
+else version( solaris )
+{
+    const F_DUPFD       = 0;
+    const F_GETFD       = 1;
+    const F_SETFD       = 2;
+    const F_GETFL       = 3;
+	const F_GETXFL		= 45;
+    const F_SETFL       = 4;
+
+  static if( __USE_LARGEFILE64 )
+  {
+    const F_GETLK       = 33;
+    const F_SETLK       = 34;
+    const F_SETLKW      = 35;
+  }
+  else
+  {
+    const F_GETLK       = 14;
+    const F_SETLK       = 6;
+    const F_SETLKW      = 7;
+  }
+    const F_GETOWN      = 23;
+    const F_SETOWN      = 24;
+
+    const FD_CLOEXEC    = 1;
+
+    const F_RDLCK       = 01;
+    const F_UNLCK       = 03;
+    const F_WRLCK       = 02;
+	
+    const O_CREAT       = 0x100;
+    const O_EXCL        = 0x400;
+    const O_NOCTTY      = 0x800;
+    const O_TRUNC       = 0x200;
+
+    const O_APPEND      = 0x08;
+    const O_NONBLOCK    = 0x80;
+    const O_SYNC        = 0x10;
+    const O_DSYNC       = 0x40;
+    const O_RSYNC       = 0x8000;
+
+    const O_ACCMODE     = 3;
+    const O_RDONLY      = 0;
+    const O_WRONLY      = 1;
+    const O_RDWR        = 2;
+
+    struct flock
+    {
+		short	l_type;
+		short	l_whence;
+		off_t	l_start;
+		off_t	l_len;		/* len == 0 means until end of file */
+		int		l_sysid;
+		pid_t	l_pid;
+		c_long	l_pad[4];		/* reserve area */
+	}
+	
+	int creat(in char*, mode_t);
+	int open(in char*, int, ...);
+
+	static if( __USE_LARGEFILE64 )
+	{
+		alias creat creat64;
+		alias open  open64;
+	}
 }
 
 //int creat(in char*, mode_t);

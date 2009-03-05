@@ -7,6 +7,7 @@
 module tango.math.random.engines.URandom;
 version(darwin) { version=has_urandom; }
 version(linux)  { version=has_urandom; }
+version(solaris){ version=has_urandom; }
 
 version(has_urandom) {
     private import Integer = tango.text.convert.Integer;

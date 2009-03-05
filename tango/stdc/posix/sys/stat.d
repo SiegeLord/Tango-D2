@@ -89,7 +89,7 @@ version( linux )
       version (X86_64) {} else {
         _pad_t      __pad1;
       }
-      static if( __USE_FILE_OFFSET64 )
+      static if( __USE_LARGEFILE64 )
       {
         ino_t      __st_ino;            /* 32bit file serial number.    */
       }
@@ -137,7 +137,7 @@ version( linux )
       version (X86_64) {
         c_long[3]  __unused;
       }
-      else static if( __USE_FILE_OFFSET64 )
+      else static if( __USE_LARGEFILE64 )
       {
         ino64_t     st_ino;             /* File serial number.  */
       }
@@ -262,23 +262,16 @@ else version( freebsd )
         uid_t   st_uid;
         gid_t   st_gid;
         dev_t   st_rdev;
-
-        timespec st_atimespec;
-        timespec st_mtimespec;
-        timespec st_ctimespec;
-        time_t st_atime()
-        {
-            return st_atimespec.tv_sec;
-        }
-        time_t st_mtime()
-        {
-            return st_mtimespec.tv_sec;
-        }
-        time_t st_ctime()
-        {
-            return st_ctimespec.tv_sec;
-        }
-
+		time_t	st_atime;
+		c_ulong	st_atimensec;
+		time_t	st_mtime;
+		c_ulong	st_mtimensec;
+		time_t	st_ctime;
+		c_ulong	st_ctimensec;
+	/*	Defined in C as:
+		timespec	st_atimespec;
+		timespec	st_mtimespec;
+		timespec	st_ctimespec; */
         off_t       st_size;
         blkcnt_t    st_blocks;
         blksize_t   st_blksize;
@@ -325,6 +318,120 @@ else version( freebsd )
     extern (D) bool S_ISLNK( mode_t mode )  { return S_ISTYPE( mode, S_IFLNK );  }
     extern (D) bool S_ISSOCK( mode_t mode ) { return S_ISTYPE( mode, S_IFSOCK ); }
 }
+else version( solaris )
+{
+	const _ST_FSTYPSZ = 16;		/* array size for file system type name */
+	
+	struct stat_t
+	{
+		version (X86_64)
+		{
+			dev_t				st_dev;
+			ino_t				st_ino;
+			mode_t				st_mode;
+			nlink_t				st_nlink;
+			uid_t				st_uid;
+			gid_t				st_gid;
+			dev_t				st_rdev;
+			off_t				st_size;
+			
+			time_t				st_atime;
+			c_ulong				st_atimensec;
+			time_t				st_mtime;
+			c_ulong				st_mtimensec;
+			time_t				st_ctime;
+			c_ulong				st_ctimensec;
+		/*	Defined in C as:
+			timespec			st_atim;
+			timespec			st_mtim;
+			timespec			st_ctim; */
+			blksize_t			st_blksize;
+			blkcnt_t			st_blocks;
+			char[_ST_FSTYPSZ]	st_fstype;
+		}
+		else
+		{
+			dev_t				st_dev;
+			c_long[3]			st_pad1;	/* reserved for network id */
+			ino_t				st_ino;
+			mode_t				st_mode;
+			nlink_t				st_nlink;
+			uid_t				st_uid;
+			gid_t				st_gid;
+			dev_t				st_rdev;
+			c_long[2]			st_pad2;
+			off_t				st_size;
+		  static if( !__USE_LARGEFILE64 ) {
+			c_long				st_pad3;	/* future off_t expansion */
+		  }	
+			time_t				st_atime;
+			c_ulong				st_atimensec;
+			time_t				st_mtime;
+			c_ulong				st_mtimensec;
+			time_t				st_ctime;
+			c_ulong				st_ctimensec;
+		/*	Defined in C as:
+			timespec			st_atim;
+			timespec			st_mtim;
+			timespec			st_ctim; */
+			blksize_t			st_blksize;
+			blkcnt_t			st_blocks;
+			char[_ST_FSTYPSZ]	st_fstype;
+			c_long[8]			st_pad4;	/* expansion area */
+		}
+	}
+	
+	/* MODE MASKS */
+  enum {
+	/* de facto standard definitions */
+	S_IFMT		= 0xF000,	/* type of file */
+	S_IAMB		= 0x1FF,	/* access mode bits */
+	S_IFIFO		= 0x1000,	/* fifo */
+	S_IFCHR		= 0x2000,	/* character special */
+	S_IFDIR		= 0x4000,	/* directory */
+	/* XENIX definitions are not relevant to Solaris */
+	S_IFNAM		= 0x5000,	/* XENIX special named file */
+	S_INSEM		= 0x1,		/* XENIX semaphore subtype of IFNAM */
+	S_INSHD		= 0x2,		/* XENIX shared data subtype of IFNAM */
+	S_IFBLK		= 0x6000,	/* block special */
+	S_IFREG		= 0x8000,	/* regular */
+	S_IFLNK		= 0xA000,	/* symbolic link */
+	S_IFSOCK	= 0xC000,	/* socket */
+	S_IFDOOR	= 0xD000,	/* door */
+	S_IFPORT	= 0xE000,	/* event port */
+	S_ISUID		= 0x800,	/* set user id on execution */
+	S_ISGID		= 0x400,	/* set group id on execution */
+	S_ISVTX		= 0x200,	/* save swapped text even after use */
+	S_IREAD		= 00400,	/* read permission, owner */
+	S_IWRITE	= 00200,	/* write permission, owner */
+	S_IEXEC		= 00100,	/* execute/search permission, owner */
+	S_ENFMT		= S_ISGID,	/* record locking enforcement flag */
+
+	S_IRWXU		= 00700,	/* read, write, execute: owner */
+	S_IRUSR		= 00400,	/* read permission: owner */
+	S_IWUSR		= 00200,	/* write permission: owner */
+	S_IXUSR		= 00100,	/* execute permission: owner */
+	S_IRWXG		= 00070,	/* read, write, execute: group */
+	S_IRGRP		= 00040,	/* read permission: group */
+	S_IWGRP		= 00020,	/* write permission: group */
+	S_IXGRP		= 00010,	/* execute permission: group */
+	S_IRWXO		= 00007,	/* read, write, execute: other */
+	S_IROTH		= 00004,	/* read permission: other */
+	S_IWOTH		= 00002,	/* write permission: other */
+	S_IXOTH		= 00001		/* execute permission: other */
+  }
+
+	extern (D) bool S_ISFIFO(mode_t mode)	{ return (mode & 0xF000) == 0x1000; }
+	extern (D) bool S_ISCHR(mode_t mode)	{ return (mode & 0xF000) == 0x2000; }
+	extern (D) bool S_ISDIR(mode_t mode)	{ return (mode & 0xF000) == 0x4000; }
+	extern (D) bool S_ISBLK(mode_t mode)	{ return (mode & 0xF000) == 0x6000; }
+	extern (D) bool S_ISREG(mode_t mode)	{ return (mode & 0xF000) == 0x8000; }
+	extern (D) bool S_ISLNK(mode_t mode)	{ return (mode & 0xF000) == 0xa000; }
+	extern (D) bool S_ISSOCK(mode_t mode)	{ return (mode & 0xF000) == 0xc000; }
+	extern (D) bool S_ISDOOR(mode_t mode)	{ return (mode & 0xF000) == 0xd000; }
+	extern (D) bool S_ISPORT(mode_t mode)	{ return (mode & 0xF000) == 0xe000; }
+
+}
 
 int    chmod(in char*, mode_t);
 int    fchmod(int, mode_t);
@@ -335,10 +442,8 @@ int    mkfifo(in char*, mode_t);
 //int    stat(in char*, stat_t*);
 mode_t umask(mode_t);
 
-version( linux )
+static if (__USE_LARGEFILE64)
 {
-  static if( __USE_LARGEFILE64 )
-  {
     int   fstat64(int, stat_t*);
     alias fstat64 fstat;
 
@@ -347,13 +452,6 @@ version( linux )
 
     int   stat64(in char*, stat_t*);
     alias stat64 stat;
-  }
-  else
-  {
-    int   fstat(int, stat_t*);
-    int   lstat(in char*, stat_t*);
-    int   stat(in char*, stat_t*);
-  }
 }
 else
 {
@@ -422,5 +520,10 @@ else version( freebsd )
     const S_IFLNK   = 0120000;
     const S_IFSOCK  = 0140000;
 
+    int mknod(in char*, mode_t, dev_t);
+}
+else version( solaris )
+{
+	// Constants defined above
     int mknod(in char*, mode_t, dev_t);
 }

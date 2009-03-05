@@ -9,6 +9,8 @@
 module tango.stdc.posix.pthread;
 
 private import tango.stdc.posix.config;
+version (solaris) private import tango.stdc.stdint;
+
 public import tango.stdc.posix.sys.types;
 public import tango.stdc.posix.sched;
 public import tango.stdc.posix.time;
@@ -163,6 +165,34 @@ else version( darwin )
         PTHREAD_PROCESS_SHARED  = 1
     }
 }
+else version( solaris )
+{	
+    const PTHREAD_CANCELED = cast(void*)-19;
+
+    //const pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
+    //const pthread_mutex_t PTHREAD_MUTEX_INITIALIZER = { 0, 0, null, PTHREAD_MUTEX_NORMAL, { 0, 0 } };
+
+    enum
+    {
+        PTHREAD_CANCEL_ENABLE		= 0x00,
+        PTHREAD_CANCEL_DISABLE		= 0x01,
+        PTHREAD_CANCEL_DEFERRED		= 0x00,
+        PTHREAD_CANCEL_ASYNCHRONOUS	= 0x02,
+        PTHREAD_CREATE_JOINABLE		= 0,
+        PTHREAD_CREATE_DETACHED		= 0x40,
+        PTHREAD_INHERIT_SCHED		= 1,
+        PTHREAD_EXPLICIT_SCHED		= 0,
+        PTHREAD_PROCESS_PRIVATE		= 0,
+        PTHREAD_PROCESS_SHARED		= 1
+    }
+
+
+    const PTHREAD_ONCE_INIT = 0; /*
+ 		#define	PTHREAD_ONCE_NOTDONE	0
+		#define	PTHREAD_ONCE_DONE		1
+		#define	PTHREAD_ONCE_INIT		{ {0, 0, 0, PTHREAD_ONCE_NOTDONE} }
+	*/
+}
 
 int pthread_atfork(void function(), void function(), void function());
 int pthread_attr_destroy(pthread_attr_t*);
@@ -235,6 +265,33 @@ else version( darwin )
             {
                 buffer.__routine( buffer.__arg );
             }
+        }
+    }
+}
+else version( solaris )
+{
+    alias void function(void*) _pthread_cleanup_routine;
+
+	struct _pthread_cleanup_buffer {
+		uintptr_t	pthread_cleanup_pad[4];
+	}
+	
+    void __pthread_cleanup_push(_pthread_cleanup_routine, void*, caddr_t, _pthread_cleanup_buffer*);
+    void __pthread_cleanup_pop(int, _pthread_cleanup_buffer*);
+	caddr_t	_getfp();
+
+    struct pthread_cleanup
+    {
+        private _pthread_cleanup_buffer buffer = void;
+
+        void push()( _pthread_cleanup_routine routine, void* arg )
+        {
+            __pthread_cleanup_push( routine, arg, _getfp(), &buffer );
+        }
+
+        void pop()( int execute )
+        {
+            __pthread_cleanup_pop( execute, &buffer );
         }
     }
 }
@@ -325,6 +382,18 @@ else version( darwin )
     int pthread_barrierattr_init(pthread_barrierattr_t*);
     int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
 }
+else version( solaris )
+{
+	const PTHREAD_BARRIER_SERIAL_THREAD = -2;
+	
+	int pthread_barrierattr_init(pthread_barrierattr_t*);
+	int pthread_barrierattr_destroy(pthread_barrierattr_t*);
+	int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
+	int pthread_barrierattr_getpshared(in pthread_barrierattr_t*, int*);
+	int pthread_barrier_init(pthread_barrier_t*, in pthread_barrierattr_t*, uint);
+	int pthread_barrier_destroy(pthread_barrier_t*);
+	int pthread_barrier_wait(pthread_barrier_t*);
+}
 
 //
 // Clock (CS)
@@ -352,6 +421,14 @@ version( linux )
     int pthread_spin_lock(pthread_spinlock_t*);
     int pthread_spin_trylock(pthread_spinlock_t*);
     int pthread_spin_unlock(pthread_spinlock_t*);
+}
+else version( solaris )
+{
+	int pthread_spin_init(pthread_spinlock_t*, int);
+	int pthread_spin_destroy(pthread_spinlock_t*);
+	int pthread_spin_lock(pthread_spinlock_t*);
+	int pthread_spin_trylock(pthread_spinlock_t*);
+	int pthread_spin_unlock(pthread_spinlock_t*);
 }
 
 //
@@ -418,6 +495,23 @@ else version( freebsd )
     int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
     int pthread_setconcurrency(int);
 }
+else version( solaris )
+{
+	enum
+    {
+    	PTHREAD_MUTEX_NORMAL        = 0x0,
+        PTHREAD_MUTEX_ERRORCHECK    = 0x2,
+        PTHREAD_MUTEX_RECURSIVE     = 0x4,
+    }
+    const PTHREAD_MUTEX_DEFAULT = PTHREAD_MUTEX_NORMAL;
+	
+    int pthread_attr_getguardsize(in pthread_attr_t*, size_t*);
+    int pthread_attr_setguardsize(pthread_attr_t*, size_t);
+    int pthread_getconcurrency();
+    int pthread_mutexattr_gettype(pthread_mutexattr_t*, int*);
+    int pthread_mutexattr_settype(pthread_mutexattr_t*, int);
+    int pthread_setconcurrency(int);
+}
 
 //
 // CPU Time (TCT)
@@ -452,6 +546,12 @@ else version( darwin )
     int pthread_rwlock_timedrdlock(pthread_rwlock_t*, in timespec*);
     int pthread_rwlock_timedwrlock(pthread_rwlock_t*, in timespec*);
 }
+else version( solaris )
+{
+    int pthread_mutex_timedlock(pthread_mutex_t*, timespec*);
+    int pthread_rwlock_timedrdlock(pthread_rwlock_t*, in timespec*);
+    int pthread_rwlock_timedwrlock(pthread_rwlock_t*, in timespec*);
+}
 
 //
 // Priority (TPI|TPP)
@@ -468,6 +568,21 @@ int pthread_mutexattr_getprotocol(in pthread_mutexattr_t*, int*); (TPI|TPP)
 int pthread_mutexattr_setprioceiling(pthread_mutexattr_t*, int); (TPP)
 int pthread_mutexattr_setprotocol(pthread_mutexattr_t*, int); (TPI|TPP)
 */
+
+version( solaris )
+{
+	enum {
+		PTHREAD_PRIO_NONE		= 0x00,
+		PTHREAD_PRIO_INHERIT	= 0x10,
+		PTHREAD_PRIO_PROTECT	= 0x20
+	}
+	int pthread_mutex_setprioceiling(pthread_mutex_t*, int, int*);
+	int pthread_mutex_getprioceiling(in pthread_mutex_t*, int*);
+	int pthread_mutexattr_setprotocol(pthread_mutexattr_t*, int);
+	int pthread_mutexattr_getprotocol(in pthread_mutexattr_t*, int*);
+	int pthread_mutexattr_setprioceiling(pthread_mutexattr_t *, int);
+	int pthread_mutexattr_getprioceiling(in pthread_mutexattr_t*, int*);
+}
 
 //
 // Scheduling (TPS)
@@ -541,6 +656,24 @@ else version( freebsd )
     int pthread_setschedparam(pthread_t, int, sched_param*);
     //int pthread_setschedprio(pthread_t, int);
 }
+else version( solaris )
+{
+    enum
+    {
+        PTHREAD_SCOPE_PROCESS   = 0,
+        PTHREAD_SCOPE_SYSTEM    = 0x01
+    }
+
+    int pthread_attr_getinheritsched(in pthread_attr_t*, int*);
+    int pthread_attr_getschedpolicy(in pthread_attr_t*, int*);
+    int pthread_attr_getscope(in pthread_attr_t*, int*);
+    int pthread_attr_setinheritsched(pthread_attr_t*, int);
+    int pthread_attr_setschedpolicy(pthread_attr_t*, int);
+    int pthread_attr_setscope(in pthread_attr_t*, int);
+    int pthread_getschedparam(pthread_t, int*, sched_param*);
+    int pthread_setschedparam(pthread_t, int, sched_param*);
+    //int pthread_setschedprio(pthread_t, int);
+}
 
 //
 // Stack (TSA|TSS)
@@ -581,6 +714,15 @@ else version( freebsd )
     int pthread_attr_setstackaddr(pthread_attr_t*, void*);
     int pthread_attr_setstacksize(pthread_attr_t*, size_t);
 }
+else version( solaris )
+{
+    int pthread_attr_getstack(in pthread_attr_t*, void**, size_t*);
+    int pthread_attr_getstackaddr(in pthread_attr_t*, void**);
+    int pthread_attr_getstacksize(in pthread_attr_t*, size_t*);
+    int pthread_attr_setstack(pthread_attr_t*, void*, size_t);
+    int pthread_attr_setstackaddr(pthread_attr_t*, void*);
+    int pthread_attr_setstacksize(pthread_attr_t*, size_t);
+}
 
 //
 // Shared Synchronization (TSH)
@@ -593,3 +735,13 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t*, int);
 int pthread_rwlockattr_getpshared(in pthread_rwlockattr_t*, int*);
 int pthread_rwlockattr_setpshared(pthread_rwlockattr_t*, int);
 */
+
+version( solaris )
+{
+	int pthread_condattr_setpshared(pthread_condattr_t*, int);
+	int pthread_condattr_getpshared(in pthread_condattr_t*, int*);
+	int pthread_mutexattr_setpshared(pthread_mutexattr_t*, int);
+	int pthread_mutexattr_getpshared(in pthread_mutexattr_t*, int*);
+	int pthread_rwlockattr_getpshared(in pthread_rwlockattr_t*, int*);
+	int pthread_rwlockattr_setpshared(pthread_rwlockattr_t*, int);
+}

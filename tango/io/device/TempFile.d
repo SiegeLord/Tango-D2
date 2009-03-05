@@ -144,10 +144,14 @@ else version( Posix )
     {
         enum { O_NOFOLLOW = 0x0100 }
     }
-	else version( freebsd )
-	{
-		enum { O_NOFOLLOW = 0x0100 }
-	}
+    else version( freebsd )
+    {
+        enum { O_NOFOLLOW = 0x0100 }
+    }
+    else version( solaris )
+    {
+        enum { O_NOFOLLOW = 0x20000 }
+    }
     else
     {
         pragma(msg, "Cannot use TempFile: O_NOFOLLOW is not "

@@ -201,6 +201,7 @@ version (Posix) {
 
 version(darwin) { version=has_urandom; }
 version(linux)  { version=has_urandom; }
+version(solaris){ version=has_urandom; }
 
 /// if T is a float
 template isFloat(T){

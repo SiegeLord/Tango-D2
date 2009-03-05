@@ -109,3 +109,47 @@ else version( darwin )
 {
 
 }
+else version( solaris )
+{
+	private const _SC_PAGESIZE = 11; // from <sys/unistd.h>
+	private c_long _sysconf(int);
+	
+    const SHM_RDONLY    = 010000;
+    const SHM_RND       = 020000;
+	const SHM_SHARE_MMU = 040000;
+	const SHM_PAGEABLE	= 0100000; /* pageable ISM */
+	extern(D) c_long SHMLBA(){ return _sysconf(_SC_PAGESIZE); };
+	
+	alias c_ulong   shmatt_t;
+	
+	struct shmid_ds
+	{
+		ipc_perm	shm_perm;	/* operation permission struct */
+		size_t		shm_segsz;	/* size of segment in bytes */
+		void*		shm_amp;	/* segment anon_map pointer */
+		ushort		shm_lkcnt;	/* number of times it is being locked */
+		pid_t		shm_lpid;	/* pid of last shmop */
+		pid_t		shm_cpid;	/* pid of creator */
+		shmatt_t	shm_nattch;	/* number of attaches */
+		ulong		shm_cnattch;/* number of ISM attaches */
+	  version(X86_64) {
+		time_t		shm_atime;	/* last shmat time */
+		time_t		shm_dtime;	/* last shmdt time */
+		time_t		shm_ctime;	/* last change time */
+		long[4]		shm_pad4;	/* reserve area */
+	  } else {
+		time_t		shm_atime;	/* last shmat time */
+		int			shm_pad1;	/* reserved for time_t expansion */
+		time_t		shm_dtime;	/* last shmdt time */
+		int			shm_pad2;	/* reserved for time_t expansion */
+		time_t		shm_ctime;	/* last change time */
+		int			shm_pad3;	/* reserved for time_t expansion */
+		int[4]		shm_pad4;	/* reserve area  */
+	  }
+	}
+	
+    void* shmat(int, in void*, int);
+    int   shmctl(int, int, shmid_ds*);
+    int   shmdt(in void*);
+    int   shmget(key_t, size_t, int);
+}

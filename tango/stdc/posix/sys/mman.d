@@ -56,6 +56,17 @@ else version( freebsd )
     const POSIX_MADV_WILLNEED   = 3;
     const POSIX_MADV_DONTNEED   = 4;
 }
+else version( solaris )
+{
+	enum
+	{
+		POSIX_MADV_NORMAL     = 0,
+	    POSIX_MADV_RANDOM     = 1,
+	    POSIX_MADV_SEQUENTIAL = 2,
+	    POSIX_MADV_WILLNEED   = 3,
+	    POSIX_MADV_DONTNEED   = 4
+	}
+}
 
 //
 // Memory Mapped Files, Shared Memory Objects, or Memory Protection (MC2)
@@ -87,6 +98,16 @@ else version( freebsd )
     const PROT_READ     = 0x01;
     const PROT_WRITE    = 0x02;
     const PROT_EXEC     = 0x04;
+}
+else version( solaris )
+{
+	enum
+	{
+		PROT_NONE     = 0x00,
+	    PROT_READ     = 0x01,
+	    PROT_WRITE    = 0x02,
+	    PROT_EXEC     = 0x04
+	}
 }
 
 //
@@ -121,6 +142,20 @@ else version( freebsd )
 {
     void* mmap(void*, size_t, int, int, int, off_t);
     int   munmap(void*, size_t);
+}
+else version( solaris )
+{
+    int   munmap(void*, size_t);
+
+  version(X86_64)
+	void* mmap(void*, size_t, int, int, int, off_t);
+  else static if( __USE_LARGEFILE64 )
+  {
+    void* mmap64(void*, size_t, int, int, int, off_t);
+    alias mmap64 mmap;
+  }
+  else
+    void* mmap(void*, size_t, int, int, int, off_t);
 }
 
 //
@@ -187,6 +222,24 @@ else version( freebsd )
 
     int msync(void*, size_t, int);
 }
+version( solaris )
+{
+    const MAP_SHARED    = 0x001;
+    const MAP_PRIVATE   = 0x002;
+    const MAP_FIXED     = 0x010;
+    const MAP_ANON      = 0x100;
+
+    const MAP_FAILED    = cast(void*) -1;
+
+    enum
+    {
+        MS_ASYNC        = 0x1,
+        MS_SYNC         = 0x4,
+        MS_INVALIDATE   = 0x2
+    }
+
+    int msync(void*, size_t, int);
+}
 
 //
 // Process Memory Locking (ML)
@@ -224,6 +277,14 @@ else version( freebsd )
     int mlockall(int);
     int munlockall();
 }
+else version( solaris )
+{
+	const MCL_CURRENT   = 0x0001;
+    const MCL_FUTURE    = 0x0002;
+
+    int mlockall(int);
+    int munlockall();
+}
 
 //
 // Range Memory Locking (MLR)
@@ -248,6 +309,11 @@ else version( freebsd )
     int mlock(in void*, size_t);
     int munlock(in void*, size_t);
 }
+else version( solaris )
+{
+    int mlock(in void*, size_t);
+    int munlock(in void*, size_t);
+}
 
 //
 // Memory Protection (MPR)
@@ -261,6 +327,10 @@ version( darwin )
     int mprotect(void*, size_t, int);
 }
 else version( freebsd )
+{
+    int mprotect(void*, size_t, int);
+}
+else version( solaris )
 {
     int mprotect(void*, size_t, int);
 }
@@ -284,6 +354,11 @@ else version( darwin )
     int shm_unlink(in char*);
 }
 else version( freebsd )
+{
+    int shm_open(in char*, int, mode_t);
+    int shm_unlink(in char*);
+}
+else version( solaris )
 {
     int shm_open(in char*, int, mode_t);
     int shm_unlink(in char*);

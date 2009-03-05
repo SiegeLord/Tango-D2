@@ -77,6 +77,19 @@ else version( freebsd )
     const SCHED_RR      = 3;
     //SCHED_SPORADIC (SS|TSP)
 }
+else version( solaris )
+{
+	struct sched_param
+	{
+		int		sched_priority;
+		int[8]	sched_pad;
+	}
+
+	const SCHED_FIFO    = 1;
+    const SCHED_OTHER   = 0;
+    const SCHED_RR      = 2;
+    //SCHED_SPORADIC ?
+}
 
 int sched_getparam(pid_t, sched_param*);
 int sched_getscheduler(pid_t);
@@ -100,7 +113,11 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    int sched_yield();
+	int sched_yield();
+}
+else version( solaris )
+{
+	int sched_yield();
 }
 
 //
@@ -125,6 +142,12 @@ else version( darwin )
     //int sched_rr_get_interval(pid_t, timespec*); // FIXME: unavailable?
 }
 else version( freebsd )
+{
+    int sched_get_priority_min(int);
+    int sched_get_priority_max(int);
+    int sched_rr_get_interval(pid_t, timespec*);
+}
+else version( solaris )
 {
     int sched_get_priority_min(int);
     int sched_get_priority_max(int);

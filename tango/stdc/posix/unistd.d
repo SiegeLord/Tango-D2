@@ -83,7 +83,7 @@ ssize_t write(int, in void*, size_t);
 
 version( linux )
 {
-  static if( __USE_FILE_OFFSET64 )
+  static if( __USE_LARGEFILE64 )
   {
     off_t lseek64(int, off_t, int);
     alias lseek64 lseek;
@@ -106,6 +106,27 @@ else version( freebsd )
 {
     off_t lseek(int, off_t, int);
     int   ftruncate(int, off_t);
+}
+else version( solaris )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    off_t lseek64(int, off_t, int);
+    alias lseek64 lseek;
+  }
+  else
+  {
+    off_t lseek(int, off_t, int);
+  }
+  static if( __USE_LARGEFILE64 )
+  {
+    int   ftruncate64(int, off_t);
+    alias ftruncate64 ftruncate;
+  }
+  else
+  {
+    int   ftruncate(int, off_t);
+  }
 }
 else
 {
@@ -452,6 +473,18 @@ else version( freebsd )
     const F_TLOCK       = 2;
     const F_TEST        = 3;
 }
+else version( solaris )
+{
+    const F_OK          = 0;
+    const R_OK          = 4;
+    const W_OK          = 2;
+    const X_OK          = 1;
+
+    const F_ULOCK       = 0;
+    const F_LOCK        = 1;
+    const F_TLOCK       = 2;
+    const F_TEST        = 3;
+}
 
 //
 // File Synchronization (FSC)
@@ -592,3 +625,47 @@ else version (freebsd)
     int        usleep(useconds_t);
     pid_t      vfork();
 }
+else version (solaris)
+{
+	char*      crypt(in char*, in char*);
+	//char*      ctermid(char*);
+	void       encrypt(char*, int);
+	int        fchdir(int);
+	c_long     gethostid();
+	int        getpgid(pid_t);
+	int        getsid(pid_t);
+	char*      getwd(char*); // LEGACY
+	int        lchown(in char*, uid_t, gid_t);
+	int        nice(int);
+	int        setpgrp(pid_t, pid_t);
+	int        setregid(gid_t, gid_t);
+	int        setreuid(uid_t, uid_t);
+	void       swab(in void*, void*, ssize_t);
+	void       sync();
+	useconds_t ualarm(useconds_t, useconds_t);
+	int        usleep(useconds_t);
+	pid_t      vfork();
+
+  static if( __USE_LARGEFILE64 )
+  {
+    int        lockf64(int, int, off_t);
+    alias      lockf64 lockf;
+
+    ssize_t    pread64(int, void*, size_t, off_t);
+    alias      pread64 pread;
+
+    ssize_t    pwrite64(int, in void*, size_t, off_t);
+    alias      pwrite64 pwrite;
+
+    int        truncate64(in char*, off_t);
+    alias      truncate64 truncate;
+  }
+  else
+  {
+    int        lockf(int, int, off_t);
+    ssize_t    pread(int, void*, size_t, off_t);
+    ssize_t    pwrite(int, in void*, size_t, off_t);
+    int        truncate(in char*, off_t);
+  }
+}
+

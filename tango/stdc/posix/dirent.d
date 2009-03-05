@@ -145,6 +145,49 @@ else version( freebsd )
 
     dirent* readdir(DIR*);
 }
+else version( solaris )
+{
+    // NOTE: The following constants are non-standard Linux definitions
+    //       for dirent.d_type.
+    enum
+    {
+        DT_UNKNOWN  = 0,
+        DT_FIFO     = 1,
+        DT_CHR      = 2,
+        DT_DIR      = 4,
+        DT_BLK      = 6,
+        DT_REG      = 8,
+        DT_LNK      = 10,
+        DT_SOCK     = 12,
+        DT_WHT      = 14
+    }
+	
+	struct dirent
+	{
+		ino_t		d_ino;		/* "inode number" of entry */
+		off_t		d_off;		/* offset of disk directory entry */
+		ushort		d_reclen;	/* length of this record */
+		char[256]	d_name;		/* name of file */
+	}
+	
+    struct DIR
+	{
+		int			d_fd;		/* file descriptor */
+		int			d_loc;		/* offset in block */
+		int			d_size;		/* amount of valid data */
+		char*		d_buf;		/* directory block */
+	}
+	
+    static if( __USE_LARGEFILE64 )
+    {
+        dirent* readdir64(DIR*);
+        alias   readdir64 readdir;
+    }
+    else
+    {
+        dirent* readdir(DIR*);
+    }
+}
 else
 {
     dirent* readdir(DIR*);
@@ -181,6 +224,18 @@ else version( darwin )
 else version( freebsd )
 {
     int readdir_r(DIR*, dirent*, dirent**);
+}
+else version( solaris )
+{
+  static if( __USE_LARGEFILE64 )
+  {
+    int   readdir64_r(DIR*, dirent*, dirent**);
+    alias readdir64_r readdir_r;
+  }
+  else
+  {
+    int readdir_r(DIR*, dirent*, dirent**);
+  }
 }
 
 //

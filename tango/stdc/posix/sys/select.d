@@ -148,3 +148,50 @@ else version( freebsd )
 		c_ulong fds_bits[((FD_SETSIZE + (_NFDBITS - 1)) / _NFDBITS)];
 	}
 }
+else version( solaris )
+{
+	private
+    {
+        alias c_long __fd_mask;
+		const NBBY = 8;
+        const FD_NFDBITS = __fd_mask.sizeof * NBBY;	/* bits per mask */
+	
+        extern (D) int __FDELT( int d )
+        {
+            return d / FD_NFDBITS;
+        }
+
+        extern (D) int __FDMASK( int d )
+        {
+            return cast(__fd_mask) 1 << ( d % FD_NFDBITS );
+        }
+    }
+	
+	version (X86_64)	const FD_SETSIZE = 65536;
+	else				const FD_SETSIZE = 1024;
+	
+    struct fd_set
+    {
+		__fd_mask[( FD_SETSIZE + FD_NFDBITS - 1 ) / FD_NFDBITS] fds_bits;
+    }
+	
+	extern (D) void FD_CLR( int fd, fd_set* fdset )
+    {
+	    fdset.fds_bits[__FDELT( fd )] &= ~__FDMASK( fd );
+    }
+
+    extern (D) int  FD_ISSET( int fd, fd_set* fdset )
+    {
+        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+    }
+
+    extern (D) void FD_SET( int fd, fd_set* fdset )
+    {
+        fdset.fds_bits[__FDELT( fd )] |= __FDMASK( fd );
+    }
+
+    extern (D) void FD_ZERO( fd_set* fdset )
+    {
+        fdset.fds_bits[0 .. $] = 0;
+    }
+}

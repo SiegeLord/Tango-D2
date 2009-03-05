@@ -13,6 +13,7 @@ private
     import tango.stdc.stdarg;
     import tango.stdc.stddef;
     import tango.stdc.config;
+	version( solaris ) import tango.stdc.posix.sys.types : ssize_t;
 }
 
 extern (C):
@@ -82,6 +83,21 @@ else version ( freebsd )
         {
         }
     }
+}
+else version( solaris )
+{
+    const int BUFSIZ      = 1024;
+    const int EOF           = -1;
+  version (X86_64) {
+    const int _NFILE		= 60;
+  } else {
+    const int _NFILE		= 20;
+  }
+	const int FOPEN_MAX		= _NFILE;
+	
+    const int FILENAME_MAX  = 1024;
+    const int TMP_MAX       = 17576;
+    const int L_tmpnam      = 25;
 }
 else
 {
@@ -187,6 +203,24 @@ struct _iobuf
         int       _blksize;
         fpos_t    _offset;
     }
+	else version( solaris )
+	{
+		// From OpenSolaris <ast/sfio_s.h>
+		ubyte*	_next;	/* next position to read/write from	*/
+		ubyte*	_endw;	/* end of write buffer			*/
+		ubyte*	_endr;	/* end of read buffer			*/
+		ubyte*	_endb;	/* end of buffer			*/
+		_iobuf*	_push;	/* the stream that was pushed on	*/
+		ushort	_flags;	/* type of stream			*/
+		short	_file;	/* file descriptor			*/
+		ubyte*	_data;	/* base of data buffer			*/
+		ssize_t	_size;	/* buffer size				*/
+		ssize_t	_val;	/* values or string lengths		*/
+		
+	//	#ifdef _SFIO_PRIVATE
+		// .. I don't think we really need this in D
+	//	#endif
+	}
     else
     {
         static assert( false );
@@ -316,6 +350,14 @@ else version( freebsd )
     auto FILE* stdout = &__sF[1];
     auto FILE* stderr = &__sF[2];
 }
+else version( solaris )
+{
+	extern FILE[_NFILE]	__iob;
+	
+	auto FILE* stdin  = &__iob[0];
+    auto FILE* stdout = &__iob[1];
+    auto FILE* stderr = &__iob[2];
+}
 else
 {
     static assert( false );
@@ -424,6 +466,17 @@ else version( freebsd )
 
     int  snprintf(char* s, size_t n, in char* format, ...);
     int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
+}
+else version( solaris )
+{
+    void rewind(FILE*);
+    void clearerr(FILE*);
+    int  feof(FILE*);
+    int  ferror(FILE*);
+    int  fileno(FILE*);
+
+    int  snprintf(char* s, size_t n, in char* format, ...);
+    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);	
 }
 else
 {
