@@ -32,7 +32,7 @@ BUGS:   Currently only works on x86 CPUs.
 */
 
 module tango.core.Cpuid;
-import tango.stdc.constants.cpu;
+
 version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(D_InlineAsm_X86) {
