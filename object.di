@@ -4,6 +4,7 @@ alias typeof(int.sizeof)                    size_t;
 alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
 
 alias size_t hash_t;
+alias int equals_t;
 
 class Object
 {
@@ -173,7 +174,7 @@ class Exception : Object
     TraceInfo   info;
     Exception   next;
 
-    this(char[] msg, Exception next = null);
+    this(char[] msg, Exception next=null);
     this(char[] msg, char[] file, size_t line, Exception next = null);
     char[] toString();
 }
