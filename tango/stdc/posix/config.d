@@ -24,9 +24,9 @@ else version( solaris )
 version( OPTIONAL_LARGEFILE_SUPPORT )
 {
     version(SMALLFILE)
-      enum {bool  __USE_LARGEFILE64 = false}
+      enum :bool {__USE_LARGEFILE64 = false}
     else
-      enum {bool  __USE_LARGEFILE64 = ((void*).sizeof==4)}
+      enum :bool {__USE_LARGEFILE64 = ((void*).sizeof==4)}
 } else {
-    enum {bool  __USE_LARGEFILE64 = false}
+    enum :bool {__USE_LARGEFILE64 = false}
 }
