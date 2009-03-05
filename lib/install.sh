@@ -62,7 +62,9 @@ defaultdmd() {
     INCL="include"
     if [ "$USERPREFIX" = "0" ]
     then
-        PREFIX="/usr/local"
+        dmdBin=`which dmd`
+        dmdBinDir=`dirname "$binDir"`
+        PREFIX=`dirname "$dmdBinDir"`
     fi
     CONFPREFIX="$PREFIX"
     LIBPREFIX="$PREFIX"
@@ -287,11 +289,11 @@ configdmd() {
                     if [ "$VERBOSE" = "1" ]; then echo "Appending -debuglib switch to DFLAGS"; fi
                     sed -i.bak2 -e 's/^DFLAGS=.*$/& -debuglib=tango-base-dmd/' $CONFPREFIX/$CONF/dmd.conf
                 fi
-             elif [ "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a ! $POSIXFLAG ]
+             elif [ "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a ! "$POSIXFLAG" ]
              then
                  if [ "$VERBOSE" = "1" ]; then echo "Removing -version=Posix due to upgraded DMD."; fi
                  sed -i.bak3 -e 's/-version=Posix//g' $CONFPREFIX/$CONF/dmd.conf
-             elif [ ! "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a $POSIXFLAG ]
+             elif [ ! "`grep '\-version=Posix' $CONFPREFIX/$CONF/dmd.conf`" -a -n "$POSIXFLAG" ]
              then
                  if [ "$VERBOSE" = "1" ]; then echo "Add missing -version=Posix."; fi
                  sed -i.bak3 -e 's/^DFLAGS=.*$/& -version=Posix/' $CONFPREFIX/$CONF/dmd.conf
