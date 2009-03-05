@@ -63,7 +63,7 @@ defaultdmd() {
     if [ "$USERPREFIX" = "0" ]
     then
         dmdBin=`which dmd`
-        dmdBinDir=`dirname "$binDir"`
+        dmdBinDir=`dirname "$dmdBin"`
         PREFIX=`dirname "$dmdBinDir"`
     fi
     CONFPREFIX="$PREFIX"
