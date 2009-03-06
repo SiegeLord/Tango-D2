@@ -141,10 +141,8 @@ class File : Device, Device.Seek
 
         ***********************************************************************/
 
-        struct Style
+         align(1) struct Style
         {
-                align (1):
-
                 Access          access;                 /// access rights
                 Open            open;                   /// how to open
                 Share           share;                  /// how to share

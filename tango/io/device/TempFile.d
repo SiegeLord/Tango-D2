@@ -275,9 +275,8 @@ class TempFile : Device, Device.Seek
      * opened and used.
      *
      **************************************************************************/
-    struct Style
+    align(1) struct Style
     {
-        align(1):
         //Visibility visibility;      ///
         Transience transience;      ///
         //Sensitivity sensitivity;    ///
