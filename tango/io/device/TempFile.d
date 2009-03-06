@@ -278,11 +278,11 @@ class TempFile : Device, Device.Seek
     align(1) struct Style
     {
         //Visibility visibility;      ///
-        Transience transience;      ///
+        Transience transience;        ///
         //Sensitivity sensitivity;    ///
         //Share share;                ///
         //Cache cache;                ///
-        int attempts = 10;          ///
+        ubyte attempts = 10;          ///
     }
 
     /**
@@ -392,7 +392,7 @@ class TempFile : Device, Device.Seek
 
     private void create(char[] prefix, Style style)
     {
-        for( size_t i=0; i<style.attempts; ++i )
+        for( size_t i=style.attempts; i--; )
         {
             if( create_path(Path.join(prefix, randomName), style) )
                 return;
