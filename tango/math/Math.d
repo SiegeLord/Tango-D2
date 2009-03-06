@@ -51,9 +51,12 @@
  *  CHOOSE = $(BIG &#40;) <sup>$(SMALL $1)</sup><sub>$(SMALL $2)</sub> $(BIG &#41;)
  *	PLUSMN = &plusmn;
  *	INFIN = &infin;
+ *  PLUSMNINF = &plusmn;&infin;
  *	PI = &pi;
  *	LT = &lt;
  *	GT = &gt;
+ *  SQRT = &radix;
+ *  HALF = &frac12;
  *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
  *      <caption>Special Values</caption>
  *      $0</table>
@@ -75,7 +78,7 @@ version(GNU){
 } else version(TangoNoAsm) {
 
 } else version(D_InlineAsm_X86) {
-    version = Really_D_InlineAsm_X86;
+    version = Naked_D_InlineAsm_X86;
 }
 else version(LDC)
 {
@@ -90,22 +93,21 @@ else version(LDC)
  * Constants
  */
 
-const real E          = 2.7182818284590452354L;  /** e */ // 0x1.5BF0A8B1_45769535_5FF5p+1L
-
-const real LOG2T      = 0x1.a934f0979a3715fcp+1L; /** log<sub>2</sub>10 */ // 3.32193 fldl2t
-const real LOG2E      = 0x1.71547652b82fe178p+0L; /** log<sub>2</sub>e */ // 1.4427 fldl2e
-const real LOG2       = 0x1.34413509f79fef32p-2L; /** log<sub>10</sub>2 */ // 0.30103 fldlg2
-const real LOG10E     = 0.43429448190325182765L;  /** log<sub>10</sub>e */
-const real LN2        = 0x1.62e42fefa39ef358p-1L; /** ln 2 */    // 0.693147 fldln2
-const real LN10       = 2.30258509299404568402L;  /** ln 10 */
-const real PI         = 0x1.921fb54442d1846ap+1L; /** &pi; */ // 3.14159 fldpi
-const real PI_2       = 1.57079632679489661923L;  /** &pi; / 2 */
-const real PI_4       = 0.78539816339744830962L;  /** &pi; / 4 */
-const real M_1_PI     = 0.31830988618379067154L;  /** 1 / &pi; */
-const real M_2_PI     = 0.63661977236758134308L;  /** 2 / &pi; */
-const real M_2_SQRTPI = 1.12837916709551257390L;  /** 2 / &radic;&pi; */
-const real SQRT2      = 1.41421356237309504880L;  /** &radic;2 */
-const real SQRT1_2    = 0.70710678118654752440L;  /** &radic;&frac12 */
+const real E =          2.7182818284590452354L;  /** e */ // 3.32193 fldl2t 0x1.5BF0A8B1_45769535_5FF5p+1L
+const real LOG2T =      0x1.a934f0979a3715fcp+1; /** $(SUB log, 2)10 */ // 1.4427 fldl2e
+const real LOG2E =      0x1.71547652b82fe178p+0; /** $(SUB log, 2)e */ // 0.30103 fldlg2
+const real LOG2 =       0x1.34413509f79fef32p-2; /** $(SUB log, 10)2 */
+const real LOG10E =     0.43429448190325182765;  /** $(SUB log, 10)e */
+const real LN2 =        0x1.62e42fefa39ef358p-1; /** ln 2 */  // 0.693147 fldln2
+const real LN10 =       2.30258509299404568402;  /** ln 10 */
+const real PI =         0x1.921fb54442d1846ap+1; /** $(_PI) */ // 3.14159 fldpi
+const real PI_2 =       1.57079632679489661923;  /** $(PI) / 2 */
+const real PI_4 =       0.78539816339744830962;  /** $(PI) / 4 */
+const real M_1_PI =     0.31830988618379067154;  /** 1 / $(PI) */
+const real M_2_PI =     0.63661977236758134308;  /** 2 / $(PI) */
+const real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / $(SQRT)$(PI) */
+const real SQRT2 =      1.41421356237309504880;  /** $(SQRT)2 */
+const real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
 
 //const real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
 //const real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
@@ -255,7 +257,7 @@ real minNum(real x, real y) {
  * If both x and y are numbers, the maximum is returned.
  * If both parameters are NaN, either will be returned.
  * If one parameter is a NaN and the other is a number, the number is
- * returned (this behaviour is mandated by IEEE 754R, and is useful
+ * returned (this behaviour is mandated by IEEE 754-2008, and is useful
  * for determining the range of a function).
  */
 real maxNum(real x, real y) {
@@ -298,17 +300,18 @@ unittest
  * Trig Functions
  */
 
-/**
+/***********************************
  * Returns cosine of x. x is in radians.
  *
- *  $(TABLE_SV
- *  $(TR $(TH x)               $(TH cos(x)) $(TH invalid?)  )
- *  $(TR $(TD $(NAN))          $(TD $(NAN)) $(TD yes)   )
- *  $(TR $(TD &plusmn;&infin;) $(TD $(NAN)) $(TD yes)   )
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH cos(x)) $(TH invalid?))
+ *      $(TR $(TD $(NAN))            $(TD $(NAN)) $(TD yes)     )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN)) $(TD yes)     )
+ *      )
  * Bugs:
- *  Results are undefined if |x| >= $(POWER 2,64).
+ *      Results are undefined if |x| >= $(POWER 2,64).
  */
+
 version(LDC)
 {
     alias llvm_cos_f32 cos;
@@ -351,17 +354,17 @@ unittest {
 }
 }
 
-/**
+/***********************************
  * Returns sine of x. x is in radians.
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> sin(x)      <th>invalid?
- *  <tr> <td> $(NAN)          <td> $(NAN)      <td> yes
- *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0 <td> no
- *  <tr> <td> &plusmn;&infin; <td> $(NAN)      <td> yes
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)               $(TH sin(x))      $(TH invalid?))
+ *      $(TR $(TD $(NAN))          $(TD $(NAN))      $(TD yes))
+ *      $(TR $(TD $(PLUSMN)0.0)    $(TD $(PLUSMN)0.0) $(TD no))
+ *      $(TR $(TD $(PLUSMNINF))    $(TD $(NAN))      $(TD yes))
+ *      )
  * Bugs:
- *  Results are undefined if |x| >= $(POWER 2,64).
+ *      Results are undefined if |x| >= $(POWER 2,64).
  */
 version(LDC)
 {
@@ -463,74 +466,59 @@ Lret:
 }
 
 debug(UnitTest) {
-unittest
-{
-// Returns true if equal to precision, false if not
-// (Used only in unit test for tan())
-bool mfeq(real x, real y, real precision)
-{
-    if (x == y)
-        return true;
-    if (isNaN(x) || isNaN(y))
-        return false;
-    return fabs(x - y) <= precision;
-}
-
-
-    static real vals[][2] = // angle,tan
-    [
-        [   0,   0],
-        [   .5,  .5463024898],
-        [   1,   1.557407725],
-        [   1.5, 14.10141995],
-        [   2,  -2.185039863],
-        [   2.5,-.7470222972],
-        [   3,  -.1425465431],
-        [   3.5, .3745856402],
-        [   4,   1.157821282],
-        [   4.5, 4.637332055],
-        [   5,  -3.380515006],
-        [   5.5,-.9955840522],
-        [   6,  -.2910061914],
-        [   6.5, .2202772003],
-        [   10,  .6483608275],
-
-        // special angles
-        [   PI_4,   1],
-        //[ PI_2,   real.infinity],
-        [   3*PI_4, -1],
-        [   PI, 0],
-        [   5*PI_4, 1],
-        //[ 3*PI_2, -real.infinity],
-        [   7*PI_4, -1],
-        [   2*PI,   0],
-
-        // overflow
-        [   real.infinity,  real.nan],
-        [   real.nan,   real.nan],
-    ];
-    int i;
-
-    for (i = 0; i < vals.length; i++)
+    unittest
     {
-        real x = vals[i][0];
-        real r = vals[i][1];
-        real t = tan(x);
+        static real vals[][2] =     // angle,tan
+        [
+                [   0,   0],
+                [   .5,  .5463024898],
+                [   1,   1.557407725],
+                [   1.5, 14.10141995],
+                [   2,  -2.185039863],
+                [   2.5,-.7470222972],
+                [   3,  -.1425465431],
+                [   3.5, .3745856402],
+                [   4,   1.157821282],
+                [   4.5, 4.637332055],
+                [   5,  -3.380515006],
+                [   5.5,-.9955840522],
+                [   6,  -.2910061914],
+                [   6.5, .2202772003],
+                [   10,  .6483608275],
 
-        //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-        if (isNaN(r)) assert(isNaN(t));
-        else assert(mfeq(r, t, .0000001));
+                // special angles
+                [   PI_4,   1],
+                //[   PI_2,   real.infinity], // PI_2 is not _exactly_ pi/2.
+                [   3*PI_4, -1],
+                [   PI,     0],
+                [   5*PI_4, 1],
+                //[   3*PI_2, -real.infinity],
+                [   7*PI_4, -1],
+                [   2*PI,   0],
+        ];
+        int i;
 
-        x = -x;
-        r = -r;
-        t = tan(x);
-        //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
-        if (isNaN(r)) assert(isNaN(t));
-        else assert(mfeq(r, t, .0000001));
+        for (i = 0; i < vals.length; i++)
+        {
+            real x = vals[i][0];
+            real r = vals[i][1];
+            real t = tan(x);
+
+            //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
+            if (!isIdentical(r, t)) assert(fabs(r-t) <= .0000001);
+
+            x = -x;
+            r = -r;
+            t = tan(x);
+            //printf("tan(%Lg) = %Lg, should be %Lg\n", x, t, r);
+            if (!isIdentical(r, t) && !(r!<>=0 && t!<>=0)) assert(fabs(r-t) <= .0000001);
+        }
+        // overflow
+        assert(isNaN(tan(real.infinity)));
+        assert(isNaN(tan(-real.infinity)));
+        // NaN propagation
+        assert(isIdentical( tan(NaN(0x0123L)), NaN(0x0123L) ));
     }
-    assert(isIdentical(tan(NaN(735)), NaN(735)));
-    assert(isNaN(tan(real.infinity)));
-}
 }
 
 /*****************************************
@@ -616,11 +604,11 @@ unittest{
 }
 }
 
-/**
+/***************
  * Calculates the arc cosine of x,
- * returning a value ranging from -&pi;/2 to &pi;/2.
+ * returning a value ranging from -$(PI)/2 to $(PI)/2.
  *
- *	$(TABLE_SV
+ *      $(TABLE_SV
  *      $(TR $(TH x)         $(TH acos(x)) $(TH invalid?))
  *      $(TR $(TD $(GT)1.0)  $(TD $(NAN))  $(TD yes))
  *      $(TR $(TD $(LT)-1.0) $(TD $(NAN))  $(TD yes))
@@ -642,16 +630,16 @@ unittest {
 }
 }
 
-/**
+/***************
  * Calculates the arc sine of x,
- * returning a value ranging from -&pi;/2 to &pi;/2.
+ * returning a value ranging from -$(PI)/2 to $(PI)/2.
  *
- *	$(TABLE_SV
- *	$(TR $(TH x)            $(TH asin(x))      $(TH invalid?))
- *	$(TR $(TD $(PLUSMN)0.0) $(TD $(PLUSMN)0.0) $(TD no))
- *	$(TR $(TD $(GT)1.0)     $(TD $(NAN))       $(TD yes))
- *	$(TR $(TD $(LT)-1.0)    $(TD $(NAN))       $(TD yes))
- *       )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)            $(TH asin(x))      $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0) $(TD $(PLUSMN)0.0) $(TD no))
+ *      $(TR $(TD $(GT)1.0)     $(TD $(NAN))       $(TD yes))
+ *      $(TR $(TD $(LT)-1.0)    $(TD $(NAN))       $(TD yes))
+ *      )
  */
 real asin(real x)
 {
@@ -668,15 +656,15 @@ unittest {
 }
 }
 
-/**
+/***************
  * Calculates the arc tangent of x,
  * returning a value ranging from -$(PI)/2 to $(PI)/2.
  *
- *	$(TABLE_SV
- *	$(TR $(TH x)                 $(TH atan(x))      $(TH invalid?))
- *	$(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) $(TD no))
- *	$(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))       $(TD yes))
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH atan(x))      $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) $(TD no))
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(NAN))       $(TD yes))
+ *      )
  */
 real atan(real x)
 {
@@ -690,29 +678,25 @@ unittest {
 }
 }
 
-/**
+/***************
  * Calculates the arc tangent of y / x,
- * returning a value ranging from -&pi;/2 to &pi;/2.
+ * returning a value ranging from -$(PI) to $(PI).
  *
- * Remarks:
- *  The Complex Argument of a complex number z is given by
- *  Arg(z) = atan2(z.re, z.im)
- *
- *  $(TABLE_SV
- *  <tr> <th> y           <th> x         <th> atan(y, x)
- *  <tr> <td> $(NAN)      <td> anything  <td> $(NAN)
- *  <tr> <td> anything    <td> $(NAN)    <td> $(NAN)
- *  <tr> <td> &plusmn;0.0       <td> &gt; 0.0  <td> &plusmn;0.0
- *  <tr> <td> &plusmn;0.0       <td> &plusmn;0.0     <td> &plusmn;0.0
- *  <tr> <td> &plusmn;0.0       <td> &lt; 0.0  <td> &plusmn;&pi;
- *  <tr> <td> &plusmn;0.0       <td> -0.0      <td> &plusmn;&pi;
- *  <tr> <td> &gt; 0.0    <td> &plusmn;0.0     <td> &pi;/2
- *  <tr> <td> &lt; 0.0    <td> &plusmn;0.0     <td> &pi;/2
- *  <tr> <td> &gt; 0.0    <td> &infin;  <td> &plusmn;0.0
- *  <tr> <td> &plusmn;&infin;  <td> anything  <td> &plusmn;&pi;/2
- *  <tr> <td> &gt; 0.0    <td> -&infin; <td> &plusmn;&pi;
- *  <tr> <td> &plusmn;&infin;  <td> &infin;  <td> &plusmn;&pi;/4
- *  <tr> <td> &plusmn;&infin;  <td> -&infin; <td> &plusmn;3&pi;/4
+ *      $(TABLE_SV
+ *      $(TR $(TH y)                 $(TH x)            $(TH atan(y, x)))
+ *      $(TR $(TD $(NAN))            $(TD anything)     $(TD $(NAN)) )
+ *      $(TR $(TD anything)          $(TD $(NAN))       $(TD $(NAN)) )
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(GT)0.0)     $(TD $(PLUSMN)0.0) )
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD +0.0)         $(TD $(PLUSMN)0.0) )
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(LT)0.0)     $(TD $(PLUSMN)$(PI)))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD -0.0)         $(TD $(PLUSMN)$(PI)))
+ *      $(TR $(TD $(GT)0.0)          $(TD $(PLUSMN)0.0) $(TD $(PI)/2) )
+ *      $(TR $(TD $(LT)0.0)          $(TD $(PLUSMN)0.0) $(TD -$(PI)/2) )
+ *      $(TR $(TD $(GT)0.0)          $(TD $(INFIN))     $(TD $(PLUSMN)0.0) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD anything)     $(TD $(PLUSMN)$(PI)/2))
+ *      $(TR $(TD $(GT)0.0)          $(TD -$(INFIN))    $(TD $(PLUSMN)$(PI)) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(INFIN))     $(TD $(PLUSMN)$(PI)/4))
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD -$(INFIN))    $(TD $(PLUSMN)3$(PI)/4))
  *      )
  */
 real atan2(real y, real x)
@@ -748,7 +732,7 @@ unittest {
 /***********************************
  * Complex inverse cosine
  *
- * acos(z) = &pi/2 - asin(z)
+ * acos(z) = $(PI)/2 - asin(z)
  */
 creal acos(creal z)
 {
@@ -756,12 +740,12 @@ creal acos(creal z)
 }
 
 
-/**
+/***********************************
  * Calculates the hyperbolic cosine of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x                <th> cosh(x)     <th> invalid?
- *  <tr> <td> &plusmn;&infin;  <td> &plusmn;0.0 <td> no
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH cosh(x))      $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)0.0) $(TD no) )
  *      )
  */
 real cosh(real x)
@@ -779,13 +763,13 @@ unittest {
 }
 }
 
-/**
+/***********************************
  * Calculates the hyperbolic sine of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> sinh(x)         <th> invalid?
- *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0     <td> no
- *  <tr> <td> &plusmn;&infin; <td> &plusmn;&infin; <td> no
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH sinh(x))           $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0)      $(TD no))
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)$(INFIN)) $(TD no))
  *      )
  */
 real sinh(real x)
@@ -808,13 +792,13 @@ unittest {
 }
 }
 
-/**
+/***********************************
  * Calculates the hyperbolic tangent of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> tanh(x)      <th> invalid?
- *  <tr> <td> &plusmn;0.0     <td> &plusmn;0.0  <td> no
- *  <tr> <td> &plusmn;&infin; <td> &plusmn;1.0  <td> no
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH tanh(x))      $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) $(TD no) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)1.0) $(TD no))
  *      )
  */
 real tanh(real x)
@@ -881,21 +865,17 @@ unittest {
 }
 
 
-/**
+/***********************************
  * Calculates the inverse hyperbolic cosine of x.
  *
  *  Mathematically, acosh(x) = log(x + sqrt( x*x - 1))
  *
- * $(TABLE_DOMRG
- *  $(DOMAIN 1..&infin;)
- *  $(RANGE  1..log(real.max), &infin; )
- * )
- *  $(TABLE_SV
+ *    $(TABLE_SV
  *    $(SVH  x,     acosh(x) )
  *    $(SV  $(NAN), $(NAN) )
  *    $(SV  <1,     $(NAN) )
  *    $(SV  1,      0       )
- *    $(SV  +&infin;,+&infin;)
+ *    $(SV  +$(INFIN),+$(INFIN))
  *  )
  */
 real acosh(real x)
@@ -918,7 +898,7 @@ unittest
 }
 }
 
-/**
+/***********************************
  * Calculates the inverse hyperbolic sine of x.
  *
  *  Mathematically,
@@ -927,12 +907,12 @@ unittest
  *  asinh(x) = -log(-x + sqrt( x*x + 1 )) // if x <= -0
  *  -------------
  *
- *  $(TABLE_SV
- *    $(SVH  x,             asinh(x)       )
- *    $(SV  $(NAN),         $(NAN)         )
- *    $(SV  &plusmn;0,      &plusmn;0      )
- *    $(SV  &plusmn;&infin;,&plusmn;&infin;)
- *  )
+ *    $(TABLE_SV
+ *    $(SVH x,                asinh(x)       )
+ *    $(SV  $(NAN),           $(NAN)         )
+ *    $(SV  $(PLUSMN)0,       $(PLUSMN)0      )
+ *    $(SV  $(PLUSMN)$(INFIN),$(PLUSMN)$(INFIN))
+ *    )
  */
 real asinh(real x)
 {
@@ -958,22 +938,19 @@ unittest
 }
 }
 
-/**
+/***********************************
  * Calculates the inverse hyperbolic tangent of x,
  * returning a value from ranging from -1 to 1.
  *
  * Mathematically, atanh(x) = log( (1+x)/(1-x) ) / 2
  *
  *
- * $(TABLE_DOMRG
- *  $(DOMAIN -&infin;..&infin;)
- *  $(RANGE  -1..1) )
- *  $(TABLE_SV
- *    $(SVH  x,     atanh(x) )
+ *    $(TABLE_SV
+ *    $(SVH  x,     acosh(x) )
  *    $(SV  $(NAN), $(NAN) )
- *    $(SV  &plusmn;0, &plusmn;0)
- *    $(SV  &plusmn;1, &plusmn;&infin;)
- *  )
+ *    $(SV  $(PLUSMN)0, $(PLUSMN)0)
+ *    $(SV  -$(INFIN), -0)
+ *    )
  */
 real atanh(real x)
 {
@@ -1012,15 +989,15 @@ creal atanh(creal z)
  * Powers and Roots
  */
 
-/**
+/***************************************
  * Compute square root of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x        <th> sqrt(x)  <th> invalid?
- *  <tr> <td> -0.0     <td> -0.0     <td> no
- *  <tr> <td> &lt;0.0  <td> $(NAN)   <td> yes
- *  <tr> <td> +&infin; <td> +&infin; <td> no
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)         $(TH sqrt(x))   $(TH invalid?))
+ *      $(TR $(TD -0.0)      $(TD -0.0)      $(TD no))
+ *      $(TR $(TD $(LT)0.0)  $(TD $(NAN))    $(TD yes))
+ *      $(TR $(TD +$(INFIN)) $(TD +$(INFIN)) $(TD no))
+ *      )
  */
 version(LDC)
 {
@@ -1128,15 +1105,15 @@ unittest {
 }
 }
 
-/**
+/***************
  * Calculates the cube root of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> <i>x</i>  <th> cbrt(x)    <th> invalid?
- *  <tr> <td> &plusmn;0.0   <td> &plusmn;0.0    <td> no
- *  <tr> <td> $(NAN)    <td> $(NAN)     <td> yes
- *  <tr> <td> &plusmn;&infin;   <td> &plusmn;&infin; <td> no
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH $(I x))            $(TH cbrt(x))           $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0)      $(TD no) )
+ *      $(TR $(TD $(NAN))            $(TD $(NAN))            $(TD yes) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD $(PLUSMN)$(INFIN)) $(TD no) )
+ *      )
  */
 real cbrt(real x)
 {
@@ -1157,18 +1134,133 @@ public:
  * Calculates e$(SUP x).
  *
  *  $(TABLE_SV
- *  <tr> <th> x        <th> exp(x)
- *  <tr> <td> +&infin; <td> +&infin;
- *  <tr> <td> -&infin; <td> +0.0
+ *    $(TR $(TH x)             $(TH e$(SUP x)) )
+ *    $(TD +$(INFIN))          $(TD +$(INFIN)) )
+ *    $(TD -$(INFIN))          $(TD +0.0)      )
+ *    $(TR $(TD $(NAN))        $(TD $(NAN))    )
  *  )
  */
-real exp(real x)
-{    
-    version(Really_D_InlineAsm_X86) {
-        /*  exp() for x87 80-bit reals, IEEE754-2008 conformant.
+real exp(real x) {
+    version(Naked_D_InlineAsm_X86) {
+   //  e^x = 2^(LOG2E*x)
+   // (This is valid because the overflow & underflow limits for exp
+   // and exp2 are so similar).
+    return exp2(LOG2E*x);
+    } else {
+        return tango.stdc.math.expl(x);        
+    }    
+}
+
+/**
+ * Calculates the value of the natural logarithm base (e)
+ * raised to the power of x, minus 1.
+ *
+ * For very small x, expm1(x) is more accurate
+ * than exp(x)-1.
+ *
+ *  $(TABLE_SV
+ *    $(TR $(TH x)             $(TH e$(SUP x)-1)  )
+ *    $(TR $(TD $(PLUSMN)0.0)  $(TD $(PLUSMN)0.0) )
+ *    $(TD +$(INFIN))          $(TD +$(INFIN))    )
+ *    $(TD -$(INFIN))          $(TD -1.0)         )
+ *    $(TR $(TD $(NAN))        $(TD $(NAN))       )
+ *  )
+ */
+real expm1(real x) 
+{
+    version(Naked_D_InlineAsm_X86) {
+      enum { PARAMSIZE = (real.sizeof+3)&(0xFFFF_FFFC) } // always a multiple of 4
+      asm {
+        /*  expm1() for x87 80-bit reals, IEEE754-2008 conformant.
          * Author: Don Clugston.
          * 
-         * exp(x) = 2^(rndint(y))* 2^(y-rndint(y)) where y = LN2*x.
+         *    expm1(x) = 2^(rndint(y))* 2^(y-rndint(y)) - 1 where y = LN2*x.
+         *    = 2rndy * 2ym1 + 2rndy - 1, where 2rndy = 2^(rndint(y))
+         *     and 2ym1 = (2^(y-rndint(y))-1).
+         *    If 2rndy  < 0.5*real.epsilon, result is -1.
+         *    Implementation is otherwise the same as for exp2()
+         */
+        naked;        
+        fld real ptr [ESP+4] ; // x
+        mov AX, [ESP+4+8]; // AX = exponent and sign
+        sub ESP, 12+8; // Create scratch space on the stack 
+        // [ESP,ESP+2] = scratchint
+        // [ESP+4..+6, +8..+10, +10] = scratchreal
+        // set scratchreal mantissa = 1.0
+        mov dword ptr [ESP+8], 0;
+        mov dword ptr [ESP+8+4], 0x80000000;
+        and AX, 0x7FFF; // drop sign bit
+        cmp AX, 0x401D; // avoid InvalidException in fist
+        jae L_extreme;
+        fldl2e;
+        fmul ; // y = x*log2(e)       
+        fist dword ptr [ESP]; // scratchint = rndint(y)
+        fisub dword ptr [ESP]; // y - rndint(y)
+        // and now set scratchreal exponent
+        mov EAX, [ESP];
+        add EAX, 0x3fff;
+        jle short L_largenegative;
+        cmp EAX,0x8000;
+        jge short L_largepositive;
+        mov [ESP+8+8],AX;        
+        f2xm1; // 2^(y-rndint(y)) -1 
+        fld real ptr [ESP+8] ; // 2^rndint(y)
+        fmul ST(1), ST;
+        fld1;
+        fsubp ST(1), ST;
+        fadd;        
+        add ESP,12+8;        
+        ret PARAMSIZE;
+        
+L_extreme: // Extreme exponent. X is very large positive, very
+        // large negative, infinity, or NaN.
+        fxam;
+        fstsw AX;
+        test AX, 0x0400; // NaN_or_zero, but we already know x!=0 
+        jz L_was_nan;  // if x is NaN, returns x
+        test AX, 0x0200;
+        jnz L_largenegative;
+L_largepositive:        
+        // Set scratchreal = real.max. 
+        // squaring it will create infinity, and set overflow flag.
+        mov word  ptr [ESP+8+8], 0x7FFE;
+        fstp ST(0), ST;
+        fld real ptr [ESP+8];  // load scratchreal
+        fmul ST(0), ST;        // square it, to create havoc!
+L_was_nan:
+        add ESP,12+8;
+        ret PARAMSIZE;
+L_largenegative:        
+        fstp ST(0), ST;
+        fld1;
+        fchs; // return -1. Underflow flag is not set.
+        add ESP,12+8;
+        ret PARAMSIZE;
+      }
+    } else {
+        return tango.stdc.math.expm1l(x);                
+    }
+}
+
+/**
+ * Calculates 2$(SUP x).
+ *
+ *  $(TABLE_SV
+ *    $(TR $(TH x)             $(TH exp2(x)    )
+ *    $(TD +$(INFIN))          $(TD +$(INFIN)) )
+ *    $(TD -$(INFIN))          $(TD +0.0)      )
+ *    $(TR $(TD $(NAN))        $(TD $(NAN))    )
+ *  )
+ */
+real exp2(real x) 
+{
+    version(Naked_D_InlineAsm_X86) {
+      enum { PARAMSIZE = (real.sizeof+3)&(0xFFFF_FFFC) } // always a multiple of 4
+      asm {
+        /*  exp2() for x87 80-bit reals, IEEE754-2008 conformant.
+         * Author: Don Clugston.
+         * 
+         * exp2(x) = 2^(rndint(x))* 2^(y-rndint(x))
          * The trick for high performance is to avoid the fscale(28cycles on core2),
          * frndint(19 cycles), leaving f2xm1(19 cycles) as the only slow instruction.
          * 
@@ -1180,78 +1272,73 @@ real exp(real x)
          * work for the (very rare) cases where the result is subnormal. So we fall back
          * to the slow method in that case.
          */
-        // parameters always get rounded up to a multiple of 4.
-        enum { SIZEOFREALPARAMETER = (real.sizeof&2)? real.sizeof+2 : real.sizeof }
-        asm {
-            naked;        
-            fld real ptr [ESP+4] ; // x
-            mov AX, [ESP+4+8]; // AX = exponent and sign
-            sub ESP, 12+8; // Create scratch space on the stack 
-            // [ESP,ESP+2] = scratchint
-            // [ESP+4..+6, +8..+10, +10] = scratchreal
-            // set scratchreal mantissa = 1.0
-            mov dword ptr [ESP+8], 0;
-            mov dword ptr [ESP+8+4], 0x80000000;
-            and AX, 0x7FFF; // drop sign bit
-            cmp AX, 0x401D; // avoid InvalidException in fist
-            jae L_extreme;
-            fldl2e;
-            fmul ; // y = x*log2(e)       
-            fist dword ptr [ESP]; // scratchint = rndint(y)
-            fisub dword ptr [ESP]; // y - rndint(y)
-            // and now set scratchreal exponent
-            mov EAX, [ESP];
-            add EAX, 0x3fff;
-            jle short L_subnormal;
-            cmp EAX,0x8000;
-            jge short L_overflow;
-            mov [ESP+8+8],AX;        
-    L_normal:
-            f2xm1;
-            fld1;
-            fadd ; // 2^(y-rndint(z))
-            fld real ptr [ESP+8] ; // 2^rndint(y)
-            add ESP,12+8;        
-            fmulp ST(1), ST;
-            ret SIZEOFREALPARAMETER;
+        naked;        
+        fld real ptr [ESP+4] ; // x
+        mov AX, [ESP+4+8]; // AX = exponent and sign
+        sub ESP, 12+8; // Create scratch space on the stack 
+        // [ESP,ESP+2] = scratchint
+        // [ESP+4..+6, +8..+10, +10] = scratchreal
+        // set scratchreal mantissa = 1.0
+        mov dword ptr [ESP+8], 0;
+        mov dword ptr [ESP+8+4], 0x80000000;
+        and AX, 0x7FFF; // drop sign bit
+        cmp AX, 0x401D; // avoid InvalidException in fist
+        jae L_extreme;
+        fist dword ptr [ESP]; // scratchint = rndint(x)
+        fisub dword ptr [ESP]; // x - rndint(x)
+        // and now set scratchreal exponent
+        mov EAX, [ESP];
+        add EAX, 0x3fff;
+        jle short L_subnormal;
+        cmp EAX,0x8000;
+        jge short L_overflow;
+        mov [ESP+8+8],AX;        
+L_normal:
+        f2xm1;
+        fld1;
+        fadd; // 2^(x-rndint(x))
+        fld real ptr [ESP+8] ; // 2^rndint(x)
+        add ESP,12+8;        
+        fmulp ST(1), ST;
+        ret PARAMSIZE;
 
-    L_subnormal:
-            // Result will be subnormal.
-            // In this rare case, the simple poking method doesn't work. 
-            // The speed doesn't matter, so use the slow fscale method.                
-            fild dword ptr [ESP];  // scratchint
-            fld1;
-            fscale;
-            fstp real ptr [ESP+8]; // scratchreal = 2^scratchint
-            fstp ST(0),ST;         // drop scratchint
-            jmp L_normal;
-            
-    L_extreme: // Extreme exponent. X is very large positive, very
-            // large negative, infinity, or NaN.
-            fxam;
-            fstsw AX;
-            test AX, 0x0400; // NaN_or_zero, but we already know x!=0 
-            jz L_was_nan;  // if x is NaN, returns x
-            // set scratchreal = real.min
-            // squaring it will return 0, setting underflow flag
-            mov word  ptr [ESP+8+8], 1;
-            test AX, 0x0200;
-            jnz L_waslargenegative;
-    L_overflow:        
-            // Set scratchreal = real.max.
-            // squaring it will create infinity, and set overflow flag.
-            mov word  ptr [ESP+8+8], 0x7FFE;
-    L_waslargenegative:        
-            fstp ST(0), ST;
-            fld real ptr [ESP+8];  // load scratchreal
-            fmul ST(0), ST;        // square it, to create havoc!
-    L_was_nan:
-            add ESP,12+8;
-            ret SIZEOFREALPARAMETER;
-        }
-    } else {       
-        return tango.stdc.math.expl(x);
-    }
+L_subnormal:
+        // Result will be subnormal.
+        // In this rare case, the simple poking method doesn't work. 
+        // The speed doesn't matter, so use the slow fscale method.
+        fild dword ptr [ESP];  // scratchint
+        fld1;
+        fscale;
+        fstp real ptr [ESP+8]; // scratchreal = 2^scratchint
+        fstp ST(0),ST;         // drop scratchint        
+        jmp L_normal;
+        
+L_extreme: // Extreme exponent. X is very large positive, very
+        // large negative, infinity, or NaN.
+        fxam;
+        fstsw AX;
+        test AX, 0x0400; // NaN_or_zero, but we already know x!=0 
+        jz L_was_nan;  // if x is NaN, returns x
+        // set scratchreal = real.min
+        // squaring it will return 0, setting underflow flag
+        mov word  ptr [ESP+8+8], 1;
+        test AX, 0x0200;
+        jnz L_waslargenegative;
+L_overflow:        
+        // Set scratchreal = real.max.
+        // squaring it will create infinity, and set overflow flag.
+        mov word  ptr [ESP+8+8], 0x7FFE;
+L_waslargenegative:        
+        fstp ST(0), ST;
+        fld real ptr [ESP+8];  // load scratchreal
+        fmul ST(0), ST;        // square it, to create havoc!
+L_was_nan:
+        add ESP,12+8;
+        ret PARAMSIZE;
+      }
+    } else {
+        return tango.stdc.math.exp2l(x);
+    }    
 }
 
 debug(UnitTest) {
@@ -1261,45 +1348,11 @@ unittest {
 }
 }
 
-/**
- * Calculates the value of the natural logarithm base (e)
- * raised to the power of x, minus 1.
- *
- * For very small x, expm1(x) is more accurate
- * than exp(x)-1.
- *
- *  $(TABLE_SV
- *  <tr> <th> x           <th> e$(SUP x)-1
- *  <tr> <td> &plusmn;0.0 <td> &plusmn;0.0
- *  <tr> <td> +&infin;    <td> +&infin;
- *  <tr> <td> -&infin;    <td> -1.0
- *  )
- */
-real expm1(real x)
-{
-    return tango.stdc.math.expm1l(x);
-}
-
 debug(UnitTest) {
 unittest {
     // NaN payloads
     assert(isIdentical(expm1(NaN(0xABC)), NaN(0xABC)));
 }
-}
-
-
-/**
- * Calculates 2$(SUP x).
- *
- *  $(TABLE_SV
- *  <tr> <th> x <th> exp2(x)
- *  <tr> <td> +&infin; <td> +&infin;
- *  <tr> <td> -&infin; <td> +0.0
- *  )
- */
-real exp2(real x)
-{
-    return tango.stdc.math.exp2l(x);
 }
 
 debug(UnitTest) {
@@ -1313,15 +1366,15 @@ unittest {
  * Powers and Roots
  */
 
-/**
+/**************************************
  * Calculate the natural logarithm of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x           <th> log(x)   <th> divide by 0? <th> invalid?
- *  <tr> <td> &plusmn;0.0 <td> -&infin; <td> yes          <td> no
- *  <tr> <td> &lt; 0.0    <td> $(NAN)   <td> no           <td> yes
- *  <tr> <td> +&infin;    <td> +&infin; <td> no           <td> no
- *  )
+ *    $(TABLE_SV
+ *    $(TR $(TH x)            $(TH log(x))    $(TH divide by 0?) $(TH invalid?))
+ *    $(TR $(TD $(PLUSMN)0.0) $(TD -$(INFIN)) $(TD yes)          $(TD no))
+ *    $(TR $(TD $(LT)0.0)     $(TD $(NAN))    $(TD no)           $(TD yes))
+ *    $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no))
+ *    )
  */
 real log(real x)
 {
@@ -1335,18 +1388,18 @@ unittest {
 }
 }
 
-/**
- *  Calculates the natural logarithm of 1 + x.
+/******************************************
+ *      Calculates the natural logarithm of 1 + x.
  *
- *  For very small x, log1p(x) will be more accurate than
- *  log(1 + x).
+ *      For very small x, log1p(x) will be more accurate than
+ *      log(1 + x).
  *
  *  $(TABLE_SV
- *  <tr> <th> x           <th> log1p(x)    <th> divide by 0? <th> invalid?
- *  <tr> <td> &plusmn;0.0 <td> &plusmn;0.0 <td> no           <td> no
- *  <tr> <td> -1.0        <td> -&infin;    <td> yes          <td> no
- *  <tr> <td> &lt;-1.0    <td> $(NAN)      <td> no           <td> yes
- *  <tr> <td> +&infin;    <td> -&infin;    <td> no           <td> no
+ *  $(TR $(TH x)            $(TH log1p(x))     $(TH divide by 0?) $(TH invalid?))
+ *  $(TR $(TD $(PLUSMN)0.0) $(TD $(PLUSMN)0.0) $(TD no)           $(TD no))
+ *  $(TR $(TD -1.0)         $(TD -$(INFIN))    $(TD yes)          $(TD no))
+ *  $(TR $(TD $(LT)-1.0)    $(TD $(NAN))       $(TD no)           $(TD yes))
+ *  $(TR $(TD +$(INFIN))    $(TD -$(INFIN))    $(TD no)           $(TD no))
  *  )
  */
 real log1p(real x)
@@ -1361,15 +1414,15 @@ unittest {
 }
 }
 
-/**
+/***************************************
  * Calculates the base-2 logarithm of x:
- * log<sub>2</sub>x
+ * $(SUB log, 2)x
  *
  *  $(TABLE_SV
- *  <tr> <th> x           <th> log2(x)  <th> divide by 0? <th> invalid?
- *  <tr> <td> &plusmn;0.0 <td> -&infin; <td> yes          <td> no
- *  <tr> <td> &lt; 0.0    <td> $(NAN)   <td> no           <td> yes
- *  <tr> <td> +&infin;    <td> +&infin; <td> no           <td> no
+ *  $(TR $(TH x)            $(TH log2(x))   $(TH divide by 0?) $(TH invalid?))
+ *  $(TR $(TD $(PLUSMN)0.0) $(TD -$(INFIN)) $(TD yes)          $(TD no) )
+ *  $(TR $(TD $(LT)0.0)     $(TD $(NAN))    $(TD no)           $(TD yes) )
+ *  $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no) )
  *  )
  */
 real log2(real x)
@@ -1384,15 +1437,15 @@ unittest {
 }
 }
 
-/**
+/**************************************
  * Calculate the base-10 logarithm of x.
  *
- *  $(TABLE_SV
- *  <tr> <th> x           <th> log10(x) <th> divide by 0? <th> invalid?
- *  <tr> <td> &plusmn;0.0 <td> -&infin; <td> yes          <td> no
- *  <tr> <td> &lt; 0.0    <td> $(NAN)   <td> no           <td> yes
- *  <tr> <td> +&infin;    <td> +&infin; <td> no           <td> no
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)            $(TH log10(x))  $(TH divide by 0?) $(TH invalid?))
+ *      $(TR $(TD $(PLUSMN)0.0) $(TD -$(INFIN)) $(TD yes)          $(TD no))
+ *      $(TR $(TD $(LT)0.0)     $(TD $(NAN))    $(TD no)           $(TD yes))
+ *      $(TR $(TD +$(INFIN))    $(TD +$(INFIN)) $(TD no)           $(TD no))
+ *      )
  */
 real log10(real x)
 {
@@ -1526,46 +1579,46 @@ real pow(real x, int n)
     else return pow(x, cast(uint)n);
 }
 
-/**
+/*********************************************
  * Calculates x$(SUP y).
  *
  * $(TABLE_SV
- * <tr>
- * <th> x <th> y <th> pow(x, y) <th> div 0 <th> invalid?
- * <tr>
- * <td> anything    <td> &plusmn;0.0    <td> 1.0    <td> no     <td> no
- * <tr>
- * <td> |x| &gt; 1  <td> +&infin;       <td> +&infin;   <td> no     <td> no
- * <tr>
- * <td> |x| &lt; 1  <td> +&infin;       <td> +0.0   <td> no     <td> no
- * <tr>
- * <td> |x| &gt; 1  <td> -&infin;       <td> +0.0   <td> no     <td> no
- * <tr>
- * <td> |x| &lt; 1  <td> -&infin;       <td> +&infin;   <td> no     <td> no
- * <tr>
- * <td> +&infin;    <td> &gt; 0.0       <td> +&infin;   <td> no     <td> no
- * <tr>
- * <td> +&infin;    <td> &lt; 0.0       <td> +0.0   <td> no     <td> no
- * <tr>
- * <td> -&infin;    <td> odd integer &gt; 0.0   <td> -&infin;   <td> no     <td> no
- * <tr>
- * <td> -&infin;    <td> &gt; 0.0, not odd integer  <td> +&infin;   <td> no     <td> no
- * <tr>
- * <td> -&infin;    <td> odd integer &lt; 0.0   <td> -0.0   <td> no     <td> no
- * <tr>
- * <td> -&infin;    <td> &lt; 0.0, not odd integer  <td> +0.0   <td> no     <td> no
- * <tr>
- * <td> &plusmn;1.0     <td> &plusmn;&infin;        <td> $(NAN)     <td> no     <td> yes
- * <tr>
- * <td> &lt; 0.0    <td> finite, nonintegral    <td> $(NAN)     <td> no     <td> yes
- * <tr>
- * <td> &plusmn;0.0     <td> odd integer &lt; 0.0   <td> &plusmn;&infin; <td> yes   <td> no
- * <tr>
- * <td> &plusmn;0.0     <td> &lt; 0.0, not odd integer  <td> +&infin;   <td> yes    <td> no
- * <tr>
- * <td> &plusmn;0.0     <td> odd integer &gt; 0.0   <td> &plusmn;0.0 <td> no    <td> no
- * <tr>
- * <td> &plusmn;0.0     <td> &gt; 0.0, not odd integer  <td> +0.0   <td> no     <td> no
+ * $(TR $(TH x) $(TH y) $(TH pow(x, y))
+ *      $(TH div 0) $(TH invalid?))
+ * $(TR $(TD anything)      $(TD $(PLUSMN)0.0)                $(TD 1.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD |x| $(GT) 1)    $(TD +$(INFIN))                  $(TD +$(INFIN))
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD |x| $(LT) 1)    $(TD +$(INFIN))                  $(TD +0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD |x| $(GT) 1)    $(TD -$(INFIN))                  $(TD +0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD |x| $(LT) 1)    $(TD -$(INFIN))                  $(TD +$(INFIN))
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD +$(INFIN))      $(TD $(GT) 0.0)                  $(TD +$(INFIN))
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD +$(INFIN))      $(TD $(LT) 0.0)                  $(TD +0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD -$(INFIN))      $(TD odd integer $(GT) 0.0)      $(TD -$(INFIN))
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD -$(INFIN))      $(TD $(GT) 0.0, not odd integer) $(TD +$(INFIN))
+ *      $(TD no)        $(TD no))
+ * $(TR $(TD -$(INFIN))      $(TD odd integer $(LT) 0.0)      $(TD -0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD -$(INFIN))      $(TD $(LT) 0.0, not odd integer) $(TD +0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD $(PLUSMN)1.0)   $(TD $(PLUSMN)$(INFIN))          $(TD $(NAN))
+ *      $(TD no)        $(TD yes) )
+ * $(TR $(TD $(LT) 0.0)      $(TD finite, nonintegral)        $(TD $(NAN))
+ *      $(TD no)        $(TD yes))
+ * $(TR $(TD $(PLUSMN)0.0)   $(TD odd integer $(LT) 0.0)      $(TD $(PLUSMNINF))
+ *      $(TD yes)       $(TD no) )
+ * $(TR $(TD $(PLUSMN)0.0)   $(TD $(LT) 0.0, not odd integer) $(TD +$(INFIN))
+ *      $(TD yes)       $(TD no))
+ * $(TR $(TD $(PLUSMN)0.0)   $(TD odd integer $(GT) 0.0)      $(TD $(PLUSMN)0.0)
+ *      $(TD no)        $(TD no) )
+ * $(TR $(TD $(PLUSMN)0.0)   $(TD $(GT) 0.0, not odd integer) $(TD +0.0)
+ *      $(TD no)        $(TD no) )
  * )
  */
 real pow(real x, real y)
@@ -1686,22 +1739,22 @@ unittest
 }
 }
 
-/**
+/***********************************************************************
  * Calculates the length of the
  * hypotenuse of a right-angled triangle with sides of length x and y.
  * The hypotenuse is the value of the square root of
  * the sums of the squares of x and y:
  *
- *  sqrt(x&sup2; + y&sup2;)
+ *      sqrt($(POW x, 2) + $(POW y, 2))
  *
  * Note that hypot(x, y), hypot(y, x) and
  * hypot(x, -y) are equivalent.
  *
  *  $(TABLE_SV
- *  <tr> <th> x               <th> y           <th> hypot(x, y) <th> invalid?
- *  <tr> <td> x               <td> &plusmn;0.0 <td> |x|         <td> no
- *  <tr> <td> &plusmn;&infin; <td> y           <td> +&infin;    <td> no
- *  <tr> <td> &plusmn;&infin; <td> $(NAN)      <td> +&infin;    <td> no
+ *  $(TR $(TH x)            $(TH y)            $(TH hypot(x, y)) $(TH invalid?))
+ *  $(TR $(TD x)            $(TD $(PLUSMN)0.0) $(TD |x|)         $(TD no))
+ *  $(TR $(TD $(PLUSMNINF)) $(TD y)            $(TD +$(INFIN))   $(TD no))
+ *  $(TR $(TD $(PLUSMNINF)) $(TD $(NAN))       $(TD +$(INFIN))   $(TD no))
  *  )
  */
 real hypot(real x, real y)
@@ -1795,7 +1848,6 @@ unittest
         real z = vals[i][2];
         real h = hypot(x, y);
 
-//    printf("hypot(%La, %La) = %La, should be %La\n", x, y, h, z);
         assert(isIdentical(z, h));
     }
     // NaN payloads
@@ -1804,12 +1856,14 @@ unittest
 }
 }
 
-/**
- * Evaluate polynomial A(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x&sup2; + a<sub>3</sub>x&sup3; ...
+/***********************************
+ * Evaluate polynomial A(x) = $(SUB a, 0) + $(SUB a, 1)x + $(SUB a, 2)$(POWER x,2)
+ *                          + $(SUB a,3)$(POWER x,3); ...
  *
- * Uses Horner's rule A(x) = a<sub>0</sub> + x(a<sub>1</sub> + x(a<sub>2</sub> + x(a<sub>3</sub> + ...)))
+ * Uses Horner's rule A(x) = $(SUB a, 0) + x($(SUB a, 1) + x($(SUB a, 2) 
+ *                         + x($(SUB a, 3) + ...)))
  * Params:
- *  A = array of coefficients a<sub>0</sub>, a<sub>1</sub>, etc.
+ *      A =     array of coefficients $(SUB a, 0), $(SUB a, 1), etc.
  */
 T poly(T)(T x, T[] A)
 in
@@ -1818,7 +1872,7 @@ in
 }
 body
 {
-  version (Really_D_InlineAsm_X86) {
+  version (Naked_D_InlineAsm_X86) {
       const bool Use_D_InlineAsm_X86 = true;
   } else const bool Use_D_InlineAsm_X86 = false;
   
@@ -2003,7 +2057,7 @@ unittest {
 */
 int rndint(real x)
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
         int n;
         asm
@@ -2022,7 +2076,7 @@ int rndint(real x)
 /** ditto */
 long rndlong(real x)
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
         long n;
         asm

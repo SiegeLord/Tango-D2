@@ -48,6 +48,14 @@
  *  SVH3 = $(TR $(TH $1) $(TH $2) $(TH $3))
  *  SV3  = $(TR $(TD $1) $(TD $2) $(TD $3))
  *  NAN = $(RED NAN)
+ *  PLUSMN = &plusmn;
+ *  INFIN = &infin;
+ *  PLUSMNINF = &plusmn;&infin;
+ *  PI = &pi;
+ *  LT = &lt;
+ *  GT = &gt;
+ *  SQRT = &radix;
+ *  HALF = &frac12;
  */
 module tango.math.IEEE;
 
@@ -56,7 +64,7 @@ version(GNU){
 } else version(TangoNoAsm) {
 
 } else version(D_InlineAsm_X86) {
-    version = Really_D_InlineAsm_X86;
+    version = Naked_D_InlineAsm_X86;
 }
 
 version (X86){
@@ -67,7 +75,7 @@ version (X86_64){
     version = X86_Any;
 }
 
-version (Really_D_InlineAsm_X86) {
+version (Naked_D_InlineAsm_X86) {
     // Don't include this extra dependency unless we need to.
     debug(UnitTest) {
         static import tango.stdc.math;
@@ -131,10 +139,11 @@ version(LittleEndian) {
 template floatTraits(T) {
  // EXPMASK is a ushort mask to select the exponent portion (without sign)
  // SIGNMASK is a ushort mask to select the sign bit.
- // POW2MANTDIG = pow(2, real.mant_dig) is the value such that
- //  (smallest_denormal)*POW2MANTDIG == real.min
  // EXPPOS_SHORT is the index of the exponent when represented as a ushort array.
  // SIGNPOS_BYTE is the index of the sign when represented as a ubyte array.
+ // RECIP_EPSILON is the value such that (smallest_denormal) * RECIP_EPSILON == T.min
+ const T RECIP_EPSILON = (1/T.epsilon);
+
  static if (T.mant_dig == 24) { // float
     enum : ushort {
         EXPMASK = 0x7F80,
@@ -143,7 +152,6 @@ template floatTraits(T) {
     }
     const uint EXPMASK_INT = 0x7F80_0000;
     const uint MANTISSAMASK_INT = 0x007F_FFFF;
-    const real POW2MANTDIG = 0x1p+24;
     version(LittleEndian) {        
       const EXPPOS_SHORT = 1;
     } else {
@@ -157,7 +165,6 @@ template floatTraits(T) {
     }
     const uint EXPMASK_INT = 0x7FF0_0000;
     const uint MANTISSAMASK_INT = 0x000F_FFFF; // for the MSB only
-    const real POW2MANTDIG = 0x1p+53;
     version(LittleEndian) {
       const EXPPOS_SHORT = 3;
       const SIGNPOS_BYTE = 7;
@@ -171,7 +178,6 @@ template floatTraits(T) {
          SIGNMASK = 0x8000,
          EXPBIAS = 0x3FFE
      }
-    const real POW2MANTDIG = 0x1p+63;    
 //    const ulong QUIETNANMASK = 0xC000_0000_0000_0000; // Converts a signaling NaN to a quiet NaN.
     version(LittleEndian) {
       const EXPPOS_SHORT = 4;
@@ -186,7 +192,6 @@ template floatTraits(T) {
          SIGNMASK = 0x8000,
          EXPBIAS = 0x3FFE
      }
-    const real POW2MANTDIG = 0x1p+113;
     version(LittleEndian) {
       const EXPPOS_SHORT = 7;
       const SIGNPOS_BYTE = 15;
@@ -200,8 +205,7 @@ template floatTraits(T) {
          SIGNMASK = 0x8000
 //         EXPBIAS = 0x3FE0
      }
-    const real POW2MANTDIG = 0x1p+53;  // doubledouble denormals are strange
-    // and the exponent byte is not unique
+    // the exponent byte is not unique
     version(LittleEndian) {
       const EXPPOS_SHORT = 7; // 3 is also an exp short
       const SIGNPOS_BYTE = 15;
@@ -480,22 +484,23 @@ PrecisionControl reduceRealPrecision(PrecisionControl prec) {
     }
 }
 
-/**
+/*********************************************************************
  * Separate floating point value into significand and exponent.
  *
  * Returns:
- *  Calculate and return <i>x</i> and exp such that
- *  value =<i>x</i>*2$(SUP exp) and
- *  .5 &lt;= |<i>x</i>| &lt; 1.0<br>
- *  <i>x</i> has same sign as value.
+ *      Calculate and return $(I x) and $(I exp) such that
+ *      value =$(I x)*2$(SUP exp) and
+ *      .5 $(LT)= |$(I x)| $(LT) 1.0
+ *      
+ *      $(I x) has same sign as value.
  *
- *  $(TABLE_SV
- *  <tr> <th> value          <th> returns        <th> exp
- *  <tr> <td> &plusmn;0.0    <td> &plusmn;0.0    <td> 0
- *  <tr> <td> +&infin;       <td> +&infin;       <td> int.max
- *  <tr> <td> -&infin;       <td> -&infin;       <td> int.min
- *  <tr> <td> &plusmn;$(NAN) <td> &plusmn;$(NAN) <td> int.min
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH value)           $(TH returns)         $(TH exp))
+ *      $(TR $(TD $(PLUSMN)0.0)    $(TD $(PLUSMN)0.0)    $(TD 0))
+ *      $(TR $(TD +$(INFIN))       $(TD +$(INFIN))       $(TD int.max))
+ *      $(TR $(TD -$(INFIN))       $(TD -$(INFIN))       $(TD int.min))
+ *      $(TR $(TD $(PLUSMN)$(NAN)) $(TD $(PLUSMN)$(NAN)) $(TD int.min))
+ *      )
  */
 real frexp(real value, out int exp)
 {
@@ -525,7 +530,7 @@ real frexp(real value, out int exp)
         exp = 0;
     } else {
         // denormal
-        value *= F.POW2MANTDIG;
+        value *= F.RECIP_EPSILON;
         ex = vu[F.EXPPOS_SHORT] & F.EXPMASK;
         exp = ex - F.EXPBIAS - 63;
         vu[F.EXPPOS_SHORT] = cast(ushort)((0x8000 & vu[F.EXPPOS_SHORT]) | 0x3FFE);
@@ -551,7 +556,7 @@ real frexp(real value, out int exp)
             exp = 0;
     } else {
         // denormal
-        value *= F.POW2MANTDIG;
+        value *= F.RECIP_EPSILON;
         ex = vu[F.EXPPOS_SHORT] & F.EXPMASK;
         exp = ex - F.EXPBIAS - 113;
         vu[F.EXPPOS_SHORT] = cast(ushort)((0x8000 & vu[F.EXPPOS_SHORT]) | 0x3FFE);
@@ -657,7 +662,7 @@ unittest
  */
 real ldexp(real n, int exp) /* intrinsic */
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
         asm {
             fild exp;
@@ -672,27 +677,27 @@ real ldexp(real n, int exp) /* intrinsic */
     }
 }
 
-/**
+/******************************************
  * Extracts the exponent of x as a signed integral value.
  *
  * If x is not a special value, the result is the same as
- * <tt>cast(int)logb(x)</tt>.
- *
+ * $(D cast(int)logb(x)).
+ * 
  * Remarks: This function is consistent with IEEE754R, but it
  * differs from the C function of the same name
  * in the return value of infinity. (in C, ilogb(real.infinity)== int.max).
  * Note that the special return values may all be equal.
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th>ilogb(x)           <th>invalid?
- *  <tr> <td> 0               <td> FP_ILOGB0         <th> yes
- *  <tr> <td> &plusmn;&infin; <td> FP_ILOGBINFINITY  <th> yes
- *  <tr> <td> $(NAN)          <td> FP_ILOGBNAN       <th> yes
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                $(TH ilogb(x))     $(TH Invalid?))
+ *      $(TR $(TD 0)                 $(TD FP_ILOGB0)   $(TD yes))
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD FP_ILOGBINFINITY) $(TD yes))
+ *      $(TR $(TD $(NAN))            $(TD FP_ILOGBNAN) $(TD yes))
+ *      )
  */
 int ilogb(real x)
 {
-        version(Really_D_InlineAsm_X86)
+        version(Naked_D_InlineAsm_X86)
         {
             int y;
             asm {
@@ -720,7 +725,7 @@ int ilogb(real x)
                     return FP_ILOGB0;
                 }
                 // Denormals
-                x *= F.POW2MANTDIG;
+                x *= F.RECIP_EPSILON;
                 short f = (cast(short *)&x)[F.EXPPOS_SHORT];
                 return -0x3FFF - (63-f);
             }
@@ -756,25 +761,23 @@ unittest {
 }
 }
 
-/**
+/*****************************************
  * Extracts the exponent of x as a signed integral value.
  *
  * If x is subnormal, it is treated as if it were normalized.
  * For a positive, finite x:
  *
- * -----
- * 1 <= $(I x) * FLT_RADIX$(SUP -logb(x)) < FLT_RADIX
- * -----
+ * 1 $(LT)= $(I x) * FLT_RADIX$(SUP -logb(x)) $(LT) FLT_RADIX
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> logb(x)  <th> Divide by 0?
- *  <tr> <td> &plusmn;&infin; <td> +&infin; <td> no
- *  <tr> <td> &plusmn;0.0     <td> -&infin; <td> yes
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH logb(x))   $(TH divide by 0?) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD +$(INFIN)) $(TD no))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD -$(INFIN)) $(TD yes) )
+ *      )
  */
 real logb(real x)
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
         asm {
             fld x;
@@ -797,21 +800,21 @@ unittest {
 }
 }
 
-/**
+/*************************************
  * Efficiently calculates x * 2$(SUP n).
  *
  * scalbn handles underflow and overflow in
  * the same fashion as the basic arithmetic operators.
  *
  *  $(TABLE_SV
- *  <tr> <th> x                <th> scalb(x)
- *  <tr> <td> &plusmn;&infin; <td> &plusmn;&infin;
- *  <tr> <td> &plusmn;0.0      <td> &plusmn;0.0
+ *      $(TR $(TH x)                 $(TH scalb(x)))
+ *      $(TR $(TD $(PLUSMNINF))      $(TD $(PLUSMNINF)) )
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD $(PLUSMN)0.0) )
  *  )
  */
 real scalbn(real x, int n)
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
         asm {
             fild n;
@@ -839,8 +842,8 @@ unittest {
  * Returns:
  * $(TABLE_SV
  *  $(SVH Arguments, fdim(x, y))
- *  $(SV x &gt; y, x - y)
- *  $(SV x &lt;= y, +0.0)
+ *  $(SV x $(GT) y, x - y)
+ *  $(SV x $(LT)= y, +0.0)
  * )
  */
 real fdim(real x, real y)
@@ -854,14 +857,14 @@ unittest {
 }
 }
 
-/**
+/*******************************
  * Returns |x|
  *
- *  $(TABLE_SV
- *  <tr> <th> x               <th> fabs(x)
- *  <tr> <td> &plusmn;0.0     <td> +0.0
- *  <tr> <td> &plusmn;&infin; <td> +&infin;
- *  )
+ *      $(TABLE_SV
+ *      $(TR $(TH x)                 $(TH fabs(x)))
+ *      $(TR $(TD $(PLUSMN)0.0)      $(TD +0.0) )
+ *      $(TR $(TD $(PLUSMN)$(INFIN)) $(TD +$(INFIN)) )
+ *      )
  */
 real fabs(real x) /* intrinsic */
 {
@@ -902,9 +905,9 @@ real fma(float x, float y, float z)
  */
 creal expi(real y)
 {
-    version(Really_D_InlineAsm_X86)
+    version(Naked_D_InlineAsm_X86)
     {
-        asm {
+        asm {            
             fld y;
             fsincos;
             fxch ST(1), ST(0);
@@ -1126,7 +1129,7 @@ unittest
 }
 
 /*********************************
- * Return !=0 if x is &plusmn;0.
+ * Return !=0 if x is $(PLUSMN)0.
  *
  * Does not affect any floating-point flags
  */
@@ -1156,7 +1159,7 @@ unittest
 }
 
 /*********************************
- * Return !=0 if e is &plusmn;&infin;.
+ * Return !=0 if e is $(PLUSMNINF);.
  */
 
 int isInfinity(real x)
@@ -1195,17 +1198,19 @@ unittest
  *
  * Return the least number greater than x that is representable as a real;
  * thus, it gives the next point on the IEEE number line.
- * This function is included in the forthcoming IEEE 754R standard.
  *
  *  $(TABLE_SV
- *    $(SVH x,             nextup(x)   )
- *    $(SV  -&infin;,      -real.max   )
- *    $(SV  &plusmn;0.0,   real.min*real.epsilon )
- *    $(SV  real.max,      real.infinity )
- *    $(SV  real.infinity, real.infinity )
- *    $(SV  $(NAN),        $(NAN)        )
+ *    $(SVH x,            nextUp(x)   )
+ *    $(SV  -$(INFIN),    -real.max   )
+ *    $(SV  $(PLUSMN)0.0, real.min*real.epsilon )
+ *    $(SV  real.max,     $(INFIN) )
+ *    $(SV  $(INFIN),     $(INFIN) )
+ *    $(SV  $(NAN),       $(NAN)   )
  * )
  *
+ * Remarks:
+ * This function is included in the IEEE 754-2008 standard.
+ * 
  * nextDoubleUp and nextFloatUp are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */
@@ -1425,17 +1430,19 @@ unittest {
  *
  * Return the greatest number less than x that is representable as a real;
  * thus, it gives the previous point on the IEEE number line.
- * Note: This function is included in the forthcoming IEEE 754R standard.
  *
- * Special values:
- * real.infinity   real.max
- * real.min*real.epsilon 0.0
- * 0.0             -real.min*real.epsilon
- * -0.0            -real.min*real.epsilon
- * -real.max        -real.infinity
- * -real.infinity    -real.infinity
- * NAN              NAN
+ *  $(TABLE_SV
+ *    $(SVH x,            nextDown(x)   )
+ *    $(SV  $(INFIN),     real.max  )
+ *    $(SV  $(PLUSMN)0.0, -real.min*real.epsilon )
+ *    $(SV  -real.max,    -$(INFIN) )
+ *    $(SV  -$(INFIN),    -$(INFIN) )
+ *    $(SV  $(NAN),       $(NAN)    )
+ * )
  *
+ * Remarks:
+ * This function is included in the IEEE 754-2008 standard.
+ * 
  * nextDoubleDown and nextFloatDown are the corresponding functions for
  * the IEEE double and IEEE float number lines.
  */
@@ -1494,8 +1501,8 @@ real nextafter(real x, real y)
  *  $(TABLE_SV
  *    $(SVH3 x,      y,         feqrel(x, y)  )
  *    $(SV3  x,      x,         typeof(x).mant_dig )
- *    $(SV3  x,      &gt;= 2*x, 0 )
- *    $(SV3  x,      &lt;= x/2, 0 )
+ *    $(SV3  x,      $(GT)= 2*x, 0 )
+ *    $(SV3  x,      $(LE)= x/2, 0 )
  *    $(SV3  $(NAN), any,       0 )
  *    $(SV3  any,    $(NAN),    0 )
  *  )
@@ -1556,7 +1563,7 @@ int feqrel(X)(X x, X y)
         // For denormals, we need to add the number of zeros that
         // lie at the start of diff's significand.
         // We do this by multiplying by 2^real.mant_dig
-        diff *= F.POW2MANTDIG;
+        diff *= F.RECIP_EPSILON;
         return bitsdiff + X.mant_dig - pd[F.EXPPOS_SHORT];
     }
 
