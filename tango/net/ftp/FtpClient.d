@@ -1249,7 +1249,7 @@ class FTPConnection : Telnet {
             data = this.processDataCommand("LIST");
 
         // Read in the stupid non-standardized response.
-        auto listing = new Array;
+        auto listing = new Array(256, 4096);
         this.readStream(data, listing);
         this.finishDataCommand(data);
 
