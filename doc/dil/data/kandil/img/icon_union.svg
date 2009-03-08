@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Author: Aziz Köksal -->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="100"
+   height="100"
+   id="svg2">
+  <defs
+     id="defs4">
+    <filter
+       id="filter6702">
+      <feGaussianBlur
+         id="feGaussianBlur6704"
+         stdDeviation="0.72684232"
+         inkscape:collect="always" />
+    </filter>
+  </defs>
+  <text
+     x="4.1176796"
+     y="90.213203"
+     id="text2847"
+     xml:space="preserve"
+     style="font-size:51.0512619px;font-style:normal;font-weight:normal;opacity:0.6;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:FreeSerif"><tspan
+       x="4.1176796"
+       y="90.213203"
+       id="tspan2849"
+       style="font-size:127.62815094px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeSerif;-inkscape-font-specification:FreeSerif">U</tspan></text>
+  <use
+      transform="translate(2,2)"
+      id="use3175"
+      style="opacity:0.3;filter:url(#filter6702)"
+      x="0"
+      y="0"
+      width="100"
+      height="100"
+      xlink:href="#text2847" />
+</svg>

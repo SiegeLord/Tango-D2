@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Author: Aziz Köksal -->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="100"
+   height="100"
+   id="svg2383">
+  <defs
+     id="defs2386">
+    <linearGradient
+       id="linearGradient3364">
+      <stop
+         id="stop3366"
+         style="stop-color:#800000;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3372"
+         style="stop-color:#b80000;stop-opacity:1"
+         offset="0.5" />
+      <stop
+         id="stop3368"
+         style="stop-color:#800000;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <filter
+       id="filter3360">
+      <feGaussianBlur
+         id="feGaussianBlur3362"
+         stdDeviation="0.705"
+         inkscape:collect="always" />
+    </filter>
+    <linearGradient
+       x1="14.75"
+       y1="52.5"
+       x2="85.25"
+       y2="52.5"
+       id="linearGradient3370"
+       xlink:href="#linearGradient3364"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <path
+     d="M 15,20 L 45,55 L 45,85 L 55,85 L 55,55 L 85,20 L 15,20 z"
+     id="path2394"
+     style="fill:url(#linearGradient3370);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path
+     d="M 20,20 L 47,55 L 47,85 L 49,85 L 49,55 L 30,20 L 20,20 z"
+     id="path3350"
+     style="opacity:0.25;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3360)" />
+  <path
+     d="M 10,20 L 90,20 L 95,40"
+     id="path3254"
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.79999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+</svg>

@@ -1,0 +1,105 @@
+DDOC = <root>
+<module>$(TITLE)</module>
+$(BODY)
+<copyright>$(COPYRIGHT)</copyright>
+$(GENERATOR)
+</root>
+
+GENERATOR =
+<generator>
+  <name>dil</name>
+  <version><!--TODO:define runtime macro for this--></version>
+  <link>http://code.google.com/p/dil</link>
+  <date>$(DATETIME)</date>
+</generator>
+
+B = <b>$0</b>
+I = <i>$0</i>
+U = <u>$0</u>
+P = <p>$0</p>
+DL = <dl>$0</dl>
+DT = <dt>$0</dt>
+DD = <dd>$0</dd>
+TABLE = <table>$0</table>
+TR = <tr>$0</tr>
+TH = <th>$0</th>
+TD = <td>$0</td>
+OL = <ol>$0</ol>
+UL = <ul>$0</ul>
+LI = <li>$0</li>
+BIG = <big>$0</big>
+SMALL = <small>$0</small>
+BR = <br/>
+LINK = <link href="$0">$0</link>
+LINK2 = <link href="$1">$+</link>
+SPAN = <span class="$1">$+</span>
+
+RED    = $(SPAN red, $0)
+BLUE   = $(SPAN blue, $0)
+GREEN  = $(SPAN green, $0)
+YELLOW = $(SPAN yellow, $0)
+BLACK  = $(SPAN black, $0)
+WHITE  = $(SPAN white, $0)
+
+D_CODE    = <dcode>$0</dcode>
+D_COMMENT = <dcomment>$0</dcomment>
+D_STRING  = <dstring>$0</dstring>
+D_COMMENT = <dkeyword>$0</dkeyword>
+D_PSYMBOL = <dpsymbol>$0</dpsymbol>
+D_PARAM   = <dparam>$0</dparam>
+
+DDOC_COMMENT   = <!-- $0 -->
+DDOC_DECL      = <declaration type="$1">$2</declaration>
+DDOC_DECL_DD   = $0
+DDOC_DITTO     = $0
+
+DDOC_SECTIONS    = <description>$0</description>
+DDOC_SECTION_T   = <section name="$1">$2</section>
+DDOC_SUMMARY     = $(DDOC_SECTION_T summary, $0)
+DDOC_DESCRIPTION = $(DDOC_SECTION_T description, $0)
+DDOC_AUTHORS     = $(DDOC_SECTION_T authors, $0)
+DDOC_BUGS        = $(DDOC_SECTION_T bugs, $0)
+DDOC_COPYRIGHT   = $(DDOC_SECTION_T copyright, $0)
+DDOC_DATE        = $(DDOC_SECTION_T date, $0)
+DDOC_DEPRECATED  = $(DDOC_SECTION_T deprecated, $0)
+DDOC_EXAMPLES    = $(DDOC_SECTION_T examples, $0)
+DDOC_HISTORY     = $(DDOC_SECTION_T history, $0)
+DDOC_LICENSE     = $(DDOC_SECTION_T license, $0)
+DDOC_RETURNS     = $(DDOC_SECTION_T returns, $0)
+DDOC_SEE_ALSO    = $(DDOC_SECTION_T seealso, $0)
+DDOC_STANDARDS   = $(DDOC_SECTION_T standards, $0)
+DDOC_THROWS      = $(DDOC_SECTION_T throws, $0)
+DDOC_VERSION     = $(DDOC_SECTION_T version, $0)
+DDOC_SECTION_H   = $(B $0)$(BR)
+DDOC_SECTION     = $0
+
+DDOC_MEMBERS           = <members>$0</members>
+DDOC_MODULE_MEMBERS    = $(DDOC_MEMBERS $0)
+DDOC_CLASS_MEMBERS     = $(DDOC_MEMBERS $0)
+DDOC_INTERFACE_MEMBERS = $(DDOC_MEMBERS $0)
+DDOC_STRUCT_MEMBERS    = $(DDOC_MEMBERS $0)
+DDOC_UNION_MEMBERS     = $(DDOC_MEMBERS $0)
+DDOC_TEMPLATE_MEMBERS  = $(DDOC_MEMBERS $0)
+DDOC_ENUM_MEMBERS      = $(DDOC_MEMBERS $0)
+
+DDOC_PARAMS     = <params>$0</params>
+DDOC_PARAM_ROW  = <param>$0</param>
+DDOC_PARAM_ID   = <name>$0</name>
+DDOC_PARAM_DESC = <description>$0</description>
+DDOC_BLANKLINE  = <newline />
+
+DDOC_PSYMBOL = $(U $0)
+DDOC_KEYWORD = $(B $0)
+DDOC_PARAM   = $0
+
+ATTRIBUTE = <attribute type="$1">$2</attribute>
+TYPE      = <type>$0</type>
+RETURNS   = <returns>$0</returns>
+DIL_SYMBOL          = $1
+DIL_ATTRIBUTES      = <attributes>$0</attributes>
+DIL_PROT            = $(ATTRIBUTE protection, $0)
+DIL_STC             = $(ATTRIBUTE storage, $0)
+DIL_LINKAGE         = $(ATTRIBUTE linkage, $0)
+DIL_BASE_CLASSES    = <parents>$0</parents>
+DIL_PARAMS          = <params>$0</params>
+DIL_TEMPLATE_PARAMS = <templateparams>$0</templateparams>
