@@ -194,7 +194,7 @@ class Conduit : IConduit
 
         void[] load (size_t max = -1)
         {
-                return load (this, null, max);
+                return load (this, max);
         }
 
         /***********************************************************************
@@ -221,30 +221,29 @@ class Conduit : IConduit
                 
         ***********************************************************************/
 
-        static void[] load (InputStream src, void[] dst=null, size_t max=-1)
+        static void[] load (InputStream src, size_t max=-1)
         {
-                auto index = 0;
-                auto chunk = dst.length;
+                void[]  dst;
+                size_t  i,
+                        len,
+                        chunk;
 
-                if (chunk < 1024)
-                    chunk = 32 * 1024;
+                if (max != -1)
+                    chunk = max;
+                else
+                   chunk = src.conduit.bufferSize;
 
-                while (max)
+                while (len < max)
                       {
-                      if (dst.length - index < 1024)
-                          dst.length = chunk + dst.length;
+                      if (dst.length - len is 0)
+                          dst.length = len + chunk;
 
-                      auto len = max;
-                      if (len > dst.length)
-                          len = dst.length;
-
-                      if ((len = src.read (dst[index .. len])) is Eof)
-                           max = 0;
-                      else
-                         index += len;
+                      if ((i = src.read (dst[len .. $])) is Eof)
+                           break;
+                      len += i;
                       }
 
-                return dst [0 .. index];
+                return dst [0 .. len];
         }
 
         /***********************************************************************
@@ -348,7 +347,7 @@ class InputFilter : InputStream
 
         void[] load (size_t max = -1)
         {
-                return Conduit.load (this, null, max);
+                return Conduit.load (this, max);
         }
 
         /***********************************************************************

@@ -1833,7 +1833,7 @@ class ZipEntryVerifier : InputStream
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
     
     override InputStream flush()
@@ -2334,7 +2334,7 @@ class CounterInput : InputStream
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override InputStream flush()
@@ -2500,7 +2500,7 @@ class SliceSeekInputStream : InputStream
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override InputStream flush()
@@ -2619,7 +2619,7 @@ class SliceInputStream : InputStream
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override InputStream flush()
@@ -2844,7 +2844,7 @@ class WrapSeekInputStream : InputStream
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override InputStream flush()

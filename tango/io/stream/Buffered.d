@@ -713,10 +713,18 @@ class BufferedInput : InputFilter, InputBuffer
         {
                 size_t  len,
                         count;
+                
+                // make some room
+                compress;
 
+                // explicitly resize?
+                if (max != -1)
+                    if ((len = writable) < max)
+                         increment = max - len;
+                        
                 while (count < max)
                       {
-                      if (writable <= (increment / 8))
+                      if (! writable)
                          {
                          dimension += increment;
                          data.length = dimension;               

@@ -1718,7 +1718,7 @@ class DummyInputStream : InputStream // IConduit.Seek
     override InputStream flush() { return this; }
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
     override long seek(long offset, Anchor anchor = cast(Anchor)0) { return 0; }
 }
@@ -1832,7 +1832,7 @@ class EventSeekInputStream : InputStream //, IConduit.Seek
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
@@ -2030,7 +2030,7 @@ class WrapSeekInputStream : InputStream //, IConduit.Seek
 
     override void[] load(size_t max=-1)
     {
-        return Conduit.load(this, null, max);
+        return Conduit.load(this, max);
     }
 
     override long seek(long offset, Anchor anchor = cast(Anchor)0)
