@@ -248,9 +248,15 @@ class DataInput : InputFilter
 
         private final void eat (void* dst, size_t bytes)
         {
-                auto count = input.read (dst[0..bytes]);
-                assert (count is bytes);
-        }
+                while (bytes)
+                      {
+                      auto i = input.read (dst [0 .. bytes]);
+                      if (i is Eof)
+                          input.conduit.error ("DataInput :: unexpected eof while reading");
+                      bytes -= i;
+                      dst += i;
+                      } 
+         }
 }
 
 
