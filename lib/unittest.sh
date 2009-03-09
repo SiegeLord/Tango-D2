@@ -101,7 +101,7 @@ EOF
         tango/util/collection/model/*.d tango/util/collection/*.d tango/util/collection/iterator/*.d \
         tango/util/collection/impl/*.d tango/util/log/model/*.d tango/util/log/*.d \
         tango/util/container/*.d tango/util/container/model/*.d tango/util/container/more/*.d \
-        tango/time/chrono/*.d tango/time/*.d -dc=$DC-darwin-tango
+        tango/time/chrono/*.d tango/time/*.d -dc=$DC-posix-tango
 
         mv $EXE lib/$EXE
         rm $EXE.d
