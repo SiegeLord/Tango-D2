@@ -66,7 +66,7 @@ version(autoconf){
 } else version (darwin) {
     version (X86_CPU) {
         public import tango.stdc.constants.darwin.ConstModuleName;
-    } else version (PPC) {
+    } else version (PPC_CPU) {
         public import tango.stdc.constants.darwin.ConstModuleName;
     } else {
         mixin undefinedConsts!("mac on non X86 or PPC CPU",__FILE__,__LINE__);

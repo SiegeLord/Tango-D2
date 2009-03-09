@@ -32,7 +32,7 @@ version(autoconf){
 } else version (darwin) {
     version (X86_CPU) {
         public import tango.stdc.constants.darwin.fcntl;
-    } else version (PPC) {
+    } else version (PPC_CPU) {
         public import tango.stdc.constants.darwin.fcntl;
     } else {
         mixin undefinedConsts!("mac on non X86 or PPC CPU",__FILE__,__LINE__);
@@ -40,9 +40,6 @@ version(autoconf){
 } else version (linux) {
     version (X86_CPU) {
         public import tango.stdc.constants.linux.fcntl;
-    } else version (PPC) {
-        pragma(msg,"constants not confirmed, please help out")
-        public import tango.stdc.constants.linuxPP.fcntl;
     } else{
         mixin undefinedConsts!("linux on non X86 CPU",__FILE__,__LINE__);
     }
