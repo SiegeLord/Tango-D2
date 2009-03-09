@@ -1038,6 +1038,32 @@ class CircularList (V, alias Reap = Container.reap,
 
                 /***************************************************************
 
+                        Insert a new value before the node about to be
+                        iterated (or after the node that was just iterated).
+
+                        Returns: a copy of this iterator for chaining.
+
+                ***************************************************************/
+
+                Iterator insert(V value)
+                {
+                    // Note: this needs some attention, not sure how
+                    // to handle when iterator is in reverse.
+                    if(cell is null)
+                        prior.addNext(value, &owner.heap.allocate);
+                    else
+                        cell.addPrev(value, &owner.heap.allocate);
+                    owner.increment;
+
+                    //
+                    // ignore this change
+                    //
+                    mutation++;
+                    return *this;
+                }
+
+                /***************************************************************
+
                 ***************************************************************/
 
                 Iterator reverse ()
@@ -1071,7 +1097,6 @@ class CircularList (V, alias Reap = Container.reap,
 
 debug (UnitTest)
 {
-    import tango.io.Stdout;
     unittest
     {
         auto list = new CircularList!(int);
@@ -1095,6 +1120,18 @@ debug (UnitTest)
         {
             assert(v == i);
             i++;
+        }
+
+        // test insert functionality
+        iter = list.iterator;
+        iter.next;
+        iter.insert(4);
+
+        int[] compareto = [2, 4, 3];
+        i = 0;
+        foreach(v; list)
+        {
+            assert(v == compareto[i++]);
         }
     }
 }
