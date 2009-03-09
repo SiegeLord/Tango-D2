@@ -216,7 +216,8 @@ do
             build gdmd libgtango.a.ppc64 libgphobos.a.ppc64 
             ARCH="-arch x86_64"
             build gdmd libgtango.a.x86_64 libgphobos.a.x86_64
-            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 \                                         libgtango.a.ppc64 libgtango.a.x86_64 
+            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 \
+                                             libgtango.a.ppc64 libgtango.a.x86_64 
             ;;
         *)
             usage
