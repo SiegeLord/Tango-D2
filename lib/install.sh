@@ -83,7 +83,7 @@ defaultgdc() {
     if [ "$USERPREFIX" = "0" ]
     then
         LIBPREFIX="`${CROSS}gdc -print-file-name=libgphobos.a`"
-        LIBPREFIX="`readlink -f $LIBPREFIX`"
+        #LIBPREFIX="`readlink -f $LIBPREFIX`"
         LIBPREFIX="`dirname $LIBPREFIX`/.."
 
         # If we have which, use it to get the prefix
