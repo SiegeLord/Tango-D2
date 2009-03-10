@@ -10,7 +10,7 @@
 private
 {
     import memory;
-    import util.console;
+    import rt.util.console;
 
     import tango.stdc.stddef;
     import tango.stdc.stdlib;

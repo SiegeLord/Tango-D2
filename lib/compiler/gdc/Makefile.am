@@ -18,7 +18,7 @@
 # AUTOMAKE_OPTIONS = 1.9.6 foreign no-dependencies
 
 OUR_CFLAGS=@DEFS@ -I.
-D_EXTRA_DFLAGS=-nostdinc -pipe -I../../.. -fversion=Posix
+D_EXTRA_DFLAGS=-nostdinc -pipe -I../../.. -I../shared -fversion=Posix
 ALL_DFLAGS = $(DFLAGS) $(D_MEM_FLAGS) $(D_EXTRA_DFLAGS) $(MULTIFLAGS)
 
 host_alias=.
@@ -92,17 +92,18 @@ OBJ_BASE= \
     switch.o
 
 OBJ_UTIL= \
-    util/console.o \
-    util/ctype.o \
-    util/string.o \
-    util/utf.o
+    ../shared/rt/util/console.o \
+    ../shared/rt/util/ctype.o \
+    ../shared/rt/util/string.o \
+    ../shared/rt/util/utf.o \
+    ../shared/rt/util/hash.o
 
 OBJ_EXT = \
     std/intrinsic.o
 
 OBJ_MEM = @D_MEM_MODULES@
 
-MAIN_OBJS=$(subst ti_,typeinfo/ti_,$(TI))
+MAIN_OBJS=$(subst ti_,../shared/rt/typeinfo/ti_,$(TI))
 
 # This should not be linked into a shared library.
 CMAIN_OBJS=

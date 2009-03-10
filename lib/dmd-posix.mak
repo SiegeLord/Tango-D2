@@ -27,6 +27,7 @@ LIB_MASK=$(LIB_BASE)*.a
 
 DIR_CC=./common/tango
 DIR_RT=./compiler/dmd
+DIR_RT2=./compiler/shared
 DIR_GC=./gc/basic
 
 CP=cp -f
@@ -81,6 +82,7 @@ $(LIB_TARGET) : $(ALL_OBJS)
 	$(RM) $@
 	$(LC) $@ `find $(DIR_CC) -name "*.o" | xargs echo`
 	$(LC) $@ `find $(DIR_RT) -name "*.o" | xargs echo`
+	$(LC) $@ `find $(DIR_RT2) -name "*.o" | xargs echo`
 	$(LC) $@ `find $(DIR_GC) -name "*.o" | xargs echo`
 ifneq ($(RANLIB),)
 	$(RANLIB) $@

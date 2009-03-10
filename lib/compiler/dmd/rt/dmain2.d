@@ -245,7 +245,6 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Exception e)
             {
-                printf("pippoException\n");
                 while (e)
                 {
                     if (e.file)
@@ -272,7 +271,6 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Object o)
             {
-                printf("pippoException\n");
                 //fprintf(stderr, "%.*s\n", o.toString());
                 console (o.toString)("\n");
                 result = EXIT_FAILURE;

@@ -31,8 +31,8 @@ MD=mkdir -p
 
 CFLAGS_RELEASE=-O $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g $(ADD_CFLAGS)
-DFLAGS_RELEASE=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../.. -I$(SRC_DIR)
-DFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I../../.. -I$(SRC_DIR)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I. -I../shared -I../../.. -I$(SRC_DIR)
+DFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS) -I. -I../shared -I../../.. -I$(SRC_DIR)
 TFLAGS_RELEASE=-O -inline -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 TFLAGS_DEBUG=-g -w -nofloat $(SYSTEM_VERSION) $(ADD_DFLAGS)
 DOCFLAGS=-version=DDoc $(SYSTEM_VERSION)

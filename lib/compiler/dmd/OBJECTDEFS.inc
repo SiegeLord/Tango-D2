@@ -48,48 +48,49 @@ OBJ_WIN=\
 # NOTE: deh.obj is only needed for Win32, linux uses deh2.obj
 
 OBJ_UTIL= \
-    rt/util/console.obj \
     rt/util/cpuid.obj \
-    rt/util/ctype.obj \
-    rt/util/string.obj \
-    rt/util/utf.obj
+    ../shared/rt/util/console.obj \
+    ../shared/rt/util/ctype.obj \
+    ../shared/rt/util/string.obj \
+    ../shared/rt/util/utf.obj \
+    ../shared/rt/util/hash.obj
 
 OBJ_TI= \
-    rt/typeinfo/ti_AC.obj \
-    rt/typeinfo/ti_Acdouble.obj \
-    rt/typeinfo/ti_Acfloat.obj \
-    rt/typeinfo/ti_Acreal.obj \
-    rt/typeinfo/ti_Adouble.obj \
-    rt/typeinfo/ti_Afloat.obj \
-    rt/typeinfo/ti_Ag.obj \
-    rt/typeinfo/ti_Aint.obj \
-    rt/typeinfo/ti_Along.obj \
-    rt/typeinfo/ti_Areal.obj \
-    rt/typeinfo/ti_Ashort.obj \
-    rt/typeinfo/ti_byte.obj \
-    rt/typeinfo/ti_C.obj \
-    rt/typeinfo/ti_cdouble.obj \
-    rt/typeinfo/ti_cfloat.obj \
-    rt/typeinfo/ti_char.obj \
-    rt/typeinfo/ti_creal.obj \
-    rt/typeinfo/ti_dchar.obj \
-    rt/typeinfo/ti_delegate.obj \
-    rt/typeinfo/ti_double.obj \
-    rt/typeinfo/ti_float.obj \
-    rt/typeinfo/ti_idouble.obj \
-    rt/typeinfo/ti_ifloat.obj \
-    rt/typeinfo/ti_int.obj \
-    rt/typeinfo/ti_ireal.obj \
-    rt/typeinfo/ti_long.obj \
-    rt/typeinfo/ti_ptr.obj \
-    rt/typeinfo/ti_real.obj \
-    rt/typeinfo/ti_short.obj \
-    rt/typeinfo/ti_ubyte.obj \
-    rt/typeinfo/ti_uint.obj \
-    rt/typeinfo/ti_ulong.obj \
-    rt/typeinfo/ti_ushort.obj \
-    rt/typeinfo/ti_void.obj \
-    rt/typeinfo/ti_wchar.obj
+    ../shared/rt/typeinfo/ti_AC.obj \
+    ../shared/rt/typeinfo/ti_Acdouble.obj \
+    ../shared/rt/typeinfo/ti_Acfloat.obj \
+    ../shared/rt/typeinfo/ti_Acreal.obj \
+    ../shared/rt/typeinfo/ti_Adouble.obj \
+    ../shared/rt/typeinfo/ti_Afloat.obj \
+    ../shared/rt/typeinfo/ti_Ag.obj \
+    ../shared/rt/typeinfo/ti_Aint.obj \
+    ../shared/rt/typeinfo/ti_Along.obj \
+    ../shared/rt/typeinfo/ti_Areal.obj \
+    ../shared/rt/typeinfo/ti_Ashort.obj \
+    ../shared/rt/typeinfo/ti_byte.obj \
+    ../shared/rt/typeinfo/ti_C.obj \
+    ../shared/rt/typeinfo/ti_cdouble.obj \
+    ../shared/rt/typeinfo/ti_cfloat.obj \
+    ../shared/rt/typeinfo/ti_char.obj \
+    ../shared/rt/typeinfo/ti_creal.obj \
+    ../shared/rt/typeinfo/ti_dchar.obj \
+    ../shared/rt/typeinfo/ti_delegate.obj \
+    ../shared/rt/typeinfo/ti_double.obj \
+    ../shared/rt/typeinfo/ti_float.obj \
+    ../shared/rt/typeinfo/ti_idouble.obj \
+    ../shared/rt/typeinfo/ti_ifloat.obj \
+    ../shared/rt/typeinfo/ti_int.obj \
+    ../shared/rt/typeinfo/ti_ireal.obj \
+    ../shared/rt/typeinfo/ti_long.obj \
+    ../shared/rt/typeinfo/ti_ptr.obj \
+    ../shared/rt/typeinfo/ti_real.obj \
+    ../shared/rt/typeinfo/ti_short.obj \
+    ../shared/rt/typeinfo/ti_ubyte.obj \
+    ../shared/rt/typeinfo/ti_uint.obj \
+    ../shared/rt/typeinfo/ti_ulong.obj \
+    ../shared/rt/typeinfo/ti_ushort.obj \
+    ../shared/rt/typeinfo/ti_void.obj \
+    ../shared/rt/typeinfo/ti_wchar.obj
 
 ALL_OBJS= \
     $(OBJ_BASE) \

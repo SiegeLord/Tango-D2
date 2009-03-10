@@ -34,7 +34,7 @@
  * and dchar, and 2 of each of those.
  */
 
-private import util.utf;
+private import rt.util.utf;
 
 /**********************************************
  */

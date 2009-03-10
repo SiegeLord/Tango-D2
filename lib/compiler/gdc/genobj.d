@@ -41,7 +41,8 @@ private
 {
     import tango.stdc.string; // : memcmp, memcpy, memmove;
     import tango.stdc.stdlib; // : calloc, realloc, free;
-    import util.string;
+    import rt.util.string;
+    import rt.util.hash;
     debug(PRINTF) import tango.stdc.stdio; // : printf;
 
     extern (C) void onOutOfMemoryError();

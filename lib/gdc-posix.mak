@@ -43,6 +43,7 @@ lib : $(ALL_OBJS)
 	$(MAKE) -C common/tango -fposix.mak lib CC=$(CC) DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
 	find . -name "libgphobos*.a" | xargs $(RM)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
+	$(LC) libgphobos.a `find ./compiler/shared -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./common/tango -name "*.o" | xargs echo`
 
