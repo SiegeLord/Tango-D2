@@ -4,16 +4,16 @@
     This is an attempt at having a good flexible and easy to use random number
     generator.
     ease of use:
-    ($UL
-      ($LI  shared generator for quick usage available through the "rand" object
+    $(UL
+      $(LI  shared generator for quick usage available through the "rand" object
             ---
             int i=rand.uniformR(10); // a random number from [0;10)
             ---
       )
-      ($LI  simple Random (non threadsafe) and RandomSync (threadsafe) types to 
+      $(LI  simple Random (non threadsafe) and RandomSync (threadsafe) types to 
             create new generators (for heavy use a good idea is one Random object per thread)
       )
-      ($LI  several distributions can be requested like this
+      $(LI  several distributions can be requested like this
             ---
             rand.distributionD!(type)(paramForDistribution)
             ---
@@ -24,7 +24,7 @@
             The choice to put all the distribution in a single object that caches them
             has made (for example) the gamma distribution very easy to implement.
       )
-      ($LI  sample usage:
+      $(LI  sample usage:
             ---
             auto r=new Random();
             int i; float f; real rv; real[100] ar0; real[] ar=ar0[];
@@ -88,8 +88,8 @@
       )
     )
     flexibility:
-    ($UL
-      ($LI  easily swappable basic source
+    $(UL
+      $(LI  easily swappable basic source
             ---
             // a random generator that uses the system provided random generator:
             auto r=RandomG!(Urandom)();
@@ -98,21 +98,21 @@
             a delegate for example), but this adds a little overhead, and changing
             engine is not something done often, so this is not part of the library.
       )
-      ($LI  ziggurat generator can be easily adapted to any decreasing derivable
+      $(LI  ziggurat generator can be easily adapted to any decreasing derivable
             distribution, the hard parametrization (to find xLast) can be done
             automatically
       )
-      ($LI  several distributions available "out of the box"
+      $(LI  several distributions available "out of the box"
       )
       )
       Quality:
-      ($UL
-      ($LI  the default Source combines two surces that pass all statistical tests 
+      $(UL
+      $(LI  the default Source combines two surces that pass all statistical tests 
             (KISS+CMWC)
             (P. L'Ecuyer and R. Simard, ACM Transactions on Mathematical Software (2007),
             33, 4, Article 22, for KISS, see CMWC enigine for the other)
       )
-      ($LI  floating point uniform generator always initializes the full mantissa, the
+      $(LI  floating point uniform generator always initializes the full mantissa, the
             only flaw is a (*very* small) predilection of 0 as least important bit 
             (IEEE rounds to 0 in case of tie).
             Using a method that initializes the full mantissa was shown to improve the
@@ -120,10 +120,10 @@
             (Thomas et al. Gaussian random number generators. Acm Comput Surv (2007)
             vol. 39 (4) pp. 11))
       )
-      ($LI  Ziggurat method, a very fast and accurate method was used for both Normal and
+      $(LI  Ziggurat method, a very fast and accurate method was used for both Normal and
             exp distributed numbers.
       )
-      ($LI  gamma distribued numbers uses a method recently proposed by Marsaglia and
+      $(LI  gamma distribued numbers uses a method recently proposed by Marsaglia and
             Tsang. The method is very fast, and should be good.
             My (Fawzi's) feeling is that the transformation h(x)=(1+d*x)^3 might lose
             a couple of bits of precision in some cases, but it is unclear if this
@@ -131,19 +131,19 @@
       )
        the basic source can be easily be changed with something else
       Efficiency:
-      ($LI  very fast methods have been used, and some effort has been put into
+      $(LI  very fast methods have been used, and some effort has been put into
             optimizing some of them, but not all, but the interface has been choosen
             so that close to optimal implementation can be provided through the same
             interface.
       )
-      ($LI  Normal and Exp sources allocated only upon request: no memory waste, but
+      $(LI  Normal and Exp sources allocated only upon request: no memory waste, but
             a (*very* small) speed hit, that can be avoided by storing the source in
             a variable and using it (not going through the RandomG)
       )
     )
     Annoyances:
-    ($UL
-      ($LI  I have added two "next" methods to RandomG for backward compatibility
+    $(UL
+      $(LI  I have added two "next" methods to RandomG for backward compatibility
             reasons, and the .instance from Random has been
             replaced by the "rand" object. The idea behind this is that RandomG is
             a template and rand it should be shared across all templates.
@@ -151,7 +151,7 @@
             I kept .instance static method that returns rand, so this remain a dropin
             replacement of the old random.
       )
-      ($LI You cannot initialize a static array directly, this because randomize is
+      $(LI You cannot initialize a static array directly, this because randomize is
           declared like this:
             ---
             U randomize(U)(ref U a) { }
