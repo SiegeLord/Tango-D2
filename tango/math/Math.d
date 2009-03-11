@@ -80,13 +80,9 @@ version(GNU){
 } else version(D_InlineAsm_X86) {
     version = Naked_D_InlineAsm_X86;
 }
-else version(LDC)
+version(LDC)
 {
     import ldc.intrinsics;
-    version(X86)
-    {
-        version = LDC_X86;
-    }
 }
 
 /*
@@ -312,27 +308,13 @@ unittest
  *      Results are undefined if |x| >= $(POWER 2,64).
  */
 
-version(LDC)
-{
-    alias llvm_cos_f32 cos;
-    alias llvm_cos_f64 cos;
-    version(X86)
-    {
-        alias llvm_cos_f80 cos;
-    }
-    else
-    {
-        real cos(real x)
-        {
-            return tango.stdc.math.cosl(x);
-        }
-    }
-}
-else
-{
 real cos(real x) /* intrinsic */
 {
-    version(D_InlineAsm_X86)
+    version(LDC)
+    {
+        return llvm_cos(x);
+    }
+    else version(D_InlineAsm_X86)
     {
         asm
         {
@@ -344,7 +326,6 @@ real cos(real x) /* intrinsic */
     {
         return tango.stdc.math.cosl(x);
     }
-}
 }
 
 debug(UnitTest) {
@@ -366,27 +347,13 @@ unittest {
  * Bugs:
  *      Results are undefined if |x| >= $(POWER 2,64).
  */
-version(LDC)
-{
-    alias llvm_sin_f32 sin;
-    alias llvm_sin_f64 sin;
-    version(X86)
-    {
-        alias llvm_sin_f80 sin;
-    }
-    else
-    {
-        real sin(real x)
-        {
-            return tango.stdc.math.sinl(x);
-        }
-    }
-}
-else
-{
 real sin(real x) /* intrinsic */
 {
-    version(D_InlineAsm_X86)
+    version(LDC)
+    {
+        return llvm_sin(x);
+    }
+    else version(D_InlineAsm_X86)
     {
         asm
         {
@@ -398,7 +365,6 @@ real sin(real x) /* intrinsic */
     {
         return tango.stdc.math.sinl(x);
     }
-}
 }
 
 debug(UnitTest) {
@@ -999,28 +965,13 @@ creal atanh(creal z)
  *      $(TR $(TD +$(INFIN)) $(TD +$(INFIN)) $(TD no))
  *      )
  */
-version(LDC)
-{
-    alias llvm_sqrt_f32 sqrt;
-    alias llvm_sqrt_f64 sqrt;
-    version(X86)
-    {
-        alias llvm_sqrt_f80 sqrt;
-    }
-    else
-    {
-        real sqrt(real x)
-        {
-            return tango.stdc.math.sqrtl(x);
-        }
-    }
-}
-else
-{
-
 float sqrt(float x) /* intrinsic */
 {
-    version(D_InlineAsm_X86)
+    version(LDC)
+    {
+        return llvm_sqrt(x);
+    }
+    else version(D_InlineAsm_X86)
     {
         asm
         {
@@ -1036,7 +987,11 @@ float sqrt(float x) /* intrinsic */
 
 double sqrt(double x) /* intrinsic */ /// ditto
 {
-    version(D_InlineAsm_X86)
+    version(LDC)
+    {
+        return llvm_sqrt(x);
+    }
+    else version(D_InlineAsm_X86)
     {
         asm
         {
@@ -1052,7 +1007,11 @@ double sqrt(double x) /* intrinsic */ /// ditto
 
 real sqrt(real x) /* intrinsic */ /// ditto
 {
-    version(D_InlineAsm_X86)
+    version(LDC)
+    {
+        return llvm_sqrt(x);
+    }
+    else version(D_InlineAsm_X86)
     {
         asm
         {
@@ -1064,8 +1023,6 @@ real sqrt(real x) /* intrinsic */ /// ditto
     {
         return tango.stdc.math.sqrtl(x);
     }
-}
-
 }
 
 /** ditto */
@@ -1714,9 +1671,9 @@ real pow(real x, real y)
         }
     }
     }
-    version(LDC_X86)
+    version(LDC)
     {
-        return llvm_pow_f80(x, y);
+        return llvm_pow(x, y);
     }
     else
     {
