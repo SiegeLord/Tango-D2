@@ -34,7 +34,7 @@ private import  Float  = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit : OutputStream;
-
+import tango.math.IEEE:signbit;
 /*******************************************************************************
 
         Platform issues ...
@@ -790,9 +790,18 @@ class Layout(T)
         private T[] complex (T[] result, creal val, T[] format)
         {
                 static T[] plus = "+";
-
-                auto len = floatingTail (result, val.re, format, val.im > 0.0 ? plus : null).length;
-                return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];
+                
+                auto res=floatingTail (result, val.re, format, signbit(val.im) ? null : plus);
+                auto len =res.length;
+                if (res.ptr is result.ptr){
+                    auto res2=floatingTail (result[len..$], val.im, format, "*1i");
+                    if (res.ptr+len is res2.ptr){
+                        return result [0 .. len + res2.length];
+                    } else {
+                        return res~res2;
+                    }
+                }
+                return res~floatingTail (result, val.im, format, "*1i");
         }
 
         /**********************************************************************
@@ -805,8 +814,14 @@ class Layout(T)
         {
                 assert (result.length > tail.length);
 
-                auto len = floater (result[0..$-tail.length], val, format).length;
+                auto res=floater (result[0..$-tail.length], val, format);
+                auto len = res.length;
                 result [len .. len + tail.length] = tail;
+                if (res.ptr !is result.ptr){
+                    if (res.length+tail.length>result.length)
+                        throw new Exception("buffer too small",__FILE__,__LINE__);
+                    result[0..res.length]=res;
+                }
                 return result [0 .. len + tail.length];
         }
 }
@@ -1005,17 +1020,20 @@ debug (UnitTest)
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
-        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" );
+        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
+            Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
 
         bool[char[]] e;
         e[ "key".dup ] = true;
         e[ "value".dup ] = false;
-        assert( Formatter( "{}", e ) == "{key => true, value => false}" );
+        assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
+            Formatter( "{}", e ) == "{value => false, key => true}");
 
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
-        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" );
+        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
+            Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
         }
 }
 
