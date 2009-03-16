@@ -1091,7 +1091,7 @@ class FTPConnection : Telnet {
 
         // If it passed, parse away!
         if(mlsd_success) {
-            auto listing = new Array;
+            auto listing = new Array(256, 65536);
             this.readStream(data, listing);
             this.finishDataCommand(data);
 
@@ -1249,7 +1249,7 @@ class FTPConnection : Telnet {
             data = this.processDataCommand("LIST");
 
         // Read in the stupid non-standardized response.
-        auto listing = new Array(256, 4096);
+        auto listing = new Array(256, 65536);
         this.readStream(data, listing);
         this.finishDataCommand(data);
 
