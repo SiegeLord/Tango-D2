@@ -40,7 +40,7 @@ module object;
 private
 {
     import rt.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
-        snprintf;
+        sprintf;
     import rt.util.string;
     import rt.util.hash;
     import rt.aaA;
@@ -950,12 +950,12 @@ class Exception : Object
         void writeOut(void delegate(char[])sink){
             char[25] buf;
             sink(func);
-            auto len=snprintf(buf.ptr,buf.length,"@%zx ",address);
+            auto len=sprintf(buf.ptr,"@%zx ",address);
             sink(buf[0..len]);
-            len=snprintf(buf.ptr,buf.length," %+td ",address);
+            len=sprintf(buf.ptr," %+td ",address);
             sink(buf[0..len]);
             sink(file);
-            len=snprintf(buf.ptr,buf.length,":%ld",line);
+            len=sprintf(buf.ptr,":%ld",line);
             sink(buf[0..len]);
         }
     }
@@ -1003,7 +1003,7 @@ class Exception : Object
             sink("@");
             sink(file);
             sink("(");
-            auto len=snprintf(buf.ptr,buf.length,"%ld",line);
+            auto len=sprintf(buf.ptr,"%ld",line);
             sink(buf[0..len]);
             sink("): ");
             sink(toString());
