@@ -40,7 +40,7 @@ module object;
 private
 {
     import rt.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
-        sprintf,strlen;
+        snprintf;
     import rt.util.string;
     import rt.util.hash;
     import rt.aaA;
@@ -950,13 +950,13 @@ class Exception : Object
         void writeOut(void delegate(char[])sink){
             char[25] buf;
             sink(func);
-            sprintf(buf.ptr,"@%zx ",address);
-            sink(buf[0..strlen(buf.ptr)]);
-            sprintf(buf.ptr," %+td ",address);
-            sink(buf[0..strlen(buf.ptr)]);
+            auto len=snprintf(buf.ptr,buf.length,"@%zx ",address);
+            sink(buf[0..len]);
+            len=snprintf(buf.ptr,buf.length," %+td ",address);
+            sink(buf[0..len]);
             sink(file);
-            sprintf(buf.ptr,":%ld",line);
-            sink(buf[0..strlen(buf.ptr)]);
+            len=snprintf(buf.ptr,buf.length,":%ld",line);
+            sink(buf[0..len]);
         }
     }
     interface TraceInfo
@@ -996,15 +996,15 @@ class Exception : Object
     }
     
     void writeOut(void delegate(char[])sink){
-        if (file)
+        if (file.length>0 || line!=0)
         {
             char[25]buf;
             sink(this.classinfo.name);
             sink("@");
             sink(file);
             sink("(");
-            sprintf(buf.ptr,"%ld",line);
-            sink(buf[0..strlen(buf.ptr)]);
+            auto len=snprintf(buf.ptr,buf.length,"%ld",line);
+            sink(buf[0..len]);
             sink("): ");
             sink(toString());
             sink("\n");

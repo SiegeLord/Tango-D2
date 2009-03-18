@@ -61,7 +61,7 @@ private
  */
 class OutOfMemoryException : Exception
 {
-    this( char[] file, size_t line )
+    this( char[] file, long line )
     {
         super( "Memory allocation failed", file, line );
     }
@@ -89,12 +89,12 @@ class PlatformException : Exception
  */
 class AssertException : Exception
 {
-    this( char[] file, size_t line )
+    this( char[] file, long line )
     {
         super( "Assertion failure", file, line );
     }
 
-    this( char[] msg, char[] file, size_t line )
+    this( char[] msg, char[] file, long line )
     {
         super( msg, file, line );
     }
@@ -106,7 +106,7 @@ class AssertException : Exception
  */
 class ArrayBoundsException : Exception
 {
-    this( char[] file, size_t line )
+    this( char[] file, long line )
     {
         super( "Array index out of bounds", file, line );
     }
@@ -138,7 +138,7 @@ class FinalizeException : Exception
  */
 class SwitchException : Exception
 {
-    this( char[] file, size_t line )
+    this( char[] file, long line )
     {
         super( "No appropriate switch clause found", file, line );
     }

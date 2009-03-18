@@ -60,7 +60,7 @@ extern(C){
     int   fclose(FILE_P stream);
     int fprintf(FILE_P stream, in char* format, ...);
     int fgetc(FILE_P stream);
-    int sprintf(char * s,char * format, ...); // snprintf not always available
+    int snprintf(char * s,size_t n,char * format, ...); // snprintf not always available
 
     // others
     void onOutOfMemoryError();
