@@ -25,7 +25,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-private import tango.stdc.string;
+private import rt.cImports: memcmp;
 
 /******************************************************
  * Support for switch statements switching on strings.

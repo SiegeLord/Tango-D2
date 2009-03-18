@@ -33,8 +33,8 @@ module rt.arraycat;
 
 private
 {
-    import tango.stdc.string;
-    debug import tango.stdc.stdio;
+    import rt.cImports: memcpy;
+    debug import rt.cImports: printf;
 }
 
 extern (C):

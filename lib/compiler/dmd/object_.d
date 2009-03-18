@@ -39,14 +39,13 @@ module object;
 
 private
 {
-    import tango.stdc.string; // : memcmp, memcpy, memmove;
-    import tango.stdc.stdlib; // : calloc, realloc, free;
+    import rt.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
+        sprintf,strlen;
     import rt.util.string;
     import rt.util.hash;
-    debug(PRINTF) import tango.stdc.stdio; // : printf;
-
-    extern (C) void onOutOfMemoryError();
-    extern (C) Object _d_newclass(ClassInfo ci);
+    import rt.aaA;
+    debug(PRINTF) import rt.cImports: printf;
+    import rt.cInterface: _d_newclass;
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -250,7 +249,7 @@ class TypeInfo
     equals_t equals(in void* p1, in void* p2) { return p1 == p2; }
 
     /// Compares two instances for &lt;, ==, or &gt;.
-    int compare(in void* p1, in void* p2) { return 0; }
+    int compare(in void* p1, in void* p2) { throw new Exception("non comparable",__FILE__,__LINE__); }
 
     /// Returns size of the type.
     size_t tsize() { return 0; }
@@ -379,10 +378,10 @@ class TypeInfo_Array : TypeInfo
     override hash_t getHash(in void* p)
     {
         size_t sz = value.tsize();
-        hash_t hash = 0;
         void[] a = *cast(void[]*)p;
+        hash_t hash = a.length;
         for (size_t i = 0; i < a.length; i++)
-            hash += value.getHash(a.ptr + i * sz);
+            hash = rt_hash_combine(value.getHash(a.ptr + i * sz),hash);
         return hash;
     }
 
@@ -461,9 +460,9 @@ class TypeInfo_StaticArray : TypeInfo
     override hash_t getHash(in void* p)
     {
         size_t sz = value.tsize();
-        hash_t hash = 0;
+        hash_t hash = len;
         for (size_t i = 0; i < len; i++)
-            hash += value.getHash(p + i * sz);
+            hash = rt_hash_combine(value.getHash(p + i * sz),hash);
         return hash;
     }
 
@@ -543,11 +542,47 @@ class TypeInfo_AssociativeArray : TypeInfo
                  this.value == c.value);
     }
 
-    // BUG: need to add the rest of the functions
+    override hash_t getHash(in void* p)
+    {
+        size_t sz = value.tsize();
+        hash_t hash = sz;
+        AA aa=*cast(AA*)p;
+        size_t keysize=key.tsize();
+        int res=_aaApply2(aa, keysize, cast(dg2_t) delegate int(void *k, void *v){
+            hash+=rt_hash_combine(key.getHash(k),value.getHash(v));
+            return 0;
+        });
+        return hash;
+    }
 
     override size_t tsize()
     {
         return (char[int]).sizeof;
+    }
+    override equals_t equals(in void* p1, in void* p2)
+    {
+        AA a=*cast(AA*)p1;
+        AA b=*cast(AA*)p2;
+        if (cast(void*)a.a==cast(void*)b.a) return true;
+        size_t l1=0;
+        size_t l2=_aaLen(b);
+        size_t keysize=key.tsize();
+        equals_t same=true;
+        int res=_aaApply2(a, keysize, cast(dg2_t) delegate int(void *k, void *v){
+            void* v2=_aaGetRvalue(b, key, value.tsize(), k);
+            if (v2 is null || !value.equals(v,v2)) {
+                same=false;
+                return 1;
+            }
+            ++l1;
+            return 0;
+        });
+        return same && (l2==l1);
+    }
+
+    override int compare(in void* p1, in void* p2)
+    {
+        throw new Exception("non comparable",__FILE__,__LINE__);
     }
 
     override TypeInfo next() { return value; }
@@ -597,12 +632,28 @@ class TypeInfo_Delegate : TypeInfo
                  this.next == c.next);
     }
 
-    // BUG: need to add the rest of the functions
+    override hash_t getHash(in void* p)
+    {
+        alias int delegate() dg;
+        return rt_hash_str(p,dg.sizeof,0);
+    }
+
+    override equals_t equals(in void* p1, in void* p2)
+    {
+        alias int delegate() dg;
+        return memcmp(p1,p2,dg.sizeof);
+    }
 
     override size_t tsize()
     {
         alias int delegate() dg;
         return dg.sizeof;
+    }
+
+    override int compare(in void* p1, in void* p2)
+    {
+        alias int delegate() dg;
+        return memcmp(p1,p2,dg.sizeof);
     }
 
     override uint flags() { return 1; }
@@ -762,16 +813,8 @@ class TypeInfo_Struct : TypeInfo
         {
             hash_t h;
             debug(PRINTF) printf("getHash() using default hash\n");
-            // A sorry hash algorithm.
-            // Should use the one for strings.
             // BUG: relies on the GC not moving objects
-            auto q = cast(ubyte*)p;
-            for (size_t i = 0; i < init.length; i++)
-            {
-                h = h * 9 + *q;
-                q++;
-            }
-            return h;
+            return rt_hash_str(p,init.length,0);
         }
     }
 
@@ -895,39 +938,96 @@ class TypeInfo_Tuple : TypeInfo
 ////////////////////////////////////////////////////////////////////////////////
 // Exception
 ////////////////////////////////////////////////////////////////////////////////
-
-
 class Exception : Object
 {
+    struct FrameInfo{
+        long line;
+        ptrdiff_t offset;
+        size_t address;
+        char[] file;
+        char[] func;
+        char[256] charBuf;
+        void writeOut(void delegate(char[])sink){
+            char[25] buf;
+            sink(func);
+            sprintf(buf.ptr,"@%zx ",address);
+            sink(buf[0..strlen(buf.ptr)]);
+            sprintf(buf.ptr," %+td ",address);
+            sink(buf[0..strlen(buf.ptr)]);
+            sink(file);
+            sprintf(buf.ptr,":%ld",line);
+            sink(buf[0..strlen(buf.ptr)]);
+        }
+    }
     interface TraceInfo
     {
-        int opApply( int delegate( inout char[] ) );
+        int opApply( int delegate( ref FrameInfo fInfo ) );
     }
 
     char[]      msg;
     char[]      file;
-    size_t      line;
+    size_t      line;  // long would be better
     TraceInfo   info;
     Exception   next;
 
-    this( char[] msg, Exception next=null )
+    this( char[] msg, char[] file, long line, Exception next, TraceInfo info )
     {
+        // main constructor, breakpoint this if you want...
         this.msg = msg;
         this.next = next;
-        this.info = traceContext();
+        this.file = file;
+        this.line = cast(size_t)line;
+        this.info = info;
     }
 
-    this( char[] msg, char[] file, size_t line, Exception next = null )
+    this( char[] msg, Exception next=null )
     {
-        this(msg, next);
-        this.file = file;
-        this.line = line;
-        this.info = traceContext();
+        this(msg,"",0,next,rt_createTraceContext(null));
+    }
+
+    this( char[] msg, char[] file, long line, Exception next=null )
+    {
+        this(msg,file,line,next,rt_createTraceContext(null));
     }
 
     override char[] toString()
     {
         return msg;
+    }
+    
+    void writeOut(void delegate(char[])sink){
+        if (file)
+        {
+            char[25]buf;
+            sink(this.classinfo.name);
+            sink("@");
+            sink(file);
+            sink("(");
+            sprintf(buf.ptr,"%ld",line);
+            sink(buf[0..strlen(buf.ptr)]);
+            sink("): ");
+            sink(toString());
+            sink("\n");
+        }
+        else
+        {
+           sink(this.classinfo.name);
+           sink(": ");
+           sink(toString);
+           sink("\n");
+        }
+        if (info)
+        {
+            sink("----------------\n");
+            foreach (ref t; info){
+                t.writeOut(sink);
+                sink("\n");
+            }
+        }
+        if (next){
+            sink("\n");
+            next.writeOut(sink);
+        }
     }
 }
 
@@ -962,13 +1062,11 @@ extern (C) void  rt_setTraceHandler( TraceHandler h )
  *  An object describing the current calling context or null if no handler is
  *  supplied.
  */
-Exception.TraceInfo traceContext( void* ptr = null )
-{
+extern(C) Exception.TraceInfo rt_createTraceContext( void* ptr ){
     if( traceHandler is null )
         return null;
     return traceHandler( ptr );
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // ModuleInfo

@@ -39,6 +39,9 @@ extern ClassInfo D9Exception7__ClassZ;
 
 typedef int (__pascal *fp_t)();   // function pointer in ambient memory model
 
+struct Interface* rt_createTraceContext(PCONTEXT context);
+void* gc_calloc(size_t sz, unsigned ba);
+
 // The layout of DEstablisherFrame is the same for C++
 
 struct DEstablisherFrame
@@ -87,7 +90,7 @@ struct DCatchInfo
 
 #define STATUS_DIGITAL_MARS_D_EXCEPTION         MAKE_EXCEPTION_CODE(3,'D',1)
 
-Object *_d_translate_se_to_d_exception(EXCEPTION_RECORD *exception_record);
+Object *_d_translate_se_to_d_exception(PCONTEXT context, EXCEPTION_RECORD *exception_record);
 void __cdecl _d_local_unwind(struct DHandlerTable *handler_table, struct DEstablisherFrame *frame, int stop_index);
 
 
@@ -150,15 +153,17 @@ EXCEPTION_DISPOSITION _d_framehandler(
                             //printf("ei[0] = %p\n", exception_record->ExceptionInformation[0]);
                             ci = **(ClassInfo ***)(exception_record->ExceptionInformation[0]);
                         }
-                        else
+                        else {
                             ci = &_Class_9Exception;
+                            context.Eip = (DWORD)exception_record->ExceptionAddress;
+                        }
                     }
 
                     if (_d_isbaseof(ci, pcb->type))
                     {   // Matched the catch type, so we've found the handler.
                         int regebp;
 
-                        pti = _d_translate_se_to_d_exception(exception_record);
+                        pti = _d_translate_se_to_d_exception(&context, exception_record);
 
                         // Initialize catch variable
                         regebp = (int)&frame->ebp;              // EBP for this frame
@@ -206,7 +211,7 @@ int _d_exception_filter(struct _EXCEPTION_POINTERS *eptrs,
                         int retval,
                         Object **exception_object)
 {
-    *exception_object = _d_translate_se_to_d_exception(eptrs->ExceptionRecord);
+    *exception_object = _d_translate_se_to_d_exception(eptrs->ContextRecord, eptrs->ExceptionRecord);
     return retval;
 }
 
@@ -227,7 +232,7 @@ void __stdcall _d_throw(Object *h)
  * Create an exception object
  */
 
-Object *_d_create_exception_object(ClassInfo *ci, char *msg)
+Object *_d_create_exception_object(PCONTEXT context, ClassInfo *ci, char *msg)
 {
     Exception *exc;
 
@@ -239,6 +244,9 @@ Object *_d_create_exception_object(ClassInfo *ci, char *msg)
         exc->msglen = strlen(msg);
         exc->msg = msg;
     }
+
+    exc->info = rt_createTraceContext(context);
+
     return (Object *)exc;
 }
 
@@ -246,7 +254,7 @@ Object *_d_create_exception_object(ClassInfo *ci, char *msg)
  * Converts a Windows Structured Exception code to a D Exception Object.
  */
 
-Object *_d_translate_se_to_d_exception(EXCEPTION_RECORD *exception_record)
+Object *_d_translate_se_to_d_exception(PCONTEXT context, EXCEPTION_RECORD *exception_record)
 {
     Object *pti;
 
@@ -257,24 +265,55 @@ Object *_d_translate_se_to_d_exception(EXCEPTION_RECORD *exception_record)
             break;
 
         case STATUS_INTEGER_DIVIDE_BY_ZERO:
-            pti = _d_create_exception_object(&_Class_9Exception, "Integer Divide by Zero");
+            pti = _d_create_exception_object(context, &_Class_9Exception, "Integer Divide by Zero");
             break;
 
         case STATUS_FLOAT_DIVIDE_BY_ZERO:
-            pti = _d_create_exception_object(&_Class_9Exception, "Float Divide by Zero");
+            pti = _d_create_exception_object(context, &_Class_9Exception, "Float Divide by Zero");
             break;
 
         case STATUS_ACCESS_VIOLATION:
-            pti = _d_create_exception_object(&_Class_9Exception, "Access Violation");
+            pti = 0;
+            if (exception_record->NumberParameters >= 2) {
+                unsigned accessType = (unsigned)exception_record->ExceptionInformation[0];
+                unsigned accessAddr = exception_record->ExceptionInformation[1];
+                char buffer[64];
+                int bufferLen = 0;
+                switch (accessType) {
+                    case 0:
+                        bufferLen = sprintf(buffer, "Access Violation - Read at address 0x%x", accessAddr);
+                        break;
+                    case 1:
+                        bufferLen = sprintf(buffer, "Access Violation - Write at address 0x%x", accessAddr);
+                        break;
+                    case 8:
+                        bufferLen = sprintf(buffer, "Access Violation - Data Execution Prevention violation at address 0x%x", accessAddr);
+                        break;
+                    default:
+                        break;
+                }
+                if (bufferLen > 0) {
+                    char* msg = gc_calloc(bufferLen+1, 2 /* NO_SCAN */);
+                    if (msg != 0) {
+                        memcpy(msg, buffer, bufferLen);
+                        msg[bufferLen] = 0;
+                        pti = _d_create_exception_object(context, &_Class_9Exception, msg);
+                    }
+                }
+            }
+            
+            if (0 == pti) {
+                pti = _d_create_exception_object(context, &_Class_9Exception, "Access Violation");
+            }
             break;
 
         case STATUS_STACK_OVERFLOW:
-            pti = _d_create_exception_object(&_Class_9Exception, "Stack Overflow");
+            pti = _d_create_exception_object(context, &_Class_9Exception, "Stack Overflow");
             break;
 
         // convert all other exception codes into a Win32Exception
         default:
-            pti = _d_create_exception_object(&_Class_9Exception, "Win32 Exception");
+            pti = _d_create_exception_object(context, &_Class_9Exception, "Win32 Exception");
             break;
     }
 

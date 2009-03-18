@@ -12,7 +12,7 @@
 
 module rt.cmath2;
 
-private import tango.stdc.math;
+//private import tango.stdc.math;
 
 extern (C):
 
@@ -129,7 +129,7 @@ void _Cdiv()
         fstp    x_re    ;
     }
 
-    if (fabs(y_re) < fabs(y_im))
+    if (((y_re<0)?-y_re:y_re) < ((y_im<0)?-y_im:y_im))
     {
         r = y_re / y_im;
         den = y_im + r * y_re;

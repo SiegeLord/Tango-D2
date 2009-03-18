@@ -1,9 +1,9 @@
 
 module rt.typeinfo.ti_Ag;
 
-private import tango.stdc.string;
 private import rt.util.string;
 private import rt.util.hash;
+private import rt.cImports: memcmp;
 
 // byte[]
 

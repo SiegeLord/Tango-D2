@@ -120,6 +120,8 @@ clean :
 	$(RM) $(ALL_OBJECTS)
 
 clean-all : clean
+	find . -name "*.o" | xargs $(RM)
+	find ../shared -name "*.o" | xargs $(RM)
 	$(RM) $(LIB_MASK)
 	$(RM) $(ALL_DOCS)
 

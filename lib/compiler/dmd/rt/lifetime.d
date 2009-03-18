@@ -29,10 +29,12 @@ module rt.lifetime;
 
 private
 {
-    import tango.stdc.stdlib;
-    import tango.stdc.string;
+    import rt.cImports: memcpy,memset,memcmp,free,malloc;
+    //import tango.stdc.stdlib;
+    //import tango.stdc.string;
     import tango.stdc.stdarg;
-    debug(PRINTF) import tango.stdc.stdio;
+    debug(PRINTF) import rt.cImports:printf;
+    //import tango.stdc.stdio;
 }
 
 
@@ -95,7 +97,7 @@ extern (C) Object _d_newclass(ClassInfo ci)
          * function called by Release() when Release()'s reference count goes
          * to zero.
      */
-        p = tango.stdc.stdlib.malloc(ci.init.length);
+        p = malloc(ci.init.length);
         if (!p)
             onOutOfMemoryError();
     }

@@ -1372,7 +1372,7 @@ private:
     }
 
 
-    final Context* topContext()
+    public final Context* topContext()
     in
     {
         assert( m_curr );

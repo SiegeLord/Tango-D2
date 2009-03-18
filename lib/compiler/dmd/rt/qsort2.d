@@ -17,7 +17,7 @@ module rt.qsort2;
 
 //debug=qsort;
 
-private import tango.stdc.stdlib;
+private import rt.cImports:qsort;
 
 struct Array
 {
@@ -37,7 +37,7 @@ extern (C) long _adSort(Array a, TypeInfo ti)
     synchronized
     {
         tiglobal = ti;
-        tango.stdc.stdlib.qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
+        qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
     }
     return *cast(long*)(&a);
 }

@@ -13,7 +13,7 @@
 
 module rt.util.string;
 
-private import tango.stdc.string;
+private import rt.cImports: memcmp;
 
 // convert uint to char[], within the given buffer
 // Returns a valid slice of the populated buffer

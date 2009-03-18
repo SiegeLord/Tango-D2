@@ -26,9 +26,9 @@ module rt.deh2;
 // Exception handling support for linux
 
 //debug=1;
-debug import tango.stdc.stdio: printf;
-import tango.stdc.stdio: printf;
-import tango.stdc.stdlib: exit;
+//debug import rt.cImports: printf;
+import rt.cImports: printf;
+import rt.cImports: exit;
 
 extern (C)
 {

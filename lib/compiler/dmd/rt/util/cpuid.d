@@ -40,7 +40,7 @@ COPYRIGHT:      Public Domain
 
 module rt.util.cpuid;
 
-private import tango.stdc.string : strlen;
+private import rt.cImports : strlen;
 
 version(D_InlineAsm_X86)
 {

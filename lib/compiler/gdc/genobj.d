@@ -39,8 +39,7 @@ module object;
 
 private
 {
-    import tango.stdc.string; // : memcmp, memcpy, memmove;
-    import tango.stdc.stdlib; // : calloc, realloc, free;
+    import rt.cImports: memcmp, memcpy, memmove, calloc, realloc, free,sprintf,strlen;
     import rt.util.string;
     import rt.util.hash;
     debug(PRINTF) import tango.stdc.stdio; // : printf;
@@ -102,10 +101,9 @@ class Object
     int opCmp(Object o)
     {
         // BUG: this prevents a compacting GC from working, needs to be fixed
-        //return cast(int)cast(void*)this - cast(int)cast(void*)o;
+        //return ((cast(void*)this<cast(void*)o)?-1:((cast(void*)this==cast(void*)o)?0:1));
 
         throw new Exception("need opCmp for class " ~ this.classinfo.name);
-        //return ((cast(void*)this<cast(void*)o)?-1:((cast(void*)this==cast(void*)o)?0:1));
     }
 
     /**
@@ -902,34 +900,93 @@ class TypeInfo_Tuple : TypeInfo
 ////////////////////////////////////////////////////////////////////////////////
 class Exception : Object
 {
+    struct FrameInfo{
+        long line;
+        ptrdiff_t offset;
+        size_t address;
+        char[] file;
+        char[] func;
+        char[256] charBuf;
+        void writeOut(void delegate(char[])sink){
+            char[25] buf;
+            sink(func);
+            sprintf(buf.ptr,"@%zx ",address);
+            sink(buf[0..strlen(buf.ptr)]);
+            sprintf(buf.ptr," %+td ",address);
+            sink(buf[0..strlen(buf.ptr)]);
+            sink(file);
+            sprintf(buf.ptr,":%ld",line);
+            sink(buf[0..strlen(buf.ptr)]);
+        }
+    }
     interface TraceInfo
     {
-        int opApply( int delegate( inout char[] ) );
+        int opApply( int delegate( ref FrameInfo fInfo ) );
     }
     char[]      msg;
     char[]      file;
-    size_t      line;
+    size_t      line;  // long would be better
     TraceInfo   info;
     Exception   next;
 
-    this(char[] msg, Exception next = null)
+    this( char[] msg, char[] file, long line, Exception next, TraceInfo info )
     {
+        // main constructor, breakpoint this if you want...
         this.msg = msg;
         this.next = next;
-        this.info = traceContext();
+        this.file = file;
+        this.line = cast(size_t)line;
+        this.info = info;
     }
 
-    this(char[] msg, char[] file, size_t line, Exception next = null)
+    this( char[] msg, Exception next=null )
     {
-        this(msg, next);
-        this.file = file;
-        this.line = line;
-        this.info = traceContext();
+        this(msg,"",0,next,rt_createTraceContext(null));
+    }
+
+    this( char[] msg, char[] file, long line, Exception next=null )
+    {
+        this(msg,file,line,next,rt_createTraceContext(null));
     }
 
     char[] toString()
     {
         return msg;
+    }
+
+    void writeOut(void delegate(char[])sink){
+        if (file)
+        {
+            char[25]buf;
+            sink(this.classinfo.name);
+            sink("@");
+            sink(file);
+            sink("(");
+            sprintf(buf.ptr,"%ld",line);
+            sink(buf[0..strlen(buf.ptr)]);
+            sink("): ");
+            sink(toString());
+            sink("\n");
+        }
+        else
+        {
+           sink(this.classinfo.name);
+           sink(": ");
+           sink(toString);
+           sink("\n");
+        }
+        if (info)
+        {
+            sink("----------------\n");
+            foreach (ref t; info){
+                t.writeOut(sink);
+                sink("\n");
+            }
+        }
+        if (next){
+            sink("\n");
+            next.writeOut(sink);
+        }
     }
 }
 
@@ -964,7 +1021,7 @@ extern (C) void  rt_setTraceHandler( TraceHandler h )
  *  An object describing the current calling context or null if no handler is
  *  supplied.
  */
-Exception.TraceInfo traceContext( void* ptr = null )
+extern(C) Exception.TraceInfo rt_createTraceContext( void* ptr )
 {
     if( traceHandler is null )
         return null;

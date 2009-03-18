@@ -11,20 +11,24 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Walter Bright, Sean Kelly
  */
-
 module rt.cover;
+// ugly, uses many different file interfaces, could it be reduced to just the stdc ones?
 
 private
 {
-    version( Win32 )
-        import tango.sys.win32.UserGdi;
-    else version( Posix )
-    {
-        import tango.stdc.posix.fcntl;
-        import tango.stdc.posix.unistd;
+    version( Win32 ) {
+        //import tango.sys.win32.UserGdi;
+        import rt.cImports: HANDLE,THANDLE,LPCWSTR,DWORD,LPSECURITY_ATTRIBUTES,WINBOOL,
+            GENERIC_READ,FILE_SHARE_READ,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,FILE_FLAG_SEQUENTIAL_SCAN,
+            HANDLE,INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,CloseHandle,ReadFile;
+    } else version( Posix ) {
+        import rt.cImports: open,close,read,fcntl_O_RDONLY;
+        //import tango.stdc.posix.fcntl;
+        //import tango.stdc.posix.unistd;
     }
     import tango.core.BitManip;
-    import tango.stdc.stdio;
+    import rt.cImports: fopen,fclose,fprintf,FILE_P;
+    // import tango.stdc.stdio;
     import rt.util.utf;
 
     struct BitArray
@@ -160,7 +164,7 @@ static ~this()
             }
         }
 
-        FILE* flst = fopen( (addExt( baseName( c.filename ), "lst\0" )).ptr, "wb" );
+        FILE_P flst = fopen( (addExt( baseName( c.filename ), "lst\0" )).ptr, "wb" );
 
         if( !flst )
             continue; //throw new Exception( "Error opening file for write: " ~ lstfn );
@@ -349,7 +353,7 @@ bool readFile( char[] name, inout char[] buf )
         char[]  namez = new char[name.length + 1];
                         namez[0 .. name.length] = name;
                         namez[$ - 1] = 0;
-        int     file = open( namez.ptr, O_RDONLY );
+        int     file = open( namez.ptr, fcntl_O_RDONLY );
 
         delete namez;
         if( file == -1 )

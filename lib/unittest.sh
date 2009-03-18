@@ -66,10 +66,7 @@ bool tangoUnitTester()
             catch (Exception e) {
                 countFailed++;
                 Stdout(" - Unittest failed.").newline;
-                Stdout.format("   File '{}', line '{}'.", e.file, e.line).newline;
-                Stdout.format("     Message is : '{}'", e.msg).newline;
-                if (e.info)
-                    Stdout.format("     TraceInfo: {}", e.info.toString).newline;
+                e.writeOut(delegate void(char[]s){ Stdout(s); });
                 continue;
             }
             Stdout(" - Success.").newline;
