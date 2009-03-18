@@ -20,7 +20,7 @@ private
         //import tango.sys.win32.UserGdi;
         import rt.cImports: HANDLE,THANDLE,LPCWSTR,DWORD,LPSECURITY_ATTRIBUTES,WINBOOL,
             GENERIC_READ,FILE_SHARE_READ,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,FILE_FLAG_SEQUENTIAL_SCAN,
-            HANDLE,INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,CloseHandle,ReadFile;
+            INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,CloseHandle,ReadFile;
     } else version( Posix ) {
         import rt.cImports: open,close,read,fcntl_O_RDONLY;
         //import tango.stdc.posix.fcntl;

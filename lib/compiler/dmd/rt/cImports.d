@@ -79,6 +79,8 @@ version(Windows){
     alias HANDLE THANDLE;
     alias wchar* LPCWSTR;
     alias uint DWORD;
+    alias void* POINTER;
+    alias POINTER LPVOID;
     struct SECURITY_ATTRIBUTES
     {
         DWORD nLength;

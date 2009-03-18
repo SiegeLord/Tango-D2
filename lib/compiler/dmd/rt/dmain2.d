@@ -23,6 +23,7 @@ private
 
 version( Win32 )
 {
+    import rt.cImports: wchar_t;
     extern (Windows) void*      LocalFree(void*);
     extern (Windows) wchar_t*   GetCommandLineW();
     extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
