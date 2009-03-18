@@ -60,7 +60,7 @@ extern(C){
     int   fclose(FILE_P stream);
     int fprintf(FILE_P stream, in char* format, ...);
     int fgetc(FILE_P stream);
-    int snprintf(char * s,size_t n,char * format, ...); // snprintf not always available
+    int sprintf(char * s,char * format, ...); // snprintf not always available
 
     // others
     void onOutOfMemoryError();
@@ -70,6 +70,8 @@ extern(C){
 version( Win32 ){
     // tango.stdc.stddef
     alias wchar wchar_t;
+    // tango.stdc.string
+    extern(C) size_t   wcslen(wchar_t* s);
 }
 
 // this is needed only by rt.cover
