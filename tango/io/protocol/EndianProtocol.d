@@ -87,7 +87,7 @@ class EndianProtocol : NativeProtocol
                         size_t writer (void[] dst)
                         {
                                 // cap bytes written
-                                uint len = dst.length & mask;
+                                size_t len = dst.length & mask;
                                 if (len > bytes)
                                     len = bytes;
 

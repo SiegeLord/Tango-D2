@@ -206,7 +206,7 @@ class StreamIterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final uint set (T* content, uint start, uint end)
+        protected final size_t set (T* content, size_t start, size_t end)
         {
                 slice = content [start .. end];
                 return end;
@@ -220,7 +220,7 @@ class StreamIterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final uint set (T* content, uint start, uint end, uint next)
+        protected final size_t set (T* content, size_t start, size_t end, size_t next)
         {
                 slice = content [start .. end];
                 delim = content [end .. next+1];
@@ -235,7 +235,7 @@ class StreamIterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final uint notFound ()
+        protected final size_t notFound ()
         {
                 return Eof;
         }
@@ -249,7 +249,7 @@ class StreamIterator(T) : InputFilter
 
         ***********************************************************************/
 
-        protected final uint found (uint i)
+        protected final size_t found (uint i)
         {
                 return (i + 1) * T.sizeof;
         }
