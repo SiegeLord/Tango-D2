@@ -6,7 +6,7 @@
  * Authors:   Sean Kelly
  */
 module tango.core.Runtime;
-debug=1;
+
 debug private extern(C) int printf(char*,...);
 
 private
