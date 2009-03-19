@@ -10,8 +10,10 @@
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=tango-gc-basic.lib
-LIB_MASK=tango-gc-basic*.lib
+LIB_BASE=tango-gc-basic
+LIB_BUILD=
+LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).lib
+LIB_MASK=$(LIB_BASE)*.lib
 
 CP=xcopy /y
 RM=del /f
@@ -20,14 +22,16 @@ MD=mkdir
 ADD_CFLAGS=
 ADD_DFLAGS=
 
-CFLAGS=-mn -6 -r $(ADD_CFLAGS)
-#CFLAGS=-g -mn -6 -r $(ADD_CFLAGS)
+CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
+CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. $(ADD_DFLAGS)
+DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. $(ADD_DFLAGS)
+TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
+TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
 
-DFLAGS=-release -O -inline -w -nofloat $(ADD_DFLAGS)
-#DFLAGS=-g -w -nofloat $(ADD_DFLAGS)
-
-TFLAGS=-O -inline -w  -nofloat $(ADD_DFLAGS)
-#TFLAGS=-g -w -nofloat $(ADD_DFLAGS)
+CFLAGS=$(CFLAGS_RELEASE)
+DFLAGS=$(DFLAGS_RELEASE)
+TFLAGS=$(TFLAGS_RELEASE)
 
 DOCFLAGS=-version=DDoc
 

@@ -10,16 +10,18 @@
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET=tango-base-dmd.lib
-LIB_MASK=tango-base-dmd*.lib
+LIB_BASE=tango-base-dmd
+LIB_BUILD=
+LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).lib
+LIB_MASK=$(LIB_BASE)*.lib
 
 DIR_CC=common\tango
 DIR_RT=compiler\dmd
 DIR_GC=gc\basic
 
-LIB_CC=$(DIR_CC)\tango-cc-tango.lib
-LIB_RT=$(DIR_RT)\tango-rt-dmd.lib
-LIB_GC=$(DIR_GC)\tango-gc-basic.lib
+LIB_CC=$(DIR_CC)\tango-cc-tango$(LIB_BUILD).lib
+LIB_RT=$(DIR_RT)\tango-rt-dmd$(LIB_BUILD).lib
+LIB_GC=$(DIR_GC)\tango-gc-basic$(LIB_BUILD).lib
 
 CP=xcopy /y
 RM=del /f
@@ -31,9 +33,15 @@ DC=dmd
 
 ADD_CFLAGS=
 ADD_DFLAGS=
+CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
+CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. $(ADD_DFLAGS)
+DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. $(ADD_DFLAGS)
+TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
+TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
 
-targets : lib doc
-all     : lib doc
+targets : lib-release doc
+all     : lib-release lib-debug doc
 
 ######################################################
 
@@ -44,16 +52,44 @@ ALL_OBJS=
 ALL_DOCS=
 
 ######################################################
+lib: lib-release
 
-lib : $(ALL_OBJS)
+lib-release:
+	make -fdmd-win32.mak clean LIB_BUILD=""
+	make -fdmd-win32.mak release-comp LIB_BUILD=""
+
+lib-debug:
+	make -fdmd-win32.mak clean LIB_BUILD=""
+	make -fdmd-win32.mak debug-comp LIB_BUILD="-d"
+	
+release-comp : $(ALL_OBJS)
 	cd $(DIR_CC)
-	make -fwin32.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_RELEASE)" CFLAGS="$(CFLAGS_RELEASE)" \
+		TFLAGS="$(TFLAGS_RELEASE)" LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
 	cd $(DIR_RT)
-	make -fwin32.mak lib
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_RELEASE)" CFLAGS="$(CFLAGS_RELEASE)" \
+		TFLAGS="$(TFLAGS_RELEASE)" LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
 	cd $(DIR_GC)
-	make -fwin32.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)"
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_RELEASE)" CFLAGS="$(CFLAGS_RELEASE)" \
+		TFLAGS="$(TFLAGS_RELEASE)" LIB_BUILD="$(LIB_BUILD)"
+	cd ..\..
+	$(RM) $(LIB_TARGET)
+	$(LC) -c -n $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
+
+debug-comp : $(ALL_OBJS)
+	cd $(DIR_CC)
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_DEBUG)" CFLAGS="$(CFLAGS_DEBUG)" \
+		TFLAGS="$(TFLAGS_DEBUG)" LIB_BUILD="$(LIB_BUILD)"
+	cd ..\..
+	cd $(DIR_RT)
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_DEBUG)" CFLAGS="$(CFLAGS_DEBUG)" \
+		TFLAGS="$(TFLAGS_DEBUG)" LIB_BUILD="$(LIB_BUILD)"
+	cd ..\..
+	cd $(DIR_GC)
+	make -fwin32.mak lib DC=$(DC) DFLAGS="$(DFLAGS_DEBUG)" CFLAGS="$(CFLAGS_DEBUG)" \
+		TFLAGS="$(TFLAGS_DEBUG)" LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
 	$(RM) $(LIB_TARGET)
 	$(LC) -c -n $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
@@ -76,16 +112,27 @@ clean :
 	$(RM) $(ALL_OBJS)
 	$(RM) $(ALL_DOCS)
 	cd $(DIR_CC)
-	make -fwin32.mak clean
+	make -fwin32.mak clean LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
 	cd $(DIR_RT)
-	make -fwin32.mak clean
+	make -fwin32.mak clean LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
 	cd $(DIR_GC)
-	make -fwin32.mak clean
+	make -fwin32.mak clean LIB_BUILD="$(LIB_BUILD)"
 	cd ..\..
-#	$(RM) $(LIB_MASK)
 
+clean-all: clean
+	cd $(DIR_CC)
+	make -fwin32.mak clean-all
+	cd ..\..
+	cd $(DIR_RT)
+	make -fwin32.mak clean-all
+	cd ..\..
+	cd $(DIR_GC)
+	make -fwin32.mak clean-all
+	cd ..\..
+	$(RM) $(LIB_MASK)
+	
 install :
 	cd $(DIR_CC)
 	make -fwin32.mak install

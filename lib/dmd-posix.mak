@@ -66,7 +66,7 @@ lib-release :
 	make -fdmd-posix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-debug :
-	make -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	make -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="-d" VERSION="$(VERSION)"
 	make -fdmd-posix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 
