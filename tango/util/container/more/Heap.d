@@ -163,7 +163,7 @@ struct Heap (T, bool Min)
                         down = left + 1;
                 }
 
-                if (!comp(heap[index], heap[left]))
+                if (!comp(heap[index], heap[down]))
                 {
                         swap (index, down);
                         fixdown (down);
