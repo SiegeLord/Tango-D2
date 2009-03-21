@@ -236,14 +236,15 @@ int rfc1123(T) (T[] src, inout Time value)
         TimeOfDay       tod;
         Date            date;
         T*              p = src.ptr;
+        T*              e = p + src.length;
 
         bool dt (inout T* p)
         {
-                return ((date.day = parseInt(p)) > 0     &&
+                return ((date.day = parseInt(p, e)) > 0  &&
                          *p++ == ' '                     &&
                         (date.month = parseMonth(p)) > 0 &&
                          *p++ == ' '                     &&
-                        (date.year = parseInt(p)) > 0);
+                        (date.year = parseInt(p, e)) > 0);
         }
 
         if (parseShortDay(p) >= 0 &&
@@ -251,7 +252,7 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             dt (p)                &&
             *p++ == ' '           &&
-            time (tod, p)         &&
+            time (tod, p, e)      &&
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
@@ -277,14 +278,15 @@ int rfc850(T) (T[] src, inout Time value)
         TimeOfDay       tod;
         Date            date;
         T*              p = src.ptr;
+        T*              e = p + src.length;
 
         bool dt (inout T* p)
         {
-                return ((date.day = parseInt(p)) > 0     &&
+                return ((date.day = parseInt(p, e)) > 0  &&
                          *p++ == '-'                     &&
                         (date.month = parseMonth(p)) > 0 &&
                          *p++ == '-'                     &&
-                        (date.year = parseInt(p)) > 0);
+                        (date.year = parseInt(p, e)) > 0);
         }
 
         if (parseFullDay(p) >= 0 &&
@@ -292,7 +294,7 @@ int rfc850(T) (T[] src, inout Time value)
             *p++ == ' '          &&
             dt (p)               &&
             *p++ == ' '          &&
-            time (tod, p)        &&
+            time (tod, p, e)     &&
             *p++ == ' '          &&
             p[0..3] == "GMT")
             {
@@ -324,23 +326,24 @@ int asctime(T) (T[] src, inout Time value)
         TimeOfDay       tod;
         Date            date;
         T*              p = src.ptr;
+        T*              e = p + src.length;
 
         bool dt (inout T* p)
         {
                 return ((date.month = parseMonth(p)) > 0  &&
                          *p++ == ' '                      &&
-                        ((date.day = parseInt(p)) > 0     ||
+                        ((date.day = parseInt(p, e)) > 0  ||
                         (*p++ == ' '                      &&
-                        (date.day = parseInt(p)) > 0)));
+                        (date.day = parseInt(p, e)) > 0)));
         }
 
         if (parseShortDay(p) >= 0 &&
             *p++ == ' '           &&
             dt (p)                &&
             *p++ == ' '           &&
-            time (tod, p)         &&
+            time (tod, p, e)      &&
             *p++ == ' '           &&
-            (date.year = parseInt (p)) > 0)
+            (date.year = parseInt (p, e)) > 0)
             {
             value = Gregorian.generic.toTime (date, tod);
             return p - src.ptr;
@@ -363,21 +366,22 @@ int dostime(T) (T[] src, inout Time value)
         TimeOfDay       tod;
         Date            date;
         T*              p = src.ptr;
+        T*              e = p + src.length;
 
         bool dt (inout T* p)
         {
-                return ((date.month = parseInt(p)) > 0 &&
-                         *p++ == '-'                   &&
-                        ((date.day = parseInt(p)) > 0  &&
-                        (*p++ == '-'                   &&
-                        (date.year = parseInt(p)) > 0)));
+                return ((date.month = parseInt(p, e)) > 0 &&
+                         *p++ == '-'                      &&
+                        ((date.day = parseInt(p, e)) > 0  &&
+                        (*p++ == '-'                      &&
+                        (date.year = parseInt(p, e)) > 0)));
         }
 
-        if (dt(p) >= 0                       &&
-            *p++ == ' '                      &&
-            (tod.hours = parseInt(p)) > 0    &&
-            *p++ == ':'                      &&
-            (tod.minutes = parseInt(p)) > 0  &&
+        if (dt(p) >= 0                         &&
+            *p++ == ' '                        &&
+            (tod.hours = parseInt(p, e)) > 0   &&
+            *p++ == ':'                        &&
+            (tod.minutes = parseInt(p, e)) > 0 &&
             (*p == 'A' || *p == 'P'))
             {
             if (*p is 'P')
@@ -410,22 +414,23 @@ int iso8601(T) (T[] src, inout Time value)
         TimeOfDay       tod;
         Date            date;
         T*              p = src.ptr;
+        T*              e = p + src.length;
 
         bool dt (inout T* p)
         {
-                return ((date.year = parseInt(p)) > 0   &&
-                         *p++ == '-'                    &&
-                        ((date.month = parseInt(p)) > 0 &&
-                        (*p++ == '-'                    &&
-                        (date.day = parseInt(p)) > 0)));
+                return ((date.year = parseInt(p, e)) > 0   &&
+                         *p++ == '-'                       &&
+                        ((date.month = parseInt(p, e)) > 0 &&
+                        (*p++ == '-'                       &&
+                        (date.day = parseInt(p, e)) > 0)));
         }
 
-        if (dt(p) >= 0     &&
-            *p++ == ' '    &&
-            time (tod, p) &&
+        if (dt(p) >= 0       &&
+            *p++ == ' '      &&
+            time (tod, p, e) &&
             *p++ == ',')
             {
-            tod.millis = parseInt (p);
+            tod.millis = parseInt (p, e);
             value = Gregorian.generic.toTime (date, tod);
             return p - src.ptr;
             }
@@ -440,13 +445,13 @@ int iso8601(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-private bool time(T) (inout TimeOfDay time, inout T* p)
+private bool time(T) (inout TimeOfDay time, inout T* p, T* e)
 {
-        return ((time.hours = parseInt(p)) >= 0   &&
-                 *p++ == ':'                      &&
-                (time.minutes = parseInt(p)) >= 0 &&
-                 *p++ == ':'                      &&
-                (time.seconds = parseInt(p)) >= 0);
+        return ((time.hours = parseInt(p, e)) >= 0   &&
+                 *p++ == ':'                         &&
+                (time.minutes = parseInt(p, e)) >= 0 &&
+                 *p++ == ':'                         &&
+                (time.seconds = parseInt(p, e)) >= 0);
 }
 
 
@@ -584,11 +589,11 @@ private int parseFullDay(T) (inout T* p)
 
 ******************************************************************************/
 
-private static int parseInt(T) (inout T* p)
+private static int parseInt(T) (inout T* p, T* e)
 {
         int value;
 
-        while (*p >= '0' && *p <= '9')
+        while (p < e && (*p >= '0' && *p <= '9'))
                value = value * 10 + *p++ - '0';
         return value;
 }
@@ -619,6 +624,13 @@ debug (TimeStamp)
 {
         void main()
         {
+                Time t;
+
+                auto dos = "12-31-06 08:49AM";
+                auto iso = "2006-01-31 14:49:30,001";
+                assert (dostime(dos, t) == dos.length);
+                assert (iso8601(iso, t) == iso.length);
+
                 wchar[30] tmp;
                 wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
                 
