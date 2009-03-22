@@ -56,10 +56,10 @@ dmdbugs() {
             echo " >> to experience problems."
         fi
 
-        if [ "$DMDVERSIONMIN" -gt "37" ]
+        if [ "$DMDVERSIONMIN" -gt "41" ]
         then
             echo ">> This version has not been tested with Tango prior to this release,"
-            echo " >> so if you experience any problems, try reverting to DMD 1.037"
+            echo " >> so if you experience any problems, try reverting to DMD 1.041"
             echo " >> or earlier."
         fi
     else

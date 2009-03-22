@@ -50,9 +50,9 @@ fi
 # Make sure object.di is present for clean GDC installs
 cp ../object.di compiler/gdc/object.di
 
-pushd ./compiler/gdc
+cd ./compiler/gdc
 ./configure || exit 1
-popd
+cd ../..
 
 # Remove object.di again
 rm compiler/gdc/object.di

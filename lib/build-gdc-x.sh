@@ -41,9 +41,9 @@ then
     exit 1
 fi
 
-pushd ./compiler/gdc
+cd ./compiler/gdc
 ./configure --host="$HOST" --build="$BUILD" $CONFIGURE_FLAGS || exit 1
-popd
+cd ../..
 
 OLDHOME=$HOME
 export HOME=`pwd`
