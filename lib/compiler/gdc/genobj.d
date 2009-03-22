@@ -902,6 +902,7 @@ class Exception : Object
 {
     struct FrameInfo{
         long line;
+        ptrdiff_t iframe;
         ptrdiff_t offset;
         size_t address;
         char[] file;
