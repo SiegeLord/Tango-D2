@@ -173,6 +173,9 @@ class ZlibInput : InputFilter
         case Encoding.None:
             windowBits *= -1;
             break;
+
+        default:
+            assert (false);
         }
         
         super (stream);
@@ -445,6 +448,9 @@ class ZlibOutput : OutputFilter
         case Encoding.None:
             windowBits *= -1;
             break;
+
+        default:
+            assert (false);
         }
         
         super(stream);

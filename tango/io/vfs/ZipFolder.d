@@ -1476,12 +1476,12 @@ class ZipSubFolderGroup : VfsFolders
     in { assert( valid ); }
     body
     {
-        return catalog(
-            (VfsInfo info)
-            {
+        bool filter (VfsInfo info)
+        {
                 return patternMatch(info.name, pattern);
-            }
-        );
+        }
+
+        return catalog (&filter);
     }
 
     final VfsFiles catalog(VfsFilter filter = null)
