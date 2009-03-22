@@ -16,5 +16,5 @@ module tango.core.Version;
 
 public enum Tango {
     Major = 0,
-    Minor = 998
+    Minor = 999
 }
