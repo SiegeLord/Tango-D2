@@ -14,7 +14,7 @@ body {
 
 #kandil-footer {
   margin: 0.5em 0;
-    /*font-size: 0.9em;*/
+  font-size: 0.6em;
   /*new:*/
   color: #666666;
   background-color: #EEFFEE;
@@ -366,15 +366,20 @@ table.params td:first-child {
   color: Gray;
 }
 
+dl .loaded_code {
+  max-height:400px; 
+  margin:0.5em 2.5em; 
+}
+
 .loaded_code .d_code {
   margin: 0;
   border: none;
 }
 
 .loaded_code {
-  margin: 0.5em 2.5em;
+  margin: 0.5em 0.1em;
   border: 1px dotted Gray;
-  max-height: 300px;
+  max-height: 1000px;
   overflow: auto;
 }
 
