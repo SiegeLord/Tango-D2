@@ -70,6 +70,10 @@ private import Float = tango.text.convert.Float;
 
         TODO: document how to extract content
 
+        Big thanks to dhasenan for suggesting the construction notation. We
+        can't make effective use of operator-overloading, due to the use of
+        struct pointers, so this syntax turned out to be the next best thing.
+
 *******************************************************************************/
 
 class Json(T) : private JsonParser!(T)
