@@ -18,12 +18,12 @@ fi
 
 # Figure out the version of Tango
 TANGO_VERSION=0.0
-if [ -e .svn ]
-then
-    TANGO_VERSION="r`svn info | grep '^Revision: ' | sed 's/Revision: //'`"
-elif [ -e version.txt ]
+if [ -e version.txt ]
 then
     TANGO_VERSION="`cat version.txt`"
+elif [ -e .svn ]
+then
+    TANGO_VERSION="r`svn info | grep '^Revision: ' | sed 's/Revision: //'`"
 fi
 
 # Figure out our platform
