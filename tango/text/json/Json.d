@@ -13,6 +13,8 @@
 
 module tango.text.json.Json;
 
+private import tango.core.Vararg;
+
 private import tango.text.json.JsonEscape;
 
 private import tango.text.json.JsonParser;
@@ -21,17 +23,52 @@ private import Float = tango.text.convert.Float;
 
 /*******************************************************************************
 
-        Parse JSON text into a set of inter-related structures. Typical usage 
-        is as follows:
+        Parse json text into a set of inter-related structures. Typical 
+        usage is as follows:
         ---
-        auto p = new Json!(char);
-        auto v = p.parse (`{"t": true, "n":null, "array":["world", [4, 5]]}`);    
+        auto json = new Json!(char);
+        json.parse (`{"t": true, "n":null, "array":["world", [4, 5]]}`);    
         ---   
 
-        Converting back to text format employs a delegate:
+        Converting back to text format employs a delegate. This one emits 
+        document content to the console:
         ---
-        v.print ((char[] s) {Stdout(s);}); 
+        json.print ((char[] s) {Stdout(s);}); 
         ---
+
+        Constructing json within your code leverages a handful of factories 
+        within a document instance. This example creates a document from an 
+        array of values:
+        ---
+        auto json = new Json!(char);
+
+        // [true, false, null, "text"]
+        with (json)
+              value = array (true, false, null, "text");
+        ---
+
+        Setting the document to contain a simple object instead:
+        ---
+        // {"a" : 10}
+        with (json)
+              value = object (pair("a", value(10)));
+        ---
+
+        Objects may be constructed with multiple attribute pairs like so:
+        ---
+        // {"a" : 10, "b", true}
+        with (json)
+              value = object (pair("a", value(10)), pair("b", value(true)));
+        ---
+
+        Substitute arrays, or other objects as values where appropriate:
+        ---
+        // {"a" : [10, true, {"b" : null}]}
+        with (json)
+              value = object (pair("a", array(10, true, object(pair("b")))));
+        ---
+
+        TODO: document how to extract content
 
 *******************************************************************************/
 
@@ -45,24 +82,28 @@ class Json(T) : private JsonParser!(T)
                     /// enumerates the seven acceptable JSON value types
         public enum Type {Null, String, RawString, Number, Object, Array, True, False};
 
+        private Value root;
+
         /***********************************************************************
         
-                Construct a json instance
+                Construct a json instance, with a default value of null
 
         ***********************************************************************/
         
         this ()
         {
                 arrays.length = 16;
+                parse (null);
         }
 
         /***********************************************************************
         
-                Parse the given text and return a resultant Value type 
+                Parse the given text and return a resultant Value type. Also
+                sets the document value. 
 
         ***********************************************************************/
         
-        public Value parse (T[] json)
+        final Value parse (T[] json)
         {
                 nesting = 0;
                 attrib.reset;
@@ -71,48 +112,160 @@ class Json(T) : private JsonParser!(T)
                 foreach (ref p; arrays)
                          p.index = 0;
 
-                auto v = values.allocate.reset;
-
+                root = createValue;
                 if (super.reset (json))
                     if (curType is Token.BeginObject)
-                        v.set (parseObject);
+                        root.set (parseObject);
                     else
                        if (curType is Token.BeginArray)
-                           v.set (parseArray);
+                           root.set (parseArray);
                        else
                           exception ("invalid json document");
-                return v;
+
+                return root;
         }
 
         /***********************************************************************
         
+                Emit a text representation of this document to the given
+                delegate
+
         ***********************************************************************/
         
-        public Value createValue ()
+        final void print (void delegate(T[]) append)
+        {
+                root.print (append);
+        }
+
+        /***********************************************************************
+        
+                Returns the root value of this document
+
+        ***********************************************************************/
+        
+        final Value value()
+        {
+                return root;
+        }
+
+        /***********************************************************************
+        
+                Set the root value of this document
+
+        ***********************************************************************/
+        
+        final Value value (Value v)
+        {
+                return root = v;
+        }
+
+        /***********************************************************************
+        
+                Create a text value
+
+        ***********************************************************************/
+        
+        final Value value (T[] v)
+        {
+                return createValue.set(v);
+        }
+
+        /***********************************************************************
+        
+                Create a boolean value
+
+        ***********************************************************************/
+        
+        final Value value (bool v)
+        {
+                return createValue.set(v);
+        }
+
+        /***********************************************************************
+        
+                Create a numeric value
+
+        ***********************************************************************/
+        
+        final Value value (double v)
+        {
+                return createValue.set(v);
+        }
+
+        /***********************************************************************
+        
+                Create an array of values
+
+        ***********************************************************************/
+
+        final Value array (...)
+        {
+                return createValue.set (this, _arguments, _argptr);
+        }
+
+        /***********************************************************************
+        
+                Create an attribute/value pair, where value defaults to 
+                null
+
+        ***********************************************************************/
+        
+        Attribute pair (T[] name, Value value = null)
+        {
+                if (value is null)
+                    value = createValue;
+                return createAttribute.set (name, value);
+        }
+
+        /***********************************************************************
+        
+                Create a composite from zero or more pairs, and return as 
+                a value
+
+        ***********************************************************************/
+        
+        final Value object (Attribute set[]...)
+        {
+                return createValue.set (createObject.add (set));
+        }
+
+        /***********************************************************************
+        
+                Internal factory to create values
+
+        ***********************************************************************/
+        
+        private Value createValue ()
         {
                 return values.allocate.reset;
         }
 
         /***********************************************************************
         
+                Internal factory to create composites
+
         ***********************************************************************/
         
-        public Composite createObject ()
+        private Composite createObject ()
         {
                 return objects.allocate.reset;
         }
 
         /***********************************************************************
         
+                Internal factory to create attributes
+
         ***********************************************************************/
-        
-        public Attribute createAttribute ()
+       
+        private Attribute createAttribute ()
         {
                 return attrib.allocate;
         }
 
         /***********************************************************************
         
+                Throw a generic exception
+
         ***********************************************************************/
         
         private void exception (char[] msg)
@@ -122,6 +275,8 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Parse an instance of a value
+
         ***********************************************************************/
         
         private Value parseValue ()
@@ -168,12 +323,13 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Parse an object declaration
+
         ***********************************************************************/
         
         private Composite parseObject ()
         {
-                auto o = objects.allocate;
-                o.attributes = null;
+                auto o = objects.allocate.reset;
 
                 while (super.next) 
                       {
@@ -188,7 +344,7 @@ class Json(T) : private JsonParser!(T)
                       if (! super.next)
                             exception ("missing value in document");
                         
-                      o.add (attrib.allocate.set (name, parseValue));
+                      o.append (attrib.allocate.set (name, parseValue));
                       }
 
                 return o;
@@ -196,6 +352,8 @@ class Json(T) : private JsonParser!(T)
         
         /***********************************************************************
         
+                Parse an array declaration
+
         ***********************************************************************/
         
         private Value[] parseArray ()
@@ -219,7 +377,9 @@ class Json(T) : private JsonParser!(T)
         }
         
         /***********************************************************************
-        
+                
+                Convert a tree to printable representation
+
         ***********************************************************************/
         
         private static void print (Value root, void delegate(T[]) append)
@@ -311,14 +471,24 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Represents an attribute/value pair. Aliased as Attribute
+
         ***********************************************************************/
         
         struct NameValue
         {
-                Attribute       next;
-                T[]             name;
-                Value           value;
+                private Attribute       next;
+                public  T[]             name;
+                public  Value           value;
 
+                /***************************************************************
+        
+                        Set a name and a value for this attribute
+
+                        Returns itself, for use with Composite.add()
+
+                ***************************************************************/
+        
                 Attribute set (T[] key, Value val)
                 {
                         name = key;
@@ -329,13 +499,17 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
 
-                Represents a single json Object        
+                Represents a single json Object (a composite of named 
+                attribute/value pairs).
+
+                This is aliased as Composite
 
         ***********************************************************************/
         
         struct JsonObject
         {
-                private Attribute attributes;
+                private Attribute head,
+                                  tail;
                 
                 /***************************************************************
         
@@ -343,26 +517,42 @@ class Json(T) : private JsonParser!(T)
         
                 Composite reset ()
                 {
-                        attributes = null;
+                        head = tail = null;
                         return this;
                 }
 
                 /***************************************************************
         
-                        Add a new attribute/value pair
+                        Append an attribute/value pair
 
                 ***************************************************************/
         
-                void add (Attribute a)
+                Composite append (Attribute a)
                 {
-                        a.next = attributes;
-                        attributes = a;
+                        if (tail)
+                            tail.next = a, tail = a;
+                        else
+                           head = tail = a;
+                        return this;
+                }
+
+                /***************************************************************
+        
+                        Add a set of attribute/value pairs
+
+                ***************************************************************/
+        
+                Composite add (Attribute[] set...)
+                {
+                        foreach (attr; set)
+                                 append (attr);
+                        return this;
                 }
 
                 /***************************************************************
                         
                         Construct and return a hashmap of Object attributes.
-                        This will be a fairly expensive operation, so consider 
+                        This will be a fairly costly operation, so consider 
                         alternatives where appropriate
 
                 ***************************************************************/
@@ -371,7 +561,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         Value[T[]] members;
 
-                        auto a = attributes;
+                        auto a = head;
                         while (a)
                               {
                               members[a.name] = a.value;
@@ -390,7 +580,7 @@ class Json(T) : private JsonParser!(T)
         
                 Value value (T[] name)
                 {
-                        auto a = attributes;
+                        auto a = head;
                         while (a)
                                if (name == a.name)
                                    return a.value;
@@ -410,7 +600,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         int res;
         
-                        auto a = attributes;
+                        auto a = head;
                         while (a)
                               {
                               if ((res = dg (a.name, a.value)) != 0) 
@@ -430,7 +620,7 @@ class Json(T) : private JsonParser!(T)
         
         struct JsonValue
         {
-                union
+                private union
                 {
                         Value[]         array;
                         real            number;
@@ -438,10 +628,12 @@ class Json(T) : private JsonParser!(T)
                         Composite       object;
                 }
         
-                Type type;
+                public Type type;               /// the type of this node
         
                 /***************************************************************
         
+                        return true if this node is of the given type
+
                 ***************************************************************/
         
                 bool opEquals (Type t) 
@@ -451,6 +643,8 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Return true if this value represent True
+
                 ***************************************************************/
         
                 bool toBool ()
@@ -459,20 +653,12 @@ class Json(T) : private JsonParser!(T)
                 }
 
                 /***************************************************************
-        
-                ***************************************************************/
-        
-                void toString (void delegate(T[]) dg)
-                {
-                        if (type is Type.RawString)
-                            dg(string);
+                        
+                        Return the string content. Returns null if this
+                        value is not a string.
 
-                        if (type is Type.String)
-                            unescape (string, dg);
-                }
+                        Uses dst for escape conversion where possible.
 
-                /***************************************************************
-        
                 ***************************************************************/
         
                 T[] toString (T[] dst = null)
@@ -488,6 +674,27 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Emit the string content to the given delegate, with
+                        escape conversion as required.
+
+                        Does nothing if this is not a String value
+                      
+                ***************************************************************/
+        
+                void toString (void delegate(T[]) dg)
+                {
+                        if (type is Type.RawString)
+                            dg(string);
+
+                        if (type is Type.String)
+                            unescape (string, dg);
+                }
+
+                /***************************************************************
+        
+                        Return the content as a Composite/Object. Returns null
+                        if this value is not a Composite.
+
                 ***************************************************************/
         
                 Composite toObject ()
@@ -497,6 +704,9 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Return the content as a double. Returns nan where
+                        the value is not numeric.
+
                 ***************************************************************/
         
                 real toNumber ()
@@ -506,6 +716,9 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Return the content as an array. Returns null where
+                        the value is not an array.
+
                 ***************************************************************/
         
                 Value[] toArray ()
@@ -515,6 +728,10 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent a string. If 'escaped' 
+                        is set, the string is assumed to have pre-converted
+                        escaping of reserved characters (such as \t).
+
                 ***************************************************************/
         
                 Value set (T[] str, bool escaped = false)
@@ -526,6 +743,8 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent an object.
+
                 ***************************************************************/
         
                 Value set (Composite obj)
@@ -537,6 +756,8 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent a number.
+
                 ***************************************************************/
         
                 Value set (real num)
@@ -548,6 +769,8 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent a boolean.
+
                 ***************************************************************/
         
                 Value set (bool b)
@@ -558,6 +781,8 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent an array of values.
+
                 ***************************************************************/
         
                 Value set (Value[] a)
@@ -569,18 +794,57 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set a variety of values into an array type
+
                 ***************************************************************/
         
-                Value set (Type type)
+                private Value set (Json host, TypeInfo[] info, va_list args)
                 {
-                        this.type = type;
-                        return this;
+                        Value[] list;
+
+                        foreach (type; info)
+                                {
+                                Value v;
+                                if (type is typeid(Value))
+                                    v = va_arg!(Value)(args);
+                                else
+                                   {
+                                   v = host.createValue;
+                                   if (type is typeid(double))
+                                       v.set (va_arg!(double)(args));
+                                   else
+                                   if (type is typeid(int))
+                                       v.set (va_arg!(int)(args));
+                                   else
+                                   if (type is typeid(bool))
+                                       v.set (va_arg!(bool)(args));
+                                   else
+                                   if (type is typeid(long))
+                                       v.set (va_arg!(long)(args));
+                                   else
+                                   if (type is typeid(Composite))
+                                       v.set (va_arg!(Composite)(args));
+                                   else
+                                   if (type is typeid(T[]))
+                                       v.set (va_arg!(T[])(args));
+                                   else
+                                   if (type is typeid(void*))
+                                       va_arg!(void*)(args);
+                                   else
+                                      host.exception ("JsonValue.set :: unexpected type: "~type.toString);
+                                   }
+                                list ~= v;
+                                }
+                        return set (list);
                 }
                 
                 /***************************************************************
         
+                        Set this value to represent null
+
                 ***************************************************************/
         
+                alias reset set;
                 Value reset ()
                 {
                         type = Type.Null;
@@ -589,6 +853,9 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Emit a text representation of this value to the
+                        provided delegate
+
                 ***************************************************************/
         
                 Value print (void delegate(T[]) dg)
@@ -596,13 +863,27 @@ class Json(T) : private JsonParser!(T)
                         Json.print (this, dg);
                         return this;
                 }
+                
+                /***************************************************************
+        
+                        Set to a specified type
+
+                ***************************************************************/
+        
+                private Value set (Type type)
+                {
+                        this.type = type;
+                        return this;
+                }
         }
 
         /***********************************************************************
         
+                Internal allocation mechansim
+
         ***********************************************************************/
         
-        struct Allocator(T)
+        private struct Allocator(T)
         {
                 private T[]     list;
                 private T[][]   lists;
@@ -637,10 +918,12 @@ class Json(T) : private JsonParser!(T)
         }
 
         /***********************************************************************
-        
+            
+                Internal use for parsing array values
+                    
         ***********************************************************************/
         
-        struct Array
+        private struct Array
         {
                 uint            index;
                 Value[]         content;
@@ -648,6 +931,8 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Internal document representation
+
         ***********************************************************************/
         
         private alias Allocator!(NameValue)     Attrib;
@@ -716,7 +1001,7 @@ void main()
 
         char[] load (char[] file)
         {
-                return cast(char[]) File(file).read;
+                return cast(char[]) File.get(file);
         }
 
         //test("test1.json", load("test1.json"));
@@ -730,33 +1015,14 @@ void main()
         auto p = new Json!(char);
         auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
         void emit (char[] s) {Stdout(s);}
-        v.print (&emit); 
+        p.print (&emit); 
         Stdout.newline;
-}
 
-unittest
-{
-        //benchmark;
-        
-        auto p = new Json!(char);
-        auto obj = p.parse(json).toObject;
+        with (p)
+              value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
 
-        //assert(obj.members[0].name == "glossary");
-        //assert(obj.members[0].value.type == Type.Object);
-
-        assert(obj.hashmap["glossary"] != null);
-        assert(obj.hashmap["glossary"].type == p.Type.Object);
-        auto o = obj.value("glossary").toObject;
-        //assert(o.members[0].name == "title");
-        //assert(o.members[1].name == "GlossDiv");
-        assert("title" in o.hashmap);
-        assert("GlossDiv" in o.hashmap);
-        o = o.hashmap["GlossDiv"].toObject;
-        //assert(o.members[0].name == "title");
-        //assert(o.members[1].name == "GlossList");
-        
-        assert("title" in o.hashmap);
-        assert("GlossList" in o.hashmap);
+        p.print (&emit); 
+        Stdout.newline;
 }
 }
 
