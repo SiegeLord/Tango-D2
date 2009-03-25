@@ -88,7 +88,7 @@ ALL_DOCS=
 
 ######################################################
 
-lib : $(ALL_OBJECTS) rt/minit.obj
+lib : $(ALL_OBJECTS)
 	$(RM) $(LIB_TARGET)
 	$(LC) -c -n $(LIB_TARGET) $(ALL_OBJECTS) rt/minit.obj
 
