@@ -677,7 +677,7 @@ struct Time
 
                 -------------------------------------
                 auto unixTime = Clock.now.unix.seconds;
-                auto javaTime = Clock.now.unix.milliseconds;
+                auto javaTime = Clock.now.unix.millis;
                 -------------------------------------
 
         **********************************************************************/
