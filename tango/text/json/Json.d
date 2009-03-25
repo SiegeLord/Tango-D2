@@ -588,17 +588,20 @@ class Json(T) : private JsonParser!(T)
                         Emit the string content to the given delegate, with
                         escape conversion as required.
 
-                        Does nothing if this is not a String value
+                        Returns false if this is not a String value
                       
                 ***************************************************************/
         
-                void toString (void delegate(T[]) dg)
+                bool toString (void delegate(T[]) dg)
                 {
                         if (type is Type.RawString)
                             dg(string);
-
-                        if (type is Type.String)
-                            unescape (string, dg);
+                        else
+                           if (type is Type.String)
+                               unescape (string, dg);
+                           else
+                              return false;
+                        return true;
                 }
 
                 /***************************************************************
