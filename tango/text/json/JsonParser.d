@@ -236,13 +236,19 @@ class JsonParser(T)
                             return doString;
         
                        case 'n':
-                            return match ("null", Token.Null);
+                            if (match ("null", Token.Null))
+                                return true;
+                            expected ("null");
 
                        case 't':
-                            return match ("true", Token.True);
+                            if (match ("true", Token.True))
+                                return true;
+                            expected ("true");
 
                        case 'f':
-                            return match ("false", Token.False); 
+                            if (match ("false", Token.False))
+                                return true;
+                            expected ("false");
 
                        default:
                             break;
@@ -312,14 +318,15 @@ class JsonParser(T)
         private bool match (T[] name, Token token)
         {
                 auto i = name.length;
-                if (str.ptr[0 .. i] != name)
-                    expected (name);
-
-                curLoc = str.ptr;
-                curType = token;
-                str.ptr += i;
-                curLen = i;
-                return true;
+                if (str.ptr[0 .. i] == name)
+                   {
+                   curLoc = str.ptr;
+                   curType = token;
+                   str.ptr += i;
+                   curLen = i;
+                   return true;
+                   }
+                return false;
         }
         
         /***********************************************************************

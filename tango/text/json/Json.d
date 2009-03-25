@@ -136,9 +136,9 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        final void print (void delegate(T[]) append)
+        final void print (void delegate(T[]) append, T[] separator = null)
         {
-                root.print (append);
+                root.print (append, separator);
         }
 
         /***********************************************************************
@@ -378,99 +378,6 @@ class Json(T) : private JsonParser!(T)
 
                 --nesting;
                 return array.content [start .. array.index];
-        }
-        
-        /***********************************************************************
-                
-                Convert a tree to printable representation
-
-        ***********************************************************************/
-        
-        private static void print (Value root, void delegate(T[]) append)
-        {
-                void printVal (Value val)
-                {
-                        void printObj (Composite obj)
-                        {
-                                if (obj is null) 
-                                    return;
-                                
-                                bool first = true;
-                                append ("{");
-
-                                foreach (k, v; *obj)
-                                        {
-                                        if (!first)  
-                                             append (",");
-                                        append (`"`), append(k), append(`":`);
-                                        printVal (v);
-                                        first = false;
-                                        }
-                                append ("}");
-                                
-                        }
-                        
-                        void printArr (Value[] arr)
-                        {
-                                
-                                bool first = true;
-                                append ("[");
-                                foreach (v; arr)
-                                        {
-                                        if (!first) 
-                                             append (", ");
-                                        printVal (v);
-                                        first = false;
-                                        }
-                                append ("]");
-                        }
-
-
-                        if (val is null) 
-                            return;
-                        
-                        switch (val.type)
-                               {
-                               T[64] tmp = void;
-
-                               case Type.String:
-                                    append (`"`), append(val.string), append(`"`);
-                                    break;
-
-                               case Type.RawString:
-                                    append (`"`), escape(val.string, append), append(`"`);
-                                    break;
-
-                               case Type.Number:
-                                    append (Float.format (tmp, val.toNumber));
-                                    break;
-
-                               case Type.Object:
-                                    auto obj = val.toObject;
-                                    debug assert(obj !is null);
-                                    printObj (val.toObject);
-                                    break;
-
-                               case Type.Array:
-                                    printArr (val.toArray);
-                                    break;
-
-                               case Type.True:
-                                    append ("true");
-                                    break;
-
-                               case Type.False:
-                                    append ("false");
-                                    break;
-
-                               default:
-                               case Type.Null:
-                                    append ("null");
-                                    break;
-                               }
-                }
-                
-                printVal (root);
         }
 
         /***********************************************************************
@@ -798,6 +705,144 @@ class Json(T) : private JsonParser!(T)
                 
                 /***************************************************************
         
+                        Set this value to represent null
+
+                ***************************************************************/
+        
+                alias reset set;
+                Value reset ()
+                {
+                        type = Type.Null;
+                        return this;
+                }
+                
+                /***************************************************************
+                        
+                        Emit a text representation of this value to the
+                        provided delegate
+
+                ***************************************************************/
+                
+                Value print (void delegate(T[]) append, T[] separator = null)
+                {
+                        auto indent = 0;
+        
+                        void newline ()
+                        {
+                                if (separator.length)
+                                   {
+                                   append ("\n");
+                                   for (auto i=0; i < indent; i++)
+                                        append (separator);
+                                   }
+                        }
+        
+                        void printValue (Value val)
+                        {
+                                void printObject (Composite obj)
+                                {
+                                        if (obj is null) 
+                                            return;
+                                        
+                                        bool first = true;
+                                        append ("{");
+                                        indent++;
+        
+                                        foreach (k, v; *obj)
+                                                {
+                                                if (!first)  
+                                                     append (",");
+                                                newline;
+                                                append (`"`), append(k), append(`":`);
+                                                printValue (v);
+                                                first = false;
+                                                }
+                                        indent--;
+                                        newline;
+                                        append ("}");
+                                }
+                                
+                                void printArray (Value[] arr)
+                                {
+                                        bool first = true;
+                                        append ("[");
+                                        indent++;
+                                        foreach (v; arr)
+                                                {
+                                                if (!first) 
+                                                     append (", ");
+                                                newline;
+                                                printValue (v);
+                                                first = false;
+                                                }
+                                        indent--;
+                                        newline;
+                                        append ("]");
+                                }
+        
+        
+                                if (val is null) 
+                                    return;
+                                
+                                switch (val.type)
+                                       {
+                                       T[64] tmp = void;
+        
+                                       case Type.String:
+                                            append (`"`), append(val.string), append(`"`);
+                                            break;
+        
+                                       case Type.RawString:
+                                            append (`"`), escape(val.string, append), append(`"`);
+                                            break;
+        
+                                       case Type.Number:
+                                            append (Float.format (tmp, val.toNumber));
+                                            break;
+        
+                                       case Type.Object:
+                                            auto obj = val.toObject;
+                                            debug assert(obj !is null);
+                                            printObject (val.toObject);
+                                            break;
+        
+                                       case Type.Array:
+                                            printArray (val.toArray);
+                                            break;
+        
+                                       case Type.True:
+                                            append ("true");
+                                            break;
+        
+                                       case Type.False:
+                                            append ("false");
+                                            break;
+        
+                                       default:
+                                       case Type.Null:
+                                            append ("null");
+                                            break;
+                                       }
+                        }
+                        
+                        printValue (this);
+                        return this;
+                }
+
+                /***************************************************************
+        
+                        Set to a specified type
+
+                ***************************************************************/
+        
+                private Value set (Type type)
+                {
+                        this.type = type;
+                        return this;
+                }
+
+                /***************************************************************
+        
                         Set a variety of values into an array type
 
                 ***************************************************************/
@@ -840,44 +885,6 @@ class Json(T) : private JsonParser!(T)
                                 list ~= v;
                                 }
                         return set (list);
-                }
-                
-                /***************************************************************
-        
-                        Set this value to represent null
-
-                ***************************************************************/
-        
-                alias reset set;
-                Value reset ()
-                {
-                        type = Type.Null;
-                        return this;
-                }
-                
-                /***************************************************************
-        
-                        Emit a text representation of this value to the
-                        provided delegate
-
-                ***************************************************************/
-        
-                Value print (void delegate(T[]) dg)
-                {
-                        Json.print (this, dg);
-                        return this;
-                }
-                
-                /***************************************************************
-        
-                        Set to a specified type
-
-                ***************************************************************/
-        
-                private Value set (Type type)
-                {
-                        this.type = type;
-                        return this;
                 }
         }
 
@@ -952,82 +959,141 @@ class Json(T) : private JsonParser!(T)
 
 
 
+/*******************************************************************************
 
+*******************************************************************************/
 
+debug (UnitTest)
+{
+        unittest
+        {
+        with (new Json!(char))
+             {
+             auto root = object
+                  (
+                  pair ("edgar", value("friendly")),
+                  pair ("count", value(11.5)),
+                  pair ("array", value(array(1, 2)))
+                  );
+
+             char[] value;
+             root.print((char[] c) { value ~= c; });
+             assert (value == `{"edgar":"friendly","count":11.50,"array":[1.00, 2.00]}`, value);
+             }
+        }
+        
+        unittest
+        {
+        // check with a separator of the tab character
+        with (new Json!(char))
+             {
+             auto root = object
+                  (
+                  pair ("edgar", value("friendly")),
+                  pair ("count", value(11.5)),
+                  pair ("array", value(array(1, 2)))
+                  );
+
+             char[] value;
+             root.print((char[] c) { value ~= c; }, "\t");
+             assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.50,\n\t\"array\":[\n\t\t1.00, \n\t\t2.00\n\t]\n}", value);
+             }
+        }
+        
+        unittest
+        {
+        // check with a separator of five spaces
+        with (new Json!(dchar))
+             {
+             auto root = object
+                  ( 
+                  pair ("edgar", value("friendly")),
+                  pair ("count", value(11.5)),
+                  pair ("array", value(array(1, 2)))
+                  );
+
+             dchar[] value;
+             root.print((dchar[] c) { value ~= c; }, "     ");
+             assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.50,\n     \"array\":[\n          1.00, \n          2.00\n     ]\n}");
+             }
+        }
+}
+        
+/*******************************************************************************
+
+*******************************************************************************/
 
 debug (Json)
 {
-        
-import tango.io.Stdout;
-import tango.io.device.File;
-import tango.time.StopWatch;
-        
-void main()
-{
-        void loop (JsonParser!(char) parser, char[] json, int n)
+        import tango.io.Stdout;
+        import tango.io.device.File;
+        import tango.time.StopWatch;
+                
+        void main()
         {
-                for(uint i = 0; i < n; ++i)
+                void loop (JsonParser!(char) parser, char[] json, int n)
                 {
-                        parser.reset (json);
-                        while (parser.next) {}
+                        for (uint i = 0; i < n; ++i)
+                            {
+                            parser.reset (json);
+                            while (parser.next) {}
+                            }
                 }
-        }
-
-        void test(char[] filename, char[] txt)
-        {
-                uint n = (300 * 1024 * 1024) / txt.length;
-                auto parser = new JsonParser!(char);
-                
-                StopWatch watch;
-                watch.start;
-                loop (parser, txt, n);
-                auto t = watch.stop;
-                auto mb = (txt.length * n) / (1024 * 1024);
-                Stdout.formatln("{} {} iterations, {} seconds: {} MB/s", filename, n, t, mb/t);
-        }
-
-        void test1(char[] filename, char[] txt)
-        {
-                uint n = (200 * 1024 * 1024) / txt.length;
-                auto parser = new Json!(char);
-                
-                StopWatch watch;
-                watch.start;
-                for(uint i = 0; i < n; ++i)
-                {
-                        parser.parse (txt);
-                }
-
-                auto t = watch.stop;
-                auto mb = (txt.length * n) / (1024 * 1024);
-                Stdout.formatln("{} {} iterations, {} seconds: {} MB/s", filename, n, t, mb/t);
-        }
-
-        char[] load (char[] file)
-        {
-                return cast(char[]) File.get(file);
-        }
-
-        //test("test1.json", load("test1.json"));
-        //test("test2.json", load("test2.json"));
-        //test("test3.json", load("test3.json"));
-                
-        //test1("test1.json", load("test1.json"));
-        //test1("test2.json", load("test2.json"));
-        //test1("test3.json", load("test3.json"));
         
-        auto p = new Json!(char);
-        auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
-        void emit (char[] s) {Stdout(s);}
-        p.print (&emit); 
-        Stdout.newline;
-
-        with (p)
-              value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
-
-        p.print (&emit); 
-        Stdout.newline;
+                void test (char[] filename, char[] txt)
+                {
+                        uint n = (300 * 1024 * 1024) / txt.length;
+                        auto parser = new JsonParser!(char);
+                        
+                        StopWatch watch;
+                        watch.start;
+                        loop (parser, txt, n);
+                        auto t = watch.stop;
+                        auto mb = (txt.length * n) / (1024 * 1024);
+                        Stdout.formatln("{} {} iterations, {} seconds: {} MB/s", filename, n, t, mb/t);
+                }
+        
+                void test1 (char[] filename, char[] txt)
+                {
+                        uint n = (200 * 1024 * 1024) / txt.length;
+                        auto parser = new Json!(char);
+                        
+                        StopWatch watch;
+                        watch.start;
+                        for (uint i = 0; i < n; ++i)
+                             parser.parse (txt);
+        
+                        auto t = watch.stop;
+                        auto mb = (txt.length * n) / (1024 * 1024);
+                        Stdout.formatln("{} {} iterations, {} seconds: {} MB/s", filename, n, t, mb/t);
+                }
+        
+                char[] load (char[] file)
+                {
+                        return cast(char[]) File.get(file);
+                }
+        
+                //test("test1.json", load("test1.json"));
+                //test("test2.json", load("test2.json"));
+                //test("test3.json", load("test3.json"));
+                        
+                //test1("test1.json", load("test1.json"));
+                //test1("test2.json", load("test2.json"));
+                //test1("test3.json", load("test3.json"));
+                
+                auto p = new Json!(char);
+                auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
+                void emit (char[] s) {Stdout(s);}
+                p.print (&emit); 
+                Stdout.newline;
+        
+                with (p)
+                      value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
+        
+                p.print (&emit, "  "); 
+                Stdout.newline;
+        }
 }
-}
+
 
 

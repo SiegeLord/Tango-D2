@@ -35,9 +35,10 @@ T[] unescape(T) (T[] src, T[] dst = null)
         int delta;
         auto s = src.ptr;
         auto len = src.length;
+        enum:T {slash = '\\'};
 
         // take a peek first to see if there's anything
-        if ((delta = Util.indexOf (s, '\\', len)) < len)
+        if ((delta = Util.indexOf (s, slash, len)) < len)
            {
            // make some room if not enough provided
            if (dst.length < src.length)
@@ -132,7 +133,7 @@ T[] unescape(T) (T[] src, T[] dst = null)
 
               s += 2;
               len -= 2;           
-              } while ((delta = Util.indexOf (s, '\\', len)) < len);
+              } while ((delta = Util.indexOf (s, slash, len)) < len);
 
            // copy tail too
            d [0 .. len] = s [0 .. len];
@@ -156,9 +157,10 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
         int delta;
         auto s = src.ptr;
         auto len = src.length;
+        enum:T {slash = '\\'};
 
         // take a peek first to see if there's anything
-        if ((delta = Util.indexOf (s, '\\', len)) < len)
+        if ((delta = Util.indexOf (s, slash, len)) < len)
            {
            // copy segments over, a chunk at a time
            do {
@@ -245,7 +247,7 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
 
               s += 2;
               len -= 2;           
-              } while ((delta = Util.indexOf (s, '\\', len)) < len);
+              } while ((delta = Util.indexOf (s, slash, len)) < len);
 
            // copy tail too
            emit (s [0 .. len]);
