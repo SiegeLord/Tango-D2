@@ -593,7 +593,7 @@ package struct FS
                                 }
 
                         if (h is INVALID_HANDLE_VALUE)
-                            exception (folder);
+                            return ret; //exception (folder);
 
                         scope (exit)
                                FindClose (h);
@@ -878,7 +878,7 @@ package struct FS
 
                         dir = tango.stdc.posix.dirent.opendir (folder.ptr);
                         if (! dir)
-                              exception (folder);
+                              return ret; //exception (folder);
 
                         scope (exit)
                                tango.stdc.posix.dirent.closedir (dir);
