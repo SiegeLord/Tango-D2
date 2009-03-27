@@ -407,7 +407,6 @@ struct Slink (V, K=KeyDummy, bool Identity = false)
                        b = b.next;
                        }
                     }
-                return null;
         }
 
         /***********************************************************************
