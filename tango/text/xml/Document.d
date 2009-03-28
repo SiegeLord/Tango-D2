@@ -405,11 +405,11 @@ else
 
         /***********************************************************************
         
-                foreach support for nodes. 
+                foreach support for visiting and selecting nodes. 
                 
                 A fruct is a low-overhead mechanism for capturing context 
                 relating to an opApply, and we use it here to sweep nodes
-                when testing for various relationships
+                when testing for various relationships.
 
                 See Node.attributes and Node.children
 
@@ -419,9 +419,14 @@ else
         {
                 private Node node;
         
+                public alias value      data;
+                public alias hasValue   hasData;
+
                 /***************************************************************
                 
                         Is there anything to visit here?
+
+                        Time complexity: O(1)
 
                 ***************************************************************/
         
@@ -439,58 +444,47 @@ else
                 int opApply (int delegate(inout Node) dg)
                 {
                         int ret;
-                        auto cur = node;
-                        while (cur)
-                              {
-                              if ((ret = dg (cur)) != 0) 
-                                   break;
-                              cur = cur.nextSibling;
-                              }
+
+                        for (auto n=node; n; n = n.nextSibling)
+                             if ((ret = dg(n)) != 0) 
+                                  break;
                         return ret;
                 }
 
                 /***************************************************************
                 
-                        Locate a node with a matching name and/or prefix
+                        Locate a node with a matching name and/or prefix, 
+                        and which passes an optional filter. Each of the
+                        arguments will be ignored where they are null.
+
+                        Time complexity: O(n)
 
                 ***************************************************************/
         
-                Node name (T[] prefix, T[] local)
+                Node name (T[] prefix, T[] local, bool delegate(Node) dg=null)
                 {
-                        foreach (node; *this)
-                                {
-                                if (local.ptr && local != node.localName)
-                                    continue;
+                        for (auto n=node; n; n = n.nextSibling)
+                            {
+                            if (local.ptr && local != node.localName)
+                                continue;
 
-                                if (prefix.ptr && prefix != node.prefixed)
-                                    continue;
+                            if (prefix.ptr && prefix != node.prefixed)
+                                continue;
 
-                                return node;
-                                }
-                        return null;
-                }
+                            if (dg.ptr && dg(node) is false)
+                                continue;
 
-                /***************************************************************
-        
-                        Sweep child data nodes looking for match
-
-                        Returns a matching node, or null.
-
-                ***************************************************************/
-        
-                Node data (bool delegate(Node) test)
-                {
-                        if (node.id is XmlNodeType.Element)
-                            foreach (child; *this)
-                                     if (child.id is XmlNodeType.Data)
-                                         if (test (child))
-                                             return child;
+                            return node;
+                            }
                         return null;
                 }
 
                 /***************************************************************
                 
-                        Check nodes for a matching name and/or prefix
+                        Scan nodes for a matching name and/or prefix. Each 
+                        of the arguments will be ignored where they are null.
+
+                        Time complexity: O(n)
 
                 ***************************************************************/
         
@@ -501,15 +495,53 @@ else
 
                 /***************************************************************
                 
-                        Sweep the data nodes looking for match
+                        Locate a node with a matching name and/or prefix, 
+                        and which matches a specified value. Each of the
+                        arguments will be ignored where they are null.
 
-                        Returns true if found.
+                        Time complexity: O(n)
 
                 ***************************************************************/
         
-                bool hasData (T[] text)
+                Node value (T[] prefix, T[] local, T[] value)
                 {
-                        return data ((Node n){return n.rawValue == text;}) != null;
+                        if (value.ptr)
+                            return name (prefix, local, (Node n){return value == n.rawValue;});
+                        return name (prefix, local);
+                }
+
+                /***************************************************************
+        
+                        Sweep nodes looking for a match, and returns either 
+                        a node or null. See value(x,y,z) or name(x,y,z) for
+                        additional filtering.
+
+                        Time complexity: O(n)
+
+                ***************************************************************/
+
+                Node value (T[] match)
+                {
+                        if (match.ptr)
+                            for (auto n=node; n; n = n.nextSibling)
+                                 if (match == n.rawValue)
+                                     return n;
+                        return null;
+                }
+
+                /***************************************************************
+                
+                        Sweep the nodes looking for a value match. Returns 
+                        true if found. See value(x,y,z) or name(x,y,z) for
+                        additional filtering.
+
+                        Time complexity: O(n)
+
+                ***************************************************************/
+        
+                bool hasValue (T[] match)
+                {
+                        return value(match) != null;
                 }
         }
         
@@ -525,7 +557,6 @@ else
                 public void*            user;           /// open for usage
                 package Document        doc;            // owning document
                 package XmlNodeType     id;             // node type
-                package uint            index;          // sibling index
                 package T[]             prefixed;       // namespace
                 package T[]             localName;      // name
                 package T[]             rawValue;       // data value
@@ -589,9 +620,13 @@ else
                 
                         Return the last child, which may be null
 
+                        Deprecated: exposes too much implementation detail. 
+                                    Please file a ticket if you really need 
+                                    this functionality
+
                 ***************************************************************/
         
-                Node childTail () 
+                deprecated Node childTail () 
                 {
                         return lastChild;
                 }
@@ -735,13 +770,19 @@ version(discrete)
                 /***************************************************************
                 
                         Return the index of this node, or how many 
-                        prior siblings it has
+                        prior siblings it has. 
+
+                        Time complexity: O(n) 
 
                 ***************************************************************/
        
                 uint position ()
                 {
-                        return index;
+                        auto count = 0;
+                        auto prior = prevSibling;
+                        while (prior)
+                               ++count, prior = prior.prevSibling;                        
+                        return count;
                 }
                 
                 /***************************************************************
@@ -858,8 +899,8 @@ version(discrete)
 
                 /***************************************************************
         
-                        Attaches a child Element, and returns a reference 
-                        to the child
+                        Appends a new (child) Element and returns a reference 
+                        to it.
 
                 ***************************************************************/
         
@@ -870,7 +911,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches an Attribute, and returns the host
+                        Attaches an Attribute and returns this, the host 
 
                 ***************************************************************/
         
@@ -881,7 +922,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches a Data node, and returns the host
+                        Attaches a Data node and returns this, the host
 
                 ***************************************************************/
         
@@ -892,7 +933,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches a CData node, and returns the host
+                        Attaches a CData node and returns this, the host
 
                 ***************************************************************/
         
@@ -903,7 +944,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches a Comment node, and returns the host
+                        Attaches a Comment node and returns this, the host
 
                 ***************************************************************/
         
@@ -914,7 +955,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches a Doctype node, and returns the host
+                        Attaches a Doctype node and returns this, the host
 
                 ***************************************************************/
         
@@ -925,7 +966,7 @@ version(discrete)
         
                 /***************************************************************
         
-                        Attaches a PI node, and returns the host
+                        Attaches a PI node and returns this, the host
 
                 ***************************************************************/
         
@@ -1047,14 +1088,10 @@ else
                            {
                            lastAttr.nextSibling = node;
                            node.prevSibling = lastAttr;
-                           node.index = lastAttr.index + 1;
                            lastAttr = node;
                            }
                         else 
-                           {
                            firstAttr = lastAttr = node;
-                           node.index = 0;
-                           }
                 }
         
                 /***************************************************************
@@ -1072,14 +1109,10 @@ else
                            {
                            lastChild.nextSibling = node;
                            node.prevSibling = lastChild;
-                           node.index = lastChild.index + 1;
                            lastChild = node;
                            }
                         else 
-                           {
                            firstChild = lastChild = node;                  
-                           node.index = 0;
-                           }
                 }
 
                 /***************************************************************
@@ -1100,10 +1133,7 @@ else
                            firstChild = node;
                            }
                         else 
-                           {
-                           firstChild = node;
-                           lastChild = node;
-                           }
+                           firstChild = lastChild = node;
                 }
                 
                 /***************************************************************
@@ -2098,7 +2128,12 @@ debug (Document)
                 foreach (node; doc.query.descendant("root").filter(&foo).child)
                          Stdout.formatln(">> {}", node.name);
 
-                auto y = doc.elements.attributes.exist;
+                foreach (node; doc.elements.attributes)
+                         Stdout.formatln("<< {}", node.name);
+                         
+                foreach (node; doc.elements.children)
+                         Stdout.formatln("<< {}", node.name);
+                         
 
                 // emit the result
                 auto print = new DocPrinter!(char);
