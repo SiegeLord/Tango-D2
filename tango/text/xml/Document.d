@@ -460,7 +460,7 @@ else
                         Time complexity: O(n)
 
                 ***************************************************************/
-        
+
                 Node name (T[] prefix, T[] local, bool delegate(Node) dg=null)
                 {
                         for (auto n=node; n; n = n.nextSibling)
@@ -502,14 +502,15 @@ else
                         Time complexity: O(n)
 
                 ***************************************************************/
-        
+version (Filter)
+{        
                 Node value (T[] prefix, T[] local, T[] value)
                 {
                         if (value.ptr)
                             return name (prefix, local, (Node n){return value == n.rawValue;});
                         return name (prefix, local);
                 }
-
+}
                 /***************************************************************
         
                         Sweep nodes looking for a match, and returns either 
@@ -800,13 +801,13 @@ version(discrete)
         
                         Return an xpath handle to query this node
 
-                        See also Node.document.query
+                        See also Document.query
 
                 ***************************************************************/
         
                 final XmlPath!(T).NodeSet query ()
                 {
-                        return document.xpath.start (this);
+                        return doc.xpath.start (this);
                 }
 
                 /***************************************************************
