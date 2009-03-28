@@ -19,8 +19,6 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
-version = d;
-
 /*******************************************************************************
 
 *******************************************************************************/
@@ -74,67 +72,64 @@ class PullParser(Ch = char)
         private char[]                  errMsg;
 
         /***********************************************************************
-        
+                
+                Construct a parser on the given content (may be null)
+
         ***********************************************************************/
 
         this(Ch[] content = null)
         {
                 reset (content);
         }
-        
+   
         /***********************************************************************
         
+                Consume the next token and return its type
+
         ***********************************************************************/
 
         final XmlTokenType next()
-        {      
-                auto p = text.point;
-                if (*p <= 32) 
-                   {
-                   while (*++p <= 32)
-                          if (p >= text.end)                                      
-                              return endOfInput;
-                   text.point = p;
-                   }
-                
-                if (type >= XmlTokenType.EndElement) 
-                    return doMain;
-
-                // in element
-                switch (*p)
-                       {
-                       case '/':
-                            return doEndEmptyElement;
-
-                       case '>':
-                            ++depth;
-                            ++text.point;
-                            return doMain;
-
-                       default:
-                            break;
-                       }
-                return doAttributeName;
-        }
- 
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        private XmlTokenType doMain()
         {
                 auto e = text.end;
                 auto p = text.point;
+        
+                // at end of document?
+                if (p >= e)
+                    return endOfInput;
 
+                // strip leading whitespace
+                while (*p <= 32)
+                       if (++p >= e)                                      
+                           return endOfInput;
+                
+                // ElementStart or Attribute?
+                if (type < XmlTokenType.EndElement) 
+                    switch (*p)
+                           {
+                           case '>':
+                                // termination of StartElement
+                                ++depth;
+                                ++p;
+                                break;
+ 
+                           case '/':
+                                // empty element closure
+                                text.point = p;
+                                return doEndEmptyElement;
+ 
+                           default:
+                                // must be attributes instead
+                                text.point = p;
+                                return doAttributeName;
+                           }
+
+                // consume data between elements?
                 if (*p != '<') 
                    {
                    auto q = p;
-                   if (p < e)
-version(d){
-                       while (*++p != '<' && p != e) {}
-}else{
-                       while (*++p != '<') {}
-}
+
+                   while (++p < e && *p != '<') 
+                         {}
                    if (p < e)
                       {
                       rawValue = q [0 .. p - q];
@@ -144,6 +139,7 @@ version(d){
                    return endOfInput;
                    }
 
+                // must be a '<' character, so peek ahead
                 switch (p[1])
                        {
                        default:
@@ -164,50 +160,43 @@ version(d){
                                }
                             else
                                {
-version (c)
-{
                                prefix = p[0 .. q - p];
                                p = ++q;
                                while (*q > 63 || text.attributeName[*q])
                                       ++q;
                                localName = p[0 .. q - p];
                                text.point = q;
-}
-else
-{
-                               prefix = p [0 .. q - p];
-                               p = ++text.point;
-                               q = text.eatAttrName;
-                               localName = p [0 .. q - p];
-}
                                }
                             return type = XmlTokenType.StartElement;
 
                        case '!':
-                            if (text[2..4] == "--") 
+                            // one of the following ...
+                            if (p[2..4] == "--") 
                                {
-                               text.point += 4;
+                               text.point = p + 4;
                                return doComment;
                                }       
                             else 
-                               if (text[2..9] == "[CDATA[") 
+                               if (p[2..9] == "[CDATA[") 
                                   {
-                                  text.point += 9;
+                                  text.point = p + 9;
                                   return doCData;
                                   }
                                else 
-                                  if (text[2..9] == "DOCTYPE") 
+                                  if (p[2..9] == "DOCTYPE") 
                                      {
-                                     text.point += 9;
+                                     text.point = p + 9;
                                      return doDoctype;
                                      }
                             return doUnexpected("!", p);
 
                        case '\?':
-                            text.point += 2;
+                            // must be PI data
+                            text.point = p + 2;
                             return doPI;
 
                        case '/':
+                            // should be a closing element name
                             p += 2;
                             auto q = p;
                             while (*q > 63 || text.name[*q]) 
@@ -229,21 +218,19 @@ else
                                }
 
                             while (*q <= 32) 
-                                   ++q;
-
-                            if (q >= e)
-                                return endOfInput;
+                                   if (++q >= e)        
+                                       return endOfInput;
 
                             if (*q is '>')
                                {
-                               text.point = q + 1;
                                --depth;
+                               text.point = q + 1;
                                return type = XmlTokenType.EndElement;
                                }
                             return doExpected(">", q);
                        }
         }
-        
+
         /***********************************************************************
         
         ***********************************************************************/
@@ -491,6 +478,8 @@ else
 
         /***********************************************************************
         
+                Return the raw value of the current token
+
         ***********************************************************************/
 
         final Ch[] value()
@@ -500,6 +489,8 @@ else
         
         /***********************************************************************
         
+                Return the name of the current token
+
         ***********************************************************************/
 
         final Ch[] name()
@@ -511,6 +502,8 @@ else
                 
         /***********************************************************************
         
+                Return the most recent error code
+
         ***********************************************************************/
 
         final bool error()
@@ -520,6 +513,8 @@ else
 
         /***********************************************************************
         
+                Reset the parser
+
         ***********************************************************************/
 
         final bool reset()
@@ -530,7 +525,9 @@ else
         }
         
         /***********************************************************************
-        
+                
+                Reset parser with new content
+
         ***********************************************************************/
 
         final void reset(Ch[] newText)
@@ -541,6 +538,10 @@ else
         
         /***********************************************************************
         
+                experimental: set streaming mode
+
+                Use at your own risk, may be removed.
+
         ***********************************************************************/
 
         final void incremental (bool yes = true)
