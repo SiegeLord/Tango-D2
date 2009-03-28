@@ -874,7 +874,11 @@ version(discrete)
                         assert (tree);
                         tree = tree.clone;
                         tree.migrate (document);
-                        append (tree);
+
+                        if (tree.id is XmlNodeType.Attribute)
+                            attrib (tree);
+                        else
+                            append (tree);
                         return tree;
                 }
 
@@ -891,7 +895,12 @@ version(discrete)
                 {
                         tree.detach;
                         if (tree.doc is doc)
-                            append (tree);
+                           {
+                           if (tree.id is XmlNodeType.Attribute)
+                               attrib (tree);
+                           else
+                              append (tree);
+                           }
                         else
                            tree = copy (tree);
                         return tree;
@@ -1078,12 +1087,10 @@ else
 
                 ***************************************************************/
         
-                private void attrib (Node node, uint uriID = 0)
+                private void attrib (Node node)
                 {
                         assert (node.parent is null);
                         node.host = this;
-                        node.id = XmlNodeType.Attribute;
-        
                         if (lastAttr) 
                            {
                            lastAttr.nextSibling = node;
@@ -2122,7 +2129,7 @@ debug (Document)
                 bool foo (doc.Node node)
                 {
                         node = node.attributes.name(null, "attrib1");
-                        return node && node.value == "value";
+                        return node && "value" == node.value;
                 }
 
                 foreach (node; doc.query.descendant("root").filter(&foo).child)
@@ -2134,7 +2141,6 @@ debug (Document)
                 foreach (node; doc.elements.children)
                          Stdout.formatln("<< {}", node.name);
                          
-
                 // emit the result
                 auto print = new DocPrinter!(char);
                 Stdout(print(doc)).newline;
