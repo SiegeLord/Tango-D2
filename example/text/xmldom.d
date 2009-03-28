@@ -7,8 +7,8 @@
 
 *******************************************************************************/
 
-import tango.io.device.File;
 import tango.io.Stdout;
+import tango.io.device.File;
 import tango.time.StopWatch;
 import tango.text.xml.Document;
 import tango.text.xml.DocPrinter;
@@ -28,12 +28,7 @@ void bench (int iterations)
         for (auto i=0; ++i < iterations;)
              doc.parse (content);
 
-        foreach (node; doc.query.descendant("xyz"))
-                 node.detach;
-
-        auto print = new DocPrinter!(char);
-        Stdout (print (doc)).newline;
-//        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
+        Stdout.formatln ("{} MB/s", (content.length * iterations) / (elapsed.stop * (1024 * 1024)));
 }
         
 /*******************************************************************************
@@ -42,7 +37,7 @@ void bench (int iterations)
 
 void main()
 {
-        for (int i=1; i--;)
+        for (int i=10; i--;)
              bench (2000);
 }
 

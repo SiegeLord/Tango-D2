@@ -1,5 +1,5 @@
-import tango.io.device.File;
 import tango.io.Stdout;
+import tango.io.device.File;
 import tango.time.StopWatch;
 import tango.text.xml.PullParser;
 
