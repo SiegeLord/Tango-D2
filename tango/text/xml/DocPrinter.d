@@ -117,7 +117,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                              emit (` `, attr.toString(tmp), `="`, attr.rawValue, `"`);  
 
                                     auto value = rawValue (node);
-                                    if (node.hasChildren)
+                                    if (node.child)
                                        {
                                        emit (">");
                                        if (value.length)

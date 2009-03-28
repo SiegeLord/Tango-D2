@@ -421,6 +421,17 @@ else
         
                 /***************************************************************
                 
+                        Is there anything to visit here?
+
+                ***************************************************************/
+        
+                bool exist ()
+                {
+                        return node != null;
+                }
+
+                /***************************************************************
+                
                         traverse sibling nodes
 
                 ***************************************************************/
@@ -785,9 +796,11 @@ version(discrete)
                 
                         Returns whether there are attributes present or not
 
+                        Deprecated: use node.attributes.exist instead
+
                 ***************************************************************/
         
-                bool hasAttributes () 
+                deprecated bool hasAttributes () 
                 {
                         return firstAttr !is null;
                 }
@@ -796,9 +809,12 @@ version(discrete)
                 
                         Returns whether there are children present or nor
 
+                        Deprecated: use node.child or node.children.exist
+                        instead
+
                 ***************************************************************/
         
-                bool hasChildren () 
+                deprecated bool hasChildren () 
                 {
                         return firstChild !is null;
                 }
@@ -838,48 +854,6 @@ version(discrete)
                         else
                            tree = copy (tree);
                         return tree;
-                }
-
-                /***************************************************************
-                
-                        Deprecated: use node.attributes.name()
-
-                        Sweep the attributes looking for a name match and, 
-                        optionally, a prefix match also.
-
-                        Returns a matching node, or null.
-
-                ***************************************************************/
-        
-                deprecated Node getAttribute (T[] name, T[] value = null)
-                {
-                        foreach (attr; attributes)
-                                {
-                                if (name.ptr && name != attr.localName)
-                                    continue;
-
-                                if (value.ptr && value != attr.rawValue)
-                                    continue;
-
-                                return attr;
-                                }
-                        return null;
-                }
-
-                /***************************************************************
-                
-                        Deprecated: use node.attributes.hasName()
-
-                        Sweep the attributes looking for a name or value
-                        match. Either may be null
-
-                        Returns true if found.
-
-                ***************************************************************/
-        
-                deprecated bool hasAttribute (T[] name, T[] value = null)
-                {
-                        return getAttribute (name, value) !is null;
                 }
 
                 /***************************************************************
@@ -2107,13 +2081,24 @@ debug (Document)
 
                 // attach an element with some attributes, plus 
                 // a child element with an attached data value
-                doc.tree.element   (null, "element")
+                doc.tree.element   (null, "root")
                         .attribute (null, "attrib1", "value")
-                        .attribute (null, "attrib2")
+                        .attribute (null, "attrib2", "other")
                         .element   (null, "child", "value");
 
                 // attach a sibling to the interior elements
-                doc.elements.element  (null, "sibling");
+                doc.elements.element (null, "sibling");
+        
+                bool foo (doc.Node node)
+                {
+                        node = node.attributes.name(null, "attrib1");
+                        return node && node.value == "value";
+                }
+
+                foreach (node; doc.query.descendant("root").filter(&foo).child)
+                         Stdout.formatln(">> {}", node.name);
+
+                auto y = doc.elements.attributes.exist;
 
                 // emit the result
                 auto print = new DocPrinter!(char);
