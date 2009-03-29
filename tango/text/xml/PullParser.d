@@ -66,8 +66,7 @@ class PullParser(Ch = char)
         public Ch[]                     localName;     
         public XmlTokenType             type = XmlTokenType.None;
 
-        package XmlIterator!(Ch)        text;
-        private bool                    err;
+        package XmlText!(Ch)            text;
         private bool                    stream;
         private char[]                  errMsg;
 
@@ -282,11 +281,10 @@ class PullParser(Ch = char)
                           case '\'':
                                p = q + 1;
                                while (*++q != quote) {}
-                               //q = text.forwardLocate(p, quote);
                                if (q < e)
                                   {
                                   rawValue = p[0 .. q - p];
-                                  text.point = q + 1;   //Skip end quote
+                                  text.point = q + 1;   // skip end quote
                                   return type = XmlTokenType.Attribute;
                                   }
                                return endOfInput; 
@@ -320,21 +318,23 @@ class PullParser(Ch = char)
 
         private XmlTokenType doComment()
         {
+                auto e = text.end;
                 auto p = text.point;
-
-                while (text.good)
+                
+                while (p < e)
                       {
-                      if (! text.forwardLocate('-')) 
-                            return endOfInput;
+                      auto q = p;
+                      while (*p != '-')
+                             if (++p >= e)
+                                 return endOfInput;
 
-                      if (text[0..3] == "-->") 
+                      if (p[0..3] == "-->") 
                          {
-                         rawValue = p [0 .. text.point - p];
-                         //prefix = null;
-                         text.point += 3;
+                         text.point = p + 3;
+                         rawValue = q [0 .. p - q];
                          return type = XmlTokenType.Comment;
                          }
-                      ++text.point;
+                      ++p;
                       }
 
                 return endOfInput;
@@ -346,21 +346,23 @@ class PullParser(Ch = char)
 
         private XmlTokenType doCData()
         {
+                auto e = text.end;
                 auto p = text.point;
                 
-                while (text.good)
+                while (p < e)
                       {
-                      if (! text.forwardLocate(']')) 
-                            return endOfInput;
+                      auto q = p;
+                      while (*p != ']')
+                             if (++p >= e)
+                                 return endOfInput;
                 
-                      if (text[0..3] == "]]>") 
+                      if (p[0..3] == "]]>") 
                          {
-                         rawValue = p [0 .. text.point - p];
-                         //prefix = null;
-                         text.point += 3;                      
+                         text.point = p + 3;                      
+                         rawValue = q [0 .. p - q];
                          return type = XmlTokenType.CData;
                          }
-                      ++text.point;
+                      ++p;
                       }
 
                 return endOfInput;
@@ -372,22 +374,23 @@ class PullParser(Ch = char)
 
         private XmlTokenType doPI()
         {
+                auto e = text.end;
                 auto p = text.point;
-                text.eatElemName;
-                ++text.point;
+                auto q = p;
 
-                while (text.good)
+                while (p < e)
                       {
-                      if (! text.forwardLocate('\?')) 
-                            return endOfInput;
+                      while (*p != '\?')
+                             if (++p >= e)
+                                 return endOfInput;
 
-                      if (text.point[1] == '>') 
+                      if (p[1] == '>') 
                          {
-                         rawValue = p [0 .. text.point - p];
-                         text.point += 2;
+                         rawValue = q [0 .. p - q];
+                         text.point = p + 2;
                          return type = XmlTokenType.PI;
                          }
-                      ++text.point;
+                      ++p;
                       }
                 return endOfInput;
         }
@@ -398,31 +401,37 @@ class PullParser(Ch = char)
 
         private XmlTokenType doDoctype()
         {
-                text.eatSpace;
+                auto e = text.end;
                 auto p = text.point;
-                                
-                while (text.good) 
+
+                // strip leading whitespace
+                while (*p <= 32)
+                       if (++p >= e)                                      
+                           return endOfInput;
+                
+                auto q = p;              
+                while (p < e) 
                       {
-                      if (*text.point == '>') 
+                      if (*p is '>') 
                          {
-                         rawValue = p [0 .. text.point - p];
+                         rawValue = q [0 .. p - q];
                          prefix = null;
-                         ++text.point;
+                         text.point = p + 1;
                          return type = XmlTokenType.Doctype;
                          }
                       else 
-                         if (*text.point == '[') 
-                            {
-                            ++text.point;
-                            text.forwardLocate(']');
-                            ++text.point;
-                            }
-                         else 
-                            ++text.point;
+                         {
+                         if (*p == '[') 
+                             do {
+                                if (++p >= e)
+                                    return endOfInput;
+                                } while (*p != ']');
+                         ++p;
+                         }
                       }
 
-                if (! text.good)
-                      return endOfInput;
+                if (p >= e)
+                    return endOfInput;
                 return XmlTokenType.Doctype;
         }
         
@@ -471,7 +480,6 @@ class PullParser(Ch = char)
 
         protected final XmlTokenType error (char[] msg)
         {
-                err = true;
                 errMsg = msg;
                 throw new XmlException (msg);
         }
@@ -502,13 +510,13 @@ class PullParser(Ch = char)
                 
         /***********************************************************************
         
-                Return the most recent error code
+                Returns the text of the last error
 
         ***********************************************************************/
 
-        final bool error()
+        final char[] error()
         {
-                return err;
+                return errMsg;
         }
 
         /***********************************************************************
@@ -519,7 +527,7 @@ class PullParser(Ch = char)
 
         final bool reset()
         {
-                text.seek (0);
+                text.reset (text.text);
                 reset_;
                 return true;
         }
@@ -555,39 +563,34 @@ class PullParser(Ch = char)
 
         private void reset_()
         {
-                err = false;
                 depth = 0;
+                errMsg = null;
                 type = XmlTokenType.None;
 
-                if (text.point)
+                auto p = text.point;
+                if (p)
                    {
                    static if (Ch.sizeof == 1)
-                   {
-                       //Read UTF8 BOM
-                       if (*text.point == 0xef)
                           {
-                          if (text.point[1] == 0xbb)
-                             {
-                             if(text.point[2] == 0xbf)
-                                text.point += 3;
-                             }
+                          // consume UTF8 BOM
+                          if (p[0] is 0xef && p[1] is 0xbb && p[2] is 0xbf)
+                              p += 3;
                           }
-                  }
                 
                    //TODO enable optional declaration parsing
-                   text.eatSpace;
-                   if (*text.point == '<')
-                      {
-                      if (text.point[1] == '\?')
-                         {
-                         if (text[2..5] == "xml")
-                            {
-                            text.point += 5;
-                            text.forwardLocate('\?');
-                            text.point += 2;
-                            }
-                         }
-                      }
+                   auto e = text.end;
+                   while (p < e && *p <= 32)
+                          ++p;
+                
+                   if (p < e)
+                       if (p[0] is '<' && p[1] is '\?' && p[2..5] == "xml")
+                          {
+                          p += 5;
+                          while (p < e && *p != '\?') 
+                                 ++p;
+                          p += 2;
+                          }
+                   text.point = p;
                    }
         }
 }
@@ -597,37 +600,12 @@ class PullParser(Ch = char)
 
 *******************************************************************************/
 
-package struct XmlIterator(Ch)
+package struct XmlText(Ch)
 {
         package Ch*     end;
         package size_t  len;
         package Ch[]    text;
         package Ch*     point;
-
-        final bool good()
-        {
-                return point < end;
-        }
-        
-        final Ch[] opSlice(size_t x, size_t y)
-        in {
-                if ((point+y) > end || y < x)
-                     assert(false);                  
-           }
-        body
-        {               
-                return point[x .. y];
-        }
-        
-        final void seek(size_t position)
-        in {
-                if (position >= len) 
-                    assert(false);
-           }
-        body
-        {
-                point = text.ptr + position;
-        }
 
         final void reset(Ch[] newText)
         {
@@ -635,93 +613,6 @@ package struct XmlIterator(Ch)
                 this.len = newText.length;
                 this.point = text.ptr;
                 this.end = point + len;
-        }
-
-        final bool forwardLocate (Ch ch)
-        {
-                auto tmp = end - point;
-                auto l = indexOf!(Ch)(point, ch, tmp);
-                if (l < tmp) 
-                   {
-                   point += l;
-                   return true;
-                   }
-                return false;
-        }
-        
-        final Ch* eatElemName()
-        {      
-                auto p = point;
-                auto e = end;
-                while (p < e)
-                      {
-                      auto c = *p;
-                      if (c > 63 || name[c])
-                          ++p;
-                      else
-                         break;
-                      }
-                return point = p;
-        }
-        
-        final Ch* eatAttrName()
-        {      
-                auto p = point;
-                auto e = end;
-                while (p < e)
-                      {
-                      auto c = *p;
-                      if (c > 63 || attributeName[c])
-                          ++p;
-                      else
-                         break;
-                      }
-                return point = p;
-        }
-        
-        final Ch* eatAttrName(Ch* p)
-        {      
-                auto e = end;
-                while (p < e)
-                      {
-                      auto c = *p;
-                      if (c > 63 || attributeName[c])
-                          ++p;
-                      else
-                         break;
-                      }
-                return p;
-        }
-        
-        final bool eatSpace()
-        {
-                auto p = point;
-                auto e = end;
-                while (p < e)
-                      {                
-                      if (*p <= 32)                                          
-                          ++p;
-                      else
-                         {
-                         point = p;
-                         return true;
-                         }                                  
-                      }
-               point = p;
-               return false;
-        }
-
-        final Ch* eatSpace(Ch* p)
-        {
-                auto e = end;
-                while (p < e)
-                      {                
-                      if (*p <= 32)                                          
-                          ++p;
-                      else
-                         break;
-                      }
-               return p;
         }
 
         static const ubyte name[64] =
@@ -773,7 +664,7 @@ debug (UnitTest)
 	        assert(itr.localName == "attr");
 	        assert(itr.value == "1");
 	        assert(itr.next);
-	        assert(itr.type == XmlTokenType.Attribute, Integer.toString(itr.type));
+	        assert(itr.type == XmlTokenType.Attribute);
 	        assert(itr.localName == "attr2");
 	        assert(itr.value == "two");
 	        assert(itr.next);
@@ -803,7 +694,7 @@ debug (UnitTest)
 	        assert(itr.next);
 	      //  assert(itr.qvalue == "pi", itr.qvalue);
 	      //  assert(itr.value == "test");
-	        assert(itr.rawValue == "pi test");
+	        assert(itr.rawValue == "pi test", itr.rawValue);
 	        assert(itr.next);
 	        assert(itr.localName == "el2");
 	        assert(itr.next);
