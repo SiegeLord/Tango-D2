@@ -465,16 +465,16 @@ else
                 {
                         for (auto n=node; n; n = n.nextSibling)
                             {
-                            if (local.ptr && local != node.localName)
+                            if (local.ptr && local != n.localName)
                                 continue;
 
-                            if (prefix.ptr && prefix != node.prefixed)
+                            if (prefix.ptr && prefix != n.prefixed)
                                 continue;
 
-                            if (dg.ptr && dg(node) is false)
+                            if (dg.ptr && dg(n) is false)
                                 continue;
 
-                            return node;
+                            return n;
                             }
                         return null;
                 }
