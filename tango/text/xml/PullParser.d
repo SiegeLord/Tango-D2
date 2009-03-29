@@ -155,7 +155,6 @@ class PullParser(Ch = char)
                             if (q >= e)
                                 return endOfInput;
 
-                            text.point = q;
                             if (*q != ':') 
                                {
                                prefix = null;
@@ -168,8 +167,8 @@ class PullParser(Ch = char)
                                while (*q > 63 || text.attributeName[*q])
                                       ++q;
                                localName = p[0 .. q - p];
-                               text.point = q;
-                               }
+                               } 
+                            text.point = q;
                             return type = XmlTokenType.StartElement;
 
                        case '!':
