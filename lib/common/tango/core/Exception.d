@@ -438,7 +438,7 @@ void setAssertHandler( assertHandlerType h )
 extern (C) void onAssertError( char[] file, size_t line )
 {
     if( assertHandler is null )
-        throw new AssertException( file, line );
+        throw new AssertException( file, cast(long)line );
     assertHandler( file, line );
 }
 
@@ -456,7 +456,7 @@ extern (C) void onAssertError( char[] file, size_t line )
 extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
 {
     if( assertHandler is null )
-        throw new AssertException( msg, file, line );
+        throw new AssertException( msg, file, cast(long)line );
     assertHandler( file, line, msg );
 }
 
@@ -479,7 +479,7 @@ extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
  */
 extern (C) void onArrayBoundsError( char[] file, size_t line )
 {
-    throw new ArrayBoundsException( file, line );
+    throw new ArrayBoundsException( file, cast(long)line );
 }
 
 
@@ -525,7 +525,7 @@ extern (C) void onOutOfMemoryError()
  */
 extern (C) void onSwitchError( char[] file, size_t line )
 {
-    throw new SwitchException( file, line );
+    throw new SwitchException( file, cast(long)line );
 }
 
 
