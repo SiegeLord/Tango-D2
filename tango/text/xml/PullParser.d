@@ -21,12 +21,16 @@ private import Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
 
+        The XML node types 
+
 *******************************************************************************/
 
 public enum XmlNodeType {Element, Data, Attribute, CData, 
                          Comment, PI, Doctype, Document};
 
 /*******************************************************************************
+
+        Values returned by the pull-parser
 
 *******************************************************************************/
 
@@ -37,8 +41,8 @@ public enum XmlTokenType {Done, StartElement, Attribute, EndElement,
 
 /*******************************************************************************
 
-        Token based XML Parser.  Templated to operate with char[], wchar[], 
-        and dchar[] based Xml strings. 
+        Token based xml Parser.  Templated to operate with char[], wchar[], 
+        and dchar[] content. 
 
         The parser is constructed with some tradeoffs relating to document
         integrity. It is generally optimized for well-formed documents, and
@@ -101,7 +105,7 @@ class PullParser(Ch = char)
                        if (++p >= e)                                      
                            return endOfInput;
                 
-                // ElementStart or Attribute?
+                // StartElement or Attribute?
                 if (type < XmlTokenType.EndElement) 
                     switch (*p)
                            {
@@ -117,7 +121,7 @@ class PullParser(Ch = char)
                                 return doEndEmptyElement;
  
                            default:
-                                // must be attributes instead
+                                // must be attribute instead
                                 text.point = p;
                                 return doAttributeName;
                            }
