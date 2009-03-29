@@ -742,8 +742,11 @@ version (old)
                        places = number;
                    }
 
-                return Float.format (output, v, places, 
-                                    (style is 'e' || style is 'E') ? 0 : 10);
+                auto s = Float.format (output, v, places, 
+                                      (style is 'e' || style is 'E') ? 0 : 10);
+                if (style is 'g')
+                    s = Float.truncate (s);
+                return s;
         }
 
         /**********************************************************************
@@ -868,6 +871,7 @@ debug (UnitTest)
         {
         auto Formatter = Layout!(char).instance;
 
+        // basic layout tests
         assert( Formatter( "abc" ) == "abc" );
         assert( Formatter( "{0}", 1 ) == "1" );
         assert( Formatter( "{0}", -1 ) == "-1" );
@@ -888,20 +892,24 @@ debug (UnitTest)
         assert( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
         assert( Formatter( "{0}", cast(short)32767 ) == "32767" );
         assert( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
-        // assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
-        // assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
+        assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
+        assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
 
         assert( Formatter( "{0}", -2147483648 ) == "-2147483648" );
         assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
         assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
-        // compiler error
+
+        // large integers
         assert( Formatter( "{0}", -9223372036854775807L) == "-9223372036854775807" );
         assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "9223372036854775808" );
         assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
-        // Error: prints -1
-        // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+        assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+        assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+        assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+        assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
 
-        assert( Formatter( "{0}", "s" ) == "s" );
         // fragments before and after
         assert( Formatter( "d{0}d", "s" ) == "dsd" );
         assert( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
@@ -912,34 +920,26 @@ debug (UnitTest)
         assert( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
         assert( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
 
+        // hex conversions, where width indicates leading zeroes
         assert( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
-        // todo: is it correct to print 7 instead of 6 chars???
         assert( Formatter( "{0:x7}", 0xafe0000 ) == "afe0000" );
         assert( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
         assert( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
         assert( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
         assert( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
         assert( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
+
         // decimal width
         assert( Formatter( "{0:d6}", 123 ) == "000123" );
         assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
         assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
 
+        // width & sign combinations
         assert( Formatter( "{0:d7}", -123 ) == "-0000123" );
         assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
         assert( Formatter( "{0,7:d7}", -123 ) == "-0000123" );
         assert( Formatter( "{0,8:d7}", -123 ) == "-0000123" );
         assert( Formatter( "{0,5:d7}", -123 ) == "-0000123" );
-
-        assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
-        assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
-        assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
-        assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
-        // Error: prints -1
-        // assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
-        assert( Formatter( "{0}", "s" ) == "s" );
-        // fragments before and after
-        assert( Formatter( "d{0}d", "s" ) == "dsd" );
 
         // Negative numbers in various bases
         assert( Formatter( "{:b}", cast(byte) -1 ) == "11111111" );
@@ -969,15 +969,21 @@ debug (UnitTest)
         assert( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
         assert( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
 
-        // alignment
-        // align does not restrict the length
+        // alignment does not restrict the length
         assert( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
-        // align fills with spaces
+
+        // alignment fills with spaces
         assert( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
         assert( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
         assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
         assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
+        // chop at maximum specified length; insert ellipses when chopped
+        assert( Formatter( "->{.5}<-", "hello" ) == "->hello<-" );
+        assert( Formatter( "->{.4}<-", "hello" ) == "->hell...<-" );
+        assert( Formatter( "->{.-3}<-", "hello" ) == "->...llo<-" );
+
+        // width specifier indicates number of decimal places
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
         assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
         assert( Formatter( "{0:e4}", 0.0001) == "0.1000e-03");
@@ -993,6 +999,16 @@ debug (UnitTest)
         assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
         assert( Formatter( "{0:e4}", 0.0001-1i) == "0.1000e-03-1.0000*1i");
 
+        // 'g' format truncates zeroes from floating decimals
+        assert( Formatter( "{0:g4}", 1.230 ) == "1.23" );
+        assert( Formatter( "{0:g6}", 1.230 ) == "1.23" );
+        assert( Formatter( "{0:g1}", 1.230 ) == "1.2" );
+        assert( Formatter( "{0:g}", 1.233 ) == "1.23" );
+        assert( Formatter( "{0:g}", 1.237 ) == "1.24" );
+        assert( Formatter( "{0:g}", 1.000 ) == "1" );
+        assert( Formatter( "{0:g}", 200 ) == "200" );
+        
+        // array output
         int[] a = [ 51, 52, 53, 54, 55 ];
         assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
         assert( Formatter( "{:x}", a ) == "[33, 34, 35, 36, 37]" );
@@ -1004,18 +1020,21 @@ debug (UnitTest)
         ushort[3] c = [ cast(ushort)51, 52, 53 ];
         assert( Formatter( "{}", c ) == "[51, 52, 53]" );
 
+        // integer AA 
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
         assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
                 Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
-
+        
+        // bool/string AA 
         bool[char[]] e;
         e[ "key".dup ] = true;
         e[ "value".dup ] = false;
         assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
                 Formatter( "{}", e ) == "{value => false, key => true}");
 
+        // string/double AA 
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
@@ -1046,6 +1065,7 @@ debug (Layout)
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 0.001)).newline;
                 Cout (layout ("{:e4}", 0.0000001)).newline;
+                Cout (layout ("{:g}", 1.231)).newline;
                 Cout (layout ("ptr:{}", &layout)).newline;
                 Cout (layout ("ulong.max {}", ulong.max)).newline;
 
