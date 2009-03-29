@@ -1,11 +1,17 @@
+/// module defining Object, the root class of all D objects, interfaces, ClassInfo and TypeInfo
+/// it is implicitly included by the compiler in all D files
 module object;
-
+/// unsigned integer type of the size of a pointer
 alias typeof(int.sizeof)                    size_t;
+/// signed integer type of the size of a pointer
 alias typeof(cast(void*)0 - cast(void*)0)   ptrdiff_t;
 
+/// type of hashes used in associative arrays
 alias size_t hash_t;
+/// type returned by equality comparisons
 alias int equals_t;
 
+/// root class for all objects in D
 class Object
 {
     char[] toString();
@@ -20,17 +26,20 @@ class Object
     }
 }
 
+/// interface, if COM objects (IUnknown) they might not be casted to Object
 struct Interface
 {
     ClassInfo   classinfo;
     void*[]     vtbl;
-    ptrdiff_t   offset;   // offset to Interface 'this' from Object 'this'
+    /// offset to Interface 'this' from Object 'this'
+    ptrdiff_t   offset;
 }
 
+/// class information
 class ClassInfo : Object
 {
     byte[]      init;   // class static initializer
-    char[]      name;   // class name
+    char[]      name;   /// class name
     void*[]     vtbl;   // virtual function pointer table
     Interface[] interfaces;
     ClassInfo   base;
@@ -49,12 +58,14 @@ class ClassInfo : Object
     Object create();
 }
 
+/// offset of the different fields (at the moment works only with ldc)
 struct OffsetTypeInfo
 {
     size_t   offset;
     TypeInfo ti;
 }
 
+/// information on a type
 class TypeInfo
 {
     hash_t   getHash(void *p);
@@ -87,6 +98,7 @@ class TypeInfo_Pointer : TypeInfo
 
 class TypeInfo_Array : TypeInfo
 {
+    /// typeinfo of the elements, might be null for basic arrays, it is safer to use next()
     TypeInfo value;
 }
 
@@ -140,6 +152,7 @@ class TypeInfo_Tuple : TypeInfo
     TypeInfo[]  elements;
 }
 
+/// information about a module (can be used for example to get its unittests)
 class ModuleInfo
 {
     char[]          name;
@@ -157,35 +170,61 @@ class ModuleInfo
         void function() ictor;
     }
     
+    /// loops on all the modules loaded
     static int opApply( int delegate( inout ModuleInfo ) );
 }
 
+/// base class for all exceptions/errors
+/// it is a good practice to pass line and file to the exception, which can be obtained with
+/// __FILE__ and __LINE__, and then passed to the exception constructor
 class Exception : Object
 {
+    /// Information about a frame in the stack
     struct FrameInfo{
+        /// line number in the source of the most likely start adress (0 if not available)
         long line;
+        /// number of the stack frame (starting at 0 for the top frame)
         ptrdiff_t iframe;
+        /// offset within the function, ot from the closest symbol
         ptrdiff_t offset;
+        /// adress of the function, or at which the ipc will return
+        // (which most likely is the one after the adress where it started)
         size_t address;
+        /// file of the current adress+offset
         char[] file;
+        /// name of the function
         char[] func;
+        /// a buffer to help avoiding allocation when composing the previous strings,
+        /// and keeping them copiable
         char[256] charBuf;
+        /// writes out the current frame info
         void writeOut(void delegate(char[])sink);
     }
+    /// trace information has the following interface
     interface TraceInfo
     {
         int opApply( int delegate( ref FrameInfo fInfo) );
     }
-
+    /// message of the exception
     char[]      msg;
+    /// file name
     char[]      file;
-    size_t      line;  // long would be better
+    /// line number
+    size_t      line;  // long would be better to be consistent
+    /// trace of where the exception was raised
     TraceInfo   info;
+    /// next exception (if an exception made an other exception raise)
     Exception   next;
 
+    /// designated constructor (breakpoint this if you want to catch all explict Exception creations,
+    /// special exception just allocate and init the structure directly)
     this(char[] msg, char[] file, long line, Exception next, TraceInfo info );
     this(char[] msg, Exception next=null);
     this(char[] msg, char[] file, long line, Exception next = null);
+    /// returns the message of the exception, should not be used (because it should not allocate,
+    /// and thus only a small message is returned)
     char[] toString();
+    /// writes out the exception message, file, line number, stacktrace (if available) and any
+    /// subexceptions
     void writeOut(void delegate(char[]) sink);
 }
