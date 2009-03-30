@@ -31,7 +31,7 @@ private import  tango.core.Exception;
 private import  Utf = tango.text.convert.Utf;
 
 private import  Float = tango.text.convert.Float,
-                Time = tango.text.convert.DateTime,
+                Dates = tango.text.convert.DateTime,
                 Integer = tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit : OutputStream;
@@ -664,10 +664,8 @@ version (old)
                             if (s.xtoString)
                                 return Utf.fromString8 (s.xtoString(p), result);
                             else
-                               {
-                               if (type is typeid(Time.Time))
-                                   return Time.format (result, *cast(Time.Time*) p, format);
-                               }
+                               if (type is typeid(Time))
+                                   return Dates.format (result, *cast(Time*) p, format);
                             goto default;
 
                        case TypeCode.INTERFACE:
