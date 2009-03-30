@@ -26,6 +26,8 @@
 
 module tango.text.convert.Layout;
 
+private import  tango.time.Time;
+
 private import  tango.core.Exception;
 
 private import  Utf = tango.text.convert.Utf;
