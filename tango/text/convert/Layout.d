@@ -30,7 +30,8 @@ private import  tango.core.Exception;
 
 private import  Utf = tango.text.convert.Utf;
 
-private import  Float  = tango.text.convert.Float,
+private import  Float = tango.text.convert.Float,
+                Time = tango.text.convert.DateTime,
                 Integer = tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit : OutputStream;
@@ -662,6 +663,11 @@ version (old)
                             auto s = cast(TypeInfo_Struct) type;
                             if (s.xtoString)
                                 return Utf.fromString8 (s.xtoString(p), result);
+                            else
+                               {
+                               if (type is typeid(Time.Time))
+                                   return Time.format (result, *cast(Time.Time*) p, format);
+                               }
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -1048,6 +1054,7 @@ debug (UnitTest)
 debug (Layout)
 {
         import tango.io.Console;
+        import tango.time.Clock;
 
         void main ()
         {
@@ -1076,5 +1083,6 @@ debug (Layout)
 
                 S s;
                 Cout (layout ("struct: {}", s)).newline;
+                Cout (layout ("time: {}", Clock.now)).newline;
         }
 }

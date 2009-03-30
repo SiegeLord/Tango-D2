@@ -10,7 +10,7 @@
 
 ******************************************************************************/
 
-module tango.time.DateFormat;
+module tango.text.convert.DateTime;
 
 private import  tango.time.WallClock;
 
