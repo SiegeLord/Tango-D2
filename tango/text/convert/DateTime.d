@@ -32,7 +32,7 @@ private import  Integer = tango.text.convert.Integer;
         A default locale
 
         TODO: need to make this integrate with the content within 
-        text.locale.Data
+        text.locale.Data, or populate from the O/S instead
 
 ******************************************************************************/
 
