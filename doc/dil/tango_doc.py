@@ -174,7 +174,7 @@ def main():
   create_index(TMP/"index.d", TANGO.SRC, FILES)
   write_tango_ddoc(TANGO_DDOC, TANGO.favicon, options.revision)
   DOC_FILES = [DIL.KANDIL.ddoc, TANGO_DDOC, TMP/"index.d"] + FILES
-  versions = ["Tango", "DDoc"]
+  versions = ["Tango", "DDoc", "D_Ddoc"]
   versions += ["Posix"] if options.posix else ["Windows", "Win32"]
   generate_docs(DIL.EXE, DEST.abspath, MODLIST, DOC_FILES,
                 versions, options=['-v', '-hl', '--kandil'], cwd=DIL)
