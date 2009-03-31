@@ -20,7 +20,7 @@ version(CatchRecursiveTracing){
 
 alias size_t function(TraceContext* context,TraceContext* contextOut,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
 AddrBacktraceFunc addrBacktraceFnc;
-alias bool function(ref Exception.FrameInfo fInfo,char[]buf) SymbolizeFrameInfoFnc;
+alias bool function(ref Exception.FrameInfo fInfo,TraceContext* context,char[]buf) SymbolizeFrameInfoFnc;
 SymbolizeFrameInfoFnc symbolizeFrameInfoFnc;
 
 static this(){
@@ -60,9 +60,9 @@ extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOu
 /// exactAddress is false the address might be changed to the one preceding it
 /// if topStack is true this frame is the top of the stack, and
 /// one should use exactly that information
-extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,char[]buf){
+extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext* context,char[]buf){
     if (symbolizeFrameInfoFnc !is null){
-        return symbolizeFrameInfoFnc(fInfo,buf);
+        return symbolizeFrameInfoFnc(fInfo,context,buf);
     } else {
         return false;
     }
@@ -122,7 +122,7 @@ class BasicTraceInfo: Exception.TraceInfo{
             fInfo.address=cast(size_t)traceAddresses[iframe];
             fInfo.iframe=cast(ptrdiff_t)iframe;
             fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
-            rt_symbolizeFrameInfo(fInfo,buf);
+            rt_symbolizeFrameInfo(fInfo,&context,buf);
             int res=loopBody(fInfo);
             if (res) return res;
         }
@@ -173,7 +173,7 @@ version(DladdrSymbolification){
     extern(C)int dladdr(void* addr, Dl_info* info);
 
     /// poor symbolication, uses dladdr, gives no line info, limited info on statically linked files
-    bool dladdrSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,char[]buf){
+    bool dladdrSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext*context,char[]buf){
         Dl_info dli;
         void *ip=cast(void*)(fInfo.address);
         if (!fInfo.exactAddress) --ip;
@@ -195,11 +195,11 @@ version(DladdrSymbolification){
     }
 }
 
-bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,char[]buf){
+bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *context,char[]buf){
     version(DladdrSymbolification){
-        return dladdrSymbolizeFrameInfo(fInfo,buf);
+        return dladdrSymbolizeFrameInfo(fInfo,context,buf);
     } else version(Windows) {
-        return winSymbolizeFrameInfo(fInfo,buf);
+        return winSymbolizeFrameInfo(fInfo,context,buf);
     } else {
         return false;
     }
