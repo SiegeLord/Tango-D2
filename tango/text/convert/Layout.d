@@ -188,7 +188,12 @@ class Layout(T)
 
         public final uint convert (OutputStream output, T[] formatStr, ...)
         {
-                return convert (cast(Sink) &output.write, _arguments, _argptr, formatStr);
+                uint sink (T[] s)
+                {
+                        return output.write(s);
+                }
+
+                return convert (&sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
