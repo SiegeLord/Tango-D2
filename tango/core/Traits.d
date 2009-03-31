@@ -394,3 +394,85 @@ debug( UnitTest )
     static assert( rankOfArray!(real[][])==2 );
     static assert( rankOfArray!(real[2][])==2 );
 }
+
+// ------- CTFE -------
+
+/// compile time integer to string
+char [] ctfe_i2a(int i){
+    char[] digit="0123456789";
+    char[] res="".dup;
+    if (i==0){
+        return "0".dup;
+    }
+    bool neg=false;
+    if (i<0){
+        neg=true;
+        i=-i;
+    }
+    while (i>0) {
+        res=digit[i%10]~res;
+        i/=10;
+    }
+    if (neg)
+        return '-'~res;
+    else
+        return res;
+}
+/// ditto
+char [] ctfe_i2a(long i){
+    char[] digit="0123456789";
+    char[] res="".dup;
+    if (i==0){
+        return "0".dup;
+    }
+    bool neg=false;
+    if (i<0){
+        neg=true;
+        i=-i;
+    }
+    while (i>0) {
+        res=digit[i%10]~res;
+        i/=10;
+    }
+    if (neg)
+        return '-'~res;
+    else
+        return res;
+}
+/// ditto
+char [] ctfe_i2a(uint i){
+    char[] digit="0123456789";
+    char[] res="".dup;
+    if (i==0){
+        return "0".dup;
+    }
+    bool neg=false;
+    while (i>0) {
+        res=digit[i%10]~res;
+        i/=10;
+    }
+    return res;
+}
+/// ditto
+char [] ctfe_i2a(ulong i){
+    char[] digit="0123456789";
+    char[] res="".dup;
+    if (i==0){
+        return "0".dup;
+    }
+    bool neg=false;
+    while (i>0) {
+        res=digit[i%10]~res;
+        i/=10;
+    }
+    return res;
+}
+
+debug( UnitTest )
+{
+    static assert( ctfe_i2a(31)=="31" );
+    static assert( ctfe_i2a(-31)=="-31" );
+    static assert( ctfe_i2a(14u)=="14" );
+    static assert( ctfe_i2a(14L)=="14" );
+    static assert( ctfe_i2a(14UL)=="14" );
+}
