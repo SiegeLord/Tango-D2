@@ -6,6 +6,14 @@ from path import Path
 from common import *
 from html2pdf import PDFGenerator
 
+def build_runtime_headers(path):
+  print "Building Tango runtime to generate headers."
+  cmd = "sh build-dmd.sh"
+  cwd = os.getcwd()
+  os.chdir(path/"lib")
+  os.system(cmd)
+  os.chdir(cwd)
+
 def copy_files(DIL, TANGO, DEST):
   """ Copies required files to the destination folder. """
   for FILE, DIR in (
@@ -153,6 +161,8 @@ def main():
   if not TANGO.exists:
     print "The path '%s' doesn't exist." % TANGO
     return
+
+  build_runtime_headers(TANGO)
 
   VERSION = get_tango_version(TANGO.SRC/"tango"/"core"/"Version.d")
 
