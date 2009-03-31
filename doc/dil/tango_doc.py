@@ -144,6 +144,7 @@ def main():
   # The version of Tango we're dealing with.
   VERSION   = ""
   # Root of the Tango source code (either svn or zip.)
+  build_runtime_headers(Path(args[0]))
   TANGO     = get_tango_path(args[0])
   # Destination of doc files.
   DEST      = doc_path(firstof(str, getitem(args, 1), 'tangodoc'))
@@ -161,8 +162,6 @@ def main():
   if not TANGO.exists:
     print "The path '%s' doesn't exist." % TANGO
     return
-
-  build_runtime_headers(TANGO)
 
   VERSION = get_tango_version(TANGO.SRC/"tango"/"core"/"Version.d")
 
