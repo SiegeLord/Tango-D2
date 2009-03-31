@@ -49,12 +49,12 @@
  *  POWER = $1<sup>$2</sup>
  *  BIGSUM = $(BIG &Sigma; <sup>$2</sup><sub>$(SMALL $1)</sub>)
  *  CHOOSE = $(BIG &#40;) <sup>$(SMALL $1)</sup><sub>$(SMALL $2)</sub> $(BIG &#41;)
- *	PLUSMN = &plusmn;
- *	INFIN = &infin;
+ *  PLUSMN = &plusmn;
+ *  INFIN = &infin;
  *  PLUSMNINF = &plusmn;&infin;
- *	PI = &pi;
- *	LT = &lt;
- *	GT = &gt;
+ *  PI = &pi;
+ *  LT = &lt;
+ *  GT = &gt;
  *  SQRT = &radix;
  *  HALF = &frac12;
  *  TABLE_SV = <table border=1 cellpadding=4 cellspacing=0>
@@ -839,7 +839,7 @@ unittest {
  *    $(TABLE_SV
  *    $(SVH  x,     acosh(x) )
  *    $(SV  $(NAN), $(NAN) )
- *    $(SV  <1,     $(NAN) )
+ *    $(SV  $(LT)1,     $(NAN) )
  *    $(SV  1,      0       )
  *    $(SV  +$(INFIN),+$(INFIN))
  *  )
