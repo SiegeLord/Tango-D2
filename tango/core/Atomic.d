@@ -45,7 +45,7 @@ enum msync
 
 private
 {
-    version( DDoc ) {} else
+    version( D_Ddoc ) {} else
     {
         import tango.core.Traits;
 
@@ -91,7 +91,7 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( DDoc )
+version( D_Ddoc )
 {
     ////////////////////////////////////////////////////////////////////////////
     // Atomic Load
@@ -1649,7 +1649,7 @@ private:
 
 private
 {
-    version( DDoc ) {} else
+    version( D_Ddoc ) {} else
     {
         template testLoad( msync ms, T )
         {

@@ -462,7 +462,7 @@ class TempFile : Device, Device.Seek
             return true;
         }
 
-        // See DDoc version
+        // See D_Ddoc version
         override long seek(long offset, Anchor anchor = Anchor.Begin)
         {
             LONG high = cast(LONG) (offset >> 32);
@@ -565,7 +565,7 @@ class TempFile : Device, Device.Seek
             }
         }
 
-        // See DDoc version
+        // See D_Ddoc version
         long seek(long offset, Anchor anchor = Anchor.Begin)
         {
             assert( offset <= uint.max );
@@ -575,7 +575,7 @@ class TempFile : Device, Device.Seek
             return result;
         }
     }
-    else version( DDoc )
+    else version( D_Ddoc )
     {
         /**********************************************************************
          * 
