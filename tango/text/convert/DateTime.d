@@ -151,7 +151,7 @@ struct DateTimeLocale
                 ---
 
                 Using these format indicators with Layout (Stdout etc) is
-                straightforward. Formatting integers, for example is done
+                straightforward. Formatting integers, for example, is done
                 like so:
                 ---
                 Stdout.formatln ("{:u}", 5);
