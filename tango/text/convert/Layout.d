@@ -30,10 +30,11 @@ private import  tango.time.Time;
 
 private import  tango.core.Exception;
 
+private import  tango.text.convert.DateTime;
+
 private import  Utf = tango.text.convert.Utf;
 
 private import  Float = tango.text.convert.Float,
-                Dates = tango.text.convert.DateTime,
                 Integer = tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit : OutputStream;
@@ -73,7 +74,9 @@ class Layout(T)
 {
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
-        
+       
+        private DateTimeLocale* dateTime = &EngUS;
+
         /**********************************************************************
 
                 Return shared instance
@@ -667,7 +670,7 @@ version (old)
                                 return Utf.fromString8 (s.xtoString(p), result);
                             else
                                if (type is typeid(Time))
-                                   return Dates.format (result, *cast(Time*) p, format);
+                                   return dateTime.format (result, *cast(Time*) p, format);
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -1054,7 +1057,7 @@ debug (UnitTest)
 debug (Layout)
 {
         import tango.io.Console;
-        import tango.time.Clock;
+        import tango.time.WallClock;
 
         void main ()
         {
@@ -1083,6 +1086,6 @@ debug (Layout)
 
                 S s;
                 Cout (layout ("struct: {}", s)).newline;
-                Cout (layout ("time: {}", Clock.now)).newline;
+                Cout (layout ("time: {}", WallClock.now)).newline;
         }
 }
