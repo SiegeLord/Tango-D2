@@ -4,17 +4,23 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: 2005
+        version:        Jan 2005: initial release
+                        Mar 2009: extracted from locale, and 
+                                  converted to a struct
 
-        author:         John Chapman
+        author:         John Chapman, Kris
+
+        Support for formatting date/time values, in a locale-specific
+        manner. See DateTimeLocate.format() for a description on how 
+        formatting is performed (below).
 
 ******************************************************************************/
 
 module tango.text.convert.DateTime;
 
-private import  tango.time.WallClock;
-
 private import  tango.core.Exception;
+
+private import  tango.time.WallClock;
 
 private import  tango.time.chrono.Calendar,
                 tango.time.chrono.Gregorian;
@@ -22,76 +28,275 @@ private import  tango.time.chrono.Calendar,
 private import  Integer = tango.text.convert.Integer;
 
 /******************************************************************************
+        
+        A default locale
+
+        TODO: need to make this integrate with the content within 
+        text.locale.Data
 
 ******************************************************************************/
 
-char[] format (char[] output, Time dateTime, char[] fmt)
+DateTimeLocale EngUS = 
 {
-        return format (output, dateTime, fmt, EngUS);
-}
+        shortDatePattern                : "M/d/yyyy",
+        shortTimePattern                : "h:mm tt",       
+        longDatePattern                 : "dddd, MMMM d, yyyy",
+        longTimePattern                 : "h:mm:ss tt",        
+        fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
+        generalShortTimePattern         : "M/d/yyyy h:mm tt",
+        generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
+        monthDayPattern                 : "MMMM d",
+        yearMonthPattern                : "MMMM, yyyy",
+        amDesignator                    : "AM",
+        pmDesignator                    : "PM",
+        timeSeparator                   : ":",
+        dateSeparator                   : "/",
+        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday", 
+                                           "Thursday", "Friday", "Saturday"],
+        monthNames                      : ["January", "February", "March", "April", 
+                                           "May", "June", "July", "August", "September", 
+                                           "October" "November", "December"],
+        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],    
+        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                           "Jul", "Aug", "Sep", "Oct" "Nov", "Dec"],
+};
+
 
 /******************************************************************************
 
+        How to format locale-specific date/time output
+
 ******************************************************************************/
 
-private char[] format (char[] output, Time dateTime, char[] format, ref DateTimeLocale dtl)
-{
+struct DateTimeLocale
+{       
+        static char[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+        static char[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+        static char[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+
+        Calendar        assignedCalendar;
+
+        char[]          shortDatePattern,
+                        shortTimePattern,
+                        longDatePattern,
+                        longTimePattern,
+                        fullDateTimePattern,
+                        generalShortTimePattern,
+                        generalLongTimePattern,
+                        monthDayPattern,
+                        yearMonthPattern;
+
+        char[]          amDesignator,
+                        pmDesignator;
+
+        char[]          timeSeparator,
+                        dateSeparator;
+
+        char[][]        dayNames,
+                        monthNames,
+                        abbreviatedDayNames,
+                        abbreviatedMonthNames;
+
+        /**********************************************************************
+
+                Format the given Time value into the provided output, 
+                using the specified layout. The layout can be a generic
+                variant or a custom one, where generics are indicated
+                via a single character:
+                ---
+                "t" = 7:04 PM
+                "T" = 7:04:02 PM 
+                "d" = 3/30/2009
+                "D" = Monday, March 30, 2009
+                "f" = Monday, March 30, 2009 7:04 PM
+                "F" = Monday, March 30, 2009 7:04:02 PM
+                "g" = 3/30/2009 7:04 PM
+                "G" = 3/30/2009 7:04:02 PM
+                "m" 
+                "M" = March 30
+                "y"
+                "Y" = March, 2009
+                "r"
+                "R" = Mon, 30 Mar 2009 19:04:02 GMT
+                "s" = 2009-03-30T19:04:02
+                "u" = 2009-03-30 19:04:02Z
+                ---
+        
+                These short codes are expanded in the following manner:
+                ---
+                "t" = "h:mm tt" 
+                "T" = "h:mm:ss tt"
+                "d" = "M/d/yyyy"  
+                "D" = "dddd, MMMM d, yyyy" 
+                "f" = "dddd, MMMM d, yyyy h:mm tt"
+                "F" = "dddd, MMMM d, yyyy h:mm:ss tt"
+                "g" = "M/d/yyyy h:mm tt"
+                "G" = "M/d/yyyy h:mm:ss tt"
+                "m" 
+                "M" = "MMMM d"            
+                "y"
+                "Y" = "MMMM, yyyy"        
+                "r"
+                "R" = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'"
+                "s" = "yyyy'-'MM'-'dd'T'HH':'mm':'ss"      
+                "u" = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'"   
+                ---
+
+                Custom layouts are constructed using a combination of the 
+                character codes indicated on the right, above. For example, 
+                a layout of "dddd, dd MMM yyyy HH':'mm':'ss zzzz" will emit 
+                something like this:
+                ---
+                Monday, 30 Mar 2009 19:04:02 -08:00
+                ---
+
+                Using these format indicators with Layout (Stdout etc) is
+                straightforward. Formatting integers, for example is done
+                like so:
+                ---
+                Stdout.formatln ("{:u}", 5);
+                Stdout.formatln ("{:b}", 5);
+                Stdout.formatln ("{:x}", 5);
+                ---
+
+                Formatting date/time values is similar, where the format
+                indicators are provided after the colon:
+                ---
+                Stdout.formatln ("{:t}", Clock.now);
+                Stdout.formatln ("{:D}", Clock.now);
+                Stdout.formatln ("{:dddd, dd MMMM yyyy HH:mm}", Clock.now);
+                ---
+
+        **********************************************************************/
+
+        char[] format (char[] output, Time dateTime, char[] layout)
+        {
+                // default to general format
+                if (layout.length is 0)
+                    layout = "G"; 
+
+                // might be one of our shortcuts
+                if (layout.length is 1) 
+                    layout = expandKnownFormat (layout);
+
+                return formatCustom (Result(output), dateTime, layout);
+        }
+
+        /**********************************************************************
+
+                Return the assigned Calendar instance, using Gregorian
+                as the default
+
+        **********************************************************************/
+
+        Calendar calendar ()
+        {
+                if (assignedCalendar is null)
+                    assignedCalendar = Gregorian.generic;
+                return assignedCalendar;
+        }
+
+        /**********************************************************************
+
+                Return a short day name 
+
+        **********************************************************************/
+
+        char[] abbreviatedDayName (Calendar.DayOfWeek dayOfWeek)
+        {
+                return abbreviatedDayNames [cast(int) dayOfWeek];
+        }
+
+        /**********************************************************************
+
+                Return a long day name
+
+        **********************************************************************/
+
+        char[] dayName (Calendar.DayOfWeek dayOfWeek)
+        {
+                return dayNames [cast(int) dayOfWeek];
+        }
+                       
+        /**********************************************************************
+
+                Return a short month name
+
+        **********************************************************************/
+
+        char[] abbreviatedMonthName (int month)
+        {
+                assert (month > 0 && month < 13);
+                return abbreviatedMonthNames [month - 1];
+        }
+
+        /**********************************************************************
+
+                Return a long month name
+
+        **********************************************************************/
+
+        char[] monthName (int month)
+        {
+                assert (month > 0 && month < 13);
+                return monthNames [month - 1];
+        }
+
         /**********************************************************************
 
         **********************************************************************/
 
-        char[] expandKnownFormat (char[] format)
+        private char[] expandKnownFormat (char[] format)
         {
                 char[] f;
 
                 switch (format[0])
                        {
                        case 'd':
-                            f = dtl.shortDatePattern;
+                            f = shortDatePattern;
                             break;
                        case 'D':
-                            f = dtl.longDatePattern;
+                            f = longDatePattern;
                             break;
                        case 'f':
-                            f = dtl.longDatePattern ~ " " ~ dtl.shortTimePattern;
+                            f = longDatePattern ~ " " ~ shortTimePattern;
                             break;
                        case 'F':
-                            f = dtl.fullDateTimePattern;
+                            f = fullDateTimePattern;
                             break;
                        case 'g':
-                            f = dtl.generalShortTimePattern;
+                            f = generalShortTimePattern;
                             break;
                        case 'G':
-                            f = dtl.generalLongTimePattern;
+                            f = generalLongTimePattern;
                             break;
                        case 'm':
                        case 'M':
-                            f = dtl.monthDayPattern;
+                            f = monthDayPattern;
                             break;
                        case 'r':
                        case 'R':
-                            f = dtl.rfc1123Pattern;
+                            f = rfc1123Pattern;
                             break;
                        case 's':
-                            f = dtl.sortableDateTimePattern;
+                            f = sortableDateTimePattern;
                             break;
                        case 'u':
-                            f = dtl.universalSortableDateTimePattern;
+                            f = universalSortableDateTimePattern;
                             break;
                        case 't':
-                            f = dtl.shortTimePattern;
+                            f = shortTimePattern;
                             break;
                        case 'T':
-                            f = dtl.longTimePattern;
+                            f = longTimePattern;
                             break;
                        case 'y':
                        case 'Y':
-                            f = dtl.yearMonthPattern;
+                            f = yearMonthPattern;
                             break;
                        default:
                            throw new IllegalArgumentException("Invalid date format.");
                        }
-
                 return f;
         }
 
@@ -99,118 +304,51 @@ private char[] format (char[] output, Time dateTime, char[] format, ref DateTime
 
         **********************************************************************/
 
-        char[] formatCustom (ref Result result, Time dateTime, char[] format)
+        private char[] formatCustom (ref Result result, Time dateTime, char[] format)
         {
+                uint            len,
+                                doy,
+                                dow,
+                                era;        
+                uint            day,
+                                year,
+                                month;
+                int             index;
+                char[10]        tmp = void;
+                auto            time = dateTime.time;
 
-                int parseRepeat(char[] format, int pos, char c)
-                {
-                        int n = pos + 1;
-                        while (n < format.length && format[n] is c)
-                               n++;
-                        return n - pos;
-                }
+                // extract date components
+                calendar.split (dateTime, year, month, day, doy, dow, era);
 
-                char[] formatDayOfWeek(Calendar.DayOfWeek dayOfWeek, int rpt)
-                {
-                        if (rpt is 3)
-                            return dtl.abbreviatedDayName(dayOfWeek);
-                        return dtl.dayName(dayOfWeek);
-                }
-
-                char[] formatMonth(int month, int rpt)
-                {
-                        if (rpt is 3)
-                            return dtl.abbreviatedMonthName(month);
-                        return dtl.monthName(month);
-                }
-
-                char[] formatInt (char[] tmp, int v, int minimum)
-                {
-                        auto num = Integer.itoa (tmp, v);
-                        if ((minimum -= num.length) > 0)
-                           {
-                           auto p = tmp.ptr + tmp.length - num.length;
-                           while (minimum--)
-                                  *--p = '0';
-                           num = tmp [p-tmp.ptr .. $];
-                           }
-                        return num;
-                }
-
-                int parseQuote(char[] format, int pos, out char[] result)
-                {
-                        int start = pos;
-                        char chQuote = format[pos++];
-                        bool found;
-                        while (pos < format.length)
-                              {
-                              char c = format[pos++];
-                              if (c is chQuote)
-                                 {
-                                 found = true;
-                                 break;
-                                 }
-                              else
-                                 if (c is '\\')
-                                    { // escaped
-                                    if (pos < format.length)
-                                        result ~= format[pos++];
-                                    }
-                                 else
-                                    result ~= c;
-                              }
-                        return pos - start;
-                }
-
-
-                auto calendar = dtl.calendar;
-                auto justTime = true;
-                int index, len;
-                char[10] tmp;
-
-                if (format[0] is '%')
-                    {
-                    // specifiers for both standard format strings and custom ones
-                    const char[] commonSpecs = "dmMsty";
-                    foreach (c; commonSpecs)
-                             if (format[1] is c)
-                                {
-                                index += 1;
-                                break;
-                                }
-                    }
-
+                // sweep format specifiers ...
                 while (index < format.length)
                       {
                       char c = format[index];
-                      auto time = dateTime.time;
-
+                      
                       switch (c)
                              {
-                             case 'd':  // day
-                                  len = parseRepeat(format, index, c);
+                             // day
+                             case 'd':  
+                                  len = parseRepeat (format, index, c);
                                   if (len <= 2)
-                                     {
-                                     int day = calendar.getDayOfMonth(dateTime);
-                                     result ~= formatInt (tmp, day, len);
-                                     }
+                                      result ~= formatInt (tmp, day, len);
                                   else
-                                     result ~= formatDayOfWeek(calendar.getDayOfWeek(dateTime), len);
-                                  justTime = false;
+                                     result ~= formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len);
                                   break;
 
-                             case 'M':  // month
-                                  len = parseRepeat(format, index, c);
-                                  int month = calendar.getMonth(dateTime);
+                             // month
+                             case 'M':  
+                                  len = parseRepeat (format, index, c);
                                   if (len <= 2)
                                       result ~= formatInt (tmp, month, len);
                                   else
-                                     result ~= formatMonth(month, len);
-                                  justTime = false;
+                                     result ~= formatMonth (month, len);
                                   break;
-                             case 'y':  // year
-                                  len = parseRepeat(format, index, c);
-                                  int year = calendar.getYear(dateTime);
+
+                             // year
+                             case 'y':  
+                                  len = parseRepeat (format, index, c);
+
                                   // Two-digit years for Japanese
                                   if (calendar.id is Calendar.JAPAN)
                                       result ~= formatInt (tmp, year, 2);
@@ -221,47 +359,58 @@ private char[] format (char[] output, Time dateTime, char[] format, ref DateTime
                                      else
                                         result ~= formatInt (tmp, year, len);
                                      }
-                                  justTime = false;
                                   break;
-                             case 'h':  // hour (12-hour clock)
-                                  len = parseRepeat(format, index, c);
+
+                             // hour (12-hour clock)
+                             case 'h':  
+                                  len = parseRepeat (format, index, c);
                                   int hour = time.hours % 12;
                                   if (hour is 0)
                                       hour = 12;
                                   result ~= formatInt (tmp, hour, len);
                                   break;
-                             case 'H':  // hour (24-hour clock)
-                                  len = parseRepeat(format, index, c);
+
+                             // hour (24-hour clock)
+                             case 'H':  
+                                  len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.hours, len);
                                   break;
-                             case 'm':  // minute
-                                  len = parseRepeat(format, index, c);
+
+                             // minute
+                             case 'm':  
+                                  len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.minutes, len);
                                   break;
-                             case 's':  // second
-                                  len = parseRepeat(format, index, c);
+
+                             // second
+                             case 's':  
+                                  len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.seconds, len);
                                   break;
-                             case 't':  // AM/PM
-                                  len = parseRepeat(format, index, c);
+
+                             // AM/PM
+                             case 't':  
+                                  len = parseRepeat (format, index, c);
                                   if (len is 1)
                                      {
                                      if (time.hours < 12)
                                         {
-                                        if (dtl.amDesignator.length != 0)
-                                            result ~= dtl.amDesignator[0];
+                                        if (amDesignator.length != 0)
+                                            result ~= amDesignator[0];
                                         }
                                      else
                                         {
-                                        if (dtl.pmDesignator.length != 0)
-                                            result ~= dtl.pmDesignator[0];
+                                        if (pmDesignator.length != 0)
+                                            result ~= pmDesignator[0];
                                         }
                                      }
                                   else
-                                     result ~= (time.hours < 12) ? dtl.amDesignator : dtl.pmDesignator;
+                                     result ~= (time.hours < 12) ? amDesignator : pmDesignator;
                                   break;
-                             case 'z':  // timezone offset
-                                  len = parseRepeat(format, index, c);
+
+                             // timezone offset
+                             case 'z':  
+                                  len = parseRepeat (format, index, c);
                                   auto minutes = cast(int) (WallClock.zone.minutes);
                                   if (minutes < 0)
                                       minutes = -minutes, result ~= '-';
@@ -278,24 +427,30 @@ private char[] format (char[] output, Time dateTime, char[] format, ref DateTime
                                      else
                                         {
                                         result ~= formatInt (tmp, hours, 2);
-                                        result ~= ':';
+                                        result ~= timeSeparator;
                                         result ~= formatInt (tmp, minutes, 2);
                                         }
                                   break;
-                             case ':':  // time separator
+
+                             // time separator
+                             case ':':  
                                   len = 1;
-                                  result ~= dtl.timeSeparator;
+                                  result ~= timeSeparator;
                                   break;
-                             case '/':  // date separator
+
+                             // date separator
+                             case '/':  
                                   len = 1;
-                                  result ~= dtl.dateSeparator;
+                                  result ~= dateSeparator;
                                   break;
-                             case '\"':  // string literal
-                             case '\'':  // char literal
-                                  char[] quote;
-                                  len = parseQuote(format, index, quote);
-                                  result ~= quote;
+
+                             // string literal
+                             case '\"':  
+                             case '\'':  
+                                  len = parseQuote (result, format, index);
                                   break;
+
+                             // other
                              default:
                                  len = 1;
                                  result ~= c;
@@ -306,17 +461,86 @@ private char[] format (char[] output, Time dateTime, char[] format, ref DateTime
                 return result.get;
         }
 
+        /**********************************************************************
 
-        if (format.length is 0)
-            format = "G"; // Default to general format.
+        **********************************************************************/
 
-        if (format.length is 1) // It might be one of our shortcuts.
-            format = expandKnownFormat (format);
+        private char[] formatMonth (int month, int rpt)
+        {
+                if (rpt is 3)
+                    return abbreviatedMonthName (month);
+                return monthName (month);
+        }
 
-        auto result = Result (output);
-        return formatCustom (result, dateTime, format);
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private char[] formatDayOfWeek (Calendar.DayOfWeek dayOfWeek, int rpt)
+        {
+                if (rpt is 3)
+                    return abbreviatedDayName (dayOfWeek);
+                return dayName (dayOfWeek);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private static int parseRepeat(char[] format, int pos, char c)
+        {
+                int n = pos + 1;
+                while (n < format.length && format[n] is c)
+                       n++;
+                return n - pos;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private static char[] formatInt (char[] tmp, int v, int minimum)
+        {
+                auto num = Integer.itoa (tmp, v);
+                if ((minimum -= num.length) > 0)
+                   {
+                   auto p = tmp.ptr + tmp.length - num.length;
+                   while (minimum--)
+                          *--p = '0';
+                   num = tmp [p-tmp.ptr .. $];
+                   }
+                return num;
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private static int parseQuote (ref Result result, char[] format, int pos)
+        {
+                int start = pos;
+                char chQuote = format[pos++];
+                bool found;
+                while (pos < format.length)
+                      {
+                      char c = format[pos++];
+                      if (c is chQuote)
+                         {
+                         found = true;
+                         break;
+                         }
+                      else
+                         if (c is '\\')
+                            { // escaped
+                            if (pos < format.length)
+                                result ~= format[pos++];
+                            }
+                         else
+                            result ~= c;
+                      }
+                return pos - start;
+        }
 }
-
 
 /******************************************************************************
 
@@ -376,114 +600,28 @@ private struct Result
 
 ******************************************************************************/
 
-private struct DateTimeLocale
-{       
-        static char[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-        static char[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-        static char[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
-
-        Calendar        calendar;
-        char[]          shortDatePattern,
-                        shortTimePattern,
-                        longDatePattern,
-                        longTimePattern,
-                        fullDateTimePattern,
-                        generalShortTimePattern,
-                        generalLongTimePattern,
-                        monthDayPattern,
-                        yearMonthPattern;
-        char[]          amDesignator,
-                        pmDesignator;
-        char[]          timeSeparator,
-                        dateSeparator;
-        char[][]        dayNames,
-                        monthNames,
-                        abbreviatedDayNames,
-                        abbreviatedMonthNames;
-
-        char[] abbreviatedDayName (Calendar.DayOfWeek dayOfWeek)
-        {
-                return abbreviatedDayNames [cast(int) dayOfWeek];
-        }
-
-        char[] dayName (Calendar.DayOfWeek dayOfWeek)
-        {
-                return dayNames [cast(int) dayOfWeek];
-        }
-                       
-        char[] abbreviatedMonthName (int month)
-        {
-                assert (month > 0 && month < 13);
-                return abbreviatedMonthNames [month - 1];
-        }
-
-        char[] monthName (int month)
-        {
-                assert (month > 0 && month < 13);
-                return monthNames [month - 1];
-        }
-}
-
-/******************************************************************************
-
-******************************************************************************/
-
-private DateTimeLocale EngUS = 
-{
-        shortDatePattern                : "M/d/yyyy",
-        shortTimePattern                : "h:mm tt",       
-        longDatePattern                 : "dddd, MMMM d, yyyy",
-        longTimePattern                 : "h:mm:ss tt",        
-        fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
-        generalShortTimePattern         : "M/d/yyyy h:mm tt",
-        generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
-        monthDayPattern                 : "MMMM d",
-        yearMonthPattern                : "MMMM, yyyy",
-        amDesignator                    : "AM",
-        pmDesignator                    : "PM",
-        timeSeparator                   : ":",
-        dateSeparator                   : "/",
-        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        monthNames                      : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October" "November", "December"],
-        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],    
-        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct" "Nov", "Dec"],
-};
-
-/******************************************************************************
-
-******************************************************************************/
-
-static this()
-{       
-        EngUS.calendar = Gregorian.generic;
-}
-
-
-
-/******************************************************************************
-
-******************************************************************************/
-
-debug (DateFormat)
+debug (DateTime)
 {
         import tango.io.Stdout;
 
         void main()
         {
                 char[100] tmp;
+                auto time = WallClock.now;
 
-                Stdout.formatln ("d: {}", format (tmp, WallClock.now, "d"));
-                Stdout.formatln ("D: {}", format (tmp, WallClock.now, "D"));
-                Stdout.formatln ("f: {}", format (tmp, WallClock.now, "f"));
-                Stdout.formatln ("F: {}", format (tmp, WallClock.now, "F"));
-                Stdout.formatln ("g: {}", format (tmp, WallClock.now, "g"));
-                Stdout.formatln ("G: {}", format (tmp, WallClock.now, "G"));
-                Stdout.formatln ("m: {}", format (tmp, WallClock.now, "m"));
-                Stdout.formatln ("r: {}", format (tmp, WallClock.now, "r"));
-                Stdout.formatln ("s: {}", format (tmp, WallClock.now, "s"));
-                Stdout.formatln ("t: {}", format (tmp, WallClock.now, "t"));
-                Stdout.formatln ("T: {}", format (tmp, WallClock.now, "T"));
-                Stdout.formatln ("y: {}", format (tmp, WallClock.now, "y"));
-                Stdout.formatln ("u: {}", format (tmp, WallClock.now, "u"));
+                Stdout.formatln ("d: {}", EngUS.format (tmp, time, "d"));
+                Stdout.formatln ("D: {}", EngUS.format (tmp, time, "D"));
+                Stdout.formatln ("f: {}", EngUS.format (tmp, time, "f"));
+                Stdout.formatln ("F: {}", EngUS.format (tmp, time, "F"));
+                Stdout.formatln ("g: {}", EngUS.format (tmp, time, "g"));
+                Stdout.formatln ("G: {}", EngUS.format (tmp, time, "G"));
+                Stdout.formatln ("m: {}", EngUS.format (tmp, time, "m"));
+                Stdout.formatln ("r: {}", EngUS.format (tmp, time, "r"));
+                Stdout.formatln ("s: {}", EngUS.format (tmp, time, "s"));
+                Stdout.formatln ("t: {}", EngUS.format (tmp, time, "t"));
+                Stdout.formatln ("T: {}", EngUS.format (tmp, time, "T"));
+                Stdout.formatln ("y: {}", EngUS.format (tmp, time, "y"));
+                Stdout.formatln ("u: {}", EngUS.format (tmp, time, "u"));
+                Stdout.formatln ("{}", EngUS.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
         }
 }
