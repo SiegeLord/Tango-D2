@@ -942,27 +942,61 @@ class Exception : Object
 {
     struct FrameInfo{
         long line;
-        ptrdiff_t iframe;
-        ptrdiff_t offset;
+        size_t iframe;
+        ptrdiff_t offsetSymb;
+        size_t baseSymb;
+        ptrdiff_t offsetImg;
+        size_t baseImg;
         size_t address;
         char[] file;
         char[] func;
-        char[256] charBuf;
+        char[] extra;
+        bool exactAddress;
+        bool internalFunction;
         void writeOut(void delegate(char[])sink){
             char[25] buf;
-            sink(func);
-            auto len=sprintf(buf.ptr,"@%zx ",address);
+            if (func.length) {
+                sink(func);
+            } else {
+                sink("???");
+            }
+            auto len=sprintf(buf.ptr,"@%zx",baseSymb);
             sink(buf[0..len]);
-            len=sprintf(buf.ptr," %+td ",address);
+            len=sprintf(buf.ptr,"%+td ",offsetSymb);
             sink(buf[0..len]);
+            if (extra.length){
+                sink(extra);
+                sink(" ");
+            }
             sink(file);
-            len=sprintf(buf.ptr,":%ld",line);
+            len=sprintf(buf.ptr,":%ld ",line);
             sink(buf[0..len]);
+            len=sprintf(buf.ptr,"%zx",baseImg);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"%+td ",offsetImg);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"[%zx]",address);
+            sink(buf[0..len]);
+        }
+        void clear(){
+            line=0;
+            iframe=-1;
+            offsetImg=0;
+            baseImg=0;
+            offsetSymb=0;
+            baseSymb=0;
+            address=0;
+            exactAddress=true;
+            internalFunction=false;
+            file=null;
+            func=null;
+            extra=null;
         }
     }
     interface TraceInfo
     {
         int opApply( int delegate( ref FrameInfo fInfo ) );
+        void writeOut(void delegate(char[])sink);
     }
 
     char[]      msg;

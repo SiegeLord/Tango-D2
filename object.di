@@ -185,25 +185,40 @@ class Exception : Object
         long line;
         /// number of the stack frame (starting at 0 for the top frame)
         ptrdiff_t iframe;
-        /// offset within the function, ot from the closest symbol
-        ptrdiff_t offset;
+        /// offset from baseSymb: within the function, or from the closest symbol
+        ptrdiff_t offsetSymb;
+        /// adress of the symbol in this execution
+        size_t baseSymb;
+        /// offset within the image (from this you can use better methods to get line number
+        /// a posteriory)
+        ptrdiff_t offsetImg;
+        /// base adress of the image (will be dependent on randomization schemes)
+        size_t baseImg;
         /// adress of the function, or at which the ipc will return
-        // (which most likely is the one after the adress where it started)
+        /// (which most likely is the one after the adress where it started)
+        /// this is the raw adress returned by the backtracing function
         size_t address;
-        /// file of the current adress+offset
+        /// file (image) of the current adress
         char[] file;
-        /// name of the function
+        /// name of the function, if possible demangled
         char[] func;
-        /// a buffer to help avoiding allocation when composing the previous strings,
-        /// and keeping them copiable
-        char[256] charBuf;
+        /// extra information (for example calling arguments)
+        char[] extra;
+        /// if the address is exact or it is the return address
+        bool exactAddress;
+        /// if this function is an internal functions (for example the backtracing function itself)
+        /// if true by default the frame is not printed
+        bool internalFunction;
         /// writes out the current frame info
         void writeOut(void delegate(char[])sink);
+        /// clears the frame information stored
+        void clear();
     }
     /// trace information has the following interface
     interface TraceInfo
     {
         int opApply( int delegate( ref FrameInfo fInfo) );
+        void writeOut(void delegate(char[])sink);
     }
     /// message of the exception
     char[]      msg;
