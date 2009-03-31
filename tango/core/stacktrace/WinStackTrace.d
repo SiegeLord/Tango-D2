@@ -50,7 +50,7 @@ version(Windows) {
             context.Ebp = ebpReg;
         }
         if (contextOut !is null){
-            contextOut.context=*ctxPtr;
+            contextOut.context=ctxPtr;
             contextOut.hProcess=hProcess;
             contextOut.hThread=hThread;
         }
@@ -84,7 +84,7 @@ version(Windows) {
         return traceLen;
     }
 
-    bool winSymbolizeFrameInfo(ref Exception.FrameInfo fInfo, TraceInfo *context,char[] buf){
+    bool winSymbolizeFrameInfo(ref Exception.FrameInfo fInfo, TraceContext *context,char[] buf){
         HANDLE hProcess;
         if (context!is null){
             hProcess=context.hProcess;
