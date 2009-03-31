@@ -11,7 +11,7 @@
         author:         John Chapman, Kris
 
         Support for formatting date/time values, in a locale-specific
-        manner. See DateTimeLocate.format() for a description on how 
+        manner. See DateTimeLocale.format() for a description on how 
         formatting is performed (below).
 
 ******************************************************************************/
@@ -122,7 +122,8 @@ struct DateTimeLocale
                 "u" = 2009-03-30 19:04:02Z
                 ---
         
-                These short codes are expanded in the following manner:
+                For the US locale, these generic layouts are expanded in the 
+                following manner:
                 ---
                 "t" = "h:mm tt" 
                 "T" = "h:mm:ss tt"
