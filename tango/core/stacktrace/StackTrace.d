@@ -6,6 +6,8 @@ import tango.stdc.stdio:printf;
 import tango.stdc.stdlib: abort;
 version(Windows){
     import tango.core.stacktrace.WinStackTrace;
+} else {
+    import tango.stdc.posix.sys.types: pid_t,pthread_t;
 }
 
 version(CatchRecursiveTracing){
@@ -16,7 +18,7 @@ version(CatchRecursiveTracing){
     }
 }
 
-alias size_t function(void* context,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
+alias size_t function(TraceContext* context,TraceContext* contextOut,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
 AddrBacktraceFunc addrBacktraceFnc;
 alias bool function(ref Exception.FrameInfo fInfo,char[]buf) SymbolizeFrameInfoFnc;
 SymbolizeFrameInfoFnc symbolizeFrameInfoFnc;
@@ -45,9 +47,9 @@ extern (C) void  rt_setTraceHandler( TraceHandler h );
 /// builds a backtrace of addresses, the addresses are addresses of the *next* instruction, 
 /// *return* addresses, the most likely the calling instruction is the one before them
 /// (stack top excluded)
-extern(C) size_t rt_addrBacktrace(void* context,size_t*traceBuf,size_t bufLength,int *flags){
+extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOut,size_t*traceBuf,size_t bufLength,int *flags){
     if (addrBacktraceFnc !is null){
-        return addrBacktraceFnc(context,traceBuf,bufLength,flags);
+        return addrBacktraceFnc(context,contextOut,traceBuf,bufLength,flags);
     } else {
         return 0;
     }
@@ -72,11 +74,24 @@ enum AddrPrecision{
     TopExact=1,
     AllExact=3
 }
+
+version(Windows){
+} else {
+    struct TraceContext{
+        void *extra;
+        size_t esp;
+        size_t gotf;
+        size_t ip;
+        pid_t hProcess;
+        pthread_t hThread;
+    }
+}
 /// basic class that represents a stacktrace
 class BasicTraceInfo: Exception.TraceInfo{
     size_t[] traceAddresses;
     size_t[128] traceBuf;
     AddrPrecision addrPrecision;
+    TraceContext context;
     /// cretes an empty stacktrace
     this(){}
     /// creates a stacktrace with the given traceAddresses
@@ -90,9 +105,9 @@ class BasicTraceInfo: Exception.TraceInfo{
         this.addrPrecision=addrPrecision;
     }
     /// takes a stacktrace
-    void trace(void* context=null,int skipFrames=0){
+    void trace(TraceContext *contextIn=null,int skipFrames=0){
         int flags;
-        size_t nFrames=rt_addrBacktrace(context,traceBuf.ptr,traceBuf.length,&flags);
+        size_t nFrames=rt_addrBacktrace(contextIn,&context,traceBuf.ptr,traceBuf.length,&flags);
         traceAddresses=traceBuf[skipFrames..nFrames];
         addrPrecision=cast(AddrPrecision)flags;
         if (flags==AddrPrecision.TopExact && skipFrames!=0)
@@ -134,13 +149,14 @@ version(LibCBacktrace){
 }
 
 /// default (tango given) backtrace function
-size_t defaultAddrBacktrace(void* context,size_t*traceBuf,size_t length,int*flags){
+size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
+    size_t*traceBuf,size_t length,int*flags){
     version(LibCBacktrace){
         if (context!is null) return 0;
         *flags=AddrPrecision.TopExact;
         return cast(size_t)backtrace(cast(void**)traceBuf,length);
     } else version (Windows){
-        return winAddrBacktrace(context,traceBuf,length,flags);
+        return winAddrBacktrace(context,contextOut,traceBuf,length,flags);
     } else {
         return 0;
     }
@@ -203,7 +219,7 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
             }
         }
         res=new BasicTraceInfo();
-        res.trace(ptr);
+        res.trace(cast(TraceContext*)ptr);
     } catch (Exception e){
         printf("tracer got exception:\n");
         printf((e.msg~"\n\0").ptr);

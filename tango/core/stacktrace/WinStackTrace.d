@@ -1,4 +1,4 @@
-module tango.core.stacktrace.WinStacktrace;
+module tango.core.stacktrace.WinStackTrace;
 version(Windows) {
     private {
         import tango.core.stacktrace.Demangler;
@@ -12,18 +12,21 @@ version(Windows) {
     //version = UseCustomFiberForDemangling;
     version = DemangleFunctionNames;
 
-    struct WinContext{
+    struct TraceContext{
         LPCONTEXT context;
         HANDLE hProcess;
         HANDLE hThread;
     }
 
-    size_t defaultAddrBacktrace(void* ctx,size_t*traceBuf,size_t length,int *flags){
+    size_t winAddrBacktrace(TraceContext* winCtx,TraceContext* contextOut,size_t*traceBuf,size_t traceBufLength,int *flags){
         CONTEXT     context;
         CONTEXT*    ctxPtr = &context;
-        WinContext *winCtx=cast(WinContext*)ctx;
+        
+        HANDLE hProcess = void;
+        HANDLE hThread = void;
+        
         if (winCtx !is null) {
-            ctxPtr=&winCtx.context;
+            ctxPtr=winCtx.context;
             hProcess=winCtx.hProcess;
             hThread=winCtx.hThread;
         } else {
@@ -37,15 +40,21 @@ version(Windows) {
                 mov ebpReg, EBP;
             }
 
+            hProcess = GetCurrentProcess();
+            hThread = GetCurrentThread();
+            
             context.ContextFlags = CONTEXT_i386 | CONTEXT_CONTROL;
             GetThreadContext(hThread, &context);
             context.Eip = eipReg;
             context.Esp = espReg;
             context.Ebp = ebpReg;
-            hProcess=GetCurrentProcess();
-            hThread=GetCurrentThread();
         }
-    
+        if (contextOut !is null){
+            contextOut.context=*ctxPtr;
+            contextOut.hProcess=hProcess;
+            contextOut.hThread=hThread;
+        }
+        
         version (StacktraceSpam) printf("Eip: %x, Esp: %x, Ebp: %x"\n, ctxPtr.Eip, ctxPtr.Esp, ctxPtr.Ebp);
     
         version (StacktraceUseWinApiStackWalking) {
@@ -56,14 +65,17 @@ version(Windows) {
             }
         }
 
-        size_t traceLen=0;
-        walkStack(ctxPtr, hProcess, hThread,delegate void(size_t[]tr){
-            for (size_t i=skipFrames;i<traceBuf;++i){
-                if (traceLen>=length) break;
-                traceBuf[traceLen]=tr[i];
-                ++traceLen;
-            }
+		size_t traceLen = 0;
+        walkStack(ctxPtr, hProcess, hThread, delegate void(size_t[]tr){
+        	if (tr.length > traceBufLength) {
+        		traceLen = traceBufLength;
+        	} else {
+        		traceLen = tr.length;
+        	}
+
+       		traceBuf[0..traceLen] = tr[0..traceLen];
         });
+        
         version(StacktraceTryMatchCallAddresses){
             *flags=3;
         } else {
@@ -72,9 +84,23 @@ version(Windows) {
         return traceLen;
     }
 
-    bool winSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,char[]buf){
-        addrToSymbolDetails(fInfo.adress, hProcess, (char[] func, char[] file, int line, ptrdiff_t addrOffset) {
-            fInfo.func = demangler.demangle(func,buf);
+    bool winSymbolizeFrameInfo(ref Exception.FrameInfo fInfo, TraceInfo *context,char[] buf){
+        HANDLE hProcess;
+        if (context!is null){
+            hProcess=context.hProcess;
+        } else {
+            hProcess=GetCurrentProcess();
+        }
+        return addrToSymbolDetails(fInfo.address, hProcess, (char[] func, char[] file, int line, ptrdiff_t addrOffset) {
+        	// store the non-demangled name in a buffer so if the demangler fails, fInfo.func will be pointing to the buffer
+        	if (func.length > buf.length) {
+        		buf[] = func[0..buf.length];
+        		func = buf;
+        	} else {
+        		buf[0..func.length] = func;
+        		func = buf[0..func.length];
+        	}
+            fInfo.func = demangler.demangle(func, buf);
             fInfo.file = file;
             fInfo.line = line;
             fInfo.offsetSymb = addrOffset;
@@ -87,6 +113,8 @@ version(Windows) {
 private extern(C) {
     void        _Dmain();
     void        D5tango4core6Thread5Fiber3runMFZv();
+}
+private {
     size_t  fiberRunFuncLength = 0;
 }
 
@@ -269,7 +297,7 @@ void walkStack(LPCONTEXT ContextRecord, HANDLE hProcess, HANDLE hThread, void de
 }
 
 
-void addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(char[] func, char[] file, int line, ptrdiff_t addrOffset) dg) {
+bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(char[] func, char[] file, int line, ptrdiff_t addrOffset) dg) {
     ubyte buffer[256];
 
     SYMBOL_INFO* symbol_info = cast(SYMBOL_INFO*)buffer.ptr;
@@ -279,15 +307,19 @@ void addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(char[] func
     ptrdiff_t addrOffset = 0;
     auto ln = getAddrDbgInfo(addr, &addrOffset);
 
+	bool success = true;
+
     char* symname = null;
     if (!SymFromAddr(hProcess, addr, null, symbol_info)) {
         //printf("%.*s"\n, SysError.lastMsg);
         symname = ln.func;
+        success = ln != AddrDebugInfo.init;
     } else {
         symname = symbol_info.Name.ptr;
     }
 
     dg(fromStringz(symname), fromStringz(ln.file), ln.line, addrOffset);
+    return success;
 }
 
 
@@ -1803,8 +1835,6 @@ static this() {
         }
     }
 
-
-    Runtime.traceHandler = &tangoTrace3Handler;
     
     SYMBOL_INFO sym;
     extern(C) void function(char[]) initTrace;
