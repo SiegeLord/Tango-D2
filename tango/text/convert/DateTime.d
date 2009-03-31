@@ -126,7 +126,7 @@ private char[] format (char[] output, Time dateTime, char[] format, ref DateTime
 
                 char[] formatInt (char[] tmp, int v, int minimum)
                 {
-                        auto num = Integer.format (tmp, v, "u");
+                        auto num = Integer.itoa (tmp, v);
                         if ((minimum -= num.length) > 0)
                            {
                            auto p = tmp.ptr + tmp.length - num.length;
