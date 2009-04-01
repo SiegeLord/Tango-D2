@@ -507,7 +507,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Iterator names()
+                Iterator attributes ()
                 {
                         Iterator i = {head};
                         return i;
@@ -519,7 +519,7 @@ class Json(T) : private JsonParser!(T)
                         use a Fruct to handle this, since foreach does
                         not operate cleanly with pointers (it doesn't 
                         automatically dereference them), whereas using 
-                        x.names() does. 
+                        x.attributes() does. 
                         
                         We may also use this to do some name filtering
 
@@ -774,7 +774,7 @@ class Json(T) : private JsonParser!(T)
                                         append ("{");
                                         indent++;
         
-                                        foreach (k, v; obj.names)
+                                        foreach (k, v; obj.attributes)
                                                 {
                                                 if (!first)  
                                                      append (",");
