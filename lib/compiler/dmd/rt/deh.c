@@ -39,7 +39,6 @@ extern ClassInfo D9Exception7__ClassZ;
 
 typedef int (__pascal *fp_t)();   // function pointer in ambient memory model
 
-struct Interface* rt_createTraceContext(PCONTEXT context);
 void* gc_calloc(size_t sz, unsigned ba);
 
 // The layout of DEstablisherFrame is the same for C++
@@ -84,12 +83,21 @@ struct DCatchInfo
     struct DCatchBlock catch_block[1];  // data for each catch block
 };
 
+
+typedef struct {
+	LPCONTEXT context;
+	HANDLE hProcess;
+	HANDLE hThread;
+} TraceContext;
+
+
 // Macro to make our own exception code
 #define MAKE_EXCEPTION_CODE(severity, facility, exception)      \
         (((severity) << 30) | (1 << 29) | (0 << 28) | ((facility) << 16) | (exception))
 
 #define STATUS_DIGITAL_MARS_D_EXCEPTION         MAKE_EXCEPTION_CODE(3,'D',1)
 
+struct Interface* rt_createTraceContext(TraceContext* context);
 Object *_d_translate_se_to_d_exception(PCONTEXT context, EXCEPTION_RECORD *exception_record);
 void __cdecl _d_local_unwind(struct DHandlerTable *handler_table, struct DEstablisherFrame *frame, int stop_index);
 
@@ -246,7 +254,11 @@ Object *_d_create_exception_object(PCONTEXT context, ClassInfo *ci, char *msg)
         exc->msg = msg;
     }
 
-    exc->info = rt_createTraceContext(context);
+	TraceContext traceContext;
+	traceContext.context = context;
+	traceContext.hProcess = GetCurrentProcess();
+	traceContext.hThread = GetCurrentThread();
+    exc->info = rt_createTraceContext(&traceContext);
 
     return (Object *)exc;
 }
