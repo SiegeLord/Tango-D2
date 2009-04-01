@@ -290,12 +290,12 @@ else
 }
 
 /// true for array types
-template isArray(T)
+template isArrayType(T)
 {
     static if (is( T U : U[] ))
-        const bool isArray=true;
+        const bool isArrayType=true;
     else
-        const bool isArray=true;
+        const bool isArrayType=false;
 }
 
 debug( UnitTest )
@@ -304,7 +304,7 @@ debug( UnitTest )
     {
         static assert( isStaticArrayType!(char[5][2]) );
         static assert( !isDynamicArrayType!(char[5][2]) );
-        static assert( isArray!(char[5][2]) );
+        static assert( isArrayType!(char[5][2]) );
 
         static assert( isStaticArrayType!(char[15]) );
         static assert( !isStaticArrayType!(char[]) );
@@ -312,8 +312,9 @@ debug( UnitTest )
         static assert( isDynamicArrayType!(char[]) );
         static assert( !isDynamicArrayType!(char[15]) );
 
-        static assert( isArray!(char[15]) );
-        static assert( isArray!(char[]) );
+        static assert( isArrayType!(char[15]) );
+        static assert( isArrayType!(char[]) );
+        static assert( !isArrayType!(char) );
     }
 }
 
@@ -460,7 +461,7 @@ template DynamicArrayType(T)
 {
     static if( isStaticArrayType!(T) )
         alias typeof(T.dup) DynamicArrayType;
-    else static if (isArray!(T))
+    else static if (isArrayType!(T))
         alias T DynamicArrayType;
     else
         alias T[] DynamicArrayType;
