@@ -503,22 +503,45 @@ class Json(T) : private JsonParser!(T)
         
                 /***************************************************************
         
-                        Iterate over our attribute names
+                        Iterate over our attribute names and values
 
                 ***************************************************************/
         
-                int opApply (int delegate(inout T[] key, ref Value val) dg)
+                Iterator names()
                 {
-                        int res;
+                        Iterator i = {head};
+                        return i;
+                }
+
+                /***************************************************************
         
-                        auto a = head;
-                        while (a)
-                              {
-                              if ((res = dg (a.name, a.value)) != 0) 
-                                   break;
-                              a = a.next;
-                              }
-                        return res;
+                        Iterate over our attribute names. Note that we 
+                        use a Fruct to handle this, since foreach does
+                        not operate cleanly with pointers (it doesn't 
+                        automatically dereference them), whereas using 
+                        x.names() does. 
+                        
+                        We may also use this to do some name filtering
+
+                ***************************************************************/
+        
+                static struct Iterator
+                {
+                        private Attribute head;
+        
+                        int opApply (int delegate(inout T[] key, ref Value val) dg)
+                        {
+                                int res;
+        
+                                auto a = head;
+                                while (a)
+                                      {
+                                      if ((res = dg (a.name, a.value)) != 0) 
+                                           break;
+                                      a = a.next;
+                                      }
+                               return res;
+                        }
                 }
         }
         
@@ -751,7 +774,7 @@ class Json(T) : private JsonParser!(T)
                                         append ("{");
                                         indent++;
         
-                                        foreach (k, v; *obj)
+                                        foreach (k, v; obj.names)
                                                 {
                                                 if (!first)  
                                                      append (",");
