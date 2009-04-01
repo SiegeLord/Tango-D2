@@ -447,6 +447,25 @@ template ValTypeOfAA(T){
     alias typeof(T.init.values[0]) ValTypeOfAA;
 }
 
+/// returns the size of a static array
+template staticArraySize(T)
+{
+    static assert(isStaticArrayType!(T),"staticArraySize needs a static array as type");
+    static assert(rankOfArray!(T)==1,"implemented only for 1d arrays...");
+    const size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
+}
+
+/// returns a dynamic array
+template DynamicArrayType(T)
+{
+    static if( isStaticArrayType!(T) )
+        alias typeof(T.dup) DynamicArrayType;
+    else static if (isArray!(T))
+        alias T DynamicArrayType;
+    else
+        alias T[] DynamicArrayType;
+}
+
 debug( UnitTest )
 {
     static assert( is(BaseTypeOfArrays!(real[][])==real) );
@@ -463,6 +482,9 @@ debug( UnitTest )
     static assert( is(KeyTypeOfAA!(char[][int[]])==int[]));
     static assert( isAssocArrayType!(char[][int[]]));
     static assert( !isAssocArrayType!(char[]));
+    static assert( is(DynamicArrayType!(char[2])==DynamicArrayType!(char[])));
+    static assert( is(DynamicArrayType!(char[2])==char[]));
+    static assert( staticArraySize!(char[2])==2);
 }
 
 // ------- CTFE -------
