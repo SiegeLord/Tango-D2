@@ -7,6 +7,7 @@ import tango.stdc.stdlib: abort;
 version(Windows){
     import tango.core.stacktrace.WinStackTrace;
 } else {
+    import tango.stdc.posix.ucontext;
     import tango.stdc.posix.sys.types: pid_t,pthread_t;
 }
 
@@ -15,6 +16,26 @@ version(CatchRecursiveTracing){
 
     static this(){
         recursiveStackTraces=new ThreadLocal!(int)(0);
+    }
+}
+
+version(Windows){
+} else {
+    static if (is(typeof(ucontext_t))){
+        struct TraceContext{
+            ucontext_t context;
+            pid_t hProcess;
+            pthread_t hThread;
+        }
+    } else {
+        struct TraceContext{
+            void *extra;
+            size_t esp;
+            size_t gotf;
+            size_t ip;
+            pid_t hProcess;
+            pthread_t hThread;
+        }
     }
 }
 
@@ -75,17 +96,6 @@ enum AddrPrecision{
     AllExact=3
 }
 
-version(Windows){
-} else {
-    struct TraceContext{
-        void *extra;
-        size_t esp;
-        size_t gotf;
-        size_t ip;
-        pid_t hProcess;
-        pthread_t hThread;
-    }
-}
 /// basic class that represents a stacktrace
 class BasicTraceInfo: Exception.TraceInfo{
     size_t[] traceAddresses;
