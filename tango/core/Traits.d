@@ -103,6 +103,32 @@ template isFloatingPointType( T )
                                      isImaginaryType!(T);
 }
 
+/// true if T is an atomic type
+template isAtomicType(T)
+{
+    static if( is( T == bool )
+            || is( T == char )
+            || is( T == wchar )
+            || is( T == dchar )
+            || is( T == byte )
+            || is( T == short )
+            || is( T == int )
+            || is( T == long )
+            || is( T == ubyte )
+            || is( T == ushort )
+            || is( T == uint )
+            || is( T == ulong )
+            || is( T == float )
+            || is( T == double )
+            || is( T == real )
+            || is( T == ifloat )
+            || is( T == idouble )
+            || is( T == ireal ) )
+        const isAtomicType = true;
+    else
+        const isAtomicType = false;
+}
+
 /**
  * complex type for the given type
  */
@@ -142,6 +168,18 @@ template ImaginaryTypeOf(T){
     } else static assert(0,"unsupported type in ImaginaryTypeOf "~T.stringof);
 }
 
+/// type with maximum precision
+template MaxPrecTypeOf(T){
+    static if (isComplexType!(T)){
+        alias creal MaxPrecTypeOf;
+    } else static if (isImaginaryType!(T)){
+        alias ireal MaxPrecTypeOf;
+    } else {
+        alias real MaxPrecTypeOf;
+    }
+}
+
+
 /**
  * Evaluates to true if T is a pointer type.
  */
@@ -159,19 +197,22 @@ debug( UnitTest )
 {
     unittest
     {
-        assert( isPointerType!(void*) );
-        assert( !isPointerType!(char[]) );
-        assert( isPointerType!(char[]*) );
-        assert( !isPointerType!(char*[]) );
-        assert( isPointerType!(real*) );
-        assert( !isPointerType!(uint) );
+        static assert( isPointerType!(void*) );
+        static assert( !isPointerType!(char[]) );
+        static assert( isPointerType!(char[]*) );
+        static assert( !isPointerType!(char*[]) );
+        static assert( isPointerType!(real*) );
+        static assert( !isPointerType!(uint) );
+        static assert( is(MaxPrecTypeOf!(float)==real));
+        static assert( is(MaxPrecTypeOf!(cfloat)==creal));
+        static assert( is(MaxPrecTypeOf!(ifloat)==ireal));
 
         class Ham
         {
             void* a;
         }
 
-        assert( !isPointerType!(Ham) );
+        static assert( !isPointerType!(Ham) );
 
         union Eggs
         {
@@ -179,12 +220,12 @@ debug( UnitTest )
             uint  b;
         };
 
-        assert( !isPointerType!(Eggs) );
-        assert( isPointerType!(Eggs*) );
+        static assert( !isPointerType!(Eggs) );
+        static assert( isPointerType!(Eggs*) );
 
         struct Bacon {};
 
-        assert( !isPointerType!(Bacon) );
+        static assert( !isPointerType!(Bacon) );
 
     }
 }
@@ -248,25 +289,38 @@ else
     }
 }
 
+/// true for array types
+template isArray(T)
+{
+    static if (is( T U : U[] ))
+        const bool isArray=true;
+    else
+        const bool isArray=true;
+}
+
 debug( UnitTest )
 {
     unittest
     {
-        assert( isStaticArrayType!(char[5][2]) );
-        assert( !isDynamicArrayType!(char[5][2]) );
+        static assert( isStaticArrayType!(char[5][2]) );
+        static assert( !isDynamicArrayType!(char[5][2]) );
+        static assert( isArray!(char[5][2]) );
 
-        assert( isStaticArrayType!(char[15]) );
-        assert( !isStaticArrayType!(char[]) );
+        static assert( isStaticArrayType!(char[15]) );
+        static assert( !isStaticArrayType!(char[]) );
 
-        assert( isDynamicArrayType!(char[]) );
-        assert( !isDynamicArrayType!(char[15]) );
+        static assert( isDynamicArrayType!(char[]) );
+        static assert( !isDynamicArrayType!(char[15]) );
+
+        static assert( isArray!(char[15]) );
+        static assert( isArray!(char[]) );
     }
 }
 
 /**
  * Evaluates to true if T is an associative array type.
  */
-private template isAssocArrayType( T )
+template isAssocArrayType( T )
 {
     const bool isAssocArrayType = is( typeof(T.init.values[0])[typeof(T.init.keys[0])] == T );
 }
@@ -383,6 +437,16 @@ template rankOfArray(T) {
     }
 }
 
+/// type of the keys of an AA
+template KeyTypeOfAA(T){
+    alias typeof(T.init.keys[0]) KeyTypeOfAA;
+}
+
+/// type of the values of an AA
+template ValTypeOfAA(T){
+    alias typeof(T.init.values[0]) ValTypeOfAA;
+}
+
 debug( UnitTest )
 {
     static assert( is(BaseTypeOfArrays!(real[][])==real) );
@@ -393,6 +457,12 @@ debug( UnitTest )
     static assert( is(ElementTypeOfArray!(real[2][2])==real[2]) );
     static assert( rankOfArray!(real[][])==2 );
     static assert( rankOfArray!(real[2][])==2 );
+    static assert( is(ValTypeOfAA!(char[int])==char));
+    static assert( is(KeyTypeOfAA!(char[int])==int));
+    static assert( is(ValTypeOfAA!(char[][int])==char[]));
+    static assert( is(KeyTypeOfAA!(char[][int[]])==int[]));
+    static assert( isAssocArrayType!(char[][int[]]));
+    static assert( !isAssocArrayType!(char[]));
 }
 
 // ------- CTFE -------
