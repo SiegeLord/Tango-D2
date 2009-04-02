@@ -332,7 +332,7 @@ version (Windows)
                         break;
                         }
 
-                return instance;
+                return dt;
         }
 }
 else
@@ -396,7 +396,7 @@ else
                             f = yearMonthPattern;
                             break;
                        default:
-                           throw new IllegalArgumentException("Invalid date format.");
+                           return ("'{invalid time format}'");
                        }
                 return f;
         }
@@ -722,6 +722,7 @@ debug (DateTime)
                 Stdout.formatln ("T: {}", locale.format (tmp, time, "T"));
                 Stdout.formatln ("y: {}", locale.format (tmp, time, "y"));
                 Stdout.formatln ("u: {}", locale.format (tmp, time, "u"));
+                Stdout.formatln ("@: {}", locale.format (tmp, time, "@"));
                 Stdout.formatln ("{}", locale.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
         }
 }
