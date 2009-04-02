@@ -292,49 +292,45 @@ version (Windows)
                         throw new Exception ("DateTime :: GetLocaleInfo failed");
                 }
 
-                DateTimeLocale instance;
-                
+                DateTimeLocale dt;
                 char[256] tmp = void;
                 auto lcid = LOCALE_USER_DEFAULT;
 
                 for (auto i=LOCALE_SDAYNAME1; i <= LOCALE_SDAYNAME7; ++i)
-                     instance.dayNames ~= toString (tmp, lcid, i);
+                     dt.dayNames ~= toString (tmp, lcid, i);
 
                 for (auto i=LOCALE_SABBREVDAYNAME1; i <= LOCALE_SABBREVDAYNAME7; ++i)
-                     instance.abbreviatedDayNames ~= toString (tmp, lcid, i);
+                     dt.abbreviatedDayNames ~= toString (tmp, lcid, i);
 
                 for (auto i=LOCALE_SMONTHNAME1; i <= LOCALE_SMONTHNAME12; ++i)
-                     instance.monthNames ~= toString (tmp, lcid, i);
+                     dt.monthNames ~= toString (tmp, lcid, i);
 
                 for (auto i=LOCALE_SABBREVMONTHNAME1; i <= LOCALE_SABBREVMONTHNAME12; ++i)
-                     instance.abbreviatedMonthNames ~= toString (tmp, lcid, i);
+                     dt.abbreviatedMonthNames ~= toString (tmp, lcid, i);
 
-                instance.dateSeparator = toString (tmp, lcid, LOCALE_SDATE);
-                instance.timeSeparator = toString (tmp, lcid, LOCALE_STIME);
-                instance.amDesignator  = toString (tmp, lcid, LOCALE_S1159);
-                instance.pmDesignator  = toString (tmp, lcid, LOCALE_S2359);
-                instance.shortDatePattern = toString (tmp, lcid, LOCALE_SSHORTDATE);
-                instance.longDatePattern  = toString (tmp, lcid, LOCALE_SLONGDATE);
-                instance.longTimePattern = toString (tmp, lcid, LOCALE_STIMEFORMAT);
-                instance.yearMonthPattern = toString (tmp, lcid, LOCALE_SYEARMONTH);
-
+                dt.dateSeparator    = toString (tmp, lcid, LOCALE_SDATE);
+                dt.timeSeparator    = toString (tmp, lcid, LOCALE_STIME);
+                dt.amDesignator     = toString (tmp, lcid, LOCALE_S1159);
+                dt.pmDesignator     = toString (tmp, lcid, LOCALE_S2359);
+                dt.longDatePattern  = toString (tmp, lcid, LOCALE_SLONGDATE);
+                dt.shortDatePattern = toString (tmp, lcid, LOCALE_SSHORTDATE);
+                dt.yearMonthPattern = toString (tmp, lcid, LOCALE_SYEARMONTH);
+                dt.longTimePattern  = toString (tmp, lcid, LOCALE_STIMEFORMAT);
+                         
+                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~ 
+                                         dt.longTimePattern;
+                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~ 
+                                            dt.longTimePattern;
+                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~ 
+                                             dt.shortTimePattern;
                 // synthesize a short time
-                auto s = instance.shortTimePattern = instance.longTimePattern;
+                auto s = dt.shortTimePattern = dt.longTimePattern;
                 for (auto i=s.length; i--;)
-                     if (s[i] is instance.timeSeparator[0])
+                     if (s[i] is dt.timeSeparator[0])
                         {
-                        instance.shortTimePattern = s[0..i];
+                        dt.shortTimePattern = s[0..i];
                         break;
                         }
-                         
-                instance.fullDateTimePattern = instance.longDatePattern ~ " " ~ 
-                                               instance.longTimePattern;
-
-                instance.generalShortTimePattern = instance.shortDatePattern ~ " " ~ 
-                                                   instance.shortTimePattern;
-
-                instance.generalLongTimePattern = instance.longDatePattern ~ " " ~ 
-                                                   instance.longTimePattern;
 
                 return instance;
         }
