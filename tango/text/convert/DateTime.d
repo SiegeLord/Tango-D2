@@ -54,41 +54,6 @@ static this()
 }
 
 /******************************************************************************
-        
-        A default locale
-
-        TODO: need to make this integrate with the content within 
-        text.locale.Data, or populate from the O/S instead
-
-******************************************************************************/
-
-private DateTimeLocale EngUS = 
-{
-        shortDatePattern                : "M/d/yyyy",
-        shortTimePattern                : "h:mm",       
-        longDatePattern                 : "dddd, MMMM d, yyyy",
-        longTimePattern                 : "h:mm:ss tt",        
-        fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
-        generalShortTimePattern         : "M/d/yyyy h:mm",
-        generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
-        monthDayPattern                 : "MMMM d",
-        yearMonthPattern                : "MMMM, yyyy",
-        amDesignator                    : "AM",
-        pmDesignator                    : "PM",
-        timeSeparator                   : ":",
-        dateSeparator                   : "/",
-        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday", 
-                                           "Thursday", "Friday", "Saturday"],
-        monthNames                      : ["January", "February", "March", "April", 
-                                           "May", "June", "July", "August", "September", 
-                                           "October" "November", "December"],
-        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],    
-        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                                           "Jul", "Aug", "Sep", "Oct" "Nov", "Dec"],
-};
-
-
-/******************************************************************************
 
         How to format locale-specific date/time output
 
@@ -130,7 +95,7 @@ struct DateTimeLocale
                 variant or a custom one, where generics are indicated
                 via a single character:
                 ---
-                "t" = 7:04 PM
+                "t" = 7:04
                 "T" = 7:04:02 PM 
                 "d" = 3/30/2009
                 "D" = Monday, March 30, 2009
@@ -149,7 +114,7 @@ struct DateTimeLocale
                 For the US locale, these generic layouts are expanded in the 
                 following manner:
                 ---
-                "t" = "h:mm tt" 
+                "t" = "h:mm" 
                 "T" = "h:mm:ss tt"
                 "d" = "M/d/yyyy"  
                 "D" = "dddd, MMMM d, yyyy" 
@@ -203,6 +168,17 @@ struct DateTimeLocale
                     layout = expandKnownFormat (layout);
 
                 return formatCustom (Result(output), dateTime, layout);
+        }
+
+        /**********************************************************************
+
+                Return a generic English/US instance
+
+        **********************************************************************/
+
+        static DateTimeLocale* generic ()
+        {
+                return &EngUS;
         }
 
         /**********************************************************************
@@ -643,6 +619,41 @@ else
 }
 
 /******************************************************************************
+        
+        An english/usa locale
+
+        TODO: need to make this integrate with the content within 
+        text.locale.Data, or populate from the O/S instead
+
+******************************************************************************/
+
+private DateTimeLocale EngUS = 
+{
+        shortDatePattern                : "M/d/yyyy",
+        shortTimePattern                : "h:mm",       
+        longDatePattern                 : "dddd, MMMM d, yyyy",
+        longTimePattern                 : "h:mm:ss tt",        
+        fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
+        generalShortTimePattern         : "M/d/yyyy h:mm",
+        generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
+        monthDayPattern                 : "MMMM d",
+        yearMonthPattern                : "MMMM, yyyy",
+        amDesignator                    : "AM",
+        pmDesignator                    : "PM",
+        timeSeparator                   : ":",
+        dateSeparator                   : "/",
+        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday", 
+                                           "Thursday", "Friday", "Saturday"],
+        monthNames                      : ["January", "February", "March", "April", 
+                                           "May", "June", "July", "August", "September", 
+                                           "October" "November", "December"],
+        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],    
+        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                           "Jul", "Aug", "Sep", "Oct" "Nov", "Dec"],
+};
+
+
+/******************************************************************************
 
 ******************************************************************************/
 
@@ -723,6 +734,6 @@ debug (DateTime)
                 Stdout.formatln ("y: {}", locale.format (tmp, time, "y"));
                 Stdout.formatln ("u: {}", locale.format (tmp, time, "u"));
                 Stdout.formatln ("@: {}", locale.format (tmp, time, "@"));
-                Stdout.formatln ("{}", locale.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
+                Stdout.formatln ("{}", locale.generic.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
         }
 }
