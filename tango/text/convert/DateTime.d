@@ -293,12 +293,6 @@ version (Windows)
                 dt.yearMonthPattern = toString (tmp, lcid, LOCALE_SYEARMONTH);
                 dt.longTimePattern  = toString (tmp, lcid, LOCALE_STIMEFORMAT);
                          
-                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~ 
-                                         dt.longTimePattern;
-                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~ 
-                                            dt.longTimePattern;
-                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~ 
-                                             dt.shortTimePattern;
                 // synthesize a short time
                 auto s = dt.shortTimePattern = dt.longTimePattern;
                 for (auto i=s.length; i--;)
@@ -308,6 +302,12 @@ version (Windows)
                         break;
                         }
 
+                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~ 
+                                         dt.longTimePattern;
+                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~ 
+                                            dt.longTimePattern;
+                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~ 
+                                             dt.shortTimePattern;
                 return dt;
         }
 }
