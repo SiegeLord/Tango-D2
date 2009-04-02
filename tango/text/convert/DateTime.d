@@ -28,6 +28,32 @@ private import  tango.time.chrono.Calendar,
 private import  Integer = tango.text.convert.Integer;
 
 /******************************************************************************
+
+        Windows specifics
+                
+******************************************************************************/
+
+version (Windows)
+{
+        private import tango.sys.win32.UserGdi;
+
+        enum {LOCALE_SYEARMONTH = 0x00001006};
+}
+
+/******************************************************************************
+
+        The default DateTimeLocale instance
+                
+******************************************************************************/
+
+public DateTimeLocale DateTimeDefault;
+
+static this()
+{       
+        DateTimeDefault = DateTimeLocale.create;
+}
+
+/******************************************************************************
         
         A default locale
 
@@ -36,14 +62,14 @@ private import  Integer = tango.text.convert.Integer;
 
 ******************************************************************************/
 
-DateTimeLocale EngUS = 
+private DateTimeLocale EngUS = 
 {
         shortDatePattern                : "M/d/yyyy",
-        shortTimePattern                : "h:mm tt",       
+        shortTimePattern                : "h:mm",       
         longDatePattern                 : "dddd, MMMM d, yyyy",
         longTimePattern                 : "h:mm:ss tt",        
         fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
-        generalShortTimePattern         : "M/d/yyyy h:mm tt",
+        generalShortTimePattern         : "M/d/yyyy h:mm",
         generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
         monthDayPattern                 : "MMMM d",
         yearMonthPattern                : "MMMM, yyyy",
@@ -112,8 +138,6 @@ struct DateTimeLocale
                 "F" = Monday, March 30, 2009 7:04:02 PM
                 "g" = 3/30/2009 7:04 PM
                 "G" = 3/30/2009 7:04:02 PM
-                "m" 
-                "M" = March 30
                 "y"
                 "Y" = March, 2009
                 "r"
@@ -133,8 +157,6 @@ struct DateTimeLocale
                 "F" = "dddd, MMMM d, yyyy h:mm:ss tt"
                 "g" = "M/d/yyyy h:mm tt"
                 "G" = "M/d/yyyy h:mm:ss tt"
-                "m" 
-                "M" = "MMMM d"            
                 "y"
                 "Y" = "MMMM, yyyy"        
                 "r"
@@ -243,6 +265,92 @@ struct DateTimeLocale
                 return monthNames [month - 1];
         }
 
+version (Windows)
+{
+        /**********************************************************************
+
+                create and populate an instance via O/S configuration
+                for the current user
+
+        **********************************************************************/
+
+        static DateTimeLocale create ()
+        {       
+                static char[] toString (char[] dst, LCID id, LCTYPE type)
+                {
+                        wchar[256] wide = void;
+
+                        auto len = GetLocaleInfoW (id, type, null, 0);
+                        if (len && len < wide.length)
+                           {
+                           GetLocaleInfoW (id, type, wide.ptr, wide.length);
+                           len = WideCharToMultiByte (CP_UTF8, 0, wide.ptr, len-1,
+                                                      cast(PCHAR)dst.ptr, dst.length, 
+                                                      null, null);
+                           return dst [0..len].dup;
+                           }
+                        throw new Exception ("DateTime :: GetLocaleInfo failed");
+                }
+
+                DateTimeLocale instance;
+                
+                char[256] tmp = void;
+                auto lcid = LOCALE_USER_DEFAULT;
+
+                for (auto i=LOCALE_SDAYNAME1; i <= LOCALE_SDAYNAME7; ++i)
+                     instance.dayNames ~= toString (tmp, lcid, i);
+
+                for (auto i=LOCALE_SABBREVDAYNAME1; i <= LOCALE_SABBREVDAYNAME7; ++i)
+                     instance.abbreviatedDayNames ~= toString (tmp, lcid, i);
+
+                for (auto i=LOCALE_SMONTHNAME1; i <= LOCALE_SMONTHNAME12; ++i)
+                     instance.monthNames ~= toString (tmp, lcid, i);
+
+                for (auto i=LOCALE_SABBREVMONTHNAME1; i <= LOCALE_SABBREVMONTHNAME12; ++i)
+                     instance.abbreviatedMonthNames ~= toString (tmp, lcid, i);
+
+                instance.dateSeparator = toString (tmp, lcid, LOCALE_SDATE);
+                instance.timeSeparator = toString (tmp, lcid, LOCALE_STIME);
+                instance.amDesignator  = toString (tmp, lcid, LOCALE_S1159);
+                instance.pmDesignator  = toString (tmp, lcid, LOCALE_S2359);
+                instance.shortDatePattern = toString (tmp, lcid, LOCALE_SSHORTDATE);
+                instance.longDatePattern  = toString (tmp, lcid, LOCALE_SLONGDATE);
+                instance.longTimePattern = toString (tmp, lcid, LOCALE_STIMEFORMAT);
+                instance.yearMonthPattern = toString (tmp, lcid, LOCALE_SYEARMONTH);
+
+                // synthesize a short time
+                auto s = instance.shortTimePattern = instance.longTimePattern;
+                for (auto i=s.length; i--;)
+                     if (s[i] is instance.timeSeparator[0])
+                        {
+                        instance.shortTimePattern = s[0..i];
+                        break;
+                        }
+                         
+                instance.fullDateTimePattern = instance.longDatePattern ~ " " ~ 
+                                               instance.longTimePattern;
+
+                instance.generalShortTimePattern = instance.shortDatePattern ~ " " ~ 
+                                                   instance.shortTimePattern;
+
+                instance.generalLongTimePattern = instance.longDatePattern ~ " " ~ 
+                                                   instance.longTimePattern;
+
+                return instance;
+        }
+}
+else
+{
+        /**********************************************************************
+
+                
+        **********************************************************************/
+
+        static DateTimeLocale create ()
+        {
+                return EngUS;
+        }
+}
         /**********************************************************************
 
         **********************************************************************/
@@ -270,10 +378,6 @@ struct DateTimeLocale
                             break;
                        case 'G':
                             f = generalLongTimePattern;
-                            break;
-                       case 'm':
-                       case 'M':
-                            f = monthDayPattern;
                             break;
                        case 'r':
                        case 'R':
@@ -428,7 +532,6 @@ struct DateTimeLocale
                                      else
                                         {
                                         result ~= formatInt (tmp, hours, 2);
-                                        result ~= timeSeparator;
                                         result ~= formatInt (tmp, minutes, 2);
                                         }
                                   break;
@@ -609,20 +712,20 @@ debug (DateTime)
         {
                 char[100] tmp;
                 auto time = WallClock.now;
+                auto locale = DateTimeLocale.create;
 
-                Stdout.formatln ("d: {}", EngUS.format (tmp, time, "d"));
-                Stdout.formatln ("D: {}", EngUS.format (tmp, time, "D"));
-                Stdout.formatln ("f: {}", EngUS.format (tmp, time, "f"));
-                Stdout.formatln ("F: {}", EngUS.format (tmp, time, "F"));
-                Stdout.formatln ("g: {}", EngUS.format (tmp, time, "g"));
-                Stdout.formatln ("G: {}", EngUS.format (tmp, time, "G"));
-                Stdout.formatln ("m: {}", EngUS.format (tmp, time, "m"));
-                Stdout.formatln ("r: {}", EngUS.format (tmp, time, "r"));
-                Stdout.formatln ("s: {}", EngUS.format (tmp, time, "s"));
-                Stdout.formatln ("t: {}", EngUS.format (tmp, time, "t"));
-                Stdout.formatln ("T: {}", EngUS.format (tmp, time, "T"));
-                Stdout.formatln ("y: {}", EngUS.format (tmp, time, "y"));
-                Stdout.formatln ("u: {}", EngUS.format (tmp, time, "u"));
-                Stdout.formatln ("{}", EngUS.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
+                Stdout.formatln ("d: {}", locale.format (tmp, time, "d"));
+                Stdout.formatln ("D: {}", locale.format (tmp, time, "D"));
+                Stdout.formatln ("f: {}", locale.format (tmp, time, "f"));
+                Stdout.formatln ("F: {}", locale.format (tmp, time, "F"));
+                Stdout.formatln ("g: {}", locale.format (tmp, time, "g"));
+                Stdout.formatln ("G: {}", locale.format (tmp, time, "G"));
+                Stdout.formatln ("r: {}", locale.format (tmp, time, "r"));
+                Stdout.formatln ("s: {}", locale.format (tmp, time, "s"));
+                Stdout.formatln ("t: {}", locale.format (tmp, time, "t"));
+                Stdout.formatln ("T: {}", locale.format (tmp, time, "T"));
+                Stdout.formatln ("y: {}", locale.format (tmp, time, "y"));
+                Stdout.formatln ("u: {}", locale.format (tmp, time, "u"));
+                Stdout.formatln ("{}", locale.format (tmp, time, "ddd, dd MMM yyyy HH':'mm':'ss zzzz"));
         }
 }

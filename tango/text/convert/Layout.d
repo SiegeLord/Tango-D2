@@ -75,7 +75,7 @@ class Layout(T)
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
        
-        private DateTimeLocale* dateTime = &EngUS;
+        private DateTimeLocale* dateTime = &DateTimeDefault;
 
         /**********************************************************************
 
