@@ -1,3 +1,12 @@
+/**
+ *   Stacktracing
+ *
+ *   Functions to generate a stacktrace
+ *
+ *  Copyright: 2009 Fawzi
+ *  License:   tango license, apache 2.0
+ *  Authors:   Fawzi Mohamed
+ */
 module tango.core.stacktrace.StackTrace;
 import tango.core.stacktrace.Demangler;
 import tango.core.Thread;
@@ -205,6 +214,7 @@ version(DladdrSymbolification){
     }
 }
 
+/// loads symbols for the given frame info with the methods defined in tango itself
 bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *context,char[]buf){
     version(DladdrSymbolification){
         return dladdrSymbolizeFrameInfo(fInfo,context,buf);
@@ -215,6 +225,7 @@ bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *conte
     }
 }
 
+/// function that generates a trace (handler compatible with old TraceInfo)
 Exception.TraceInfo basicTracer( void* ptr = null ){
     BasicTraceInfo res;
     try{

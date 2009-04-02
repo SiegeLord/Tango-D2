@@ -1,3 +1,12 @@
+/**
+ *   Stacktracing
+ *
+ *   Inclusion of this module activates traced exceptions using the tango own tracers if possible
+ *
+ *  Copyright: 2009 h3r3tic 
+ *  License:   tango license, apache 2.0
+ *  Authors:   Tomasz Stachowiak (h3r3tic)
+ */
 module tango.core.stacktrace.WinStackTrace;
 version(Windows) {
     private {
@@ -65,15 +74,15 @@ version(Windows) {
             }
         }
 
-		size_t traceLen = 0;
+        size_t traceLen = 0;
         walkStack(ctxPtr, hProcess, hThread, delegate void(size_t[]tr){
-        	if (tr.length > traceBufLength) {
-        		traceLen = traceBufLength;
-        	} else {
-        		traceLen = tr.length;
-        	}
+            if (tr.length > traceBufLength) {
+                traceLen = traceBufLength;
+            } else {
+                traceLen = tr.length;
+            }
 
-       		traceBuf[0..traceLen] = tr[0..traceLen];
+            traceBuf[0..traceLen] = tr[0..traceLen];
         });
         
         version(StacktraceTryMatchCallAddresses){
@@ -94,15 +103,15 @@ version(Windows) {
         return addrToSymbolDetails(fInfo.address, hProcess, (char[] func, char[] file, int line, ptrdiff_t addrOffset) {
             fInfo.func = demangler.demangle(func, buf);
 
-        	// store the non-demangled name in a buffer so if the demangler fails, fInfo.func will be pointing to the buffer
+            // store the non-demangled name in a buffer so if the demangler fails, fInfo.func will be pointing to the buffer
             if (fInfo.func is func) {
-				if (func.length > buf.length) {
-					buf[] = func[0..buf.length];
-					fInfo.func = buf;
-				} else {
-					buf[0..func.length] = func;
-					fInfo.func = buf[0..func.length];
-				}
+                if (func.length > buf.length) {
+                    buf[] = func[0..buf.length];
+                    fInfo.func = buf;
+                } else {
+                    buf[0..func.length] = func;
+                    fInfo.func = buf[0..func.length];
+                }
             }
 
             fInfo.file = file;
@@ -311,7 +320,7 @@ bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(char[] func
     ptrdiff_t addrOffset = 0;
     auto ln = getAddrDbgInfo(addr, &addrOffset);
 
-	bool success = true;
+    bool success = true;
 
     char* symname = null;
     if (!SymFromAddr(hProcess, addr, null, symbol_info)) {
