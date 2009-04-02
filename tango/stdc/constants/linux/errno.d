@@ -1,4 +1,19 @@
 module tango.stdc.constants.linux.errno;
+version(X86) {
+    version=X86_CPU;
+} else version(X86_64) {
+    version=X86_CPU;
+} else version ( PPC64 )
+{
+    version=PPC_CPU;
+} else version ( PPC ) {
+    version=PPC_CPU;
+} else version(ARM){
+} else version(SPARC){
+} else {
+    static assert(0,"unknown cpu family");
+}
+
 enum {
     E2BIG = 7, // Argument list too long
     EACCES = 13, // Permission denied
@@ -25,7 +40,6 @@ enum {
     ECONNREFUSED = 111, // Connection refused
     ECONNRESET = 104, // Connection reset by peer
     EDEADLK = 35, // Resource deadlock avoided
-    EDEADLOCK = 35,
     EDESTADDRREQ = 89, // Destination address required
     EDOM = 33, // Numerical argument out of domain
     EDOTDOT = 73, // RFS specific error
@@ -133,3 +147,8 @@ enum {
     EXDEV = 18, // Cross-device link
     EXFULL = 54, // Exchange full
 }
+version(X86_CPU)
+    enum { EDEADLOCK = 35, }
+else version(PPC_CPU)
+    enum { EDEADLOCK = 58, }
+else static assert(0);

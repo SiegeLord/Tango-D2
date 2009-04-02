@@ -58,7 +58,7 @@ module tango.stdc.constants.linux.socket;
         IPPROTO_SCTP = 132, /* Stream Control Transmission Protocol.  */
         IPPROTO_RAW = 255, /* Raw IP packets.  */
         IPPROTO_MAX
-      };
+      }
     
     enum SocketOptionLevel
     {
@@ -96,3 +96,83 @@ module tango.stdc.constants.linux.socket;
         APPLETALK = 5 ,
         INET6 = 10 ,
     }
+
+    /+
+    /* Bits in the FLAGS argument to `send', `recv', et al.  */
+    enum
+      {
+        MSG_OOB = 0x01, /* Process out-of-band data.  */
+        MSG_PEEK = 0x02, /* Peek at incoming messages.  */
+        MSG_DONTROUTE = 0x04, /* Don't use local routing.  */
+        MSG_CTRUNC = 0x08, /* Control data lost before delivery.  */
+        MSG_PROXY = 0x10, /* Supply or ask second address.  */
+        MSG_TRUNC = 0x20,
+        MSG_DONTWAIT = 0x40, /* Nonblocking IO.  */
+        MSG_EOR = 0x80, /* End of record.  */
+        MSG_WAITALL = 0x100, /* Wait for a full request.  */
+        MSG_FIN = 0x200,
+        MSG_SYN = 0x400,
+        MSG_CONFIRM = 0x800, /* Confirm path validity.  */
+        MSG_RST = 0x1000,
+        MSG_ERRQUEUE = 0x2000, /* Fetch message from error queue.  */
+        MSG_NOSIGNAL = 0x4000, /* Do not generate SIGPIPE.  */
+        MSG_MORE = 0x8000, /* Sender will send more.  */
+        MSG_CMSG_CLOEXEC = 0x40000000 /* Set close_on_exit for file
+                                               descriptor received through
+                                               SCM_RIGHTS.  */
+      }
+    /* The following constants should be used for the second parameter of
+       `shutdown'.  */
+    enum
+    {
+      SHUT_RD = 0, /* No more receptions.  */
+      SHUT_WR, /* No more transmissions.  */
+      SHUT_RDWR /* No more receptions or transmissions.  */
+    }
+    /* Standard well-known ports.  */
+    enum
+      {
+        IPPORT_ECHO = 7, /* Echo service.  */
+        IPPORT_DISCARD = 9, /* Discard transmissions service.  */
+        IPPORT_SYSTAT = 11, /* System status service.  */
+        IPPORT_DAYTIME = 13, /* Time of day service.  */
+        IPPORT_NETSTAT = 15, /* Network status service.  */
+        IPPORT_FTP = 21, /* File Transfer Protocol.  */
+        IPPORT_TELNET = 23, /* Telnet protocol.  */
+        IPPORT_SMTP = 25, /* Simple Mail Transfer Protocol.  */
+        IPPORT_TIMESERVER = 37, /* Timeserver service.  */
+        IPPORT_NAMESERVER = 42, /* Domain Name Service.  */
+        IPPORT_WHOIS = 43, /* Internet Whois service.  */
+        IPPORT_MTP = 57,
+        IPPORT_TFTP = 69, /* Trivial File Transfer Protocol.  */
+        IPPORT_RJE = 77,
+        IPPORT_FINGER = 79, /* Finger service.  */
+        IPPORT_TTYLINK = 87,
+        IPPORT_SUPDUP = 95, /* SUPDUP protocol.  */
+        IPPORT_EXECSERVER = 512, /* execd service.  */
+        IPPORT_LOGINSERVER = 513, /* rlogind service.  */
+        IPPORT_CMDSERVER = 514,
+        IPPORT_EFSSERVER = 520,
+        /* UDP ports.  */
+        IPPORT_BIFFUDP = 512,
+        IPPORT_WHOSERVER = 513,
+        IPPORT_ROUTESERVER = 520,
+        /* Ports less than this value are reserved for privileged processes.  */
+        IPPORT_RESERVED = 1024,
+        /* Ports greater this value are reserved for (non-privileged) servers.  */
+        IPPORT_USERRESERVED = 5000
+      }
+    enum
+    {
+      TCP_ESTABLISHED = 1,
+      TCP_SYN_SENT,
+      TCP_SYN_RECV,
+      TCP_FIN_WAIT1,
+      TCP_FIN_WAIT2,
+      TCP_TIME_WAIT,
+      TCP_CLOSE,
+      TCP_CLOSE_WAIT,
+      TCP_LAST_ACK,
+      TCP_LISTEN,
+      TCP_CLOSING /* now a valid state */
+    } +/

@@ -40,8 +40,10 @@ version(autoconf){
 } else version (linux) {
     version (X86_CPU) {
         public import tango.stdc.constants.linux.unistd;
+    } else version (PPC_CPU) {
+        public import tango.stdc.constants.linux.unistd;
     } else{
-        mixin undefinedConsts!("linux on non X86 CPU",__FILE__,__LINE__);
+        mixin undefinedConsts!("linux on non X86 or PPC CPU",__FILE__,__LINE__);
     }
 } else version (freebsd) {
     version (X86) {
