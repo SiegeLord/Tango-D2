@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -x
 
 # A simple script to build libtango.a/libgtango
 # Copyright (C) 2007  Lars Ivar Igesund
@@ -36,7 +36,7 @@ UNAME=`uname`
 ARCH=""
 INLINE="-inline"
 POSIXFLAG=""
-DEBUG=""
+DEBUG="-unittest -debug=UnitTest -g"
 RELEASE="-release -O"
 WARN=""
 VERBOSE=0

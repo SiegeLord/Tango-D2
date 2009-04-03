@@ -44,7 +44,7 @@ struct Console
     {
             char[25] tmp = void;
 
-            return console (intToUtf8 (tmp, i));
+            return console (ulongToUtf8 (tmp,cast(ulong) i));
     }
 }
 

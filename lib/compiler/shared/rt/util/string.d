@@ -19,7 +19,7 @@ private import rt.cImports: memcmp;
 // Returns a valid slice of the populated buffer
 char[] intToUtf8 (char[] tmp, uint val)
 in {
-   assert (tmp.length > 9, "atoi buffer should be 9 or more chars wide");
+   assert (tmp.length > 9, "atoi buffer should be more than 9 chars wide");
    }
 body
 {
@@ -29,7 +29,24 @@ body
        *--p = cast(char)((val % 10) + '0');
        } while (val /= 10);
 
-    return tmp [(p - tmp.ptr) .. $];
+    return tmp [cast(size_t)(p - tmp.ptr) .. $];
+}
+
+// convert uint to char[], within the given buffer
+// Returns a valid slice of the populated buffer
+char[] ulongToUtf8 (char[] tmp, ulong val)
+in {
+   assert (tmp.length > 19, "atoi buffer should be more than 19 chars wide");
+   }
+body
+{
+    char* p = tmp.ptr + tmp.length;
+
+    do {
+       *--p = cast(char)((val % 10) + '0');
+       } while (val /= 10);
+
+    return tmp [cast(size_t)(p - tmp.ptr) .. $];
 }
 
 

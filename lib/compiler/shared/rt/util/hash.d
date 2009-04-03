@@ -23,7 +23,7 @@ extern(C) hash_t rt_hash_block(size_t *bStart,size_t length, hash_t seed=0){
 }
 
 /// hashes UTF-8 chars using the UTF codepoints (slower than rt_hash_str that uses the bit representation)
-extern(C) hash_t rt_hash_utf8(char[] str, hash_t seed=0){
+extern(C) uint rt_hash_utf8(char[] str, uint seed=0){
     const uint m = 0x5bd1e995;
     const int r = 24;
 
@@ -41,7 +41,7 @@ extern(C) hash_t rt_hash_utf8(char[] str, hash_t seed=0){
 }
 
 /// hashes UTF-16 chars using the UTF codepoints (slower than rt_hash_str that uses the bit representation)
-extern(C) hash_t rt_hash_utf16(wchar[] str, hash_t seed=0){
+extern(C) uint rt_hash_utf16(wchar[] str, uint seed=0){
     const uint m = 0x5bd1e995;
     const int r = 24;
 
@@ -59,7 +59,7 @@ extern(C) hash_t rt_hash_utf16(wchar[] str, hash_t seed=0){
 }
 
 /// hashes UTF-32 chars using the UTF codepoints (should be equivalent to rt_hash_str that uses the bit representation)
-extern(C) hash_t rt_hash_utf32(dchar[] str, hash_t seed=0){
+extern(C) uint rt_hash_utf32(dchar[] str, uint seed=0){
     const uint m = 0x5bd1e995;
     const int r = 24;
 
