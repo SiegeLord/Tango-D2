@@ -111,10 +111,7 @@ class FtpFolderEntry: VfsFolderEntry {
 	bool exists() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -210,10 +207,7 @@ class FtpFolder: VfsFolder {
 	VfsFolders self() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -243,10 +237,7 @@ class FtpFolder: VfsFolder {
 	VfsFolders tree() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -276,10 +267,7 @@ class FtpFolder: VfsFolder {
 	int opApply(int delegate(inout VfsFolder) dg) {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -318,10 +306,7 @@ class FtpFolder: VfsFolder {
 	VfsFolder clear() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -444,10 +429,7 @@ class FtpFolders: VfsFolders {
 
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -499,10 +481,7 @@ class FtpFolders: VfsFolders {
 
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -533,10 +512,7 @@ class FtpFolders: VfsFolders {
 	int opApply(int delegate(inout VfsFolder) dg) {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -575,10 +551,7 @@ class FtpFolders: VfsFolders {
 	uint files() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -606,10 +579,7 @@ class FtpFolders: VfsFolders {
 	uint folders() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -637,10 +607,7 @@ class FtpFolders: VfsFolders {
 	uint entries() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -668,10 +635,7 @@ class FtpFolders: VfsFolders {
 	ulong bytes() {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -705,10 +669,7 @@ class FtpFolders: VfsFolders {
 	VfsFolders subset(char[] pattern) {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -747,10 +708,7 @@ class FtpFolders: VfsFolders {
 	VfsFiles catalog(char[] pattern) {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -791,10 +749,7 @@ class FtpFolders: VfsFolders {
 	VfsFiles catalog(VfsFilter filter = null) {
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
@@ -1223,10 +1178,7 @@ class FtpFiles: VfsFiles {
 
 		FTPConnection conn;
 
-		scope(failure) {
-			if(conn !is null)
-				conn.close();
-		}
+		
 
 		scope(exit) {
 			if(conn !is null)
