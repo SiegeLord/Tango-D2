@@ -106,7 +106,7 @@ $(LIB_TARGET_SHARED) : $(ALL_OBJS_O)
 	$(CC) -shared -o $@ $(ALL_OBJS_O)
 
 
-tango.doc : $(ALL_DOCS)
+doc : $(ALL_DOCS)
 	echo Documentation generated.
 
 ######################################################

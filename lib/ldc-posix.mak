@@ -25,7 +25,7 @@ LIB_EXT=so
 LC_CMD=$(CC) -shared -o
 else
 LIB_EXT=a
-LC_CMD=$(LD)
+LC_CMD=$(CLC)
 endif
 
 LIB_BASE=libtango-base-ldc

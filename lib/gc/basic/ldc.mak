@@ -17,7 +17,7 @@ LIB_TARGET_SHARED=libtango-gc-basic-shared$(LIB_BUILD).so
 LIB_MASK=libtango-gc-basic*.*
 
 targets : libs
-all     : lib-release lib-debug  doc
+all     : lib-release lib-debug
 
 LOCAL_CFLAGS=
 LOCAL_DFLAGS=-I../../..
@@ -68,7 +68,7 @@ $(LIB_TARGET_SHARED) : $(ALL_OBJS_O)
 	$(RM) $@
 	$(CC) -shared -o $@ $(ALL_OBJS_O)
 
-basic.doc : $(ALL_DOCS)
+doc : $(ALL_DOCS)
 	echo No documentation available.
 
 ######################################################
