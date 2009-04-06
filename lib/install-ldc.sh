@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # A simple script to install Tango for LDC
 
@@ -63,7 +63,10 @@ fi
 
 echo 'Copying files...'
 cp -pRvf libtango-base-ldc*.a $LIB_DIR || die "Failed to copy libraries" 7
-mkdir -p $PREFIX/include/d
+mkdir -p $PREFIX/include/d/ldc
 cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
-
+for f in compiler/ldc/ldc/*.d ; do
+ ff=`basename "$f"`
+ cp -pRvf "$f" "$PREFIX/include/d/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
+done
 die "Done!" 0
