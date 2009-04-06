@@ -9,73 +9,28 @@
 #       Generate documentation
 #	make clean
 #		Delete unneeded files created by build process
-
-LIB_TARGET_FULL=libtango-cc-tango.a
-LIB_TARGET_BC_ONLY=libtango-cc-tango-bc-only.a
-LIB_TARGET_C_ONLY=libtango-cc-tango-c-only.a
-LIB_TARGET_SHARED=libtango-cc-tango-shared.so
+#       make clean-all
+#               Delete also the libraries
+LIB_BUILD=
+LIB_TARGET_FULL=libtango-cc-tango$(LIB_BUILD).a
+LIB_TARGET_BC_ONLY=libtango-cc-tango-bc-only$(LIB_BUILD).a
+LIB_TARGET_C_ONLY=libtango-cc-tango-c-only$(LIB_BUILD).a
+LIB_TARGET_SHARED=libtango-cc-tango-shared$(LIB_BUILD).so
 LIB_MASK=libtango-cc-tango*.*
+target: libs
+all: lib-release lib-debug
 
-CP=cp -f
-RM=rm -f
-MD=mkdir -p
+LOCAL_CFLAGS=
+LOCAL_DFLAGS=-I../../..
+LOCAL_TFLAGS=
+MAKEFILE=ldc.mak
 
-ADD_CFLAGS=
-ADD_DFLAGS=
-
-#CFLAGS=-O3 $(ADD_CFLAGS)
-CFLAGS=$(ADD_CFLAGS)
-
-#DFLAGS=-release -O3 -inline -w $(ADD_DFLAGS)
-DFLAGS=-w $(ADD_DFLAGS)
-
-#TFLAGS=-O3 -inline -w $(ADD_DFLAGS)
-TFLAGS=-w $(ADD_DFLAGS)
-
-DOCFLAGS=-version=DDoc
-
-CC=gcc
-LC=llvm-ar rsv
-LLINK=llvm-link
-LCC=llc
-CLC=ar rsv
-DC=ldc
-LLC=llvm-as
+include ../../ldcCommonFlags.mak
 
 INC_DEST=../../../tango
 LIB_DEST=..
 DOC_DEST=../../../doc/tango
 
-.SUFFIXES: .s .S .c .cpp .d .ll .html .o .bc
-
-.s.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.S.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.c.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.cpp.o:
-	g++ -c $(CFLAGS) $< -o$@
-
-.d.o:
-	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@ -output-bc
-
-.ll.bc:
-	$(LLC) -f -o=$@ $<
-
-.d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html tango.ddoc $<
-
-targets : lib sharedlib doc
-all     : lib sharedlib doc
-tango   : lib
-lib     : tango.lib tango.bclib tango.clib
-sharedlib : tango.sharedlib
-doc     : tango.doc
 
 ######################################################
 
@@ -123,12 +78,14 @@ DOC_CORE= \
 
 ALL_DOCS=
 
+
 ######################################################
 
-tango.bclib : $(LIB_TARGET_BC_ONLY)
-tango.lib : $(LIB_TARGET_FULL)
-tango.clib : $(LIB_TARGET_C_ONLY)
-tango.sharedlib : $(LIB_TARGET_SHARED)
+ifeq ($(SHARED),yes)
+libs     : $(LIB_TARGET_SHARED)
+else
+libs     : $(LIB_TARGET_C_ONLY) $(LIB_TARGET_BC_ONLY) $(LIB_TARGET_FULL)
+endif
 
 $(LIB_TARGET_BC_ONLY) : $(ALL_OBJS_O)
 	$(RM) $@
@@ -143,7 +100,6 @@ $(LIB_TARGET_FULL) : $(ALL_OBJS_O)
 $(LIB_TARGET_C_ONLY) : $(OBJ_STDC)
 	$(RM) $@
 	$(CLC) $@ $(OBJ_STDC)
-
 
 $(LIB_TARGET_SHARED) : $(ALL_OBJS_O)
 	$(RM) $@

@@ -902,34 +902,96 @@ class TypeInfo_Tuple : TypeInfo
 // Exception
 ////////////////////////////////////////////////////////////////////////////////
 
+static import tango.core.Version;
 
 class Exception : Object
 {
-    struct FrameInfo{
-        long line;
-        ptrdiff_t iframe;
-        ptrdiff_t offset;
-        size_t address;
-        char[] file;
-        char[] func;
-        char[256] charBuf;
-        void writeOut(void delegate(char[])sink){
-            char[25] buf;
-            sink(func);
-            auto len = snprintf(buf.ptr,buf.length,"@%zx ",address);
-            sink(buf[0..len]);
-            len = snprintf(buf.ptr,buf.length," %+td ",address);
-            sink(buf[0..len]);
-            if (file.length != 0 || line) {
-                sink(file);
-                len = snprintf(buf.ptr,buf.length,":%ld",line);
+    static if (tango.core.Version.Tango.Minor==998){
+        struct FrameInfo{
+            long line;
+            ptrdiff_t iframe;
+            ptrdiff_t offset;
+            size_t address;
+            char[] file;
+            char[] func;
+            char[256] charBuf;
+            void writeOut(void delegate(char[])sink){
+                char[25] buf;
+                sink(func);
+                auto len = snprintf(buf.ptr,buf.length,"@%zx ",address);
                 sink(buf[0..len]);
+                len = snprintf(buf.ptr,buf.length," %+td ",address);
+                sink(buf[0..len]);
+                if (file.length != 0 || line) {
+                    sink(file);
+                    len = snprintf(buf.ptr,buf.length,":%ld",line);
+                    sink(buf[0..len]);
+                }
             }
         }
-    }
-    interface TraceInfo
-    {
-        int opApply( int delegate( ref FrameInfo fInfo ) );
+        interface TraceInfo
+        {
+            int opApply( int delegate( ref FrameInfo fInfo ) );
+        }
+    } else {
+        struct FrameInfo{
+            long line;
+            size_t iframe;
+            ptrdiff_t offsetSymb;
+            size_t baseSymb;
+            ptrdiff_t offsetImg;
+            size_t baseImg;
+            size_t address;
+            char[] file;
+            char[] func;
+            char[] extra;
+            bool exactAddress;
+            bool internalFunction;
+            void writeOut(void delegate(char[])sink){
+                char[25] buf;
+                if (func.length) {
+                    sink(func);
+                } else {
+                    sink("???");
+                }
+                auto len=sprintf(buf.ptr,"@%zx",baseSymb);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%+td ",offsetSymb);
+                sink(buf[0..len]);
+                if (extra.length){
+                    sink(extra);
+                    sink(" ");
+                }
+                sink(file);
+                len=sprintf(buf.ptr,":%ld ",line);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%zx",baseImg);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%+td ",offsetImg);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"[%zx]",address);
+                sink(buf[0..len]);
+            }
+            void clear(){
+                line=0;
+                iframe=-1;
+                offsetImg=0;
+                baseImg=0;
+                offsetSymb=0;
+                baseSymb=0;
+                address=0;
+                exactAddress=true;
+                internalFunction=false;
+                file=null;
+                func=null;
+                extra=null;
+            }
+        }
+        interface TraceInfo
+        {
+            int opApply( int delegate( ref FrameInfo fInfo ) );
+            void writeOut(void delegate(char[])sink);
+        }
     }
 
     char[]      msg;

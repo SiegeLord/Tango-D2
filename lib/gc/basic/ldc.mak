@@ -10,65 +10,29 @@
 #	make clean
 #		Delete unneeded files created by build process
 
-LIB_TARGET_BC=libtango-gc-basic-bc.a
-LIB_TARGET_NATIVE=libtango-gc-basic.a
-LIB_TARGET_SHARED=libtango-gc-basic-shared.so
+LIB_BUILD=
+LIB_TARGET_BC=libtango-gc-basic-bc$(LIB_BUILD).a
+LIB_TARGET_NATIVE=libtango-gc-basic$(LIB_BUILD).a
+LIB_TARGET_SHARED=libtango-gc-basic-shared$(LIB_BUILD).so
 LIB_MASK=libtango-gc-basic*.*
 
-CP=cp -f
-RM=rm -f
-MD=mkdir -p
+targets : libs
+all     : lib-release lib-debug  doc
 
-ADD_CFLAGS=
-ADD_DFLAGS=
+LOCAL_CFLAGS=
+LOCAL_DFLAGS=-I../../..
+LOCAL_TFLAGS=
+MAKEFILE=ldc.mak
 
-#CFLAGS=-O3 $(ADD_CFLAGS)
-CFLAGS=$(ADD_CFLAGS)
-
-#DFLAGS=-release -O3 -inline -w -nofloat $(ADD_DFLAGS)
-DFLAGS=-w -disable-invariants $(ADD_DFLAGS)
-
-#TFLAGS=-O3 -inline -w -nofloat $(ADD_DFLAGS)
-TFLAGS=-w -disable-invariants $(ADD_DFLAGS)
-
-DOCFLAGS=-version=DDoc
-
-CC=gcc
-LC=llvm-ar rsv
-LCC=llc
-LLINK=llvm-link
-CLC=ar rsv
-LD=llvm-ld
-DC=ldc
+include ../../ldcCommonFlags.mak
 
 LIB_DEST=..
 
-.SUFFIXES: .s .S .c .cpp .d .html .o .bc
-
-.s.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.S.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.c.o:
-	$(CC) -c $(CFLAGS) $< -o$@
-
-.cpp.o:
-	g++ -c $(CFLAGS) $< -o$@
-
-.d.o:
-	$(DC) -c $(DFLAGS) $< -of$@ -output-bc
-
-.d.html:
-	$(DC) -c -o- $(DOCFLAGS) -Df$*.html $<
-#	$(DC) -c -o- $(DOCFLAGS) -Df$*.html dmd.ddoc $<
-
-targets : lib sharedlib doc
-all     : lib sharedlib doc
-lib     : basic.lib basic.nlib
-sharedlib : basic.sharedlib
-doc     : basic.doc
+ifeq ($(SHARED),yes)
+libs: $(LIB_TARGET_BC) $(LIB_TARGET_SHARED)
+else
+libs: $(LIB_TARGET_BC) $(LIB_TARGET_NATIVE)
+endif
 
 ######################################################
 
@@ -89,12 +53,6 @@ ALL_OBJS_O= \
 ######################################################
 
 ALL_DOCS=
-
-######################################################
-
-basic.lib : $(LIB_TARGET_BC)
-basic.nlib : $(LIB_TARGET_NATIVE)
-basic.sharedlib : $(LIB_TARGET_SHARED)
 
 $(LIB_TARGET_BC) : $(ALL_OBJS_O)
 	$(RM) $@
