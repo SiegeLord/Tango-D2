@@ -35,6 +35,7 @@ OBJ_BASE= \
     rt/trace.obj
 
 OBJ_POSIX=rt/alloca.obj \
+    rt/cConst.obj \
     rt/cmath2.obj \
     rt/gcosx.obj \
     rt/deh2.obj \
