@@ -20,6 +20,12 @@ private {
 	import tango.time.Time;
 }
 
+private char[] fixName(char[] toFix) {
+	if (containsPattern(toFix, "/"))
+		toFix = toFix[(locatePrior(toFix, '/') + 1) .. length];
+	return toFix;
+}
+
 private char[] checkFirst(char[] toFix) {
 	for(; toFix[$-1] == '/';)
 		toFix = toFix[0 .. ($-1)];
@@ -194,7 +200,7 @@ class FtpFolder: VfsFolder {
 	 ***********************************************************************/
 
 	char[] name() {
-		return name_;
+		return fixName(name_);
 	}
 
 	/***********************************************************************
@@ -840,7 +846,7 @@ class FtpFile: VfsFile {
 	 ***********************************************************************/
 
 	char[] name() {
-		return name_;
+		return fixName(name_);
 	}
 
 	/***********************************************************************
@@ -1162,20 +1168,6 @@ class FtpFiles: VfsFiles {
 	FtpFileInfo[] infos_;
 
 	public this(char[] server, char[] path, char[] username = "",
-	            char[] password = "", uint port = 21)
-	in {
-		assert(server.length > 0);
-	}
-	body {
-		toString_ = checkFirst(server);
-		name_ = checkLast(path);
-		username_ = username;
-		password_ = password;
-		port_ = port;
-		fillInfos();
-	}
-
-	public this(char[] server, char[] path, char[] username = "",
 	            char[] password = "", uint port = 21, FtpFileInfo[] infos = null)
 	in {
 		assert(server.length > 0);
@@ -1188,6 +1180,8 @@ class FtpFiles: VfsFiles {
 		port_ = port;
 		if(infos !is null)
 			infos_ = infos;
+		else 
+			fillInfos();
 	}
 
 	void fillInfos() {
