@@ -87,15 +87,32 @@ extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOu
 
 /// tries to sybolize a frame information, this should try to build the best
 /// backtrace information, if possible finding the calling context, thus 
-/// exactAddress is false the address might be changed to the one preceding it
-/// if topStack is true this frame is the top of the stack, and
-/// one should use exactly that information
+/// if fInfo.exactAddress is false the address might be changed to the one preceding it
+/// returns true if it managed to at least find the function name
 extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext* context,char[]buf){
     if (symbolizeFrameInfoFnc !is null){
         return symbolizeFrameInfoFnc(fInfo,context,buf);
     } else {
         return false;
     }
+}
+
+/// returns the name of the function at the given adress (if possible)
+/// function@ and then the address
+char[] nameOfFunctionAt(void* addr, char[] buf){
+    Exception.FrameInfo fInfo;
+    fInfo.clear();
+    fInfo.address=cast(size_t)addr;
+    if (rt_symbolizeFrameInfo(fInfo,null,buf) && fInfo.func.length){
+        return fInfo.func;
+    } else {
+        return "function@"~ctfe_i2a(cast(size_t)addr);
+    }
+}
+
+char[] nameOfFunctionAt(void * addr){
+    char[1024] buf;
+    return nameOfFunctionAt(addr,buf).dup;
 }
 
 /// precision of the addresses given by the backtrace function
@@ -150,7 +167,8 @@ class BasicTraceInfo: Exception.TraceInfo{
     /// writes out the stacktrace
     void writeOut(void delegate(char[]) sink){
         foreach (ref fInfo; this){
-            fInfo.writeOut(sink);
+            if (!fInfo.internalFunction)
+                fInfo.writeOut(sink);
         }
     }
 }
