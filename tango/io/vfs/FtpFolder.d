@@ -20,8 +20,25 @@ private {
 	import tango.time.Time;
 }
 
+private char[] checkFirst(char[] toFix) {
+	for(; toFix[$-1] == '/';)
+		toFix = toFix[0 .. ($-1)];
+	return toFix;
+}
+
+private char[] checkLast(char[] toFix) {
+	if (toFix[0] != '/')
+		toFix = '/' ~ toFix;
+	return toFix;
+}
+
+private char[] checkCat(char[] first, char[] last) {
+	return checkFirst(first) ~ checkLast(last);
+}
 private FtpFileInfo[] getEntries(FTPConnection ftp, char[] path = "") {
 	FtpFileInfo[] orig = ftp.ls(path);
+	FtpFileInfo[] temp2;
+	FtpFileInfo[] use;
 	FtpFileInfo[] temp;
 	foreach(FtpFileInfo inf; orig) {
 		if(inf.type == FtpFileType.dir) {
@@ -29,7 +46,14 @@ private FtpFileInfo[] getEntries(FTPConnection ftp, char[] path = "") {
 		}
 	}
 	foreach(FtpFileInfo inf; temp) {
-		orig ~= getEntries((ftp.cd(inf.name) , ftp));
+		temp2 ~= getEntries((ftp.cd(inf.name) , ftp));
+		//wasn't here at the beginning
+		foreach(inf2; temp2) {
+			inf2.name = checkCat(inf.name, inf2.name);
+			use ~= inf2;
+		}
+		orig ~= use;
+		//end wasn't here at the beginning
 		ftp.cdup();
 	}
 	return orig;
@@ -66,8 +90,8 @@ class FtpFolderEntry: VfsFolderEntry {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -158,8 +182,8 @@ class FtpFolder: VfsFolder {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -178,7 +202,7 @@ class FtpFolder: VfsFolder {
 	 ***********************************************************************/
 
 	char[] toString() {
-		return toString_ ~ "/" ~ name_;
+		return checkCat(toString_, name_);
 	}
 
 	/***********************************************************************
@@ -186,7 +210,7 @@ class FtpFolder: VfsFolder {
 	 ***********************************************************************/
 
 	VfsFile file(char[] path) {
-		return new FtpFile(toString_, name_ ~ "/" ~ path, username_, password_,
+		return new FtpFile(toString_, checkLast(checkCat(name_, path)), username_, password_,
 			port_);
 	}
 
@@ -195,7 +219,7 @@ class FtpFolder: VfsFolder {
 	 ***********************************************************************/
 
 	VfsFolderEntry folder(char[] path) {
-		return new FtpFolderEntry(toString_, name_ ~ "/" ~ path, username_,
+		return new FtpFolderEntry(toString_, checkLast(checkCat(name_, path)), username_,
 			password_, port_);
 	}
 
@@ -290,7 +314,7 @@ class FtpFolder: VfsFolder {
 		int result;
 
 		foreach(FtpFileInfo fi; info) {
-			VfsFolder x = new FtpFolder(toString_ ~ name_, fi.name, username_,
+			VfsFolder x = new FtpFolder(toString_, checkLast(checkCat(name_, fi.name)), username_,
 				password_, port_);
 			if((result = dg(x)) != 0)
 				break;
@@ -421,8 +445,8 @@ class FtpFolders: VfsFolders {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -457,8 +481,8 @@ class FtpFolders: VfsFolders {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -472,8 +496,8 @@ class FtpFolders: VfsFolders {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -535,8 +559,12 @@ class FtpFolders: VfsFolders {
 		int result;
 
 		foreach(FtpFileInfo fi; info) {
-			VfsFolder x = new FtpFolder(toString_ ~ "/" ~ name_, fi.name,
+			VfsFolder x = new FtpFolder(toString_, checkLast(checkCat(name_, fi.name)),
 				username_, password_, port_);
+			
+			// was
+			// VfsFolder x = new FtpFolder(toString_ ~ "/" ~ name_, fi.name,
+			// username_, password_, port_);
 			if((result = dg(x)) != 0)
 				break;
 		}
@@ -775,7 +803,7 @@ class FtpFolders: VfsFolders {
 			vinf.bytes = inf.size;
 			vinf.name = inf.name;
 			vinf.folder = false;
-			vinf.path = toString_ ~ "/" ~ name_ ~ "/" ~ inf.name;
+			vinf.path = checkCat(checkFirst(toString_), checkCat(name_ ,inf.name));
 			if(filter(&vinf))
 				return__ ~= inf;
 		}
@@ -800,8 +828,8 @@ class FtpFile: VfsFile {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -820,19 +848,7 @@ class FtpFile: VfsFile {
 	 ***********************************************************************/
 
 	char[] toString() {
-		char[] connect = toString_;
-
-		if(connect[$ - 1] == '/') {
-			connect = connect[0 .. ($ - 1)];
-		}
-
-		connect ~= "/" ~ name_;
-
-		if(connect[$ - 1] == '/') {
-			connect = connect[0 .. ($ - 1)];
-		}
-
-		return connect;
+		return checkCat(toString_, name_);
 	}
 
 	/***********************************************************************
@@ -1151,8 +1167,8 @@ class FtpFiles: VfsFiles {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -1165,8 +1181,8 @@ class FtpFiles: VfsFiles {
 		assert(server.length > 0);
 	}
 	body {
-		toString_ = server;
-		name_ = path;
+		toString_ = checkFirst(server);
+		name_ = checkLast(path);
 		username_ = username;
 		password_ = password;
 		port_ = port;
@@ -1207,7 +1223,7 @@ class FtpFiles: VfsFiles {
 		int result = 0;
 
 		foreach(FtpFileInfo inf; infos_) {
-			VfsFile x = new FtpFile(toString_ ~ "/" ~ name_, inf.name,
+			VfsFile x = new FtpFile(toString_, checkLast(checkCat(name_, inf.name)),
 				username_, password_, port_);
 			if((result = dg(x)) != 0)
 				break;
