@@ -33,7 +33,9 @@ private char[] checkFirst(char[] toFix) {
 }
 
 private char[] checkLast(char[] toFix) {
-	if (toFix[0] != '/')
+	for(; toFix[0] == '/' && toFix[1] == '/';)
+		toFix = toFix[1 .. $];
+	if(toFix[0] != '/')
 		toFix = '/' ~ toFix;
 	return toFix;
 }
