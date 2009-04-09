@@ -49,7 +49,7 @@ version( linux )
 
     struct dirent
     {
-        ino_t       d_ino;
+        inol_t       d_ino;
         off_t       d_off;
         ushort      d_reclen;
         ubyte       d_type;
@@ -161,23 +161,23 @@ else version( solaris )
         DT_SOCK     = 12,
         DT_WHT      = 14
     }
-	
-	struct dirent
-	{
-		ino_t		d_ino;		/* "inode number" of entry */
-		off_t		d_off;		/* offset of disk directory entry */
-		ushort		d_reclen;	/* length of this record */
-		char[256]	d_name;		/* name of file */
-	}
-	
+    
+    struct dirent
+    {
+        inol_t       d_ino;      /* "inode number" of entry */
+        off_t       d_off;      /* offset of disk directory entry */
+        ushort      d_reclen;   /* length of this record */
+        char[256]   d_name;     /* name of file */
+    }
+    
     struct DIR
-	{
-		int			d_fd;		/* file descriptor */
-		int			d_loc;		/* offset in block */
-		int			d_size;		/* amount of valid data */
-		char*		d_buf;		/* directory block */
-	}
-	
+    {
+        int         d_fd;       /* file descriptor */
+        int         d_loc;      /* offset in block */
+        int         d_size;     /* amount of valid data */
+        char*       d_buf;      /* directory block */
+    }
+    
     static if( __USE_LARGEFILE64 )
     {
         dirent* readdir64(DIR*);

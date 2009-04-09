@@ -34,10 +34,10 @@ version (freebsd)
         alias tango.sys.freebsd.freebsd posix;
         }
 version (solaris)
-		{
-		public import tango.sys.solaris.solaris;
-		alias tango.sys.solaris.solaris posix;
-		}
+        {
+        public import tango.sys.solaris.solaris;
+        alias tango.sys.solaris.solaris posix;
+        }
 
 /*******************************************************************************
 
