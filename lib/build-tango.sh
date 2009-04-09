@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # A simple script to build libtango.a/libgtango
 # Copyright (C) 2007  Lars Ivar Igesund
