@@ -36,7 +36,7 @@ UNAME=`uname`
 ARCH=""
 INLINE="-inline"
 POSIXFLAG=""
-DEBUG="-unittest -debug=UnitTest -g"
+DEBUG=""
 RELEASE="-release -O"
 WARN=""
 VERBOSE=0
