@@ -524,7 +524,7 @@ char [] ctfe_i2a(long i){
         i=-i;
     }
     while (i>0) {
-        res=digit[i%10]~res;
+        res=digit[cast(size_t)(i%10)]~res;
         i/=10;
     }
     if (neg)
@@ -555,7 +555,7 @@ char [] ctfe_i2a(ulong i){
     }
     bool neg=false;
     while (i>0) {
-        res=digit[i%10]~res;
+        res=digit[cast(size_t)(i%10)]~res;
         i/=10;
     }
     return res;
@@ -563,9 +563,11 @@ char [] ctfe_i2a(ulong i){
 
 debug( UnitTest )
 {
+    unittest {
     static assert( ctfe_i2a(31)=="31" );
     static assert( ctfe_i2a(-31)=="-31" );
     static assert( ctfe_i2a(14u)=="14" );
     static assert( ctfe_i2a(14L)=="14" );
     static assert( ctfe_i2a(14UL)=="14" );
+    }
 }
