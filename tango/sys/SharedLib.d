@@ -40,6 +40,10 @@ private {
     version (SharedLibVerbose) import tango.util.log.Trace;
 }
 
+version (Posix) {
+    version (GNU) { } else { pragma (lib, "dl"); }
+}
+
 
 /**
     SharedLib is an interface to system-specific shared libraries, such
