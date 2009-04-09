@@ -186,10 +186,10 @@ def main():
   TMP.rmtree()
 
   if options.zip:
-    name, src = "Tango.%s_doc" % VERSION, DEST
-    cmd = "7zr a %(name)s.7z %(src)s" % locals()
-    print cmd
-    os.system(cmd)
+    name, src = "tango.%s-docs" % VERSION, DEST
+    zipcmd = "zip -r9 %(name)s.zip %(src)s" % locals()
+    print zipcmd
+    os.system(zipcmd)
 
   print "Exiting normally."
 
