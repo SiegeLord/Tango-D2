@@ -99,7 +99,7 @@ extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext*
 }
 
 /// returns the name of the function at the given adress (if possible)
-/// function@ and then the address
+/// function@ and then the address. For delegates you can use .funcptr
 char[] nameOfFunctionAt(void* addr, char[] buf){
     Exception.FrameInfo fInfo;
     fInfo.clear();
@@ -110,7 +110,7 @@ char[] nameOfFunctionAt(void* addr, char[] buf){
         return "function@"~ctfe_i2a(cast(size_t)addr);
     }
 }
-
+/// ditto
 char[] nameOfFunctionAt(void * addr){
     char[1024] buf;
     return nameOfFunctionAt(addr,buf).dup;
