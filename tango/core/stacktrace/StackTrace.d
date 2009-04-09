@@ -10,6 +10,7 @@
 module tango.core.stacktrace.StackTrace;
 import tango.core.stacktrace.Demangler;
 import tango.core.Thread;
+import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
 import tango.stdc.stdio:printf;
 import tango.stdc.stdlib: abort;
