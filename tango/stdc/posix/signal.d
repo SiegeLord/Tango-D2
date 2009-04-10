@@ -12,7 +12,7 @@ module tango.stdc.posix.signal;
 
 private import tango.stdc.posix.config;
 version( solaris ) {
-	private import tango.stdc.stdint;
+    private import tango.stdc.stdint;
 }
 public import tango.stdc.signal;
 public import tango.stdc.stddef;          // for size_t
@@ -180,49 +180,49 @@ else version( freebsd )
 else version( solaris )
 {
     //SIGABRT (defined in tango.stdc.signal)
-	const SIGALRM	= 14;	/* alarm clock */
-	const SIGBUS	= 10;	/* bus error */
-	const SIGCHLD	= 18;	/* child status change alias (POSIX) */
-	const SIGCONT	= 25;	/* stopped process has been continued */
+    const SIGALRM   = 14;   /* alarm clock */
+    const SIGBUS    = 10;   /* bus error */
+    const SIGCHLD   = 18;   /* child status change alias (POSIX) */
+    const SIGCONT   = 25;   /* stopped process has been continued */
     //SIGFPE (defined in tango.stdc.signal)
-	const SIGHUP	= 1;	/* hangup */
+    const SIGHUP    = 1;    /* hangup */
     //SIGILL (defined in tango.stdc.signal)
     //SIGINT (defined in tango.stdc.signal)
-	const SIGKILL	= 9;	/* kill (cannot be caught or ignored) */
-	const SIGPIPE	= 13;	/* write on a pipe with no one to read it */
-	const SIGQUIT	= 3;	/* quit (ASCII FS) */
+    const SIGKILL   = 9;    /* kill (cannot be caught or ignored) */
+    const SIGPIPE   = 13;   /* write on a pipe with no one to read it */
+    const SIGQUIT   = 3;    /* quit (ASCII FS) */
     //SIGSEGV (defined in tango.stdc.signal)
-	const SIGSTOP 	= 23;	/* stop (cannot be caught or ignored) */
+    const SIGSTOP   = 23;   /* stop (cannot be caught or ignored) */
     //SIGTERM (defined in tango.stdc.signal)
-	const SIGTSTP	= 24;	/* user stop requested from tty */
-	const SIGTTIN	= 26;	/* background tty read attempted */
-	const SIGTTOU	= 27;	/* background tty write attempted */
-	const SIGUSR1	= 16;	/* user defined signal 1 */
-	const SIGUSR2	= 17;	/* user defined signal 2 */
-	const SIGURG	= 21;	/* urgent socket condition */
+    const SIGTSTP   = 24;   /* user stop requested from tty */
+    const SIGTTIN   = 26;   /* background tty read attempted */
+    const SIGTTOU   = 27;   /* background tty write attempted */
+    const SIGUSR1   = 16;   /* user defined signal 1 */
+    const SIGUSR2   = 17;   /* user defined signal 2 */
+    const SIGURG    = 21;   /* urgent socket condition */
 /+
-	const SIGTRAP	= 5;	/* trace trap (not reset when caught) */
-	const SIGIOT	= 6;	/* IOT instruction */
-	const SIGEMT	= 7;	/* EMT instruction */
-	const SIGSYS	= 12;	/* bad argument to system call */
-	const SIGCLD	= 18;	/* child status change */
-	const SIGPWR	= 19;	/* power-fail restart */
-	const SIGWINCH	= 20;	/* window size change */
-	const SIGPOLL	= 22;	/* pollable event occured */
-	const SIGIO		= SIGPOLL;	/* socket I/O possible (SIGPOLL alias) */
-	const SIGVTALRM	= 28;	/* virtual timer expired */
-	const SIGPROF	= 29;	/* profiling timer expired */
-	const SIGXCPU	= 30;	/* exceeded cpu limit */
-	const SIGXFSZ	= 31;	/* exceeded file size limit */
-	const SIGWAITING= 32;	/* reserved signal no longer used by threading code */
-	const SIGLWP	= 33;	/* reserved signal no longer used by threading code */
-	const SIGFREEZE	= 34;	/* special signal used by CPR */
-	const SIGTHAW	= 35;	/* special signal used by CPR */
-	const SIGCANCEL	= 36;	/* reserved signal for thread cancellation */
-	const SIGLOST	= 37;	/* resource lost (eg, record-lock lost) */
-	const SIGXRES	= 38;	/* resource control exceeded */
-	const SIGJVM1	= 39;	/* reserved signal for Java Virtual Machine */
-	const SIGJVM2	= 40;	/* reserved signal for Java Virtual Machine */
+    const SIGTRAP   = 5;    /* trace trap (not reset when caught) */
+    const SIGIOT    = 6;    /* IOT instruction */
+    const SIGEMT    = 7;    /* EMT instruction */
+    const SIGSYS    = 12;   /* bad argument to system call */
+    const SIGCLD    = 18;   /* child status change */
+    const SIGPWR    = 19;   /* power-fail restart */
+    const SIGWINCH  = 20;   /* window size change */
+    const SIGPOLL   = 22;   /* pollable event occured */
+    const SIGIO     = SIGPOLL;  /* socket I/O possible (SIGPOLL alias) */
+    const SIGVTALRM = 28;   /* virtual timer expired */
+    const SIGPROF   = 29;   /* profiling timer expired */
+    const SIGXCPU   = 30;   /* exceeded cpu limit */
+    const SIGXFSZ   = 31;   /* exceeded file size limit */
+    const SIGWAITING= 32;   /* reserved signal no longer used by threading code */
+    const SIGLWP    = 33;   /* reserved signal no longer used by threading code */
+    const SIGFREEZE = 34;   /* special signal used by CPR */
+    const SIGTHAW   = 35;   /* special signal used by CPR */
+    const SIGCANCEL = 36;   /* reserved signal for thread cancellation */
+    const SIGLOST   = 37;   /* resource lost (eg, record-lock lost) */
+    const SIGXRES   = 38;   /* resource control exceeded */
+    const SIGJVM1   = 39;   /* reserved signal for Java Virtual Machine */
+    const SIGJVM2   = 40;   /* reserved signal for Java Virtual Machine */
 +/
 }
 
@@ -240,8 +240,13 @@ struct sigaction_t
     {
         sigfn_t     sa_handler;
     }
-    sigset_t        sa_mask;
-    int             sa_flags;
+    version(freebsd){
+        int             sa_flags;
+        sigset_t        sa_mask;
+    }else{
+        sigset_t        sa_mask;
+        int             sa_flags;
+    }
 
     version( darwin ) {} else {
     void function() sa_restorer;
@@ -545,19 +550,19 @@ else version( freebsd )
 }
 else version( solaris )
 {
-	alias id_t taskid_t;
-	alias id_t projid_t;
-	alias id_t poolid_t;
-	alias id_t zoneid_t;
-	alias id_t ctid_t;
-	
+    alias id_t taskid_t;
+    alias id_t projid_t;
+    alias id_t poolid_t;
+    alias id_t zoneid_t;
+    alias id_t ctid_t;
+    
     const SIG_HOLD = cast(sigfn_t) 2;
-	
+    
     struct sigset_t
     {
-		uint[4] __sigbits;
+        uint[4] __sigbits;
     }
-	
+    
     // pid_t  (defined in sys.types)
 
     //SIGABRT (defined in tango.stdc.signal)
@@ -573,88 +578,88 @@ else version( solaris )
     const SIG_UNBLOCK   = 2;
     const SIG_SETMASK   = 3;
 
-	static if( /* _LP64 */ size_t.sizeof == 8 ) {
-		const SI_MAXSZ	= 256;
-		const SI_PAD	= ((SI_MAXSZ / int.sizeof) - 4);
-	}
-	else {
-		const SI_MAXSZ	= 128;
-		const SI_PAD	= ((SI_MAXSZ / int.sizeof) - 3);
-	}
-	
-	struct siginfo_t
-	{
-		int		si_signo;			/* signal from signal.h	*/
-		int 	si_code;			/* code from above	*/
-		int		si_errno;			/* error from errno.h	*/
-	static if( /* _LP64 */ size_t.sizeof == 8 ) {
-		int		si_pad;				/* _LP64 union starts on an 8-byte boundary */
-	}
-		union __data
-		{
-			int	__pad[SI_PAD];		/* for future growth	*/
+    static if( /* _LP64 */ size_t.sizeof == 8 ) {
+        const SI_MAXSZ  = 256;
+        const SI_PAD    = ((SI_MAXSZ / int.sizeof) - 4);
+    }
+    else {
+        const SI_MAXSZ  = 128;
+        const SI_PAD    = ((SI_MAXSZ / int.sizeof) - 3);
+    }
+    
+    struct siginfo_t
+    {
+        int     si_signo;           /* signal from signal.h */
+        int     si_code;            /* code from above  */
+        int     si_errno;           /* error from errno.h   */
+    static if( /* _LP64 */ size_t.sizeof == 8 ) {
+        int     si_pad;             /* _LP64 union starts on an 8-byte boundary */
+    }
+        union __data
+        {
+            int __pad[SI_PAD];      /* for future growth    */
 
-			struct __proc			/* kill(), SIGCLD, siqqueue() */
-			{
-				pid_t	__pid;		/* process ID		*/
-				union __pdata
-				{
-					struct __kill {
-						uid_t	__uid;
-						sigval	__value;
-					}
-					struct __cld {
-						clock_t	__utime;
-						int		__status;
-						clock_t	__stime;
-					}
-				}
-				ctid_t		__ctid;		/* contract ID		*/
-				zoneid_t	__zoneid;	/* zone ID		*/
-			}
-			
-			struct __fault	/* SIGSEGV, SIGBUS, SIGILL, SIGTRAP, SIGFPE */
-			{
-				void*	__addr;		/* faulting address	*/
-				int		__trapno;	/* illegal trap number	*/
-				caddr_t	__pc;		/* instruction address	*/
-			}
+            struct __proc           /* kill(), SIGCLD, siqqueue() */
+            {
+                pid_t   __pid;      /* process ID       */
+                union __pdata
+                {
+                    struct __kill {
+                        uid_t   __uid;
+                        sigval  __value;
+                    }
+                    struct __cld {
+                        clock_t __utime;
+                        int     __status;
+                        clock_t __stime;
+                    }
+                }
+                ctid_t      __ctid;     /* contract ID      */
+                zoneid_t    __zoneid;   /* zone ID      */
+            }
+            
+            struct __fault  /* SIGSEGV, SIGBUS, SIGILL, SIGTRAP, SIGFPE */
+            {
+                void*   __addr;     /* faulting address */
+                int     __trapno;   /* illegal trap number  */
+                caddr_t __pc;       /* instruction address  */
+            }
 
-			struct __file			/* SIGPOLL, SIGXFSZ	*/
-			{
-			/* fd not currently available for SIGPOLL */
-				int		__fd;		/* file descriptor	*/
-				long	__band;
-			}
+            struct __file           /* SIGPOLL, SIGXFSZ */
+            {
+            /* fd not currently available for SIGPOLL */
+                int     __fd;       /* file descriptor  */
+                long    __band;
+            }
 
-			struct __prof			/* SIGPROF */
-			{
-				caddr_t		__faddr;		/* last fault address	*/
-				timespec	__tstamp;		/* real time stamp	*/
-				short		__syscall;		/* current syscall	*/
-				char		__nsysarg;		/* number of arguments	*/
-				char		__fault;		/* last fault type	*/
-				long		__sysarg[8];	/* syscall arguments	*/
-				int			__mstate[10];	/* see <sys/msacct.h>	*/
-			}
+            struct __prof           /* SIGPROF */
+            {
+                caddr_t     __faddr;        /* last fault address   */
+                timespec    __tstamp;       /* real time stamp  */
+                short       __syscall;      /* current syscall  */
+                char        __nsysarg;      /* number of arguments  */
+                char        __fault;        /* last fault type  */
+                long        __sysarg[8];    /* syscall arguments    */
+                int         __mstate[10];   /* see <sys/msacct.h>   */
+            }
 
-			struct __rctl {			/* SI_RCTL */
-				int32_t		__entity;	/* type of entity exceeding */
-			}
-		}
-	}
+            struct __rctl {         /* SI_RCTL */
+                int32_t     __entity;   /* type of entity exceeding */
+            }
+        }
+    }
 
     enum
     {
-		SI_NOINFO	= 32767,	/* no signal information */
-		SI_DTRACE	= 2050,		/* kernel generated signal via DTrace action */
-		SI_RCTL		= 2049,		/* kernel generated signal via rctl action */
-		SI_USER		= 0,		/* user generated signal via kill() */
-		SI_LWP		= -1,		/* user generated signal via lwp_kill() */
-		SI_QUEUE	= -2,		/* user generated signal via sigqueue() */
-		SI_TIMER	= -3,		/* from timer expiration */
-		SI_ASYNCIO	= -4,		/* from asynchronous I/O completion */
-		SI_MESGQ	= -5		/* from message arrival */
+        SI_NOINFO   = 32767,    /* no signal information */
+        SI_DTRACE   = 2050,     /* kernel generated signal via DTrace action */
+        SI_RCTL     = 2049,     /* kernel generated signal via rctl action */
+        SI_USER     = 0,        /* user generated signal via kill() */
+        SI_LWP      = -1,       /* user generated signal via lwp_kill() */
+        SI_QUEUE    = -2,       /* user generated signal via sigqueue() */
+        SI_TIMER    = -3,       /* from timer expiration */
+        SI_ASYNCIO  = -4,       /* from asynchronous I/O completion */
+        SI_MESGQ    = -5        /* from message arrival */
     }
 
     int kill(pid_t, int);
@@ -874,6 +879,118 @@ version( linux )
     int sigpause(int);
     int sigrelse(int);
 }
+else version( freebsd )
+{
+    const SIGPROF       = 27;
+    const SIGSYS        = 12;
+    const SIGTRAP       = 5;
+    const SIGVTALRM     = 26;
+    const SIGXCPU       = 24;
+    const SIGXFSZ       = 25;
+
+    const SA_ONSTACK    = 0x0001;
+    const SA_RESETHAND  = 0x0004;
+    const SA_RESTART    = 0x0002;
+    const SA_SIGINFO    = 0x0040;
+    const SA_NOCLDWAIT  = 0x0020;
+    const SA_NODEFER    = 0x0010;
+    const SS_ONSTACK    = 0x0001;
+    const SS_DISABLE    = 0x0004;
+    const MINSIGSTKSZ   = (512 * 4);
+    const SIGSTKSZ      = (MINSIGSTKSZ + 32768);
+
+    //ucontext_t (defined in tango.stdc.posix.ucontext)
+    //mcontext_t (defined in tango.stdc.posix.ucontext)
+
+    struct stack_t
+    {
+        char* ss_sp;
+        size_t ss_size;
+        int ss_flags;
+    }
+
+    struct sigstack
+    {
+        char* ss_sp;
+        int ss_onstack;
+    }
+
+    enum
+    {
+        ILL_ILLOPC = 1,
+        ILL_ILLOPN,
+        ILL_ILLADR,
+        ILL_ILLTRP,
+        ILL_PRVOPC,
+        ILL_PRVREG,
+        ILL_COPROC,
+        ILL_BADSTK
+    }
+
+    enum
+    {
+        FPE_INTOVF = 1,
+        FPE_INTDIV,
+        FPE_FLTDIV,
+        FPE_FLTOVF,
+        FPE_FLTUND,
+        FPE_FLTRES,
+        FPE_FLTINV,
+        FPE_FLTSUB
+    }
+
+    enum
+    {
+        SEGV_MAPERR = 1,
+        SEGV_ACCERR
+    }
+
+    enum
+    {
+        BUS_ADRALN = 1,
+        BUS_ADRERR,
+        BUS_OBJERR
+    }
+
+    enum
+    {
+        TRAP_BRKPT = 1,
+        TRAP_TRACE
+    }
+
+    enum
+    {
+        CLD_EXITED = 1,
+        CLD_KILLED,
+        CLD_DUMPED,
+        CLD_TRAPPED,
+        CLD_STOPPED,
+        CLD_CONTINUED
+    }
+
+    enum
+    {
+        POLL_IN = 1,
+        POLL_OUT,
+        POLL_MSG,
+        POLL_ERR,
+        POLL_PRI,
+        POLL_HUP
+    }
+
+    //sigfn_t bsd_signal(int sig, sigfn_t func);
+    //sigfn_t sigset(int sig, sigfn_t func);
+
+    int killpg(pid_t, int);
+    int sigaltstack(stack_t*, stack_t*);
+    //int sighold(int);
+    int sigblock(int);
+    int sigignore(int);
+    int siginterrupt(int, int);
+    int sigpause(int);
+    int sigrelse(int);
+}
+
 
 //
 // Timer (TMR)
@@ -915,11 +1032,11 @@ else version( freebsd )
 }
 else version ( solaris )
 {
-	struct timespec			/* definition per POSIX.4 */
-	{
-		time_t	tv_sec;		/* seconds */
-		c_long	tv_nsec;	/* and nanoseconds */
-	}
+    struct timespec         /* definition per POSIX.4 */
+    {
+        time_t  tv_sec;     /* seconds */
+        c_long  tv_nsec;    /* and nanoseconds */
+    }
 }
 
 //
@@ -983,13 +1100,14 @@ else version( freebsd )
         int             sigev_notify;
         int             sigev_signo;
         sigval          sigev_value;
+        struct __sigev_thread {
+            void function(sigval) _function;
+            void* _attribute;
+        }
         union  _sigev_un
         {
             lwpid_t _threadid;
-            struct _sigev_thread {
-                void function(sigval) _function;
-                void* _attribute;
-            }
+            __sigev_thread _sigev_thread;
             c_long[8] __spare__;
         }
     }
@@ -1000,14 +1118,14 @@ else version( freebsd )
 }
 else version ( solaris )
 {
-	struct sigevent {
-		int						sigev_notify;	/* notification mode */
-		int						sigev_signo;	/* signal number */
-		sigval					sigev_value;	/* signal value */
-		void function(sigval)	sigev_notify_function;
-		pthread_attr_t*			sigev_notify_attributes;
-		private int				__sigev_pad2;
-	}
+    struct sigevent {
+        int                     sigev_notify;   /* notification mode */
+        int                     sigev_signo;    /* signal number */
+        sigval                  sigev_value;    /* signal value */
+        void function(sigval)   sigev_notify_function;
+        pthread_attr_t*         sigev_notify_attributes;
+        private int             __sigev_pad2;
+    }
 }
 
 //

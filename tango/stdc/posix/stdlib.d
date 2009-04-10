@@ -287,10 +287,93 @@ else version( freebsd )
 
     c_long a64l(in char*);
     double drand48();
-    //char*  ecvt(double, int, int *, int *); // LEGACY
+    
+    // Unimplemented on FreeBSD, but required by tango 
+    import tango.stdc.math : modf; 
+    char* ecvt(double arg, int ndigits, int* decpt, int* sign) 
+    { 
+        return(cvt(arg, ndigits, decpt, sign, true)); 
+    } 
+    char* fcvt(double arg, int ndigits, int* decpt, int* sign) 
+    { 
+        return(cvt(arg, ndigits, decpt, sign, false)); 
+    } 
+    private char* cvt(double arg, int ndigits, int* decpt, int* sign, bool eflag) 
+    { 
+        int r2; 
+        double fi, fj; 
+        char* p, p1; 
+        char[] buf; 
+    
+        if (ndigits<0) 
+            ndigits = 0; 
+        buf = new char[ndigits]; 
+    
+        r2 = 0; 
+        *sign = 0; 
+        p = &buf[0]; 
+        if (arg<0) { 
+            *sign = 1; 
+            arg = -arg; 
+        } 
+        arg = modf(arg, &fi); 
+        p1 = &buf[$-1]; 
+        /* 
+         * Do integer part 
+         */ 
+        if (fi != 0) { 
+            p1 = &buf[$-1]; 
+            while (fi != 0) { 
+                fj = modf(fi/10, &fi); 
+                *--p1 = cast(int)((fj+.03)*10) + '0'; 
+                r2++; 
+            } 
+            while (p1 < &buf[$-1]) 
+                *p++ = *p1++; 
+        } else if (arg > 0) { 
+            while ((fj = arg*10) < 1) { 
+                arg = fj; 
+                r2--; 
+            } 
+        } 
+        p1 = &buf[ndigits]; 
+        if (!eflag) 
+            p1 += r2; 
+        *decpt = r2; 
+        if (p1 < &buf[0]) { 
+            buf[0] = '\0'; 
+            return(buf.ptr); 
+        } 
+        while (p<=p1 && p<&buf[$-1]) { 
+            arg *= 10; 
+            arg = modf(arg, &fj); 
+            *p++ = cast(int)fj + '0'; 
+        } 
+        if (p1 >= &buf[$-1]) { 
+            buf[$-2] = '\0'; 
+            return(buf.ptr); 
+        } 
+        p = p1; 
+        *p1 += 5; 
+        while (*p1 > '9') { 
+            *p1 = '0'; 
+            if (p1>buf.ptr) 
+                ++*--p1; 
+            else { 
+                *p1 = '1'; 
+                (*decpt)++; 
+                if (!eflag) { 
+                    if (p>buf.ptr) 
+                        *p = '0'; 
+                    p++; 
+                } 
+            } 
+        } 
+        *p = '\0'; 
+        return(buf.ptr); 
+    } 
+
     double erand48(ushort[3]);
-    //char*  fcvt(double, int, int *, int *); // LEGACY
-    //char*  gcvt(double, int, char*); // LEGACY
     int    getsubopt(char**, in char**, char**);
     int    grantpt(int);
     char*  initstate(uint, char*, size_t);
