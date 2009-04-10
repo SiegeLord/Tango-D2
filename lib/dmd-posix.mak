@@ -57,26 +57,26 @@ ALL_DOCS=
 
 ######################################################
 unittest :
-	make -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -fdmd-posix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
+	$(MAKE) -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -fdmd-posix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS) -unittest -debug=UnitTest" \
 		SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-release :
-	make -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -fdmd-posix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
+	$(MAKE) -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -fdmd-posix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-debug :
-	make -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="-d" VERSION="$(VERSION)"
-	make -fdmd-posix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
+	$(MAKE) -fdmd-posix.mak clean DC="$(DC)" LIB_BUILD="-d" VERSION="$(VERSION)"
+	$(MAKE) -fdmd-posix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 
 lib : $(LIB_TARGET)
 $(LIB_TARGET) : $(ALL_OBJS)
-	make -C $(DIR_CC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_CC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
 	 	VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
-	make -C $(DIR_RT) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_RT) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
 	 	VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
-	make -C $(DIR_GC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_GC) -fposix.mak lib DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
  		VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(RM) $@
@@ -89,28 +89,28 @@ ifneq ($(RANLIB),)
 endif
 
 doc : $(ALL_DOCS)
-	make -C $(DIR_CC) -fposix.mak doc DC=$(DC)
-	make -C $(DIR_RT) -fposix.mak doc DC=$(DC)
-	make -C $(DIR_GC) -fposix.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_CC) -fposix.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_RT) -fposix.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_GC) -fposix.mak doc DC=$(DC)
 
 ######################################################
 
 #	find . -name "*.di" | xargs $(RM)
 clean :
 	$(RM) $(ALL_OBJS)
-	make -C $(DIR_CC) -fposix.mak clean
-	make -C $(DIR_RT) -fposix.mak clean
-	make -C $(DIR_GC) -fposix.mak clean
+	$(MAKE) -C $(DIR_CC) -fposix.mak clean
+	$(MAKE) -C $(DIR_RT) -fposix.mak clean
+	$(MAKE) -C $(DIR_GC) -fposix.mak clean
 
 clean-all : clean
-	make -C $(DIR_CC) -fposix.mak clean-all
-	make -C $(DIR_RT) -fposix.mak clean-all
-	make -C $(DIR_GC) -fposix.mak clean-all
+	$(MAKE) -C $(DIR_CC) -fposix.mak clean-all
+	$(MAKE) -C $(DIR_RT) -fposix.mak clean-all
+	$(MAKE) -C $(DIR_GC) -fposix.mak clean-all
 	$(RM) $(ALL_DOCS)
 	$(RM) $(LIB_MASK)
 
 install :
-	make -C $(DIR_CC) -fposix.mak install
-	make -C $(DIR_RT) -fposix.mak install
-	make -C $(DIR_GC) -fposix.mak install
+	$(MAKE) -C $(DIR_CC) -fposix.mak install
+	$(MAKE) -C $(DIR_RT) -fposix.mak install
+	$(MAKE) -C $(DIR_GC) -fposix.mak install
 #	$(CP) $(LIB_MASK) $(LIB_DEST)/.

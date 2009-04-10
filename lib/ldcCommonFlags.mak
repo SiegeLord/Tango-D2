@@ -65,16 +65,16 @@ LLC=llvm-as
 
 ######################################################
 unittest :
-	make -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -f$(MAKEFILE) libs DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
+	$(MAKE) -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -f$(MAKEFILE) libs DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS) -unittest -d-debug=UnitTest" \
 		SHARED="$(SHARED)"
 lib-release :
-	make -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -f$(MAKEFILE) DC="$(DC)" LIB_BUILD="" VERSION=release libs \
+	$(MAKE) -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -f$(MAKEFILE) DC="$(DC)" LIB_BUILD="" VERSION=release libs \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-debug :
-	make -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -f$(MAKEFILE) DC="$(DC)" LIB_BUILD="-d" VERSION=debug libs \
+	$(MAKE) -f$(MAKEFILE) clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -f$(MAKEFILE) DC="$(DC)" LIB_BUILD="-d" VERSION=debug libs \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 

@@ -57,11 +57,11 @@ ALL_DOCS=
 
 libs : $(LIB_TARGET) $(LIB_BC) $(LIB_C)
 $(LIB_TARGET) : $(ALL_OBJS)
-	make -C $(DIR_CC) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_CC) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
 	 	VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SHARED="$(SHARED)"
-	make -C $(DIR_RT) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_RT) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
 	 	VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SHARED="$(SHARED)"
-	make -C $(DIR_GC) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
+	$(MAKE) -C $(DIR_GC) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
                 VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SHARED="$(SHARED)"
 	$(RM) $@
 	$(LC_CMD) $@ `find $(DIR_CC) -name "*.o" | xargs echo`
@@ -89,23 +89,23 @@ $(LIB_C): $(LIB_TARGET) $(LIB_C_OBJS)
 	$(LC) $@ $(LIB_C_OBJS)
 
 doc : $(ALL_DOCS)
-	make -C $(DIR_CC) -fldc.mak doc DC=$(DC)
-	make -C $(DIR_RT) -fldc.mak doc DC=$(DC)
-	make -C $(DIR_GC) -fldc.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_CC) -fldc.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_RT) -fldc.mak doc DC=$(DC)
+	$(MAKE) -C $(DIR_GC) -fldc.mak doc DC=$(DC)
 
 ######################################################
 
 #	find . -name "*.di" | xargs $(RM)
 clean :
 	$(RM) $(ALL_OBJS)
-	make -C $(DIR_CC) -fldc.mak clean
-	make -C $(DIR_RT) -fldc.mak clean
-	make -C $(DIR_GC) -fldc.mak clean
+	$(MAKE) -C $(DIR_CC) -fldc.mak clean
+	$(MAKE) -C $(DIR_RT) -fldc.mak clean
+	$(MAKE) -C $(DIR_GC) -fldc.mak clean
 
 clean-all : clean
-	make -C $(DIR_CC) -fldc.mak clean-all
-	make -C $(DIR_RT) -fldc.mak clean-all
-	make -C $(DIR_GC) -fldc.mak clean-all
+	$(MAKE) -C $(DIR_CC) -fldc.mak clean-all
+	$(MAKE) -C $(DIR_RT) -fldc.mak clean-all
+	$(MAKE) -C $(DIR_GC) -fldc.mak clean-all
 	$(RM) $(ALL_DOCS)
 	$(RM) $(LIB_MASK)
 	find $(DIR_CC) -name "*.bc" | xargs rm -rf
@@ -118,7 +118,7 @@ clean-all : clean
 	find $(DIR_GC) -name "*.o"  | xargs rm -rf
 
 install :
-	make -C $(DIR_CC) -fldc.mak install
-	make -C $(DIR_RT) -fldc.mak install
-	make -C $(DIR_GC) -fldc.mak install
+	$(MAKE) -C $(DIR_CC) -fldc.mak install
+	$(MAKE) -C $(DIR_RT) -fldc.mak install
+	$(MAKE) -C $(DIR_GC) -fldc.mak install
 #	$(CP) $(LIB_MASK) $(LIB_DEST)/.

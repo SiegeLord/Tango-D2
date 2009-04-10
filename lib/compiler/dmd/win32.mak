@@ -78,13 +78,13 @@ ALL_DOCS=
 ######################################################
 
 #unittest :
-#	make -fwin32.mak DC="$(DC)" LIB_BUILD="" DFLAGS="$(DFLAGS_RELEASE) -unittest -version=Unittest"
+#	$(MAKE) -fwin32.mak DC="$(DC)" LIB_BUILD="" DFLAGS="$(DFLAGS_RELEASE) -unittest -version=Unittest"
 
 #lib-release : clean
-#	make -fwin32.mak DC="$(DC)" LIB_BUILD="" DFLAGS="$(DFLAGS_RELEASE)"
+#	$(MAKE) -fwin32.mak DC="$(DC)" LIB_BUILD="" DFLAGS="$(DFLAGS_RELEASE)"
 
 #lib-debug : clean
-#	make -fwin32.mak DC="$(DC)" LIB_BUILD="-d" DFLAGS="$(DFLAGS_DEBUG)"
+#	$(MAKE) -fwin32.mak DC="$(DC)" LIB_BUILD="-d" DFLAGS="$(DFLAGS_DEBUG)"
 
 ######################################################
 

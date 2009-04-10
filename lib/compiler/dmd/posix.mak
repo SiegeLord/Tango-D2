@@ -86,17 +86,17 @@ ALL_DOCS=
 
 ######################################################
 unittest :
-	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -fposix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
+	$(MAKE) -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -fposix.mak lib DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)" \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS) -unittest -debug=UnitTest" \
 		SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-release :
-	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -fposix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
+	$(MAKE) -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -fposix.mak DC="$(DC)" LIB_BUILD="" VERSION=release lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 lib-debug :
-	make -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
-	make -fposix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
+	$(MAKE) -fposix.mak clean DC="$(DC)" LIB_BUILD="" VERSION="$(VERSION)"
+	$(MAKE) -fposix.mak DC="$(DC)" LIB_BUILD="-d" VERSION=debug lib \
 		ADD_CFLAGS="$(ADD_CFLAGS)" ADD_DFLAGS="$(ADD_DFLAGS)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 
 ######################################################
