@@ -6,13 +6,13 @@ from path import Path
 from common import *
 from html2pdf import PDFGenerator
 
-def build_runtime_headers(path):
-  print "Building Tango runtime to generate headers."
-  cmd = "sh build-dmd.sh"
-  cwd = os.getcwd()
-  os.chdir(path/"lib")
-  os.system(cmd)
-  os.chdir(cwd)
+def copy_runtime_files(path):
+  print "Copying Tango runtime files."
+
+  for NAME in ("BitManip", "Exception", "Memory", "Runtime", "Thread"):
+    FILE = path/("lib/common/tango/core/%s.d" % NAME)
+    print "Copying %s to %s" % (FILE, path/"tango/core/")
+    FILE.copy(path/"tango/core/")
 
 def copy_files(DIL, TANGO, DEST):
   """ Copies required files to the destination folder. """
@@ -144,7 +144,7 @@ def main():
   # The version of Tango we're dealing with.
   VERSION   = ""
   # Root of the Tango source code (either svn or zip.)
-  build_runtime_headers(Path(args[0]))
+  copy_runtime_files(Path(args[0]))
   TANGO     = get_tango_path(args[0])
   # Destination of doc files.
   DEST      = doc_path(firstof(str, getitem(args, 1), 'tangodoc'))
