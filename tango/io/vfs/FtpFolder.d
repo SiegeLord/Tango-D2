@@ -26,18 +26,19 @@ private char[] fixName(char[] toFix) {
 }
 
 private char[] checkFirst(char[] toFix) {
-	for(; toFix[$-1] == '/';)
+	for(; toFix.length>0 && toFix[$-1] == '/';)
 		toFix = toFix[0 .. ($-1)];
 	return toFix;
 }
 
 private char[] checkLast(char[] toFix) {
-	for(; toFix[0] == '/' && toFix[1] == '/';)
+	for(;toFix.length>1 &&  toFix[0] == '/' && toFix[1] == '/' ;)
 		toFix = toFix[1 .. $];
 	if(toFix[0] != '/')
 		toFix = '/' ~ toFix;
 	return toFix;
 }
+
 
 private char[] checkCat(char[] first, char[] last) {
 	return checkFirst(first) ~ checkLast(last);
