@@ -1118,6 +1118,8 @@ debug (Json)
         
                 p.print (&emit, "  "); 
                 Stdout.newline;
+
+                p.parse ("[-1]");
         }
 }
 
