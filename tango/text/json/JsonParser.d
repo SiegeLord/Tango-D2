@@ -294,6 +294,9 @@ class JsonParser(T)
 
                 curType = Token.Number;
 
+                if (c is '-' || c is '+')
+                    c = *++p;
+
                 while (c >= '0' && c <= '9') c = *++p;                 
 
                 if (c is '.')
