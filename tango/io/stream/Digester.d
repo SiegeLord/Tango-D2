@@ -57,6 +57,22 @@ class DigestInput : InputFilter, InputFilter.Mutator
                 return len;
         }
 
+        /***********************************************************************
+
+                Slurp remaining stream content and return the associated
+                filter
+                
+        ***********************************************************************/
+
+        final Digest slurp (void[] dst = null)
+        {
+                if (dst.length is 0)
+                    dst.length = conduit.bufferSize;
+                
+                while (read(dst) != Eof) {}
+                return filter;
+        }
+
         /********************************************************************
              
                 Return the Digest instance we were created with. Use this
