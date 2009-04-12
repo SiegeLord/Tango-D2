@@ -1024,26 +1024,28 @@ class Exception : Object
     {
         return msg;
     }
-    
+    void writeOutMsg(void delegate(char[])sink){
+        sink(toString());
+    }
     void writeOut(void delegate(char[])sink){
-        if (file.length != 0 || line)
+        if (file.length>0 || line!=0)
         {
             char[25]buf;
             sink(this.classinfo.name);
             sink("@");
             sink(file);
             sink("(");
-            auto len = snprintf(buf.ptr,buf.length,"%ld",line);
+            auto len=sprintf(buf.ptr,"%ld",line);
             sink(buf[0..len]);
             sink("): ");
-            sink(toString());
+            writeOutMsg(sink);
             sink("\n");
         }
         else
         {
            sink(this.classinfo.name);
            sink(": ");
-           sink(toString);
+           writeOutMsg(sink);
            sink("\n");
         }
         if (info)

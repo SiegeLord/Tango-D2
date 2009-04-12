@@ -239,6 +239,9 @@ class Exception : Object
     /// returns the message of the exception, should not be used (because it should not allocate,
     /// and thus only a small message is returned)
     char[] toString();
+    /// writes out the message of the exception, by default writes toString
+    /// override this is you have a better message for the exception
+    void writeOutMsg(void delegate(char[]) sink);
     /// writes out the exception message, file, line number, stacktrace (if available) and any
     /// subexceptions
     void writeOut(void delegate(char[]) sink);
