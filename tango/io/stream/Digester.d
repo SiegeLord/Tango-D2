@@ -23,10 +23,10 @@ private import tango.io.digest.Digest;
 
 *******************************************************************************/
 
-class DigestInput : InputFilter
+class DigestInput : InputFilter, InputFilter.Mutator
 {
         private Digest filter;
-
+        
         /***********************************************************************
 
                 Accepts any input stream, and any digest derivation
@@ -85,7 +85,7 @@ class DigestInput : InputFilter
 
 *******************************************************************************/
 
-class DigestOutput : OutputFilter
+class DigestOutput : OutputFilter, InputFilter.Mutator
 {
         private Digest filter;
 
