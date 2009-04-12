@@ -59,18 +59,17 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
         /***********************************************************************
 
-                Slurp remaining stream content and return the associated
-                filter
+                Slurp remaining stream content and return this
                 
         ***********************************************************************/
 
-        final Digest slurp (void[] dst = null)
+        final DigestInput slurp (void[] dst = null)
         {
                 if (dst.length is 0)
                     dst.length = conduit.bufferSize;
                 
                 while (read(dst) != Eof) {}
-                return filter;
+                return this;
         }
 
         /********************************************************************
