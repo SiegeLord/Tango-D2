@@ -15,7 +15,7 @@ char[] digestOfFile (Digest digest, char[] path)
 
 void main(char[][] args)
 {
-        char[] name = "digester.d";
+        char[] name = "crc.d";
         if (args.length > 1)
             name = args[1];
             
