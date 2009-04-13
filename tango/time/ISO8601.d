@@ -128,7 +128,7 @@ public struct ExtendedDate {
  * ---
  * Time t;
  * ExtendedDate ed;
- * 
+ *
  * parseDate("19",             t);    // January 1st, 1900
  * parseDate("1970",           t);    // January 1st, 1970
  * parseDate("1970-02",        t);    // February 1st, 1970
@@ -367,8 +367,10 @@ private size_t doIso8601Time(T)(
 
    if (hour == 24)
       fd.setEndOfDay();
-   else
-      addHours(fd, hour);
+
+   // Add the hours even if endOfDay: the day should be the next day, not the
+   // previous
+   addHours(fd, hour);
 
    auto onlyHour = eaten();
 
@@ -510,10 +512,10 @@ private size_t doIso8601Time(T)(
  * Time t;
  *
  * // January 1st, 2008 00:01:00
- * parseDateAndTime("2007-12-31T23:01-01", t); 
+ * parseDateAndTime("2007-12-31T23:01-01", t);
  *
  * // April 12th, 1985 23:50:30,042
- * parseDateAndTime("1985W155T235030,042", t); 
+ * parseDateAndTime("1985W155T235030,042", t);
  *
  * // Invalid time: returns zero
  * parseDateAndTime("1902-03-04T10:1a", t);
@@ -1208,7 +1210,7 @@ debug (UnitTest) {
 
       assert (t("24:00") == 5);
       assert (fd.endOfDay);
-      assert (days(fd)  == INIT_DAY);
+      assert (days(fd)  == INIT_DAY + 1);
       assert (hours(fd) == 0);
       assert (mins(fd)  == 0);
       assert (secs(fd)  == 0);
@@ -1413,6 +1415,23 @@ debug (UnitTest) {
       assert (b("1902-03-04T050607") == 0);
       assert (b("19020304T05:06:07abcd") == 0);
       assert (b("1902-03-04T050607abcd") == 0);
+
+      assert (b("2009-04-13T23:00-01") == 19);
+      assert (fd.endOfDay);
+      assert (years(fd)  == 2009);
+      assert (months(fd) ==    4);
+      assert (days(fd)   ==   14);
+      assert (hours(fd)  ==    0);
+      assert (mins(fd)   ==    0);
+      assert (secs(fd)   ==    0);
+      assert (b("2009-04-13T24:00Z") == 17);
+      assert (fd.endOfDay);
+      assert (years(fd)  == 2009);
+      assert (months(fd) ==    4);
+      assert (days(fd)   ==   14);
+      assert (hours(fd)  ==    0);
+      assert (mins(fd)   ==    0);
+      assert (secs(fd)   ==    0);
 
       // unimplemented: intervals, durations, recurring intervals
    }
