@@ -14,9 +14,14 @@ alias int equals_t;
 /// root class for all objects in D
 class Object
 {
+    /// returns a string representation of the object (for debugging purposes)
     char[] toString();
+    /// returns a hash
     hash_t toHash();
+    /// compares two objects, returns a number ret, such (a op b) is rewritten as (a.opCmp(b) op 0)
+    /// thus if a>b a.opCmp(b)>0
     int    opCmp(Object o);
+    /// returns 0 if this==o
     equals_t    opEquals(Object o);
 
     interface Monitor
@@ -29,6 +34,7 @@ class Object
 /// interface, if COM objects (IUnknown) they might not be casted to Object
 struct Interface
 {
+    /// class info of the interface
     ClassInfo   classinfo;
     void*[]     vtbl;
     /// offset to Interface 'this' from Object 'this'
@@ -41,20 +47,22 @@ class ClassInfo : Object
     byte[]      init;   // class static initializer
     char[]      name;   /// class name
     void*[]     vtbl;   // virtual function pointer table
-    Interface[] interfaces;
-    ClassInfo   base;
+    Interface[] interfaces; /// implemented interfaces
+    ClassInfo   base; /// base class
     void*       destructor;
     void(*classInvariant)(Object);
+    /// flags
+    /// 1: IUnknown
+    /// 2: has no possible pointers into GC memory
+    /// 4: has offTi[] member
+    /// 8: has constructors
     uint        flags;
-    // 1:       // IUnknown
-    // 2:       // has no possible pointers into GC memory
-    // 4:       // has offTi[] member
-    // 8:       // has constructors
     void*       deallocator;
-    OffsetTypeInfo[] offTi;
+    OffsetTypeInfo[] offTi; /// offsets of its members (not supported by all compilers)
     void*       defaultConstructor;
-
+    /// finds the classinfo of the class with the given name
     static ClassInfo find(char[] classname);
+    /// creates an instance of this class (works only if there is a constructor without arguments)
     Object create();
 }
 
@@ -68,15 +76,22 @@ struct OffsetTypeInfo
 /// information on a type
 class TypeInfo
 {
+    /// returns the hash of the type of this TypeInfo at p
     hash_t   getHash(void *p);
+    /// returns 0 if the types of this TypeInfo stored at p1 and p2 are different
     equals_t      equals(void *p1, void *p2);
+    /// compares the types of this TypeInfo stored at p1 and p2
     int      compare(void *p1, void *p2);
+    /// returns the size of a type with the current TypeInfo
     size_t   tsize();
+    /// swaps the two types stored at p1 and p2
     void     swap(void *p1, void *p2);
+    /// "next" TypeInfo (for an array its elements, for a pointer what it is pointed to,...)
     TypeInfo next();
     void[]   init();
+    /// flags, 1: has possible pointers into GC memory
     uint     flags();
-    // 1:    // has possible pointers into GC memory
+    /// offsets of the various elements
     OffsetTypeInfo[] offTi();
 }
 
@@ -155,13 +170,17 @@ class TypeInfo_Tuple : TypeInfo
 /// information about a module (can be used for example to get its unittests)
 class ModuleInfo
 {
+    /// name of the module
     char[]          name;
+    ///
     ModuleInfo[]    importedModules;
+    ///
     ClassInfo[]     localClasses;
     uint            flags;
 
     void function() ctor;
     void function() dtor;
+    /// unit tests of the module
     void function() unitTest;
 
     version(GNU){}
