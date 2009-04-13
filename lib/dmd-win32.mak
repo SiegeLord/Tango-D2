@@ -23,6 +23,8 @@ LIB_CC=$(DIR_CC)\tango-cc-tango$(LIB_BUILD).lib
 LIB_RT=$(DIR_RT)\tango-rt-dmd$(LIB_BUILD).lib
 LIB_GC=$(DIR_GC)\tango-gc-basic$(LIB_BUILD).lib
 
+MAKE=make
+
 CP=xcopy /y
 RM=del /f
 MD=mkdir
