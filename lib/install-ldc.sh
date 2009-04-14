@@ -60,14 +60,14 @@ fi
 
 echo 'Copying files...'
 cp -pRvf libtango-base-ldc*.a $LIB_DIR || die "Failed to copy libraries" 7
-mkdir -p $PREFIX/include/d/ldc
-cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source" 8
+mkdir -p $PREFIX/tango/ldc
+cp -pRvf ../object.di $PREFIX/tango/object.di || echo object.di not copied
 for f in compiler/ldc/ldc/*.d ; do
  ff=`basename "$f"`
- cp -pRvf "$f" "$PREFIX/include/d/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
+ cp -pRvf "$f" "$PREFIX/tango/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
 done
 for f in compiler/ldc/ldc/*.di ; do
  ff=`basename "$f"`
- cp -pRvf "$f" "$PREFIX/include/d/ldc/${ff}" || die "Failed to copy ldc intrinsic" 10
+ cp -pRvf "$f" "$PREFIX/tango/ldc/${ff}" || die "Failed to copy ldc intrinsic" 10
 done
 die "Done!" 0
