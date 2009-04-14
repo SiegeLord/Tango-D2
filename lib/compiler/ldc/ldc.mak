@@ -86,7 +86,6 @@ doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	find . -name "*.di" | xargs $(RM)
 	$(RM) $(ALL_OBJECTS) $(ALL_OBJS_BC)
 
 clean-all : clean

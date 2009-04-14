@@ -21,7 +21,7 @@ target: libs
 all: lib-release lib-debug
 
 LOCAL_CFLAGS=
-LOCAL_DFLAGS=-I../../..
+LOCAL_DFLAGS=-I../../.. -I../../compiler/ldc
 LOCAL_TFLAGS=
 MAKEFILE=ldc.mak
 

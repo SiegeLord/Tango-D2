@@ -52,9 +52,6 @@ fi
 
 LIB_DIR="$PREFIX/lib"
 
-LDC_VER="`ldc -dumpversion`"
-LDC_MCH="`ldc -dumpmachine`"
-
 # Sanity check
 if [ ! -e libtango-base-ldc.a ]
 then
@@ -68,5 +65,9 @@ cp -pRvf ../object.di $PREFIX/include/d/object.di || die "Failed to copy source"
 for f in compiler/ldc/ldc/*.d ; do
  ff=`basename "$f"`
  cp -pRvf "$f" "$PREFIX/include/d/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
+done
+for f in compiler/ldc/ldc/*.di ; do
+ ff=`basename "$f"`
+ cp -pRvf "$f" "$PREFIX/include/d/ldc/${ff}" || die "Failed to copy ldc intrinsic" 10
 done
 die "Done!" 0
