@@ -26,6 +26,11 @@ class DocPrinter(T) : IXmlPrinter!(T)
         private bool quick = true;
         private uint indentation = 2;
 
+        version (Win32)
+                 private const T[] Eol = "\r\n";
+           else
+              private const T[] Eol = "\n";
+
         /***********************************************************************
         
                 Sets the number of spaces used when increasing indentation
@@ -110,7 +115,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
         
                                case XmlNodeType.Element:
                                     if (indentation > 0)
-                                        emit ("\r\n", spaces[0..indent]);
+                                        emit (Eol, spaces[0..indent]);
                                     emit ("<", node.toString(tmp));
 
                                     foreach (attr; node.attributes)
@@ -127,7 +132,7 @@ class DocPrinter(T) : IXmlPrinter!(T)
                                         
                                        // inhibit newline if we're closing Data
                                        if (node.lastChild.id != XmlNodeType.Data && indentation > 0)
-                                           emit ("\r\n", spaces[0..indent]);
+                                           emit (Eol, spaces[0..indent]);
                                        emit ("</", node.toString(tmp), ">");
                                        }
                                     else 
