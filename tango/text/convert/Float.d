@@ -56,7 +56,7 @@ NumType toFloat(T) (T[] src)
         uint len;
 
         auto x = parse (src, &len);
-        if (len < src.length)
+        if (len < src.length || len == 0)
             throw new IllegalArgumentException ("Float.toFloat :: invalid number");
         return x;
 }
@@ -304,14 +304,22 @@ NumType parse(T) (T[] src, uint* ate=null)
         uint            radix;
         NumType         value = 0.0;
 
+        // bail out if the string is empty
+        if (src.length == 0)
+           return NumType.nan;
+
         // remove leading space, and sign
-        c = *(p = src.ptr + Integer.trim (src, sign, radix));
+        p = src.ptr + Integer.trim (src, sign, radix);
+        if( p > &src[$-1] )
+            return NumType.nan;
+
+        c = *p;
 
         // handle non-decimal representations
         if (radix != 10)
            {
            long v = Integer.parse (src, radix, ate); 
-           return *cast(NumType*) &v;
+           return cast(NumType) v;
            }
 
         // set begin and end checks

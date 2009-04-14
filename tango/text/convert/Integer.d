@@ -350,7 +350,8 @@ long parse(T) (T[] digits, uint radix=0, uint* ate=null)
         auto eaten = trim (digits, sign, radix);
         auto value = convert (digits[eaten..$], radix, ate);
 
-        if (ate)
+        // check *ate > 0 to make sure we don't parse "-" as 0.
+        if (ate && *ate > 0)
             *ate += eaten;
 
         return cast(long) (sign ? -value : value);

@@ -11,6 +11,7 @@
 
 module tango.util.Convert;
 
+private import tango.core.Exception;
 private import tango.core.Traits;
 private import tango.core.Tuple : Tuple;
 
@@ -745,10 +746,22 @@ D toIntegerFromString(D,S)(S value)
 
         static if( is( D == ulong ) )
         {
-            uint len;
-            auto result = tango.text.convert.Integer.convert(value, 10, &len);
+            // Check for sign
+            S s = value;
 
-            if( len < value.length )
+            if( s.length == 0 )
+                throwConvError;
+
+            else if( s[0] == '-' )
+                throwConvError;
+
+            else if( s[0] == '+' )
+                s = s[1..$];
+
+            uint len;
+            auto result = tango.text.convert.Integer.convert(s, 10, &len);
+
+            if( len < s.length || len == 0 )
                 throwConvError;
 
             return result;
@@ -758,7 +771,7 @@ D toIntegerFromString(D,S)(S value)
             uint len;
             auto result = tango.text.convert.Integer.parse(value, 10, &len);
 
-            if( len < value.length )
+            if( len < value.length || len == 0 )
                 throwConvError;
 
             return toIntegerFromInteger!(D,long)(result);
@@ -816,7 +829,28 @@ D toReal(D,S)(S value)
         return cast(D) to!(uint)(value);+/
 
     else static if( isString!(S) )
-        return tango.text.convert.Float.parse(value);
+    {
+        /+
+        try
+        {
+            return tango.text.convert.Float.toFloat(value);
+        }
+        catch( IllegalArgumentException e )
+        {
+            mixin convError;
+            throwConvError;
+        }
+        +/
+
+        mixin convError;
+
+        uint len;
+        auto r = tango.text.convert.Float.parse(value, &len);
+        if( len < value.length || len == 0 )
+            throwConvError;
+
+        return r;
+    }
 
     else static if( isPOD!(S) || isObject!(S) )
     {
@@ -1104,7 +1138,7 @@ bool ex(T)(lazy T v)
     {
         v();
     }
-    catch( Exception _ )
+    catch( ConversionException _ )
     {
         result = true;
     }
@@ -1118,7 +1152,7 @@ bool nx(T)(lazy T v)
     {
         v();
     }
-    catch( Exception _ )
+    catch( ConversionException _ )
     {
         result = false;
     }
@@ -1172,8 +1206,6 @@ struct Baz
         Bar result; return result;
     }
 }
-
-import tango.io.Stdout;
 
 unittest
 {
@@ -1340,6 +1372,27 @@ unittest
         assert( to!(int)("abc", 456) == 456,
                 `to!(int)("abc", 456) == "` ~ to!(char[])(
                     to!(int)("abc", 456)) ~ `"` );
+    }
+
+    /*
+     * Ticket #1486
+     */
+    {
+        assert(ex( to!(int)("") ));
+
+        assert(ex( to!(real)("Foo") ));
+        assert(ex( to!(real)("") ));
+        assert(ex( to!(real)("0x1.2cp+9") ));
+
+        // From d0c's patch
+        assert(ex( to!(int)("0x20") ));
+        assert(ex( to!(int)("0x") ));
+        assert(ex( to!(int)("-") ));
+        assert(ex( to!(int)("-0x") ));
+
+        assert( to!(real)("0x20") == cast(real) 0x20 );
+        assert(ex( to!(real)("0x") ));
+        assert(ex( to!(real)("-") ));
     }
 }
 
