@@ -61,7 +61,7 @@ version( D_Ddoc )
      * Imaginary    <-- Complex
      * Complex      <-- Integer, Real, Imaginary
      * Char         <-- bool, Integer (0-9)
-     * String       <-- bool, Integer, Real
+     * String       <-- bool, Integer, Real, Char
      * -----
      *
      * Conversions between arrays and associative arrays are also supported,
@@ -157,19 +157,6 @@ else
                     {}
 
                 return def;
-
-                //D result = def;
-                /+
-                try
-                {
-                    return toImpl!(D,S)(value);
-                }
-                catch( ConversionException e )
-                {
-                    return def;
-                }
-                // +/
-                //return result;
             }
         }
     }
@@ -724,7 +711,7 @@ D toBool(D,S)(S value)
 D toIntegerFromInteger(D,S)(S value)
 {
     static if( (cast(ulong) D.max) < (cast(ulong) S.max)
-            && (cast(long) D.min) > (cast(long) S.min) )
+            || (cast(long) D.min) > (cast(long) S.min) )
     {
         mixin convError; // TODO: Overflow error
 
@@ -923,10 +910,42 @@ D toStringFromString(D,S)(S value)
     }
 }
 
+const char[] CHARS = 
+"\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
+"\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f"
+"\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f"
+"\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f"
+"\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f"
+"\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e";
+
+D toStringFromChar(D,S)(S value)
+{
+    static if( is( D == S[] ) )
+    {
+        static if( is( S == char ) )
+        {
+            if( 0x20 <= value && value <= 0x7e )
+                return (&CHARS[value-0x20])[0..1];
+        }
+        auto r = new S[1];
+        r[0] = value;
+        return r;
+    }
+    else
+    {
+        S[1] temp;
+        temp[0] = value;
+        return toStringFromString!(D,S[])(temp);
+    }
+}
+
 D toString(D,S)(S value)
 {
     static if( is( S == bool ) )
         return (value ? "true" : "false");
+
+    else static if( isCharType!(S) )
+        return toStringFromChar!(D,S)(value);
 
     else static if( isIntegerType!(S) )
         // TODO: Make sure this works with ulongs.
@@ -1154,6 +1173,8 @@ struct Baz
     }
 }
 
+import tango.io.Stdout;
+
 unittest
 {
     /*
@@ -1265,6 +1286,16 @@ unittest
 
     assert( to!(char[])(12345678) == "12345678" );
     assert( to!(char[])(1234.567800) == "1234.57");
+
+    assert( to!( char[])(cast(char) 'a') == "a"c );
+    assert( to!(wchar[])(cast(char) 'b') == "b"w );
+    assert( to!(dchar[])(cast(char) 'c') == "c"d );
+    assert( to!( char[])(cast(wchar)'d') == "d"c );
+    assert( to!(wchar[])(cast(wchar)'e') == "e"w );
+    assert( to!(dchar[])(cast(wchar)'f') == "f"d );
+    assert( to!( char[])(cast(dchar)'g') == "g"c );
+    assert( to!(wchar[])(cast(dchar)'h') == "h"w );
+    assert( to!(dchar[])(cast(dchar)'i') == "i"d );
 
     /*
      * Array-array
