@@ -1292,7 +1292,7 @@ private class TNFAFragment(char_t)
 /* ************************************************************************************************
     Tagged NFA
 **************************************************************************************************/
-private class TNFA(char_t)
+private final class TNFA(char_t)
 {
     alias TNFATransition!(char_t)   trans_t;
     alias TNFAFragment!(char_t)     frag_t;
