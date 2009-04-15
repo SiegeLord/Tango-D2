@@ -14,6 +14,7 @@ version(Windows) {
         import tango.core.Runtime;
         static import tango.stdc.stdlib;
         static import tango.stdc.string;
+        version (StacktraceSpam) import tango.stdc.stdio : printf;
     }
 
     version = StacktraceTryMatchCallAddresses;
@@ -1061,7 +1062,7 @@ AddrDebugInfo getAddrDbgInfo(size_t a, ptrdiff_t* diff = null) {
                         minDiff = 0x7fffffff;
                     }
                 } else {
-                    printf("there ain't '%s' in fileMaxAddr\n", bestInfo.file);
+                    version (StacktraceSpam) printf("there ain't '%s' in fileMaxAddr\n", bestInfo.file);
                     bestInfo = bestInfo.init;
                     minDiff = 0x7fffffff;
                 }

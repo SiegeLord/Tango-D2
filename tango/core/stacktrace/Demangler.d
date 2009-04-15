@@ -53,7 +53,6 @@ module tango.core.stacktrace.Demangler;
 
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string: memmove,memcpy;
-import tango.stdc.stdio: printf;
 
 debug(traceDemangler) import tango.io.Stdout;
 
