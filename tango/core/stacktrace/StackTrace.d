@@ -168,8 +168,10 @@ class BasicTraceInfo: Exception.TraceInfo{
     /// writes out the stacktrace
     void writeOut(void delegate(char[]) sink){
         foreach (ref fInfo; this){
-            if (!fInfo.internalFunction)
+            if (!fInfo.internalFunction){
                 fInfo.writeOut(sink);
+                sink("\n");
+            }
         }
     }
 }
@@ -201,6 +203,17 @@ size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
 }
 
 version(DladdrSymbolification){
+    int[char[]] internalFuncs;
+    static this(){
+                internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
+        internalFuncs["rt_addrBacktrace"]=1;
+        internalFuncs["D5tango4core10stacktrace10StackTrace14BasicTraceInfo5traceMFPS5tango4core10stacktrace10StackTrace12TraceContextiZv"]=1;
+        internalFuncs["D5tango4core10stacktrace10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
+        internalFuncs["rt_createTraceContext"]=1;
+        internalFuncs["D2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
+        internalFuncs["D2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
+        internalFuncs["D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
+    }
     extern(C) struct Dl_info {
       char *dli_fname;      /* Filename of defining object */
       void *dli_fbase;      /* Load address of that object */
@@ -226,6 +239,8 @@ version(DladdrSymbolification){
                 fInfo.offsetSymb = cast(ptrdiff_t)ip - cast(ptrdiff_t)dli.dli_saddr;
                 fInfo.baseSymb = cast(size_t)dli.dli_saddr;
                 fInfo.func = dli.dli_sname[0..strlen(dli.dli_sname)];
+                auto r= fInfo.func in internalFuncs;
+                fInfo.internalFunction= (r !is null);
                 fInfo.func = demangler.demangle(fInfo.func,buf);
             }
         }

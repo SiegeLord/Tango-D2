@@ -1051,13 +1051,10 @@ class Exception : Object
         if (info)
         {
             sink("----------------\n");
-            foreach (ref t; info){
-                t.writeOut(sink);
-                sink("\n");
-            }
+            info.writeOut(sink);
         }
         if (next){
-            sink("\n");
+            sink("\n++++++++++++++++\n");
             next.writeOut(sink);
         }
     }
