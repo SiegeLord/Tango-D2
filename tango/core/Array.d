@@ -9,7 +9,6 @@
  */
 module tango.core.Array;
 
-
 private import tango.core.Traits;
 private import tango.stdc.stdlib : alloca, rand;
 
@@ -1016,7 +1015,7 @@ version( D_Ddoc )
      * Returns:
      *  True if an element equivalent to pat is found, false if not.
      */
-    size_t contains( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
+    equals_t contains( Elem[] buf, Elem[] pat, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -1024,16 +1023,16 @@ else
     {
         size_t contains( Buf buf, Pat pat )
         {
-            return find( buf, pat ) != buf.length;
+            return cast(equals_t)(find( buf, pat ) != buf.length);
         }
     }
 
 
     template contains( Buf, Pat, Pred )
     {
-        size_t contains( Buf buf, Pat pat, Pred pred )
+        equals_t contains( Buf buf, Pat pat, Pred pred )
         {
-            return find( buf, pat, pred ) != buf.length;
+            return cast(equals_t)(find( buf, pat, pred ) != buf.length);
         }
     }
 
