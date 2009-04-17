@@ -27,8 +27,8 @@ MD=mkdir
 
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
-DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. $(ADD_DFLAGS)
-DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. $(ADD_DFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I..\shared -I..\..\.. $(ADD_DFLAGS)
+DFLAGS_DEBUG=-g -w -nofloat  -I. -I..\shared -I..\..\.. $(ADD_DFLAGS)
 TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
 TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
 
@@ -65,7 +65,7 @@ all: lib doc
 
 ######################################################
 
-include OBJECTDEFS.inc
+include OBJECTDEFS_WIN.inc
 
 ALL_OBJECTS= $(ALL_OBJS) $(OBJ_WIN)
 # $(patsubst %.o,%.obj,$(ALL_OBJS)) $(OBJ_WIN)
@@ -90,7 +90,7 @@ ALL_DOCS=
 
 lib : $(ALL_OBJECTS)
 	$(RM) $(LIB_TARGET)
-	$(LC) -c -n $(LIB_TARGET) $(ALL_OBJECTS) rt/minit.obj
+	$(LC) -c -n $(LIB_TARGET) $(ALL_OBJECTS) rt\minit.obj
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.
