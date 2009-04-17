@@ -11,6 +11,8 @@ module tango.util.container.more.Heap;
 
 private import tango.core.Exception;
 
+void defaultSwapCallback(T)(T t, uint index) {}
+
 /** A heap is a data structure where you can insert items in random order and extract them in sorted order. 
   * Pushing an element into the heap takes O(lg n) and popping the top of the heap takes O(lg n). Heaps are 
   * thus popular for sorting, among other things.
@@ -21,9 +23,17 @@ private import tango.core.Exception;
   *
   * Note: always pass by reference when modifying a heap. 
   *
+  * The template arguments to the heap are:
+  * 	T = the element type
+  *	Min = true if it is a minheap (the smallest element is popped first), 
+  *		false for a maxheap (the greatest element is popped first)
+  *	onMove = a function called when swapping elements. Its signature should be void(T, uint).
+  *		The default does nothing, and should suffice for most users. You 
+  *		probably want to keep this function small; it's called O(log N) 
+  *		times per insertion or removal.
 */
 
-struct Heap (T, bool Min)
+struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
 {
         alias pop       remove;
         alias push      opCatAssign;
@@ -33,7 +43,6 @@ struct Heap (T, bool Min)
         
         // The index of the cell into which the next element will go.
         private uint    next;
-
 
         /** Inserts the given element into the heap. */
         void push (T t)
@@ -49,25 +58,68 @@ struct Heap (T, bool Min)
         /** Inserts all elements in the given array into the heap. */
         void push (T[] array)
         {
-                if (heap.length < next + array.length)
-                    heap.length = next + array.length + 32;
-                
-                foreach (t; array) push (t);
+		if (heap.length < next + array.length)
+			heap.length = next + array.length + 32;
+
+		foreach (t; array) push (t);
         }
 
         /** Removes the top of this heap and returns it. */
         T pop ()
         {
-                if (next == 0)
-                {
-                        throw new NoSuchElementException ("Heap :: no elements to pop");
-                }
-                next--;
-                auto t = heap[0];
-                heap[0] = heap[next];
-                fixdown(0);
-                return t;
+		return removeAt (0);
         }
+
+	/** Remove the every instance that matches the given item. */
+	void removeAll (T t)
+	{
+		// TODO: this is slower than it could be.
+		// I am reasonably certain we can do the O(n) scan, but I want to
+		// look at it a bit more.
+		while (remove (t)) {}
+	}
+
+	/** Remove the first instance that matches the given item. 
+	  * Returns: true iff the item was found, otherwise false. */
+	bool remove (T t)
+	{
+		foreach (i, a; heap)
+		{
+			if (a is t || a == t)
+			{
+				removeAt (i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Remove the element at the given index from the heap.
+	  * The index is according to the heap's internal layout; you are 
+	  * responsible for making sure the index is correct.
+	  * The heap invariant is maintained. */
+	T removeAt (uint index)
+	{
+		if (next <= index)
+		{
+			throw new NoSuchElementException ("Heap :: tried to remove an"
+				~ " element with index greater than the size of the heap "
+				~ "(did you call pop() from an empty heap?)");
+		}
+		next--;
+		auto t = heap[index];
+		// if next == index, then we have nothing valid on the heap
+		// so popping does nothing but change the length
+		// the other calls are irrelevant, but we surely don't want to
+		// call onMove with invalid data
+		if (next > index)
+		{
+			heap[index] = heap[next];
+			onMove(heap[index], index);
+			fixdown(index);
+		}
+		return t;
+	}
 
         /** Gets the value at the top of the heap without removing it. */
         T peek ()
@@ -134,8 +186,8 @@ struct Heap (T, bool Min)
                 uint par = parent (index);
                 if (!comp(heap[par], heap[index]))
                 {
-                swap (par, index);
-                fixup (par);
+			swap (par, index);
+			fixup (par);
                 }
         }
 
@@ -176,6 +228,8 @@ struct Heap (T, bool Min)
                 auto t = heap[a];
                 heap[a] = heap[b];
                 heap[b] = t;
+		onMove(heap[a], a);
+		onMove(heap[b], b);
         }
 
         private bool comp (T parent, T child)
@@ -212,7 +266,7 @@ template MaxHeap(T)
 
 
 
-debug (UnitTest)
+version (UnitTest)
 {
 unittest
 {
@@ -264,6 +318,75 @@ unittest
         assert (h.pop is 3);
         assert (h.pop is 2);
         assert (h.pop is 1);
+}
+
+unittest
+{
+        MaxHeap!(uint) h;
+        h ~= 1;
+        h ~= 3;
+        h ~= 2;
+        h ~= 4;
+	h.remove(3);
+	assert (h.pop is 4);
+	assert (h.pop is 2);
+	assert (h.pop is 1);
+	assert (h.size == 0);
+}
+
+long[] swapped;
+uint[] indices;
+void onMove(long a, uint b)
+{
+	swapped ~= a;
+	indices ~= b;
+}
+unittest
+{
+	// this tests that onMove is called with fixdown
+	swapped = null;
+	indices = null;
+        Heap!(long, true, onMove) h;
+	// no swap
+        h ~= 1;
+	// no swap
+        h ~= 3;
+	// pop: you replace the top with the last and
+	// percolate down. So you have to swap once when
+	// popping at a minimum, and that's if you have only two
+	// items in the heap.
+        assert (h.pop is 1);
+	assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
+	assert (swapped[0] == 3);
+	assert (indices[0] == 0);
+        assert (h.pop is 3);
+	assert (swapped.length == 1, "" ~ cast(char)('a' + swapped.length));
+}
+unittest
+{
+	// this tests that onMove is called with fixup
+	swapped = null;
+	indices = null;
+        Heap!(long, true, onMove) h;
+	// no swap
+        h ~= 1;
+	// no swap
+        h ~= 3;
+	// swap: move 0 to position 0, 1 to position 2
+        h ~= 0;
+	if (swapped[0] == 0)
+	{
+		assert (swapped[1] == 1);
+		assert (indices[0] == 0);
+		assert (indices[1] == 2);
+	}
+	else
+	{
+		assert (swapped[1] == 0);
+		assert (swapped[0] == 1);
+		assert (indices[0] == 2);
+		assert (indices[1] == 0);
+	}
 }
 
 unittest
