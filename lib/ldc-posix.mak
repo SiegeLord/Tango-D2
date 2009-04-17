@@ -33,7 +33,7 @@ LIB_BUILD=
 LIB_TARGET=$(LIB_BASE)$(LIB_BUILD).$(LIB_EXT)
 LIB_BC=$(LIB_BASE)$(LIB_BUILD)-bc.a
 LIB_C=$(LIB_BASE)$(LIB_BUILD)-c.a
-LIB_MASK=$(LIB_BASE)*.a
+LIB_MASK=$(LIB_BASE)*.a $(LIB_BASE)*.so
 
 DIR_CC=./common/tango
 DIR_RT=./compiler/ldc
@@ -82,11 +82,10 @@ ifneq ($(RANLIB),)
 	$(RANLIB) $@
 endif
 
-#LIB_C_OBJS= $(DIR_CC)/libtango-cc$(LIB_BUILD)-tango-c-only.a $(DIR_RT)/libtango-rt-ldc$(LIB_BUILD)-c.a 
-LIB_C_OBJS= $(DIR_CC)/libtango-cc-tango-c-only.a $(DIR_RT)/libtango-rt-ldc-c.a 
+LIB_C_OBJS= $(DIR_CC)/libtango-cc$(LIB_BUILD)-tango-c-only.a $(DIR_RT)/libtango-rt-ldc$(LIB_BUILD)-c.a 
 
 $(LIB_C): $(LIB_TARGET) $(LIB_C_OBJS)
-	$(LC) $@ $(LIB_C_OBJS)
+	$(CLC) $@ $(LIB_C_OBJS)
 
 doc : $(ALL_DOCS)
 	$(MAKE) -C $(DIR_CC) -fldc.mak doc DC=$(DC)
