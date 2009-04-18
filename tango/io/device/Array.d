@@ -148,7 +148,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         final override char[] toString ()
         {
-                return "<Array>";
+                return "<array>";
         }
       
         /***********************************************************************

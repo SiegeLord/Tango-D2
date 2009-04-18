@@ -355,7 +355,7 @@ class TempFile : Device, Device.Seek
         if( path.length > 0 )
             return path;
         else
-            return "<TempFile>";
+            return "<tempfile>";
     }
 
     /**************************************************************************

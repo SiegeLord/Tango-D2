@@ -27,7 +27,7 @@ private import tango.io.device.Conduit;
 
 class BitBucket : Conduit
 {
-        override char[] toString () {return "<BitBucket>";} 
+        override char[] toString () {return "<bitbucket>";} 
 
         override size_t bufferSize () { return 0;}
 
