@@ -82,7 +82,7 @@ ifneq ($(RANLIB),)
 	$(RANLIB) $@
 endif
 
-LIB_C_OBJS= $(DIR_CC)/libtango-cc$(LIB_BUILD)-tango-c-only.a $(DIR_RT)/libtango-rt-ldc$(LIB_BUILD)-c.a 
+LIB_C_OBJS= $(DIR_CC)/libtango-cc-tango-c-only$(LIB_BUILD).a $(DIR_RT)/libtango-rt-ldc$(LIB_BUILD)-c.a 
 
 $(LIB_C): $(LIB_TARGET) $(LIB_C_OBJS)
 	$(CLC) $@ $(LIB_C_OBJS)
