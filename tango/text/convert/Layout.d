@@ -673,9 +673,6 @@ version (old)
                             auto s = cast(TypeInfo_Struct) type;
                             if (s.xtoString)
                                 return Utf.fromString8 (s.xtoString(p), result);
-                            else
-                               if (type is typeid(Time))
-                                   return dateTime.format (result, *cast(Time*) p, format);
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -709,6 +706,9 @@ version (old)
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
+                if (type is typeid(Time))
+                    return dateTime.format (result, *cast(Time*) p, format);
+
                 return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
         }
 
