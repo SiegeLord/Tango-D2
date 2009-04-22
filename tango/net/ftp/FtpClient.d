@@ -1762,6 +1762,7 @@ class FTPConnection: Telnet {
 	 Added Since: 0.99.8
 	 *****************************************************************************/
 	public InputStream input(char[] path) {
+		type(FtpFormat.image);
 		dataSocket_ = this.processDataCommand("RETR", path);
 		return dataSocket_;
 	}
@@ -1770,6 +1771,7 @@ class FTPConnection: Telnet {
 	 Added Since: 0.99.8
 	 *****************************************************************************/
 	public OutputStream output(char[] path) {
+		type(FtpFormat.image); 
 		dataSocket_ = this.processDataCommand("STOR", path);
 		return dataSocket_;
 	}

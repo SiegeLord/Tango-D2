@@ -34,7 +34,7 @@ private char[] checkFirst(char[] toFix) {
 private char[] checkLast(char[] toFix) {
 	for(;toFix.length>1 &&  toFix[0] == '/' && toFix[1] == '/' ;)
 		toFix = toFix[1 .. $];
-	if(toFix[0] != '/')
+	if(toFix.length && toFix[0] != '/')
 		toFix = '/' ~ toFix;
 	return toFix;
 }
