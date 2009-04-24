@@ -21,13 +21,13 @@ target: libs
 all: lib-release lib-debug
 
 LOCAL_CFLAGS=
-LOCAL_DFLAGS=-I../../.. -I../../compiler/ldc
+LOCAL_DFLAGS=-I../../.. -I../../compiler/ldc -H
 LOCAL_TFLAGS=
 MAKEFILE=ldc.mak
 
 include ../../ldcCommonFlags.mak
 
-INC_DEST=../../../tango
+INC_DEST=../../../tango/core
 LIB_DEST=..
 DOC_DEST=../../../doc/tango
 
