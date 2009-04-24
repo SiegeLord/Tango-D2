@@ -14,6 +14,8 @@ module tango.net.Uri;
 
 public  import  tango.net.model.UriView;
 
+//public alias Uri UriView;
+
 private import  tango.core.Exception;
 
 private import  Integer = tango.text.convert.Integer;
@@ -43,25 +45,43 @@ extern (C) char* memchr (char *, char, uint);
         (see <A HREF="http://www.w3.org/2001/Talks/0912-IUC-IRI/paper.html">
         this page</A> for further details).
 
-        Use the UriView subset where you need a readonly perspective. 
-
 *******************************************************************************/
 
 class Uri : UriView
 {
         // simplistic string appender
         private alias size_t delegate(void[]) Consumer;  
+        
+        /// old method names
+        public alias port        getPort;
+        public alias defaultPort getDefaultPort;
+        public alias scheme      getScheme;
+        public alias host        getHost;
+        public alias validPort   getValidPort;
+        public alias userinfo    getUserInfo;
+        public alias path        getPath;
+        public alias query       getQuery;
+        public alias fragment    getFragment;
+        public alias port        setPort;
+        public alias scheme      setScheme;
+        public alias host        setHost;
+        public alias userinfo    setUserInfo;
+        public alias query       setQuery;
+        public alias path        setPath;
+        public alias fragment    setFragment;
 
-        private int             port;
-        private char[]          host,
-                                path,
-                                query,
-                                scheme,
-                                userinfo,
-                                fragment;
+        public enum {InvalidPort = -1}
+
+        private int             port_;
+        private char[]          host_,
+                                path_,
+                                query_,
+                                scheme_,
+                                userinfo_,
+                                fragment_;
         private HeapSlice       decoded;
 
-        private static ubyte    map[256];
+        private static ubyte    map[];
 
         private static short[char[]] genericSchemes;
 
@@ -85,10 +105,6 @@ class Uri : UriView
                 {"nntp",        119},
                 {"pop",         110}, 
                 {"rwhois",      4321},
-                {"sip",         InvalidPort},
-                {"sips",        InvalidPort},
-                {"sipt",        InvalidPort},
-                {"sipu",        InvalidPort},
                 {"shttp",       80},
                 {"smtp",        25},
                 {"snews",       563},
@@ -136,6 +152,8 @@ class Uri : UriView
                 foreach (SchemePort sp; schemePorts)
                          genericSchemes[sp.name] = sp.port;
                 genericSchemes.rehash;
+
+                map = new ubyte[256];
 
                 // load the character map with valid symbols
                 for (int i='a'; i <= 'z'; ++i)  
@@ -213,8 +231,8 @@ class Uri : UriView
 
         this ()
         {
-                port = InvalidPort;
-                decoded = new HeapSlice (256);
+                port_ = InvalidPort;
+                decoded.expand (512);
         }
 
         /***********************************************************************
@@ -240,10 +258,10 @@ class Uri : UriView
         {
                 this ();
 
-                this.scheme = scheme;
-                this.query = query;
-                this.host = host;
-                this.path = path;
+                this.scheme_ = scheme;
+                this.query_ = query;
+                this.host_ = host;
+                this.path_ = path;
         }
 
         /***********************************************************************
@@ -258,9 +276,9 @@ class Uri : UriView
                 with (other)
                      {
                      this (getScheme, getHost, getPath, getQuery);
-                     this.userinfo = getUserInfo;
-                     this.fragment = getFragment;
-                     this.port = getPort;
+                     this.userinfo_ = getUserInfo;
+                     this.fragment_ = getFragment;
+                     this.port_ = getPort;
                      }
         }
 
@@ -272,7 +290,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int getDefaultPort (char[] scheme)
+        final int defaultPort (char[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -287,9 +305,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getScheme()
+        final char[] scheme()
         {
-                return scheme;
+                return scheme_;
         }
 
         /***********************************************************************
@@ -299,9 +317,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getHost()
+        final char[] host()
         {
-                return host;
+                return host_;
         }
 
         /***********************************************************************
@@ -311,9 +329,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int getPort()
+        final int port()
         {
-                return port;
+                return port_;
         }
 
         /***********************************************************************
@@ -323,11 +341,11 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int getValidPort()
+        final int validPort()
         {
-                if (port is InvalidPort)
-                    return getDefaultPort (scheme);
-                return port;
+                if (port_ is InvalidPort)
+                    return defaultPort (scheme_);
+                return port_;
         }
 
         /***********************************************************************
@@ -337,9 +355,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getUserInfo()
+        final char[] userinfo()
         {
-                return userinfo;
+                return userinfo_;
         }
 
         /***********************************************************************
@@ -349,9 +367,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getPath()
+        final char[] path()
         {
-                return path;
+                return path_;
         }
 
         /***********************************************************************
@@ -361,9 +379,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getQuery()
+        final char[] query()
         {
-                return query;
+                return query_;
         }
 
         /***********************************************************************
@@ -373,9 +391,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] getFragment()
+        final char[] fragment()
         {
-                return fragment;
+                return fragment_;
         }
 
         /***********************************************************************
@@ -386,7 +404,7 @@ class Uri : UriView
 
         final bool isGeneric ()
         {
-                return (scheme in genericSchemes) !is null;
+                return (scheme_ in genericSchemes) !is null;
         }
 
         /***********************************************************************
@@ -398,40 +416,40 @@ class Uri : UriView
 
         final Consumer produce (Consumer consume)
         {
-                if (scheme.length)
-                    consume (scheme), consume (":");
+                if (scheme_.length)
+                    consume (scheme_), consume (":");
 
 
-                if (userinfo.length || host.length || port != InvalidPort)
+                if (userinfo_.length || host_.length || port_ != InvalidPort)
                    {
                    consume ("//");
 
-                   if (userinfo.length)
-                       encode (consume, userinfo, IncUser) ("@");
+                   if (userinfo_.length)
+                       encode (consume, userinfo_, IncUser) ("@");
 
-                   if (host.length)
-                       consume (host);
+                   if (host_.length)
+                       consume (host_);
 
-                   if (port != InvalidPort && port != getDefaultPort(scheme))
+                   if (port_ != InvalidPort && port_ != getDefaultPort(scheme_))
                       {
                       char[8] tmp;
-                      consume (":"), consume (Integer.itoa (tmp, cast(uint) port));
+                      consume (":"), consume (Integer.itoa (tmp, cast(uint) port_));
                       }
                    }
 
-                if (path.length)
-                    encode (consume, path, IncPath);
+                if (path_.length)
+                    encode (consume, path_, IncPath);
 
-                if (query.length)
+                if (query_.length)
                    {
                    consume ("?");
-                   encode (consume, query, IncQueryAll);
+                   encode (consume, query_, IncQueryAll);
                    }
 
-                if (fragment.length)
+                if (fragment_.length)
                    {
                    consume ("#");
-                   encode (consume, fragment, IncQuery);
+                   encode (consume, fragment_, IncQuery);
                    }
 
                 return consume;
@@ -601,7 +619,7 @@ class Uri : UriView
                 char    c;
                 int     i, 
                         mark;
-                auto    prefix = path;
+                auto    prefix = path_;
                 auto    len = uri.length;
 
                 reset;
@@ -610,8 +628,8 @@ class Uri : UriView
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
                 if (c is ':')
                    {
-                   scheme = uri [mark .. i];
-                   toLower (scheme);
+                   scheme_ = uri [mark .. i];
+                   toLower (scheme_);
                    mark = i + 1;
                    }
 
@@ -626,26 +644,26 @@ class Uri : UriView
                    if (relative && uri[0] != '/')
                       {
                       uri = toLastSlash(prefix) ~ uri;
-                      query = fragment = null;
+                      query_ = fragment_ = null;
                       len = uri.length;
                       }
 
                 // isolate path
                 for (i=mark; i < len && !(map[uri[i]] & ExcPath); ++i) {}
-                path = decoder (uri[mark .. i]);
+                path_ = decoder (uri[mark .. i]);
                 mark = i;
 
                 // isolate query
                 if (mark < len && uri[mark] is '?')
                    {
                    for (++mark, i=mark; i < len && uri[i] != '#'; ++i) {}
-                   query = decoder (uri[mark .. i], '&');
+                   query_ = decoder (uri[mark .. i], '&');
                    mark = i;
                    }
 
                 // isolate fragment
                 if (mark < len && uri[mark] is '#')
-                    fragment = decoder (uri[mark+1 .. len]);
+                    fragment_ = decoder (uri[mark+1 .. len]);
 
                 return this;
         }
@@ -659,8 +677,8 @@ class Uri : UriView
         final void reset()
         {
                 decoded.reset;
-                port = InvalidPort;
-                host = path = query = scheme = userinfo = fragment = null;
+                port_ = InvalidPort;
+                host_ = path_ = query_ = scheme_ = userinfo_ = fragment_ = null;
         }
 
         /***********************************************************************
@@ -680,9 +698,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setScheme (char[] scheme)
+        final Uri scheme (char[] scheme)
         {
-                this.scheme = scheme;
+                this.scheme_ = scheme;
                 return this;
         }
 
@@ -692,9 +710,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setHost (char[] host)
+        final Uri host (char[] host)
         {
-                this.host = host;
+                this.host_ = host;
                 return this;
         }
 
@@ -704,9 +722,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setPort (int port)
+        final Uri port (int port)
         {
-                this.port = port;
+                this.port_ = port;
                 return this;
         }
 
@@ -716,9 +734,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setUserInfo (char[] userinfo)
+        final Uri userinfo (char[] userinfo)
         {
-                this.userinfo = userinfo;
+                this.userinfo_ = userinfo;
                 return this;
         }
 
@@ -728,9 +746,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setQuery (char[] query)
+        final Uri query (char[] query)
         {
-                this.query = query;
+                this.query_ = query;
                 return this;
         }
 
@@ -743,11 +761,11 @@ class Uri : UriView
         final char[] extendQuery (char[] tail)
         {
                 if (tail.length)
-                    if (query.length)
-                        query = query ~ "&" ~ tail;
+                    if (query_.length)
+                        query_ = query_ ~ "&" ~ tail;
                     else
-                       query = tail;
-                return query;
+                       query_ = tail;
+                return query_;
         }
 
         /***********************************************************************
@@ -755,10 +773,10 @@ class Uri : UriView
                 Set the Uri path
 
         ***********************************************************************/
-
-        final Uri setPath (char[] path)
+        
+        final Uri path (char[] path)
         {
-                this.path = path;
+                this.path_ = path;
                 return this;
         }
 
@@ -768,9 +786,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Uri setFragment (char[] fragment)
+        final Uri fragment (char[] fragment)
         {
-                this.fragment = fragment;
+                this.fragment_ = fragment;
                 return this;
         }
         
@@ -799,7 +817,7 @@ class Uri : UriView
                 foreach (int i, char c; auth)
                          if (c is '@')
                             {
-                            userinfo = decoder (auth[0 .. i]);
+                            userinfo_ = decoder (auth[0 .. i]);
                             mark = i + 1;
                             break;
                             }
@@ -808,13 +826,13 @@ class Uri : UriView
                 for (int i=mark; i < len; ++i)
                      if (auth [i] is ':')
                         {
-                        port = Integer.atoi (auth [i+1 .. len]);
+                        port_ = Integer.atoi (auth [i+1 .. len]);
                         len = i;
                         break;
                         }
 
                 // get host: ([^:]*)?
-                host = auth [mark..len];
+                host_ = auth [mark..len];
         }
 
         /**********************************************************************
@@ -850,21 +868,10 @@ class Uri : UriView
         
 *******************************************************************************/
 
-private class HeapSlice
+private struct HeapSlice
 {
         private uint    used;
         private void[]  buffer;
-
-        /***********************************************************************
-        
-                Create with the specified starting size
-
-        ***********************************************************************/
-
-        this (uint size)
-        {
-                buffer = new void[size];
-        }
 
         /***********************************************************************
         
@@ -886,8 +893,10 @@ private class HeapSlice
 
         final void* expand (uint size)
         {
-                if ((used + size) > buffer.length)
-                     buffer.length = (used + size) * 2;
+                auto len = used + size;
+                if (len > buffer.length)
+                    buffer.length = len + len/2;
+
                 return &buffer [used];
         }
 

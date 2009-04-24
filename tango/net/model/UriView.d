@@ -33,6 +33,23 @@ module tango.net.model.UriView;
 
 abstract class UriView
 {
+        public alias port        getPort;
+        public alias defaultPort getDefaultPort;
+        public alias scheme      getScheme;
+        public alias host        getHost;
+        public alias validPort   getValidPort;
+        public alias userinfo    getUserInfo;
+        public alias path        getPath;
+        public alias query       getQuery;
+        public alias fragment    getFragment;
+        public alias port        setPort;
+        public alias scheme      setScheme;
+        public alias host        setHost;
+        public alias userinfo    setUserInfo;
+        public alias query       setQuery;
+        public alias path        setPath;
+        public alias fragment    setFragment;
+
         public enum {InvalidPort = -1}
 
         /***********************************************************************
@@ -43,7 +60,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract int getDefaultPort (char[] scheme);
+        abstract int defaultPort (char[] scheme);
 
         /***********************************************************************
         
@@ -52,7 +69,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getScheme();
+        abstract char[] scheme();
 
         /***********************************************************************
         
@@ -61,7 +78,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getHost();
+        abstract char[] host();
 
         /***********************************************************************
         
@@ -70,7 +87,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract int getPort();
+        abstract int port();
 
         /***********************************************************************
         
@@ -79,7 +96,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract int getValidPort();
+        abstract int validPort();
 
         /***********************************************************************
         
@@ -88,7 +105,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getUserInfo();
+        abstract char[] userinfo();
 
         /***********************************************************************
         
@@ -97,7 +114,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getPath();
+        abstract char[] path();
 
         /***********************************************************************
         
@@ -106,7 +123,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getQuery();
+        abstract char[] query();
 
         /***********************************************************************
         
@@ -115,7 +132,7 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract char[] getFragment();
+        abstract char[] fragment();
 
         /***********************************************************************
         
