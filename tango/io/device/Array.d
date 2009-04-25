@@ -251,7 +251,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         override long seek (long offset, Anchor anchor = Anchor.Begin)
         {
-                if (offset > limit)
+                if (offset > cast(long) limit)
                     offset = limit;
 
                 switch (anchor)
