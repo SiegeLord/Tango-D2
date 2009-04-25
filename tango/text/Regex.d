@@ -4306,6 +4306,14 @@ class RegExpT(char_t)
         return code;
     }
 
+    /*********************************************************************************************
+        Get the pattern with which this regex was constructed. 
+    **********************************************************************************************/
+    public char_t[] pattern() 
+    { 
+        return pattern_; 
+    }
+
     uint tagCount()
     {
         return tdfa_.num_tags;
