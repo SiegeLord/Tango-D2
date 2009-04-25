@@ -268,7 +268,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                             long o = cast(size_t) (index + offset);
                             if (o < 0)
                                 o = 0;
-                            if (o > limit)
+                            if (o > cast(long) limit)
                                 o = limit;
                             index = cast(size_t) o;
                        default:
