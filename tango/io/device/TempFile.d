@@ -15,7 +15,6 @@ import Path = tango.io.Path;
 import tango.math.random.Kiss : Kiss;
 import tango.io.device.Device : Device;
 import tango.io.device.File : File;
-import tango.io.FilePath : FilePath;
 import tango.stdc.stringz : toStringz, toString16z;
 
 /******************************************************************************
@@ -317,12 +316,6 @@ class TempFile : Device, Device.Seek
         create (prefix, style);
     }
 
-    /// deprecated: please use char[] version instead
-    deprecated this(FilePath prefix, Style style = Style.init)
-    {
-        this (prefix.toString.dup, style);
-    }
-
     ~this()
     {
         if( !detached ) this.detach();
@@ -401,7 +394,24 @@ class TempFile : Device, Device.Seek
         error("could not create temporary file");
     }
 
-    version( Win32 )
+    version( D_Ddoc )
+    {
+        /**********************************************************************
+         * 
+         * Seeks the temporary file's cursor to the given location.
+         *
+         **********************************************************************/
+        long seek(long offset, Anchor anchor = Anchor.Begin);
+
+        /**********************************************************************
+         * 
+         * Returns the path to the directory where temporary files will be
+         * created.  The returned path is safe to mutate.
+         *
+         **********************************************************************/
+        public static char[] tempPath();
+    }
+    else version( Win32 )
     {
         private static const DEFAULT_LENGTH = 6;
         private static const DEFAULT_PREFIX = "~t";
@@ -574,23 +584,6 @@ class TempFile : Device, Device.Seek
                 error();
             return result;
         }
-    }
-    else version( D_Ddoc )
-    {
-        /**********************************************************************
-         * 
-         * Seeks the temporary file's cursor to the given location.
-         *
-         **********************************************************************/
-        long seek(long offset, Anchor anchor = Anchor.Begin);
-
-        /**********************************************************************
-         * 
-         * Returns the path to the directory where temporary files will be
-         * created.  The returned path is safe to mutate.
-         *
-         **********************************************************************/
-        char[] tempPath();
     }
     else
     {
