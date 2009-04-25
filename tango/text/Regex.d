@@ -4314,6 +4314,11 @@ class RegExpT(char_t)
         return pattern_; 
     }
 
+    /*********************************************************************************************
+        Get the tag count of this regex, representing the number of sub-matches. 
+
+        This value is the max valid value for match/opIndex.
+    **********************************************************************************************/
     uint tagCount()
     {
         return tdfa_.num_tags;
