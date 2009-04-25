@@ -4093,6 +4093,10 @@ class RegExpT(char_t)
 
     /**********************************************************************************************
         Compiles the regular expression to D code.
+
+        NOTE : Remember to import this module (tango.text.Regex) in the module where you put the
+        generated D code.
+
     **********************************************************************************************/
     // TODO: input-end special case
     string compileToD(string func_name = "match", bool lexer=false)
