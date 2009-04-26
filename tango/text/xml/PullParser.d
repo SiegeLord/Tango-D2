@@ -19,6 +19,8 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
+version = leadingWhitespace;
+
 /*******************************************************************************
 
         The XML node types 
@@ -135,6 +137,12 @@ class PullParser(Ch = char)
                          {}
                    if (p < e)
                       {
+version(leadingWhitespace)
+{
+                      // include leading whitespace
+                      while (*(q-1) <= 32)
+                             --q;
+}                
                       rawValue = q [0 .. p - q];
                       text.point = p;
                       return type = XmlTokenType.Data;
@@ -145,32 +153,6 @@ class PullParser(Ch = char)
                 // must be a '<' character, so peek ahead
                 switch (p[1])
                        {
-                       default:
-                            // scan new element name
-                            auto q = ++p;
-                            while (*q > 63 || text.name[*q]) 
-                                   ++q;
-
-                            // check if we ran past the end
-                            if (q >= e)
-                                return endOfInput;
-
-                            if (*q != ':') 
-                               {
-                               prefix = null;
-                               localName = p [0 .. q - p];
-                               }
-                            else
-                               {
-                               prefix = p[0 .. q - p];
-                               p = ++q;
-                               while (*q > 63 || text.attributeName[*q])
-                                      ++q;
-                               localName = p[0 .. q - p];
-                               } 
-                            text.point = q;
-                            return type = XmlTokenType.StartElement;
-
                        case '!':
                             // one of the following ...
                             if (p[2..4] == "--") 
@@ -230,6 +212,32 @@ class PullParser(Ch = char)
                                return type = XmlTokenType.EndElement;
                                }
                             return doExpected(">", q);
+
+                       default:
+                            // scan new element name
+                            auto q = ++p;
+                            while (*q > 63 || text.name[*q]) 
+                                   ++q;
+
+                            // check if we ran past the end
+                            if (q >= e)
+                                return endOfInput;
+
+                            if (*q != ':') 
+                               {
+                               prefix = null;
+                               localName = p [0 .. q - p];
+                               }
+                            else
+                               {
+                               prefix = p[0 .. q - p];
+                               p = ++q;
+                               while (*q > 63 || text.attributeName[*q])
+                                      ++q;
+                               localName = p[0 .. q - p];
+                               } 
+                            text.point = q;
+                            return type = XmlTokenType.StartElement;
                        }
         }
 
