@@ -18,7 +18,7 @@ version(X86) {
 
 version(autoconf){
     public import tango.stdc.constants.autoconf.fcntl;
-} else version (windows) {
+} else version (Windows) {
     version (X86_CPU) {
         static if ((void*).sizeof==4)
             public import tango.stdc.constants.win.fcntl;
