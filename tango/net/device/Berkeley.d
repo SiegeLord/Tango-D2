@@ -767,10 +767,10 @@ version (Windows)
 
 public abstract class Address
 {
-        sockaddr*       name();
-        int             nameLen();
-        AddressFamily   addressFamily();
-        char[]          toString();
+        abstract sockaddr*       name();
+        abstract int             nameLen();
+        abstract AddressFamily   addressFamily();
+        abstract char[]          toString();
 
         /***********************************************************************
 

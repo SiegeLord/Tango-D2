@@ -1545,10 +1545,10 @@ class Socket
 
 abstract class Address
 {
-        protected sockaddr* name();
-        protected int nameLen();
-        AddressFamily addressFamily();
-        char[] toString();
+        abstract protected sockaddr* name();
+        abstract protected int nameLen();
+        abstract AddressFamily addressFamily();
+        abstract char[] toString();
 
         /***********************************************************************
 
