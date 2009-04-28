@@ -1401,7 +1401,8 @@ else
         .prev                   prior siblings
         .ancestor               all parents
         .descendant             all descendants
-        .text                   text children
+        .data                   text children
+        .cdata                  cdata children
         .attribute              attribute children
         ---
 
