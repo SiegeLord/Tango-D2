@@ -18,7 +18,7 @@ private import  tango.core.Exception;
 public  import  tango.io.model.IBuffer,
                 tango.io.model.IConduit;
 
-pragma (msg, "warning - io.Buffer functionality has been split into io.stream.Buffered and io.device.Array - use the former for discrete streams, and the latter for combined I/O");
+pragma (msg, "revision: io.Buffer functionality has been split into io.stream.Buffered and io.device.Array - use the former for streaming, and the latter for virtual/memory IO");
 
 
 /******************************************************************************
