@@ -288,7 +288,7 @@ void testSelector(ISelector selector)
             */
         }
 
-        serverSocket.socket.detach;
+        serverSocket.detach;
     }
     catch (SelectorException e)
     {
