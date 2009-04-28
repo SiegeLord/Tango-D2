@@ -2604,6 +2604,7 @@ private
     }
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Fiber
 ////////////////////////////////////////////////////////////////////////////////
@@ -2665,6 +2666,63 @@ private
  */
 class Fiber
 {
+    static class Scheduler
+    {
+        alias uint Handle;
+
+        enum Type {Read=1, Write=2, Accept=3, Connect=4, Transfer=5}
+
+        void idle (uint timeout=0) {}
+
+        void open (Handle fd, char[] name) {}
+
+        void close (Handle fd, char[] name) {}
+
+        void idle (Handle fd, Type t, uint timeout=uint.max) {}
+        
+        void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
+    }
+
+    struct Event                        // scheduler support 
+    {  
+        uint             idx;           // support for timer removal
+        Fiber            next;          // linked list of elapsed fibers
+        ulong            clock;         // request timeout duration
+        Scheduler.Handle handle;        // IO request handle
+        Scheduler        scheduler;     // associated scheduler (may be null)
+    }
+
+    final override int opCmp (Object o)
+    {   
+        auto other = cast(Fiber) cast(void*) o;
+        if (other)
+           {
+           long x = cast(long) (event.clock - other.event.clock);
+           return ((x & 0x80000000) ? -1 : x is 0 ? 0 : 1);
+           }
+        return 1;
+    }
+
+    final char[] name ()
+    {
+        return m_name;
+    }
+
+    final void name (char[] s)
+    {
+        m_name = s;
+    }
+
+    override char[] toString ()
+    {
+        return (m_name.length) ? m_name : super.toString;
+    }
+
+    final static Scheduler scheduler ()
+    {
+        return getThis.event.scheduler;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Initialization
     ////////////////////////////////////////////////////////////////////////////
@@ -2681,7 +2739,7 @@ class Fiber
      * In:
      *  fn must not be null.
      */
-    this( void function() fn, size_t sz = PAGESIZE )
+    this( void function() fn, size_t sz = PAGESIZE)
     in
     {
         assert( fn );
@@ -2707,13 +2765,15 @@ class Fiber
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = PAGESIZE )
+    this( void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
     in
     {
         assert( dg );
     }
     body
     {
+        event.scheduler = s;
+
         m_dg    = dg;
         m_call  = Call.DG;
         m_state = State.HOLD;
@@ -2951,20 +3011,31 @@ class Fiber
     /**
      * Forces a context switch to occur away from the calling fiber.
      */
-    static void yield()
+    final void cede ()
     {
-        Fiber   cur = getThis();
-        assert( cur, "Fiber.yield() called with no active fiber" );
-        assert( cur.m_state == State.EXEC );
+        assert( m_state == State.EXEC );
 
         static if( is( ucontext_t ) )
-          cur.m_ucur = &cur.m_utxt;
+                   m_ucur = &m_utxt;
 
-        cur.m_state = State.HOLD;
-        cur.switchOut();
-        cur.m_state = State.EXEC;
+        m_state = State.HOLD;
+        switchOut();
+        m_state = State.EXEC;
     }
 
+
+    /**
+     * Forces a context switch to occur away from the calling fiber.
+     */
+    static void yield()
+    {
+        Fiber cur = getThis;
+        assert( cur, "Fiber.yield() called with no active fiber" );
+        if (cur.event.scheduler)
+            cur.event.scheduler.idle;
+        else
+          cur.cede;
+    }
 
     /**
      * Forces a context switch to occur away from the calling fiber and then
@@ -2983,17 +3054,13 @@ class Fiber
     }
     body
     {
-        Fiber   cur = getThis();
-        assert( cur, "Fiber.yield() called with no active fiber" );
-        assert( cur.m_state == State.EXEC );
-
-        static if( is( ucontext_t ) )
-          cur.m_ucur = &cur.m_utxt;
-
+        Fiber cur = getThis();
+        assert( cur, "Fiber.yield(obj) called with no active fiber" );
         cur.m_unhandled = obj;
-        cur.m_state = State.HOLD;
-        cur.switchOut();
-        cur.m_state = State.EXEC;
+        if (cur.event.scheduler)
+            cur.event.scheduler.idle;
+        else
+           cur.cede;
     }
 
 
@@ -3105,6 +3172,9 @@ private:
     bool                m_isRunning;
     Object              m_unhandled;
     State               m_state;
+    char[]              m_name;
+public:
+    Event               event;
 
 
 private:
