@@ -8,6 +8,8 @@
  */
 module tango.core.Exception;
 
+version = SocketSpecifics;              // TODO: remove this before v1.0
+
 
 private
 {
@@ -33,9 +35,6 @@ private
     - SyncException
     - IOException
       - SocketException
-        - SocketAcceptException
-      - AddressException
-      - HostException
       - VfsException
       - ClusterException
 
@@ -254,6 +253,8 @@ class SocketException : IOException
 }
 
 
+version (SocketSpecifics)
+{
 /**
  * Base class for exception thrown by an InternetHost.
  */
@@ -288,7 +289,7 @@ class SocketAcceptException : SocketException
         super( msg );
     }
 }
-
+}
 
 /**
  * Thrown on a process error.
