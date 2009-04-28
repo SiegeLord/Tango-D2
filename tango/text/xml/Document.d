@@ -712,7 +712,8 @@ version(discrete)
 {
                         if (type is XmlNodeType.Element)
                             foreach (child; children)
-                                     if (child.id is XmlNodeType.Data)
+                                     if (child.id is XmlNodeType.Data || 
+                                         child.id is XmlNodeType.CData)
                                          return child.rawValue;
 }
                         return rawValue;
@@ -1645,6 +1646,22 @@ private class XmlPath(T)
 
                 /***************************************************************
         
+                        Return a set containing all cdata nodes of the 
+                        nodes within this set, which match the optional
+                        value
+
+                ***************************************************************/
+        
+                NodeSet cdata (T[] value = null)
+                {
+                        if (value.ptr)
+                            return child ((Node node){return node.value == value;}, 
+                                           XmlNodeType.CData);
+                        return child (&always, XmlNodeType.CData);
+                }
+
+                /***************************************************************
+        
                         Return a set containing all attributes of the 
                         nodes within this set, which match the optional
                         name
@@ -2122,7 +2139,8 @@ debug (Document)
                 doc.tree.element   (null, "root")
                         .attribute (null, "attrib1", "value")
                         .attribute (null, "attrib2", "other")
-                        .element   (null, "child", "value");
+                        .element   (null, "child")
+                        .cdata     ("some text");
 
                 // attach a sibling to the interior elements
                 doc.elements.element (null, "sibling");
@@ -2142,6 +2160,9 @@ debug (Document)
                 foreach (node; doc.elements.children)
                          Stdout.formatln("<< {}", node.name);
                          
+                foreach (node; doc.query.descendant.cdata)
+                         Stdout.formatln ("{}: {}", node.parent.name, node.value);
+
                 // emit the result
                 auto print = new DocPrinter!(char);
                 Stdout(print(doc)).newline;
