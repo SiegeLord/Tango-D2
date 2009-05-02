@@ -13,45 +13,46 @@
 
 module tango.net.ftp.Telnet;
 
-private {
-        import tango.net.SocketConduit;
-        import tango.net.Socket;
-        import tango.net.InternetAddress;
+private 
+{
         import tango.core.Exception;
         import tango.io.stream.Lines;
+        import tango.net.device.Socket;
 }
 
-class Telnet {
-
-        /// The Socket Conduit that is used to send commands.
-        SocketConduit socket_;
+class Telnet 
+{
+        /// The Socket that is used to send commands.
+        Socket socket_;
         Lines!(char) iterator;
-        char[8 * 1024] dst; //for reading from the socket_
 
         abstract void exception(char[] message);
 
         /// Send a line over the Socket Conduit.
         ///
-        ///    buf =             the bytes to send
-        void sendline(void[] buf) {
+        /// buf = the bytes to send
+        void sendline(void[] buf) 
+        {
                 sendData(buf);
                 sendData("\r\n");
         }
 
         /// Send a line over the Socket Conduit.
         ///
-        ///    buf =             the bytes to send
-        void sendData(void[] buf) {
+        /// buf = the bytes to send
+        void sendData(void[] buf) 
+        {
                 socket_.write(buf);
         }
 
         /// Read a CRLF terminated line from the socket.
         ///
-        /// Returns:             the line read
-        char[] readLine() {
-        char[] to_return; 
-        iterator.readln(to_return); 
-        return to_return; 
+        /// Returns: the line read
+        char[] readLine() 
+        {
+                char[] to_return; 
+                iterator.readln(to_return); 
+                return to_return; 
         }
 
         /************************************************************************
@@ -61,12 +62,13 @@ class Telnet {
          *          hostname = the hostname to lookup and connect to
          *          port = the port to connect on
          *      Returns:
-                the SocketConduit instance used
+                the Socket instance used
          *      Since: 0.99.8
          */
-        SocketConduit findAvailableServer(char[] hostname, int port) {
-                socket_ = new SocketConduit();
-                socket_.connect(new InternetAddress(hostname, port));
+        Socket findAvailableServer(char[] hostname, int port) 
+        {
+                socket_ = new Socket;
+                socket_.connect(hostname, port);
                 iterator = new Lines!(char)(socket_); 
                 return socket_;
         }
