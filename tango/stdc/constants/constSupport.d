@@ -13,7 +13,7 @@ char [] ctfe_i2a(long i){
         i=-i;
     }
     while (i>0) {
-        res=digit[i%10]~res;
+        res=digit[cast(size_t) (i%10)]~res;
         i/=10;
     }
     if (neg)
