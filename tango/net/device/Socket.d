@@ -477,7 +477,7 @@ class Socket : Conduit, ISelectable
         
                 ***************************************************************/
         
-                Socket asyncCopy (ISelectable file)
+                Socket asyncCopy (Handle file)
                 {
                         assert (false);
                         return this;
