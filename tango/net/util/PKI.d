@@ -28,7 +28,7 @@ private import tango.net.util.c.OpenSSL;
 
   - Validate a X509 Certificate against a Certificate Authority
 
-  - Generate a SSLCtx for SSLSocketConduit and SSLServerSocket
+  - Generate a SSLCtx for SSLSocket and SSLServerSocket
 
   - Wrap a SSLVerifyCallback so that retrieving the peer cert is easier
 
@@ -89,7 +89,7 @@ extern (C) typedef int function(int, X509_STORE_CTX *ctx) SSLVerifyCallback;
 
 /*******************************************************************************
 
-    SSLCtx is provided to SSLSocketConduit and SSLServerSocket.
+    SSLCtx is provided to SSLSocket and SSLServerSocket.
 
     It contains the public/private keypair, and some additional options that
     control how the SSL streams work.
