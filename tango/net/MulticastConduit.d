@@ -13,6 +13,14 @@
 
 module tango.net.MulticastConduit;
 
+public import tango.net.device.Multicast;
+
+alias Multicast MulticastConduit;
+
+pragma(msg, "revision: net.MulticastConduit has been moved to net.device.Multicast");
+
+version (Old)
+{
 public  import  tango.io.device.Conduit;
 
 private import  tango.net.DatagramConduit,
@@ -186,4 +194,5 @@ debug (Multicast)
                 auto bytes = multi.read (tmp);
                 Cout (tmp[0..bytes]).newline;
         }
+}
 }

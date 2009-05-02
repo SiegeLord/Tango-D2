@@ -14,8 +14,15 @@
 
 module tango.net.SocketConduit;
 
+public  import  tango.net.device.Socket;
 public  import  tango.io.device.Conduit;
 
+alias Socket SocketConduit;
+
+pragma(msg, "revision: net.SocketConduit has been moved to net.device.Socket");
+
+version (Old)
+{
 private import  tango.net.Socket;
 
 /*******************************************************************************
@@ -366,4 +373,4 @@ else
         }
 }
 
-
+}

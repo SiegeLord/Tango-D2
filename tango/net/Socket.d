@@ -62,6 +62,12 @@
 
 module tango.net.Socket;
 
+public import tango.net.device.Berkeley;
+
+pragma(msg, "revision: net.Socket has been moved to net.device.Berkeley");
+
+version (Old)
+{
 private import  tango.time.Time;
 
 private import  tango.sys.Common;
@@ -1050,7 +1056,7 @@ class Socket
         {
                 auto newsock = cast(socket_t).accept(sock, null, null); // DMD 0.101 error: found '(' when expecting ';' following 'statement
                 if (socket_t.init == newsock)
-                   throw new SocketAcceptException("Unable to accept socket connection: " ~ SysError.lookup(lastError));
+                   throw new SocketException("Unable to accept socket connection: " ~ SysError.lookup(lastError));
 
                 target.initialize (newsock);
                 version(Win32)
@@ -1558,7 +1564,7 @@ abstract class Address
 
         static void exception (char[] msg)
         {
-                throw new AddressException (msg);
+                throw new SocketException (msg);
         }
 
 }
@@ -1641,7 +1647,7 @@ class NetHost
         protected void validHostent(hostent* he)
         {
                 if(he.h_addrtype != cast(int)AddressFamily.INET || he.h_length != 4)
-                        throw new HostException("Address family mismatch.");
+                        throw new SocketException("Address family mismatch.");
         }
 
 
@@ -2340,4 +2346,4 @@ class SocketSet
         }
 }
 
-
+}

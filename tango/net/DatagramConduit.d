@@ -13,6 +13,14 @@
 
 module tango.net.DatagramConduit;
 
+public import tango.net.device.Datagram;
+
+alias Datagram DatagramConduit;
+
+pragma(msg, "revision: net.DatagramConduit has been moved to net.device.Datagram");
+
+version (Old)
+{
 public  import  tango.io.device.Conduit;
 
 package import  tango.net.Socket,
@@ -160,4 +168,5 @@ debug (Datagram)
                 auto bytes = gram.read (tmp, x);
                 Cout (x) (tmp[0..bytes]).newline;
         }
+}
 }

@@ -105,7 +105,7 @@ abstract class ClusterServer : AbstractServer
                 super.start (reuse);
 
                 // configure an identity for ourselves
-                id.addr = Socket.hostName ~ ':' ~ localAddress.toPortString;
+                id.addr = Berkeley.hostName ~ ':' ~ localAddress.toPortString;
                 this.rollcall = id;
 
                 // clients are listening on this channel ...

@@ -12,7 +12,7 @@
 
 module tango.net.InternetAddress;
 
-private import tango.net.Socket;
+private import tango.net.device.Berkeley;
 
 /*******************************************************************************
 

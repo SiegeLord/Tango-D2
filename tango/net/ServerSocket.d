@@ -13,6 +13,14 @@
 
 module tango.net.ServerSocket;
 
+public import tango.net.device.Socket;
+
+public  import tango.net.InternetAddress;
+
+pragma(msg, "revision: net.ServerSocket has been folded into net.device.Socket");
+
+version (Old)
+{
 private import  tango.net.Socket,
                 tango.net.SocketConduit;
 
@@ -155,4 +163,5 @@ class ServerSocket : ISelectable
 
                 return wrapper;
         }
+}
 }

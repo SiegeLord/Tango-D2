@@ -10,6 +10,14 @@
 
 module tango.net.SSLSocketConduit;
 
+public import tango.net.device.SSLSocket;
+
+public alias SSLSocket SSLSocketConduit;
+
+pragma(msg, "revision: net.SSLSocketConduit has been moved to net.device.SSLSocket");
+
+version (Old)
+{
 private import tango.time.Time;
 
 private import tango.io.FilePath;
@@ -495,4 +503,6 @@ version(Test)
         t["Read/Write Timeout"] = &sslReadWriteTestWithTimeout; 
         t.run();
     }
+}
+
 }

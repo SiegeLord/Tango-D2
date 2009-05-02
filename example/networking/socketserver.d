@@ -11,8 +11,7 @@ private import  tango.core.Thread;
 
 private import  tango.io.Console;
 
-private import  tango.net.ServerSocket,
-                tango.net.SocketConduit;
+private import  tango.net.device.Socket;
 
 /*******************************************************************************
 
@@ -27,7 +26,7 @@ void main()
         // thread body for socket-listener
         void run()
         {       
-                auto server = new ServerSocket (new InternetAddress(port));
+                auto server = new ServerSocket (port);
                 
                 // wait for requests
                 auto request = server.accept;
@@ -41,8 +40,8 @@ void main()
         Thread.sleep (0.250);
 
         // make a connection request to the server
-        auto request = new SocketConduit;
-        request.connect (new InternetAddress("localhost", port));
+        auto request = new Socket;
+        request.connect ("localhost", port);
 
         // wait for and display response (there is an optional timeout)
         char[64] response;

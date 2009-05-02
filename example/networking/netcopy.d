@@ -12,8 +12,8 @@ private import  tango.core.Thread;
 private import  tango.io.Console,
                 tango.io.device.File;
 
-private import  tango.net.ServerSocket,
-                tango.net.SocketConduit;
+private import  tango.net.device.Socket;
+            
 
 /*******************************************************************************
 
@@ -27,7 +27,7 @@ void main(char[][] args)
         void run()
         {       
                 // instantiate a server socket
-                auto server = new ServerSocket (new InternetAddress("localhost", 8080));
+                auto server = new ServerSocket (8080);
 
                 // wait for requests
                 auto stream = server.accept;
@@ -47,8 +47,8 @@ void main(char[][] args)
            Thread.sleep (0.1);
 
            // make a connection request to the server
-           auto send = new SocketConduit;
-           send.connect (new InternetAddress("localhost", 8080));
+           auto send = new Socket;
+           send.connect ("localhost", 8080);
 
            // send the specified file
            send.copy (new File(args[1])).flush.close;

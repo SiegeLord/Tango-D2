@@ -10,6 +10,12 @@
 
 module tango.net.PKI;
 
+public import tango.net.util.PKI;
+
+pragma(msg, "revision: net.PKI has been moved to net.util.PKI");
+
+version (Old)
+{
 private import tango.time.Time;
 
 private import tango.stdc.stringz;
@@ -1309,3 +1315,5 @@ version (Test)
         t.run();
     }
 }
+}
+

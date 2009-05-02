@@ -7,13 +7,13 @@
 
 private import  tango.io.Console;
 
-private import  tango.net.SocketConduit, 
+private import  tango.net.device.Socket, 
                 tango.net.InternetAddress;
 
 void main()
 {
         // make a connection request to the server
-        auto request = new SocketConduit;
+        auto request = new Socket;
         request.connect (new InternetAddress ("localhost", 8080));
         request.output.write ("hello\n");
 

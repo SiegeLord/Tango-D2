@@ -10,6 +10,12 @@
 
 module tango.net.SSLServerSocket;
 
+public import tango.net.device.SSLSocket;
+
+pragma(msg, "revision: net.SSLServerSocket has been folded into net.device.SSLSocket");
+
+version (Old)
+{
 private import tango.net.PKI,
                tango.net.ServerSocket,
                tango.net.SocketConduit,
@@ -93,4 +99,6 @@ class SSLServerSocket : ServerSocket
         rtn.setCtx(sslCtx, false);
         return rtn;
     }
+}
+
 }

@@ -20,10 +20,9 @@ private
     import tango.io.selector.Selector;
     import tango.io.selector.SelectSelector;
     import tango.io.selector.SelectorException;
+    import tango.net.InternetAddress;
     import tango.io.device.Conduit;
-    import tango.net.Socket;
-    import tango.net.SocketConduit;
-    import tango.net.ServerSocket;
+    import tango.net.device.Socket;
     import tango.time.Clock;
     import tango.core.Exception;
     import tango.core.Thread;
@@ -111,7 +110,7 @@ void testSelector(ISelector selector)
         TimeSpan            timeout         = TimeSpan.fromSeconds(1);
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         ServerSocket        serverSocket    = new ServerSocket(addr, 5);
-        SocketConduit       clientSocket;
+        Socket       clientSocket;
         char[MAX_LENGTH]    buffer;
         int                 eventCount;
         uint                count;
@@ -168,7 +167,7 @@ void testSelector(ISelector selector)
                             debug (selector)
                                 log.trace("[{0}] Receiving message from client", i);
 
-                            count = (cast(SocketConduit) selectionKey.conduit).read(buffer);
+                            count = (cast(Socket) selectionKey.conduit).read(buffer);
                             if (count != IConduit.Eof)
                             {
                                 debug (selector)
@@ -187,7 +186,7 @@ void testSelector(ISelector selector)
                                 // unregistering and closing until after the
                                 // loop is done.
                                 //selector.unregister(selectionKey.conduit);
-                                //(cast(SocketConduit) selectionKey.conduit).close();
+                                //(cast(Socket) selectionKey.conduit).close();
                                 removeThese ~= selectionKey.conduit;
                                 failedReceiveCount++;
                                 continue;
@@ -200,7 +199,7 @@ void testSelector(ISelector selector)
                         debug (selector)
                             log.trace("[{0}] Sending PONG to client", i);
 
-                        count = (cast(SocketConduit) selectionKey.conduit).write("PONG");
+                        count = (cast(Socket) selectionKey.conduit).write("PONG");
                         if (count != IConduit.Eof)
                         {
                             debug (selector)
@@ -216,7 +215,7 @@ void testSelector(ISelector selector)
                                            i, selectionKey.conduit.fileHandle);
                             // note, see comment above
                             //selector.unregister(selectionKey.conduit);
-                            //(cast(SocketConduit) selectionKey.conduit).close();
+                            //(cast(Socket) selectionKey.conduit).close();
                             removeThese ~= selectionKey.conduit;
                             failedSendCount++;
                             continue;
@@ -318,7 +317,7 @@ void testSelector(ISelector selector)
 void clientThreadFunc()
 {
     Logger log = Log.getLogger("selector.client");
-    SocketConduit socket  = new SocketConduit;
+    Socket socket  = new Socket;
 
     Thread.sleep(0.010);      // 10 milliseconds
 
