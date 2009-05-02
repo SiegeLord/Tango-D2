@@ -21,7 +21,7 @@ module tango.net.http.HttpClient;
 private import  tango.time.Time;
                 
 private import  tango.net.Uri,
-                tango.net.SocketConduit,
+                tango.net.device.Socket,
                 tango.net.InternetAddress;
 
 private import  tango.io.device.Array;
@@ -94,7 +94,7 @@ class HttpClient
         private BufferedOutput          output;
         private Array                   tokens;
         private Lines!(char)            line;
-        private SocketConduit           socket;
+        private Socket                  socket;
         private RequestMethod           method;
         private InternetAddress         address;
         private HttpParams              paramsOut;
@@ -423,7 +423,7 @@ class HttpClient
                 if (socket is null)
                    {
                    socket = createSocket;
-                   socket.setTimeout (timeout);
+                   socket.timeout = cast(int)(timeout * 1000);
                    socket.connect (address);
                    }
 
@@ -441,7 +441,6 @@ class HttpClient
                     headersOut.add (HttpHeader.Connection, "close");
 
                 // attach/extend query parameters if user has added some
-                // place for
                 tokens.clear;
                 auto query = uri.extendQuery (paramsOut.formatTokens(tokens, "&"));
 
@@ -521,9 +520,11 @@ class HttpClient
                       {}
 
                 // throw if we experienced a timeout
+version (OldTimer)
+{
                 if (socket.hadTimeout)
                     responseLine.error ("response timeout");
-
+}
                 // is this a bogus request?
                 if (line.get.length is 0)
                     responseLine.error ("truncated response");
@@ -664,9 +665,9 @@ class HttpClient
 
         ***********************************************************************/
 
-        protected SocketConduit createSocket ()
+        protected Socket createSocket ()
         {
-                return new SocketConduit;
+                return new Socket;
         }
 
         /***********************************************************************
