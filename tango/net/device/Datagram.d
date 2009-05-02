@@ -71,7 +71,7 @@ class Datagram : Socket
                 Read bytes from an available datagram into the given array.
                 When provided, the 'from' address will be populated with the
                 origin of the incoming data. Note that we employ the timeout
-                mechanics exposed via our SocketConduit superclass. 
+                mechanics exposed via our Socket superclass. 
 
                 Returns the number of bytes read from the input, or Eof if
                 the socket cannot read

@@ -18,15 +18,15 @@ private import tango.net.util.c.OpenSSL;
 
 /*******************************************************************************
     
-    SSLSocketConduit is a sub-class of SocketConduit. It's purpose is to
+    SSLSocket is a sub-class of Socket. It's purpose is to
     provide SSL encryption at the socket level as well as easily fit into
-    existing Tango network applications that may already be using SocketConduit.
+    existing Tango network applications that may already be using Socket.
 
-    SSLSocketConduit requires the OpenSSL library, and uses a dynamic binding
+    SSLSocket requires the OpenSSL library, and uses a dynamic binding
     to the library. You can find the library at http://www.openssl.org and a
     Win32 specific port at http://www.slproweb.com/products/Win32OpenSSL.html.
 
-    SSLSocketConduit's have two modes:
+    SSLSockets have two modes:
 
     1. Client mode, useful for connecting to existing servers, but not
     accepting new connections. Accepting a new connection will cause 
@@ -80,7 +80,7 @@ class SSLSocket : Socket
 
         Creates a Client Mode SSLSocket
 
-        This is overriding the SocketConduit ctor in order to emulate the 
+        This is overriding the Socket ctor in order to emulate the 
         existing free-list frameowrk.
 
         Specifying anything other than ProtocolType.TCP or SocketType.STREAM will
@@ -107,7 +107,7 @@ class SSLSocket : Socket
         Creates a SSLSocket
 
         This class allows the ability to turn a regular Socket into an
-        SSLSocketConduit. It also gives the ability to change an SSLSocketConduit 
+        SSLSocket. It also gives the ability to change an SSLSocket 
         into Server Mode or ClientMode.
 
         Params:
@@ -141,7 +141,7 @@ class SSLSocket : Socket
 
         Release this SSLSocket. 
         
-        As per SocketConduit.detach.
+        As per Socket.detach.
 
     *******************************************************************************/
 
@@ -380,7 +380,7 @@ class SSLServerSocket : ServerSocket
     /*******************************************************************************
 
       Accepts a new conection and copies the provided server SSLCtx to a new
-      SSLSocketConduit.
+      SSLSocket.
 
     *******************************************************************************/
 
@@ -423,12 +423,12 @@ version(Test)
         loadOpenSSL();
         Test.Status sslCTXTest(inout char[][] messages)
         {
-            auto s1 = new SSLSocketConduit();
+            auto s1 = new SSLSocket();
             if (s1)
             {
                 bool good = false;
                 try
-                    auto s2 = new SSLSocketConduit(SocketType.STREAM,  ProtocolType.UDP);
+                    auto s2 = new SSLSocket(SocketType.STREAM,  ProtocolType.UDP);
                 catch (Exception e)
                     good = true;
 
@@ -453,7 +453,7 @@ version(Test)
                         }                        
                         auto sslCtx = new SSLCtx();
                         sslCtx.certificate(publicCertificate).privateKey(privateKey).checkKey();
-                        auto s3 = new SSLSocketConduit(mySock, sslCtx);
+                        auto s3 = new SSLSocket(mySock, sslCtx);
                         if (s3)
                             return Test.Status.Success;
                     }
@@ -464,7 +464,7 @@ version(Test)
 
         Test.Status sslReadWriteTest(inout char[][] messages)
         {
-            auto s1 = new SSLSocketConduit();
+            auto s1 = new SSLSocket();
             auto address = new IPv4Address("209.20.65.224", 443);
             if (s1.connect(address))
             {
@@ -482,7 +482,7 @@ version(Test)
 
         Test.Status sslReadWriteTestWithTimeout(inout char[][] messages)
         {
-            auto s1 = new SSLSocketConduit();
+            auto s1 = new SSLSocket();
             auto address = new IPv4Address("209.20.65.224", 443);
             if (s1.connect(address))
             {
@@ -494,7 +494,7 @@ version(Test)
                 if (bytesRead > 0 && bytesRead != Eof && (result[0 .. expectedResult.length] == expectedResult))
                 {
                     s1.setTimeout(t2);
-                    while (bytesRead != SocketConduit.Eof)
+                    while (bytesRead != s1.Eof)
                         bytesRead = s1.read(result);                
                     if (s1.hadTimeout)
                         return Test.Status.Success;
@@ -507,7 +507,7 @@ version(Test)
             return Test.Status.Failure;    
         }
 
-        auto t = new Test("tetra.net.SSLSocketConduit");
+        auto t = new Test("tetra.net.SSLSocket");
         t["SSL_CTX"] = &sslCTXTest;
         t["Read/Write"] = &sslReadWriteTest;
         t["Read/Write Timeout"] = &sslReadWriteTestWithTimeout; 

@@ -32,13 +32,9 @@ version (Windows)
 
 /*******************************************************************************
 
-        A wrapper around the bare Socket to implement the IConduit abstraction
-        and add socket-specific functionality.
+        A wrapper around the Berkeley API to implement the IConduit 
+        abstraction and add stream-specific functionality.
 
-        SocketConduit data-transfer is typically performed in conjunction with
-        an IBuffer, but can happily be handled directly using void array where
-        preferred
-        
 *******************************************************************************/
 
 class Socket : Conduit, ISelectable
