@@ -159,7 +159,7 @@ class Socket : Conduit, ISelectable
 
         /***********************************************************************
 
-                Bind the berkeley. This is typically used to configure a
+                Bind this socket. This is typically used to configure a
                 listening socket (such as a server or multicast socket).
                 The address given should describe a local adapter, or
                 specify the port alone (ADDR_ANY) to have the OS assign
@@ -180,10 +180,10 @@ class Socket : Conduit, ISelectable
         
                 The shutdown function shuts down the connection of the socket: 
 
-                    -   stops receiving data for this berkeley. If further data 
+                    -   stops receiving data for this socket. If further data 
                         arrives, it is rejected.
 
-                    -   stops trying to transmit data from this berkeley. Also
+                    -   stops trying to transmit data from this socket. Also
                         discards any data waiting to be sent. Stop looking for 
                         acknowledgement of data already sent; don't retransmit 
                         if any data is lost.
@@ -198,11 +198,11 @@ class Socket : Conduit, ISelectable
 
         /***********************************************************************
 
-                Release this SocketConduit
+                Release this Socket
 
-                Note that one should always disconnect a SocketConduit 
-                under normal conditions, and generally invoke shutdown 
-                on all connected sockets beforehand
+                Note that one should always disconnect a Socket under 
+                normal conditions, and generally invoke shutdown on all 
+                connected sockets beforehand
 
         ***********************************************************************/
 
@@ -362,13 +362,12 @@ class Socket : Conduit, ISelectable
         
                 ***************************************************************/
         
-                Socket asyncCopy (Handle handle)
+                private void asyncCopy (Handle handle)
                 {
                         TransmitFile (berkeley.sock, cast(HANDLE) handle, 
                                       0, 0, &overlapped, null, 0);
                         if (wait (scheduler.Type.Transfer) is Eof)
-                            berkeley.exception ("TransmitFile :: ");
-                        return this;
+                            berkeley.exception ("Socket.copy :: ");
                 }
 
                 /***************************************************************
@@ -457,6 +456,8 @@ class Socket : Conduit, ISelectable
                                  else
                                     error;
                               }
+                        // should never get here
+                        assert (false);
                 }
         }
         /***********************************************************************
@@ -535,7 +536,7 @@ class ServerSocket : Socket
 
         this (uint port, int backlog=32, bool reuse=false)
         {
-                scope addr = new IPv4Address (port);
+                scope addr = new IPv4Address (cast(ushort) port);
                 this (addr, backlog, reuse);
         }
 

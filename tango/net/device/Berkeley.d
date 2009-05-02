@@ -1646,7 +1646,10 @@ version (OldSocket)
 
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, long microseconds)
         {       
-                timeval tv = {microseconds / 1000000, microseconds % 1000000};
+                timeval tv = {
+                             cast(int)(microseconds / 1000000), 
+                             cast(int)(microseconds % 1000000)
+                             };
                 return select (checkRead, checkWrite, checkError, &tv);
         }
 
