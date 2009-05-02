@@ -67,12 +67,11 @@ module tango.stdc.constants.solaris.socket;
         TCP = 6 ,
         UDP = 17 ,
     }
-    enum SocketType{
-        SOCK_STREAM = 1 , /++ sequential, reliable +/
-        SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
-        SOCK_RAW = 3 , /++ raw protocol +/
-        SOCK_RDM = 4 , /++ reliable messages +/
+    enum SocketType
+    {
+        STREAM = 2 , /++ sequential, reliable +/
+        DGRAM = 1, /++ connectionless unreliable, max length +/
+        SEQPACKET = 6, /++ sequential, reliable, max length +/
     }
     enum ProtocolType: int
     {

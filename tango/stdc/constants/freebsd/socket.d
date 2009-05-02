@@ -60,6 +60,13 @@ module tango.stdc.constants.freebsd.socket;
         IPPROTO_MAX
       };
     
+    enum SocketType
+    {
+        STREAM = 1 , /++ sequential, reliable +/
+        DGRAM = 2 , /++ connectionless unreliable, max length +/
+        SEQPACKET = 5, /++ sequential, reliable, max length +/
+    }
+
     enum SocketOptionLevel
     {
         SOCKET = 1,

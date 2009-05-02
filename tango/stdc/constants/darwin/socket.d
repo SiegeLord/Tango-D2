@@ -35,11 +35,11 @@ module tango.stdc.constants.darwin.socket;
         UDP = 17 ,
     }
     enum SocketType{
-        SOCK_STREAM = 1 , /++ sequential, reliable +/
-        SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
-        SOCK_RAW = 3 , /++ raw protocol +/
-        SOCK_RDM = 4 , /++ reliable messages +/
+        STREAM = 1 , /++ sequential, reliable +/
+        DGRAM = 2 , /++ connectionless unreliable, max length +/
+        SEQPACKET = 5, /++ sequential, reliable, max length +/
+        RAW = 3 , /++ raw protocol +/
+        RDM = 4 , /++ reliable messages +/
     }
     enum ProtocolType: int
     {
