@@ -30,7 +30,7 @@ class Device : Conduit, ISelectable
 {
         /// expose superclass definition also
         public alias Conduit.error error;
-
+            
         /***********************************************************************
 
                 Throw an IOException noting the last error
@@ -39,7 +39,7 @@ class Device : Conduit, ISelectable
 
         final void error ()
         {
-                super.error (this.toString ~ " :: " ~ SysError.lastMsg);
+                error (this.toString ~ " :: " ~ SysError.lastMsg);
         }
 
         /***********************************************************************
@@ -72,7 +72,10 @@ class Device : Conduit, ISelectable
 
         version (Win32)
         {
-                protected HANDLE handle;
+                protected HANDLE        handle;
+                protected OVERLAPPED    overlapped;
+                protected long          readOffset,
+                                        writeOffset;
 
                 /***************************************************************
 
@@ -83,6 +86,7 @@ class Device : Conduit, ISelectable
                 protected void reopen (Handle handle)
                 {
                         this.handle = cast(HANDLE) handle;
+                        readOffset = writeOffset = 0;
                 }
 
                 /***************************************************************
@@ -110,51 +114,102 @@ class Device : Conduit, ISelectable
                 {
                         if (handle != INVALID_HANDLE_VALUE)
                             CloseHandle (handle);
+
                         handle = INVALID_HANDLE_VALUE;
                 }
 
                 /***************************************************************
 
                         Read a chunk of bytes from the file into the provided
-                        array (typically that belonging to an IBuffer). 
+                        array. Returns the number of bytes read, or Eof where 
+                        there is no further data.
 
-                        Returns the number of bytes read, or Eof when there is
-                        no further data
+                        Operates asynchronously where the hosting thread is
+                        configured in that manner.
 
                 ***************************************************************/
 
                 override size_t read (void[] dst)
                 {
-                        DWORD read;
-                        void *p = dst.ptr;
+                        DWORD bytes;
 
-                        if (! ReadFile (handle, p, dst.length, &read, null))
-                              // make Win32 behave like linux
-                              if (SysError.lastCode is ERROR_BROKEN_PIPE)
-                                  return Eof;
-                              else
-                                 error;
+                        ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped);
+                        if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
+                             return Eof;
 
-                        if (read is 0 && dst.length > 0)
+                        // synchronous read of zero means Eof
+                        if (bytes is 0 && dst.length > 0)
                             return Eof;
-                        return read;
+
+                        // update read position ...
+                        readOffset += bytes;
+
+                        return bytes;
                 }
 
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
-                        array (typically that belonging to an IBuffer)
+                        array. Returns the number of bytes written, or Eof if 
+                        the output is no longer available.
+
+                        Operates asynchronously where the hosting thread is
+                        configured in that manner.
 
                 ***************************************************************/
 
                 override size_t write (void[] src)
                 {
-                        DWORD written;
+                        DWORD bytes;
 
-                        if (! WriteFile (handle, src.ptr, src.length, &written, null))
-                              error;
+                        WriteFile (handle, src.ptr, src.length, &bytes, &overlapped);
+                        if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
+                             return Eof;
 
-                        return written;
+                        // update write position ...
+                        writeOffset += bytes;
+
+                        return bytes;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                protected final size_t wait (scheduler.Type type, uint bytes=0)
+                {
+                        while (true)
+                              {
+                              auto code = GetLastError;
+                              if (code is ERROR_HANDLE_EOF ||
+                                  code is ERROR_BROKEN_PIPE)
+                                  return Eof;
+
+                              if (scheduler)
+                                 {
+                                 if (code is ERROR_SUCCESS || 
+                                     code is ERROR_IO_PENDING || 
+                                     code is ERROR_IO_INCOMPLETE)
+                                    {
+                                    if (code is ERROR_IO_INCOMPLETE)
+                                        super.error ("timeout"); //Stdout ("+").flush;
+
+                                    scheduler.idle (cast(Handle) handle, type, timeout);
+                                    if (GetOverlappedResult (handle, &overlapped, &bytes, false))
+                                        return bytes;
+                                    }
+                                 else
+                                    error;
+                                 }
+                              else
+                                 if (code is ERROR_SUCCESS)
+                                     return bytes;
+                                 else
+                                    error;
+                              }
+
+                        // should never get here
+                        assert(false);
                 }
         }
 
@@ -200,21 +255,26 @@ class Device : Conduit, ISelectable
                 override void detach ()
                 {
                         if (handle >= 0)
-                            posix.close (handle);
+                           {
+                           if (scheduler)
+                               scheduler.close (handle, toString);
+                           posix.close (handle);
+                           }
                         handle = -1;
                 }
 
                 /***************************************************************
 
                         Read a chunk of bytes from the file into the provided
-                        array (typically that belonging to an IBuffer)
+                        array. Returns the number of bytes read, or Eof where 
+                        there is no further data.
 
                 ***************************************************************/
 
                 override size_t read (void[] dst)
                 {
                         int read = posix.read (handle, dst.ptr, dst.length);
-                        if (read == -1)
+                        if (read is -1)
                             error;
                         else
                            if (read is 0 && dst.length > 0)
@@ -225,7 +285,8 @@ class Device : Conduit, ISelectable
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
-                        array (typically that belonging to an IBuffer)
+                        array. Returns the number of bytes written, or Eof if 
+                        the output is no longer available.
 
                 ***************************************************************/
 

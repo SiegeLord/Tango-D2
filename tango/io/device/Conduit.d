@@ -12,7 +12,8 @@
 
 module tango.io.device.Conduit;
 
-private import tango.core.Exception;
+private import tango.core.Thread,
+               tango.core.Exception;
 
 public  import tango.io.model.IConduit;
 
@@ -38,6 +39,39 @@ public  import tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
+        protected Fiber.Scheduler scheduler;           // optional scheduler
+        private   uint            duration = uint.max; // scheduling timeout
+
+        /***********************************************************************
+
+                Test for asynchronous capability. This will be eligable
+                for scheduling where (a) it is created within a fiber and
+                (b) there is a scheduler attached to the fiber at the time
+                this is invoked.
+
+                Note that fibers may schedule just one outstanding I/O 
+                request at a time
+
+        ***********************************************************************/
+
+        this ()
+        {
+                auto f = Fiber.getThis;
+                if (f)
+                    scheduler = f.event.scheduler;
+        }
+
+        /***********************************************************************
+
+                Clean up when collected. See method detach()
+
+        ***********************************************************************/
+
+        ~this ()
+        {
+                detach;
+        }
+
         /***********************************************************************
         
                 Return the name of this conduit
@@ -82,11 +116,36 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Disconnect this conduit
+                Disconnect this conduit. Note that this may be invoked
+                both explicitly by the user, and implicitly by the GC.
+                Be sure to manage multiple detachment requests correctly:
+                set a flag, or sentinel value as necessary
 
         ***********************************************************************/
 
         abstract void detach ();
+
+        /***********************************************************************
+
+                Set the active duration period for asynchronous IO calls
+
+        ***********************************************************************/
+
+        final void timeout (uint millisec)
+        {
+                duration = millisec;
+        }
+
+        /***********************************************************************
+
+                Get the active duration period for asynchronous IO calls
+
+        ***********************************************************************/
+
+        final uint timeout ()
+        {
+                return duration;
+        }
 
         /***********************************************************************
 

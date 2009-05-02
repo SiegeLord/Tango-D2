@@ -200,6 +200,14 @@ class File : Device, Device.Seek
         const Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
+
+            Read an existing file
+        
+        ***********************************************************************/
+
+        const Style ReadShared = {Access.Read, Open.Exists, Share.Read};
+
+        /***********************************************************************
         
                 Write on an existing file. Do not create
 
@@ -459,6 +467,9 @@ class File : Device, Device.Seek
                         create = Create[style.open];
                         access = Access[style.access];
 
+                        if (scheduler)
+                            attr |= FILE_FLAG_OVERLAPPED;// + FILE_FLAG_NO_BUFFERING;
+
                         // zero terminate the path
                         char[512] zero = void;
                         auto name = stdc.toStringz (path, zero);
@@ -467,7 +478,7 @@ class File : Device, Device.Seek
                                  handle = CreateFileA (name, access, share, 
                                                        null, create, 
                                                        attr | FILE_ATTRIBUTE_NORMAL,
-                                                       cast(HANDLE) null);
+                                                       null);
                              else
                                 {
                                 // convert to utf16
@@ -478,7 +489,7 @@ class File : Device, Device.Seek
                                 handle = CreateFileW (wide.ptr, access, share,
                                                       null, create, 
                                                       attr | FILE_ATTRIBUTE_NORMAL,
-                                                      cast(HANDLE) null);
+                                                      null);
                                 }
 
                         if (handle is INVALID_HANDLE_VALUE)
@@ -487,8 +498,30 @@ class File : Device, Device.Seek
                         // move to end of file?
                         if (style.open is Open.Append)
                             appending = true;
+
+                        // monitor this handle for async I/O?
+                        if (scheduler)
+                            scheduler.open (cast(int) handle, toString);
                 }
                 
+                /***************************************************************
+
+                        Read a chunk of bytes from the file into the provided
+                        array (typically that belonging to an IBuffer). 
+
+                        Returns the number of bytes read, or Eof when there is
+                        no further data
+
+                ***************************************************************/
+
+                override size_t read (void[] dst)
+                {
+                       *(cast(long*) &super.overlapped.Offset) = 
+                                     (appending ? -1 : super.readOffset);
+
+                        return super.read (dst);
+                }
+
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
@@ -498,11 +531,9 @@ class File : Device, Device.Seek
 
                 override size_t write (void[] src)
                 {
-                        DWORD written;
-
-                        // try to emulate the Unix O_APPEND mode
-                        if (appending)
-                            SetFilePointer (handle, 0, null, Anchor.End);
+                        // emulate the Unix O_APPEND mode
+                        *(cast(long*) &super.overlapped.Offset) = 
+                                      (appending ? -1 : super.writeOffset);
                         
                         return super.write (src);
                 }
@@ -552,8 +583,9 @@ class File : Device, Device.Seek
                         if (result is -1 && 
                             GetLastError() != ERROR_SUCCESS)
                             error;
+                        result += (cast(long) high) << 32;
 
-                        return result + (cast(long) high << 32);
+                        return readOffset = writeOffset = result;
                 }               
         }
 
