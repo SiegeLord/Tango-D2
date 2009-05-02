@@ -4,8 +4,9 @@
 
 *****************************************************/
 
-import Path = tango.io.Path;
 import tango.io.Stdout;
+
+import Path = tango.io.Path;
 
 void main(char[][] args)
 {
@@ -18,13 +19,9 @@ void main(char[][] args)
         if(child.folder)
            continue;
 
-        char[] name = child.name;
-        char[] path = child.path;
-        ulong bytes = child.bytes;
-
         Stdout.formatln("Child {} has path \"{}\" and size is {} bytes", 
-                        child.name, 
-                        child.path,
-                        child.bytes);
+                         child.name, 
+                         child.path,
+                         child.bytes);
     }
 }
