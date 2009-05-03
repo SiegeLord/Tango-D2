@@ -551,7 +551,7 @@ version (OldTimer)
 
                                 // parse redirected uri
                                 auto redirect = headersIn.get (HttpHeader.Location, "[missing Location header]");
-                                uri.relParse (redirect);
+                                uri.relParse (redirect.dup);
 
                                 // decode the host name (may take a second or two)
                                 auto host = uri.getHost();
