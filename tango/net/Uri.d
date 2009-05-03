@@ -622,13 +622,14 @@ class Uri : UriView
                 auto    prefix = path_;
                 auto    len = uri.length;
 
-                reset;
+                if (! relative)
+                      reset;
 
                 // isolate scheme (note that it's OK to not specify a scheme)
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
                 if (c is ':')
                    {
-                   scheme_ = uri [mark .. i];
+                   scheme_ = uri [mark .. i];   
                    toLower (scheme_);
                    mark = i + 1;
                    }
@@ -641,11 +642,13 @@ class Uri : UriView
                    mark = i;
                    }
                 else
-                   if (relative && uri[0] != '/')
+                   if (relative)
                       {
-                      uri = toLastSlash(prefix) ~ uri;
+                      auto head = (uri[0] is '/') ? host_ : toLastSlash(prefix);
                       query_ = fragment_ = null;
+                      uri = head ~ uri;
                       len = uri.length;
+                      mark = head.length;
                       }
 
                 // isolate path
