@@ -19,7 +19,21 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
-version = leadingWhitespace;
+/*******************************************************************************
+
+        Use -version=whitespace to retain whitespace as data nodes. We
+        see a %25 increase in token count and 10% throughput drop when
+        parsing "hamlet.xml" with this option enabled (pullparser alone)
+
+*******************************************************************************/
+
+version (whitespace)
+         version = retainwhite;
+else
+   {
+   version = stripwhite;
+   version = partialwhite;
+   }
 
 /*******************************************************************************
 
@@ -101,50 +115,59 @@ class PullParser(Ch = char)
                 // at end of document?
                 if (p >= e)
                     return endOfInput;
-
+version (stripwhite)
+{
                 // strip leading whitespace
                 while (*p <= 32)
                        if (++p >= e)                                      
                            return endOfInput;
-                
+}                
                 // StartElement or Attribute?
                 if (type < XmlTokenType.EndElement) 
-                    switch (*p)
-                           {
-                           case '>':
-                                // termination of StartElement
-                                ++depth;
-                                ++p;
-                                break;
+                   {
+version (retainwhite)
+{
+                   // strip leading whitespace (thanks to DRK)
+                   while (*p <= 32)
+                          if (++p >= e)                                      
+                              return endOfInput;
+}                
+                   switch (*p)
+                          {
+                          case '>':
+                               // termination of StartElement
+                               ++depth;
+                               ++p;
+                               break;
+
+                          case '/':
+                               // empty element closure
+                               text.point = p;
+                               return doEndEmptyElement;
  
-                           case '/':
-                                // empty element closure
-                                text.point = p;
-                                return doEndEmptyElement;
- 
-                           default:
-                                // must be attribute instead
-                                text.point = p;
-                                return doAttributeName;
-                           }
+                          default:
+                               // must be attribute instead
+                               text.point = p;
+                               return doAttributeName;
+                          }
+                   }
 
                 // consume data between elements?
                 if (*p != '<') 
                    {
                    auto q = p;
+                   while (++p < e && *p != '<') {}
 
-                   while (++p < e && *p != '<') 
-                         {}
                    if (p < e)
                       {
-version(leadingWhitespace)
+version (partialwhite)
 {
                       // include leading whitespace
                       while (*(q-1) <= 32)
                              --q;
 }                
-                      rawValue = q [0 .. p - q];
                       text.point = p;
+                      rawValue = q [0 .. p - q];
                       return type = XmlTokenType.Data;
                       }
                    return endOfInput;
@@ -235,7 +258,8 @@ version(leadingWhitespace)
                                while (*q > 63 || text.attributeName[*q])
                                       ++q;
                                localName = p[0 .. q - p];
-                               } 
+                               }  
+                                                      
                             text.point = q;
                             return type = XmlTokenType.StartElement;
                        }
