@@ -4348,9 +4348,9 @@ private:
     }
 }
 
-alias RegExpT!(char)     Regex;
+alias RegExpT!(char) Regex;
 
-alias char[] string;
+private alias char[] string;
 
 debug(utf) import tango.stdc.stdio;
 // the following block is stolen from phobos.
