@@ -13,7 +13,7 @@ private import tango.stdc.stdint;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for off_t, mode_t
 public import tango.stdc.posix.sys.stat;  // for S_IFMT, etc.
-
+public import tango.stdc.constants.fcntl;
 extern (C):
 
 //
@@ -68,47 +68,6 @@ int open(in char*, int, ...);
 */
 version( linux )
 {
-    const F_DUPFD       = 0;
-    const F_GETFD       = 1;
-    const F_SETFD       = 2;
-    const F_GETFL       = 3;
-    const F_SETFL       = 4;
-  static if( __USE_LARGEFILE64 )
-  {
-    const F_GETLK       = 12;
-    const F_SETLK       = 13;
-    const F_SETLKW      = 14;
-  }
-  else
-  {
-    const F_GETLK       = 5;
-    const F_SETLK       = 6;
-    const F_SETLKW      = 7;
-  }
-    const F_GETOWN      = 9;
-    const F_SETOWN      = 8;
-
-    const FD_CLOEXEC    = 1;
-
-    const F_RDLCK       = 0;
-    const F_UNLCK       = 2;
-    const F_WRLCK       = 1;
-
-    const O_CREAT       = 0100;
-    const O_EXCL        = 0200;
-    const O_NOCTTY      = 0400;
-    const O_TRUNC       = 01000;
-
-    const O_APPEND      = 02000;
-    const O_NONBLOCK    = 04000;
-    const O_SYNC        = 010000;
-    const O_DSYNC       = O_SYNC;
-    const O_RSYNC       = O_SYNC;
-
-    const O_ACCMODE     = 0003;
-    const O_RDONLY      = 00;
-    const O_WRONLY      = 01;
-    const O_RDWR        = 02;
 
     struct flock
     {
@@ -135,39 +94,6 @@ version( linux )
 }
 else version( darwin )
 {
-    const F_DUPFD       = 0;
-    const F_GETFD       = 1;
-    const F_SETFD       = 2;
-    const F_GETFL       = 3;
-    const F_SETFL       = 4;
-    const F_GETOWN      = 5;
-    const F_SETOWN      = 6;
-    const F_GETLK       = 7;
-    const F_SETLK       = 8;
-    const F_SETLKW      = 9;
-
-    const FD_CLOEXEC    = 1;
-
-    const F_RDLCK       = 1;
-    const F_UNLCK       = 2;
-    const F_WRLCK       = 3;
-
-    const O_CREAT       = 0x0200;
-    const O_EXCL        = 0x0800;
-    const O_NOCTTY      = 0;
-    const O_TRUNC       = 0x0400;
-
-    const O_RDONLY      = 0x0000;
-    const O_WRONLY      = 0x0001;
-    const O_RDWR        = 0x0002;
-    const O_ACCMODE     = 0x0003;
-
-    const O_NONBLOCK    = 0x0004;
-    const O_APPEND      = 0x0008;
-    const O_SYNC        = 0x0080;
-    //const O_DSYNC
-    //const O_RSYNC
-
     struct flock
     {
         off_t   l_start;
@@ -182,39 +108,6 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    const F_DUPFD       = 0;
-    const F_GETFD       = 1;
-    const F_SETFD       = 2;
-    const F_GETFL       = 3;
-    const F_SETFL       = 4;
-    const F_GETOWN      = 5;
-    const F_SETOWN      = 6;
-    const F_GETLK       = 7;
-    const F_SETLK       = 8;
-    const F_SETLKW      = 9;
-
-    const FD_CLOEXEC    = 1;
-
-    const F_RDLCK       = 1;
-    const F_UNLCK       = 2;
-    const F_WRLCK       = 3;
-
-    const O_CREAT       = 0x0200;
-    const O_EXCL        = 0x0800;
-    const O_NOCTTY      = 0;
-    const O_TRUNC       = 0x0400;
-
-    const O_RDONLY      = 0x0000;
-    const O_WRONLY      = 0x0001;
-    const O_RDWR        = 0x0002;
-    const O_ACCMODE     = 0x0003;
-
-    const O_NONBLOCK    = 0x0004;
-    const O_APPEND      = 0x0008;
-    const O_SYNC        = 0x0080;
-    //const O_DSYNC
-    //const O_RSYNC
-
     struct flock
     {
         off_t   l_start;
@@ -229,69 +122,25 @@ else version( freebsd )
 }
 else version( solaris )
 {
-    const F_DUPFD       = 0;
-    const F_GETFD       = 1;
-    const F_SETFD       = 2;
-    const F_GETFL       = 3;
-	const F_GETXFL		= 45;
-    const F_SETFL       = 4;
-
-  static if( __USE_LARGEFILE64 )
-  {
-    const F_GETLK       = 33;
-    const F_SETLK       = 34;
-    const F_SETLKW      = 35;
-  }
-  else
-  {
-    const F_GETLK       = 14;
-    const F_SETLK       = 6;
-    const F_SETLKW      = 7;
-  }
-    const F_GETOWN      = 23;
-    const F_SETOWN      = 24;
-
-    const FD_CLOEXEC    = 1;
-
-    const F_RDLCK       = 01;
-    const F_UNLCK       = 03;
-    const F_WRLCK       = 02;
-	
-    const O_CREAT       = 0x100;
-    const O_EXCL        = 0x400;
-    const O_NOCTTY      = 0x800;
-    const O_TRUNC       = 0x200;
-
-    const O_APPEND      = 0x08;
-    const O_NONBLOCK    = 0x80;
-    const O_SYNC        = 0x10;
-    const O_DSYNC       = 0x40;
-    const O_RSYNC       = 0x8000;
-
-    const O_ACCMODE     = 3;
-    const O_RDONLY      = 0;
-    const O_WRONLY      = 1;
-    const O_RDWR        = 2;
-
     struct flock
     {
-		short	l_type;
-		short	l_whence;
-		off_t	l_start;
-		off_t	l_len;		/* len == 0 means until end of file */
-		int		l_sysid;
-		pid_t	l_pid;
-		c_long	l_pad[4];		/* reserve area */
-	}
-	
-	int creat(in char*, mode_t);
-	int open(in char*, int, ...);
+        short   l_type;
+        short   l_whence;
+        off_t   l_start;
+        off_t   l_len;      /* len == 0 means until end of file */
+        int     l_sysid;
+        pid_t   l_pid;
+        c_long  l_pad[4];       /* reserve area */
+    }
+    
+    int creat(in char*, mode_t);
+    int open(in char*, int, ...);
 
-	static if( __USE_LARGEFILE64 )
-	{
-		alias creat creat64;
-		alias open  open64;
-	}
+    static if( __USE_LARGEFILE64 )
+    {
+        alias creat creat64;
+        alias open  open64;
+    }
 }
 
 //int creat(in char*, mode_t);
