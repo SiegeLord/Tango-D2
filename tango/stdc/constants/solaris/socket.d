@@ -43,6 +43,7 @@ module tango.stdc.constants.solaris.socket;
     enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
+        IPPROTO_IPV4 = 0,
         IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ICMP = 1, /* Internet Control Message Protocol.  */
         IPPROTO_IGMP = 2, /* Internet Group Management Protocol. */

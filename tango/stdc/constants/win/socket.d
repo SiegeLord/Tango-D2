@@ -82,6 +82,7 @@ enum
 enum
 {
         IPPROTO_IP =    0,      /// internet protocol version 4
+        IPPROTO_IPV4 =  0,      /// internet protocol version 4
         IPPROTO_ICMP =  1,      /// internet control message protocol
         IPPROTO_IGMP =  2,      /// internet group management protocol
         IPPROTO_GGP =   3,      /// gateway to gateway protocol
