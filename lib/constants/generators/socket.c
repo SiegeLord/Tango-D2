@@ -22,7 +22,7 @@ enum {
     enum {SOCKET_ERROR = -1}
 #endif
 
-    enum SocketOption: int
+    enum
     {
         __XYX__SO_DEBUG        =   SO_DEBUG     ,       /* turn on debugging info recording */
         __XYX__SO_BROADCAST    =   SO_BROADCAST ,       /* permit sending of broadcast msgs */
@@ -53,15 +53,12 @@ enum {
         __XYX__TCP_NODELAY        = TCP_NODELAY ,
     }
     
-    enum SocketOptionLevel
+    enum
     {
-        __XYX__SOCKET = SOL_SOCKET    ,
-        __XYX__IP     = IPPROTO_IP    ,   
-        __XYX__TCP    = IPPROTO_TCP   ,   
-        __XYX__UDP    = IPPROTO_UDP   ,   
+        __XYX__SOL_SOCKET = SOL_SOCKET    ,
     }
     
-    enum SocketType{
+    enum {
         __XYX__SOCK_STREAM    = SOCK_STREAM   , /++ sequential, reliable +/
         __XYX__SOCK_DGRAM     = SOCK_DGRAM    , /++ connectionless unreliable, max length +/
         __XYX__SOCK_SEQPACKET = SOCK_SEQPACKET, /++ sequential, reliable, max length +/
@@ -81,22 +78,24 @@ enum {
 
     ***********************************************************************/
 
-    enum ProtocolType: int
+    enum
     {
-        IP   = IPPROTO_IP   ,     /// default internet protocol (probably 4 for compatibility)
+        __XYX__IPPROTO_IP   = IPPROTO_IP   ,     /// default internet protocol (probably 4 for compatibility)
 #ifdef IPPROTO_IPV4
-        IPV4 = IPPROTO_IPV4 ,     /// internet protocol version 4
+        __XYX__IPPROTO_IPV4 = IPPROTO_IPV4 ,     /// internet protocol version 4
+#else
+        __XYX__IPPROTO_IPV4 = IPPROTO_IP   ,
 #endif
 #ifdef IPPROTO_IPV6
-        IPV6 = IPPROTO_IPV6 ,     /// internet protocol version 6
+        __XYX__IPPROTO_IPV6 = IPPROTO_IPV6 ,     /// internet protocol version 6
 #endif
-        ICMP = IPPROTO_ICMP ,     /// internet control message protocol
-        IGMP = IPPROTO_IGMP ,     /// internet group management protocol
-        GGP  = IPPROTO_GGP  ,     /// gateway to gateway protocol
-        TCP  = IPPROTO_TCP  ,     /// transmission control protocol
-        PUP  = IPPROTO_PUP  ,     /// PARC universal packet protocol
-        UDP  = IPPROTO_UDP  ,     /// user datagram protocol
-        IDP  = IPPROTO_IDP  ,     /// Xerox NS protocol
+        __XYX__IPPROTO_ICMP = IPPROTO_ICMP ,     /// internet control message protocol
+        __XYX__IPPROTO_IGMP = IPPROTO_IGMP ,     /// internet group management protocol
+//        __XYX__IPPROTO_GGP  = IPPROTO_GGP  ,     /// gateway to gateway protocol deprecated
+        __XYX__IPPROTO_TCP  = IPPROTO_TCP  ,     /// transmission control protocol
+        __XYX__IPPROTO_PUP  = IPPROTO_PUP  ,     /// PARC universal packet protocol
+        __XYX__IPPROTO_UDP  = IPPROTO_UDP  ,     /// user datagram protocol
+        __XYX__IPPROTO_IDP  = IPPROTO_IDP  ,     /// Xerox NS protocol
     }
     
     /***********************************************************************
@@ -104,14 +103,40 @@ enum {
     
         ***********************************************************************/
     
-    enum AddressFamily: int
+    enum
     {
-        __XYX__UNSPEC    = AF_UNSPEC   ,
-        __XYX__UNIX      = AF_UNIX     ,
-        __XYX__INET      = AF_INET     ,
-        __XYX__IPX       = AF_IPX      ,
-        __XYX__APPLETALK = AF_APPLETALK,
+        __XYX__AF_UNSPEC    = AF_UNSPEC   ,
+        __XYX__AF_UNIX      = AF_UNIX     ,
+        __XYX__AF_INET      = AF_INET     ,
+        __XYX__AF_IPX       = AF_IPX      ,
+        __XYX__AF_APPLETALK = AF_APPLETALK,
 #ifdef AF_INET6
-        __XYX__INET6     = AF_INET6    ,
+        __XYX__AF_INET6     = AF_INET6    ,
 #endif
     }
+    
+    enum :uint
+    {
+        __XYX__SCM_RIGHTS = SCM_RIGHTS,
+    }
+    enum
+    {
+        __XYX__SOMAXCONN  = SOMAXCONN ,
+    }
+    enum : uint
+    {
+        __XYX__MSG_CTRUNC      = MSG_CTRUNC    ,
+        __XYX__MSG_DONTROUTE   = MSG_DONTROUTE ,
+        __XYX__MSG_EOR         = MSG_EOR       ,
+        __XYX__MSG_OOB         = MSG_OOB       ,
+        __XYX__MSG_PEEK        = MSG_PEEK      ,
+        __XYX__MSG_TRUNC       = MSG_TRUNC     ,
+        __XYX__MSG_WAITALL     = MSG_WAITALL   ,
+    }
+    enum
+    {
+        __XYX__SHUT_RD   = SHUT_RD  ,
+        __XYX__SHUT_WR   = SHUT_WR  ,
+        __XYX__SHUT_RDWR = SHUT_RDWR
+    }
+    

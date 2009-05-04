@@ -1,7 +1,7 @@
 module tango.stdc.constants.darwin.socket;
     import tango.stdc.constants.darwin.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
-    enum SocketOption: int
+    enum
     {
         SO_DEBUG = 0x0001 , /* turn on debugging info recording */
         SO_BROADCAST = 0x0020 , /* permit sending of broadcast msgs */
@@ -27,39 +27,60 @@ module tango.stdc.constants.darwin.socket;
         // OptionLevel.TCP settings
         TCP_NODELAY = 0x01 ,
     }
-    enum SocketOptionLevel
+    enum
     {
-        SOCKET = 0xffff ,
-        IP = 0 ,
-        TCP = 6 ,
-        UDP = 17 ,
+        SOL_SOCKET = 0xffff ,
     }
-    enum SocketType{
-        STREAM = 1 , /++ sequential, reliable +/
-        DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SEQPACKET = 5, /++ sequential, reliable, max length +/
-        RAW = 3 , /++ raw protocol +/
-        RDM = 4 , /++ reliable messages +/
+    enum {
+        SOCK_STREAM = 1 , /++ sequential, reliable +/
+        SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
+        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
+        SOCK_RAW = 3 , /++ raw protocol +/
+        SOCK_RDM = 4 , /++ reliable messages +/
     }
-    enum ProtocolType: int
+    enum
     {
-        IP = 0 , /// default internet protocol (probably 4 for compatibility)
-        IPV4 = 4 , /// internet protocol version 4
-        IPV6 = 41 , /// internet protocol version 6
-        ICMP = 1 , /// internet control message protocol
-        IGMP = 2 , /// internet group management protocol
-        GGP = 3 , /// gateway to gateway protocol
-        TCP = 6 , /// transmission control protocol
-        PUP = 12 , /// PARC universal packet protocol
-        UDP = 17 , /// user datagram protocol
-        IDP = 22 , /// Xerox NS protocol
+        IPPROTO_IP = 0 , /// default internet protocol (probably 4 for compatibility)
+        IPPROTO_IPV4 = 4 , /// internet protocol version 4
+        IPPROTO_IPV6 = 41 , /// internet protocol version 6
+        IPPROTO_ICMP = 1 , /// internet control message protocol
+        IPPROTO_IGMP = 2 , /// internet group management protocol
+        //IPPROTO_GGP = 3 , /// gateway to gateway protocol
+        IPPROTO_TCP = 6 , /// transmission control protocol
+        IPPROTO_PUP = 12 , /// PARC universal packet protocol
+        IPPROTO_UDP = 17 , /// user datagram protocol
+        IPPROTO_IDP = 22 , /// Xerox NS protocol
     }
-    enum AddressFamily: int
+    enum
     {
-        UNSPEC = 0 ,
-        UNIX = 1 ,
-        INET = 2 ,
-        IPX = 23 ,
-        APPLETALK = 16,
-        INET6 = 30 ,
+        AF_UNSPEC = 0 ,
+        AF_UNIX = 1 ,
+        AF_INET = 2 ,
+        AF_IPX = 23 ,
+        AF_APPLETALK = 16,
+        AF_INET6 = 30 ,
+    }
+    enum : uint
+    {
+        SCM_RIGHTS = 0x01
+    }
+    enum
+    {
+        SOMAXCONN       = 128,
+    }
+    enum : uint
+    {
+        MSG_CTRUNC = 0x20 ,
+        MSG_DONTROUTE = 0x4 ,
+        MSG_EOR = 0x8 ,
+        MSG_OOB = 0x1 ,
+        MSG_PEEK = 0x2 ,
+        MSG_TRUNC = 0x10 ,
+        MSG_WAITALL = 0x40 ,
+    }
+    enum
+    {
+        SHUT_RD = 0,
+        SHUT_WR = 1,
+        SHUT_RDWR = 2
     }

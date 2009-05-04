@@ -17,7 +17,7 @@ enum : int
 
 ***************************************************************/
 
-enum SocketOption : int
+enum
 {
         //consistent
         SO_DEBUG =              0x1,
@@ -52,12 +52,9 @@ enum SocketOption : int
 
 ***************************************************************/
 
-enum SocketOptionLevel : int
+enum
 {
-        SOCKET =  0xFFFF,
-        IP =      0,
-        TCP =     6,
-        UDP =     17,
+        SOL_SOCKET =  0xFFFF,
 }
 
 /***************************************************************
@@ -65,14 +62,14 @@ enum SocketOptionLevel : int
 
 ***************************************************************/
 
-enum AddressFamily : int
+enum
 {
-        UNSPEC =     0,
-        UNIX =       1,
-        INET =       2,
-        IPX =        6,
-        APPLETALK =  16,
-        //INET6 =      ? // Need Windows XP ?
+        AF_UNSPEC =     0,
+        AF_UNIX =       1,
+        AF_INET =       2,
+        AF_IPX =        6,
+        AF_APPLETALK =  16,
+        //AF_INET6 =      ? // Need Windows XP ?
 }
 
 /***********************************************************************
@@ -81,16 +78,16 @@ enum AddressFamily : int
 
 ***********************************************************************/
 
-enum ProtocolType : int
+enum
 {
-        IP =    0,      /// internet protocol version 4
-        ICMP =  1,      /// internet control message protocol
-        IGMP =  2,      /// internet group management protocol
-        GGP =   3,      /// gateway to gateway protocol
-        TCP =   6,      /// transmission control protocol
-        PUP =   12,     /// PARC universal packet protocol
-        UDP =   17,     /// user datagram protocol
-        IDP =   22,     /// Xerox NS protocol
+        IPPROTO_IP =    0,      /// internet protocol version 4
+        IPPROTO_ICMP =  1,      /// internet control message protocol
+        IPPROTO_IGMP =  2,      /// internet group management protocol
+        IPPROTO_GGP =   3,      /// gateway to gateway protocol
+        IPPROTO_TCP =   6,      /// transmission control protocol
+        IPPROTO_PUP =   12,     /// PARC universal packet protocol
+        IPPROTO_UDP =   17,     /// user datagram protocol
+        IPPROTO_IDP =   22,     /// Xerox NS protocol
 }
 
 /***********************************************************************
@@ -99,12 +96,20 @@ enum ProtocolType : int
 
 ***********************************************************************/
 
-enum SocketType : int
+enum
 {
-        STREAM =     1, /// sequenced, reliable, two-way communication-based byte streams
-        DGRAM =      2, /// connectionless, unreliable datagrams with a fixed maximum length; data may be lost or arrive out of order
-        RAW =        3, /// raw protocol access
-        RDM =        4, /// reliably-delivered message datagrams
-        SEQPACKET =  5, /// sequenced, reliable, two-way connection-based datagrams with a fixed maximum length
+        SOCK_STREAM =     1, /// sequenced, reliable, two-way communication-based byte streams
+        SOCK_DGRAM =      2, /// connectionless, unreliable datagrams with a fixed maximum length; data may be lost or arrive out of order
+        SOCK_RAW =        3, /// raw protocol access
+        SOCK_RDM =        4, /// reliably-delivered message datagrams
+        SOCK_SEQPACKET =  5, /// sequenced, reliable, two-way connection-based datagrams with a fixed maximum length
+}
+enum : uint
+{
+    SCM_RIGHTS = 0x01
+}
+enum
+{
+    SOMAXCONN       = 128,
 }
 

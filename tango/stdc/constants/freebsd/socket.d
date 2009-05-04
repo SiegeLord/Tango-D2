@@ -1,25 +1,26 @@
 module tango.stdc.constants.freebsd.socket;
     import tango.stdc.constants.freebsd.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
-    enum SocketOption: int
+    enum
     {
-        SO_DEBUG = 1 , /* turn on debugging info recording */
-        SO_BROADCAST = 6 , /* permit sending of broadcast msgs */
-        SO_REUSEADDR = 2 , /* allow local address reuse */
-        SO_LINGER = 13 , /* linger on close if data present */
-        SO_DONTLINGER = ~(13),
-        SO_OOBINLINE = 10 , /* leave received OOB data in line */
-        SO_ACCEPTCONN = 30, /* socket has had listen() */
-        SO_KEEPALIVE = 9 , /* keep connections alive */
-        SO_DONTROUTE = 5 , /* just use interface addresses */
-        SO_TYPE = 3 , /* get socket type */
-        /*
-         * Additional options, not kept in so_options.
-         */
-        SO_SNDBUF = 7, /* send buffer size */
-        SO_RCVBUF = 8, /* receive buffer size */
-        SO_ERROR = 4 , /* get error status and clear */
-        // OptionLevel.IP settings
+        SO_ACCEPTCONN   = 0x0002,
+        SO_BROADCAST    = 0x0020,
+        SO_DEBUG        = 0x0001,
+        SO_DONTROUTE    = 0x0010,
+        SO_ERROR        = 0x1007,
+        SO_KEEPALIVE    = 0x0008,
+        SO_LINGER       = 0x1080,
+        SO_OOBINLINE    = 0x0100,
+        SO_RCVBUF       = 0x1002,
+        SO_RCVLOWAT     = 0x1004,
+        SO_RCVTIMEO     = 0x1006,
+        SO_REUSEADDR    = 0x1006,
+        SO_SNDBUF       = 0x1001,
+        SO_SNDLOWAT     = 0x1003,
+        SO_SNDTIMEO     = 0x1005,
+        SO_TYPE         = 0x1008,
+        SO_DONTLINGER   = ~(SO_LINGER),
+        // OptionLevel.IP settings unconfirmed
         IP_MULTICAST_TTL = 33 ,
         IP_MULTICAST_LOOP = 34 ,
         IP_ADD_MEMBERSHIP = 35 ,
@@ -27,21 +28,36 @@ module tango.stdc.constants.freebsd.socket;
         // OptionLevel.TCP settings
         TCP_NODELAY = 1 ,
     }
+    
+    enum
+    {
+        SOCK_STREAM = 1 , /++ sequential, reliable +/
+        SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
+        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
+        SOCK_RAW = 3 , /++ raw protocol +/
+    }
+
+    enum
+    {
+        SOL_SOCKET      = 0xffff,
+    }
     /* Standard well-defined IP protocols.  */
     private enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
-        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ICMP = 1, /* Internet Control Message Protocol.  */
         IPPROTO_IGMP = 2, /* Internet Group Management Protocol. */
-        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
         IPPROTO_TCP = 6, /* Transmission Control Protocol.  */
-        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_PUP = 12, /* PUP protocol.  */
         IPPROTO_UDP = 17, /* User Datagram Protocol.  */
         IPPROTO_IDP = 22, /* XNS IDP protocol.  */
+        /+
+        // undefined for cross platform reasons, if you need them ask
+        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
+        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_TP = 29, /* SO Transport Protocol Class 4.  */
-        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ROUTING = 43, /* IPv6 routing header.  */
         IPPROTO_FRAGMENT = 44, /* IPv6 fragmentation header.  */
         IPPROTO_RSVP = 46, /* Reservation Protocol.  */
@@ -58,40 +74,37 @@ module tango.stdc.constants.freebsd.socket;
         IPPROTO_SCTP = 132, /* Stream Control Transmission Protocol.  */
         IPPROTO_RAW = 255, /* Raw IP packets.  */
         IPPROTO_MAX
+        +/
       };
-    
-    enum SocketType
+    enum
     {
-        STREAM = 1 , /++ sequential, reliable +/
-        DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SEQPACKET = 5, /++ sequential, reliable, max length +/
+        AF_UNSPEC = 0 ,
+        AF_UNIX = 1 ,
+        AF_INET = 2 ,
+        AF_INET6 = 28 ,
+    }
+    enum : uint
+    {
+        SCM_RIGHTS = 0x01
+    }
+    enum
+    {
+        SOMAXCONN       = 128,
+    }
+    enum : uint
+    {
+        MSG_CTRUNC      = 0x20,
+        MSG_DONTROUTE   = 0x4,
+        MSG_EOR         = 0x8,
+        MSG_OOB         = 0x1,
+        MSG_PEEK        = 0x2,
+        MSG_TRUNC       = 0x10,
+        MSG_WAITALL     = 0x40
+    }
+    enum
+    {
+        SHUT_RD = 0,
+        SHUT_WR = 1,
+        SHUT_RDWR = 2
     }
 
-    enum SocketOptionLevel
-    {
-        SOCKET = 1,
-        IP = IPPROTO_IP ,
-        TCP = IPPROTO_TCP ,
-        UDP = IPPROTO_UDP ,
-    }
-    enum ProtocolType: int
-    {
-        IP = IPPROTO_IP , /// default internet protocol (probably 4 for compatibility)
-        IPV6 = IPPROTO_IPV6 , /// internet protocol version 6
-        ICMP = IPPROTO_ICMP , /// internet control message protocol
-        IGMP = IPPROTO_IGMP , /// internet group management protocol
-        //GGP = IPPROTO_GGP , /// gateway to gateway protocol, deprecated
-        TCP = IPPROTO_TCP , /// transmission control protocol
-        PUP = IPPROTO_PUP , /// PARC universal packet protocol
-        UDP = IPPROTO_UDP , /// user datagram protocol
-        IDP = IPPROTO_IDP , /// Xerox NS protocol
-    }
-    enum AddressFamily: int
-    {
-        UNSPEC = 0 ,
-        UNIX = 1 ,
-        INET = 2 ,
-        IPX = 4 ,
-        APPLETALK = 5 ,
-        INET6 = 10 ,
-    }

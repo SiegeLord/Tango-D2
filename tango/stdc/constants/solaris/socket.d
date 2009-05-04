@@ -1,7 +1,7 @@
 module tango.stdc.constants.solaris.socket;
     import tango.stdc.constants.solaris.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
-    enum SocketOption: int
+    enum
     {
         SO_DEBUG = 0x0001 , /* turn on debugging info recording */
         SO_BROADCAST = 0x0020 , /* permit sending of broadcast msgs */
@@ -27,21 +27,35 @@ module tango.stdc.constants.solaris.socket;
         // OptionLevel.TCP settings
         TCP_NODELAY = 0x01 ,
     }
+    
+    enum
+    {
+        SOL_SOCKET = 0xffff,
+    }
+    enum
+    {
+        SOCK_STREAM = 1 , /++ sequential, reliable +/
+        SOCK_DGRAM = 2, /++ connectionless unreliable, max length +/
+        SOCK_SEQPACKET = 6, /++ sequential, reliable, max length +/
+        SOCK_RAW = 4,
+    }
     /* Standard well-defined IP protocols.  */
-    private enum
+    enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
-        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ICMP = 1, /* Internet Control Message Protocol.  */
         IPPROTO_IGMP = 2, /* Internet Group Management Protocol. */
-        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
         IPPROTO_TCP = 6, /* Transmission Control Protocol.  */
-        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_PUP = 12, /* PUP protocol.  */
         IPPROTO_UDP = 17, /* User Datagram Protocol.  */
         IPPROTO_IDP = 22, /* XNS IDP protocol.  */
+        /+
+        // undefined for cross platform reasons, if you need them ask
+        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
+        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_TP = 29, /* SO Transport Protocol Class 4.  */
-        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ROUTING = 43, /* IPv6 routing header.  */
         IPPROTO_FRAGMENT = 44, /* IPv6 fragmentation header.  */
         IPPROTO_RSVP = 46, /* Reservation Protocol.  */
@@ -58,39 +72,41 @@ module tango.stdc.constants.solaris.socket;
         IPPROTO_SCTP = 132, /* Stream Control Transmission Protocol.  */
         IPPROTO_RAW = 255, /* Raw IP packets.  */
         IPPROTO_MAX
-      };
+        +/
+      }
+    enum
+    {
+        AF_UNSPEC = 0 ,
+        AF_UNIX = 1 ,
+        AF_INET = 2 ,
+        AF_IPX = 4 ,
+        AF_APPLETALK = 5 ,
+        AF_INET6 = 26 ,
+    }
+    enum : uint
+    {
+        SCM_RIGHTS = 0x1010
+    }
+    enum
+    {
+        SOMAXCONN       = 128,
+    }
     
-    enum SocketOptionLevel
+    enum : uint
     {
-        SOCKET = 1,
-        IP = 0 ,
-        TCP = 6 ,
-        UDP = 17 ,
+        MSG_CTRUNC      = 0x20,
+        MSG_DONTROUTE   = 0x4,
+        MSG_EOR         = 0x8,
+        MSG_OOB         = 0x1,
+        MSG_PEEK        = 0x2,
+        MSG_TRUNC       = 0x10,
+        MSG_WAITALL     = 0x40
     }
-    enum SocketType
+
+    enum
     {
-        STREAM = 2 , /++ sequential, reliable +/
-        DGRAM = 1, /++ connectionless unreliable, max length +/
-        SEQPACKET = 6, /++ sequential, reliable, max length +/
+        SHUT_RD = 0,
+        SHUT_WR = 1,
+        SHUT_RDWR = 2
     }
-    enum ProtocolType: int
-    {
-        IP = IPPROTO_IP , /// default internet protocol (probably 4 for compatibility)
-        IPV6 = IPPROTO_IPV6 , /// internet protocol version 6
-        ICMP = IPPROTO_ICMP , /// internet control message protocol
-        IGMP = IPPROTO_IGMP , /// internet group management protocol
-        //GGP = IPPROTO_GGP , /// gateway to gateway protocol, deprecated
-        TCP = IPPROTO_TCP , /// transmission control protocol
-        PUP = IPPROTO_PUP , /// PARC universal packet protocol
-        UDP = IPPROTO_UDP , /// user datagram protocol
-        IDP = IPPROTO_IDP , /// Xerox NS protocol
-    }
-    enum AddressFamily: int
-    {
-        UNSPEC = 0 ,
-        UNIX = 1 ,
-        INET = 2 ,
-        IPX = 4 ,
-        APPLETALK = 5 ,
-        INET6 = 10 ,
-    }
+        

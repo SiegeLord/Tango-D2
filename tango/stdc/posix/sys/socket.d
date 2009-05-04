@@ -11,7 +11,7 @@ module tango.stdc.posix.sys.socket;
 private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for ssize_t, size_t
 public import tango.stdc.posix.sys.uio;   // for iovec
-
+public import tango.stdc.constants.socket;
 extern (C):
 
 //
@@ -171,11 +171,6 @@ version( linux )
         }
     }
 
-    enum : uint
-    {
-        SCM_RIGHTS = 0x01
-    }
-
     static if( false /* (!is( __STRICT_ANSI__ ) && __GNUC__ >= 2) || __STDC_VERSION__ >= 199901L */ )
     {
         extern (D) ubyte[1] CMSG_DATA( cmsghdr* cmsg ) { return cmsg.__cmsg_data; }
@@ -199,68 +194,6 @@ version( linux )
     {
         int l_onoff;
         int l_linger;
-    }
-
-    enum
-    {
-        SOCK_DGRAM      = 2,
-        SOCK_SEQPACKET  = 5,
-        SOCK_STREAM     = 1
-    }
-
-    enum
-    {
-        SOL_SOCKET      = 1
-    }
-
-    enum
-    {
-        SO_ACCEPTCONN   = 30,
-        SO_BROADCAST    = 6,
-        SO_DEBUG        = 1,
-        SO_DONTROUTE    = 5,
-        SO_ERROR        = 4,
-        SO_KEEPALIVE    = 9,
-        SO_LINGER       = 13,
-        SO_OOBINLINE    = 10,
-        SO_RCVBUF       = 8,
-        SO_RCVLOWAT     = 18,
-        SO_RCVTIMEO     = 20,
-        SO_REUSEADDR    = 2,
-        SO_SNDBUF       = 7,
-        SO_SNDLOWAT     = 19,
-        SO_SNDTIMEO     = 21,
-        SO_TYPE         = 3
-    }
-
-    enum
-    {
-        SOMAXCONN       = 128
-    }
-
-    enum : uint
-    {
-        MSG_CTRUNC      = 0x08,
-        MSG_DONTROUTE   = 0x04,
-        MSG_EOR         = 0x80,
-        MSG_OOB         = 0x01,
-        MSG_PEEK        = 0x02,
-        MSG_TRUNC       = 0x20,
-        MSG_WAITALL     = 0x100
-    }
-
-    enum
-    {
-        AF_INET         = 2,
-        AF_UNIX         = 1,
-        AF_UNSPEC       = 0
-    }
-
-    enum
-    {
-        SHUT_RD,
-        SHUT_WR,
-        SHUT_RDWR
     }
 
     int     accept(int, sockaddr*, socklen_t*);
@@ -327,11 +260,6 @@ else version( darwin )
          int       cmsg_type;
     }
 
-    enum : uint
-    {
-        SCM_RIGHTS = 0x01
-    }
-
     /+
     CMSG_DATA(cmsg)     ((unsigned char *)(cmsg) + \
                          ALIGN(sizeof(struct cmsghdr)))
@@ -348,68 +276,6 @@ else version( darwin )
     {
         int l_onoff;
         int l_linger;
-    }
-
-    enum
-    {
-        SOCK_DGRAM      = 2,
-        SOCK_SEQPACKET  = 5,
-        SOCK_STREAM     = 1
-    }
-
-    enum : uint
-    {
-        SOL_SOCKET      = 0xffff
-    }
-
-    enum : uint
-    {
-        SO_ACCEPTCONN   = 0x0002,
-        SO_BROADCAST    = 0x0020,
-        SO_DEBUG        = 0x0001,
-        SO_DONTROUTE    = 0x0010,
-        SO_ERROR        = 0x1007,
-        SO_KEEPALIVE    = 0x0008,
-        SO_LINGER       = 0x1080,
-        SO_OOBINLINE    = 0x0100,
-        SO_RCVBUF       = 0x1002,
-        SO_RCVLOWAT     = 0x1004,
-        SO_RCVTIMEO     = 0x1006,
-        SO_REUSEADDR    = 0x1006,
-        SO_SNDBUF       = 0x1001,
-        SO_SNDLOWAT     = 0x1003,
-        SO_SNDTIMEO     = 0x1005,
-        SO_TYPE         = 0x1008
-    }
-
-    enum
-    {
-        SOMAXCONN       = 128
-    }
-
-    enum : uint
-    {
-        MSG_CTRUNC      = 0x20,
-        MSG_DONTROUTE   = 0x4,
-        MSG_EOR         = 0x8,
-        MSG_OOB         = 0x1,
-        MSG_PEEK        = 0x2,
-        MSG_TRUNC       = 0x10,
-        MSG_WAITALL     = 0x40
-    }
-
-    enum
-    {
-        AF_INET         = 2,
-        AF_UNIX         = 1,
-        AF_UNSPEC       = 0
-    }
-
-    enum
-    {
-        SHUT_RD,
-        SHUT_WR,
-        SHUT_RDWR
     }
 
     int     accept(int, sockaddr*, socklen_t*);
@@ -445,10 +311,10 @@ else version( freebsd )
 
     private
     {
-		const _SS_ALIGNSIZE = long.sizeof;
-		const uint _SS_MAXSIZE = 128;
+        const _SS_ALIGNSIZE = long.sizeof;
+        const uint _SS_MAXSIZE = 128;
         const _SS_PAD1SIZE = _SS_ALIGNSIZE - ubyte.sizeof - sa_family_t.sizeof;
-		const _SS_PAD2SIZE = _SS_MAXSIZE - ubyte.sizeof - sa_family_t.sizeof - _SS_PAD1SIZE - _SS_ALIGNSIZE;
+        const _SS_PAD2SIZE = _SS_MAXSIZE - ubyte.sizeof - sa_family_t.sizeof - _SS_PAD1SIZE - _SS_ALIGNSIZE;
     }
 
     struct sockaddr_storage
@@ -478,11 +344,6 @@ else version( freebsd )
          int       cmsg_type;
     }
 
-    enum : uint
-    {
-        SCM_RIGHTS = 0x01
-    }
-
     /+
     CMSG_DATA(cmsg)     ((unsigned char *)(cmsg) + \
                          ALIGN(sizeof(struct cmsghdr)))
@@ -499,68 +360,6 @@ else version( freebsd )
     {
         int l_onoff;
         int l_linger;
-    }
-
-    enum
-    {
-        SOCK_DGRAM      = 2,
-        SOCK_SEQPACKET  = 5,
-        SOCK_STREAM     = 1
-    }
-
-    enum : uint
-    {
-        SOL_SOCKET      = 0xffff
-    }
-
-    enum : uint
-    {
-        SO_ACCEPTCONN   = 0x0002,
-        SO_BROADCAST    = 0x0020,
-        SO_DEBUG        = 0x0001,
-        SO_DONTROUTE    = 0x0010,
-        SO_ERROR        = 0x1007,
-        SO_KEEPALIVE    = 0x0008,
-        SO_LINGER       = 0x1080,
-        SO_OOBINLINE    = 0x0100,
-        SO_RCVBUF       = 0x1002,
-        SO_RCVLOWAT     = 0x1004,
-        SO_RCVTIMEO     = 0x1006,
-        SO_REUSEADDR    = 0x1006,
-        SO_SNDBUF       = 0x1001,
-        SO_SNDLOWAT     = 0x1003,
-        SO_SNDTIMEO     = 0x1005,
-        SO_TYPE         = 0x1008
-    }
-
-    enum
-    {
-        SOMAXCONN       = 128
-    }
-
-    enum : uint
-    {
-        MSG_CTRUNC      = 0x20,
-        MSG_DONTROUTE   = 0x4,
-        MSG_EOR         = 0x8,
-        MSG_OOB         = 0x1,
-        MSG_PEEK        = 0x2,
-        MSG_TRUNC       = 0x10,
-        MSG_WAITALL     = 0x40
-    }
-
-    enum
-    {
-        AF_INET         = 2,
-        AF_UNIX         = 1,
-        AF_UNSPEC       = 0
-    }
-
-    enum
-    {
-        SHUT_RD = 0,
-        SHUT_WR = 1,
-        SHUT_RDWR = 2
     }
 
     int     accept(int, sockaddr*, socklen_t*);
@@ -587,252 +386,113 @@ else version( solaris )
     alias uint   socklen_t;
     alias ushort sa_family_t;
 
-	struct sockaddr
-	{
-	    sa_family_t sa_family;
-	    char[14]    sa_data;
-	}
-
-	private
+    struct sockaddr
     {
-		typedef	double sockaddr_maxalign_t;
-		const _SS_ALIGNSIZE = sockaddr_maxalign_t.sizeof;
-		const _SS_MAXSIZE   = 256;
+        sa_family_t sa_family;
+        char[14]    sa_data;
+    }
+
+    private
+    {
+        typedef double sockaddr_maxalign_t;
+        const _SS_ALIGNSIZE = sockaddr_maxalign_t.sizeof;
+        const _SS_MAXSIZE   = 256;
         const _SS_PAD1SIZE  = _SS_ALIGNSIZE - sa_family_t.sizeof;
-		const _SS_PAD2SIZE  = _SS_MAXSIZE - (sa_family_t.sizeof + _SS_PAD1SIZE + _SS_ALIGNSIZE);
+        const _SS_PAD2SIZE  = _SS_MAXSIZE - (sa_family_t.sizeof + _SS_PAD1SIZE + _SS_ALIGNSIZE);
     }
 
     struct sockaddr_storage
     {
-    	sa_family_t	ss_family;	/* Address family */
-		/* Following fields are implementation specific */
-		char		_ss_pad1[_SS_PAD1SIZE];
-		sockaddr_maxalign_t _ss_align;
-		char		_ss_pad2[_SS_PAD2SIZE];
-	}
-	
-	struct msghdr
-	{
-	    void*         msg_name;
-	    socklen_t     msg_namelen;
-	    iovec*        msg_iov;
-	    int           msg_iovlen;
-	    void*         msg_control;
-	    socklen_t     msg_controllen;
-	    int           msg_flags;
-	}
+        sa_family_t ss_family;  /* Address family */
+        /* Following fields are implementation specific */
+        char        _ss_pad1[_SS_PAD1SIZE];
+        sockaddr_maxalign_t _ss_align;
+        char        _ss_pad2[_SS_PAD2SIZE];
+    }
+    
+    struct msghdr
+    {
+        void*         msg_name;
+        socklen_t     msg_namelen;
+        iovec*        msg_iov;
+        int           msg_iovlen;
+        void*         msg_control;
+        socklen_t     msg_controllen;
+        int           msg_flags;
+    }
 
-	struct iovec {} // from tango.stdc.posix.sys.uio
+    struct iovec {} // from tango.stdc.posix.sys.uio
 
-	struct cmsghdr
-	{
-	    socklen_t cmsg_len;
-	    int       cmsg_level;
-	    int       cmsg_type;
-	}
-
-	enum : uint
-	{
-		SCM_RIGHTS = 0x1010
-	}
-	
-	enum
-	{	
-		SOCK_DGRAM		= 1,
-		SOCK_SEQPACKET	= 6,
-		SOCK_STREAM		= 2,
-	}
-	
-	enum : uint
-	{
-		SOL_SOCKET		= 0xFFFF,
-	}
-	
-	enum : uint
-	{
-		SO_ACCEPTCONN	= 0x0002,
-		SO_BROADCAST	= 0x0020,
-		SO_DEBUG		= 0x0001,
-		SO_DONTROUTE	= 0x0010,
-		SO_KEEPALIVE	= 0x0008,
-		SO_ERROR		= 0x1007,
-		SO_LINGER		= 0x0080,
-		SO_OOBINLINE	= 0x0100,
-		SO_RCVBUF		= 0x1002,
-		SO_RCVLOWAT		= 0x1004,
-		SO_RCVTIMEO		= 0x1006,
-		SO_REUSEADDR	= 0x0004,
-		SO_SNDBUF		= 0x1001,
-		SO_SNDLOWAT		= 0x1003,
-		SO_SNDTIMEO		= 0x1005,
-		SO_TYPE			= 0x1008,
-	}
-	
-	enum
-	{
-		SOMAXCONN		= 128,
-	}
-	
-	enum : uint
-	{
-		MSG_CTRUNC		= 0x10,
-		MSG_DONTROUTE	= 0x4,
-		MSG_EOR			= 0x8,
-		MSG_OOB			= 0x1,
-		MSG_PEEK		= 0x2,
-		MSG_TRUNC		= 0x20,
-		MSG_WAITALL		= 0x40,
-	}
-	
-	enum
-	{
-		AF_INET			= 2,
-		AF_UNIX			= 1,
-		AF_UNSPEC		= 0,
-	}
-	
-	enum
-	{
-		SHUT_RD			= 0,
-		SHUT_RDWR		= 2,
-		SHUT_WR			= 1,
-	}
-	
-	private
-	{
-		const _CMSG_DATA_ALIGNMENT = int.sizeof;
-		version (X86)			const _CMSG_HDR_ALIGNMENT = 4;
-		else version(X86_64)	const _CMSG_HDR_ALIGNMENT = 4;
-		else /* SPARC */		const _CMSG_HDR_ALIGNMENT = 8;
-		
-		extern (D)
-		{
-			private ubyte* _CMSG_DATA_ALIGN(cmsghdr* x) { 
-				return cast(ubyte*)((cast(size_t)x + _CMSG_DATA_ALIGNMENT - 1) & ~(_CMSG_DATA_ALIGNMENT - 1));
-			}
-			private size_t _CMSG_HDR_ALIGN(cmsghdr* x) { 
-				return (cast(size_t)x + _CMSG_HDR_ALIGNMENT - 1) & ~(_CMSG_HDR_ALIGNMENT - 1);
-			}
-		}
-	}
-	
+    struct cmsghdr
+    {
+        socklen_t cmsg_len;
+        int       cmsg_level;
+        int       cmsg_type;
+    }
+    
+    private
+    {
+        const _CMSG_DATA_ALIGNMENT = int.sizeof;
+        version (X86)           const _CMSG_HDR_ALIGNMENT = 4;
+        else version(X86_64)    const _CMSG_HDR_ALIGNMENT = 4;
+        else /* SPARC */        const _CMSG_HDR_ALIGNMENT = 8;
+        
+        extern (D)
+        {
+            private ubyte* _CMSG_DATA_ALIGN(cmsghdr* x) { 
+                return cast(ubyte*)((cast(size_t)x + _CMSG_DATA_ALIGNMENT - 1) & ~(_CMSG_DATA_ALIGNMENT - 1));
+            }
+            private size_t _CMSG_HDR_ALIGN(cmsghdr* x) { 
+                return (cast(size_t)x + _CMSG_HDR_ALIGNMENT - 1) & ~(_CMSG_HDR_ALIGNMENT - 1);
+            }
+        }
+    }
+    
     extern (D) ubyte*   CMSG_DATA( cmsghdr* cmsg ) { return cast(ubyte*)_CMSG_DATA_ALIGN( cmsg + 1 ); }
 
     extern (D) cmsghdr* CMSG_FIRSTHDR( msghdr* mhdr )
     {
         return mhdr.msg_controllen >= cmsghdr.sizeof
-        	? cast(cmsghdr*) mhdr.msg_control
-        	: null;
+            ? cast(cmsghdr*) mhdr.msg_control
+            : null;
     }
 
-	extern (D) cmsghdr* CMSG_NXTHDR( msghdr* m, cmsghdr* c )
+    extern (D) cmsghdr* CMSG_NXTHDR( msghdr* m, cmsghdr* c )
     {
-		/* Hurrah for unreadable C macros! */
-		
-		if(c is null) return CMSG_FIRSTHDR(m);
-		
-		size_t aligned_cmsg = _CMSG_HDR_ALIGN(c);
-		return
-			(aligned_cmsg + c.cmsg_len + cmsghdr.sizeof) > (cast(size_t)m.msg_control + m.msg_controllen)
-			? null
-			: cast(cmsghdr*)(aligned_cmsg + c.cmsg_len);
+        /* Hurrah for unreadable C macros! */
+        
+        if(c is null) return CMSG_FIRSTHDR(m);
+        
+        size_t aligned_cmsg = _CMSG_HDR_ALIGN(c);
+        return
+            (aligned_cmsg + c.cmsg_len + cmsghdr.sizeof) > (cast(size_t)m.msg_control + m.msg_controllen)
+            ? null
+            : cast(cmsghdr*)(aligned_cmsg + c.cmsg_len);
     }
-	
-	struct linger
-	{
-	    int l_onoff;
-	    int l_linger;
-	}
+    
+    struct linger
+    {
+        int l_onoff;
+        int l_linger;
+    }
 
 
-	int     accept(int, sockaddr*, socklen_t*);
-	int     bind(int, in sockaddr*, socklen_t);
-	int     connect(int, in sockaddr*, socklen_t);
-	int     getpeername(int, sockaddr*, socklen_t*);
-	int     getsockname(int, sockaddr*, socklen_t*);
-	int     getsockopt(int, int, int, void*, socklen_t*);
-	int     listen(int, int);
-	ssize_t recv(int, void*, size_t, int);
-	ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
-	ssize_t recvmsg(int, msghdr*, int);
-	ssize_t send(int, in void*, size_t, int);
-	ssize_t sendmsg(int, in msghdr*, int);
-	ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
-	int     setsockopt(int, int, int, in void*, socklen_t);
-	int     shutdown(int, int);
-	int     socket(int, int, int);
-	int     sockatmark(int);
-	int     socketpair(int, int, int, int[2]);
-}
-
-//
-// IPV6 (IP6)
-//
-/*
-AF_INET6
-*/
-
-version( linux )
-{
-    enum
-    {
-        AF_INET6    = 10
-    }
-}
-else version( darwin )
-{
-    enum
-    {
-        AF_INET6    = 30
-    }
-}
-else version( freebsd )
-{
-    enum
-    {
-        AF_INET6    = 28
-    }
-}
-else version( solaris )
-{
-    enum
-    {
-        AF_INET6    = 26
-    }
-}
-
-//
-// Raw Sockets (RS)
-//
-/*
-SOCK_RAW
-*/
-
-version( linux )
-{
-    enum
-    {
-        SOCK_RAW    = 3
-    }
-}
-else version( darwin )
-{
-    enum
-    {
-        SOCK_RAW    = 3
-    }
-}
-else version( freebsd )
-{
-    enum
-    {
-        SOCK_RAW    = 3
-    }
-}
-else version( solaris )
-{
-    enum
-    {
-        SOCK_RAW    = 4
-    }
+    int     accept(int, sockaddr*, socklen_t*);
+    int     bind(int, in sockaddr*, socklen_t);
+    int     connect(int, in sockaddr*, socklen_t);
+    int     getpeername(int, sockaddr*, socklen_t*);
+    int     getsockname(int, sockaddr*, socklen_t*);
+    int     getsockopt(int, int, int, void*, socklen_t*);
+    int     listen(int, int);
+    ssize_t recv(int, void*, size_t, int);
+    ssize_t recvfrom(int, void*, size_t, int, sockaddr*, socklen_t*);
+    ssize_t recvmsg(int, msghdr*, int);
+    ssize_t send(int, in void*, size_t, int);
+    ssize_t sendmsg(int, in msghdr*, int);
+    ssize_t sendto(int, in void*, size_t, int, in sockaddr*, socklen_t);
+    int     setsockopt(int, int, int, in void*, socklen_t);
+    int     shutdown(int, int);
+    int     socket(int, int, int);
+    int     sockatmark(int);
+    int     socketpair(int, int, int, int[2]);
 }
