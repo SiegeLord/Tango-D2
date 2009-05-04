@@ -1,7 +1,7 @@
 module tango.stdc.constants.linux.socket;
     import tango.stdc.constants.linux.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
-    enum SocketOption: int
+    enum
     {
         SO_DEBUG = 1 , /* turn on debugging info recording */
         SO_BROADCAST = 6 , /* permit sending of broadcast msgs */
@@ -27,21 +27,35 @@ module tango.stdc.constants.linux.socket;
         // OptionLevel.TCP settings
         TCP_NODELAY = 1 ,
     }
+    enum
+    {
+        SOL_SOCKET = 1,
+    }
+    enum {
+        SOCK_STREAM = 1 , /++ sequential, reliable +/
+        SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
+        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
+        SOCK_RAW = 3 , /++ raw protocol +/
+        SOCK_RDM = 4 , /++ reliable messages +/
+        SOCK_PACKET = 10, /++ linux specific packets at dev level +/
+    }
     /* Standard well-defined IP protocols.  */
-    private enum
+    enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
-        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ICMP = 1, /* Internet Control Message Protocol.  */
         IPPROTO_IGMP = 2, /* Internet Group Management Protocol. */
-        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
         IPPROTO_TCP = 6, /* Transmission Control Protocol.  */
-        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_PUP = 12, /* PUP protocol.  */
         IPPROTO_UDP = 17, /* User Datagram Protocol.  */
         IPPROTO_IDP = 22, /* XNS IDP protocol.  */
+        /+
+        // undefined for cross platform reasons, if you need some of these ask
+        IPPROTO_HOPOPTS = 0, /* IPv6 Hop-by-Hop options.  */
+        IPPROTO_IPIP = 4, /* IPIP tunnels (older KA9Q tunnels use 94).  */
+        IPPROTO_EGP = 8, /* Exterior Gateway Protocol.  */
         IPPROTO_TP = 29, /* SO Transport Protocol Class 4.  */
-        IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ROUTING = 43, /* IPv6 routing header.  */
         IPPROTO_FRAGMENT = 44, /* IPv6 fragmentation header.  */
         IPPROTO_RSVP = 46, /* Reservation Protocol.  */
@@ -57,70 +71,35 @@ module tango.stdc.constants.linux.socket;
         IPPROTO_COMP = 108, /* Compression Header Protocol.  */
         IPPROTO_SCTP = 132, /* Stream Control Transmission Protocol.  */
         IPPROTO_RAW = 255, /* Raw IP packets.  */
-        IPPROTO_MAX
+        IPPROTO_MAX +/
       }
-    
-    enum SocketOptionLevel
-    {
-        SOCKET = 1,
-        IP = IPPROTO_IP ,
-        TCP = IPPROTO_TCP ,
-        UDP = IPPROTO_UDP ,
-    }
-    enum SocketType{
-        STREAM = 1 , /++ sequential, reliable +/
-        DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SEQPACKET = 5, /++ sequential, reliable, max length +/
-        RAW = 3 , /++ raw protocol +/
-        RDM = 4 , /++ reliable messages +/
-        PACKET = 10, /++ linux specific packets at dev level +/
-    }
-    enum ProtocolType: int
-    {
-        IP = IPPROTO_IP , /// default internet protocol (probably 4 for compatibility)
-        IPV6 = IPPROTO_IPV6 , /// internet protocol version 6
-        ICMP = IPPROTO_ICMP , /// internet control message protocol
-        IGMP = IPPROTO_IGMP , /// internet group management protocol
-        //GGP = IPPROTO_GGP , /// gateway to gateway protocol, deprecated
-        TCP = IPPROTO_TCP , /// transmission control protocol
-        PUP = IPPROTO_PUP , /// PARC universal packet protocol
-        UDP = IPPROTO_UDP , /// user datagram protocol
-        IDP = IPPROTO_IDP , /// Xerox NS protocol
-    }
-    enum AddressFamily: int
-    {
-        UNSPEC = 0 ,
-        UNIX = 1 ,
-        INET = 2 ,
-        IPX = 4 ,
-        APPLETALK = 5 ,
-        INET6 = 10 ,
-    }
-
-    /+
-    /* Bits in the FLAGS argument to `send', `recv', et al.  */
     enum
-      {
-        MSG_OOB = 0x01, /* Process out-of-band data.  */
-        MSG_PEEK = 0x02, /* Peek at incoming messages.  */
-        MSG_DONTROUTE = 0x04, /* Don't use local routing.  */
-        MSG_CTRUNC = 0x08, /* Control data lost before delivery.  */
-        MSG_PROXY = 0x10, /* Supply or ask second address.  */
-        MSG_TRUNC = 0x20,
-        MSG_DONTWAIT = 0x40, /* Nonblocking IO.  */
-        MSG_EOR = 0x80, /* End of record.  */
-        MSG_WAITALL = 0x100, /* Wait for a full request.  */
-        MSG_FIN = 0x200,
-        MSG_SYN = 0x400,
-        MSG_CONFIRM = 0x800, /* Confirm path validity.  */
-        MSG_RST = 0x1000,
-        MSG_ERRQUEUE = 0x2000, /* Fetch message from error queue.  */
-        MSG_NOSIGNAL = 0x4000, /* Do not generate SIGPIPE.  */
-        MSG_MORE = 0x8000, /* Sender will send more.  */
-        MSG_CMSG_CLOEXEC = 0x40000000 /* Set close_on_exit for file
-                                               descriptor received through
-                                               SCM_RIGHTS.  */
-      }
+    {
+        AF_UNSPEC = 0 ,
+        AF_UNIX = 1 ,
+        AF_INET = 2 ,
+        AF_IPX = 4 ,
+        AF_APPLETALK = 5 ,
+        AF_INET6 = 10 ,
+    }
+    enum : uint
+    {
+        SCM_RIGHTS = 0x01
+    }
+    enum
+    {
+        SOMAXCONN       = 128,
+    }
+    enum : uint
+    {
+        MSG_CTRUNC      = 0x08,
+        MSG_DONTROUTE   = 0x04,
+        MSG_EOR         = 0x80,
+        MSG_OOB         = 0x01,
+        MSG_PEEK        = 0x02,
+        MSG_TRUNC       = 0x20,
+        MSG_WAITALL     = 0x100
+    }
     /* The following constants should be used for the second parameter of
        `shutdown'.  */
     enum
@@ -129,6 +108,26 @@ module tango.stdc.constants.linux.socket;
       SHUT_WR, /* No more transmissions.  */
       SHUT_RDWR /* No more receptions or transmissions.  */
     }
+    
+    // non cross platform.
+    /+
+        /* Bits in the FLAGS argument to `send', `recv', et al.  */
+        enum :uint
+          {
+            MSG_PROXY = 0x10, /* Supply or ask second address.  */
+            MSG_DONTWAIT = 0x40, /* Nonblocking IO.  */
+            MSG_WAITALL = 0x100, /* Wait for a full request.  */
+            MSG_FIN = 0x200,
+            MSG_SYN = 0x400,
+            MSG_CONFIRM = 0x800, /* Confirm path validity.  */
+            MSG_RST = 0x1000,
+            MSG_ERRQUEUE = 0x2000, /* Fetch message from error queue.  */
+            MSG_NOSIGNAL = 0x4000, /* Do not generate SIGPIPE.  */
+            MSG_MORE = 0x8000, /* Sender will send more.  */
+            MSG_CMSG_CLOEXEC = 0x40000000 /* Set close_on_exit for file
+                                                   descriptor received through
+                                                   SCM_RIGHTS.  */
+          }
     /* Standard well-known ports.  */
     enum
       {

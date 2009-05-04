@@ -16,6 +16,7 @@ enum : int
 
 
 ***************************************************************/
+enum {SOCKET_ERROR = -1}
 
 enum
 {
@@ -113,3 +114,16 @@ enum
     SOMAXCONN       = 128,
 }
 
+enum : uint
+{
+    MSG_DONTROUTE   = 0x4,
+    MSG_OOB         = 0x1,
+    MSG_PEEK        = 0x2,
+}
+
+enum
+{
+    SHUT_RD = 0,
+    SHUT_WR = 1,
+    SHUT_RDWR = 2
+}
