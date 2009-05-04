@@ -11,89 +11,79 @@ import  consts=tango.stdc.constants.socket;
 *******************************************************************************/
 
 private extern(C) int strlen(char*);
-version(Windows){
-    enum {
-        IOCPARM_MASK = consts.IOCPARM_MASK,
-        IOC_IN       = consts.IOC_IN      ,
-        FIONBIO      = consts.FIONBIO     ,
-    
-        WSADESCRIPTION_LEN = consts.WSADESCRIPTION_LEN,
-        WSASYS_STATUS_LEN  = consts.WSASYS_STATUS_LEN ,
-        WSAEWOULDBLOCK     = consts.WSAEWOULDBLOCK    ,
-        WSAEINTR           = consts.WSAEINTR          ,
-    }
-}
 
-    enum {SOCKET_ERROR = consts.SOCKET_ERROR}
+/*******************************************************************************
 
-    enum SocketOption: int
-    {
-        SO_DEBUG        =   consts.SO_DEBUG     ,       /* turn on debugging info recording */
-        SO_BROADCAST    =   consts.SO_BROADCAST ,       /* permit sending of broadcast msgs */
-        SO_REUSEADDR    =   consts.SO_REUSEADDR ,       /* allow local address reuse */
-        SO_LINGER       =   consts.SO_LINGER    ,       /* linger on close if data present */
-        SO_DONTLINGER   = ~(consts.SO_LINGER),
+*******************************************************************************/
+
+enum {SOCKET_ERROR = consts.SOCKET_ERROR}
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+enum SocketOption
+{
+        DEBUG        =   consts.SO_DEBUG     ,       /* turn on debugging info recording */
+        BROADCAST    =   consts.SO_BROADCAST ,       /* permit sending of broadcast msgs */
+        REUSEADDR    =   consts.SO_REUSEADDR ,       /* allow local address reuse */
+        LINGER       =   consts.SO_LINGER    ,       /* linger on close if data present */
+        DONTLINGER   = ~(consts.SO_LINGER),
         
-        SO_OOBINLINE    =   consts.SO_OOBINLINE ,       /* leave received OOB data in line */
-        SO_ACCEPTCONN   =   consts.SO_ACCEPTCONN,       /* socket has had listen() */
-        SO_KEEPALIVE    =   consts.SO_KEEPALIVE ,       /* keep connections alive */
-        SO_DONTROUTE    =   consts.SO_DONTROUTE ,       /* just use interface addresses */
-        SO_TYPE         =   consts.SO_TYPE      ,       /* get socket type */
+        OOBINLINE    =   consts.SO_OOBINLINE ,       /* leave received OOB data in line */
+        ACCEPTCONN   =   consts.SO_ACCEPTCONN,       /* socket has had listen() */
+        KEEPALIVE    =   consts.SO_KEEPALIVE ,       /* keep connections alive */
+        DONTROUTE    =   consts.SO_DONTROUTE ,       /* just use interface addresses */
+        TYPE         =   consts.SO_TYPE      ,       /* get socket type */
     
         /*
          * Additional options, not kept in so_options.
          */
-        SO_SNDBUF       = consts.SO_SNDBUF,               /* send buffer size */
-        SO_RCVBUF       = consts.SO_RCVBUF,               /* receive buffer size */
-        SO_ERROR        = consts.SO_ERROR ,               /* get error status and clear */
+        SNDBUF       = consts.SO_SNDBUF,               /* send buffer size */
+        RCVBUF       = consts.SO_RCVBUF,               /* receive buffer size */
+        ERROR        = consts.SO_ERROR ,               /* get error status and clear */
     
         // OptionLevel.IP settings
-        IP_MULTICAST_TTL   = consts.IP_MULTICAST_TTL  ,
-        IP_MULTICAST_LOOP  = consts.IP_MULTICAST_LOOP ,
-        IP_ADD_MEMBERSHIP  = consts.IP_ADD_MEMBERSHIP ,
-        IP_DROP_MEMBERSHIP = consts.IP_DROP_MEMBERSHIP,
+        MULTICAST_TTL   = consts.IP_MULTICAST_TTL  ,
+        MULTICAST_LOOP  = consts.IP_MULTICAST_LOOP ,
+        ADD_MEMBERSHIP  = consts.IP_ADD_MEMBERSHIP ,
+        DROP_MEMBERSHIP = consts.IP_DROP_MEMBERSHIP,
     
         // OptionLevel.TCP settings
-        TCP_NODELAY        = consts.TCP_NODELAY ,
-    }
+        TCP_NODELAY     = consts.TCP_NODELAY ,
+}
     
-    enum SocketOptionLevel
-    {
+/*******************************************************************************
+
+*******************************************************************************/
+
+enum SocketOptionLevel
+{
         SOCKET = consts.SOL_SOCKET    ,
         IP     = consts.IPPROTO_IP    ,   
         TCP    = consts.IPPROTO_TCP   ,   
         UDP    = consts.IPPROTO_UDP   ,   
-    }
-    
-    /***********************************************************************
-
-             Communication semantics
-
-    ***********************************************************************/
-static if (is(typeof(SOCK_RAW))) {
-    enum SocketType{
-        STREAM    = consts.SOCK_STREAM   , /++ sequential, reliable +/
-        DGRAM     = consts.SOCK_DGRAM    , /++ connectionless unreliable, max length +/
-        SEQPACKET = consts.SOCK_SEQPACKET, /++ sequential, reliable, max length +/
-        RAW       = consts.SOCK_RAW      , /++ raw protocol +/
-    }
-} else {
-    enum SocketType{
-        STREAM    = consts.SOCK_STREAM   , /++ sequential, reliable +/
-        DGRAM     = consts.SOCK_DGRAM    , /++ connectionless unreliable, max length +/
-        SEQPACKET = consts.SOCK_SEQPACKET, /++ sequential, reliable, max length +/
-    }
 }
-    /***********************************************************************
+    
+/*******************************************************************************
 
-            Protocol
+*******************************************************************************/
 
-    ***********************************************************************/
-static if (is(typeof(IPPROTO_IPV6))) {
-    enum ProtocolType: int
-    {
+enum SocketType
+{
+        STREAM    = consts.SOCK_STREAM   , /++ sequential, reliable +/
+        DGRAM     = consts.SOCK_DGRAM    , /++ connectionless unreliable, max length +/
+        SEQPACKET = consts.SOCK_SEQPACKET, /++ sequential, reliable, max length +/
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+enum ProtocolType
+{
         IP   = consts.IPPROTO_IP   ,     /// default internet protocol (probably 4 for compatibility)
-        IPV4 = consts.IPPROTO_IPV4 ,     /// internet protocol version 4
+        IPV4 = consts.IPPROTO_IP   ,     /// internet protocol version 4
         IPV6 = consts.IPPROTO_IPV6 ,     /// internet protocol version 6
         ICMP = consts.IPPROTO_ICMP ,     /// internet control message protocol
         IGMP = consts.IPPROTO_IGMP ,     /// internet group management protocol
@@ -101,51 +91,44 @@ static if (is(typeof(IPPROTO_IPV6))) {
         PUP  = consts.IPPROTO_PUP  ,     /// PARC universal packet protocol
         UDP  = consts.IPPROTO_UDP  ,     /// user datagram protocol
         IDP  = consts.IPPROTO_IDP  ,     /// Xerox NS protocol
-    }
-} else {
-    enum ProtocolType: int
-    {
-        IP   = consts.IPPROTO_IP   ,     /// default internet protocol (probably 4 for compatibility)
-        IPV4 = consts.IPPROTO_IPV4 ,     /// internet protocol version 4
-        ICMP = consts.IPPROTO_ICMP ,     /// internet control message protocol
-        IGMP = consts.IPPROTO_IGMP ,     /// internet group management protocol
-        TCP  = consts.IPPROTO_TCP  ,     /// transmission control protocol
-        PUP  = consts.IPPROTO_PUP  ,     /// PARC universal packet protocol
-        UDP  = consts.IPPROTO_UDP  ,     /// user datagram protocol
-        IDP  = consts.IPPROTO_IDP  ,     /// Xerox NS protocol
-    }
-}    
-    /***********************************************************************
-    
-    
-    ***********************************************************************/
-    
-static if (is(typeof(consts.AF_INET6))) {
-    enum AddressFamily: int
-    {
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+
+enum AddressFamily
+{
         UNSPEC    = consts.AF_UNSPEC   ,
         UNIX      = consts.AF_UNIX     ,
         INET      = consts.AF_INET     ,
         IPX       = consts.AF_IPX      ,
         APPLETALK = consts.AF_APPLETALK,
         INET6     = consts.AF_INET6    ,
-    }
-} else {
-    enum AddressFamily: int
-    {
-        UNSPEC    = consts.AF_UNSPEC   ,
-        UNIX      = consts.AF_UNIX     ,
-        INET      = consts.AF_INET     ,
-        IPX       = consts.AF_IPX      ,
-        APPLETALK = consts.AF_APPLETALK,
-    }
 }
 
-    /***********************************************************************
+/*******************************************************************************
 
+*******************************************************************************/
 
-    ***********************************************************************/
+enum SocketShutdown
+{
+        RECEIVE =  consts.SHUT_RD,
+        SEND =     consts.SHUT_WR,
+        BOTH =     consts.SHUT_RDWR,
+}
 
+/*******************************************************************************
+
+*******************************************************************************/
+
+enum SocketFlags
+{
+        NONE =           0,
+        OOB =            consts.MSG_OOB, //out of band
+        PEEK =           consts.MSG_PEEK, //only for receiving
+        DONTROUTE =      consts.MSG_DONTROUTE, //only for sending
+}
 
 /*******************************************************************************
 
@@ -321,21 +304,6 @@ version (Windows)
                 Error = -1
         }
 
-        enum Shutdown: int
-        {
-                RECEIVE =  consts.SHUT_RD,
-                SEND =     consts.SHUT_WR,
-                BOTH =     consts.SHUT_RDWR,
-        }
-
-        enum Flags: int
-        {
-                NONE =           0,
-                OOB =            consts.MSG_OOB, //out of band
-                PEEK =           consts.MSG_PEEK, //only for receiving
-                DONTROUTE =      consts.MSG_DONTROUTE, //only for sending
-        }
-
         alias Error        ERROR;               // backward compatibility
         alias noDelay      setNoDelay;          // backward compatibility
         alias addressReuse setAddressReuse;     // backward compatibility
@@ -426,7 +394,7 @@ version (Windows)
         {
                 int type, typesize = type.sizeof;
                 return getsockopt (sock, SocketOptionLevel.SOCKET,
-                                   SocketOption.SO_TYPE, cast(char*) &type,
+                                   SocketOption.TYPE, cast(char*) &type,
                                    &typesize) != Error;
         }
 
@@ -527,7 +495,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* shutdown (Shutdown how)
+        Berkeley* shutdown (SocketShutdown how)
         {
                 .shutdown (sock, how);
                 return this;
@@ -559,7 +527,7 @@ version (Windows)
                 l.l_onoff = 1;                          // option on/off
                 l.l_linger = cast(ushort) period;       // linger time
 
-                return setOption (SocketOptionLevel.SOCKET, SocketOption.SO_LINGER, l.array);
+                return setOption (SocketOptionLevel.SOCKET, SocketOption.LINGER, l.array);
         }
 
         /***********************************************************************
@@ -571,7 +539,7 @@ version (Windows)
         Berkeley* addressReuse (bool enabled)
         {
                 int[1] x = enabled;
-                return setOption (SocketOptionLevel.SOCKET, SocketOption.SO_REUSEADDR, x);
+                return setOption (SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, x);
         }
 
         /***********************************************************************
@@ -605,7 +573,7 @@ version (Windows)
 
                 ip_mreq mrq;
 
-                auto option = (onOff) ? SocketOption.IP_ADD_MEMBERSHIP : SocketOption.IP_DROP_MEMBERSHIP;
+                auto option = (onOff) ? SocketOption.ADD_MEMBERSHIP : SocketOption.DROP_MEMBERSHIP;
                 mrq.imr_interface = 0;
                 mrq.imr_multiaddr = address.sin.sin_addr;
 
@@ -694,7 +662,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int send (void[] buf, Flags flags=Flags.NONE)
+        int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return .send(sock, buf.ptr, buf.length, cast(int)flags);
         }
@@ -709,7 +677,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, Flags flags, Address to)
+        int sendTo (void[] buf, SocketFlags flags, Address to)
         {
                 return .sendto(sock, buf.ptr, buf.length, cast(int)flags, to.name, to.nameLen);
         }
@@ -722,7 +690,7 @@ version (Windows)
 
         int sendTo (void[] buf, Address to)
         {
-                return sendTo(buf, Flags.NONE, to);
+                return sendTo(buf, SocketFlags.NONE, to);
         }
 
         /***********************************************************************
@@ -731,7 +699,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, Flags flags=Flags.NONE)
+        int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return .sendto(sock, buf.ptr, buf.length, cast(int)flags, null, 0);
         }
@@ -747,7 +715,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receive (void[] buf, Flags flags=Flags.NONE)
+        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -765,7 +733,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Flags flags, Address from)
+        int receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -783,7 +751,7 @@ version (Windows)
 
         int receiveFrom (void[] buf, Address from)
         {
-                return receiveFrom(buf, Flags.NONE, from);
+                return receiveFrom(buf, SocketFlags.NONE, from);
         }
 
         /***********************************************************************
@@ -792,7 +760,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Flags flags = Flags.NONE)
+        int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -856,7 +824,7 @@ version (Windows)
                 version(Windows)
                 {
                         uint num = !yes;
-                        if(ioctlsocket(sock, FIONBIO, &num) is ERROR)
+                        if(ioctlsocket(sock, consts.FIONBIO, &num) is ERROR)
                            exception("Unable to set socket blocking: ");
                         synchronous = yes;
                 }

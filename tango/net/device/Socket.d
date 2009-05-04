@@ -188,7 +188,7 @@ class Socket : Conduit, ISelectable
 
         Socket shutdown ()
         {
-                berkeley.shutdown (berkeley.Shutdown.BOTH);
+                berkeley.shutdown (SocketShutdown.BOTH);
                 return this;
         }
 

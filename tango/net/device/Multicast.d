@@ -109,7 +109,7 @@ class Multicast : Datagram
         Multicast loopback (bool yes = true)
         {
                 uint[1] onoff = yes;
-                native.setOption (SocketOptionLevel.IP, SocketOption.IP_MULTICAST_LOOP, onoff);
+                native.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_LOOP, onoff);
                 return this;
         }
 
@@ -131,7 +131,7 @@ class Multicast : Datagram
         Multicast ttl (uint value=Subnet)
         {
                 uint[1] options = value;
-                native.setOption (SocketOptionLevel.IP, SocketOption.IP_MULTICAST_TTL, options);
+                native.setOption (SocketOptionLevel.IP, SocketOption.MULTICAST_TTL, options);
                 return this;
         }
 

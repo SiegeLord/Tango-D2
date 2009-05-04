@@ -68,9 +68,9 @@ enum
         AF_UNSPEC =     0,
         AF_UNIX =       1,
         AF_INET =       2,
+        AF_INET6 =      2, // TODO: Need Windows XP ?
         AF_IPX =        6,
         AF_APPLETALK =  16,
-        //AF_INET6 =      ? // Need Windows XP ?
 }
 
 /***********************************************************************
@@ -83,6 +83,7 @@ enum
 {
         IPPROTO_IP =    0,      /// internet protocol version 4
         IPPROTO_IPV4 =  0,      /// internet protocol version 4
+        IPPROTO_IPV6 =  0,      /// TODO: internet protocol version 6
         IPPROTO_ICMP =  1,      /// internet control message protocol
         IPPROTO_IGMP =  2,      /// internet group management protocol
         IPPROTO_GGP =   3,      /// gateway to gateway protocol
