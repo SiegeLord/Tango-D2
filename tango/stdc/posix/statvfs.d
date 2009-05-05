@@ -31,17 +31,17 @@ import tango.stdc.config;
 version(darwin) {
 
     struct statvfs_t {
-     unsigned long f_bsize;
-     unsigned long f_frsize;
+     c_ulong f_bsize;
+     c_ulong f_frsize;
      uint f_blocks;
      uint f_bfree;
      uint f_bavail;
      uint f_files;
      uint f_ffree;
      uint f_favail;
-     ulong f_fsid;
-     ulong f_flag;
-     ulong f_namemax;
+     c_ulong f_fsid;
+     c_ulong f_flag;
+     c_ulong f_namemax;
     }
 
     enum{
