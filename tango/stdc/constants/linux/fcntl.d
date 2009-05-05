@@ -1,12 +1,6 @@
 module tango.stdc.constants.linux.fcntl;
-version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
-{
-    enum :bool {__USE_LARGEFILE64   = false}
-}
-else
-{
-    enum :bool {__USE_LARGEFILE64   = ((void*).sizeof==4)}
-}
+import tango.stdc.posix.config;
+
 static if( __USE_LARGEFILE64 )
 {
     enum { F_GETLK = 12 }
