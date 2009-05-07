@@ -49,13 +49,6 @@ private
     import rt.aaA;
     debug(PRINTF) import rt.cImports: printf;
     import rt.cInterface: _d_allocclass;
-//    import tango.stdc.string; // : memcmp, memcpy, memmove;
-//    import tango.stdc.stdlib; // : calloc, realloc, free;
-//    import rt.util.string;
-//    import tango.stdc.stdio;  // : printf, snprintf;
-//
-//    extern (C) void onOutOfMemoryError();
-//    extern (C) Object _d_allocclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -909,7 +902,6 @@ class TypeInfo_Tuple : TypeInfo
 ////////////////////////////////////////////////////////////////////////////////
 // Exception
 ////////////////////////////////////////////////////////////////////////////////
-
 
 class Exception : Object
 {

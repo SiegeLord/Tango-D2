@@ -15,10 +15,9 @@ private
     import rt.util.console;
 
 //    import tango.stdc.stddef;
-    import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE;
+    import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE,printf;
     //import tango.stdc.stdlib;
     //import tango.stdc.string;
-    extern(C) int printf(char*,...);
 }
 
 version( Win32 )

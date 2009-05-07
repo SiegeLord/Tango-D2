@@ -12,10 +12,7 @@ module rt.dmain2;
 private
 {
     import rt.util.console;
-
-    import tango.stdc.stddef;
-    import tango.stdc.stdlib;
-    import tango.stdc.string;
+    import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE,printf;
     import rt.memory;
 }
 

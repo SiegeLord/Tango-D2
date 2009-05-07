@@ -11,12 +11,8 @@ goerror(){
     exit 1
 }
 
-# Version specific settings
-. dmdinclude
-dmdsettings
-
-make clean-all -fldc-posix.mak           || goerror
-make all install -fldc-posix.mak SYSTEM_VERSION="$POSIXFLAG"  || goerror
+make clean-all -fldc-posix.mak       || goerror
+make all install -fldc-posix.mak     || goerror
 make clean -fldc-posix.mak           || goerror
 chmod 644 ../tango/core/*.di         || goerror
 

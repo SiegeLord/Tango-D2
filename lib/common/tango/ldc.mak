@@ -128,9 +128,9 @@ clean-all: clean
 	find . -name "$(LIB_MASK)" | xargs $(RM)
 
 install :
-	$(MD) $(INC_DEST)
-	find . -name "*.di" -exec cp -f {} $(INC_DEST)/{} \;
-	$(MD) $(DOC_DEST)
-	find . -name "*.html" -exec cp -f {} $(DOC_DEST)/{} \;
-	$(MD) $(LIB_DEST)
-	find . -name "$(LIB_MASK)" -exec cp -f {} $(LIB_DEST)/{} \;
+	$(MD) "$(INC_DEST)"
+	find . -name "*.di" -exec cp -f {} "$(INC_DEST)/{}" \;
+	$(MD) "$(DOC_DEST)"
+	find . -name "*.html" -exec cp -f {} "$(DOC_DEST)/{}" \;
+	$(MD) "$(LIB_DEST)"
+	find . -name "$(LIB_MASK)" -exec cp -f {} "$(LIB_DEST)/{}" \;

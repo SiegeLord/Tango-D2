@@ -16,7 +16,7 @@ module rt.qsort2;
 
 //debug=qsort;
 
-private import tango.stdc.stdlib;
+private import rt.cImports:qsort;
 
 private TypeInfo tiglobal;
 
@@ -30,7 +30,7 @@ extern (C) void[] _adSort(void[] a, TypeInfo ti)
     synchronized
     {
         tiglobal = ti;
-        tango.stdc.stdlib.qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
+        qsort(a.ptr, a.length, cast(size_t)ti.tsize(), &cmp);
     }
     return a;
 }

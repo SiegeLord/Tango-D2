@@ -36,7 +36,7 @@ module rt.aaA;
 private
 {
     import tango.stdc.stdarg;
-    import tango.stdc.string;
+    import rt.cImports: memcmp, memcpy;
 
     enum BlkAttr : uint
     {
