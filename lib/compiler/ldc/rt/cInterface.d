@@ -17,7 +17,8 @@ struct Array2
     size_t length;
     void*  ptr;
 }
-extern (C) Object _d_newclass(ClassInfo ci);
+//extern (C) Object _d_newclass(ClassInfo ci);
+extern (C) Object _d_allocclass(ClassInfo ci);
 extern (C) void _d_delinterface(void** p);
 extern (C) ulong _d_newarrayT(TypeInfo ti, size_t length);
 extern (C) ulong _d_newarrayiT(TypeInfo ti, size_t length);

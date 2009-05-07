@@ -42,13 +42,20 @@ module object;
 
 private
 {
-    import tango.stdc.string; // : memcmp, memcpy, memmove;
-    import tango.stdc.stdlib; // : calloc, realloc, free;
+    import rt.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
+        sprintf;
     import rt.util.string;
-    import tango.stdc.stdio;  // : printf, snprintf;
-
-    extern (C) void onOutOfMemoryError();
-    extern (C) Object _d_allocclass(ClassInfo ci);
+    import rt.util.hash;
+    import rt.aaA;
+    debug(PRINTF) import rt.cImports: printf;
+    import rt.cInterface: _d_allocclass;
+//    import tango.stdc.string; // : memcmp, memcpy, memmove;
+//    import tango.stdc.stdlib; // : calloc, realloc, free;
+//    import rt.util.string;
+//    import tango.stdc.stdio;  // : printf, snprintf;
+//
+//    extern (C) void onOutOfMemoryError();
+//    extern (C) Object _d_allocclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -160,7 +167,7 @@ class ClassInfo : Object
     //  8:                      // has constructors
     void*       deallocator;
     OffsetTypeInfo[] offTi;
-    void function(Object) defaultConstructor;   // default Constructor
+    void* defaultConstructor;   // default Constructor
 
     /**
      * Search all modules for ClassInfo corresponding to classname.
@@ -195,7 +202,8 @@ class ClassInfo : Object
 
         if (flags & 8 && defaultConstructor)
         {
-            defaultConstructor(o);
+            auto ctor = cast(Object function(Object))defaultConstructor;
+            return ctor(o);
         }
         return o;
     }
@@ -902,96 +910,66 @@ class TypeInfo_Tuple : TypeInfo
 // Exception
 ////////////////////////////////////////////////////////////////////////////////
 
-static import tango.core.Version;
 
 class Exception : Object
 {
-    static if (tango.core.Version.Tango.Minor==998){
-        struct FrameInfo{
-            long line;
-            ptrdiff_t iframe;
-            ptrdiff_t offset;
-            size_t address;
-            char[] file;
-            char[] func;
-            char[256] charBuf;
-            void writeOut(void delegate(char[])sink){
-                char[25] buf;
+    struct FrameInfo{
+        long line;
+        size_t iframe;
+        ptrdiff_t offsetSymb;
+        size_t baseSymb;
+        ptrdiff_t offsetImg;
+        size_t baseImg;
+        size_t address;
+        char[] file;
+        char[] func;
+        char[] extra;
+        bool exactAddress;
+        bool internalFunction;
+        void writeOut(void delegate(char[])sink){
+            char[25] buf;
+            if (func.length) {
                 sink(func);
-                auto len = snprintf(buf.ptr,buf.length,"@%zx ",address);
-                sink(buf[0..len]);
-                len = snprintf(buf.ptr,buf.length," %+td ",address);
-                sink(buf[0..len]);
-                if (file.length != 0 || line) {
-                    sink(file);
-                    len = snprintf(buf.ptr,buf.length,":%ld",line);
-                    sink(buf[0..len]);
-                }
+            } else {
+                sink("???");
             }
-        }
-        interface TraceInfo
-        {
-            int opApply( int delegate( ref FrameInfo fInfo ) );
-        }
-    } else {
-        struct FrameInfo{
-            long line;
-            size_t iframe;
-            ptrdiff_t offsetSymb;
-            size_t baseSymb;
-            ptrdiff_t offsetImg;
-            size_t baseImg;
-            size_t address;
-            char[] file;
-            char[] func;
-            char[] extra;
-            bool exactAddress;
-            bool internalFunction;
-            void writeOut(void delegate(char[])sink){
-                char[25] buf;
-                if (func.length) {
-                    sink(func);
-                } else {
-                    sink("???");
-                }
-                auto len=sprintf(buf.ptr,"@%zx",baseSymb);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%+td ",offsetSymb);
-                sink(buf[0..len]);
-                if (extra.length){
-                    sink(extra);
-                    sink(" ");
-                }
-                sink(file);
-                len=sprintf(buf.ptr,":%ld ",line);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%zx",baseImg);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%+td ",offsetImg);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"[%zx]",address);
-                sink(buf[0..len]);
+            auto len=sprintf(buf.ptr,"@%zx",baseSymb);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"%+td ",offsetSymb);
+            sink(buf[0..len]);
+            if (extra.length){
+                sink(extra);
+                sink(" ");
             }
-            void clear(){
-                line=0;
-                iframe=-1;
-                offsetImg=0;
-                baseImg=0;
-                offsetSymb=0;
-                baseSymb=0;
-                address=0;
-                exactAddress=true;
-                internalFunction=false;
-                file=null;
-                func=null;
-                extra=null;
-            }
+            sink(file);
+            len=sprintf(buf.ptr,":%ld ",line);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"%zx",baseImg);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"%+td ",offsetImg);
+            sink(buf[0..len]);
+            len=sprintf(buf.ptr,"[%zx]",address);
+            sink(buf[0..len]);
         }
-        interface TraceInfo
-        {
-            int opApply( int delegate( ref FrameInfo fInfo ) );
-            void writeOut(void delegate(char[])sink);
+        void clear(){
+            line=0;
+            iframe=-1;
+            offsetImg=0;
+            baseImg=0;
+            offsetSymb=0;
+            baseSymb=0;
+            address=0;
+            exactAddress=true;
+            internalFunction=false;
+            file=null;
+            func=null;
+            extra=null;
         }
+    }
+    interface TraceInfo
+    {
+        int opApply( int delegate( ref FrameInfo fInfo ) );
+        void writeOut(void delegate(char[])sink);
     }
 
     char[]      msg;
