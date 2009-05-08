@@ -703,8 +703,8 @@ int ilogb(real x)
             asm {
                 fld x;
                 fxtract;
-                fstp ST(0), ST; // drop significand
-                fistp y, ST(0); // and return the exponent
+                fstp ST(0); // drop significand
+                fistp y; // and return the exponent
             }
             return y;
         } else static if (real.mant_dig==64) { // 80-bit reals
