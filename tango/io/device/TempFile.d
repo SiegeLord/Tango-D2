@@ -128,7 +128,8 @@ else version( Posix )
     import tango.stdc.posix.sys.types : off_t;
     import tango.stdc.posix.sys.stat : stat, stat_t;
     
-    import tango.sys.Environment : Environment;
+    import tango.stdc.posix.stdlib : getenv;
+    import tango.stdc.string : strlen;
 
     enum { O_LARGEFILE = 0x8000 }
 
@@ -504,10 +505,11 @@ class TempFile : Device, Device.Seek
         public static char[] tempPath()
         {
             // Check for TMPDIR; failing that, use /tmp
-            if( auto tmpdir = Environment.get("TMPDIR") )
-                return tmpdir.dup;
-            else
+            char* ptr = getenv ("TMPDIR");
+            if (ptr is null)
                 return "/tmp/";
+            else 
+                return ptr[0 .. strlen (ptr)].dup;
         }
 
         /*
