@@ -37,7 +37,6 @@ extern (C) void _moduleDtor();
 extern (C) void thread_joinAll();
 
 //debug=PRINTF;
-debug(PRINTF) extern (C) int printf(char*, ...);
 
 /***********************************
  * These functions must be defined for any D program linked
