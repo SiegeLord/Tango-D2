@@ -8,7 +8,7 @@
 * Authors:   Fawzi Mohamed
 */
 
-module tango.stdc.posix.statvfs;
+module tango.stdc.posix.sys.statvfs;
 import tango.stdc.config;
 /+
 // possible errno:
