@@ -58,7 +58,7 @@ version( linux )
     alias c_long    blksize_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
-    alias c_long    ssize_t;
+    alias ptrdiff_t ssize_t;
     //time_t (defined in tango.stdc.time)
 }
 else version( darwin )
@@ -74,7 +74,7 @@ else version( darwin )
     alias long      off_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
-    alias size_t    ssize_t;
+    alias ptrdiff_t  ssize_t;
     //time_t (defined in tango.stdc.time)
     alias uint      uid_t;
 }
@@ -91,7 +91,7 @@ else version( freebsd )
     alias long      off_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
-    alias size_t    ssize_t;
+    alias ptrdiff_t ssize_t;
     //time_t (defined in tango.stdc.time)
     alias uint      uid_t;
     alias uint      fflags_t;
@@ -120,7 +120,7 @@ else version( solaris )
     alias uint      gid_t;
     alias int       pid_t;
     //size_t (defined in tango.stdc.stddef)
-    alias c_long    ssize_t;
+    alias ptrdiff_t ssize_t;
     //time_t (defined in tango.stdc.time)
 
 
