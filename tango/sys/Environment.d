@@ -319,6 +319,10 @@ struct Environment
                         return arr;
                 }
 
+                /**************************************************************
+
+                **************************************************************/
+
                 static void directory (char[] path)
                 {
                         version (Win32SansUnicode)
@@ -345,6 +349,10 @@ struct Environment
                                 }
                 }
 
+                /**************************************************************
+
+                **************************************************************/
+
                 static char[] directory ()
                 {
                         char[] path;
@@ -356,7 +364,10 @@ struct Environment
                                 GetCurrentDirectoryA (len, dir.ptr);
                                 if (len)
                                    {
-                                   dir[len-1] = '/';                                   
+                                   if (dir[len-2] is '/')
+                                       dir.length = len-1;
+                                   else
+                                       dir[len-1] = '/'; 
                                    path = standard (dir);
                                    }
                                 else
@@ -375,7 +386,10 @@ struct Environment
                                 if (len && i)
                                    {
                                    path = standard (dir[0..i]);
-                                   path[$-1] = '/';
+                                   if (path[$-2] is '/')
+                                       path.length = path.length-1;
+                                   else
+                                       path[$-1] = '/';
                                    }
                                 else
                                    exception ("Failed to get current directory");
@@ -451,7 +465,11 @@ struct Environment
                         return arr;
                 }
 
-                static void directory (char[] path)
+                /**************************************************************
+
+                **************************************************************/
+
+               static void directory (char[] path)
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
@@ -460,6 +478,10 @@ struct Environment
                         if (tango.stdc.posix.unistd.chdir (tmp.ptr))
                             exception ("Failed to set current directory");
                 }
+
+                /**************************************************************
+
+                **************************************************************/
 
                 static char[] directory ()
                 {
@@ -470,7 +492,10 @@ struct Environment
                             exception ("Failed to get current directory");
 
                         auto path = s[0 .. strlen(s)+1].dup;
-                        path[$-1] = '/';
+                        if (path[$-2] is '/') // root path has the slash
+                            path.length = path.length-1;
+                        else
+                            path[$-1] = '/';
                         return path;
                 }
         }
