@@ -2,7 +2,8 @@
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD style: $(LICENSE)
+        license:        BSD:  
+                        AFL 3.0: 
 
         version:        Mar 2004: Initial release
         version:        Feb 2007: Now using mutating paths
@@ -19,18 +20,31 @@ private import tango.io.FilePath;
 
 private import tango.core.Exception;
 
-private import tango.io.Path : standard;
+private import tango.io.Path : standard, native;
 
 version (Win32)
         {
         private import Text = tango.text.Util;
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPSTR);
+
+        enum {        
+            FILE_DEVICE_DISK = 7,
+            IOCTL_DISK_BASE = FILE_DEVICE_DISK,
+            METHOD_BUFFERED = 0,
+            FILE_READ_ACCESS = 1
+        }
+        uint CTL_CODE(uint t, uint f, uint m, uint a) {
+            return (t << 16) | (a << 14) | (f << 2) | m;
+        }
+
+        const IOCTL_DISK_GET_LENGTH_INFO = CTL_CODE(IOCTL_DISK_BASE,0x17,METHOD_BUFFERED,FILE_READ_ACCESS);
         }
 
 version (Posix)
         {
         private import tango.stdc.string;
-        private import tango.stdc.posix.unistd;
+        private import tango.stdc.posix.unistd,
+                       tango.stdc.posix.sys.statvfs;
 
         private import tango.io.device.File;
         private import Integer = tango.text.convert.Integer;
@@ -57,7 +71,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        static FilePath toAbsolute (FilePath target, char[] prefix=null)
+        deprecated static FilePath toAbsolute (FilePath target, char[] prefix=null)
         {
                 if (! target.isAbsolute)
                    {
@@ -80,7 +94,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        static char[] toAbsolute (char[] path, char[] prefix=null)
+        deprecated static char[] toAbsolute (char[] path, char[] prefix=null)
         {
                 scope target = new FilePath (path);
                 return toAbsolute (target, prefix).toString;
@@ -97,7 +111,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        static bool equals (char[] path1, char[] path2, char[] prefix=null)
+        deprecated static bool equals (char[] path1, char[] path2, char[] prefix=null)
         {
                 scope p1 = new FilePath (path1);
                 scope p2 = new FilePath (path2);
@@ -117,7 +131,7 @@ struct FileSystem
 
         ***********************************************************************/
 
-        version (Win32)
+        version (D_Ddoc)
         {
                 /***************************************************************
 
@@ -125,7 +139,111 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static void setDirectory (char[] path)
+                deprecated static void setDirectory (char[] path);
+
+                /***************************************************************
+
+                        Set the current working directory
+
+                ***************************************************************/
+
+                deprecated static char[] getDirectory ();
+
+                /***************************************************************
+                        
+                        List the set of root devices (C:, D: etc)
+
+                ***************************************************************/
+
+                static char[][] roots ();
+
+                /***************************************************************
+ 
+                        Request how much free space in bytes is available on the 
+                        disk/mountpoint where folder resides.
+
+                        If a quota limit exists for this area, that will be taken 
+                        into account unless superuser is set to true.
+
+                        If a user has exceeded the quota, a negative number can 
+                        be returned.
+
+                        Note that the difference between total available space
+                        and free space will not equal the combined size of the 
+                        contents on the file system, since the numbers for the
+                        functions here are calculated from the used blocks,
+                        including those spent on metadata and file nodes.
+
+                        If actual used space is wanted one should use the
+                        statistics functionality of tango.io.vfs.
+
+                        See also: totalSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
+
+                static long freeSpace(char[] folder, bool superuser = false);
+
+                /***************************************************************
+
+                        Request how large in bytes the
+                        disk/mountpoint where folder resides is.
+
+                        If a quota limit exists for this area, then
+                        that quota can be what will be returned unless superuser
+                        is set to true. On Posix systems this distinction is not
+                        made though.
+
+                        NOTE Access to this information when _superuser is
+                        set to true may only be available if the program is
+                        run in superuser mode.
+
+                        See also: freeSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
+
+                static ulong totalSpace(char[] folder, bool superuser = false);
+        }
+
+        else version (Win32)
+        {
+                
+                /*
+                   Private helpers
+                */
+
+                version (Win32SansUnicode)
+                        {
+                            private static void windowsPath(char[] path, ref char[] result)
+                            {
+                                result[0..path.length] = path;
+                                result[path.length] = 0;
+                            }
+                        }
+                else
+                        {
+                            private static void windowsPath(char[] path, ref wchar[] result)
+                            {
+                                assert (path.length < result.length);
+                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
+                                                              cast(PCHAR)path.ptr, 
+                                                              path.length, 
+                                                              result.ptr, result.length);
+                                result[i] = 0;
+                            }
+                        }
+
+
+                /***************************************************************
+
+                        Set the current working directory
+
+                ***************************************************************/
+
+                deprecated static void setDirectory (char[] path)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -157,7 +275,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static char[] getDirectory ()
+                deprecated static char[] getDirectory ()
                 {
                         char[] path;
 
@@ -220,6 +338,82 @@ struct FileSystem
                            }
                         return roots;
                 }
+
+                /***************************************************************
+
+                 ***************************************************************/
+
+                static long freeSpace(char[] folder, bool superuser = false)
+                {
+                    scope fp = new FilePath(folder);
+                    ULARGE_INTEGER free, totalFree;
+                    version (Win32SansUnicode)
+                        {
+                        GetDiskFreeSpaceExA(fp.native.cString, &free, null, &totalFree);
+                        }
+                    else
+                        {
+                        wchar[MAX_PATH+2] tmp_ = void;
+                        wchar[] tmp = tmp_;
+                        windowsPath(fp.native.toString, tmp);
+                        GetDiskFreeSpaceExW(tmp.ptr, &free, null, &totalFree);
+                        }
+                    return cast(long) (superuser ? totalFree : free).QuadPart;
+                }
+
+                /***************************************************************
+
+                 ***************************************************************/
+
+                static ulong totalSpace(char[] folder, bool superuser = false)
+                {
+                    scope fp = new FilePath(folder);
+                    if (superuser) {
+                        struct GET_LENGTH_INFORMATION {
+                            LARGE_INTEGER Length;
+                        }
+                        GET_LENGTH_INFORMATION lenInfo;
+                        DWORD numBytes;
+                        OVERLAPPED overlap;
+                        auto abspath = toAbsolute(fp);        
+                        char[7] volid = void;
+                        volid[0..4] = `\\.\`;
+                        volid[4..6] = abspath.root;
+                        volid[6] = '\0';
+                        HANDLE h = CreateFileA(
+                                volid.ptr, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                null, OPEN_EXISTING, 0, null
+                        );
+                        
+                        if (h == INVALID_HANDLE_VALUE) {
+                            exception ("Failed to open volume for reading");
+                        }
+                                               
+                        if (0 == DeviceIoControl(
+                                h, IOCTL_DISK_GET_LENGTH_INFO, null , 0,
+                                cast(void*)&lenInfo, lenInfo.sizeof, &numBytes, &overlap
+                            )) {
+                            exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg);
+                        }
+
+                        return lenInfo.Length.QuadPart;
+                    }
+                    else {
+                        ULARGE_INTEGER total;
+                        version (Win32SansUnicode)
+                            {
+                            GetDiskFreeSpaceExA(fp.native.cString, null, &total, null);
+                            }
+                        else
+                            {
+                            wchar[MAX_PATH+2] tmp_ = void;
+                            wchar[] tmp = tmp_;
+                            windowsPath(fp.native.toString, tmp);
+                            GetDiskFreeSpaceExW(tmp.ptr, null, &total, null);
+                            }
+                        return total.QuadPart;
+                    }
+                }
         }
 
         /***********************************************************************
@@ -234,7 +428,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static void setDirectory (char[] path)
+                deprecated static void setDirectory (char[] path)
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
@@ -250,7 +444,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static char[] getDirectory ()
+                deprecated static char[] getDirectory ()
                 {
                         char[512] tmp = void;
 
@@ -310,6 +504,41 @@ struct FileSystem
                             
                             return list;
                         }
+                }
+
+                /***************************************************************
+
+                 ***************************************************************/
+
+                static long freeSpace(char[] folder, bool superuser = false)
+                {
+                    scope fp = new FilePath(folder);
+                    statvfs_t info;
+                    int res = statvfs(fp.native.cString.ptr, &info);
+                    if (res == -1)
+                        exception ("freeSpace->statvfs failed:"
+                                   ~ SysError.lastMsg);
+
+                    if (superuser)
+                        return cast(long)info.f_bfree *  cast(long)info.f_bsize;
+                    else
+                        return cast(long)info.f_bavail * cast(long)info.f_bsize;
+                }
+
+                /***************************************************************
+
+                 ***************************************************************/
+
+                static ulong totalSpace(char[] folder, bool superuser = false)
+                {
+                    scope fp = new FilePath(folder);
+                    statvfs_t info;
+                    int res = statvfs(fp.native.cString.ptr, &info);
+                    if (res == -1)
+                        exception ("totalSpace->statvfs failed:"
+                                   ~ SysError.lastMsg);
+
+                    return cast(long)info.f_blocks *  cast(long)info.f_frsize;
                 }
         }
 }

@@ -15,8 +15,7 @@ module tango.sys.Environment;
 private import  tango.sys.Common;
 
 private import  tango.io.Path,
-                tango.io.FilePath,
-                tango.io.FileSystem;
+                tango.io.FilePath;
 
 private import  tango.core.Exception;
 
@@ -76,6 +75,74 @@ else
 
 struct Environment
 {
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private static void exception (char[] msg)
+        {
+                throw new PlatformException (msg);
+        }
+
+        /***********************************************************************
+
+                Convert the provided path to an absolute path, using the
+                current working directory where prefix is not provided. 
+                If the given path is already an absolute path, return it 
+                intact.
+
+                Returns the provided path, adjusted as necessary
+
+        ***********************************************************************/
+
+        static FilePath toAbsolute (FilePath target, char[] prefix=null)
+        {
+                if (! target.isAbsolute)
+                   {
+                   if (prefix is null)
+                       prefix = directory;
+
+                   target.prepend (target.padded(prefix));
+                   }
+                return target;
+        }
+
+        /***********************************************************************
+
+                Convert the provided path to an absolute path, using the
+                current working directory where prefix is not provided. 
+                If the given path is already an absolute path, return it 
+                intact.
+
+                Returns the provided path, adjusted as necessary
+
+        ***********************************************************************/
+
+        static char[] toAbsolute (char[] path, char[] prefix=null)
+        {
+                scope target = new FilePath (path);
+                return toAbsolute (target, prefix).toString;
+        }
+
+        /***********************************************************************
+
+                Compare two paths for absolute equality. The given prefix
+                is prepended to the paths where they are not already in
+                absolute format (start with a '/'). Where prefix is not
+                provided, the current working directory will be used
+
+                Returns true if the paths are equivalent, false otherwise
+
+        ***********************************************************************/
+
+        static bool equals (char[] path1, char[] path2, char[] prefix=null)
+        {
+                scope p1 = new FilePath (path1);
+                scope p2 = new FilePath (path2);
+                return (toAbsolute(p1, prefix) == toAbsolute(p2, prefix)) is 0;
+        }
+
         /***********************************************************************
 
                 Returns the full path location of the provided executable
@@ -96,11 +163,11 @@ struct Environment
 
                 // is this a directory? Potentially make it absolute
                 if (bin.isChild)
-                    return FileSystem.toAbsolute (bin);
+                    return toAbsolute (bin);
 
                 // is it in cwd?
                 version (Windows)
-                         if (bin.path(FileSystem.getDirectory).exists)
+                         if (bin.path(directory).exists)
                              return bin;
 
                 // rifle through the path (after converting to standard format)
@@ -119,7 +186,48 @@ struct Environment
         }
 
 
-        version (Win32)
+        version (D_Ddoc)
+        {
+                /***************************************************************
+
+                        Set the current working directory
+
+                ***************************************************************/
+                static void directory (char[] path);
+
+                /***************************************************************
+
+                        Set the current working directory
+
+                ***************************************************************/
+                static char[] directory ();
+
+                /**************************************************************
+
+                        Returns the provided 'def' value if the environment 
+                        variable does not exist
+
+                **************************************************************/
+                static char[] get (char[] variable, char[] def = null);
+
+                /**************************************************************
+
+                        Clears the environment variable if value is null or 
+                        empty.
+
+                **************************************************************/
+                static void set (char[] variable, char[] value = null);
+
+                /**************************************************************
+                        
+                        Get all set environment variables as an associative
+                        array.
+
+                **************************************************************/
+                static char[][char[]] get ();
+
+        }
+        else version (Win32)
         {
                 /**************************************************************
 
@@ -138,13 +246,13 @@ struct Environment
                            if (SysError.lastCode is ERROR_ENVVAR_NOT_FOUND)
                                return def;
                            else
-                              throw new PlatformException (SysError.lastMsg);
+                              exception (SysError.lastMsg);
                            }
 
                         auto buffer = new wchar[size];
                         size = GetEnvironmentVariableW(var.ptr, buffer.ptr, size);
                         if (size is 0)
-                            throw new PlatformException (SysError.lastMsg);
+                            exception (SysError.lastMsg);
 
                         return toString (buffer[0 .. size]);
                 }
@@ -165,7 +273,7 @@ struct Environment
                             val = (toString16 (value) ~ "\0").ptr;
 
                         if (! SetEnvironmentVariableW(var, val))
-                              throw new PlatformException (SysError.lastMsg);
+                              exception (SysError.lastMsg);
                 }
 
                 /**************************************************************
@@ -210,6 +318,73 @@ struct Environment
 
                         return arr;
                 }
+
+                static void directory (char[] path)
+                {
+                        version (Win32SansUnicode)
+                                {
+                                char[MAX_PATH+1] tmp = void;
+                                tmp[0..path.length] = path;
+                                tmp[path.length] = 0;
+
+                                if (! SetCurrentDirectoryA (tmp.ptr))
+                                      exception ("Failed to set current directory");
+                                }
+                             else
+                                {
+                                // convert into output buffer
+                                wchar[MAX_PATH+1] tmp = void;
+                                assert (path.length < tmp.length);
+                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
+                                                              cast(PCHAR)path.ptr, path.length, 
+                                                              tmp.ptr, tmp.length);
+                                tmp[i] = 0;
+
+                                if (! SetCurrentDirectoryW (tmp.ptr))
+                                      exception ("Failed to set current directory");
+                                }
+                }
+
+                static char[] directory ()
+                {
+                        char[] path;
+
+                        version (Win32SansUnicode)
+                                {
+                                int len = GetCurrentDirectoryA (0, null);
+                                auto dir = new char [len];
+                                GetCurrentDirectoryA (len, dir.ptr);
+                                if (len)
+                                   {
+                                   dir[len-1] = '/';                                   
+                                   path = standard (dir);
+                                   }
+                                else
+                                   exception ("Failed to get current directory");
+                                }
+                             else
+                                {
+                                wchar[MAX_PATH+2] tmp = void;
+
+                                auto len = GetCurrentDirectoryW (0, null);
+                                assert (len < tmp.length);
+                                auto dir = new char [len * 3];
+                                GetCurrentDirectoryW (len, tmp.ptr); 
+                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, len, 
+                                                              cast(PCHAR)dir.ptr, dir.length, null, null);
+                                if (len && i)
+                                   {
+                                   path = standard (dir[0..i]);
+                                   path[$-1] = '/';
+                                   }
+                                else
+                                   exception ("Failed to get current directory");
+                                }
+
+                        return path;
+                }
+
+
         }
         else // POSIX
         {
@@ -246,7 +421,7 @@ struct Environment
                            result = setenv ((variable ~ '\0').ptr, (value ~ '\0').ptr, 1);
 
                         if (result != 0)
-                            throw new PlatformException (SysError.lastMsg);
+                            exception (SysError.lastMsg);
                 }
 
                 /**************************************************************
@@ -274,6 +449,29 @@ struct Environment
                             }
 
                         return arr;
+                }
+
+                static void directory (char[] path)
+                {
+                        char[512] tmp = void;
+                        tmp [path.length] = 0;
+                        tmp[0..path.length] = path;
+
+                        if (tango.stdc.posix.unistd.chdir (tmp.ptr))
+                            exception ("Failed to set current directory");
+                }
+
+                static char[] directory ()
+                {
+                        char[512] tmp = void;
+
+                        char *s = tango.stdc.posix.unistd.getcwd (tmp.ptr, tmp.length);
+                        if (s is null)
+                            exception ("Failed to get current directory");
+
+                        auto path = s[0 .. strlen(s)+1].dup;
+                        path[$-1] = '/';
+                        return path;
                 }
         }
 }
