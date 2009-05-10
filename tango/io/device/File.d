@@ -494,6 +494,9 @@ class File : Device, Device.Seek
 
                         if (handle is INVALID_HANDLE_VALUE)
                             error;
+                        else
+                           // reset 'errors' from opening a file 
+                           SetLastError (0);
 
                         // move to end of file?
                         if (style.open is Open.Append)
