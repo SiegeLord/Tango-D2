@@ -228,6 +228,9 @@ class Exception : Object
         /// if this function is an internal functions (for example the backtracing function itself)
         /// if true by default the frame is not printed
         bool internalFunction;
+        alias void function(FrameInfo,void delegate(char[])) FramePrintHandler;
+        /// the default printing function
+        static FramePrintHandler defaultFramePrintingFunction;
         /// writes out the current frame info
         void writeOut(void delegate(char[])sink);
         /// clears the frame information stored

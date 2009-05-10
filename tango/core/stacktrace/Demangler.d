@@ -184,7 +184,7 @@ public class Demangler
     uint templateExpansionDepth = 1;
 
     /** Skip default members of templates (sole members named after
-      * the template) (BUGGY) */
+      * the template) */
     bool foldDefaults = false;
 
     /** Print types of functions being part of the main symbol */
@@ -426,13 +426,13 @@ public class Demangler
         {
             debug(traceDemangler) trace ("typedqualifiedName");
 
-            auto pos=checkpoint();
+            auto posCar=checkpoint();
             if (! symbolName ())
                 return false;
-            char[] car=pos.sliceFrom();
+            char[] car=posCar.sliceFrom();
             
             // undocumented
-            pos=checkpoint();
+            auto pos=checkpoint();
             output.append ("{");
             if (typeFunction ()){
                 if (!prefs. expandFunctionTypes){
@@ -450,7 +450,8 @@ public class Demangler
             {
                 if (prefs.foldDefaults && car.length<pos.sliceFrom().length &&
                     car==pos.sliceFrom()[1..car.length+1]){
-                    pos.resetOutput(); // resets way too much
+                    memmove(&output.data[posCar.len],&output.data[pos.len+1],output.length-pos.len);
+                    output.length+=posCar.len-pos.len-1;
                 }
             } else {
                 pos.reset();
@@ -479,7 +480,8 @@ public class Demangler
             {
                 char[] cdr=pos1.sliceFrom()[1..$];
                 if (prefs.foldDefaults && cdr.length>=car.length && cdr[0..car.length]==car){
-                    pos1.resetOutput(); // resets way too much
+                    memmove(&output.data[pos.len],&output.data[pos1.len+1],output.length-pos1.len);
+                    output.length+=pos.len-pos1.len-1;
                 }
             } else {
                 pos1.reset();

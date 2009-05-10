@@ -918,30 +918,36 @@ class Exception : Object
         char[] extra;
         bool exactAddress;
         bool internalFunction;
+        alias void function(FrameInfo*,void delegate(char[])) FramePrintHandler;
+        static FramePrintHandler defaultFramePrintingFunction;
         void writeOut(void delegate(char[])sink){
-            char[25] buf;
-            if (func.length) {
-                sink(func);
+            if (defaultFramePrintingFunction){
+                defaultFramePrintingFunction(this,sink);
             } else {
-                sink("???");
+                char[25] buf;
+                if (func.length) {
+                    sink(func);
+                } else {
+                    sink("???");
+                }
+                auto len=sprintf(buf.ptr,"@%zx",baseSymb);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%+td ",offsetSymb);
+                sink(buf[0..len]);
+                if (extra.length){
+                    sink(extra);
+                    sink(" ");
+                }
+                sink(file);
+                len=sprintf(buf.ptr,":%ld ",line);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%zx",baseImg);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%+td ",offsetImg);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"[%zx]",address);
+                sink(buf[0..len]);
             }
-            auto len=sprintf(buf.ptr,"@%zx",baseSymb);
-            sink(buf[0..len]);
-            len=sprintf(buf.ptr,"%+td ",offsetSymb);
-            sink(buf[0..len]);
-            if (extra.length){
-                sink(extra);
-                sink(" ");
-            }
-            sink(file);
-            len=sprintf(buf.ptr,":%ld ",line);
-            sink(buf[0..len]);
-            len=sprintf(buf.ptr,"%zx",baseImg);
-            sink(buf[0..len]);
-            len=sprintf(buf.ptr,"%+td ",offsetImg);
-            sink(buf[0..len]);
-            len=sprintf(buf.ptr,"[%zx]",address);
-            sink(buf[0..len]);
         }
         void clear(){
             line=0;
