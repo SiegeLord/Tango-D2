@@ -1390,7 +1390,7 @@ void createFolder (char[] name)
         Create an entire path consisting of this folder along with
         all parent folders. The path must not contain '.' or '..'
         segments. Related methods include PathUtil.normalize() and
-        FileSystem.toAbsolute()
+        FilePath.absolute()
 
         Note that each segment is created as a folder, including the
         trailing segment.

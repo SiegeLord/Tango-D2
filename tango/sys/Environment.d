@@ -75,7 +75,6 @@ else
 
 struct Environment
 {
-
         /***********************************************************************
 
         ***********************************************************************/
@@ -83,64 +82,6 @@ struct Environment
         private static void exception (char[] msg)
         {
                 throw new PlatformException (msg);
-        }
-
-        /***********************************************************************
-
-                Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
-                intact.
-
-                Returns the provided path, adjusted as necessary
-
-        ***********************************************************************/
-
-        static FilePath toAbsolute (FilePath target, char[] prefix=null)
-        {
-                if (! target.isAbsolute)
-                   {
-                   if (prefix is null)
-                       prefix = directory;
-
-                   target.prepend (target.padded(prefix));
-                   }
-                return target;
-        }
-
-        /***********************************************************************
-
-                Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
-                intact.
-
-                Returns the provided path, adjusted as necessary
-
-        ***********************************************************************/
-
-        static char[] toAbsolute (char[] path, char[] prefix=null)
-        {
-                scope target = new FilePath (path);
-                return toAbsolute (target, prefix).toString;
-        }
-
-        /***********************************************************************
-
-                Compare two paths for absolute equality. The given prefix
-                is prepended to the paths where they are not already in
-                absolute format (start with a '/'). Where prefix is not
-                provided, the current working directory will be used
-
-                Returns true if the paths are equivalent, false otherwise
-
-        ***********************************************************************/
-
-        static bool equals (char[] path1, char[] path2, char[] prefix=null)
-        {
-                scope p1 = new FilePath (path1);
-                scope p2 = new FilePath (path2);
-                return (toAbsolute(p1, prefix) == toAbsolute(p2, prefix)) is 0;
         }
 
         /***********************************************************************
@@ -162,8 +103,8 @@ struct Environment
                              bin.suffix = "exe";
 
                 // is this a directory? Potentially make it absolute
-                if (bin.isChild)
-                    return toAbsolute (bin);
+                if (bin.isChild && !bin.isAbsolute)
+                    return bin.absolute (directory);
 
                 // is it in cwd?
                 version (Windows)

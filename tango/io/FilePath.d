@@ -584,6 +584,23 @@ class FilePath : PathView
 
         /***********************************************************************
 
+                Convert the provided path to an absolute path, using the
+                given prefix as necessary. If the given path is already an 
+                absolute path, return it intact.
+
+                Returns the provided path, adjusted as necessary
+
+        ***********************************************************************/
+
+        final FilePath absolute (char[] prefix)
+        {
+                if (! isAbsolute)
+                      prepend (padded(prefix));
+                return this;
+        }
+
+        /***********************************************************************
+
                 Return an adjusted path such that non-empty instances do not
                 have a trailing separator
 
@@ -688,7 +705,7 @@ class FilePath : PathView
                 Create an entire path consisting of this folder along with
                 all parent folders. The path must not contain '.' or '..'
                 segments. Related methods include PathUtil.normalize() and
-                FileSystem.toAbsolute()
+                absolute()
 
                 Note that each segment is created as a folder, including the
                 trailing segment.

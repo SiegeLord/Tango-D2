@@ -22,6 +22,10 @@ private import tango.core.Exception;
 
 private import tango.io.Path : standard, native;
 
+/*******************************************************************************
+
+*******************************************************************************/
+
 version (Win32)
         {
         private import Text = tango.text.Util;
@@ -69,6 +73,8 @@ struct FileSystem
 
                 Returns the provided path, adjusted as necessary
 
+                deprecated: see FilePath.absolute
+
         ***********************************************************************/
 
         deprecated static FilePath toAbsolute (FilePath target, char[] prefix=null)
@@ -92,6 +98,8 @@ struct FileSystem
 
                 Returns the provided path, adjusted as necessary
 
+                deprecated: see FilePath.absolute
+
         ***********************************************************************/
 
         deprecated static char[] toAbsolute (char[] path, char[] prefix=null)
@@ -108,6 +116,8 @@ struct FileSystem
                 provided, the current working directory will be used
 
                 Returns true if the paths are equivalent, false otherwise
+
+                deprecated: see FilePath.equals
 
         ***********************************************************************/
 
@@ -128,118 +138,45 @@ struct FileSystem
         }
 
         /***********************************************************************
+        
+                Windows specifics
 
         ***********************************************************************/
 
-        version (D_Ddoc)
+        version (Windows)
         {
                 /***************************************************************
 
-                        Set the current working directory
+                        private helpers
 
                 ***************************************************************/
-
-                deprecated static void setDirectory (char[] path);
-
-                /***************************************************************
-
-                        Set the current working directory
-
-                ***************************************************************/
-
-                deprecated static char[] getDirectory ();
-
-                /***************************************************************
-                        
-                        List the set of root devices (C:, D: etc)
-
-                ***************************************************************/
-
-                static char[][] roots ();
-
-                /***************************************************************
- 
-                        Request how much free space in bytes is available on the 
-                        disk/mountpoint where folder resides.
-
-                        If a quota limit exists for this area, that will be taken 
-                        into account unless superuser is set to true.
-
-                        If a user has exceeded the quota, a negative number can 
-                        be returned.
-
-                        Note that the difference between total available space
-                        and free space will not equal the combined size of the 
-                        contents on the file system, since the numbers for the
-                        functions here are calculated from the used blocks,
-                        including those spent on metadata and file nodes.
-
-                        If actual used space is wanted one should use the
-                        statistics functionality of tango.io.vfs.
-
-                        See also: totalSpace()
-
-                        Since: 0.99.9
-
-                ***************************************************************/
-
-                static long freeSpace(char[] folder, bool superuser = false);
-
-                /***************************************************************
-
-                        Request how large in bytes the
-                        disk/mountpoint where folder resides is.
-
-                        If a quota limit exists for this area, then
-                        that quota can be what will be returned unless superuser
-                        is set to true. On Posix systems this distinction is not
-                        made though.
-
-                        NOTE Access to this information when _superuser is
-                        set to true may only be available if the program is
-                        run in superuser mode.
-
-                        See also: freeSpace()
-
-                        Since: 0.99.9
-
-                ***************************************************************/
-
-                static ulong totalSpace(char[] folder, bool superuser = false);
-        }
-
-        else version (Win32)
-        {
-                
-                /*
-                   Private helpers
-                */
 
                 version (Win32SansUnicode)
+                {
+                        private static void windowsPath(char[] path, ref char[] result)
                         {
-                            private static void windowsPath(char[] path, ref char[] result)
-                            {
                                 result[0..path.length] = path;
                                 result[path.length] = 0;
-                            }
                         }
+                }
                 else
+                {
+                        private static void windowsPath(char[] path, ref wchar[] result)
                         {
-                            private static void windowsPath(char[] path, ref wchar[] result)
-                            {
                                 assert (path.length < result.length);
                                 auto i = MultiByteToWideChar (CP_UTF8, 0, 
                                                               cast(PCHAR)path.ptr, 
                                                               path.length, 
                                                               result.ptr, result.length);
                                 result[i] = 0;
-                            }
                         }
-
+                }
 
                 /***************************************************************
 
                         Set the current working directory
+
+                        deprecated: see Environment.cwd()
 
                 ***************************************************************/
 
@@ -272,6 +209,8 @@ struct FileSystem
                 /***************************************************************
 
                         Return the current working directory
+
+                        deprecated: see Environment.cwd()
 
                 ***************************************************************/
 
@@ -340,8 +279,30 @@ struct FileSystem
                 }
 
                 /***************************************************************
+ 
+                        Request how much free space in bytes is available on the 
+                        disk/mountpoint where folder resides.
 
-                 ***************************************************************/
+                        If a quota limit exists for this area, that will be taken 
+                        into account unless superuser is set to true.
+
+                        If a user has exceeded the quota, a negative number can 
+                        be returned.
+
+                        Note that the difference between total available space
+                        and free space will not equal the combined size of the 
+                        contents on the file system, since the numbers for the
+                        functions here are calculated from the used blocks,
+                        including those spent on metadata and file nodes.
+
+                        If actual used space is wanted one should use the
+                        statistics functionality of tango.io.vfs.
+
+                        See also: totalSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
 
                 static long freeSpace(char[] folder, bool superuser = false)
                 {
@@ -363,7 +324,23 @@ struct FileSystem
 
                 /***************************************************************
 
-                 ***************************************************************/
+                        Request how large in bytes the
+                        disk/mountpoint where folder resides is.
+
+                        If a quota limit exists for this area, then
+                        that quota can be what will be returned unless superuser
+                        is set to true. On Posix systems this distinction is not
+                        made though.
+
+                        NOTE Access to this information when _superuser is
+                        set to true may only be available if the program is
+                        run in superuser mode.
+
+                        See also: freeSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
 
                 static ulong totalSpace(char[] folder, bool superuser = false)
                 {
@@ -426,6 +403,8 @@ struct FileSystem
 
                         Set the current working directory
 
+                        deprecated: see Environment.cwd()
+
                 ***************************************************************/
 
                 deprecated static void setDirectory (char[] path)
@@ -441,6 +420,8 @@ struct FileSystem
                 /***************************************************************
 
                         Return the current working directory
+
+                        deprecated: see Environment.cwd()
 
                 ***************************************************************/
 
@@ -507,8 +488,30 @@ struct FileSystem
                 }
 
                 /***************************************************************
+ 
+                        Request how much free space in bytes is available on the 
+                        disk/mountpoint where folder resides.
 
-                 ***************************************************************/
+                        If a quota limit exists for this area, that will be taken 
+                        into account unless superuser is set to true.
+
+                        If a user has exceeded the quota, a negative number can 
+                        be returned.
+
+                        Note that the difference between total available space
+                        and free space will not equal the combined size of the 
+                        contents on the file system, since the numbers for the
+                        functions here are calculated from the used blocks,
+                        including those spent on metadata and file nodes.
+
+                        If actual used space is wanted one should use the
+                        statistics functionality of tango.io.vfs.
+
+                        See also: totalSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
 
                 static long freeSpace(char[] folder, bool superuser = false)
                 {
@@ -527,7 +530,23 @@ struct FileSystem
 
                 /***************************************************************
 
-                 ***************************************************************/
+                        Request how large in bytes the
+                        disk/mountpoint where folder resides is.
+
+                        If a quota limit exists for this area, then
+                        that quota can be what will be returned unless superuser
+                        is set to true. On Posix systems this distinction is not
+                        made though.
+
+                        NOTE Access to this information when _superuser is
+                        set to true may only be available if the program is
+                        run in superuser mode.
+
+                        See also: freeSpace()
+
+                        Since: 0.99.9
+
+                ***************************************************************/
 
                 static ulong totalSpace(char[] folder, bool superuser = false)
                 {
@@ -583,12 +602,12 @@ debug (FileSystem)
         foo (path);
 
         path.set ("file.bar");
-        FileSystem.toAbsolute(path);
+        path.absolute("c:/prefix");
         foo(path);
 
         path.set (r"arf/test");
         foo(path);
-        FileSystem.toAbsolute(path);
+        path.absolute("c:/prefix");
         foo(path);
 
         path.name = "foo";
