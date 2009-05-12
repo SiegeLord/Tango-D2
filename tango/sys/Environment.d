@@ -25,6 +25,8 @@ private import  Text = tango.text.Util;
 
 /*******************************************************************************
 
+        Platform decls
+
 *******************************************************************************/
 
 version (Windows)
@@ -75,7 +77,11 @@ else
 
 struct Environment
 {
+        public alias cwd directory;
+                    
         /***********************************************************************
+
+                Throw an exception
 
         ***********************************************************************/
 
@@ -104,11 +110,11 @@ struct Environment
 
                 // is this a directory? Potentially make it absolute
                 if (bin.isChild && !bin.isAbsolute)
-                    return bin.absolute (directory);
+                    return bin.absolute (cwd);
 
                 // is it in cwd?
                 version (Windows)
-                         if (bin.path(directory).exists)
+                         if (bin.path(cwd).exists)
                              return bin;
 
                 // rifle through the path (after converting to standard format)
@@ -126,49 +132,13 @@ struct Environment
                 return null;
         }
 
+        /***********************************************************************
 
-        version (D_Ddoc)
-        {
-                /***************************************************************
+                Windows implementation
 
-                        Set the current working directory
+        ***********************************************************************/
 
-                ***************************************************************/
-                static void directory (char[] path);
-
-                /***************************************************************
-
-                        Set the current working directory
-
-                ***************************************************************/
-                static char[] directory ();
-
-                /**************************************************************
-
-                        Returns the provided 'def' value if the environment 
-                        variable does not exist
-
-                **************************************************************/
-                static char[] get (char[] variable, char[] def = null);
-
-                /**************************************************************
-
-                        Clears the environment variable if value is null or 
-                        empty.
-
-                **************************************************************/
-                static void set (char[] variable, char[] value = null);
-
-                /**************************************************************
-                        
-                        Get all set environment variables as an associative
-                        array.
-
-                **************************************************************/
-                static char[][char[]] get ();
-
-        }
-        else version (Win32)
+        version (Windows)
         {
                 /**************************************************************
 
@@ -219,6 +189,9 @@ struct Environment
 
                 /**************************************************************
 
+                        Get all set environment variables as an associative
+                        array.
+
                 **************************************************************/
 
                 static char[][char[]] get ()
@@ -262,9 +235,11 @@ struct Environment
 
                 /**************************************************************
 
+                        Set the current working directory
+
                 **************************************************************/
 
-                static void directory (char[] path)
+                static void cwd (char[] path)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -292,9 +267,11 @@ struct Environment
 
                 /**************************************************************
 
+                        Get the current working directory
+
                 **************************************************************/
 
-                static char[] directory ()
+                static char[] cwd ()
                 {
                         char[] path;
 
@@ -339,9 +316,15 @@ struct Environment
                         return path;
                 }
 
-
         }
-        else // POSIX
+
+        /***********************************************************************
+
+                Posix implementation
+
+        ***********************************************************************/
+
+        version (Posix)
         {
                 /**************************************************************
 
@@ -381,6 +364,9 @@ struct Environment
 
                 /**************************************************************
 
+                        Get all set environment variables as an associative
+                        array.
+
                 **************************************************************/
 
                 static char[][char[]] get ()
@@ -408,9 +394,11 @@ struct Environment
 
                 /**************************************************************
 
+                        Set the current working directory
+
                 **************************************************************/
 
-               static void directory (char[] path)
+                static void cwd (char[] path)
                 {
                         char[512] tmp = void;
                         tmp [path.length] = 0;
@@ -422,9 +410,11 @@ struct Environment
 
                 /**************************************************************
 
+                        Get the current working directory
+
                 **************************************************************/
 
-                static char[] directory ()
+                static char[] cwd ()
                 {
                         char[512] tmp = void;
 
@@ -441,6 +431,12 @@ struct Environment
                 }
         }
 }
+
+                
+/*******************************************************************************
+
+
+*******************************************************************************/
 
 debug (Environment)
 {
