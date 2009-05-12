@@ -584,11 +584,11 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Convert the provided path to an absolute path, using the
-                given prefix as necessary. If the given path is already an 
-                absolute path, return it intact.
+                Convert this FilePath to absolute format, using the given
+                prefix as necessary. If this FilePath is already absolute,
+                return it intact.
 
-                Returns the provided path, adjusted as necessary
+                Returns this FilePath, adjusted as necessary
 
         ***********************************************************************/
 
