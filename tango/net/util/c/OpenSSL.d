@@ -11,13 +11,14 @@
 module tango.net.util.c.OpenSSL;
 
 private import tango.sys.SharedLib;
+private import tango.sys.Environment;
 
 private import tango.stdc.stdio;
 private import tango.stdc.stringz;
 private import tango.stdc.config: c_long,c_ulong;
 
 private import tango.io.Stdout;
-private import tango.io.FileSystem;
+private import tango.io.FilePath;
 
 private import tango.core.Thread;
 private import tango.core.sync.Mutex;
@@ -721,9 +722,9 @@ SharedLib loadLib(char[][] loadPath)
             rtn = SharedLib.load(path);
         catch (SharedLibException ex)
         {
-            char[] cwd = FileSystem.getDirectory();
+            scope fp = new FilePath(path);
             try
-                rtn = SharedLib.load(cwd ~ path);
+                rtn = SharedLib.load(fp.absolute(Environment.cwd()).toString);
             catch (SharedLibException ex)
             {}
         }

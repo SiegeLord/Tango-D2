@@ -30,6 +30,7 @@ version (Win32)
         {
         private import Text = tango.text.Util;
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPSTR);
+        private import tango.stdc.stringz : fromString16z, fromStringz;
 
         enum {        
             FILE_DEVICE_DISK = 7,
@@ -278,6 +279,53 @@ struct FileSystem
                         return roots;
                 }
 
+                private enum {
+                    volumePathBufferLen = MAX_PATH + 6
+                }
+                
+                private static TCHAR[] getVolumePath(char[] folder, TCHAR[] volPath_,
+                                                     bool trailingBackslash)
+                in {
+                    assert (volPath_.length > 5);
+                } body {
+                    version (Win32SansUnicode) {
+                        alias GetVolumePathNameA GetVolumePathName;
+                        alias fromStringz fromStringzT;
+                    }
+                    else {
+                        alias GetVolumePathNameW GetVolumePathName;
+                        alias fromString16z fromStringzT;
+                    }
+
+                    // convert to (w)stringz
+                    TCHAR[MAX_PATH+2] tmp_ = void;
+                    TCHAR[] tmp = tmp_;
+                    windowsPath(folder, tmp);
+
+                    // we'd like to open a volume
+                    volPath_[0..4] = `\\.\`;
+
+                    if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4)) 
+                        exception ("GetVolumePathName failed");
+                    
+                    TCHAR[] volPath;
+
+                    // the path could have the volume/network prefix already
+                    if (volPath_[4..6] != `\\`) {
+                        volPath = fromStringzT(volPath_.ptr);
+                    } else {
+                        volPath = fromStringzT(volPath_[4..$].ptr);
+                    }
+
+                    // GetVolumePathName returns a path with a trailing backslash
+                    // some winapi functions want that backslash, some don't
+                    if ('\\' == volPath[$-1] && !trailingBackslash) {
+                        volPath[$-1] = '\0';
+                    }
+
+                    return volPath;
+                }
+ 
                 /***************************************************************
  
                         Request how much free space in bytes is available on the 
@@ -307,18 +355,19 @@ struct FileSystem
                 static long freeSpace(char[] folder, bool superuser = false)
                 {
                     scope fp = new FilePath(folder);
+
+                    const bool wantTrailingBackslash = true;                    
+                    TCHAR[volumePathBufferLen] volPathBuf;
+                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+
+                    version (Win32SansUnicode) {
+                        alias GetDiskFreeSpaceExA GetDiskFreeSpaceEx;
+                    } else {
+                        alias GetDiskFreeSpaceExW GetDiskFreeSpaceEx;
+                    }
+
                     ULARGE_INTEGER free, totalFree;
-                    version (Win32SansUnicode)
-                        {
-                        GetDiskFreeSpaceExA(fp.native.cString, &free, null, &totalFree);
-                        }
-                    else
-                        {
-                        wchar[MAX_PATH+2] tmp_ = void;
-                        wchar[] tmp = tmp_;
-                        windowsPath(fp.native.toString, tmp);
-                        GetDiskFreeSpaceExW(tmp.ptr, &free, null, &totalFree);
-                        }
+                    GetDiskFreeSpaceEx(volPath.ptr, &free, null, &totalFree);
                     return cast(long) (superuser ? totalFree : free).QuadPart;
                 }
 
@@ -344,7 +393,20 @@ struct FileSystem
 
                 static ulong totalSpace(char[] folder, bool superuser = false)
                 {
+                    version (Win32SansUnicode) {
+                        alias GetDiskFreeSpaceExA GetDiskFreeSpaceEx;
+                        alias CreateFileA CreateFile;
+                    } else {
+                        alias GetDiskFreeSpaceExW GetDiskFreeSpaceEx;
+                        alias CreateFileW CreateFile;
+                    }
+                    
                     scope fp = new FilePath(folder);
+
+                    bool wantTrailingBackslash = (false == superuser);                    
+                    TCHAR[volumePathBufferLen] volPathBuf;
+                    auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
+
                     if (superuser) {
                         struct GET_LENGTH_INFORMATION {
                             LARGE_INTEGER Length;
@@ -352,13 +414,9 @@ struct FileSystem
                         GET_LENGTH_INFORMATION lenInfo;
                         DWORD numBytes;
                         OVERLAPPED overlap;
-                        auto abspath = toAbsolute(fp);        
-                        char[7] volid = void;
-                        volid[0..4] = `\\.\`;
-                        volid[4..6] = abspath.root;
-                        volid[6] = '\0';
-                        HANDLE h = CreateFileA(
-                                volid.ptr, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                        
+                        HANDLE h = CreateFile(
+                                volPath.ptr, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                 null, OPEN_EXISTING, 0, null
                         );
                         
@@ -377,17 +435,7 @@ struct FileSystem
                     }
                     else {
                         ULARGE_INTEGER total;
-                        version (Win32SansUnicode)
-                            {
-                            GetDiskFreeSpaceExA(fp.native.cString, null, &total, null);
-                            }
-                        else
-                            {
-                            wchar[MAX_PATH+2] tmp_ = void;
-                            wchar[] tmp = tmp_;
-                            windowsPath(fp.native.toString, tmp);
-                            GetDiskFreeSpaceExW(tmp.ptr, null, &total, null);
-                            }
+                        GetDiskFreeSpaceEx(volPath.ptr, null, &total, null);
                         return total.QuadPart;
                     }
                 }
