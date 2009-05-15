@@ -17,13 +17,13 @@ private import tango.stdc.stdio;
 private import tango.stdc.stringz;
 private import tango.stdc.config: c_long,c_ulong;
 
-private import tango.io.Stdout;
 private import tango.io.FilePath;
 
 private import tango.core.Thread;
 private import tango.core.sync.Mutex;
 private import tango.core.sync.ReadWriteMutex;
 
+private import tango.text.convert.Format;
 private import Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
@@ -655,9 +655,9 @@ void throwOpenSSLError()
         while (code != 0)
         {
             if (data && (flags & ERR_TXT_STRING))
-                exceptionString ~= Stdout.layout.convert("ssl error code: {} {}:{} - {}\r\n", code, fromStringz(file), line, fromStringz(data));
+                exceptionString ~= Format.convert("ssl error code: {} {}:{} - {}\r\n", code, fromStringz(file), line, fromStringz(data));
             else
-                exceptionString ~= Stdout.layout.convert("ssl error code: {} {}:{}\r\n", code, fromStringz(file), line); 
+                exceptionString ~= Format.convert("ssl error code: {} {}:{}\r\n", code, fromStringz(file), line); 
             code = ERR_get_error_line_data(&file, &line, &data, &flags);
         }
         throw new Exception(exceptionString);
