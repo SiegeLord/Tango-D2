@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #if _WIN32
-#elif linux || __APPLE__
+#elif linux || __APPLE__ || __FreeBSD__ || __sun&&__SVR4
 #define USE_PTHREADS    1
 #else
 #endif
@@ -121,16 +121,15 @@ void _d_monitor_unlock(Object *h)
     //printf("-_d_monitor_release(%p)\n", h);
 }
 
-#endif
 
 /* =============================== linux ============================ */
 
-#if USE_PTHREADS
+#elif USE_PTHREADS
 
 // PTHREAD_MUTEX_RECURSIVE is what posix says should be supported,
 // but some versions of glibc have only PTHREAD_MUTEX_RECURSIVE_NP 
 // (the np stands for non-portable), when they have the same meaning.
-#ifndef PTHREAD_MUTEX_RECURSIVE
+#if defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
 
@@ -212,4 +211,6 @@ void _d_monitor_unlock(Object *h)
     //printf("-_d_monitor_release(%p)\n", h);
 }
 
+#else
+#error Unsupported platform
 #endif

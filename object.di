@@ -56,10 +56,13 @@ class ClassInfo : Object
     /// 2: has no possible pointers into GC memory
     /// 4: has offTi[] member
     /// 8: has constructors
+    //	32:			// has typeinfo
     uint        flags;
     void*       deallocator;
     OffsetTypeInfo[] offTi; /// offsets of its members (not supported by all compilers)
     void*       defaultConstructor;
+    /// TypeInfo information about this class
+    TypeInfo typeinfo;
     /// finds the classinfo of the class with the given name
     static ClassInfo find(char[] classname);
     /// creates an instance of this class (works only if there is a constructor without arguments)

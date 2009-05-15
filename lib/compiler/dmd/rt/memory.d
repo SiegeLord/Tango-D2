@@ -41,7 +41,7 @@ private
     {
         extern (C)
         {
-    	extern void* __osx_stack_end;	// set by D startup code
+            extern void* __osx_stack_end;    // set by D startup code
         }
     }
 }
@@ -136,8 +136,25 @@ private
     }
 
     alias void delegate( void*, void* ) scanFn;
-}
 
+    version (FreeBSD)
+    {
+        extern (C)
+        {
+        extern char etext;
+        extern int _end;
+        }
+    }
+    
+    version (Solaris)
+    {
+        extern (C)
+        {
+            extern char etext;
+            extern int _end;
+        }
+    }
+}
 
 /**
  *
@@ -154,6 +171,14 @@ extern (C) void rt_scanStaticData( scanFn scan )
     }
     else version( darwin ){
         // already ranges already added through osxgc.c functions
+    }
+    else version (FreeBSD)
+    {
+        scan( &etext, &_end );
+    }
+    else version (Solaris)
+    {
+        scan( &etext, &_end );
     }
     else
     {

@@ -75,7 +75,7 @@ void _STD_critical_term()
 
 /* ================================= linux ============================ */
 
-#if linux || __APPLE__
+#if linux || __APPLE__ || __FreeBSD__ || __sun&&__SVR4
 
 #include        <stdio.h>
 #include        <stdlib.h>
@@ -84,7 +84,7 @@ void _STD_critical_term()
 // PTHREAD_MUTEX_RECURSIVE is what posix says should be supported,
 // but some versions of glibc have only PTHREAD_MUTEX_RECURSIVE_NP 
 // (the np stands for non-portable), when they have the same meaning.
-#ifndef PTHREAD_MUTEX_RECURSIVE
+#if defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
 
