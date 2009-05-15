@@ -230,6 +230,7 @@ debug (UnitTest)
         assert (normalize("bar/") == "bar/");
         assert (normalize(".../") == ".../");
         assert (normalize("///../foo") == "/foo");
+        assert (normalize("./foo") == "foo");
         auto buf = new char[100];
         auto ret = normalize("foo/bar/./baz", buf);
         assert (ret.ptr == buf.ptr);
@@ -258,7 +259,6 @@ version (Windows) {
 }
     }
 }
-
 
 /******************************************************************************
 
