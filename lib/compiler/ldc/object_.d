@@ -158,7 +158,8 @@ class ClassInfo : Object
     //  2:                      // has no possible pointers into GC memory
     //  4:                      // has offTi[] member
     //  8:                      // has constructors
-    //    void*       deallocator;
+    //  32:                     // has typeinfo
+    void*       deallocator;
     OffsetTypeInfo[] offTi;
     void* defaultConstructor;   // default Constructor
     TypeInfo typeinfo;
