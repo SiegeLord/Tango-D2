@@ -81,7 +81,9 @@ class FileMap : Array
 
         override void detach ()
         {
-                file.close;
+                if (file)
+                    file.close;
+                file = null;
         }
 }
 
@@ -183,7 +185,7 @@ class MappedFile
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
                         if (base is null)
                             host.error;
- 
+  
                         return (cast(ubyte*) base) [0 .. size];
                 }
 
@@ -271,8 +273,11 @@ class MappedFile
                             protection |= PROT_WRITE;
                                 
                         base = mmap (null, size, protection, flags, host.fileHandle, 0);
-                        if (base is null)
-                            host.error;
+                        if (base is MAP_FAILED)
+                           {
+                           base = null;
+                           host.error;
+                           }
                                 
                         return (cast(ubyte*) base) [0 .. size];
                 }    
