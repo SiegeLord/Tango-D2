@@ -133,9 +133,9 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped);
-                        if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
-                             return Eof;
+                        if (! ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped))
+                              if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
+                                   return Eof;
 
                         // synchronous read of zero means Eof
                         if (bytes is 0 && dst.length > 0)
@@ -162,13 +162,12 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        WriteFile (handle, src.ptr, src.length, &bytes, &overlapped);
-                        if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
-                             return Eof;
+                        if (! WriteFile (handle, src.ptr, src.length, &bytes, &overlapped))
+                              if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
+                                   return Eof;
 
                         // update write position ...
                         writeOffset += bytes;
-
                         return bytes;
                 }
 
