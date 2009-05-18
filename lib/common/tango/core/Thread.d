@@ -1206,7 +1206,6 @@ class Thread
      */
     static this()
     {
-        printf("pippoThreadInit\n");
         version( Win32 )
         {
             PRIORITY_MIN = -15;
