@@ -1206,6 +1206,7 @@ class Thread
      */
     static this()
     {
+        printf("pippoThreadInit\n");
         version( Win32 )
         {
             PRIORITY_MIN = -15;
@@ -2378,7 +2379,7 @@ private
     {
         version( X86_64 )
         {
-
+            // Shouldn't an x64 compiler be setting D_InlineAsm_X86_64 instead?
         }
         else
         {
@@ -2388,22 +2389,15 @@ private
                 version = AsmX86_Posix;
         }
     }
+    else version( D_InlineAsm_X86_64 )
+    {
+        version( Posix )
+            version = AsmX86_64_Posix;
+    }
     else version( PPC )
     {
         version( Posix )
             version = AsmPPC_Posix;
-    }
-    version( LLVM_InlineAsm_X86 ) 
-    {
-        version( Win32 )
-            version = LLVM_AsmX86_Win32;
-        else version( Posix )
-            version = LLVM_AsmX86_Posix;
-    }
-    else version( LLVM_InlineAsm_X86_64 )
-    {
-        version( Posix )
-            version = LLVM_AsmX86_64_Posix;
     }
 
     version( Posix )
@@ -2414,11 +2408,8 @@ private
 
         version( AsmX86_Win32 ) {} else
         version( AsmX86_Posix ) {} else
+        version( AsmX86_64_Posix ) {} else
         version( AsmPPC_Posix ) {} else
-        version( LLVM_AsmX86_Win32 ) {} else
-        version( LLVM_AsmX86_Posix ) {} else
-//TODO: Enable when x86-64 Posix supports fibers
-//        version( LLVM_AsmX86_64_Posix ) {} else
         {
             // NOTE: The ucontext implementation requires architecture specific
             //       data definitions to operate so testing for it must be done
@@ -2427,6 +2418,7 @@ private
             //       an obsolescent feature according to the POSIX spec, so a
             //       custom solution is still preferred.
             import tango.stdc.posix.ucontext;
+            static assert( is( ucontext_t ), "Unknown fiber implementation");
         }
     }
     const size_t PAGESIZE;
@@ -2572,28 +2564,48 @@ private
                 ret;
             }
         }
-        else version( LLVM_AsmX86_Posix )
+        else version( AsmX86_64_Posix )
         {
             asm
             {
-                // clobber registers to save
-                inc EBX;
-                inc ESI;
-                inc EDI;
+                naked;
+
+                // save current stack state
+                pushq RBP;
+                mov RBP, RSP;
+                pushq RBX;
+                pushq R12;
+                pushq R13;
+                pushq R14;
+                pushq R15;
+                sub RSP, 4;
+                stmxcsr [RSP];
+                sub RSP, 4;
+                fstcw [RSP];
+                fwait;
 
                 // store oldp again with more accurate address
-                mov EAX, oldp;
-                mov [EAX], ESP;
+                mov [RDI], RSP;
                 // load newp to begin context switch
-                mov ESP, newp;
+                mov RSP, RSI;
+
+                // load saved state from new stack
+                fldcw [RSP];
+                add RSP, 4;
+                ldmxcsr [RSP];
+                add RSP, 4;
+                popq R15;
+                popq R14;
+                popq R13;
+                popq R12;
+
+                popq RBX;
+                popq RBP;
+
+                // 'return' to complete switch
+                ret;
             }
         }
-/+
-        version( LLVM_AsmX86_64_Posix )
-        {
-            //TODO: Fiber implementation here
-        }
-+/
         else static if( is( ucontext_t ) )
         {
             Fiber   cfib = Fiber.getThis();
@@ -2779,7 +2791,7 @@ class Fiber
         m_dg    = dg;
         m_call  = Call.DG;
         m_state = State.HOLD;
-        allocStack( sz );
+        allocStack(sz);
         initStack();
     }
 
@@ -3408,22 +3420,17 @@ private:
             push( 0x00000000 );                                     // ESI
             push( 0x00000000 );                                     // EDI
         }
-        else version( LLVM_AsmX86_Posix )
+        else version( AsmX86_64_Posix )
         {
-            push( cast(size_t) &fiber_entryPoint );                 // EIP
-            push( 0x00000000 );                                     // newp
-            push( 0x00000000 );                                     // oldp
-            push( 0x00000000 );                                     // EBP
-            push( 0x00000000 );                                     // EBX
-            push( 0x00000000 );                                     // ESI
-            push( 0x00000000 );                                     // EDI
+            push( cast(size_t) &fiber_entryPoint );                 // RIP
+            push( (cast(size_t)pstack)+8 );                         // RBP
+            push( 0x00000000_00000000 );                            // RBX
+            push( 0x00000000_00000000 );                            // R12
+            push( 0x00000000_00000000 );                            // R13
+            push( 0x00000000_00000000 );                            // R14
+            push( 0x00000000_00000000 );                            // R15
+            push( 0x00001f80_01df0000 );                            // MXCSR (32 bits), x87 control (16 bits), (unused)
         }
-//TODO: Implement x86-64 fibers
-/+
-        else version( LLVM_AsmX86_Posix )
-        {
-        }
-+/
         else version( AsmPPC_Posix )
         {
             version( StackGrowsDown )
