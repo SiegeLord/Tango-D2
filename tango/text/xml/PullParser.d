@@ -355,10 +355,10 @@ version (partialwhite)
         {
                 auto e = text.end;
                 auto p = text.point;
+                auto q = p;
                 
                 while (p < e)
                       {
-                      auto q = p;
                       while (*p != '-')
                              if (++p >= e)
                                  return endOfInput;
