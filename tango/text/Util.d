@@ -100,6 +100,8 @@
 
 module tango.text.Util;
 
+extern (C) void printf(char*, ...);
+
 /******************************************************************************
 
         Trim the provided array by stripping whitespace from both
@@ -712,76 +714,34 @@ uint indexOf(T, U=uint) (T* str, T match, U length)
 
 uint indexOf(T) (T* str, T match, uint length)
 {
-        version (D_InlineAsm_X86)
-        {       
-                static if (T.sizeof == 1)
-                {
-                        asm {
-                            mov   EDI, str;
-                            mov   ECX, length;
-                            movzx EAX, match;
-                            mov   ESI, ECX;
-                            and   ESI, ESI;            
-                            jz    end;        
+        static if (T.sizeof == 1)
+        {
+                int m = match;
+                m <<= 8;
+                m += match;
+                m <<= 8;
+                m += match;
+                m <<= 8;
+                m += match;
 
-                            cld;
-                            repnz;
-                            scasb;
-                            jnz   end;
-                            sub   ESI, ECX;
-                            dec   ESI;
-                        end:;
-                            mov   EAX, ESI;
-                            }
-                }
-                else static if (T.sizeof == 2)
-                {
-                        asm {
-                            mov   EDI, str;
-                            mov   ECX, length;
-                            movzx EAX, match;
-                            mov   ESI, ECX;
-                            and   ESI, ESI;            
-                            jz    end;        
+                auto p = str;
+                auto e = p + length - 4;
 
-                            cld;
-                            repnz;
-                            scasw;
-                            jnz   end;
-                            sub   ESI, ECX;
-                            dec   ESI;
-                        end:;
-                            mov   EAX, ESI;
-                            }
-                }
-                else static if (T.sizeof == 4)
-                {
-                        asm {
-                            mov   EDI, str;
-                            mov   ECX, length;
-                            mov   EAX, match;
-                            mov   ESI, ECX;
-                            and   ESI, ESI;            
-                            jz    end;        
+                while (p < e)
+                      {
+                      // clear matching bytes
+                      auto v = (*cast(int*) p) ^ m;
+                      // test for match, courtesy of Alan Mycroft
+                      if ((v - 0x01010101) & ~v & 0x80808080)
+                           break;
+                      p += 4;
+                      }
 
-                            cld;
-                            repnz;
-                            scasd;
-                            jnz   end;
-                            sub   ESI, ECX;
-                            dec   ESI;
-                        end:;
-                            mov   EAX, ESI;
-                            }
-                }
-                else
-                {
-                        auto len = length;
-                        for (auto p=str-1; len--;)
-                             if (*++p is match)
-                                 return p - str;
-                        return length;
-                }
+                e += 4;
+                while (p < e)
+                       if (*p++ is match)
+                           return p - str - 1;
+                return length;
         }
         else
         {
@@ -799,10 +759,9 @@ uint indexOf(T) (T* str, T match, uint length)
         length is reached. Note that we return 'length' upon failure
         (array content matches) and a 0-based index upon success.
 
-        Use this as a faster opEquals (the assembler version). Also
-        provides the basis for a much faster opCmp, since the index
-        of the first mismatched character can be used to determine
-        the (greater or less than zero) return value
+        Use this as a faster opEquals. Also provides the basis for a
+        faster opCmp, since the index of the first mismatched character
+        can be used to determine the return value
 
 ******************************************************************************/
 
@@ -811,75 +770,24 @@ uint mismatch(T, U=uint) (T* s1, T* s2, U length)
 
 uint mismatch(T) (T* s1, T* s2, uint length)
 {
-        version (D_InlineAsm_X86)
+        static if (T.sizeof == 1)
         {
-                static if (T.sizeof == 1)
-                {
-                        asm {
-                            mov   EDI, s1;
-                            mov   ESI, s2;
-                            mov   ECX, length;
-                            mov   EAX, ECX;
-                            and   EAX, EAX;
-                            jz    end;
+                auto start = s1;
+                auto e = start + length - 4;
 
-                            cld;
-                            repz;
-                            cmpsb;
-                            jz    end;
-                            sub   EAX, ECX;
-                            dec   EAX;
-                        end:;
-                            }
-                }
-                else static if (T.sizeof == 2)
-                {
-                        asm {
-                            mov   EDI, s1;
-                            mov   ESI, s2;
-                            mov   ECX, length;
-                            mov   EAX, ECX;
-                            and   EAX, EAX;
-                            jz    end;
+                while (s1 < e)
+                      {
+                      if (*cast(int*) s1 != *cast(int*) s2)
+                          break;
+                      s1 += 4;
+                      s2 += 4;
+                      }
 
-                            cld;
-                            repz;
-                            cmpsw;
-                            jz    end;
-                            sub   EAX, ECX;
-                            dec   EAX;
-                            sar   ESI, 1;
-                        end:;
-                            }
-                }
-                else static if (T.sizeof == 4)
-                {
-                        asm {
-                            mov   EDI, s1;
-                            mov   ESI, s2;
-                            mov   ECX, length;
-                            mov   EAX, ECX;
-                            and   EAX, EAX;
-                            jz    end;
-
-                            cld;
-                            repz;
-                            cmpsd;
-                            jz    end;
-                            sub   EAX, ECX;
-                            dec   EAX;
-                            sar   ESI, 2;
-                        end:;
-                            }
-                }
-                else
-                {
-                        auto len = length;
-                        for (auto p=s1-1; len--;)
-                             if (*++p != *s2++)
-                                 return p - s1;
-                        return length;
-                }
+                e += 4;
+                while (s1 < e)
+                       if (*s1++ != *s2++)
+                           return s1 - start - 1;
+                return length;
         }
         else
         {
@@ -1276,16 +1184,9 @@ private struct LineFruct(T)
                       }
 
                 line = src [mark .. $];
-version(995)
-{
-                if (mark < src.length)
-                    ret = dg (line);
-}
-else
-{
                 if (mark <= src.length)
                     ret = dg (line);
-}
+
                 return ret;
         }
 }
@@ -1331,16 +1232,9 @@ private struct DelimFruct(T)
                                    }
 
                 token = src [mark .. $];
-version(995)
-{
-                if (mark < src.length)
-                    ret = dg (token);
-}
-else
-{
                 if (mark <= src.length)
                     ret = dg (token);
-}
+
                 return ret;
         }
 }
@@ -1392,16 +1286,9 @@ private struct PatternFruct(T)
                              }
 
                 token = src [mark .. $];
-version(995)
-{
-                if (mark < src.length)
-                    ret = dg (token);
-}
-else
-{
                 if (mark <= src.length)
                     ret = dg (token);
-}
+
                 return ret;
         }
 }
@@ -1442,16 +1329,9 @@ private struct QuoteFruct(T)
                         }
                 
                 token = src [mark .. $];
-version(995)
-{
-                if (mark < src.length)
-                    ret = dg (token);
-}
-else
-{
                 if (mark <= src.length)
                     ret = dg (token);
-}
+
                 return ret;
         }
 }
@@ -1473,6 +1353,7 @@ debug (UnitTest)
         assert (indexOf ("abc".ptr, 'b', 3) is 1);
         assert (indexOf ("abc".ptr, 'c', 3) is 2);
         assert (indexOf ("abc".ptr, 'd', 3) is 3);
+        assert (indexOf ("abcabcabc".ptr, 'd', 9) is 9);
 
         assert (indexOf ("abc"d.ptr, cast(dchar)'c', 3) is 2);
         assert (indexOf ("abc"d.ptr, cast(dchar)'d', 3) is 3);
@@ -1545,9 +1426,6 @@ debug (UnitTest)
         x = delimit ("abcd", ":");
         assert (x.length is 1 && x[0] == "abcd");
         x = delimit ("abcd:", ":");
-version(995)
-        assert (x.length is 1 && x[0] == "abcd");
-else
         assert (x.length is 2 && x[0] == "abcd" && x[1] == "");
         x = delimit ("a;b$c#d:e@f", ";:$#@");
         assert (x.length is 6 && x[0]=="a" && x[1]=="b" && x[2]=="c" &&
@@ -1568,26 +1446,14 @@ else
         assert (locatePatternPrior ("abcdefgcde", "cde", 4) is 2);
         assert (locatePatternPrior ("abcdefg", "abcdefgx") is 7);
 
-version(995)
-{
-        x = splitLines ("a\nb\n");
-        assert (x.length is 2 && x[0] == "a" && x[1] == "b");
-        x = splitLines ("a\r\n");
-        assert (x.length is 1 && x[0] == "a");
-}
-else
-{
         x = splitLines ("a\nb\n");
         assert (x.length is 3 && x[0] == "a" && x[1] == "b" && x[2] == "");
         x = splitLines ("a\r\n");
         assert (x.length is 2 && x[0] == "a" && x[1] == "");
-}
+
         x = splitLines ("a");
         assert (x.length is 1 && x[0] == "a");
         x = splitLines ("");
-version(995)
-        assert (x.length is 0);
-else
         assert (x.length is 1);
 
         char[][] q;
@@ -1604,9 +1470,6 @@ else
         x = split ("one, two, three", ",,");
         assert (x.length is 1 && x[0] == "one, two, three");
         x = split ("one,,", ",");
-version(995)
-        assert (x.length is 2 && x[0] == "one" && x[1] == "");
-else
         assert (x.length is 3 && x[0] == "one" && x[1] == "" && x[2] == "");
 
         char[] h, t;
@@ -1669,5 +1532,29 @@ else
 
 debug (Util)
 {
-        void main() {}
+        import tango.io.Stdout;
+        import tango.time.StopWatch;
+
+        auto x = import("Util.d");
+        
+        void main()
+        {
+                StopWatch elapsed;
+
+                elapsed.start;
+                for (auto i=5000; i--;)
+                     locatePattern (x, "@{}");
+                Stdout.formatln ("{}", elapsed.stop);
+
+                elapsed.start;
+                for (auto i=5000; i--;)
+                     mismatch (x.ptr, x.ptr, x.length);
+                Stdout.formatln ("{}", elapsed.stop);
+
+                elapsed.start;
+                for (auto i=5000; i--;)
+                     indexOf (x.ptr, '@', cast(uint) x.length);
+                Stdout.formatln ("@{}", elapsed.stop);
+                
+        }
 }
