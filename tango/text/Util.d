@@ -712,6 +712,8 @@ uint indexOf(T, U=uint) (T* str, T match, U length)
 
 uint indexOf(T) (T* str, T match, uint length)
 {
+        assert (str);
+
         static if (T.sizeof == 1)
                    enum : size_t {m1 = cast(size_t) 0x0101010101010101, 
                                   m2 = cast(size_t) 0x8080808080808080}
@@ -779,6 +781,8 @@ uint mismatch(T, U=uint) (T* s1, T* s2, U length)
 
 uint mismatch(T) (T* s1, T* s2, uint length)
 {
+        assert (s1 && s2);
+
         static if (T.sizeof < size_t.sizeof)
         {
                 auto start = s1;
@@ -1549,6 +1553,9 @@ debug (Util)
         void main()
         {
                 StopWatch elapsed;
+        
+                mismatch ("".ptr, x.ptr, 0);
+                indexOf ("".ptr, '@', 0);
 
                 elapsed.start;
                 for (auto i=5000; i--;)
