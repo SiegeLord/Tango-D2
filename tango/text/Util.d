@@ -100,8 +100,6 @@
 
 module tango.text.Util;
 
-extern (C) void printf(char*, ...);
-
 /******************************************************************************
 
         Trim the provided array by stripping whitespace from both
@@ -715,42 +713,43 @@ uint indexOf(T, U=uint) (T* str, T match, U length)
 uint indexOf(T) (T* str, T match, uint length)
 {
         static if (T.sizeof == 1)
-        {
-    		if (length>4) {
-                    int m = match;
-                    m <<= 8;
-                    m += match;
-                    m <<= 8;
-                    m += match;
-                    m <<= 8;
-                    m += match;
-    
-                    auto p = str;
-                    auto e = p + length - 4;
-    
-                    while (p < e)
-                          {
-                          // clear matching bytes
-                          auto v = (*cast(int*) p) ^ m;
-                          // test for match, courtesy of Alan Mycroft
-                          if ((v - 0x01010101) & ~v & 0x80808080)
-                               break;
-                          p += 4;
-                          }
-    
-                    e += 4;
-    
-                    while (p < e)
-                           if (*p++ is match)
-                               return p - str - 1;
+                   enum : size_t {m1 = cast(size_t) 0x0101010101010101, 
+                                  m2 = cast(size_t) 0x8080808080808080}
+        static if (T.sizeof == 2)
+                   enum : size_t {m1 = cast(size_t) 0x0001000100010001, 
+                                  m2 = cast(size_t) 0x8000800080008000}
+        static if (T.sizeof == 4)
+                   enum : size_t {m1 = cast(size_t) 0x0000000100000001, 
+                                  m2 = cast(size_t) 0x8000000080000000}
 
-		} else {
-                    auto p = str;
-                    auto e = p + length;
-                    while (p < e)
-                           if (*p++ is match)
-                               return p - str - 1;
-    		}
+        static if (T.sizeof < size_t.sizeof)
+        {
+                size_t m = match;
+                m += m << (8 * T.sizeof);
+
+                static if (T.sizeof < size_t.sizeof / 2)
+                           m += (m << (8 * T.sizeof * 2));
+
+                static if (T.sizeof < size_t.sizeof / 4)
+                           m += (m << (8 * T.sizeof * 4));
+
+                auto p = str;
+                auto e = p + length - size_t.sizeof;
+
+                while (p < e)
+                      {
+                      // clear matching T segments
+                      auto v = (*cast(size_t*) p) ^ m;
+                      // test for zero, courtesy of Alan Mycroft
+                      if ((v - m1) & ~v & m2)
+                           break;
+                      p += size_t.sizeof;
+                      }
+
+                e += size_t.sizeof;
+                while (p < e)
+                       if (*p++ is match)
+                           return p - str - 1;
                 return length;
         }
         else
@@ -780,31 +779,23 @@ uint mismatch(T, U=uint) (T* s1, T* s2, U length)
 
 uint mismatch(T) (T* s1, T* s2, uint length)
 {
-        static if (T.sizeof == 1)
+        static if (T.sizeof < size_t.sizeof)
         {
-		if ( length>4 ){
-                    auto start = s1;
-                    auto e = start + length - 4;
-    
-                    while (s1 < e)
-                          {
-                          if (*cast(int*) s1 != *cast(int*) s2)
-                              break;
-                          s1 += 4;
-                          s2 += 4;
-                          }
-    
-                    e += 4;
-                    while (s1 < e)
-                           if (*s1++ != *s2++)
-                               return s1 - start - 1;
-	        } else {
-                    auto start = s1;
-                    auto e = start + length;
-                     while (s1 < e)
-                           if (*s1++ != *s2++)
-                               return s1 - start - 1;
-		}
+                auto start = s1;
+                auto e = start + length - size_t.sizeof;
+
+                while (s1 < e)
+                      {
+                      if (*cast(size_t*) s1 != *cast(size_t*) s2)
+                          break;
+                      s1 += size_t.sizeof;
+                      s2 += size_t.sizeof;
+                      }
+
+                e += size_t.sizeof;
+                while (s1 < e)
+                       if (*s1++ != *s2++)
+                           return s1 - start - 1;
                 return length;
         }
         else
@@ -1367,8 +1358,6 @@ debug (UnitTest)
 
         assert (isSpace (' ') && !isSpace ('d'));
 
-        assert (indexOf ("".ptr, 'a', 0) is 0);
-        assert (indexOf (cast(char*)null, 'a', 0) is 0);
         assert (indexOf ("abc".ptr, 'a', 3) is 0);
         assert (indexOf ("abc".ptr, 'b', 3) is 1);
         assert (indexOf ("abc".ptr, 'c', 3) is 2);
@@ -1381,8 +1370,6 @@ debug (UnitTest)
         assert (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
         assert (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
 
-        assert (mismatch ("".ptr, "".ptr, 0) is 0);
-        assert (mismatch (cast(char*)null, cast(char*)null, 0) is 0);
         assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
         assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
         assert (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
@@ -1565,11 +1552,6 @@ debug (Util)
 
                 elapsed.start;
                 for (auto i=5000; i--;)
-                     locatePattern (x, "@{}");
-                Stdout.formatln ("{}", elapsed.stop);
-
-                elapsed.start;
-                for (auto i=5000; i--;)
                      mismatch (x.ptr, x.ptr, x.length);
                 Stdout.formatln ("{}", elapsed.stop);
 
@@ -1577,6 +1559,10 @@ debug (Util)
                 for (auto i=5000; i--;)
                      indexOf (x.ptr, '@', cast(uint) x.length);
                 Stdout.formatln ("@{}", elapsed.stop);
-                
+
+                elapsed.start;
+                for (auto i=5000; i--;)
+                     locatePattern (x, "@{}");
+                Stdout.formatln ("{}", elapsed.stop);
         }
 }
