@@ -335,31 +335,31 @@ Object *_d_translate_se_to_d_exception(PCONTEXT context,EXCEPTION_RECORD *except
             pti = _d_create_exception_object(context,&_Class_9Exception, "Invalid Floating Point Operation");
             break;
 
-                case STATUS_FLOAT_DENORMAL_OPERAND:
-            pti = _d_create_exception_object(&_Class_9Exception, "Floating Point Denormal Operand");
+         case STATUS_FLOAT_DENORMAL_OPERAND:
+	    pti = _d_create_exception_object(context,&_Class_9Exception, "Floating Point Denormal Operand");
             break;
 
-                case STATUS_FLOAT_INEXACT_RESULT:
+         case STATUS_FLOAT_INEXACT_RESULT:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Floating Point Inexact Result");
             break;
 
-                case STATUS_FLOAT_OVERFLOW:
+         case STATUS_FLOAT_OVERFLOW:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Floating Point Overflow");
             break;
 
-                case STATUS_FLOAT_UNDERFLOW:
+         case STATUS_FLOAT_UNDERFLOW:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Floating Point Underflow");
             break;
 
-                case STATUS_FLOAT_STACK_CHECK:
+         case STATUS_FLOAT_STACK_CHECK:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Floating Point Stack Check");
             break;
 
-                case STATUS_PRIVILEGED_INSTRUCTION:
+         case STATUS_PRIVILEGED_INSTRUCTION:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Privileged Instruction");
             break;
 
-                case STATUS_ILLEGAL_INSTRUCTION:
+         case STATUS_ILLEGAL_INSTRUCTION:
             pti = _d_create_exception_object(context,&_Class_9Exception, "Illegal Instruction");
             break;
 /*
