@@ -66,6 +66,8 @@ else
 }
 +/
 alias size_t hash_t;
+/// type returned by equality comparisons
+alias int equals_t;
 
 /**
  * All D class objects inherit from Object.
@@ -109,7 +111,7 @@ class Object
     /**
      * Returns !=0 if this object does have the same contents as obj.
      */
-    int opEquals(Object o)
+    equals_t opEquals(Object o)
     {
         return cast(int)(this is o);
     }
@@ -148,7 +150,7 @@ class ClassInfo : Object
     Interface[] interfaces;     /// interfaces this class implements
     ClassInfo   base;           /// base class
     void*       destructor;
-    void function(Object) classInvariant;
+    void*       classInvariant;
     uint        flags;
     //  1:                      // IUnknown
     //  2:                      // has no possible pointers into GC memory
@@ -157,8 +159,8 @@ class ClassInfo : Object
     // 32:                      // has typeinfo
     void*       deallocator;
     OffsetTypeInfo[] offTi;
-    void function(Object) defaultConstructor;   // default Constructor
-    TypeInfo typeinfo;
+    void * defaultConstructor;   // default Constructor
+    //TypeInfo typeinfo;
 
     /**
      * Search all modules for ClassInfo corresponding to classname.
@@ -189,7 +191,7 @@ class ClassInfo : Object
         Object o = _d_newclass(this);
         if (flags & 8 && defaultConstructor)
         {
-            defaultConstructor(o);
+            (cast(void function(Object))defaultConstructor)(o);
         }
         return o;
     }

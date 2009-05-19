@@ -18,7 +18,7 @@ void _d_invariant(Object o)
     {
 	if (c.classInvariant)
 	{
-	    (*c.classInvariant)(o);
+	    (*(cast(void function(Object))c.classInvariant))(o);
 	}
 	c = c.base;
     } while (c);
