@@ -716,31 +716,41 @@ uint indexOf(T) (T* str, T match, uint length)
 {
         static if (T.sizeof == 1)
         {
-                int m = match;
-                m <<= 8;
-                m += match;
-                m <<= 8;
-                m += match;
-                m <<= 8;
-                m += match;
+    		if (length>4) {
+                    int m = match;
+                    m <<= 8;
+                    m += match;
+                    m <<= 8;
+                    m += match;
+                    m <<= 8;
+                    m += match;
+    
+                    auto p = str;
+                    auto e = p + length - 4;
+    
+                    while (p < e)
+                          {
+                          // clear matching bytes
+                          auto v = (*cast(int*) p) ^ m;
+                          // test for match, courtesy of Alan Mycroft
+                          if ((v - 0x01010101) & ~v & 0x80808080)
+                               break;
+                          p += 4;
+                          }
+    
+                    e += 4;
+    
+                    while (p < e)
+                           if (*p++ is match)
+                               return p - str - 1;
 
-                auto p = str;
-                auto e = p + length - 4;
-
-                while (p < e)
-                      {
-                      // clear matching bytes
-                      auto v = (*cast(int*) p) ^ m;
-                      // test for match, courtesy of Alan Mycroft
-                      if ((v - 0x01010101) & ~v & 0x80808080)
-                           break;
-                      p += 4;
-                      }
-
-                e += 4;
-                while (p < e)
-                       if (*p++ is match)
-                           return p - str - 1;
+		} else {
+                    auto p = str;
+                    auto e = p + length;
+                    while (p < e)
+                           if (*p++ is match)
+                               return p - str - 1;
+    		}
                 return length;
         }
         else
@@ -772,21 +782,29 @@ uint mismatch(T) (T* s1, T* s2, uint length)
 {
         static if (T.sizeof == 1)
         {
-                auto start = s1;
-                auto e = start + length - 4;
-
-                while (s1 < e)
-                      {
-                      if (*cast(int*) s1 != *cast(int*) s2)
-                          break;
-                      s1 += 4;
-                      s2 += 4;
-                      }
-
-                e += 4;
-                while (s1 < e)
-                       if (*s1++ != *s2++)
-                           return s1 - start - 1;
+		if ( length>4 ){
+                    auto start = s1;
+                    auto e = start + length - 4;
+    
+                    while (s1 < e)
+                          {
+                          if (*cast(int*) s1 != *cast(int*) s2)
+                              break;
+                          s1 += 4;
+                          s2 += 4;
+                          }
+    
+                    e += 4;
+                    while (s1 < e)
+                           if (*s1++ != *s2++)
+                               return s1 - start - 1;
+	        } else {
+                    auto start = s1;
+                    auto e = start + length;
+                     while (s1 < e)
+                           if (*s1++ != *s2++)
+                               return s1 - start - 1;
+		}
                 return length;
         }
         else
@@ -1349,6 +1367,8 @@ debug (UnitTest)
 
         assert (isSpace (' ') && !isSpace ('d'));
 
+        assert (indexOf ("".ptr, 'a', 0) is 0);
+        assert (indexOf (cast(char*)null, 'a', 0) is 0);
         assert (indexOf ("abc".ptr, 'a', 3) is 0);
         assert (indexOf ("abc".ptr, 'b', 3) is 1);
         assert (indexOf ("abc".ptr, 'c', 3) is 2);
@@ -1361,6 +1381,8 @@ debug (UnitTest)
         assert (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
         assert (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
 
+        assert (mismatch ("".ptr, "".ptr, 0) is 0);
+        assert (mismatch (cast(char*)null, cast(char*)null, 0) is 0);
         assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
         assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
         assert (mismatch ("abc".ptr, "acc".ptr, 3) is 1);
