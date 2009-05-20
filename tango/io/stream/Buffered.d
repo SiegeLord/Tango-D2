@@ -17,6 +17,8 @@ public import tango.io.model.IConduit;
 
 private import tango.io.device.Conduit;
 
+extern (C) void printf (char*, ...);
+
 /******************************************************************************
 
 ******************************************************************************/
@@ -693,7 +695,7 @@ class BufferedInput : InputFilter, InputBuffer
                               
         ***********************************************************************/
 
-        final override void[] load (size_t max = -1)
+        final override void[] load (size_t max = size_t.max)
         {
                 load (super.input, super.conduit.bufferSize, max);
                 return slice;
@@ -718,7 +720,7 @@ class BufferedInput : InputFilter, InputBuffer
                 compress;
 
                 // explicitly resize?
-                if (max != -1)
+                if (max != max.max)
                     if ((len = writable) < max)
                          increment = max - len;
                         
