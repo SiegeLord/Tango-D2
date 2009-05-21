@@ -206,7 +206,7 @@ bool fromDecimalString(char [] s)
         (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
             ++firstNonZero;
     }
-    if (firstNonZero == s.length - 1) {
+    if (firstNonZero == s.length - 1 && s.length > 1) {
         data = ZERO;
         return true;
     }
