@@ -76,6 +76,7 @@
         count (source, match)                       // count instances
         contains (source, match)                    // has char?
         containsPattern (source, match)             // has pattern?
+        index (source, match, start)                // find match index
         locate (source, match, start)               // find char
         locatePrior (source, match, start)          // find prior char
         locatePattern (source, match, start);       // find pattern
@@ -313,6 +314,42 @@ bool contains(T) (T[] source, T match)
 bool containsPattern(T) (T[] source, T[] match)
 {
         return locatePattern (source, match) != source.length;
+}
+
+/******************************************************************************
+
+        Return the index of the next instance of 'match' starting at
+        position 'start', or source.length where there is no match.
+
+        Parameter 'start' defaults to 0
+
+******************************************************************************/
+
+uint index(T, U=uint) (T[] source, T[] match, U start=0)
+{return index!(T) (source, match, start);}
+
+uint index(T) (T[] source, T[] match, uint start=0)
+{
+        return (match.length is 1) ? locate (source, match[0], start) 
+                                   : locatePattern (source, match, start);
+}
+
+/******************************************************************************
+
+        Return the index of the prior instance of 'match' starting
+        just before 'start', or source.length where there is no match.
+
+        Parameter 'start' defaults to source.length
+
+******************************************************************************/
+
+uint rindex(T, U=uint) (T[] source, T match[], U start=uint.max)
+{return rindex!(T)(source, match, start);}
+
+uint rindex(T) (T[] source, T[] match, uint start=uint.max)
+{
+        return (match.length is 1) ? locatePrior (source, match[0], start) 
+                                   : locatePatternPrior (source, match, start);
 }
 
 /******************************************************************************
@@ -1273,30 +1310,15 @@ private struct PatternFruct(T)
                         mark;
                 T[]     token;
 
-                // optimize for single-element pattern
-                if (pattern.length is 1)
-                    while ((pos = locate (src, pattern[0], mark)) < src.length)
-                          {
-                          token = src [mark .. pos];
-                          if ((ret = dg(token)) != 0)
-                               return ret;
-                          if (sub.ptr)
-                              if ((ret = dg(sub)) != 0)
-                                   return ret;
-                          mark = pos + 1;
-                          }
-                else
-                   if (pattern.length > 1)
-                       while ((pos = locatePattern (src, pattern, mark)) < src.length)
-                             {
-                             token = src [mark .. pos];
-                             if ((ret = dg(token)) != 0)
-                                  return ret;
-                             if (sub.ptr)
-                                 if ((ret = dg(sub)) != 0)
-                                      return ret;
-                             mark = pos + pattern.length;
-                             }
+                while ((pos = index (src, pattern, mark)) < src.length)
+                      {
+                      token = src [mark .. pos];
+                      if ((ret = dg(token)) != 0)
+                           return ret;
+                      if (sub.ptr && (ret = dg(sub)) != 0)
+                          return ret;
+                      mark = pos + pattern.length;
+                      }
 
                 token = src [mark .. $];
                 if (mark <= src.length)
@@ -1545,31 +1567,11 @@ debug (UnitTest)
 
 debug (Util)
 {
-        import tango.io.Stdout;
-        import tango.time.StopWatch;
-
         auto x = import("Util.d");
         
         void main()
         {
-                StopWatch elapsed;
-        
                 mismatch ("".ptr, x.ptr, 0);
                 indexOf ("".ptr, '@', 0);
-
-                elapsed.start;
-                for (auto i=5000; i--;)
-                     mismatch (x.ptr, x.ptr, x.length);
-                Stdout.formatln ("{}", elapsed.stop);
-
-                elapsed.start;
-                for (auto i=5000; i--;)
-                     indexOf (x.ptr, '@', cast(uint) x.length);
-                Stdout.formatln ("@{}", elapsed.stop);
-
-                elapsed.start;
-                for (auto i=5000; i--;)
-                     locatePattern (x, "@{}");
-                Stdout.formatln ("{}", elapsed.stop);
         }
 }
