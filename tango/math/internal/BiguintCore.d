@@ -397,7 +397,7 @@ static BigUint div(BigUint x, BigUint y)
 static BigUint mod(BigUint x, BigUint y)
 {
     if (y.data.length > x.data.length) return x;
-    if (y.data.length == 1) return divInt(x, y.data[0]);
+    if (y.data.length == 1)  return modInt(x, y.data[0]);
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     BigDigit [] rem = new BigDigit[y.data.length];
     divModInternal(result, rem, x.data, y.data);
