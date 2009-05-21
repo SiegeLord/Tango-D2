@@ -11,17 +11,21 @@
   - "Intel(R) 64 and IA-32 Architectures Software Developers Manual,
 	  Volume 2A: Instruction Set Reference, A-M" (2007).
   - "AMD CPUID Specification", Advanced Micro Devices, Rev 2.28 (2008).
-  - "AMD Processor Recognition Application Note For Processors Prior to AMD Family 0Fh Processors", Advanced Micro Devices, Rev 3.13 (2005).
-  - "AMD Geode(TM) GX Processors Data Book", AMD, Publication ID 31505E, (2005).
+  - "AMD Processor Recognition Application Note For Processors Prior to AMD
+      Family 0Fh Processors", Advanced Micro Devices, Rev 3.13 (2005).
+  - "AMD Geode(TM) GX Processors Data Book",
+      Advanced Micro Devices, Publication ID 31505E, (2005).
   - "AMD K6 Processor Code Optimisation", Advanced Micro Devices, Rev D (2000).
-  - "Application note 106: Software Customization for the 6x86 Family", Cyrix Corporation, Rev 1.5 (1998)
+  - "Application note 106: Software Customization for the 6x86 Family",
+      Cyrix Corporation, Rev 1.5 (1998)
   - http://ftp.intron.ac/pub/document/cpu/cpuid.htm
-  - "Geode(TM) GX1 Processor Series Low Power Integrated X86 Solution", National Semiconductor, (2002)
+  - "Geode(TM) GX1 Processor Series Low Power Integrated X86 Solution",
+      National Semiconductor, (2002)
   - "The VIA Isaiah Architecture", G. Glenn Henry, Centaur Technology, Inc (2008).
   - http://www.sandpile.org/ia32/cpuid.htm
   - http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html
-  - "What every programmer should know about memory", Ulrich Depper, Red Hat, Inc. 
-     (2007). 
+  - "What every programmer should know about memory",
+     Ulrich Depper, Red Hat, Inc., (2007). 
    
 AUTHORS:  Don Clugston,
           Tomas Lindquist Olsen &lt;tomas@famolsen.dk&gt;
@@ -82,13 +86,13 @@ public:
 	/// Note that some CPUs have programmable vendorIDs.
 	char[] vendor()		{return vendorID;}
 	/// Returns processor string, for display purposes only
-	char[] processor()		{return processorName;}    
+	char[] processor()	{return processorName;}    
 	
 	/// The data caches. If there are fewer than 5 physical caches levels,
 	/// the remaining levels are set to uint.max (== entire memory space)
 	CacheInfo[5] datacache;
 	/// Does it have an x87 FPU on-chip?
-	bool x87onChip()          {return (features&FPU_BIT)!=0;}
+	bool x87onChip()    {return (features&FPU_BIT)!=0;}
     /// Is MMX supported?
     bool mmx()			{return (features&MMX_BIT)!=0;}
     /// Is SSE supported?
@@ -104,7 +108,7 @@ public:
     /// Is SSE4.2 supported?
     bool sse42()		{return (miscfeatures&SSE42_BIT)!=0;}
     /// Is SSE4a supported?
-    bool sse4a()			{return (amdmiscfeatures&SSE4A_BIT)!=0;}
+    bool sse4a()        {return (amdmiscfeatures&SSE4A_BIT)!=0;}
     /// Is SSE5 supported?
     bool sse5()			{return (amdmiscfeatures&SSE5_BIT)!=0;}
     /// Is AMD 3DNOW supported?

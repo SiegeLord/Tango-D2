@@ -29,12 +29,12 @@ version(GNU){
 } else version(TangoBignumNoAsm) {
 
 } else version(D_InlineAsm_X86) {
-    version = Really_D_InlineAsm_X86;
+    version = Naked_D_InlineAsm_X86;
 } else version(LLVM_InlineAsm_X86) { 
-    version = Really_D_InlineAsm_X86; 
+    version = Naked_D_InlineAsm_X86; 
 }
 
-version(Really_D_InlineAsm_X86) { 
+version(Naked_D_InlineAsm_X86) { 
 private import tango.math.internal.BignumX86;
 } else {
 private import tango.math.internal.BignumNoAsm;
@@ -1019,7 +1019,7 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
             qhat = uint.max;
         } else {
             uint ulo = u[j + v.length - 2];
-version(Really_D_InlineAsm_X86) {
+version(Naked_D_InlineAsm_X86) {
             // Note: On DMD, this make is only ~10% faster than the non-asm code. 
             uint *p = &u[j + v.length - 1];
             asm {
