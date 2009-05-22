@@ -397,7 +397,11 @@ static BigUint div(BigUint x, BigUint y)
 static BigUint mod(BigUint x, BigUint y)
 {
     if (y.data.length > x.data.length) return x;
-    if (y.data.length == 1)  return BigUint(new BigDigit[modInt(x, y.data[0])]);
+    if (y.data.length == 1) {
+        BigDigit [] result = new BigDigit[1];
+        result[0] = modInt(x, y.data[0]);
+        return BigUint(result);
+    }
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     BigDigit [] rem = new BigDigit[y.data.length];
     divModInternal(result, rem, x.data, y.data);
@@ -406,6 +410,16 @@ static BigUint mod(BigUint x, BigUint y)
 }
 
 } // end BigUint
+
+debug(UnitTest) {
+unittest {
+// Bug 1650.
+   BigUint r = BigUint([5]);
+   BigUint t = BigUint([7]);
+   BigUint s = BigUint.mod(r, t);
+   assert(s==5);
+}
+}
 
 private:
 
