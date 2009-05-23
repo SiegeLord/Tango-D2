@@ -14,7 +14,7 @@
 
 module tango.text.Search;
 
-private import tango.text.Util;
+private import Util = tango.text.Util;
 
 /******************************************************************************
 
@@ -87,7 +87,7 @@ private struct FindFruct(T)
 
         size_t forward (T[] content, size_t ofs = 0)
         {
-                return index (content, what, ofs);
+                return Util.index (content, what, ofs);
         }
 
         /***********************************************************************
@@ -102,7 +102,7 @@ private struct FindFruct(T)
 
         size_t reverse (T[] content, size_t ofs = size_t.max)
         {       
-                return rindex (content, what, ofs);
+                return Util.rindex (content, what, ofs);
         }
 
         /***********************************************************************
@@ -148,7 +148,7 @@ private struct FindFruct(T)
         {       
                 size_t mark, count;
 
-                while ((mark = index (content, what, mark)) != content.length)
+                while ((mark = Util.index (content, what, mark)) != content.length)
                         ++count, ++mark;
                 return count;
         }
@@ -204,9 +204,9 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        PatternFruct!(T) tokens (T[] content, T[] sub = null)
+        Util.PatternFruct!(T) tokens (T[] content, T[] sub = null)
         {
-                return patterns (content, what, sub);
+                return Util.patterns (content, what, sub);
         }
         
         /***********************************************************************
@@ -245,7 +245,7 @@ private struct FindFruct(T)
                         int    ret;
                         size_t mark;
 
-                        while ((mark = index(content, what, mark)) != content.length)                        
+                        while ((mark = Util.index(content, what, mark)) != content.length)                        
                                 if ((ret = dg(mark)) is 0)                                
                                      ++mark;       
                                 else
@@ -654,17 +654,17 @@ debug (Search)
 
                 elapsed.start;
                 for (auto i=5000; i--;)
-                     mismatch (x.ptr, x.ptr, x.length);
+                     Util.mismatch (x.ptr, x.ptr, x.length);
                 Stdout.formatln ("mismatch {}", elapsed.stop);
 
                 elapsed.start;
                 for (auto i=5000; i--;)
-                     indexOf (x.ptr, '@', cast(uint) x.length);
+                     Util.indexOf (x.ptr, '@', cast(uint) x.length);
                 Stdout.formatln ("indexOf {}", elapsed.stop);
 
                 elapsed.start;
                 for (auto i=5000; i--;)
-                     locatePattern (x, "indexOf {}");
+                     Util.locatePattern (x, "indexOf {}");
                 Stdout.formatln ("pattern {}", elapsed.stop);
 
                 elapsed.start;
