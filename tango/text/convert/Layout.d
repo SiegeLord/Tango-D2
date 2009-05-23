@@ -39,6 +39,7 @@ private import  Float = tango.text.convert.Float,
 
 private import  tango.io.model.IConduit : OutputStream;
 
+
 /*******************************************************************************
 
         Platform issues ...
@@ -537,27 +538,35 @@ version (old)
                                    length += sink ("}");
                                    }
                                 else 
-                                if (_ti.classinfo.name[9] is TypeCode.ARRAY &&
-                                   (_ti !is typeid(char[]))  &&
-                                   (_ti !is typeid(wchar[])) &&
-                                   (_ti !is typeid(dchar[])))
+                                if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
-                                   // for all non string array types (including char[][])
-                                   auto arr = *cast(void[]*)_arg;
-                                   auto len = arr.length;
-                                   auto ptr = cast(Arg) arr.ptr;
-                                   auto elTi = _ti.next();
-                                   auto size = elTi.tsize();
-                                   length += sink ("[");
-                                   while (len > 0)
-                                         {
-                                         if (ptr !is arr.ptr)
-                                             length += sink (", ");
-                                         processElement (elTi, ptr);
-                                         len -= 1;
-                                         ptr += size;
-                                         }
-                                   length += sink ("]");
+                                   if (_ti is typeid(char[]))
+                                       process (Utf.fromString8 (*cast(char[]*) _arg, result));
+                                   else
+                                   if (_ti is typeid(wchar[]))        
+                                       process (Utf.fromString16 (*cast(wchar[]*) _arg, result));
+                                   else
+                                   if (_ti is typeid(dchar[]))
+                                       process (Utf.fromString32 (*cast(dchar[]*) _arg, result));
+                                   else
+                                      {
+                                      // for all non string array types (including char[][])
+                                      auto arr = *cast(void[]*)_arg;
+                                      auto len = arr.length;
+                                      auto ptr = cast(Arg) arr.ptr;
+                                      auto elTi = _ti.next();
+                                      auto size = elTi.tsize();
+                                      length += sink ("[");
+                                      while (len > 0)
+                                            {
+                                            if (ptr !is arr.ptr)
+                                                length += sink (", ");
+                                            processElement (elTi, ptr);
+                                            len -= 1;
+                                            ptr += size;
+                                            }
+                                      length += sink ("]");
+                                      }
                                    }
                                 else
                                    // the standard processing
@@ -582,18 +591,6 @@ version (old)
         {
                 switch (type.classinfo.name[9])
                        {
-                       case TypeCode.ARRAY:
-                            if (type is typeid(char[]))
-                                return Utf.fromString8 (*cast(char[]*) p, result);
-
-                            if (type is typeid(wchar[]))
-                                return Utf.fromString16 (*cast(wchar[]*) p, result);
-
-                            if (type is typeid(dchar[]))
-                                return Utf.fromString32 (*cast(dchar[]*) p, result);
-
-                            return Utf.fromString8 (type.toString, result);
-
                        case TypeCode.BOOL:
                             static T[] t = "true";
                             static T[] f = "false";
