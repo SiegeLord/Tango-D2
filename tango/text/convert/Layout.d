@@ -447,7 +447,7 @@ version (old)
                       fragment = ++s;
 
                       // handle alignment
-                      void process (T[] str)
+                      void emit (T[] str)
                       {
                                 int padding = width - str.length;
 
@@ -485,7 +485,7 @@ version (old)
                       }
 
                       // an astonishing number of typehacks needed to handle arrays :(
-                      void processElement (TypeInfo _ti, Arg _arg)
+                      void process (TypeInfo _ti, Arg _arg)
                       {
                                 if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
                                    {
@@ -496,7 +496,7 @@ version (old)
                                        {
                                        if (p !is _arg )
                                            length += sink (", ");
-                                       processElement (tiStat.value, p);
+                                       process (tiStat.value, p);
                                        p += tiStat.tsize/tiStat.len;
                                        }
                                    length += sink ("]");
@@ -530,9 +530,9 @@ version (old)
 
                                            if (!first)
                                                 length += sink (", ");
-                                           processElement (tiKey, pk);
+                                           process (tiKey, pk);
                                            length += sink (" => ");
-                                           processElement (tiVal, pv);
+                                           process (tiVal, pv);
                                            first = false;
                                            }
                                    length += sink ("}");
@@ -541,13 +541,13 @@ version (old)
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
                                    if (_ti is typeid(char[]))
-                                       process (Utf.fromString8 (*cast(char[]*) _arg, result));
+                                       emit (Utf.fromString8 (*cast(char[]*) _arg, result));
                                    else
                                    if (_ti is typeid(wchar[]))        
-                                       process (Utf.fromString16 (*cast(wchar[]*) _arg, result));
+                                       emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
                                    else
                                    if (_ti is typeid(dchar[]))
-                                       process (Utf.fromString32 (*cast(dchar[]*) _arg, result));
+                                       emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
                                    else
                                       {
                                       // for all non string array types (including char[][])
@@ -561,7 +561,7 @@ version (old)
                                             {
                                             if (ptr !is arr.ptr)
                                                 length += sink (", ");
-                                            processElement (elTi, ptr);
+                                            process (elTi, ptr);
                                             len -= 1;
                                             ptr += size;
                                             }
@@ -570,15 +570,15 @@ version (old)
                                    }
                                 else
                                    // the standard processing
-                                   process (dispatch (result, format, _ti, _arg));
+                                   emit (dispatch (result, format, _ti, _arg));
                       }
 
                       
                       // process this argument
                       if (index >= ti.length)
-                          process ("{invalid index}");
+                          emit ("{invalid index}");
                       else
-                         processElement (ti[index], args[index]);
+                         process (ti[index], args[index]);
                       }
                 return length;
         }
