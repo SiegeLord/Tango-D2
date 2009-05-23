@@ -749,7 +749,7 @@ uint indexOf(T, U=uint) (T* str, T match, U length)
 
 uint indexOf(T) (T* str, T match, uint length)
 {
-        assert (str);
+        //assert (str);
 
         static if (T.sizeof == 1)
                    enum : size_t {m1 = cast(size_t) 0x0101010101010101, 
@@ -763,32 +763,34 @@ uint indexOf(T) (T* str, T match, uint length)
 
         static if (T.sizeof < size_t.sizeof)
         {
-                size_t m = match;
-                m += m << (8 * T.sizeof);
+                if (length)
+                   {
+                   size_t m = match;
+                   m += m << (8 * T.sizeof);
 
-                static if (T.sizeof < size_t.sizeof / 2)
-                           m += (m << (8 * T.sizeof * 2));
+                   static if (T.sizeof < size_t.sizeof / 2)
+                              m += (m << (8 * T.sizeof * 2));
 
-                static if (T.sizeof < size_t.sizeof / 4)
-                           m += (m << (8 * T.sizeof * 4));
+                   static if (T.sizeof < size_t.sizeof / 4)
+                              m += (m << (8 * T.sizeof * 4));
 
-                auto p = str;
-                auto e = p + length - size_t.sizeof;
+                   auto p = str;
+                   auto e = p + length - size_t.sizeof;
+                   while (p < e)
+                         {
+                         // clear matching T segments
+                         auto v = (*cast(size_t*) p) ^ m;
+                         // test for zero, courtesy of Alan Mycroft
+                         if ((v - m1) & ~v & m2)
+                              break;
+                         p += size_t.sizeof;
+                         }
 
-                while (p < e)
-                      {
-                      // clear matching T segments
-                      auto v = (*cast(size_t*) p) ^ m;
-                      // test for zero, courtesy of Alan Mycroft
-                      if ((v - m1) & ~v & m2)
-                           break;
-                      p += size_t.sizeof;
-                      }
-
-                e += size_t.sizeof;
-                while (p < e)
-                       if (*p++ is match)
-                           return p - str - 1;
+                   e += size_t.sizeof;
+                   while (p < e)
+                          if (*p++ is match)
+                              return p - str - 1;
+                   }
                 return length;
         }
         else
@@ -822,21 +824,24 @@ uint mismatch(T) (T* s1, T* s2, uint length)
 
         static if (T.sizeof < size_t.sizeof)
         {
-                auto start = s1;
-                auto e = start + length - size_t.sizeof;
+                if (length)
+                   {
+                   auto start = s1;
+                   auto e = start + length - size_t.sizeof;
 
-                while (s1 < e)
-                      {
-                      if (*cast(size_t*) s1 != *cast(size_t*) s2)
-                          break;
-                      s1 += size_t.sizeof;
-                      s2 += size_t.sizeof;
-                      }
+                   while (s1 < e)
+                         {
+                         if (*cast(size_t*) s1 != *cast(size_t*) s2)
+                             break;
+                         s1 += size_t.sizeof;
+                         s2 += size_t.sizeof;
+                         }
 
-                e += size_t.sizeof;
-                while (s1 < e)
-                       if (*s1++ != *s2++)
-                           return s1 - start - 1;
+                   e += size_t.sizeof;
+                   while (s1 < e)
+                          if (*s1++ != *s2++)
+                              return s1 - start - 1;
+                   }
                 return length;
         }
         else
@@ -1573,5 +1578,9 @@ debug (Util)
         {
                 mismatch ("".ptr, x.ptr, 0);
                 indexOf ("".ptr, '@', 0);
+                char[] s;
+                split (s, " ");
+                //indexOf (s.ptr, '@', 0);
+
         }
 }
