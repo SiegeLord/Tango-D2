@@ -31,8 +31,7 @@ template undefinedConsts(char[] what,char[] file,long line){
 // here is the basic structure of the basic const models
 // just replace ConstModuleName with the correct name
 // this is done explicitly instead of using a mixin to be friendly toward the build tools
-/+
-module tango.stdc.constants.ConstModuleName;
+/+module tango.stdc.constants.ConstModuleName;
 import tango.stdc.constants.constSupport;
 
 version(X86) {
