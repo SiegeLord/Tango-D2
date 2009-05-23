@@ -298,8 +298,7 @@ private struct SearchFruct(T)
         static SearchFruct opCall (T[] what) 
         {
                 SearchFruct find = void;
-                find.fore = true;
-                find.match (what);
+                find.match = what;
                 return find;
         }
         
@@ -323,6 +322,7 @@ private struct SearchFruct(T)
         void match (T[] what)
         {
                 offsets[] = what.length + 1;
+                this.fore = true;
                 this.what = what;
                 reset;
         }
@@ -452,7 +452,7 @@ private struct SearchFruct(T)
 
         Substitute tokens (T[] content, T[] sub = null)
         {
-                return Substitute (sub, what, content);
+                return Substitute (sub, what, content, &forward);
         }
         
         /***********************************************************************
