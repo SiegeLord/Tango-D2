@@ -82,15 +82,13 @@
                 Search search (T chr);
                 Search search (T[] pattern);
 
-                // format behind current selection
+                // format arguments behind current selection
                 Text format (T[] format, ...);
 
                 // append behind current selection
                 Text append (T[] text);
                 Text append (TextView other);
                 Text append (T chr, int count=1);
-                Text append (long value, options);
-                Text append (double value, options);
                 Text append (InputStream source);
 
                 // transcode behind current selection
@@ -283,17 +281,15 @@ class Text(T) : TextView!(T)
 
                 /***************************************************************
 
-                        Search forward, starting at the current selection
-                        point. We start at the following character position
-                        where an existing selection has been made (to avoid
-                        selecting the same location)
+                        Search forward, starting just after the currently
+                        selected text
 
                 ***************************************************************/
 
                 bool next ()
                 {
                         return locate (&engine.forward, text.slice, 
-                                        text.point + ((text.selectLength > 0) & 1));
+                                        text.selectPoint + text.selectLength);
                 }
 
                 /***************************************************************
@@ -436,18 +432,22 @@ class Text(T) : TextView!(T)
                 specifies whether the given array is likely to change. If
                 not, the array is aliased until such time it is altered via
                 this class. This can be useful when wrapping an array
-                "temporarily" with a stack-based Text
+                "temporarily" with a stack-based Text.
+
+                Also resets the curent selection to null           
 
         ***********************************************************************/
 
         final Text set (T[] chars, bool copy = true)
         {
+                contentLength = chars.length;
                 if ((this.mutable = copy) is true)
                      content = chars.dup;
                 else
                    content = chars;
 
-                return select (0, contentLength = chars.length);
+                // no selection
+                return select (0, 0);
         }
 
         /***********************************************************************
@@ -457,7 +457,9 @@ class Text(T) : TextView!(T)
                 'copy' parameter to false. Doing so will avoid allocating
                 heap-space for the content until it is modified via one of
                 these methods. This can be useful when wrapping an array
-                "temporarily" with a stack-based Text
+                "temporarily" with a stack-based Text.
+
+                Also resets the curent selection to null           
 
         ***********************************************************************/
 
@@ -468,7 +470,8 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
-                Explicitly set the current selection
+                Explicitly set the current selection to the given start and
+                length. values are pinned to the content extents
 
         ***********************************************************************/
 
@@ -520,13 +523,13 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
-                Set the current selection point. See select(int, int) also
+                Set the current selection point, and resets selection length
 
         ***********************************************************************/
 
         final Text point (uint index)
         {
-                return select (0, 0);
+                return select (index, 0);
         }
 
         /***********************************************************************
@@ -572,7 +575,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool select (T c)
+        deprecated final bool select (T c)
         {
                 auto s = slice();
                 auto x = Util.locate (s, c, selectPoint);
@@ -593,7 +596,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool select (TextViewT other)
+        deprecated final bool select (TextViewT other)
         {
                 return select (other.slice);
         }
@@ -607,7 +610,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool select (T[] chars)
+        deprecated final bool select (T[] chars)
         {
                 auto s = slice();
                 auto x = Util.locatePattern (s, chars, selectPoint);
@@ -628,7 +631,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool selectPrior (T c)
+        deprecated final bool selectPrior (T c)
         {
                 auto s = slice();
                 auto x = Util.locatePrior (s, c, selectPoint);
@@ -649,7 +652,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool selectPrior (TextViewT other)
+        deprecated final bool selectPrior (TextViewT other)
         {
                 return selectPrior (other.slice);
         }
@@ -663,7 +666,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        final bool selectPrior (T[] chars)
+        deprecated final bool selectPrior (T[] chars)
         {
                 auto s = slice();
                 auto x = Util.locatePatternPrior (s, chars, selectPoint);
@@ -734,20 +737,24 @@ class Text(T) : TextView!(T)
 
                 Append an integer to this Text
 
+                deprecated: use format() instead
+
         ***********************************************************************/
-/+
-        final Text append (int v, T[] fmt = null)
+        
+        deprecated final Text append (int v, T[] fmt = null)
         {
                 return append (cast(long) v, fmt);
         }
-+/
+
         /***********************************************************************
 
                 Append a long to this Text
 
+                deprecated: use format() instead
+
         ***********************************************************************/
 
-        final Text append (long v, T[] fmt = null)
+        deprecated final Text append (long v, T[] fmt = null)
         {
                 T[64] tmp = void;
                 return append (Integer.format(tmp, v, fmt));
@@ -757,9 +764,11 @@ class Text(T) : TextView!(T)
 
                 Append a double to this Text
 
+                deprecated: use format() instead
+
         ***********************************************************************/
 
-        final Text append (double v, uint decimals=2, int e=10)
+        deprecated final Text append (double v, uint decimals=2, int e=10)
         {
                 T[64] tmp = void;
                 return append (Float.format(tmp, v, decimals, e));
@@ -1655,7 +1664,7 @@ debug (UnitTest)
 
         assert (s.clear == "");
 
-        assert (s.append(12345) == "12345");
+        assert (s.format("{}", 12345) == "12345");
         assert (s.selection == "12345");
 
         s ~= "fubar";
@@ -1668,9 +1677,9 @@ debug (UnitTest)
         assert (s.select("wumpus") is false);
         assert (s.selection == "fubar");
 
-        assert (s.clear.append(1.2345, 4) == "1.2345");
+        assert (s.clear.format("{:f4}", 1.2345) == "1.2345");
 
-        assert (s.clear.append(0xf0, "b") == "11110000");
+        assert (s.clear.format("{:b}", 0xf0) == "11110000");
 
         assert (s.clear.encode("one"d).toString == "one");
 
