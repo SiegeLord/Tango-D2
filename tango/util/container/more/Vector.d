@@ -21,18 +21,28 @@ private extern(C) void memmove (void*, void*, int);
 /******************************************************************************
 
         A vector of the given value-type V, with maximum depth Size. Note
-        that this does no memory allocation of its own 
+        that this does no memory allocation of its own when Size != 0, and
+        does heap allocation when Size == 0. Thus you can have a fixed-size
+        low-overhead instance, or a heap oriented instance.
 
 ******************************************************************************/
 
-struct Vector (V, int Size) 
+struct Vector (V, int Size = 0) 
 {
-        private V[Size]         vector;
-        private uint            depth;
-
-        alias slice             opSlice;
-        alias add               opCatAssign;
+        alias slice     opSlice;
+        alias add       opCatAssign;
           
+        static if (Size == 0)
+                  {
+                  private uint depth;
+                  private V[]  vector;
+                  }
+               else
+                  {
+                  private uint     depth;
+                  private V[Size]  vector;
+                  }
+
         /***********************************************************************
 
                 Clear the vector
@@ -63,7 +73,7 @@ struct Vector (V, int Size)
 
         uint unused ()
         {
-                return Size - depth;
+                return vector.length - depth;
         }
 
         /***********************************************************************
@@ -75,6 +85,9 @@ struct Vector (V, int Size)
         Vector clone ()
         {       
                 Vector v = void;
+                static if (Size == 0)
+                           v.vector.length = vector.length;
+                
                 v.vector[] = vector;
                 v.depth = depth;
                 return v;
@@ -90,10 +103,19 @@ struct Vector (V, int Size)
 
         V add (V value)
         {
-                if (depth < vector.length)
-                    return vector[depth++] = value;
-                else
-                   error (__LINE__);
+                static if (Size == 0)
+                          {
+                          if (depth >= vector.length)
+                              vector.length = vector.length + 64;
+                          return vector[depth++] = value;
+                          }
+                       else
+                          {                         
+                          if (depth < vector.length)
+                              return vector[depth++] = value;
+                          else
+                             error (__LINE__);
+                          }
         }
 
         /**********************************************************************
@@ -258,6 +280,9 @@ debug (Vector)
 
         void main()
         {
+                Vector!(int, 0) v;
+                v.add (1);
+                
                 Vector!(int, 10) s;
 
                 Stdout.formatln ("add four");
@@ -290,7 +315,6 @@ debug (Vector)
                 foreach (v, ref k; s)
                          k = true;
                 Stdout.formatln ("size {}", s.size);
-                
         }
 }
         
