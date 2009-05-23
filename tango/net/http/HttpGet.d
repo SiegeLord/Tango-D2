@@ -70,7 +70,7 @@ class HttpGet : HttpClient
                 auto buffer = super.open;
                 try {
                     if (super.isResponseOK)
-                        buffer.load (getResponseHeaders.getInt(HttpHeader.ContentLength, int.max));
+                        buffer.load (getResponseHeaders.getInt(HttpHeader.ContentLength));
                     } finally {super.close;}
                 return buffer.slice;
         }
