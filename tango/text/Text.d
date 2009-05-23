@@ -9,22 +9,24 @@
         author:         Kris
 
 
-        _Text is a class for storing and manipulating Unicode characters.
+        Text is a class for managing and manipulating Unicode character
+        arrays.
 
-        _Text maintains a current "selection", controlled via the mark(),
-        select() and selectPrior() methods. Each of append(), prepend(),
-        replace() and remove() operate with respect to the selection. The
-        select() methods operate with respect to the current selection
-        also, providing a means of iterating across matched patterns. To
-        set a selection across the entire content, use the mark() method
-        with no arguments.
+        Text maintains a current "selection", controlled via the select()
+        and search() methods. Each of append(), prepend(), replace() and
+        remove() operate with respect to the selection.
+
+        The search() methods also operate with respect to the current
+        selection, providing a means of iterating across matched patterns.
+        To set a selection across the entire content, use the select()
+        method with no arguments.
 
         Indexes and lengths of content always count code units, not code
         points. This is similar to traditional ascii string handling, yet
         indexing is rarely used in practice due to the selection idiom:
         substring indexing is generally implied as opposed to manipulated
         directly. This allows for a more streamlined model with regard to
-        surrogates.
+        utf-surrogates.
 
         Strings support a range of functionality, from insert and removal
         to utf encoding and decoding. There is also an immutable subset
@@ -37,12 +39,12 @@
 
         The class is templated for use with char[], wchar[], and dchar[],
         and should migrate across encodings seamlessly. In particular, all
-        functions in tango.text.Util are compatible with _Text content in
+        functions in tango.text.Util are compatible with Text content in
         any of the supported encodings. In future, this class will become
-        the principal gateway to the extensive ICU unicode library.
+        a principal gateway to the extensive ICU unicode library.
 
         Note that several common text operations can be constructed through
-        combining tango.text._Text with tango.text.Util e.g. lines of text
+        combining tango.text.Text with tango.text.Util e.g. lines of text
         can be processed thusly:
         ---
         auto source = new Text!(char)("one\ntwo\nthree");
@@ -682,8 +684,6 @@ class Text(T) : TextView!(T)
 
                 Append formatted content to this Text
 
-                deprecated: use search() instead
-
         ***********************************************************************/
 
         final Text format (T[] format, ...)
@@ -1245,7 +1245,7 @@ class Text(T) : TextView!(T)
                 To minimize heap allocation during subsequent conversions,
                 apply the following pattern:
                 ---
-                _Text  string;
+                Text  string;
 
                 wchar[] buffer;
                 wchar[] result = string.utf16 (buffer);
