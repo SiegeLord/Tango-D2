@@ -1,76 +1,81 @@
 /**
  * The variant module contains a variant, or polymorphic type.
  *
- * Copyright: Copyright (C) 2005-2007 The Tango Team.  All rights reserved.
+ * Copyright: Copyright (C) 2005-2009 The Tango Team.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Daniel Keep, Sean Kelly
  */
 module tango.core.Variant;
 
+private import tango.core.Memory : GC;
 private import tango.core.Vararg : va_list;
 private import tango.core.Traits;
+private import tango.core.Tuple;
+
+private extern(C) Object _d_toObject(void*);
+
+/*
+ * This is to control when we compile in vararg support.  Vararg is a complete
+ * pain in the arse.  I haven't been able to test under GDC at all (and
+ * support for it may disappear soon anyway) and LDC refuses to build for me.
+ *
+ * As other compilers are tested and verified to work, they should be added
+ * below.  It would also probably be a good idea to verify the platforms for
+ * which it works.
+ */
+
+version( DigitalMars )
+{
+    version( X86 )
+    {
+        version( Windows )
+        {
+            version=EnableVararg;
+        }
+        else version( Posix )
+        {
+            version=EnableVararg;
+        }
+    }
+}
+else version( DDoc )
+{
+    // Let's hope DDoc is smart enough to catch this...
+    version=EnableVararg;
+}
+
+version( EnableVararg ) {} else
+{
+    pragma(msg, "Note: Variant vararg functionality not supported for this "
+            "compiler/platform combination.");
+    pragma(msg, "To override and enable vararg support anyway, compile with "
+            "the EnableVararg version.");
+}
 
 private
 {
-    template maxT(uint a, uint b)
-    {
-        const maxT = (a > b) ? a : b;
-    }
-
-    struct AtomicTypes
+    /*
+     * This is used to store the actual value being kept in a Variant.
+     */
+    struct VariantStorage
     {
         union
         {
-            bool _bool;
-            char _char;
-            wchar _wchar;
-            dchar _dchar;
-            byte _byte;
-            short _short;
-            int _int;
-            long _long;
-            ubyte _ubyte;
-            ushort _ushort;
-            uint _uint;
-            ulong _ulong;
-            float _float;
-            double _double;
-            real _real;
-            ifloat _ifloat;
-            idouble _idouble;
-            ireal _ireal;
-            void* ptr;
+            /*
+             * Contains heap-allocated storage for values which are too large
+             * to fit into the Variant directly.
+             */
             void[] arr;
+
+            // Used to simplify dealing with objects.
             Object obj;
-            ubyte[maxT!(_real.sizeof,arr.sizeof)] data;
+
+            // Used to address the structure as an array.
+            ubyte[arr.sizeof] data;
         }
     }
 
-    template isAtomicType(T)
-    {
-        static if( is( T == bool )
-                || is( T == char )
-                || is( T == wchar )
-                || is( T == dchar )
-                || is( T == byte )
-                || is( T == short )
-                || is( T == int )
-                || is( T == long )
-                || is( T == ubyte )
-                || is( T == ushort )
-                || is( T == uint )
-                || is( T == ulong )
-                || is( T == float )
-                || is( T == double )
-                || is( T == real )
-                || is( T == ifloat )
-                || is( T == idouble )
-                || is( T == ireal ) )
-            const isAtomicType = true;
-        else
-            const isAtomicType = false;
-    }
-
+    // Determines if the given type is an Object (class) type.
     template isObject(T)
     {
         static if( is( T : Object ) )
@@ -79,6 +84,7 @@ private
             const isObject = false;
     }
 
+    // Determines if the given type is an interface
     template isInterface(T)
     {
         static if( is( T == interface ) )
@@ -87,94 +93,153 @@ private
             const isInterface = false;
     }
 
-    bool isAny(T,argsT...)(T v, argsT args)
+    // A list of all basic types
+    alias Tuple!(bool, char, wchar, dchar,
+            byte, short, int, long, //cent,
+            ubyte, ushort, uint, ulong, //ucent,
+            float, double, real,
+            ifloat, idouble, ireal,
+            cfloat, cdouble, creal) BasicTypes;
+
+    // see isBasicType
+    template isBasicTypeImpl(T, U)
     {
-        foreach( arg ; args )
-            if( v is arg ) return true;
+        const isBasicTypeImpl = is( T == U );
+    }
+
+    // see isBasicType
+    template isBasicTypeImpl(T, U, Us...)
+    {
+        static if( is( T == U ) )
+            const isBasicTypeImpl = true;
+        else
+            const isBasicTypeImpl = isBasicTypeImpl!(T, Us);
+    }
+
+    // Determines if the given type is one of the basic types.
+    template isBasicType(T)
+    {
+        const isBasicType = isBasicTypeImpl!(T, BasicTypes);
+    }
+
+    /*
+     * Used to determine if we can cast a value of the given TypeInfo to the
+     * specified type implicitly.  This should be somewhat faster than the
+     * version in RuntimeTraits since we can basically eliminate half of the
+     * tests.
+     */
+    bool canImplicitCastToType(dsttypeT)(TypeInfo srctype)
+    {
+        /*
+         * Before we do anything else, we need to "unwrap" typedefs to
+         * get at the real type.  While we do that, make sure we don't
+         * accidentally jump over the destination type.
+         */
+        while( cast(TypeInfo_Typedef) srctype !is null )
+        {
+            if( srctype is typeid(dsttypeT) )
+                return true;
+            srctype = srctype.next;
+        }
+
+        /*
+         * First, we'll generate tests for the basic types.  The list of
+         * things which can be cast TO basic types is finite and easily
+         * computed.
+         */
+        foreach( T ; BasicTypes )
+        {
+            // If the current type is the target...
+            static if( is( dsttypeT == T ) )
+            {
+                // ... then for all of the other basic types ...
+                foreach( U ; BasicTypes )
+                {
+                    static if
+                    (
+                        // ... if that type is smaller than ...
+                        U.sizeof < T.sizeof
+
+                        // ... or the same size and signed-ness ...
+                        || ( U.sizeof == T.sizeof &&
+                            ((isCharType!(T) || isUnsignedIntegerType!(T))
+                             ^ !(isCharType!(U) || isUnsignedIntegerType!(U)))
+                        )
+                    )
+                    {
+                        // ... test.
+                        if( srctype is typeid(U) )
+                            return true;
+                    }
+                }
+                // Nothing matched; no implicit casting.
+                return false;
+            }
+        }
+
+        /*
+         * Account for static arrays being implicitly convertible to dynamic
+         * arrays.
+         */
+        static if( is( T[] : dsttypeT ) )
+        {
+            if( typeid(T[]) is srctype )
+                return true;
+
+            if( auto ti_sa = cast(TypeInfo_StaticArray) srctype )
+                return ti_sa.next is typeid(T);
+
+            return false;
+        }
+
+        /*
+         * Any pointer can be cast to void*.
+         */
+        static if( is( dsttypeT == void* ) )
+            return (cast(TypeInfo_Pointer) srctype) !is null;
+
+        /*
+         * Any array can be cast to void[], however remember that it has to
+         * be manually adjusted to preserve the correct length.
+         */
+        static if( is( dsttypeT == void[] ) )
+            return ((cast(TypeInfo_Array) srctype) !is null)
+                || ((cast(TypeInfo_StaticArray) srctype) !is null);
+
         return false;
     }
 
-    const tibool = typeid(bool);
-    const tichar = typeid(char);
-    const tiwchar = typeid(wchar);
-    const tidchar = typeid(dchar);
-    const tibyte = typeid(byte);
-    const tishort = typeid(short);
-    const tiint = typeid(int);
-    const tilong = typeid(long);
-    const tiubyte = typeid(ubyte);
-    const tiushort = typeid(ushort);
-    const tiuint = typeid(uint);
-    const tiulong = typeid(ulong);
-    const tifloat = typeid(float);
-    const tidouble = typeid(double);
-    const tireal = typeid(real);
-    const tiifloat = typeid(ifloat);
-    const tiidouble = typeid(idouble);
-    const tiireal = typeid(ireal);
-
-    bool canImplicitCastTo(dsttypeT)(TypeInfo srctype)
-    {
-        static if( is( dsttypeT == char ) )
-            return isAny(srctype, tibool, tiubyte);
-
-        else static if( is( dsttypeT == wchar ) )
-            return isAny(srctype, tibool, tiubyte, tiushort, tichar);
-
-        else static if( is( dsttypeT == dchar ) )
-            return isAny(srctype, tibool, tiubyte, tiushort, tiuint, tichar,
-                    tiwchar);
-
-        else static if( is( dsttypeT == byte ) )
-            return isAny(srctype, tibool);
-
-        else static if( is( dsttypeT == ubyte ) )
-            return isAny(srctype, tibool, tichar);
-
-        else static if( is( dsttypeT == short ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tichar);
-
-        else static if( is( dsttypeT == ushort ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tichar, tiwchar);
-
-        else static if( is( dsttypeT == int ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tishort, tiushort,
-                    tichar, tiwchar);
-
-        else static if( is( dsttypeT == uint ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tishort, tiushort,
-                    tichar, tiwchar, tidchar);
-
-        else static if( is( dsttypeT == long ) || is( dsttypeT == ulong ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tishort, tiushort,
-                        tiint, tiuint, tichar, tiwchar, tidchar);
-
-        else static if( is( dsttypeT == float ) )
-            return isAny(srctype, tibool, tibyte, tiubyte);
-
-        else static if( is( dsttypeT == double ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tifloat);
-
-        else static if( is( dsttypeT == real ) )
-            return isAny(srctype, tibool, tibyte, tiubyte, tifloat, tidouble);
-
-        else static if( is( dsttypeT == idouble ) )
-            return isAny(srctype, tiifloat);
-
-        else static if( is( dsttypeT == ireal ) )
-            return isAny(srctype, tiifloat, tiidouble);
-
-        else
-            return false;
-    }
-
-    template storageT(T)
+    /*
+     * Aliases itself to the type used to return a value of type T out of a
+     * function.  This is basically a work-around for not being able to return
+     * static arrays.
+     */
+    template returnT(T)
     {
         static if( isStaticArrayType!(T) )
-            alias typeof(T.dup) storageT;
+            alias typeof(T.dup) returnT;
         else
-            alias T storageT;
+            alias T returnT;
     }
+
+    /*
+     * Here are some tests that perform runtime versions of the compile-time
+     * traits functions.
+     */
+
+    bool isBasicTypeInfo(TypeInfo ti)
+    {
+        foreach( T ; BasicTypes )
+            if( ti is typeid(T) )
+                return true;
+        return false;
+    }
+
+    private import RuntimeTraits = tango.core.RuntimeTraits;
+
+    alias RuntimeTraits.isStaticArray isStaticArrayTypeInfo;
+    alias RuntimeTraits.isClass isObjectTypeInfo;
+    alias RuntimeTraits.isInterface isInterfaceTypeInfo;
 }
 
 /**
@@ -187,6 +252,18 @@ class VariantTypeMismatchException : Exception
     {
         super("cannot convert "~expected.toString
                     ~" value to a "~got.toString);
+    }
+}
+
+/**
+ * This exception is thrown when you attempt to use an empty Variant with
+ * varargs.
+ */
+class VariantVoidVarargException : Exception
+{
+    this()
+    {
+        super("cannot use Variants containing a void with varargs");
     }
 }
 
@@ -212,6 +289,11 @@ struct Variant
      *
      * Returns:
      *  The new Variant.
+     * 
+     * Example:
+     * -----
+     *  auto v = Variant(42);
+     * -----
      */
     static Variant opCall(T)(T value)
     {
@@ -227,6 +309,30 @@ struct Variant
     }
 
     /**
+     * This pseudo-constructor creates a new Variant using a specified
+     * TypeInfo and raw pointer to the value.
+     *
+     * Params:
+     *  type = Type of the value.
+     *  ptr  = Pointer to the value.
+     *
+     * Returns:
+     *  The new Variant.
+     * 
+     * Example:
+     * -----
+     *  int life = 42;
+     *  auto v = Variant(typeid(typeof(life)), &life);
+     * -----
+     */
+    static Variant opCall()(TypeInfo type, void* ptr)
+    {
+        Variant _this;
+        Variant.fromPtr(type, ptr, _this);
+        return _this;
+    }
+
+    /**
      * This operator allows you to assign arbitrary values directly into an
      * existing Variant.
      *
@@ -235,6 +341,12 @@ struct Variant
      *
      * Returns:
      *  The new value of the assigned-to variant.
+     * 
+     * Example:
+     * -----
+     *  Variant v;
+     *  v = 42;
+     * -----
      */
     Variant opAssign(T)(T value)
     {
@@ -246,22 +358,9 @@ struct Variant
         {
             type = typeid(T);
 
-            static if( isAtomicType!(T) )
+            static if( isDynamicArrayType!(T) )
             {
-                mixin("this.value._"~T.stringof~"=value;");
-            }
-            else static if( isDynamicArrayType!(T) )
-            {
-                this.value.arr = (cast(void*)value.ptr)
-                    [0 .. value.length];
-            }
-            else static if( isPointerType!(T) )
-            {
-                this.value.ptr = cast(void*)value;
-            }
-            else static if( isObject!(T) )
-            {
-                this.value.obj = value;
+                this.value.arr = value;
             }
             else static if( isInterface!(T) )
             {
@@ -291,6 +390,13 @@ struct Variant
      *
      * Returns:
      *  true if the Variant contains a value of type T, false otherwise.
+     * 
+     * Example:
+     * -----
+     *  auto v = Variant(cast(int) 42);
+     *  assert(   v.isA!(int) );
+     *  assert( ! v.isA!(short) ); // note no implicit conversion
+     * -----
      */
     bool isA(T)()
     {
@@ -306,6 +412,13 @@ struct Variant
      *  true if the Variant contains a value of type T, or if the Variant
      *  contains a value that can be implicitly cast to type T; false
      *  otherwise.
+     * 
+     * Example:
+     * -----
+     *  auto v = Variant(cast(int) 42);
+     *  assert( v.isA!(int) );
+     *  assert( v.isA!(short) ); // note implicit conversion
+     * -----
      */
     bool isImplicitly(T)()
     {
@@ -322,8 +435,10 @@ struct Variant
         }
         else
         {
+            // Test for basic types (oh, and dynamic->static arrays and
+            // pointers.)
             return ( cast(bool)(typeid(T) is type)
-                    || canImplicitCastTo!(T)(type) );
+                    || canImplicitCastToType!(T)(type) );
         }
     }
 
@@ -348,94 +463,101 @@ struct Variant
         value = value.init;
     }
 
-    /**
-     * This is the primary mechanism for extracting a value from a Variant.
-     * Given a destination type S, it will attempt to extract the value of the
-     * Variant into that type.  If the value contained within the Variant
-     * cannot be implicitly cast to the given type S, it will throw an
-     * exception.
-     *
-     * You can check to see if this operation will fail by calling the
-     * isImplicitly member with the type S.
-     *
-     * Returns:
-     *  The value stored within the Variant.
-     */
-    storageT!(S) get(S)()
+    version( DDoc )
     {
-        alias storageT!(S) T;
-
-        if( type !is typeid(T)
-                // Let D do runtime check itself
-                && !isObject!(T)
-                && !isInterface!(T)
-                // Allow implicit upcasts
-                && !canImplicitCastTo!(T)(type)
-          )
-            throw new VariantTypeMismatchException(type,typeid(T));
-
-        static if( isAtomicType!(T) )
+        /**
+         * This is the primary mechanism for extracting a value from a Variant.
+         * Given a destination type S, it will attempt to extract the value of the
+         * Variant into that type.  If the value contained within the Variant
+         * cannot be implicitly cast to the given type S, it will throw an
+         * exception.
+         *
+         * You can check to see if this operation will fail by calling the
+         * isImplicitly member with the type S.
+         *
+         * Note that attempting to get a statically-sized array will result in a
+         * dynamic array being returned; this is a language limitation.
+         *
+         * Returns:
+         *  The value stored within the Variant.
+         */
+        T get(T)()
         {
-            if( type is typeid(T) )
+            // For actual implementation, see below.
+        }
+    }
+    else
+    {
+        returnT!(S) get(S)()
+        {
+            alias returnT!(S) T;
+
+            // If we're not dealing with the exact same type as is being
+            // stored, we fail NOW if the type in question isn't an object (we
+            // can let the runtime do the test) and if it isn't something we
+            // know we can implicitly cast to.
+            if( type !is typeid(T)
+                    // Let D do runtime check itself
+                    && !isObject!(T)
+                    && !isInterface!(T)
+
+                    // Allow implicit upcasts
+                    && !canImplicitCastToType!(T)(type)
+              )
+                throw new VariantTypeMismatchException(type,typeid(T));
+
+            // Handle basic types, since they account for most of the implicit
+            // casts.
+            static if( isBasicType!(T) )
             {
-                return mixin("this.value._"~T.stringof);
-            }
-            else
-            {
-                if( type is tibool ) return cast(T)this.value._bool;
-                else if( type is tichar ) return cast(T)this.value._char;
-                else if( type is tiwchar ) return cast(T)this.value._wchar;
-                else if( type is tidchar ) return cast(T)this.value._dchar;
-                else if( type is tibyte ) return cast(T)this.value._byte;
-                else if( type is tishort ) return cast(T)this.value._short;
-                else if( type is tiint ) return cast(T)this.value._int;
-                else if( type is tilong ) return cast(T)this.value._long;
-                else if( type is tiubyte ) return cast(T)this.value._ubyte;
-                else if( type is tiushort ) return cast(T)this.value._ushort;
-                else if( type is tiuint ) return cast(T)this.value._uint;
-                else if( type is tiulong ) return cast(T)this.value._ulong;
-                else if( type is tifloat ) return cast(T)this.value._float;
-                else if( type is tidouble ) return cast(T)this.value._double;
-                else if( type is tireal ) return cast(T)this.value._real;
-                else if( type is tiifloat ) return cast(T)this.value._ifloat;
-                else if( type is tiidouble ) return cast(T)this.value._idouble;
-                else if( type is tiireal ) return cast(T)this.value._ireal;
+                if( type is typeid(T) )
+                {
+                    static if( T.sizeof <= value.sizeof )
+                        return *cast(T*)(&value);
+
+                    else
+                        return *cast(T*)(value.arr.ptr);
+                }
                 else
+                {
+                    foreach( U ; BasicTypes )
+                    {
+                        if( type is typeid(U) )
+                        {
+                            static if( U.sizeof <= value.sizeof )
+                                return cast(T) *cast(U*)(&value);
+
+                            else
+                                return cast(T) *cast(U*)(value.arr.ptr);
+                        }
+                    }
                     throw new VariantTypeMismatchException(type,typeid(T));
+                }
             }
-        }
-        else static if( isDynamicArrayType!(T) )
-        {
-            return (cast(typeof(T[0])*)this.value.arr.ptr)
-                [0 .. this.value.arr.length];
-        }
-        else static if( isPointerType!(T) )
-        {
-            return cast(T)this.value.ptr;
-        }
-        else static if( isObject!(T) )
-        {
-            return cast(T)this.value.obj;
-        }
-        else static if( isInterface!(T) )
-        {
-            return cast(T)this.value.obj;
-        }
-        else
-        {
-            if( T.sizeof <= this.value.data.length )
+            else static if( isDynamicArrayType!(T) )
             {
-                T result;
-                (cast(ubyte*)&result)[0..T.sizeof] =
-                    this.value.data[0..T.sizeof];
-                return result;
+                return cast(T) value.arr;
+            }
+            else static if( isObject!(T) || isInterface!(T) )
+            {
+                return cast(T)this.value.obj;
             }
             else
             {
-                T result;
-                (cast(ubyte*)&result)[0..T.sizeof] =
-                    (cast(ubyte[])this.value.arr)[0..T.sizeof];
-                return result;
+                if( T.sizeof <= this.value.data.length )
+                {
+                    T result;
+                    (cast(ubyte*)&result)[0..T.sizeof] =
+                        this.value.data[0..T.sizeof];
+                    return result;
+                }
+                else
+                {
+                    T result;
+                    (cast(ubyte*)&result)[0..T.sizeof] =
+                        (cast(ubyte[])this.value.arr)[0..T.sizeof];
+                    return result;
+                }
             }
         }
     }
@@ -494,6 +616,7 @@ struct Variant
     {
         static if( is( T == Variant ) )
             return opEqualsVariant(rhs);
+
         else
             return get!(T) == rhs;
     }
@@ -513,16 +636,15 @@ struct Variant
     /// ditto
     hash_t toHash()
     {
-        return type.getHash(data.ptr);
+        return type.getHash(this.ptr);
     }
 
     /**
-     * Performs "stringification" of the value stored within the Variant.  In
-     * the case of the Variant having no assigned value, it will return the
-     * string "Variant.init".
+     * Returns a string representation of the type being stored in this
+     * Variant.
      *
      * Returns:
-     *  The string representation of the value contained within the Variant.
+     *  The string representation of the type contained within the Variant.
      */
     char[] toString()
     {
@@ -538,39 +660,292 @@ struct Variant
         return _type;
     }
 
+    /**
+     * This can be used to retrieve a pointer to the value stored in the
+     * variant.
+     */
+    void* ptr()
+    {
+        if( type.tsize <= value.sizeof )
+            return &value;
+
+        else
+            return value.arr.ptr;
+    }
+    
+    version( EnableVararg )
+    {
+        /**
+         * Converts a vararg function argument list into an array of Variants.
+         */
+        static Variant[] fromVararg(TypeInfo[] types, va_list args)
+        {
+            auto vs = new Variant[](types.length);
+
+            foreach( i, ref v ; vs )
+                args = Variant.fromPtr(types[i], args, v);
+            
+            return vs;
+        }
+        
+        /// ditto
+        static Variant[] fromVararg(...)
+        {
+            return Variant.fromVararg(_arguments, _argptr);
+        }
+        
+        /**
+         * Converts an array of Variants into a vararg function argument list.
+         *
+         * This will allocate memory to store the arguments in; you may destroy
+         * this memory when you are done with it if you feel so inclined.
+         */
+        static void toVararg(Variant[] vars, out TypeInfo[] types, out va_list args)
+        {
+            // First up, compute the total amount of space we'll need.  While
+            // we're at it, work out if any of the values we're storing have
+            // pointers.  If they do, we'll need to tell the GC.
+            size_t size = 0;
+            bool noptr = true;
+            foreach( ref v ; vars )
+            {
+                auto ti = v.type;
+                size += (ti.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1);
+                noptr = noptr && (ti.flags & 2);
+            }
+            
+            // Create the storage, and tell the GC whether it needs to be scanned
+            // or not.
+            auto storage = new ubyte[size];
+            GC.setAttr(storage.ptr,
+                (GC.getAttr(storage.ptr) & ~GC.BlkAttr.NO_SCAN)
+                | (noptr ? GC.BlkAttr.NO_SCAN : 0));
+
+            // Dump the variants into the storage.
+            args = storage.ptr;
+            auto arg_temp = args;
+
+            types = new TypeInfo[size];
+
+            foreach( i, ref v ; vars )
+            {
+                types[i] = v.type;
+                arg_temp = v.toPtr(arg_temp);
+            }
+        }
+    } // version( EnableVararg )
+
 private:
     TypeInfo _type = typeid(void);
-    AtomicTypes value;
+    VariantStorage value;
 
     TypeInfo type(TypeInfo v)
     {
         return (_type = v);
     }
+    
+    /*
+     * Creates a Variant using a given TypeInfo and a void*.  Returns the
+     * given pointer adjusted for the next vararg.
+     */
+    static void* fromPtr(TypeInfo type, void* ptr, out Variant r)
+    {
+        /*
+         * This function basically duplicates the functionality of
+         * opAssign, except that we can't generate code based on the
+         * type of the data we're storing.
+         */
 
+        if( type is typeid(void) )
+            throw new VariantVoidVarargException;
+
+        r.type = type;
+
+        if( isStaticArrayTypeInfo(type) )
+        {
+            /*
+             * Static arrays are passed by-value; for example, if type is
+             * typeid(int[4]), then ptr is a pointer to 16 bytes of memory
+             * (four 32-bit integers).
+             *
+             * It's possible that the memory being pointed to is on the
+             * stack, so we need to copy it before storing it.  type.tsize
+             * tells us exactly how many bytes we need to copy.
+             *
+             * Sadly, we can't directly construct the dynamic array version
+             * of type.  We'll store the static array type and cope with it
+             * in isImplicitly(S) and get(S).
+             */
+            r.value.arr = ptr[0 .. type.tsize];
+        }
+        else
+        {
+            if( isObjectTypeInfo(type)
+                || isInterfaceTypeInfo(type) )
+            {
+                /*
+                 * We have to call into the core runtime to turn this pointer
+                 * into an actual Object reference.
+                 */
+                r.value.obj = _d_toObject(*cast(void**)ptr);
+            }
+            else
+            {
+                if( type.tsize <= this.value.data.length )
+                {
+                    // Copy into storage
+                    r.value.data[0 .. type.tsize] = 
+                        (cast(ubyte*)ptr)[0 .. type.tsize];
+                }
+                else
+                {
+                    // Store in heap
+                    auto buffer = (cast(ubyte*)ptr)[0 .. type.tsize].dup;
+                    r.value.arr = cast(void[])buffer;
+                }
+            }
+        }
+
+        // Compute the "advanced" pointer.
+        return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
+    }
+
+    version( EnableVararg )
+    {
+        /*
+         * Takes the current Variant, and dumps its contents into memory pointed
+         * at by a void*, suitable for vararg calls.
+         *
+         * It also returns the supplied pointer adjusted by the size of the data
+         * written to memory.
+         */
+        void* toPtr(void* ptr)
+        {
+            version( GNU )
+            {
+                pragma(msg, "WARNING: tango.core.Variant's vararg support has "
+                        "not been tested with this compiler." );
+            }
+            version( LDC )
+            {
+                pragma(msg, "WARNING: tango.core.Variant's vararg support has "
+                        "not been tested with this compiler." );
+            }
+
+            if( type is typeid(void) )
+                throw new VariantVoidVarargException;
+
+            if( isStaticArrayTypeInfo(type) )
+            {
+                // Just dump straight
+                ptr[0 .. type.tsize] = this.value.arr[0 .. type.tsize];
+            }
+            else
+            {
+                if( isInterfaceTypeInfo(type) )
+                {
+                    /*
+                     * This is tricky.  What we actually have stored in
+                     * value.obj is an Object, not an interface.  What we
+                     * need to do is manually "cast" value.obj to the correct
+                     * interface.
+                     *
+                     * We have the original interface's TypeInfo.  This gives us
+                     * the interface's ClassInfo.  We can also obtain the object's
+                     * ClassInfo which contains a list of Interfaces.
+                     *
+                     * So what we need to do is loop over the interfaces obj
+                     * implements until we find the one we're interested in.  Then
+                     * we just read out the interface's offset and adjust obj
+                     * accordingly.
+                     */
+                    auto type_i = cast(TypeInfo_Interface) type;
+                    bool found = false;
+                    foreach( i ; this.value.obj.classinfo.interfaces )
+                    {
+                        if( i.classinfo is type_i.info )
+                        {
+                            // Found it
+                            void* i_ptr = (cast(void*) this.value.obj) + i.offset;
+                            *cast(void**)ptr = i_ptr;
+                            found = true;
+                            break;
+                        }
+                    }
+                    assert(found,"Could not convert Object to interface; "
+                            "bad things have happened.");
+                }
+                else
+                {
+                    if( type.tsize <= this.value.data.length )
+                    {
+                        // Value stored in storage
+                        ptr[0 .. type.tsize] = this.value.data[0 .. type.tsize];
+                    }
+                    else
+                    {
+                        // Value stored on heap
+                        ptr[0 .. type.tsize] = this.value.arr[0 .. type.tsize];
+                    }
+                }
+            }
+
+            // Compute the "advanced" pointer.
+            return ptr + ( (type.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1) );
+        }
+    } // version( EnableVararg )
+
+    /*
+     * Performs a type-dependant comparison.  Note that this obviously doesn't
+     * take into account things like implicit conversions.
+     */
     int opEqualsVariant(Variant rhs)
     {
         if( type != rhs.type ) return false;
-        return cast(bool) type.equals(data.ptr, rhs.data.ptr);
+        return cast(bool) type.equals(this.ptr, rhs.ptr);
     }
 
+    /*
+     * Same as opEqualsVariant except it does opCmp.
+     */
     int opCmpVariant(Variant rhs)
     {
         if( type != rhs.type )
             throw new VariantTypeMismatchException(type, rhs.type);
-        return type.compare(data.ptr, rhs.data.ptr);
-    }
-
-    void[] data()
-    {
-        if( type.tsize <= value.data.length )
-            return cast(void[])(value.data);
-        else
-            return value.arr;
+        return type.compare(this.ptr, rhs.ptr);
     }
 }
 
 debug( UnitTest )
 {
+    /*
+     * Language tests.
+     */
+
+    unittest
+    {
+        {
+            int[2] a;
+            void[] b = a;
+            int[]  c = cast(int[]) b;
+            assert( b.length == 2*int.sizeof );
+            assert( c.length == a.length );
+        }
+
+        {
+            struct A { size_t l; void* p; }
+            char[] b = "123";
+            A a = *cast(A*)(&b);
+
+            assert( a.l == b.length );
+            assert( a.p == b.ptr );
+        }
+    }
+
+    /*
+     * Basic tests.
+     */
+
     unittest
     {
         Variant v;
@@ -607,10 +982,7 @@ debug( UnitTest )
         v = &v;
         assert( v.isA!(Variant*), v.type.toString );
         assert( !v.isImplicitly!(int*), v.type.toString );
-        // NB: we *should* be able to implicitly cast any pointer to a void*;
-        // I'm just not sure how to do it right now.  This test will catch
-        // once it works, and remind us to switch the assert around.
-        assert( !v.isImplicitly!(void*), "see above comment in source" );
+        assert( v.isImplicitly!(void*), v.type.toString );
         assert( v.get!(Variant*) == &v );
 
         // Test object storage
@@ -755,6 +1127,140 @@ debug( UnitTest )
             assert( vhash.get!(int[char[]])["a"] == 1 );
             assert( vhash.get!(int[char[]])["b"] == 2 );
             assert( vhash.get!(int[char[]])["c"] == 3 );
+        }
+    }
+
+    /*
+     * Vararg tests.
+     */
+
+    version( EnableVararg )
+    {
+        private import tango.core.Vararg;
+
+        unittest
+        {
+            class A
+            {
+                char[] msg() { return "A"; }
+            }
+            class B : A
+            {
+                override char[] msg() { return "B"; }
+            }
+            interface C
+            {
+                char[] name();
+            }
+            class D : B, C
+            {
+                override char[] msg() { return "D"; }
+                override char[] name() { return "phil"; }
+            }
+
+            struct S { int a, b, c, d; }
+
+            Variant[] scoop(...)
+            {
+                return Variant.fromVararg(_arguments, _argptr);
+            }
+
+            auto va_0 = cast(char)  '?';
+            auto va_1 = cast(short) 42;
+            auto va_2 = cast(int)   1701;
+            auto va_3 = cast(long)  9001;
+            auto va_4 = cast(float) 3.14;
+            auto va_5 = cast(double)2.14;
+            auto va_6 = cast(real)  0.1;
+            auto va_7 = "abcd"[];
+            S    va_8 = { 1, 2, 3, 4 };
+            A    va_9 = new A;
+            B    va_a = new B;
+            C    va_b = new D;
+            D    va_c = new D;
+            
+            auto vs = scoop(va_0, va_1, va_2, va_3,
+                            va_4, va_5, va_6, va_7,
+                            va_8, va_9, va_a, va_b, va_c);
+
+            assert( vs[0x0].get!(typeof(va_0)) == va_0 );
+            assert( vs[0x1].get!(typeof(va_1)) == va_1 );
+            assert( vs[0x2].get!(typeof(va_2)) == va_2 );
+            assert( vs[0x3].get!(typeof(va_3)) == va_3 );
+            assert( vs[0x4].get!(typeof(va_4)) == va_4 );
+            assert( vs[0x5].get!(typeof(va_5)) == va_5 );
+            assert( vs[0x6].get!(typeof(va_6)) == va_6 );
+            assert( vs[0x7].get!(typeof(va_7)) == va_7 );
+            assert( vs[0x8].get!(typeof(va_8)) == va_8 );
+            assert( vs[0x9].get!(typeof(va_9)) is va_9 );
+            assert( vs[0xa].get!(typeof(va_a)) is va_a );
+            assert( vs[0xb].get!(typeof(va_b)) is va_b );
+            assert( vs[0xc].get!(typeof(va_c)) is va_c );
+
+            assert( vs[0x9].get!(typeof(va_9)).msg == "A" );
+            assert( vs[0xa].get!(typeof(va_a)).msg == "B" );
+            assert( vs[0xc].get!(typeof(va_c)).msg == "D" );
+            
+            assert( vs[0xb].get!(typeof(va_b)).name == "phil" );
+            assert( vs[0xc].get!(typeof(va_c)).name == "phil" );
+
+            {
+                TypeInfo[] types;
+                void* args;
+
+                Variant.toVararg(vs, types, args);
+
+                assert( types[0x0] is typeid(typeof(va_0)) );
+                assert( types[0x1] is typeid(typeof(va_1)) );
+                assert( types[0x2] is typeid(typeof(va_2)) );
+                assert( types[0x3] is typeid(typeof(va_3)) );
+                assert( types[0x4] is typeid(typeof(va_4)) );
+                assert( types[0x5] is typeid(typeof(va_5)) );
+                assert( types[0x6] is typeid(typeof(va_6)) );
+                assert( types[0x7] is typeid(typeof(va_7)) );
+                assert( types[0x8] is typeid(typeof(va_8)) );
+                assert( types[0x9] is typeid(typeof(va_9)) );
+                assert( types[0xa] is typeid(typeof(va_a)) );
+                assert( types[0xb] is typeid(typeof(va_b)) );
+                assert( types[0xc] is typeid(typeof(va_c)) );
+
+                auto ptr = args;
+
+                auto vb_0 = va_arg!(typeof(va_0))(ptr);
+                auto vb_1 = va_arg!(typeof(va_1))(ptr);
+                auto vb_2 = va_arg!(typeof(va_2))(ptr);
+                auto vb_3 = va_arg!(typeof(va_3))(ptr);
+                auto vb_4 = va_arg!(typeof(va_4))(ptr);
+                auto vb_5 = va_arg!(typeof(va_5))(ptr);
+                auto vb_6 = va_arg!(typeof(va_6))(ptr);
+                auto vb_7 = va_arg!(typeof(va_7))(ptr);
+                auto vb_8 = va_arg!(typeof(va_8))(ptr);
+                auto vb_9 = va_arg!(typeof(va_9))(ptr);
+                auto vb_a = va_arg!(typeof(va_a))(ptr);
+                auto vb_b = va_arg!(typeof(va_b))(ptr);
+                auto vb_c = va_arg!(typeof(va_c))(ptr);
+
+                assert( vb_0 == va_0 );
+                assert( vb_1 == va_1 );
+                assert( vb_2 == va_2 );
+                assert( vb_3 == va_3 );
+                assert( vb_4 == va_4 );
+                assert( vb_5 == va_5 );
+                assert( vb_6 == va_6 );
+                assert( vb_7 == va_7 );
+                assert( vb_8 == va_8 );
+                assert( vb_9 is va_9 );
+                assert( vb_a is va_a );
+                assert( vb_b is va_b );
+                assert( vb_c is va_c );
+
+                assert( vb_9.msg == "A" );
+                assert( vb_a.msg == "B" );
+                assert( vb_c.msg == "D" );
+
+                assert( vb_b.name == "phil" );
+                assert( vb_c.name == "phil" );
+            }
         }
     }
 }
