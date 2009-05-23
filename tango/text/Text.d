@@ -51,15 +51,6 @@
                  // do something with line
         ---
 
-        Substituting patterns within text can be implemented simply and
-        rather efficiently:
-        ---
-        auto dst = new Text!(char);
-
-        foreach (element; Util.patterns ("all cows eat grass", "eat", "chew"))
-                 dst.append (element);
-        ---
-
         Speaking a bit like Yoda might be accomplished as follows:
         ---
         auto dst = new Text!(char);
@@ -76,22 +67,20 @@
                 Text set (T[] chars, bool mutable=true);
                 Text set (TextView other, bool mutable=true);
 
-                // retreive currently selected text
+                // retrieve currently selected text
                 T[] selection ();
 
-                // get the index and length of the current selection
-                Span span ();
+                // set and retrieve current selection point
+                Text point (uint index);
+                uint point ();
 
                 // mark a selection
                 Text select (int start=0, int length=int.max);
 
-                // move the selection around
-                bool select (T c);
-                bool select (T[] pattern);
-                bool select (TextView other);
-                bool selectPrior (T c);
-                bool selectPrior (T[] pattern);
-                bool selectPrior (TextView other);
+                // return an iterator to move the selection around.
+                // Also exposes "replace all" functionality
+                Search search (T chr);
+                Search search (T[] pattern);
 
                 // format behind current selection
                 Text format (T[] format, ...);
@@ -100,7 +89,6 @@
                 Text append (T[] text);
                 Text append (TextView other);
                 Text append (T chr, int count=1);
-                Text append (int value, options);
                 Text append (long value, options);
                 Text append (double value, options);
                 Text append (InputStream source);
@@ -178,15 +166,38 @@
         class UniText
         {
                 // convert content
-                abstract char[]  toString  (char[]  dst = null);
+                abstract char[]  toString   (char[]  dst = null);
                 abstract wchar[] toString16 (wchar[] dst = null);
                 abstract dchar[] toString32 (dchar[] dst = null);
+        }
+
+        struct Search
+        {
+                // select prior instance
+                bool prev();
+
+                // select next instance
+                bool next();
+
+                // return instance count
+                size_t count();
+
+                // contains instance?
+                bool within();
+
+                // replace all with char
+                void replace(T);
+
+                // replace all with text (null == remove all)
+                void replace(T[]);
         }
         ---
 
 *******************************************************************************/
 
 module tango.text.Text;
+
+private import  tango.text.Search;
 
 private import  tango.io.model.IConduit;
 
@@ -231,11 +242,138 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
-                Selection span
+                Search Iterator
 
         ***********************************************************************/
 
-        public struct Span
+        private struct Search(T)
+        {
+                private alias SearchFruct!(T) Engine;
+                private alias size_t delegate(T[], size_t) Call;
+
+                private Text    text;
+                private Engine  engine;
+
+                /***************************************************************
+
+                        Construct a Search instance
+
+                ***************************************************************/
+
+                static Search opCall (Text text, T[] match)
+                {
+                        Search s = void;
+                        s.engine.match = match;
+                        text.selectLength = 0;
+                        s.text = text;
+                        return s;
+                }
+
+                /***************************************************************
+
+                        Search backward, starting at the character prior to
+                        the selection point
+
+                ***************************************************************/
+
+                bool prev ()
+                {
+                        return locate (&engine.reverse, text.slice, text.point - 1);
+                }
+
+                /***************************************************************
+
+                        Search forward, starting at the current selection
+                        point. We start at the following character position
+                        where an existing selection has been made (to avoid
+                        selecting the same location)
+
+                ***************************************************************/
+
+                bool next ()
+                {
+                        return locate (&engine.forward, text.slice, 
+                                        text.point + ((text.selectLength > 0) & 1));
+                }
+
+                /***************************************************************
+
+                        Returns true if there is a match within the 
+                        associated text
+
+                ***************************************************************/
+
+                bool within ()
+                {       
+                        return engine.within (text.slice);
+                }
+
+                /***************************************************************
+                
+                        Returns number of matches within the associated
+                        text
+
+                ***************************************************************/
+
+                size_t count ()
+                {       
+                        return engine.count (text.slice);
+                }
+
+                /***************************************************************
+
+                        Replace all matches with the given character
+
+                ***************************************************************/
+
+                void replace (T chr)
+                {     
+                        replace ((&chr)[0..1]);  
+                }
+
+                /***************************************************************
+
+                        Replace all matches with the given substitution
+
+                ***************************************************************/
+
+                void replace (T[] sub = null)
+                {  
+                        auto dst = new T[text.length];
+                        dst.length = 0;
+
+                        foreach (token; engine.tokens (text.slice, sub))
+                                 dst ~= token;
+                        text.set (dst, false);
+                }
+ 
+                /***************************************************************
+
+                        locate pattern index and select as appropriate
+
+                ***************************************************************/
+
+                private bool locate (Call call, T[] content, size_t from)
+                {
+                        auto index = call (content, from);
+                        if (index < content.length)
+                           {
+                           text.select (index, engine.match.length);
+                           return true;
+                           }
+                        return false;
+                }
+        }
+
+        /***********************************************************************
+
+                Selection span
+
+                deprecated: use point() instead
+
+        ***********************************************************************/
+
+        deprecated public struct Span
         {
                 uint    begin,                  /// index of selection point
                         length;                 /// length of selection
@@ -357,9 +495,11 @@ class Text(T) : TextView!(T)
 
                 Return the index and length of the current selection
 
+                deprecated: use point() instead
+
         ***********************************************************************/
 
-        final Span span ()
+        deprecated final Span span ()
         {
                 Span s;
                 s.begin = selectPoint;
@@ -369,8 +509,66 @@ class Text(T) : TextView!(T)
 
         /***********************************************************************
 
+                Return the current selection point
+
+        ***********************************************************************/
+
+        final uint point ()
+        {
+                return selectPoint;
+        }
+
+        /***********************************************************************
+
+                Set the current selection point. See select(int, int) also
+
+        ***********************************************************************/
+
+        final Text point (uint index)
+        {
+                return select (0, 0);
+        }
+
+        /***********************************************************************
+        
+                Return a search iterator for a given pattern. The iterator
+                sets the current text selection as appropriate. For example:
+                ---
+                auto t = new Text ("hello world");
+                auto s = t.search ("world");
+
+                assert (s.next);
+                assert (t.selection == "world");
+                ---
+
+                Replacing patterns operates in a similar fashion:
+                ---
+                auto t = new Text ("hello world");
+                auto s = t.search ("world");
+
+                // replace all instances of "world" with "everyone"
+                assert (s.replace ("everyone"));
+                assert (s.count is 0);
+                ---
+
+        ***********************************************************************/
+
+        Search!(T) search (T[] match)
+        {
+                return Search!(T) (this, match);
+        }
+
+        Search!(T) search (T match)
+        {
+                return search ((&match)[0..1]);
+        }
+
+        /***********************************************************************
+
                 Find and select the next occurrence of a BMP code point
                 in a string. Returns true if found, false otherwise
+
+                deprecated: use search() instead
 
         ***********************************************************************/
 
@@ -391,6 +589,8 @@ class Text(T) : TextView!(T)
                 Find and select the next substring occurrence.  Returns
                 true if found, false otherwise
 
+                deprecated: use search() instead
+
         ***********************************************************************/
 
         final bool select (TextViewT other)
@@ -402,6 +602,8 @@ class Text(T) : TextView!(T)
 
                 Find and select the next substring occurrence. Returns
                 true if found, false otherwise
+
+                deprecated: use search() instead
 
         ***********************************************************************/
 
@@ -422,6 +624,8 @@ class Text(T) : TextView!(T)
                 Find and select a prior occurrence of a BMP code point
                 in a string. Returns true if found, false otherwise
 
+                deprecated: use search() instead
+
         ***********************************************************************/
 
         final bool selectPrior (T c)
@@ -441,6 +645,8 @@ class Text(T) : TextView!(T)
                 Find and select a prior substring occurrence. Returns
                 true if found, false otherwise
 
+                deprecated: use search() instead
+
         ***********************************************************************/
 
         final bool selectPrior (TextViewT other)
@@ -452,6 +658,8 @@ class Text(T) : TextView!(T)
 
                 Find and select a prior substring occurrence. Returns
                 true if found, false otherwise
+
+                deprecated: use search() instead
 
         ***********************************************************************/
 
@@ -470,6 +678,8 @@ class Text(T) : TextView!(T)
         /***********************************************************************
 
                 Append formatted content to this Text
+
+                deprecated: use search() instead
 
         ***********************************************************************/
 
@@ -525,12 +735,12 @@ class Text(T) : TextView!(T)
                 Append an integer to this Text
 
         ***********************************************************************/
-
+/+
         final Text append (int v, T[] fmt = null)
         {
                 return append (cast(long) v, fmt);
         }
-
++/
         /***********************************************************************
 
                 Append a long to this Text
@@ -1471,5 +1681,47 @@ debug (UnitTest)
                  s.append (element);
         assert (s.selection == "almost all cows chew grass");
         assert (s.clear.format("{}:{}", 1, 2) == "1:2");
+        }
+}
+
+
+debug (Text)
+{
+        void main()
+        {
+                auto t = new Text!(char);
+                t = "hello world";
+                auto s = t.search ("o");
+                assert (s.next);
+                assert (t.selection == "o");
+                assert (t.point is 4);
+                assert (s.next);
+                assert (t.selection == "o");
+                assert (t.point is 7);
+                assert (!s.next);
+
+                t.point = 9;
+                assert (s.prev);
+                assert (t.selection == "o");
+                assert (t.point is 7);
+                assert (s.prev);
+                assert (t.selection == "o");
+                assert (t.point is 4);
+                assert (s.next);
+                assert (t.point is 7);
+                assert (s.prev);
+                assert (t.selection == "o");
+                assert (t.point is 4);
+                assert (!s.prev);
+                assert (s.count is 2);
+                s.replace ('O');
+                assert (t.slice == "hellO wOrld");
+                assert (s.count is 0);
+
+                t.point = 0;
+                assert (t.select ("hellO"));
+                assert (t.selection == "hellO");
+                assert (t.select ("hellO"));
+                assert (t.selection == "hellO");
         }
 }
