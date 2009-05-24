@@ -19,21 +19,32 @@ private import tango.core.Exception : ArrayBoundsException;
 /******************************************************************************
 
         A stack of the given value-type V, with maximum depth Size. Note
-        that this does not generate any heap activity
+        that this does no memory allocation of its own when Size != 0, and
+        does heap allocation when Size == 0. Thus you can have a fixed-size
+        low-overhead instance, or a heap oriented instance.
 
 ******************************************************************************/
 
-struct Stack (V, int Size) 
+struct Stack (V, int Size = 0) 
 {
-        private V[Size]         stack;
-        private uint            depth;
-
-        alias rotateLeft       opShlAssign;
-        alias rotateRight      opShrAssign;
-        alias push             opCatAssign;
-        alias slice            opSlice;
         alias nth              opIndex;
+        alias slice            opSlice;
+        alias rotateRight      opShrAssign;
+        alias rotateLeft       opShlAssign;
+        alias push             opCatAssign;
           
+        
+        static if (Size == 0)
+                  {
+                  private uint depth;
+                  private V[]  stack;
+                  }
+               else
+                  {
+                  private uint     depth;
+                  private V[Size]  stack;
+                  }
+
         /***********************************************************************
 
                 Clear the stack
@@ -76,6 +87,8 @@ struct Stack (V, int Size)
         Stack clone ()
         {       
                 Stack s = void;
+                static if (Size == 0)
+                           s.stack.length = stack.length;
                 s.stack[] = stack;
                 s.depth = depth;
                 return s;
@@ -104,10 +117,19 @@ struct Stack (V, int Size)
 
         void push (V value)
         {
-                if (depth < stack.length)
-                    stack[depth++] = value;
-                else
-                   error (__LINE__);
+                static if (Size == 0)
+                          {
+                          if (depth >= stack.length)
+                              stack.length = stack.length + 64;
+                          stack[depth++] = value;
+                          }
+                       else
+                          {                         
+                          if (depth < stack.length)
+                              stack[depth++] = value;
+                          else
+                             error (__LINE__);
+                          }
         }
 
         /**********************************************************************
@@ -291,6 +313,9 @@ debug (Stack)
 
         void main()
         {
+                Stack!(int) v;
+                v.push(1);
+                
                 Stack!(int, 10) s;
 
                 Stdout.formatln ("push four");
