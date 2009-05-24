@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 # tries to guess the D compiler
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 
-return_path=0
+return_path=
 while [ $# -gt 0 ]
 do
     case $1 in
@@ -27,30 +27,30 @@ if [ -n "$1" -o -n "$DC" ]; then
     if [ -z "$comp" ] ; then
         comp="$DC"
     fi
-    if [ 0 -lt $return_path ]; then
+    if [ -n "$return_path" ]; then
         which "$comp"
-    elif ("$comp" -v 2>&1 | grep ldc >& /dev/null); then
+    elif ( "$comp" -v 2>&1 | grep ldc >& /dev/null ) ; then
         echo ldc
-    elif ("$comp" -v 2>&1 | grep gdc >& /dev/null); then
+    elif ( "$comp" -v 2>&1 | grep gdc >& /dev/null ) ; then
         echo gdc
-    elif ("$comp" -v 2>&1 | grep dmd >& /dev/null); then
+    elif ( "$comp" -v 2>&1 | grep dmd >& /dev/null ) ; then
         echo dmd
     else
         echo `basename $comp`
     fi
-elif (which ldc > /dev/null); then
+elif (which ldc >& /dev/null); then
     if [ 0 -lt $return_path ]; then
         which ldc
     else
         echo ldc
     fi
-elif (which dmd > /dev/null); then
+elif (which dmd >& /dev/null); then
     if [ 0 -lt $return_path ]; then
         which dmd
     else
         echo dmd
     fi
-elif (which gdc > /dev/null); then
+elif (which gdc >& /dev/null); then
     if [ 0 -lt $return_path ]; then
         which gdc
     else

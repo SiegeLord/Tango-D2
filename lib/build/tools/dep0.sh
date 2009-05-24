@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # generates the make dependencies to generate fully qualified d files out of the files
 # it receives as input
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
@@ -24,7 +24,7 @@ do
     fi
     if [ ! "$1" -ef "$newName" ] ; then
         echo "$newName : $1"
-        echo "\tcp $1 $newName"
+        echo "	cp $1 $newName"
         echo ".INTERMEDIATE: $newName"
         echo ".PRECIOUS: $newName"
         #echo ".SECONDARY: $newName"

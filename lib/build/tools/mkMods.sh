@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # this gives the objects to compile in a make compatible way
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # returns os-platform
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 

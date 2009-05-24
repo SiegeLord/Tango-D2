@@ -11,6 +11,8 @@ EXCLUDE_DEP_COMP= ^ldc\.
 
 %.dep:%.d
 	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	[ -r "$(<:%.d=%.o)" ]
 
 %.o:%.d
 	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	[ -r "$(<:%.d=%.o)" ]
