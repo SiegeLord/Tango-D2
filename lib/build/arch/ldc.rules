@@ -1,0 +1,16 @@
+# common make rules for native static compilation with ldc
+
+LIB_EXT=a
+OBJ_EXT=o
+mkLib=ar -r
+ranlib=ranlib
+
+DFLAGS_ALL=$(DFLAGS) $(DFLAGS_ADD) -I$(TANGO_HOME)
+
+EXCLUDE_DEP_COMP= ^ldc\.
+
+%.dep:%.d
+	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+
+%.o:%.d
+	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)

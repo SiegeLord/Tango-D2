@@ -1,0 +1,19 @@
+# common make rules for dmd
+
+LIB_EXT=a
+OBJ_EXT=o
+mkLib=ar -r
+ranlib=ranlib
+
+DFLAGS_ALL=$(DFLAGS) $(DFLAGS_ADD) -I$(TANGO_HOME)
+
+EXCLUDE_DEP_COMP=
+# ^dmd\.
+
+%.dep:%.d
+	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	if [ ! -e $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ ! -e $(<:%.d=%.o) ]; fi
+
+%.o:%.d
+	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	if [ ! -e $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ ! -e $(<:%.d=%.o) ]; fi
