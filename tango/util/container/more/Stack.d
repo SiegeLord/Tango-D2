@@ -75,7 +75,7 @@ struct Stack (V, int Size = 0)
 
         uint unused ()
         {
-                return Size - depth;
+                return stack.length - depth;
         }
 
         /***********************************************************************
@@ -277,7 +277,7 @@ struct Stack (V, int Size = 0)
 
         /**********************************************************************
 
-                Throw an exception
+                Throw an exception 
 
         **********************************************************************/
 
