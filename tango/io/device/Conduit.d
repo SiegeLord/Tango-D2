@@ -189,7 +189,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void close ()
+        void close ()
         {
                 this.detach;
         }
