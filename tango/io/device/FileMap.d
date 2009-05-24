@@ -79,8 +79,9 @@ class FileMap : Array
 
         ***********************************************************************/
 
-        override void detach ()
+        override void close ()
         {
+                super.close;
                 if (file)
                     file.close;
                 file = null;
