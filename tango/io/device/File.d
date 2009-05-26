@@ -168,6 +168,7 @@ class File : Device, Device.Seek
                                 Create,                 /// create or truncate
                                 Sedate,                 /// create if necessary
                                 Append,                 /// create if necessary
+                                New,                    /// can't exist
                                 };
 
         /***********************************************************************
@@ -411,12 +412,17 @@ class File : Device, Device.Seek
                 private bool appending;
 
                 /***************************************************************
+                  
+                    Low level open for sub-classes that need to apply specific
+                    attributes.
 
-                        Open a file with the provided style.
+                    Return:
+                        false in case of failure
 
                 ***************************************************************/
 
-                void open (char[] path, Style style = ReadExisting)
+                protected bool open (char[] path, Style style, 
+                                     DWORD addattr)
                 {
                         DWORD   attr,
                                 share,
@@ -439,6 +445,7 @@ class File : Device, Device.Seek
                                         CREATE_ALWAYS,          // truncate always
                                         OPEN_ALWAYS,            // create if needed
                                         OPEN_ALWAYS,            // (for appending)
+                                        CREATE_NEW              // can't exist
                                         ];
                                                 
                         static const Flags Share =   
@@ -462,7 +469,7 @@ class File : Device, Device.Seek
                         path_ = path;
                         style_ = style;
 
-                        attr   = Attr[style.cache];
+                        attr   = Attr[style.cache] | addattr;
                         share  = Share[style.share];
                         create = Create[style.open];
                         access = Access[style.access];
@@ -493,7 +500,7 @@ class File : Device, Device.Seek
                                 }
 
                         if (handle is INVALID_HANDLE_VALUE)
-                            error;
+                            return false;
 
                         // move to end of file?
                         if (style.open is Open.Append)
@@ -502,6 +509,20 @@ class File : Device, Device.Seek
                         // monitor this handle for async I/O?
                         if (scheduler)
                             scheduler.open (cast(int) handle, toString);
+
+                        return true;
+                }
+
+                /***************************************************************
+
+                        Open a file with the provided style.
+
+                ***************************************************************/
+
+                void open (char[] path, Style style = ReadExisting)
+                {
+                    if (!open(path, style, [0, 0, 0, 0]))
+                        error;
                 }
                 
                 /***************************************************************
@@ -600,18 +621,16 @@ class File : Device, Device.Seek
         {
                 /***************************************************************
 
-                        Open a file with the provided style.
+                    Low level open for sub-classes that need to apply specific
+                    attributes.
 
-                        Note that files default to no-sharing. That is, 
-                        they are locked exclusively to the host process 
-                        unless otherwise stipulated. We do this in order
-                        to expose the same default behaviour as Win32
-
-                        NO FILE LOCKING FOR BORKED POSIX
+                    Return:
+                        false in case of failure
 
                 ***************************************************************/
 
-                void open (char[] path, Style style = ReadExisting)
+                protected bool open (char[] path, Style style,
+                                     int addflags, int access = 0666)
                 {
                         alias int[] Flags;
 
@@ -631,6 +650,7 @@ class File : Device, Device.Seek
                                         O_CREAT | O_TRUNC,      // truncate always
                                         O_CREAT,                // create if needed
                                         O_APPEND | O_CREAT,     // append
+                                        O_CREAT | O_EXCL,       // can't exist
                                         ];
 
                         static const short[] Locks =   
@@ -650,9 +670,31 @@ class File : Device, Device.Seek
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = posix.open (name, mode | O_LARGEFILE, 0666);
+                        handle = posix.open (name, mode | O_LARGEFILE | addflags, 
+                                             access);
                         if (handle is -1)
-                            error;
+                            return false;
+
+                        return true;
+                }
+
+                /***************************************************************
+
+                        Open a file with the provided style.
+
+                        Note that files default to no-sharing. That is, 
+                        they are locked exclusively to the host process 
+                        unless otherwise stipulated. We do this in order
+                        to expose the same default behaviour as Win32
+
+                        NO FILE LOCKING FOR BORKED POSIX
+
+                ***************************************************************/
+
+                void open (char[] path, Style style = ReadExisting)
+                {
+                    if (!open(path, style, 0))
+                        error;
                 }
 
                 /***************************************************************

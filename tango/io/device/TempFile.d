@@ -2,7 +2,8 @@
  *
  * copyright:   Copyright &copy; 2007 Daniel Keep.  All rights reserved.
  * license:     BSD style: $(LICENSE)
- * version:     Initial release: December 2007
+ * version:     Dec 2007: Initial release
+ *              May 2009: Inherit File
  * authors:     Daniel Keep
  * credits:     Thanks to John Reimer for helping test this module under
  *              Linux.
@@ -14,8 +15,8 @@ module tango.io.device.TempFile;
 import Path = tango.io.Path;
 import tango.math.random.Kiss : Kiss;
 import tango.io.device.Device : Device;
-import tango.io.device.File : File;
-import tango.stdc.stringz : toStringz, toString16z;
+import tango.io.device.File;
+import tango.stdc.stringz : toStringz;
 
 /******************************************************************************
  ******************************************************************************/
@@ -30,18 +31,8 @@ version( Win32 )
     {
         import tango.sys.Common :
             GetVersionExA, OSVERSIONINFO,
-            CreateFileA, GENERIC_READ, GENERIC_WRITE,
-            CREATE_NEW, FILE_ATTRIBUTE_NORMAL, FILE_FLAG_DELETE_ON_CLOSE,
-            FILE_SHARE_READ, FILE_SHARE_WRITE,
-            LPSECURITY_ATTRIBUTES,
-            HANDLE, INVALID_HANDLE_VALUE,
-            GetTempPathA, SetFilePointer, GetLastError, ERROR_SUCCESS;
-
-        HANDLE CreateFile(char[] fn, DWORD da, DWORD sm,
-                LPSECURITY_ATTRIBUTES sa, DWORD cd, DWORD faa, HANDLE tf)
-        {
-            return CreateFileA(toStringz(fn), da, sm, sa, cd, faa, tf);
-        }
+            FILE_FLAG_DELETE_ON_CLOSE,
+            GetTempPathA;
 
         char[] GetTempPath()
         {
@@ -59,26 +50,10 @@ version( Win32 )
     else
     {
         import tango.sys.Common :
-            MultiByteToWideChar, WideCharToMultiByte,
+            WideCharToMultiByte,
             GetVersionExW, OSVERSIONINFO,
-            CreateFileW, GENERIC_READ, GENERIC_WRITE,
-            CREATE_NEW, FILE_ATTRIBUTE_NORMAL, FILE_FLAG_DELETE_ON_CLOSE,
-            FILE_SHARE_READ, FILE_SHARE_WRITE,
-            LPSECURITY_ATTRIBUTES,
-            HANDLE, INVALID_HANDLE_VALUE,
-            GetTempPathW, SetFilePointer, GetLastError, ERROR_SUCCESS;
-
-        HANDLE CreateFile(char[] fn, DWORD da, DWORD sm,
-                LPSECURITY_ATTRIBUTES sa, DWORD cd, DWORD faa, HANDLE tf)
-        {
-                // convert into output buffer
-                wchar[MAX_PATH+1] tmp = void;
-                assert (fn.length < tmp.length);
-                auto i = MultiByteToWideChar (CP_UTF8, 0, cast(PCHAR) fn.ptr, 
-                                              fn.length, tmp.ptr, tmp.length);
-                tmp[i] = 0;
-                return CreateFileW(tmp.ptr, da, sm, sa, cd, faa, tf);
-        }
+            FILE_FLAG_DELETE_ON_CLOSE,
+            GetTempPathW;
 
         char[] GetTempPath()
         {
@@ -122,7 +97,6 @@ version( Win32 )
 
 else version( Posix )
 {
-    import tango.stdc.posix.fcntl : open, O_CREAT, O_EXCL, O_RDWR;
     import tango.stdc.posix.pwd : getpwnam;
     import tango.stdc.posix.unistd : access, getuid, lseek, unlink, W_OK;
     import tango.stdc.posix.sys.types : off_t;
@@ -130,8 +104,6 @@ else version( Posix )
     
     import tango.stdc.posix.stdlib : getenv;
     import tango.stdc.string : strlen;
-
-    enum { O_LARGEFILE = 0x8000 }
 
     version( linux )
     {
@@ -201,11 +173,8 @@ else version( Posix )
  *
  ******************************************************************************/
 
-class TempFile : Device, Device.Seek
+class TempFile : File
 {
-    //alias File.Cache Cache;
-    //alias File.Share Share;
-
     /+enum Visibility : ubyte
     {
         /**
@@ -275,7 +244,7 @@ class TempFile : Device, Device.Seek
      * opened and used.
      *
      **************************************************************************/
-    align(1) struct Style
+    align(1) struct TempStyle
     {
         //Visibility visibility;      ///
         Transience transience;        ///
@@ -286,52 +255,32 @@ class TempFile : Device, Device.Seek
     }
 
     /**
-     * Style for creating a transient temporary file that only the current
+     * TempStyle for creating a transient temporary file that only the current
      * user can access.
      */
-    static const Style Transient = {Transience.Transient};
+    static const TempStyle Transient = {Transience.Transient};
     /**
-     * Style for creating a permanent temporary file that only the current
+     * TempStyle for creating a permanent temporary file that only the current
      * user can access.
      */
-    static const Style Permanent = {Transience.Permanent};
+    static const TempStyle Permanent = {Transience.Permanent};
 
     // Path to the temporary file
     private char[] _path;
 
-    // Style we've opened with
-    private Style _style;
-
-    // Have we been detatched?
-    private bool detached = false;
+    // TempStyle we've opened with
+    private TempStyle _style;
 
     ///
-    this(Style style = Style.init)
+    this(TempStyle style = TempStyle.init)
     {
-        create(style);
+        open (style);
     }
 
     ///
-    this(char[] prefix, Style style = Style.init)
+    this(char[] prefix, TempStyle style = TempStyle.init)
     {
-        create (prefix, style);
-    }
-
-    ~this()
-    {
-        if( !detached ) this.detach();
-    }
-
-    /**************************************************************************
-     *
-     * Returns the path of the temporary file.  Please note that depending
-     * on your platform, the returned path may or may not actually exist if
-     * you specified a transient file.
-     *
-     **************************************************************************/
-    char[] path()
-    {
-        return _path;
+        open (prefix, style);
     }
 
     /**************************************************************************
@@ -339,80 +288,31 @@ class TempFile : Device, Device.Seek
      * Indicates the style that this TempFile was created with.
      *
      **************************************************************************/
-    Style style()
+    TempStyle tempStyle()
     {
         return _style;
-    }
-
-    override char[] toString()
-    {
-        if( path.length > 0 )
-            return path;
-        else
-            return "<tempfile>";
-    }
-
-    /**************************************************************************
-     *
-     * Returns the current cursor position within the file.
-     *
-     **************************************************************************/
-    long position()
-    {
-        return seek(0, Anchor.Current);
-    }
-
-    /**************************************************************************
-     *
-     * Returns the total length, in bytes, of the temporary file.
-     *
-     **************************************************************************/
-    long length()
-    {
-        long pos, ret;
-        pos = position;
-        ret = seek(0, Anchor.End);
-        seek(pos);
-        return ret;
     }
 
     /*
      * Creates a new temporary file with the given style.
      */
-    private void create(Style style)
+    private void open (TempStyle style)
     {
-        create(tempPath, style);
+        open (tempPath, style);
     }
 
-    private void create(char[] prefix, Style style)
+    private void open (char[] prefix, TempStyle style)
     {
-        for( size_t i=style.attempts; i--; )
+        for( ubyte i=style.attempts; i--; )
         {
-            if( create_path(Path.join(prefix, randomName), style) )
+            if( openTempFile(Path.join(prefix, randomName), style) )
                 return;
         }
 
         error("could not create temporary file");
     }
 
-    version( D_Ddoc )
-    {
-        /**********************************************************************
-         * 
-         * Seeks the temporary file's cursor to the given location.
-         *
-         **********************************************************************/
-        long seek(long offset, Anchor anchor = Anchor.Begin);
-
-        /**********************************************************************
-         * 
-         * Returns the path to the directory where temporary files will be
-         * created.  The returned path is safe to mutate.
-         *
-         **********************************************************************/
-        public static char[] tempPath();
-    }
-    else version( Win32 )
+    version( Win32 )
     {
         private static const DEFAULT_LENGTH = 6;
         private static const DEFAULT_PREFIX = "~t";
@@ -421,9 +321,12 @@ class TempFile : Device, Device.Seek
         private static const JUNK_CHARS = 
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
-        /*
-         * Returns the path to the temporary directory.
-         */
+       /**********************************************************************
+         * 
+         * Returns the path to the directory where temporary files will be
+         * created.  The returned path is safe to mutate.
+         *
+         **********************************************************************/
         public static char[] tempPath()
         {
             return GetTempPath;
@@ -433,58 +336,27 @@ class TempFile : Device, Device.Seek
          * Creates a new temporary file at the given path, with the specified
          * style.
          */
-        private bool create_path(char[] path, Style style)
+        private bool openTempFile(char[] path, TempStyle style)
         {
             // TODO: Check permissions directly and throw an exception;
             // otherwise, we could spin trying to make a file when it's
             // actually not possible.
 
-            // This code is largely stolen from File
-            DWORD attr, share, access, create;
+            Style filestyle = {Access.ReadWrite, Open.New, 
+                               Share.None, Cache.None};
 
-            alias DWORD[] Flags;
-
-            // Basic stuff
-            access = GENERIC_READ | GENERIC_WRITE;
-            share = 0; // No sharing
-            create = CREATE_NEW;
+            DWORD attr;
 
             // Set up flags
-            attr = FILE_ATTRIBUTE_NORMAL;
-            attr |= reparseSupported ? FILE_FLAG_OPEN_REPARSE_POINT : 0;
+            attr = reparseSupported ? FILE_FLAG_OPEN_REPARSE_POINT : 0;
             if( style.transience == Transience.Transient )
                 attr |= FILE_FLAG_DELETE_ON_CLOSE;
 
-            handle = CreateFile(
-                    /*lpFileName*/ path,
-                    /*dwDesiredAccess*/ access,
-                    /*dwShareMode*/ share,
-                    /*lpSecurityAttributes*/ null,
-                    /*dwCreationDisposition*/ CREATE_NEW,
-                    /*dwFlagsAndAttributes*/ attr,
-                    /*hTemplateFile*/ null
-                    );
-
-            if( handle is INVALID_HANDLE_VALUE )
+            if (!super.open (path, filestyle, attr))
                 return false;
 
-            _path = path;
             _style = style;
             return true;
-        }
-
-        // See D_Ddoc version
-        override long seek(long offset, Anchor anchor = Anchor.Begin)
-        {
-            LONG high = cast(LONG) (offset >> 32);
-            long result = SetFilePointer (handle, cast(LONG) offset, 
-                                          &high, anchor);
-
-            if (result is -1 && 
-                GetLastError() != ERROR_SUCCESS)
-                error();
-
-            return result + (cast(long) high << 32);
         }
     }
     else version( Posix )
@@ -499,9 +371,12 @@ class TempFile : Device, Device.Seek
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
-        /*
-         * Returns the path to the temporary directory.
-         */
+       /**********************************************************************
+         * 
+         * Returns the path to the directory where temporary files will be
+         * created.  The returned path is safe to mutate.
+         *
+         **********************************************************************/
         public static char[] tempPath()
         {
             // Check for TMPDIR; failing that, use /tmp
@@ -516,12 +391,11 @@ class TempFile : Device, Device.Seek
          * Creates a new temporary file at the given path, with the specified
          * style.
          */
-        private bool create_path(char[] path, Style style)
+        private bool openTempFile(char[] path, TempStyle style)
         {
             // Check suitability
             {
-                auto parent = Path.parse(path).path;
-                auto parentz = toStringz(parent);
+                auto parentz = toStringz(Path.parse(path).path);
 
                 // Make sure we have write access
                 if( access(parentz, W_OK) == -1 )
@@ -548,13 +422,12 @@ class TempFile : Device, Device.Seek
 
             // Create file
             {
-                auto flags = O_LARGEFILE | O_CREAT | O_EXCL
-                    | O_NOFOLLOW | O_RDWR;
+                Style filestyle = {Access.ReadWrite, Open.New, 
+                                   Share.None, Cache.None};
 
-                auto pathz = toStringz(path);
+                auto addflags = O_NOFOLLOW;
 
-                handle = open(pathz, flags, 0600);
-                if( handle is -1 )
+                if (!super.open(path, filestyle, addflags, 0600))
                     return false;
 
                 if( style.transience == Transience.Transient )
@@ -566,25 +439,14 @@ class TempFile : Device, Device.Seek
                     // NOTE: This should be an exception and not simply
                     // returning false, since this is a violation of our
                     // guarantees.
-                    if( unlink(pathz) == -1 )
+                    if( unlink(toStringz(path)) == -1 )
                         error("could not remove transient file");
                 }
 
-                _path = path;
                 _style = style;
 
                 return true;
             }
-        }
-
-        // See D_Ddoc version
-        long seek(long offset, Anchor anchor = Anchor.Begin)
-        {
-            assert( offset <= uint.max );
-            long result = lseek(handle, cast(off_t) offset, anchor);
-            if (result is -1)
-                error();
-            return result;
         }
     }
     else
@@ -612,7 +474,6 @@ class TempFile : Device, Device.Seek
     {
         static assert( !is(Sensitivity) );
         super.detach();
-        detached = true;
     }
 }
 
@@ -646,7 +507,7 @@ You might want to delete the permanent one afterwards, too. :)")
     Stdout.formatln("Creating a transient file:");
     {
         scope tempFile = new TempFile(/*TempFile.UserPermanent*/);
-        scope(exit) tempFile.detach;
+        //scope(exit) tempFile.detach;
 
         Stdout.formatln(" .. path: {}", tempFile);
 
@@ -667,7 +528,7 @@ You might want to delete the permanent one afterwards, too. :)")
     Stdout.formatln("Creating a permanent file:");
     {
         scope tempFile = new TempFile(TempFile.Permanent);
-        scope(exit) tempFile.detach;
+        //scope(exit) tempFile.detach;
 
         Stdout.formatln(" .. path: {}", tempFile);
 

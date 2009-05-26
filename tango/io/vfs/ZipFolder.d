@@ -432,7 +432,7 @@ else
                 Stderr.formatln(" sync: renaming {} to {}",
                         tempFile, path);
 
-            Path.rename (tempFile.path, path);
+            Path.rename (tempFile.toString, path);
         }
 
         // Finally, re-open the archive so that we have all the nicely
