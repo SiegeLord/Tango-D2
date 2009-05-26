@@ -507,7 +507,6 @@ You might want to delete the permanent one afterwards, too. :)")
     Stdout.formatln("Creating a transient file:");
     {
         scope tempFile = new TempFile(/*TempFile.UserPermanent*/);
-        //scope(exit) tempFile.detach;
 
         Stdout.formatln(" .. path: {}", tempFile);
 
@@ -528,7 +527,6 @@ You might want to delete the permanent one afterwards, too. :)")
     Stdout.formatln("Creating a permanent file:");
     {
         scope tempFile = new TempFile(TempFile.Permanent);
-        //scope(exit) tempFile.detach;
 
         Stdout.formatln(" .. path: {}", tempFile);
 
