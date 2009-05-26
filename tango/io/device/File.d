@@ -521,7 +521,7 @@ class File : Device, Device.Seek
 
                 void open (char[] path, Style style = ReadExisting)
                 {
-                    if (!open(path, style, [0, 0, 0, 0]))
+                    if (!open(path, style, 0))
                         error;
                 }
                 
