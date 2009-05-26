@@ -1363,7 +1363,7 @@ private:
         header.data = data;
         if (p.isAbsolute)
             f_name = f_name[p.root.length+1..$]; 
-        header.file_name = Path.native(f_name);
+        header.file_name = f_name;
 
         // Write out the header and the filename
         auto header_pos = seeker.seek(0, seeker.Anchor.Current);
