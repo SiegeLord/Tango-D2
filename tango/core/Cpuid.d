@@ -964,7 +964,8 @@ final class CpuInfoSparc: CpuInfo{
     // TODO: Implement this function with OS support
     void cpuidSparc(Sparc_Cputype cputype)
     {
-        size_t l1,l2,way1,way2;
+        size_t l1,l2;
+        ubyte way1,way2;
         switch(cputype){
         case Sparc_Cputype.UltraSparcIIi:
             l1 = 16;  way1=2; l2 = 512; way2=4;
