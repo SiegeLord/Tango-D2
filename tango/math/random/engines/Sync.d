@@ -54,8 +54,8 @@ struct Sync(E){
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    uint fromString(char[] s){
-        int i;
+    size_t fromString(char[] s){
+        size_t i;
         assert(s[0..4]=="Sync","unexpected kind, expected Sync");
         synchronized(lock){
             i=engine.fromString(s[i+4..$]);

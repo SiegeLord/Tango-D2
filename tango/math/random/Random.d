@@ -1201,7 +1201,7 @@ final class RandomG(SourceT=DefaultEngine)
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    uint fromString(char[] s){
+    size_t fromString(char[] s){
         return source.fromString(s);
     }
     

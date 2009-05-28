@@ -105,10 +105,10 @@ struct Twister
     /// initializes the generator with a uint as seed
     void seed (uint s)
     {
-        mt[0]= s & 0xffffffffUL;
+        mt[0]= s & 0xffff_ffffUL;
         for (mti=1; mti<mt.length; mti++){
             mt[mti] = (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
-            mt[mti] &= 0xffffffffUL;
+            mt[mti] &= 0xffff_ffffUL;
         }
     }
     /// adds entropy to the generator
@@ -119,7 +119,7 @@ struct Twister
 
         for (k = mt.length; k; k--)   {
             mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ r() + j; 
-            mt[i] &=  0xffffffffUL; 
+            mt[i] &=  0xffff_ffffUL; 
             i++;
             j++;
 
@@ -168,8 +168,8 @@ struct Twister
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    uint fromString(char[] s){
-        int i;
+    size_t fromString(char[] s){
+        size_t i;
         assert(s[0..7]=="Twister","unexpected kind, expected Twister");
         i+=7;
         assert(s[i]=='_',"no separator _ found");

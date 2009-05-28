@@ -85,7 +85,7 @@ version(has_urandom) {
         }
         /// reads the current status from a string (that should have been trimmed)
         /// returns the number of chars read
-        uint fromString(char[] s){
+        size_t fromString(char[] s){
             char[] r="URandom";
             assert(s[0.. r.length]==r,"unxepected string instad of URandom:"~s);
             return r.length;

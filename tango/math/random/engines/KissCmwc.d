@@ -51,7 +51,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         const uint m=0xFFFF_FFFE;
         cmwc_i=(cmwc_i+1)&rMask;
         ulong t=cmwc_a*cmwc_q[cmwc_i]+cmwc_c;
-        cmwc_c=(t>>32);
+        cmwc_c=cast(uint)(t>>32);
         uint x=cast(uint)t+cmwc_c;
         if (x<cmwc_c) {
             ++x; ++cmwc_c;
@@ -60,7 +60,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         ulong k_t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
-        k_t = a*kiss_z+kiss_c; kiss_c = (k_t>>32);
+        k_t = cast(uint)(a*kiss_z+kiss_c); kiss_c = (k_t>>32);
         kiss_z=cast(uint)k_t;
         return (cmwc_q[cmwc_i]=m-x)+kiss_x+kiss_y+kiss_z; // xor to avoid overflow?
     }
@@ -81,7 +81,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
                 if (nV<to) break;
                 nV=rSeed();
             }
-            cmwc_c=nV%cmwc_a;
+            cmwc_c=cast(uint)(nV%cmwc_a);
             nBytes = 0;
             restB=0;
             if (cmwc_c==0){
@@ -133,9 +133,9 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    uint fromString(char[] s){
+    size_t fromString(char[] s){
         char[16] tmpC;
-        uint i=0;
+        size_t i=0;
         assert(s[i..i+11]=="CMWC+KISS99","unexpected kind, expected CMWC+KISS99");
         i+=11;
         assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");

@@ -48,7 +48,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         const uint m=0xFFFF_FFFE;
         cmwc_i=(cmwc_i+1)&rMask;
         ulong t=cmwc_a*cmwc_q[cmwc_i]+cmwc_c;
-        cmwc_c=(t>>32);
+        cmwc_c=cast(uint)(t>>32);
         uint x=cast(uint)t+cmwc_c;
         if (x<cmwc_c) {
             ++x; ++cmwc_c;
@@ -114,9 +114,9 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    uint fromString(char[] s){
+    size_t fromString(char[] s){
         char[16] tmpC;
-        uint i=0;
+        size_t i=0;
         assert(s[i..i+4]=="CMWC","unexpected kind, expected CMWC");
         i+=4;
         assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
