@@ -24,7 +24,8 @@ do
     fi
     if [ ! "$1" -ef "$newName" ] ; then
         echo "$newName : $1"
-        echo "	cp $1 $newName"
+        echo "#line 1 \"$1\"" >$newName
+        echo "	cat $1 >>$newName"
         echo ".INTERMEDIATE: $newName"
         echo ".PRECIOUS: $newName"
         #echo ".SECONDARY: $newName"
