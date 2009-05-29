@@ -34,6 +34,7 @@ enum { O_CREAT = 0100  }
 enum { O_EXCL = 0200  }
 enum { O_NOCTTY = 0400 }
 enum { O_TRUNC = 01000  }
+enum { O_NOFOLLOW = 0x20000 }
 enum { O_APPEND = 02000  }
 enum { O_NONBLOCK = 04000 }
 enum { O_SYNC = 010000  }

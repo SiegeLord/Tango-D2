@@ -50,6 +50,7 @@ enum { __XYX__O_CREAT       = O_CREAT  }
 enum { __XYX__O_EXCL        = O_EXCL   }
 enum { __XYX__O_NOCTTY      = O_NOCTTY }
 enum { __XYX__O_TRUNC       = O_TRUNC  }
+enum { __XYX__O_NOFOLLOW    = O_NOFOLLOW }
 
 enum { __XYX__O_APPEND      = O_APPEND   }
 enum { __XYX__O_NONBLOCK    = O_NONBLOCK }

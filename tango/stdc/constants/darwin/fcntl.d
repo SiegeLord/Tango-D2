@@ -17,6 +17,7 @@ enum { O_CREAT = 0x0200 }
 enum { O_EXCL = 0x0800 }
 enum { O_NOCTTY = 0x20000 }
 enum { O_TRUNC = 0x0400 }
+enum { O_NOFOLLOW = 0x0100 }
 enum { O_APPEND = 0x0008 }
 enum { O_NONBLOCK = 0x0004 }
 enum { O_SYNC = 0x0080 }
