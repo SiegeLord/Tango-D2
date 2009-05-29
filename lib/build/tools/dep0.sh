@@ -24,8 +24,8 @@ do
     fi
     if [ ! "$1" -ef "$newName" ] ; then
         echo "$newName : $1"
-        echo "#line 1 \"$1\"" >$newName
-        echo "	cat $1 >>$newName"
+        echo "	echo \"#line 1 \\\"\$<\\\"\" > \$@"
+        echo "	cat \$< >> \$@"
         echo ".INTERMEDIATE: $newName"
         echo ".PRECIOUS: $newName"
         #echo ".SECONDARY: $newName"
