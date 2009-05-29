@@ -18,10 +18,7 @@ private
 
 version( Win32 )
 {
-    extern (Windows) void*      LocalFree(void*);
-    extern (Windows) wchar_t*   GetCommandLineW();
-    extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
-    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
+    import rt.cImports: wchar_t,LocalFree,GetCommandLineW,CommandLineToArgvW,WideCharToMultiByte, alloca;
     //pragma(lib, "shell32.lib");   // needed for CommandLineToArgvW
     //pragma(lib, "tango-win32-dmd.lib"); // links Tango's Win32 library to reduce EXE size
 }

@@ -72,6 +72,11 @@ version( Win32 ){
     alias wchar wchar_t;
     // tango.stdc.string
     extern(C) size_t   wcslen(wchar_t* s);
+    // for dmain2
+    extern (Windows) void*      LocalFree(void*);
+    extern (Windows) wchar_t*   GetCommandLineW();
+    extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
+    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
 }
 
 // this is needed only by rt.cover
