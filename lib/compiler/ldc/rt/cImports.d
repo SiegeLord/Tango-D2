@@ -29,7 +29,7 @@ extern(C){
     void*   calloc(size_t nmemb, size_t size);
     void*   realloc(void* ptr, size_t size);
     void    free(void* ptr);
-    void* alloca(size_t size);
+pragma(alloca) void* alloca(size_t size);
     c_ulong strtoul(in char*, char**, int);
     ulong   strtoull(in char*, char**, int);
     //
