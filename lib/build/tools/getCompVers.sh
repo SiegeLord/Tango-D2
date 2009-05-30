@@ -38,7 +38,7 @@ vers=`echo $1 | sed 's/.*-[^-]*-\([^-][^-]*\)$/\1/'`
 if [ "$vers" == "opt" -a "$version" == "1" ] ; then
     echo $comp
 else
-    if [ $version -gt 0 -a $compiler -gt 0] ; then
+    if [ $version -gt 0 -a $compiler -gt 0 ] ; then
         echo ${comp}-${vers}
     elif [ $compiler -gt 0 ] ; then
         echo ${comp}

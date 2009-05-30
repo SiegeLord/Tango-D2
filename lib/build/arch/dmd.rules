@@ -12,8 +12,8 @@ EXCLUDE_DEP_COMP=
 
 %.dep:%.d
 	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -e $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ ! -e $(<:%.d=%.o) ]; fi
+	if [ ! -r $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
 
 %.o:%.d
 	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -e $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ ! -e $(<:%.d=%.o) ]; fi
+	if [ ! -r $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
