@@ -39,6 +39,7 @@ size_t strlen(in char* s);
 version( Posix )
 {
     char* strdup(char*);
+    char *strsignal(int sig);
 }
 
 wchar_t* wmemchr(in wchar_t* s, wchar_t c, size_t n);
