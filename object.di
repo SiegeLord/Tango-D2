@@ -41,6 +41,16 @@ struct Interface
     ptrdiff_t   offset;
 }
 
+version (GNU){
+}else version (DigitalMars)
+{
+    static if (__VERSION__ >= 1045) {
+        version=ClassInfoHasTypeInfo;
+    }
+} else {
+    version=ClassInfoHasTypeInfo;
+}
+
 /// class information
 class ClassInfo : Object
 {
@@ -61,7 +71,7 @@ class ClassInfo : Object
     void*       deallocator;
     OffsetTypeInfo[] offTi; /// offsets of its members (not supported by all compilers)
     void*       defaultConstructor;
-    version(GNU){} else{
+    version(ClassInfoHasTypeInfo){
         /// TypeInfo information about this class
         TypeInfo typeinfo;
     }

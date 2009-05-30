@@ -160,8 +160,10 @@ class ClassInfo : Object
     void*       deallocator;
     OffsetTypeInfo[] offTi;
     void function(Object) defaultConstructor;   // default Constructor
-    TypeInfo typeinfo;
-
+    static if (__VERSION__ >= 1045) {
+        TypeInfo typeinfo;
+    }
+    
     /**
      * Search all modules for ClassInfo corresponding to classname.
      * Returns: null if not found
