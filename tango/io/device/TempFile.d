@@ -101,35 +101,9 @@ else version( Posix )
     import tango.stdc.posix.unistd : access, getuid, lseek, unlink, W_OK;
     import tango.stdc.posix.sys.types : off_t;
     import tango.stdc.posix.sys.stat : stat, stat_t;
-    
+    import tango.stdc.constants.fcntl : O_NOFOLLOW;
     import tango.stdc.posix.stdlib : getenv;
     import tango.stdc.string : strlen;
-
-    version( linux )
-    {
-        // NOTE: This constant is actually platform-dependant for some
-        // God-only-knows reason.  *sigh*  It should be fine for 'generic'
-        // architectures, but other ones will need to be double-checked.
-        enum { O_NOFOLLOW = 00400000 }
-    }
-    else version( darwin )
-    {
-        enum { O_NOFOLLOW = 0x0100 }
-    }
-    else version( freebsd )
-    {
-        enum { O_NOFOLLOW = 0x0100 }
-    }
-    else version( solaris )
-    {
-        enum { O_NOFOLLOW = 0x20000 }
-    }
-    else
-    {
-        pragma(msg, "Cannot use TempFile: O_NOFOLLOW is not "
-                "defined for this platform.");
-        static assert(false);
-    }
 }
 
 /******************************************************************************
