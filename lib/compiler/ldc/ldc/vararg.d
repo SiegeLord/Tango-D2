@@ -4,7 +4,7 @@
  * Provides the functions tango.core.Vararg expects to be present!
  */
 
-module ldc.Vararg;
+module ldc.vararg;
 
 // Check for the right compiler
 version(LDC)
