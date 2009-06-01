@@ -89,14 +89,22 @@ public: // for development only, will be removed eventually
     }
 public:
     ///
-    void opAssign(uint u) {
+    void opAssign(ulong u) {
         if (u == 0) data = ZERO;
         else if (u == 1) data = ONE;
         else if (u == 2) data = TWO;
         else if (u == 10) data = TEN;
         else {
-            data = new BigDigit[1];
-            data[0] = u;
+            uint ulo = cast(uint)(u & 0xFFFF_FFFF);
+            uint uhi = cast(uint)(u >> 32);
+            if (uhi==0) {
+              data = new BigDigit[1];
+              data[0] = ulo;
+            } else {
+              data = new BigDigit[2];
+              data[0] = ulo;
+              data[1] = uhi;
+            }
         }
     }
     
@@ -124,8 +132,13 @@ int opEquals(BigUint y) {
        return y.data[] == data[];
 }
 
-int opEquals(uint y) {
-     return data.length == 1 && data[0] == y;
+int opEquals(ulong y) {
+    if (data.length>2) return 0;
+    uint ylo = cast(uint)(y & 0xFFFF_FFFF);
+    uint yhi = cast(uint)(y >> 32);
+    if (data.length==2 && data[1]!=yhi) return 0;
+    if (data.length==1 && yhi!=0) return 0;
+    return (data[0] == ylo);
 }
 
 

@@ -32,7 +32,8 @@ public:
     /// It may have a leading + or - sign; followed by "0x" if hexadecimal.
     /// Underscores are permitted.
     /// BUG: Should throw a IllegalArgumentException/ConvError if invalid character found
-    static BigInt opCall(char [] s) {
+    static BigInt opCall(T : char[])(T z) {
+        char [] s = z;
         BigInt r;
         bool neg = false;
         if (s[0] == '-') {
@@ -53,7 +54,7 @@ public:
         r.sign = neg;
         return r;
     }
-    static BigInt opCall(int x) {
+    static BigInt opCall(T: int)(T x) {
         BigInt r;
         r.data = (x < 0) ? -x : x;
         r.sign = (x < 0);
@@ -235,8 +236,13 @@ public:
         return *this;
     }
     ///
-    int opEquals(BigInt y) {
+    int opEquals(T: BigInt)(T y) {
        return sign == y.sign && y.data == data;
+    }
+    ///
+    int opEquals(T: int)(T y) {
+        if (sign!=(y<0)) return 0;
+        return data.opEquals(y>=0?y:-y);
     }
     ///
     int opCmp(T:int)(T y) {
