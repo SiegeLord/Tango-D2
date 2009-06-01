@@ -6,6 +6,10 @@
  * external functions.  The compiler's optimizer and code generator are fully
  * integrated in with intrinsic functions, bringing to bear their full power on
  * them. This can result in some surprising speedups.
+ * 
+ * Note that this module is only present in Tango because the module name is
+ * hardcoded into DMD, see http://d.puremagic.com/issues/show_bug.cgi?id=178 
+ * To correctly use this functionality in Tango, import tango.core.BitManip.
  *
  * Copyright: Public Domain
  * License:   Public Domain
