@@ -33,18 +33,35 @@ interface FileConst
         {
                 enum : char 
                 {
+                        /// The current directory character
                         CurrentDirChar = '.',
+                        
+                        /// The file separator character
                         FileSeparatorChar = '.',
+                        
+                        /// The path separator character
                         PathSeparatorChar = '/',
+                        
+                        /// The system path character
                         SystemPathChar = ';',
                 }
 
+                /// The parent directory string
                 static const char[] ParentDirString = "..";
+                
+                /// The current directory string
                 static const char[] CurrentDirString = ".";
+                
+                /// The file separator string
                 static const char[] FileSeparatorString = ".";
+                
+                /// The path separator string
                 static const char[] PathSeparatorString = "/";
+                
+                /// The system path string
                 static const char[] SystemPathString = ";";
 
+                /// The newline string
                 static const char[] NewlineString = "\r\n";
         }
 
@@ -52,18 +69,35 @@ interface FileConst
         {
                 enum : char 
                 {
+                        /// The current directory character
                         CurrentDirChar = '.',
+                        
+                        /// The file separator character
                         FileSeparatorChar = '.',
+                        
+                        /// The path separator character
                         PathSeparatorChar = '/',
+                        
+                        /// The system path character
                         SystemPathChar = ':',
                 }
 
+                /// The parent directory string
                 static const char[] ParentDirString = "..";
+                
+                /// The current directory string
                 static const char[] CurrentDirString = ".";
+                
+                /// The file separator string
                 static const char[] FileSeparatorString = ".";
+                
+                /// The path separator string
                 static const char[] PathSeparatorString = "/";
+                
+                /// The system path string
                 static const char[] SystemPathString = ":";
 
+                /// The newline string
                 static const char[] NewlineString = "\n";
         }
 }
