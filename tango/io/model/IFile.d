@@ -31,6 +31,7 @@ interface FileConst
 
         version (Win32)
         {
+                ///
                 enum : char 
                 {
                         /// The current directory character
@@ -67,6 +68,7 @@ interface FileConst
 
         version (Posix)
         {
+                ///
                 enum : char 
                 {
                         /// The current directory character
