@@ -668,8 +668,12 @@ version (old)
 
                        case TypeCode.STRUCT:
                             auto s = cast(TypeInfo_Struct) type;
-                            if (s.xtoString)
-                                return Utf.fromString8 (s.xtoString(p), result);
+                            if (s.xtoString) {
+                                char[] delegate() toString;
+                                toString.ptr = p;
+                                toString.funcptr = cast(char[] function())s.xtoString;
+                                return Utf.fromString8 (toString(), result);
+                            }
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -805,9 +809,22 @@ version (old)
 
         private T[] complex (T[] result, creal val, T[] format)
         {
+                static bool signed (real x)
+                {
+                        static if (real.sizeof is 4) 
+                                   return ((*cast(uint *)&x) & 0x8000_0000) != 0;
+                        else
+                        static if (real.sizeof is 8) 
+                                   return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
+                               else
+                                  {
+                                  auto pe = cast(ubyte *)&x;
+                                  return (pe[9] & 0x80) != 0;
+                                  }
+                }
                 static T[] plus = "+";
 
-                auto len = floatingTail (result, val.re, format, val.im > 0.0 ? plus : null).length;
+                auto len = floatingTail (result, val.re, format, signed(val.im) ? null : plus).length;
                 return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];
         }
 
@@ -821,7 +838,10 @@ version (old)
         {
                 assert (result.length > tail.length);
 
-                auto len = floater (result[0..$-tail.length], val, format).length;
+                auto res = floater (result[0..$-tail.length], val, format);
+                auto len=res.length;
+                if (res.ptr!is result.ptr)
+                    result[0..len]=res;
                 result [len .. len + tail.length] = tail;
                 return result [0 .. len + tail.length];
         }
