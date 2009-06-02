@@ -149,17 +149,17 @@ class ClassInfo : Object
     void*[]     vtbl;           /// virtual function pointer table
     Interface[] interfaces;     /// interfaces this class implements
     ClassInfo   base;           /// base class
-    void*       destructor;
-    void function(Object) classInvariant;
+    void*       destructor;     // Only use as delegate.funcptr!
+    void*       classInvariant; // Only use as delegate.funcptr!
     uint        flags;
     //  1:                      // is IUnknown or is derived from IUnknown
     //  2:                      // has no possible pointers into GC memory
     //  4:                      // has offTi[] member
     //  8:                      // has constructors
-    //	32:			// has typeinfo
+    //  32:         // has typeinfo
     void*       deallocator;
     OffsetTypeInfo[] offTi;
-    void function(Object) defaultConstructor;   // default Constructor
+    Object function() defaultConstructor;   // default Constructor. Only use as delegate.funcptr!
     static if (__VERSION__ >= 1045) {
         TypeInfo typeinfo;
     }
@@ -188,12 +188,15 @@ class ClassInfo : Object
      */
     Object create()
     {
-        if (flags & 8 && !defaultConstructor)
+        if (flags & 8 && defaultConstructor is null)
             return null;
         Object o = _d_newclass(this);
-        if (flags & 8 && defaultConstructor)
+        if (flags & 8 && defaultConstructor !is null)
         {
-            defaultConstructor(o);
+            Object delegate() ctor;
+            ctor.ptr = cast(void*)o;
+            ctor.funcptr = cast(Object function())defaultConstructor;
+            return ctor();
         }
         return o;
     }
@@ -808,14 +811,16 @@ class TypeInfo_Struct : TypeInfo
     override hash_t getHash(in void* p)
     {
         assert(p);
-        if (xtoHash)
+        if (xtoHash !is null)
         {
             debug(PRINTF) printf("getHash() using xtoHash\n");
-            return (*xtoHash)(p);
+            hash_t delegate() toHash;
+            toHash.ptr = p;
+            toHash.funcptr = cast(hash_t function())xtoHash;
+            return toHash();
         }
         else
         {
-            hash_t h;
             debug(PRINTF) printf("getHash() using default hash\n");
             // BUG: relies on the GC not moving objects
             return rt_hash_str(p,init.length,0);
@@ -828,9 +833,12 @@ class TypeInfo_Struct : TypeInfo
             return true;
         else if (!p1 || !p2)
             return false;
-        else if (xopEquals)
-            return (*xopEquals)(p1, p2);
-        else
+        else if (xopEquals !is null) {
+            int delegate(void*) opEquals;
+            opEquals.ptr = p1;
+            opEquals.funcptr = xopEquals;
+            return opEquals(p2);
+        } else
             // BUG: relies on the GC not moving objects
             return memcmp(p1, p2, init.length) == 0;
     }
@@ -844,9 +852,12 @@ class TypeInfo_Struct : TypeInfo
             {
                 if (!p2)
                     return true;
-                else if (xopCmp)
-                    return (*xopCmp)(p2, p1);
-                else
+                else if (xopCmp !is null) {
+                    int delegate(void*) opCmp;
+                    opCmp.ptr = p1;
+                    opCmp.funcptr = xopCmp;
+                    return opCmp(p2);
+                } else
                     // BUG: relies on the GC not moving objects
                     return memcmp(p1, p2, init.length);
             }
@@ -868,10 +879,11 @@ class TypeInfo_Struct : TypeInfo
     char[] name;
     void[] m_init;      // initializer; init.ptr == null if 0 initialize
 
-    hash_t   function(in void*)           xtoHash;
-    equals_t function(in void*, in void*) xopEquals;
-    int      function(in void*, in void*) xopCmp;
-    char[]   function(in void*)           xtoString;
+    // These are ONLY for use as a delegate.funcptr!
+    hash_t function()   xtoHash;
+    int function(void*) xopEquals;
+    int function(void*) xopCmp;
+    char[] function()   xtoString;
 
     uint m_flags;
 }

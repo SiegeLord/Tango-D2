@@ -59,18 +59,18 @@ class ClassInfo : Object
     void*[]     vtbl;   // virtual function pointer table
     Interface[] interfaces; /// implemented interfaces
     ClassInfo   base; /// base class
-    void*       destructor;
-    void(*classInvariant)(Object);
+    void*       destructor; /// compiler dependent storage of destructor function pointer
+    void*       classInvariant; /// compiler dependent storage of classInvariant function pointer
     /// flags
     /// 1: IUnknown
     /// 2: has no possible pointers into GC memory
     /// 4: has offTi[] member
     /// 8: has constructors
-    //	32:			// has typeinfo
+    //  32: has typeinfo
     uint        flags;
     void*       deallocator;
     OffsetTypeInfo[] offTi; /// offsets of its members (not supported by all compilers)
-    void*       defaultConstructor;
+    void*       defaultConstructor; /// compiler dependent storage of constructor function pointer
     version(ClassInfoHasTypeInfo){
         /// TypeInfo information about this class
         TypeInfo typeinfo;

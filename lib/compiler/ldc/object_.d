@@ -151,8 +151,8 @@ class ClassInfo : Object
     void*[]     vtbl;           /// virtual function pointer table
     Interface[] interfaces;     /// interfaces this class implements
     ClassInfo   base;           /// base class
-    void*       destructor;
-    void function(Object) classInvariant;
+    void*       destructor;     // Only use as delegate.funcptr!
+    void*       classInvariant; // Only use as delegate.funcptr!
     uint        flags;
     //  1:                      // IUnknown
     //  2:                      // has no possible pointers into GC memory
@@ -161,7 +161,7 @@ class ClassInfo : Object
     //  32:                     // has typeinfo
     void*       deallocator;
     OffsetTypeInfo[] offTi;
-    void* defaultConstructor;   // default Constructor
+    void* defaultConstructor;   // default Constructor. Only use as delegate.funcptr!
     TypeInfo typeinfo;
 
     /**
@@ -188,17 +188,19 @@ class ClassInfo : Object
      */
     Object create()
     {
-        if (flags & 8 && !defaultConstructor)
+        if (flags & 8 && defaultConstructor is null)
             return null;
 
         Object o = _d_allocclass(this);
         // initialize it
         (cast(byte*) o)[0 .. init.length] = init[];
 
-        if (flags & 8 && defaultConstructor)
+        if (flags & 8 && defaultConstructor !is null)
         {
-            auto ctor = cast(Object function(Object))defaultConstructor;
-            return ctor(o);
+            Object delegate() ctor;
+            ctor.ptr = cast(void*)o;
+            ctor.funcptr = cast(Object function())defaultConstructor;
+            return ctor();
         }
         return o;
     }
@@ -759,9 +761,12 @@ class TypeInfo_Struct : TypeInfo
     {   hash_t h;
 
         assert(p);
-        if (xtoHash)
+        if (xtoHash !is null)
         {   debug(PRINTF) printf("getHash() using xtoHash\n");
-            h = (*xtoHash)(p);
+            hash_t delegate() toHash;
+            toHash.ptr = p;
+            toHash.funcptr = xtoHash;
+            h = toHash();
         }
         else
         {
@@ -784,9 +789,12 @@ class TypeInfo_Struct : TypeInfo
             c = 1;
         else if (!p1 || !p2)
             c = 0;
-        else if (xopEquals)
-            c = (*xopEquals)(p1, p2);
-        else
+        else if (xopEquals !is null) {
+            int delegate(void*) opEquals;
+            opEquals.ptr = p1;
+            opEquals.funcptr = xopEquals;
+            c = opEquals(p2);
+        } else
             // BUG: relies on the GC not moving objects
             c = (memcmp(p1, p2, m_init.length) == 0);
         return c;
@@ -802,13 +810,12 @@ class TypeInfo_Struct : TypeInfo
             if (p1)
             {   if (!p2)
                     c = 1;
-                else if (xopCmp)
-                    // the x86 D calling conv requires the this arg to be last here
-                    version(X86)
-                        c = (*xopCmp)(p2, p1);
-                    else
-                        c = (*xopCmp)(p1, p2);
-                else
+                else if (xopCmp !is null) {
+                    int delegate(void*) opCmp;
+                    opCmp.ptr = p1;
+                    opCmp.funcptr = xopCmp;
+                    c = opCmp(p2);
+                } else
                     // BUG: relies on the GC not moving objects
                     c = memcmp(p1, p2, m_init.length);
             }
@@ -830,10 +837,11 @@ class TypeInfo_Struct : TypeInfo
     char[] name;
     void[] m_init;      // initializer; never null
 
-    hash_t function(void*)    xtoHash;
-    int function(void*,void*) xopEquals;
-    int function(void*,void*) xopCmp;
-    char[] function(void*)    xtoString;
+    // These are ONLY for use as a delegate.funcptr!
+    hash_t function()   xtoHash;
+    int function(void*) xopEquals;
+    int function(void*) xopCmp;
+    char[] function()   xtoString;
 
     uint m_flags;
 }

@@ -490,10 +490,12 @@ extern (C) void rt_finalize(void* p, bool det = true)
                 {
                     do
                     {
-                        if (c.destructor)
+                        if (c.destructor !is null)
                         {
-                            fp_t fp = cast(fp_t)c.destructor;
-                            (*fp)(cast(Object)p); // call destructor
+                            void delegate() dg;
+                            dg.ptr = p;
+                            dg.funcptr = cast(void function()) c.destructor;
+                            dg(); // call destructor
                         }
                         c = c.base;
                     } while (c);

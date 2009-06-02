@@ -11,15 +11,18 @@ void _d_invariant(Object o)
     //printf("__d_invariant(%p)\n", o);
 
     // BUG: needs to be filename/line of caller, not library routine
-    assert(o !is null);	// just do null check, not invariant check
+    assert(o !is null); // just do null check, not invariant check
 
     c = o.classinfo;
     do
     {
-	if (c.classInvariant)
-	{
-	    (*(cast(void function(Object))c.classInvariant))(o);
-	}
-	c = c.base;
+    if (c.classInvariant !is null)
+    {
+        void delegate() inv;
+        inv.ptr = cast(void*) o;
+        inv.funcptr = cast(void function())c.classInvariant;
+        inv();
+    }
+    c = c.base;
     } while (c);
 }
