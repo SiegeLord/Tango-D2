@@ -1,6 +1,9 @@
 /**
  * These functions are built-in intrinsics to the compiler.
  *
+ * Note that this module is only present in Tango because the module name is
+ * hardcoded into GDC, see http://d.puremagic.com/issues/show_bug.cgi?id=1949 
+ *
  * Copyright: Public Domain
  * License:   Public Domain
  * Authors:   David Friedman
