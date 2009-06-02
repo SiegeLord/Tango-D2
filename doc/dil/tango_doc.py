@@ -6,7 +6,7 @@ from path import Path
 from common import *
 from html2pdf import PDFGenerator
 
-EXCLUDES = ["std/intrinsic.di"]
+EXCLUDES = ["std/intrinsic.di", "std/stdarg.di", "std/c/stdarg.di"]
 
 def exclude(file):
     for f in EXCLUDES:
