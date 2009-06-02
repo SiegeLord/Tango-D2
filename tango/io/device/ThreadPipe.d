@@ -43,7 +43,7 @@ private import tango.core.sync.Condition;
 class ThreadPipe : Conduit
 {
     private bool _closed;
-    private size_t _readIdx, _writeIdx;
+    private size_t _readIdx, _remaining;
     private void[] _buf;
     private Mutex _mutex;
     private Condition _condition;
@@ -58,7 +58,7 @@ class ThreadPipe : Conduit
     {
         _buf = new void[bufferSize];
         _closed = false;
-        _readIdx = _writeIdx = 0;
+        _readIdx = _remaining = 0;
         _mutex = new Mutex;
         _condition = new Condition(_mutex);
     }
@@ -94,7 +94,7 @@ class ThreadPipe : Conduit
     {
         synchronized(_mutex)
         {
-            return !_closed || remaining != 0;
+            return !_closed || _remaining != 0;
         }
     }
 
@@ -104,23 +104,16 @@ class ThreadPipe : Conduit
     size_t remaining()
     {
         synchronized(_mutex)
-        {
-            if(_writeIdx < _readIdx)
-                return _writeIdx + _buf.length - _readIdx;
-            else
-                return _writeIdx - _readIdx;
-        }
+            return _remaining;
     }
 
     /**
      * Return the number of bytes that can be written to the circular buffer
-     *
-     * Note that we leave 1 byte for a marker to know whether the read pointer
-     * is ahead or behind the write pointer.
      */
     size_t writable()
     {
-        return _buf.length - remaining - 1;
+        synchronized(_mutex)
+            return _buf.length - _remaining;
     }
 
     /**
@@ -129,7 +122,7 @@ class ThreadPipe : Conduit
      *
      * The read end is not closed until the buffer is empty.
      */
-    void detach()
+    void stop()
     {
         //
         // close write end.  The read end can stay open until the remaining
@@ -140,6 +133,18 @@ class ThreadPipe : Conduit
             _closed = true;
             _condition.notifyAll();
         }
+    }
+
+    /**
+     * This does nothing because we have no clue whether the members have been
+     * collected, and detach is run in the destructor.  To stop communications,
+     * use stop().
+     *
+     * TODO: move stop() functionality to detach when it becomes possible to
+     * have fully-owned members
+     */
+    void detach()
+    {
     }
 
     /**
@@ -164,7 +169,7 @@ class ThreadPipe : Conduit
             // see if any remaining data is present
             //
             size_t r;
-            while((r = remaining) == 0 && !_closed)
+            while((r = _remaining) == 0 && !_closed)
                 _condition.wait();
 
             //
@@ -185,12 +190,14 @@ class ThreadPipe : Conduit
                 size_t x = _buf.length - _readIdx;
                 dst[0..x] = _buf[_readIdx..$];
                 _readIdx = 0;
+                _remaining -= x;
                 r -= x;
                 dst = dst[x..$];
             }
 
             dst[0..r] = _buf[_readIdx..(_readIdx + r)];
-            _readIdx += r;
+            _readIdx = (_readIdx + r) % _buf.length;
+            _remaining -= r;
             _condition.notifyAll();
             return result;
         }
@@ -205,10 +212,15 @@ class ThreadPipe : Conduit
     {
         synchronized(_mutex)
         {
-            if(_readIdx != _writeIdx)
+            if(_remaining != 0)
             {
+                /*
+                 * this isn't technically necessary, but we do it because it
+                 * preserves the most recent data first
+                 */
+                _readIdx = (_readIdx + _remaining) % _buf.length;
+                _remaining = 0;
                 _condition.notifyAll();
-                _readIdx = _writeIdx;
             }
         }
         return this;
@@ -234,7 +246,7 @@ class ThreadPipe : Conduit
         synchronized(_mutex)
         {
             size_t w;
-            while((w = writable) == 0 && !_closed)
+            while((w = _buf.length - _remaining) == 0 && !_closed)
                 _condition.wait();
 
             if(_closed)
@@ -243,20 +255,58 @@ class ThreadPipe : Conduit
             if(w > src.length)
                 w = src.length;
 
+            auto writeIdx = (_readIdx + _remaining) % _buf.length;
+
             auto result = w;
 
-            if(w + _writeIdx >= _buf.length)
+            if(w + writeIdx >= _buf.length)
             {
-                auto x = _buf.length - _writeIdx;
-                _buf[_writeIdx..$] = src[0..x];
-                _writeIdx = 0;
+                auto x = _buf.length - writeIdx;
+                _buf[writeIdx..$] = src[0..x];
+                writeIdx = 0;
                 w -= x;
+                _remaining += x;
                 src = src[x..$];
             }
-            _buf[_writeIdx..(_writeIdx + w)] = src[0..w];
-            _writeIdx += w;
+            _buf[writeIdx..(writeIdx + w)] = src[0..w];
+            _remaining += w;
             _condition.notifyAll();
             return result;
         }
+    }
+}
+
+debug(UnitTest)
+{
+    import tango.core.Thread;
+
+    unittest
+    {
+        uint[] source = new uint[1000];
+        foreach(i, ref x; source)
+            x = i;
+
+        ThreadPipe tp = new ThreadPipe(16);
+        void threadA()
+        {
+            void[] sourceBuf = source;
+            while(sourceBuf.length > 0)
+            {
+                sourceBuf = sourceBuf[tp.write(sourceBuf)..$];
+            }
+            tp.stop();
+        }
+        Thread a = new Thread(&threadA);
+        a.start();
+        int readval;
+        int last = -1;
+        size_t nread;
+        while((nread = tp.read((&readval)[0..1])) == readval.sizeof)
+        {
+            assert(readval == last + 1);
+            last = readval;
+        }
+        assert(nread == tp.Eof);
+        a.join();
     }
 }
