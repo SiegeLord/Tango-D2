@@ -1,10 +1,11 @@
+
 /**
  *   Stacktracing
  *
  *   Functions to generate a stacktrace
  *
  *  Copyright: 2009 Fawzi
- *  License:   tango license, apache 2.0
+ *  License:   tango license
  *  Authors:   Fawzi Mohamed
  */
 module tango.core.stacktrace.StackTrace;
@@ -12,13 +13,17 @@ import tango.core.stacktrace.Demangler;
 import tango.core.Thread;
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
-import tango.stdc.stdio:printf;
+import tango.stdc.stdio:printf,fprintf,stderr,fflush;
 import tango.stdc.stdlib: abort;
 version(Windows){
     import tango.core.stacktrace.WinStackTrace;
 } else {
     import tango.stdc.posix.ucontext;
     import tango.stdc.posix.sys.types: pid_t,pthread_t;
+    import tango.stdc.signal;
+}
+version(linux){
+    import tango.core.stacktrace.LinuxStackTrace;
 }
 
 version(CatchRecursiveTracing){
@@ -31,22 +36,12 @@ version(CatchRecursiveTracing){
 
 version(Windows){
 } else {
-    static if (is(typeof(ucontext_t))){
-        struct TraceContext{
-            ucontext_t context;
-            pid_t hProcess;
-            pthread_t hThread;
-        }
-    } else {
-        struct TraceContext{
-            void *extra;
-            size_t esp;
-            size_t gotf;
-            size_t ip;
-            pid_t hProcess;
-            pthread_t hThread;
-        }
-    }
+   struct TraceContext{
+       bool hasContext;
+       ucontext_t context;
+       pid_t hProcess;
+       pthread_t hThread;
+   }
 }
 
 alias size_t function(TraceContext* context,TraceContext* contextOut,size_t*traceBuf,size_t bufLength,int *flags) AddrBacktraceFunc;
@@ -98,8 +93,31 @@ extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext*
     }
 }
 
+// names of the functions that should be ignored for the backtrace
+int[char[]] internalFuncs;
+static this(){
+    internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
+    internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPmmPiZm"]=1;
+    internalFuncs["rt_addrBacktrace"]=1;
+    internalFuncs["D5tango4core10stacktrace10StackTrace14BasicTraceInfo5traceMFPS5tango4core10stacktrace10StackTrace12TraceContextiZv"]=1;
+    internalFuncs["D5tango4core10stacktrace10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
+    internalFuncs["rt_createTraceContext"]=1;
+    internalFuncs["D2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
+    internalFuncs["D2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
+    internalFuncs["D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
+    internalFuncs["_D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
+    internalFuncs["_rt_addrBacktrace"]=1;
+    internalFuncs["_D5tango4core10stacktrace10StackTrace14BasicTraceInfo5traceMFPS5tango4core10stacktrace10StackTrace12TraceContextiZv"]=1;
+    internalFuncs["_D5tango4core10stacktrace10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
+    internalFuncs["_rt_createTraceContext"]=1;
+    internalFuncs["_D2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
+    internalFuncs["_D2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
+    internalFuncs["_D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
+}
+
 /// returns the name of the function at the given adress (if possible)
 /// function@ and then the address. For delegates you can use .funcptr
+/// does not demangle
 char[] nameOfFunctionAt(void* addr, char[] buf){
     Exception.FrameInfo fInfo;
     fInfo.clear();
@@ -155,11 +173,16 @@ class BasicTraceInfo: Exception.TraceInfo{
         Exception.FrameInfo fInfo;
         for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
             char[2048] buf;
+            char[1024] buf2;
             fInfo.clear();
             fInfo.address=cast(size_t)traceAddresses[iframe];
             fInfo.iframe=cast(ptrdiff_t)iframe;
             fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
             rt_symbolizeFrameInfo(fInfo,&context,buf);
+            
+            auto r= fInfo.func in internalFuncs;
+            fInfo.internalFunction |= (r !is null);
+            fInfo.func = demangler.demangle(fInfo.func,buf2);
             int res=loopBody(fInfo);
             if (res) return res;
         }
@@ -179,6 +202,7 @@ class BasicTraceInfo: Exception.TraceInfo{
 version(linux){
     version=LibCBacktrace;
     version=DladdrSymbolification;
+    version=ElfSymbolification;
 }
 version(darwin){
     version=LibCBacktrace;
@@ -192,7 +216,7 @@ version(LibCBacktrace){
 size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
     size_t*traceBuf,size_t length,int*flags){
     version(LibCBacktrace){
-        if (context!is null) return 0;
+        //if (context!is null) return 0; // now it just gives a local trace, uncomment & skip?
         *flags=AddrPrecision.TopExact;
         return cast(size_t)backtrace(cast(void**)traceBuf,length);
     } else version (Windows){
@@ -203,17 +227,6 @@ size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
 }
 
 version(DladdrSymbolification){
-    int[char[]] internalFuncs;
-    static this(){
-                internalFuncs["D5tango4core10stacktrace10StackTrace20defaultAddrBacktraceFPS5tango4core10stacktrace10StackTrace12TraceContextPS5tango4core10stacktrace10StackTrace12TraceContextPkkPiZk"]=1;
-        internalFuncs["rt_addrBacktrace"]=1;
-        internalFuncs["D5tango4core10stacktrace10StackTrace14BasicTraceInfo5traceMFPS5tango4core10stacktrace10StackTrace12TraceContextiZv"]=1;
-        internalFuncs["D5tango4core10stacktrace10StackTrace11basicTracerFPvZC9Exception9TraceInfo"]=1;
-        internalFuncs["rt_createTraceContext"]=1;
-        internalFuncs["D2rt6dmain24mainUiPPaZi7runMainMFZv"]=1;
-        internalFuncs["D2rt6dmain24mainUiPPaZi6runAllMFZv"]=1;
-        internalFuncs["D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
-    }
     extern(C) struct Dl_info {
       char *dli_fname;      /* Filename of defining object */
       void *dli_fbase;      /* Load address of that object */
@@ -239,9 +252,42 @@ version(DladdrSymbolification){
                 fInfo.offsetSymb = cast(ptrdiff_t)ip - cast(ptrdiff_t)dli.dli_saddr;
                 fInfo.baseSymb = cast(size_t)dli.dli_saddr;
                 fInfo.func = dli.dli_sname[0..strlen(dli.dli_sname)];
-                auto r= fInfo.func in internalFuncs;
-                fInfo.internalFunction= (r !is null);
-                fInfo.func = demangler.demangle(fInfo.func,buf);
+            }
+        }
+        return true;
+    }
+}
+
+
+version(ElfSymbolification){
+
+    bool elfSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,
+        TraceContext* context, char[] buf)
+    {
+        Dl_info dli;
+        void *ip=cast(void*)(fInfo.address);
+        if (!fInfo.exactAddress) --ip;
+        if (dladdr(ip, &dli))
+        {
+            if (dli.dli_fname && dli.dli_fbase){
+                fInfo.offsetImg = cast(ptrdiff_t)ip - cast(ptrdiff_t)dli.dli_fbase;
+                fInfo.baseImg = cast(size_t)dli.dli_fbase;
+                fInfo.file=dli.dli_fname[0..strlen(dli.dli_fname)];
+            }
+            if (dli.dli_sname && dli.dli_saddr){
+                fInfo.offsetSymb = cast(ptrdiff_t)ip - cast(ptrdiff_t)dli.dli_saddr;
+                fInfo.baseSymb = cast(size_t)dli.dli_saddr;
+                fInfo.func = dli.dli_sname[0..strlen(dli.dli_sname)];
+            } else {
+                // try static symbols
+                foreach(symName,symAddr,symEnd,pub;StaticSectionInfo) {
+                    if (cast(size_t)ip>=symAddr && cast(size_t)ip<symEnd) {
+                        fInfo.offsetSymb = cast(ptrdiff_t)ip - cast(ptrdiff_t)symAddr;
+                        fInfo.baseSymb = cast(size_t)symAddr;
+                        fInfo.func = symName;
+                        return true;
+                    }
+                }
             }
         }
         return true;
@@ -250,7 +296,9 @@ version(DladdrSymbolification){
 
 /// loads symbols for the given frame info with the methods defined in tango itself
 bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *context,char[]buf){
-    version(DladdrSymbolification){
+    version(ElfSymbolification) {
+        return elfSymbolizeFrameInfo(fInfo,context,buf);
+    } else version(DladdrSymbolification){
         return dladdrSymbolizeFrameInfo(fInfo,context,buf);
     } else version(Windows) {
         return winSymbolizeFrameInfo(fInfo,context,buf);
@@ -287,3 +335,70 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
     return res;
 }
 
+version(Posix){
+    version(X86){
+        version = haveSegfaultTrace;
+    }else version(X86_64){
+        version = haveSegfaultTrace;
+    }
+
+    version(haveSegfaultTrace){
+        extern(C) void tango_stacktrace_fault_handler (int sn, siginfo_t * si, void *ctx){
+            fprintf(stderr, "%s encountered at:\n", strsignal(sn));
+            fflush(stderr);
+            ucontext_t * context = cast(ucontext_t *) ctx;
+            void* stack;
+            void* code;
+            version(X86){
+                stack = cast(void*) context.uc_mcontext.gregs[6];
+                code = cast(void*) context.uc_mcontext.gregs[14];
+            }else version(X86_64){
+                stack = cast(void*) context.uc_mcontext.gregs[0xF];
+                code = cast(void*) context.uc_mcontext.gregs[0x10];
+            }else{
+                static assert(0);
+            }
+
+            Exception.FrameInfo fInfo;
+            char[1024] buf1,buf2;
+            fInfo.clear();
+            fInfo.address=cast(size_t)code;
+            rt_symbolizeFrameInfo(fInfo,null,buf1);
+            fInfo.func = demangler.demangle(fInfo.func,buf2);
+            fInfo.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); });
+            fflush(stderr);
+            fprintf(stderr, "\n Stacktrace:\n");
+            TraceContext tc;
+            tc.hasContext=ctx is null;
+            if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
+            Exception.TraceInfo info=basicTracer(&tc);
+            info.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); fflush(stderr); });
+
+            fprintf(stderr, "Stacktrace singnal handler abort().\n");
+            abort();
+        }
+
+        sigaction_t fault_action;
+        
+        void setupSegfaultTracer(){
+            fault_action.sa_handler = cast(typeof(fault_action.sa_handler)) &tango_stacktrace_fault_handler;
+            sigemptyset(&fault_action.sa_mask);
+            fault_action.sa_flags = SA_SIGINFO;
+            sigaction(SIGSEGV, &fault_action, null);
+            sigaction(SIGFPE, &fault_action, null);
+            sigaction(SIGILL, &fault_action, null);
+        }
+        
+        version(noSegfaultTrace){
+        } else {
+            static this(){
+                setupSegfaultTracer();
+            }
+        }
+    }else{
+        pragma(msg, "[INFO] SEGFAULT trace not yet implemented for this CPU");
+    }
+}else version(Windows){
+}else {
+    pragma(msg, "[INFO] SEGFAULT trace not yet implemented for this OS");
+}

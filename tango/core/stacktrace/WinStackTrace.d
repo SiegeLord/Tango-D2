@@ -103,19 +103,13 @@ version(Windows) {
             hProcess=GetCurrentProcess();
         }
         return addrToSymbolDetails(fInfo.address, hProcess, (char[] func, char[] file, int line, ptrdiff_t addrOffset) {
-            fInfo.func = demangler.demangle(func, buf);
-
-            // store the non-demangled name in a buffer so if the demangler fails, fInfo.func will be pointing to the buffer
-            if (fInfo.func is func) {
-                if (func.length > buf.length) {
-                    buf[] = func[0..buf.length];
-                    fInfo.func = buf;
-                } else {
-                    buf[0..func.length] = func;
-                    fInfo.func = buf[0..func.length];
-                }
+            if (func.length > buf.length) {
+                buf[] = func[0..buf.length];
+                fInfo.func = buf;
+            } else {
+                buf[0..func.length] = func;
+                fInfo.func = buf[0..func.length];
             }
-
             fInfo.file = file;
             fInfo.line = line;
             fInfo.offsetSymb = addrOffset;

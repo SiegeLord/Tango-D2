@@ -934,13 +934,21 @@ class Exception : Object
             if (defaultFramePrintingFunction){
                 defaultFramePrintingFunction(this,sink);
             } else {
-                char[25] buf;
+                char[26] buf;
+                auto len=sprintf(buf.ptr,"[%8zx]",address);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%8zx",baseImg);
+                sink(buf[0..len]);
+                len=sprintf(buf.ptr,"%+td ",offsetImg);
+                sink(buf[0..len]);
+                while (++len<10) sink(" ");
                 if (func.length) {
                     sink(func);
                 } else {
                     sink("???");
                 }
-                auto len=sprintf(buf.ptr,"@%zx",baseSymb);
+                for (size_t i=func.length;i<80;++i) sink(" ");
+                len=sprintf(buf.ptr," @%zx",baseSymb);
                 sink(buf[0..len]);
                 len=sprintf(buf.ptr,"%+td ",offsetSymb);
                 sink(buf[0..len]);
@@ -950,12 +958,6 @@ class Exception : Object
                 }
                 sink(file);
                 len=sprintf(buf.ptr,":%ld ",line);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%zx",baseImg);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%+td ",offsetImg);
-                sink(buf[0..len]);
-                len=sprintf(buf.ptr,"[%zx]",address);
                 sink(buf[0..len]);
             }
         }
