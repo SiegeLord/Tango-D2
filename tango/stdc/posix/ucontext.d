@@ -136,6 +136,29 @@ version( linux )
     }
 }
 
+version(darwin){
+    struct mcontext_t{
+        int undefined; /// this is architecture dependent, if you need it, then define it from the header files
+    }
+    
+    struct stack_t{
+     void *ss_sp;
+     size_t ss_size;
+     int ss_flags;
+    }
+    
+    alias uint sigset_t;
+    struct ucontext_t
+    {
+        int uc_onstack;
+        sigset_t uc_sigmask;
+        stack_t uc_stack;
+        ucontext_t* uc_link;
+        size_t uc_mcsize;
+        mcontext_t*uc_mcontext;
+    }
+}
+
 //
 // Obsolescent (OB)
 //

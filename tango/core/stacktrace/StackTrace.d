@@ -335,25 +335,27 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
     return res;
 }
 
+// signal handling
 version(Posix){
-    version(X86){
-        version = haveSegfaultTrace;
-    }else version(X86_64){
-        version = haveSegfaultTrace;
+    version(linux){
+        version(X86){
+            version = haveSegfaultTrace;
+        }else version(X86_64){
+            version = haveSegfaultTrace;
+        }
     }
 
-    version(haveSegfaultTrace){
-        extern(C) void tango_stacktrace_fault_handler (int sn, siginfo_t * si, void *ctx){
-            fprintf(stderr, "%s encountered at:\n", strsignal(sn));
-            fflush(stderr);
-            ucontext_t * context = cast(ucontext_t *) ctx;
+    extern(C) void tango_stacktrace_fault_handler (int sn, siginfo_t * si, void *ctx){
+        printf("%d encountered at:\n", sn);
+        fprintf(stderr, "%s encountered at:\n", strsignal(sn));
+        fflush(stderr);
+        ucontext_t * context = cast(ucontext_t *) ctx;
+        version(haveSegfaultTrace){
             void* stack;
             void* code;
             version(X86){
-                stack = cast(void*) context.uc_mcontext.gregs[6];
                 code = cast(void*) context.uc_mcontext.gregs[14];
             }else version(X86_64){
-                stack = cast(void*) context.uc_mcontext.gregs[0xF];
                 code = cast(void*) context.uc_mcontext.gregs[0x10];
             }else{
                 static assert(0);
@@ -367,36 +369,35 @@ version(Posix){
             fInfo.func = demangler.demangle(fInfo.func,buf2);
             fInfo.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); });
             fflush(stderr);
-            fprintf(stderr, "\n Stacktrace:\n");
-            TraceContext tc;
-            tc.hasContext=ctx is null;
-            if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
-            Exception.TraceInfo info=basicTracer(&tc);
-            info.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); fflush(stderr); });
+        }
+        fprintf(stderr, "\n Stacktrace:\n");
+        TraceContext tc;
+        tc.hasContext=ctx is null;
+        if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
+        Exception.TraceInfo info=basicTracer(&tc);
+        info.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); fflush(stderr); });
 
-            fprintf(stderr, "Stacktrace singnal handler abort().\n");
-            abort();
-        }
+        fprintf(stderr, "Stacktrace singnal handler abort().\n");
+        abort();
+    }
 
-        sigaction_t fault_action;
+    sigaction_t fault_action;
         
-        void setupSegfaultTracer(){
-            fault_action.sa_handler = cast(typeof(fault_action.sa_handler)) &tango_stacktrace_fault_handler;
-            sigemptyset(&fault_action.sa_mask);
-            fault_action.sa_flags = SA_SIGINFO;
-            sigaction(SIGSEGV, &fault_action, null);
-            sigaction(SIGFPE, &fault_action, null);
-            sigaction(SIGILL, &fault_action, null);
+    void setupSegfaultTracer(){
+        fault_action.sa_handler = cast(typeof(fault_action.sa_handler)) &tango_stacktrace_fault_handler;
+        sigemptyset(&fault_action.sa_mask);
+        fault_action.sa_flags = SA_SIGINFO;
+        foreach (sig;[SIGSEGV,SIGFPE,SIGILL,SIGBUS,SIGKILL,SIGINT]){
+            sigaction(sig, &fault_action, null);
         }
-        
-        version(noSegfaultTrace){
-        } else {
-            static this(){
-                setupSegfaultTracer();
-            }
+    }
+    
+    version(noSegfaultTrace){
+    } else {
+        static this(){
+            printf("sig handlers setup\n");
+            setupSegfaultTracer();
         }
-    }else{
-        pragma(msg, "[INFO] SEGFAULT trace not yet implemented for this CPU");
     }
 }else version(Windows){
 }else {

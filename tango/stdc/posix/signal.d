@@ -990,6 +990,17 @@ else version( freebsd )
     int sigpause(int);
     int sigrelse(int);
 }
+version(darwin){
+    // to complete
+    const int SA_ONSTACK   = 0x0001;
+    const int SA_RESTART   = 0x0002;
+    const int SA_RESETHAND = 0x0004;
+    const int SA_NOCLDSTOP = 0x0008;
+    const int SA_NODEFER   = 0x0010;
+    const int SA_NOCLDWAIT = 0x0020;
+    const int SA_SIGINFO   = 0x0040;
+    const int SA_USERTRAMP = 0x0100;
+}
 
 
 //
