@@ -346,7 +346,6 @@ version(Posix){
     }
 
     extern(C) void tango_stacktrace_fault_handler (int sn, siginfo_t * si, void *ctx){
-        printf("%d encountered at:\n", sn);
         fprintf(stderr, "%s encountered at:\n", strsignal(sn));
         fflush(stderr);
         ucontext_t * context = cast(ucontext_t *) ctx;
@@ -395,7 +394,6 @@ version(Posix){
     version(noSegfaultTrace){
     } else {
         static this(){
-            printf("sig handlers setup\n");
             setupSegfaultTracer();
         }
     }
