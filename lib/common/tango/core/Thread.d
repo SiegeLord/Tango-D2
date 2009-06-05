@@ -3421,6 +3421,7 @@ private:
         }
         else version( AsmX86_64_Posix )
         {
+            push( 0x00000000 );                                     // strange pre EIP
             push( cast(size_t) &fiber_entryPoint );                 // RIP
             push( (cast(size_t)pstack)+8 );                         // RBP
             push( 0x00000000_00000000 );                            // RBX
