@@ -67,6 +67,12 @@ all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)
 	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" build
 
+allVersions:	$(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
+	@mkdir -p $(OBJDIR)
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" VERSION=opt DC="$(DC)" all
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" VERSION=tst DC="$(DC)" all
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" VERSION=dbg DC="$(DC)" all
+
 build:
 	@echo "XXX using the architecture file $(ARCHFILE)"
 	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" _genDeps
