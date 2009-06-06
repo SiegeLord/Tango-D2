@@ -548,7 +548,7 @@ Lsplit:
         find_symbols();
     }
 
-    version(DigitalMars){
+    version(none){
         size_t dmd_AddrBacktrace(TraceContext* context, TraceContext* contextOut,
             size_t* trace_buf, size_t buf_length, int* flags)
         {
