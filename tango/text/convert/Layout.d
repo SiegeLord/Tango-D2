@@ -668,12 +668,13 @@ version (old)
 
                        case TypeCode.STRUCT:
                             auto s = cast(TypeInfo_Struct) type;
-                            if (s.xtoString) {
-                                char[] delegate() toString;
-                                toString.ptr = p;
-                                toString.funcptr = cast(char[] function())s.xtoString;
-                                return Utf.fromString8 (toString(), result);
-                            }
+                            if (s.xtoString) 
+                               {
+                               char[] delegate() toString;
+                               toString.ptr = p;
+                               toString.funcptr = cast(char[] function())s.xtoString;
+                               return Utf.fromString8 (toString(), result);
+                               }
                             goto default;
 
                        case TypeCode.INTERFACE:
@@ -708,7 +709,17 @@ version (old)
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
                 if (type is typeid(Time))
-                    return dateTime.format (result, *cast(Time*) p, format);
+                   {
+                   static if (is (T == char))
+                              return dateTime.format(result, *cast(Time*) p, format);
+                          else
+                             {
+                             // TODO: this needs to be cleaned up
+                             char tmp0[128] = void;
+                             char tmp1[128] = void;
+                             return Utf.fromString8(dateTime.format(tmp0, *cast(Time*) p, Utf.toString(format, tmp1)), result);
+                             }
+                   }
 
                 return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
         }
