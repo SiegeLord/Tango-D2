@@ -768,7 +768,7 @@ size_t newCapacity(size_t newlength, size_t size)
     else
     {
         /*
-         * Better version by Dave Fladebo:
+         * Better version by Fawzi, inspired by the one of Dave Fladebo:
          * This uses an inverse logorithmic algorithm to pre-allocate a bit more
          * space for larger arrays.
          * - Arrays smaller than PAGESIZE bytes are left as-is, so for the most
@@ -790,38 +790,27 @@ size_t newCapacity(size_t newlength, size_t size)
 
         if (newcap > PAGESIZE)
         {
-            //double mult2 = 1.0 + (size / log10(pow(newcap * 2.0,2.0)));
+            const size_t b=0; // flatness factor, how fast the extra space decreases with array size
+            const size_t a=100; // allocate at most a% of the requested size as extra space (rounding will change this)
+            const size_t minBits=1; // minimum bit size
+            
 
-            // redo above line using only integer math
-
-            static int log2plus1(size_t c)
-            {   int i;
-
-                if (c == 0)
-                    i = -1;
-                else
-                    for (i = 1; c >>= 1; i++)
-                    {
-                    }
+            static size_t log2plusB(size_t c)
+            {
+                // could use the bsr bit op
+                size_t i=b+1;
+                while(c >>= 1){
+                    ++i;
+                }
                 return i;
             }
+            long mult = 100 + a*(minBits+b) / log2plusB(newlength);
 
-            /* The following setting for mult sets how much bigger
-             * the new size will be over what is actually needed.
-             * 100 means the same size, more means proportionally more.
-             * More means faster but more memory consumption.
-             */
-            //long mult = 100 + (1000L * size) / (6 * log2plus1(newcap));
-            long mult = 100 + (1000L * size) / log2plus1(newcap);
-
-            // testing shows 1.02 for large arrays is about the point of diminishing return
-            if (mult < 102)
-                mult = 102;
             newext = cast(size_t)((newcap * mult) / 100);
-            newext -= newext % size;
+            newext += size-(newext % size); // round up
             debug(PRINTF) printf("mult: %2.2f, alloc: %2.2f\n",mult/100.0,newext / cast(double)size);
         }
-        newcap = newext > newcap ? newext : newcap;
+        newcap = newext > newcap ? newext : newcap; // just to handle overflows
         debug(PRINTF) printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
     }
     return newcap;
