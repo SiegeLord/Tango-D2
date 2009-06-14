@@ -31,6 +31,7 @@ version(darwin)
 {
     version = GC_Use_Data_Dyld;
     version = GC_Use_Dynamic_Ranges;
+    import rt.cImports: c_ulong;
 }
 else version(Posix)
 {
@@ -46,9 +47,10 @@ version(GC_Use_Data_Proc_Maps)
     version(Posix) {} else {
         static assert(false, "Proc Maps only supported on Posix systems");
     }
-    private import tango.stdc.posix.unistd;
-    private import tango.stdc.posix.fcntl;
-    private import tango.stdc.string;
+    //private import tango.stdc.posix.unistd;
+    //private import tango.stdc.posix.fcntl;
+    //private import tango.stdc.string;
+    import rt.cImports: memmove,open,close,read;
 
     version = GC_Use_Dynamic_Ranges;
 }
@@ -120,7 +122,10 @@ extern (C) void* rt_stackBottom()
     else version( darwin )
     {
         // darwin has a fixed stack bottom
-        return cast(void*) 0xc0000000;
+        version( D_LP64 )
+            return cast(void*) 0x7fff5fc00000;
+        else
+            return cast(void*) 0xc0000000;
     }
     else version( solaris )
     {
@@ -529,14 +534,16 @@ version (GC_Use_Data_Dyld)
             uint ncmds;
             uint sizeofcmds;
             uint flags;
+            version (D_LP64)
+                uint reserved;
         }
 
         struct section
         {
             char[16] sectname;
             char[16] segname;
-            uint addr;
-            uint size;
+            c_ulong addr;
+            c_ulong size;
             uint offset;
             uint align_;
             uint reloff;
@@ -544,11 +551,16 @@ version (GC_Use_Data_Dyld)
             uint flags;
             uint reserved1;
             uint reserved2;
+            version (D_LP64)
+                uint reserved3;
         }
 
         alias extern (C) void function (mach_header* mh, ptrdiff_t vmaddr_slide) DyldFuncPointer;
 
-        extern (C) /*const*/ section* getsectbynamefromheader(/*const*/ mach_header* mhp, /*const*/ char* segname, /*const*/ char* sectname);
+        version (D_LP64)
+            extern (C) /*const*/ section* getsectbynamefromheader_64(/*const*/ mach_header* mhp, /*const*/ char* segname, /*const*/ char* sectname);
+        else
+            extern (C) /*const*/ section* getsectbynamefromheader(/*const*/ mach_header* mhp, /*const*/ char* segname, /*const*/ char* sectname);
         extern (C) void _dyld_register_func_for_add_image(DyldFuncPointer func);
         extern (C) void _dyld_register_func_for_remove_image(DyldFuncPointer func);
 
@@ -562,7 +574,10 @@ version (GC_Use_Data_Dyld)
 
             foreach (s ; GC_dyld_sections)
             {
-                sec = getsectbynamefromheader(hdr, s.segment, s.section);
+                version (D_LP64)
+                    sec = getsectbynamefromheader_64(hdr, s.segment, s.section);
+                else
+                    sec = getsectbynamefromheader(hdr, s.segment, s.section);
 
                 if (sec == null || sec.size == 0)
                     continue;
@@ -582,7 +597,10 @@ version (GC_Use_Data_Dyld)
 
             foreach (s ; GC_dyld_sections)
             {
-                sec = getsectbynamefromheader(hdr, s.segment, s.section);
+                version (D_LP64)
+                    sec = getsectbynamefromheader_64(hdr, s.segment, s.section);
+                else
+                    sec = getsectbynamefromheader(hdr, s.segment, s.section);
 
                 if (sec == null || sec.size == 0)
                     continue;

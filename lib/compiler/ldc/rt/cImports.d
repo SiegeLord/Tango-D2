@@ -2,8 +2,10 @@ module rt.cImports;
 
 static if ((void*).sizeof==4){
     alias uint c_ulong;
+    alias int c_long;
 } else {
     alias ulong c_ulong;
+    alias long c_long;
 }
 // tango.stdc.stdlib
 enum:int{
