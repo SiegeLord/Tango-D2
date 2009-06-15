@@ -50,7 +50,7 @@ version(GC_Use_Data_Proc_Maps)
     //private import tango.stdc.posix.unistd;
     //private import tango.stdc.posix.fcntl;
     //private import tango.stdc.string;
-    import rt.cImports: memmove,open,close,read;
+    import rt.cImports: memmove,open,close,read,fcntl_O_RDONLY;
 
     version = GC_Use_Dynamic_Ranges;
 }
@@ -346,7 +346,7 @@ version(solaris)
         // http://docs.sun.com/app/docs/doc/816-5174/proc-4
         prmap pr;
 
-        int   fd = open("/proc/self/map", O_RDONLY);
+        int   fd = open("/proc/self/map", fcntl_O_RDONLY);
         scope (exit) close(fd);
 
         while (prmap.sizeof == read(fd, &pr, prmap.sizeof))
@@ -378,7 +378,7 @@ else
     {
         // TODO: Exclude zero-mapped regions
 
-        int   fd = open("/proc/self/maps", O_RDONLY);
+        int   fd = open("/proc/self/maps", fcntl_O_RDONLY);
         ptrdiff_t   count; // %% need to configure ret for read..
         char  buf[2024];
         char* p;
