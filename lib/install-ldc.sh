@@ -58,16 +58,17 @@ then
     die "You must run build-ldc.sh before running install-ldc.sh" 4
 fi
 
+INCLUDE_DIR=..
 echo 'Copying files...'
 cp -pRvf libtango-base-ldc*.a $LIB_DIR || die "Failed to copy libraries" 7
-mkdir -p $PREFIX/tango/ldc
-cp -pRvf ../object.di $PREFIX/tango/object.di || echo object.di not copied
+mkdir -p $INCLUDE_DIR/ldc
+cp -pRvf ../object.di $INCLUDE_DIR/object.di || echo object.di not copied
 for f in compiler/ldc/ldc/*.d ; do
  ff=`basename "$f"`
- cp -pRvf "$f" "$PREFIX/tango/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
+ cp -pRvf "$f" "$INCLUDE_DIR/ldc/${ff}i" || die "Failed to copy ldc intrinsic" 9
 done
 for f in compiler/ldc/ldc/*.di ; do
  ff=`basename "$f"`
- cp -pRvf "$f" "$PREFIX/tango/ldc/${ff}" || die "Failed to copy ldc intrinsic" 10
+ cp -pRvf "$f" "$INCLUDE_DIR/ldc/${ff}" || die "Failed to copy ldc intrinsic" 10
 done
 die "Done!" 0
