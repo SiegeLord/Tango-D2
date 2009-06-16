@@ -5,14 +5,28 @@ OBJ_EXT=o
 mkLib=ar -r
 ranlib=ranlib
 
-DFLAGS_ALL=$(DFLAGS) $(DFLAGS_ADD) -I$(TANGO_HOME)
+DFLAGS_ALL=$(DFLAGS_ADD) $(DFLAGS_COMP)
 
 EXCLUDE_DEP_COMP= ^ldc\.
 
 %.dep:%.d
-	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	$(DC) -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
 	[ -r "$(<:%.d=%.o)" ]
 
 %.o:%.d
-	ldc -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	$(DC) -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
 	[ -r "$(<:%.d=%.o)" ]
+
+LCC=llc
+
+%.o:%.s
+	$(CC) -c $(CFLAGS) $< -o$@
+
+%.o:%.S
+	$(CC) -c $(CFLAGS) $< -o$@
+
+%.o:%.c
+	$(CC) -c $(CFLAGS) $< -o$@
+
+%.bc:%.ll
+	$(LLC) -f -o=$@ $<

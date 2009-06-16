@@ -5,7 +5,7 @@ OBJ_EXT=o
 mkLib=ar -r
 ranlib=ranlib
 
-DFLAGS_ALL=$(DFLAGS) $(DFLAGS_ADD) -I$(TANGO_HOME)
+DFLAGS_ALL=$(DFLAGS_ADD) $(DFLAGS_COMP)
 
 EXCLUDE_DEP_COMP=
 # ^dmd\.
@@ -17,3 +17,12 @@ EXCLUDE_DEP_COMP=
 %.o:%.d
 	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
 	if [ ! -r $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
+
+%.o:%.s
+	$(CC) -c $(CFLAGS) $< -o$@
+
+%.o:%.S
+	$(CC) -c $(CFLAGS) $< -o$@
+
+%.o:%.c
+	$(CC) -c $(CFLAGS) $< -o$@

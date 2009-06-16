@@ -46,6 +46,7 @@ ARCHDIR=$(TANGO_HOME)/lib/build/arch
 EXCLUDEPAT_ALL=$(EXCLUDEPAT_OS)
 ARCHFILE=$(ARCHDIR)/$(IDENT).mak
 MAKEFILE=$(TANGO_HOME)/Makefile
+DFLAGS_ADD=-I$(TANGO_HOME)
 
 LIB=libtango-user.$(LIB_EXT)
 INSTALL_LIB=libtango-user-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
