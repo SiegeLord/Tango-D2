@@ -62,7 +62,7 @@ EXCLUDE_DEP_ALL=$(EXCLUDE_DEP_COMP)
 
 OBJS=$(MODULES:%=%.$(OBJ_EXT))
 
-.PHONY: _genDeps newFiles build clean distclean
+.PHONY: _genDeps newFiles build clean distclean allVersions
 
 all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)
@@ -112,6 +112,7 @@ clean-all:
 
 distclean:
 	rm -rf $(TANGO_HOME)/objs-*
+	rm -f libtango-user-*
 
 ifeq ($(shell if [ -e "$(OBJDIR)/intermediate.rule" ]; then echo 1; fi;),1)
 include $(OBJDIR)/intermediate.rule
