@@ -725,7 +725,7 @@ struct Variant
             args = storage.ptr;
             auto arg_temp = args;
 
-            types = new TypeInfo[size];
+            types = new TypeInfo[vars.length];
 
             foreach( i, ref v ; vars )
             {
