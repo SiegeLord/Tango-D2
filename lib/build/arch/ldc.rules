@@ -2,10 +2,13 @@
 
 LIB_EXT=a
 OBJ_EXT=o
+LIB_DIR="-L=-L"
+LIB_LINK="-L=-l"
+OUT_NAME="-of="
 mkLib=ar -r
 ranlib=ranlib
 
-DFLAGS_ALL=$(DFLAGS_ADD) $(DFLAGS_COMP)
+DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
 
 EXCLUDE_DEP_COMP= ^ldc\.
 
