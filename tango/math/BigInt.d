@@ -56,13 +56,13 @@ public:
     }
     static BigInt opCall(T: int)(T x) {
         BigInt r;
-        r.data = (x < 0) ? -x : x;
+        r.data = cast(ulong)((x < 0) ? -x : x);
         r.sign = (x < 0);
         return r;
     }
     ///
     void opAssign(T:int)(T x) {
-        data = (x < 0) ? -x : x;
+        data = cast(ulong)((x < 0) ? -x : x);
         sign = (x < 0);
     }
     ///
@@ -257,8 +257,26 @@ public:
         int cmp = data.opCmp(y.data);
         return sign? -cmp: cmp;
     }
+    /// Returns the value of this BigInt as a long,
+    /// or +- long.max if outside the representable range.
+    long toLong() {
+        return (sign ? -1 : 1)* 
+          (data.ulongLength() == 1  && (data.peekUlong(0) <= cast(ulong)(long.max)) ? cast(long)(data.peekUlong(0)): long.max);
+    }
+    /// Returns the value of this BigInt as an int,
+    /// or +- long.max if outside the representable range.
+    long toInt() {
+        return (sign ? -1 : 1)* 
+          (data.uintLength() == 1  && (data.peekUint(0) <= cast(uint)(int.max)) ? cast(int)(data.peekUint(0)): int.max);
+    }
+    /// Number of significant uints which are used in storing this number.
+    /// The absolute value of this BigInt is always < 2^(32*uintLength)
+    int uintLength() { return data.uintLength(); }
+    /// Number of significant ulongs which are used in storing this number.
+    /// The absolute value of this BigInt is always < 2^(64*ulongLength)
+    int ulongLength() { return data.ulongLength(); } 
 public:
-    /// BUG: For testing only, this will be removed eventually
+    /// Deprecated. Use uintLength() or ulongLength() instead.
     int numBytes() {
         return data.numBytes();
     }
@@ -344,6 +362,12 @@ unittest {
     assert( BigInt("0x00000000000000000000000000000000000A234567890123456789").toHex
         == "A23_45678901_23456789");
     assert( BigInt("0x000_00_000000_000_000_000000000000_000000_").toHex == "0");
+    
+    assert(BigInt(-0x12345678).toInt() == -0x12345678);
+    assert(BigInt(-0x12345678).toLong() == -0x12345678);
+    assert(BigInt(0x1234_5678_9ABC_5A5AL).toLong() == 0x1234_5678_9ABC_5A5AL);
+    assert(BigInt(0xF234_5678_9ABC_5A5AL).toLong() == long.max);
+    assert(BigInt(-0x123456789ABCL).toInt() == -int.max);
 
 }
 }

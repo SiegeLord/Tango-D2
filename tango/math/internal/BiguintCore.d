@@ -43,6 +43,8 @@ version(build){// bud/build won't link properly without this.
     static import tango.math.internal.BignumX86;
 }
 
+alias multibyteAddSub!('+') multibyteAdd;
+alias multibyteAddSub!('-') multibyteSub;
 
 // private import tango.core.Cpuid;
 static this()
@@ -86,6 +88,44 @@ public: // for development only, will be removed eventually
         BigUint x;
         x.data = data[$-(numbytes>>2)..$];
         return x;
+    }
+    // Length in uints
+    int uintLength() {
+        static if (BigDigit.sizeof == uint.sizeof) {
+            return data.length;
+        } else static if (BigDigit.sizeof == ulong.sizeof) {
+            return data.length * 2 - 
+            ((data[$-1]&0xFFFF_FFFF_0000_0000L)? 1 : 0);
+        }
+    }
+    int ulongLength() {
+        static if (BigDigit.sizeof == uint.sizeof) {
+            return (data.length+1)>>1;
+        } else static if (BigDigit.sizeof == ulong.sizeof) {
+            return data.length;
+        }
+    }
+
+    // The value at (cast(ulong[])data)[n]
+    ulong peekUlong(int n) {
+        static if (BigDigit.sizeof == int.sizeof) {
+            if (data.length == n*2+1) return data[n*2];
+            version(LittleEndian) {
+                return data[n*2] + ((cast(ulong)data[n*2+1])<<32);
+            } else {
+                return data[n*2+1] + ((cast(ulong)data[n*2])<<32);
+            }
+        } else static if (BigDigit.sizeof == long.sizeof) {
+            return data[n];
+        }
+    }
+    uint peekUint(int n) {
+        static if (BigDigit.sizeof == int.sizeof) {
+            return data[n];
+        } else {
+            ulong x = data[n>>1];
+            return (n&1) ? cast(uint)(x >> 32) : cast(uint)x;
+        }
     }
 public:
     ///
@@ -447,10 +487,10 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
         int last = highestDifferentDigit(x, y);
         BigDigit [] result = new BigDigit[last+1];
         if (x[last] < y[last]) { // we know result is negative
-            multibyteAddSub!('-')(result[0..last+1], y[0..last+1], x[0..last+1], 0);
+            multibyteSub(result[0..last+1], y[0..last+1], x[0..last+1], 0);
             *negative = true;
         } else { // positive or zero result
-            multibyteAddSub!('-')(result[0..last+1], x[0..last+1], y[0..last+1], 0);
+            multibyteSub(result[0..last+1], x[0..last+1], y[0..last+1], 0);
             *negative = false;
         }
         if (result.length >1 && result[$-1]==0) return result[0..$-1];
@@ -468,13 +508,21 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
     // result.length will be equal to larger length, or could decrease by 1.
     
     BigDigit [] result = new BigDigit[large.length];
-    BigDigit carry = multibyteAddSub!('-')(result[0..small.length], large[0..small.length], small, 0);
+    BigDigit carry = multibyteSub(result[0..small.length], large[0..small.length], small, 0);
     result[small.length..$] = large[small.length..$];
     if (carry) {
-        multibyteIncrementAssign!('-')(result[small.length..$-1], carry);
+        multibyteIncrementAssign!('-')(result[small.length..$], carry);
     }
     if (result.length >1 && result[$-1]==0) return result[0..$-1];
     return result;
+}
+
+
+// Remove leading zeros from x.
+BigDigit [] removeLeadingZeros(BigDigit[] x)
+{
+  while(x.length>1 && x[$-1]==0) x=x[0..$-1];
+  return x;
 }
 
 // return a + b
@@ -485,7 +533,7 @@ BigDigit [] add(BigDigit[] a, BigDigit [] b) {
     // create result. add 1 in case it overflows
     BigDigit [] result = new BigDigit[x.length + 1];
     
-    BigDigit carry = multibyteAddSub!('+')(result[0..y.length], x[0..y.length], y, 0);
+    BigDigit carry = multibyteAdd(result[0..y.length], x[0..y.length], y, 0);
     if (x.length != y.length){
         result[y.length..$-1]= x[y.length..$];
         carry  = multibyteIncrementAssign!('+')(result[y.length..$-1], carry);
@@ -535,7 +583,9 @@ BigDigit [] subInt(BigDigit[] x, ulong y)
  *
  *  The length of y must not be larger than the length of x.
  *  Different algorithms are used, depending on the lengths of x and y.
- * 
+ *  TODO: "Modern Computer Arithmetic" suggests better algorithms for the
+ *  unbalanced case.
+ *  
  */
 void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
 {
@@ -567,7 +617,7 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
             BigDigit [KARATSUBALIMIT] partial;
             partial[0..y.length] = result[done..done+y.length];
             mulSimple(result[done..done+chunksize+y.length], x[done..done+chunksize], y);
-            simpleAddAssign(result[done..done+chunksize + y.length], partial[0..y.length]);
+            addAssignSimple(result[done..done+chunksize + y.length], partial[0..y.length]);
             done += chunksize;
         }
         return;
@@ -619,7 +669,7 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
                         x[0 .. chunksize + (extra>0?1:0)], y, scratchbuff);
           done = chunksize + (extra > 0 ? 1 : 0);
           if (extra) --extra;
-        } else { // Begin with the extra bit.
+        } else { // We're padding X. Begin with the extra bit.
             mulKaratsuba(result[0 .. y.length + extra], y, x[0..extra], scratchbuff);
             done = extra;
             extra = 0;
@@ -631,7 +681,7 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
             partial[] = result[done .. done+y.length];
             mulKaratsuba(result[done .. done + y.length + chunksize], 
                        x[done .. done+chunksize], y, scratchbuff);
-            simpleAddAssign(result[done .. done + y.length + chunksize], partial);
+            addAssignSimple(result[done .. done + y.length + chunksize], partial);
             done += chunksize;
         }
         delete scratchbuff;
@@ -642,6 +692,24 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
         delete scratchbuff;
     }
 }
+
+/**  General unsigned squaring routine for BigInts.
+ *   Sets result = x*x.
+ */
+void squareInternal(BigDigit[] result, BigDigit[] x)
+{
+  // TODO: Squaring is potentially half a multiply, plus add the squares of 
+  // the diagonal elements.
+  assert(result.length == 2*x.length);
+  if (x.length <= KARATSUBALIMIT) {
+      return mulSimple(result, x, x);
+  }
+  // The nice thing about squaring is that it always stays balanced
+  BigDigit [] scratchbuff = new BigDigit[karatsubaRequiredBuffSize(x.length)];
+  mulKaratsuba(result, x, x, scratchbuff);
+  delete scratchbuff;  
+}
+
 
 import tango.core.BitManip : bsr;
 
@@ -872,7 +940,7 @@ in {
     assert(right.length>0);
 }
 body {
-    uint carry = multibyteAddSub!('+')(result[0..right.length],
+    uint carry = multibyteAdd(result[0..right.length],
             left[0..right.length], right, 0);
     if (right.length < left.length) {
         result[right.length..left.length] = left[right.length .. $];            
@@ -883,14 +951,14 @@ body {
 
 //  result = left - right
 // returns carry (0 or 1)
-uint subSimple(BigDigit [] result, BigDigit [] left, BigDigit [] right)
+BigDigit subSimple(BigDigit [] result, BigDigit [] left, BigDigit [] right)
 in {
     assert(result.length == left.length);
     assert(left.length >= right.length);
     assert(right.length>0);
 }
 body {
-    uint carry = multibyteAddSub!('-')(result[0..right.length],
+    BigDigit carry = multibyteSub(result[0..right.length],
             left[0..right.length], right, 0);
     if (right.length < left.length) {
         result[right.length..left.length] = left[right.length .. $];            
@@ -903,24 +971,69 @@ body {
 /* result = result - right 
  * Returns carry = 1 if result was less than right.
 */
-uint simpleSubAssign(BigDigit [] result, BigDigit [] right)
+BigDigit subAssignSimple(BigDigit [] result, BigDigit [] right)
 {
     assert(result.length >= right.length);
-    uint c = multibyteAddSub!('-')(result[0..right.length], result[0..right.length], right, 0); 
+    uint c = multibyteSub(result[0..right.length], result[0..right.length], right, 0); 
     if (c && result.length > right.length) c = multibyteIncrementAssign!('-')(result[right.length .. $], c);
     return c;
 }
 
-
-void simpleAddAssign(BigDigit [] result, BigDigit [] right)
+/* result = result + right
+*/
+BigDigit addAssignSimple(BigDigit [] result, BigDigit [] right)
 {
-   assert(result.length >= right.length);
-   uint c = multibyteAddSub!('+')(result[0..right.length], result[0..right.length], right, 0);
-   if (c) {
-   assert(result.length > right.length);
+    assert(result.length >= right.length);
+    uint c = multibyteAdd(result[0..right.length], result[0..right.length], right, 0);
+    if (c && result.length > right.length) {
        c = multibyteIncrementAssign!('+')(result[right.length .. $], c);
-       assert(c==0);
-   }
+    }
+    return c;
+}
+
+/* performs result += wantSub? - right : right;
+*/
+BigDigit addOrSubAssignSimple(BigDigit [] result, BigDigit [] right, bool wantSub)
+{
+  if (wantSub) return subAssignSimple(result, right);
+  else return addAssignSimple(result, right);
+}
+
+// return true if x<y, considering leading zeros
+bool less(BigDigit[] x, BigDigit[] y)
+{
+    assert(x.length >= y.length);
+    uint k = x.length-1;
+    while(x[k]==0 && k>=y.length) --k; 
+    if (k>=y.length) return false;
+    while (k>0 && x[k]==y[k]) --k;
+    return x[k] < y[k];
+}
+
+// Set result = abs(x-y), return true if result is negative(x<y), false if x<=y.
+bool inplaceSub(BigDigit[] result, BigDigit[] x, BigDigit[] y)
+{
+    assert(result.length == (x.length >= y.length) ? x.length : y.length);
+    
+    size_t minlen;
+    bool negative;
+    if (x.length >= y.length) {
+        minlen = y.length;
+        negative = less(x, y);
+    } else {
+       minlen = x.length;
+       negative = !less(y, x);
+    }
+    BigDigit[] large, small;
+    if (negative) { large = y; small=x; } else { large=x; small=y; }
+       
+    BigDigit carry = multibyteSub(result[0..minlen], large[0..minlen], small[0..minlen], 0);
+    if (x.length != y.length) {
+        result[minlen..large.length]= large[minlen..$];
+        result[large.length..$] = 0;
+        if (carry) multibyteIncrementAssign!('-')(result[minlen..$], carry);
+    }
+    return negative;
 }
 
 /* Determine how much space is required for the temporaries
@@ -928,36 +1041,41 @@ void simpleAddAssign(BigDigit [] result, BigDigit [] right)
  */
 uint karatsubaRequiredBuffSize(uint xlen)
 {
-    return xlen <= KARATSUBALIMIT ? 0 : 2*xlen - KARATSUBALIMIT + 2*uint.sizeof*8;
+    return xlen <= KARATSUBALIMIT ? 0 : 2*xlen; // - KARATSUBALIMIT+2;
 }
 
 /* Sets result = x*y, using Karatsuba multiplication.
 * x must be longer or equal to y.
 * Valid only for balanced multiplies, where x is not shorter than y.
-* It is efficient only if sqrt(2)*y.length > x.length >= y.length.
+* It is superior to schoolbook multiplication if and only if 
+*    sqrt(2)*y.length > x.length > y.length.
 * Karatsuba multiplication is O(n^1.59), whereas schoolbook is O(n^2)
-* The maximum allowable length of x and y is uint.max; but performance is appalling
-* long before that length is reached.
+* The maximum allowable length of x and y is uint.max; but better algorithms
+* should be used far before that length is reached.
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
 */
 void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] scratchbuff)
 {
     assert(x.length >= y.length);
-	assert(result.length<uint.max, "Operands too large");
+	  assert(result.length < uint.max, "Operands too large");
     assert(result.length == x.length + y.length);
-    if (y.length <= KARATSUBALIMIT) {
+    if (x.length <= KARATSUBALIMIT) {
         return mulSimple(result, x, y);
     }
-    // Must be almost square.
-    assert(2L * y.length * y.length > (x.length-1) * (x.length-1), "Asymmetric Karatsuba");
+    // Must be almost square (otherwise, a schoolbook iteration is better)
+    assert(2L * y.length * y.length > (x.length-1) * (x.length-1),
+        "Bigint Internal Error: Asymmetric Karatsuba");
         
-    // Karatsuba multiply uses the following result:
-    // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 + N * mid
-    // where mid = (x1+x0)*(y1+y0) - x1y1 - x0y0
+    // The subtractive version of Karatsuba multiply uses the following result:
+    // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 + N * (x0y0 + x1y1 - mid)
+    // where mid = (x0-x1)*(y0-y1)
     // requiring 3 multiplies of length N, instead of 4.
+    // The advantage of the subtractive over the additive version is that
+    // the mid multiply cannot exceed length N. But there are subtleties:
+    // (x0-x1),(y0-y1) may be negative or zero. To keep it simple, we 
+    // retain all of the leading zeros in the subtractions
     
-
     // half length, round up.
     uint half = (x.length >> 1) + (x.length & 1);
     
@@ -965,31 +1083,23 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
     BigDigit [] x1 = x[half .. $];    
     BigDigit [] y0 = y[0 .. half];
     BigDigit [] y1 = y[half .. $];
-    BigDigit [] xsum = result[0 .. half]; // initially use result to store temporaries
-    BigDigit [] ysum = result[half .. half*2];
-    BigDigit [] mid = scratchbuff[0 .. half*2+1];
-    BigDigit [] newscratchbuff = scratchbuff[half*2+1 .. $];
-    BigDigit [] resultLow = result[0 .. x0.length + y0.length];
-    BigDigit [] resultHigh = result[x0.length + y0.length .. $];       
+    BigDigit [] mid = scratchbuff[0 .. half*2];
+    BigDigit [] newscratchbuff = scratchbuff[half*2 .. $];
+    BigDigit [] resultLow = result[0 .. 2*half];
+    BigDigit [] resultHigh = result[2*half .. $];
+     // initially use result to store temporaries
+    BigDigit [] xdiff= result[0 .. half];
+    BigDigit [] ydiff = result[half .. half*2];
     
-    // Add the high and low parts of x and y.
-    // This will generate carries of either 0 or 1.
-    // TODO: Knuth's variant would save the extra two additions:
-    // (Nx1 + x0)*(Ny1 + y0) = (N*N)*x1y1 + x0y0 - N * mid
-    // where mid = (x0-x1)*(y0-y1) - x1y1 - x0y0
-    // since then mid.length cannot exceed length N.
-    uint carry_x = addSimple(xsum, x0, x1);
-    uint carry_y = addSimple(ysum, y0, y1);
+    // First, we calculate mid, and sign of mid
+    bool midNegative = inplaceSub(xdiff, x0, x1)
+                      ^ inplaceSub(ydiff, y0, y1);
+    mulKaratsuba(mid, xdiff, ydiff, newscratchbuff);
     
-    mulKaratsuba(mid[0..half*2], xsum, ysum, newscratchbuff);
-    mid[half*2] = carry_x & carry_y;
-    if (carry_x)  simpleAddAssign(mid[half..$], ysum);
-    if (carry_y)  simpleAddAssign(mid[half..$], xsum);
     // Low half of result gets x0 * y0. High half gets x1 * y1
-   
+  
     mulKaratsuba(resultLow, x0, y0, newscratchbuff);
-    mid.simpleSubAssign(resultLow);
-
+    
     if (2L * y1.length * y1.length < x1.length * x1.length) {
         // an asymmetric situation has been created.
         // Worst case is if x:y = 1.414 : 1, then x1:y1 = 2.41 : 1.
@@ -1003,20 +1113,41 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
             mulKaratsuba(resultHigh[0..quarter+y1.length], ysmaller ? x1[0..quarter] : y1, 
                 ysmaller ? y1 : x1[0..quarter], newscratchbuff);
             // Save the part which will be overwritten.
-            bool ysmaller2 = ((x1.length -quarter) >= y1.length);
+            bool ysmaller2 = ((x1.length - quarter) >= y1.length);
             newscratchbuff[0..y1.length] = resultHigh[quarter..quarter + y1.length];
             mulKaratsuba(resultHigh[quarter..$], ysmaller2 ? x1[quarter..$] : y1, 
                 ysmaller2 ? y1 : x1[quarter..$], newscratchbuff[y1.length..$]);
 
-            resultHigh[quarter..$].simpleAddAssign(newscratchbuff[0..y1.length]);                
+            resultHigh[quarter..$].addAssignSimple(newscratchbuff[0..y1.length]);                
         }
     } else mulKaratsuba(resultHigh, x1, y1, newscratchbuff);
-        
-    mid.simpleSubAssign(resultHigh);
 
-    // result += MID
-    result[half..$].simpleAddAssign(mid);
+    /* We now have result = x0y0 + (N*N)*x1y1
+       Before adding or subtracting mid, we must calculate
+       result += N * (x0y0 + x1y1)    
+       We can do this with three half-length additions. With a = x0y0, b = x1y1:
+                      aHI aLO
+        +       aHI   aLO
+        +       bHI   bLO
+        +  bHI  bLO
+        =  R3   R2    R1   R0        
+        R1 = aHI + bLO + aLO
+        R2 = aHI + bLO + aHI + carry_from_R1
+        R3 = bHi + carry_from_R2
+    */
+    BigDigit[] R1 = result[half..half*2];
+    BigDigit[] R2 = result[half*2..half*3];
+    BigDigit[] R3 = result[half*3..$];
+    BigDigit c1 = multibyteAdd(R2, R2, R1, 0); // c1:R2 = R2 + R1
+    BigDigit c2 = multibyteAdd(R1, R2, result[0..half], 0); // c2:R1 = R2 + R1 + R0
+    BigDigit c3 = addAssignSimple(R2, R3); // R2 = R2 + R1 + R3
+    if (c1+c2) multibyteIncrementAssign!('+')(result[half*2..$], c1+c2);
+    if (c1+c3) multibyteIncrementAssign!('+')(R3, c1+c3);
+     
+    // And finally we subtract mid
+    addOrSubAssignSimple(result[half..$], mid, !midNegative);
 }
+
 
 /* Knuth's Algorithm D, as presented in 
  * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).
@@ -1047,7 +1178,7 @@ void schoolbookDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
         } else {
             uint ulo = u[j + v.length - 2];
 version(Naked_D_InlineAsm_X86) {
-            // Note: On DMD, this make is only ~10% faster than the non-asm code. 
+            // Note: On DMD, this is only ~10% faster than the non-asm code. 
             uint *p = &u[j + v.length - 1];
             asm {
                 mov EAX, p;
@@ -1087,7 +1218,7 @@ div3by2done:    ;
         if (u[j+v.length] < carry) {
             // If we subtracted too much, add back
             --qhat;
-            carry -= multibyteAddSub!('+')(u[j..j+v.length],u[j..j+v.length], v, 0);
+            carry -= multibyteAdd(u[j..j+v.length],u[j..j+v.length], v, 0);
         }
         quotient[j] = qhat;
         u[j + v.length] = u[j + v.length] - carry;
@@ -1126,7 +1257,7 @@ int highestDifferentDigit(BigDigit [] left, BigDigit [] right)
     return 0;
 }
 
-/* Calculate quotient and remainder of u and v using fast recursive division.
+/* Calculate quotient and remainder of u / v using fast recursive division.
   v must be normalised, and must be at least half as long as u.
   Given u and v, v normalised, calculates  quotient  = u/v, u = u%v.
   Algorithm is described in 
@@ -1172,13 +1303,14 @@ void adjustRemainder(BigDigit[] quot, BigDigit[] rem, in BigDigit[] v, int k,
 {
     assert(rem.length == v.length);
     mulInternal(scratch, quot, v[0 .. k]);
-    uint carry = simpleSubAssign(rem, scratch);
+    uint carry = subAssignSimple(rem, scratch);
     while(carry) {
         multibyteIncrementAssign!('-')(quot, 1); // quot--
-        carry -= multibyteAddSub!('+')(rem, rem, v, 0);
+        carry -= multibyteAdd(rem, rem, v, 0);
     }
 }
 
+// Cope with unbalanced division by performing block schoolbook division.
 void fastDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
 {
     assert(quotient.length == u.length - v.length);
