@@ -20,6 +20,8 @@ alias uint BigDigit; // A Bignum is an array of BigDigits.
     
     // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 10 }; // Minimum value for which Karatsuba is worthwhile.
+enum : int { KARATSUBASQUARELIMIT=12 }; // Minimum value for which square Karatsuba is worthwhile
+
 
 /** Multi-byte addition or subtraction
  *    dest[] = src1[] + src2[] + carry (0 or 1).
@@ -215,6 +217,7 @@ unittest {
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
 }
 
+
 /** 
    Sets result = result[0..left.length] + left * right
    
@@ -258,4 +261,56 @@ unittest {
     for (int i=aa.length-1; i>=0; --i) { assert(aa[i] == 0x8765_4321 * (i+3)); }
     assert(r==0x33FF_7461);
 
+}
+// Set dest[2*i..2*i+1]+=src[i]*src[i]
+void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
+{
+    ulong c = 0;
+    for(int i = 0; i < src.length; ++i){
+		 // At this point, c is 0 or 1, since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
+         c += cast(ulong)(src[i]) * src[i] + dest[2*i];
+         dest[2*i] = cast(uint)c;
+         c = (c>>=32) + dest[2*i+1];
+         dest[2*i+1] = cast(uint)c;
+         c >>= 32;
+    }
+}
+
+// Does half a square multiply. (square = diagonal + 2*triangle)
+void multibyteTriangleAccumulate(uint[] dest, uint[] x)
+{
+    // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
+    dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);
+	if (x.length <4) {
+	    if (x.length ==3) {
+            ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
+	        dest[2*x.length-3] = cast(uint)c;
+	        c >>= 32;
+	        dest[2*x.length-2] = cast(uint)c;
+        }
+	    return;
+	}
+    for (int i = 2; i < x.length-2; ++i) {
+        dest[i-1+ x.length] = multibyteMulAdd!('+')(
+             dest[i+i-1 .. i+x.length-1], x[i..$], x[i-1], 0);
+    }
+	// Unroll the last two entries, to reduce loop overhead:
+    ulong  c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
+    dest[2*x.length-5] = cast(uint)c;
+    c >>= 32;
+    c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];
+    dest[2*x.length-4] = cast(uint)c;
+    c >>= 32;
+    c += cast(ulong)(x[$-1]) * x[$-2];
+	dest[2*x.length-3] = cast(uint)c;
+	c >>= 32;
+	dest[2*x.length-2] = cast(uint)c;
+}
+
+void multibyteSquare(BigDigit[] result, BigDigit [] x)
+{
+    multibyteTriangleAccumulate(result, x);
+    result[$-1] = multibyteShl(result[1..$-1], result[1..$-1], 1); // mul by 2
+    result[0] = 0;
+    multibyteAddDiagonalSquares(result, x);
 }

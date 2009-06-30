@@ -390,7 +390,8 @@ static BigUint mul(BigUint x, BigUint y)
     if (y.data.length > x.data.length) {
         mulInternal(r.data, y.data, x.data);
     } else {
-        mulInternal(r.data, x.data, y.data);
+        if (x.data[]==y.data[]) squareInternal(r.data, x.data);
+        else mulInternal(r.data, x.data, y.data);
     }
     // the highest element could be zero, 
     // in which case we need to reduce the length
@@ -701,12 +702,16 @@ void squareInternal(BigDigit[] result, BigDigit[] x)
   // TODO: Squaring is potentially half a multiply, plus add the squares of 
   // the diagonal elements.
   assert(result.length == 2*x.length);
-  if (x.length <= KARATSUBALIMIT) {
-      return mulSimple(result, x, x);
+  if (x.length <= KARATSUBASQUARELIMIT) {
+      if (x.length==1) {
+         result[1] = multibyteMul(result[0..1], x, x[0], 0);
+         return;
+      }
+      return squareSimple(result, x);
   }
   // The nice thing about squaring is that it always stays balanced
   BigDigit [] scratchbuff = new BigDigit[karatsubaRequiredBuffSize(x.length)];
-  mulKaratsuba(result, x, x, scratchbuff);
+  squareKaratsuba(result, x, scratchbuff);
   delete scratchbuff;  
 }
 
@@ -929,6 +934,16 @@ body {
     multibyteMultiplyAccumulate(result[1..$], left, right[1..$]);
 }
 
+// Classic 'schoolbook' squaring
+void squareSimple(BigDigit[] result, BigDigit [] x)
+in {    
+    assert(result.length == 2*x.length);
+    assert(x.length>1);
+}
+body {
+    multibyteSquare(result, x);
+}
+
 
 // add two uints of possibly different lengths. Result must be as long
 // as the larger length.
@@ -998,6 +1013,7 @@ BigDigit addOrSubAssignSimple(BigDigit [] result, BigDigit [] right, bool wantSu
   if (wantSub) return subAssignSimple(result, right);
   else return addAssignSimple(result, right);
 }
+
 
 // return true if x<y, considering leading zeros
 bool less(BigDigit[] x, BigDigit[] y)
@@ -1148,6 +1164,52 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
     addOrSubAssignSimple(result[half..$], mid, !midNegative);
 }
 
+void squareKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit [] scratchbuff)
+{
+    // See mulKaratsuba for implementation comments.
+    // Squaring is simpler, since it never gets asymmetric.
+	  assert(result.length < uint.max, "Operands too large");
+    assert(result.length == 2*x.length);
+    if (x.length <= KARATSUBASQUARELIMIT) {
+        return squareSimple(result, x);
+    }
+    // half length, round up.
+    uint half = (x.length >> 1) + (x.length & 1);
+    
+    BigDigit [] x0 = x[0 .. half];
+    BigDigit [] x1 = x[half .. $];    
+    BigDigit [] mid = scratchbuff[0 .. half*2];
+    BigDigit [] newscratchbuff = scratchbuff[half*2 .. $];
+     // initially use result to store temporaries
+    BigDigit [] xdiff= result[0 .. half];
+    BigDigit [] ydiff = result[half .. half*2];
+    
+    // First, we calculate mid. We don't need its sign
+    inplaceSub(xdiff, x0, x1);
+    squareKaratsuba(mid, xdiff, newscratchbuff);
+  
+    // Set result = x0x0 + (N*N)*x1x1
+    squareKaratsuba(result[0 .. 2*half], x0, newscratchbuff);
+    squareKaratsuba(result[2*half .. $], x1, newscratchbuff);
+
+    /* result += N * (x0x0 + x1x1)    
+       Do this with three half-length additions. With a = x0x0, b = x1x1:
+        R1 = aHI + bLO + aLO
+        R2 = aHI + bLO + aHI + carry_from_R1
+        R3 = bHi + carry_from_R2
+    */
+    BigDigit[] R1 = result[half..half*2];
+    BigDigit[] R2 = result[half*2..half*3];
+    BigDigit[] R3 = result[half*3..$];
+    BigDigit c1 = multibyteAdd(R2, R2, R1, 0); // c1:R2 = R2 + R1
+    BigDigit c2 = multibyteAdd(R1, R2, result[0..half], 0); // c2:R1 = R2 + R1 + R0
+    BigDigit c3 = addAssignSimple(R2, R3); // R2 = R2 + R1 + R3
+    if (c1+c2) multibyteIncrementAssign!('+')(result[half*2..$], c1+c2);
+    if (c1+c3) multibyteIncrementAssign!('+')(R3, c1+c3);
+     
+    // And finally we subtract mid, which is always positive
+    subAssignSimple(result[half..$], mid);
+}
 
 /* Knuth's Algorithm D, as presented in 
  * H.S. Warren, "Hacker's Delight", Addison-Wesley Professional (2002).

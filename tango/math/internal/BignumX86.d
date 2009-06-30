@@ -100,6 +100,7 @@ alias uint BigDigit; // A Bignum is an array of BigDigits. Usually the machine w
     
 // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 18 }; // Minimum value for which Karatsuba is worthwhile.
+enum : int { KARATSUBASQUARELIMIT=18 }; // Minimum value for which square Karatsuba is worthwhile
     
 /** Multi-byte addition or subtraction
  *    dest[#] = src1[#] + src2[#] + carry (0 or 1).
@@ -1042,6 +1043,59 @@ unittest {
 
 }
 
+// Set dest[2*i..2*i+1]+=src[i]*src[i]
+void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
+{
+    ulong c = 0;
+    for(int i = 0; i < src.length; ++i){
+		 // At this point, c is 0 or 1, since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
+         c += cast(ulong)(src[i]) * src[i] + dest[2*i];
+         dest[2*i] = cast(uint)c;
+         c = (c>>=32) + dest[2*i+1];
+         dest[2*i+1] = cast(uint)c;
+         c >>= 32;
+    }
+}
+
+// Does half a square multiply. (square = diagonal + 2*triangle)
+void multibyteTriangleAccumulate(uint[] dest, uint[] x)
+{
+    // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
+    dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);
+	if (x.length <4) {
+	    if (x.length ==3) {
+            ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
+	        dest[2*x.length-3] = cast(uint)c;
+	        c >>= 32;
+	        dest[2*x.length-2] = cast(uint)c;
+        }
+	    return;
+	}
+    for (int i = 2; i < x.length-2; ++i) {
+        dest[i-1+ x.length] = multibyteMulAdd!('+')(
+             dest[i+i-1 .. i+x.length-1], x[i..$], x[i-1], 0);
+    }
+	// Unroll the last two entries, to reduce loop overhead:
+    ulong  c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
+    dest[2*x.length-5] = cast(uint)c;
+    c >>= 32;
+    c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];
+    dest[2*x.length-4] = cast(uint)c;
+    c >>= 32;
+    c += cast(ulong)(x[$-1]) * x[$-2];
+	dest[2*x.length-3] = cast(uint)c;
+	c >>= 32;
+	dest[2*x.length-2] = cast(uint)c;
+}
+
+void multibyteSquare(BigDigit[] result, BigDigit [] x)
+{
+    multibyteTriangleAccumulate(result, x);
+    result[$-1] = multibyteShlNoMMX(result[1..$-1], result[1..$-1], 1); // mul by 2
+    result[0] = 0;
+    multibyteAddDiagonalSquares(result, x);
+}
+
 version(TangoPerformanceTest) {
 import tango.stdc.stdio;
 int clock() { asm { push EBX; xor EAX, EAX; cpuid; pop EBX; rdtsc; } }
@@ -1094,6 +1148,9 @@ void testPerformance()
     t = clock();
     multibyteDivAssign(Z1[0..1000], 37, 0);
     auto divtime = (t - t0) - (clock() - t);
+	t= clock();
+    multibyteSquare(Z1[0..64], X1[0..32]);
+    auto squaretime = clock() - t;
     
     printf("-- BigInt asm performance (cycles/int) --\n");    
     printf("Add:        %.2f\n", addtime/1000.0);
@@ -1102,7 +1159,8 @@ void testPerformance()
     printf("Mul:        %.2f\n", multime/1000.0);
     printf("MulAdd:     %.2f\n", muladdtime/1000.0);
     printf("Div:        %.2f\n", divtime/1000.0);
-    printf("MulAccum32: %.2f*n*n (total %d)\n\n", accumtime/(32.0*32.0), accumtime);
+    printf("MulAccum32: %.2f*n*n (total %d)\n", accumtime/(32.0*32.0), accumtime);
+    printf("Square32: %.2f*n*n (total %d)\n\n", squaretime/(32.0*32.0), squaretime);
 }
 
 static this()
@@ -1110,6 +1168,5 @@ static this()
     testPerformance();
 }
 }
-
 
 } // version(D_InlineAsm_X86)
