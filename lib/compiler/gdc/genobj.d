@@ -538,20 +538,23 @@ class TypeInfo_AssociativeArray : TypeInfo
         return next.toString() ~ "[" ~ key.toString() ~ "]";
     }
 
-    int opEquals(Object o)
-    {   TypeInfo_AssociativeArray c;
-
+    override equals_t opEquals(Object o)
+    {
+        TypeInfo_AssociativeArray c;
         return this is o ||
                 ((c = cast(TypeInfo_AssociativeArray)o) !is null &&
                  this.key == c.key &&
                  this.value == c.value);
     }
 
-    // BUG: need to add the rest of the functions
-
-    size_t tsize()
+    override size_t tsize()
     {
         return (char[int]).sizeof;
+    }
+
+    override int compare(in void* p1, in void* p2)
+    {
+        throw new Exception("non comparable",__FILE__,__LINE__);
     }
 
     TypeInfo next() { return value; }

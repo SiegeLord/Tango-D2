@@ -839,7 +839,6 @@ size_t newCapacity(size_t newlength, size_t size)
         }
         newcap = newext > newcap ? newext : newcap; // just to handle overflows
         debug(PRINTF) printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
-        debug(PRINTF) printf("newcap = %d, newlength = %d, size = %d\n", newcap, newlength, size);
     }
     return newcap;
 }

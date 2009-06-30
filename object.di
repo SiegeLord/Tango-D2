@@ -169,10 +169,10 @@ class TypeInfo_Struct : TypeInfo
     char[] name;
     void[] m_init;
 
-    uint function(void*)      xtoHash;
-    int function(void*,void*) xopEquals;
-    int function(void*,void*) xopCmp;
-    char[] function(void*)    xtoString;
+    hash_t function()   xtoHash;
+    int function(void*) xopEquals;
+    int function(void*) xopCmp;
+    char[] function()   xtoString;
 
     uint m_flags;
 }

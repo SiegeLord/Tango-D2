@@ -12,7 +12,7 @@ goerror(){
 }
 
 make clean-all -fldc-posix.mak       || goerror
-make all install -fldc-posix.mak     || goerror
+make lib-release install -fldc-posix.mak     || goerror
 make clean -fldc-posix.mak           || goerror
 chmod 644 ../tango/core/*.di         || goerror
 
