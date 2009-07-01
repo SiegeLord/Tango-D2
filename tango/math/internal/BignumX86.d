@@ -629,6 +629,97 @@ unittest
     assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
 
+// The inner multiply-and-add loop, together with the Even entry point.
+// Multiples by M_ADDRESS which should be "ESP+LASTPARAM" or "ESP". OP must be "add" or "sub"
+// This is the most time-critical code in the BigInt library.
+// It is used by both MulAdd and by multiplyAccumulate
+char [] asmMulAdd_innerloop(char [] OP, char [] M_ADDRESS) {
+    // The bottlenecks in this code are extremely complicated. The MUL, ADD, and ADC
+    // need 4 cycles on each of the ALUs units p0 and p1. So we use memory load 
+    // (unit p2) for initializing registers to zero.
+    // There are also dependencies between the instructions, and we run up against the
+    // ROB-read limit (can only read 2 registers per cycle).
+    // We also need the number of uops in the loop to be a multiple of 3.
+    // The only available execution unit for this is p3 (memory write). Unfortunately we can't do that
+	// if Position-Independent Code is required.
+	
+	// Register usage
+    // ESI = end of src
+    // EDI = end of dest
+    // EBX = index. Counts up to zero (in steps of 2).
+    // EDX:EAX = scratch, used in multiply.
+    // ECX = carry1.
+    // EBP = carry2.
+	// ESP = points to the multiplier.
+	
+	// The first member of 'dest' which will be modified is [EDI+4*EBX].
+	// EAX must already contain the first member of 'src', [ESI+4*EBX].
+
+version(D_PIC) { bool using_PIC = true; } else { bool using_PIC=false; }
+return "asm {
+        // Entry point for even length
+        add EBX, 1;
+        mov EBP, ECX; // carry
+        
+        mul int ptr [" ~ M_ADDRESS ~ "]; // M
+        mov ECX, 0;
+ 
+        add EBP, EAX;
+        mov EAX, [ESI+4*EBX];
+        adc ECX, EDX;
+
+        mul int ptr [" ~ M_ADDRESS ~ "]; // M
+        " ~ OP ~ " [-4+EDI+4*EBX], EBP;
+        mov EBP, zero;
+    
+        adc ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jnl L_done;
+L1:
+        mul int ptr [" ~ M_ADDRESS ~ "];
+        " ~ OP ~ " [-8+EDI+4*EBX], ECX; 
+        adc EBP, EAX;
+        mov ECX, zero;
+        mov EAX, [ESI+4*EBX];        
+        adc ECX, EDX;
+		" ~
+    (using_PIC ? "" : "   mov storagenop, EDX; ") // make #uops in loop a multiple of 3, can't do this in PIC mode.
+	~ "
+        mul int ptr [" ~ M_ADDRESS ~ "];
+        " ~ OP ~ " [-4+EDI+4*EBX], EBP;
+        mov EBP, zero;
+    
+        adc ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jl L1;
+L_done: " ~ OP ~ " [-8+EDI+4*EBX], ECX;
+        adc EBP, 0;
+		}";
+		// final carry is now in EBP
+}
+
+char [] asmMulAdd_enter_odd(char [] OP, char [] M_ADDRESS) {
+return "asm {
+        mul int ptr [" ~M_ADDRESS ~"];
+        mov EBP, zero;   
+        add ECX, EAX;
+        mov EAX, [4+ESI+4*EBX];
+    
+        adc EBP, EDX;    
+        add EBX, 2;
+        jl L1;
+        jmp L_done;
+		}";
+}
+		
+
+
 /**
  * dest[#] += src[#] * multiplier OP carry(0..FFFF_FFFF).
  * where op == '+' or '-'
@@ -637,15 +728,7 @@ unittest
 uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
 {
     // Timing: This is the most time-critical bignum function.
-    // Pentium M: 5.4 cycles/operation, still has 2 resource stalls + 1 load block/iteration
-    
-    // The bottlenecks in this code are extremely complicated. The MUL, ADD, and ADC
-    // need 4 cycles on each of the ALUs units p0 and p1. So we use memory load 
-    // (unit p2) for initializing registers to zero.
-    // There are also dependencies between the instructions, and we run up against the
-    // ROB-read limit (can only read 2 registers per cycle).
-    // We also need the number of uops in the loop to be a multiple of 3.
-    // The only available execution unit for this is p3 (memory write)
+    // Pentium M: 5.4 cycles/operation, still has 2 resource stalls + 1load block/iteration
     
     // The main loop is pipelined and unrolled by 2, 
     //   so entry to the loop is also complicated.
@@ -670,7 +753,6 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     }
     
     enum { LASTPARAM = 5*4 } // 4* pushes + return address.
-mixin("        
     asm {
         naked;
         
@@ -691,74 +773,19 @@ mixin("
         mov EAX, [ESI+4*EBX];
         test EBX, 1;
         jnz L_enter_odd;
-        // Entry point for even length
-        add EBX, 1;
-        mov EBP, ECX; // carry
-        
-        mul int ptr [ESP+LASTPARAM];
-        mov ECX, 0;
- 
-        add EBP, EAX;
-        mov EAX, [ESI+4*EBX];
-        adc ECX, EDX;
-
-        mul int ptr [ESP+LASTPARAM];
-" ~ OP ~ " [-4+EDI+4*EBX], EBP;
-        mov EBP, zero;
-    
-        adc ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jnl L_done;
-        // Main loop
-L1:
-        mul int ptr [ESP+LASTPARAM];
-        " ~ OP ~ " [-8+EDI+4*EBX], ECX;
- 
-        adc EBP, EAX;
-        mov ECX, zero;
-        mov EAX, [ESI+4*EBX];
-        
-        adc ECX, EDX;
-    }
-    version(D_PIC) {} else {
-     asm {
-        mov storagenop, EDX; // make #uops in loop a multiple of 3
-     }
-    }
-    asm {        
-        mul int ptr [ESP+LASTPARAM];
-        " ~ OP ~ " [-4+EDI+4*EBX], EBP;
-        mov EBP, zero;
-    
-        adc ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jl L1;
-L_done: " ~ OP ~ " [-8+EDI+4*EBX], ECX;
+}
+		// Main loop, with entry point for even length
+mixin(asmMulAdd_innerloop(OP, "ESP+LASTPARAM")); 
+asm {
         mov EAX, EBP; // get final carry
-        adc EAX, 0;
         pop EBP;
         pop EBX;
         pop EDI;
         pop ESI;
         ret 5*4;
-        
+}        
 L_enter_odd:
-        mul int ptr [ESP+LASTPARAM];
-        mov EBP, zero;   
-        add ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jl L1;
-        jmp L_done;
-     } ");
+    mixin(asmMulAdd_enter_odd(OP, "ESP+LASTPARAM"));
 }
 
 unittest {
@@ -834,58 +861,10 @@ outer_loop:
         mov EAX, [ESI+4*EBX];
         test EBX, 1;
         jnz L_enter_odd;
-        // Entry point for even length
-        add EBX, 1;
-        mov EBP, ECX; // carry
-        
-        mul int ptr [ESP]; // M
-        mov ECX, 0;
- 
-        add EBP, EAX;
-        mov EAX, [ESI+4*EBX];
-        adc ECX, EDX;
-
-        mul int ptr [ESP]; // M
-        add [-4+EDI+4*EBX], EBP;
-        mov EBP, zero;
-    
-        adc ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jnl L_done;
-        // -- Inner loop
-L1:
-        mul int ptr [ESP]; // M
-        add [-8+EDI+4*EBX], ECX;
-   
-        adc EBP, EAX;
-        mov ECX, zero;
-        mov EAX, [ESI+4*EBX];
-        adc ECX, EDX;
-    }
-    version(D_PIC) {} else {
-     asm {
-        mov storagenop, EDX; // make #uops in loop a multiple of 3
-     }
-    }
-    asm {        
-    
-        mul int ptr [ESP];  // M
-        add [-4+EDI+4*EBX], EBP;
-        mov EBP, zero;
-    
-        adc ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jl L1;
-        // -- End inner loop
-L_done:
-        add [-8+EDI+4*EBX], ECX;
-        adc EBP, 0;
+		}
+        // -- Inner loop, with even entry point
+        mixin(asmMulAdd_innerloop("add", "ESP"));
+asm {
         mov [-4+EDI+4*EBX], EBP;
         add EDI, 4;
         cmp EDI, [ESP + LASTPARAM + 4*0]; // is EDI = &dest[$]?
@@ -903,18 +882,9 @@ outer_done:
         pop EDI;
         pop ESI;
         ret 6*4;
-        
+}
 L_enter_odd:
-        mul int ptr [ESP]; // M
-        mov EBP, zero;   
-        add ECX, EAX;
-        mov EAX, [4+ESI+4*EBX];
-    
-        adc EBP, EDX;    
-        add EBX, 2;
-        jl L1;
-        jmp L_done;
-     }
+    mixin(asmMulAdd_enter_odd("add", "ESP"));
 }
 
 /**  dest[#] /= divisor.
@@ -1040,53 +1010,90 @@ unittest {
     uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
     for (int i=0; i<aa.length-1; ++i) assert(aa[i] == 0x8765_4321 * (i+3));
     assert(r==0x33FF_7461);
-
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
-void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
+void multibyteAddDiagonalSquares(uint [] dest, uint [] src)
 {
-    ulong c = 0;
-    for(int i = 0; i < src.length; ++i){
-		 // At this point, c is 0 or 1, since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
-         c += cast(ulong)(src[i]) * src[i] + dest[2*i];
-         dest[2*i] = cast(uint)c;
-         c = (c>>=32) + dest[2*i+1];
-         dest[2*i+1] = cast(uint)c;
-         c >>= 32;
-    }
+    /* Unlike mulAdd, the carry is only 1 bit, 
+	   since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
+	   Note also that on the last iteration, no carry can occur.
+	   As for multibyteAdd, we save & restore carry flag through the loop.
+	   
+	   The timing is entirely dictated by the dependency chain. We could
+	   improve it by moving the mov EAX after the adc [EDI], EAX. Probably not worthwhile.
+    */
+    enum { LASTPARAM = 4*5 } // 4* pushes + return address.
+ asm {
+    naked;
+    push ESI;
+    push EDI;
+    push EBX;
+	push ECX;
+    mov EDI, [ESP + LASTPARAM + 4*3]; //dest.ptr;
+    mov EBX, [ESP + LASTPARAM + 4*0]; //src.length;
+    mov ESI, [ESP + LASTPARAM + 4*1]; //src.ptr;
+    lea EDI, [EDI + 8*EBX];      // EDI = end of dest
+    lea ESI, [ESI + 4*EBX];      // ESI = end of src
+    neg EBX;                     // count UP to zero.
+ 	xor ECX, ECX;             // initial carry = 0.
+L1:
+    mov EAX, [ESI + 4*EBX];
+	mul EAX, EAX;
+    shr CL, 1;                 // get carry
+	adc [EDI + 8*EBX], EAX;
+	adc [EDI + 8*EBX + 4], EDX;
+	setc CL;                   // save carry
+	inc EBX;
+	jnz L1;
+	
+	pop ECX;
+	pop EBX;
+	pop EDI;
+	pop ESI;
+	ret 4*4;
+ }
 }
 
-// Does half a square multiply. (square = diagonal + 2*triangle)
+unittest {
+    uint [] aa = new uint[13];
+	uint [] bb = new uint[6];
+    for (int i=0; i<aa.length; ++i) aa[i] = 0x8000_0000;
+    for (int i=0; i<bb.length; ++i) bb[i] = i;
+	aa[$-1]= 7;
+    multibyteAddDiagonalSquares(aa[0..$-1], bb);
+	assert(aa[$-1]==7);
+	for (int i=0; i<bb.length; ++i) { assert(aa[2*i]==0x8000_0000+i*i); assert(aa[2*i+1]==0x8000_0000); }
+}
+
+// Does half a square multiply.
+// dest += src[0]*src[1...$] + src[1]*src[2..$] + ... + src[$-3]*src[$-2..$]+ src[$-2]*src[$-1]
 void multibyteTriangleAccumulate(uint[] dest, uint[] x)
 {
-    // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
-    dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);
-	if (x.length <4) {
-	    if (x.length ==3) {
-            ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
-	        dest[2*x.length-3] = cast(uint)c;
-	        c >>= 32;
-	        dest[2*x.length-2] = cast(uint)c;
-        }
-	    return;
-	}
+    // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]*x[$-1..$]
+	ulong c=0;
+	if (x.length==2) goto length2;
+	if (x.length==3) goto length3;
+    dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);	
     for (int i = 2; i < x.length-2; ++i) {
         dest[i-1+ x.length] = multibyteMulAdd!('+')(
              dest[i+i-1 .. i+x.length-1], x[i..$], x[i-1], 0);
-    }
+    }   	
 	// Unroll the last two entries, to reduce loop overhead:
-    ulong  c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
+length3:		
+    c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
     dest[2*x.length-5] = cast(uint)c;
     c >>= 32;
     c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];
     dest[2*x.length-4] = cast(uint)c;
     c >>= 32;
-    c += cast(ulong)(x[$-1]) * x[$-2];
+length2:	
+    c += cast(ulong)(x[$-2]) * x[$-1];
 	dest[2*x.length-3] = cast(uint)c;
 	c >>= 32;
 	dest[2*x.length-2] = cast(uint)c;
 }
+
 
 void multibyteSquare(BigDigit[] result, BigDigit [] x)
 {
