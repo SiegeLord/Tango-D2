@@ -100,10 +100,10 @@ OBJ_CORE= \
     core/Memory.o \
     core/Runtime.o \
     core/Thread.o \
-    core/ThreadASM.o
+    ../ThreadASM.o
 
 OBJ_STDC= \
-    stdc/wrap.o
+    ../wrap.o
 
 OBJ_STDC_POSIX= \
     stdc/posix/pthread_darwin.o

@@ -4,7 +4,7 @@
  +
  + Fawzi Mohamed
  +/
-
+module rt.cInterface;
 
 // rt.lifetime
 struct Array

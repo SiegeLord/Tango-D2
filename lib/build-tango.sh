@@ -148,6 +148,7 @@ build() {
     fi
 
     cd ..
+    echo compiler call: $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango
 
     for file in `find tango -name '*.d'`
     do
@@ -189,6 +190,10 @@ do
         --norelease)
             RELEASE=""
             ;;
+        --test)
+            RELEASE="-unittest -d-debug=UnitTest"
+#            RELEASE="-release -O -d-debug=UnitTest"
+	    ;;
         --noinline)
             INLINE=""
             ;;

@@ -39,19 +39,19 @@ if [ -n "$1" -o -n "$DC" ]; then
         echo `basename $comp`
     fi
 elif (which ldc >& /dev/null); then
-    if [ 0 -lt $return_path ]; then
+    if [ -n "$return_path" ]; then
         which ldc
     else
         echo ldc
     fi
 elif (which dmd >& /dev/null); then
-    if [ 0 -lt $return_path ]; then
+    if [ -n "$return_path" ]; then
         which dmd
     else
         echo dmd
     fi
 elif (which gdc >& /dev/null); then
-    if [ 0 -lt $return_path ]; then
+    if [ -n "$return_path" ]; then
         which gdc
     else
         echo gdc

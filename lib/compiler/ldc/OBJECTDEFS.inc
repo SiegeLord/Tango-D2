@@ -3,9 +3,9 @@
 ######################################################
 
 OBJ_C= \
-    rt/critical.obj \
-    rt/monitor.obj \
-    rt/cConst.obj
+    critical.obj \
+    monitor.obj \
+    cConst.obj
 
 OBJ_BASE= \
     ldc/bitmanip.bc \

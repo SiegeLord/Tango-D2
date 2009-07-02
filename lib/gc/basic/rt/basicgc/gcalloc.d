@@ -23,7 +23,7 @@
  *     distribution.
  * Authors:   Walter Bright, David Friedman, Sean Kelly
  */
-
+module rt.basicgc.gcalloc;
 
 version (Win32)
 {
@@ -174,7 +174,7 @@ else static if (is(typeof(malloc))) // else version (GC_Use_Alloc_Malloc)
     //       after PAGESIZE bytes used by the GC.
 
 
-    private import gcx; // for PAGESIZE
+    private import rt.basicgc.gcx; // for PAGESIZE
 
 
     const size_t PAGE_MASK = PAGESIZE - 1;

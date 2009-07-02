@@ -45,7 +45,7 @@ lib : $(ALL_OBJS)
 	$(LC) libgphobos.a `find ./compiler/gdc -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./compiler/shared -name "*.o" | xargs echo`
 	$(LC) libgphobos.a `find ./gc/basic -name "*.o" | xargs echo`
-	$(LC) libgphobos.a `find ./common/tango -name "*.o" | xargs echo`
+	$(LC) libgphobos.a `find ./common -name "*.o" | xargs echo`
 
 doc : $(ALL_DOCS)
 	echo No documentation available.

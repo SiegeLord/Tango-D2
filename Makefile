@@ -33,7 +33,7 @@
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 
 
-TANGO_HOME=$(PWD)
+TANGO_HOME=$(shell pwd)
 TOOLDIR=$(TANGO_HOME)/lib/build/tools
 VERSION=opt
 DC=$(shell $(TOOLDIR)/guessCompiler.sh --path)

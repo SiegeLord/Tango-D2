@@ -41,6 +41,8 @@ DFLAGS=$(DFLAGS_RELEASE)
 TFLAGS=$(TFLAGS_RELEASE)
 endif
 
+vpath %d rt/basicgc
+
 CC=gcc
 LC=$(AR) -qsv
 DC=dmd

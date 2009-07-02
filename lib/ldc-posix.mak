@@ -64,7 +64,7 @@ $(LIB_TARGET) : $(ALL_OBJS)
 	$(MAKE) -C $(DIR_GC) -fldc.mak libs DC=$(DC) ADD_DFLAGS="$(ADD_DFLAGS)" ADD_CFLAGS="$(ADD_CFLAGS)" \
                 VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SHARED="$(SHARED)"
 	$(RM) $@
-	$(LC_CMD) $@ `find $(DIR_CC) -name "*.o" | xargs echo`
+	$(LC_CMD) $@ `find $(DIR_CC)/.. -name "*.o" | xargs echo`
 	$(LC_CMD) $@ `find $(DIR_RT) -name "*.o" | xargs echo`
 	$(LC_CMD) $@ `find $(DIR_RT2) -name "*.o" | xargs echo`
 	$(LC_CMD) $@ `find $(DIR_GC) -name "*.o" | xargs echo`

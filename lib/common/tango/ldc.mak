@@ -50,7 +50,7 @@ OBJ_CORE_O= \
     core/Thread.o
 
 OBJ_STDC= \
-    stdc/wrap.o
+    ../wrap.o
 #    stdc/wrap.bc
 
 OBJ_STDC_POSIX= \

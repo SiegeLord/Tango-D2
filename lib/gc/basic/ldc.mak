@@ -26,6 +26,8 @@ MAKEFILE=ldc.mak
 
 include ../../ldcCommonFlags.mak
 
+vpath %d rt/basicgc
+
 LIB_DEST=..
 
 ifeq ($(SHARED),yes)

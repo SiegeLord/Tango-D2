@@ -78,7 +78,7 @@ OBJ_CORE= \
     core\Thread.obj
 
 OBJ_STDC= \
-    stdc\wrap.obj
+    ..\wrap.obj
 
 ALL_OBJS= \
     $(OBJ_CORE) \

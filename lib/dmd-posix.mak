@@ -80,7 +80,7 @@ $(LIB_TARGET) : $(ALL_OBJS)
  		VERSION="$(VERSION)" LIB_BUILD="$(LIB_BUILD)" SYSTEM_VERSION="$(SYSTEM_VERSION)"
 	find . -name "libphobos*.a" | xargs $(RM)
 	$(RM) $@
-	$(LC) $@ `find $(DIR_CC) -name "*.o" | xargs echo`
+	$(LC) $@ `find $(DIR_CC)/.. -name "*.o" | xargs echo`
 	$(LC) $@ `find $(DIR_RT) -name "*.o" | xargs echo`
 	$(LC) $@ `find $(DIR_RT2) -name "*.o" | xargs echo`
 	$(LC) $@ `find $(DIR_GC) -name "*.o" | xargs echo`

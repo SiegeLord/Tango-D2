@@ -3581,3 +3581,13 @@ private:
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 }
+
+extern(C){
+    void thread_yield(){
+        Thread.yield();
+    }
+    
+    void thread_sleep(double period){
+        Thread.sleep(period);
+    }
+}

@@ -67,11 +67,11 @@ doc     : basic.doc
 ######################################################
 
 ALL_OBJS= \
-    gc.obj \
-    gcalloc.obj \
-    gcbits.obj \
-    gcstats.obj \
-    gcx.obj
+    rt/basicgc/gc.obj \
+    rt/basicgc/gcalloc.obj \
+    rt/basicgc/gcbits.obj \
+    rt/basicgc/gcstats.obj \
+    rt/basicgc/gcx.obj
 
 ######################################################
 

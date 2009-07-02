@@ -23,9 +23,10 @@
  *     distribution.
  * Authors:   Walter Bright, David Friedman, Sean Kelly
  */
-
+module rt.basicgc.gcbits;
 
 private import tango.core.BitManip;
+//private import rt.cImports: memset, memcpy, free, calloc;
 private import tango.stdc.string;
 private import tango.stdc.stdlib;
 private extern (C) void onOutOfMemoryError();
