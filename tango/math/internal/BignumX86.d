@@ -1064,7 +1064,6 @@ unittest {
 	for (int i=0; i<bb.length; ++i) { assert(aa[2*i]==0x8000_0000+i*i); assert(aa[2*i+1]==0x8000_0000); }
 }
 
-
 // Does half a square multiply.
 // dest += src[0]*src[1...$] + src[1]*src[2..$] + ... + src[$-3]*src[$-2..$]+ src[$-2]*src[$-1]
 void multibyteTriangleAccumulate(uint[] dest, uint[] x)
@@ -1076,9 +1075,10 @@ void multibyteTriangleAccumulate(uint[] dest, uint[] x)
     dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);	
     if (x.length>4) {
         multibyteTriangleAccumulateAsm(dest[2..$], x[1..$]);
+        return;
     }
 length3:		
-    c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
+    c = cast(ulong)(x[$-3]) * x[$-2] + dest[$-5];
     dest[2*x.length-5] = cast(uint)c;
     c >>= 32;
     c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];
@@ -1091,12 +1091,23 @@ length2:
 	  dest[2*x.length-2] = cast(uint)c;
 }
 
-void multibyteTriangleAccumulateD(uint[] dst, uint[] xx)
+void multibyteTriangleAccumulateD(uint[] dest, uint[] x)
 {
-    for (int i = 0; i < xx.length-3; ++i) {
-        dst[i+xx.length] = multibyteMulAdd!('+')(
-             dst[i+i+1 .. i+xx.length], xx[i+1..$], xx[i], 0);
+    for (int i = 0; i < x.length-3; ++i) {
+        dest[i+x.length] = multibyteMulAdd!('+')(
+             dest[i+i+1 .. i+x.length], x[i+1..$], x[i], 0);
     }
+    ulong c = cast(ulong)(x[$-3]) * x[$-2] + dest[$-5];
+    dest[$-5] = cast(uint)c;
+    c >>= 32;
+    c += cast(ulong)(x[$-3]) * x[$-1] + dest[$-4];
+    dest[$-4] = cast(uint)c;
+    c >>= 32;
+length2:	
+    c += cast(ulong)(x[$-2]) * x[$-1];
+	  dest[$-3] = cast(uint)c;
+	  c >>= 32;
+	  dest[$-2] = cast(uint)c;
 }
 
 // dest += src[0]*src[1...$] + src[1]*src[2..$] + ... + src[$-3]*src[$-2..$]+ src[$-2]*src[$-1]
@@ -1134,15 +1145,19 @@ void multibyteTriangleAccumulateAsm(uint[] dest, uint[] src)
         mov EDI, [ESP + LASTPARAM + 4*3]; // dest.ptr
         mov EBX, [ESP + LASTPARAM + 4*0]; // src.length
         mov ESI, [ESP + LASTPARAM + 4*1];  // src.ptr
+        
+        lea ESI, [ESI + 4*EBX]; // ESI = end of left
+        add int ptr [ESP + LASTPARAM + 4*1], 4; // src.ptr, used for getting M
+        
 		    // local variable [ESP + LASTPARAM + 4*2] = last value for EDI
         lea EDI, [EDI + 4*EBX]; // EDI = end of dest for first pass
         
         lea EAX, [EDI + 4*EBX-3*4]; // up to src.length - 3
-        mov [ESP + LASTPARAM + 4*2], EAX; // last value for EDI  = &dest[src.length*2 -3]     
-		
-        lea ESI, [ESI + 4*EBX]; // ESI = end of left
-        add int ptr [ESP + LASTPARAM + 4*1], 4; // src.ptr
-		    // We start at src[1], not src[0].
+        mov [ESP + LASTPARAM + 4*2], EAX; // last value for EDI  = &dest[src.length*2 -3]     		
+        
+        mov ECX, 0;
+        
+		    // We start at src[1], not src[0].		    
 		    dec EBX;
 		    mov [ESP + LASTPARAM + 4*0], EBX;
 		    
@@ -1169,6 +1184,30 @@ asm {
         mov EBX, [ESP + LASTPARAM + 4*0]; // src.length
         jmp outer_loop;
 outer_done:
+
+// do length == 3
+        mov EAX, [ESI - 4*3];
+        mul EAX, [ESI - 4*2];
+        mov ECX, 0;
+        add [EDI-2*4], EAX;  // ECX:dest[$-5] += x[$-3] * x[$-2]        
+        adc ECX, EDX;
+        
+        mov EAX, [ESI - 4*3];
+        mul EAX, [ESI - 4*1]; // x[$-3] * x[$-1]
+        add EAX, ECX;
+        mov ECX, 0;
+        adc EDX, 0;
+        // now EDX: EAX = c + x[$-3] * x[$-1]
+        add [EDI-1*4], EAX; // ECX:dest[$-4] += (EDX:EAX)
+        adc ECX, EDX;  //  ECX holds dest[$-3], it acts as carry for the last row
+// do length==2 
+        mov EAX, [ESI - 4*2];
+        mul EAX, [ESI - 4*1];
+        add ECX, EAX;
+        adc EDX, 0;        
+        mov [EDI - 0*4], ECX; // dest[$-2:$-3] = c + x[$-2] * x[$-1];
+        mov [EDI + 1*4], EDX;
+        
         pop EAX;
         pop EBP;
         pop EBX;
@@ -1215,15 +1254,13 @@ uint [] aa = new uint[200];
    b[3] = 0;
    
    multibyteTriangleAccumulateAsm(a[0..8], b[0..4]);
-   assert(a[4]==0);   
    assert(a[1]==0x3a600964);
    assert(a[2]==0x339974f6);
-   assert(a[3]==0xa37dae3a);
+   assert(a[3]==0x46736fce);
+   assert(a[4]==0x5e24a2b4);
    
    b[3] = 0xe93ff9f4;
    b[4] = 0x184f03;
-   a[]=0;
-   multibyteTriangleAccumulateD(a[0..14], b[0..7]);
    a[]=0;
    multibyteTriangleAccumulateAsm(a[0..14], b[0..7]);
    assert(a[3]==0x79fff5c2);
