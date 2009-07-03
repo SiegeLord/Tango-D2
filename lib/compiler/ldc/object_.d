@@ -382,10 +382,9 @@ class TypeInfo_Array : TypeInfo
     override equals_t opEquals(Object o)
     {
         TypeInfo_Array c;
-        assert(this.value !is null,"array typedef with undefined value type");
         auto res= this is o ||
                ((c = cast(TypeInfo_Array)o) !is null &&
-                this.value == c.value);
+                this.next == c.next);
         return res;
     }
 
@@ -575,23 +574,25 @@ class TypeInfo_AssociativeArray : TypeInfo
     }
     override equals_t equals(in void* p1, in void* p2)
     {
-        AA a=*cast(AA*)p1;
-        AA b=*cast(AA*)p2;
-        if (p1==p2) return true;
-        size_t l1=0;
-        size_t l2=_aaLen(b);
-        size_t keysize=key.tsize();
-        equals_t same=true;
-        int res=_aaApply2(a, keysize, cast(dg2_t) delegate int(void *k, void *v){
-            void* v2=_aaIn(b, key, k);
-            if (v2 is null || !value.equals(v,v2)) {
-                same=false;
-                return 1;
+        AA aa = *cast(AA*)p1;
+        AA ab = *cast(AA*)p2;
+        
+        if (_aaLen(aa) != _aaLen(ab))
+            return false;
+        
+        equals_t equal = true;
+        int eq_x(void* k, void* va)
+        {
+            void* vb = _aaIn(ab, key, k);
+            if (!vb || !value.equals(va, vb))
+            {
+                equal = false;
+                return 1; // break
             }
-            ++l1;
             return 0;
-        });
-        return same && (l2==l1);
+        }
+        _aaApply2(aa, key.tsize(), &eq_x);
+        return equal;
     }
 
     override int compare(in void* p1, in void* p2)

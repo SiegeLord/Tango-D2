@@ -544,7 +544,7 @@ class TypeInfo_AssociativeArray : TypeInfo
         return this is o ||
                 ((c = cast(TypeInfo_AssociativeArray)o) !is null &&
                  this.key == c.key &&
-                 this.value == c.value);
+                 this.next == c.next);
     }
 
     override size_t tsize()

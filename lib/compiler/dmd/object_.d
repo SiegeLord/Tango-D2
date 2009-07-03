@@ -546,7 +546,7 @@ class TypeInfo_AssociativeArray : TypeInfo
         return this is o ||
                 ((c = cast(TypeInfo_AssociativeArray)o) !is null &&
                  this.key == c.key &&
-                 this.value == c.value);
+                 this.next == c.next);
     }
 
     override hash_t getHash(in void* p)
@@ -571,8 +571,9 @@ class TypeInfo_AssociativeArray : TypeInfo
         AA a=*cast(AA*)p1;
         AA b=*cast(AA*)p2;
         if (cast(void*)a.a==cast(void*)b.a) return true;
-        size_t l1=0;
+        size_t l1=_aaLen(a);
         size_t l2=_aaLen(b);
+        if (l1!=l2) return false;
         size_t keysize=key.tsize();
         equals_t same=true;
         int res=_aaApply2(a, keysize, cast(dg2_t) delegate int(void *k, void *v){
@@ -584,7 +585,7 @@ class TypeInfo_AssociativeArray : TypeInfo
             ++l1;
             return 0;
         });
-        return same && (l2==l1);
+        return same;
     }
 
     override int compare(in void* p1, in void* p2)
