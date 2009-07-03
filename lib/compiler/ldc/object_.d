@@ -382,9 +382,11 @@ class TypeInfo_Array : TypeInfo
     override equals_t opEquals(Object o)
     {
         TypeInfo_Array c;
-        return this is o ||
+        assert(this.value !is null,"array typedef with undefined value type");
+        auto res= this is o ||
                ((c = cast(TypeInfo_Array)o) !is null &&
                 this.value == c.value);
+        return res;
     }
 
     override hash_t getHash(in void* p)
