@@ -1,0 +1,44 @@
+COMPILER_MODULES_S= \
+ rt.typeinfo.ti_void \
+ rt.typeinfo.ti_wchar \
+ rt.typeinfo.ti_ptr \
+ rt.typeinfo.ti_Afloat \
+ rt.typeinfo.ti_double \
+ rt.typeinfo.ti_delegate \
+ rt.typeinfo.ti_Adouble \
+ rt.typeinfo.ti_char \
+ rt.typeinfo.ti_Acdouble \
+ rt.typeinfo.ti_uint \
+ rt.typeinfo.ti_AC \
+ rt.typeinfo.ti_ulong \
+ rt.typeinfo.ti_creal \
+ rt.typeinfo.ti_ubyte \
+ rt.typeinfo.ti_Aint \
+ rt.typeinfo.ti_ireal \
+ rt.typeinfo.ti_short \
+ rt.typeinfo.ti_long \
+ rt.typeinfo.ti_Along \
+ rt.typeinfo.ti_byte \
+ rt.typeinfo.ti_float \
+ rt.typeinfo.ti_cfloat \
+ rt.typeinfo.ti_Acfloat \
+ rt.typeinfo.ti_cdouble \
+ rt.typeinfo.ti_ifloat \
+ rt.typeinfo.ti_dchar \
+ rt.typeinfo.ti_C \
+ rt.typeinfo.ti_real \
+ rt.typeinfo.ti_idouble \
+ rt.typeinfo.ti_Areal \
+ rt.typeinfo.ti_ushort \
+ rt.typeinfo.ti_Acreal \
+ rt.typeinfo.ti_Ag \
+ rt.typeinfo.ti_int \
+ rt.typeinfo.ti_Ashort \
+ rt.util.utf \
+ rt.util.console \
+ rt.util.hash \
+ rt.util.ctype \
+ rt.util.string \
+
+#end
+COMPILER_OO_S=
