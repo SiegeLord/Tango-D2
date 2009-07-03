@@ -9,6 +9,7 @@ mkLib=ar -r
 ranlib=ranlib
 
 DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
+CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
 
 EXCLUDE_DEP_COMP= ^ldc\.
 
@@ -23,13 +24,13 @@ EXCLUDE_DEP_COMP= ^ldc\.
 LCC=llc
 
 %.o:%.s
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
 
 %.o:%.S
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
 
 %.o:%.c
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
 
 %.bc:%.ll
 	$(LLC) -f -o=$@ $<

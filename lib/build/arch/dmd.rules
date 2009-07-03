@@ -9,23 +9,24 @@ LIB_LINK="-L-l"
 OUT_NAME="-of"
 
 DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
+CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
 
 EXCLUDE_DEP_COMP=
 # ^dmd\.
 
 %.dep:%.d
-	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -r $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
+	$(DC) -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	if [ ! -r $(<:%.d=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
 
 %.o:%.d
-	dmd -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -r $(<:%.d=%.o) ] ; then dmd -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
+	$(DC) -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
+	if [ ! -r $(<:%.d=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
 
 %.o:%.s
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
 
 %.o:%.S
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
 
 %.o:%.c
-	$(CC) -c $(CFLAGS) $< -o$@
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
