@@ -36,7 +36,7 @@ compile() {
         module ${EXE};
 EOF
         #for pkg in net time text util math core stdc ; do
-            find tango -name "*.d" | grep -v -i win32 | grep -v "/\\." | sed -e"s/.d$/;/g" -e "sX/X.Xg" -e"s/^tango/import tango/g" >> $EXE.d
+            find tango -name "*.d" | grep -v -i win32 | grep -v -i linux | grep -v "/\\." | sed -e"s/.d$/;/g" -e "sX/X.Xg" -e"s/^tango/import tango/g" >> $EXE.d
         #done
         cat >> $EXE.d <<EOF
 import tango.io.Stdout;

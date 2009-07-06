@@ -83,7 +83,7 @@ build: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 
 _genDeps: $(MODULES:%=%.dep)
 
-_lib:$(LIB)
+_lib:$(TANGO_HOME)/$(LIB)
 
 $(LIB):  $(OBJS)
 	rm -f $@

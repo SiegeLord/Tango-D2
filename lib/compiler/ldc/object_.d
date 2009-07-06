@@ -48,7 +48,7 @@ private
     import rt.util.hash;
     import rt.aaA;
     debug(PRINTF) import rt.cImports: printf;
-    import rt.cInterface: _d_allocclass;
+    extern (C) Object _d_allocclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
