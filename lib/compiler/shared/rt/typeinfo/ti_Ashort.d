@@ -1,7 +1,7 @@
 
 module rt.typeinfo.ti_Ashort;
 
-private import tango.stdc.string;
+private import rt.cImports:memcmp;
 private import rt.util.hash;
 
 // short[]

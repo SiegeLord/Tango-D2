@@ -16,9 +16,9 @@ OBJ_BASE= \
     rt/arrayreal.obj \
     rt/arrayshort.obj \
     rt/cast_.obj \
-    rt/complex.obj \
+    complex.obj \
     rt/cover.obj \
-    rt/critical.obj \
+    critical.obj \
     rt/cImports.obj \
     rt/cInterface.obj \
     rt/dmain2.obj \
@@ -27,7 +27,7 @@ OBJ_BASE= \
     rt/lifetime.obj \
     rt/memory.obj \
     rt/memset.obj \
-    rt/monitor.obj \
+    monitor.obj \
     rt/obj.obj \
     object_.obj \
     rt/qsort.obj \
@@ -35,14 +35,14 @@ OBJ_BASE= \
     rt/trace.obj
 
 OBJ_POSIX=rt/alloca.obj \
-    rt/cConst.obj \
+    cConst.obj \
     rt/cmath2.obj \
-    rt/gcosx.obj \
+    gcosx.obj \
     rt/deh2.obj \
     rt/llmath.obj
 
 OBJ_WIN=\
-    rt/deh.obj
+    deh.obj
     
 # NOTE: trace.obj and cover.obj are not necessary for a successful build
 #       as both are used for debugging features (profiling and coverage)

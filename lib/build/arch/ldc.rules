@@ -14,12 +14,12 @@ CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
 EXCLUDE_DEP_COMP= ^ldc\.
 
 %.dep:%.d
-	$(DC) -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	[ -r "$(<:%.d=%.o)" ]
+	$(DC) -c -v $(DFLAGS_ALL) -of=$(@:%.dep=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(@:%.dep=%.o) $(EXCLUDE_DEP_ALL) > $@
+	if [ ! -r $(@:%.dep=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of=$(@:%.dep=%.o) $< ; [ -r $(@:%.dep=%.o) ] ; fi
 
 %.o:%.d
-	$(DC) -c -v $(DFLAGS_ALL) -of=$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	[ -r "$(<:%.d=%.o)" ]
+	$(DC) -c -v $(DFLAGS_ALL) -of=$@ $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(@:.o=%.dep)
+	if [ ! -r $@ ] ; then $(DC) -c $(DFLAGS_ALL) -of=$@ $< ; [ -r $@ ] ; fi
 
 LCC=llc
 

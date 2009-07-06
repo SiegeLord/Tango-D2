@@ -15,12 +15,12 @@ EXCLUDE_DEP_COMP=
 # ^dmd\.
 
 %.dep:%.d
-	$(DC) -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -r $(<:%.d=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
+	$(DC) -c -v $(DFLAGS_ALL) -of$(@:%.dep=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(@:%.dep=%.o) $(EXCLUDE_DEP_ALL) > $@
+	if [ ! -r $(@:%.dep=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(@:%.dep=%.o) $< ; [ -r $(@:%.dep=%.o) ] ; fi
 
 %.o:%.d
-	$(DC) -c -v $(DFLAGS_ALL) -of$(<:%.d=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(<:%.d=%.dep)
-	if [ ! -r $(<:%.d=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(<:%.d=%.o) $< ; [ -r $(<:%.d=%.o) ] ; fi
+	$(DC) -c -v $(DFLAGS_ALL) -of$@ $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(@:.o=%.dep)
+	if [ ! -r $@ ] ; then $(DC) -c $(DFLAGS_ALL) -of$@ $< ; [ -r $@ ] ; fi
 
 %.o:%.s
 	$(CC) -c $(CFLAGS_ALL) $< -o$@

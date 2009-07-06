@@ -116,7 +116,7 @@ doc : $(ALL_DOCS)
 ######################################################
 
 clean :
-	find . -name "*.di" | xargs $(RM)
+	find . -name "*.di" | grep -v intrinsic.di | xargs $(RM)
 	$(RM) $(ALL_OBJECTS)
 
 clean-all : clean

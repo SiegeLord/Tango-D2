@@ -45,7 +45,7 @@ private
     import rt.util.hash;
     import rt.aaA;
     debug(PRINTF) import rt.cImports: printf;
-    import rt.cInterface: _d_newclass;
+    import rt.cInterface:_d_newclass;
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -1236,12 +1236,12 @@ extern (C) void _moduleCtor()
      */
         size_t length = cast(ModuleInfo*)&_minfo_end - cast(ModuleInfo*)&_minfo_beg;
         _moduleinfo_array = (cast(ModuleInfo*)&_minfo_beg)[0 .. length];
-        debug printf("moduleinfo: ptr = %p, length = %d\n", _moduleinfo_array.ptr, _moduleinfo_array.length);
+        debug(PRINTF) printf("moduleinfo: ptr = %p, length = %d\n", _moduleinfo_array.ptr, _moduleinfo_array.length);
 
-        debug foreach (m; _moduleinfo_array)
+        debug(PRINTF) foreach (m; _moduleinfo_array)
         {
             //printf("\t%p\n", m);
-            printf("\t%.*s\n", m.name);
+            printf("\t%.*s\n", m.name.length,m.name.ptr);
         }
     }
     

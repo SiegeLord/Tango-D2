@@ -43,10 +43,11 @@ IDENT=$(shell $(TOOLDIR)/archName.sh)-$(DC_SHORT)-$(VERSION)
 SRCDIR=$(TANGO_HOME)/tango
 OBJDIR=$(TANGO_HOME)/objs-$(IDENT)
 ARCHDIR=$(TANGO_HOME)/lib/build/arch
-EXCLUDEPAT_ALL=$(EXCLUDEPAT_OS)
+EXCLUDEPAT_ALL=$(EXCLUDEPAT_OS) $(EXCLUDEPAT_COMP)
 ARCHFILE=$(ARCHDIR)/$(IDENT).mak
 MAKEFILE=$(TANGO_HOME)/Makefile
 DFLAGS_ADD=-I$(TANGO_HOME)
+WHAT=_lib
 
 LIB=libtango-user.$(LIB_EXT)
 INSTALL_LIB=libtango-user-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
@@ -58,7 +59,7 @@ endif
 vpath %d $(SRCDIR)
 vpath %di $(SRCDIR)
 
-EXCLUDE_DEP_ALL=$(EXCLUDE_DEP_COMP)
+EXCLUDE_DEP_ALL=$(EXCLUDE_DEP_COMP)  $(EXCLUDE_DEP_OS)
 
 OBJS=$(MODULES:%=%.$(OBJ_EXT))
 
@@ -66,7 +67,7 @@ OBJS=$(MODULES:%=%.$(OBJ_EXT))
 
 all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)
-	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" build
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_lib build
 
 allVersions:	$(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)
@@ -74,10 +75,11 @@ allVersions:	$(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" VERSION=tst DC="$(DC)" all
 	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" VERSION=dbg DC="$(DC)" all
 
-build:
+build: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
+	@mkdir -p $(OBJDIR)
 	@echo "XXX using the architecture file $(ARCHFILE)"
 	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" _genDeps
-	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" _lib
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" $(WHAT)
 
 _genDeps: $(MODULES:%=%.dep)
 
@@ -87,6 +89,8 @@ $(LIB):  $(OBJS)
 	rm -f $@
 	$(mkLib) $@ $(OBJS)
 	$(ranlib) $@
+
+$(TANGO_HOME)/$(LIB): $(LIB)
 	cp $(OBJDIR)/$(LIB) $(TANGO_HOME)/$(INSTALL_LIB)
 
 $(OBJDIR)/MODULES.inc:
