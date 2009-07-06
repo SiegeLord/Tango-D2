@@ -584,8 +584,8 @@ BigDigit [] subInt(BigDigit[] x, ulong y)
  *
  *  The length of y must not be larger than the length of x.
  *  Different algorithms are used, depending on the lengths of x and y.
- *  TODO: "Modern Computer Arithmetic" suggests better algorithms for the
- *  unbalanced case.
+ *  TODO: "Modern Computer Arithmetic" suggests the OddEvenKaratsuba algorithm for the
+ *  unbalanced case. (But I doubt it would be faster in practice).
  *  
  */
 void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
@@ -1150,7 +1150,12 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
         R1 = aHI + bLO + aLO
         R2 = aHI + bLO + aHI + carry_from_R1
         R3 = bHi + carry_from_R2
-    */
+         Can also do use newscratchbuff:
+
+//    It might actually be quicker to do it in two full-length additions:        
+//    newscratchbuff[2*half] = addSimple(newscratchbuff[0..2*half], result[0..2*half], result[2*half..$]);
+//    addAssignSimple(result[half..$], newscratchbuff[0..2*half+1]);
+   */
     BigDigit[] R1 = result[half..half*2];
     BigDigit[] R2 = result[half*2..half*3];
     BigDigit[] R3 = result[half*3..$];
