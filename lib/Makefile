@@ -50,7 +50,7 @@ WHAT=_lib
 PLACES=common compiler/shared gc/basic compiler/$(DC_SHORT)
 DFLAGS_ADD=-I$(TANGO_HOME) -I$(TANGO_HOME)/lib $(PLACES:%=-I$(TANGO_HOME)/lib/%)
 LIB=libtango-base.$(LIB_EXT)
-INSTALL_LIB=libtango-base-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
+INSTALL_LIB=$(TANGO_HOME)/libtango-base-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
 include $(ARCHFILE)
 include $(PLACES:%=$(TANGO_HOME)/lib/%/OBJDEFS.inc)
 ifeq ($(shell if [ -e "$(OBJDIR)/MODULES.inc" ]; then echo 1; fi;),1)
@@ -102,15 +102,15 @@ _install:
 
 _genDeps: $(MODULES:%=%.dep)
 
-_lib:$(TANGO_HOME)/$(LIB)
+_lib:$(INSTALL_LIB)
 
 $(LIB):  $(OBJS)
 	rm -f $@
 	$(mkLib) $@ $(OBJS)
 	$(ranlib) $@
 
-$(TANGO_HOME)/$(LIB): $(LIB)
-	cp $(OBJDIR)/$(LIB) $(TANGO_HOME)/$(INSTALL_LIB)
+$(INSTALL_LIB): $(LIB)
+	cp $(OBJDIR)/$(LIB) $(INSTALL_LIB)
 
 $(OBJDIR)/MODULES.inc:
 	@mkdir -p $(OBJDIR)

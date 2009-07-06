@@ -50,7 +50,7 @@ DFLAGS_ADD=-I$(TANGO_HOME)
 WHAT=_lib
 
 LIB=libtango-user.$(LIB_EXT)
-INSTALL_LIB=libtango-user-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
+INSTALL_LIB=$(TANGO_HOME)/libtango-user-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
 include $(ARCHFILE)
 ifeq ($(shell if [ -e "$(OBJDIR)/MODULES.inc" ]; then echo 1; fi;),1)
 include $(OBJDIR)/MODULES.inc
@@ -83,15 +83,15 @@ build: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 
 _genDeps: $(MODULES:%=%.dep)
 
-_lib:$(TANGO_HOME)/$(LIB)
+_lib:$(INSTALL_LIB)
 
 $(LIB):  $(OBJS)
 	rm -f $@
 	$(mkLib) $@ $(OBJS)
 	$(ranlib) $@
 
-$(TANGO_HOME)/$(LIB): $(LIB)
-	cp $(OBJDIR)/$(LIB) $(TANGO_HOME)/$(INSTALL_LIB)
+$(INSTALL_LIB): $(LIB)
+	cp $(OBJDIR)/$(LIB) $(INSTALL_LIB)
 
 $(OBJDIR)/MODULES.inc:
 	@mkdir -p $(OBJDIR)
