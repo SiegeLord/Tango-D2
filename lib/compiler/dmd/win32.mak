@@ -90,7 +90,7 @@ ALL_DOCS=
 
 lib : $(ALL_OBJECTS)
 	$(RM) $(LIB_TARGET)
-	$(LC) -c -n $(LIB_TARGET) $(ALL_OBJECTS) rt\minit.obj
+	$(LC) -c -n $(LIB_TARGET) $(ALL_OBJECTS) minit.obj
 
 doc : $(ALL_DOCS)
 	@echo No documentation available.
