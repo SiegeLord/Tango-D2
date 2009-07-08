@@ -1,5 +1,4 @@
 // Implementation may be internal/fpmath.d or gcc/cbridge_math.c
-module gcc.fpmath;
 
 int signbit(float f);
 int signbit(double f);

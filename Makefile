@@ -51,6 +51,11 @@ WHAT=_lib
 
 LIB=libtango-user.$(LIB_EXT)
 INSTALL_LIB=$(TANGO_HOME)/libtango-user-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
+
+all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
+	@mkdir -p $(OBJDIR)
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_lib build
+
 include $(ARCHFILE)
 ifeq ($(shell if [ -e "$(OBJDIR)/MODULES.inc" ]; then echo 1; fi;),1)
 include $(OBJDIR)/MODULES.inc
@@ -64,10 +69,6 @@ EXCLUDE_DEP_ALL=$(EXCLUDE_DEP_COMP)  $(EXCLUDE_DEP_OS)
 OBJS=$(MODULES:%=%.$(OBJ_EXT))
 
 .PHONY: _genDeps newFiles build clean distclean allVersions
-
-all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
-	@mkdir -p $(OBJDIR)
-	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_lib build
 
 allVersions:	$(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)

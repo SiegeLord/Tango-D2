@@ -33,7 +33,7 @@
  * There are 6 combinations of conversions between char, wchar,
  * and dchar, and 2 of each of those.
  */
-
+module aApply;
 private import rt.util.utf;
 
 /**********************************************

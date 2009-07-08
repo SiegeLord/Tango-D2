@@ -24,7 +24,7 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
-
+module switch_;
 private import tango.stdc.string;
 
 /******************************************************

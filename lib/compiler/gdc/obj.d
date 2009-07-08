@@ -1,4 +1,4 @@
-
+module obj;
 
 // Copyright (c) 2002 by Digital Mars
 // All Rights Reserved

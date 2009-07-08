@@ -37,7 +37,7 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
-
+module adi;
 
 //debug=adi;            // uncomment to turn on debugging printf's
 
@@ -152,7 +152,7 @@ extern (C) Array _adReverseChar(char[] a)
 
 unittest
 {
-    auto a = "abcd"c;
+    auto a = "abcd"c[];
 
     auto r = a.dup.reverse;
     //writefln(r);
@@ -251,6 +251,7 @@ extern (C) Array _adReverseWchar(wchar[] a)
 
 unittest
 {
+    alias wchar[] wstring;
     wstring a = "abcd";
     wstring r;
 

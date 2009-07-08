@@ -34,7 +34,7 @@
  * There are 6 combinations of conversions between char, wchar,
  * and dchar, and 2 of each of those.
  */
-
+module aApplyR;
 private import rt.util.utf;
 
 /**********************************************/
@@ -79,40 +79,44 @@ unittest
 {
     debug(apply) printf("_aApplyRcd1.unittest\n");
 
-    auto s = "hello"c;
-    int i;
-
-    foreach_reverse(dchar d; s)
     {
-        switch (i)
-        {
-            case 0:     assert(d == 'o'); break;
-            case 1:     assert(d == 'l'); break;
-            case 2:     assert(d == 'l'); break;
-            case 3:     assert(d == 'e'); break;
-            case 4:     assert(d == 'h'); break;
-            default:    assert(0);
-        }
-        i++;
-    }
-    assert(i == 5);
+        auto s = "hello"c;
+        int i;
 
-    s = "a\u1234\U00100456b";
-    i = 0;
-    foreach_reverse(dchar d; s)
-    {
-        //printf("i = %d, d = %x\n", i, d);
-        switch (i)
+        foreach_reverse(dchar d; s)
         {
-            case 0:     assert(d == 'b'); break;
-            case 1:     assert(d == '\U00100456'); break;
-            case 2:     assert(d == '\u1234'); break;
-            case 3:     assert(d == 'a'); break;
-            default:    assert(0);
+            switch (i)
+            {
+                case 0:     assert(d == 'o'); break;
+                case 1:     assert(d == 'l'); break;
+                case 2:     assert(d == 'l'); break;
+                case 3:     assert(d == 'e'); break;
+                case 4:     assert(d == 'h'); break;
+                default:    assert(0);
+            }
+            i++;
         }
-        i++;
+        assert(i == 5);
     }
-    assert(i == 4);
+    
+    {
+        auto s = "a\u1234\U00100456b"c;
+        int i = 0;
+        foreach_reverse(dchar d; s)
+        {
+            //printf("i = %d, d = %x\n", i, d);
+            switch (i)
+            {
+                case 0:     assert(d == 'b'); break;
+                case 1:     assert(d == '\U00100456'); break;
+                case 2:     assert(d == '\u1234'); break;
+                case 3:     assert(d == 'a'); break;
+                default:    assert(0);
+            }
+            i++;
+        }
+        assert(i == 4);
+    }
 }
 
 /*****************************/
@@ -143,7 +147,7 @@ unittest
 {
     debug(apply) printf("_aApplyRwd1.unittest\n");
 
-    auto s = "hello"w;
+    auto s = "hello"w[];
     int i;
 
     foreach_reverse(dchar d; s)
@@ -161,7 +165,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"w[];
     i = 0;
     foreach_reverse(dchar d; s)
     {
@@ -229,7 +233,7 @@ unittest
 {
     debug(apply) printf("_aApplyRcw1.unittest\n");
 
-    auto s = "hello"c;
+    auto s = "hello"c[];
     int i;
 
     foreach_reverse(wchar d; s)
@@ -247,7 +251,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"c[];
     i = 0;
     foreach_reverse(wchar d; s)
     {
@@ -310,7 +314,7 @@ unittest
 {
     debug(apply) printf("_aApplyRwc1.unittest\n");
 
-    auto s = "hello"w;
+    auto s = "hello"w[];
     int i;
 
     foreach_reverse(char d; s)
@@ -328,7 +332,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"w[];
     i = 0;
     foreach_reverse(char d; s)
     {
@@ -389,7 +393,7 @@ unittest
 {
     debug(apply) printf("_aApplyRdc1.unittest\n");
 
-    auto s = "hello"d;
+    auto s = "hello"d[];
     int i;
 
     foreach_reverse(char d; s)
@@ -407,7 +411,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"d[];
     i = 0;
     foreach_reverse(char d; s)
     {
@@ -461,7 +465,7 @@ unittest
 {
     debug(apply) printf("_aApplyRdw1.unittest\n");
 
-    auto s = "hello"d;
+    auto s = "hello"d[];
     int i;
 
     foreach_reverse(wchar d; s)
@@ -479,7 +483,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"d[];
     i = 0;
     foreach_reverse(wchar d; s)
     {
@@ -543,7 +547,7 @@ unittest
 {
     debug(apply) printf("_aApplyRcd2.unittest\n");
 
-    auto s = "hello"c;
+    auto s = "hello"c[];
     int i;
 
     foreach_reverse(k, dchar d; s)
@@ -562,7 +566,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"c[];
     i = 0;
     foreach_reverse(k, dchar d; s)
     {
@@ -608,7 +612,7 @@ unittest
 {
     debug(apply) printf("_aApplyRwd2.unittest\n");
 
-    auto s = "hello"w;
+    auto s = "hello"w[];
     int i;
 
     foreach_reverse(k, dchar d; s)
@@ -628,7 +632,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"w[];
     i = 0;
     foreach_reverse(k, dchar d; s)
     {
@@ -696,7 +700,7 @@ unittest
 {
     debug(apply) printf("_aApplyRcw2.unittest\n");
 
-    auto s = "hello"c;
+    auto s = "hello"c[];
     int i;
 
     foreach_reverse(k, wchar d; s)
@@ -716,7 +720,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"c[];
     i = 0;
     foreach_reverse(k, wchar d; s)
     {
@@ -779,7 +783,7 @@ unittest
 {
     debug(apply) printf("_aApplyRwc2.unittest\n");
 
-    auto s = "hello"w;
+    auto s = "hello"w[];
     int i;
 
     foreach_reverse(k, char d; s)
@@ -799,7 +803,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"w[];
     i = 0;
     foreach_reverse(k, char d; s)
     {
@@ -859,7 +863,7 @@ unittest
 {
     debug(apply) printf("_aApplyRdc2.unittest\n");
 
-    auto s = "hello"d;
+    auto s = "hello"d[];
     int i;
 
     foreach_reverse(k, char d; s)
@@ -879,7 +883,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"d[];
     i = 0;
     foreach_reverse(k, char d; s)
     {
@@ -933,7 +937,7 @@ unittest
 {
     debug(apply) printf("_aApplyRdw2.unittest\n");
 
-    auto s = "hello"d;
+    auto s = "hello"d[];
     int i;
 
     foreach_reverse(k, wchar d; s)
@@ -953,7 +957,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b";
+    s = "a\u1234\U00100456b"d[];
     i = 0;
     foreach_reverse(k, wchar d; s)
     {

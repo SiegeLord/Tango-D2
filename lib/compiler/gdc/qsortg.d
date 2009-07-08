@@ -1,4 +1,4 @@
-
+module qsortg;
 struct Array
 {
     size_t length;

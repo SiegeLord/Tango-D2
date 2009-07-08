@@ -26,7 +26,7 @@
 
    Modified by David Friedman, September 2004
 */
-
+module memset;
 extern (C)
 {
     // Functions from the C library.

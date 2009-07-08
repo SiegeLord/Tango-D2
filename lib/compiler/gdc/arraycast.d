@@ -24,7 +24,7 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
-
+module arraycast;
 /******************************************
  * Runtime helper to convert dynamic array of one
  * type to dynamic array of another.

@@ -51,6 +51,12 @@ PLACES=common compiler/shared gc/basic compiler/$(DC_SHORT)
 DFLAGS_ADD=-I$(TANGO_HOME) -I$(TANGO_HOME)/lib $(PLACES:%=-I$(TANGO_HOME)/lib/%)
 LIB=libtango-base.$(LIB_EXT)
 INSTALL_LIB=$(TANGO_HOME)/libtango-base-$(shell $(TOOLDIR)/getCompVers.sh $(IDENT)).$(LIB_EXT)
+
+all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
+	@mkdir -p $(OBJDIR)
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_lib build
+	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_install build
+
 include $(ARCHFILE)
 include $(PLACES:%=$(TANGO_HOME)/lib/%/OBJDEFS.inc)
 ifeq ($(shell if [ -e "$(OBJDIR)/MODULES.inc" ]; then echo 1; fi;),1)
@@ -74,11 +80,6 @@ OBJS=$(MODULES:%=%.$(OBJ_EXT)) $(OTHER_OBJS)
 INSTALL_DI=$(COMMON_DI) $(GC_DI) $(COMPILER_DI) $(ARCH_DI)
 
 .PHONY: _genDeps newFiles build clean distclean allVersions install
-
-all: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
-	@mkdir -p $(OBJDIR)
-	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_lib build
-	$(MAKE) -f $(MAKEFILE) -C $(OBJDIR) TANGO_HOME="$(TANGO_HOME)" IDENT="$(IDENT)" DC="$(DC)" WHAT=_install build
 
 install: $(OBJDIR)/MODULES.inc $(OBJDIR)/intermediate.rule
 	@mkdir -p $(OBJDIR)

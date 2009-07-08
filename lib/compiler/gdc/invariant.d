@@ -4,7 +4,7 @@
  * written by Walter Bright
  * www.digitalmars.com
  */
-
+module invariant_;
 void _d_invariant(Object o)
 {   ClassInfo c;
 

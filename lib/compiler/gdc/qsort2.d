@@ -14,7 +14,7 @@
  */
 
 //debug=qsort;
-
+module qsort2;
 private import tango.stdc.stdlib;
 
 struct Array

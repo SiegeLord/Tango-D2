@@ -28,7 +28,7 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
-
+module arraycat;
 private
 {
     import tango.stdc.string;
