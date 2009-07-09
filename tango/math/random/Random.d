@@ -1021,7 +1021,7 @@ final class RandomG(SourceT=DefaultEngine)
             return *this;
         }
         /// returns a single random number
-        T getRandom(T a=alpha,t=theta)
+        T getRandom(T a=alpha,T t=theta)
         in { assert(a>=cast(T)1,"implemented only for alpha>=1"); }
         body {
             T d=a-(cast(T)1)/(cast(T)3);
