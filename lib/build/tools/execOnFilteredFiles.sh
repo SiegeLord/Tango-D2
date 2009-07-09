@@ -50,5 +50,9 @@ do
     excl="$excl -path '$1' -prune -name a -not -name a -o "
     shift
 done
-findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \+"
+if ( uname -m | grep -i mingw >& /dev/null ) ; then 
+    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \;"
+else
+    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \+"
+fi
 sh -c "$findCmd"

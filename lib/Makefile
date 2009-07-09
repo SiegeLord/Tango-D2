@@ -30,6 +30,12 @@
 # For problems with the flags (or if you want to define a new special build setting)
 # normally you should edit the tango/lib/build/arch/$(IDENT).mak file.
 #
+# * Other important variables
+# DFLAGS_ADD: adds the given D flags
+# CFLAGS_ADD: adds the given C flags
+# DFLAGS: as environment variable is not changed
+# CFLAGS: adds the given C flags
+#
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 
 
