@@ -243,7 +243,8 @@ struct WallClock
         static Time toLocal (Time utc)
         {
                 auto mod = utc.ticks % TimeSpan.TicksPerMillisecond;
-                return Clock.fromDate(toDate(utc)) + TimeSpan(mod);
+                auto date=toDate(utc);
+                return Clock.fromDate(date) + TimeSpan(mod);
         }
 
         /***********************************************************************
@@ -253,7 +254,8 @@ struct WallClock
         static Time toUtc (Time wall)
         {
                 auto mod = wall.ticks % TimeSpan.TicksPerMillisecond;
-                return fromDate(Clock.toDate(wall)) + TimeSpan(mod);
+                auto date=Clock.toDate(wall);
+                return fromDate(date) + TimeSpan(mod);
         }
 }
 

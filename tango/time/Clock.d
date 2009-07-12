@@ -304,7 +304,8 @@ debug (UnitTest)
         unittest 
         {
                 auto time = Clock.now;
-                assert (Clock.convert(Clock.convert(time)) is time);
+                auto clock=Clock.convert(time);
+                assert (Clock.convert(clock) is time);
 
                 time -= TimeSpan(time.ticks % TimeSpan.TicksPerSecond);
                 auto date = Clock.toDate(time);
