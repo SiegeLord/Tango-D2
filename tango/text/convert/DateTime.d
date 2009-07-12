@@ -166,8 +166,9 @@ struct DateTimeLocale
                 // might be one of our shortcuts
                 if (layout.length is 1) 
                     layout = expandKnownFormat (layout);
-
-                return formatCustom (Result(output), dateTime, layout);
+                
+                auto res=Result(output);
+                return formatCustom (res, dateTime, layout);
         }
 
         /**********************************************************************
