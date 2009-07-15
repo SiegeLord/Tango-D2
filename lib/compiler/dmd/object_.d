@@ -45,7 +45,7 @@ private
     import rt.util.hash;
     import rt.aaA;
     debug(PRINTF) import rt.cImports: printf;
-    import rt.cInterface:_d_newclass;
+    extern (C) Object _d_newclass(ClassInfo ci);
 }
 
 // NOTE: For some reason, this declaration method doesn't work
