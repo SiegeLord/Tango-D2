@@ -8,7 +8,7 @@
  */
 /* References:
   - R.P. Brent and P. Zimmermann, "Modern Computer Arithmetic", 
-    Version 0.2, p. 26, (June 2008).
+    Version 0.2, p. 26, (June 2009).
   - C. Burkinel and J. Ziegler, "Fast Recursive Division", MPI-I-98-1-022, 
     Max-Planck Institute fuer Informatik, (Oct 1998).
   - G. Hanrot, M. Quercia, and P. Zimmermann, "The Middle Product Algorithm, I.",
@@ -58,10 +58,13 @@ private:
 const int CACHELIMIT;   // Half the size of the data cache.
 const int FASTDIVLIMIT; // crossover to recursive division
 
+
 // These constants are used by shift operations
 static if (BigDigit.sizeof == int.sizeof) {
     enum { LG2BIGDIGITBITS = 5, BIGDIGITSHIFTMASK=31 };
+    alias ushort BIGHALFDIGIT;
 } else static if (BigDigit.sizeof == long.sizeof) {
+    alias uint BIGHALFDIGIT;
     enum { LG2BIGDIGITBITS = 6, BIGDIGITSHIFTMASK=63 };
 } else static assert(0, "Unsupported BigDigit size");
 
@@ -475,7 +478,242 @@ unittest {
 }
 }
 
+/**
+ * Return a BigUint which is x raised to the power of y.
+ * Method: Powers of 2 are removed from x, then left-to-right binary
+ * exponentiation is used.
+ * Memory allocation is minimized: at most one temporary BigUint is used.
+ */
+BigUint pow(BigUint x, ulong y)
+{
+    // Deal with the degenerate cases first.
+    if (y==0) return BigUint(ONE);
+    if (y==1) return x;
+    if (x==0 || x==1) return x;
+   
+    BigUint result;
+     
+    // Simplify, step 1: Remove all powers of 2.
+    uint firstnonzero = firstNonZeroDigit(x.data);
+    
+    // See if x can now fit into a single digit.            
+    bool singledigit = ((x.data.length - firstnonzero) == 1);
+    // If true, then x0 is that digit, and we must calculate x0 ^ y0.
+    BigDigit x0 = x.data[firstnonzero];
+    assert(x0 !=0);
+    size_t xlength = x.data.length;
+    ulong y0;
+    uint evenbits = 0; // number of even bits in the bottom of x
+    while (!(x0 & 1)) { x0 >>= 1; ++evenbits; }
+    
+    if ((x.data.length- firstnonzero == 2)) {
+        // Check for a single digit straddling a digit boundary
+        BigDigit x1 = x.data[firstnonzero+1];
+        if ((x1 >> evenbits) == 0) {
+            x0 |= (x1 << (BigDigit.sizeof * 8 - evenbits));
+            singledigit = true;
+        }
+    }
+    uint evenshiftbits = 0; // Total powers of 2 to shift by, at the end
+    
+    // Simplify, step 2: For singledigits, see if we can trivially reduce y
+    
+    BigDigit finalMultiplier = 1;
+   
+    if (singledigit) {
+        // x fits into a single digit. Raise it to the highest power we can
+        // that still fits into a single digit, then reduce the exponent accordingly.
+        // We're quite likely to have a residual multiply at the end.
+        // For example, 10^100 = (((5^13)^7) * 5^9) * 2^100.
+        // and 5^13 still fits into a uint.
+        evenshiftbits  = cast(uint)( (evenbits * y) & BIGDIGITSHIFTMASK);
+        if (x0 == 1) { // Perfect power of 2
+             result = 1;
+             return result<< (evenbits + firstnonzero*BigDigit.sizeof)*y;
+        } else {
+            int p = highestPowerBelowUintMax(x0);
+            if (y <= p) { // Just do it with pow               
+                result = intpow(x0, y);
+                if (evenshiftbits+firstnonzero == 0) return result;
+                return result<< (evenbits + firstnonzero*BigDigit.sizeof)*y;
+            }
+            y0 = y/p;
+            finalMultiplier = intpow(x0, y - y0*p);
+            x0 = intpow(x0, p);
+        }
+        xlength = 1;
+    }
+
+    // Check for overflow and allocate result buffer
+    // Single digit case: +1 is for final multiplier, + 1 is for spare evenbits.
+    ulong estimatelength = singledigit ? firstnonzero*y + y0*1 + 2 + ((evenbits*y) >> LG2BIGDIGITBITS) 
+        : x.data.length * y; // estimated length in BigDigits
+    // (Estimated length can overestimate by a factor of 2, if x.data.length ~ 2).
+    if (estimatelength > uint.max/(4*BigDigit.sizeof)) assert(0, "Overflow in BigInt.pow");
+    
+    // The result buffer includes space for all the trailing zeros
+    BigDigit [] resultBuffer = new BigDigit[cast(size_t)estimatelength];
+    
+    // Do all the powers of 2!
+    size_t result_start = cast(size_t)(firstnonzero*y + singledigit? ((evenbits*y) >> LG2BIGDIGITBITS) : 0);
+    resultBuffer[0..result_start] = 0;
+    BigDigit [] t1 = resultBuffer[result_start..$];
+    BigDigit [] r1;
+    
+    if (singledigit) {
+        r1 = t1[0..1];
+        r1[0] = x0;
+        y = y0;        
+    } else {
+        // It's not worth right shifting by evenbits unless we also shrink the length after each 
+        // multiply or squaring operation. That might still be worthwhile for large y.
+        r1 = t1[0..x.data.length - firstnonzero];
+        r1[0..$] = x.data[firstnonzero..$];
+    }    
+
+    if (y>1) {
+        // Set r1 = r1 ^ y.
+         
+        // The secondary buffer only needs space for the multiplication results    
+        BigDigit [] secondaryBuffer = new BigDigit[resultBuffer.length - cast(size_t)(firstnonzero*y)];
+        BigDigit [] t2 = secondaryBuffer;
+        BigDigit [] r2;
+    
+        int shifts = 63; // num bits in a long
+        while(!(y & 0x8000_0000_0000_0000L)) {
+            y <<=1;
+            --shifts;
+        }
+        y <<=1;
+   
+        while(y!=0) {
+            r2 = t2[0..r1.length*2];
+            squareInternal(r2, r1);
+            if (y&0x8000_0000_0000_0000L) {           
+                r1 = t1[0.. r2.length + xlength];
+                if (xlength==1) {
+                    r1[$-1] = multibyteMul(r1[0..$-1], r2, x0, 0);
+                } else {
+                    mulInternal(r1, r2, x.data);
+                }
+            } else {
+                r1 = t1[0..r2.length];
+                r1[] = r2[];
+            }
+            y <<=1;
+            shifts--;
+        }
+        while (shifts>0) {
+            r2 = t2[0..r1.length *2];
+            squareInternal(r2, r1);
+            r1 = t1[0..r2.length];
+            r1[] = r2[];
+            --shifts;
+        }
+    }   
+
+    if (finalMultiplier!=1) {
+        BigDigit carry = multibyteMul(r1, r1, finalMultiplier, 0);
+        if (carry) {
+            r1 = t1[0..r1.length+1];
+            r1[$-1] = carry;
+        }
+    }
+    if (evenshiftbits) {
+        BigDigit carry = multibyteShl(r1, r1, evenshiftbits);
+        if (carry!=0) {
+            r1 = t1[0..r1.length+1];
+            r1[$-1] = carry;
+        }
+    }    
+    while(r1[$-1]==0) {
+        r1=r1[0..$-1];
+    }
+    result.data = resultBuffer[0..result_start + r1.length];
+    return result;
+}
+
+
+debug (UnitTest) {
+unittest {   
+   BigUint r, s;
+   r.fromHexString("80000000_00000001");
+   s = pow(r, 5);
+   r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000"
+   ~"_00000002_80000000_00000001");
+   assert(s == r);
+   s = 10;
+   s = pow(s, 39);
+   r.fromDecimalString("1000000000000000000000000000000000000000");
+   assert(s == r);
+}
+}
+
 private:
+
+// works for any type
+T intpow(T)(T x, ulong n)
+{
+    T p;
+
+    switch (n)
+    {
+    case 0:
+        p = 1;
+        break;
+
+    case 1:
+        p = x;
+        break;
+
+    case 2:
+        p = x * x;
+        break;
+
+    default:
+        p = 1;
+        while (1){
+            if (n & 1)
+                p *= x;
+            n >>= 1;
+            if (!n)
+                break;
+            x *= x;
+        }
+        break;
+    }
+    return p;
+}
+
+
+//  returns the maximum power of x that will fit in a uint.
+ int highestPowerBelowUintMax(uint x)
+ {
+     assert(x>1);     
+     const int [22] maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7];
+     if (x<24) return maxpwr[x-2]; 
+     if (x<41) return 6;
+     if (x<85) return 5;
+     if (x<256) return 4;
+     if (x<1626) return 3;
+     if (x<65536) return 2;
+     return 1;
+ }
+  
+
+ int slowHighestPowerBelowUintMax(uint x)
+ {
+     int pwr = 1;
+     for (ulong q = x;x*q < cast(ulong)uint.max; ) {
+         q*=x; ++pwr;
+     } 
+     return pwr;
+ }
+
+ unittest {
+  assert(highestPowerBelowUintMax(10)==9);
+  for (int k=82; k<88; ++k) {assert(highestPowerBelowUintMax(k)== slowHighestPowerBelowUintMax(k)); }
+ }
 
 
 /*  General unsigned subtraction routine for bigints.
@@ -696,6 +934,8 @@ void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
 
 /**  General unsigned squaring routine for BigInts.
  *   Sets result = x*x.
+ *   NOTE: If the highest half-digit of x is zero, the highest digit of result will
+ *   also be zero.
  */
 void squareInternal(BigDigit[] result, BigDigit[] x)
 {
@@ -1324,6 +1564,17 @@ int highestDifferentDigit(BigDigit [] left, BigDigit [] right)
     return 0;
 }
 
+// Returns the lowest value of i for which x[i]!=0.
+int firstNonZeroDigit(BigDigit[] x)
+{
+    int k = 0;
+    while (x[k]==0) {
+        ++k;
+        assert(k<x.length);
+    }
+    return k;
+}
+
 /* Calculate quotient and remainder of u / v using fast recursive division.
   v must be normalised, and must be at least half as long as u.
   Given u and v, v normalised, calculates  quotient  = u/v, u = u%v.
@@ -1405,6 +1656,11 @@ void printBiguint(uint [] data)
 {
     char [] buff = new char[data.length*9];
     printf("%.*s\n", biguintToHex(buff, data, '_'));
+}
+
+void printDecimalBigUint(BigUint data)
+{
+   printf("%.*s\n", data.toDecimalString(0)); 
 }
 
 unittest{
