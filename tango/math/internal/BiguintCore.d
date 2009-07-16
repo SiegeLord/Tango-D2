@@ -375,10 +375,7 @@ static BigUint mulInt(BigUint x, ulong y)
         result[x.data.length+1] = multibyteMulAdd!('+')(result[1..x.data.length+1],
             x.data, hi, 0);
     }
-    if (result.length > 1 && result[$-1] == 0) {
-            result = result[0..$-1];
-    }
-    return BigUint(result);
+    return BigUint(removeLeadingZeros(result));
 }
 
 /*  return x*y.
@@ -388,20 +385,16 @@ static BigUint mul(BigUint x, BigUint y)
     if (y==0 || x == 0) return BigUint(ZERO);
 
     uint len = x.data.length + y.data.length;
-    BigUint r;
-    r.data = new BigDigit[len];
+    BigDigit [] result = new BigDigit[len];
     if (y.data.length > x.data.length) {
-        mulInternal(r.data, y.data, x.data);
+        mulInternal(result, y.data, x.data);
     } else {
-        if (x.data[]==y.data[]) squareInternal(r.data, x.data);
-        else mulInternal(r.data, x.data, y.data);
+        if (x.data[]==y.data[]) squareInternal(result, x.data);
+        else mulInternal(result, x.data, y.data);
     }
     // the highest element could be zero, 
     // in which case we need to reduce the length
-    if (r.data.length > 1 && r.data[$-1] == 0) {
-        r.data = r.data[0..$-1];
-    }
-    return r;
+    return BigUint(removeLeadingZeros(result));
 }
 
 // return x/y
@@ -419,9 +412,7 @@ static BigUint divInt(BigUint x, uint y) {
         result[] = x.data[];
         uint rem = multibyteDivAssign(result, y, 0);
     }
-    if (result[$-1]==0 && result.length>1) {
-        return BigUint(result[0..$-1]);
-    } else return BigUint(result);
+    return BigUint(removeLeadingZeros(result));
 }
 
 // return x%y
@@ -446,8 +437,7 @@ static BigUint div(BigUint x, BigUint y)
     if (y.data.length == 1) return divInt(x, y.data[0]);
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     divModInternal(result, null, x.data, y.data);
-    if (result.length>1 && result[$-1]==0) result = result[0..$-1];
-    return BigUint(result);
+    return BigUint(removeLeadingZeros(result));
 }
 
 // return x%y
@@ -462,20 +452,7 @@ static BigUint mod(BigUint x, BigUint y)
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     BigDigit [] rem = new BigDigit[y.data.length];
     divModInternal(result, rem, x.data, y.data);
-    while (rem.length>1 && rem[$-1]==0) rem = rem[0..$-1];
-    return BigUint(rem);
-}
-
-} // end BigUint
-
-debug(UnitTest) {
-unittest {
-// Bug 1650.
-   BigUint r = BigUint([5]);
-   BigUint t = BigUint([7]);
-   BigUint s = BigUint.mod(r, t);
-   assert(s==5);
-}
+    return BigUint(removeLeadingZeros(rem));
 }
 
 /**
@@ -484,7 +461,7 @@ unittest {
  * exponentiation is used.
  * Memory allocation is minimized: at most one temporary BigUint is used.
  */
-BigUint pow(BigUint x, ulong y)
+static BigUint pow(BigUint x, ulong y)
 {
     // Deal with the degenerate cases first.
     if (y==0) return BigUint(ONE);
@@ -571,11 +548,10 @@ BigUint pow(BigUint x, ulong y)
         r1[0..$] = x.data[firstnonzero..$];
     }    
 
-    if (y>1) {
-        // Set r1 = r1 ^ y.
+    if (y>1) {    // Set r1 = r1 ^ y.
          
         // The secondary buffer only needs space for the multiplication results    
-        BigDigit [] secondaryBuffer = new BigDigit[resultBuffer.length - cast(size_t)(firstnonzero*y)];
+        BigDigit [] secondaryBuffer = new BigDigit[resultBuffer.length - result_start];
         BigDigit [] t2 = secondaryBuffer;
         BigDigit [] r2;
     
@@ -633,19 +609,45 @@ BigUint pow(BigUint x, ulong y)
     return result;
 }
 
+} // end BigUint
+
+
+// Remove leading zeros from x, to restore the BigUint invariant
+BigDigit[] removeLeadingZeros(BigDigit [] x)
+{
+    size_t k = x.length;
+    while(k>1 && x[k-1]==0) --k;
+    return x[0..k];
+}
+
+debug(UnitTest) {
+unittest {
+// Bug 1650.
+   BigUint r = BigUint([5]);
+   BigUint t = BigUint([7]);
+   BigUint s = BigUint.mod(r, t);
+   assert(s==5);
+}
+}
+
+
 
 debug (UnitTest) {
 unittest {   
-   BigUint r, s;
-   r.fromHexString("80000000_00000001");
-   s = pow(r, 5);
-   r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000"
-   ~"_00000002_80000000_00000001");
-   assert(s == r);
-   s = 10;
-   s = pow(s, 39);
-   r.fromDecimalString("1000000000000000000000000000000000000000");
-   assert(s == r);
+    BigUint r, s;
+    r.fromHexString("80000000_00000001");
+    s = BigUint.pow(r, 5);
+    r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000"
+      ~ "_00000002_80000000_00000001");
+    assert(s == r);
+    s = 10;
+    s = BigUint.pow(s, 39);
+    r.fromDecimalString("1000000000000000000000000000000000000000");
+    assert(s == r);
+   
+    r.fromHexString("1_E1178E81_00000000");
+    s = BigUint.pow(r, 15); // this used to overflow array bounds
+
 }
 }
 
@@ -687,10 +689,11 @@ T intpow(T)(T x, ulong n)
 
 
 //  returns the maximum power of x that will fit in a uint.
- int highestPowerBelowUintMax(uint x)
- {
+int highestPowerBelowUintMax(uint x)
+{
      assert(x>1);     
-     const int [22] maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7];
+     const ubyte [22] maxpwr = [31, 20, 15, 13, 12, 11, 10, 10, 9, 9,
+                                 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7];
      if (x<24) return maxpwr[x-2]; 
      if (x<41) return 6;
      if (x<85) return 5;
@@ -698,22 +701,44 @@ T intpow(T)(T x, ulong n)
      if (x<1626) return 3;
      if (x<65536) return 2;
      return 1;
- }
-  
+}
 
- int slowHighestPowerBelowUintMax(uint x)
- {
+//  returns the maximum power of x that will fit in a ulong.
+int highestPowerBelowUlongMax(uint x)
+{
+     assert(x>1);     
+     const ubyte [39] maxpwr = [63, 40, 31, 27, 24, 22, 21, 20, 19, 18,
+                                 17, 17, 16, 16, 15, 15, 15, 15, 14, 14,
+                                 14, 14, 13, 13, 13, 13, 13, 13, 13, 12,
+                                 12, 12, 12, 12, 12, 12, 12, 12, 12];
+     if (x<41) return maxpwr[x-2]; 
+     if (x<57) return 11;
+     if (x<85) return 10;
+     if (x<139) return 9;
+     if (x<256) return 8;
+     if (x<566) return 7;
+     if (x<1626) return 6;
+     if (x<7132) return 5;
+     if (x<65536) return 4;
+     if (x<2642246) return 3;
+     return 2;
+} 
+
+version(UnitTest) {
+int slowHighestPowerBelowUintMax(uint x)
+{
      int pwr = 1;
      for (ulong q = x;x*q < cast(ulong)uint.max; ) {
          q*=x; ++pwr;
      } 
      return pwr;
- }
+}
 
- unittest {
+unittest {
   assert(highestPowerBelowUintMax(10)==9);
   for (int k=82; k<88; ++k) {assert(highestPowerBelowUintMax(k)== slowHighestPowerBelowUintMax(k)); }
- }
+}
+}
 
 
 /*  General unsigned subtraction routine for bigints.
@@ -756,13 +781,6 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
     return result;
 }
 
-
-// Remove leading zeros from x.
-BigDigit [] removeLeadingZeros(BigDigit[] x)
-{
-  while(x.length>1 && x[$-1]==0) x=x[0..$-1];
-  return x;
-}
 
 // return a + b
 BigDigit [] add(BigDigit[] a, BigDigit [] b) {

@@ -112,6 +112,16 @@ public:
         r.data = BigUint.addOrSub(data, y.data, sign == y.sign, &r.sign);
         return r;
     }        
+    /*    
+    BigInt opSub_r(T:int)(T y) {
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        BigInt r;
+        r.sign = sign;
+        r.data = BigUint.addOrSubInt(data, u, sign == (y<0), &r.sign);
+        r.negate();
+        return r;
+    }
+    */
     ///
     BigInt opSubAssign(T:BigInt)(T y) {
         data = BigUint.addOrSub(data, y.data, sign == y.sign, &sign);
@@ -275,6 +285,15 @@ public:
     /// Number of significant ulongs which are used in storing this number.
     /// The absolute value of this BigInt is always < 2^(64*ulongLength)
     int ulongLength() { return data.ulongLength(); } 
+    
+    /// Return x raised to the power of y
+    /// This interface is tentative and may change.
+    static BigInt pow(BigInt x, ulong y) {
+       BigInt r;
+       r.sign = (y&1)? x.sign : false;
+       r.data = BigUint.pow(x.data, y);
+       return r;
+    }
 public:
     /// Deprecated. Use uintLength() or ulongLength() instead.
     int numBytes() {
