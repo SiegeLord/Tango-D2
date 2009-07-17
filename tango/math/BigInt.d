@@ -13,6 +13,8 @@ private import tango.math.internal.BiguintCore;
  *
  * All arithmetic operations are supported, except
  * unsigned shift right (>>>).
+ * Reverse operations are supported only for int, long,
+ * and ulong, due to language limitations.
  * It implements value semantics using copy-on-write. This means that
  * assignment is cheap, but operations such as x++ will cause heap
  * allocation. (But note that for most bigint operations, heap allocation is
@@ -112,8 +114,8 @@ public:
         r.data = BigUint.addOrSub(data, y.data, sign == y.sign, &r.sign);
         return r;
     }        
-    /*    
-    BigInt opSub_r(T:int)(T y) {
+    ///
+    BigInt opSub_r(int y) {
         ulong u = cast(ulong)(y < 0 ? -y : y);
         BigInt r;
         r.sign = sign;
@@ -121,7 +123,24 @@ public:
         r.negate();
         return r;
     }
-    */
+    ///
+    BigInt opSub_r(long y) {
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        BigInt r;
+        r.sign = sign;
+        r.data = BigUint.addOrSubInt(data, u, sign == (y<0), &r.sign);
+        r.negate();
+        return r;
+    }
+    ///
+    BigInt opSub_r(ulong y) {
+        ulong u = cast(ulong)(y < 0 ? -y : y);
+        BigInt r;
+        r.sign = sign;
+        r.data = BigUint.addOrSubInt(data, u, sign == (y<0), &r.sign);
+        r.negate();
+        return r;
+    }    
     ///
     BigInt opSubAssign(T:BigInt)(T y) {
         data = BigUint.addOrSub(data, y.data, sign == y.sign, &sign);
@@ -252,13 +271,13 @@ public:
     ///
     int opEquals(T: int)(T y) {
         if (sign!=(y<0)) return 0;
-        return data.opEquals(y>=0?y:-y);
+        return data.opEquals(cast(ulong)(y>=0?y:-y));
     }
     ///
     int opCmp(T:int)(T y) {
      //   if (y==0) return sign? -1: 1;
         if (sign!=(y<0)) return sign ? -1 : 1;
-        int cmp = data.opCmp(y>=0? y: -y);        
+        int cmp = data.opCmp(cast(ulong)(y>=0? y: -y));        
         return sign? -cmp: cmp;
     }
     ///
