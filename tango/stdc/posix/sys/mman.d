@@ -322,7 +322,11 @@ else version( solaris )
 int mprotect(void*, size_t, int);
 */
 
-version( darwin )
+version( linux )
+{
+    int mprotect(void*, size_t, int);
+}
+else version( darwin )
 {
     int mprotect(void*, size_t, int);
 }
