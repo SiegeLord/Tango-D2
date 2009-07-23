@@ -30,6 +30,8 @@ private import  tango.time.Time;
 
 private import  tango.core.Exception;
 
+private import  tango.core.Variant;
+
 private import  tango.text.convert.DateTime;
 
 private import  Utf = tango.text.convert.Utf;
@@ -487,6 +489,18 @@ version (old)
                       // an astonishing number of typehacks needed to handle arrays :(
                       void process (TypeInfo _ti, Arg _arg)
                       {
+                                // Because Variants can contain AAs (and maybe
+                                // even static arrays someday), we need to
+                                // process them here.
+                                if (_ti is typeid(Variant))
+                                   {
+                                   // Unpack the variant and forward
+                                   auto vptr = cast(Variant*)_arg;
+                                   auto innerTi = vptr.type;
+                                   auto innerArg = vptr.ptr;
+                                   process (innerTi, innerArg);
+                                   }
+                                else
                                 if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
                                    {
                                    auto tiStat = cast(TypeInfo_StaticArray)_ti;

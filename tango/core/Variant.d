@@ -65,13 +65,44 @@ private
              * Contains heap-allocated storage for values which are too large
              * to fit into the Variant directly.
              */
-            void[] arr;
+            void[] heap;
+
+            /*
+             * Used to store arrays directly.  Note that this is NOT an actual
+             * array; using a void[] causes the length to change, which screws
+             * up the ptr() property.
+             *
+             * WARNING: this structure MUST match the ABI for arrays for this
+             * platform.  AFAIK, all compilers implement arrays this way.
+             * There needs to be a case in the unit test to ensure this.
+             */
+            struct Array
+            {
+                size_t length;
+                void* ptr;
+            }
+            Array array;
 
             // Used to simplify dealing with objects.
             Object obj;
 
-            // Used to address the structure as an array.
-            ubyte[arr.sizeof] data;
+            // Used to address storage as an array.
+            ubyte[array.sizeof] data;
+        }
+
+        /*
+         * This is used to set the array structure safely.  We're essentially
+         * just ensuring that if a garbage collection happens mid-assign, we
+         * don't accidentally mark bits of memory we shouldn't.
+         *
+         * Of course, the compiler could always re-order the length and ptr
+         * assignment.  Oh well.
+         */
+        void setArray(void* ptr, size_t length)
+        {
+            array.length = 0;
+            array.ptr = ptr;
+            array.length = length;
         }
     }
 
@@ -360,7 +391,7 @@ struct Variant
 
             static if( isDynamicArrayType!(T) )
             {
-                this.value.arr = value;
+                this.value.setArray(value.ptr, value.length);
             }
             else static if( isInterface!(T) )
             {
@@ -368,7 +399,15 @@ struct Variant
             }
             else
             {
-                if( T.sizeof <= this.value.data.length )
+                /*
+                 * If the value is small enough to fit in the storage
+                 * available, do so.  If it isn't, then make a heap copy.
+                 *
+                 * Obviously, this pretty clearly breaks value semantics for
+                 * large values, but without a postblit operator, there's not
+                 * much we can do.  :(
+                 */
+                static if( T.sizeof <= this.value.data.length )
                 {
                     this.value.data[0..T.sizeof] =
                         (cast(ubyte*)&value)[0..T.sizeof];
@@ -376,7 +415,7 @@ struct Variant
                 else
                 {
                     auto buffer = (cast(ubyte*)&value)[0..T.sizeof].dup;
-                    this.value.arr = cast(void[])buffer;
+                    this.value.heap = cast(void[])buffer;
                 }
             }
             return *this;
@@ -512,14 +551,24 @@ struct Variant
             {
                 if( type is typeid(T) )
                 {
+                    // We got lucky; the types match exactly.  If the type is
+                    // small, grab it out of storage; otherwise, copy it from
+                    // the heap.
                     static if( T.sizeof <= value.sizeof )
                         return *cast(T*)(&value);
 
                     else
-                        return *cast(T*)(value.arr.ptr);
+                        return *cast(T*)(value.heap.ptr);
                 }
                 else
                 {
+                    // This handles implicit coercion.  What it does is finds
+                    // the basic type U which is actually being stored.  It
+                    // then unpacks the value of type U stored in the Variant
+                    // and casts it to type T.
+                    //
+                    // It is assumed that this is valid to perform since we
+                    // should have already eliminated invalid coercions.
                     foreach( U ; BasicTypes )
                     {
                         if( type is typeid(U) )
@@ -528,7 +577,7 @@ struct Variant
                                 return cast(T) *cast(U*)(&value);
 
                             else
-                                return cast(T) *cast(U*)(value.arr.ptr);
+                                return cast(T) *cast(U*)(value.heap.ptr);
                         }
                     }
                     throw new VariantTypeMismatchException(type,typeid(T));
@@ -536,7 +585,8 @@ struct Variant
             }
             else static if( isDynamicArrayType!(T) )
             {
-                return cast(T) value.arr;
+                return (cast(typeof(T.ptr)) value.array.ptr)
+                    [0..value.array.length];
             }
             else static if( isObject!(T) || isInterface!(T) )
             {
@@ -544,7 +594,7 @@ struct Variant
             }
             else
             {
-                if( T.sizeof <= this.value.data.length )
+                static if( T.sizeof <= this.value.data.length )
                 {
                     T result;
                     (cast(ubyte*)&result)[0..T.sizeof] =
@@ -555,7 +605,7 @@ struct Variant
                 {
                     T result;
                     (cast(ubyte*)&result)[0..T.sizeof] =
-                        (cast(ubyte[])this.value.arr)[0..T.sizeof];
+                        (cast(ubyte[])this.value.heap)[0..T.sizeof];
                     return result;
                 }
             }
@@ -670,7 +720,7 @@ struct Variant
             return &value;
 
         else
-            return value.arr.ptr;
+            return value.heap.ptr;
     }
     
     version( EnableVararg )
@@ -776,7 +826,7 @@ private:
              * of type.  We'll store the static array type and cope with it
              * in isImplicitly(S) and get(S).
              */
-            r.value.arr = ptr[0 .. type.tsize];
+            r.value.heap = ptr[0 .. type.tsize].dup;
         }
         else
         {
@@ -801,7 +851,7 @@ private:
                 {
                     // Store in heap
                     auto buffer = (cast(ubyte*)ptr)[0 .. type.tsize].dup;
-                    r.value.arr = cast(void[])buffer;
+                    r.value.heap = cast(void[])buffer;
                 }
             }
         }
@@ -838,7 +888,7 @@ private:
             if( isStaticArrayTypeInfo(type) )
             {
                 // Just dump straight
-                ptr[0 .. type.tsize] = this.value.arr[0 .. type.tsize];
+                ptr[0 .. type.tsize] = this.value.heap[0 .. type.tsize];
             }
             else
             {
@@ -885,7 +935,7 @@ private:
                     else
                     {
                         // Value stored on heap
-                        ptr[0 .. type.tsize] = this.value.arr[0 .. type.tsize];
+                        ptr[0 .. type.tsize] = this.value.heap[0 .. type.tsize];
                     }
                 }
             }
@@ -977,6 +1027,16 @@ debug( UnitTest )
         v = [1,2,3,4,5];
         assert( v.isA!(int[]), v.type.toString );
         assert( v.get!(int[]) == [1,2,3,4,5] );
+
+        // Make sure arrays are correctly stored so that .ptr works.
+        {
+            int[] a = [1,2,3,4,5];
+            v = a;
+            auto b = *cast(int[]*)(v.ptr);
+
+            assert( a.ptr == b.ptr );
+            assert( a.length == b.length );
+        }
 
         // Test pointer storage
         v = &v;
