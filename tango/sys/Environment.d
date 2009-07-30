@@ -89,6 +89,25 @@ struct Environment
         {
                 throw new PlatformException (msg);
         }
+        
+        /***********************************************************************
+
+            Returns an absolute version of the provided path, where cwd is used
+            as the prefix.
+
+            The provided path is returned as is if already absolute.
+
+        ***********************************************************************/
+
+        static char[] toAbsolute(char[] path)
+        {
+            scope fp = new FilePath(path);
+            if (fp.isAbsolute)
+                return path;
+
+            fp.absolute(cwd);
+            return fp.toString;
+        }
 
         /***********************************************************************
 
