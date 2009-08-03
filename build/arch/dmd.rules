@@ -1,0 +1,34 @@
+# common make rules for dmd
+
+LIB_EXT=a
+LIB_PREFIX=lib
+OBJ_EXT=o
+COBJ_EXT=o
+mkLib=ar -r
+ranlib=ranlib
+LIB_DIR="-L-L"
+LIB_LINK="-L-l"
+OUT_NAME="-of"
+
+DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
+CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
+
+EXCLUDE_DEP_COMP=
+# ^dmd\.
+
+%.dep:%.d
+	$(DC) -c -v $(DFLAGS_ALL) -of$(@:%.dep=%.o) $< | $(TOOLDIR)/toMakeDeps.sh --target $(@:%.dep=%.o) $(EXCLUDE_DEP_ALL) > $@
+	if [ ! -r $(@:%.dep=%.o) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(@:%.dep=%.o) $< ; [ -r $(@:%.dep=%.o) ] ; fi
+
+%.o:%.d
+	$(DC) -c -v $(DFLAGS_ALL) -of$@ $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.o) $(EXCLUDE_DEP_ALL) > $(@:.o=%.dep)
+	if [ ! -r $@ ] ; then $(DC) -c $(DFLAGS_ALL) -of$@ $< ; [ -r $@ ] ; fi
+
+%.o:%.s
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+%.o:%.S
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+%.o:%.c
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
