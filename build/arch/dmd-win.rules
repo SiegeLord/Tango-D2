@@ -33,3 +33,7 @@ EXCLUDE_DEP_COMP=
 
 %.obj:%.c
 	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+minit.obj:minit.asm
+	cp $(<:%.asm=%.obj) $@
+

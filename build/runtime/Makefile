@@ -74,10 +74,12 @@ vpath %d $(TANGO_HOME)/runtime
 vpath %di $(TANGO_HOME)/runtime
 vpath %S $(TANGO_HOME)/runtime
 vpath %c $(TANGO_HOME)/runtime
+vpath %asm $(TANGO_HOME)/runtime
 vpath %d $(PLACES:%=$(TANGO_HOME)/runtime/%)
 vpath %di $(PLACES:%=$(TANGO_HOME)/runtime/%)
 vpath %S $(PLACES:%=$(TANGO_HOME)/runtime/%)
 vpath %c $(PLACES:%=$(TANGO_HOME)/runtime/%)
+vpath %asm $(PLACES:%=$(TANGO_HOME)/runtime/%)
 
 EXCLUDE_DEP_ALL=$(EXCLUDE_DEP_COMP)
 

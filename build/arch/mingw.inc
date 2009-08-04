@@ -3,7 +3,8 @@ OS_MODULES=\
   tango.sys.win32.Process  \
   tango.sys.win32.Types    \
   tango.sys.win32.UserGdi  \
-  tango.sys.win32.WsaSock
+  tango.sys.win32.WsaSock  \
+  rt.util.cpuid
 
 OS_OO=$(COMPILER_OO_WIN)
 OS_DI=\

@@ -43,7 +43,8 @@ COMPILER_OO_POSIX = \
     ThreadASM.$(COBJ_EXT) \
 
 COMPILER_OO_WIN =\
-    deh.$(COBJ_EXT)
+    deh.$(COBJ_EXT) \
+    minit.$(COBJ_EXT)
 
 COMPILER_DI_L= \
  rt/cInterface.di \
