@@ -61,3 +61,8 @@ version( Win32 ){
     extern(C) size_t   wcslen(wchar_t* s);
 }
 
+// tango.stdc.fcntl
+extern (C) int open(in char*, int, ...);
+extern (C) int close(int);
+extern (C) size_t read(int, void*, size_t);
+extern extern (C) int fcntl_O_RDONLY();
