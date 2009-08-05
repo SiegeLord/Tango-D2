@@ -19,8 +19,8 @@ def copy_runtime_files(path):
 
   for NAME in ("BitManip", "Exception", "Memory", "Runtime", "Thread"):
     FILE = path/("lib/common/tango/core/%s.d" % NAME)
-    print "Copying %s to %s" % (FILE, path/"tango/core/")
-    FILE.copy(path/"tango/core/")
+    print "Copying %s to %s" % (FILE, path/"user/tango/core/")
+    FILE.copy(path/"user/tango/core/")
 
 def copy_files(DIL, TANGO, DEST):
   """ Copies required files to the destination folder. """
@@ -112,10 +112,11 @@ def get_tango_path(path):
   if is_svn:
     path.SRC.mkdir()
     print "Copying tango/, std/ and object.di to import/."
-    (path/"tango").copytree(path.SRC/"tango")
-    (path/"std").copytree(path.SRC/"std")
-    (path/"object.di").copy(path.SRC)
+    (path/"user/tango").copytree(path.SRC/"tango")
+    (path/"user/std").copytree(path.SRC/"std")
+    (path/"user/object.di").copy(path.SRC)
   path.license = path/"LICENSE"
+  # TODO Do favicon properly since I don't think it is in CWD
   path.favicon = Path("tango_favicon.png") # Look in CWD atm.
   return path
 
