@@ -81,7 +81,9 @@ OBJ_CORE= \
     stdc\config.obj \
     stdc\stdarg.obj \
     stdc\stddef.obj \
-    stdc\stdio.obj
+    stdc\stdio.obj \
+    sys\win32\Types.obj \
+    sys\win32\UserGdi.obj
 
 
 OBJ_STDC= \

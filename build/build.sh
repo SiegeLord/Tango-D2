@@ -21,6 +21,7 @@ version=
 user_only=
 no_install=
 lib_install_dir=
+clean_only=
 silent="-s"
 while [ $# -gt 0 ]
 do
@@ -28,11 +29,12 @@ do
         --help)
             echo "usage: build.sh [--help] [--tango-home path/to/tango_root]"
             echo "[--quick] [--version versionName] [--user-only] [--no-install-libs]"
-            echo "[--lib-install-dir path/to/lib/install/dir] --verbose"
+            echo "[--lib-install-dir path/to/lib/install/dir] [--verbose] [--clean]"
             echo
             echo "Builds tango runtime and tango user libs, by default makes"
             echo "a distclean and builds opt, dbg and tst versions."
             echo "If --version X is passed only version X will be built."
+            echo "--clean removes all build files"
             echo "--quick does not clean before building"
             echo "--user-only rebuilds only the user lib"
             echo "--no-install-libs skips the installation of the libs"
@@ -62,6 +64,9 @@ do
         --no-install-libs)
             no_install=1
             ;;
+        --clean)
+            clean_only=
+            ;;
         --verbose)
             silent=
             ;;
@@ -74,24 +79,32 @@ done
 
 if [ -z "$user_only" ] ; then
     cd $tango_home/build/runtime
-    if [ -z "$quick" ] ; then
+    if [ -z "$clean_only" ] ; then
         make $silent distclean || die "error cleaning runtime" 1
-    fi
-    if [ -z "$version" ] ; then
-        make $silent allVersions || die "error building runtime" 2
     else
-        make $silent VERSION=$version
+        if [ -z "$quick" ] ; then
+            make $silent distclean || die "error cleaning runtime" 1
+        fi
+        if [ -z "$version" ] ; then
+            make $silent allVersions || die "error building runtime" 2
+        else
+            make $silent VERSION=$version
+        fi
     fi
     cd ../..
 fi
 cd $tango_home/build/user
-if [ -z "$quick" ] ; then
-    make $silent distclean || die "error cleaning tango user" 3
-fi
-if [ -z "$version" ] ; then
-    make $silent allVersions || die "error building tango user" 4
+if [ -z "$clean_only" ] ; then
+    make $silent distclean || die "error cleaning runtime" 1
 else
-    make $silent VERSION=$version
+    if [ -z "$quick" ] ; then
+        make $silent distclean || die "error cleaning tango user" 3
+    fi
+    if [ -z "$version" ] ; then
+        make $silent allVersions || die "error building tango user" 4
+    else
+        make $silent VERSION=$version
+    fi
 fi
 cd ../..
 
