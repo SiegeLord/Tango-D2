@@ -61,8 +61,8 @@ lib-release:
 	$(MAKE) -fdmd-win32.mak release-comp LIB_BUILD=""
 
 lib-debug:
-	$(MAKE) -fdmd-win32.mak clean LIB_BUILD=""
-	$(MAKE) -fdmd-win32.mak debug-comp LIB_BUILD="-d"
+	$(MAKE) -fdmd-win32.mak clean LIB_BUILD="-dbg"
+	$(MAKE) -fdmd-win32.mak debug-comp LIB_BUILD="-dbg"
 	
 release-comp : $(ALL_OBJS)
 	cd $(DIR_CC)

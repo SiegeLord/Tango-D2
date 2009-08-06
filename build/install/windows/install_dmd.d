@@ -61,21 +61,23 @@ void main( char[][] args )
 			restoreFile( binPath.file( "sc.ini" ) );
         removeFile( libPath.file( "tango-user-dmd.lib" ) );
         removeFile( libPath.file( "tango-base-dmd.lib" ) );
-        removeFile( libPath.file( "tango-base-dmd-d.lib" ) );
+        removeFile( libPath.file( "tango-base-dmd-dbg.lib" ) );
 
         removeFile( impPath.file( "object.di" ) );
         removeTree( impPath.file( "tango" ) );
         removeTree( impPath.file( "std" ) );
+        removeTree( impPath.file( "rt" ) );
     }
     if (!uninst)
     {
+		copyTree( impPath.file( "rt" ), "..\\user" );
 		copyTree( impPath.file( "std" ), "..\\user" );
         copyTree( impPath.file( "tango" ), "..\\user" );
         copyFile( impPath.file( "object.di" ), "..\\user" );
 
         copyFile( libPath.file( "tango-user-dmd.lib" ), ".\\libs" );
         copyFile( libPath.file( "tango-base-dmd.lib" ), ".\\libs" );
-        copyFile( libPath.file( "tango-base-dmd-d.lib" ), ".\\libs" );
+        copyFile( libPath.file( "tango-base-dmd-dbg.lib" ), ".\\libs" );
 
         backupFile( binPath.file( "sc.ini" ) );
         scope(failure) restoreFile( libPath.file( "sc.ini" ) );
@@ -218,6 +220,6 @@ char[] iniFile( char[] impPath, char[] libPath )
            "\n"
            "[Environment]\n"
            "LIB=\"" ~ libPath ~ "\"\n"
-           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -defaultlib=tango-base-dmd.lib -debuglib=tango-base-dmd-d.lib -L+tango-user-dmd.lib\n"
+           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -defaultlib=tango-base-dmd.lib -debuglib=tango-base-dmd-dbg.lib -L+tango-user-dmd.lib\n"
            "LINKCMD=%@P%\\link.exe\n";
 }
