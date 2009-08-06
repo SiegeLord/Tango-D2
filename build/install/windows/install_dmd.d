@@ -60,8 +60,8 @@ void main( char[][] args )
         if ((!reinstall)||(binPath.file("sc.ini.phobos").exists))
 			restoreFile( binPath.file( "sc.ini" ) );
         removeFile( libPath.file( "tango-user-dmd.lib" ) );
-        removeFile( libPath.file( "tango-win32-dmd.lib" ) );
         removeFile( libPath.file( "tango-base-dmd.lib" ) );
+        removeFile( libPath.file( "tango-base-dmd-d.lib" ) );
 
         removeFile( impPath.file( "object.di" ) );
         removeTree( impPath.file( "tango" ) );
@@ -74,8 +74,8 @@ void main( char[][] args )
         copyFile( impPath.file( "object.di" ), "..\\user" );
 
         copyFile( libPath.file( "tango-user-dmd.lib" ), ".\\libs" );
-        copyFile( libPath.file( "tango-win32-dmd.lib" ), ".\\libs" );
         copyFile( libPath.file( "tango-base-dmd.lib" ), ".\\libs" );
+        copyFile( libPath.file( "tango-base-dmd-d.lib" ), ".\\libs" );
 
         backupFile( binPath.file( "sc.ini" ) );
         scope(failure) restoreFile( libPath.file( "sc.ini" ) );
@@ -218,6 +218,6 @@ char[] iniFile( char[] impPath, char[] libPath )
            "\n"
            "[Environment]\n"
            "LIB=\"" ~ libPath ~ "\"\n"
-           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -defaultlib=tango-base-dmd.lib -debuglib=tango-base-dmd.lib -L+tango-user-dmd.lib\n"
-           "LINKCMD=%@P%\\..\\..\\dm\\bin\\link.exe\n";
+           "DFLAGS=\"-I" ~ impPath ~ "\" -version=Tango -defaultlib=tango-base-dmd.lib -debuglib=tango-base-dmd-d.lib -L+tango-user-dmd.lib\n"
+           "LINKCMD=%@P%\\link.exe\n";
 }
