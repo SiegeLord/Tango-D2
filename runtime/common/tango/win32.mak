@@ -55,7 +55,7 @@ DOC_DEST=..\..\..\doc\tango
 	$(CC) -c $(CFLAGS) $< -o$@
 
 .d.obj:
-	$(DC) -c $(DFLAGS) -Hf$*.di $< -of$@
+	$(DC) -c $(DFLAGS) -I.. -Hf$*.di $< -of$@
 #	$(DC) -c $(DFLAGS) $< -of$@
 
 .d.html:

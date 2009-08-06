@@ -34,7 +34,7 @@ LC=lib
 DC=dmd
 
 ADD_CFLAGS=
-ADD_DFLAGS=
+ADD_DFLAGS=-I../../compiler/dmd
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
 DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. -I../../common $(ADD_DFLAGS)
@@ -79,7 +79,7 @@ release-comp : $(ALL_OBJS)
 	cd ..\..
 	$(MD) ..\build\libs
 	$(RM) $(LIB_TARGET)
-	$(LC) -c -n $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
+	$(LC) -c -n -p32 $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
 
 debug-comp : $(ALL_OBJS)
 	cd $(DIR_CC)
@@ -96,7 +96,7 @@ debug-comp : $(ALL_OBJS)
 	cd ..\..
 	$(MD) ..\build\libs
 	$(RM) $(LIB_TARGET)
-	$(LC) -c -n $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
+	$(LC) -c -n -p32 $(LIB_TARGET) $(LIB_CC) $(LIB_RT) $(LIB_GC)
 
 doc : $(ALL_DOCS)
 	cd $(DIR_CC)
