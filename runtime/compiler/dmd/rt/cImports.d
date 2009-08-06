@@ -52,6 +52,7 @@ extern(C){
 
 version( Win32 ){
     // tango.stdc.string
+    import  tango.stdc.stddef:wchar_t;
     extern(C) size_t   wcslen(wchar_t* s);
 }
 

@@ -37,8 +37,8 @@ ADD_CFLAGS=
 ADD_DFLAGS=
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
-DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. $(ADD_DFLAGS)
-DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. $(ADD_DFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. -I../../common $(ADD_DFLAGS)
+DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. -I../../common $(ADD_DFLAGS)
 TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
 TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
 
