@@ -107,4 +107,6 @@ install :
 	$(MD) $(LIB_DEST)
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
 	$(MD) ..\..\..\user\std
+	$(MD) ..\..\..\user\rt
 	$(CP) std\intrinsic.di ..\..\..\user\std\
+	$(CP) rt\cInterface.di ..\..\..\user\rt\
