@@ -24,6 +24,7 @@ LIB_MASK=$(LIB_BASE)*.lib
 CP=xcopy /y
 RM=del /f
 MD=mkdir
+MV=rename
 
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
@@ -108,5 +109,7 @@ install :
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
 	$(MD) ..\..\..\user\std
 	$(MD) ..\..\..\user\rt
-	$(CP) std\intrinsic.di ..\..\..\user\std\
-	$(CP) rt\cInterface.di ..\..\..\user\rt\
+	$(CP) std\intrinsic.di ..\..\..\user\std
+	# You CANNOT copy directly to .di; xcopy will stop the build with a prompt
+	$(CP) rt\cInterface.d ..\..\..\user\rt
+	$(MV) ..\..\..\user\rt\cInterface.d ..\..\..\user\rt\cInterface.di
