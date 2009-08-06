@@ -106,3 +106,5 @@ clean :
 install :
 	$(MD) $(LIB_DEST)
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
+	$(MD) ..\..\..\user\std
+	$(CP) std\intrinsic.di ..\..\..\user\std\
