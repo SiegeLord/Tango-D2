@@ -111,9 +111,8 @@ def get_tango_path(path):
   is_svn = not path.SRC.exists
   if is_svn:
     path.SRC.mkdir()
-    print "Copying tango/, std/ and object.di to import/."
+    print "Copying tango/ and object.di to import/."
     (path/"user/tango").copytree(path.SRC/"tango")
-    (path/"user/std").copytree(path.SRC/"std")
     (path/"user/object.di").copy(path.SRC)
   path.license = path/"LICENSE"
   # TODO Do favicon properly since I don't think it is in CWD
