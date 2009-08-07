@@ -17,7 +17,7 @@ def exclude(file):
 def copy_runtime_files(path):
   print "Copying Tango runtime files."
 
-  for NAME in ("BitManip", "Exception", "Memory", "Runtime", "Thread"):
+  for NAME in ("BitManip", "Exception", "Memory", "Runtime", "Thread", "Traits"):
     FILE = path/("runtime/common/tango/core/%s.d" % NAME)
     print "Copying %s to %s" % (FILE, path/"user/tango/core/")
     FILE.copy(path/"user/tango/core/")
