@@ -120,7 +120,6 @@ jQuery.extend(jQuery.fn, function(p/*rototype*/){ return {
   }
 }}(Element.prototype));
 
-
 /// Gets a cookie or sets it to a value.
 function cookie(name, value, expires, path, domain, secure)
 { // Get the cookie.
@@ -147,6 +146,15 @@ cookie.escape = function(value) { return value.replace(/;/g, "\x01") }
 cookie.unescape = function(value) { return value.replace(/\x01/g, ";") }
 /// Deletes a cookie.
 cookie.del = function(name) { cookie(name, "", -1) }
+cookie.default_converter = function(val) { return val }
+/// Returns a convenience function that can read a cookie and
+/// apply a converter function to its value, it can also write to the cookie.
+cookie.func = function (name, convert) {
+  convert = convert || cookie.default_converter;
+  return function(val) { return val == undefined ? convert(cookie(name)) :
+    (cookie(name, val, kandil.settings.cookie_life), val)
+  };
+}
 
 /*// Create "console" variable for browsers that don't support it.
 var emptyFunc = function(){};
