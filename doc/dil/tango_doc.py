@@ -6,14 +6,6 @@ from path import Path
 from common import *
 from html2pdf import PDFGenerator
 
-EXCLUDES = ["std/intrinsic.di", "std/stdarg.di", "std/c/stdarg.di"]
-
-def exclude(file):
-    for f in EXCLUDES:
-        if file.endswith(f):
-            return True
-    return False
-
 def copy_runtime_files(path):
   print "Copying Tango runtime files."
 
@@ -177,9 +169,10 @@ def main():
   DEST.makedirs()
   map(Path.mkdir, (DEST.HTMLSRC, DEST.JS, DEST.CSS, DEST.IMG, TMP))
 
-  find_source_files(TANGO.SRC, FILES)
-
-  FILES = [f for f in FILES if not exclude(f)]
+  std = Path("std")
+  EXCLUDES = [std/"intrinsic.di", std/"stdarg.di", std/"c"/"stdarg.di"]
+  filter_func = lambda f: any(f.endswith(x) for x in EXCLUDES)
+  FILES = find_source_files(TANGO.SRC, filter_func)
 
   create_index(TMP/"index.d", TANGO.SRC, FILES)
   write_tango_ddoc(TANGO_DDOC, TANGO.favicon, options.revision)
