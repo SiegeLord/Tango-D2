@@ -855,7 +855,7 @@ else version (Posix)
              */
             void dump(char[] name = null)
             {
-                if (_buffer !is null && _buffer.length > 0)
+                if (_buffer.ptr !is null && _buffer.length > 0)
                 {
                     char[] handleStr = new char[16];
                     char[] handleListStr;
