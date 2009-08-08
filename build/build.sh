@@ -94,7 +94,7 @@ if [ -z "$user_only" ] ; then
     cd ../..
 fi
 cd $tango_home/build/user
-if [ -z "$clean_only" ] ; then
+if [ -n "$clean_only" ] ; then
     make $silent distclean || die "error cleaning runtime" 1
 else
     if [ -z "$quick" ] ; then
