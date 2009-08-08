@@ -31,6 +31,6 @@ COMMON_DI=\
     tango/stdc/stdio.di \
     tango/stdc/stddef.di \
     tango/stdc/config.di \
-    tango/stdc/stdint.d \
+    tango/stdc/stdint.di \
     tango/stdc/posix/config.di
 

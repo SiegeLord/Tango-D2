@@ -65,7 +65,7 @@ do
             no_install=1
             ;;
         --clean)
-            clean_only=
+            clean_only=1
             ;;
         --verbose)
             silent=
@@ -79,7 +79,7 @@ done
 
 if [ -z "$user_only" ] ; then
     cd $tango_home/build/runtime
-    if [ -z "$clean_only" ] ; then
+    if [ -n "$clean_only" ] ; then
         make $silent distclean || die "error cleaning runtime" 1
     else
         if [ -z "$quick" ] ; then
