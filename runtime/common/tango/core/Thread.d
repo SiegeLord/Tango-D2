@@ -14,6 +14,9 @@ version = StackGrowsDown;
 version(darwin){
     version=AtomicSuspendCount;
 }
+version(linux){
+    version=AtomicSuspendCount;
+}
 
 public
 {
@@ -1096,16 +1099,24 @@ class Thread
      */
     static Thread[] getAll()
     {
-        synchronized( slock )
-        {
-            size_t   pos = 0;
-            Thread[] buf = new Thread[sm_tlen];
-
-            foreach( Thread t; Thread )
+        Thread[] buf;
+        while(1){
+            if (buf) delete buf;
+            buf = new Thread[sm_tlen];
+            synchronized( slock )
             {
-                buf[pos++] = t;
+                size_t   pos = 0;
+                if (buf.length<sm_tlen) {
+                    continue;
+                } else {
+                    buf.length=sm_tlen;
+                }
+                foreach( Thread t; Thread )
+                {
+                    buf[pos++] = t;
+                }
+                return buf;
             }
-            return buf;
         }
     }
 
