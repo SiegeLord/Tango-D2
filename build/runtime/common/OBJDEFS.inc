@@ -12,7 +12,6 @@ COMMON_MODULES= \
     tango.stdc.stdio \
     tango.stdc.config \
     tango.stdc.stdint \
-    tango.stdc.posix.config \
     rt.CommonFunct
 
 COMMON_OO= \
@@ -31,6 +30,6 @@ COMMON_DI=\
     tango/stdc/stdio.di \
     tango/stdc/stddef.di \
     tango/stdc/config.di \
-    tango/stdc/stdint.di \
-    tango/stdc/posix/config.di
+    tango/stdc/stdint.di
+
 
