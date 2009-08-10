@@ -23,6 +23,7 @@ COMPILER_MODULES_L= \
     rt.memset \
     rt.qsort \
     rt.switch_ \
+    rt.util.cpuid \
     rt.trace \
     invariant \
 
