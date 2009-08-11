@@ -72,7 +72,7 @@ struct fd_set
 {
 }
 
-private struct hostent
+struct hostent
 {
         char* h_name;
         char** h_aliases;
