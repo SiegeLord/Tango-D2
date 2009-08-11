@@ -109,85 +109,20 @@ version (Posix)
 
 *******************************************************************************/
 
-version (Win32)
-        {
-        pragma(lib, "ws2_32.lib");
-
-        private typedef int socket_t = ~0;
-
-        private const int IOCPARM_MASK =  0x7f;
-        private const int IOC_IN =        cast(int)0x80000000;
-        private const int FIONBIO =       cast(int) (IOC_IN | ((int.sizeof & IOCPARM_MASK) << 16) | (102 << 8) | 126);
-
-        private const int WSADESCRIPTION_LEN = 256;
-        private const int WSASYS_STATUS_LEN = 128;
-        private const int WSAEWOULDBLOCK =  10035;
-        private const int WSAEINTR =        10004;
-
-
-        struct WSADATA
-        {
-                        WORD wVersion;
-                        WORD wHighVersion;
-                        char szDescription[WSADESCRIPTION_LEN+1];
-                        char szSystemStatus[WSASYS_STATUS_LEN+1];
-                        ushort iMaxSockets;
-                        ushort iMaxUdpDg;
-                        char* lpVendorInfo;
-        }
-        alias WSADATA* LPWSADATA;
-
-        extern  (Windows)
-                {
-                alias closesocket close;
-                int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
-                int WSACleanup();
-                socket_t socket(int af, int type, int protocol);
-                int ioctlsocket(socket_t s, int cmd, uint* argp);
-                uint inet_addr(char* cp);
-                int bind(socket_t s, sockaddr* name, int namelen);
-                int connect(socket_t s, sockaddr* name, int namelen);
-                int listen(socket_t s, int backlog);
-                socket_t accept(socket_t s, sockaddr* addr, int* addrlen);
-                int closesocket(socket_t s);
-                int shutdown(socket_t s, int how);
-                int getpeername(socket_t s, sockaddr* name, int* namelen);
-                int getsockname(socket_t s, sockaddr* name, int* namelen);
-                int send(socket_t s, void* buf, int len, int flags);
-                int sendto(socket_t s, void* buf, int len, int flags, sockaddr* to, int tolen);
-                int recv(socket_t s, void* buf, int len, int flags);
-                int recvfrom(socket_t s, void* buf, int len, int flags, sockaddr* from, int* fromlen);
-                int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);
-                //int __WSAFDIsSet(socket_t s, fd_set* fds);
-                int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
-                int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
-                int gethostname(void* namebuffer, int buflen);
-                char* inet_ntoa(uint ina);
-                hostent* gethostbyname(char* name);
-                hostent* gethostbyaddr(void* addr, int len, int type);
-                int WSAGetLastError();
-                }
-
-        static this()
-        {
-                WSADATA wd;
-                if (WSAStartup (0x0101, &wd))
-                    throw new SocketException("Unable to initialize socket library");
-        }
-
-
-        static ~this()
-        {
-                WSACleanup();
-        }
-
-        }
+version (Win32){
+    private import tango.sys.win32.WsaSock;
+}
 
 version (BsdSockets)
         {
         private import tango.stdc.errno;
+        private import tango.stdc.posix.sys.time;
+        private import tango.stdc.posix.sys.socket: sockaddr;
+        private import tango.stdc.posix.sys.select: fd_set;
+        private import tango.stdc.posix.netdb;
 
         private typedef int socket_t = -1;
+        // very ugly redeclarations, to remove
 
         private const int F_GETFL       = 3;
         private const int F_SETFL       = 4;
@@ -233,58 +168,6 @@ version (BsdSockets)
 
 private const socket_t INVALID_SOCKET = socket_t.init;
 private const int SOCKET_ERROR = -1;
-
-
-
-/*******************************************************************************
-
-        Internal structs:
-
-*******************************************************************************/
-
-struct timeval
-{
-        int tv_sec; //seconds
-        int tv_usec; //microseconds
-}
-
-
-//transparent
-struct fd_set
-{
-}
-
-
-struct sockaddr
-{
-        ushort sa_family;
-        char[14] sa_data = 0;
-}
-
-
-struct hostent
-{
-        char* h_name;
-        char** h_aliases;
-        version(Win32)
-        {
-                short h_addrtype;
-                short h_length;
-        }
-        else version(BsdSockets)
-        {
-                int h_addrtype;
-                int h_length;
-        }
-        char** h_addr_list;
-
-
-        char* h_addr()
-        {
-                return h_addr_list[0];
-        }
-}
-
 
 /*******************************************************************************
 
@@ -1536,8 +1419,8 @@ class Socket
         static timeval toTimeval (TimeSpan time)
         {
                 timeval tv;
-                tv.tv_sec = cast(uint) time.seconds;
-                tv.tv_usec = cast(uint) time.micros % 1_000_000;
+                tv.tv_sec = time.seconds;
+                tv.tv_usec = time.micros % 1_000_000;
                 return tv;
         }
 }
