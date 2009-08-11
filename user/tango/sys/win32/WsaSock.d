@@ -2,6 +2,7 @@ module tango.sys.win32.WsaSock;
 
 public import tango.sys.Common;
 private import tango.stdc.config; 
+import  consts=tango.stdc.constants.socket;
 
 struct Guid
 {
@@ -88,16 +89,6 @@ struct hostent
 
 typedef int socket_t = ~0;
 
-enum AddressFamily: int
-{
-        UNSPEC =     0,
-        UNIX =       1,
-        INET =       2,
-        IPX =        6,
-        APPLETALK =  16,
-        //INET6 =      ? // Need Windows XP ?
-}
-
 extern (Windows)
 {
         alias closesocket close;
@@ -145,7 +136,7 @@ static this()
         Guid connectG  = {0x25a207b9, 0xddf3, 0x4660, [0x8e,0xe9,0x76,0xe5,0x8c,0x74,0x06,0x3e]};
         Guid transmitG = {0xb5367df0, 0xcbac, 0x11cf, [0x95,0xca,0x00,0x80,0x5f,0x48,0xa1,0x92]};
 
-        auto s = cast(HANDLE) socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
+        auto s = cast(HANDLE) socket (consts.AF_INET, consts.SOCK_STREAM, consts.IPPROTO_TCP);
         assert (s != cast(HANDLE) -1);
         WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER, 
                   &connectG, connectG.sizeof, &ConnectEx, 
