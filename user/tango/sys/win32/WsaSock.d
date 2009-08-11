@@ -88,6 +88,16 @@ private struct hostent
 
 typedef int socket_t = ~0;
 
+enum AddressFamily: int
+{
+        UNSPEC =     0,
+        UNIX =       1,
+        INET =       2,
+        IPX =        6,
+        APPLETALK =  16,
+        //INET6 =      ? // Need Windows XP ?
+}
+
 extern (Windows)
 {
         alias closesocket close;
@@ -127,7 +137,7 @@ static this()
 {
         WSADATA wd = void;
         if (WSAStartup (0x0202, &wd))
-            throw new SocketException("version of socket library is too old");
+            throw new Exception("version of socket library is too old");
 
         DWORD result;
 
