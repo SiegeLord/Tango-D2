@@ -180,7 +180,6 @@ else version( Posix )
             import gcc.builtins;
         }
 
-
         //
         // entry point for POSIX threads
         //
@@ -2214,7 +2213,7 @@ class ThreadLocal( T )
     T val()
     {
         Wrap* wrap = cast(Wrap*) Thread.getLocal( m_key );
-
+        
         return wrap ? wrap.val : m_def;
     }
 
@@ -2817,7 +2816,6 @@ class Fiber
         initStack();
     }
 
-
     /**
      * Initializes a fiber object which is associated with a dynamic
      * D function.
@@ -3064,6 +3062,10 @@ class Fiber
     final State state()
     {
         return m_state;
+    }
+    
+    size_t stackSize(){
+        return m_size;
     }
 
 
