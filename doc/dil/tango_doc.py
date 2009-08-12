@@ -52,6 +52,12 @@ SQRT = √
 NAN = NaN
 SUP = <sup>$0</sup>
 BR = <br/>
+SUB = $1<sub>$2</sub>
+POW = $1<sup>$2</sup>
+_PI = $(PI $0)
+D = <span class="inlcode">$0</span>
+LE = <=
+GT = <
 %(favicon)s
 """ % locals()
   )
@@ -102,10 +108,7 @@ def get_tango_path(path):
   path.SRC = path/"import"
   is_svn = not path.SRC.exists
   if is_svn:
-    path.SRC.mkdir()
-    print "Copying tango/ and object.di to import/."
-    (path/"user/tango").copytree(path.SRC/"tango")
-    (path/"user/object.di").copy(path.SRC)
+    path.SRC = path/"user"
   path.license = path/"LICENSE"
   # TODO Do favicon properly since I don't think it is in CWD
   path.favicon = Path("tango_favicon.png") # Look in CWD atm.
@@ -125,6 +128,8 @@ def main():
     help="create a 7z archive")
   parser.add_option("--pdf", dest="pdf", default=False, action="store_true",
     help="create a PDF document")
+  parser.add_option("--pykandil", dest="pykandil", default=False, action="store_true",
+    help="use Python code to handle kandil, don't pass --kandil to dil")
 
   parser.add_option("--data", dest="data", help="path to data and kandil")
 
@@ -179,8 +184,15 @@ def main():
   DOC_FILES = [DIL.KANDIL.ddoc, TANGO_DDOC, TMP/"index.d"] + FILES
   versions = ["Tango", "DDoc", "D_Ddoc"]
   versions += ["Posix"] if options.posix else ["Windows", "Win32"]
-  generate_docs(DIL.EXE, DEST.abspath, MODLIST, DOC_FILES,
-                versions, options=['-v', '-hl', '--kandil'], cwd=DIL)
+  dil_options = ['-v', '-hl']
+  if not options.pykandil:
+    dil_options += ['--kandil']
+  dil_retcode = generate_docs(DIL.EXE, DEST.abspath, MODLIST,
+    DOC_FILES, versions, dil_options, cwd=DIL)
+
+  if options.pykandil:
+    MODULES_JS = (DEST/"js"/"modules.js").abspath
+    generate_modules_js(read_modules_list(MODLIST), MODULES_JS)
 
   copy_files(DIL, TANGO, DEST)
   if options.pdf:
