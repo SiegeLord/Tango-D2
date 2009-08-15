@@ -22,6 +22,7 @@ struct Console
     Console opCall (char[] s)
     {
         fprintf(stderr, "%.*s",s.length,s.ptr);
+        fflush(stderr);
         return *this;
     }
 
