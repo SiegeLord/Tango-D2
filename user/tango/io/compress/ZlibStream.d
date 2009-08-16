@@ -131,6 +131,35 @@ class ZlibInput : InputFilter
     this(InputStream stream, Encoding encoding,
             int windowBits = WINDOWBITS_DEFAULT)
     {
+        init(stream, encoding, windowBits);
+        scope(failure) kill_zs();
+
+        super(stream);
+        in_chunk = new ubyte[CHUNKSIZE];
+    }
+    
+    /// ditto
+    this(InputStream stream)
+    {
+        // DRK 2009-02-26
+        // Removed unique implementation in favour of passing on to another
+        // constructor.  The specific implementation was because the default
+        // value of windowBits is documented in zlib.h, but not actually
+        // exposed.  Using inflateInit over inflateInit2 ensured we would
+        // never get it wrong.  That said, the default value of 15 is REALLY
+        // unlikely to change: values below that aren't terribly useful, and
+        // values higher than 15 are already used for other purposes.
+        // Also, this leads to less code which is always good.  :D
+        this(stream, Encoding.init);
+    }
+
+    /*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */
+    private void init(InputStream stream, Encoding encoding, int windowBits)
+    {
         /*
          * Here's how windowBits works, according to zlib.h:
          * 
@@ -178,9 +207,6 @@ class ZlibInput : InputFilter
             assert (false);
         }
         
-        super (stream);
-        in_chunk = new ubyte[CHUNKSIZE];
-
         // Allocate inflate state
         with( zs )
         {
@@ -198,25 +224,39 @@ class ZlibInput : InputFilter
         zs_valid = true;
     }
     
-    /// ditto
-    this(InputStream stream)
-    {
-        // DRK 2009-02-26
-        // Removed unique implementation in favour of passing on to another
-        // constructor.  The specific implementation was because the default
-        // value of windowBits is documented in zlib.h, but not actually
-        // exposed.  Using inflateInit over inflateInit2 ensured we would
-        // never get it wrong.  That said, the default value of 15 is REALLY
-        // unlikely to change: values below that aren't terribly useful, and
-        // values higher than 15 are already used for other purposes.
-        // Also, this leads to less code which is always good.  :D
-        this(stream, Encoding.init);
-    }
-    
     ~this()
     {
         if( zs_valid )
             kill_zs();
+    }
+
+    /***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed before calling reset.
+
+    ***************************************************************************/ 
+
+    void reset(InputStream stream, Encoding encoding,
+            int windowBits = WINDOWBITS_DEFAULT)
+    {
+        // If the stream is still valid, bail.
+        if( zs_valid )
+            throw new ZlibStillOpenException;
+        
+        init(stream, encoding, windowBits);
+    }
+
+    /// ditto
+
+    void reset(InputStream stream)
+    {
+        reset(stream, Encoding.init);
     }
 
     /***************************************************************************
@@ -274,20 +314,19 @@ class ZlibInput : InputFilter
 
     /***************************************************************************
 
-        Clear any buffered content.  No-op.
+        Closes the compression stream.
 
     ***************************************************************************/ 
 
-    override InputStream flush()
+    override void close()
     {
         check_valid();
 
-        // TODO: What should this method do?  We don't do any heap allocation,
-        // so there's really nothing to clear...  For now, just invalidate the
-        // stream...
+        // Kill the stream.  Don't deallocate the buffer since the user may
+        // yet reset the stream.
         kill_zs();
 
-        super.flush();
+        super.close();
         return this;
     }
 
@@ -407,6 +446,30 @@ class ZlibOutput : OutputFilter
     this(OutputStream stream, Level level, Encoding encoding,
             int windowBits = WINDOWBITS_DEFAULT)
     {
+        init(stream, level, encoding, windowBits);
+        scope(failure) kill_zs();
+
+        super(stream);
+        out_chunk = new ubyte[CHUNKSIZE];
+    }
+    
+    /// ditto
+    this(OutputStream stream, Level level = Level.Normal)
+    {
+        // DRK 2009-02-26
+        // Removed unique implementation in favour of passing on to another
+        // constructor.  See ZlibInput.this(InputStream).
+        this(stream, level, Encoding.init);
+    }
+
+    /*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */
+    private void init(OutputStream stream, Level level, Encoding encoding,
+            int windowBits)
+    {
         /*
          * Here's how windowBits works, according to zlib.h:
          * 
@@ -453,9 +516,6 @@ class ZlibOutput : OutputFilter
             assert (false);
         }
         
-        super(stream);
-        out_chunk = new ubyte[CHUNKSIZE];
-
         // Allocate deflate state
         with( zs )
         {
@@ -471,20 +531,40 @@ class ZlibOutput : OutputFilter
 
         zs_valid = true;
     }
-    
-    /// ditto
-    this(OutputStream stream, Level level = Level.Normal)
-    {
-        // DRK 2009-02-26
-        // Removed unique implementation in favour of passing on to another
-        // constructor.  See ZlibInput.this(InputStream).
-        this(stream, level, Encoding.init);
-    }
 
     ~this()
     {
         if( zs_valid )
             kill_zs();
+    }
+
+    /***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed or committed before calling
+        reset.
+
+    ***************************************************************************/ 
+
+    void reset(OutputStream stream, Level level, Encoding encoding,
+            int windowBits = WINDOWBITS_DEFAULT)
+    {
+        // If the stream is still valid, bail.
+        if( zs_valid )
+            throw new ZlibStillOpenException;
+
+        init(stream, level, encoding, windowBits);
+    }
+
+    /// ditto
+    void reset(OutputStream stream, Level level = Level.Normal)
+    {
+        reset(stream, level, Encoding.init);
     }
 
     /***************************************************************************
@@ -553,7 +633,8 @@ class ZlibOutput : OutputFilter
 
     /***************************************************************************
 
-        commit the output
+        Close the compression stream.  This will cause any buffered content to
+        be committed to the underlying stream.
 
     ***************************************************************************/
 
@@ -571,6 +652,9 @@ class ZlibOutput : OutputFilter
         stream, so it should not be called until you are finished compressing
         data.  Any calls to either write or commit after a compression filter
         has been committed will throw an exception.
+
+        The only difference between calling this method and calling close is
+        that the underlying stream will not be closed.
 
     ***************************************************************************/
 
@@ -658,6 +742,22 @@ class ZlibClosedException : IOException
     this()
     {
         super("cannot operate on closed zlib stream");
+    }
+}
+
+/*******************************************************************************
+  
+    This exception is thrown if you attempt to reset a compression stream that
+    is still open.  You must either close or commit a stream before it can be
+    reset.
+
+*******************************************************************************/
+
+class ZlibStillOpenException : IOException
+{
+    this()
+    {
+        super("cannot reset an open zlib stream");
     }
 }
 
