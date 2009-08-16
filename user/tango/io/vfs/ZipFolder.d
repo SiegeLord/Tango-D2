@@ -1707,12 +1707,17 @@ class DummyInputStream : InputStream // IConduit.Seek
     ///
     this()
     {
+        // DRK: this is needed to avoid spurious warnings from DMD.
+        // {
+        auto f = true;
+        if( f )
+        // }
         // Should not be using DummyStream! (KB)
         assert (false);
     }
 
     override InputStream input() {return null;}
-    override IConduit conduit() { return null; }
+    override IConduit conduit() { return null; } // BISECT
     override void close() {}
     override size_t read(void[] dst) { return IConduit.Eof; }
     override InputStream flush() { return this; }
@@ -1731,6 +1736,11 @@ class DummyOutputStream : OutputStream //, IConduit.Seek
     ///
     this()
     {
+        // DRK: this is needed to avoid spurious warnings from DMD.
+        // {
+        auto f = true;
+        if( f )
+        // }
         // Should not be using DummyStream! (KB)
         assert (false);
     }
