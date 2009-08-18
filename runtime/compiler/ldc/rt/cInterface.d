@@ -42,8 +42,14 @@ extern (C) long _adDupT(TypeInfo ti, Array2 a);
 extern (C) void tango_abort();
 extern (C) void tango_exit(int);
 
-// rt.aaA;
-alias long ArrayRet_t;
+extern (C) size_t gc_counter();
+extern (C) void gc_finishGCRun();
+
+alias void delegate(Object) DEvent;
+extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
+extern (C) bool rt_detachDisposeEvent(Object h, DEvent e);
+
+// =========== rt.aaA ========
 struct aaA
 {
     aaA *left;
@@ -52,34 +58,32 @@ struct aaA
     /* key   */
     /* value */
 }
+
 struct BB
 {
     aaA*[] b;
     size_t nodes;       // total number of aaA nodes
-    TypeInfo keyti;     // TODO: replace this with TypeInfo_AssociativeArray when available in _aaGet()
+    TypeInfo keyti;     // TODO: replace this with TypeInfo_AssociativeArray when available in _aaGet() 
 }
-struct AA
-{
-    BB* a;
-}
+
+/* This is the type actually seen by the programmer, although
+ * it is completely opaque.
+ */
+
+// LDC doesn't pass structs in registers so no need to wrap it ...
+alias BB* AA;
+
+extern (C):
+size_t _aaLen(AA aa);
+void* _aaGet(AA* aa_arg, TypeInfo keyti, size_t valuesize, void* pkey);
+void* _aaIn(AA aa, TypeInfo keyti, void *pkey);
+void _aaDel(AA aa, TypeInfo keyti, void *pkey);
+void[] _aaValues(AA aa, size_t keysize, size_t valuesize);
+void* _aaRehash(AA* paa, TypeInfo keyti);
+void[] _aaKeys(AA aa, size_t keysize);
 extern (D) typedef int delegate(void *) dg_t;
+int _aaApply(AA aa, size_t keysize, dg_t dg);
 extern (D) typedef int delegate(void *, void *) dg2_t;
-extern (C) size_t _aaLen(AA aa);
-extern (C) void* _aaGet(AA* aa, TypeInfo keyti, size_t valuesize, ...);
-extern (C) void* _aaGetRvalue(AA aa, TypeInfo keyti, size_t valuesize, ...);
-extern (C) void* _aaIn(AA aa, TypeInfo keyti, ...);
-extern (C) void _aaDel(AA aa, TypeInfo keyti, ...);
-extern (C) ArrayRet_t _aaValues(AA aa, size_t keysize, size_t valuesize);
-extern (C) void* _aaRehash(AA* paa, TypeInfo keyti);
-extern (C) void _aaBalance(AA* paa);
-extern (C) ArrayRet_t _aaKeys(AA aa, size_t keysize);
-extern (C) int _aaApply(AA aa, size_t keysize, dg_t dg);
-extern (C) int _aaApply2(AA aa, size_t keysize, dg2_t dg);
-extern (C) BB* _d_assocarrayliteralT(TypeInfo_AssociativeArray ti, size_t length, ...);
-
-extern (C) size_t gc_counter();
-extern (C) void gc_finishGCRun();
-
-alias void delegate(Object) DEvent;
-extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
-extern (C) bool rt_detachDisposeEvent(Object h, DEvent e);
+int _aaApply2(AA aa, size_t keysize, dg2_t dg);
+int _aaEq(AA aa, AA ab, TypeInfo_AssociativeArray ti);
+// =========== /aaA ========

@@ -2289,7 +2289,7 @@ struct Gcx
 
         thread_suspendAll();
         ++gcCounter;
-        assert((gcCounter & cast(size_t)1) ==0,"unexpected gcCounter value");
+        assert((gcCounter & cast(size_t)1) ==1,"unexpected gcCounter value");
 
         p_cache = null;
         size_cache = 0;
@@ -2581,7 +2581,7 @@ struct Gcx
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
         auto oldV=flagAdd!(size_t)(gcCounter,1);
-        assert(oldV&cast(size_t)1 == 1,"unexpected gc counter value");
+        assert(oldV&cast(size_t)1 == 0,"unexpected gc counter value");
 
         return freedpages + recoveredpages;
     }

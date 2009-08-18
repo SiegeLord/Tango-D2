@@ -468,7 +468,7 @@ struct GC
             }
             return i;
         }
-        long mult = 100 + a*(minBits+b) / log2plusB(newlength);
+        ulong mult = 100 + a*(minBits+b) / log2plusB(newlength);
 
         newext = elSize*cast(size_t)(((newcap * mult)+99) / 100);
         newcap = newext > newcap ? newext : newcap; // just to handle overflows
@@ -498,7 +498,7 @@ struct GC
             }
             return i;
         }
-        long mult = 100 + a*(minBits+b) / (log2(newlength)+b);
+        ulong mult = 100 + a*(minBits+b) / (log2(newlength)+b);
 
         newext = elSize*cast(size_t)(((newcap * mult)+99) / 100);
         newcap = newext > newcap ? newext : newcap; // just to handle overflows

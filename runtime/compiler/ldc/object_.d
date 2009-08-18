@@ -541,6 +541,11 @@ class TypeInfo_StaticArray : TypeInfo
 
 class TypeInfo_AssociativeArray : TypeInfo
 {
+    static size_t aligntsize(size_t tsize)
+    {
+        return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
+    }
+
     override char[] toString()
     {
         return next.toString() ~ "[" ~ key.toString() ~ "]";
@@ -560,7 +565,7 @@ class TypeInfo_AssociativeArray : TypeInfo
         size_t sz = value.tsize();
         hash_t hash = sz;
         AA aa=*cast(AA*)p;
-        size_t keysize=key.tsize();
+        size_t keysize=aligntsize(key.tsize());
         int res=_aaApply2(aa, keysize, cast(dg2_t) delegate int(void *k, void *v){
             hash+=rt_hash_combine(key.getHash(k),value.getHash(v));
             return 0;
@@ -591,7 +596,7 @@ class TypeInfo_AssociativeArray : TypeInfo
             }
             return 0;
         }
-        _aaApply2(aa, key.tsize(), &eq_x);
+        _aaApply2(aa, aligntsize(key.tsize()), &eq_x);
         return equal;
     }
 
