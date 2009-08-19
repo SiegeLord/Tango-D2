@@ -502,7 +502,7 @@ private class Connection
                               // parse the incoming content-length
                               for (i=content.length; content[--i] != ' ';) 
                                   {}
-                              i = Integer.parse (content[i .. $]);
+                              i = cast(int)Integer.parse (content[i .. $]);
         
                               // ensure output buffer has enough space
                               buffer.expand (i);
@@ -556,7 +556,8 @@ private class Connection
         
         **********************************************************************/
                 
-        private synchronized bool bump (char[] cmd, void[] key, uint value, inout uint result)
+        private synchronized bool bump (char[] cmd, void[] key, uint value, 
+                                        inout uint result)
         {
                 if (connected)
                     try {
@@ -574,7 +575,7 @@ private class Connection
                         if (line.next)
                             if (line.get != "NOT_FOUND")
                                {
-                               result = Integer.parse (line.get);
+                               result = cast(uint)Integer.parse (line.get);
                                return true;
                                }
                         } catch (IOException e)
