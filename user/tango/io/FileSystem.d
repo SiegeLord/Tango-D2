@@ -431,12 +431,12 @@ struct FileSystem
                             exception ("IOCTL_DISK_GET_LENGTH_INFO failed:" ~ SysError.lastMsg);
                         }
 
-                        return lenInfo.Length.QuadPart;
+                        return cast(ulong)lenInfo.Length.QuadPart;
                     }
                     else {
                         ULARGE_INTEGER total;
                         GetDiskFreeSpaceEx(volPath.ptr, null, &total, null);
-                        return total.QuadPart;
+                        return cast(ulong)total.QuadPart;
                     }
                 }
         }
