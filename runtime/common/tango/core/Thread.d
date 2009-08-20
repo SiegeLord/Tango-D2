@@ -2630,7 +2630,8 @@ private
                 sub RSP, 4;
                 stmxcsr [RSP];
                 sub RSP, 4;
-                fstcw [RSP];
+                fnstcw [RSP];
+                fnclex;
                 fwait;
 
                 // store oldp again with more accurate address

@@ -105,10 +105,10 @@ struct Twister
     /// initializes the generator with a uint as seed
     void seed (uint s)
     {
-        mt[0]= s & 0xffff_ffffUL;
+        mt[0]= s & 0xffff_ffffU;  // this is very suspicious, was the previous line incorrectly translated from C???
         for (mti=1; mti<mt.length; mti++){
-            mt[mti] = (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
-            mt[mti] &= 0xffff_ffffUL;
+            mt[mti] = cast(uint)(1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
+            mt[mti] &= 0xffff_ffffUL; // this is very suspicious, was the previous line incorrectly translated from C???
         }
     }
     /// adds entropy to the generator
@@ -118,8 +118,8 @@ struct Twister
         j=0;
 
         for (k = mt.length; k; k--)   {
-            mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ r() + j; 
-            mt[i] &=  0xffff_ffffUL; 
+            mt[i] = cast(uint)((mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))+ r() + j); 
+            mt[i] &=  0xffff_ffffUL;  // this is very suspicious, was the previous line incorrectly translated from C???
             i++;
             j++;
 
@@ -130,8 +130,8 @@ struct Twister
         }
 
         for (k=mt.length-1; k; k--)     {
-            mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))- i; 
-            mt[i] &=  0xffffffffUL; 
+            mt[i] = cast(uint)((mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))- i); 
+            mt[i] &=  0xffffffffUL;  // this is very suspicious, was the previous line incorrectly translated from C???
             i++;
 
             if (i>=mt.length){
