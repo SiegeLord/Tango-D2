@@ -435,107 +435,92 @@ version(LDC){
         static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
-            llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
+            return llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
         }
         else
         {
-            llvm_atomic_load_add!(T)(&val, cast(T)inc);
+            return llvm_atomic_load_add!(T)(&val, cast(T)inc);
         }
-        return val;
     }
 } else version (D_InlineAsm_X86){
     T atomicAdd(T)(ref T val, T incV){
         static assert( isIntegerType!(T) );
-        static if (isPointerType!(T))
-        {
-            llvm_atomic_load_add!(size_t)(cast(size_t*)&val, incV);
-        }
-        else
-        {
-            T* posVal=&val;
-            T res;
-            static if (T.sizeof==1){
-                volatile asm {
-                    mov BL, incV;
-                    mov ECX, posVal;
-                    lock;
-                    xadd byte ptr [ECX],BL;
-                    mov byte ptr res[EBP],BL;
-                }
-            } else static if (T.sizeof==2){
-                volatile asm {
-                    mov BX, incV;
-                    mov ECX, posVal;
-                    lock;
-                    xadd short ptr [ECX],BX;
-                    mov short ptr res[EBP],BX;
-                }
-            } else static if (T.sizeof==4){
-                volatile asm
-                {
-                    mov EDX, incV;
-                    mov ECX, posVal;
-                    lock;
-                    xadd int ptr [ECX],EDX;
-                    mov int ptr res[EBP],EDX;
-                }
-            } else static if (T.sizeof==8){
-                // try to get it through CAS and a loop? is the load of 8 byte atomic?
-                static assert(0,"Unsupported type size 8 in 32 bit mode");
-            } else {
-                static assert(0,"Unsupported type size");
+        T* posVal=&val;
+        T res;
+        static if (T.sizeof==1){
+            volatile asm {
+                mov BL, incV;
+                mov ECX, posVal;
+                lock;
+                xadd byte ptr [ECX],BL;
+                mov byte ptr res[EBP],BL;
             }
+        } else static if (T.sizeof==2){
+            volatile asm {
+                mov BX, incV;
+                mov ECX, posVal;
+                lock;
+                xadd short ptr [ECX],BX;
+                mov short ptr res[EBP],BX;
+            }
+        } else static if (T.sizeof==4){
+            volatile asm
+            {
+                mov EDX, incV;
+                mov ECX, posVal;
+                lock;
+                xadd int ptr [ECX],EDX;
+                mov int ptr res[EBP],EDX;
+            }
+        } else static if (T.sizeof==8){
+            // try to get it through CAS and a loop? is the load of 8 byte atomic?
+            static assert(0,"Unsupported type size 8 in 32 bit mode");
+        } else {
+            static assert(0,"Unsupported type size");
         }
         return res;
     }
 } else version (D_InlineAsm_X86_64){
     T atomicAdd(T)(ref T val, T incV){
         static assert( isIntegerType!(T) );
-        static if (isPointerType!(T))
-        {
-            llvm_atomic_load_add!(size_t)(cast(size_t*)&val, incV);
-        }
-        else
-        {
-            T* posVal=&val;
-            T res;
-            static if (T.sizeof==1){
-                volatile asm {
-                    mov BL, incV;
-                    mov RCX, posVal;
-                    lock;
-                    xadd byte ptr [RCX],BL;
-                    mov byte ptr res[EBP],BL;
-                }
-            } else static if (T.sizeof==2){
-                volatile asm {
-                    mov BX, incV;
-                    mov RCX, posVal;
-                    lock;
-                    xadd short ptr [RCX],BX;
-                    mov short ptr res[EBP],BX;
-                }
-            } else static if (T.sizeof==4){
-                volatile asm
-                {
-                    mov EDX, incV;
-                    mov RCX, posVal;
-                    lock;
-                    xadd int ptr [RCX],EDX;
-                    mov int ptr res[EBP],EDX;
-                }
-            } else static if (T.sizeof==8){
-                volatile asm
-                {
-                    mov RAX, val;
-                    mov RBX, incV;
-                    lock; // lock always needed to make this op atomic
-                    xadd qword ptr [RAX],RBX;
-                    mov res[EBP],RAX;
-                }
-            } else {
-                static assert(0,"Unsupported type size for type:"~T.stringof);
+        T* posVal=&val;
+        T res;
+        static if (T.sizeof==1){
+            volatile asm {
+                mov BL, incV;
+                mov RCX, posVal;
+                lock;
+                xadd byte ptr [RCX],BL;
+                mov byte ptr res[EBP],BL;
             }
+        } else static if (T.sizeof==2){
+            volatile asm {
+                mov BX, incV;
+                mov RCX, posVal;
+                lock;
+                xadd short ptr [RCX],BX;
+                mov short ptr res[EBP],BX;
+            }
+        } else static if (T.sizeof==4){
+            volatile asm
+            {
+                mov EDX, incV;
+                mov RCX, posVal;
+                lock;
+                xadd int ptr [RCX],EDX;
+                mov int ptr res[EBP],EDX;
+            }
+        } else static if (T.sizeof==8){
+            volatile asm
+            {
+                mov RAX, val;
+                mov RBX, incV;
+                lock; // lock always needed to make this op atomic
+                xadd qword ptr [RAX],RBX;
+                mov res[EBP],RBX;
+            }
+        } else {
+            static assert(0,"Unsupported type size for type:"~T.stringof);
         }
         return res;
     }

@@ -457,8 +457,8 @@ class TypeInfo_StaticArray : TypeInfo
 {
     override char[] toString()
     {
-        char [10] tmp = void;
-        return value.toString() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
+        char [20] tmp = void;
+        return value.toString() ~ "[" ~ ulongToUtf8(tmp, len) ~ "]";
     }
 
     override equals_t opEquals(Object o)

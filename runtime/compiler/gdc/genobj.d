@@ -451,8 +451,8 @@ class TypeInfo_StaticArray : TypeInfo
 {
     char[] toString()
     {
-        char [10] tmp = void;
-        return value.toString() ~ "[" ~ intToUtf8(tmp, len) ~ "]";
+        char [20] tmp = void;
+        return value.toString() ~ "[" ~ ulongToUtf8(tmp, len) ~ "]";
     }
 
     int opEquals(Object o)
