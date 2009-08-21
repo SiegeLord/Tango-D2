@@ -162,6 +162,7 @@ class JsonParser(T)
                     return push (Token.BeginArray, State.Array);
 
                 expected ("{ or [ at start of document");
+                assert (false);		// for DMD's erroneous warning "no return at end of function"
         }
 
         /***********************************************************************
