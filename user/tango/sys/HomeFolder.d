@@ -150,16 +150,16 @@ version (Posix)
 
         // Extract username, searching for path separator.
         char[] username;
-        int last_char = TextUtil.locate(path, '/');
+        uint last_char = TextUtil.locate(path, '/');
 
-        if (last_char == -1)
+        if (last_char == path.length)
             {
-            username = path[1 .. length] ~ '\0';
+            username = path[1..$] ~ '\0';
             last_char = username.length + 1;
             }
         else
             {
-            username = path[1 .. last_char] ~ '\0';
+            username = path[1..last_char] ~ '\0';
             }
 
         assert(last_char > 1);
@@ -208,7 +208,6 @@ version (Posix)
             if (extra_memory)
                 tango.stdc.stdlib.free(extra_memory);
             throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
-        return null;
     }
 
 }
