@@ -59,6 +59,12 @@
         if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
+
+        Alernatively:
+        ---
+        if (log.warn)
+            log.warn ("temperature is {} degrees!", complexFunction());
+        ---
         
         The above will be handled implicitly by the logging system when 
         macros are added to the language (used to be handled implicitly 
