@@ -80,10 +80,10 @@ done
 if [ -z "$user_only" ] ; then
     cd $tango_home/build/runtime
     if [ -n "$clean_only" ] ; then
-        make $silent distclean || die "error cleaning runtime" 1
+        make $silent prebuildclean || die "error cleaning runtime" 1
     else
         if [ -z "$quick" ] ; then
-            make $silent distclean || die "error cleaning runtime" 1
+            make $silent prebuildclean || die "error cleaning runtime" 1
         fi
         if [ -z "$version" ] ; then
             make $silent allVersions || die "error building runtime" 2

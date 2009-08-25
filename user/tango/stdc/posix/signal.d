@@ -17,6 +17,7 @@ version( solaris ) {
 public import tango.stdc.signal;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for pid_t
+public import tango.stdc.posix.timer; // timespec
 //public import tango.stdc.posix.time;      // for timespec, now defined here
 
 extern (C):
@@ -1000,54 +1001,6 @@ version(darwin){
     const int SA_NOCLDWAIT = 0x0020;
     const int SA_SIGINFO   = 0x0040;
     const int SA_USERTRAMP = 0x0100;
-}
-
-
-//
-// Timer (TMR)
-//
-/*
-NOTE: This should actually be defined in tango.stdc.posix.time.
-      It is defined here instead to break a circular import.
-
-struct timespec
-{
-    time_t  tv_sec;
-    int     tv_nsec;
-}
-*/
-
-version( linux )
-{
-    struct timespec
-    {
-        time_t  tv_sec;
-        c_long  tv_nsec;
-    }
-}
-else version( darwin )
-{
-    struct timespec
-    {
-        time_t  tv_sec;
-        c_long  tv_nsec;
-    }
-}
-else version( freebsd )
-{
-    struct timespec
-    {
-        time_t  tv_sec;
-        c_long  tv_nsec;
-    }
-}
-else version ( solaris )
-{
-    struct timespec         /* definition per POSIX.4 */
-    {
-        time_t  tv_sec;     /* seconds */
-        c_long  tv_nsec;    /* and nanoseconds */
-    }
 }
 
 //

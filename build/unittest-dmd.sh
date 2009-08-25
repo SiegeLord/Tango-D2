@@ -79,7 +79,7 @@ static this() {
 void main() {}
 EOF
 
-	$DC -g -w -I../user -L-Llibs -L-ltango-user-dmd-tst -L-L$HOME/lib -L-ldl -L-lz -L-lbz2 -debug=UnitTest $EXE.d && rm $EXE.d
+	$DC -g -w -I../user -L-Llibs -L-ltango-user-dmd-tst -defaultlib=tango-base-dmd-tst -L-L$HOME/lib -L-ldl -L-lz -L-lbz2 -debug=UnitTest $EXE.d && rm $EXE.d
 
     fi
 

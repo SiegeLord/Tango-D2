@@ -76,7 +76,7 @@ OBJ_CORE= \
     core\Memory.obj \
     core\Runtime.obj \
     core\Thread.obj \
-    core\Traits.obj \
+    core\PerformanceTimers.obj \
     core\sync\Atomic.obj \
     stdc\config.obj \
     stdc\stdarg.obj \

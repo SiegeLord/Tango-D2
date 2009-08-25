@@ -2630,9 +2630,13 @@ private
                 sub RSP, 4;
                 stmxcsr [RSP];
                 sub RSP, 4;
-                fnstcw [RSP];
-                fnclex;
-                fwait;
+                //version(SynchroFloatExcept){
+                //    fstcw [RSP];
+                //    fwait;
+                //} else {
+                    fnstcw [RSP];
+                    fnclex;
+                //}
 
                 // store oldp again with more accurate address
                 mov [RDI], RSP;
@@ -2791,6 +2795,19 @@ class Fiber
     // Initialization
     ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Initializes an empty fiber object
+     *
+     * (useful to reset it)
+     */
+    this(size_t sz){
+        m_dg    = null;
+        m_fn    = null;
+        m_call  = Call.NO;
+        m_state = State.TERM;
+        m_unhandled = null;
+        allocStack( sz );
+    }
 
     /**
      * Initializes a fiber object which is associated with a static

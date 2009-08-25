@@ -151,9 +151,16 @@ clean:
 clean-all:
 	rm -rf $(OBJDIR)
 
+prebuildclean:
+	rm -rf $(TANGO_HOME)/build/runtime/objs-*
+	rm -f $(TANGO_HOME)/build/libs/$(LIB_PREFIX)tango-base-*
+	find $(TANGO_HOME)/user/tango -name '*.di' | xargs rm
+	rm -rf $(TANGO_HOME)/user/rt
+
 distclean:
 	rm -rf $(TANGO_HOME)/build/runtime/objs-*
 	rm -f $(TANGO_HOME)/build/libs/$(LIB_PREFIX)tango-base-*
+	find $(TANGO_HOME)/user -name '*.di' | xargs rm
 
 ifeq ($(shell if [ -e "$(OBJDIR)/intermediate.rule" ]; then echo 1; fi;),1)
 include $(OBJDIR)/intermediate.rule

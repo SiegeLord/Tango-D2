@@ -47,9 +47,10 @@ version = MULTI_THREADED;       // produce multithreaded version
 /***************************************************/
 
 private import rt.basicgc.gcbits;
-private import rt.basicgc.gcstats;
+private import tango.core.internal.gcInterface;
 private import rt.basicgc.gcalloc;
 private import tango.core.sync.Atomic;
+private import tango.core.PerformanceTimers;
 
 import cImports=rt.cImports: calloc, free, malloc, realloc, memcpy, memmove, memset;
 //private import cstdlib = tango.stdc.stdlib : calloc, free, malloc, realloc;
@@ -234,6 +235,11 @@ class GC
 
     Gcx *gcx;                   // implementation
     static ClassInfo gcLock;    // global lock
+
+    version(AllocTimeStats){
+        ulong totalAllocTime;
+        ulong nAlloc;
+    }
 
 
     void initialize()
@@ -430,6 +436,14 @@ class GC
      */
     void *malloc(size_t size, uint bits = 0)
     {
+        version(AllocTimeStats){
+            atomicAdd(nAlloc,1);
+            auto t=realtimeClock();
+            scope(exit){
+                atomicAdd(totalAllocTime,realtimeClock()-t);
+            }
+        }
+        
         if (!size)
         {
             return null;
@@ -543,6 +557,14 @@ class GC
      */
     void *calloc(size_t size, uint bits = 0)
     {
+        version(AllocTimeStats){
+            atomicAdd(nAlloc,1);
+            auto t=realtimeClock();
+            scope(exit){
+                atomicAdd(totalAllocTime,realtimeClock()-t);
+            }
+        }
+
         if (!size)
         {
             return null;
@@ -578,6 +600,14 @@ class GC
      */
     void *realloc(void *p, size_t size, uint bits = 0)
     {
+        version(AllocTimeStats){
+            atomicAdd(nAlloc,1);
+            auto t=realtimeClock();
+            scope(exit){
+                atomicAdd(totalAllocTime,realtimeClock()-t);
+            }
+        }
+
         if (!thread_needLock())
         {
             return reallocNoSync(p, size, bits);
@@ -738,6 +768,14 @@ class GC
      */
     size_t extend(void* p, size_t minsize, size_t maxsize)
     {
+        version(AllocTimeStats){
+            atomicAdd(nAlloc,1);
+            auto t=realtimeClock();
+            scope(exit){
+                atomicAdd(totalAllocTime,realtimeClock()-t);
+            }
+        }
+
         if (!thread_needLock())
         {
             return extendNoSync(p, minsize, maxsize);
@@ -845,6 +883,14 @@ class GC
      */
     void free(void *p)
     {
+        version(AllocTimeStats){
+            atomicAdd(nAlloc,1);
+            auto t=realtimeClock();
+            scope(exit){
+                atomicAdd(totalAllocTime,realtimeClock()-t);
+            }
+        }
+
         if (!p)
         {
             return;
@@ -1243,8 +1289,8 @@ class GC
             GCStats stats;
 
             getStats(stats);
-            debug(PRINTF) printf("poolsize = %x, usedsize = %x, freelistsize = %x\n",
-                    stats.poolsize, stats.usedsize, stats.freelistsize);
+            debug(PRINTF) printf("poolSize = %x, usedSize = %x, freelistSize = %x\n",
+                    stats.poolSize, stats.usedSize, stats.freelistSize);
         }
 
         gcx.log_collect();
@@ -1327,9 +1373,9 @@ class GC
             {
                 Bins bin = cast(Bins)pool.pagetable[j];
                 if (bin == B_FREE)
-                    stats.freeblocks++;
+                    stats.freeBlocks++;
                 else if (bin == B_PAGE)
-                    stats.pageblocks++;
+                    stats.pageBlocks++;
                 else if (bin < B_PAGE)
                     bsize += PAGESIZE;
             }
@@ -1347,9 +1393,17 @@ class GC
 
         usize = bsize - flsize;
 
-        stats.poolsize = psize;
-        stats.usedsize = bsize - flsize;
-        stats.freelistsize = flsize;
+        stats.poolSize = psize;
+        stats.usedSize = bsize - flsize;
+        stats.freelistSize = flsize;
+        stats.totalMarkTime=gcx.totalMarkTime;
+        stats.totalSweepTime=gcx.totalSweepTime;
+        stats.totalPagesFreed=gcx.totalPagesFreed;
+        stats.gcCounter=gcx.gcCounter;
+        version(AllocTimeStats){
+            stats.totalAllocTime=totalAllocTime;
+            stats.nAlloc=nAlloc;
+        }
     }
 
     size_t gcCounter(){
@@ -1457,7 +1511,10 @@ struct Gcx
 
     List *bucket[B_MAX];        // free list for each size
 
-    size_t gcCounter;    // counter of gc collections
+    real totalMarkTime;
+    real totalSweepTime;
+    real totalPagesFreed;
+    size_t gcCounter;    // counter of gc collections, guaranteed to change at each mark and at each sweep phase, 1 during the sweep phase
 
     void initialize()
     {   int dummy;
@@ -2287,6 +2344,8 @@ struct Gcx
 
         debug(COLLECT_PRINTF) printf("Gcx.fullcollect()\n");
 
+        ulong t1=realtimeClock();
+        
         thread_suspendAll();
         ++gcCounter;
         assert((gcCounter & cast(size_t)1) ==1,"unexpected gcCounter value");
@@ -2420,6 +2479,9 @@ struct Gcx
         }
 
         thread_resumeAll();
+        
+        auto t2=realtimeClock();
+        totalMarkTime += cast(real)(t2-t1)/cast(real)realtimeClockFreq();
 
         // Free up everything not marked
         debug(COLLECT_PRINTF) printf("\tfree'ing\n");
@@ -2577,6 +2639,9 @@ struct Gcx
                 }
             }
         }
+
+        totalSweepTime  += cast(real)(realtimeClock()-t2)/cast(real)realtimeClockFreq();
+        totalPagesFreed += cast(real)(freedpages + recoveredpages);
 
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
@@ -2859,31 +2924,31 @@ struct Pool
 
     void initialize(size_t npages)
     {
-        size_t poolsize;
+        size_t poolSize;
 
         //debug(PRINTF) printf("Pool::Pool(%u)\n", npages);
-        poolsize = npages * PAGESIZE;
-        assert(poolsize >= POOLSIZE);
-        baseAddr = cast(byte *)os_mem_map(poolsize);
+        poolSize = npages * PAGESIZE;
+        assert(poolSize >= POOLSIZE);
+        baseAddr = cast(byte *)os_mem_map(poolSize);
 
         // Some of the code depends on page alignment of memory pools
         assert((cast(size_t)baseAddr & (PAGESIZE - 1)) == 0);
 
         if (!baseAddr)
         {
-            //debug(PRINTF) printf("GC fail: poolsize = x%x, errno = %d\n", poolsize, errno);
+            //debug(PRINTF) printf("GC fail: poolSize = x%x, errno = %d\n", poolSize, errno);
             //debug(PRINTF) printf("message = '%s'\n", sys_errlist[errno]);
 
             npages = 0;
-            poolsize = 0;
+            poolSize = 0;
         }
         //assert(baseAddr);
-        topAddr = baseAddr + poolsize;
+        topAddr = baseAddr + poolSize;
 
-        mark.alloc(cast(size_t)poolsize / 16);
-        scan.alloc(cast(size_t)poolsize / 16);
-        freebits.alloc(cast(size_t)poolsize / 16);
-        noscan.alloc(cast(size_t)poolsize / 16);
+        mark.alloc(cast(size_t)poolSize / 16);
+        scan.alloc(cast(size_t)poolSize / 16);
+        freebits.alloc(cast(size_t)poolSize / 16);
+        noscan.alloc(cast(size_t)poolSize / 16);
 
         pagetable = cast(ubyte*)cImports.malloc(npages);
         if (!pagetable)

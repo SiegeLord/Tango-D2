@@ -5,7 +5,7 @@
 * license: tango license
 */
 module tango.core.Lifetime;
-import rt.cInterface: gc_counter, gc_finishGCRun,rt_attachDisposeEvent,rt_detachDisposeEvent;
+import tango.core.internal.runtimeInterface: gc_counter, gc_finishGCRun,rt_attachDisposeEvent,rt_detachDisposeEvent;
 import tango.core.sync.Atomic;
 import tango.core.Variant;
 

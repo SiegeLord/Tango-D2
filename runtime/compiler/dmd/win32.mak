@@ -108,8 +108,8 @@ install :
 	$(MD) $(LIB_DEST)
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
 	$(MD) ..\..\..\user\std
-	$(MD) ..\..\..\user\rt
+	$(MD) ..\..\..\user\tango\core\internal
 	$(CP) std\intrinsic.di ..\..\..\user\std
 	# You CANNOT copy directly to .di; xcopy will stop the build with a prompt
-	$(CP) rt\cInterface.d ..\..\..\user\rt
-	$(MV) ..\..\..\user\rt\cInterface.d ..\..\..\user\rt\cInterface.di
+	$(CP) tango\core\internal\runtimeInterface.d ..\..\..\user\tango\core\internal
+	$(MV) ..\..\..\user\tango\core\internal\runtimeInterface.d ..\..\..\user\tango\core\internal\runtimeInterface.di

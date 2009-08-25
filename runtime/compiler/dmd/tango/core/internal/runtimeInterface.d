@@ -4,9 +4,7 @@
  +
  + Fawzi Mohamed
  +/
-module rt.cInterface;
-extern (C) void tango_abort();
-extern (C) void tango_exit(int);
+module tango.core.internal.runtimeInterface;
 
 // rt.lifetime
 struct Array

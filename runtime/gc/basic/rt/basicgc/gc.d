@@ -26,7 +26,7 @@
 module rt.basicgc.gc;
 
 private import rt.basicgc.gcx;
-private import rt.basicgc.gcstats;
+private import tango.core.internal.gcInterface;
 //private import tango.stdc.stdlib;
 private import cImports=rt.cImports;
 
@@ -195,15 +195,6 @@ extern (C) BlkInfo gc_query( void* p )
     return _gc.query( p );
 }
 
-// NOTE: This routine is experimental.  The stats or function name may change
-//       before it is made officially available.
-extern (C) GCStats gc_stats()
-{
-    GCStats stats = void;
-    _gc.getStats( stats );
-    return stats;
-}
-
 extern (C) void gc_addRoot( void* p )
 {
     _gc.addRoot( p );
@@ -230,4 +221,13 @@ extern (C) size_t gc_counter(){
 
 extern (C) void gc_finishGCRun(){
     _gc.finishGCRun();
+}
+
+/// returns a stats structure that can be cached
+// NOTE: This routine is gc dependent.
+extern (C) GCStats gc_stats()
+{
+    GCStats stats = void;
+    _gc.getStats( stats );
+    return stats;
 }

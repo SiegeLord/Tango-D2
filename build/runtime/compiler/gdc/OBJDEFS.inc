@@ -39,13 +39,13 @@ OBJ_UTIL = \
     shared/rt/util/hash.o
 
 
-COMPILER_MODULES=rt.cInterface
+COMPILER_MODULES=tango.core.internal.runtimeInterface
 COMPILER_OO=$(TI:%=$(TANGO_HOME)/runtime/compiler/shared/rt/typeinfo/%) $(TANGO_HOME)/runtime/compiler/shared/ThreadASM.$(COBJ_EXT) $(OBJ_BASE:%=$(TANGO_HOME)/runtime/compiler/gdc/%) $(OBJ_UTIL:%=$(TANGO_HOME)/runtime/compiler/%)
 
 COMPILER_DI=std/c/stdarg.di\
     std/stdarg.di\
     std/intrinsic.di\
-    rt/cInterface.di
+    tango/core/internal/runtimeInterface.di
 
 EXCLUDE_DEP_COMP=object
 

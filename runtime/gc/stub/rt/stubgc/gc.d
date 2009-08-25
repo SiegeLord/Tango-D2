@@ -142,3 +142,14 @@ extern (C) size_t gc_counter(){
 }
 
 extern (C) void gc_finishGCRun(){}
+
+/// gc counter, it is assumed that if this & 1 is true then freeing is in progress
+extern (C) size_t gc_counter();
+/// waits that a collection & freeing cycle is finished
+extern (C) void gc_finishGCRun();
+
+/// returns a stats structure that can be cached
+extern (C) GCStats gc_stats(){
+    GCStats n;
+    return n;
+}

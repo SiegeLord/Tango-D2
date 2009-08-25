@@ -8,7 +8,7 @@ module rt.arrayreal;
 
 import rt.util.cpuid;
 
-debug(UnitTest)
+debug(UnitTestBase)
 {
     private extern(C) int printf(char*,...);
     /* This is so unit tests will test every CPU variant
@@ -61,6 +61,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceAddSliceAssign_r unittest\n");
@@ -97,7 +98,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -121,6 +122,7 @@ body
 }
 
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceMinSliceAssign_r unittest\n");
@@ -157,7 +159,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -194,6 +196,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpMulSliceAddass_r unittest\n");
@@ -232,4 +235,5 @@ unittest
             }
         }
     }
+}
 }

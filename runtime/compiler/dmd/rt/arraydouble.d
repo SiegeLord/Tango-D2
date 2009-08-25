@@ -9,7 +9,7 @@ module rt.arraydouble;
 
 import rt.util.cpuid;
 
-debug(UnitTest)
+debug(UnitTestBase)
 {
     private extern(C) int printf(char*,...);
     /* This is so unit tests will test every CPU variant
@@ -119,7 +119,7 @@ body
     return a;
 }
 
-
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceAddSliceAssign_d unittest\n");
@@ -155,6 +155,7 @@ unittest
             }
         }
     }
+}
 }
 
 /* ======================================================================== */
@@ -232,7 +233,7 @@ body
     return a;
 }
 
-
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceMinSliceAssign_d unittest\n");
@@ -269,7 +270,7 @@ unittest
         }
     }
 }
-
+}
 
 /* ======================================================================== */
 
@@ -338,6 +339,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpAddSliceAssign_d unittest\n");
@@ -373,6 +375,7 @@ unittest
             }
         }
     }
+}
 }
 
 /* ======================================================================== */
@@ -433,6 +436,7 @@ T[] _arrayExpSliceAddass_d(T[] a, T value)
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceAddass_d unittest\n");
@@ -469,6 +473,7 @@ unittest
             }
         }
     }
+}
 }
 
 /* ======================================================================== */
@@ -540,6 +545,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceAddass_d unittest\n");
@@ -576,6 +582,7 @@ unittest
             }
         }
     }
+}
 }
 
 /* ======================================================================== */
@@ -645,6 +652,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpMinSliceAssign_d unittest\n");
@@ -680,6 +688,7 @@ unittest
             }
         }
     }
+}
 }
 
 /* ======================================================================== */
@@ -753,6 +762,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceMinSliceAssign_d unittest\n");
@@ -789,7 +799,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -848,6 +858,7 @@ T[] _arrayExpSliceMinass_d(T[] a, T value)
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceMinass_d unittest\n");
@@ -885,7 +896,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -955,6 +966,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceMinass_d unittest\n");
@@ -992,7 +1004,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1060,6 +1072,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpMulSliceAssign_d unittest\n");
@@ -1096,7 +1109,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1172,6 +1185,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceSliceMulSliceAssign_d unittest\n");
@@ -1208,7 +1222,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1267,6 +1281,7 @@ T[] _arrayExpSliceMulass_d(T[] a, T value)
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceMulass_d unittest\n");
@@ -1304,7 +1319,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1374,6 +1389,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceMulass_d unittest\n");
@@ -1411,7 +1427,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1493,6 +1509,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpDivSliceAssign_d unittest\n");
@@ -1530,7 +1547,7 @@ unittest
         }
     }
 }
-
+}
 /* ======================================================================== */
 
 /***********************
@@ -1600,6 +1617,7 @@ T[] _arrayExpSliceDivass_d(T[] a, T value)
 }
 
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arrayExpSliceDivass_d unittest\n");
@@ -1637,7 +1655,7 @@ unittest
         }
     }
 }
-
+}
 
 /* ======================================================================== */
 
@@ -1675,6 +1693,7 @@ body
     return a;
 }
 
+debug(UnitTestBase){
 unittest
 {
     printf("_arraySliceExpMulSliceAddass_d unittest\n");
@@ -1713,4 +1732,5 @@ unittest
             }
         }
     }
+}
 }

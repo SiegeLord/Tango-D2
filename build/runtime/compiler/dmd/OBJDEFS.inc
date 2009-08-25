@@ -15,7 +15,6 @@ COMPILER_MODULES_L= \
     rt.cast_ \
     rt.cover \
     rt.cImports \
-    rt.cInterface \
     rt.dmain2 \
     rt.invariant_ \
     rt.lifetime \
@@ -25,6 +24,7 @@ COMPILER_MODULES_L= \
     rt.switch_ \
     rt.util.cpuid \
     rt.trace \
+    tango.core.internal.runtimeInterface \
     invariant \
 
 COMPILER_MODULES_POSIX =\
@@ -48,7 +48,7 @@ COMPILER_OO_WIN =\
     minit.$(COBJ_EXT)
 
 COMPILER_DI_L= \
- rt/cInterface.di \
+ tango/core/internal/runtimeInterface.di \
  std/intrinsic.di
 
 COMPILER_MODULES=$(COMPILER_MODULES_L) $(COMPILER_MODULES_S)

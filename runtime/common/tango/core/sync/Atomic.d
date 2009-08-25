@@ -15,11 +15,56 @@
  * Authors:   Fawzi Mohamed
  */
 module tango.core.sync.Atomic;
-import tango.core.Traits;
 
 version( LDC )
 {
     import ldc.intrinsics;
+}
+
+private {
+    // from tango.core.traits:
+    /**
+     * Evaluates to true if T is a signed or unsigned integer type.
+     */
+    template isIntegerType( T )
+    {
+        const bool isIntegerType = isSignedIntegerType!(T) ||
+                                   isUnsignedIntegerType!(T);
+    }
+    /**
+     * Evaluates to true if T is a pointer type.
+     */
+    template isPointerType(T)
+    {
+            const isPointerType = false;
+    }
+
+    template isPointerType(T : T*)
+    {
+            const isPointerType = true;
+    }
+    /**
+     * Evaluates to true if T is a signed integer type.
+     */
+    template isSignedIntegerType( T )
+    {
+        const bool isSignedIntegerType = is( T == byte )  ||
+                                         is( T == short ) ||
+                                         is( T == int )   ||
+                                         is( T == long )/+||
+                                         is( T == cent  )+/;
+    }
+    /**
+     * Evaluates to true if T is an unsigned integer type.
+     */
+    template isUnsignedIntegerType( T )
+    {
+        const bool isUnsignedIntegerType = is( T == ubyte )  ||
+                                           is( T == ushort ) ||
+                                           is( T == uint )   ||
+                                           is( T == ulong )/+||
+                                           is( T == ucent  )+/;
+    }
 }
 
 extern(C) void thread_yield();
@@ -473,8 +518,7 @@ version(LDC){
                 mov int ptr res[EBP],EDX;
             }
         } else static if (T.sizeof==8){
-            // try to get it through CAS and a loop? is the load of 8 byte atomic?
-            static assert(0,"Unsupported type size 8 in 32 bit mode");
+            return atomicOp(val,delegate T(T x){ return x+inc; });
         } else {
             static assert(0,"Unsupported type size");
         }

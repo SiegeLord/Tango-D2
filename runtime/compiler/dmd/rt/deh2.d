@@ -224,7 +224,7 @@ extern (Windows) void _d_throw(Object *h)
             printf("handler_info[]:\n");
             for (int i = 0; i < dim; i++)
             {
-                phi = &handler_table.handler_info[i];
+                phi = &handler_table.handler_info.ptr[i];
                 printf("\t[%d]: offset = x%04x, endoffset = x%04x, prev_index = %d, cioffset = x%04x, finally_code = %x\n",
                         i, phi.offset, phi.endoffset, phi.prev_index, phi.cioffset, phi.finally_code);
             }
@@ -233,7 +233,7 @@ extern (Windows) void _d_throw(Object *h)
         index = -1;
         for (int i = 0; i < dim; i++)
         {
-            phi = &handler_table.handler_info[i];
+            phi = &handler_table.handler_info.ptr[i];
 
             debug(PRINTF) printf("i = %d, phi.offset = %04x\n", i, funcoffset + phi.offset);
             if (cast(uint)retaddr > funcoffset + phi.offset &&
@@ -246,7 +246,7 @@ extern (Windows) void _d_throw(Object *h)
         // with an index smaller than the current table_index
         for (ndx = index; ndx != -1; ndx = prev_ndx)
         {
-            phi = &handler_table.handler_info[ndx];
+            phi = &handler_table.handler_info.ptr[ndx];
             prev_ndx = phi.prev_index;
             if (phi.cioffset)
             {

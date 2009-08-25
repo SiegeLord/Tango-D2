@@ -509,7 +509,7 @@ ulong lookup8_hash2( ulong *k, ulong length, ulong level)
   return c;
 }
 
-debug(UnitTest){
+debug(UnitTestBase){
     void alignIndependence(T)(ubyte[] val,T function (void*,T len,T oldHash)hashF){
         ubyte[] vval=new ubyte[val.length+16];
         T oldV=0xdeadbeef;

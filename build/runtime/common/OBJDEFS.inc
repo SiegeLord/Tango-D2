@@ -4,8 +4,8 @@ COMMON_MODULES= \
     tango.core.Memory \
     tango.core.Runtime \
     tango.core.Thread \
-    tango.core.Traits \
     tango.core.sync.Atomic \
+    tango.core.PerformanceTimers \
     tango.stdc.config \
     tango.stdc.stdarg \
     tango.stdc.stddef \
@@ -22,8 +22,8 @@ COMMON_DI=\
     tango/core/Memory.di \
     tango/core/Runtime.di \
     tango/core/Thread.di \
-    tango/core/Traits.di \
     tango/core/sync/Atomic.di \
+    tango/core/PerformanceTimers.di \
     tango/stdc/config.di \
     tango/stdc/stdarg.di \
     tango/stdc/stdio.di \

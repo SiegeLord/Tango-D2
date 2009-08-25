@@ -216,7 +216,7 @@ int popcnt( uint x )
 }
 
 
-debug( UnitTest )
+debug( UnitTestBase )
 {
     unittest
     {
@@ -281,7 +281,7 @@ uint bitswap( uint x )
 }
 
 
-debug( UnitTest )
+debug( UnitTestBase )
 {
     unittest
     {

@@ -11,26 +11,7 @@
 *******************************************************************************/
 
 module tango.time.StopWatch;
-
-private import tango.core.Exception;
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-version (Win32)
-{
-        private extern (Windows) 
-        {
-        int QueryPerformanceCounter   (ulong *count);
-        int QueryPerformanceFrequency (ulong *frequency);
-        }
-}
-
-version (Posix)
-{
-        private import tango.stdc.posix.sys.time;
-}
+import tango.core.PerformanceTimers;
 
 /*******************************************************************************
 
@@ -65,10 +46,12 @@ version (Posix)
 public struct StopWatch
 {
         private ulong  started;
-        private static double multiplier = 1.0 / 1_000_000.0;
-
-        version (Win32)
-                 private static double microsecond;
+        private static double multiplier;
+        private static double microsecond;
+        static this(){
+            multiplier=1.0/cast(real)realtimeClockFreq();
+            microsecond=1.0E6/cast(real)realtimeClockFreq();
+        }
 
         /***********************************************************************
                 
@@ -78,7 +61,7 @@ public struct StopWatch
         
         void start ()
         {
-                started = timer;
+            started = realtimeClock();
         }
 
         /***********************************************************************
@@ -89,7 +72,7 @@ public struct StopWatch
         
         double stop ()
         {
-                return multiplier * (timer - started);
+            return multiplier * (realtimeClock() - started);
         }
 
         /***********************************************************************
@@ -100,29 +83,7 @@ public struct StopWatch
         
         ulong microsec ()
         {
-                version (Posix)
-                         return (timer - started);
-
-                version (Win32)
-                         return cast(ulong) ((timer - started) * microsecond);
-        }
-
-        /***********************************************************************
-                
-                Setup timing information for later use
-
-        ***********************************************************************/
-
-        static this()
-        {
-                version (Win32)
-                {
-                        ulong freq;
-
-                        QueryPerformanceFrequency (&freq);
-                        microsecond = 1_000_000.0 / freq;       
-                        multiplier = 1.0 / freq;       
-                }
+            return cast(ulong) ((realtimeClock() - started) * microsecond);
         }
 
         /***********************************************************************
@@ -133,24 +94,7 @@ public struct StopWatch
 
         private static ulong timer ()
         {
-                version (Posix)       
-                {
-                        timeval tv;
-                        if (gettimeofday (&tv, null))
-                            throw new PlatformException ("Timer :: linux timer is not available");
-
-                        return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
-                }
-
-                version (Win32)
-                {
-                        ulong now;
-
-                        if (! QueryPerformanceCounter (&now))
-                              throw new PlatformException ("high-resolution timer is not available");
-
-                        return now;
-                }
+            return realtimeClock();
         }
 }
 

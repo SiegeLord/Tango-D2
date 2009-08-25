@@ -15,7 +15,7 @@ COMPILER_MODULES_L= \
  rt.eh \
  rt.dmain2 \
  rt.cImports \
- rt.cInterface \
+ tango.core.internal.runtimeInterface \
  object \
 
 #end
@@ -25,7 +25,7 @@ COMPILER_OO_L= \
     cConst.o
 
 COMPILER_DI_L= \
- rt/cInterface.di  \
+ tango/core/internal/runtimeInterface.di  \
  ldc/bitmanip.di   \
  ldc/cstdarg.di    \
  ldc/intrinsics.di \

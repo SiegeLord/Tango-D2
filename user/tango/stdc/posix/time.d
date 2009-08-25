@@ -10,6 +10,7 @@ module tango.stdc.posix.time;
 
 private import tango.stdc.posix.config;
 public import tango.stdc.time;
+public import tango.stdc.posix.timer;
 public import tango.stdc.posix.sys.types;
 public import tango.stdc.posix.signal; // for sigevent
 
