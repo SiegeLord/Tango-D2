@@ -88,8 +88,7 @@ OBJ_CORE= \
 
 
 OBJ_STDC= \
-    ..\wrap.obj \
-    ..\rt\commonFunct.obj
+    ..\wrap.obj 
 
 ALL_OBJS= \
     $(OBJ_CORE) \

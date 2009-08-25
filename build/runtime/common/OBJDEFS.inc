@@ -11,8 +11,7 @@ COMMON_MODULES= \
     tango.stdc.stddef \
     tango.stdc.stdio \
     tango.stdc.config \
-    tango.stdc.stdint \
-    rt.CommonFunct
+    tango.stdc.stdint
 
 COMMON_OO= \
     wrap.$(COBJ_EXT)
