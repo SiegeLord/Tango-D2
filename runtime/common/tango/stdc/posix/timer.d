@@ -5,6 +5,9 @@
 /// license: tango, apache 2.0
 module tango.stdc.posix.timer;
 import tango.stdc.config;
+
+extern(C):
+
 alias c_long time_t;
 
 //
@@ -58,9 +61,11 @@ version( linux )
     const CLOCK_REALTIME    = 0;
     const TIMER_ABSTIME     = 0x01;
 
-    alias int timer_t;
+    alias int clockid_t;
 
-    int clock_gettime(clockid_t, timespec*);
+//    extern int clock_gettime(clockid_t, timespec*);
+//    pragma(lib,"rt");
+
 }
 else version( darwin )
 {
@@ -75,7 +80,7 @@ else version( freebsd )
 
     alias int clockid_t;
 
-    int clock_gettime(clockid_t, timespec*);
+    extern int clock_gettime(clockid_t, timespec*);
 }
 else version( solaris )
 {
@@ -86,6 +91,6 @@ else version( solaris )
 
     alias int clockid_t;
 
-    int clock_gettime(clockid_t, timespec*);
+    extern int clock_gettime(clockid_t, timespec*);
 }
 

@@ -119,27 +119,12 @@ int timer_settime(timer_t, int, in itimerspec*, itimerspec*);
 
 version( linux )
 {
-    const CLOCK_PROCESS_CPUTIME_ID  = 2; // (TMR|CPT)
-    const CLOCK_THREAD_CPUTIME_ID   = 3; // (TMR|TCT)
-
-    // NOTE: See above for why this is commented out.
-    //
-    //struct timespec
-    //{
-    //    time_t  tv_sec;
-    //    c_long  tv_nsec;
-    //}
-
     struct itimerspec
     {
         timespec it_interval;
         timespec it_value;
     }
 
-    const CLOCK_REALTIME    = 0;
-    const TIMER_ABSTIME     = 0x01;
-
-    alias int clockid_t;
     alias int timer_t;
 
     int clock_getres(clockid_t, timespec*);
@@ -158,17 +143,6 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    const CLOCK_PROCESS_CPUTIME_ID  = 2; // (TMR|CPT)
-    const CLOCK_THREAD_CPUTIME_ID   = 3; // (TMR|TCT)
-
-    // NOTE: See above for why this is commented out.
-    //
-    //struct timespec
-    //{
-    //    time_t  tv_sec;
-    //    c_long  tv_nsec;
-    //}
-
     struct itimerspec
     {
         timespec it_interval;
