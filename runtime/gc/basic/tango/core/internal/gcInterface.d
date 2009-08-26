@@ -2,8 +2,31 @@
  * External interface exported by the gc
  */
 module tango.core.internal.gcInterface;
-import tango.core.PerformanceTimers: realtimeClockFreq;
+private {
+    version (Win32)
+    {
+        private extern (Windows) 
+        {
+            int QueryPerformanceFrequency (ulong *frequency);
+        }
+        /// frequency (in seconds) of the systemwide realtime clock
+        ulong realtimeClockFreq(){
+            ulong res;
+            if (! QueryPerformanceFrequency (&res))
+                throw new PlatformException ("high-resolution timer is not available");
+            return res;
+        }
+    
+    }
 
+    version (Posix)
+    {
+        /// frequency (in seconds) of the systemwide realtime clock
+        ulong realtimeClockFreq(){
+            return 1_000_000UL;
+        }
+    }
+}
 // ------- gc interface, all gc need to expose the following functions --------
 extern (C) void gc_init();
 extern (C) void gc_term();
@@ -85,7 +108,7 @@ struct GCStats
         case "totalSweepTime":
             return totalSweepTime;
         case "totalAllocTime":
-            return cast(real)totalAllocTime/cast(real)realtimeClockFreq();
+            return cast(real)totalAllocTime/cast(real)1_000_000.0;
         case "nAlloc":
             return cast(real)nAlloc;
         default:

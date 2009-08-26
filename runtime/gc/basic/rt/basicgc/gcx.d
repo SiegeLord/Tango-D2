@@ -50,8 +50,54 @@ private import rt.basicgc.gcbits;
 private import tango.core.internal.gcInterface;
 private import rt.basicgc.gcalloc;
 private import tango.core.sync.Atomic;
-private import tango.core.PerformanceTimers;
 
+private{
+    version (Win32)
+    {
+        private extern (Windows) 
+        {
+            int QueryPerformanceCounter   (ulong *count);
+            int QueryPerformanceFrequency (ulong *frequency);
+        }
+    }
+
+    version (Posix)
+    {
+        private import tango.stdc.posix.sys.time;
+    }
+
+    version (Win32){
+        /// systemwide realtime clock
+        ulong realtimeClock(){
+            ulong res;
+            if (! QueryPerformanceCounter (&res))
+                throw new Exception ("high-resolution timer is not available");
+            return res;
+        }
+        /// frequency (in seconds) of the systemwide realtime clock
+        ulong realtimeClockFreq(){
+            ulong res;
+            if (! QueryPerformanceFrequency (&res))
+                throw new Exception ("high-resolution timer is not available");
+            return res;
+        }
+    } else version (Posix) {
+    
+        /// systemwide realtime clock
+        ulong realtimeClock(){
+            timeval tv;
+            if (gettimeofday (&tv, null))
+                throw new Exception ("Timer :: linux timer is not available");
+
+            return (cast(ulong) tv.tv_sec * 1_000_000) + tv.tv_usec;
+        }
+    
+        /// frequency (in seconds) of the systemwide realtime clock
+        ulong realtimeClockFreq(){
+            return 1_000_000UL;
+        }
+    }
+}
 import cImports=rt.cImports: calloc, free, malloc, realloc, memcpy, memmove, memset;
 //private import cstdlib = tango.stdc.stdlib : calloc, free, malloc, realloc;
 //private import cstring = tango.stdc.string : memcpy, memmove, memset;

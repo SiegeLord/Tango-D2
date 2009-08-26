@@ -76,12 +76,11 @@ OBJ_CORE= \
     core\Memory.obj \
     core\Runtime.obj \
     core\Thread.obj \
-    core\PerformanceTimers.obj \
     core\sync\Atomic.obj \
     stdc\config.obj \
     stdc\stdarg.obj \
     stdc\stddef.obj \
-	stdc\stdint.obj \
+    stdc\stdint.obj \
     stdc\stdio.obj \
     sys\win32\Types.obj \
     sys\win32\UserGdi.obj
