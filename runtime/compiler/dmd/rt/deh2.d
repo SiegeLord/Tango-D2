@@ -262,7 +262,7 @@ extern (Windows) void _d_throw(Object *h)
                     DCatchBlock *pcb;
                     ClassInfo ci = **cast(ClassInfo **)h;
 
-                    pcb = &pci.catch_block[i];
+                    pcb = &pci.catch_block.ptr[i];
 
                     if (_d_isbaseof(ci, pcb.type))
                     {   // Matched the catch type, so we've found the handler.
