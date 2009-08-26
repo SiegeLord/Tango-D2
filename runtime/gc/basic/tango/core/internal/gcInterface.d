@@ -86,7 +86,6 @@ struct GCStats
     real totalMarkTime;     /// seconds spent in mark-phase
     real totalSweepTime;    /// seconds spent in sweep-phase
     ulong totalAllocTime;   /// total time spent in alloc and malloc,calloc,realloc,...free
-    ulong totalAllocTime;   /// total time spent in alloc and malloc,calloc,realloc,...free
     ulong nAlloc;           /// number of calls to allocation/free routines
     real opIndex(char[] prop){
         switch(prop){
