@@ -2,31 +2,6 @@
  * External interface exported by the gc
  */
 module tango.core.internal.gcInterface;
-private {
-    version (Win32)
-    {
-        private extern (Windows) 
-        {
-            int QueryPerformanceFrequency (ulong *frequency);
-        }
-        /// frequency (in seconds) of the systemwide realtime clock
-        ulong realtimeClockFreq(){
-            ulong res;
-            if (! QueryPerformanceFrequency (&res))
-                throw new Exception ("high-resolution timer is not available");
-            return res;
-        }
-    
-    }
-
-    version (Posix)
-    {
-        /// frequency (in seconds) of the systemwide realtime clock
-        ulong realtimeClockFreq(){
-            return 1_000_000UL;
-        }
-    }
-}
 // ------- gc interface, all gc need to expose the following functions --------
 extern (C) void gc_init();
 extern (C) void gc_term();
@@ -86,6 +61,7 @@ struct GCStats
     real totalMarkTime;     /// seconds spent in mark-phase
     real totalSweepTime;    /// seconds spent in sweep-phase
     ulong totalAllocTime;   /// total time spent in alloc and malloc,calloc,realloc,...free
+    ulong totalAllocTimeFreq;   /// frequancy for totalAllocTime
     ulong nAlloc;           /// number of calls to allocation/free routines
     real opIndex(char[] prop){
         switch(prop){
@@ -108,7 +84,7 @@ struct GCStats
         case "totalSweepTime":
             return totalSweepTime;
         case "totalAllocTime":
-            return cast(real)totalAllocTime/cast(real)1_000_000.0;
+            return cast(real)totalAllocTime/cast(real)(totalAllocTimeFreq==0?1UL:totalAllocTimeFreq);
         case "nAlloc":
             return cast(real)nAlloc;
         default:

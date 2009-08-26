@@ -1448,6 +1448,7 @@ class GC
         stats.gcCounter=gcx.gcCounter;
         version(AllocTimeStats){
             stats.totalAllocTime=totalAllocTime;
+            stats.totalAllocTimeFreq=realtimeClockFreq();
             stats.nAlloc=nAlloc;
         }
     }
