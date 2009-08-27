@@ -518,7 +518,7 @@ version(LDC){
                 mov int ptr res[EBP],EDX;
             }
         } else static if (T.sizeof==8){
-            return atomicOp(val,delegate T(T x){ return x+inc; });
+            return atomicOp(val,delegate (T x){ return x+inc; });
         } else {
             static assert(0,"Unsupported type size");
         }
