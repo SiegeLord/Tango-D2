@@ -96,7 +96,7 @@ _lib:$(INSTALL_LIB)
 $(LIB):  $(OBJS)
 	rm -f $@
 	$(mkLib) $(out_lib_name)$@ $(OBJS)
-ifneq($(ranlib),)
+ifneq ($(ranlib),)
 	$(ranlib) $@
 endif
 
