@@ -49,17 +49,19 @@ public class AppendFiles : Filer
         this (char[] path, int count, ulong maxSize, Appender.Layout how = null)
         {
                 assert (path);
-                assert (count > 1 && count < 10);
+                assert (count > 1 && count < 1000);
 
                 // Get a unique fingerprint for this instance
                 mask_ = register (path);
 
-                char[1] x;
+                char[3] x;
                 Time mostRecent;
 
-                for (int i=0; i < count; ++i)
+                for (int i=0; i <= count; ++i)
                     {
-                    x[0] = cast(char)('0' + i);
+                    x[0] = cast(char)('0' + i/100);
+                    x[1] = cast(char)('0' + i/10);
+                    x[2] = cast(char)('0' + i%10);
                     auto c = Path.parse (path);
                     auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
                     paths ~= p;
@@ -168,3 +170,30 @@ public class AppendFiles : Filer
         }
 }
 
+/*******************************************************************************
+
+*******************************************************************************/
+
+debug (AppendFiles)
+{
+        void main()
+        {
+                Log.root.add (new AppendFiles ("foo", 20, 6));
+                auto log = Log.lookup ("fu.bar");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+        }
+}
