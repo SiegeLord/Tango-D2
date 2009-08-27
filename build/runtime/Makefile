@@ -117,8 +117,10 @@ _lib:$(INSTALL_LIB)
 
 $(LIB):  $(OBJS)
 	rm -f $@
-	$(mkLib) $@ $(OBJS)
+	$(mkLib) $(out_lib_name)$@ $(OBJS)
+ifneq ($(ranlib),)
 	$(ranlib) $@
+endif
 
 $(INSTALL_LIB): $(LIB)
 	mkdir -p $(TANGO_HOME)/build/libs
