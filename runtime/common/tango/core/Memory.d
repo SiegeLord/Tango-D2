@@ -7,7 +7,50 @@
  * Authors:   Sean Kelly
  */
 module tango.core.Memory;
-import tango.core.internal.gcInterface;
+
+
+private
+{
+    extern (C) void gc_init();
+    extern (C) void gc_term();
+
+    extern (C) void gc_enable();
+    extern (C) void gc_disable();
+    extern (C) void gc_collect();
+    extern (C) void gc_minimize();
+
+    extern (C) uint gc_getAttr( void* p );
+    extern (C) uint gc_setAttr( void* p, uint a );
+    extern (C) uint gc_clrAttr( void* p, uint a );
+
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_realloc( void* p, size_t sz, uint ba = 0 );
+    extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
+    extern (C) size_t gc_reserve( size_t sz );
+    extern (C) void   gc_free( void* p );
+
+    extern (C) void*   gc_addrOf( void* p );
+    extern (C) size_t  gc_sizeOf( void* p );
+
+    struct BlkInfo_
+    {
+        void*  base;
+        size_t size;
+        uint   attr;
+    }
+
+    extern (C) BlkInfo_ gc_query( void* p );
+
+    extern (C) void gc_addRoot( void* p );
+    extern (C) void gc_addRange( void* p, size_t sz );
+
+    extern (C) void gc_removeRoot( void* p );
+    extern (C) void gc_removeRange( void* p );
+    
+    extern (C) size_t gc_counter();
+}
+
 
 /**
  * This struct encapsulates all garbage collection functionality for the D
@@ -408,7 +451,7 @@ struct GC
     * newlength = the number of elements to allocate
     * elSize = size of one element
     */
-    static size_t growLength(size_t newlength,size_t elSize=1){
+    size_t growLength(size_t newlength,size_t elSize=1){
         size_t newcap = newlength*elSize;
         size_t newext = 0;
         const size_t b=0; // flatness factor, how fast the extra space decreases with array size
@@ -443,7 +486,7 @@ struct GC
     * b = flatness factor, how fast the extra space decreases with array size (the larger the more constant)
     * minBits = minimum number of bits of newlength
     */
-    static size_t growLength(size_t newlength, size_t elSize,size_t a, size_t b=0,size_t minBits=1){
+    size_t growLength(size_t newlength, size_t elSize,size_t a, size_t b=0,size_t minBits=1){
         size_t newcap = newlength*elSize;
         size_t newext = 0;
         static size_t log2(size_t c)
@@ -466,15 +509,8 @@ struct GC
     * returns a counter c that is incremented in each mark phase and after each free phase is finished
     * c & 1 == 1 during gc (freeing phase), and == 0 outside it
     */
-    static size_t counter(){
+    size_t counter(){
         return gc_counter();
     }
-    
-    alias tango.core.internal.gcInterface.GCStats GCStats;
 
-    static GCStats stats(){
-        return gc_stats();
-    }
-    
 }
-
