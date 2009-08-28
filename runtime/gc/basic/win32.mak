@@ -99,3 +99,5 @@ clean :
 install :
 	$(MD) $(LIB_DEST)
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
+	$(MD) ..\..\..\user\tango\core\internal
+	$(CP) tango\core\internal\gcInterface.di ..\..\..\user\tango\core\internal

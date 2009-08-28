@@ -20,6 +20,7 @@ OBJ_BASE= \
     rt\cover.obj \
     critical.obj \
     rt\cImports.obj \
+    tango\core\internal\runtimeInterface.obj \
     rt\dmain2.obj \
     invariant.obj \
     rt\invariant_.obj \
