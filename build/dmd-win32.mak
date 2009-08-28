@@ -15,9 +15,10 @@ LIB_BUILD=
 LIB_TARGET=..\build\libs\$(LIB_BASE)$(LIB_BUILD).lib
 LIB_MASK=$(LIB_BASE)*.lib
 
+GC=basic
 DIR_CC=..\runtime\common\tango
 DIR_RT=..\runtime\compiler\dmd
-DIR_GC=..\runtime\gc\basic
+DIR_GC=..\runtime\gc\$(GC)
 
 LIB_CC=$(DIR_CC)\tango-cc-tango$(LIB_BUILD).lib
 LIB_RT=$(DIR_RT)\tango-rt-dmd$(LIB_BUILD).lib
@@ -37,7 +38,7 @@ ADD_CFLAGS=
 ADD_DFLAGS=-I../../compiler/dmd
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
-DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. -I../../common $(ADD_DFLAGS)
+DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../.. -I../../common -I../../gc/$(GC) $(ADD_DFLAGS)
 DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../.. -I../../common $(ADD_DFLAGS)
 TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
 TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
