@@ -38,8 +38,8 @@ ADD_CFLAGS=
 ADD_DFLAGS=-I../../compiler/dmd
 CFLAGS_RELEASE=-mn -6 -r $(ADD_CFLAGS)
 CFLAGS_DEBUG=-g -mn -6 -r $(ADD_CFLAGS)
-DFLAGS_RELEASE=-release -O -inline -w -nofloat -I. -I../shared -I../../../user -I../../common -I../../gc/$(GC) $(ADD_DFLAGS)
-DFLAGS_DEBUG=-g -w -nofloat  -I. -I../shared -I../../../user -I../../common -I../../gc/$(GC) $(ADD_DFLAGS)
+DFLAGS_RELEASE=-H -release -O -inline -w -nofloat -I. -I../shared -I../../../user -I../../common -I../../gc/$(GC) $(ADD_DFLAGS)
+DFLAGS_DEBUG=-H -g -w -nofloat  -I. -I../shared -I../../../user -I../../common -I../../gc/$(GC) $(ADD_DFLAGS)
 TFLAGS_RELEASE=-O -inline -w  -nofloat $(ADD_DFLAGS)
 TFLAGS_DEBUG=-g -w -nofloat $(ADD_DFLAGS)
 
