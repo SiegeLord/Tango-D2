@@ -18,6 +18,7 @@ LIB_MASK=$(LIB_BASE)*.lib
 CP=xcopy /y
 RM=del /f
 MD=mkdir
+MV=rename
 
 ADD_CFLAGS=
 ADD_DFLAGS=

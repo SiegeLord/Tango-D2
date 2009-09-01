@@ -16,6 +16,7 @@ LIB_MASK=tango-gc-stub*.lib
 CP=xcopy /y
 RM=del /f
 MD=mkdir
+MV=rename
 
 ADD_CFLAGS=
 ADD_DFLAGS=
