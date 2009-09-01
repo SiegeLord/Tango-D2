@@ -53,6 +53,6 @@ done
 if ( uname -a | grep -i mingw >& /dev/null ) ; then 
     findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \;"
 else
-    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \+"
+    findCmd="find '$dir' $excl $dfiles -print0 | xargs -0 $execCmd"
 fi
 sh -c "$findCmd"
