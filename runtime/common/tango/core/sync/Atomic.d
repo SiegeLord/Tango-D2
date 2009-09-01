@@ -480,7 +480,7 @@ version(LDC){
         static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
-            return llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
+            return cast(T)llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
         }
         else
         {
