@@ -47,7 +47,7 @@ version = MULTI_THREADED;       // produce multithreaded version
 /***************************************************/
 
 private import rt.basicgc.gcbits;
-private import tango.core.internal.gcInterface;
+private import rt.basicgc.gcstats;
 private import rt.basicgc.gcalloc;
 private import tango.core.sync.Atomic;
 
@@ -104,7 +104,6 @@ import cImports=rt.cImports: calloc, free, malloc, realloc, memcpy, memmove, mem
 debug(THREADINVARIANT) private import tango.stdc.posix.pthread;
 debug(PRINTF) private import tango.stdc.posix.pthread : pthread_self, pthread_t;
 debug private import tango.stdc.stdio : printf;
-
 version (GNU)
 {
     // BUG: The following import will likely not work, since the gcc
@@ -1332,11 +1331,11 @@ class GC
 
         version (none)
         {
-            GCStats stats;
+            GCStatsInternal statsInt;
 
-            getStats(stats);
+            getStats(statsInt);
             debug(PRINTF) printf("poolSize = %x, usedSize = %x, freelistSize = %x\n",
-                    stats.poolSize, stats.usedSize, stats.freelistSize);
+                    statsInt.poolSize, statsInt.usedSize, statsInt.freelistSize);
         }
 
         gcx.log_collect();
@@ -1383,15 +1382,15 @@ class GC
      * Retrieve statistics about garbage collection.
      * Useful for debugging and tuning.
      */
-    void getStats(out GCStats stats)
+    void getStats(out GCStatsInternal stats, int statDetail=0)
     {
         if (!thread_needLock())
         {
-            getStatsNoSync(stats);
+            getStatsNoSync(stats,statDetail);
         }
         else synchronized (gcLock)
         {
-            getStatsNoSync(stats);
+            getStatsNoSync(stats,statDetail);
         }
     }
 
@@ -1399,49 +1398,51 @@ class GC
     //
     //
     //
-    private void getStatsNoSync(out GCStats stats)
+    private void getStatsNoSync(out GCStatsInternal stats, int statDetail=0)
     {
-        size_t psize = 0;
-        size_t usize = 0;
-        size_t flsize = 0;
+        cImports.memset(&stats, 0, GCStatsInternal.sizeof);
+        if (statDetail==0){
+            size_t psize = 0;
+            size_t usize = 0;
+            size_t flsize = 0;
 
-        size_t n;
-        size_t bsize = 0;
+            size_t n;
+            size_t bsize = 0;
 
-        //debug(PRINTF) printf("getStats()\n");
-        cImports.memset(&stats, 0, GCStats.sizeof);
+            //debug(PRINTF) printf("getStats()\n");
 
-        for (n = 0; n < gcx.npools; n++)
-        {   Pool *pool = gcx.pooltable[n];
+            for (n = 0; n < gcx.npools; n++)
+            {   Pool *pool = gcx.pooltable[n];
 
-            psize += pool.ncommitted * PAGESIZE;
-            for (size_t j = 0; j < pool.ncommitted; j++)
-            {
-                Bins bin = cast(Bins)pool.pagetable[j];
-                if (bin == B_FREE)
-                    stats.freeBlocks++;
-                else if (bin == B_PAGE)
-                    stats.pageBlocks++;
-                else if (bin < B_PAGE)
-                    bsize += PAGESIZE;
+                psize += pool.ncommitted * PAGESIZE;
+                for (size_t j = 0; j < pool.ncommitted; j++)
+                {
+                    Bins bin = cast(Bins)pool.pagetable[j];
+                    if (bin == B_FREE)
+                        stats.freeBlocks++;
+                    else if (bin == B_PAGE)
+                        stats.pageBlocks++;
+                    else if (bin < B_PAGE)
+                        bsize += PAGESIZE;
+                }
             }
-        }
 
-        for (n = 0; n < B_PAGE; n++)
-        {
-            //debug(PRINTF) printf("bin %d\n", n);
-            for (List *list = gcx.bucket[n]; list; list = list.next)
+            for (n = 0; n < B_PAGE; n++)
             {
-                //debug(PRINTF) printf("\tlist %x\n", list);
-                flsize += binsize[n];
+                //debug(PRINTF) printf("bin %d\n", n);
+                for (List *list = gcx.bucket[n]; list; list = list.next)
+                {
+                    //debug(PRINTF) printf("\tlist %x\n", list);
+                    flsize += binsize[n];
+                }
             }
+
+            usize = bsize - flsize;
+
+            stats.poolSize = psize;
+            stats.usedSize = bsize - flsize;
+            stats.freelistSize = flsize;
         }
-
-        usize = bsize - flsize;
-
-        stats.poolSize = psize;
-        stats.usedSize = bsize - flsize;
-        stats.freelistSize = flsize;
         stats.totalMarkTime=gcx.totalMarkTime;
         stats.totalSweepTime=gcx.totalSweepTime;
         stats.totalPagesFreed=gcx.totalPagesFreed;
@@ -2692,7 +2693,7 @@ struct Gcx
 
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
-        auto oldV=flagAdd!(size_t)(gcCounter,1);
+        auto oldV=flagAdd!(size_t)(gcCounter,1); //pippo
         assert((oldV&cast(size_t)1) == 1,"unexpected gc counter value");
 
         return freedpages + recoveredpages;

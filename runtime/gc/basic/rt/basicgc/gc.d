@@ -27,6 +27,7 @@ module rt.basicgc.gc;
 
 private import rt.basicgc.gcx;
 private import tango.core.internal.gcInterface;
+private import rt.basicgc.gcstats;
 //private import tango.stdc.stdlib;
 private import cImports=rt.cImports;
 
@@ -224,10 +225,26 @@ extern (C) void gc_finishGCRun(){
 }
 
 /// returns a stats structure that can be cached
-// NOTE: This routine is gc dependent.
-extern (C) GCStats gc_stats()
+extern (C) GCStats gc_stats(int statDetail)
 {
     GCStats stats = void;
-    _gc.getStats( stats );
+    GCStatsInternal *statsInt=cast(GCStatsInternal*)&stats;
+    _gc.getStats( *statsInt, statDetail );
     return stats;
+}
+
+static assert(GCStats.sizeof>=GCStatsInternal.sizeof,"GCStats size too small");
+static assert(GCStats.alignof % GCStatsInternal.alignof ==0,"GCStats align incompatible");
+
+extern (C) double gc_stats_opIndex(GCStats *gcStats,char[] c){
+    auto gcStatsInt=cast(GCStatsInternal *)gcStats;
+    return gcStatsInt.opIndex(c);
+}
+extern (C) bool gc_stats_opIn_r(GCStats *gcStats,char[] c){
+    auto gcStatsInt=cast(GCStatsInternal *)gcStats;
+    return gcStatsInt.opIn_r(c);
+}
+extern (C) char[][] gc_stats_keys(GCStats *gcStats){
+    auto gcStatsInt=cast(GCStatsInternal *)gcStats;
+    return gcStatsInt.keys();
 }

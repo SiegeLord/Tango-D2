@@ -25,14 +25,64 @@
  */
 module rt.basicgc.gcstats;
 
-/**
- *
- */
-struct GCStats
+/// NOTE: The content of this structure are gc dependent, but opIndex, opIn and keys
+/// are supposed to be available for all gc
+struct GCStatsInternal
 {
-    size_t poolsize;        // total size of pool
-    size_t usedsize;        // bytes allocated
-    size_t freeblocks;      // number of blocks marked FREE
-    size_t freelistsize;    // total of memory on free lists
-    size_t pageblocks;      // number of blocks marked PAGE
+    void* dummy;
+    size_t poolSize;        /// total size of pool
+    size_t usedSize;        /// bytes allocated
+    size_t freeBlocks;      /// number of blocks marked FREE
+    size_t freelistSize;    /// total of memory on free lists
+    size_t pageBlocks;      /// number of blocks marked PAGE
+    size_t gcCounter;       /// number of GC phases (twice the number of gc collections)
+    real totalPagesFreed;   /// total pages freed
+    real totalMarkTime;     /// seconds spent in mark-phase
+    real totalSweepTime;    /// seconds spent in sweep-phase
+    ulong totalAllocTime;   /// total time spent in alloc and malloc,calloc,realloc,...free
+    ulong totalAllocTimeFreq;   /// frequancy for totalAllocTime
+    ulong nAlloc;           /// number of calls to allocation/free routines
+    
+    /// return the statistical information for the given key
+    real opIndex(char[] prop){
+        switch(prop){
+        case "poolSize":
+            return cast(real)poolSize;
+        case "usedSize":
+            return cast(real)usedSize;
+        case "freeBlocks":
+            return cast(real)freeBlocks;
+        case "freelistSize":
+            return cast(real)freelistSize;
+        case "pageBlocks":
+            return cast(real)pageBlocks;
+        case "gcCounter":
+            return 0.5*cast(real)gcCounter;
+        case "totalPagesFreed":
+            return totalPagesFreed;
+        case "totalMarkTime":
+            return totalMarkTime;
+        case "totalSweepTime":
+            return totalSweepTime;
+        case "totalAllocTime":
+            return cast(real)totalAllocTime/cast(real)(totalAllocTimeFreq==0?1UL:totalAllocTimeFreq);
+        case "nAlloc":
+            return cast(real)nAlloc;
+        default:
+            throw new Exception("unsupported property",__FILE__,__LINE__);
+        }
+    }
+    /// returns if the given string is a valid key
+    bool opIn_r(char[] c){
+        return (c=="poolSize")||(c=="usedSize")||(c=="freeBlocks")||(c=="freelistSize")
+            || (c=="pageBlocks")||(c=="gcCounter")||(c=="totalPagesFreed")||(c=="totalMarkTime")
+            || (c=="totalSweepTime")||(c=="totalAllocTime")||(c=="nAlloc");
+    }
+    /// returns the valid keys
+    char[][]keys(){
+        return ["poolSize"[],"usedSize","freeBlocks","freelistSize","pageBlocks",
+        "gcCounter","totalPagesFreed","totalMarkTime","totalSweepTime","totalAllocTime",
+        "nAlloc"];
+    }
 }
+

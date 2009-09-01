@@ -1388,7 +1388,6 @@ extern (C) void _d_monitorexit(Object h)
 {
     Monitor* m = getMonitor(h);
     IMonitor i = m.impl;
-
     if (i is null)
     {
         _d_monitor_unlock(h);

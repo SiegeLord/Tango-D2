@@ -149,7 +149,17 @@ extern (C) size_t gc_counter();
 extern (C) void gc_finishGCRun();
 
 /// returns a stats structure that can be cached
-extern (C) GCStats gc_stats(){
+extern (C) GCStats gc_stats(int statDetail){
     GCStats n;
     return n;
+}
+
+extern (C) double gc_stats_opIndex(GCStats *gcStats,char[] c){
+    throw new Exception("unknown key "~c,__FILE__,__LINE);
+}
+extern (C) bool gc_stats_opIn_r(GCStats *gcStats,char[] c){
+    return false;
+}
+extern (C) char[][] gc_stats_keys(GCStats *gcStats){
+    return null;
 }

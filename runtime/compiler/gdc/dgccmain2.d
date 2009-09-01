@@ -11,6 +11,7 @@ private
 {
     import memory;
     import rt.util.console;
+    import tango.core.internal.runtimeInterface;
 
     import tango.stdc.stddef;
     import tango.stdc.stdlib;

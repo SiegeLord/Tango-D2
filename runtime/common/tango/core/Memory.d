@@ -472,8 +472,15 @@ struct GC
     
     alias tango.core.internal.gcInterface.GCStats GCStats;
 
-    static GCStats stats(){
-        return gc_stats();
+    /**
+    * returns a atructure with various statistical information about the gc.
+    * Its contents are gc specific, but can be queried via opIndex, opIn_r and keys.
+    * The default detail level should return all information, the information is supposed
+    * to be useful for debugging, performace analysis, and collecting it might be costly.
+    * Normally emphasis is on zero (or negligible) cost for information if not used.
+    */
+    static GCStats stats(int detail=0){
+        return gc_stats(detail);
     }
     
 }

@@ -15,6 +15,7 @@ private
     import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE;
     import rt.memory;
     import tango.stdc.stdio: printf;
+    import tango.core.internal.runtimeInterface;
 }
 
 version( Win32 )

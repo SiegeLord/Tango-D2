@@ -13,7 +13,7 @@ module rt.dmain2;
 private
 {
     import rt.util.console;
-
+    import tango.core.internal.runtimeInterface;
     import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE;
     import tango.stdc.stdio: printf;
 }

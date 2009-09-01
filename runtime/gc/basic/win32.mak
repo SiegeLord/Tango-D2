@@ -71,6 +71,7 @@ ALL_OBJS= \
     rt/basicgc/gc.obj \
     rt/basicgc/gcalloc.obj \
     rt/basicgc/gcbits.obj \
+    rt/basicgc/gcstats.obj \
     tango/core/internal/gcInterface.obj \
     rt/basicgc/gcx.obj
 
