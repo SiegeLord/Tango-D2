@@ -138,9 +138,11 @@ static if (LockVersion){
             return res;
         }
         
-        /// adds to the flag
-        T opAddAssign(T incV=cast(T)1){
-            return flagAdd(_val,incV);
+        static if (is(typeof(T.init+T.init))){
+            /// adds to the flag
+            T opAddAssign(T incV=cast(T)1){
+                return flagAdd(_val,incV);
+            }
         }
         
         /// sets the value of the flag
