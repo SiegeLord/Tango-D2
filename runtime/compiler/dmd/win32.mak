@@ -112,4 +112,4 @@ install :
 	$(CP) std\intrinsic.di ..\..\..\user\std
 	# You CANNOT copy directly to .di; xcopy will stop the build with a prompt
 	$(CP) tango\core\internal\runtimeInterface.d ..\..\..\user\tango\core\internal
-	$(MV) ..\..\..\user\tango\core\internal\runtimeInterface.d ..\..\..\user\tango\core\internal\runtimeInterface.di
+	$(MV) ..\..\..\user\tango\core\internal\runtimeInterface.d runtimeInterface.di
