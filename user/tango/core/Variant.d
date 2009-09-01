@@ -168,7 +168,7 @@ private
          */
         while( cast(TypeInfo_Typedef) srctype !is null )
         {
-            if( srctype is typeid(dsttypeT) )
+            if( srctype == typeid(dsttypeT) )
                 return true;
             srctype = srctype.next;
         }
@@ -199,7 +199,7 @@ private
                     )
                     {
                         // ... test.
-                        if( srctype is typeid(U) )
+                        if( srctype == typeid(U) )
                             return true;
                     }
                 }
@@ -214,11 +214,11 @@ private
          */
         static if( is( T[] : dsttypeT ) )
         {
-            if( typeid(T[]) is srctype )
+            if( typeid(T[]) == srctype )
                 return true;
 
             if( auto ti_sa = cast(TypeInfo_StaticArray) srctype )
-                return ti_sa.next is typeid(T);
+                return ti_sa.next == typeid(T);
 
             return false;
         }
@@ -261,7 +261,7 @@ private
     bool isBasicTypeInfo(TypeInfo ti)
     {
         foreach( T ; BasicTypes )
-            if( ti is typeid(T) )
+            if( ti == typeid(T) )
                 return true;
         return false;
     }
@@ -439,7 +439,7 @@ struct Variant
      */
     bool isA(T)()
     {
-        return cast(bool)(typeid(T) is type);
+        return cast(bool)(typeid(T) == type);
     }
 
     /**
@@ -476,7 +476,7 @@ struct Variant
         {
             // Test for basic types (oh, and dynamic->static arrays and
             // pointers.)
-            return ( cast(bool)(typeid(T) is type)
+            return ( cast(bool)(typeid(T) == type)
                     || canImplicitCastToType!(T)(type) );
         }
     }
@@ -535,7 +535,7 @@ struct Variant
             // stored, we fail NOW if the type in question isn't an object (we
             // can let the runtime do the test) and if it isn't something we
             // know we can implicitly cast to.
-            if( type !is typeid(T)
+            if( type != typeid(T)
                     // Let D do runtime check itself
                     && !isObject!(T)
                     && !isInterface!(T)
@@ -549,7 +549,7 @@ struct Variant
             // casts.
             static if( isBasicType!(T) )
             {
-                if( type is typeid(T) )
+                if( type == typeid(T) )
                 {
                     // We got lucky; the types match exactly.  If the type is
                     // small, grab it out of storage; otherwise, copy it from
@@ -571,7 +571,7 @@ struct Variant
                     // should have already eliminated invalid coercions.
                     foreach( U ; BasicTypes )
                     {
-                        if( type is typeid(U) )
+                        if( type == typeid(U) )
                         {
                             static if( U.sizeof <= value.sizeof )
                                 return cast(T) *cast(U*)(&value);
@@ -806,7 +806,7 @@ private:
          * type of the data we're storing.
          */
 
-        if( type is typeid(void) )
+        if( type == typeid(void) )
             throw new VariantVoidVarargException;
 
         r.type = type;
@@ -882,7 +882,7 @@ private:
                         "not been tested with this compiler." );
             }
 
-            if( type is typeid(void) )
+            if( type == typeid(void) )
                 throw new VariantVoidVarargException;
 
             if( isStaticArrayTypeInfo(type) )
@@ -913,7 +913,7 @@ private:
                     bool found = false;
                     foreach( i ; this.value.obj.classinfo.interfaces )
                     {
-                        if( i.classinfo is type_i.info )
+                        if( i.classinfo == type_i.info )
                         {
                             // Found it
                             void* i_ptr = (cast(void*) this.value.obj) + i.offset;
