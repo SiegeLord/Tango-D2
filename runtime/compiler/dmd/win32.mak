@@ -111,5 +111,6 @@ install :
 	$(MD) ..\..\..\user\tango\core\internal
 	$(CP) std\intrinsic.di ..\..\..\user\std
 	# You CANNOT copy directly to .di; xcopy will stop the build with a prompt
+	$(RM) ..\..\..\user\tango\core\internal\runtimeInterface.di
 	$(CP) tango\core\internal\runtimeInterface.d ..\..\..\user\tango\core\internal
 	$(MV) ..\..\..\user\tango\core\internal\runtimeInterface.d runtimeInterface.di

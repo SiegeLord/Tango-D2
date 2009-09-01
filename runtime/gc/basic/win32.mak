@@ -101,5 +101,6 @@ install :
 	$(MD) $(LIB_DEST)
 	$(CP) $(LIB_MASK) $(LIB_DEST)\.
 	$(MD) ..\..\..\user\tango\core\internal
+	$(RM) ..\..\..\user\tango\core\internal\gcInterface.di
 	$(CP) tango\core\internal\gcInterface.d ..\..\..\user\tango\core\internal
 	$(MV) ..\..\..\user\tango\core\internal\gcInterface.d gcInterface.di
