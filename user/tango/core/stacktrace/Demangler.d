@@ -567,11 +567,6 @@ public class Demangler
         {
             debug(traceDemangler) trace ("lNameAH");
 
-    //      uint chars;
-    //      if (! number (chars))
-    //          return false;
-
-            uint chars;
             auto pos=checkpoint();
             if (! numberNoParse ())
                 return false;
@@ -583,57 +578,51 @@ public class Demangler
             numberBuf[0..str.length]=str;
             str=numberBuf[0..str.length];
             pos.resetOutput();
+            pos.reset();
             
-            int i = 0;
+            int i = str.length;
 
             bool done = false;
 
             char[] original = input;
-            char[] working = input;
 
-            while (done == false)
+            while (i != 0)
             {
-                if (i > 0)
-                {
-                    input = working = original[0 .. toUint(str[0..i])];
+                auto len=toUint(str[0..i]);
+                debug(traceDemangler) report ("trying {}/{}", str[0..i], str[i..$]);
+                if (len+i>original.length) {
+                    i--;
+                    continue;
                 }
-                else
-                    input = working = original;
+                input=original[i .. len+i];
 
-                chars = toUint(str[i..$]);
+                auto chars = toUint(str[i..$]);
 
-                if (chars < input.length && chars > 0)
+                if (chars +(str.length-i)<= len && chars > 0)
                 {
-                    // cut the string from the right side to the number
-                    // char[] original = input;
-                    // input = input[0 .. chars];
-                    // uint len = input.length;
-                    debug(traceDemangler) report ("trying {}/{}", chars, input.length);
+                    debug(traceDemangler) report ("input now '{}'", input);
                     done = templateInstanceName ();
-                    //input = original[len - input.length .. $];
-
-                    if (!done)
-                    {
-                        input = working;
-                        debug(traceDemangler) report ("trying {}/{}", chars, input.length);
-                        done = name (chars);
+                    if (!done) {
+                        done = qualifiedName();
                     }
 
                     if (done)
                     {
-                        input = original[working.length - input.length .. $];
-                        return true;
+                        if (input.length==0){
+                            input = original[len+i .. $];
+                            return true;
+                        } else {
+                            debug(traceDemangler) report ("failed due to leftover: '{}'", input);
+                        }
+                        pos.resetOutput();
                     }
-                    else
-                        input = original;
                 }
 
-                i += 1;
-                if (i == str.length)
-                    return false;
+                --i;
             }
-
-            return true;
+            
+            input = original;
+            return pos.reset;
         }
 
         bool number (ref uint value)
