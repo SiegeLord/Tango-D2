@@ -379,7 +379,7 @@ class TypeInfo_Array : TypeInfo
         TypeInfo_Array c;
         return this is o ||
                ((c = cast(TypeInfo_Array)o) !is null &&
-                this.value == c.value);
+                this.next == c.next);
     }
 
     override hash_t getHash(in void* p)

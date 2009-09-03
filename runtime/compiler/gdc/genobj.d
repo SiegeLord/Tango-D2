@@ -380,7 +380,7 @@ class TypeInfo_Array : TypeInfo
         return cast(int)
                (this is o ||
                 ((c = cast(TypeInfo_Array)o) !is null &&
-                 this.value == c.value));
+                 this.next == c.next));
     }
 
     hash_t getHash(void *p)
