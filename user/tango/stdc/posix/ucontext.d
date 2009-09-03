@@ -159,6 +159,75 @@ version(darwin){
     }
 }
 
+version( freebsd )
+{
+    alias int __register_t;
+    struct mcontext_t
+    {
+        /*
+        * The first 20 fields must match the definition of
+        * sigcontext. So that we can support sigcontext
+        * and ucontext_t at the same time.
+        */
+        __register_t	mc_onstack;	/* XXX - sigcontext compat. */
+        __register_t	mc_gs;		/* machine state (struct trapframe) */
+        __register_t	mc_fs;
+        __register_t	mc_es;
+        __register_t	mc_ds;
+        __register_t	mc_edi;
+        __register_t	mc_esi;
+        __register_t	mc_ebp;
+        __register_t	mc_isp;
+        __register_t	mc_ebx;
+        __register_t	mc_edx;
+        __register_t	mc_ecx;
+        __register_t	mc_eax;
+        __register_t	mc_trapno;
+        __register_t	mc_err;
+        __register_t	mc_eip;
+        __register_t	mc_cs;
+        __register_t	mc_eflags;
+        __register_t	mc_esp;
+        __register_t	mc_ss;
+
+        int mc_len;			/* sizeof(mcontext_t) */
+        //#define	_MC_FPFMT_NODEV		0x10000	/* device not present or configured */
+        //#define	_MC_FPFMT_387		0x10001
+        //#define	_MC_FPFMT_XMM		0x10002
+        int mc_fpformat;
+        //#define	_MC_FPOWNED_NONE	0x20000	/* FP state not used */
+        //#define	_MC_FPOWNED_FPU		0x20001	/* FP state came from FPU */
+        //#define	_MC_FPOWNED_PCB		0x20002	/* FP state came from PCB */
+        int mc_ownedfp;
+        int[1] mc_spare1;		/* align next field to 16 bytes */
+        /*
+        * See <machine/npx.h> for the internals of mc_fpstate[].
+        */
+        align(16) int[128] mc_fpstate;
+        int[8] mc_spare2;
+    }
+    
+    struct ucontext_t
+    {
+        /*
+        * Keep the order of the first two fields. Also,
+        * keep them the first two fields in the structure.
+        * This way we can have a union with struct
+        * sigcontext and ucontext_t. This allows us to
+        * support them both at the same time.
+        * note: the union is not defined, though.
+        */
+        sigset_t uc_sigmask;
+        mcontext_t uc_mcontext;
+
+        ucontext_t* uc_link;
+        stack_t uc_stack;
+        int uc_flags;
+        //#define	UCF_SWAPPED	0x00000001	/* Used by swapcontext(3). */
+        int[4] __spare__;
+    }
+}
+
 //
 // Obsolescent (OB)
 //

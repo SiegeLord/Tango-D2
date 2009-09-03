@@ -73,6 +73,28 @@ version(linux){
     }    
 }
 
+version(freebsd){
+    struct statvfs_t
+      {
+        c_ulong	f_bavail;	/* Number of blocks */
+        c_ulong	f_bfree;
+        c_ulong	f_blocks;
+        c_ulong	f_favail;	/* Number of files (e.g., inodes) */
+        c_ulong	f_ffree;
+        c_ulong	f_files;
+        c_ulong	f_bsize;	/* Size of blocks counted above */
+        c_ulong	f_flag;
+        c_ulong	f_frsize;	/* Size of fragments */
+        c_ulong	f_fsid;		/* Not meaningful */
+        c_ulong	f_namemax;	/* Same as pathconf(_PC_NAME_MAX) */
+      };
+    enum
+    {
+      ST_RDONLY = 0x1,
+      ST_NOSUID = 0x2,
+    }    
+}
+
 extern(C){
     int fstatvfs(int, statvfs_t *);
     int statvfs(char * , statvfs_t *);

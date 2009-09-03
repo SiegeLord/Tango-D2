@@ -9,5 +9,6 @@ versionName=`uname -r`
 case $osName in
     Linux) echo linux-$platformName ;;
     Darwin) echo osx-$platformName ;;
+    FreeBSD) echo freebsd-$platformName ;;
     *) echo $osName-$platformName
 esac

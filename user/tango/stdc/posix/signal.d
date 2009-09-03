@@ -226,6 +226,10 @@ else version( solaris )
     const SIGJVM2   = 40;   /* reserved signal for Java Virtual Machine */
 +/
 }
+else
+{
+   static assert(0, "Platform not supported...");
+}
 
 struct sigaction_t
 {

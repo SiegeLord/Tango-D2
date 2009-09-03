@@ -33,8 +33,9 @@ module tango.stdc.constants.freebsd.socket;
     {
         SOCK_STREAM = 1 , /++ sequential, reliable +/
         SOCK_DGRAM = 2 , /++ connectionless unreliable, max length +/
-        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
         SOCK_RAW = 3 , /++ raw protocol +/
+        SOCK_RDM = 4,
+        SOCK_SEQPACKET = 5, /++ sequential, reliable, max length +/
     }
 
     enum
@@ -82,6 +83,8 @@ module tango.stdc.constants.freebsd.socket;
         AF_UNSPEC = 0 ,
         AF_UNIX = 1 ,
         AF_INET = 2 ,
+        AF_IPX = 23 ,
+        AF_APPLETALK = 16 ,
         AF_INET6 = 28 ,
     }
     enum : uint
