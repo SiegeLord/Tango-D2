@@ -44,15 +44,17 @@ if [ -z "$dir" ] ; then
 fi
 
 excl=
+excl2=
 while [ $# -gt 0 ]
 do
     # -false is a non standard linux extension
     excl="$excl -path '$1' -prune -name a -not -name a -o "
+    excl2="$excl2 -not -name '$1' "
     shift
 done
 if ( uname -a | grep -i mingw >& /dev/null ) ; then 
-    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \;"
+    findCmd="find '$dir' $excl $excl2 $dfiles -exec $execCmd '{}' \;"
 else
-    findCmd="find '$dir' $excl $dfiles -print0 | xargs -0 $execCmd"
+    findCmd="find '$dir' $excl $excl2 $dfiles -print0 | xargs -0 $execCmd"
 fi
 sh -c "$findCmd"
