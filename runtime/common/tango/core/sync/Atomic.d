@@ -123,8 +123,40 @@ version( LDC )
             if (ls || sl || ll || ss){
                 // cpid should sequence even more than mfence
                 volatile asm {
+                    push EBX;
                     mov EAX, 0; // model, stepping
                     cpuid;
+                    pop EBX;
+                }
+            }
+        } else static if (ls || sl || (ll && ss)){ // use a sequencing operation like cpuid or simply cmpxch instead?
+            volatile asm {
+                mfence;
+            }
+            // this is supposedly faster and correct, but let's play it safe and use the specific instruction
+            // push rax
+            // xchg rax
+            // pop rax
+        } else static if (ll){
+            volatile asm {
+                lfence;
+            }
+        } else static if( ss ){
+            volatile asm {
+                sfence;
+            }
+        }
+    }
+} else version(D_InlineAsm_X86_64){
+    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+        static if (device) {
+            if (ls || sl || ll || ss){
+                // cpid should sequence even more than mfence
+                volatile asm {
+                    push RBX;
+                    mov RAX, 0; // model, stepping
+                    cpuid;
+                    pop RBX;
                 }
             }
         } else static if (ls || sl || (ll && ss)){ // use a sequencing operation like cpuid or simply cmpxch instead?
@@ -494,19 +526,19 @@ version(LDC){
         T res;
         static if (T.sizeof==1){
             volatile asm {
-                mov BL, incV;
+                mov DL, incV;
                 mov ECX, posVal;
                 lock;
-                xadd byte ptr [ECX],BL;
-                mov byte ptr res[EBP],BL;
+                xadd byte ptr [ECX],DL;
+                mov byte ptr res[EBP],DL;
             }
         } else static if (T.sizeof==2){
             volatile asm {
-                mov BX, incV;
+                mov DX, incV;
                 mov ECX, posVal;
                 lock;
-                xadd short ptr [ECX],BX;
-                mov short ptr res[EBP],BX;
+                xadd short ptr [ECX],DX;
+                mov short ptr res[EBP],DX;
             }
         } else static if (T.sizeof==4){
             volatile asm
@@ -531,19 +563,19 @@ version(LDC){
         T res;
         static if (T.sizeof==1){
             volatile asm {
-                mov BL, incV;
+                mov DL, incV;
                 mov RCX, posVal;
                 lock;
-                xadd byte ptr [RCX],BL;
-                mov byte ptr res[EBP],BL;
+                xadd byte ptr [RCX],DL;
+                mov byte ptr res[EBP],DL;
             }
         } else static if (T.sizeof==2){
             volatile asm {
-                mov BX, incV;
+                mov DX, incV;
                 mov RCX, posVal;
                 lock;
-                xadd short ptr [RCX],BX;
-                mov short ptr res[EBP],BX;
+                xadd short ptr [RCX],DX;
+                mov short ptr res[EBP],DX;
             }
         } else static if (T.sizeof==4){
             volatile asm
@@ -558,10 +590,10 @@ version(LDC){
             volatile asm
             {
                 mov RAX, val;
-                mov RBX, incV;
+                mov RDX, incV;
                 lock; // lock always needed to make this op atomic
-                xadd qword ptr [RAX],RBX;
-                mov res[EBP],RBX;
+                xadd qword ptr [RAX],RDX;
+                mov res[EBP],RDX;
             }
         } else {
             static assert(0,"Unsupported type size for type:"~T.stringof);
