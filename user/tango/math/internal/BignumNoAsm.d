@@ -280,7 +280,7 @@ void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
 void multibyteTriangleAccumulate(uint[] dest, uint[] x)
 {
     // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
-    dest[x.length] = multibyteMul!('+')(dest[1 .. x.length], x[1..$], x[0], 0);
+    dest[x.length] = multibyteMul(dest[1 .. x.length], x[1..$], x[0], 0);
 	if (x.length <4) {
 	    if (x.length ==3) {
             ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
