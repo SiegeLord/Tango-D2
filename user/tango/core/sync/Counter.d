@@ -68,7 +68,7 @@ static if (LockVersion){
         Mutex m;
         
         /// creates a unique number object with the given initial value
-        static Flag opCall(T firstVal=cast(T)0){
+        static Flag opCall(T firstVal){
             Flag res;
             res._val=firstVal;
             res.m=new Mutex();
@@ -86,14 +86,26 @@ static if (LockVersion){
             return _m;
         }
         
-        /// adds to the flag
-        T opAddAssign(T incV=cast(T)1){
-            T oldVal;
-            synchronized(m){
-                oldVal=_val;
-                _val+=incV;
+        static if (is(typeof(T.init+T.init))){
+            /// adds to the flag
+            T opAddAssign(T incV=cast(T)1){
+                T oldVal;
+                synchronized(m){
+                    oldVal=_val;
+                    _val+=incV;
+                }
+                return oldVal;
             }
-            return oldVal;
+
+            /// subtracts from the flag
+            T opSubAssign(T incV=cast(T)1){
+                T oldVal;
+                synchronized(m){
+                    oldVal=_val;
+                    _val-=incV;
+                }
+                return oldVal;
+            }
         }
         
         /// sets the value of the flag
@@ -132,7 +144,7 @@ static if (LockVersion){
         T _val;
         
         /// creates a unique number object with the given initial value
-        static Flag opCall(T firstVal=cast(T)0){
+        static Flag opCall(T firstVal){
             Flag res;
             res._val=firstVal;
             return res;
@@ -142,6 +154,10 @@ static if (LockVersion){
             /// adds to the flag
             T opAddAssign(T incV=cast(T)1){
                 return flagAdd(_val,incV);
+            }
+            /// subtracts from the flag
+            T opSubAssign(T incV=cast(T)1){
+                return flagAdd(_val,-incV);
             }
         }
         

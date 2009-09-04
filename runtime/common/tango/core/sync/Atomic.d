@@ -178,6 +178,8 @@ version( LDC )
         }
     }
 } else {
+    pragma(msg,"WARNING: no atomic operations on this architecture");
+    pragma(msg,"WARNING: this is *slow* you probably want to change this!");
     int dummy;
     // acquires a lock... probably you will want to skip this
     synchronized void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
@@ -244,7 +246,6 @@ version(LDC){
                 mov ECX, posVal;
                 lock; // lock always needed to make this op atomic
                 xchg [ECX], EAX;
-                setz EAX;
             }
         }
         else static if( T.sizeof == long.sizeof ) {
@@ -284,7 +285,6 @@ version(LDC){
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
                 xchg [RCX], EAX;
-                setz AL;
             }
         }
         else static if( T.sizeof == long.sizeof ) {
@@ -482,7 +482,7 @@ version(LDC){
 T atomicLoad(T)(ref T val)
 in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-        static assert(T.sizeof<=size_t.sizeof);
+        static assert(T.sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
     volatile res=val;
     return res;
@@ -496,8 +496,8 @@ in {
 /// remove this? I know no actual architecture where this would be different
 T atomicStore(T)(ref T val, T newVal)
 in {
-        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
-        static assert(T.sizeof<=size_t.sizeof);
+        assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ), "invalid alignment" );
+        static assert(T.sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
     volatile newVal=val;
 }
@@ -509,19 +509,19 @@ in {
 /// no barriers implied, only atomicity!
 version(LDC){
     T atomicAdd(T)(ref T val, T inc){
-        static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
             return cast(T)llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
         }
         else
         {
+            static assert( isIntegerType!(T), "invalid type "~T.stringof );
             return llvm_atomic_load_add!(T)(&val, cast(T)inc);
         }
     }
 } else version (D_InlineAsm_X86){
     T atomicAdd(T)(ref T val, T incV){
-        static assert( isIntegerType!(T) );
+        static assert( isIntegerType!(T)||isPointerType!(T),"invalid type: "~T.stringof );
         T* posVal=&val;
         T res;
         static if (T.sizeof==1){
@@ -558,7 +558,7 @@ version(LDC){
     }
 } else version (D_InlineAsm_X86_64){
     T atomicAdd(T)(ref T val, T incV){
-        static assert( isIntegerType!(T) );
+        static assert( isIntegerType!(T)||isPointerType!(T),"invalid type: "~T.stringof );
         T* posVal=&val;
         T res;
         static if (T.sizeof==1){
@@ -603,7 +603,7 @@ version(LDC){
 } else {
     static if (LockVersion){
         T atomicAdd(T)(ref T val, T incV){
-            static assert( isIntegerType!(T) );
+            static assert( isIntegerType!(T)||isPointerType!(T),"invalid type: "~T.stringof );
             synchronized(typeid(T)){
                 T oldV=val;
                 val+=incV;
@@ -612,7 +612,7 @@ version(LDC){
         }
     } else {
         T atomicAdd(T)(ref T val, T incV){
-            static assert( isIntegerType!(T) );
+            static assert( isIntegerType!(T)||isPointerType!(T),"invalid type: "~T.stringof );
             synchronized(typeid(T)){
                 T oldV,newVal;
                 do{
@@ -631,24 +631,22 @@ version(LDC){
 /// and no "fair" share is applied between fast function (more likely to succeed) and
 /// the others (i.e. do not use this in case of high contention)
 T atomicOp(T)(ref T val, T delegate(T) f){
-    static assert( isIntegerType!(T) );
-    synchronized(typeid(T)){
-        T oldV,newVal;
-        int i=0;
-        bool success;
-        do{
-            volatile oldV=val;
-            newV=f(oldV);
-            success=atomicCAS!(T)(val,newV,oldV);
-        } while((!success) && ++i<200)
-        while (!success){
-            thread_yield();
-            volatile oldV=val;
-            newV=f(oldV);
-            success=atomicCAS!(T)(val,newV,oldV);
-        }
-        return oldV;
+    static assert( isIntegerType!(T) || isPointerType!(T));
+    T oldV,newV;
+    int i=0;
+    bool success;
+    do{
+        volatile oldV=val;
+        newV=f(oldV);
+        success=atomicCAS!(T)(val,newV,oldV);
+    } while((!success) && ++i<200)
+    while (!success){
+        thread_yield();
+        volatile oldV=val;
+        newV=f(oldV);
+        success=atomicCAS!(T)(val,newV,oldV);
     }
+    return oldV;
 }
 
 // use stricter fences
@@ -664,7 +662,7 @@ T flagGet(T)(ref T flag){
 
 /// sets a flag (ensuring that all pending writes are executed before this)
 /// the original value is returned
-T flagSet(T)(ref T flag,newVal){
+T flagSet(T)(ref T flag,T newVal){
     memoryBarrier!(false,strictFences,false,true)();
     return atomicSwap(flag,newVal);
 }

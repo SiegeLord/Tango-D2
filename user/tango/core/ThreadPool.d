@@ -9,7 +9,7 @@
 module tango.core.ThreadPool;
 
 private import  tango.core.Thread,
-                tango.core.Atomic;
+                tango.core.sync.Counter;
 
 private import  tango.core.sync.Mutex,
                 tango.core.sync.Condition;
@@ -76,9 +76,9 @@ class ThreadPool(Args...)
         poolActivity = new Condition(m);
         workerActivity = new Condition(m);
 
-        priority_job.store(cast(Job*)null);
-        active_jobs.store(cast(size_t) 0);
-        done.store(false);
+        priority_job=(cast(Job*)null);
+        active_jobs=(cast(size_t) 0);
+        done=false;
 
         for (size_t i = 0; i < workers; i++)
         {
@@ -100,10 +100,10 @@ class ThreadPool(Args...)
         m.lock();
         scope(exit) m.unlock();
         auto j = Job(job, args);
-        priority_job.store(&j);
+        priority_job=(&j);
         poolActivity.notify();
         // Wait until someone has taken the job
-        while (priority_job.load() !is null)
+        while (priority_job() !is null)
             workerActivity.wait();
     }
 
@@ -113,7 +113,7 @@ class ThreadPool(Args...)
      */
     bool tryAssign(JobD job, Args args)
     {
-        if (active_jobs.load() >= pool.length)
+        if (active_jobs() >= pool.length)
             return false;
         assign(job, args);
         return true;
@@ -142,13 +142,13 @@ class ThreadPool(Args...)
     /// Get the number of jobs being executed
     size_t activeJobs()
     {
-        return active_jobs.load();
+        return active_jobs();
     }
 
     /// Finish currently executing jobs and drop all pending.
     void shutdown()
     {
-        done.store(true);
+        done=true;
         m.lock();
         q.length = 0;
         m.unlock();
@@ -163,7 +163,7 @@ class ThreadPool(Args...)
     void finish()
     {
         m.lock();
-        while (q.length > 0 || active_jobs.load() > 0)
+        while (q.length > 0 || active_jobs() > 0)
             workerActivity.wait();
         m.unlock();
         shutdown();
@@ -183,7 +183,7 @@ private:
     // This is to store a single job for immediate execution, which hopefully
     // means that any program using only assign and tryAssign wont need any
     // heap allocations after startup.
-    Atomic!(Job*) priority_job;
+    Flag!(Job*) priority_job;
 
     // This should be used when accessing the job queue
     Mutex m;
@@ -199,29 +199,29 @@ private:
     Condition workerActivity;
 
     // Are we in the shutdown phase?
-    Atomic!(bool) done;
+    Flag!(int) done;
 
     // Counter for the number of jobs currently being calculated
-    Atomic!(size_t) active_jobs;
+    Flag!(size_t) active_jobs;
 
     // Thread delegate:
     void doJob()
     {
-        while (!done.load())
+        while (!done())
         {
             m.lock();
-            while (q.length == 0 && priority_job.load() is null && !done.load())
+            while (q.length == 0 && priority_job() is null && !done())
                 poolActivity.wait();
-            if (done.load()) {
+            if (done()) {
                 m.unlock(); // not using scope(exit), need to manually unlock
                 break;
             }
             Job job;
-            Job* jobPtr = priority_job.load();
+            Job* jobPtr = priority_job();
             if (jobPtr !is null)
             {
                 job = *jobPtr;
-                priority_job.store(cast(Job*)null);
+                priority_job=(cast(Job*)null);
                 workerActivity.notify();
             }
             else
@@ -235,11 +235,11 @@ private:
             m.unlock();
 
             // Do the actual job
-            active_jobs.increment();
+            active_jobs+=1;
             try {
                 job.dg(job.args);
             } catch (Exception ex) { }
-            active_jobs.decrement();
+            active_jobs-=1;
 
             // Tell the pool that we are done with something
             m.lock();
