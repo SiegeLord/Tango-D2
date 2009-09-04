@@ -28,26 +28,29 @@ module rt.memory;
 
 private
 {
-    version( linux )
+    version(linux)
     {
         version = SimpleLibcStackEnd;
 
-        version( SimpleLibcStackEnd )
+        version(SimpleLibcStackEnd)
         {
             extern (C) extern void* __libc_stack_end;
         }
     }
-    version (OSX)
+    version(OSX)
     {
         extern (C)
         {
             extern void* __osx_stack_end;    // set by D startup code
         }
     }
-   version (freebsd)
+   version(freebsd)
    {
-     // The bottom of the stack
-     extern (C) void* __libc_stack_end;
+        // The bottom of the stack
+        extern (C)
+        {
+            extern void* __libc_stack_end;
+        }
    }
 }
 

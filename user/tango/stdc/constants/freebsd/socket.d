@@ -97,13 +97,14 @@ module tango.stdc.constants.freebsd.socket;
     }
     enum : uint
     {
-        MSG_CTRUNC      = 0x20,
-        MSG_DONTROUTE   = 0x4,
-        MSG_EOR         = 0x8,
         MSG_OOB         = 0x1,
         MSG_PEEK        = 0x2,
+        MSG_DONTROUTE   = 0x4,
+        MSG_EOR         = 0x8,
         MSG_TRUNC       = 0x10,
-        MSG_WAITALL     = 0x40
+        MSG_CTRUNC      = 0x20,
+        MSG_WAITALL     = 0x40,
+	MSG_NOSIGNAL =   0x20000,
     }
     enum
     {

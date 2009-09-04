@@ -72,7 +72,7 @@ module tango.stdc.constants.linux.socket;
         IPPROTO_COMP = 108, /* Compression Header Protocol.  */
         IPPROTO_SCTP = 132, /* Stream Control Transmission Protocol.  */
         IPPROTO_RAW = 255, /* Raw IP packets.  */
-        IPPROTO_MAX +/
+        IPPROTO_MAX = 256, +/
       }
     enum
     {
