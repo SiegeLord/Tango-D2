@@ -38,18 +38,20 @@ do
             echo "[--quick] [--version versionName] [--user-only] [--no-install-libs]"
             echo "[--lib-install-dir path/to/lib/install/dir] [--verbose] [--clean]"
             echo "[--make makeProgram]"
-            echo
+            echo ""
             echo "Builds tango runtime and tango user libs, by default makes"
             echo "a distclean and builds opt, dbg and tst versions."
-            echo "If --version X is passed only version X will be built."
-            echo "--clean removes all build files"
-            echo "--quick does not clean before building"
-            echo "--user-only rebuilds only the user lib"
+            echo ""
+            echo "--version X       only version X will be built"
+            echo "--clean           removes all build files"
+            echo "--quick           does not clean before building"
+            echo "--user-only       rebuilds only the user lib"
             echo "--no-install-libs skips the installation of the libs"
-            echo "with --verbose make commands print all commands"
-            echo "--make can be used to use a non standard make program"
-            echo "the script uses '$'DC as compiler if set, or the first"
-            echo "compiler found if not set"
+            echo "--verbose         print all commands"
+            echo "--make            use a non standard make program"
+            echo ""
+            echo "The script uses '$'DC as compiler if set"
+            echo "or the first compiler found if not set."
             exit 0
             ;;
         --quick)
@@ -84,6 +86,7 @@ do
             silent=
             ;;
         *)
+            die "Unknown parameter '$1'."
             break
             ;;
     esac
