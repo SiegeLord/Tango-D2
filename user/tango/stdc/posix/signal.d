@@ -497,7 +497,11 @@ else version( freebsd )
     {
         uint __bits[4];
     }
-
+   
+    const SIG_BLOCK = 2;
+    const SIG_UNBLOCK = 1;
+    const SIG_SETMASK = 3;
+   
     struct siginfo_t
     {
         int si_signo;
