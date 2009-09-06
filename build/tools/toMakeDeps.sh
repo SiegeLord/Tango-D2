@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # extracts the dependencies from the compiler -v log and formats them 
 # in a make friendly way. The target of the dependency is the first argument if given
 # dependencies on .di files are ignored (change???)

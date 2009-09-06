@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # finds d files in the directory give as first argument, excluding paths that
 # match the following arguments
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed

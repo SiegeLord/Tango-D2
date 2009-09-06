@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # copies the .di files of the given module paths from the runtime into the "main" tango
 
 die() {

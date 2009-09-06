@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # returns the compiler name and version name out of an IDENT string
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 

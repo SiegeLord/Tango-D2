@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # returns the name of the qualified object names with a \ appended at the end
 # of the given files, useful to build makefile lists
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed

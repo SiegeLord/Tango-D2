@@ -1,6 +1,7 @@
-#!/bin/bash
-# builds runtime & tango-user
-# tango 
+#!/usr/bin/env bash
+# builds tango-base & tango-user
+# author: fawzi
+# license: tango (bsd, AFL)
 
 die() {
     echo "$1"

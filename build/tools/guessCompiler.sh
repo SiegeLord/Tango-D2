@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # tries to guess the D compiler
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 

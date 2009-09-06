@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # transforms the dependencies from the new xfBuild format to make format
 # the regex is not perfect and will break for filepaths with "():" in them.
 # keeps all dependencies, probably one could filter them and keep only the ones 
