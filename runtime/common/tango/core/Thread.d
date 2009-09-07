@@ -1,7 +1,14 @@
 /**
  * The thread module provides support for thread creation and management.
  *
- * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * If AtomicSuspendCount is used for speed reasons all signals are sent together.
+ * When debugging gdb funnels all signals through one single handler, and if
+ * the signals arrive quickly enough they will be coalesced in a single signal,
+ * (discarding the second) thus it is possible to loose signals, which blocks
+ * the program. Thus when debugging it is better to use the slower SuspendOneAtTime
+ * version.
+ *
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly, Fawzi.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   Sean Kelly, Fawzi Mohamed
  */
@@ -1911,6 +1918,18 @@ extern (C) void thread_suspendAll()
                 }
                 version (AtomicSuspendCount){
                     ++suspendedCount;
+                    version(AtomicSuspendCount){
+                        version(SuspendOneAtTime){ // when debugging suspending all threads at once might give "lost" signals
+                            int icycle=0;
+                            while (flagGet(suspendCount)!=suspendedCount){
+                                if (++icycle==100_000){
+                                    printf("waited %d cycles for thread suspension,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,suspendedCount);
+                                }
+                                Thread.yield();
+                            }
+                        }
+                    }
+                    
                 } else {
                     sem_wait( &suspendCount );
                     // shouldn't the return be checked and maybe a loop added for further interrupts
@@ -1998,6 +2017,7 @@ in
 }
 body
 {
+    version(AtomicSuspendCount) version(SuspendOneAtTime) auto suspendedCount=flagGet(suspendCount);
     /**
      * Resume the specified thread and unload stack and register information.
      * If the supplied thread is the calling thread, stack and register
@@ -2044,6 +2064,16 @@ body
                     throw new ThreadException( "Unable to resume thread" );
                 }
                 version (AtomicSuspendCount){
+                    version(SuspendOneAtTime){ // when debugging suspending all threads at once might give "lost" signals
+                        --suspendedCount;
+                        int icycle=0;
+                        while(flagGet(suspendCount)>suspendedCount){
+                            Thread.yield();
+                            if (++icycle==100_000){
+                                printf("waited %d cycles for thread recovery,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,suspendedCount);
+                            }
+                        }
+                    }
                 } else {
                     sem_wait( &suspendCount );
                     // shouldn't the return be checked and maybe a loop added for further interrupts
