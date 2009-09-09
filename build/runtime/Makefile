@@ -47,7 +47,8 @@ DC_SHORT=$(shell $(TOOLDIR)/guessCompiler.sh $(DC))
 IDENT=$(shell $(TOOLDIR)/archName.sh)-$(DC_SHORT)-$(VERSION)
 
 SRCDIR=$(TANGO_HOME)/runtime
-OBJDIR=$(TANGO_HOME)/build/runtime/objs-$(IDENT)
+OBJDIRBASE=$(TANGO_HOME)/build
+OBJDIR=$(OBJDIRBASE)/runtime/objs-$(IDENT)
 ARCHDIR=$(TANGO_HOME)/build/arch
 EXCLUDEPAT_ALL=$(EXCLUDEPAT_OS) 
 ARCHFILE=$(ARCHDIR)/$(IDENT).mak
