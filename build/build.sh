@@ -101,6 +101,11 @@ do
     shift
 done
 
+if [ -z "$build_dir" ] ; then
+    if [ -n "$D_BUILD_DIR" ] ; then
+      build_dir="OBJDIRBASE=$D_BUILD_DIR"
+    fi
+fi
 if [ -z "$user_only" ] ; then
     cd $tango_home/build/runtime
     if [ -n "$clean_only" ] ; then

@@ -155,13 +155,13 @@ clean-all:
 	rm -rf $(OBJDIR)
 
 prebuildclean:
-	rm -rf $(TANGO_HOME)/build/runtime/objs-*
+	rm -rf $(OBJDIRBASE)/runtime/objs-*
 	rm -f $(TANGO_HOME)/build/libs/$(LIB_PREFIX)tango-base-*
 	find $(TANGO_HOME)/user/tango -name '*.di' | xargs rm -f
 	rm -rf $(TANGO_HOME)/user/rt
 
 distclean:
-	rm -rf $(TANGO_HOME)/build/runtime/objs-*
+	rm -rf $(OBJDIRBASE)/runtime/objs-*
 	rm -f $(TANGO_HOME)/build/libs/$(LIB_PREFIX)tango-base-*
 	find $(TANGO_HOME)/user -name '*.di' -a -not -name object.di | xargs rm -f
 

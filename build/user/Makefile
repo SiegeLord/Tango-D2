@@ -127,7 +127,7 @@ clean-all:
 	rm -rf $(OBJDIR)
 
 distclean:
-	rm -rf $(TANGO_HOME)/build/user/objs-*
+	rm -rf $(OBJDIRBASE)/user/objs-*
 	rm -f $(TANGO_HOME)/build/libs/$(LIB_PREFIX)tango-user-*$(DC_SHORT)*
 
 ifeq ($(shell if [ -e "$(OBJDIR)/intermediate.rule" ]; then echo 1; fi;),1)
