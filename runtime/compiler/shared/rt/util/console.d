@@ -15,14 +15,24 @@ module rt.util.console;
 
 private import rt.util.string;
 
-import tango.stdc.stdio;
+version (Win32) {
+    private extern (Windows) int GetStdHandle (int);
+    private extern (Windows) int WriteFile (int, char*, int, int*, void*);
+} else {
+    import tango.stdc.stdio;
+}
 
 struct Console
 {
     Console opCall (char[] s)
     {
-        fprintf(stderr, "%.*s",s.length,s.ptr);
-        fflush(stderr);
+        version (Win32) {
+            int count;
+            WriteFile (GetStdHandle(0xfffffff5), s.ptr, s.length, &count, null);
+        } else {
+            fprintf(stderr, "%.*s",s.length,s.ptr);
+            fflush(stderr);
+        }
         return *this;
     }
 
