@@ -51,23 +51,23 @@ alias c_long clock_t;
 
 version( Win32 )
 {
-    clock_t CLOCKS_PER_SEC = 1000;
+    enum:clock_t {CLOCKS_PER_SEC = 1000}
 }
 else version( darwin )
 {
-    clock_t CLOCKS_PER_SEC = 100;
+    enum:clock_t {CLOCKS_PER_SEC = 100}
 }
 else version( freebsd )
 {
-    clock_t CLOCKS_PER_SEC = 128;
+    enum:clock_t {CLOCKS_PER_SEC = 128}
 }
 else version( solaris )
 {
-	clock_t CLOCKS_PER_SEC = 1000000;
+    enum:clock_t {CLOCKS_PER_SEC = 1000000}
 }
 else
 {
-    clock_t CLOCKS_PER_SEC = 1000000;
+    enum:clock_t {CLOCKS_PER_SEC = 1000000}
 }
 
 clock_t clock();
