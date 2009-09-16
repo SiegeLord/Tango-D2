@@ -88,11 +88,16 @@ void exec( char[] cmd, char[][char[]] env, char[] workDir = null )
 void exec( char[][] cmd, char[][char[]] env, char[] workDir = null )
 {
     scope auto    proc = new Process( cmd, env );
+    
+    // env must not be null for vista
+    if( env is null ) proc.copyEnv( true );
     if( workDir ) proc.workDir = workDir;
 
     foreach( str; cmd )
         Stdout( str )( ' ' );
-    Stdout( '\n' );
+
+    // let console output be line buffered
+    Stdout.newline;
     proc.execute();
     Stdout.stream.copy( proc.stdout );
     Stdout.stream.copy( proc.stderr );
