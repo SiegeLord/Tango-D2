@@ -1,4 +1,4 @@
-import tango.core.stacktrace.TraceExceptions;
+import tango.core.tools.TraceExceptions;
 
 void foo()
 {

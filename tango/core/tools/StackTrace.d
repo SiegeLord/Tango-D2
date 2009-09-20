@@ -8,22 +8,22 @@
  *  License:   tango license
  *  Authors:   Fawzi Mohamed
  */
-module tango.core.stacktrace.StackTrace;
-import tango.core.stacktrace.Demangler;
+module tango.core.tools.StackTrace;
+import tango.core.tools.Demangler;
 import tango.core.Thread;
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
 import tango.stdc.stdio:printf,fprintf,stderr,fflush;
 import tango.stdc.stdlib: abort;
 version(Windows){
-    import tango.core.stacktrace.WinStackTrace;
+    import tango.core.tools.WinStackTrace;
 } else {
     import tango.stdc.posix.ucontext;
     import tango.stdc.posix.sys.types: pid_t,pthread_t;
     import tango.stdc.signal;
 }
 version(linux){
-    import tango.core.stacktrace.LinuxStackTrace;
+    import tango.core.tools.LinuxStackTrace;
 }
 
 version(CatchRecursiveTracing){

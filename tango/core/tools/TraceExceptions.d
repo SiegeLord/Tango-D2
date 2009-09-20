@@ -7,8 +7,8 @@
  *  License:   tango license, apache 2.0
  *  Authors:   Fawzi Mohamed
  */
-module tango.core.stacktrace.TraceExceptions;
-import tango.core.stacktrace.StackTrace;
+module tango.core.tools.TraceExceptions;
+import tango.core.tools.StackTrace;
 
 static this(){
     rt_setTraceHandler(&basicTracer);

@@ -7,7 +7,7 @@
  *  A sample program demangling the names passed as arguments
  * {{{
  *   module demangle;
- *   import tango.core.stacktrace.Demangler;
+ *   import tango.core.tools.Demangler;
  *   import tango.io.Stdout;
  *
  *   void usage(){
@@ -49,7 +49,7 @@
  *
  */
 
-module tango.core.stacktrace.Demangler;
+module tango.core.tools.Demangler;
 
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string: memmove,memcpy;

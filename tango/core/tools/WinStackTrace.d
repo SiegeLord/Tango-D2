@@ -7,10 +7,10 @@
  *  License:   tango license, apache 2.0
  *  Authors:   Tomasz Stachowiak (h3r3tic)
  */
-module tango.core.stacktrace.WinStackTrace;
+module tango.core.tools.WinStackTrace;
 version(Windows) {
     private {
-        import tango.core.stacktrace.Demangler;
+        import tango.core.tools.Demangler;
         import tango.core.Runtime;
         static import tango.stdc.stdlib;
         static import tango.stdc.string;

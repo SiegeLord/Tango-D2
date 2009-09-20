@@ -41,7 +41,7 @@ EOF
         cat >> $EXE.d <<EOF
 import tango.io.Stdout;
 import tango.core.Runtime;
-import tango.core.stacktrace.TraceExceptions;
+import tango.core.tools.TraceExceptions;
 
 bool tangoUnitTester()
 {

@@ -12,7 +12,7 @@
  *  License:   tango license
  *  Authors:   Fawzi Mohamed
  */
-module tango.core.stacktrace.LinuxStackTrace;
+module tango.core.tools.LinuxStackTrace;
 
 version(linux){
     import tango.stdc.stdlib;
