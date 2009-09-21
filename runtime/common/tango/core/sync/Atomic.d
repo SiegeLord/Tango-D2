@@ -196,7 +196,7 @@ static if (!is(typeof(LockVersion))) {
 /// val and newval in one atomic operation
 /// barriers are not implied, just atomicity!
 version(LDC){
-    bool atomicSwap( T )( ref T val, T newval )
+    T atomicSwap( T )( ref T val, T newval )
     {
         T oldval = void;
         static if (isPointerType!(T))
