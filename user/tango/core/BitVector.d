@@ -12,7 +12,7 @@ private import tango.core.BitManip;
 alias uint internal_t; // at the moment there are places where this is hardcoded (bitsize=32)
 
 struct BitVector(size_t len){
-    internal_t data[(len+internal_t.sizeof-1)/internal_t.sizeof];
+    internal_t[(len+internal_t.sizeof-1)/(internal_t.sizeof*8)] data;
     
     static BitVector opCall(bool[] vals){
         assert(vals.length==len);
@@ -77,6 +77,27 @@ struct BitVector(size_t len){
         }
         return result;
     }
+    
+    /**
+     * returns a string with the hex representation of the current bit sequence
+     */
+    char[] toString(){
+        auto dim = this.dim();
+        char[] res;
+        auto p=ptr;
+        for (size_t i=0;i<dim;++i){
+            for (int idim=internal_t.sizeof;idim!=0;){
+                --idim;
+                ubyte v=0xFF & (p[i]>>8*idim);
+                ubyte v0=v & 0xF;
+                v>>=4;
+                auto str="0123456789ABCDEF";
+                res~=str[v];
+                res~=str[v0];
+            }
+        }
+        return res;
+    }
 
 
     /**
@@ -104,7 +125,32 @@ struct BitVector(size_t len){
         uint mask = ~((~0u)<<rest);
         return (rest == 0) || (p1[i] & mask) == (p2[i] & mask);
     }
-
+    
+    /**
+     * returns a set with only one bit set (the first one)
+     */
+    BitVector singlify(){
+        auto dim = this.dim();
+        BitVector result;
+        result.data[]=0;
+        
+        internal_t* p = this.ptr;
+        size_t n = len / 32;
+        size_t i;
+        for( i = 0; i < n; ++i )
+        {
+            if( p[i] != 0 ){
+                result.data[i]=(cast(internal_t)1)<<bsr(p[i]);
+                return result;
+            }
+        }
+        int rest = cast(int)(len & cast(size_t)31u);
+        uint mask = ~((~0u)<<rest);
+        if (rest!=0 && (mask&p[n])!=0){
+            result.ptr[n]=(cast(internal_t)1)<<bsr(p[n]);
+        }
+        return result;
+    }
 
     /**
      * Performs a lexicographical comparison of this array to the supplied
