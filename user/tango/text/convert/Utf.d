@@ -692,6 +692,7 @@ T[] cropLeft(T) (T[] s)
 
 T[] cropRight(T) (T[] s)
 {
+        if (s.length==0) return s;
         uint i = s.length - 1;
         static if (is (T == char))
                    while (i && (s[i] & 0x80))
