@@ -1,0 +1,39 @@
+# common make rules for dmd
+
+LIB_EXT=lib
+LIB_PREFIX=
+OBJ_EXT=obj
+COBJ_EXT=obj
+mkLib=lib -c -n -p256
+ranlib=echo
+LIB_DIR="-L-L"
+LIB_LINK="-L-l"
+OUT_NAME="-of"
+CC=dmc
+
+DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
+CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
+
+EXCLUDE_DEP_COMP=
+# ^dmd\.
+
+%.dep:%.d
+	$(DC) -c -v $(DFLAGS_ALL) -of$(@:%.dep=%.obj) $< | $(TOOLDIR)/toMakeDeps.sh --target $(@:%.dep=%.obj) $(EXCLUDE_DEP_ALL) > $@
+	if [ ! -r $(@:%.dep=%.obj) ] ; then $(DC) -c $(DFLAGS_ALL) -of$(@:%.dep=%.obj) $< ; [ -r $(@:%.dep=%.obj) ] ; fi
+
+%.obj:%.d
+	$(DC) -c -v $(DFLAGS_ALL) -of$@ $< | $(TOOLDIR)/toMakeDeps.sh --target $(<:%.d=%.obj) $(EXCLUDE_DEP_ALL) > $(@:.obj=%.dep)
+	if [ ! -r $@ ] ; then $(DC) -c $(DFLAGS_ALL) -of$@ $< ; [ -r $@ ] ; fi
+
+%.obj:%.s
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+%.obj:%.S
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+%.obj:%.c
+	$(CC) -c $(CFLAGS_ALL) $< -o$@
+
+minit.obj:minit.asm
+	cp $(<:%.asm=%.obj) $@
+
