@@ -23,7 +23,7 @@
  *     distribution.
  * Authors:   Walter Bright, Sean Kelly
  */
-module rt.basicgc.gcstats;
+module rt.gc.basic.gcstats;
 
 /**
  *

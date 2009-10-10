@@ -23,10 +23,10 @@
  *     distribution.
  * Authors:   Walter Bright, Sean Kelly
  */
-module rt.basicgc.gc;
+module rt.gc.basic.gc;
 
-private import rt.basicgc.gcx;
-private import rt.basicgc.gcstats;
+private import rt.gc.basic.gcx;
+private import rt.gc.basic.gcstats;
 private import tango.stdc.stdlib;
 
 version=GCCLASS;

@@ -23,7 +23,7 @@
  *     distribution.
  * Authors:   Walter Bright, David Friedman, Sean Kelly
  */
-module rt.basicgc.gcx;
+module rt.gc.basic.gcx;
 // D Programming Language Garbage Collector implementation
 
 /************** Debugging ***************************/
@@ -46,9 +46,9 @@ version = MULTI_THREADED;       // produce multithreaded version
 
 /***************************************************/
 
-private import rt.basicgc.gcbits;
-private import rt.basicgc.gcstats;
-private import rt.basicgc.gcalloc;
+private import rt.gc.basic.gcbits;
+private import rt.gc.basic.gcstats;
+private import rt.gc.basic.gcalloc;
 
 private import cstdlib = tango.stdc.stdlib : calloc, free, malloc, realloc;
 private import cstring = tango.stdc.string : memcpy, memmove, memset;
