@@ -66,9 +66,6 @@ extern(C) void rt_setSymbolizeFrameInfoFnc(SymbolizeFrameInfoFnc f){
 extern(C) Exception.TraceInfo rt_createTraceContext( void* ptr );
 
 alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
-/// changes the trace handler (defined in the runtime)
-extern (C) void  rt_setTraceHandler( TraceHandler h );
-
 
 /// builds a backtrace of addresses, the addresses are addresses of the *next* instruction, 
 /// *return* addresses, the most likely the calling instruction is the one before them
