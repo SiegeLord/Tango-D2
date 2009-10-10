@@ -16,7 +16,7 @@ module rt.qsort2;
 
 //debug=qsort;
 
-private import rt.cImports:qsort;
+private import rt.compiler.cImports:qsort;
 
 private TypeInfo tiglobal;
 

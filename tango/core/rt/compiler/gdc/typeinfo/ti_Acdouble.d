@@ -21,10 +21,10 @@
  *     distribution.
  */
 
-module rt.typeinfo.ti_Acdouble;
+module rt.compiler.typeinfo.ti_Acdouble;
 
-private import rt.typeinfo.ti_cdouble;
-private import rt.util.hash;
+private import rt.compiler.typeinfo.ti_cdouble;
+private import rt.compiler.util.hash;
 // cdouble[]
 
 class TypeInfo_Ar : TypeInfo_Array

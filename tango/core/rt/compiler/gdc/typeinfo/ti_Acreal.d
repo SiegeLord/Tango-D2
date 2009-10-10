@@ -21,10 +21,10 @@
  *     distribution.
  */
 
-module rt.typeinfo.ti_Acreal;
+module rt.compiler.typeinfo.ti_Acreal;
 
-private import rt.typeinfo.ti_creal;
-private import rt.util.hash;
+private import rt.compiler.typeinfo.ti_creal;
+private import rt.compiler.util.hash;
 
 // creal[]
 

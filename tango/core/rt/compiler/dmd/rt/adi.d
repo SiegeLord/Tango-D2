@@ -38,8 +38,8 @@ module rt.adi;
 
 private
 {
-    import rt.cImports: memcpy,memmove,memcmp,alloca;
-    import rt.util.utf;
+    import rt.compiler.cImports: memcpy,memmove,memcmp,alloca;
+    import rt.compiler.util.utf;
 
     enum BlkAttr : uint
     {

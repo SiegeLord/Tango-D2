@@ -1,4 +1,4 @@
-module rt.util.hash;
+module rt.compiler.util.hash;
 
 /// hashes bStart[0..length] bytes
 extern(C) hash_t rt_hash_str(void *bStart,size_t length, hash_t seed=0){

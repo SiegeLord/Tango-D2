@@ -26,7 +26,7 @@
  */
 module rt.switch_;
 
-private import rt.cImports: memcmp;
+private import rt.compiler.cImports: memcmp;
 
 /******************************************************
  * Support for switch statements switching on strings.

@@ -39,9 +39,9 @@ module object;
 
 private
 {
-    import rt.cImports: memcmp, memcpy, memmove, calloc, realloc, free,sprintf,strlen;
-    import rt.util.string;
-    import rt.util.hash;
+    import rt.compiler.cImports: memcmp, memcpy, memmove, calloc, realloc, free,sprintf,strlen;
+    import rt.compiler.util.string;
+    import rt.compiler.util.hash;
     debug(PRINTF) import tango.stdc.stdio; // : printf;
 
     extern (C) void onOutOfMemoryError();

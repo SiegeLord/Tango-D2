@@ -1,9 +1,9 @@
 
-module rt.typeinfo.ti_Ag;
+module rt.compiler.typeinfo.ti_Ag;
 
-private import rt.util.string;
-private import rt.util.hash;
-private import rt.cImports: memcmp;
+private import rt.compiler.util.string;
+private import rt.compiler.util.hash;
+private import rt.compiler.cImports: memcmp;
 
 // byte[]
 

@@ -11,9 +11,9 @@
 
 *******************************************************************************/
 
-module rt.util.string;
+module rt.compiler.util.string;
 
-private import rt.cImports: memcmp;
+private import rt.compiler.cImports: memcmp;
 
 // convert uint to char[], within the given buffer
 // Returns a valid slice of the populated buffer

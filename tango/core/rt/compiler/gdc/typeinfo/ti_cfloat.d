@@ -1,8 +1,8 @@
 
 // cfloat
 
-module rt.typeinfo.ti_cfloat;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_cfloat;
+private import rt.compiler.util.hash;
 
 class TypeInfo_q : TypeInfo
 {

@@ -38,9 +38,9 @@ COPYRIGHT:      Public Domain
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.util.cpuid;
+module rt.compiler.util.cpuid;
 
-private import rt.cImports : strlen;
+private import rt.compiler.cImports : strlen;
 
 version(D_InlineAsm_X86)
 {

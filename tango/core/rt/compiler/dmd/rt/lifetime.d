@@ -29,11 +29,11 @@ module rt.lifetime;
 
 private
 {
-    import rt.cImports: memcpy,memset,memcmp,free,malloc;
+    import rt.compiler.cImports: memcpy,memset,memcmp,free,malloc;
     //import tango.stdc.stdlib;
     //import tango.stdc.string;
     import tango.stdc.stdarg;
-    debug(PRINTF) import rt.cImports:printf;
+    debug(PRINTF) import rt.compiler.cImports:printf;
     //import tango.stdc.stdio;
 }
 

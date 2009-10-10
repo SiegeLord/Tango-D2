@@ -33,8 +33,8 @@ module rt.arraycat;
 
 private
 {
-    import rt.cImports: memcpy;
-    debug import rt.cImports: printf;
+    import rt.compiler.cImports: memcpy;
+    debug import rt.compiler.cImports: printf;
 }
 
 extern (C):

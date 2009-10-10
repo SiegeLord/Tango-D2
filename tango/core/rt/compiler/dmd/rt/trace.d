@@ -15,12 +15,12 @@ module rt.trace;
 
 private
 {
-    import rt.util.string;
+    import rt.compiler.util.string;
     //import tango.stdc.ctype;
     //import tango.stdc.stdio;
     //import tango.stdc.string;
     //import tango.stdc.stdlib;
-    import rt.cImports: memset,memcpy,malloc,free,exit,fopen,fclose,fprintf,fgetc,FILE_P,
+    import rt.compiler.cImports: memset,memcpy,malloc,free,exit,fopen,fclose,fprintf,fgetc,FILE_P,
         isspace,isalpha,isgraph,qsort,EXIT_FAILURE,EOF,strtoul,strtoull,strlen;
 }
 

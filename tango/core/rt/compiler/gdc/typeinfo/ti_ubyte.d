@@ -1,7 +1,7 @@
 
 // ubyte
 
-module rt.typeinfo.ti_ubyte;
+module rt.compiler.typeinfo.ti_ubyte;
 
 class TypeInfo_h : TypeInfo
 {

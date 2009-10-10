@@ -1,8 +1,8 @@
 
 // cdouble
 
-module rt.typeinfo.ti_cdouble;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_cdouble;
+private import rt.compiler.util.hash;
 
 class TypeInfo_r : TypeInfo
 {

@@ -1,7 +1,7 @@
 
 // short
 
-module rt.typeinfo.ti_short;
+module rt.compiler.typeinfo.ti_short;
 
 class TypeInfo_s : TypeInfo
 {

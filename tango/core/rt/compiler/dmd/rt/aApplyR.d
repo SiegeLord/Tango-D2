@@ -36,7 +36,7 @@ module rt.aApplyR;
  * and dchar, and 2 of each of those.
  */
 
-private import rt.util.utf;
+private import rt.compiler.util.utf;
 
 /**********************************************/
 /* 1 argument versions */

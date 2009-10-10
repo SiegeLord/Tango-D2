@@ -21,10 +21,10 @@
  *     distribution.
  */
 
-module rt.typeinfo.ti_Areal;
+module rt.compiler.typeinfo.ti_Areal;
 
-private import rt.typeinfo.ti_real;
-private import rt.util.hash;
+private import rt.compiler.typeinfo.ti_real;
+private import rt.compiler.util.hash;
 
 // real[]
 

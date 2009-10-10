@@ -1,4 +1,4 @@
-module rt.cImports;
+module rt.compiler.cImports;
 
 static if ((void*).sizeof==4){
     alias uint c_ulong;

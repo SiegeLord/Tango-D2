@@ -6,7 +6,7 @@
 
 module rt.arrayreal;
 
-import rt.util.cpuid;
+import CPUid = tango.core.rt.compiler.util.cpuid;
 
 debug(UnitTest)
 {
@@ -15,17 +15,17 @@ debug(UnitTest)
      */
     int cpuid;
     const int CPUID_MAX = 1;
-    bool mmx()      { return cpuid == 1 && rt.util.cpuid.mmx(); }
-    bool sse()      { return cpuid == 2 && rt.util.cpuid.sse(); }
-    bool sse2()     { return cpuid == 3 && rt.util.cpuid.sse2(); }
-    bool amd3dnow() { return cpuid == 4 && rt.util.cpuid.amd3dnow(); }
+    bool mmx()      { return cpuid == 1 && CPUid.mmx(); }
+    bool sse()      { return cpuid == 2 && CPUid.sse(); }
+    bool sse2()     { return cpuid == 3 && CPUid.sse2(); }
+    bool amd3dnow() { return cpuid == 4 && CPUid.amd3dnow(); }
 }
 else
 {
-    alias rt.util.cpuid.mmx mmx;
-    alias rt.util.cpuid.sse sse;
-    alias rt.util.cpuid.sse2 sse2;
-    alias rt.util.cpuid.amd3dnow amd3dnow;
+    alias CPUid.mmx mmx;
+    alias CPUid.sse sse;
+    alias CPUid.sse2 sse2;
+    alias CPUid.amd3dnow amd3dnow;
 }
 
 //version = log;

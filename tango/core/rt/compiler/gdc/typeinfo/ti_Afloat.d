@@ -21,10 +21,10 @@
  *     distribution.
  */
 
-module rt.typeinfo.ti_Afloat;
+module rt.compiler.typeinfo.ti_Afloat;
 
-private import rt.typeinfo.ti_float;
-private import rt.util.hash;
+private import rt.compiler.typeinfo.ti_float;
+private import rt.compiler.util.hash;
 
 // float[]
 

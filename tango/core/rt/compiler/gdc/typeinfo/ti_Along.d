@@ -1,8 +1,8 @@
 
-module rt.typeinfo.ti_Along;
+module rt.compiler.typeinfo.ti_Along;
 
-private import rt.cImports:memcmp;
-private import rt.util.hash;
+private import rt.compiler.cImports:memcmp;
+private import rt.compiler.util.hash;
 
 // long[]
 

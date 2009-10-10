@@ -18,18 +18,18 @@ private
 {
     version( Win32 ) {
         //import tango.sys.win32.UserGdi;
-        import rt.cImports: HANDLE,THANDLE,LPCWSTR,DWORD,LPSECURITY_ATTRIBUTES,WINBOOL,
+        import rt.compiler.cImports: HANDLE,THANDLE,LPCWSTR,DWORD,LPSECURITY_ATTRIBUTES,WINBOOL,
             GENERIC_READ,FILE_SHARE_READ,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,FILE_FLAG_SEQUENTIAL_SCAN,
             INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,CloseHandle,ReadFile;
     } else version( Posix ) {
-        import rt.cImports: open,close,read,fcntl_O_RDONLY;
+        import rt.compiler.cImports: open,close,read,fcntl_O_RDONLY;
         //import tango.stdc.posix.fcntl;
         //import tango.stdc.posix.unistd;
     }
     import tango.core.BitManip;
-    import rt.cImports: fopen,fclose,fprintf,FILE_P;
+    import rt.compiler.cImports: fopen,fclose,fprintf,FILE_P;
     // import tango.stdc.stdio;
-    import rt.util.utf;
+    import rt.compiler.util.utf;
 
     struct BitArray
     {

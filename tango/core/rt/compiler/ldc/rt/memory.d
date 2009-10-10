@@ -31,7 +31,7 @@ version(darwin)
 {
     version = GC_Use_Data_Dyld;
     version = GC_Use_Dynamic_Ranges;
-    import rt.cImports: c_ulong;
+    import rt.compiler.cImports: c_ulong;
 }
 else version(Posix)
 {
@@ -50,7 +50,7 @@ version(GC_Use_Data_Proc_Maps)
     //private import tango.stdc.posix.unistd;
     //private import tango.stdc.posix.fcntl;
     //private import tango.stdc.string;
-    import rt.cImports: memmove,open,close,read,fcntl_O_RDONLY;
+    import rt.compiler.cImports: memmove,open,close,read,fcntl_O_RDONLY;
 
     version = GC_Use_Dynamic_Ranges;
 }

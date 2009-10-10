@@ -1,8 +1,8 @@
 
 // real
 
-module rt.typeinfo.ti_real;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_real;
+private import rt.compiler.util.hash;
 
 class TypeInfo_e : TypeInfo
 {

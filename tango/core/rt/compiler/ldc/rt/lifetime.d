@@ -31,9 +31,9 @@ module rt.lifetime;
 
 private
 {
-    import rt.cImports: memcpy,memset,memcmp,free,malloc;
-    debug(PRINTF) import rt.cImports:printf;
-    else debug(PRINTF2) import rt.cImports:printf;
+    import rt.compiler.cImports: memcpy,memset,memcmp,free,malloc;
+    debug(PRINTF) import rt.compiler.cImports:printf;
+    else debug(PRINTF2) import rt.compiler.cImports:printf;
 }
 
 

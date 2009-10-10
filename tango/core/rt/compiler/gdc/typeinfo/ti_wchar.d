@@ -1,5 +1,5 @@
 
-module rt.typeinfo.ti_wchar;
+module rt.compiler.typeinfo.ti_wchar;
 
 
 class TypeInfo_u : TypeInfo

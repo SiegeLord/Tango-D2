@@ -37,7 +37,7 @@ module rt.adi;
 
 private
 {
-    import rt.cImports: memcpy,memmove, memcmp, printf;
+    import rt.compiler.cImports: memcpy,memmove, memcmp, printf;
     import rt.util.utf;
 
     enum BlkAttr : uint

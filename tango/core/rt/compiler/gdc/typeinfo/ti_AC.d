@@ -1,5 +1,5 @@
-module rt.typeinfo.ti_AC;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_AC;
+private import rt.compiler.util.hash;
 
 // Object[]
 

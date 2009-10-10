@@ -42,12 +42,12 @@ module object;
 
 private
 {
-    import rt.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
+    import rt.compiler.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
         sprintf;
-    import rt.util.string;
-    import rt.util.hash;
+    import rt.compiler.util.string;
+    import rt.compiler.util.hash;
     import rt.aaA;
-    debug(PRINTF) import rt.cImports: printf;
+    debug(PRINTF) import rt.compiler.cImports: printf;
     extern (C) Object _d_allocclass(ClassInfo ci);
 }
 

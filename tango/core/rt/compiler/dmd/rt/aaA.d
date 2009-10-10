@@ -31,12 +31,12 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.aaA;
+module rt.compiler.dmd.rt.aaA;
 
 private
 {
     import tango.stdc.stdarg;
-    import rt.cImports: memcmp,memcpy;
+    import rt.compiler.cImports: memcmp,memcpy;
 
     enum BlkAttr : uint
     {

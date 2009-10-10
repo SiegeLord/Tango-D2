@@ -11,9 +11,9 @@
 
 *******************************************************************************/
 
-module rt.util.console;
+module rt.compiler.util.console;
 
-private import rt.util.string;
+private import rt.compiler.util.string;
 
 version (Win32) {
         private extern (Windows) int GetStdHandle (int);

@@ -1,8 +1,8 @@
 
-module rt.typeinfo.ti_Aint;
+module rt.compiler.typeinfo.ti_Aint;
 
-private import rt.cImports:memcmp;
-private import rt.util.hash;
+private import rt.compiler.cImports:memcmp;
+private import rt.compiler.util.hash;
 
 // int[]
 

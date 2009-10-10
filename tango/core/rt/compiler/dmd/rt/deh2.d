@@ -26,9 +26,9 @@ module rt.deh2;
 // Exception handling support for linux
 
 //debug=1;
-//debug import rt.cImports: printf;
-import rt.cImports: printf;
-import rt.cImports: exit;
+//debug import rt.compiler.cImports: printf;
+import rt.compiler.cImports: printf;
+import rt.compiler.cImports: exit;
 
 extern (C)
 {

@@ -12,17 +12,17 @@ module rt.dmain2;
 
 private
 {
-    import rt.util.console;
+    import rt.compiler.util.console;
 
 //    import tango.stdc.stddef;
-    import rt.cImports: malloc,free,exit,strlen,EXIT_FAILURE,printf;
+    import rt.compiler.cImports: malloc,free,exit,strlen,EXIT_FAILURE,printf;
     //import tango.stdc.stdlib;
     //import tango.stdc.string;
 }
 
 version( Win32 )
 {
-    import rt.cImports: wchar_t,alloca,wcslen;
+    import rt.compiler.cImports: wchar_t,alloca,wcslen;
     extern (Windows) void*      LocalFree(void*);
     extern (Windows) wchar_t*   GetCommandLineW();
     extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);

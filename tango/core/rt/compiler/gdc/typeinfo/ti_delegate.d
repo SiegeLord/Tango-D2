@@ -1,8 +1,8 @@
 
 // delegate
 
-module rt.typeinfo.ti_delegate;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_delegate;
+private import rt.compiler.util.hash;
 
 alias void delegate(int) dg;
 

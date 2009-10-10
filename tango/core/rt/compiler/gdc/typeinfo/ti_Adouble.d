@@ -21,10 +21,10 @@
  *     distribution.
  */
 
-module rt.typeinfo.ti_Adouble;
+module rt.compiler.typeinfo.ti_Adouble;
 
-private import rt.typeinfo.ti_double;
-private import rt.util.hash;
+private import rt.compiler.typeinfo.ti_double;
+private import rt.compiler.util.hash;
 
 // double[]
 

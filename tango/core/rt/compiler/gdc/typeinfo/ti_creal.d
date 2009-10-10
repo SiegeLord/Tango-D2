@@ -1,8 +1,8 @@
 
 // creal
 
-module rt.typeinfo.ti_creal;
-private import rt.util.hash;
+module rt.compiler.typeinfo.ti_creal;
+private import rt.compiler.util.hash;
 
 class TypeInfo_c : TypeInfo
 {
