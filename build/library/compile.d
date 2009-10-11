@@ -23,12 +23,11 @@ private import tango.util.ArgParser;
 
 void main (char[][] arg)
 {
+        Args args;
         if (arg.length < 2)
-            Stdout.formatln ("usage: compile TangoImportPath [-user] [-core] [-list] [-quiet] [-lib=outputname] "
-                             "[-os=windows|linux] [-for=dmd|gdc|ldc] [-flags=\"options\"]");
+            Stdout.formatln (args.usage);
         else
            {
-           Args args;
            switch (args.populate(arg[1..$]).os)
                   {
                   case "windows":
@@ -246,13 +245,13 @@ class FileFilter : FileScan
         
         void exec (char[][] cmd, char[][char[]] env, char[] workDir)
         {
-                if (! args.quiet)
+                if (args.verbose)
                    {
                    foreach (str; cmd)
                             Stdout (str)(' ');
                    Stdout.newline;
                    }        
-                if (! args.list)
+                if (! args.inhibit)
                    {
                    scope proc = new Process (cmd, env);
                    if (workDir) 
@@ -276,27 +275,42 @@ struct Args
 {
         bool            core,
                         user,
-                        list,
-                        quiet;
+                        inhibit,
+                        verbose;
         char[]          root,
                         os = "windows",
                         lib = "tango",
                         flags = "-g",
                         target = "dmd";
+        char[]          usage = "usage: compile TangoImportPath\n"
+                                "\t[-v]\t\t\tverbose output\n"
+                                "\t[-i]\t\t\tinhibit execution\n"
+                                "\t[-u]\t\t\tinclude user modules\n"
+                                "\t[-r]\t\t\tinclude runtime modules\n"
+                                "\t[-o=\"options\"]\t\tspecify D compiler options\n"
+                                "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
+                                "\t[-p=windows|linux]\tdetermines package filtering\n"
+                                "\t[-t=dmd|gdc|ldc]\tspecify the runtime target (for -core)";
+
+        static char[] check(char[] v, char[] opt) 
+        {
+                if (v.length < 2 || v[0] != ':') 
+                    throw new Exception("invalid argument for "~opt);
+        }
 
         Args* populate (char[][] arg)
-        {
+        {       
                 root = arg[0];
 
                 auto args = new ArgParser;
-                args.bind ("-", "core", {core=true;});
-                args.bind ("-", "user", {user=true;});
-                args.bind ("-", "list", {list=true;});
-                args.bind ("-", "quiet", {quiet=true;});
-                args.bind ("-", "flags", (char[] v){assert(v[0] is '='); flags=v[1..$];});
-                args.bind ("-", "for", (char[] v){assert(v[0] is '='); target=v[1..$];});
-                args.bind ("-", "lib", (char[] v){assert(v[0] is '='); lib=v[1..$];});
-                args.bind ("-", "os", (char[] v){assert(v[0] is '='); os=v[1..$];});
+                args.bind ("-", "r", {core=true;});
+                args.bind ("-", "u", {user=true;});
+                args.bind ("-", "i", {inhibit=true;});
+                args.bind ("-", "v", {verbose=true;});
+                args.bind ("-", "o", (char[] v){flags=check(v, "-o")[1..$];});
+                args.bind ("-", "t", (char[] v){target=check(v, "-t")[1..$];});
+                args.bind ("-", "l", (char[] v){lib=check(v, "-l")[1..$];});
+                args.bind ("-", "p", (char[] v){os=check(v, "-p")[1..$];});
                 args.parse (arg[1..$]);
 
                 // default to everything
