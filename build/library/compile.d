@@ -286,16 +286,16 @@ struct Args
                                 "\t[-v]\t\t\tverbose output\n"
                                 "\t[-i]\t\t\tinhibit execution\n"
                                 "\t[-u]\t\t\tinclude user modules\n"
-                                "\t[-r]\t\t\tinclude runtime modules\n"
+                                "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
                                 "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                                 "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                                "\t[-p=windows|linux]\tdetermines package filtering\n"
-                                "\t[-t=dmd|gdc|ldc]\tspecify the runtime target (for -core)";
+                                "\t[-p=windows|linux]\tdetermines package filtering";
 
         static char[] check(char[] v, char[] opt) 
         {
-                if (v.length < 2 || v[0] != ':') 
+                if (v.length < 2 || v[0] != '=') 
                     throw new Exception("invalid argument for "~opt);
+                return v;
         }
 
         Args* populate (char[][] arg)
@@ -303,19 +303,14 @@ struct Args
                 root = arg[0];
 
                 auto args = new ArgParser;
-                args.bind ("-", "r", {core=true;});
                 args.bind ("-", "u", {user=true;});
                 args.bind ("-", "i", {inhibit=true;});
                 args.bind ("-", "v", {verbose=true;});
-                args.bind ("-", "o", (char[] v){flags=check(v, "-o")[1..$];});
-                args.bind ("-", "t", (char[] v){target=check(v, "-t")[1..$];});
-                args.bind ("-", "l", (char[] v){lib=check(v, "-l")[1..$];});
                 args.bind ("-", "p", (char[] v){os=check(v, "-p")[1..$];});
+                args.bind ("-", "l", (char[] v){lib=check(v, "-l")[1..$];});
+                args.bind ("-", "o", (char[] v){flags=check(v, "-o")[1..$];});
+                args.bind ("-", "r", (char[] v){core=true; target=check(v, "-r")[1..$];});
                 args.parse (arg[1..$]);
-
-                // default to everything
-                if (core is false && user is false)
-                    core = user = true;
 
                 assert (target == "ldc" || target == "dmd" || target == "gdc");
                 return this;
