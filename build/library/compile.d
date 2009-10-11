@@ -24,7 +24,7 @@ private import tango.util.ArgParser;
 void main (char[][] arg)
 {
         if (arg.length < 2)
-            Stdout.formatln ("usage: compile TangoImportPath [-user] [-core] [-list] "
+            Stdout.formatln ("usage: compile TangoImportPath [-user] [-core] [-list] [-quiet] [-lib=outputname] "
                              "[-os=windows|linux] [-for=dmd|gdc|ldc] [-flags=\"options\"]");
         else
            {
@@ -246,10 +246,12 @@ class FileFilter : FileScan
         
         void exec (char[][] cmd, char[][char[]] env, char[] workDir)
         {
-                foreach (str; cmd)
-                         Stdout (str)(' ');
-                Stdout.newline;
-        
+                if (! args.quiet)
+                   {
+                   foreach (str; cmd)
+                            Stdout (str)(' ');
+                   Stdout.newline;
+                   }        
                 if (! args.list)
                    {
                    scope proc = new Process (cmd, env);
@@ -274,7 +276,8 @@ struct Args
 {
         bool            core,
                         user,
-                        list;
+                        list,
+                        quiet;
         char[]          root,
                         os = "windows",
                         lib = "tango",
@@ -289,6 +292,7 @@ struct Args
                 args.bind ("-", "core", {core=true;});
                 args.bind ("-", "user", {user=true;});
                 args.bind ("-", "list", {list=true;});
+                args.bind ("-", "quiet", {quiet=true;});
                 args.bind ("-", "flags", (char[] v){assert(v[0] is '='); flags=v[1..$];});
                 args.bind ("-", "for", (char[] v){assert(v[0] is '='); target=v[1..$];});
                 args.bind ("-", "lib", (char[] v){assert(v[0] is '='); lib=v[1..$];});
