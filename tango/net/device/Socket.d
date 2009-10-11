@@ -436,7 +436,7 @@ class Socket : Conduit, ISelectable
                                     {
                                     if (code is ERROR_IO_INCOMPLETE)
                                         super.error ("timeout"); //Stdout ("-").flush;
-                                    scheduler.idle (berkeley.sock, type, timeout);
+                                    scheduler.await (berkeley.sock, type, timeout);
 
                                     DWORD flags;
                                     if (WSAGetOverlappedResult (cast(HANDLE) berkeley.sock, 

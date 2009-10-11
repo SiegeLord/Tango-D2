@@ -193,7 +193,7 @@ class Device : Conduit, ISelectable
                                     if (code is ERROR_IO_INCOMPLETE)
                                         super.error ("timeout"); //Stdout ("+").flush;
 
-                                    scheduler.idle (cast(Handle) handle, type, timeout);
+                                    scheduler.await (cast(Handle) handle, type, timeout);
                                     if (GetOverlappedResult (handle, &overlapped, &bytes, false))
                                         return bytes;
                                     }

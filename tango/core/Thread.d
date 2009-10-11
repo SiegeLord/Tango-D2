@@ -2685,13 +2685,13 @@ class Fiber
 
         enum Type {Read=1, Write=2, Accept=3, Connect=4, Transfer=5}
 
-        void idle (uint timeout=0) {}
+        void pause (uint ms=0) {}
 
         void open (Handle fd, char[] name) {}
 
         void close (Handle fd, char[] name) {}
 
-        void idle (Handle fd, Type t, uint timeout=uint.max) {}
+        void await (Handle fd, Type t, uint timeout=uint.max) {}
         
         void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
     }
@@ -3045,7 +3045,7 @@ class Fiber
         Fiber cur = getThis;
         assert( cur, "Fiber.yield() called with no active fiber" );
         if (cur.event.scheduler)
-            cur.event.scheduler.idle;
+            cur.event.scheduler.pause;
         else
           cur.cede;
     }
@@ -3071,7 +3071,7 @@ class Fiber
         assert( cur, "Fiber.yield(obj) called with no active fiber" );
         cur.m_unhandled = obj;
         if (cur.event.scheduler)
-            cur.event.scheduler.idle;
+            cur.event.scheduler.pause;
         else
            cur.cede;
     }
