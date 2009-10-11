@@ -16,7 +16,7 @@ private import  tango.util.log.Log;
 
 private import  tango.io.stream.Buffered;
 
-private import  tango.net.SocketConduit,
+private import  tango.net.device.Socket,
                 tango.net.InternetAddress;
 
 /*******************************************************************************
@@ -61,7 +61,7 @@ public class AppendMail : Appender
 
         final synchronized void append (LogEvent event)
         {
-                auto conduit = new SocketConduit;
+                auto conduit = new Socket;
                 scope (exit)
                        conduit.close;
 
