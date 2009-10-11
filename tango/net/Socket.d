@@ -64,7 +64,8 @@ module tango.net.Socket;
 
 public import tango.net.device.Berkeley;
 
-pragma(msg, "revision: net.Socket has been moved to net.device.Berkeley");
+version (Quiet){} else
+         pragma(msg, "revision: net.Socket has been moved to net.device.Berkeley");
 
 version (Old)
 {

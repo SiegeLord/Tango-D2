@@ -12,7 +12,8 @@ module tango.net.PKI;
 
 public import tango.net.util.PKI;
 
-pragma(msg, "revision: net.PKI has been moved to net.util.PKI");
+version (Quiet){} else
+         pragma(msg, "revision: net.PKI has been moved to net.util.PKI");
 
 version (Old)
 {

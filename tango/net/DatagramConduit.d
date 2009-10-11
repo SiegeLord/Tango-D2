@@ -17,7 +17,8 @@ public import tango.net.device.Datagram;
 
 alias Datagram DatagramConduit;
 
-pragma(msg, "revision: net.DatagramConduit has been moved to net.device.Datagram");
+version (Quiet){} else
+         pragma(msg, "revision: net.DatagramConduit has been moved to net.device.Datagram");
 
 version (Old)
 {

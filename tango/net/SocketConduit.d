@@ -19,7 +19,8 @@ public  import  tango.io.device.Conduit;
 
 alias Socket SocketConduit;
 
-pragma(msg, "revision: net.SocketConduit has been moved to net.device.Socket");
+version (Quiet){} else
+         pragma(msg, "revision: net.SocketConduit has been moved to net.device.Socket");
 
 version (Old)
 {

@@ -17,7 +17,8 @@ public import tango.net.device.Multicast;
 
 alias Multicast MulticastConduit;
 
-pragma(msg, "revision: net.MulticastConduit has been moved to net.device.Multicast");
+version (Quiet){} else
+         pragma(msg, "revision: net.MulticastConduit has been moved to net.device.Multicast");
 
 version (Old)
 {

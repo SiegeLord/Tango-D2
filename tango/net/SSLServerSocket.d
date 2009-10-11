@@ -12,7 +12,8 @@ module tango.net.SSLServerSocket;
 
 public import tango.net.device.SSLSocket;
 
-pragma(msg, "revision: net.SSLServerSocket has been folded into net.device.SSLSocket");
+version (Quiet){} else
+         pragma(msg, "revision: net.SSLServerSocket has been folded into net.device.SSLSocket");
 
 version (Old)
 {

@@ -17,7 +17,8 @@ public import tango.net.device.Socket;
 
 public  import tango.net.InternetAddress;
 
-pragma(msg, "revision: net.ServerSocket has been folded into net.device.Socket");
+version (Quiet){} else
+         pragma(msg, "revision: net.ServerSocket has been folded into net.device.Socket");
 
 version (Old)
 {

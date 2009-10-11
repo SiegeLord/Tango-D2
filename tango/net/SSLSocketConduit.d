@@ -14,7 +14,8 @@ public import tango.net.device.SSLSocket;
 
 public alias SSLSocket SSLSocketConduit;
 
-pragma(msg, "revision: net.SSLSocketConduit has been moved to net.device.SSLSocket");
+version (Quiet){} else
+         pragma(msg, "revision: net.SSLSocketConduit has been moved to net.device.SSLSocket");
 
 version (Old)
 {
