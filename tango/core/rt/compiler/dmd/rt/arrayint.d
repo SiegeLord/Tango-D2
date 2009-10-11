@@ -11,7 +11,7 @@
 
 module rt.arrayint;
 
-private import CPUid = tango.core.rt.compiler.util.cpuid;
+private import CPUid = rt.compiler.util.cpuid;
 
 debug(UnitTest)
 {

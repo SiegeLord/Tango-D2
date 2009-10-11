@@ -7,7 +7,7 @@
 
 module rt.arraydouble;
 
-import CPUid = tango.core.rt.compiler.util.cpuid;
+import CPUid = rt.compiler.util.cpuid;
 
 debug(UnitTest)
 {
