@@ -10,6 +10,8 @@
 module tango.core.tools.TraceExceptions;
 import tango.core.tools.StackTrace;
 
+extern (C) void  rt_setTraceHandler( TraceHandler h );
+
 static this(){
     rt_setTraceHandler(&basicTracer);
 }
