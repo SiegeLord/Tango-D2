@@ -30,8 +30,6 @@ private import  tango.time.Time;
 
 private import  tango.core.Exception;
 
-private import  tango.core.Variant;
-
 private import  tango.text.convert.DateTime;
 
 private import  Utf = tango.text.convert.Utf;
@@ -40,6 +38,9 @@ private import  Float = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
 
 private import  tango.io.model.IConduit : OutputStream;
+
+version(WithVariant)
+        private import  tango.core.Variant;
 
 
 /*******************************************************************************
@@ -492,6 +493,8 @@ version (old)
                                 // Because Variants can contain AAs (and maybe
                                 // even static arrays someday), we need to
                                 // process them here.
+version (WithVariant)
+{
                                 if (_ti is typeid(Variant))
                                    {
                                    // Unpack the variant and forward
@@ -500,7 +503,7 @@ version (old)
                                    auto innerArg = vptr.ptr;
                                    process (innerTi, innerArg);
                                    }
-                                else
+}
                                 if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
                                    {
                                    auto tiStat = cast(TypeInfo_StaticArray)_ti;
