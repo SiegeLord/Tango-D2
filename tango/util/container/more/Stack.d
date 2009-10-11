@@ -140,7 +140,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        void pushMore (V[] value...)
+        void append (V[] value...)
         {
                 foreach (v; value)
                          push (v);

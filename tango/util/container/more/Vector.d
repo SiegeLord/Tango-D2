@@ -29,9 +29,10 @@ private extern(C) void memmove (void*, void*, int);
 
 struct Vector (V, int Size = 0) 
 {
+        alias add       push;
         alias slice     opSlice;
-        alias add       opCatAssign;
-          
+        alias push      opCatAssign;
+
         static if (Size == 0)
                   {
                   private uint depth;
@@ -101,21 +102,46 @@ struct Vector (V, int Size = 0)
 
         **********************************************************************/
 
-        V add (V value)
+        V* add (V value)
         {
                 static if (Size == 0)
                           {
                           if (depth >= vector.length)
                               vector.length = vector.length + 64;
-                          return vector[depth++] = value;
+                          vector[depth++] = value;
                           }
                        else
                           {                         
                           if (depth < vector.length)
-                              return vector[depth++] = value;
+                              vector[depth++] = value;
                           else
                              error (__LINE__);
                           }
+                return &vector[depth-1];
+        }
+
+        /**********************************************************************
+
+                Add a value to the vector.
+
+                Throws an exception when the vector is full
+
+        **********************************************************************/
+
+        V* add ()
+        {
+                static if (Size == 0)
+                          {
+                          if (depth >= vector.length)
+                              vector.length = vector.length + 64;
+                          }
+                       else
+                          if (depth >= vector.length)
+                              error (__LINE__);
+
+                auto p = &vector[depth++];
+                *p = V.init;
+                return p;
         }
 
         /**********************************************************************
@@ -126,7 +152,7 @@ struct Vector (V, int Size = 0)
 
         **********************************************************************/
 
-        void addMore (V[] value...)
+        void append (V[] value...)
         {
                 foreach (v; value)
                          add (v);
