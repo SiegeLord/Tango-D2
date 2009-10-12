@@ -70,11 +70,18 @@ debug private import tango.io.Stdout;
         args("help").aliased('?').aliased('h');
         ---
 
-        A variety of known arguments can be declared in this manner
+        Parameters can be constrained to a set of matching text values,
+        and the parser will fail on mismatched input:
+        ---
+        args("greeting").restrict("hello", "yo", "gday");
+        args("enabled").restrict("true", "false", "t", "f", "y", "n");  
+        ---
+
+        A set of declared arguments may be configured in this manner
         and the parser will return true only where all conditions are
         met. Where a error condition occurs you may traverse the set
         of arguments to find out which argument has what error. This
-        is handled as shown, where arg.error holds a defined code:
+        can be handled like so, where arg.error holds a defined code:
         ---
         if (! args.parse (...))
               foreach (arg; args)
@@ -98,7 +105,7 @@ debug private import tango.io.Stdout;
         routine, which constructs error messages on your behalf:
         ---
         if (! args.parse (...))
-              Stderr (args.errors(&Stderr.layout.sprint));
+              stderr (args.errors(&stderr.layout.sprint));
         ---
 
         Note that messages are constructed via a layout handler and
