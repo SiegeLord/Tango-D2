@@ -10,9 +10,11 @@
     
 *******************************************************************************/
 
-module tango.util.Arguments;
+module tango.text.Arguments;
 
 private import tango.text.Util;
+
+debug private import tango.io.Stdout;
 
 /*******************************************************************************
 
@@ -89,6 +91,7 @@ private import tango.text.Util;
         Requires:       depends on a missing argument
         Conflict:       conflicting argument is present
         Extra:          unexpected argument (see sloppy)
+        Option:         parameter does not match options
         ---
         
         A simpler way to handle errors is to invoke an internal format
@@ -164,6 +167,7 @@ class Arguments
                 "argument '{0}' requires '{4}'\n", 
                 "argument '{0}' conflicts with '{4}'\n", 
                 "unexpected argument '{0}'\n", 
+                "argument '{0}' expects one of {5}\n", 
                 ];
 
         /***********************************************************************
@@ -318,7 +322,7 @@ class Arguments
                          if (arg.error)
                              result ~= dg (tmp, msgs[arg.error-1], arg.name, 
                                            arg.values.length, arg.min, arg.max, 
-                                           arg.bogus);
+                                           arg.bogus, arg.options);
                 return result;                             
         }
 
@@ -334,6 +338,7 @@ class Arguments
                 index 2: configured minimum parameters
                 index 3: configured maximum parameters
                 index 4: conflicting/dependent argument name
+                index 5: array of configured parameter options
                 ---
 
         ***********************************************************************/
@@ -399,28 +404,30 @@ class Arguments
                         Requires:       depends on a missing argument
                         Conflict:       conflicting argument is present
                         Extra:          unexpected argument (see sloppy)
+                        Option:         parameter does not match options
                         ---
 
                 ***************************************************************/
         
-                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra};
+                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra, Option};
 
-                alias void delegate() Invoker;
-                alias void delegate(char[] value) Validator;
+                alias void   delegate() Invoker;
+                alias void   delegate(char[] value) Inspector;
 
                 int             min,            // minimum params
                                 max,            // maximum params
                                 error;          // error condition
                 bool            set,            // arg is present
                                 req,            // arg is required
-                                cat;            // arg is smushable
+                                cat,            // arg is smushable
+                                fail;           // fail the parse
                 char[]          name,           // arg name
-                                text,           // help text
                                 bogus;          // name of conflict
                 char[][]        values,         // assigned values
-                                deefalts;       // assigned defaults
+                                options,        // validation options
+                                deefalts;       // configured defaults
                 Invoker         invoker;        // invocation callback
-                Validator       validator;      // validation callback
+                Inspector       inspector;      // inspection callback
                 Argument[]      dependees,      // who we require
                                 conflictees;    // who we conflict with
                 
@@ -444,6 +451,18 @@ class Arguments
                 override char[] toString()
                 {
                         return name;
+                }
+
+                /***************************************************************
+                
+                        return the assigned parameters, or the defaults if
+                        no parameters were assigned
+
+                ***************************************************************/
+        
+                final char[][] assigned ()
+                {
+                        return values.length ? values : deefalts;
                 }
 
                 /***************************************************************
@@ -589,14 +608,14 @@ class Arguments
 
                 /***************************************************************
               
-                        Set a validator for this argument, fired when a
+                        Set an inspector for this argument, fired when a
                         parameter is appended to an argument
 
                 ***************************************************************/
         
-                final Argument bind (Validator validator)
+                final Argument bind (Inspector inspector)
                 {
-                        this.validator = validator;
+                        this.inspector = inspector;
                         return this;
                 }
 
@@ -628,27 +647,41 @@ class Arguments
                 }
 
                 /***************************************************************
-                
-                        Set the help text
+              
+                        Alter the title of this argument, which can be 
+                        useful for naming the default argument
 
                 ***************************************************************/
         
-                final Argument help (char[] text)
+                final Argument title (char[] name)
                 {
-                        this.text = text;
+                        this.name = name;
                         return this;
                 }
 
                 /***************************************************************
-                
-                        return the assigned parameters, or the defaults if
-                        no parameters were assigned
+              
+                        Fail the parse when this arg is encountered. You
+                        might use this for managing help text
 
                 ***************************************************************/
         
-                final char[][] assigned ()
+                final Argument halt ()
                 {
-                        return values.length ? values : deefalts;
+                        this.fail = true;
+                        return this;
+                }
+
+                /***************************************************************
+              
+                        Restrict values to one of the given set
+
+                ***************************************************************/
+        
+                final Argument restrict (char[][] options ...)
+                {
+                        this.options = options;
+                        return this;
                 }
 
                 /***************************************************************
@@ -678,8 +711,17 @@ class Arguments
         
                 private Argument append (char[] value)
                 {       
-                        if (validator)
-                            validator(value);
+                        this.set = true;        // needed for default assignments 
+                        if (inspector)
+                            inspector (value);
+
+                        if (options.length)
+                           {
+                           error = Option;
+                           foreach (option; options)
+                                    if (option == value)
+                                        error = None;
+                           }
                         values ~= value;
                         return this;
                 }
@@ -698,6 +740,10 @@ class Arguments
                             else
                                if (set)
                                   {
+                                  // short circuit?
+                                  if (fail)
+                                      return -1;
+
                                   if (values.length < min)
                                       error = ParamLo;
                                   else
