@@ -65,6 +65,7 @@ private import tango.text.Util;
         dependent upon the presence of another argument "bar":
         ---
         args("foo").required.params(1).aliased('f').requires("bar");
+        args("help").aliased('?').aliased('h');
         ---
 
         A variety of known arguments can be declared in this manner
@@ -101,10 +102,46 @@ private import tango.text.Util;
         the messages themselves may be customized (for i18n purposes).
         See the two errors() methods for more information on this.
 
-        You may change the argument indicator(s) to be something other
-        than "-" and "--" via the constructor. You might, for example, 
-        need to specify a "/" indicator instead. See the unit-test code 
-        for an example of this plus a variety of other options.
+        The parser make a distinction between a short and long prefix, 
+        in that a long prefix argument is always distinct while short
+        prefix arguments may be combined as a shortcut:
+        ---
+        args.parse ("--foo --bar -abc", true);
+        assert (args("foo").set);
+        assert (args("bar".set);
+        assert (args("a").set);
+        assert (args("b").set);
+        assert (args("c").set);
+        ---
+
+        In addition, short-prefix arguments may be "smushed" with an
+        associated parameter when configured to do so:
+        ---
+        args('o').params(1).smush;
+        if (args.parse ("-ofile"))
+            assert (args('o').assigned[0] == "file");
+        ---
+
+        There are two callback varieties supports, where one is invoked
+        when an associated argument is parsed and the other is invoked
+        as parameters are assigned. See the bind() methods for delegate
+        signature details.
+
+        You may change the argument prefix to be something other than 
+        "-" and "--" via the constructor. You might, for example, need 
+        to specify a "/" indicator instead:
+        ---
+        auto args = new Args ("/", "-");
+        args.parse ("-foo -bar /abc");
+        assert (args("foo").set);
+        assert (args("bar".set);
+        assert (args("a").set);
+        assert (args("b").set);
+        assert (args("c").set);
+        ---
+
+        See the unit-test code for an example of this plus a variety of 
+        other options.
 
 *******************************************************************************/
 
