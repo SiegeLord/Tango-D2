@@ -15,7 +15,7 @@ private import tango.io.Stdout;
 private import tango.sys.Process;
 private import tango.io.FileScan;
 private import tango.io.device.File;
-private import tango.util.ArgParser;
+private import tango.util.Arguments;
 
 /*******************************************************************************
       
@@ -27,21 +27,12 @@ void main (char[][] arg)
         if (arg.length < 2)
             Stdout.formatln (args.usage);
         else
-           {
-           switch (args.populate(arg[1..$]).os)
-                  {
-                  case "windows":
-                       (new Windows(args)).build;
-                       break;
-
-                  case "linux":
-                       (new Linux(args)).build;
-                       break;
-
-                  default:
-                      assert (false, "unsupported O/S: "~args.os);
-                  }
-           }
+           if (args.populate(arg[1..$]))
+              {
+              new Linux (args);
+              new Windows (args);
+              Stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
+              }
 }
 
 /*******************************************************************************
@@ -56,35 +47,34 @@ class Windows : FileFilter
                 exclude ("tango/stdc/posix");
                 include ("tango/sys/win32");
                 include ("tango/stdc/constants/win");
+                register ("windows", "dmd", &dmd);
         }
 
-        override void build ()
+        int dmd ()
         {
-                void compile (FilePath file, File list, char[] cmd)
+                void compile (char[] cmd, FilePath file, File list)
                 {
                         auto temp = objname (file);
                         exec (cmd~temp~" "~file.toString);
                         list.write (temp ~ "\n");
                 }
 
-                auto dmc = "dmc -c -mn -6 -r -o";
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
-
                 auto outf = new File ("tango.lsp", File.ReadWriteCreate);
+                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
                 outf.write ("-c -n -p256\n"~args.lib~".lib\n");
 
                 foreach (file; scan(".d"))
-                         compile (file, outf, dmd);
+                         compile (dmd, file, outf);
+
+                foreach (file; scan(".c"))
+                         compile ("dmc -c -mn -6 -r -o", file, outf);
+
                 if (args.core)
-                   {
-                   foreach (file; scan(".c"))
-                            compile (file, outf, dmc);
-                   outf.write (args.root~"/tango/core/rt/compiler/dmd/minit.obj\n");
-                   }
+                    outf.write (args.root~"/tango/core/rt/compiler/dmd/minit.obj\n");
                 outf.close;
                 exec ("lib @tango.lsp");
                 exec ("cmd /q /c del tango.lsp *.obj");
-                Stdout.formatln ("{} files processed", count);
+                return count;
         }
 }
 
@@ -99,11 +89,12 @@ class Linux : FileFilter
                 super (args);
                 include ("tango/sys/linux");
                 include ("tango/stdc/constants/linux");
+                //register ("linux", "dmd", &dmd);
         }
 
-        override void build ()
-        {       
-                Stdout("not implemented").newline;
+        int dmd ()
+        {
+                return count;
         }
 }
 
@@ -113,16 +104,34 @@ class Linux : FileFilter
 
 class FileFilter : FileScan
 {
-        Args            args;
-        int             count;
-        char[]          suffix;
-        bool[char[]]    excluded;         
+        alias int delegate()    Builder;
+        Args                    args;
+        int                     count;
+        char[]                  suffix;
+        bool[char[]]            excluded;         
+        static Builder[char[]]  builders;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        abstract void build ();
+        static void register (char[] platform, char[] compiler, Builder builder)
+        {
+                builders [platform~compiler] = builder;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        static Builder builder (char[] platform, char[] compiler)
+        {       
+                auto s = platform~compiler;
+                auto b = s in builders;
+                if (b)
+                    return *b;
+                throw new Exception ("unsupported combination of "~platform~" and "~compiler);
+        }
 
         /***********************************************************************
 
@@ -179,7 +188,7 @@ class FileFilter : FileScan
         final FileFilter scan (char[] suffix)
         {
                 this.suffix = suffix;
-                super.sweep (args.root~"/tango", &execute);
+                super.sweep (args.root~"/tango", &filter);
                 return this;
         }
 
@@ -205,7 +214,7 @@ class FileFilter : FileScan
 
         ***********************************************************************/
 
-        private bool execute (FilePath fp, bool isDir)
+        private bool filter (FilePath fp, bool isDir)
         {
                 if (isDir)
                    {    
@@ -281,39 +290,34 @@ struct Args
                         os = "windows",
                         lib = "tango",
                         flags = "-g",
-                        target = "dmd";
+                        target = "dmd",
+                        compiler = "dmd";
         char[]          usage = "usage: compile TangoImportPath\n"
                                 "\t[-v]\t\t\tverbose output\n"
                                 "\t[-i]\t\t\tinhibit execution\n"
                                 "\t[-u]\t\t\tinclude user modules\n"
                                 "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
+                                "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
                                 "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                                 "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
                                 "\t[-p=windows|linux]\tdetermines package filtering";
 
-        static char[] check(char[] v, char[] opt) 
-        {
-                if (v.length < 2 || v[0] != '=') 
-                    throw new Exception("invalid argument for "~opt);
-                return v;
-        }
-
-        Args* populate (char[][] arg)
+        bool populate (char[][] arg)
         {       
                 root = arg[0];
 
-                auto args = new ArgParser;
-                args.bind ("-", "u", {user=true;});
-                args.bind ("-", "i", {inhibit=true;});
-                args.bind ("-", "v", {verbose=true;});
-                args.bind ("-", "p", (char[] v){os=check(v, "-p")[1..$];});
-                args.bind ("-", "l", (char[] v){lib=check(v, "-l")[1..$];});
-                args.bind ("-", "o", (char[] v){flags=check(v, "-o")[1..$];});
-                args.bind ("-", "r", (char[] v){core=true; target=check(v, "-r")[1..$];});
-                args.parse (arg[1..$]);
-
-                assert (target == "ldc" || target == "dmd" || target == "gdc");
-                return this;
+                auto args = new Arguments;
+                args('u').bind({user=true;});
+                args('i').bind({inhibit=true;});
+                args('v').bind({verbose=true;});
+                args('p').params(1).bind((char[] v){os = v;});
+                args('l').params(1).bind((char[] v){lib = v;});
+                args('o').params(1).bind((char[] v){flags = v;});
+                args('c').params(1).bind((char[] v){compiler = v;});
+                args('r').params(1).bind((char[] v){target = v, core=true;});
+                if (! args.parse (arg[1..$]))
+                      return Stdout (args.errors (&Stdout.layout.sprint)), false;
+                return true;
         }
 }
 
