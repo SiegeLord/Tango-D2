@@ -371,7 +371,8 @@ class Arguments
         
                 enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Invalid, Extra};
 
-                alias bool delegate(char[] value) Validator;
+                alias void delegate() Invoker;
+                alias void delegate(char[] value) Validator;
 
                 int             min,            // minimum params
                                 max,            // maximum params
@@ -384,6 +385,7 @@ class Arguments
                                 bogus;          // name of conflict
                 char[][]        values,         // assigned values
                                 deefalts;       // assigned defaults
+                Invoker         invoker;        // invocation callback
                 Validator       validator;      // validation callback
                 Argument[]      dependees,      // who we require
                                 conflictees;    // who we conflict with
@@ -553,13 +555,27 @@ class Arguments
 
                 /***************************************************************
               
-                        Set a validator for this argument
+                        Set a validator for this argument, fired when a
+                        parameter is appended to an argument
 
                 ***************************************************************/
         
-                final Argument validate (Validator validator)
+                final Argument bind (Validator validator)
                 {
                         this.validator = validator;
+                        return this;
+                }
+
+                /***************************************************************
+              
+                        Set an invoker for this argument, fired when an
+                        argument declaration is seen
+
+                ***************************************************************/
+        
+                final Argument bind (Invoker invoker)
+                {
+                        this.invoker = invoker;
                         return this;
                 }
 
@@ -604,13 +620,16 @@ class Arguments
                 /***************************************************************
               
                         This arg is present, but set an error condition
-                        (Extra) when unexpected and sloppy is not enabled
+                        (Extra) when unexpected and sloppy is not enabled.
+                        Fires any configured invoker callback.
 
                 ***************************************************************/
         
                 private Argument enable (bool unexpected=false)
                 {
                         this.set = true;
+                        if (invoker)
+                            invoker();
                         if (unexpected)
                             error = Extra;
                         return this;
@@ -626,8 +645,7 @@ class Arguments
                 private Argument append (char[] value)
                 {       
                         if (validator)
-                            if (! validator(value))
-                                  error = Invalid;
+                            validator(value);
                         values ~= value;
                         return this;
                 }
@@ -644,21 +662,24 @@ class Arguments
                             if (req && !set)      
                                 error = Required;
                             else
-                               if (values.length < min)
-                                   error = ParamLo;
-                               else
-                                  if (values.length > max)
-                                      error = ParamHi;
+                               if (set)
+                                  {
+                                  if (values.length < min)
+                                      error = ParamLo;
                                   else
-                                     {
-                                     foreach (arg; dependees)
-                                              if (! arg.set)
-                                                    error = Requires, bogus=arg.name;
+                                     if (values.length > max)
+                                         error = ParamHi;
+                                     else
+                                        {
+                                        foreach (arg; dependees)
+                                                 if (! arg.set)
+                                                       error = Requires, bogus=arg.name;
 
-                                     foreach (arg; conflictees)
-                                              if (arg.set)
-                                                  error = Conflict, bogus=arg.name;
-                                     }
+                                        foreach (arg; conflictees)
+                                                 if (arg.set)
+                                                     error = Conflict, bogus=arg.name;
+                                        }
+                                  }
 
                         debug Stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
