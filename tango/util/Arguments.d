@@ -16,7 +16,7 @@ private import tango.text.Util;
 
 /*******************************************************************************
 
-        Command-line argument parser. Simple usage is as follows:
+        Command-line argument parser. Simple usage is:
         ---
         auto args = new Arguments;
         args.parse ("-a -b", true);
@@ -36,7 +36,7 @@ private import tango.text.Util;
         That example results in argument 'a' assigned three parameters. 
         Note '=', ' ' and ':' are equivalent argument separators. Those
         parameters without a prior argument are assigned to the default
-        argument as follows, where null specifies the default argument:
+        argument, where null specifies the default argument:
         ---
         args.parse ("one two");
         assert (args(null).assigned.length is 2);
@@ -46,7 +46,7 @@ private import tango.text.Util;
         the second argument of parse() being set true. This allows the
         parser to create argument declaration on-the-fly, which can be
         handy for trivial usage. However, most features require the a-
-        priori declaration of arguments as follows:
+        priori declaration of arguments:
         ---
         args = new Arguments;
         args('x').required;
@@ -71,7 +71,7 @@ private import tango.text.Util;
         and the parser will return true only where all conditions are
         met. Where a error condition occurs you may traverse the set
         of arguments to find out which argument has what error. This
-        is handled as follows, where arg.error holds a defined code:
+        is handled as shown, where arg.error holds a defined code:
         ---
         if (! args.parse (...))
               foreach (arg; args)
@@ -87,11 +87,10 @@ private import tango.text.Util;
         Required:       missing argument is required 
         Requires:       depends on a missing argument
         Conflict:       conflicting argument is present
-        Invalid:        configured validator failed
         Extra:          unexpected argument (see sloppy)
         ---
         
-        A simple way to handle errors is to invoke an internal format
+        A simpler way to handle errors is to invoke an internal format
         routine, which constructs error messages on your behalf:
         ---
         if (! args.parse (...))
@@ -100,7 +99,7 @@ private import tango.text.Util;
 
         Note that messages are constructed via a layout handler and
         the messages themselves may be customized (for i18n purposes).
-        See the two errors() methods for more information.
+        See the two errors() methods for more information on this.
 
         You may change the argument indicator(s) to be something other
         than "-" and "--" via the constructor. You might, for example, 
@@ -127,7 +126,6 @@ class Arguments
                 "argument '{0}' is missing\n", 
                 "argument '{0}' requires '{4}'\n", 
                 "argument '{0}' conflicts with '{4}'\n", 
-                "validation failed for argument '{0}'\n", 
                 "unexpected argument '{0}'\n", 
                 ];
 
@@ -363,13 +361,12 @@ class Arguments
                         Required:       missing argument is required 
                         Requires:       depends on a missing argument
                         Conflict:       conflicting argument is present
-                        Invalid:        configured validator failed
                         Extra:          unexpected argument (see sloppy)
                         ---
 
                 ***************************************************************/
         
-                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Invalid, Extra};
+                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra};
 
                 alias void delegate() Invoker;
                 alias void delegate(char[] value) Validator;
