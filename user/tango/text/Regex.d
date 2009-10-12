@@ -1862,7 +1862,7 @@ private:
         if ( peekPattern == '}' ) {
             readPattern;
             maxOccur = minOccur;
-            return true;
+            return;
         }
         if ( peekPattern != ',' )
             throw new RegExpException("Invalid occurence range at \""~Utf.toString(pattern[cursor..$])~"\"");
