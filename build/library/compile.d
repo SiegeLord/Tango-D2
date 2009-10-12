@@ -15,7 +15,7 @@ private import tango.io.Stdout;
 private import tango.sys.Process;
 private import tango.io.FileScan;
 private import tango.io.device.File;
-private import tango.util.Arguments;
+private import tango.text.Arguments;
 
 /*******************************************************************************
       
@@ -24,15 +24,13 @@ private import tango.util.Arguments;
 void main (char[][] arg)
 {
         Args args;
-        if (arg.length < 2)
-            Stdout.formatln (args.usage);
-        else
-           if (args.populate(arg[1..$]))
-              {
-              new Linux (args);
-              new Windows (args);
-              Stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
-              }
+
+        if (args.populate (arg[1..$]))
+           {
+           new Linux (args);
+           new Windows (args);
+           stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
+           }
 }
 
 /*******************************************************************************
@@ -257,8 +255,8 @@ class FileFilter : FileScan
                 if (args.verbose)
                    {
                    foreach (str; cmd)
-                            Stdout (str)(' ');
-                   Stdout.newline;
+                            stdout (str)(' ');
+                   stdout.newline;
                    }        
                 if (! args.inhibit)
                    {
@@ -267,8 +265,8 @@ class FileFilter : FileScan
                        proc.workDir = workDir;
         
                    proc.execute();
-                   Stdout.stream.copy (proc.stdout);
-                   Stdout.stream.copy (proc.stderr);
+                   stdout.stream.copy (proc.stdout);
+                   stdout.stream.copy (proc.stderr);
                    auto result = proc.wait;
                    if (result.reason != Process.Result.Exit)
                        throw new Exception (result.toString);
@@ -282,45 +280,46 @@ class FileFilter : FileScan
 
 struct Args
 {
-        bool            core,
-                        user,
-                        inhibit,
-                        verbose;
-        char[]          root,
-                        os = "windows",
-                        lib = "tango",
-                        flags = "-g",
-                        target = "dmd",
-                        compiler = "dmd";
-        char[]          usage = "usage: compile TangoImportPath\n"
-                                "\t[-v]\t\t\tverbose output\n"
-                                "\t[-i]\t\t\tinhibit execution\n"
-                                "\t[-u]\t\t\tinclude user modules\n"
-                                "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
-                                "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
-                                "\t[-o=\"options\"]\t\tspecify D compiler options\n"
-                                "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                                "\t[-p=windows|linux]\tdetermines package filtering";
+        bool    core,
+                user,
+                inhibit,
+                verbose;
+        char[]  root,
+                os = "windows",
+                lib = "tango",
+                flags = "-g",
+                target = "dmd",
+                compiler = "dmd";
+        char[]  usage = "usage: compile tango-path\n"
+                        "\t[-v]\t\t\tverbose output\n"
+                        "\t[-i]\t\t\tinhibit execution\n"
+                        "\t[-u]\t\t\tinclude user modules\n"
+                        "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
+                        "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
+                        "\t[-o=\"options\"]\t\tspecify D compiler options\n"
+                        "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
+                        "\t[-p=windows|linux]\tdetermines package filtering\n";
 
         bool populate (char[][] arg)
         {       
-                root = arg[0];
-
                 auto args = new Arguments;
                 args('u').bind({user=true;});
                 args('i').bind({inhibit=true;});
                 args('v').bind({verbose=true;});
-                args("help").aliased('h').aliased('?');
-                args('p').params(1).bind((char[] v){os = v;});
                 args('l').params(1).bind((char[] v){lib = v;});
                 args('o').params(1).bind((char[] v){flags = v;});
-                args('c').params(1).bind((char[] v){compiler = v;});
-                args('r').params(1).bind((char[] v){target = v, core=true;});
-                if (! args.parse (arg[1..$]))
-                      return Stdout (args.errors (&Stdout.layout.sprint)), false;
-                if (args("help").set)
-                    return Stdout (usage), false;
-                return true;
+                args('p').params(1).bind((char[] v){os = v;}).restrict("windows", "linux");
+                args('c').params(1).bind((char[] v){compiler = v;}).restrict("dmd", "gdc", "ldc");
+                args('r').params(1).bind((char[] v){target = v, core=true;}).restrict("dmd", "gdc", "ldc");
+                args(null).required.params(1).title("tango path");
+                args("help").aliased('h').aliased('?').halt;
+                if (args.parse(arg))
+                    return root = args(null).assigned[0], true;
+
+                stdout (usage);
+                if (! args("help").set)
+                      stdout (args.errors (&stdout.layout.sprint));
+                return false;
         }
 }
 
