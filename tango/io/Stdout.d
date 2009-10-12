@@ -110,6 +110,8 @@ private alias FormatOutput!(char) Output;
 
 public static Output Stdout,      /// global standard output
                      Stderr;      /// global error output
+public alias Stdout  stdout;      /// alternative
+public alias Stderr  stderr;      /// alternative
 
 static this ()
 {
