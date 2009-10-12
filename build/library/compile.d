@@ -310,6 +310,7 @@ struct Args
                 args('u').bind({user=true;});
                 args('i').bind({inhibit=true;});
                 args('v').bind({verbose=true;});
+                args("help").aliased('h').aliased('?');
                 args('p').params(1).bind((char[] v){os = v;});
                 args('l').params(1).bind((char[] v){lib = v;});
                 args('o').params(1).bind((char[] v){flags = v;});
@@ -317,6 +318,8 @@ struct Args
                 args('r').params(1).bind((char[] v){target = v, core=true;});
                 if (! args.parse (arg[1..$]))
                       return Stdout (args.errors (&Stdout.layout.sprint)), false;
+                if (args("help").set)
+                    return Stdout (usage), false;
                 return true;
         }
 }
