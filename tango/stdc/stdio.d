@@ -262,17 +262,19 @@ version( Win32 )
         _IOAPP   = 0x200,
     }
 
-    extern void function() _fcloseallp;
+    extern extern(C) void function() _fcloseallp;
 
     version (GNU)
     {
-        extern FILE[_NFILE]* _imp___iob;
+        extern(C){
+            extern FILE[_NFILE]* _imp___iob;
+        }
 
-        auto FILE* stdin;
-        auto FILE* stdout;
-        auto FILE* stderr;
-        auto FILE* stdaux;
-        auto FILE* stdprn;
+        FILE* stdin;
+        FILE* stdout;
+        FILE* stderr;
+        FILE* stdaux;
+        FILE* stdprn;
 
         static this()
         {
@@ -284,7 +286,9 @@ version( Win32 )
         }
     }
     else version (LDC) {
-        extern FILE[_NFILE]* _imp___iob;
+        extern(C){
+            extern FILE[_NFILE]* _imp___iob;
+        }
 
         FILE* stdin;
         FILE* stdout;
@@ -303,7 +307,9 @@ version( Win32 )
     }
     else
     {
-        extern FILE[_NFILE] _iob;
+        extern(C){
+            extern FILE[_NFILE] _iob;
+        }
 
        FILE* stdin  = &_iob[0];
        FILE* stdout = &_iob[1];
@@ -311,10 +317,7 @@ version( Win32 )
        FILE* stdaux = &_iob[3];
        FILE* stdprn = &_iob[4];
     }
-}
-
-else version( linux )
-{
+} else version( linux ) {
     enum
     {
         _IOFBF = 0,
@@ -322,15 +325,15 @@ else version( linux )
         _IONBF = 2,
     }
 
-    extern(C) FILE* stdin;
-    extern(C) FILE* stdout;
-    extern(C) FILE* stderr;
+    extern(C) extern FILE* stdin;
+    extern(C) extern FILE* stdout;
+    extern(C) extern FILE* stderr;
 }
 else version( darwin )
 {
-    extern(C) FILE* __stdinp;
-    extern(C) FILE* __stdoutp;
-    extern(C) FILE* __stderrp;
+    extern(C) extern FILE* __stdinp;
+    extern(C) extern FILE* __stdoutp;
+    extern(C) extern FILE* __stderrp;
 
     FILE* stdin;
     FILE* stdout;
@@ -345,7 +348,7 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    extern(C) FILE[3] __sF;
+    extern(C) extern FILE[3] __sF;
 
     FILE* stdin  = &__sF[0];
     FILE* stdout = &__sF[1];
@@ -353,7 +356,7 @@ else version( freebsd )
 }
 else version( solaris )
 {
-    extern(C) FILE[_NFILE] __iob;
+    extern(C) extern FILE[_NFILE] __iob;
     
     FILE* stdin  = &__iob[0];
     FILE* stdout = &__iob[1];
