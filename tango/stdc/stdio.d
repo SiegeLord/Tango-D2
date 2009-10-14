@@ -13,237 +13,237 @@ private
     import tango.stdc.stdarg;
     import tango.stdc.stddef;
     import tango.stdc.config;
-	version( solaris ) import tango.stdc.posix.sys.types : ssize_t;
+    version( solaris ) import tango.stdc.posix.sys.types : ssize_t;
 }
 
-extern (C):
+extern (C){
 
-version( Win32 )
-{
-    const int BUFSIZ         = 0x4000;
-    const int EOF            = -1;
-    const int FOPEN_MAX      = 20;
-    const int FILENAME_MAX   = 256; // 255 plus NULL
-    const int TMP_MAX        = 32767;
-    const int _SYS_OPEN      = 20;
-    const int SYS_OPEN       = _SYS_OPEN;
-
-    const int     _NFILE     = 60;
-    const char[]  _P_tmpdir  = "\\";
-    const wchar[] _wP_tmpdir = "\\";
-    const int     L_tmpnam   = _P_tmpdir.length + 12;
-}
-else version( linux )
-{
-    //const int BUFSIZ      = 0x4000;
-    const int EOF           = -1;
-    const int FOPEN_MAX     = 16;
-    const int FILENAME_MAX  = 4095;
-    const int TMP_MAX       = 238328;
-    const int L_tmpnam      = 20;
-}
-else version( darwin )
-{
-    const int EOF           = -1;
-    const int FOPEN_MAX     = 20;
-    const int FILENAME_MAX  = 1024;
-    const int TMP_MAX       = 308915776;
-    const int L_tmpnam      = 1024;
-
-    private
-    {
-        struct __sbuf
-        {
-            ubyte*  _base;
-            int     _size;
-        }
-
-        struct __sFILEX
-        {
-
-        }
-    }
-}
-else version ( freebsd )
-{
-    const int EOF           = -1;
-    const int FOPEN_MAX     = 20;
-    const int FILENAME_MAX  = 1024;
-    const int TMP_MAX       = 308915776;
-    const int L_tmpnam      = 1024;
-
-    private
-    {
-        struct __sbuf
-        {
-            ubyte *_base;
-            int _size;
-        }
-        struct __sFILEX
-        {
-        }
-    }
-}
-else version( solaris )
-{
-    const int BUFSIZ      = 1024;
-    const int EOF           = -1;
-  version (X86_64) {
-    const int _NFILE		= 60;
-  } else {
-    const int _NFILE		= 20;
-  }
-	const int FOPEN_MAX		= _NFILE;
-	
-    const int FILENAME_MAX  = 1024;
-    const int TMP_MAX       = 17576;
-    const int L_tmpnam      = 25;
-}
-else
-{
-    static assert( false );
-}
-
-enum
-{
-    SEEK_SET,
-    SEEK_CUR,
-    SEEK_END
-}
-
-struct _iobuf
-{
-    align (1):
     version( Win32 )
     {
-        char* _ptr;
-        int   _cnt;
-        char* _base;
-        int   _flag;
-        int   _file;
-        int   _charbuf;
-        int   _bufsiz;
-        int   __tmpnum;
+        const int BUFSIZ         = 0x4000;
+        const int EOF            = -1;
+        const int FOPEN_MAX      = 20;
+        const int FILENAME_MAX   = 256; // 255 plus NULL
+        const int TMP_MAX        = 32767;
+        const int _SYS_OPEN      = 20;
+        const int SYS_OPEN       = _SYS_OPEN;
+
+        const int     _NFILE     = 60;
+        const char[]  _P_tmpdir  = "\\";
+        const wchar[] _wP_tmpdir = "\\";
+        const int     L_tmpnam   = _P_tmpdir.length + 12;
     }
     else version( linux )
     {
-        char*   _read_ptr;
-        char*   _read_end;
-        char*   _read_base;
-        char*   _write_base;
-        char*   _write_ptr;
-        char*   _write_end;
-        char*   _buf_base;
-        char*   _buf_end;
-        char*   _save_base;
-        char*   _backup_base;
-        char*   _save_end;
-        void*   _markers;
-        _iobuf* _chain;
-        int     _fileno;
-        int     _blksize;
-        int     _old_offset;
-        ushort  _cur_column;
-        byte    _vtable_offset;
-        char[1] _shortbuf;
-        void*   _lock;
+        //const int BUFSIZ      = 0x4000;
+        const int EOF           = -1;
+        const int FOPEN_MAX     = 16;
+        const int FILENAME_MAX  = 4095;
+        const int TMP_MAX       = 238328;
+        const int L_tmpnam      = 20;
     }
     else version( darwin )
     {
-        ubyte*    _p;
-        int       _r;
-        int       _w;
-        short     _flags;
-        short     _file;
-        __sbuf    _bf;
-        int       _lbfsize;
+        const int EOF           = -1;
+        const int FOPEN_MAX     = 20;
+        const int FILENAME_MAX  = 1024;
+        const int TMP_MAX       = 308915776;
+        const int L_tmpnam      = 1024;
 
-        int* function(void*)                    _close;
-        int* function(void*, char*, int)        _read;
-        fpos_t* function(void*, fpos_t, int)    _seek;
-        int* function(void*, char *, int)       _write;
+        private
+        {
+            struct __sbuf
+            {
+                ubyte*  _base;
+                int     _size;
+            }
 
-        __sbuf    _ub;
-        __sFILEX* _extra;
-        int       _ur;
+            struct __sFILEX
+            {
 
-        ubyte[3]  _ubuf;
-        ubyte[1]  _nbuf;
-
-        __sbuf    _lb;
-
-        int       _blksize;
-        fpos_t    _offset;
+            }
+        }
     }
-    else version( freebsd )
+    else version ( freebsd )
     {
-        ubyte*    _p;
-        int       _r;
-        int       _w;
-        short     _flags;
-        short     _file;
-        __sbuf    _bf;
-        int       _lbfsize;
+        const int EOF           = -1;
+        const int FOPEN_MAX     = 20;
+        const int FILENAME_MAX  = 1024;
+        const int TMP_MAX       = 308915776;
+        const int L_tmpnam      = 1024;
 
-        void* function()                        _cookie;
-        int* function(void*)                    _close;
-        int* function(void*, char*, int)        _read;
-        fpos_t* function(void*, fpos_t, int)    _seek;
-        int* function(void*, char *, int)       _write;
-
-        __sbuf    _ub;
-        __sFILEX* _extra;
-        int       _ur;
-
-        ubyte[3]  _ubuf;
-        ubyte[1]  _nbuf;
-
-        __sbuf    _lb;
-
-        int       _blksize;
-        fpos_t    _offset;
+        private
+        {
+            struct __sbuf
+            {
+                ubyte *_base;
+                int _size;
+            }
+            struct __sFILEX
+            {
+            }
+        }
     }
-	else version( solaris )
-	{
-		// From OpenSolaris <ast/sfio_s.h>
-		ubyte*	_next;	/* next position to read/write from	*/
-		ubyte*	_endw;	/* end of write buffer			*/
-		ubyte*	_endr;	/* end of read buffer			*/
-		ubyte*	_endb;	/* end of buffer			*/
-		_iobuf*	_push;	/* the stream that was pushed on	*/
-		ushort	_flags;	/* type of stream			*/
-		short	_file;	/* file descriptor			*/
-		ubyte*	_data;	/* base of data buffer			*/
-		ssize_t	_size;	/* buffer size				*/
-		ssize_t	_val;	/* values or string lengths		*/
-		
-	//	#ifdef _SFIO_PRIVATE
-		// .. I don't think we really need this in D
-	//	#endif
-	}
+    else version( solaris )
+    {
+        const int BUFSIZ      = 1024;
+        const int EOF           = -1;
+      version (X86_64) {
+        const int _NFILE        = 60;
+      } else {
+        const int _NFILE        = 20;
+      }
+        const int FOPEN_MAX     = _NFILE;
+    
+        const int FILENAME_MAX  = 1024;
+        const int TMP_MAX       = 17576;
+        const int L_tmpnam      = 25;
+    }
     else
     {
         static assert( false );
     }
+
+    enum
+    {
+        SEEK_SET,
+        SEEK_CUR,
+        SEEK_END
+    }
+
+    struct _iobuf
+    {
+        align (1):
+        version( Win32 )
+        {
+            char* _ptr;
+            int   _cnt;
+            char* _base;
+            int   _flag;
+            int   _file;
+            int   _charbuf;
+            int   _bufsiz;
+            int   __tmpnum;
+        }
+        else version( linux )
+        {
+            char*   _read_ptr;
+            char*   _read_end;
+            char*   _read_base;
+            char*   _write_base;
+            char*   _write_ptr;
+            char*   _write_end;
+            char*   _buf_base;
+            char*   _buf_end;
+            char*   _save_base;
+            char*   _backup_base;
+            char*   _save_end;
+            void*   _markers;
+            _iobuf* _chain;
+            int     _fileno;
+            int     _blksize;
+            int     _old_offset;
+            ushort  _cur_column;
+            byte    _vtable_offset;
+            char[1] _shortbuf;
+            void*   _lock;
+        }
+        else version( darwin )
+        {
+            ubyte*    _p;
+            int       _r;
+            int       _w;
+            short     _flags;
+            short     _file;
+            __sbuf    _bf;
+            int       _lbfsize;
+
+            int* function(void*)                    _close;
+            int* function(void*, char*, int)        _read;
+            fpos_t* function(void*, fpos_t, int)    _seek;
+            int* function(void*, char *, int)       _write;
+
+            __sbuf    _ub;
+            __sFILEX* _extra;
+            int       _ur;
+
+            ubyte[3]  _ubuf;
+            ubyte[1]  _nbuf;
+
+            __sbuf    _lb;
+
+            int       _blksize;
+            fpos_t    _offset;
+        }
+        else version( freebsd )
+        {
+            ubyte*    _p;
+            int       _r;
+            int       _w;
+            short     _flags;
+            short     _file;
+            __sbuf    _bf;
+            int       _lbfsize;
+
+            void* function()                        _cookie;
+            int* function(void*)                    _close;
+            int* function(void*, char*, int)        _read;
+            fpos_t* function(void*, fpos_t, int)    _seek;
+            int* function(void*, char *, int)       _write;
+
+            __sbuf    _ub;
+            __sFILEX* _extra;
+            int       _ur;
+
+            ubyte[3]  _ubuf;
+            ubyte[1]  _nbuf;
+
+            __sbuf    _lb;
+
+            int       _blksize;
+            fpos_t    _offset;
+        }
+        else version( solaris )
+        {
+            // From OpenSolaris <ast/sfio_s.h>
+            ubyte*  _next;  /* next position to read/write from */
+            ubyte*  _endw;  /* end of write buffer          */
+            ubyte*  _endr;  /* end of read buffer           */
+            ubyte*  _endb;  /* end of buffer            */
+            _iobuf* _push;  /* the stream that was pushed on    */
+            ushort  _flags; /* type of stream           */
+            short   _file;  /* file descriptor          */
+            ubyte*  _data;  /* base of data buffer          */
+            ssize_t _size;  /* buffer size              */
+            ssize_t _val;   /* values or string lengths     */
+        
+        //  #ifdef _SFIO_PRIVATE
+            // .. I don't think we really need this in D
+        //  #endif
+        }
+        else
+        {
+            static assert( false );
+        }
+    }
+
+    alias _iobuf FILE;
+
+    enum
+    {
+        _F_RDWR = 0x0003,
+        _F_READ = 0x0001,
+        _F_WRIT = 0x0002,
+        _F_BUF  = 0x0004,
+        _F_LBUF = 0x0008,
+        _F_ERR  = 0x0010,
+        _F_EOF  = 0x0020,
+        _F_BIN  = 0x0040,
+        _F_IN   = 0x0080,
+        _F_OUT  = 0x0100,
+        _F_TERM = 0x0200,
+    }
 }
-
-alias _iobuf FILE;
-
-enum
-{
-    _F_RDWR = 0x0003,
-    _F_READ = 0x0001,
-    _F_WRIT = 0x0002,
-    _F_BUF  = 0x0004,
-    _F_LBUF = 0x0008,
-    _F_ERR  = 0x0010,
-    _F_EOF  = 0x0020,
-    _F_BIN  = 0x0040,
-    _F_IN   = 0x0080,
-    _F_OUT  = 0x0100,
-    _F_TERM = 0x0200,
-}
-
 version( Win32 )
 {
     enum
@@ -286,11 +286,11 @@ version( Win32 )
     else version (LDC) {
         extern FILE[_NFILE]* _imp___iob;
 
-        auto FILE* stdin;
-        auto FILE* stdout;
-        auto FILE* stderr;
-        auto FILE* stdaux;
-        auto FILE* stdprn;
+        FILE* stdin;
+        FILE* stdout;
+        FILE* stderr;
+        FILE* stdaux;
+        FILE* stdprn;
 
         static this()
         {
@@ -305,13 +305,14 @@ version( Win32 )
     {
         extern FILE[_NFILE] _iob;
 
-        auto FILE* stdin  = &_iob[0];
-        auto FILE* stdout = &_iob[1];
-        auto FILE* stderr = &_iob[2];
-        auto FILE* stdaux = &_iob[3];
-        auto FILE* stdprn = &_iob[4];
+       FILE* stdin  = &_iob[0];
+       FILE* stdout = &_iob[1];
+       FILE* stderr = &_iob[2];
+       FILE* stdaux = &_iob[3];
+       FILE* stdprn = &_iob[4];
     }
 }
+
 else version( linux )
 {
     enum
@@ -321,19 +322,19 @@ else version( linux )
         _IONBF = 2,
     }
 
-    extern FILE* stdin;
-    extern FILE* stdout;
-    extern FILE* stderr;
+    extern(C) FILE* stdin;
+    extern(C) FILE* stdout;
+    extern(C) FILE* stderr;
 }
 else version( darwin )
 {
-    extern FILE* __stdinp;
-    extern FILE* __stdoutp;
-    extern FILE* __stderrp;
+    extern(C) FILE* __stdinp;
+    extern(C) FILE* __stdoutp;
+    extern(C) FILE* __stderrp;
 
-    auto FILE* stdin;
-    auto FILE* stdout;
-    auto FILE* stderr;
+    FILE* stdin;
+    FILE* stdout;
+    FILE* stderr;
 
     static this()
     {
@@ -344,19 +345,19 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    extern FILE[3] __sF;
+    extern(C) FILE[3] __sF;
 
-    auto FILE* stdin  = &__sF[0];
-    auto FILE* stdout = &__sF[1];
-    auto FILE* stderr = &__sF[2];
+    FILE* stdin  = &__sF[0];
+    FILE* stdout = &__sF[1];
+    FILE* stderr = &__sF[2];
 }
 else version( solaris )
 {
-	extern FILE[_NFILE]	__iob;
-	
-	auto FILE* stdin  = &__iob[0];
-    auto FILE* stdout = &__iob[1];
-    auto FILE* stderr = &__iob[2];
+    extern(C) FILE[_NFILE] __iob;
+    
+    FILE* stdin  = &__iob[0];
+    FILE* stdout = &__iob[1];
+    FILE* stderr = &__iob[2];
 }
 else
 {
@@ -365,40 +366,42 @@ else
 
 alias int fpos_t;
 
-int remove(in char* filename);
-int rename(in char* from, in char* to);
+extern(C){
+    int remove(in char* filename);
+    int rename(in char* from, in char* to);
 
-FILE* tmpfile();
-char* tmpnam(char* s);
+    FILE* tmpfile();
+    char* tmpnam(char* s);
 
-int   fclose(FILE* stream);
-int   fflush(FILE* stream);
-FILE* fopen(in char* filename, in char* mode);
-FILE* freopen(in char* filename, in char* mode, FILE* stream);
+    int   fclose(FILE* stream);
+    int   fflush(FILE* stream);
+    FILE* fopen(in char* filename, in char* mode);
+    FILE* freopen(in char* filename, in char* mode, FILE* stream);
 
-void setbuf(FILE* stream, char* buf);
-int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
+    void setbuf(FILE* stream, char* buf);
+    int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
 
-int fprintf(FILE* stream, in char* format, ...);
-int fscanf(FILE* stream, in char* format, ...);
-int sprintf(char* s, in char* format, ...);
-int sscanf(in char* s, in char* format, ...);
-int vfprintf(FILE* stream, in char* format, va_list arg);
-int vfscanf(FILE* stream, in char* format, va_list arg);
-int vsprintf(char* s, in char* format, va_list arg);
-int vsscanf(in char* s, in char* format, va_list arg);
-int vprintf(in char* format, va_list arg);
-int vscanf(in char* format, va_list arg);
-int printf(in char* format, ...);
-int scanf(in char* format, ...);
+    int fprintf(FILE* stream, in char* format, ...);
+    int fscanf(FILE* stream, in char* format, ...);
+    int sprintf(char* s, in char* format, ...);
+    int sscanf(in char* s, in char* format, ...);
+    int vfprintf(FILE* stream, in char* format, va_list arg);
+    int vfscanf(FILE* stream, in char* format, va_list arg);
+    int vsprintf(char* s, in char* format, va_list arg);
+    int vsscanf(in char* s, in char* format, va_list arg);
+    int vprintf(in char* format, va_list arg);
+    int vscanf(in char* format, va_list arg);
+    int printf(in char* format, ...);
+    int scanf(in char* format, ...);
 
-int fgetc(FILE* stream);
-int fputc(int c, FILE* stream);
+    int fgetc(FILE* stream);
+    int fputc(int c, FILE* stream);
 
-char* fgets(char* s, int n, FILE* stream);
-int   fputs(in char* s, FILE* stream);
-char* gets(char* s);
-int   puts(in char* s);
+    char* fgets(char* s, int n, FILE* stream);
+    int   fputs(in char* s, FILE* stream);
+    char* gets(char* s);
+    int   puts(in char* s);
+}
 
 extern (D)
 {
@@ -408,16 +411,20 @@ extern (D)
     int putc(int c, FILE* stream) { return fputc(c,stream); }
 }
 
-int ungetc(int c, FILE* stream);
+extern(C) {
+    int ungetc(int c, FILE* stream);
 
-size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
-size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
+    size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
+    size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
 
-int fgetpos(FILE* stream, fpos_t * pos);
-int fsetpos(FILE* stream, in fpos_t* pos);
+    int fgetpos(FILE* stream, fpos_t * pos);
+    int fsetpos(FILE* stream, in fpos_t* pos);
 
-int    fseek(FILE* stream, c_long offset, int whence);
-c_long ftell(FILE* stream);
+    int    fseek(FILE* stream, c_long offset, int whence);
+    c_long ftell(FILE* stream);
+}
+
+extern(C):
 
 version( Win32 )
 {
@@ -476,7 +483,7 @@ else version( solaris )
     int  fileno(FILE*);
 
     int  snprintf(char* s, size_t n, in char* format, ...);
-    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);	
+    int  vsnprintf(char* s, size_t n, in char* format, va_list arg);    
 }
 else
 {
