@@ -13,6 +13,7 @@
 module tango.text.Arguments;
 
 private import tango.text.Util;
+private import tango.util.container.more.Stack;
 
 debug private import tango.io.Stdout;
 
@@ -35,14 +36,18 @@ debug private import tango.io.Stdout;
         assert (args('a').assigned.length is 3);
         ---
 
-        That example results in argument 'a' assigned three parameters. 
-        Note '=', ' ' and ':' are equivalent argument separators. Those
-        parameters without a prior argument are assigned to the default
-        argument, where null specifies the default argument:
+        That example results in argument 'a' assigned three parameters.
+        Two parameters are explicitly assigned using '=', while a third
+        is implicitly assigned. Implicit parameters are often useful for
+        collecting filenames or other parameters without specifying the
+        associated argument:
         ---
-        args.parse ("one two");
+        args.parse ("thisfile.txt thatfile.doc -v", true);
         assert (args(null).assigned.length is 2);
         ---
+        The 'null' argument is always defined and acts as an accumulator
+        for parameters left uncaptured by other arguments. In the above
+        instance it was assigned both parameters. 
         
         Examples thus far have used 'sloppy' argument declaration, via
         the second argument of parse() being set true. This allows the
@@ -139,20 +144,58 @@ debug private import tango.io.Stdout;
 
         You may change the argument prefix to be something other than 
         "-" and "--" via the constructor. You might, for example, need 
-        to specify a "/" indicator instead:
+        to specify a "/" indicator instead, and use ':' for explicitly
+        assigning parameters:
         ---
-        auto args = new Args ("/", "-");
-        args.parse ("-foo -bar /abc");
+        auto args = new Args ("/", "-", ':');
+        args.parse ("-foo:param -bar /abc");
         assert (args("foo").set);
         assert (args("bar".set);
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
+        assert (args("foo").assigned.length is 1);
         ---
 
-        See the unit-test code for an example of this plus a variety of 
-        other options.
+        Returning to an earlier example we can declare some specifics:
+        ---
+        args('v').params(0);
+        assert (args.parse ("-v thisfile.txt thatfile.doc"));
+        assert (args(null).assigned.length is 2);
+        ---
 
+        Note that the -v flag is now in front of the implicit parameters
+        but ignores them because it is declared to consume none. That is,
+        implicit parameters are assigned to arguments from right to left,
+        according to how many parameters said arguments may consume. Each
+        sloppy argument consumes parameters by default, so those implicit
+        parameters would have been assigned to -v without the declaration 
+        shown. On the other hand, an explicit assignment (via '=') always 
+        associates the parameter with that argument even when an overflow
+        would occur (though will cause an error to be raised).
+
+        Certain parameters are used for capturing comments or other plain
+        text from the user, including whitespace and other special chars.
+        Such parameter values should be quoted on the commandline, and be
+        assigned explicitly rather than implicitly:
+        ---
+        args.parse ("--comment=\"---- a comment ----\"");
+        ---
+
+        Without the explicit assignment, the text content might otherwise 
+        be considered the start of another argument (due to how argv/argc
+        values are stripped of original quotes).
+
+        Lastly, all subsequent text is treated as paramter-values after a
+        "--" token is encountered. This notion is applied by unix systems 
+        to terminate argument processing in a similar manner. Such values
+        are considered to be implicit, and are assigned to preceding args
+        in the usual right to left fashion (or to the null argument):
+        ---
+        args.parse ("-- -thisfile --thatfile");
+        assert (args(null).assigned.length is 2);
+        ---
+        
 *******************************************************************************/
 
 class Arguments
@@ -160,13 +203,14 @@ class Arguments
         public alias get                opCall;         // args("name")
         public alias get                opIndex;        // args["name"]
 
+        private Stack!(Argument)        stack;          // args with params
         private Argument[char[]]        args;           // the set of args
         private Argument[char[]]        aliases;        // set of aliases
-        private char[]                  sp = "-",       // short prefix
-                                        lp = "--";      // long prefix
+        private char                    eq;             // '=' or ':'
+        private char[]                  sp,             // short prefix
+                                        lp;             // long prefix
         private char[][]                msgs = errmsg;  // error messages
-
-        private const char[][] errmsg =                 // default errors
+        private const char[][]          errmsg =        // default errors
                 [
                 "argument '{0}' expects {2} parameter(s) but has {1}\n", 
                 "argument '{0}' expects {3} parameter(s) but has {1}\n", 
@@ -179,15 +223,41 @@ class Arguments
 
         /***********************************************************************
               
-              Construct with the specific short & long prefixes
+              Construct with the specific short & long prefixes, and the 
+              given assignment character (typically ':' on Windows but we
+              set the defaults to look like unix instead)
 
         ***********************************************************************/
         
-        this (char[] sp="-", char[] lp="--")
+        this (char[] sp="-", char[] lp="--", char eq='=')
         {
                 this.sp = sp;
                 this.lp = lp;
-                get(null).params;
+                this.eq = eq;
+                get(null).params;       // set null argument to consume params
+        }
+
+        /***********************************************************************
+              
+                Parse string[] into a set of Argument instances. The 'sloppy'
+                option allows for unexpected arguments without error.
+                
+                Returns false where an error condition occurred, whereupon the 
+                arguments should be traversed to discover said condition(s):
+                ---
+                auto args = new Arguments;
+                if (! args.parse (...))
+                      stderr (args.errors(&stderr.layout.sprint));
+                ---
+
+        ***********************************************************************/
+        
+        final bool parse (char[] input, bool sloppy=false)
+        {
+                char[][] tmp;
+                foreach (s; quotes(input, " "))
+                         tmp ~= s;
+                return parse (tmp, sloppy);
         }
 
         /***********************************************************************
@@ -205,46 +275,29 @@ class Arguments
 
         ***********************************************************************/
         
-        final bool parse (char[] input, bool sloppy=false)
+        final bool parse (char[][] input, bool sloppy=false)
         {
-                auto current = get(null);
-                foreach (s; quotes(input, " :="))
+                bool    done;
+                int     error;
+
+                debug stdout.formatln ("\ncmdline: '{}'", input);
+                stack.push (get(null));
+                foreach (s; input)
                          if (s.length)
                             {
-                            debug Stdout.formatln ("'{}'", s);
-                            if (s.length >= lp.length && s[0..lp.length] == lp)
-                                current = enable (s[lp.length..$], sloppy);
-                            else
-                               if (s.length >= sp.length && s[0..sp.length] == sp)
-                                   current = enable (s[sp.length..$], sloppy, true);
-                               else
-                                  current.append (s);
+                            debug stdout.formatln ("'{}'", s);
+                            if (! done)
+                                  if (s == "--")
+                                     {done=true; continue;}
+                                  else
+                                     if (argument (s, lp, sloppy, false) ||
+                                         argument (s, sp, sloppy, true))
+                                         continue;
+                            stack.top.append (s);
                             }  
-                int error;
                 foreach (arg; args)
                          error |= arg.valid;
                 return error is 0;
-        }
-
-        /***********************************************************************
-              
-                Parse string[] into a set of Argument instances. The 'sloppy'
-                option allows for unexpected arguments without error.
-                
-                Returns false where an error condition occurred, whereupon the 
-                arguments should be traversed to discover said condition(s):
-                ---
-                auto args = new Arguments;
-                if (! args.parse (...))
-                      Stderr (args.errors(&Stderr.layout.sprint));
-                ---
-
-        ***********************************************************************/
-        
-        final bool parse (char[][] input, bool sloppy=false)
-        {
-                char[1024] tmp = void;
-                return parse (join(input, " ", tmp), sloppy);
         }
 
         /***********************************************************************
@@ -256,11 +309,12 @@ class Arguments
         
         final Arguments clear ()
         {
+                stack.clear;
                 foreach (arg; args)
                         {
                         arg.set = false;
-                        arg.error = arg.None;
                         arg.values = null;
+                        arg.error = arg.None;
                         }
                 return this;
         }
@@ -288,7 +342,7 @@ class Arguments
         {
                 auto a = name in args;
                 if (a is null)
-                    return name=name.dup, args[name] = new Argument(name);
+                   {name=name.dup; return args[name] = new Argument(name);}
                 return *a;
         }
 
@@ -313,11 +367,11 @@ class Arguments
                 delegate to format the output. You would typically pass
                 the system formatter here, like so:
                 ---
-                auto msgs = args.errors (&Stderr.layout.sprint);
+                auto msgs = args.errors (&stderr.layout.sprint);
                 ---
 
-                The messages are replacable with custom version (i18n)
-                instead, using the errors(char[][]) method
+                The messages are replacable with custom (i18n) versions
+                instead, using the errors(char[][]) method 
 
         ***********************************************************************/
 
@@ -355,6 +409,32 @@ class Arguments
                 if (errors.length is errmsg.length)
                     msgs = errors;
                 return this;
+        }
+
+        /***********************************************************************
+              
+                Test for the presence of a switch (long/short prefix) 
+                and enable the associated arg where found. Also look 
+                for and handle explicit parameter assignment
+                
+        ***********************************************************************/
+        
+        private bool argument (char[] s, char[] p, bool sloppy, bool flag)
+        {
+                if (s.length >= p.length && s[0..p.length] == p)
+                   {
+                   s = s [p.length..$];
+                   auto i = locate (s, eq);
+                   if (i < s.length)
+                      {
+                      enable (s[0..i], sloppy, flag);
+                      stack.top.append (s[i+1..$]);
+                      }
+                   else
+                      enable (s, sloppy, flag);
+                   return true;
+                   }
+                return false;
         }
 
         /***********************************************************************
@@ -702,6 +782,9 @@ class Arguments
                 private Argument enable (bool unexpected=false)
                 {
                         this.set = true;
+                        if (max > 0)
+                            this.outer.stack.push(this);
+
                         if (invoker)
                             invoker();
                         if (unexpected)
@@ -716,21 +799,25 @@ class Arguments
 
                 ***************************************************************/
         
-                private Argument append (char[] value)
+                private void append (char[] value)
                 {       
                         this.set = true;        // needed for default assignments 
+                        values ~= value;        // append new value
+
                         if (inspector)
                             inspector (value);
 
-                        if (options.length)
+                        if (options.length && !error)
                            {
                            error = Option;
                            foreach (option; options)
                                     if (option == value)
                                         error = None;
                            }
-                        values ~= value;
-                        return this;
+
+                        // pop to an argument that can accept parameters
+                        for (auto s=&this.outer.stack; values.length >= max && s.size>1; this=s.top)
+                             s.pop;
                 }
 
                 /***************************************************************
@@ -768,7 +855,7 @@ class Arguments
                                         }
                                   }
 
-                        debug Stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
+                        debug stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
                                                deefalts, dependees);
@@ -809,30 +896,36 @@ debug(UnitTest)
         assert (args.clear.parse ("-x -y", true));
 
         // parameters
-        assert (args.clear.parse ("-x param") is false);
+        x.params(0);
+        assert (args.clear.parse ("-x param"));
+        assert (x.assigned.length is 0);
+        assert (args(null).assigned.length is 1);
         x.params(1);
         assert (args.clear.parse ("-x=param"));
         assert (x.assigned.length is 1);
-        assert (args.clear.parse ("-x:param"));
-        assert (x.assigned.length is 1);
+        assert (x.assigned[0] == "param");
         assert (args.clear.parse ("-x param"));
-        assert (x.assigned.length is 1);
-        assert (args.clear.parse ("-x = param"));
-        assert (x.assigned.length is 1);
-        assert (args.clear.parse ("-x :param"));
         assert (x.assigned.length is 1);
         assert (x.assigned[0] == "param");
 
         // too many args
-        assert (args.clear.parse ("-x param1 param2") is false);
+        x.params(1);
+        assert (args.clear.parse ("-x param1 param2"));
+        assert (x.assigned.length is 1);
+        assert (x.assigned[0] == "param1");
+        assert (args(null).assigned.length is 1);
+        assert (args(null).assigned[0] == "param2");
+        
 
         // now with default params
-        assert (args.clear.parse ("param1 param2 -x:blah"));
+        assert (args.clear.parse ("param1 param2 -x=blah"));
         assert (args[null].assigned.length is 2);
         assert (args(null).assigned.length is 2);
         assert (x.assigned.length is 1);
         x.params(0);
-        assert (args.clear.parse ("-x:blah") is false);
+        assert (args.clear.parse ("-x=blah"));
+        assert (args(null).assigned.length is 1);
+
 
         // multiple flags, with alias and sloppy
         assert (args.clear.parse ("-xy"));
@@ -850,7 +943,10 @@ debug(UnitTest)
 
         // again, but without sloppy param declaration
         z.params(0);
-        assert (args.clear.parse ("-xyz=10") is false);
+        assert (args.clear.parse ("-xyz=10"));
+        assert (args('y').assigned.length is 1);
+        assert (args('x').assigned.length is 0);
+        assert (args('z').assigned.length is 0);
 
         // x requires y
         x.requires('y');
@@ -914,6 +1010,13 @@ debug(UnitTest)
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
+
+        // "--" makes all subsequent be implicit parameters
+        args = new Arguments;
+        args('f').params(2);
+        assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
+        assert (args('f').assigned.length is 2);
+        assert (args(null).assigned.length is 2);
         }
 }
 
@@ -929,10 +1032,12 @@ debug (Arguments)
         {
                 auto args = new Arguments;
 
-                args('x').aliased('X').params.required;
-                args('y').defaults("hi").params(3).conflicts('a');
-                args('a').required.defaults("hi").requires('x').requires("foo").params;
-                if (! args.parse ("one two -a=bar -y=ff -y:ss --foobar:blah --foobar barf blah", true))
-                      Stdout (args.errors(&Stdout.layout.sprint));
+                args(null).title("root").params;
+                args('x').aliased('X').params(0).required;
+                args('y').defaults("hi").params(3);
+                args('a').required.defaults("hi").requires('y').params(1);
+                args("foobar").params(2);
+                if (! args.parse ("'one =two' -ax=bar -y=ff -y=ss --foobar=blah1 --foobar barf blah2"))
+                      stdout (args.errors(&stdout.layout.sprint));
         }
 }
