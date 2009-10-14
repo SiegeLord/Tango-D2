@@ -794,7 +794,7 @@ class Arguments
 
                 /***************************************************************
               
-                        Append a parameter value, involing validator as
+                        Append a parameter value, invoking an inspector as
                         necessary
 
                 ***************************************************************/
