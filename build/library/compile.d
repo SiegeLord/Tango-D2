@@ -284,12 +284,14 @@ struct Args
                 user,
                 inhibit,
                 verbose;
-        char[]  root,
-                os = "windows",
-                lib = "tango",
-                flags = "-g",
-                target = "dmd",
-                compiler = "dmd";
+
+        char[]  os,
+                lib,
+                root,
+                flags,
+                target,
+                compiler;
+
         char[]  usage = "usage: compile tango-path\n"
                         "\t[-v]\t\t\tverbose output\n"
                         "\t[-i]\t\t\tinhibit execution\n"
@@ -303,21 +305,33 @@ struct Args
         bool populate (char[][] arg)
         {       
                 auto args = new Arguments;
-                args('u').bind({user=true;});
-                args('i').bind({inhibit=true;});
-                args('v').bind({verbose=true;});
-                args('l').params(1).bind((char[] v){lib = v;});
-                args('o').params(1).bind((char[] v){flags = v;});
-                args('p').params(1).bind((char[] v){os = v;}).restrict("windows", "linux");
-                args('c').params(1).bind((char[] v){compiler = v;}).restrict("dmd", "gdc", "ldc");
-                args('r').params(1).bind((char[] v){target = v, core=true;}).restrict("dmd", "gdc", "ldc");
-                args(null).required.params(1).title("tango path");
-                args("help").aliased('h').aliased('?').halt;
-                if (args.parse(arg))
-                    return root = args(null).assigned[0], true;
+                auto u = args('u');
+                auto i = args('i');
+                auto v = args('v');
+                auto o = args('o').params(1).defaults("-g");
+                auto l = args('l').params(1).defaults("tango");
+                auto p = args('p').params(1).defaults("windows");
+                auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto r = args('r').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto n = args(null).params(1).required.title("tango path");
+                auto h = args("help").aliased('h').aliased('?').halt;
+                if (args.parse (arg))
+                   {
+                   user = u.set;
+                   core = r.set;
+                   inhibit = i.set;
+                   verbose = v.set;
+                   os = p.assigned[0];
+                   lib = l.assigned[0];
+                   root = n.assigned[0];
+                   flags = o.assigned[0];
+                   target = r.assigned[0];
+                   compiler = c.assigned[0];
+                   return true;
+                   }
 
                 stdout (usage);
-                if (! args("help").set)
+                if (! h.set)
                       stdout (args.errors (&stdout.layout.sprint));
                 return false;
         }
