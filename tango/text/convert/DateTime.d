@@ -25,7 +25,12 @@ private import  tango.time.WallClock;
 private import  tango.time.chrono.Calendar,
                 tango.time.chrono.Gregorian;
 
+private import  Utf = tango.text.convert.Utf;
+
 private import  Integer = tango.text.convert.Integer;
+
+version (WithExtensions)
+         private import tango.text.convert.Extensions;
 
 /******************************************************************************
 
@@ -51,6 +56,12 @@ public DateTimeLocale DateTimeDefault;
 static this()
 {       
         DateTimeDefault = DateTimeLocale.create;
+version (WithExtensions)
+        {
+        Extensions8.add  (typeid(Time), &DateTimeDefault.bridge!(char));
+        Extensions16.add (typeid(Time), &DateTimeDefault.bridge!(wchar));
+        Extensions32.add (typeid(Time), &DateTimeDefault.bridge!(dchar));
+        }
 }
 
 /******************************************************************************
@@ -169,6 +180,22 @@ struct DateTimeLocale
                 
                 auto res=Result(output);
                 return formatCustom (res, dateTime, layout);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        T[] formatWide(T) (T[] output, Time dateTime, T[] fmt)
+        {
+                static if (is (T == char))
+                           return format (output, dateTime, fmt);
+                else
+                   {
+                   char tmp0[128] = void;
+                   char tmp1[128] = void;
+                   return Utf.fromString8(format(tmp0, dateTime, Utf.toString(fmt, tmp1)), output);
+                   }
         }
 
         /**********************************************************************
@@ -558,6 +585,15 @@ else
                 if (rpt is 3)
                     return abbreviatedDayName (dayOfWeek);
                 return dayName (dayOfWeek);
+        }
+
+        /**********************************************************************
+
+        **********************************************************************/
+
+        private T[] bridge(T) (T[] result, void* arg, T[] format)
+        {
+                return formatWide (result, *cast(Time*) arg, format);
         }
 
         /**********************************************************************

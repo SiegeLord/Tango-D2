@@ -26,11 +26,7 @@
 
 module tango.text.convert.Layout;
 
-private import  tango.time.Time;
-
 private import  tango.core.Exception;
-
-private import  tango.text.convert.DateTime;
 
 private import  Utf = tango.text.convert.Utf;
 
@@ -40,7 +36,15 @@ private import  Float = tango.text.convert.Float,
 private import  tango.io.model.IConduit : OutputStream;
 
 version(WithVariant)
-        private import  tango.core.Variant;
+        private import tango.core.Variant;
+
+version(WithExtensions)
+        private import tango.text.convert.Extensions;
+else
+   {
+   private import tango.time.Time;
+   private import tango.text.convert.DateTime;
+   }
 
 
 /*******************************************************************************
@@ -79,7 +83,8 @@ class Layout(T)
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
        
-        private DateTimeLocale* dateTime = &DateTimeDefault;
+        version (WithExtensions) {} else
+                 private DateTimeLocale* dateTime = &DateTimeDefault;
 
         /**********************************************************************
 
@@ -725,6 +730,14 @@ version (WithVariant)
 
         protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
         {
+        version (WithExtensions)
+                {
+                result = Extensions!(T).run (type, result, p, format);
+                return (result) ? result : 
+                       "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
+                }
+             else
+                {
                 if (type is typeid(Time))
                    {
                    static if (is (T == char))
@@ -739,6 +752,7 @@ version (WithVariant)
                    }
 
                 return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
+                }
         }
 
         /**********************************************************************
