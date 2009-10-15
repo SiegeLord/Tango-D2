@@ -19,10 +19,9 @@ private import  tango.core.Exception;
 
 private extern (C) void memmove (void* dst, void* src, uint bytes);
 
-private enum
-{
-    NodeStackLength = 64
-}
+version (Quiet){} else
+         pragma (msg, "revision: util.PathUtil has been merged into io.Path - please update your import statements");
+
 
 /*******************************************************************************
 
@@ -48,7 +47,10 @@ private enum
     -----
 
 *******************************************************************************/
-char[] normalize(char[] path, char[] buf = null)
+
+private enum {NodeStackLength = 64}
+
+deprecated char[] normalize(char[] path, char[] buf = null)
 {
     // Whether the path is absolute
     bool isAbsolute;
@@ -309,7 +311,7 @@ version (Windows) {
     
 ******************************************************************************/
 
-bool patternMatch(char[] filename, char[] pattern)
+deprecated bool patternMatch(char[] filename, char[] pattern)
 in
 {
     // Verify that pattern[] is valid

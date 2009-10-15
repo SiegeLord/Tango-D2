@@ -40,7 +40,6 @@ import tango.time.WallClock : WallClock;
 import tango.time.chrono.Gregorian : Gregorian;
 
 import Path = tango.io.Path;
-import PathUtil = tango.util.PathUtil;
 import Integer = tango.text.convert.Integer;
 
 debug(Zip) import tango.io.Stdout : Stderr;
@@ -1320,7 +1319,7 @@ private:
     void put_local_header(LocalFileHeaderData data,
             char[] file_name)
     {
-        auto f_name = PathUtil.normalize(file_name);
+        auto f_name = Path.normalize(file_name);
         auto p = Path.parse(f_name);
 
         // Compute Zip version

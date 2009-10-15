@@ -12,13 +12,13 @@
 
 module tango.io.vfs.VirtualFolder;
 
-private import tango.util.PathUtil;
-
 private import tango.core.Exception;
 
 private import tango.io.model.IFile;
 
 private import tango.io.vfs.model.Vfs;
+
+private import tango.io.Path : patternMatch;
 
 private import tango.text.Util : head, locatePrior;
 

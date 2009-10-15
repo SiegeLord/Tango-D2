@@ -12,8 +12,6 @@
 
 module tango.io.vfs.FileFolder;
 
-private import tango.util.PathUtil;
-
 private import tango.io.device.File;
 
 private import Path = tango.io.Path;
@@ -498,7 +496,7 @@ private class FolderGroup : VfsFolders
                 auto set = new FolderGroup;
 
                 foreach (folder; members)    
-                         if (patternMatch (parser.parse(folder.path).name, pattern))
+                         if (Path.patternMatch (parser.parse(folder.path).name, pattern))
                              set.members ~= folder; 
                 return set;
         }
@@ -513,7 +511,7 @@ private class FolderGroup : VfsFolders
         {
                 bool foo (VfsInfo info)
                 {
-                        return patternMatch (info.name, pattern);
+                        return Path.patternMatch (info.name, pattern);
                 }
 
                 return catalog (&foo);

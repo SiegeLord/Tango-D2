@@ -23,7 +23,6 @@ import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
        VfsFolders, VfsFiles, VfsFilter, VfsStats, VfsFilterInfo,
        VfsInfo, VfsSync;
-import tango.util.PathUtil : patternMatch;
 import Path = tango.io.Path;
 
 debug( ZipFolder )
@@ -1466,7 +1465,7 @@ class ZipSubFolderGroup : VfsFolders
         ZipSubFolder[] set;
 
         foreach( folder ; members )
-            if( patternMatch(folder.name, pattern) )
+            if( Path.patternMatch(folder.name, pattern) )
                 set ~= folder;
 
         return new ZipSubFolderGroup(archive, set);
@@ -1478,7 +1477,7 @@ class ZipSubFolderGroup : VfsFolders
     {
         bool filter (VfsInfo info)
         {
-                return patternMatch(info.name, pattern);
+                return Path.patternMatch(info.name, pattern);
         }
 
         return catalog (&filter);
