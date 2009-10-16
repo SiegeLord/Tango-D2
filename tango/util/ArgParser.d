@@ -13,6 +13,9 @@
 
 module tango.util.ArgParser;
 
+version (Quiet){} else
+         pragma (msg, "revision: util.ArgParser is being deprecated in favor of text.Arguments");
+
 private import tango.core.Exception;
 
 /**
@@ -114,14 +117,14 @@ class ArgParser{
     /**
         The constructor, creates an empty ArgParser instance.
     */
-    public this(){
+    deprecated public this(){
         defaultbinding = null;
     }
      
     /**
         The constructor, creates an ArgParser instance with a defined default callback.
     */    
-    public this(DefaultArgParserCallback callback){
+    deprecated public this(DefaultArgParserCallback callback){
         defaultbinding = callback;
     }    
 
