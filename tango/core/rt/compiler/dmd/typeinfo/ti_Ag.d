@@ -3,7 +3,7 @@ module rt.compiler.dmd.typeinfo.ti_Ag;
 
 private import rt.compiler.util.string;
 private import rt.compiler.util.hash;
-private import rt.compiler.cImports: memcmp;
+private import tango.stdc.string : memcmp;
 
 // byte[]
 

@@ -16,12 +16,11 @@ module rt.trace;
 private
 {
     import rt.compiler.util.string;
-    //import tango.stdc.ctype;
-    //import tango.stdc.stdio;
-    //import tango.stdc.string;
-    //import tango.stdc.stdlib;
-    import rt.compiler.cImports: memset,memcpy,malloc,free,exit,fopen,fclose,fprintf,fgetc,FILE_P,
-        isspace,isalpha,isgraph,qsort,EXIT_FAILURE,EOF,strtoul,strtoull,strlen;
+    import tango.stdc.string : memset, memcpy, strlen;
+    import tango.stdc.stdlib : malloc, free, exit, strtoul, strtoull, qsort, 
+                                EXIT_FAILURE;
+    import tango.stdc.ctype : isspace, isalpha, isgraph;
+    import tango.stdc.stdio : fopen, fclose, fprintf, fgetc, FILE, EOF;
 }
 
 extern (C):
@@ -79,10 +78,10 @@ static Symbol** psymbols;
 static uint nsymbols;           // number of symbols
 
 static char[] trace_logfilename = "trace.log";
-static FILE_P fplog;
+static FILE* fplog;
 
 static char[] trace_deffilename = "trace.def";
-static FILE_P fpdef;
+static FILE* fpdef;
 
 
 ////////////////////////////////////////
@@ -630,7 +629,7 @@ static void trace_epi()
 //      trace_malloc'd line buffer
 //      null if end of file
 
-static char* trace_readline(FILE_P fp)
+static char* trace_readline(FILE* fp)
 {   int c;
     int dim;
     int i;
@@ -687,7 +686,7 @@ static char *skipspace(char *p)
 // Merge in profiling data from existing file.
 
 static void trace_merge()
-{   FILE_P fp;
+{   FILE* fp;
     char *buf;
     char *p;
     uint count;

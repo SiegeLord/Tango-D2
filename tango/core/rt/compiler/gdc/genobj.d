@@ -39,7 +39,9 @@ module object;
 
 private
 {
-    import rt.compiler.cImports: memcmp, memcpy, memmove, calloc, realloc, free,sprintf,strlen;
+    import tango.stdc.string : memcmp, memcpy, memmove, strlen;
+    import tango.stdc.stdlib : calloc, realloc, free;
+    import tango.stdc.stdio : sprintf;
     import rt.compiler.util.string;
     import rt.compiler.util.hash;
     debug(PRINTF) import tango.stdc.stdio; // : printf;

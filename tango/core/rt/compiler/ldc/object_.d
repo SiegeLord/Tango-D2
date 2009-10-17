@@ -42,12 +42,14 @@ module object;
 
 private
 {
-    import rt.compiler.cImports: memcmp,memcpy,memmove,calloc,realloc,free,onOutOfMemoryError,
-        sprintf;
+    import tango.stdc.string : memcmp, memcpy, memmove;
+    import tango.stdc.stdlib : calloc, realloc, free;
+    import tango.stdc.stdio : sprintf;
     import rt.compiler.util.string;
     import rt.compiler.util.hash;
     import rt.aaA;
-    debug(PRINTF) import rt.compiler.cImports: printf;
+    import tango.core.Exception : onOutOfMemoryError;
+    debug(PRINTF) import tango.stdc.stdio : printf;
     extern (C) Object _d_allocclass(ClassInfo ci);
 }
 

@@ -17,18 +17,18 @@ module rt.cover;
 private
 {
     version( Win32 ) {
-        //import tango.sys.win32.UserGdi;
-        import rt.compiler.cImports: HANDLE,THANDLE,LPCWSTR,DWORD,LPSECURITY_ATTRIBUTES,WINBOOL,
-            GENERIC_READ,FILE_SHARE_READ,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,FILE_FLAG_SEQUENTIAL_SCAN,
-            INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,CloseHandle,ReadFile;
+        import tango.sys.win32.UserGdi : HANDLE,THANDLE,LPCWSTR,DWORD,
+                                         LPSECURITY_ATTRIBUTES,WINBOOL, GENERIC_READ,
+                                         FILE_SHARE_READ,OPEN_EXISTING,
+                                         FILE_ATTRIBUTE_NORMAL,FILE_FLAG_SEQUENTIAL_SCAN,
+                                         INVALID_HANDLE_VALUE,POVERLAPPED,CreateFileW,
+                                         CloseHandle,ReadFile;
     } else version( Posix ) {
-        import rt.compiler.cImports: open,close,read,fcntl_O_RDONLY;
-        //import tango.stdc.posix.fcntl;
-        //import tango.stdc.posix.unistd;
+        import tango.stdc.posix.fcntl : open, O_RDONLY;
+        import tango.stdc.posix.unistd : close, read;
     }
     import tango.core.BitManip;
-    import rt.compiler.cImports: fopen,fclose,fprintf,FILE_P;
-    // import tango.stdc.stdio;
+    import tango.stdc.stdio : fopen,fclose,fprintf,FILE;
     import rt.compiler.util.utf;
 
     struct BitArray
@@ -164,7 +164,7 @@ static ~this()
             }
         }
 
-        FILE_P flst = fopen( (addExt( baseName( c.filename ), "lst\0" )).ptr, "wb" );
+        FILE* flst = fopen( (addExt( baseName( c.filename ), "lst\0" )).ptr, "wb" );
 
         if( !flst )
             continue; //throw new Exception( "Error opening file for write: " ~ lstfn );
@@ -353,7 +353,7 @@ bool readFile( char[] name, inout char[] buf )
         char[]  namez = new char[name.length + 1];
                         namez[0 .. name.length] = name;
                         namez[$ - 1] = 0;
-        int     file = open( namez.ptr, fcntl_O_RDONLY() );
+        int     file = open( namez.ptr, O_RDONLY );
 
         delete namez;
         if( file == -1 )

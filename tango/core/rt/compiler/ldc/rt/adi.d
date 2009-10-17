@@ -37,8 +37,9 @@ module rt.adi;
 
 private
 {
-    import rt.compiler.cImports: memcpy,memmove, memcmp, printf;
-    import rt.util.utf;
+    import tango.stdc.string : memcpy, memmove, memcmp;
+    import tango.stdc.stdio : printf;
+    import rt.compiler.util.utf;
 
     enum BlkAttr : uint
     {

@@ -31,7 +31,7 @@ version(darwin)
 {
     version = GC_Use_Data_Dyld;
     version = GC_Use_Dynamic_Ranges;
-    import rt.compiler.cImports: c_ulong;
+    import tango.stdc.config : c_ulong;
 }
 else version(Posix)
 {
@@ -47,10 +47,9 @@ version(GC_Use_Data_Proc_Maps)
     version(Posix) {} else {
         static assert(false, "Proc Maps only supported on Posix systems");
     }
-    //private import tango.stdc.posix.unistd;
-    //private import tango.stdc.posix.fcntl;
-    //private import tango.stdc.string;
-    import rt.compiler.cImports: memmove,open,close,read,fcntl_O_RDONLY;
+    import tango.stdc.string : memmove;
+    import tango.stdc.posix.fcntl : open, O_RDONLY;
+    import tango.stdc.posix.unistd : close, read;
 
     version = GC_Use_Dynamic_Ranges;
 }
@@ -346,7 +345,7 @@ version(solaris)
         // http://docs.sun.com/app/docs/doc/816-5174/proc-4
         prmap pr;
 
-        int   fd = open("/proc/self/map", fcntl_O_RDONLY);
+        int   fd = open("/proc/self/map", O_RDONLY);
         scope (exit) close(fd);
 
         while (prmap.sizeof == read(fd, &pr, prmap.sizeof))
@@ -378,7 +377,7 @@ else
     {
         // TODO: Exclude zero-mapped regions
 
-        int   fd = open("/proc/self/maps", fcntl_O_RDONLY);
+        int   fd = open("/proc/self/maps", O_RDONLY);
         ptrdiff_t   count; // %% need to configure ret for read..
         char  buf[2024];
         char* p;

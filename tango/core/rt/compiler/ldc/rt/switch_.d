@@ -26,7 +26,7 @@
  */
 module rt.switch_;
 
-private import rt.compiler.cImports: memcmp;
+private import tango.stdc.string : memcmp;
 
 /******************************************************
  * Support for switch statements switching on strings.

@@ -34,7 +34,7 @@
  * and dchar, and 2 of each of those.
  */
 module rt.aApply;
-private import rt.util.utf;
+private import rt.compiler.util.utf;
 
 //debug = apply;
 debug(apply)

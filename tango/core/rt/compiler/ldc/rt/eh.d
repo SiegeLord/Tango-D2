@@ -4,7 +4,7 @@
  */
 module rt.eh;
 
-import rt.util.console;
+import rt.compiler.util.console;
 import ldc.cstdarg;
 
 // debug = EH_personality;

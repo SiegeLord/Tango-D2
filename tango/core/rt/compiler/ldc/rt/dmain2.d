@@ -11,8 +11,10 @@ module rt.dmain2;
 
 private
 {
-    import rt.util.console;
-    import rt.compiler.cImports: malloc,free,exit,strlen,EXIT_FAILURE,printf;
+    import rt.compiler.util.console;
+    import tango.stdc.stdlib : malloc, free, exit, EXIT_FAILURE;
+    import tango.stdc.string : strlen;
+    import tango.stdc.stdio : printf;
     import rt.memory;
 }
 

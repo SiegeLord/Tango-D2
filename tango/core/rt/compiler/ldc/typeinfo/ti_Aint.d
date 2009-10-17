@@ -1,7 +1,7 @@
 
 module rt.compiler.ldc.typeinfo.ti_Aint;
 
-private import rt.compiler.cImports:memcmp;
+private import tango.stdc.string : memcmp;
 private import rt.compiler.util.hash;
 
 // int[]
