@@ -16,7 +16,6 @@ OBJ_BASE= \
     rt/adi.bc \
     rt/arrayInit.bc \
     rt/cast_.bc \
-    rt/cImports.bc \
     rt/cInterface.bc \
     rt/dmain2.bc \
     rt/eh.bc \

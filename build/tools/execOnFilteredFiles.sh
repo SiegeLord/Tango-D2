@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # finds d files in the directory give as first argument, excluding paths that
 # match the following arguments
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
@@ -44,15 +44,17 @@ if [ -z "$dir" ] ; then
 fi
 
 excl=
+excl2=
 while [ $# -gt 0 ]
 do
     # -false is a non standard linux extension
     excl="$excl -path '$1' -prune -name a -not -name a -o "
+    excl2="$excl2 -not -name '$1' "
     shift
 done
-if ( uname -m | grep -i mingw >& /dev/null ) ; then 
-    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \;"
+if ( uname -a | grep -i mingw >& /dev/null ) ; then 
+    findCmd="find '$dir' $excl $excl2 $dfiles -exec $execCmd '{}' \;"
 else
-    findCmd="find '$dir' $excl $dfiles -exec $execCmd '{}' \+"
+    findCmd="find '$dir' $excl $excl2 $dfiles -print0 | xargs -0 $execCmd"
 fi
 sh -c "$findCmd"

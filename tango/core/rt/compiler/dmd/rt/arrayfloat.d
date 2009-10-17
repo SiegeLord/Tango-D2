@@ -5,7 +5,7 @@
  * Placed in public domain.
  */
 
-module rt.arrayfloat;
+module rt.compiler.dmd.rt.arrayfloat;
 
 import CPUid = rt.compiler.util.cpuid;
 

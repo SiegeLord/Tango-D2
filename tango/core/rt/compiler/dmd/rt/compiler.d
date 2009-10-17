@@ -4,7 +4,7 @@
  * Placed into Public Domain
  */
 
-module rt.compiler;
+module rt.compiler.dmd.rt.compiler;
 
 // Identify the compiler used and its various features.
 

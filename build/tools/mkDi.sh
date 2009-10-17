@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # copies the .di files of the given module paths from the runtime into the "main" tango
 
 die() {
@@ -35,12 +35,12 @@ do
     shift
 done
 
-DC_SHORT=`$tango_home/lib/build/tools/guessCompiler.sh $DC_SHORT`
+DC_SHORT=`$tango_home/build/tools/guessCompiler.sh $DC_SHORT`
 
 while [ $# -gt 0 ]
 do
     found=
-    for d in lib/common lib/compiler/${DC_SHORT} lib/compiler/shared lib/gc/basic ; do
+    for d in ../../tango/core/rt/compiler/shared ../../tango/core/rt/gc/basic ; do
         if [ -e "$tango_home/$d/${1}.d" ] ; then
             echo "$d/${1}.d -> ${1}.di"
             dirN=`dirname $tango_home/${1}`

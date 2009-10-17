@@ -13,11 +13,11 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.qsort2;
+module rt.compiler.dmd.rt.qsort2;
 
 //debug=qsort;
 
-private import rt.compiler.cImports:qsort;
+private import tango.stdc.stdlib:qsort;
 
 struct Array
 {

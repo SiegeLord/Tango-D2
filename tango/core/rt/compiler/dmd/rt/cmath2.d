@@ -10,7 +10,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.cmath2;
+module rt.compiler.dmd.rt.cmath2;
 
 //private import tango.stdc.math;
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # excludes the given patterns
 if [ "$1" == "--help" ] ; then
     echo "usage: excludeDep.sh [--help] [exclude patterns]"

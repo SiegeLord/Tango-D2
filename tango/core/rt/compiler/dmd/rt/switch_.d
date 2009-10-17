@@ -24,7 +24,7 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
-module rt.switch_;
+module rt.compiler.dmd.rt.switch_;
 private import tango.stdc.string : memcmp;
 
 /******************************************************

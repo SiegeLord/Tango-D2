@@ -25,7 +25,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.arraycast;
+module rt.compiler.dmd.rt.arraycast;
 
 /******************************************
  * Runtime helper to convert dynamic array of one

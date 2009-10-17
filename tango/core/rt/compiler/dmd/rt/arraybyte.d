@@ -9,7 +9,7 @@
  * and ubyte ('a', 'g' and 'h' suffixes).
  */
 
-module rt.arraybyte;
+module rt.compiler.dmd.rt.arraybyte;
 
 import CPUid = rt.compiler.util.cpuid;
 

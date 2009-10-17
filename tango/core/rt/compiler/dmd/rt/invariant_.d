@@ -3,7 +3,7 @@
  * written by Walter Bright
  * www.digitalmars.com
  */
-module rt.invariant_;
+module rt.compiler.dmd.rt.invariant_;
 
 extern (C) void _d_invariant(Object o)
 {   ClassInfo c;

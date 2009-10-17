@@ -32,7 +32,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.adi;
+module rt.compiler.dmd.rt.adi;
 
 //debug=adi;            // uncomment to turn on debugging printf's
 

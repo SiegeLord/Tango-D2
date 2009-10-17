@@ -19,7 +19,6 @@ OBJ_BASE= \
     complex.obj \
     rt/cover.obj \
     critical.obj \
-    rt/cImports.obj \
     rt/cInterface.obj \
     rt/dmain2.obj \
     invariant.obj \

@@ -29,7 +29,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.arraycat;
+module rt.compiler.dmd.rt.arraycat;
 
 private
 {

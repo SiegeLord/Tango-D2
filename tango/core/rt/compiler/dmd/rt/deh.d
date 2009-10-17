@@ -21,12 +21,11 @@
  *     distribution.
  */
 
-module rt.deh;
+module rt.compiler.dmd.rt.deh;
 
 // Exception handling support for linux
 
 //debug=1;
-//debug import rt.compiler.cImports: printf;
 import tango.stdc.stdio : printf;
 import tango.stdc.stdlib : exit;
 

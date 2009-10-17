@@ -20,7 +20,7 @@
  *  o  This notice may not be removed or altered from any source
  *     distribution.
  */
-module rt.memset;
+module rt.compiler.dmd.rt.memset;
 
 
 extern (C)

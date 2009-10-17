@@ -14,7 +14,6 @@ COMPILER_MODULES_L= \
  rt.qsort2 \
  rt.eh \
  rt.dmain2 \
- rt.cImports \
  rt.cInterface \
  object \
 

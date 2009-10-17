@@ -9,7 +9,7 @@
  * and uint ('w', 'i' and 'k' suffixes).
  */
 
-module rt.arrayint;
+module rt.compiler.dmd.rt.arrayint;
 
 private import CPUid = rt.compiler.util.cpuid;
 

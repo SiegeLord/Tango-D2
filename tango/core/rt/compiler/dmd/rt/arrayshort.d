@@ -9,7 +9,7 @@
  * and ushort ('u', 's' and 't' suffixes).
  */
 
-module rt.arrayshort;
+module rt.compiler.dmd.rt.arrayshort;
 
 private import CPUid = rt.compiler.util.cpuid;
 

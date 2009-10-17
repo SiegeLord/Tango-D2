@@ -8,7 +8,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.dmain2;
+module rt.compiler.dmd.rt.dmain2;
 
 private
 {
@@ -21,7 +21,8 @@ private
 
 version( Win32 )
 {
-    import rt.compiler.cImports: wchar_t,alloca,wcslen;
+    import tango.stdc.posix.stdlib:wchar_t,alloca;
+    import tango.stdc.string: wcslen;
     extern (Windows) void*      LocalFree(void*);
     extern (Windows) wchar_t*   GetCommandLineW();
     extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);

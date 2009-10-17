@@ -29,7 +29,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.aApply;
+module rt.compiler.dmd.rt.aApply;
 
 /* This code handles decoding UTF strings for foreach loops.
  * There are 6 combinations of conversions between char, wchar,

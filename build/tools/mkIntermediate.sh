@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this gives make rules to generate the intermediate d files that have 
 # a fully qualifed name
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed

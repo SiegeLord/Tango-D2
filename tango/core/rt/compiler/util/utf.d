@@ -40,7 +40,7 @@
  *	WIKI = Phobos/StdUtf
  */
 
-module rt.util.utf;
+module rt.compiler.util.utf;
 
 
 

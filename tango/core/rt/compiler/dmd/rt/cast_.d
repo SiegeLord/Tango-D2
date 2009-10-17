@@ -25,7 +25,7 @@
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
 
-module rt.cast_;
+module rt.compiler.dmd.rt.cast_;
 
 extern (C):
 

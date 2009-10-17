@@ -89,8 +89,7 @@ OBJ_BASE= \
     obj.o \
     qsortg.o \
     rundmain.o \
-    switch.o \
-    rt/cImports.o
+    switch.o
 
 OBJ_UTIL= \
     ../shared/rt/util/console.o \

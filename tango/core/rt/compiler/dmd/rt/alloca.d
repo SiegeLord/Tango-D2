@@ -4,7 +4,7 @@
  * Written by Walter Bright
  */
 
-module rt.alloca;
+module rt.compiler.dmd.rt.alloca;
 
 /+
 #if DOS386

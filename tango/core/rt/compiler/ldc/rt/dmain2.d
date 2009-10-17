@@ -20,7 +20,9 @@ private
 
 version( Win32 )
 {
-    import rt.compiler.cImports: wchar_t,LocalFree,GetCommandLineW,CommandLineToArgvW,WideCharToMultiByte, alloca, wcslen;
+    import tango.stdc.stdlib: wchar_t, alloca
+    import tango.stdc.string: wcslen;
+    import rttango.sys.win32.UserGdi: LocalFree,GetCommandLineW,CommandLineToArgvW,WideCharToMultiByte;
     //pragma(lib, "shell32.lib");   // needed for CommandLineToArgvW
     //pragma(lib, "tango-win32-dmd.lib"); // links Tango's Win32 library to reduce EXE size
 }

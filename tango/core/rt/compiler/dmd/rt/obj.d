@@ -3,7 +3,7 @@
 // written by Walter Bright
 // www.digitalmars.com
 
-module rt.obj;
+module rt.compiler.dmd.rt.obj;
 
 extern (C):
 

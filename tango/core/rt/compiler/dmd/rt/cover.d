@@ -11,7 +11,7 @@
  * License:   BSD style: $(LICENSE)
  * Authors:   Walter Bright, Sean Kelly
  */
-module rt.cover;
+module rt.compiler.dmd.rt.cover;
 // ugly, uses many different file interfaces, could it be reduced to just the stdc ones?
 
 private

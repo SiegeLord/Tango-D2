@@ -13,7 +13,7 @@
         _adSort() is required.
 */
 
-module rt.qsort;
+module rt.compiler.dmd.rt.qsort;
 
 /*
 **    Sorts an array starting at base, of length nbr_elements, each

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # generates the make dependencies to generate fully qualified d files out of the files
 # it receives as input
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed

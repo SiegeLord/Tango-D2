@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # returns the name of the module of the given files
 # tango & apache 2.0 license, © 2009 Fawzi Mohamed
 
