@@ -125,6 +125,11 @@ enum Redirect
  * To stop a running process you must use kill() method. If you do this you
  * cannot call the wait() method. Once the kill() method returns the process
  * will be already dead.
+ * 
+ * After calling either wait() or kill(), and no more data is expected on the
+ * pipes, you should call close() as this will clean the pipes. Not doing this
+ * may lead to a depletion of the available file descriptors for the main
+ * process if many processes are created.
  *
  * Examples:
  * ---
@@ -1391,6 +1396,9 @@ class Process
      * You can only call wait() on a running process once. The Signal, Stop
      * and Continue reasons will only be returned on POSIX-compatible
      * platforms.
+     * Calling wait() will not clean the pipes as the parent process may still
+     * want the remaining output. It is however recommended to call close()
+     * when no more content is expected, as this will close the pipes.
      */
     public Result wait()
     {
@@ -1567,6 +1575,10 @@ class Process
      * Remarks:
      * After calling this method you will not be able to call wait() on the
      * process.
+     * Killing the process does not clean the attached pipes as the parent
+     * process may still want/need the remaining content. However, it is
+     * recommended to call close() on the process when it is no longer needed
+     * as this will clean the pipes. 
      */
     public void kill()
     {
@@ -1809,6 +1821,15 @@ class Process
         delete _stdin;
         delete _stdout;
         delete _stderr;
+    }
+
+    /**
+     * Explicitly close any resources held by this process object. It is recommended
+     * to always call this when you are done with the process.
+     */
+    public void close()
+    {
+        this.cleanPipes;
     }
 
     version (Windows)
