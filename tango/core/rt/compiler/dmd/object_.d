@@ -41,12 +41,12 @@ private
 {
     import tango.stdc.string : memcmp, memcpy, memmove;
     import tango.stdc.stdlib : calloc, realloc, free;
-    import tango.stdc.stdio : sprintf;
+    import tango.stdc.stdio : snprintf;
     import tango.core.Exception : onOutOfMemoryError;
     import rt.compiler.util.string;
     import rt.compiler.util.hash;
     import rt.compiler.dmd.rt.aaA;
-    debug(PRINTF) import rt.compiler.cImports: printf;
+    debug(PRINTF) import tango.stdc.stdio: printf;
     extern (C) Object _d_newclass(ClassInfo ci);
 }
 
@@ -979,11 +979,11 @@ class Exception : Object
                 defaultFramePrintingFunction(this,sink);
             } else {
                 char[26] buf;
-                auto len=sprintf(buf.ptr,"[%8zx]",address);
+                auto len=snprintf(buf.ptr,26,"[%8zx]",address);
                 sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%8zx",baseImg);
+                len=snprintf(buf.ptr,26,"%8zx",baseImg);
                 sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%+td ",offsetImg);
+                len=snprintf(buf.ptr,26,"%+td ",offsetImg);
                 sink(buf[0..len]);
                 while (++len<6) sink(" ");
                 if (func.length) {
@@ -992,16 +992,16 @@ class Exception : Object
                     sink("???");
                 }
                 for (size_t i=func.length;i<80;++i) sink(" ");
-                len=sprintf(buf.ptr," @%zx",baseSymb);
+                len=snprintf(buf.ptr,26," @%zx",baseSymb);
                 sink(buf[0..len]);
-                len=sprintf(buf.ptr,"%+td ",offsetSymb);
+                len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
                 sink(buf[0..len]);
                 if (extra.length){
                     sink(extra);
                     sink(" ");
                 }
                 sink(file);
-                len=sprintf(buf.ptr,":%ld ",line);
+                len=snprintf(buf.ptr,26,":%ld ",line);
                 sink(buf[0..len]);
             }
         }
@@ -1068,7 +1068,7 @@ class Exception : Object
             sink("@");
             sink(file);
             sink("(");
-            auto len=sprintf(buf.ptr,"%ld",line);
+            auto len=snprintf(buf.ptr,26,"%ld",line);
             sink(buf[0..len]);
             sink("): ");
             writeOutMsg(sink);
@@ -1474,7 +1474,7 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
     }
 }
 
-extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
+extern (C) bool rt_detachDisposeEvent(Object h, DEvent e)
 {
     synchronized (h)
     {
@@ -1489,8 +1489,9 @@ extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
                         &m.devt[p+1],
                         (m.devt.length - p - 1) * DEvent.sizeof);
                 m.devt[$ - 1] = null;
-                return;
+                return true;
             }
         }
     }
+    return false;
 }

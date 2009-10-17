@@ -13,7 +13,6 @@ private
     import tango.stdc.stdarg;
     import tango.stdc.stddef;
     import tango.stdc.config;
-    version( solaris ) import tango.stdc.posix.sys.types : ssize_t;
 }
 
 extern (C){
@@ -214,8 +213,8 @@ extern (C){
             ushort  _flags; /* type of stream           */
             short   _file;  /* file descriptor          */
             ubyte*  _data;  /* base of data buffer          */
-            ssize_t _size;  /* buffer size              */
-            ssize_t _val;   /* values or string lengths     */
+            ptrdiff_t _size;  /* buffer size              */
+            ptrdiff_t _val;   /* values or string lengths     */
         
         //  #ifdef _SFIO_PRIVATE
             // .. I don't think we really need this in D

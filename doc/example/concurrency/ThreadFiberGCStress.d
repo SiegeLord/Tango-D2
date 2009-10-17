@@ -4,7 +4,8 @@ import tango.core.Thread;
 import tango.core.sync.Mutex;
 import tango.core.Memory:GC;
 import tango.stdc.stringz;
-import tango.stdc.stdio;
+//import tango.stdc.stdio;
+import tango.core.stacktrace.TraceExceptions;
 
 Mutex tttt;
 

@@ -93,7 +93,7 @@ private import  tango.util.log.model.ILogger;
 
 version (GNU)
         {
-        private import std.stdarg;
+        private import tango.core.Vararg;
         alias void* Arg;
         alias va_list ArgList;
         }

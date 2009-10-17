@@ -44,7 +44,8 @@ private
     import tango.stdc.stdio : sprintf;
     import rt.compiler.util.string;
     import rt.compiler.util.hash;
-    debug(PRINTF) import tango.stdc.stdio; // : printf;
+    import tango.stdc.stdio: sprintf;
+    debug(PRINTF) import tango.stdc.stdio: printf;
 
     extern (C) void onOutOfMemoryError();
     extern (C) Object _d_newclass(ClassInfo ci);
@@ -1413,7 +1414,7 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
     }
 }
 
-extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
+extern (C) bool rt_detachDisposeEvent(Object h, DEvent e)
 {
     synchronized (h)
     {
@@ -1428,8 +1429,9 @@ extern (C) void rt_detachDisposeEvent(Object h, DEvent e)
                         &m.devt[p+1],
                         (m.devt.length - p - 1) * DEvent.sizeof);
                 m.devt[$ - 1] = null;
-                return;
+                return true;
             }
         }
     }
+    return false;
 }

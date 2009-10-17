@@ -15,6 +15,7 @@
  * Authors:   Fawzi Mohamed
  */
 module tango.core.sync.Atomic;
+import tango.core.Traits;
 
 version( LDC )
 {
@@ -431,7 +432,7 @@ in {
 /// no barriers implied, only atomicity!
 version(LDC){
     T atomicAdd(T)(ref T val, T inc){
-        static assert( isValidNumericType!(T) );
+        static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
             llvm_atomic_load_add!(size_t)(cast(size_t*)&val, inc);
@@ -444,7 +445,7 @@ version(LDC){
     }
 } else version (D_InlineAsm_X86){
     T atomicAdd(T)(ref T val, T incV){
-        static assert( isValidNumericType!(T) );
+        static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
             llvm_atomic_load_add!(size_t)(cast(size_t*)&val, incV);
@@ -489,7 +490,7 @@ version(LDC){
     }
 } else version (D_InlineAsm_X86_64){
     T atomicAdd(T)(ref T val, T incV){
-        static assert( isValidNumericType!(T) );
+        static assert( isIntegerType!(T) );
         static if (isPointerType!(T))
         {
             llvm_atomic_load_add!(size_t)(cast(size_t*)&val, incV);
@@ -541,7 +542,7 @@ version(LDC){
 } else {
     static if (LockVersion){
         T atomicAdd(T)(ref T val, T incV){
-            static assert( isValidNumericType!(T) );
+            static assert( isIntegerType!(T) );
             synchronized(typeid(T)){
                 T oldV=val;
                 val+=incV;
@@ -550,7 +551,7 @@ version(LDC){
         }
     } else {
         T atomicAdd(T)(ref T val, T incV){
-            static assert( isValidNumericType!(T) );
+            static assert( isIntegerType!(T) );
             synchronized(typeid(T)){
                 T oldV,newVal;
                 do{
@@ -569,7 +570,7 @@ version(LDC){
 /// and no "fair" share is applied between fast function (more likely to succeed) and
 /// the others (i.e. do not use this in case of high contention)
 T atomicOp(T)(ref T val, T delegate(T) f){
-    static assert( isValidNumericType!(T) );
+    static assert( isIntegerType!(T) );
     synchronized(typeid(T)){
         T oldV,newVal;
         int i=0;
