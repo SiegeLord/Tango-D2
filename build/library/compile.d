@@ -17,6 +17,9 @@ private import tango.io.FileScan;
 private import tango.io.device.File;
 private import tango.text.Arguments;
 
+version (Posix)
+    private import tango.sys.Environment;
+
 /*******************************************************************************
       
 *******************************************************************************/
@@ -87,13 +90,97 @@ class Linux : FileFilter
                 super (args);
                 include ("tango/sys/linux");
                 include ("tango/stdc/constants/linux");
-                //register ("linux", "dmd", &dmd);
+                register ("linux", "dmd", &dmd);
+                register ("linux", "ldc", &ldc);
+                register ("linux", "gdc", &gdc);
+
         }
+
+        private void addToLib(char[] obj)
+        {
+            exec ("ar -r "~args.lib~" "~obj);
+        }
+
+        private char[] compile (FilePath file, char[] cmd)
+        {
+                auto temp = objname (file, ".o");
+                exec (split(cmd~temp~" "~file.toString, " "), 
+                      Environment.get, null);
+                return temp;
+        }
+
+        private auto gcc = "gcc -c -o";
 
         int dmd ()
         {
+                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, dmd);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
                 return count;
         }
+
+        int ldc ()
+        {
+                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, ldc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                return count;
+        }
+
+        int gdc ()
+        {
+                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, gdc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                return count;
+        }
+
+
 }
 
 /*******************************************************************************
@@ -221,6 +308,7 @@ class FileFilter : FileScan
                        return ! (fp.toString[tango..$] in excluded);
                    return false;
                    }
+
                 return fp.suffix == suffix;
         }
 
@@ -261,6 +349,7 @@ class FileFilter : FileScan
                 if (! args.inhibit)
                    {
                    scope proc = new Process (cmd, env);
+                   scope (exit) proc.close;
                    if (workDir) 
                        proc.workDir = workDir;
         
