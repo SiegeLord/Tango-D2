@@ -21,14 +21,14 @@ private
 
 version( Win32 )
 {
-    import tango.stdc.posix.stdlib:wchar_t,alloca;
+    import tango.stdc.stdlib: alloca;
     import tango.stdc.string: wcslen;
-    extern (Windows) void*      LocalFree(void*);
-    extern (Windows) wchar_t*   GetCommandLineW();
-    extern (Windows) wchar_t**  CommandLineToArgvW(wchar_t*, int*);
-    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar_t*, int, char*, int, char*, int);
+    extern (Windows) void*    LocalFree(void*);
+    extern (Windows) wchar*   GetCommandLineW();
+    extern (Windows) wchar**  CommandLineToArgvW(wchar*, int*);
+    extern (Windows) export int WideCharToMultiByte(uint, uint, wchar*, int, char*, int, char*, int);
     pragma(lib, "shell32.lib");   // needed for CommandLineToArgvW
-    pragma(lib, "tango-win32-dmd.lib"); // links Tango's Win32 library to reduce EXE size
+    //pragma(lib, "tango-win32-dmd.lib"); // links Tango's Win32 library to reduce EXE size
 }
 
 extern (C) void _STI_monitor_staticctor();
@@ -223,10 +223,10 @@ extern (C) int main(int argc, char **argv)
 
     version (Win32)
     {
-        wchar_t*  wcbuf = GetCommandLineW();
+        wchar*    wcbuf = GetCommandLineW();
         size_t    wclen = wcslen(wcbuf);
         int       wargc = 0;
-        wchar_t** wargs = CommandLineToArgvW(wcbuf, &wargc);
+        wchar**   wargs = CommandLineToArgvW(wcbuf, &wargc);
         assert(wargc == argc);
 
         char*     cargp = null;
