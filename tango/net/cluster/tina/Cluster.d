@@ -26,11 +26,11 @@ private import  tango.io.Buffer;
 
 private import  tango.io.model.IConduit;
 
-private import  tango.net.Socket,
-                tango.net.SocketConduit,
+private import  tango.net.device.Socket,
                 tango.net.SocketListener,
                 tango.net.InternetAddress,
-                tango.net.MulticastConduit;
+                tango.net.device.Berkeley,
+                tango.net.device.Multicast;
 
 private import  tango.net.cluster.NetworkClient;
 
@@ -230,7 +230,7 @@ private class Broadcaster
         private static InternetAddress[char[]]  groups;
         private Buffer                          mBuffer;
         private ProtocolWriter                  mWriter;
-        private MulticastConduit                mSocket;
+        private Multicast                       mSocket;
 
         private int                             groupPort = 3333;
         private int                             groupPrefix = 225;
@@ -248,7 +248,7 @@ private class Broadcaster
         this ()
         {
                 mBuffer = new Buffer (1024 * 4);
-                mSocket = new MulticastConduit;
+                mSocket = new Multicast;
                 mWriter = new ProtocolWriter (mBuffer);
         }
 
@@ -261,7 +261,7 @@ private class Broadcaster
 
         ***********************************************************************/
         
-        final MulticastConduit conduit ()
+        final Multicast conduit ()
         {
                 return mSocket;
         }
@@ -692,7 +692,7 @@ private class BulletinConsumer : SocketListener, IConsumer, IEvent
         private ProtocolReader          reader;         // input decoder
         private Channel                 channel_;       // associated channel
         private Cluster                 cluster;        // associated cluster
-        private MulticastConduit        consumer;       // broadcast listener
+        private Multicast               consumer;       // broadcast listener
         private ChannelListener         listener;       // user-level callback
 
         /***********************************************************************
@@ -716,7 +716,7 @@ private class BulletinConsumer : SocketListener, IConsumer, IEvent
                 reader = new ProtocolReader (buffer);
 
                 // configure a listener socket
-                consumer = new MulticastConduit (cluster.getGroup (channel_.name), true);
+                consumer = new Multicast (cluster.getGroup (channel_.name), true);
                 consumer.join;
 
                 super (consumer, buffer);
@@ -986,7 +986,7 @@ private class Connection
 
         abstract void done (Time time);
 
-        abstract SocketConduit conduit ();
+        abstract Socket conduit ();
 }
 
 
@@ -1020,7 +1020,7 @@ private class ConnectionPool
                 Time            time;
                 PoolConnection  next;   
                 ConnectionPool  parent;   
-                SocketConduit   conduit_;
+                Socket          conduit_;
 
                 /***************************************************************
                 
@@ -1046,7 +1046,7 @@ private class ConnectionPool
                 final bool reset ()
                 {
                         try {
-                            conduit_ = new SocketConduit;
+                            conduit_ = new Socket;
 
                             // apply Nagle settings
                             conduit.socket.setNoDelay (parent.noDelay);
@@ -1073,7 +1073,7 @@ private class ConnectionPool
 
                 ***************************************************************/
         
-                final SocketConduit conduit ()
+                final Socket conduit ()
                 {
                         return conduit_;
                 }
