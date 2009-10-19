@@ -9,7 +9,7 @@
 
 import tango.io.Stdout;
 
-import tango.util.PathUtil;
+import tango.io.Path;
 
 int main()
 {

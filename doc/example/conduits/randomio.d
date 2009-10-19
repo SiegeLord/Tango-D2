@@ -1,8 +1,6 @@
 
 private import  tango.io.device.File;
-
-private import  tango.io.protocol.Reader,
-                tango.io.protocol.Writer;
+private import  tango.io.stream.Data;
 
 /*******************************************************************************
 
@@ -14,25 +12,28 @@ private import  tango.io.protocol.Reader,
 void main()
 {
         // open a file for reading
-        auto fc = new File ("random.bin", File.ReadWriteCreate);
+        auto file = new File ("random.bin", File.ReadWriteCreate);
 
         // construct (binary) reader & writer upon this conduit
-        auto read  = new Reader (fc);
-        auto write = new Writer (fc);
+        auto read  = new DataInput (file);
+        auto write = new DataOutput (file);
 
         int x=10, y=20;
 
         // write some data and flush output since IO is buffered
-        write (x) (y) ();
+        write.int32(x);
+        write.int32(y);
+        write.flush;
 
         // rewind to file start
-        fc.seek (0);
+        file.seek (0);
 
         // read data back again, but swap destinations
-        read (y) (x);
+        y = read.int32;
+        x = read.int32;
 
         assert (y is 10);
         assert (x is 20);
 
-        fc.close();
+        file.close;
 }

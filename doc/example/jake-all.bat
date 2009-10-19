@@ -8,7 +8,6 @@
 @rem # CONDUIT EXAMPLES
 @rem ###########################################################################
 
-@jake conduits\composite.d -I.. -op
 @jake conduits\filebubbler.d -I.. -op
 @jake -c conduits\filebucket.d -I.. -op
 @jake conduits\filecat.d -I.. -op
@@ -39,7 +38,7 @@
 @rem # REFERENCE MANUAL EXAMPLES
 @rem ###########################################################################
 
-@jake manual\chapterStorage.d -I.. -op 
+@rem 
 
 @rem ###########################################################################
 @rem # NETWORKING EXAMPLES
@@ -55,7 +54,6 @@
 @rem # SYSTEM EXAMPLES
 @rem ###########################################################################
 
-@jake system\argparser.d -I.. -op
 @jake system\localtime.d -I.. -op
 @jake system\normpath.d -I.. -op
 @jake system\process.d -I.. -op
