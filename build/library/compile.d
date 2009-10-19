@@ -17,7 +17,7 @@ private import tango.io.FileScan;
 private import tango.io.device.File;
 private import tango.text.Arguments;
 
-version (Posix)
+//version (Posix)
     private import tango.sys.Environment;
 
 /*******************************************************************************
@@ -64,6 +64,7 @@ class Windows : FileFilter
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
                 outf.write ("-c -n -p256\n"~args.lib~".lib\n");
 
+                exclude ("tango/core/rt/compiler/dmd/posix");
                 foreach (file; scan(".d"))
                          compile (dmd, file, outf);
 
@@ -114,6 +115,8 @@ class Linux : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+
+                exclude ("tango/core/rt/compiler/dmd/windows");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
