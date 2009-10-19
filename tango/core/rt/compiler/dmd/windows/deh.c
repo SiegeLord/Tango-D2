@@ -31,7 +31,7 @@ void __cdecl _global_unwind(void *frame,EXCEPTION_RECORD *eRecord);
 extern DWORD _except_list;
 /*** ***/
 
-#include        "mars.h"
+#include        "../mars.h"
 
 extern ClassInfo D9Exception7__ClassZ;
 

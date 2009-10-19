@@ -21,7 +21,7 @@
  *     distribution.
  */
 
-module rt.compiler.dmd.rt.deh;
+module rt.compiler.dmd.posix.deh;
 
 // Exception handling support for linux
 
