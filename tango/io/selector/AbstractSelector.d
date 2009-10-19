@@ -55,8 +55,8 @@ version (Windows)
  * Examples:
  * ---
  * import tango.io.selector.model.ISelector;
+ * import tango.net.device.Socket;
  * import tango.io.Stdout;
- * import tango.net.SocketConduit;
  *
  * AbstractSelector selector;
  * SocketConduit conduit1;

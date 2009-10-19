@@ -34,8 +34,8 @@ version (linux)
      * Examples:
      * ---
      * import tango.io.selector.EpollSelector;
+     * import tango.net.device.Socket;
      * import tango.io.Stdout;
-     * import tango.net.SocketConduit;
      *
      * SocketConduit conduit1;
      * SocketConduit conduit2;
