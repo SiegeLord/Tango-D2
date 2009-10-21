@@ -16,9 +16,7 @@ private import tango.sys.Process;
 private import tango.io.FileScan;
 private import tango.io.device.File;
 private import tango.text.Arguments;
-
-//version (Posix)
-    private import tango.sys.Environment;
+private import tango.sys.Environment;
 
 /*******************************************************************************
       
