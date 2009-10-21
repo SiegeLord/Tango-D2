@@ -28,29 +28,57 @@ private import std.intrinsic;
 
 ******************************************************************************/
 
-struct Bitset (int Count = 0) 
-{
-        private const width = size_t.sizeof * 8;
+struct Bitset (int Count=0) 
+{               
+        public alias and        opAnd;
+        public alias or         opOrAssign;
+        public alias xor        opXorAssign;
+        private const           width = size_t.sizeof * 8;
+
         static if (Count == 0)
+                   private size_t[] bits;
+               else
+                  private size_t [(Count+width-1)/width] bits;
+
+        /**********************************************************************
+
+                Set the indexed bit, resizing as necessary for heap-based
+                instances (IndexOutOfBounds for statically-sized instances)
+
+        **********************************************************************/
+
+        void add (size_t i)
         {
-                private size_t[] bits;
-
-                /**************************************************************
-
-                        Expand to include the indexed bit (dynamic only)
-
-                **************************************************************/
-
-                Bitset* size (size_t i)
-                {
-                        i = i / width;
-                        if (i >= bits.length)
-                             bits.length = i + 1;
-                        return this;
-                }
+                static if (Count == 0)
+                           size (i);
+                or (i);
         }
-        else
-           private size_t [(Count+width-1)/width] bits;
+
+        /**********************************************************************
+
+                Test whether the indexed bit is enabled 
+
+        **********************************************************************/
+
+        bool has (size_t i)
+        {
+                auto idx = i / width;
+                return idx < bits.length && (bits[idx] & (1 << (i % width))) != 0;
+                //return idx < bits.length && bt(&bits[idx], i % width) != 0;
+        }
+
+        /**********************************************************************
+
+                Like get() but a little faster for when you know the range
+                is valid
+
+        **********************************************************************/
+
+        bool and (size_t i)
+        {
+                return (bits[i / width] & (1 << (i % width))) != 0;
+                //return bt(&bits[i / width], i % width) != 0;
+        }
 
         /**********************************************************************
 
@@ -76,32 +104,6 @@ struct Bitset (int Count = 0)
                 //btc (&bits[i / width], i % width);
         }
         
-        /**********************************************************************
-
-                Test whether the indexed bit is enabled 
-
-        **********************************************************************/
-
-        bool has (size_t i)
-        {
-                auto idx = i / width;
-                return idx < bits.length && (bits[idx] & (1 << (i % width))) != 0;
-                //return idx < bits.length && bt(&bits[idx], i % width) != 0;
-        }
-
-        /**********************************************************************
-
-                Like has() but a little faster for when you know the range
-                is valid
-
-        **********************************************************************/
-
-        bool and (size_t i)
-        {
-                return (bits[i / width] & (1 << (i % width))) != 0;
-                //return bt(&bits[i / width], i % width) != 0;
-        }
-
         /**********************************************************************
 
                 Clear an indexed bit
@@ -141,12 +143,26 @@ struct Bitset (int Count = 0)
 
         /**********************************************************************
 
-                Is the bit-index within range?
+                Return the number of bits we have room for
 
         **********************************************************************/
 
-        bool valid (size_t i)
+        size_t size ()
         {
-                return (i / width) < bits.length;
+                return width * bits.length;
+        }
+
+        /**********************************************************************
+
+                Expand to include the indexed bit (dynamic only)
+
+        **********************************************************************/
+
+        static if (Count == 0) Bitset* size (size_t i)
+        {
+                i = i / width;
+                if (i >= bits.length)
+                    bits.length = i + 1;
+                return this;
         }
 }
