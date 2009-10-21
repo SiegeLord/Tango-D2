@@ -36,7 +36,7 @@ extern(C) {
 // libunwind headers
 extern(C)
 {
-    enum _Unwind_Reason_Code
+    enum _Unwind_Reason_Code : int
     {
         NO_REASON = 0,
         FOREIGN_EXCEPTION_CAUGHT = 1,
@@ -49,7 +49,7 @@ extern(C)
         CONTINUE_UNWIND = 8
     }
 
-    enum _Unwind_Action
+    enum _Unwind_Action : int
     {
         SEARCH_PHASE = 1,
         CLEANUP_PHASE = 2,
@@ -63,7 +63,7 @@ extern(C)
 
     struct _Unwind_Exception
     {
-        char[8] exception_class;
+        ulong exception_class;
         _Unwind_Exception_Cleanup_Fn exception_cleanup;
         ptrdiff_t private_1;
         ptrdiff_t private_2;
@@ -120,13 +120,9 @@ else
 }
 
 // error and exit
-extern(C) private void fatalerror(char* format, ...)
+extern(C) private void fatalerror(char[] format)
 {
-  va_list args;
-  va_start(args, format);
-  printf("Fatal error in EH code: ");
-  vprintf(format, args);
-  printf("\n");
+  printf("Fatal error in EH code: %.*s\n", format.length, format.ptr);
   abort();
 }
 
@@ -193,7 +189,7 @@ struct _d_exception
 // the 8-byte string identifying the type of exception
 // the first 4 are for vendor, the second 4 for language
 //TODO: This may be the wrong way around
-char[8] _d_exception_class = "LLDCD1\0\0";
+const char[8] _d_exception_class = "LLDCD1\0\0";
 
 
 //
@@ -224,7 +220,8 @@ extern(C) _Unwind_Reason_Code _d_eh_personality(int ver, _Unwind_Action actions,
   ubyte* action_table;
   ClassInfo* classinfo_table;
   _d_getLanguageSpecificTables(context, callsite_table, action_table, classinfo_table);
-
+  if (!callsite_table)
+    return _Unwind_Reason_Code.CONTINUE_UNWIND;
 
   /*
     find landing pad and action table index belonging to ip by walking
@@ -377,6 +374,13 @@ private _Unwind_Reason_Code _d_eh_install_finally_context(_Unwind_Action actions
 private void _d_getLanguageSpecificTables(_Unwind_Context_Ptr context, ref ubyte* callsite, ref ubyte* action, ref ClassInfo* ci)
 {
   ubyte* data = cast(ubyte*)_Unwind_GetLanguageSpecificData(context);
+  if (!data)
+  {
+    callsite = null;
+    action = null;
+    ci = null;
+    return;
+  }
 
   //TODO: Do proper DWARF reading here
   if(*data++ != 0xff)
@@ -405,7 +409,7 @@ extern(C) void _d_throw_exception(Object e)
     if (e !is null)
     {
         _d_exception* exc_struct = new _d_exception;
-        exc_struct.unwind_info.exception_class[] = _d_exception_class;
+        exc_struct.unwind_info.exception_class = *cast(ulong*)_d_exception_class;
         exc_struct.exception_object = e;
         _Unwind_Reason_Code ret = _Unwind_RaiseException(&exc_struct.unwind_info);
         console("_Unwind_RaiseException failed with reason code: ")(ret)("\n");
