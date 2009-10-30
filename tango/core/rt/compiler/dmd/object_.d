@@ -76,6 +76,15 @@ alias int equals_t;
 class Object
 {
     /**
+     * Override this to capture an explicit delete or an implicit 
+     * delete via a scoped-instance. Unlike a dtor(), GC references
+     * are still intact when this method is invoked
+     */
+    void dispose()
+    {
+    }
+
+    /**
      * Convert Object to a human readable string.
      */
     char[] toString()

@@ -14,6 +14,7 @@ alias int equals_t;
 /// root class for all objects in D
 class Object
 {
+    void dispose();
     /// returns a string representation of the object (for debugging purposes)
     char[] toString();
     /// returns a hash
@@ -23,7 +24,7 @@ class Object
     int    opCmp(Object o);
     /// returns 0 if this==o
     equals_t    opEquals(Object o);
-
+    
     interface Monitor
     {
         void lock();

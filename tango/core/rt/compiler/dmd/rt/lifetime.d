@@ -476,6 +476,9 @@ extern (C) void rt_finalize(void* p, bool det = true)
 
     if (p) // not necessary if called from gc
     {
+        if (det)
+           (cast(Object)p).dispose();
+
         ClassInfo** pc = cast(ClassInfo**)p;
 
         if (*pc)
