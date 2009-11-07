@@ -267,7 +267,7 @@ class BzipOutput : OutputFilter
                 {
                     auto w = sink.write(out_buffer);
                     if( w == IConduit.Eof )
-                        return w;
+                        return;
 
                     out_buffer = out_buffer[w..$];
                     _written += w;
