@@ -480,7 +480,10 @@ struct Console
                                    // are we redirecting?
                                    DWORD mode;
                                    if (! GetConsoleMode (handle, &mode))
-                                         redirected = true;
+                                      {
+                                      *cast(long*) &overlapped.Offset = -1;
+                                      redirected = true;
+                                      }
                                    }
                         }
 
