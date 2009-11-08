@@ -456,15 +456,13 @@ template staticArraySize(T)
     const size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
 }
 
-/// returns a dynamic array
+/// is T is static array returns a dynamic array, otherwise returns T
 template DynamicArrayType(T)
 {
     static if( isStaticArrayType!(T) )
         alias typeof(T.dup) DynamicArrayType;
-    else static if (isArrayType!(T))
-        alias T DynamicArrayType;
     else
-        alias T[] DynamicArrayType;
+        alias T DynamicArrayType;
 }
 
 debug( UnitTest )
