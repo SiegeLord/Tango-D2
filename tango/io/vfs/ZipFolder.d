@@ -146,7 +146,8 @@ private
 
             else
                {
-               return new DummyInputStream;
+               throw new Exception ("cannot open input stream for '"~fullname~"'");
+               //return new DummyInputStream;
                }
         }
 
@@ -1699,16 +1700,9 @@ import tango.io.device.Conduit : Conduit;
  * conduit, which will likely break code which expects streams to have an
  * underlying conduit.
  */
-class DummyInputStream : InputStream // IConduit.Seek
+private deprecated class DummyInputStream : InputStream // IConduit.Seek
 {
     //alias IConduit.Seek.Anchor Anchor;
-
-    ///
-    this()
-    {
-        // Should not be using DummyStream! (KB)
-        assert (false);
-    }
 
     override InputStream input() {return null;}
     override IConduit conduit() { return null; }
@@ -1723,16 +1717,9 @@ class DummyInputStream : InputStream // IConduit.Seek
 }
 
 /// ditto
-class DummyOutputStream : OutputStream //, IConduit.Seek
+private deprecated class DummyOutputStream : OutputStream //, IConduit.Seek
 {
     //alias IConduit.Seek.Anchor Anchor;
-
-    ///
-    this()
-    {
-        // Should not be using DummyStream! (KB)
-        assert (false);
-    }
 
     override OutputStream output() {return null;}
     override IConduit conduit() { return null; }
