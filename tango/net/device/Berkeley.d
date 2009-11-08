@@ -670,7 +670,7 @@ version (Windows)
                         auto ret = .send (sock, buf.ptr, buf.length, 
                                           SocketFlags.NOSIGNAL + cast(int) flags);
                         if (errno is EPIPE)
-                            ret = Eof;
+                            ret = -1;
                         return ret;
                         }
                      else
@@ -731,7 +731,7 @@ version (Windows)
                         auto ret = .sendto (sock, buf.ptr, buf.length, 
                                             flags | SocketFlags.NOSIGNAL, to, len);
                         if (errno is EPIPE)
-                            ret = Eof;
+                            ret = -1;
                         return ret;
                         }
                      else
