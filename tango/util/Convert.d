@@ -1080,6 +1080,12 @@ D toImpl(D,S)(S value)
     static if( is( D == S ) )
         return value;
 
+    else static if( is( S BaseType == typedef ) )
+        return toImpl!(D,BaseType)(value);
+
+    else static if( is( S BaseType == enum ) )
+        return toImpl!(D,BaseType)(value);
+
     else static if( isArrayType!(D) && isArrayType!(S)
             && is( typeof(D[0]) == typeof(S[0]) ) )
         // Special-case which catches to!(T[])!(T[n]).
