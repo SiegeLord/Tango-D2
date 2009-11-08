@@ -66,7 +66,7 @@ class FileMap : Array
 
         ***********************************************************************/
 
-        final ubyte[] resize (ulong size)
+        final ubyte[] resize (long size)
         {
                 auto ret = file.resize (size);
                 super.assign (ret);
@@ -115,7 +115,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        final ulong length ()
+        final long length ()
         {
                 return host.length;
         }
@@ -136,7 +136,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        final ubyte[] resize (ulong size)
+        final ubyte[] resize (long size)
         {
                 host.truncate (size);
                 return map;
