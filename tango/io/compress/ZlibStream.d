@@ -330,6 +330,12 @@ class ZlibInput : InputFilter
         return this;
     }
 
+    // Disable seeking
+    override long seek(long offset, Anchor anchor = Anchor.Begin)
+    {
+        throw new IOException("ZlibInput does not support seek requests");
+    }
+
     // This function kills the stream: it deallocates the internal state, and
     // unsets the zs_valid flag.
     private void kill_zs()
@@ -708,6 +714,12 @@ class ZlibOutput : OutputFilter
         while( !finished );
 
         kill_zs();
+    }
+
+    // Disable seeking
+    override long seek(long offset, Anchor anchor = Anchor.Begin)
+    {
+        throw new IOException("ZlibOutput does not support seek requests");
     }
 
     // This function kills the stream: it deallocates the internal state, and

@@ -280,6 +280,12 @@ class BzipOutput : OutputFilter
         kill_bzs();
     }
 
+    // Disable seeking
+    override long seek(long offset, Anchor anchor = Anchor.Begin)
+    {
+        throw new IOException("BzipOutput does not support seek requests");
+    }
+
     // This function kills the stream: it deallocates the internal state, and
     // unsets the bzs_valid flag.
     private void kill_bzs()
@@ -430,20 +436,25 @@ class BzipInput : InputFilter
 
     /***************************************************************************
 
-        Clear any buffered content.  No-op.
+        Closes the compression stream.
 
     ***************************************************************************/ 
 
-    override InputStream flush()
+    override void close()
     {
         check_valid();
 
-        // TODO: What should this method do?  We don't do any heap allocation,
-        // so there's really nothing to clear...  For now, just invalidate the
-        // stream...
+        // Kill the stream.  Don't deallocate the buffer since the user may
+        // yet reset the stream.
         kill_bzs();
-        super.flush();
+        super.close();
         return this;
+    }
+
+    // Disable seeking
+    override long seek(long offset, Anchor anchor = Anchor.Begin)
+    {
+        throw new IOException("BzipOutput does not support seek requests");
     }
 
     // This function kills the stream: it deallocates the internal state, and
