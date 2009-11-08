@@ -46,7 +46,7 @@ struct Kiss99{
         ulong t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
-        t = a*kiss_z+kiss_c; kiss_c = (t>>32);
+        t = a*kiss_z+kiss_c; kiss_c = cast(uint)(t>>32);
         kiss_z=cast(uint)t;
         return kiss_x+kiss_y+kiss_z;
     }

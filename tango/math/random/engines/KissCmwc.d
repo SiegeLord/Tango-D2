@@ -60,7 +60,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         ulong k_t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
-        k_t = cast(uint)(a*kiss_z+kiss_c); kiss_c = (k_t>>32);
+        k_t = a*kiss_z+kiss_c; kiss_c = cast(uint)(k_t>>32);
         kiss_z=cast(uint)k_t;
         return (cmwc_q[cmwc_i]=m-x)+kiss_x+kiss_y+kiss_z; // xor to avoid overflow?
     }

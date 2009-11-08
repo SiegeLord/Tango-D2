@@ -72,7 +72,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
                 if (nV<to) break;
                 nV=rSeed();
             }
-            cmwc_c=nV%cmwc_a;
+            cmwc_c=cast(uint)(nV%cmwc_a);
             nBytes = 0;
             restB=0;
             if (cmwc_c==0){
