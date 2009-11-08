@@ -692,35 +692,38 @@ T[] cropLeft(T) (T[] s)
 
 T[] cropRight(T) (T[] s)
 {
-        uint i = s.length - 1;
-        static if (is (T == char))
-                   while (i && (s[i] & 0x80))
-                          if ((s[i] & 0xc0) is 0xc0)
-                             {
-                             // located the first byte of a sequence
-                             ubyte b = s[i];
-                             int d = s.length - i;
+        if (s.length)
+           {
+           uint i = s.length - 1;
+           static if (is (T == char))
+                      while (i && (s[i] & 0x80))
+                             if ((s[i] & 0xc0) is 0xc0)
+                                {
+                                // located the first byte of a sequence
+                                ubyte b = s[i];
+                                int d = s.length - i;
 
-                             // is it a 3 byte sequence?
-                             if (b & 0x20)
-                                 --d;
+                                // is it a 3 byte sequence?
+                                if (b & 0x20)
+                                    --d;
+   
+                                // or a four byte sequence?
+                                if (b & 0x10)
+                                    --d;
 
-                             // or a four byte sequence?
-                             if (b & 0x10)
-                                 --d;
+                                // is the sequence complete?
+                                if (d is 2)
+                                    i = s.length;
+                                return s [0..i];
+                                }
+                             else 
+                                --i;
 
-                             // is the sequence complete?
-                             if (d is 2)
-                                 i = s.length;
-                             return s [0..i];
-                             }
-                          else 
-                             --i;
-
-        static if (is (T == wchar))
-                   // skip if last char is a leading surrogate
-                   if ((s[i] & 0xfffffc00) is 0xd800)
-                        return s [0..$-1];
+           static if (is (T == wchar))
+                      // skip if last char is a leading surrogate
+                      if ((s[i] & 0xfffffc00) is 0xd800)
+                           return s [0..$-1];
+           }
         return s;
 }
 
