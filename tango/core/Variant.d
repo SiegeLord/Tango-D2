@@ -38,6 +38,16 @@ version( DigitalMars )
         }
     }
 }
+else version( LDC )
+{
+    version( X86_64 )
+    {
+        version( linux )
+        {
+            version=EnableVararg; // thanks mwarning
+        }
+    }
+}
 else version( DDoc )
 {
     // Let's hope DDoc is smart enough to catch this...
