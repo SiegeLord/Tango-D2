@@ -1133,6 +1133,10 @@ debug (Layout)
                 Cout (layout.sprint (new char[10], "{.4}", "hello")).newline;
                 Cout (layout.sprint (new char[10], "{.-4}", "hello")).newline;
 
+                Cout (layout ("{:f1}", 3.0)).newline;
+                Cout (layout ("{:g}", 3.00)).newline;
+                Cout (layout ("{:f1}", -0.0)).newline;
+                Cout (layout ("{:g1}", -0.0)).newline;
                 Cout (layout ("{:d2}", 56)).newline;
                 Cout (layout ("{:d4}", cast(byte) -56)).newline;
                 Cout (layout ("{:f4}", 0.001)).newline;
