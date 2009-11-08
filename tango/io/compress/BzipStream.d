@@ -448,7 +448,6 @@ class BzipInput : InputFilter
         // yet reset the stream.
         kill_bzs();
         super.close();
-        return this;
     }
 
     // Disable seeking
