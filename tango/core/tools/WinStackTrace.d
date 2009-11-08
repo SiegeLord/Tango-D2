@@ -1846,9 +1846,12 @@ static this() {
 
     
     SYMBOL_INFO sym;
+    sym.SizeOfStruct = SYMBOL_INFO.sizeof; 
+
     extern(C) void function(char[]) initTrace;
     if (SymFromName(GetCurrentProcess(), "__initLGPLHostExecutableDebugInfo", &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
+        assert (initTrace !is null); 
         //Stdout.formatln("Initializing the TangoTrace LGPL stuff");
         initTrace(modName);
     } else {
