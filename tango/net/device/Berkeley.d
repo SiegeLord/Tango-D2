@@ -125,9 +125,10 @@ enum SocketShutdown
 enum SocketFlags
 {
         NONE =           0,
-        OOB =            consts.MSG_OOB, //out of band
-        PEEK =           consts.MSG_PEEK, //only for receiving
-        DONTROUTE =      consts.MSG_DONTROUTE, //only for sending
+        OOB =            consts.MSG_OOB,        /// out of band
+        PEEK =           consts.MSG_PEEK,       /// only for receiving
+        DONTROUTE =      consts.MSG_DONTROUTE,  /// only for sending
+        NOSIGNAL =       0x4000,                /// inhibit signals
 }
 
 /*******************************************************************************
@@ -645,10 +646,10 @@ version (Windows)
         Address localAddress ()
         {
                 auto addr = newFamilyObject;
-                auto nameLen = addr.nameLen();
+                auto nameLen = addr.nameLen;
                 if(Error == .getsockname (sock, addr.name, &nameLen))
                    exception ("Unable to obtain local socket address: ");
-                assert (addr.addressFamily() is family);
+                assert (addr.addressFamily is family);
                 return addr;
         }
 
@@ -664,7 +665,16 @@ version (Windows)
 
         int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                return .send(sock, buf.ptr, buf.length, cast(int)flags);
+                version (Posix)
+                        {
+                        auto ret = .send (sock, buf.ptr, buf.length, 
+                                          SocketFlags.NOSIGNAL + cast(int) flags);
+                        if (errno is EPIPE)
+                            ret = Eof;
+                        return ret;
+                        }
+                     else
+                        return .send (sock, buf.ptr, buf.length, cast(int) flags);
         }
 
         /***********************************************************************
@@ -679,7 +689,7 @@ version (Windows)
 
         int sendTo (void[] buf, SocketFlags flags, Address to)
         {
-                return .sendto(sock, buf.ptr, buf.length, cast(int)flags, to.name, to.nameLen);
+                return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
 
         /***********************************************************************
@@ -690,7 +700,7 @@ version (Windows)
 
         int sendTo (void[] buf, Address to)
         {
-                return sendTo(buf, SocketFlags.NONE, to);
+                return sendTo (buf, SocketFlags.NONE, to);
         }
 
         /***********************************************************************
@@ -701,7 +711,31 @@ version (Windows)
 
         int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
-                return .sendto(sock, buf.ptr, buf.length, cast(int)flags, null, 0);
+                return sendTo (buf, cast(int) flags, null, 0);
+        }
+
+        /***********************************************************************
+
+                Send data to a specific destination Address. If the 
+                destination address is not specified, a connection 
+                must have been made and that address is used. If the 
+                socket is blocking and there is no buffer space left, 
+                sendTo waits.
+
+        ***********************************************************************/
+
+        private int sendTo (void[] buf, int flags, sockaddr* to, int len)
+        {
+                version (Posix)
+                        {
+                        auto ret = .sendto (sock, buf.ptr, buf.length, 
+                                            flags | SocketFlags.NOSIGNAL, to, len);
+                        if (errno is EPIPE)
+                            ret = Eof;
+                        return ret;
+                        }
+                     else
+                        return .sendto (sock, buf.ptr, buf.length, flags, to, len);
         }
 
         /***********************************************************************
