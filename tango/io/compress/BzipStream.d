@@ -26,10 +26,10 @@ private
      * internally.  There's no particular reason to pick this size.  It might
      * be an idea to run some benchmarks to work out what a good number is.
      */
-    const BUFFER_SIZE = 4*1024;
+    private enum { BUFFER_SIZE = 4*1024 };
 
-    const DEFAULT_BLOCKSIZE = 9;
-    const DEFAULT_WORKFACTOR = 0;
+    private enum { DEFAULT_BLOCKSIZE = 9 };
+    private enum { DEFAULT_WORKFACTOR = 0 };
 }
 
 /*******************************************************************************
@@ -90,13 +90,24 @@ class BzipOutput : OutputFilter
 
     this(OutputStream stream, int blockSize = BlockSize.Normal)
     {
+        init(stream, blockSize);
+        scope(failure) kill_bzs();
+
+        super(stream);
+        out_chunk = new ubyte[BUFFER_SIZE];
+    }
+
+    /*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */
+    private void init(OutputStream stream, int blockSize)
+    {
         if( blockSize < 1 || blockSize > 9 )
             throw new BzipException("bzip2 block size must be between"
                     " 1 and 9");
 
-        super(stream);
-        out_chunk = new ubyte[BUFFER_SIZE];
-        
         auto ret = BZ2_bzCompressInit(&bzs, blockSize, 0, DEFAULT_WORKFACTOR);
         if( ret != BZ_OK )
             throw new BzipException(ret);
@@ -108,6 +119,27 @@ class BzipOutput : OutputFilter
     {
         if( bzs_valid )
             kill_bzs();
+    }
+
+    /***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed before calling reset.
+
+    ***************************************************************************/ 
+
+    void reset(OutputStream stream, int blockSize = BlockSize.Normal)
+    {
+        // If the stream is still valid, bail.
+        if( bzs_valid )
+            throw new BzipStillOpenException;
+
+        init(stream, blockSize);
     }
 
     /***************************************************************************
@@ -175,7 +207,8 @@ class BzipOutput : OutputFilter
 
     /***************************************************************************
 
-        commit the output
+        Close the compression stream.  This will cause any buffered content to
+        be committed to the underlying stream.
 
     ***************************************************************************/
 
@@ -191,6 +224,9 @@ class BzipOutput : OutputFilter
         bzip2 stream, so it should not be called until you are finished
         compressing data.  Any calls to either write or commit after a
         compression filter has been committed will throw an exception.
+
+        The only difference between calling this method and calling close is
+        that the underlying stream will not be closed.
 
     ***************************************************************************/
 
@@ -297,9 +333,20 @@ class BzipInput : InputFilter
 
     this(InputStream stream, bool small=false)
     {
+        init(stream, small);
+        scope(failure) kill_bzs();
+
         super(stream);
         in_chunk = new ubyte[BUFFER_SIZE];
+    }
 
+    /*
+     * This method performs initialisation for the stream.  Note that this may
+     * be called more than once for an instance, provided the instance is
+     * either new or as part of a call to reset.
+     */
+    private void init(InputStream stream, bool small)
+    {
         auto ret = BZ2_bzDecompressInit(&bzs, 0, small?1:0);
         if( ret != BZ_OK )
             throw new BzipException(ret);
@@ -311,6 +358,27 @@ class BzipInput : InputFilter
     {
         if( bzs_valid )
             kill_bzs();
+    }
+
+    /***************************************************************************
+        
+        Resets and re-initialises this instance.
+
+        If you are creating compression streams inside a loop, you may wish to
+        use this method to re-use a single instance.  This prevents the
+        potentially costly re-allocation of internal buffers.
+
+        The stream must have already been closed before calling reset.
+
+    ***************************************************************************/ 
+
+    void reset(InputStream stream, bool small=false)
+    {
+        // If the stream is still valid, bail.
+        if( bzs_valid )
+            throw new BzipStillOpenException;
+
+        init(stream, small);
     }
 
     /***************************************************************************
@@ -455,6 +523,22 @@ class BzipClosedException : IOException
     this()
     {
         super("cannot operate on closed bzip2 stream");
+    }
+}
+
+/*******************************************************************************
+  
+    This exception is thrown if you attempt to reset a compression stream that
+    is still open.  You must either close or commit a stream before it can be
+    reset.
+
+*******************************************************************************/
+
+class BzipStillOpenException : IOException
+{
+    this()
+    {
+        super("cannot reset an open bzip2 stream");
     }
 }
 
