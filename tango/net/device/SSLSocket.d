@@ -352,7 +352,7 @@ class SSLServerSocket : ServerSocket
 
     *******************************************************************************/
 
-    this (uint port, SSLCtx ctx, int backlog=32, bool reuse=false)
+    this (ushort port, SSLCtx ctx, int backlog=32, bool reuse=false)
     {
         scope addr = new IPv4Address (port);
         this (addr, ctx, backlog, reuse);

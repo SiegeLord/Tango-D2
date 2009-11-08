@@ -283,7 +283,7 @@ class Iterator(T) : InputFilter
                 source.reader ((void[] arr) 
                               { 
                               slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
-                              return arr.length; 
+                              return cast(size_t)arr.length; 
                               });
                 return false;
         }
