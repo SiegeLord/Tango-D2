@@ -166,7 +166,6 @@ uint toUint(char[]s){
             res+=s[i]-'0';
         } else {
             assert(false);
-            return res;
         }
     }
     return res;
@@ -896,7 +895,7 @@ public class Demangler
                     return pos.reset();
             }
 
-            return true;
+            //return true;
         }
 
         bool typeFunction ()
@@ -1210,7 +1209,7 @@ public class Demangler
                     return pos.reset();
             }
 
-            return pos.reset;
+            //return pos.reset;
         }
 
         bool value ()
@@ -1273,7 +1272,7 @@ public class Demangler
                     return true;
             }
 
-            return pos.reset();
+            //return pos.reset();
         }
 
         bool hexFloat ()
