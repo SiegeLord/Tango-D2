@@ -327,7 +327,7 @@ class ZlibInput : InputFilter
         kill_zs();
 
         super.close();
-        return this;
+        return;
     }
 
     // Disable seeking
