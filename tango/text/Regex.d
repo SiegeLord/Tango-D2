@@ -1228,9 +1228,9 @@ private enum PriorityClass {
     greedy=0, normal=1, reluctant=2, extraReluctant=3
 }
 
-/* ************************************************************************************************
+/* ********************************************************************************
     TNFA tagged transition
-**************************************************************************************************/
+***********************************************************************************/
 private class TNFATransition(char_t)
 {
     TNFAState!(char_t)  target;
@@ -1243,6 +1243,33 @@ private class TNFATransition(char_t)
     {
         priorityClass = pc;
     }
+
+    /******************************************************************************
+        Move through states only going via epsilon transitions, and only choosing
+        the one with highest priority. If the highest priority transition from a 
+        state isn't an epsilon transition, false is returned. 
+        If the accepting NFA state can be reached in this manner, true is returned. 
+
+        NOTE: This method does not look for cycles which should be kept in mind for
+        later. larsivi 20090827
+    *******************************************************************************/
+    bool canFinish()
+    {
+        TNFAState!(char_t)  t = target;
+        while (!t.accept) {
+            TNFATransition!(char_t) highestPriTrans;
+            foreach (trans; t.transitions) {
+                if (!highestPriTrans || highestPriTrans.priority > trans.priority)
+                    highestPriTrans = trans;
+            }
+            if (!(highestPriTrans.predicate.type == Predicate!(char_t).Type.epsilon))
+                return false;
+            
+            t = highestPriTrans.target;
+        }
+        return true;
+    }
+
 }
 
 /* ************************************************************************************************
@@ -2348,6 +2375,7 @@ private class TDFA(char_t)
                     INVALID_STATE = 255;
 
         bool            accept = false;
+        bool            reluctant = false;
         uint            index;
         Transition[]    transitions,
                         generic_transitions;
@@ -2554,6 +2582,7 @@ private class TDFA(char_t)
 
                 Transition trans = new Transition;
                 state.dfa_state.transitions ~= trans;
+                debug (tdfa_new_trans) Stdout.formatln("Creating with pred: {}", pred);
                 trans.predicate = pred;
 
                 // generate indeces for pos commands
@@ -2603,8 +2632,8 @@ private class TDFA(char_t)
                     target.dfa_state = ts;
                     subset_states   ~= target;
                     unmarked        ~= target;
-                    debug(tdfa) {
-                        Stdout.formatln("\n{} = {}\n", target.dfa_state.index, target.toString);
+                    debug(tdfa_add) {
+                        Stdout.formatln("\nAdded {} = {}\n", target.dfa_state.index, target.toString);
                     }
                     generateFinishers(target);
                 }
@@ -3454,10 +3483,32 @@ private:
         // if at least one of the TNFA states accepts,
         // set the finishers from active tags in increasing priority
         StateElement[]  sorted_elms = r.elms.dup.sort;
-        foreach ( se; sorted_elms )
+        bool reluctant = false;
+        foreach ( se; sorted_elms ) {
+            debug (Finishers) Stdout.formatln("Finisher: {}", se);
             if ( se.nfa_state.accept )
             {
                 r.dfa_state.accept = true;
+
+                // Knowing that we're looking at an epsilon closure with an accepting
+                // state, we look at the involved transitions - if the path from the
+                // nfa state in the set with the highest incoming priority (last in
+                // sorted_elms list) to the accepting nfa state is via the highest
+                // priority transitions, and they are all epsilon transitions, this
+                // suggests we're looking at a regex ending with a reluctant pattern.
+                // The NFA->DFA transformation will most likely extend the automata
+                // further, but we want the matching to stop here.
+                // NOTE: The grounds for choosing the last element in sorted_elms
+                // are somewhat weak (empirical testing), but sofar no new
+                // regressions have been discovered. larsivi 20090827
+                TNFATransition!(char_t) highestPriTrans;
+                foreach ( trans; sorted_elms[$-1].nfa_state.transitions ) {
+                    if (trans.canFinish()) {
+                        r.dfa_state.reluctant = true;
+                        break;
+                    }
+                }
+
                 bool[uint]  finished_tags;
                 {
                     foreach ( t, i; se.tags )
@@ -3470,6 +3521,7 @@ private:
                         }
                 }
             }
+        }
     }
 
     /* ********************************************************************************************
@@ -3882,7 +3934,12 @@ class RegExpT(char_t)
                         registers_[cmd.dst] = registers_[cmd.src];
                 }
 
-                // if all input was consumed and we do not already accept, try to add an explicit string/line end
+                if (s.accept && s.reluctant)
+                    // Don't continue matching, the current find should be correct
+                    goto Laccept;
+
+                // if all input was consumed and we do not already accept, try to 
+                // add an explicit string/line end
                 if ( p >= inp.length )
                 {
                     if ( s.accept || c == 0 )
@@ -3898,6 +3955,7 @@ class RegExpT(char_t)
 
         if ( s.accept )
         {
+        Laccept:
             foreach ( cmd; s.finishers ) {
                 assert(cmd.src != tdfa_.CURRENT_POSITION_REGISTER);
                 registers_[cmd.dst] = registers_[cmd.src];
