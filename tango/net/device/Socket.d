@@ -480,7 +480,6 @@ class Socket : Conduit, ISelectable
                 Socket asyncCopy (Handle file)
                 {
                         assert (false);
-                        return this;
                 }
 
                 /***************************************************************
