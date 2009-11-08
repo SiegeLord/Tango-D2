@@ -4,11 +4,11 @@
 /// author: fawzi
 /// license: tango, apache 2.0
 module tango.stdc.posix.timer;
+
 import tango.stdc.config;
+import tango.stdc.time;
 
 extern(C):
-
-alias c_long time_t;
 
 //
 // Timer (TMR)
