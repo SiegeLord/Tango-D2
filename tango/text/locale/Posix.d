@@ -21,6 +21,7 @@ private import tango.text.locale.Data;
 private import tango.stdc.ctype;
 private import tango.stdc.posix.stdlib;
 private import tango.stdc.string;
+private import tango.stdc.stringz;
 private import tango.stdc.locale;
 
 /*private extern(C) char* setlocale(int type, char* locale);
@@ -38,20 +39,13 @@ int getUserCulture() {
   // Therefore we need to replace underscores with hyphens.
   char[] s;
   if (env){
-      char* p = env;
-      int len;
-      while (*p) {
-        if (*p == '.'){
-          break;
-        }
-        if (*p == '_'){
-          *p = '-';
-        }
-        p++;
-        len++;
-      }
-
-      s = env[0 .. len];
+      s = fromStringz(env).dup;
+      foreach (ref c; s)
+               if (c == '.')
+                   break;
+               else
+                  if (c == '_')
+                      c = '-';
   } else {
       s="en-US";
   }
