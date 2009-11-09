@@ -45,14 +45,15 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
         private uint    next;
 
         /** Inserts the given element into the heap. */
-        void push (T t)
+        uint push (T t)
         {
-                while (heap.length <= next)
+                auto index = next++;
+                while (heap.length <= index)
                        heap.length = 2 * heap.length + 32;
 
-                heap[next] = t;
-                fixup (next);
-                next++;
+                heap[index] = t;
+                fixup (index);
+                return index;
         }
 
         /** Inserts all elements in the given array into the heap. */
