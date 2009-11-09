@@ -461,32 +461,31 @@ class HttpClient
 
                 // should we emit query as part of request line?
                 if (query.length)
-                    if (method != Post)
+                   {
+                   output.append ("?");
+                   if (encode)
+                       uri.encode (&output.write, query, uri.IncQueryAll);
+                   else
+                       output.append (query);
+                            
+                    if (method is Post && pump.funcptr is null)
                        {
-                       output.append("?");
-                       if (encode)
-                           uri.encode (&output.write, query, uri.IncQueryAll);
-                       else
-                           output.append (query);
-                       }
-                    else 
-                       if (pump.funcptr is null)
+                       // we're POSTing query text - add default info
+                       if (headersOut.get (HttpHeader.ContentType, null) is null)
+                           headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
+
+                       if (headersOut.get (HttpHeader.ContentLength, null) is null)
                           {
-                          // we're POSTing query text - add default info
-                          if (headersOut.get (HttpHeader.ContentType, null) is null)
-                              headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
+                          if (encode)
+                              // TODO: this generates heap activity
+                              query = uri.encode (query, uri.IncQueryAll);
 
-                          if (headersOut.get (HttpHeader.ContentLength, null) is null)
-                             {
-                             if (encode)
-                                 // TODO: this generates heap activity
-                                 query = uri.encode (query, uri.IncQueryAll);
-
-                             headersOut.addInt (HttpHeader.ContentLength, query.length);
-                             pump = (OutputBuffer o){o.append(query);};
-                             }
+                          headersOut.addInt (HttpHeader.ContentLength, query.length);
+                          pump = (OutputBuffer o){o.append(query);};
                           }
-
+                       }
+                   }
+                
                 // complete the request line, and emit headers too
                 output.append (" ")
                       .append (httpVersion)
