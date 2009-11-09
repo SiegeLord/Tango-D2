@@ -12,8 +12,6 @@
 
 module tango.net.http.HttpTriplet;
 
-private import  tango.core.Exception;
-
 /******************************************************************************
 
         Class to represent an HTTP response- or request-line 
@@ -23,6 +21,7 @@ private import  tango.core.Exception;
 class HttpTriplet 
 {
         protected char[]        line;
+        protected char[]        failed;
         protected char[][3]     tokens;
 
         /**********************************************************************
@@ -31,7 +30,7 @@ class HttpTriplet
 
         **********************************************************************/
 
-        abstract void test ();
+        abstract bool test ();
 
         /**********************************************************************
 
@@ -39,7 +38,7 @@ class HttpTriplet
 
         **********************************************************************/
 
-        void parse (char[] line)
+        bool parse (char[] line)
         {
                 int i;
                 int mark;
@@ -57,8 +56,7 @@ class HttpTriplet
                                 break;
 
                 tokens[2] = line [mark .. line.length];
-
-                test ();
+                return test;
         }
 
         /**********************************************************************
@@ -74,13 +72,13 @@ class HttpTriplet
 
         /**********************************************************************
 
-                throw an exception
+                return error string after a failed parse()
 
         **********************************************************************/
 
-        final void error (char[] msg)
+        final char[] error ()
         {
-                throw new IOException (msg);
+                return failed;
         }
 }
 

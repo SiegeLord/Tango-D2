@@ -35,6 +35,8 @@ private import  tango.net.http.HttpConst,
                 tango.net.http.HttpTriplet,
                 tango.net.http.HttpCookies;
 
+private import  tango.core.Exception : IOException;
+
 private import  Integer = tango.text.convert.Integer;
 
 /*******************************************************************************
@@ -177,7 +179,7 @@ class HttpClient
                 if (host)
                     address = new InternetAddress (host, uri.getValidPort);
                 else
-                   responseLine.error ("invalid url provided to HttpClient ctor");
+                   error ("invalid url provided to HttpClient ctor");
 
                 // default the http version to 1.0
                 setVersion (Version.OnePointZero);
@@ -412,7 +414,7 @@ class HttpClient
         OutputBuffer openStart (Pump pump)
         {
                 if (++redirections > redirectionLimit)
-                    responseLine.error ("too many redirections, or a circular redirection");
+                    error ("too many redirections, or a circular redirection");
 
                 // new socket for each request?
                 if (keepalive is false)
@@ -522,14 +524,15 @@ class HttpClient
 version (OldTimer)
 {
                 if (socket.hadTimeout)
-                    responseLine.error ("response timeout");
+                    error ("response timeout");
 }
                 // is this a bogus request?
                 if (line.get.length is 0)
-                    responseLine.error ("truncated response");
+                    error ("truncated response");
 
                 // read response line
-                responseLine.parse (line.get);
+                if (! responseLine.parse (line.get))
+                      error (responseLine.error);
 
                 // parse incoming headers
                 headersIn.reset.parse (this.input);
@@ -557,7 +560,7 @@ version (OldTimer)
                                 if (host)
                                     address = new InternetAddress (uri.getHost, uri.getValidPort);
                                 else
-                                    responseLine.error ("redirect has invalid url: "~redirect);
+                                    error ("redirect has invalid url: "~redirect);
 
                                 // figure out what to do
                                 if (method is Get || method is Head)
@@ -566,7 +569,7 @@ version (OldTimer)
                                     if (method is Post)
                                         return redirectPost (pump, responseLine.getStatus);
                                     else
-                                        responseLine.error ("unexpected redirect for method "~method.name);
+                                        error ("unexpected redirect for method "~method.name);
                            default:
                                break;
                            }
@@ -638,7 +641,7 @@ version (OldTimer)
                             // fall through!
 
                        default:
-                            responseLine.error ("Illegal redirection of Post");
+                            error ("Illegal redirection of Post");
                        }
                 return null;
         }
@@ -702,6 +705,18 @@ version (OldTimer)
                     return openFinish (pump);
                     } finally {redirections = 0;}
         }
+
+        /**********************************************************************
+
+                throw an exception, after closing the socket
+
+        **********************************************************************/
+
+        private void error (char[] msg)
+        {
+                close;
+                throw new IOException (msg);
+        }
 }
 
 
@@ -723,7 +738,7 @@ private class ResponseLine : HttpTriplet
 
         **********************************************************************/
 
-        void test ()
+        override bool test ()
         {
                 vers = tokens[0];
                 reason = tokens[2];
@@ -732,8 +747,12 @@ private class ResponseLine : HttpTriplet
                    {
                    status = cast(int) Integer.convert (tokens[2]);
                    if (status is 0)
-                       error ("Invalid HTTP response: '"~tokens[0]~"' '"~tokens[1]~"' '" ~tokens[2] ~"'");
+                      {
+                      failed = "Invalid HTTP response: '"~tokens[0]~"' '"~tokens[1]~"' '" ~tokens[2] ~"'";
+                      return false;
+                      }
                    }
+                return true;
         }
 
         /**********************************************************************
@@ -775,7 +794,7 @@ private class ResponseLine : HttpTriplet
 
 ******************************************************************************/
 
-version (Debug)
+debug (HttpClient)
 {
         import tango.io.Stdout;
 
