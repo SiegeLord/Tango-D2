@@ -246,9 +246,10 @@ class DataInput : InputFilter
 
         ***********************************************************************/
 
-        final void consume (void[] data)
+        final override size_t read (void[] data)
         {
                 eat (data.ptr, data.length);
+                return data.length;
         }
 
         /***********************************************************************
@@ -425,9 +426,10 @@ class DataOutput : OutputFilter
 
         ***********************************************************************/
 
-        final void consume (void[] data)
+        final override size_t write (void[] data)
         {
                 eat (data.ptr, data.length);
+                return data.length;
         }
 
         /***********************************************************************
