@@ -382,7 +382,7 @@ struct Args
                 target,
                 compiler;
 
-        char[]  usage = "usage: compile tango-path\n"
+        char[]  usage = "usage: bob tango-path\n"
                         "\t[-v]\t\t\tverbose output\n"
                         "\t[-i]\t\t\tinhibit execution\n"
                         "\t[-u]\t\t\tinclude user modules\n"
@@ -403,7 +403,7 @@ struct Args
                 auto p = args('p').params(1).defaults("windows");
                 auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto r = args('r').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
-                auto n = args(null).params(1).required.title("tango path");
+                auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
                 if (args.parse (arg))
                    {
