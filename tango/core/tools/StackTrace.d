@@ -373,7 +373,7 @@ version(Posix){
         Exception.TraceInfo info=basicTracer(&tc);
         info.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); fflush(stderr); });
 
-        fprintf(stderr, "Stacktrace singnal handler abort().\n");
+        fprintf(stderr, "Stacktrace signal handler abort().\n");
         abort();
     }
 
