@@ -24,9 +24,17 @@ import tango.core.BitManip;
         ---
         ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
 
-        swap16 (x) => 02 01 04 03 06 05 08 07     
-        swap32 (x) => 04 03 02 01 08 07 06 05
-        swap64 (x) => 08 07 06 05 04 03 02 01
+        auto a = x.dup;
+        ByteSwap.swap16(a);
+        assert(a == [cast(ubyte) 0x02, 0x01, 0x04, 0x03, 0x06, 0x05, 0x08, 0x07]);
+
+        auto b = x.dup;
+        ByteSwap.swap32(b);
+        assert(b == [cast(ubyte) 0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05]);
+	
+        auto c = x.dup;
+        ByteSwap.swap64(c);
+        assert(c == [cast(ubyte) 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01]);
         ---
 
 *******************************************************************************/
