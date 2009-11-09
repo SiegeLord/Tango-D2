@@ -88,7 +88,7 @@ class HttpTokens
                 sepString[0] = separator;
 
                 // pre-construct an empty buffer for wrapping char[] parsing
-                input = new Array;
+                input = new Array (0);
 
                 // construct an array for containing stack tokens
                 output = new Array (4096, 1024);

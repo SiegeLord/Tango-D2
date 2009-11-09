@@ -90,7 +90,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        this (size_t capacity = 0, size_t growing = 0)
+        this (size_t capacity, size_t growing = 0)
         {
                 assign (new ubyte[capacity], 0);
                 expansion = growing;

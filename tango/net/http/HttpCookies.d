@@ -497,7 +497,7 @@ class CookieParser : Iterator!(char)
         {
                 super();
                 this.stack = stack;
-                array = new Array;
+                array = new Array(0);
         }
 
         /***********************************************************************
