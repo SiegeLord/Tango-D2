@@ -56,7 +56,7 @@ private import Float = tango.text.convert.Float;
 
         Objects may be constructed with multiple attribute pairs like so:
         ---
-        // {"a" : 10, "b", true}
+        // {"a" : 10, "b" : true}
         with (json)
               value = object (pair("a", value(10)), pair("b", value(true)));
         ---
