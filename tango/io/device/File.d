@@ -125,6 +125,9 @@ version (Win32)
         file.close;
         ---
 
+        Note that File is unbuffered by default - wrap an instance within
+        tango.io.stream.Buffered for buffered I/O.
+
         Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.
         
@@ -269,6 +272,9 @@ class File : Device, Device.Seek
         
                 Create a File for use with open()
 
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
+
         ***********************************************************************/
 
         this ()
@@ -278,6 +284,9 @@ class File : Device, Device.Seek
         /***********************************************************************
         
                 Create a File with the provided path and style.
+
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
 
         ***********************************************************************/
 
