@@ -304,15 +304,12 @@ NumType parse(T) (T[] src, uint* ate=null)
         uint            radix;
         NumType         value = 0.0;
 
-        // bail out if the string is empty
-        if (src.length == 0)
-           return NumType.nan;
-
         // remove leading space, and sign
         p = src.ptr + Integer.trim (src, sign, radix);
-        if( p > &src[$-1] )
-            return NumType.nan;
 
+        // bail out if the string is empty
+        if (src.length is 0 || p > &src[$-1])
+            return NumType.nan;
         c = *p;
 
         // handle non-decimal representations
@@ -353,7 +350,7 @@ NumType parse(T) (T[] src, uint* ate=null)
               } 
 
         // did we get something?
-        if (value)
+        if (p > begin)
            {
            // parse base10 exponent?
            if ((c is 'e' || c is 'E') && p < end )
@@ -372,12 +369,11 @@ NumType parse(T) (T[] src, uint* ate=null)
            }
         else
            // was it was nan instead?
-           if (p is begin)
-               if (p[0..3] == "inf")
-                   p += 3, value = value.infinity;
-               else
-                  if (p[0..3] == "nan")
-                      p += 3, value = value.nan;
+           if (p[0..3] == "inf")
+               p += 3, value = value.infinity;
+           else
+              if (p[0..3] == "nan")
+                  p += 3, value = value.nan;
 
         // set parse length, and return value
         if (ate)
@@ -493,7 +489,9 @@ debug (Float)
         void main() 
         {
                 char[30] tmp;
-                
+
+                auto f = toFloat ("0.000000e+00");
+
                 Cout (format(tmp, 1)).newline;
                 Cout (format(tmp, 0)).newline;
                 Cout (format(tmp, 0.000001)).newline.newline;
