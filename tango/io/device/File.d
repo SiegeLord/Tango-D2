@@ -749,7 +749,7 @@ class File : Device, Device.Seek
                         stat_t stats = void;
                         if (posix.fstat (handle, &stats))
                             error;
-                        return cast(ulong) stats.st_size;
+                        return cast(long) stats.st_size;
                 }               
         }
 }
