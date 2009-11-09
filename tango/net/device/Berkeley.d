@@ -664,7 +664,10 @@ version (Windows)
         ***********************************************************************/
 
         int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
-        {
+        {       
+                if (buf.length is 0)
+                    return 0;
+
                 version (Posix)
                         {
                         auto ret = .send (sock, buf.ptr, buf.length, 
@@ -726,6 +729,9 @@ version (Windows)
 
         private int sendTo (void[] buf, int flags, sockaddr* to, int len)
         {
+                if (buf.length is 0)
+                    return 0;
+
                 version (Posix)
                         {
                         auto ret = .sendto (sock, buf.ptr, buf.length, 

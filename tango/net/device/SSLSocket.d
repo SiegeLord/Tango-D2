@@ -167,6 +167,9 @@ class SSLSocket : Socket
 
     override size_t write(void[] src)
     {
+        if (src.length is 0)
+            return 0;
+
         int bytes = BIO_write(sslSocket, src.ptr, src.length);
         if (bytes <= 0)
             return Eof;

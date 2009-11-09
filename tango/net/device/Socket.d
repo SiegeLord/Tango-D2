@@ -246,7 +246,7 @@ class Socket : Conduit, ISelectable
                 if (wait (false))
                    {
                    x = native.send (src);
-                   if (x <= 0)
+                   if (x < 0)
                        x = Eof;
                    }
                 return x;                        
