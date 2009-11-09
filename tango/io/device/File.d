@@ -30,13 +30,9 @@ private import stdc = tango.stdc.stringz;
 *******************************************************************************/
 
 version (Win32)
-        {
-        private import Utf = tango.text.convert.Utf;
-
-        private extern (Windows) BOOL SetEndOfFile (HANDLE);
-        }
-     else
-        private import tango.stdc.posix.unistd;
+         private import Utf = tango.text.convert.Utf;
+   else
+      private import tango.stdc.posix.unistd;
 
 
 /*******************************************************************************
@@ -329,23 +325,6 @@ class File : Device, Device.Seek
         }               
 
         /***********************************************************************
-        
-                Return the total length of this file.
-
-        ***********************************************************************/
-
-        long length ()
-        {
-                long   pos,    
-                       ret;
-                        
-                pos = position;
-                ret = seek (0, Anchor.End);
-                seek (pos);
-                return ret;
-        }               
-
-        /***********************************************************************
 
                 Convenience function to return the content of a file.
                 Returns a slice of the provided output buffer, where
@@ -606,16 +585,27 @@ class File : Device, Device.Seek
 
                 override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
-                        LONG high = cast(LONG) (offset >> 32);
-                        long result = SetFilePointer (handle, cast(LONG) offset, 
-                                                      &high, anchor);
+                        long newOffset; 
+                        if (! SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
+                                                &offset, cast(PLARGE_INTEGER) 
+                                                &newOffset, anchor)) 
+                              error;
+                        return readOffset = writeOffset = newOffset;
+                } 
+                              
+                /***************************************************************
+        
+                        Return the total length of this file.
 
-                        if (result is -1 && 
-                            GetLastError() != ERROR_SUCCESS)
-                            error;
-                        result += (cast(long) high) << 32;
+                ***************************************************************/
 
-                        return readOffset = writeOffset = result;
+                long length ()
+                {
+                        long len;
+
+                        if (! GetFileSizeEx(handle, cast(PLARGE_INTEGER) &len))
+                              error;
+                        return len;
                 }               
         }
 
@@ -702,8 +692,8 @@ class File : Device, Device.Seek
 
                 void open (char[] path, Style style = ReadExisting)
                 {
-                    if (!open(path, style, 0))
-                        error;
+                    if (! open (path, style, 0))
+                          error;
                 }
 
                 /***************************************************************
@@ -746,6 +736,20 @@ class File : Device, Device.Seek
                         if (result is -1)
                             error;
                         return result;
+                }               
+
+                /***************************************************************
+        
+                        Return the total length of this file. 
+
+                ***************************************************************/
+
+                long length ()
+                {
+                        stat_t stats = void;
+                        if (posix.fstat (handle, &stats))
+                            error;
+                        return cast(ulong) stats.st_size;
                 }               
         }
 }

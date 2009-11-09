@@ -682,7 +682,7 @@ package struct FS
                         stat_t stats = void;
 
                         getInfo (name, stats);
-                        return cast(ulong) stats.st_size;    // 32 bits only
+                        return cast(ulong) stats.st_size;
                 }
 
                 /***************************************************************
