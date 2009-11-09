@@ -36,7 +36,7 @@
             ...
         ---
 
-        Note that where some functions expect a uint as an argument, the
+        Note that where some functions expect a size_t as an argument, the
         D template-matching algorithm will fail where an int is provided
         instead. This is the typically the cause of "template not found"
         errors. Also note that name overloading is not supported cleanly
@@ -283,9 +283,9 @@ T[] substitute(T) (T[] source, T[] match, T[] replacement)
 
 ******************************************************************************/
 
-uint count(T) (T[] source, T[] match)
+size_t count(T) (T[] source, T[] match)
 {
-        uint c;
+        size_t c;
 
         foreach (s; patterns (source, match))
                     ++c;
@@ -325,10 +325,10 @@ bool containsPattern(T) (T[] source, T[] match)
 
 ******************************************************************************/
 
-uint index(T, U=uint) (T[] source, T[] match, U start=0)
+size_t index(T, U=size_t) (T[] source, T[] match, U start=0)
 {return index!(T) (source, match, start);}
 
-uint index(T) (T[] source, T[] match, uint start=0)
+size_t index(T) (T[] source, T[] match, size_t start=0)
 {
         return (match.length is 1) ? locate (source, match[0], start) 
                                    : locatePattern (source, match, start);
@@ -343,10 +343,10 @@ uint index(T) (T[] source, T[] match, uint start=0)
 
 ******************************************************************************/
 
-uint rindex(T, U=uint) (T[] source, T match[], U start=uint.max)
+size_t rindex(T, U=size_t) (T[] source, T match[], U start=size_t.max)
 {return rindex!(T)(source, match, start);}
 
-uint rindex(T) (T[] source, T[] match, uint start=uint.max)
+size_t rindex(T) (T[] source, T[] match, size_t start=size_t.max)
 {
         return (match.length is 1) ? locatePrior (source, match[0], start) 
                                    : locatePatternPrior (source, match, start);
@@ -361,10 +361,10 @@ uint rindex(T) (T[] source, T[] match, uint start=uint.max)
 
 ******************************************************************************/
 
-uint locate(T, U=uint) (T[] source, T match, U start=0)
+size_t locate(T, U=size_t) (T[] source, T match, U start=0)
 {return locate!(T) (source, match, start);}
 
-uint locate(T) (T[] source, T match, uint start=0)
+size_t locate(T) (T[] source, T match, size_t start=0)
 {
         if (start > source.length)
             start = source.length;
@@ -381,10 +381,10 @@ uint locate(T) (T[] source, T match, uint start=0)
 
 ******************************************************************************/
 
-uint locatePrior(T, U=uint) (T[] source, T match, U start=uint.max)
+size_t locatePrior(T, U=size_t) (T[] source, T match, U start=size_t.max)
 {return locatePrior!(T)(source, match, start);}
 
-uint locatePrior(T) (T[] source, T match, uint start=uint.max)
+size_t locatePrior(T) (T[] source, T match, size_t start=size_t.max)
 {
         if (start > source.length)
             start = source.length;
@@ -404,14 +404,14 @@ uint locatePrior(T) (T[] source, T match, uint start=uint.max)
 
 ******************************************************************************/
 
-uint locatePattern(T, U=uint) (T[] source, T[] match, U start=0)
+size_t locatePattern(T, U=size_t) (T[] source, T[] match, U start=0)
 {return locatePattern!(T) (source, match, start);}
 
-uint locatePattern(T) (T[] source, T[] match, uint start=0)
+size_t locatePattern(T) (T[] source, T[] match, size_t start=0)
 {
-        uint    idx;
+        size_t    idx;
         T*      p = source.ptr + start;
-        uint    extent = source.length - start - match.length + 1;
+        size_t    extent = source.length - start - match.length + 1;
 
         if (match.length && extent <= source.length)
             while (extent)
@@ -438,10 +438,10 @@ uint locatePattern(T) (T[] source, T[] match, uint start=0)
 
 ******************************************************************************/
 
-uint locatePatternPrior(T, U=uint) (T[] source, T[] match, U start=uint.max)
+size_t locatePatternPrior(T, U=size_t) (T[] source, T[] match, U start=size_t.max)
 {return locatePatternPrior!(T)(source, match, start);}
 
-uint locatePatternPrior(T) (T[] source, T[] match, uint start=uint.max)
+size_t locatePatternPrior(T) (T[] source, T[] match, size_t start=size_t.max)
 {
         auto len = source.length;
         
@@ -652,7 +652,7 @@ T[] postfix(T) (T[] dst, T[] postfix, T[][] src...)
 
 T[] combine(T) (T[] dst, T[] prefix, T[] postfix, T[][] src ...)
 {
-        uint len = src.length * prefix.length + 
+        size_t len = src.length * prefix.length + 
                    src.length * postfix.length;
 
         foreach (segment; src)
@@ -690,12 +690,12 @@ T[] combine(T) (T[] dst, T[] prefix, T[] postfix, T[][] src ...)
 
 ******************************************************************************/
 
-T[] repeat(T, U=uint) (T[] src, U count, T[] dst=null)
+T[] repeat(T, U=size_t) (T[] src, U count, T[] dst=null)
 {return repeat!(T)(src, count, dst);}
 
-T[] repeat(T) (T[] src, uint count, T[] dst=null)
+T[] repeat(T) (T[] src, size_t count, T[] dst=null)
 {
-        uint len = src.length * count;
+        size_t len = src.length * count;
         if (len is 0)
             return null;
 
@@ -728,10 +728,10 @@ bool isSpace(T) (T c)
         
 ******************************************************************************/
 
-bool matching(T, U=uint) (T* s1, T* s2, U length)
+bool matching(T, U=size_t) (T* s1, T* s2, U length)
 {return matching!(T) (s1, s2, length);}
 
-bool matching(T) (T* s1, T* s2, uint length)
+bool matching(T) (T* s1, T* s2, size_t length)
 {
         return mismatch(s1, s2, length) is length;
 }
@@ -744,10 +744,10 @@ bool matching(T) (T* s1, T* s2, uint length)
 
 ******************************************************************************/
 
-uint indexOf(T, U=uint) (T* str, T match, U length)
+size_t indexOf(T, U=size_t) (T* str, T match, U length)
 {return indexOf!(T) (str, match, length);}
 
-uint indexOf(T) (T* str, T match, uint length)
+size_t indexOf(T) (T* str, T match, size_t length)
 {
         //assert (str);
 
@@ -815,10 +815,10 @@ uint indexOf(T) (T* str, T match, uint length)
 
 ******************************************************************************/
 
-uint mismatch(T, U=uint) (T* s1, T* s2, U length)
+size_t mismatch(T, U=size_t) (T* s1, T* s2, U length)
 {return mismatch!(T)(s1, s2, length);}
 
-uint mismatch(T) (T* s1, T* s2, uint length)
+size_t mismatch(T) (T* s1, T* s2, size_t length)
 {
         assert (s1 && s2);
 
@@ -984,7 +984,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                    state = false;
                    if (c >= '0' && c <= '9')
                       {
-                      uint index = c - '0';
+                      size_t index = c - '0';
                       if (index < args)
                          {
                          T[] x = layout[index+1];
@@ -1141,9 +1141,9 @@ T[] unescape(T) (T[] src, T[] dst = null)
 
 ******************************************************************************/
 
-uint jhash (ubyte* k, uint len, uint c = 0)
+size_t jhash (ubyte* k, size_t len, size_t c = 0)
 {
-        uint a = 0x9e3779b9,
+        size_t a = 0x9e3779b9,
              b = 0x9e3779b9,
              i = len;
 
@@ -1198,7 +1198,7 @@ uint jhash (ubyte* k, uint len, uint c = 0)
 }
 
 /// ditto
-uint jhash (void[] x, uint c = 0)
+size_t jhash (void[] x, size_t c = 0)
 {
         return jhash (cast(ubyte*) x.ptr, x.length, c);
 }
@@ -1218,8 +1218,8 @@ private struct LineFruct(T)
 
         int opApply (int delegate (inout T[] line) dg)
         {
-                uint    ret,
-                        pos,
+                int     ret;
+                size_t  pos,
                         mark;
                 T[]     line;
 
@@ -1261,8 +1261,8 @@ private struct DelimFruct(T)
 
         int opApply (int delegate (inout T[] token) dg)
         {
-                uint    ret,
-                        pos,
+                int     ret;
+                size_t  pos,
                         mark;
                 T[]     token;
 
@@ -1310,8 +1310,8 @@ private struct PatternFruct(T)
 
         int opApply (int delegate (inout T[] token) dg)
         {
-                uint    ret,
-                        pos,
+                int     ret;
+                size_t  pos,
                         mark;
                 T[]     token;
 
@@ -1348,12 +1348,12 @@ private struct QuoteFruct(T)
         
         int opApply (int delegate (inout T[] token) dg)
         {
-                int ret,
-                    mark;
-                T[] token;
+                int     ret;
+                size_t  mark;
+                T[]     token;
 
                 if (set.length)
-                    for (uint i=0; i < src.length; ++i)
+                    for (size_t i=0; i < src.length; ++i)
                         {
                         T c = src[i];
                         if (c is '"' || c is '\'')
