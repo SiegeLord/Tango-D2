@@ -147,7 +147,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        final Value value()
+        final Value value ()
         {
                 return root;
         }
@@ -171,7 +171,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (T[] v)
         {
-                return createValue.set(v);
+                return createValue.set (v);
         }
 
         /***********************************************************************
@@ -182,7 +182,7 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (bool v)
         {
-                return createValue.set(v);
+                return createValue.set (v);
         }
 
         /***********************************************************************
@@ -193,8 +193,19 @@ class Json(T) : private JsonParser!(T)
         
         final Value value (double v)
         {
-                return createValue.set(v);
+                return createValue.set (v);
         }
+
+         /***********************************************************************
+         
+                 Create a single Value from an array of Values
+
+         ***********************************************************************/
+
+         final Value value (Value[] vals)
+         {
+                 return createValue.set (vals);
+         }
 
         /***********************************************************************
         
