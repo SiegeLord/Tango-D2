@@ -39,7 +39,9 @@ public class AppendFiles : Filer
         /***********************************************************************
                 
                 Create a RollingFileAppender upon a file-set with the 
-                specified path and optional layout.
+                specified path and optional layout. The minimal file
+                count is two and the maximum is 1000. Note that files
+                are numbered starting with zero rather than one.
 
                 Where a file set already exists, we resume appending to 
                 the one with the most recent activity timestamp.
@@ -48,8 +50,9 @@ public class AppendFiles : Filer
 
         this (char[] path, int count, ulong maxSize, Appender.Layout how = null)
         {
+                --count;
                 assert (path);
-                assert (count > 1 && count < 1000);
+                assert (count > 0 && count < 1000);
 
                 // Get a unique fingerprint for this instance
                 mask_ = register (path);
@@ -60,7 +63,7 @@ public class AppendFiles : Filer
                 for (int i=0; i <= count; ++i)
                     {
                     x[0] = cast(char)('0' + i/100);
-                    x[1] = cast(char)('0' + i/10);
+                    x[1] = cast(char)('0' + i/10%10);
                     x[2] = cast(char)('0' + i%10);
                     auto c = Path.parse (path);
                     auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
@@ -178,7 +181,7 @@ debug (AppendFiles)
 {
         void main()
         {
-                Log.root.add (new AppendFiles ("foo", 20, 6));
+                Log.root.add (new AppendFiles ("foo", 5, 6));
                 auto log = Log.lookup ("fu.bar");
                 log.trace ("hello {}", "world");
                 log.trace ("hello {}", "world");
@@ -195,5 +198,7 @@ debug (AppendFiles)
                 log.trace ("hello {}", "world");
                 log.trace ("hello {}", "world");
                 log.trace ("hello {}", "world");
+                log.trace ("hello {}", "world");
+
         }
 }
