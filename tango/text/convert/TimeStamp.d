@@ -193,16 +193,16 @@ T[] format8601(T) (T[] output, Time t)
                            );
 }
 
-
 /******************************************************************************
 
       Parse provided input and return a UTC epoch time. A return value 
-      of Time.max indicated a parse-failure.
+      of Time.max (or false, respectively) indicated a parse-failure.
 
       An option is provided to return the count of characters parsed - 
       an unchanged value here also indicates invalid input.
 
 ******************************************************************************/
+
 
 Time parse(T) (T[] src, uint* ate = null)
 {
@@ -211,6 +211,8 @@ Time parse(T) (T[] src, uint* ate = null)
 
         if ((len = rfc1123 (src, value)) > 0 || 
             (len = rfc850  (src, value)) > 0 || 
+            (len = iso8601  (src, value)) > 0 || 
+            (len = dostime  (src, value)) > 0 || 
             (len = asctime (src, value)) > 0)
            {
            if (ate)
@@ -221,6 +223,24 @@ Time parse(T) (T[] src, uint* ate = null)
         return Time.max;
 }
 
+
+bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, uint* ate = null)
+{
+    int     len;
+    
+    if ((len = rfc1123 (src, tod, date)) > 0 || 
+        (len = rfc850  (src, tod, date)) > 0 || 
+        (len = iso8601  (src, tod, date)) > 0 || 
+        (len = dostime  (src, tod, date)) > 0 || 
+        (len = asctime (src, tod, date)) > 0)
+    {
+        if (ate)
+            *ate = len;
+        return true;
+    }
+    
+    return false;
+}
 
 /******************************************************************************
 
@@ -233,8 +253,28 @@ Time parse(T) (T[] src, uint* ate = null)
 
 int rfc1123(T) (T[] src, inout Time value)
 {
-        TimeOfDay       tod;
-        Date            date;
+    TimeOfDay       tod;
+    Date            date;
+
+    int r = rfc1123!(T)(src, tod, date);
+        
+    value = Gregorian.generic.toTime(date, tod);
+    
+    return r;
+}
+
+
+/******************************************************************************
+
+        RFC 822, updated by RFC 1123 :: "Sun, 06 Nov 1994 08:49:37 GMT"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+******************************************************************************/
+
+int rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
+{
         T*              p = src.ptr;
         T*              e = p + src.length;
 
@@ -256,7 +296,6 @@ int rfc1123(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            value = Gregorian.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -275,8 +314,27 @@ int rfc1123(T) (T[] src, inout Time value)
 
 int rfc850(T) (T[] src, inout Time value)
 {
-        TimeOfDay       tod;
-        Date            date;
+    TimeOfDay       tod;
+    Date            date;
+
+    int r = rfc850!(T)(src, tod, date);
+        
+    value = Gregorian.generic.toTime (date, tod);
+    
+    return r;
+}
+
+/******************************************************************************
+
+        RFC 850, obsoleted by RFC 1036 :: "Sunday, 06-Nov-94 08:49:37 GMT"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+******************************************************************************/
+
+int rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
+{
         T*              p = src.ptr;
         T*              e = p + src.length;
 
@@ -304,7 +362,6 @@ int rfc850(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
 
-            value = Gregorian.generic.toTime (date, tod);
             return (p+3) - src.ptr;
             }
 
@@ -323,8 +380,27 @@ int rfc850(T) (T[] src, inout Time value)
 
 int asctime(T) (T[] src, inout Time value)
 {
-        TimeOfDay       tod;
-        Date            date;
+    TimeOfDay       tod;
+    Date            date;
+    
+    int r = asctime!(T)(src, tod, date);
+    
+    value = Gregorian.generic.toTime(date, tod);
+    
+    return r;
+}
+
+/******************************************************************************
+
+        ANSI C's asctime() format :: "Sun Nov 6 08:49:37 1994"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+******************************************************************************/
+
+int asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
+{
         T*              p = src.ptr;
         T*              e = p + src.length;
 
@@ -345,7 +421,6 @@ int asctime(T) (T[] src, inout Time value)
             *p++ == ' '           &&
             (date.year = parseInt (p, e)) > 0)
             {
-            value = Gregorian.generic.toTime (date, tod);
             return p - src.ptr;
             }
 
@@ -363,8 +438,28 @@ int asctime(T) (T[] src, inout Time value)
 
 int dostime(T) (T[] src, inout Time value)
 {
-        TimeOfDay       tod;
-        Date            date;
+    TimeOfDay       tod;
+    Date            date;
+    
+    int r = dostime!(T)(src, tod, date);
+    
+    value = Gregorian.generic.toTime(date, tod);
+    
+    return r;
+}
+
+
+/******************************************************************************
+
+        DOS time format :: "12-31-06 08:49AM"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+******************************************************************************/
+
+int dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
+{
         T*              p = src.ptr;
         T*              e = p + src.length;
 
@@ -393,7 +488,6 @@ int dostime(T) (T[] src, inout Time value)
                if (date.year < 100)
                    date.year += 1900;
             
-            value = Gregorian.generic.toTime (date, tod);
             return (p+2) - src.ptr;
             }
 
@@ -407,12 +501,45 @@ int dostime(T) (T[] src, inout Time value)
         Returns the number of elements consumed by the parse; zero if
         the parse failed
 
+        Quote from http://en.wikipedia.org/wiki/ISO_8601 (2009-09-01):
+        "Decimal fractions may also be added to any of the three time elements.
+        A decimal point, either a comma or a dot (without any preference as
+        stated most recently in resolution 10 of the 22nd General Conference
+        CGPM in 2003), is used as a separator between the time element and
+        its fraction."
+
 ******************************************************************************/
 
 int iso8601(T) (T[] src, inout Time value)
 {
-        TimeOfDay       tod;
-        Date            date;
+    TimeOfDay       tod;
+    Date            date;
+
+    int r = iso8601!(T)(src, tod, date);
+    
+    value = Gregorian.generic.toTime(date, tod);
+    
+    return r;
+}
+
+/******************************************************************************
+
+        ISO-8601 format :: "2006-01-31 14:49:30,001"
+
+        Returns the number of elements consumed by the parse; zero if
+        the parse failed
+
+        Quote from http://en.wikipedia.org/wiki/ISO_8601 (2009-09-01):
+        "Decimal fractions may also be added to any of the three time elements.
+        A decimal point, either a comma or a dot (without any preference as
+        stated most recently in resolution 10 of the 22nd General Conference
+        CGPM in 2003), is used as a separator between the time element and
+        its fraction."
+
+******************************************************************************/
+
+int iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
+{
         T*              p = src.ptr;
         T*              e = p + src.length;
 
@@ -427,11 +554,21 @@ int iso8601(T) (T[] src, inout Time value)
 
         if (dt(p) >= 0       &&
             *p++ == ' '      &&
-            time (tod, p, e) &&
-            *p++ == ',')
+            time (tod, p, e))
             {
-            tod.millis = parseInt (p, e);
-            value = Gregorian.generic.toTime (date, tod);
+            // Are there chars left? If yes, parse millis. If no, millis = 0.
+            if (p - src.ptr) {
+                // check fraction separator
+                T frac_sep = *p++;
+                if (frac_sep is ',' || frac_sep is '.')
+                    // separator is ok: parse millis
+                    tod.millis = parseInt (p, e);
+                else
+                    // wrong separator: error 
+                    return 0;
+            } else
+                tod.millis = 0;
+            
             return p - src.ptr;
             }
 
