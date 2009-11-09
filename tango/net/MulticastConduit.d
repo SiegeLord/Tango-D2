@@ -107,7 +107,15 @@ class MulticastConduit : DatagramConduit
                 super ();
 
                 this.group = group;
-                socket.setAddressReuse(reuse).bind(new InternetAddress(group.port));
+                /* Linux also seems to require to bind to the specific group, while 
+                 * windows does not allow binding to multicast groups. The most portable 
+                 * way seems to always bind for posix, but not for other systems. 
+                 * Reference; http://markmail.org/thread/co53qzbsvqivqxgc 
+                 */ 
+                version (Posix) 
+                         socket.setAddressReuse(reuse).bind(group); 
+                    else
+                       socket.setAddressReuse(reuse).bind(new InternetAddress(group.port)); 
         }
         
         /***********************************************************************
