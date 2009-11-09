@@ -43,6 +43,13 @@ enum SocketOption
         RCVBUF       = consts.SO_RCVBUF,               /* receive buffer size */
         ERROR        = consts.SO_ERROR ,               /* get error status and clear */
     
+        version (Windows)
+                {
+                UPDATE_ACCEPT_CONTEXT  = 0x700B, 
+                CONNECT_TIME           = 0x700C, 
+                UPDATE_CONNECT_CONTEXT = 0x7010, 
+                }
+
         // OptionLevel.IP settings
         MULTICAST_TTL   = consts.IP_MULTICAST_TTL  ,
         MULTICAST_LOOP  = consts.IP_MULTICAST_LOOP ,
