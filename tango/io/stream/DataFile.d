@@ -106,3 +106,16 @@ class DataFileOutput : DataOutput
                 return conduit;
         }
 }
+
+debug (DataFile)
+{
+        import tango.io.Stdout;
+
+        void main()
+        {
+                auto myFile = new DataFileOutput("Hello.txt");
+                myFile.write("some text");
+                myFile.flush;
+                Stdout.formatln ("{}:{}", myFile.file.position, myFile.seek(myFile.Anchor.Current));
+        }
+}
