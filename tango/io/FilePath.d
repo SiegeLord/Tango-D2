@@ -66,7 +66,6 @@ class FilePath : PathView
         private PathParser      p;              // the parsed path
         private bool            dir_;           // this represents a dir?
 
-        public alias    set     opAssign;       // path = x;
         public alias    append  opCatAssign;    // path ~= x;
 
 
@@ -1208,17 +1207,17 @@ debug (UnitTest)
                 auto fp = new FilePath(r"C:/home/foo/bar");
                 fp ~= "john";
                 assert (fp == r"C:/home/foo/bar/john");
-                fp = r"C:/";
+                fp.set (r"C:/");
                 fp ~= "john";
                 assert (fp == r"C:/john");
-                fp = "foo.bar";
+                fp.set("foo.bar");
                 fp ~= "john";
                 assert (fp == r"foo.bar/john");
-                fp = "";
+                fp.set("");
                 fp ~= "john";
                 assert (fp == r"john");
 
-                fp = r"C:/home/foo/bar/john/foo.d";
+                fp.set(r"C:/home/foo/bar/john/foo.d");
                 assert (fp.pop == r"C:/home/foo/bar/john");
                 assert (fp.pop == r"C:/home/foo/bar");
                 assert (fp.pop == r"C:/home/foo");
@@ -1227,11 +1226,11 @@ debug (UnitTest)
                 assert (fp.pop == r"C:");
         
                 // special case for popping empty names
-                fp = r"C:/home/foo/bar/john/";
+                fp.set (r"C:/home/foo/bar/john/");
                 assert (fp.pop == r"C:/home/foo/bar");
 
                 fp = new FilePath;
-                fp = r"C:/home/foo/bar/john/";
+                fp.set (r"C:/home/foo/bar/john/");
                 assert (fp.isAbsolute);
                 assert (fp.name == "");
                 assert (fp.folder == r"/home/foo/bar/john/");
