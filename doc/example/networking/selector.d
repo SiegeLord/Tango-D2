@@ -403,6 +403,4 @@ void clientThreadFunc()
     }
     debug (selector)
         log.trace("Leaving thread");
-
-    return 0;
 }
