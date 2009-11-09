@@ -19,6 +19,8 @@ private import tango.core.Exception : XmlException;
 
 private import Integer = tango.text.convert.Integer;
 
+private import Utf = tango.text.convert.Utf : toString;
+
 /*******************************************************************************
 
         Use -version=whitespace to retain whitespace as data nodes. We
@@ -329,7 +331,7 @@ version (partialwhite)
                           }
                    }
                 
-                return doUnexpected (q[0..1], q);
+                return doExpected ("=", q);
         }
 
         /***********************************************************************
@@ -497,7 +499,8 @@ version (partialwhite)
 
         private XmlTokenType doExpected (char[] msg, Ch* p)
         {
-                return position ("parse error :: expected  " ~ msg ~ " instead of " ~ *p, p);
+                char[6] tmp = void;
+                return position ("parse error :: expected  " ~ msg ~ " instead of " ~ Utf.toString(p[0..1], tmp), p);
         }
         
         /***********************************************************************

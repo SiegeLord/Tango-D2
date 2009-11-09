@@ -52,6 +52,16 @@ module tango.text.convert.Utf;
 
 public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
 
+/*******************************************************************************
+
+        Symmetric calls for equivalent types; these return the provided
+        input with no conversion
+
+*******************************************************************************/
+
+char[] toString (char[] src, char[] dst, uint* ate=null) {return src;}
+wchar[] toString (wchar[] src, wchar[] dst, uint* ate=null) {return src;}
+dchar[] toString (dchar[] src, dchar[] dst, uint* ate=null) {return src;}
 
 /*******************************************************************************
 
