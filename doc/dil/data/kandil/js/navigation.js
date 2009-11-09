@@ -7,8 +7,6 @@ var kandil = {
   originalModuleFQN: "",
   /// An object that represents the symbol tree.
   symbolTree: {},
-  /// The tags with the symbol CSS class.
-  symbolTags: null,
   /// An array of all the lines of this module's source code.
   sourceCode: [],
   /// Represents the package tree (located in generated modules.js).
@@ -16,8 +14,8 @@ var kandil = {
   /// Application settings.
   settings: {
     navbar_html: "<div id='navbar'><p id='navtabs'>\
-<span id='apitab' class='current'>{apitab_label}</span>\
-<span id='modtab'>{modtab_label}</span></p>\
+<span id='modtab' class='current'>{modtab_label}</span>\
+<span id='apitab'>{apitab_label}</span></p>\
 <div id='panels'><div id='apipanel'/><div id='modpanel'/></div>\
 </div>", /// The navbar HTML code prepended to the body.
     splitbar_html: "<div title='{splitbar_title}' class='splitbar'>\
@@ -25,10 +23,9 @@ var kandil = {
     navbar_width: 250,    /// Initial navigation bar width.
     navbar_minwidth: 180, /// Minimum resizable width.
     navbar_collapsewidth : 50, /// Hide the navbar at this width.
-    default_tab: "#apitab", /// Initial, active tab ("#apitab", "#modtab").
+    default_tab: "#modtab", /// Initial, active tab ("#apitab", "#modtab").
     apitab_label: getPNGIcon("variable")+"Symbols",
-    modtab_label: getPNGIcon("module")+"Modules",
-    dynamic_mod_loading: true, /// Load modules with JavaScript?
+    modtab_label: getPNGIcon("module_alt")+"Modules",
     tview_save_delay: 5*1000, /// Delay for saving a treeview's state after
                               /// each collapse and expand event of a node.
     tooltip: {
@@ -42,25 +39,26 @@ var kandil = {
     qs_delay: 500, /// Delay after last key press before quick search starts.
   },
   saved: {
-    /// The position of the splitbar.
-    splitbar_pos: cookie.func("splitbar_pos", parseInt),
-    /// The collapse state.
-    splitbar_collapsed: cookie.func("splitbar_collapsed",
-                                    function(v){return v == "true"}),
-    active_tab: cookie.func("active_tab"), /// Last active tab.
+    splitbar_pos: function(pos) { /// Saves or retrieves the splitbar position.
+      var days = kandil.settings.cookie_life;
+      return pos == undefined ? parseInt(cookie("splitbar_pos")) :
+                                (cookie("splitbar_pos", pos, days), pos);
+    },
+    splitbar_collapsed: function(val) { /// The collapse state.
+      var days = kandil.settings.cookie_life;
+      return val == undefined ? cookie("splitbar_collapsed") == "true" :
+                               (cookie("splitbar_collapsed", val, days), val);
+    },
   },
-  save: null, /// An alias for "saved".
   msg: {
     failed_module: "Failed loading the module from '{0}'!",
     failed_code: "Failed loading code from '{0}'!",
-    loading_module: "Loading module...",
     loading_code: "Loading source code...",
     filter: "Filter...", /// Initial text in the filter boxes.
     splitbar_title: "Drag to resize. Double-click to close or open.",
     no_match: "No match...",
   },
 };
-kandil.save = kandil.saved;
 
 /// Execute when document is ready.
 $(function() {
@@ -79,23 +77,19 @@ $(function() {
 
   createQuickSearchInputs();
 
-  createSplitbar();
+  initAPIList();
 
-  initSymbolTags();
+  createSplitbar();
 
   // Assign click event handlers for the tabs.
   function makeCurrentTab() {
     $(".current", this.parentNode).removeClass('current');
     this.addClass('current');
     $("#panels > *:visible").hide(); // Hide all panels.
-    kandil.save.active_tab("#"+this.id);
   }
 
   $("#apitab").click(makeCurrentTab)
-              .click(function lazyLoad() {
-    $(this).unbind("click", lazyLoad); // Remove the lazyLoad handler.
-    initAPIList();
-  }).click(function() {
+              .click(function() {
     $("#apipanel").show(); // Display the API list.
   });
 
@@ -104,21 +98,20 @@ $(function() {
     $(this).unbind("click", lazyLoad); // Remove the lazyLoad handler.
     var modpanel = $("#modpanel");
     // Create the list.
-    var ul = createModulesUL(modpanel);
-    var tv = new Treeview(ul);
-    tv.loadState("module_tree");
-    tv.bind("save_state", function() {
-      tv.saveState("module_tree");
+    createModulesUL(modpanel);
+    var ul = $("#modpanel > ul");
+    Treeview(ul);
+    Treeview.loadState(ul[0], "module_tree");
+    ul.bind("save_state", function() {
+      Treeview.saveState(this, "module_tree");
     });
-    if (kandil.settings.dynamic_mod_loading)
-      $(".tview a", modpanel).click(handleLoadingModule);
+    $(".tview a", modpanel).click(handleLoadingModule);
     kandil.packageTree.initList(); // Init the list property.
   }).click(function() { // Add the display handler.
     $("#modpanel").show(); // Display the modules list.
   });
-  // Activate the tab that has been saved or activate the default tab.
-  var tab = kandil.saved.active_tab() || kandil.settings.default_tab;
-  $(tab).trigger("click");
+  // Activate the default tab.
+  $(kandil.settings.default_tab).trigger("click");
 });
 
 /// Creates the quick search text inputs.
@@ -190,8 +183,7 @@ function installTooltipHandlers()
       .fadeIn(tooltip.fadein);
   };
   // TODO: try implementing this with a single mousemove event handler on ul.
-  // For some reason $(">.root>ul a", ul) doesn't produce correct results.
-  $("a", $(">.root>ul", ul)).mouseover(function(e) {
+  $(">.root>ul a", ul).mouseover(function(e) {
     clearTimeout(tooltip.TID);
     tooltip.target = this;
     // Delay normally if this is the first tooltip being displayed, then
@@ -203,6 +195,88 @@ function installTooltipHandlers()
     if (tooltip.current) fadeOutRemove(tooltip.current, 0, tooltip.fadeout);
     tooltip.TID = setTimeout(function() { tooltip.current = null; }, 100);
   });
+}
+
+/// Adds treeview functionality to ul. Expects special markup.
+/// TODO: make this a proper class.
+function Treeview(ul)
+{
+  ul.addClass("tview");
+  function handleIconClick(icon)
+  {
+    var li = icon.parentNode;
+    // First two if-statements are for filtered treeviews.
+    // Go from [.] -> [-] -> [+] -> [.]
+    if (ul.hasClass("filtered")) {
+      if (li.hasClass("has_hidden")) {
+        if (li.hasClass("closed")) // [+] -> [.]
+          li.removeClass("closed");
+        else // [.] -> [-]
+          li.addClass("show_hidden").removeClass("has_hidden");
+      }
+      else if (li.hasClass("show_hidden")) // [-] -> [+]
+        li.addClass("has_hidden|closed").removeClass("show_hidden");
+    }
+    else // Normal node. [-] <-> [+]
+      li.toggleClass("closed"),
+      ul.trigger("state_toggled");
+  }
+  var selected_li = $(">li", ul)[0]; // Default to first li.
+  function setSelected(new_li)
+  {
+    new_li.addClass("selected");
+    if (new_li == selected_li)
+      return;
+    selected_li.removeClass("selected");
+    selected_li = new_li;
+  }
+
+  ul.mousedown(function(e) {
+    var tagName = e.target.tagName;
+    // The i-tag represents the icon of the tree node.
+    if (tagName == "I")
+      handleIconClick(e.target);
+    else if (tagName == "A" || tagName == "LABEL" || tagName == "SUB")
+    {
+      var li = e.target;
+      for (; li && li.tagName != "LI";)
+        li = li.parentNode;
+      if (li) setSelected(li);
+    }
+  });
+
+  ul.bind("state_toggled", function() {
+    this.savedState = false;
+    clearTimeout(ul.saveTID);
+    ul.saveTID = setTimeout(function() {
+      ul.trigger("save_state");
+    }, kandil.settings.tview_save_delay);
+  });
+}
+
+/// Saves the state of a treeview in a cookie.
+Treeview.saveState = function(ul, cookie_name) {
+  if (ul.savedState)
+    return;
+  var ul_tags = ul.getElementsByTagName("ul"), list = "";
+  for (var i = 0, len = ul_tags.length; i < len; i++)
+    if (ul_tags[i].parentNode.hasClass("closed"))
+      list += i + ",";
+  if (list)
+    cookie(cookie_name, list.slice(0, -1), 30);
+  else
+    cookie.del(cookie_name);
+  ul.savedState = true;
+}
+/// Loads the state of a treeview from a cookie.
+Treeview.loadState = function(ul, cookie_name) {
+  var list = cookie(cookie_name);
+  if (!list)
+    return;
+  var ul_tags = ul.getElementsByTagName("ul");
+  list = list.split(",");
+  for (var i = 0, len = list.length; i < len; i++)
+    ul_tags[list[i]].parentNode.addClass("closed");
 }
 
 /// Creates the split bar for resizing the navigation panel and content.
@@ -278,36 +352,34 @@ function handleLoadingModule(event)
   loadNewModule(modFQN);
 }
 
-function initSymbolTags()
+/// Adds click handlers to symbols and inits the symbol list.
+function initAPIList()
 {
-  kandil.symbolTags = $(".symbol");
+  var symbol_tags = $(".symbol");
   // Add code display functionality to symbol links.
-  kandil.symbolTags.click(function(event) {
+  symbol_tags.click(function(event) {
     event.preventDefault();
     showCode($(this));
   });
-  // Prevent permalinks from loading a new page,
-  // in case a different module is loaded.
+
+  initializeSymbolTree(symbol_tags);
+
+  // Create the HTML text and append it to the api panel.
+  createSymbolsUL($("#apipanel"));
+
+  var ul = $("#apipanel > ul");
+  Treeview(ul);
+  Treeview.loadState(ul[0], kandil.moduleFQN);
+  ul.bind("save_state", function() {
+    Treeview.saveState(this, kandil.moduleFQN);
+  });
+  installTooltipHandlers();
+
   if (kandil.originalModuleFQN != kandil.moduleFQN)
     $(".symlink").click(function(event) {
       event.preventDefault();
       this.scrollIntoView();
     });
-}
-
-/// Adds click handlers to symbols and inits the symbol list.
-function initAPIList()
-{
-  initializeSymbolTree(kandil.symbolTags);
-
-  // Create the HTML text and append it to the api panel.
-  var ul = createSymbolsUL($("#apipanel"));
-  var tv = new Treeview(ul);
-  tv.loadState(kandil.moduleFQN);
-  tv.bind("save_state", function() {
-    tv.saveState(kandil.moduleFQN);
-  });
-  installTooltipHandlers();
 }
 
 /// Delays for 'delay' ms, fades out an element in 'fade' ms and removes it.
@@ -327,7 +399,6 @@ function loadNewModule(modFQN)
 
   function errorHandler(request, error, exception)
   {
-    hideLoadingGif();
     var msg = kandil.msg.failed_module.format(doc_url);
     msg = $("<p class='ajaxerror'>'"+msg+"</p>");
     $(document.body).append(msg);
@@ -347,7 +418,7 @@ function loadNewModule(modFQN)
     return text.slice(start+7, end); // '<title>'.length = 7
   }
 
-  showLoadingGif(kandil.msg.loading_module);
+  displayLoadingGif("Loading module...");
   try {
     $.ajax({url: doc_url, dataType: "text", error: errorHandler,
       success: function(data) {
@@ -357,23 +428,16 @@ function loadNewModule(modFQN)
         document.title = extractTitle(data);
         $("#kandil-content")[0].innerHTML = extractContent(data);
         $("#apipanel > ul").remove(); // Delete old API list.
-        if ($("#apitab").hasClass("current"))
-          initAPIList();
-        else
-          $("#apitab").click(function lazyLoad() {
-            $(this).unbind("click", lazyLoad); // Remove the lazyLoad handler.
-            initAPIList();
-          });
-        initSymbolTags();
+        initAPIList();
         $("#apiqs")[0].qs.resetFirstFocusHandler();
-        hideLoadingGif();
       }
     });
   }
   catch(e){ errorHandler(); }
+  hideLoadingGif();
 }
 
-function showLoadingGif(msg)
+function displayLoadingGif(msg)
 {
   if (!msg)
     msg = "";
@@ -390,9 +454,8 @@ function hideLoadingGif()
 }
 
 /// Initializes the symbol list under the API tab.
-function initializeSymbolTree()
+function initializeSymbolTree(sym_tags)
 {
-  var sym_tags = kandil.symbolTags;
   if (!sym_tags.length)
     return;
   // Prepare the symbol list.
@@ -434,7 +497,6 @@ function createSymbolsUL(panel)
   if (root.sub.length)
     $(ul[0].firstChild).append(createSymbolsUL_(root.sub));
   $(ul[0].lastChild).remove();
-  return ul;
 }
 
 function createModulesUL(panel)
@@ -446,7 +508,6 @@ function createModulesUL(panel)
   if (root.sub.length)
     $(ul[0].firstChild).append(createModulesUL_(root.sub));
   $(ul[0].lastChild).remove();
-  return ul;
 }
 
 /// Constructs a ul (enclosing nested ul's) from the symbols data structure.
@@ -518,11 +579,9 @@ function showCode(symbol)
   if (dt_tag.code_div)
   { // Remove the displayed code div.
     dt_tag.code_div.remove();
-    dt_tag.code_div = null;
+    delete dt_tag.code_div;
     return;
   }
-  // Assign a dummy tag to block quick, multiple clicks while loading.
-  dt_tag.code_div = $("<div/>");
 
   function show()
   { // The function that actually displays the code.
@@ -554,24 +613,23 @@ function showCode(symbol)
 
     function errorHandler(request, error, exception)
     {
-      hideLoadingGif();
       var msg = kandil.msg.failed_code.format(doc_url);
       msg = $("<p class='ajaxerror'>"+msg+"</p>");
       $(document.body).append(msg);
       fadeOutRemove(msg, 5000, 500);
     }
 
-    showLoadingGif(kandil.msg.loading_code);
+    displayLoadingGif(kandil.msg.loading_code);
     try {
       $.ajax({url: doc_url, dataType: "text", error: errorHandler,
         success: function(data) {
           setSourceCode(data);
           show();
-          hideLoadingGif();
         }
       });
     }
     catch(e){ errorHandler(); }
+    hideLoadingGif();
   }
   else // Already loaded. Show the code.
     show();
@@ -581,242 +639,3 @@ function reportBug()
 {
   // TODO: implement.
 }
-
-/// Constructs a Treeview object.
-/// Adds treeview functionality to ul. Expects special markup.
-function Treeview(ul)
-{
-  var tv = this;
-  ul.addClass("tview");
-  this.$ul = ul;
-  this.ul = ul[0];
-
-  this.ul.tabIndex = 1; // Make this tag focusable by tabbing and clicking.
-  if (window.opera)
-    // Unfortunately Opera selects all the text inside ul if it is focused via
-    // the tab key. We can still make an element focusable with a value of -1.
-    // Hope this gets fixed in Opera 10.
-    this.ul.tabIndex = -1; // Make focusable but prevent tabbing.
-
-  this.selected_li = ul[0].firstChild;
-
-  function handleKeypress(e)
-  {
-    if (33 <= e.keyCode && e.keyCode <= 40 || e.keyCode == 13)
-      e.preventDefault(),
-      tv.eventHandlerTable[e.keyCode].call(tv, e);
-  }
-
-  this.setFocus = function() {
-    if (tv.focused) return;
-    tv.focused = true;
-    tv.ul.addClass("focused");
-  }
-
-  this.unsetFocus = function() {
-    if (!tv.focused) return;
-    tv.focused = false;
-    tv.ul.removeClass("focused");
-  }
-
-  this.$ul.focus(tv.setFocus);
-  this.$ul.blur(tv.unsetFocus); // Losing focus.
-  // Note: keyboard navigation is unfinished.
-//   this.$ul.keypress(handleKeypress);
-
-  this.$ul.mousedown(function(e) {
-    tv.setFocus();
-    var tagName = e.target.tagName;
-    // The i-tag represents the icon of the tree node.
-    if (tagName == "I")
-      tv.iconClick(e.target.parentNode);
-    else if (tagName == "A" || tagName == "LABEL" || tagName == "SUB")
-    {
-      var li = e.target;
-      for (; li && li.tagName != "LI";)
-        li = li.parentNode;
-      if (li) tv.selected(li);
-    }
-  });
-
-  // When the state of a node changes, trigger a delayed save_state event.
-  this.$ul.bind("state_toggled", function() {
-    tv.savedState = false;
-    clearTimeout(tv.saveTID);
-    tv.saveTID = setTimeout(function() {
-      tv.$ul.trigger("save_state");
-    }, kandil.settings.tview_save_delay);
-  });
-}
-
-Treeview.prototype = {
-//   default_li: {
-//     nextSibling: ,
-//     lastChild: {
-//     }
-//   },
-  selected: function(new_li) {
-    if (new_li != undefined) {
-      new_li.addClass("selected");
-      if (new_li == this.selected_li)
-        return;
-      this.selected_li.removeClass("selected");
-      this.selected_li = new_li;
-      // TODO: Adjust the scrollbar position.
-      // This is very difficult.
-//       if (new_li.scrollTop < this.ul.scrollTop)
-//         this.ul.scrollTop = new_li.scrollTop;
-//       else if (new_li.scrollTop > this.ul.scrollTop + this.ul.clientHeight)
-//         this.ul.scrollTop = new_li.scrollTop;
-    }
-    return this.selected_li;
-  },
-
-  // Functions for keyboard navigation:
-  // TODO: The code must be reviewed, debugged and tested for correctness.
-
-  getLastLI: function(ul) {
-    var li = $(">li:visible:last", ul)[0];
-    if (li && li.lastChild.tagName == "UL" && li.lastChild.clientHeight != 0)
-      return this.getLastLI(li.lastChild);
-    return li;
-  },
-  movePageUp: function(e) { /*TODO:*/ },
-  movePageDown: function(e) { /*TODO:*/ },
-  moveHome: function(e) {
-    if (first_li = this.ul.firstChild)
-      this.selected(first_li);
-  },
-  moveEnd: function(e) {
-    if (last_li = this.getLastLI(this.ul))
-      this.selected(last_li);
-  },
-  moveLeft: function(e) {
-    var li = this.selected();
-    if (li.lastChild.tagName == "UL" &&
-        !li.hasClass("closed|has_hidden|show_hidden"))
-      this.iconClick(li);
-    else if (li.parentNode != this.ul)
-      (li = li.parentNode.parentNode),
-      this.selected(li),
-      this.iconClick(li);
-    else
-      this.moveUp(e);
-  },
-  moveUp: function(e) {
-    var tview = this;
-    function prev_visible(li)
-    {
-      var prev_li = li.previousSibling; // Default.
-      if (prev_li && prev_li.tagName != "LI")
-        return prev_visible(prev_li);
-      if (!prev_li && li.parentNode != tview.ul)
-        prev_li = li.parentNode.parentNode; // Go up one level.
-      else if (prev_li && prev_li.lastChild.tagName == "UL" &&
-              !prev_li.hasClass("closed"))
-        // Get the last li-tag of the previous branch.
-        prev_li = tview.getLastLI(prev_li.lastChild);
-      if (prev_li && prev_li.clientHeight == 0)
-        return prev_visible(prev_li);
-      return prev_li;
-    }
-    if (li = prev_visible(this.selected()))
-      this.selected(li);
-  },
-  moveRight: function(e) {
-    var li = this.selected();
-    if (li.hasClass("closed|has_hidden"))
-      this.iconClick(li);
-    else
-      this.moveDown(e);
-  },
-  moveDown: function(e) {
-    var tview = this;
-    function next_visible(li)
-    {
-      var next_li = li.nextSibling; // Default.
-      if (li.lastChild &&
-          li.lastChild.tagName == "UL" &&
-          !li.hasClass("closed"))
-        next_li = li.lastChild.firstChild; // Go down one level.
-      if (!next_li)
-        // Backtrack to the next sibling branch.
-        for (var p_ul = li.parentNode; !next_li && p_ul != tview.ul;
-             p_ul = p_ul.parentNode.parentNode)
-          if (p_ul.parentNode.nextSibling)
-            next_li = p_ul.parentNode.nextSibling;
-//       if (next_li && next_li.tagName != "LI")
-//         return next_visible(next_li);
-      if (next_li && next_li.clientHeight == 0)
-        return next_visible(next_li);
-      return next_li;
-    }
-    if (li = next_visible(this.selected()))
-      this.selected(li);
-  },
-  itemEnter: function(e) {
-    if (link = $(">label>a", this.selected())[0])
-      if (link.click) link.click(); // For Opera.
-      else { // Browsers like Firefox, Safari etc.
-        var ev = document.createEvent('MouseEvents');
-        ev.initEvent('click', true, true);
-        link.dispatchEvent(ev);
-      }
-  },
-  iconClick: function(li) {
-    if (this.ul.hasClass("filtered")) {
-      // Go from [.] -> [-] -> [+] -> [.]
-      if (li.hasClass("has_hidden")) {
-        if (li.hasClass("closed")) // [+] -> [.]
-          li.removeClass("closed");
-        else // [.] -> [-]
-          li.addClass("show_hidden").removeClass("has_hidden");
-      }
-      else if (li.hasClass("show_hidden")) // [-] -> [+]
-        li.addClass("has_hidden|closed").removeClass("show_hidden");
-      else // [-] <-> [+]
-        li.toggleClass("closed");
-    }
-    else // Normal node. [-] <-> [+]
-      li.toggleClass("closed");
-    this.$ul.trigger("state_toggled");
-  },
-  // Binds a function to an event from the ul tag.
-  bind: function(which_event, func) {
-    this.$ul.bind(which_event, func);
-  },
-};
-
-Treeview.prototype.eventHandlerTable = (function() {
-  var p = Treeview.prototype;
-  return {
-    33:p.movePageUp, 34:p.movePageDown, 35:p.moveEnd, 36:p.moveHome,
-    37:p.moveLeft, 38:p.moveUp, 39:p.moveRight, 40:p.moveDown,
-    13:p.itemEnter
-  };
-})();
-
-/// Saves the state of a treeview in a cookie.
-Treeview.prototype.saveState = function(cookie_name) {
-  if (this.savedState)
-    return;
-  var ul_tags = this.ul.getElementsByTagName("ul"), list = "";
-  for (var i = 0, len = ul_tags.length; i < len; i++)
-    if (ul_tags[i].parentNode.hasClass("closed"))
-      list += i + ",";
-  if (list)
-    cookie(cookie_name, list.slice(0, -1), 30);
-  else
-    cookie.del(cookie_name);
-  this.savedState = true;
-};
-/// Loads the state of a treeview from a cookie.
-Treeview.prototype.loadState = function(cookie_name) {
-  var list = cookie(cookie_name);
-  if (!list)
-    return;
-  var ul_tags = this.ul.getElementsByTagName("ul");
-  list = list.split(",");
-  for (var i = 0, len = list.length; i < len; i++)
-    ul_tags[list[i]].parentNode.addClass("closed");
-};

@@ -40,19 +40,19 @@ DC_SHORT=`$tango_home/build/tools/guessCompiler.sh $DC_SHORT`
 while [ $# -gt 0 ]
 do
     found=
-    for d in runtime/common runtime/compiler/${DC_SHORT} runtime/compiler/shared runtime/gc/basic ; do
+    for d in ../../tango/core/rt/compiler/shared ../../tango/core/rt/gc/basic ; do
         if [ -e "$tango_home/$d/${1}.d" ] ; then
-            echo "$d/${1}.d -> user/${1}.di"
-            dirN=`dirname $tango_home/user/${1}`
+            echo "$d/${1}.d -> ${1}.di"
+            dirN=`dirname $tango_home/${1}`
             mkdir -p "$dirN"
-            cp "$tango_home/$d/${1}.d" "$tango_home/user/${1}.di"
+            cp "$tango_home/$d/${1}.d" "$tango_home/${1}.di"
             found=1
             break
         elif [ -e "$tango_home/$d/${1}.di" ] ; then
-            echo "$d/${1}.di -> user/${1}.di"
-            dirN=`dirname $tango_home/user/${1}`
+            echo "$d/${1}.di -> ${1}.di"
+            dirN=`dirname $tango_home/${1}`
             mkdir -p "$dirN"
-            cp "$tango_home/$d/${1}.di" "$tango_home/user/${1}.di"
+            cp "$tango_home/$d/${1}.di" "$tango_home/${1}.di"
             found=1
             break
         fi

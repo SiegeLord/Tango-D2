@@ -1,0 +1,14 @@
+gdcversion() {
+    echo ">> Checking compiler version GDC"
+
+    GDCVERSION=`gdc --version | head -1 | cut -c 26-`
+    echo ">> Compiler version is $GDCVERSION"
+}
+
+gdcsettings() {
+    gdcversion
+}
+
+gdcbugs() {
+    gdcversion
+}

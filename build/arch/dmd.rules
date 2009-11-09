@@ -1,7 +1,6 @@
 # common make rules for dmd
 
 LIB_EXT=a
-LIB_PREFIX=lib
 OBJ_EXT=o
 COBJ_EXT=o
 mkLib=ar -r
@@ -13,6 +12,7 @@ OUT_NAME="-of"
 DFLAGS_ALL=$(DFLAGS_MAIN) $(DFLAGS_COMP) $(DFLAGS_ADD)
 CFLAGS_ALL=$(CFLAGS) $(CFLAGS_MAIN) $(CFLAGS_COMP) $(CFLAGS_ADD)
 
+EXCLUDEPAT_COMP=*ldc *gdc
 EXCLUDE_DEP_COMP=
 # ^dmd\.
 

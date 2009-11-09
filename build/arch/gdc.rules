@@ -1,9 +1,7 @@
 # common make rules for gdc
 
 LIB_EXT=a
-LIB_PREFIX=lib
 OBJ_EXT=o
-COBJ_EXT=o
 mkLib=ar -r
 ranlib=ranlib
 LIB_DIR="-L-L"

@@ -6,13 +6,21 @@ from path import Path
 from common import *
 from html2pdf import PDFGenerator
 
+EXCLUDES = ["std/intrinsic.di", "std/stdarg.di", "std/c/stdarg.di"]
+
+def exclude(file):
+    for f in EXCLUDES:
+        if file.endswith(f):
+            return True
+    return False
+
 def copy_runtime_files(path):
   print "Copying Tango runtime files."
 
   for NAME in ("BitManip", "Exception", "Memory", "Runtime", "Thread"):
-    FILE = path/("runtime/common/tango/core/%s.d" % NAME)
-    print "Copying %s to %s" % (FILE, path/"user/tango/core/")
-    FILE.copy(path/"user/tango/core/")
+    FILE = path/("lib/common/tango/core/%s.d" % NAME)
+    print "Copying %s to %s" % (FILE, path/"tango/core/")
+    FILE.copy(path/"tango/core/")
 
 def copy_files(DIL, TANGO, DEST):
   """ Copies required files to the destination folder. """
@@ -52,12 +60,6 @@ SQRT = √
 NAN = NaN
 SUP = <sup>$0</sup>
 BR = <br/>
-SUB = $1<sub>$2</sub>
-POW = $1<sup>$2</sup>
-_PI = $(PI $0)
-D = <span class="inlcode">$0</span>
-LE = <=
-GT = <
 %(favicon)s
 """ % locals()
   )
@@ -108,9 +110,12 @@ def get_tango_path(path):
   path.SRC = path/"import"
   is_svn = not path.SRC.exists
   if is_svn:
-    path.SRC = path/"user"
+    path.SRC.mkdir()
+    print "Copying tango/, std/ and object.di to import/."
+    (path/"tango").copytree(path.SRC/"tango")
+    (path/"std").copytree(path.SRC/"std")
+    (path/"object.di").copy(path.SRC)
   path.license = path/"LICENSE"
-  # TODO Do favicon properly since I don't think it is in CWD
   path.favicon = Path("tango_favicon.png") # Look in CWD atm.
   return path
 
@@ -128,8 +133,6 @@ def main():
     help="create a 7z archive")
   parser.add_option("--pdf", dest="pdf", default=False, action="store_true",
     help="create a PDF document")
-  parser.add_option("--pykandil", dest="pykandil", default=False, action="store_true",
-    help="use Python code to handle kandil, don't pass --kandil to dil")
 
   parser.add_option("--data", dest="data", help="path to data and kandil")
 
@@ -174,25 +177,17 @@ def main():
   DEST.makedirs()
   map(Path.mkdir, (DEST.HTMLSRC, DEST.JS, DEST.CSS, DEST.IMG, TMP))
 
-  std = Path("std")
-  EXCLUDES = [std/"intrinsic.di", std/"stdarg.di", std/"c"/"stdarg.di"]
-  filter_func = lambda f: any(f.endswith(x) for x in EXCLUDES)
-  FILES = find_source_files(TANGO.SRC, filter_func)
+  find_source_files(TANGO.SRC, FILES)
+
+  FILES = [f for f in FILES if not exclude(f)]
 
   create_index(TMP/"index.d", TANGO.SRC, FILES)
   write_tango_ddoc(TANGO_DDOC, TANGO.favicon, options.revision)
   DOC_FILES = [DIL.KANDIL.ddoc, TANGO_DDOC, TMP/"index.d"] + FILES
   versions = ["Tango", "DDoc", "D_Ddoc"]
   versions += ["Posix"] if options.posix else ["Windows", "Win32"]
-  dil_options = ['-v', '-hl']
-  if not options.pykandil:
-    dil_options += ['--kandil']
-  dil_retcode = generate_docs(DIL.EXE, DEST.abspath, MODLIST,
-    DOC_FILES, versions, dil_options, cwd=DIL)
-
-  if options.pykandil:
-    MODULES_JS = (DEST/"js"/"modules.js").abspath
-    generate_modules_js(read_modules_list(MODLIST), MODULES_JS)
+  generate_docs(DIL.EXE, DEST.abspath, MODLIST, DOC_FILES,
+                versions, options=['-v', '-hl', '--kandil'], cwd=DIL)
 
   copy_files(DIL, TANGO, DEST)
   if options.pdf:
