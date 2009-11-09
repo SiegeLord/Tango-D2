@@ -20,7 +20,7 @@ private import  tango.core.Exception;
 
 ******************************************************************************/
 
-class HttpTriplet //: IWritable
+class HttpTriplet 
 {
         protected char[]        line;
         protected char[][3]     tokens;
@@ -71,18 +71,7 @@ class HttpTriplet //: IWritable
         {
                 return line;
         }
-/+
-        /**********************************************************************
 
-                Output the string via the given writer
-
-        **********************************************************************/
-
-        void write (IWriter writer)
-        {
-               writer(toString).newline();
-        }
-+/
         /**********************************************************************
 
                 throw an exception
