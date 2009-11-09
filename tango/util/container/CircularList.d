@@ -28,21 +28,21 @@ private import tango.util.container.model.IContainer;
 
         ---
         Iterator iterator ()
-        uint opApply (int delegate(ref V value) dg)
+        int opApply (int delegate(ref V value) dg)
 
         CircularList add (V element)
-        CircularList addAt (uint index, V element)
+        CircularList addAt (size_t index, V element)
         CircularList append (V element)
         CircularList prepend (V element)
-        uint addAt (uint index, IContainer!(V) e)
-        uint append (IContainer!(V) e)
-        uint prepend (IContainer!(V) e)
+        size_t addAt (size_t index, IContainer!(V) e)
+        size_t append (IContainer!(V) e)
+        size_t prepend (IContainer!(V) e)
 
         bool take (ref V v)
         bool contains (V element)
-        V get (uint index)
-        uint first (V element, uint startingIndex = 0)
-        uint last (V element, uint startingIndex = 0)
+        V get (size_t index)
+        size_t first (V element, size_t startingIndex = 0)
+        size_t last (V element, size_t startingIndex = 0)
 
         V head ()
         V tail ()
@@ -51,18 +51,18 @@ private import tango.util.container.model.IContainer;
         V removeHead ()
         V removeTail ()
 
-        bool removeAt (uint index)
-        uint remove (V element, bool all)
-        uint removeRange (uint fromIndex, uint toIndex)
+        bool removeAt (size_t index)
+        size_t remove (V element, bool all)
+        size_t removeRange (size_t fromIndex, size_t toIndex)
 
-        uint replace (V oldElement, V newElement, bool all)
-        bool replaceAt (uint index, V element)
+        size_t replace (V oldElement, V newElement, bool all)
+        bool replaceAt (size_t index, V element)
 
-        uint size ()
+        size_t size ()
         bool isEmpty ()
         V[] toArray (V[] dst)
         CircularList dup ()
-        CircularList subset (uint from, uint length)
+        CircularList subset (size_t from, size_t length)
         CircularList clear ()
         CircularList reset ()
         CircularList check ()
@@ -82,13 +82,13 @@ class CircularList (V, alias Reap = Container.reap,
         private alias Heap!(Type) Alloc;
 
         // number of elements contained
-        private uint            count;
+        private size_t          count;
 
         // configured heap manager
         private Alloc           heap;
         
         // mutation tag updates on each change
-        private uint            mutation;
+        private size_t          mutation;
 
         // head of the list. Null if empty
         private Ref             list;
@@ -111,7 +111,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        protected this (Ref h, uint c)
+        protected this (Ref h, size_t c)
         {
                 list = h;
                 count = c;
@@ -174,7 +174,7 @@ class CircularList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final uint size ()
+        final size_t size ()
         {
                 return count;
         }
@@ -232,7 +232,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final V get (uint index)
+        final V get (size_t index)
         {
                 return cellAt(index).value;
         }
@@ -240,19 +240,20 @@ class CircularList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                 Time complexity: O(n)
+                Returns size_t.max if no element found.
 
         ***********************************************************************/
 
-        final uint first (V element, uint startingIndex = 0)
+        final size_t first (V element, size_t startingIndex = 0)
         {
                 if (startingIndex < 0)
                     startingIndex = 0;
 
                 auto p = list;
                 if (p is null)
-                    return uint.max;
+                    return size_t.max;
 
-                for (uint i = 0; true; ++i)
+                for (size_t i = 0; true; ++i)
                     {
                     if (i >= startingIndex && element == p.value)
                         return i;
@@ -261,19 +262,20 @@ class CircularList (V, alias Reap = Container.reap,
                     if (p is list)
                         break;
                     }
-                return uint.max;
+                return size_t.max;
         }
 
         /***********************************************************************
                 
                 Time complexity: O(n)
+                Returns size_t.max if no element found.
 
         ***********************************************************************/
 
-        final uint last (V element, uint startingIndex = 0)
+        final size_t last (V element, size_t startingIndex = 0)
         {
                 if (count is 0)
-                    return uint.max;
+                    return size_t.max;
 
                 if (startingIndex >= count)
                     startingIndex = count - 1;
@@ -282,7 +284,7 @@ class CircularList (V, alias Reap = Container.reap,
                     startingIndex = 0;
 
                 auto p = cellAt (startingIndex);
-                uint i = startingIndex;
+                size_t i = startingIndex;
                 for (;;)
                     {
                     if (element == p.value)
@@ -296,7 +298,7 @@ class CircularList (V, alias Reap = Container.reap,
                           --i;
                           }
                     }
-                return uint.max;
+                return size_t.max;
         }
 
         /***********************************************************************
@@ -305,7 +307,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList subset (uint from, uint length)
+        final CircularList subset (size_t from, size_t length)
         {
                 Ref newlist = null;
 
@@ -315,7 +317,7 @@ class CircularList (V, alias Reap = Container.reap,
                    auto p = cellAt (from);
                    auto current = newlist = heap.allocate.set (p.value);
 
-                   for (uint i = 1; i < length; ++i)
+                   for (size_t i = 1; i < length; ++i)
                        {
                        p = p.next;
                        if (p is null)
@@ -498,7 +500,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList addAt (uint index, V element)
+        final CircularList addAt (size_t index, V element)
         {
                 if (index is 0)
                     prepend (element);
@@ -516,7 +518,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList replaceAt (uint index, V element)
+        final CircularList replaceAt (size_t index, V element)
         {
                 cellAt(index).value = element;
                 mutate;
@@ -529,7 +531,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList removeAt (uint index)
+        final CircularList removeAt (size_t index)
         {
                 if (index is 0)
                     removeHead;
@@ -548,7 +550,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint remove (V element, bool all)
+        final size_t remove (V element, bool all)
         {
                 auto c = count;
                 if (list)
@@ -593,9 +595,9 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all)
+        final size_t replace (V oldElement, V newElement, bool all)
         {
-                uint c;
+                size_t c;
                 if (list)
                    {
                    auto p = list;
@@ -620,7 +622,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint prepend (IContainer!(V) e)
+        final size_t prepend (IContainer!(V) e)
         {
                 Ref hd = null;
                 Ref current = null;
@@ -663,7 +665,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint append (IContainer!(V) e)
+        final size_t append (IContainer!(V) e)
         {
                 auto c = count;
                 if (list is null)
@@ -687,7 +689,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint addAt (uint index, IContainer!(V) e)
+        final size_t addAt (size_t index, IContainer!(V) e)
         {
                 auto c = count;
                 if (list is null || index is 0)
@@ -711,12 +713,12 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint removeRange (uint fromIndex, uint toIndex)
+        final size_t removeRange (size_t fromIndex, size_t toIndex)
         {
                 auto p = cellAt (fromIndex);
                 auto last = list.prev;
                 auto c = count;
-                for (uint i = fromIndex; i <= toIndex; ++i)
+                for (size_t i = fromIndex; i <= toIndex; ++i)
                     {
                     auto n = p.next;
                     p.unlink;
@@ -753,7 +755,7 @@ class CircularList (V, alias Reap = Container.reap,
                 if (dst.length < count)
                     dst.length = count;
 
-                int i = 0;
+                size_t i = 0;
                 foreach (v; this)
                          dst[i++] = v;
                 return dst [0 .. count];                        
@@ -784,7 +786,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 if (list)
                    {
-                   uint c = 0;
+                   size_t c = 0;
                    auto p = list;
                    do {
                       assert(p.prev.next is p);
@@ -805,7 +807,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private uint instances (V element)
+        private size_t instances (V element)
         {
                 if (list)
                     return list.count (element);
@@ -817,7 +819,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private void checkIndex (uint i)
+        private void checkIndex (size_t i)
         {
                 if (i >= count)
                     throw new Exception ("out of range");
@@ -853,7 +855,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private Ref cellAt (uint index)
+        private Ref cellAt (size_t index)
         {
                 checkIndex (index);
                 return list.nth (index);
@@ -935,7 +937,7 @@ class CircularList (V, alias Reap = Container.reap,
                                   head,
                                   prior;
                 CircularList      owner;
-                uint              mutation;
+                size_t            mutation;
 
                 /***************************************************************
 

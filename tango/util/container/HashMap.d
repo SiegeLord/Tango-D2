@@ -41,9 +41,9 @@ private import tango.core.Exception : NoSuchElementException;
         bool removeKey (K key)
         bool take (ref V element)
         bool take (K key, ref V element)
-        uint remove (V element, bool all)
-        uint remove (IContainer!(V) e, bool all)
-        uint replace (V oldElement, V newElement, bool all)
+        size_t remove (V element, bool all)
+        size_t remove (IContainer!(V) e, bool all)
+        size_t replace (V oldElement, V newElement, bool all)
         bool replacePair (K key, V oldElement, V newElement)
 
         bool add (K key, V element)
@@ -51,15 +51,15 @@ private import tango.core.Exception : NoSuchElementException;
         V    opIndex (K key)
         V*   opIn_r (K key)
 
-        uint size ()
+        size_t size ()
         bool isEmpty ()
         V[] toArray (V[] dst)
         HashMap dup ()
         HashMap clear ()
         HashMap reset ()
-        uint buckets ()
+        size_t buckets ()
         float threshold ()
-        void buckets (uint cap)
+        void buckets (size_t cap)
         void threshold (float desired)
         Allocator allocator()
         ---
@@ -82,7 +82,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         private Ref                table[];
         
         // number of elements contained
-        private uint               count;
+        private size_t             count;
 
         // the threshold load factor
         private float              loadFactor;
@@ -91,7 +91,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         private Alloc              heap;
         
         // mutation tag updates on each change
-        private uint               mutation;
+        private size_t             mutation;
 
         /***********************************************************************
 
@@ -169,7 +169,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final uint size ()
+        final size_t size ()
         {
                 return count;
         }
@@ -576,9 +576,9 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ************************************************************************/
 
-        final uint remove (IContainer!(V) e, bool all = false)
+        final size_t remove (IContainer!(V) e, bool all = false)
         {
-                int i = count;
+                auto i = count;
                 foreach (value; e)
                          remove (value, all);
                 return i - count;
@@ -593,7 +593,7 @@ class HashMap (K, V, alias Hash = Container.hash,
         
         ************************************************************************/
 
-        final uint remove (V element, bool all = false)
+        final size_t remove (V element, bool all = false)
         {
                 auto i = count;
                 
@@ -642,9 +642,9 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ************************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all = false)
+        final size_t replace (V oldElement, V newElement, bool all = false)
         {
-                uint i;
+                size_t i;
                 
                 if (count && oldElement != newElement)
                     foreach (node; table)
@@ -699,7 +699,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final uint buckets ()
+        final size_t buckets ()
         {
                 return table ? table.length : 0;
         }
@@ -715,7 +715,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (uint cap)
+        final void buckets (size_t cap)
         {
                 if (cap < Container.defaultInitialBuckets)
                     cap = Container.defaultInitialBuckets;
@@ -733,10 +733,10 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (uint cap, float threshold)
+        final void buckets (size_t cap, float threshold)
         {
                 loadFactor = threshold;
-                buckets (cast(int)(cap / threshold) + 1);
+                buckets (cast(size_t)(cap / threshold) + 1);
         }
 
         /***********************************************************************
@@ -791,7 +791,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 if (dst.length < count)
                     dst.length = count;
 
-                int i = 0;
+                size_t i = 0;
                 foreach (k, v; this)
                          dst[i++] = v;
                 return dst [0 .. count];                        
@@ -824,8 +824,8 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 if (table)
                    {
-                   int c = 0;
-                   for (int i=0; i < table.length; ++i)
+                   size_t c = 0;
+                   for (size_t i=0; i < table.length; ++i)
                         for (auto p = table[i]; p; p = p.next)
                             {
                             ++c;
@@ -849,9 +849,9 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        private uint instances (V element)
+        private size_t instances (V element)
         {
-                uint c = 0;
+                size_t c = 0;
                 foreach (node; table)
                          if (node)
                              c += node.count (element);
@@ -870,7 +870,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 float fc = count;
                 float ft = table.length;
                 if (fc / ft > loadFactor)
-                    resize (2 * cast(int)(fc / loadFactor) + 1);
+                    resize (2 * cast(size_t)(fc / loadFactor) + 1);
                 return this;
         }
 
@@ -880,7 +880,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        private void resize (uint newCap)
+        private void resize (size_t newCap)
         {
                 // Stdout.formatln ("resize {}", newCap);
                 auto newtab = heap.allocate (newCap);
@@ -1005,12 +1005,12 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         private struct Iterator
         {
-                uint    row;
+                size_t  row;
                 Ref     cell,
                         prior;
                 Ref[]   table;
                 HashMap owner;
-                uint    mutation;
+                size_t  mutation;
 
                 /***************************************************************
 

@@ -34,7 +34,7 @@ struct Container
 
         ***********************************************************************/
         
-        static int defaultInitialBuckets = 31;
+        static size_t defaultInitialBuckets = 31;
 
         /***********************************************************************
 
@@ -69,14 +69,14 @@ struct Container
 
         ***********************************************************************/
 
-        static uint hash(K) (K k, uint length)
+        static size_t hash(K) (K k, size_t length)
         {
                 static if (is(K : int) || is(K : uint) || 
                            is(K : long) || is(K : ulong) || 
                            is(K : short) || is(K : ushort) ||
                            is(K : byte) || is(K : ubyte) ||
                            is(K : char) || is(K : wchar) || is (K : dchar))
-                           return cast(uint) (k % length);
+                           return cast(size_t) (k % length);
                 else
                    return (typeid(K).getHash(&k) & 0x7FFFFFFF) % length;
         }
@@ -106,7 +106,7 @@ struct Container
                         
                 ***************************************************************/
         
-                T*[] allocate (uint count)
+                T*[] allocate (size_t count)
                 {
                         return new T*[count];
                 }
@@ -193,7 +193,7 @@ struct Container
                         
                 ***************************************************************/
         
-                T*[] allocate (uint count)
+                T*[] allocate (size_t count)
                 {
                         return (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
                 }
@@ -272,10 +272,10 @@ struct Container
                 
                 private T[]     list;
                 private T[][]   lists;
-                private int     index;
-                private int     freelists;
-                private int     presize = 0;
-                private int     chunks = 1000;
+                private size_t     index;
+                private size_t     freelists;
+                private size_t     presize = 0;
+                private size_t     chunks = 1000;
 
                 private struct Discarded
                 {
@@ -289,7 +289,7 @@ struct Container
                         
                 ***************************************************************/
         
-                void config (int chunks, int presize)
+                void config (size_t chunks, size_t presize)
                 {
                         this.chunks = chunks;
                         this.presize = presize;
@@ -326,7 +326,7 @@ struct Container
                         
                 ***************************************************************/
         
-                T*[] allocate (uint count)
+                T*[] allocate (size_t count)
                 {
                         return (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
                 }

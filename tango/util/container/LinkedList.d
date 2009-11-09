@@ -38,32 +38,32 @@ private import tango.util.container.model.IContainer;
         V removeTail ()
 
         bool contains (V value)
-        uint first (V value, uint startingIndex = 0)
-        uint last (V value, uint startingIndex = 0)
+        size_t first (V value, size_t startingIndex = 0)
+        size_t last (V value, size_t startingIndex = 0)
 
         LinkedList add (V value)
         LinkedList prepend (V value)
-        uint prepend (IContainer!(V) e)
+        size_t prepend (IContainer!(V) e)
         LinkedList append (V value)
-        uint append (IContainer!(V) e)
-        LinkedList addAt (uint index, V value)
-        uint addAt (uint index, IContainer!(V) e)
+        size_t append (IContainer!(V) e)
+        LinkedList addAt (size_t index, V value)
+        size_t addAt (size_t index, IContainer!(V) e)
 
-        V get (uint index)
+        V get (size_t index)
         bool take (ref V v)
-        uint remove (V value, bool all)
-        bool removeAt (uint index)
-        uint removeRange (uint fromIndex, uint toIndex)
-        uint replace (V oldElement, V newElement, bool all)
-        bool replaceAt (uint index, V value)
+        size_t remove (V value, bool all)
+        bool removeAt (size_t index)
+        size_t removeRange (size_t fromIndex, size_t toIndex)
+        size_t replace (V oldElement, V newElement, bool all)
+        bool replaceAt (size_t index, V value)
 
         LinkedList clear ()
         LinkedList reset ()
 
-        LinkedList subset (uint from, uint length = int.max)
+        LinkedList subset (size_t from, size_t length = size_t.max)
         LinkedList dup ()
 
-        uint size ()
+        size_t size ()
         bool isEmpty ()
         V[] toArray (V[] dst)
         LinkedList sort (Compare!(V) cmp)
@@ -85,13 +85,13 @@ class LinkedList (V, alias Reap = Container.reap,
         private alias Heap!(Type) Alloc;
 
         // number of elements contained
-        private uint            count;
+        private size_t          count;
 
         // configured heap manager
         private Alloc           heap;
         
         // mutation tag updates on each change
-        private uint            mutation;
+        private size_t          mutation;
 
         // head of the list. Null if empty
         private Ref             list;
@@ -113,7 +113,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        protected this (Ref l, int c)
+        protected this (Ref l, size_t c)
         {
                 list = l;
                 count = c;
@@ -173,7 +173,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final uint size ()
+        final size_t size ()
         {
                 return count;
         }
@@ -232,7 +232,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final V get (uint index)
+        final V get (size_t index)
         {
                 return cellAt(index).value;
         }
@@ -240,13 +240,14 @@ class LinkedList (V, alias Reap = Container.reap,
         /***********************************************************************
 
                  Time complexity: O(n)
+                 Returns size_t.max if no element found.
 
         ***********************************************************************/
 
-        final uint first (V value, uint startingIndex = 0)
+        final size_t first (V value, size_t startingIndex = 0)
         {
                 if (list is null || startingIndex >= count)
-                    return uint.max;
+                    return size_t.max;
 
                 if (startingIndex < 0)
                     startingIndex = 0;
@@ -258,25 +259,26 @@ class LinkedList (V, alias Reap = Container.reap,
                    if (i >= 0)
                        return i + startingIndex;
                    }
-                return uint.max;
+                return size_t.max;
         }
 
         /***********************************************************************
 
                  Time complexity: O(n)
+                 Returns size_t.max if no element found.
 
         ***********************************************************************/
 
-        final uint last (V value, uint startingIndex = 0)
+        final size_t last (V value, size_t startingIndex = 0)
         {
                 if (list is null)
-                    return uint.max;
+                    return size_t.max;
 
                 auto i = 0;
                 if (startingIndex >= count)
                     startingIndex = count - 1;
 
-                auto index = uint.max;
+                auto index = size_t.max;
                 auto p = list;
                 while (i <= startingIndex && p)
                       {
@@ -294,7 +296,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final LinkedList subset (uint from, uint length = int.max)
+        final LinkedList subset (size_t from, size_t length = size_t.max)
         {
                 Ref newlist = null;
 
@@ -410,7 +412,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint remove (V value, bool all = false)
+        final size_t remove (V value, bool all = false)
         {
                 auto c = count;
                 if (c)
@@ -453,9 +455,9 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all = false)
+        final size_t replace (V oldElement, V newElement, bool all = false)
         {
-                uint c;
+                size_t c;
                 if (count && oldElement != newElement)
                    {
                    auto p = list.find (oldElement);
@@ -566,7 +568,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final LinkedList addAt (uint index, V value)
+        final LinkedList addAt (size_t index, V value)
         {
                 if (index is 0)
                     prepend (value);
@@ -584,7 +586,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final LinkedList removeAt (uint index)
+        final LinkedList removeAt (size_t index)
         {
                 if (index is 0)
                     removeHead;
@@ -604,7 +606,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final LinkedList replaceAt (uint index, V value)
+        final LinkedList replaceAt (size_t index, V value)
         {
                 cellAt(index).value = value;
                 mutate;
@@ -617,7 +619,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint prepend (IContainer!(V) e)
+        final size_t prepend (IContainer!(V) e)
         {
                 auto c = count;
                 splice_ (e, null, list);
@@ -630,7 +632,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint append (IContainer!(V) e)
+        final size_t append (IContainer!(V) e)
         {
                 auto c = count;
                 if (list is null)
@@ -646,7 +648,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint addAt (uint index, IContainer!(V) e)
+        final size_t addAt (size_t index, IContainer!(V) e)
         {
                 auto c = count;
                 if (index is 0)
@@ -665,7 +667,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final uint removeRange (uint fromIndex, uint toIndex)
+        final size_t removeRange (size_t fromIndex, size_t toIndex)
         {
                 auto c = count;
                 if (fromIndex <= toIndex)
@@ -673,7 +675,7 @@ class LinkedList (V, alias Reap = Container.reap,
                    if (fromIndex is 0)
                       {
                       auto p = firstCell;
-                      for (int i = fromIndex; i <= toIndex; ++i)
+                      for (size_t i = fromIndex; i <= toIndex; ++i)
                            p = p.next;
                       list = p;
                       }
@@ -681,7 +683,7 @@ class LinkedList (V, alias Reap = Container.reap,
                       {
                       auto f = cellAt (fromIndex - 1);
                       auto p = f;
-                      for (int i = fromIndex; i <= toIndex; ++i)
+                      for (size_t i = fromIndex; i <= toIndex; ++i)
                            p = p.next;
                       f.next = p.next;
                       }
@@ -709,7 +711,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 if (dst.length < count)
                     dst.length = count;
 
-                int i = 0;
+                size_t i = 0;
                 foreach (v; this)
                          dst[i++] = v;
                 return dst [0 .. count];                        
@@ -737,7 +739,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 assert(((count is 0) is (list is null)));
                 assert((list is null || list.count is size));
 
-                int c = 0;
+                size_t c = 0;
                 for (Ref p = list; p; p = p.next)
                     {
                     assert(instances(p.value) > 0);
@@ -754,7 +756,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private uint instances (V value)
+        private size_t instances (V value)
         {
                 if (count is 0)
                     return 0;
@@ -786,7 +788,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private Ref cellAt (uint index)
+        private Ref cellAt (size_t index)
         {
                 checkIndex (index);
                 return list.nth (index);
@@ -796,7 +798,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        private void checkIndex (uint index)
+        private void checkIndex (size_t index)
         {
                 if (index >= count)
                     throw new Exception ("out of range");
@@ -915,7 +917,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 Ref*            hook,
                                 prior;
                 LinkedList      owner;
-                uint            mutation;
+                size_t          mutation;
 
                 /***************************************************************
 

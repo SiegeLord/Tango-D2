@@ -34,18 +34,18 @@ private import tango.util.container.model.IContainer;
         bool contains (V element)
         bool take (ref V element)
         bool remove (V element)
-        uint remove (IContainer!(V) e)
+        size_t remove (IContainer!(V) e)
         bool replace (V oldElement, V newElement)
 
-        uint size ()
+        size_t size ()
         bool isEmpty ()
         V[] toArray (V[] dst)
         HashSet dup ()
         HashSet clear ()
         HashSet reset ()
 
-        uint buckets ()
-        void buckets (uint cap)
+        size_t buckets ()
+        void buckets (size_t cap)
         float threshold ()
         void threshold (float desired)
         ---
@@ -68,7 +68,7 @@ class HashSet (V, alias Hash = Container.hash,
         private Ref             table[];
         
         // number of elements contained
-        private uint            count;
+        private size_t          count;
 
         // the threshold load factor
         private float           loadFactor;
@@ -77,7 +77,7 @@ class HashSet (V, alias Hash = Container.hash,
         private Alloc           heap;
         
         // mutation tag updates on each change
-        private uint            mutation;
+        private size_t            mutation;
 
         /***********************************************************************
 
@@ -145,7 +145,7 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final uint size ()
+        final size_t size ()
         {
                 return count;
         }
@@ -231,7 +231,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final uint remove (V element, bool all)
+        final size_t remove (V element, bool all)
         {
                 return remove(element) ? 1 : 0;
         }
@@ -287,7 +287,7 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all)
+        final size_t replace (V oldElement, V newElement, bool all)
         {
                 return replace (oldElement, newElement) ? 1 : 0;
         }
@@ -351,9 +351,9 @@ class HashSet (V, alias Hash = Container.hash,
 
         ************************************************************************/
 
-        public uint remove (IContainer!(V) e)
+        public size_t remove (IContainer!(V) e)
         {
-                uint c;
+                size_t c;
                 foreach (value; e)
                          if (remove (value))
                              ++c;
@@ -400,7 +400,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final uint buckets ()
+        final size_t buckets ()
         {
                 return table ? table.length : 0;
         }
@@ -413,7 +413,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (uint cap)
+        final void buckets (size_t cap)
         {
                 if (cap < Container.defaultInitialBuckets)
                     cap = Container.defaultInitialBuckets;
@@ -468,7 +468,7 @@ class HashSet (V, alias Hash = Container.hash,
                 if (dst.length < count)
                     dst.length = count;
 
-                int i = 0;
+                size_t i = 0;
                 foreach (v; this)
                          dst[i++] = v;
                 return dst [0 .. count];                        
@@ -501,8 +501,8 @@ class HashSet (V, alias Hash = Container.hash,
 
                 if (table)
                    {
-                   int c = 0;
-                   for (int i = 0; i < table.length; ++i)
+                   size_t c = 0;
+                   for (size_t i = 0; i < table.length; ++i)
                        {
                        for (auto p = table[i]; p; p = p.next)
                            {
@@ -539,7 +539,7 @@ class HashSet (V, alias Hash = Container.hash,
                 float fc = count;
                 float ft = table.length;
                 if (fc / ft > loadFactor)
-                    resize (2 * cast(int)(fc / loadFactor) + 1);
+                    resize (2 * cast(size_t)(fc / loadFactor) + 1);
         }
 
         /***********************************************************************
@@ -548,7 +548,7 @@ class HashSet (V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        private void resize (uint newCap)
+        private void resize (size_t newCap)
         {
                 //Stdout.formatln ("resize {}", newCap);
                 auto newtab = heap.allocate (newCap);
@@ -579,7 +579,7 @@ class HashSet (V, alias Hash = Container.hash,
                  
         ***********************************************************************/
 
-        private bool remove (Ref node, uint row)
+        private bool remove (Ref node, size_t row)
         {
                 auto hd = table[row];
                 auto trail = hd;
@@ -683,12 +683,12 @@ class HashSet (V, alias Hash = Container.hash,
 
         private struct Iterator
         {
-                uint    row;
+                size_t  row;
                 Ref     cell,
                         prior;
                 Ref[]   table;
                 HashSet owner;
-                uint    mutation;
+                size_t  mutation;
 
                 /***************************************************************
 

@@ -43,18 +43,18 @@ private import tango.core.Exception : NoSuchElementException;
         bool take (ref V v)
         bool take (K key, ref V v)
         bool removeKey (K key)
-        uint remove (V value, bool all)
-        uint remove (IContainer!(V) e, bool all)
+        size_t remove (V value, bool all)
+        size_t remove (IContainer!(V) e, bool all)
 
         bool add (K key, V value)
-        uint replace (V oldElement, V newElement, bool all)
+        size_t replace (V oldElement, V newElement, bool all)
         bool replacePair (K key, V oldElement, V newElement)
         bool opIndexAssign (V element, K key)
         K    nearbyKey (K key, bool greater)
         V    opIndex (K key)
         V*   opIn_r (K key)
 
-        uint size ()
+        size_t size ()
         bool isEmpty ()
         V[] toArray (V[] dst)
         SortedMap dup ()
@@ -86,7 +86,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         private Comparator              cmp;
         private Compare!(V)             cmpElem;
 
-        private int                     count,
+        private size_t                  count,
                                         mutation;
 
 
@@ -107,7 +107,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        private this (Comparator c, int n)
+        private this (Comparator c, size_t n)
         {       
                 count = n;
                 cmpElem = &compareElem;
@@ -176,7 +176,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final uint size ()
+        final size_t size ()
         {
                 return count;
         }
@@ -438,7 +438,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         ************************************************************************/
 
-        final uint remove (IContainer!(V) e, bool all)
+        final size_t remove (IContainer!(V) e, bool all)
         {
                 auto c = count;
                 foreach (v; e)
@@ -452,9 +452,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        final uint remove (V value, bool all = false)
+        final size_t remove (V value, bool all = false)
         {       
-                uint i = count;
+                size_t i = count;
                 if (count)
                    {
                    auto p = tree.findAttribute (value, cmpElem);
@@ -476,9 +476,9 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        final uint replace (V oldElement, V newElement, bool all = false)
+        final size_t replace (V oldElement, V newElement, bool all = false)
         {
-                uint c;
+                size_t c;
 
                 if (count)
                    {
@@ -636,7 +636,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 if (dst.length < count)
                     dst.length = count;
 
-                int i = 0;
+                size_t i = 0;
                 foreach (k, v; this)
                          dst[i++] = v;
                 return dst [0 .. count];                        
@@ -700,7 +700,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        private uint instances (V value)
+        private size_t instances (V value)
         {
                 if (count is 0)
                      return 0;
@@ -894,7 +894,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 Ref               node,
                                   prior;
                 SortedMap         owner;
-                uint              mutation;
+                size_t            mutation;
 
                 /***************************************************************
 

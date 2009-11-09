@@ -22,7 +22,7 @@ module tango.util.container.model.IContainer;
 
 interface IContainer (V)
 {
-        uint size ();
+        size_t size ();
 
         bool isEmpty ();
 
@@ -40,11 +40,11 @@ interface IContainer (V)
 
         V[] toArray (V[] dst = null);
 
-        uint remove (V element, bool all);
+        size_t remove (V element, bool all);
 
         int opApply (int delegate(ref V value) dg);
 
-        uint replace (V oldElement, V newElement, bool all);
+        size_t replace (V oldElement, V newElement, bool all);
 }
 
 
