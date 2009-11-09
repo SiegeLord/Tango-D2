@@ -1178,7 +1178,7 @@ private class Hierarchy : Logger.Context
                    insert (li);
 
                    // look for and adjust children
-                   update (li, true);
+                   update (li);
 
                    // insert into map
                    loggers [name] = li;
@@ -1217,7 +1217,7 @@ private class Hierarchy : Logger.Context
                              }
                       else
                          // find best match for parent of new entry
-                         propagate (l, curr, true);
+                         propagate (l, curr);
 
                       // remember where insertion point should be
                       prev = curr;  
@@ -1237,7 +1237,7 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        private void update (Logger changed, bool force)
+        private void update (Logger changed, bool force=false)
         {
                 foreach (logger; this)
                          propagate (logger, changed, force);
@@ -1251,7 +1251,7 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        private void propagate (Logger logger, Logger changed, bool force)
+        private void propagate (Logger logger, Logger changed, bool force=false)
         {
                 // is the changed instance a better match for our parent?
                 if (logger.isCloserAncestor (changed))
