@@ -82,9 +82,16 @@ version (Naked_D_InlineAsm_X86) {
     }
 } else {
     // Needed for cos(), sin(), tan() on GNU.
-   static import tango.stdc.math;
+    static import tango.stdc.math;
 }
 
+
+version(Windows) { 
+    version(DigitalMars) { 
+ 	    version = DMDWindows; 
+    } 
+}
+ 	
 // Standard Tango NaN payloads.
 // NOTE: These values may change in future Tango releases
 // The lowest three bits indicate the cause of the NaN:
@@ -299,20 +306,8 @@ private:
     {
         // This is a highly time-critical operation, and
         // should really be an intrinsic.
-       version(D_InlineAsm_X86) {
-           version(Posix) {
-             IeeeFlags tmp1;
-             asm {
-                 fstsw AX;
-                 // NOTE: If compiler supports SSE2, need to OR the result with
-                 // the SSE2 status register.
-                 // Clear all irrelevant bits
-                 and EAX, 0x03D;
-                 mov tmp1, EAX;
-             }
-             return tmp1;
-           }
-           else { // DMD-Windows
+        version(D_InlineAsm_X86) {
+            version(DMDWindows) {
              // In this case, we
              // take advantage of the fact that for DMD-Windows
              // a struct containing only a int is returned in EAX.
@@ -323,6 +318,18 @@ private:
                  // Clear all irrelevant bits
                  and EAX, 0x03D;
              }
+           }
+           else {
+             IeeeFlags tmp1;
+             asm {
+                 fstsw AX;
+                 // NOTE: If compiler supports SSE2, need to OR the result with
+                 // the SSE2 status register.
+                 // Clear all irrelevant bits
+                 and EAX, 0x03D;
+                 mov tmp1, EAX;
+             }
+             return tmp1;
            }
        } else version (PPC) {
            assert(0, "Not yet supported");
