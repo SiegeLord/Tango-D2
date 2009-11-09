@@ -55,7 +55,7 @@ struct HttpToken
 
 ******************************************************************************/
 
-class HttpTokens //: IWritable
+class HttpTokens
 {
         protected HttpStack     stack;
         private Array           input;
