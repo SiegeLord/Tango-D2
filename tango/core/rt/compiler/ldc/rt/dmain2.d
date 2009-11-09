@@ -184,7 +184,7 @@ extern (C) int main(int argc, char **argv, char** env)
         assert(wargc == argc);
 
         char*     cargp = null;
-        size_t    cargl = WideCharToMultiByte(65001, 0, wcbuf, wclen, null, 0, null, 0);
+        size_t    cargl = WideCharToMultiByte(65001, 0, wcbuf, wclen, null, 0, null, null);
 
         cargp = cast(char*) alloca(cargl);
         args  = ((cast(char[]*) alloca(wargc * (char[]).sizeof)))[0 .. wargc];
@@ -192,10 +192,10 @@ extern (C) int main(int argc, char **argv, char** env)
         for (size_t i = 0, p = 0; i < wargc; i++)
         {
             int wlen = wcslen( wargs[i] );
-            int clen = WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, null, 0, null, 0);
+            int clen = WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, null, 0, null, null);
             args[i]  = cargp[p .. p+clen];
             p += clen; assert(p <= cargl);
-            WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, &args[i][0], clen, null, 0);
+            WideCharToMultiByte(65001, 0, &wargs[i][0], wlen, &args[i][0], clen, null, null);
         }
         LocalFree(wargs);
         wargs = null;
