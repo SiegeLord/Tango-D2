@@ -109,7 +109,7 @@ class Linux : FileFilter
         }
 
         private auto gcc = "gcc -c -o";
-        private auto gcc32 = "gcc -c -o -m32";
+        private auto gcc32 = "gcc -c -m32 -o";
 
         int dmd ()
         {
