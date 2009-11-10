@@ -596,7 +596,7 @@ struct FileSystem
 
                 ***************************************************************/
 
-                static ulong totalSpace(char[] folder, bool superuser = false)
+                static long totalSpace(char[] folder, bool superuser = false)
                 {
                     scope fp = new FilePath(folder);
                     statvfs_t info;
@@ -605,7 +605,7 @@ struct FileSystem
                         exception ("totalSpace->statvfs failed:"
                                    ~ SysError.lastMsg);
 
-                    return cast(ulong)info.f_blocks *  cast(ulong)info.f_frsize;
+                    return cast(long)info.f_blocks *  cast(long)info.f_frsize;
                 }
         }
 }
