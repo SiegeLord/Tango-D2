@@ -130,7 +130,7 @@ version (Posix)
 
         // Get HOME and use that to replace the tilde.
         char[] home = homeFolder;
-        if (home == null)
+        if (home is null)
             return path;
 
         return Path.join(home, path[1..$]);
@@ -172,7 +172,7 @@ version (Posix)
         while (1)
             {
             extra_memory = tango.stdc.stdlib.malloc(extra_memory_size);
-            if (extra_memory == null)
+            if (extra_memory is null)
                 goto Lerror;
 
             // Obtain info from database.
