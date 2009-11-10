@@ -97,7 +97,7 @@ class Linux : FileFilter
 
         private void addToLib(char[] obj)
         {
-            exec ("ar -r "~args.lib~" "~obj);
+            exec ("ar -r "~args.lib~".a "~obj);
         }
 
         private char[] compile (FilePath file, char[] cmd)
