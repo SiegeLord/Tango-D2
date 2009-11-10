@@ -20,7 +20,7 @@ private
 
 version( Win32 )
 {
-    import tango.stdc.stdlib: wchar_t, alloca
+    import tango.stdc.stdlib: wchar_t, alloca;
     import tango.stdc.string: wcslen;
     import rttango.sys.win32.UserGdi: LocalFree,GetCommandLineW,CommandLineToArgvW,WideCharToMultiByte;
     //pragma(lib, "shell32.lib");   // needed for CommandLineToArgvW
