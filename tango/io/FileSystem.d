@@ -605,7 +605,7 @@ struct FileSystem
                         exception ("totalSpace->statvfs failed:"
                                    ~ SysError.lastMsg);
 
-                    return cast(long)info.f_blocks *  cast(long)info.f_frsize;
+                    return cast(ulong)info.f_blocks *  cast(ulong)info.f_frsize;
                 }
         }
 }
