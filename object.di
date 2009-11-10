@@ -14,7 +14,7 @@ alias int equals_t;
 /// root class for all objects in D
 class Object
 {
-    void dispose();
+    //void dispose();
     /// returns a string representation of the object (for debugging purposes)
     char[] toString();
     /// returns a hash
