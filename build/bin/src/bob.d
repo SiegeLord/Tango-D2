@@ -109,6 +109,7 @@ class Linux : FileFilter
         }
 
         private auto gcc = "gcc -c -o";
+        private auto gcc32 = "gcc -c -o -m32";
 
         int dmd ()
         {
@@ -122,12 +123,12 @@ class Linux : FileFilter
 
                 if (args.core) {
                     foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc);
+                             auto obj = compile (file, gcc32);
                              addToLib(obj);
                     }
 
                     foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc);
+                            auto obj = compile (file, gcc32);
                             addToLib(obj);
                     }
                 }
@@ -304,7 +305,7 @@ class FileFilter : FileScan
         {
                 if (isDir)
                    {    
-                   auto tango = locatePattern (fp.path, "tango");
+                   auto tango = locatePatternPrior (fp.path, "tango");
                    if (tango < fp.path.length)
                        return ! (fp.toString[tango..$] in excluded);
                    return false;
