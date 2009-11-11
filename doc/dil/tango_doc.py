@@ -100,7 +100,7 @@ def get_tango_path(path):
   path.SRC = path/"import"
   is_svn = not path.SRC.exists
   if is_svn:
-    path.SRC = path/
+    path.SRC = path
   path.license = path/"LICENSE"
   # TODO Do favicon properly since I don't think it is in CWD
   path.favicon = Path("tango_favicon.png") # Look in CWD atm.
