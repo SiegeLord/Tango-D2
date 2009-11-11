@@ -169,7 +169,9 @@ def main():
   std = Path("std")
   EXCLUDES = [std/"intrinsic.di", std/"stdarg.di", std/"c"/"stdarg.di"]
   filter_func = lambda f: any(f.endswith(x) or 
-                              "core/rt" in f for x in EXCLUDES)
+                              "core/rt" in f or
+                              "doc" in f or
+                              "build" in f for x in EXCLUDES)
   FILES = find_source_files(TANGO.SRC, filter_func)
 
   create_index(TMP/"index.d", TANGO.SRC, FILES)
