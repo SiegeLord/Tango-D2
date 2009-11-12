@@ -775,7 +775,7 @@ size_t indexOf(T) (T* str, T match, size_t length)
                               m += (m << (8 * T.sizeof * 4));
 
                    auto p = str;
-                   auto e = p + length - size_t.sizeof;
+                   auto e = p + length - size_t.sizeof/T.sizeof;
                    while (p < e)
                          {
                          // clear matching T segments
@@ -783,10 +783,10 @@ size_t indexOf(T) (T* str, T match, size_t length)
                          // test for zero, courtesy of Alan Mycroft
                          if ((v - m1) & ~v & m2)
                               break;
-                         p += size_t.sizeof;
+                         p += size_t.sizeof/T.sizeof;
                          }
 
-                   e += size_t.sizeof;
+                   e += size_t.sizeof/T.sizeof;
                    while (p < e)
                           if (*p++ is match)
                               return p - str - 1;
@@ -827,17 +827,17 @@ size_t mismatch(T) (T* s1, T* s2, size_t length)
                 if (length)
                    {
                    auto start = s1;
-                   auto e = start + length - size_t.sizeof;
+                   auto e = start + length - size_t.sizeof/T.sizeof;
 
                    while (s1 < e)
                          {
                          if (*cast(size_t*) s1 != *cast(size_t*) s2)
                              break;
-                         s1 += size_t.sizeof;
-                         s2 += size_t.sizeof;
+                         s1 += size_t.sizeof/T.sizeof;
+                         s2 += size_t.sizeof/T.sizeof;
                          }
 
-                   e += size_t.sizeof;
+                   e += size_t.sizeof/T.sizeof;
                    while (s1 < e)
                           if (*s1++ != *s2++)
                               return s1 - start - 1;
@@ -1400,6 +1400,7 @@ debug (UnitTest)
 
         assert (indexOf ("abc"w.ptr, cast(wchar)'c', 3) is 2);
         assert (indexOf ("abc"w.ptr, cast(wchar)'d', 3) is 3);
+        assert (indexOf ("abcdefghijklmnopqrstuvwxyz"w.ptr, cast(wchar)'x', 25) is 23);
 
         assert (mismatch ("abc".ptr, "abc".ptr, 3) is 3);
         assert (mismatch ("abc".ptr, "abd".ptr, 3) is 2);
