@@ -150,11 +150,11 @@ class CircularList (V, alias Reap = Container.reap,
                 // used to be Iterator i = void, but that doesn't initialize
                 // fields that are not initialized here.
                 Iterator i;
-                i.mutation = mutation;
                 i.owner = this;
-                i.cell = list;
-                i.head = list;
-                i.bump = &Iterator.fore;
+                i.mutation = mutation;
+                i.cell = i.head = list;
+                i.count = count;
+                i.index = 0;
                 return i;
         }
 
@@ -932,11 +932,13 @@ class CircularList (V, alias Reap = Container.reap,
 
         private struct Iterator
         {
-                Ref function(Ref) bump;
+                bool              rev;
                 Ref               cell,
                                   head,
                                   prior;
                 CircularList      owner;
+                size_t            index,
+                                  count;
                 size_t            mutation;
 
                 /***************************************************************
@@ -974,14 +976,15 @@ class CircularList (V, alias Reap = Container.reap,
                 {
                         V* r;
 
-                        if (cell)
+                        if (index < count)
                            {
+                           ++index;
                            prior = cell;
                            r = &cell.value;
-                           cell = bump (cell);
-                           if (cell is head)
-                               cell = null;
+                           cell = (rev ? cell.prev : cell.next);
                            }
+                        else
+                           cell = null;
                         return r;
                 }
 
@@ -994,17 +997,17 @@ class CircularList (V, alias Reap = Container.reap,
                 int opApply (int delegate(ref V value) dg)
                 {
                         int result;
-
                         auto c = cell;
-                        while (c)
+
+                        while (index < count)
                               {
+                              ++index;
                               prior = c;
-                              if ((c = bump(c)) is head)
-                                   c = null;
+                              c = (rev ? c.prev : c.next);
                               if ((result = dg(prior.value)) != 0)
                                    break;
                               }
-                        cell = c;
+                        cell = null;
                         return result;
                 }                               
 
@@ -1018,19 +1021,20 @@ class CircularList (V, alias Reap = Container.reap,
                 {
                         if (prior)
                            {
-                           auto next = bump (prior);
+                           auto next = (rev ? prior.prev : prior.next);
                            if (prior is head)
-                           {
-                               if (prior is next)
-                                   owner.list = null;
-                               else
-                                   head = owner.list = next;
-                           }
+                              {
+                              if (prior is next)
+                                  owner.list = null;
+                              else
+                                 head = owner.list = next;
+                              }
 
                            prior.unlink;
                            owner.decrement (prior);
                            prior = null;
 
+                           --count;
                            // ignore this change
                            ++mutation;
                            return true;
@@ -1047,55 +1051,43 @@ class CircularList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                Iterator insert(V value)
+                Iterator insert (V value)
                 {
                     // Note: this needs some attention, not sure how
                     // to handle when iterator is in reverse.
-                    if(cell is null)
-                        prior.addNext(value, &owner.heap.allocate);
+                    if (cell is null)
+                        prior.addNext (value, &owner.heap.allocate);
                     else
-                        cell.addPrev(value, &owner.heap.allocate);
+                       cell.addPrev (value, &owner.heap.allocate);
                     owner.increment;
 
-                    //
+                    ++count;
                     // ignore this change
-                    //
-                    mutation++;
+                    ++mutation;
                     return *this;
                 }
 
                 /***************************************************************
+        
+                        Flip the direction of next() and opApply(), and 
+                        reset the termination point such that we can do
+                        another full traversal.
 
                 ***************************************************************/
 
                 Iterator reverse ()
                 {
-                        if (bump is &fore)
-                            bump = &back;
-                        else
-                           bump = &fore;
+                        rev ^= true;
+                        next;
+                        index = 0;
                         return *this;
-                }
-
-                /***************************************************************
-
-                ***************************************************************/
-
-                private static Ref fore (Ref p)
-                {
-                        return p.next;
-                }
-
-                /***************************************************************
-
-                ***************************************************************/
-
-                private static Ref back (Ref p)
-                {
-                        return p.prev;
                 }
         }
 }
+
+/*******************************************************************************
+
+*******************************************************************************/
 
 debug (UnitTest)
 {
