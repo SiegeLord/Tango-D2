@@ -12,7 +12,9 @@
 
 module tango.util.log.Config;
 
-private import  tango.util.log.Log,
+public  import  tango.util.log.Log : Log;
+
+private import  tango.util.log.LayoutDate,
                 tango.util.log.AppendConsole;
 
 /*******************************************************************************
@@ -27,5 +29,6 @@ private import  tango.util.log.Log,
 
 static this ()
 {
-        Log.root.add (new AppendConsole (new LayoutTimer));
+        Log.root.add (new AppendConsole (new LayoutDate));
 }
+

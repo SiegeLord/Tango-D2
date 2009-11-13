@@ -10,12 +10,20 @@
         author:         Kris
 
 
+        Simplified, pedestrian usage:
+        ---
+        import tango.util.log.Config;
+
+        Log ("hello world");
+        Log ("temperature is {} degrees", 75);
+        ---
+
         Loggers are named entities, sometimes shared, sometimes specific to 
         a particular portion of code. The names are generally hierarchical in 
         nature, using dot notation (with '.') to separate each named section. 
         For example, a typical name might be something like "mail.send.writer"
         ---
-        import tango.util.log.Log;format
+        import tango.util.log.Log;
         
         auto log = Log.lookup ("mail.send.writer");
 
@@ -50,26 +58,16 @@
         ---
         char[4096] buf = void;
 
-        log.warn (log.format (buf, "a very long warning: {}", someLongWarning));
+        log.warn (log.format (buf, "a very long message: {}", someLongMessage));
         ---
 
         To avoid overhead when constructing argument passed to formatted 
         messages, you should check to see whether a logger is active or not:
         ---
-        if (log.enabled (log.Warn))
-            log.warn ("temperature is {} degrees!", complexFunction());
-        ---
-
-        Alernatively:
-        ---
         if (log.warn)
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
         
-        The above will be handled implicitly by the logging system when 
-        macros are added to the language (used to be handled implicitly 
-        via lazy delegates, but usage of those turned out to be awkward).
-
         tango.log closely follows both the API and the behaviour as documented 
         at the official Log4J site, where you'll find a good tutorial. Those 
         pages are hosted over 
@@ -190,7 +188,7 @@ public struct Log
         // logging-level names
         private static char[][] LevelNames = 
         [
-                "Trace ", "Info  ", "Warn  ", "Error ", "Fatal ", "None  "
+                "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];
 
         /***********************************************************************
@@ -317,6 +315,17 @@ public struct Log
         }
 
         /***********************************************************************
+                
+                Pedestrian usage support, as an alias for Log.root.info()
+
+        ***********************************************************************/
+
+        static void opCall (char[] fmt, ...)
+        {
+                root.format (Level.Info, fmt, _arguments, _argptr);
+        }
+
+        /***********************************************************************
 
                 Initialize the behaviour of a basic logging hierarchy.
 
@@ -328,108 +337,6 @@ public struct Log
         static void config (OutputStream stream, bool flush = true)
         {
                 root.add (new AppendStream (stream, flush));
-        }
-
-        /***********************************************************************
-        
-                Initialize a snapshot for a specific logging level, and 
-                with an optional buffer. Default buffer size is 1024
-
-        ***********************************************************************/
-
-        static private Snapshot snapshot (Logger owner, Level level, char[] buffer = null)
-        {
-                assert (owner);
-                Snapshot snap = void;
-
-                if (buffer.length is 0)
-                    buffer = snap.tmp;
-
-                snap.buffer = buffer;
-                snap.level = level;
-                snap.owner = owner;
-                snap.next = 0;
-                return snap;
-        }
-}
-
-
-/*******************************************************************************
-
-        Snapshot support for use with existing log instances. The behaviour 
-        is different from traditional logging in that snapshots don't emit any 
-        output until flushed. They gather up information in a temporary buffer 
-        and emit that instead - this can be used to gather up a series of log 
-        snippets into one place. Typical usage is like so:
-        ---
-        auto snap = Log.snapshot (log, Level.Info);
-        ...
-        snap.format ("{}; ", "first");
-        ...
-        snap.format ("{}; ", "second");
-        ...
-        snap.flush;
-        ---
-        
-        Setting a larger buffer size than the default:
-        ---
-        char[4096] buf = void;
-        auto snap = Log.snapshot (log, Level.Info, buf);
-        ...
-        ---
-        
-        Note that this is a struct, and is constructed on the stack
-
-*******************************************************************************/
-
-private struct Snapshot
-{
-        private Logger          owner;
-        private int             next;
-        private Level           level;
-        private char[]          buffer;
-        private char[1024]      tmp = void;
-
-        /***********************************************************************
-        
-                See if this Snapshot is enabled via the associated logger. If
-                that logger is set to a level less verbose than our snapshot, 
-                we are considered disabled.
-
-        ***********************************************************************/
-
-        bool enabled ()
-        {
-                return owner.enabled (level);
-        }
-
-        /***********************************************************************
-                
-                Append formatted text to the snapshot. Nothing is emitted 
-                until flush is invoked.
-
-        ***********************************************************************/
-
-        void format (char[] formatStr, ...)
-        {
-                if (enabled)
-                   {
-                   auto s = Format.vprint (buffer[next .. $], formatStr, _arguments, _argptr);  
-                   next += s.length;
-                   }
-        }
-
-        /***********************************************************************
-        
-                Must be invoked to generate any output
-
-        ***********************************************************************/
-
-        void flush ()
-        {
-                if (next)
-                    owner.append (level, buffer [0 .. next]);
-                next = 0;
         }
 }
 
@@ -558,14 +465,6 @@ public class Logger : ILogger
 
         /***********************************************************************
         
-                No, you should not delete or 'scope' these entities
-
-        ***********************************************************************/
-
-        private ~this() {}
-
-        /***********************************************************************
-        
                 Is this logger enabed for the specified Level?
 
         ***********************************************************************/
@@ -599,18 +498,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Append a trace message
-
-        ***********************************************************************/
-
-        private void trace (lazy void dg)
-        {
-                if (enabled (Level.Trace))
-                    dg();
-        }
-
-        /***********************************************************************
-
                 Is info enabled?
 
         ***********************************************************************/
@@ -629,18 +516,6 @@ public class Logger : ILogger
         final void info (char[] fmt, ...)
         {
                 format (Level.Info, fmt, _arguments, _argptr);
-        }
-
-        /***********************************************************************
-
-                Append an info message
-
-        ***********************************************************************/
-
-        private void info (lazy void dg)
-        {
-                if (enabled (Level.Info))
-                    dg();
         }
 
         /***********************************************************************
@@ -667,18 +542,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Append a warning message
-
-        ***********************************************************************/
-
-        private void warn (lazy void dg)
-        {
-                if (enabled (Level.Warn))
-                    dg();
-        }
-
-        /***********************************************************************
-
                 Is error enabled?
 
         ***********************************************************************/
@@ -701,18 +564,6 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Append an error message
-
-        ***********************************************************************/
-
-        private void error (lazy void dg)
-        {
-                if (enabled (Level.Error))
-                    dg();
-        }
-
-        /***********************************************************************
-
                 Is fatal enabled?
 
         ***********************************************************************/
@@ -731,18 +582,6 @@ public class Logger : ILogger
         final void fatal (char[] fmt, ...)
         {
                 format (Level.Fatal, fmt, _arguments, _argptr);
-        }
-
-        /***********************************************************************
-
-                Append a fatal message
-
-        ***********************************************************************/
-
-        private void fatal (lazy void dg)
-        {
-                if (enabled (Level.Fatal))
-                    dg();
         }
 
         /***********************************************************************
@@ -1733,12 +1572,12 @@ public class LayoutTimer : Appender.Layout
 
                 dg (event.toMilli (tmp, event.span));
                 dg (" ");
-//                dg (Thread.getThis.name);
-//                dg (" ");
                 dg (event.levelName);
+                dg (" [");
                 dg (event.name);
+                dg ("] ");
                 dg (event.host.context.label);
-                dg (" - ");
+                dg ("- ");
                 dg (event.toString);
         }
 }

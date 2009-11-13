@@ -63,7 +63,7 @@ public class LayoutDate : Appender.Layout
                 // format date according to ISO-8601 (lightweight formatter)
                 char[20] tmp = void;
                 char[256] tmp2 = void;
-                dg (layout (tmp2, "%0-%1-%2 %3:%4:%5,%6 %7%8 %9 - ", 
+                dg (layout (tmp2, "%0-%1-%2 %3:%4:%5,%6 %7 [%8] - ", 
                             convert (tmp[0..4],   dt.date.year),
                             convert (tmp[4..6],   dt.date.month),
                             convert (tmp[6..8],   dt.date.day),
@@ -71,7 +71,6 @@ public class LayoutDate : Appender.Layout
                             convert (tmp[10..12], dt.time.minutes),
                             convert (tmp[12..14], dt.time.seconds),
                             convert (tmp[14..17], dt.time.millis),
-                            spaces [0 .. $-level.length],
                             level,
                             event.name
                             ));

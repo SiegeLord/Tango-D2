@@ -45,7 +45,7 @@ public class LayoutChainsaw : Appender.Layout
                 dg ("\" timestamp=\"");
                 dg (event.toMilli (tmp, event.time.span));
                 dg ("\" level=\"");
-                dg (event.levelName [0..length-1]);
+                dg (event.levelName);
                 dg ("\" thread=\"");
                 dg (threadName);
                 dg ("\">\r\n<log4j:message><![CDATA[");
