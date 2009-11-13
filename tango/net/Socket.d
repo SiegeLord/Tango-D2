@@ -1552,8 +1552,8 @@ class Socket
 
 abstract class Address
 {
-        abstract protected sockaddr* name();
-        abstract protected int nameLen();
+        abstract sockaddr* name();
+        abstract int nameLen();
         abstract AddressFamily addressFamily();
         abstract char[] toString();
 
@@ -1578,9 +1578,7 @@ abstract class Address
 
 class UnknownAddress: Address
 {
-        protected:
-        sockaddr sa;
-
+        private sockaddr sa;
 
         /***********************************************************************
 
@@ -1603,8 +1601,6 @@ class UnknownAddress: Address
                 return sa.sizeof;
         }
 
-
-        public:
         /***********************************************************************
 
 
