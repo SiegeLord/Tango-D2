@@ -354,9 +354,6 @@ class File : Device, Device.Seek
         static void set (char[] path, void[] content)
         {
                 scope file = new File (path, ReadWriteCreate);  
-                scope (exit)
-                       file.close;
-
                 file.write (content);
         }
 
@@ -369,9 +366,6 @@ class File : Device, Device.Seek
         static void append (char[] path, void[] content)
         {
                 scope file = new File (path, WriteAppending);  
-                scope (exit)
-                       file.close;
-
                 file.write (content);
         }
 
