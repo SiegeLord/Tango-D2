@@ -330,8 +330,6 @@ class File : Device, Device.Seek
         static void[] get (char[] path, void[] dst = null)
         {
                 scope file = new File (path);  
-                scope (exit)
-                       file.close;
 
                 // allocate enough space for the entire file
                 auto len = cast(size_t) file.length;
@@ -511,7 +509,7 @@ class File : Device, Device.Seek
 
                 void truncate ()
                 {
-                        truncate (*cast(long*) &super.overlapped.Offset);
+                        truncate (position);
                 }               
 
                 /***************************************************************
@@ -543,7 +541,7 @@ class File : Device, Device.Seek
                         long newOffset; 
 
                         if (anchor is Anchor.Current)
-                            offset += *cast(long*) &super.overlapped.Offset;
+                            offset += position;
 
                         if (! SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
                                                 &offset, cast(PLARGE_INTEGER) 
