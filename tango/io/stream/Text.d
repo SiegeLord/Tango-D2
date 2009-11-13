@@ -16,11 +16,14 @@ private import tango.io.stream.Lines;
 
 private import tango.io.stream.Format;
 
+private import tango.io.stream.Buffered;
+
 private import tango.io.model.IConduit;
 
 /*******************************************************************************
 
-        
+        Input is buffered
+                
 *******************************************************************************/
 
 class TextInput : Lines!(char)
@@ -37,7 +40,8 @@ class TextInput : Lines!(char)
 
 /*******************************************************************************
 
-        
+        Output is buffered
+
 *******************************************************************************/
 
 class TextOutput : FormatOutput!(char)
@@ -51,6 +55,6 @@ class TextOutput : FormatOutput!(char)
 
         this (OutputStream output)
         {
-                super (output);
+                super (BufferedOutput.create(output));
         }
 }
