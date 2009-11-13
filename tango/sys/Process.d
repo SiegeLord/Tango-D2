@@ -1850,7 +1850,7 @@ class Process
                 dest ~= key ~ '=' ~ value ~ '\0';
             }
 
-            dest ~= '\0';
+            dest ~= "\0\0";
             return dest;
         }
     }
