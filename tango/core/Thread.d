@@ -2688,6 +2688,8 @@ class Fiber
 
         void pause (uint ms=0) {}
 
+        void ready (Fiber fiber) {}
+
         void open (Handle fd, char[] name) {}
 
         void close (Handle fd, char[] name) {}
@@ -2701,6 +2703,7 @@ class Fiber
     {  
         uint             idx;           // support for timer removal
         Fiber            next;          // linked list of elapsed fibers
+        void*            data;          // data to exchange
         ulong            clock;         // request timeout duration
         Scheduler.Handle handle;        // IO request handle
         Scheduler        scheduler;     // associated scheduler (may be null)
