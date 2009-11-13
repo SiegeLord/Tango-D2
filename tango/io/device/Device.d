@@ -72,10 +72,9 @@ class Device : Conduit, ISelectable
 
         version (Win32)
         {
+                protected bool          track;
                 protected HANDLE        handle;
                 protected OVERLAPPED    overlapped;
-                protected long          readOffset,
-                                        writeOffset;
 
                 /***************************************************************
 
@@ -86,7 +85,6 @@ class Device : Conduit, ISelectable
                 protected void reopen (Handle handle)
                 {
                         this.handle = cast(HANDLE) handle;
-                        readOffset = writeOffset = 0;
                 }
 
                 /***************************************************************
@@ -134,6 +132,7 @@ class Device : Conduit, ISelectable
                         DWORD bytes;
 
                         if (! ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped))
+                        //ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped);
                               if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
                                    return Eof;
 
@@ -141,9 +140,9 @@ class Device : Conduit, ISelectable
                         if (bytes is 0 && dst.length > 0)
                             return Eof;
 
-                        // update read position ...
-                        readOffset += bytes;
-
+                        // update stream location?
+                        if (track)
+                           (*cast(long*) &overlapped.Offset) += bytes;
                         return bytes;
                 }
 
@@ -163,11 +162,13 @@ class Device : Conduit, ISelectable
                         DWORD bytes;
 
                         if (! WriteFile (handle, src.ptr, src.length, &bytes, &overlapped))
+                        //WriteFile (handle, src.ptr, src.length, &bytes, &overlapped);
                               if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
                                    return Eof;
 
-                        // update write position ...
-                        writeOffset += bytes;
+                        // update stream location?
+                        if (track)
+                           (*cast(long*) &overlapped.Offset) += bytes;
                         return bytes;
                 }
 

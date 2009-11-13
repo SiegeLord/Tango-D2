@@ -314,17 +314,6 @@ class File : Device, Device.Seek
         }               
 
         /***********************************************************************
-                
-                Return the current file position.
-                
-        ***********************************************************************/
-
-        long position ()
-        {
-                return seek (0, Anchor.Current);
-        }               
-
-        /***********************************************************************
 
                 Convenience function to return the content of a file.
                 Returns a slice of the provided output buffer, where
@@ -397,8 +386,6 @@ class File : Device, Device.Seek
 
         version(Win32)
         {
-                private bool appending;
-
                 /***************************************************************
                   
                     Low level open for sub-classes that need to apply specific
@@ -409,8 +396,7 @@ class File : Device, Device.Seek
 
                 ***************************************************************/
 
-                protected bool open (char[] path, Style style, 
-                                     DWORD addattr)
+                protected bool open (char[] path, Style style, DWORD addattr)
                 {
                         DWORD   attr,
                                 share,
@@ -492,7 +478,9 @@ class File : Device, Device.Seek
 
                         // move to end of file?
                         if (style.open is Open.Append)
-                            appending = true;
+                            *(cast(long*) &super.overlapped.Offset) = -1;
+                        else
+                           super.track = true;
 
                         // monitor this handle for async I/O?
                         if (scheduler)
@@ -509,44 +497,10 @@ class File : Device, Device.Seek
 
                 void open (char[] path, Style style = ReadExisting)
                 {
-                    if (!open(path, style, 0))
-                        error;
-                }
-                
-                /***************************************************************
-
-                        Read a chunk of bytes from the file into the provided
-                        array (typically that belonging to an IBuffer). 
-
-                        Returns the number of bytes read, or Eof when there is
-                        no further data
-
-                ***************************************************************/
-
-                override size_t read (void[] dst)
-                {
-                       *(cast(long*) &super.overlapped.Offset) = 
-                                     (appending ? -1 : super.readOffset);
-
-                        return super.read (dst);
+                    if (! open (path, style, 0))
+                          error;
                 }
 
-                /***************************************************************
-
-                        Write a chunk of bytes to the file from the provided
-                        array (typically that belonging to an IBuffer)
-
-                ***************************************************************/
-
-                override size_t write (void[] src)
-                {
-                        // emulate the Unix O_APPEND mode
-                        *(cast(long*) &super.overlapped.Offset) = 
-                                      (appending ? -1 : super.writeOffset);
-                        
-                        return super.write (src);
-                }
-            
                 /***************************************************************
 
                         Set the file size to be that of the current seek 
@@ -557,9 +511,7 @@ class File : Device, Device.Seek
 
                 void truncate ()
                 {
-                        // must have Generic_Write access
-                        if (! SetEndOfFile (handle))
-                              error;                            
+                        truncate (*cast(long*) &super.overlapped.Offset);
                 }               
 
                 /***************************************************************
@@ -573,7 +525,10 @@ class File : Device, Device.Seek
                 {
                         auto s = seek (size);
                         assert (s is size);
-                        truncate;
+
+                        // must have Generic_Write access
+                        if (! SetEndOfFile (handle))
+                              error;                            
                 }               
 
                 /***************************************************************
@@ -586,13 +541,29 @@ class File : Device, Device.Seek
                 override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
                         long newOffset; 
+
+                        if (anchor is Anchor.Current)
+                            offset += *cast(long*) &super.overlapped.Offset;
+
                         if (! SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
                                                 &offset, cast(PLARGE_INTEGER) 
                                                 &newOffset, anchor)) 
                               error;
-                        return readOffset = writeOffset = newOffset;
+
+                        return (*cast(long*) &super.overlapped.Offset) = newOffset;
                 } 
                               
+                /***************************************************************
+                
+                        Return the current file position.
+                
+                ***************************************************************/
+
+                long position ()
+                {
+                        return *cast(long*) &super.overlapped.Offset;
+                }               
+
                 /***************************************************************
         
                         Return the total length of this file.
@@ -603,7 +574,7 @@ class File : Device, Device.Seek
                 {
                         long len;
 
-                        if (! GetFileSizeEx(handle, cast(PLARGE_INTEGER) &len))
+                        if (! GetFileSizeEx (handle, cast(PLARGE_INTEGER) &len))
                               error;
                         return len;
                 }               
@@ -736,6 +707,17 @@ class File : Device, Device.Seek
                         if (result is -1)
                             error;
                         return result;
+                }               
+
+                /***************************************************************
+                
+                        Return the current file position.
+                
+                ***************************************************************/
+
+                long position ()
+                {
+                        return seek (0, Anchor.Current);
                 }               
 
                 /***************************************************************
