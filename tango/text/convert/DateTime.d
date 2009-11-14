@@ -34,15 +34,16 @@ version (WithExtensions)
 
 /******************************************************************************
 
-        Windows specifics
+        O/S specifics
                 
 ******************************************************************************/
 
 version (Windows)
+         private import tango.sys.win32.UserGdi;
+else
 {
-        private import tango.sys.win32.UserGdi;
-
-        enum {LOCALE_SYEARMONTH = 0x00001006};
+        private import tango.stdc.stringz;
+        private import tango.stdc.posix.langinfo;
 }
 
 /******************************************************************************
@@ -270,7 +271,7 @@ struct DateTimeLocale
         }
 
 version (Windows)
-{
+        {
         /**********************************************************************
 
                 create and populate an instance via O/S configuration
@@ -338,19 +339,263 @@ version (Windows)
                                              dt.shortTimePattern;
                 return dt;
         }
-}
+        }
 else
-{
+        {
         /**********************************************************************
 
-                
+                create and populate an instance via O/S configuration
+                for the current user
+
         **********************************************************************/
 
         static DateTimeLocale create ()
         {
-                return EngUS;
+                //extract separator
+                static char[] extractSeparator(char[] str, char[] def)
+                {
+                        for (auto i = 0; i < str.length; ++i)
+                            {
+                            char c = str[i];
+                            if ((c == '%') || (c == ' ') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+                                continue;
+                            return str[i..i+1].dup;
+                            }
+                        return def;
+                }
+
+                static char[] getString(nl_item id, char[] def = null)
+                {
+                        char* p = nl_langinfo(id);
+                        return p ? fromStringz(p).dup : def;
+                }
+
+                static char[] getFormatString(nl_item id, char[] def = null)
+                {
+                        char[] posix_str = getString(id, def);
+                        return convert(posix_str);
+                }
+
+                DateTimeLocale dt;
+
+                for (auto i = DAY_1; i <= DAY_7; ++i)
+                     dt.dayNames ~= getString (i);
+
+                for (auto i = ABDAY_1; i <= ABDAY_7; ++i)
+                     dt.abbreviatedDayNames ~= getString (i);
+
+                for (auto i = MON_1; i <= MON_12; ++i)
+                     dt.monthNames ~= getString (i);
+
+                for (auto i = ABMON_1; i <= ABMON_12; ++i)
+                     dt.abbreviatedMonthNames ~= getString (i);
+
+                dt.amDesignator = getString (AM_STR, "AM");
+                dt.pmDesignator = getString (PM_STR, "PM");
+
+                dt.longDatePattern = "dddd, MMMM d, yyyy"; //default
+                dt.shortDatePattern = getFormatString(D_FMT, "M/d/yyyy");
+
+                dt.longTimePattern = getFormatString(T_FMT, "h:mm:ss tt");
+                dt.shortTimePattern = "h:mm"; //default
+
+                dt.yearMonthPattern = "MMMM, yyyy"; //no posix equivalent?
+                dt.fullDateTimePattern = getFormatString(D_T_FMT, "dddd, MMMM d, yyyy h:mm:ss tt");
+
+                dt.dateSeparator = extractSeparator(dt.shortDatePattern, "/");
+                dt.timeSeparator = extractSeparator(dt.longTimePattern, ":");
+
+                //extract shortTimePattern from longTimePattern
+                for (auto i = dt.longTimePattern.length; i--;) 
+                    {
+                    if (dt.longTimePattern[i] == dt.timeSeparator[$-1])
+                       {
+                       dt.shortTimePattern = dt.longTimePattern[0..i];
+                       break;
+                       }
+                    }
+
+                //extract longDatePattern from fullDateTimePattern
+                auto pos = dt.fullDateTimePattern.length - dt.longTimePattern.length - 2;
+                if (pos < dt.fullDateTimePattern.length)
+                    dt.longDatePattern = dt.fullDateTimePattern[0..pos];
+
+                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~ dt.longTimePattern;
+                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~  dt.longTimePattern;
+                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~  dt.shortTimePattern;
+
+                return dt;
         }
-}
+
+        /**********************************************************************
+
+                Convert POSIX date time format to .NET format syntax.
+
+        **********************************************************************/
+
+        private static char[] convert(char[] fmt)
+        {
+                char[32] ret;
+                size_t len;
+
+                void put(char[] str)
+                {
+                        assert((len+str.length) < ret.length);
+                        ret[len..len+str.length] = str;
+                        len += str.length;
+                }
+
+                for (auto i = 0; i < fmt.length; ++i)
+                    {
+                    char c = fmt[i];
+
+                    if (c != '%')
+                       {
+                       put([c]);
+                       continue;
+                       }
+
+                    i++;
+                    if (i >= fmt.length)
+                        break;
+
+                    c = fmt[i];
+                    switch (c)
+                           {
+                           case 'a': //locale's abbreviated weekday name. 
+                                put("ddd"); //The abbreviated name of the day of the week,
+                                break;
+
+                           case 'A': //locale's full weekday name.
+                                put("dddd");
+                                break;
+
+                           case 'b': //locale's abbreviated month name
+                                put("MMM");
+                                break;
+
+                           case 'B': //locale's full month name
+                                put("MMMM");
+                                break;
+
+                           case 'd': //day of the month as a decimal number [01,31]
+                                put("dd"); // The day of the month. Single-digit
+                                //days will have a leading zero.
+                                break;
+
+                           case 'D': //same as %m/%d/%y. 
+                                put("MM/dd/yy");
+                                break;
+
+                           case 'e': //day of the month as a decimal number [1,31];
+                                //a single digit is preceded by a space
+                                put("d"); //The day of the month. Single-digit days
+                                //will not have a leading zero.
+                                break;
+
+                           case 'h': //same as %b. 
+                                put("MMM");
+                                break;
+
+                           case 'H':
+                                //hour (24-hour clock) as a decimal number [00,23]
+                                put("HH"); //The hour in a 24-hour clock. Single-digit
+                                //hours will have a leading zero.
+                                break;
+
+                           case 'I': //the hour (12-hour clock) as a decimal number [01,12]
+                                put("hh"); //The hour in a 12-hour clock.
+                                //Single-digit hours will have a leading zero.
+                                break;
+
+                           case 'm': //month as a decimal number [01,12]
+                                put("MM"); //The numeric month. Single-digit
+                                //months will have a leading zero.
+                                break;
+
+                           case 'M': //minute as a decimal number [00,59]
+                                put("mm"); //The minute. Single-digit minutes
+                                //will have a leading zero.
+                                break;
+
+                           case 'n': //newline character
+                                put("\n");
+                                break;
+
+                           case 'p': //locale's equivalent of either a.m. or p.m
+                                put("tt");
+                                break;
+
+                           case 'r': //time in a.m. and p.m. notation;
+                                //equivalent to %I:%M:%S %p.
+                                put("hh:mm:ss tt");
+                                break;
+
+                           case 'R': //time in 24 hour notation (%H:%M)
+                                put("HH:mm");
+                                break;
+
+                           case 'S': //second as a decimal number [00,61]
+                                put("ss"); //The second. Single-digit seconds
+                                //will have a leading zero.
+                                break;
+
+                           case 't': //tab character.
+                                put("\t");
+                                break;
+
+                           case 'T': //equivalent to (%H:%M:%S)
+                                put("HH:mm:ss");
+                                break;
+
+                           case 'u': //weekday as a decimal number [1,7],
+                                //with 1 representing Monday
+                           case 'U': //week number of the year
+                                //(Sunday as the first day of the week) as a decimal number [00,53]
+                           case 'V': //week number of the year
+                                //(Monday as the first day of the week) as a decimal number [01,53].
+                                //If the week containing 1 January has four or more days
+                                //in the new year, then it is considered week 1.
+                                //Otherwise, it is the last week of the previous year, and the next week is week 1. 
+                           case 'w': //weekday as a decimal number [0,6], with 0 representing Sunday
+                           case 'W': //week number of the year (Monday as the first day of the week)
+                                //as a decimal number [00,53].
+                                //All days in a new year preceding the first Monday
+                                //are considered to be in week 0. 
+                           case 'x': //locale's appropriate date representation
+                           case 'X': //locale's appropriate time representation
+                           case 'c': //locale's appropriate date and time representation
+                           case 'C': //century number (the year divided by 100 and
+                                //truncated to an integer) as a decimal number [00-99]
+                           case 'j': //day of the year as a decimal number [001,366]
+                                assert(0);
+
+                           case 'y': //year without century as a decimal number [00,99]
+                                put("yy"); // The year without the century. If the year without
+                                //the century is less than 10, the year is displayed with a leading zero.
+                                break;
+
+                           case 'Y': //year with century as a decimal number
+                                put("yyyy"); //The year in four digits, including the century.
+                                break;
+
+                           case 'Z': //timezone name or abbreviation,
+                                //or by no bytes if no timezone information exists
+                                //assert(0);
+                                break;
+
+                           case '%':
+                                put("%");
+                                break;
+
+                           default:
+                                assert(0);
+                           }
+                    }
+                return ret[0..len].dup;
+        }
+        }
+
         /**********************************************************************
 
         **********************************************************************/
@@ -658,9 +903,7 @@ else
 /******************************************************************************
         
         An english/usa locale
-
-        TODO: need to make this integrate with the content within 
-        text.locale.Data, or populate from the O/S instead
+        Used as generic DateTimeLocale.
 
 ******************************************************************************/
 
