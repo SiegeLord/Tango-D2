@@ -27,8 +27,8 @@ private extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
 
 enum Encoding {
               Unknown,
-              UTF_8,
               UTF_8N,
+              UTF_8,
               UTF_16,
               UTF_16BE,
               UTF_16LE,
@@ -54,8 +54,8 @@ enum Encoding {
         Supported external encodings are as follow:
 
                 Encoding.Unknown 
-                Encoding.UTF_8
                 Encoding.UTF_8N
+                Encoding.UTF_8
                 Encoding.UTF_16
                 Encoding.UTF_16BE
                 Encoding.UTF_16LE 
@@ -126,7 +126,10 @@ class UnicodeBom(T) : BomSniffer
                 thrown if a signature is present when, according to the
                 encoding type, it should not be. Conversely, An exception
                 is thrown if there is no known signature where the current
-                encoding expects one to be present
+                encoding expects one to be present.
+
+                Where 'ate' is provided, it will be set to the number of 
+                bytes consumed from the input (not the number of elements)
 
         ***********************************************************************/
 
@@ -157,7 +160,10 @@ class UnicodeBom(T) : BomSniffer
                        onUnicodeError ("UnicodeBom.decode :: explicit encoding does not permit BOM");   
                 
                 // convert it to internal representation
-                return into (swapBytes(content), settings.type, dst, ate);
+                auto ret = into (swapBytes(content), settings.type, dst, ate);
+                if (ate && info)
+                    *ate += info.bom.length;
+                return ret;
         }
 
         /***********************************************************************
@@ -167,13 +173,13 @@ class UnicodeBom(T) : BomSniffer
 
         ***********************************************************************/
 
-        final void[] encode (T[] content, void[] dst=null, uint* ate=null)
+        final void[] encode (T[] content, void[] dst=null)
         {
                 if (settings.test)
                     onUnicodeError ("UnicodeBom.encode :: cannot write to a non-specific encoding");
 
                 // convert it to external representation, and write
-		return swapBytes (from (content, settings.type, dst, ate));
+		return swapBytes (from (content, settings.type, dst));
         }
 
         /***********************************************************************
@@ -199,23 +205,26 @@ class UnicodeBom(T) : BomSniffer
                    }
                 return content;
         }
-
+        
         /***********************************************************************
       
-
         ***********************************************************************/
 
-        static T[] into (void[] x, uint type, T[] dst=null, uint* ate=null)
+        static T[] into (void[] x, uint type, T[] dst=null, uint* ate = null)
         {
                 T[] ret;
-
+                
                 static if (is (T == char))
                           {
                           if (type == Utf8)
-                              return cast(T[]) x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = cast(char[]) x;
+                             }
+                          else
                           if (type == Utf16)
-			      ret = Utf.toString (cast(wchar[]) x, dst, ate);
+                              ret = Utf.toString (cast(wchar[]) x, dst, ate);
                           else
                           if (type == Utf32)
                               ret = Utf.toString (cast(dchar[]) x, dst, ate);
@@ -224,8 +233,12 @@ class UnicodeBom(T) : BomSniffer
                 static if (is (T == wchar))
                           {
                           if (type == Utf16)
-                              return cast(T[]) x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = cast(wchar[]) x;
+                             }
+                          else
                           if (type == Utf8)
                               ret = Utf.toString16 (cast(char[]) x, dst, ate);
                           else
@@ -236,15 +249,18 @@ class UnicodeBom(T) : BomSniffer
                 static if (is (T == dchar))
                           {
                           if (type == Utf32)
-                              return cast(T[]) x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = cast(dchar[]) x;
+                             }
+                          else
                           if (type == Utf8)
                               ret = Utf.toString32 (cast(char[]) x, dst, ate);
                           else
                           if (type == Utf16)
                               ret = Utf.toString32 (cast(wchar[]) x, dst, ate);
                           }
-
                 return ret;
         }
 
@@ -260,8 +276,12 @@ class UnicodeBom(T) : BomSniffer
                 static if (is (T == char))
                           {
                           if (type == Utf8)
-                              return x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = x;
+                             }
+                          else
                           if (type == Utf16)
                               ret = Utf.toString16 (x, cast(wchar[]) dst, ate);
                           else
@@ -272,8 +292,12 @@ class UnicodeBom(T) : BomSniffer
                 static if (is (T == wchar))
                           {
                           if (type == Utf16)
-                              return x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = x;
+                             }
+                          else
                           if (type == Utf8)
                               ret = Utf.toString (x, cast(char[]) dst, ate);
                           else
@@ -284,8 +308,12 @@ class UnicodeBom(T) : BomSniffer
                 static if (is (T == dchar))
                           {
                           if (type == Utf32)
-                              return x;
-
+                             {
+                             if (ate)
+                                 *ate = x.length;
+                             ret = x;
+                             }
+                          else
                           if (type == Utf8)
                               ret = Utf.toString (x, cast(char[]) dst, ate);
                           else
@@ -324,9 +352,9 @@ class BomSniffer
         
         private const Info[] lookup =
         [
-        {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8N},
-        {Utf8,  Encoding.UTF_8,    null,        true,  false, false, Encoding.UTF_8N},
-        {Utf8,  Encoding.UTF_8N,   x"efbbbf",   false},
+        {Utf8,  Encoding.Unknown,  null,        true,  false, false, Encoding.UTF_8},
+        {Utf8,  Encoding.UTF_8N,   null,        true,  false, false, Encoding.UTF_8},
+        {Utf8,  Encoding.UTF_8,    x"efbbbf",   false},
         {Utf16, Encoding.UTF_16,   null,        true,  false, false, Encoding.UTF_16BE},
         {Utf16, Encoding.UTF_16BE, x"feff",     false, true, true},
         {Utf16, Encoding.UTF_16LE, x"fffe",     false, true},
@@ -405,3 +433,49 @@ class BomSniffer
         }
 }
 
+debug (UnitTest)
+{
+        unittest
+        {
+                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86";
+                void[] INPUT = x"efbbbf" ~ INPUT2;
+                auto bom = new UnicodeBom!(char)(Encoding.Unknown);
+                uint ate;
+                char[256] buf;
+                
+                auto temp = bom.decode (INPUT, buf, &ate);
+                assert (temp == INPUT2);
+                assert (ate == INPUT.length);
+                assert (bom.encoding == Encoding.UTF_8);
+                
+                temp = bom.decode (INPUT2, buf, &ate);
+                assert (temp == INPUT2);
+                assert (ate == INPUT2.length);
+                assert (bom.encoding == Encoding.UTF_8);
+        }
+}
+
+debug (UnicodeBom)
+{
+        import tango.io.Stdout;
+
+        void main()
+        {
+                void[] INPUT2 = "abc\xE3\x81\x82\xE3\x81\x84\xE3\x81\x86";
+                void[] INPUT = x"efbbbf" ~ INPUT2;
+                auto bom = new UnicodeBom!(char)(Encoding.Unknown);
+                uint ate;
+                char[256] buf;
+                
+                auto temp = bom.decode (INPUT, buf, &ate);
+                assert (temp == INPUT2);
+                Stdout (ate, INPUT.length);
+                assert (ate == INPUT.length);
+                assert (bom.encoding == Encoding.UTF_8);
+                
+                temp = bom.decode (INPUT2, buf, &ate);
+                assert (temp == INPUT2);
+                assert (ate == INPUT2.length);
+                assert (bom.encoding == Encoding.UTF_8);
+        }
+}
