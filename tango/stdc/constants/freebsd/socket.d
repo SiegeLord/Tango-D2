@@ -82,7 +82,9 @@ module tango.stdc.constants.freebsd.socket;
         AF_UNSPEC = 0 ,
         AF_UNIX = 1 ,
         AF_INET = 2 ,
-        AF_INET6 = 28 ,
+        AF_IPX = 23 ,
+        AF_APPLETALK = 16,
+        AF_INET6 = 28
     }
     enum : uint
     {
@@ -90,7 +92,7 @@ module tango.stdc.constants.freebsd.socket;
     }
     enum
     {
-        SOMAXCONN       = 128,
+        SOMAXCONN       = 128
     }
     enum : uint
     {
@@ -100,7 +102,8 @@ module tango.stdc.constants.freebsd.socket;
         MSG_OOB         = 0x1,
         MSG_PEEK        = 0x2,
         MSG_TRUNC       = 0x10,
-        MSG_WAITALL     = 0x40
+        MSG_WAITALL     = 0x40,
+	MSG_NOSIGNAL	= 0x20000
     }
     enum
     {

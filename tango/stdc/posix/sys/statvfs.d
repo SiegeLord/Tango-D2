@@ -50,6 +50,28 @@ version(darwin) {
     }
 }
 
+version( freebsd )
+{
+    alias ulong __fsblkcnt_t, __fsfilcnt_t;
+    struct statvfs_t {
+        __fsblkcnt_t      f_bavail;       /* Number of blocks */
+        __fsblkcnt_t      f_bfree;
+        __fsblkcnt_t      f_blocks;
+        __fsfilcnt_t      f_favail;       /* Number of files (e.g., inodes) */
+        __fsfilcnt_t      f_ffree;
+        __fsfilcnt_t      f_files;
+        c_ulong   f_bsize;        /* Size of blocks counted above */
+        c_ulong  f_flag;
+        c_ulong   f_frsize;       /* Size of fragments */
+        c_ulong   f_fsid;         /* Not meaningful */
+        c_ulong   f_namemax;      /* Same as pathconf(_PC_NAME_MAX) */
+    }
+    enum {
+        ST_RDONLY = 1,
+        ST_NOSUID = 2,
+    }
+}
+
 version(linux){
     struct statvfs_t
       {

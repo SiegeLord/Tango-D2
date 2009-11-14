@@ -37,13 +37,21 @@ private
             extern (C) extern void* __libc_stack_end;
         }
     }
-    version (OSX)
+    version( OSX )
     {
         extern (C)
         {
             extern void* __osx_stack_end;    // set by D startup code
         }
     }
+    version( freebsd )
+    {
+        extern (C)
+        {
+            extern void* __libc_stack_end;
+        }
+    }
+
 }
 
 
@@ -77,8 +85,10 @@ extern (C) void* rt_stackBottom()
                 }
                 return *libc_stack_end;
         }
-    } else version (darwin) {
+    } else version( darwin ) {
         return __osx_stack_end;
+    } else version( freebsd ) {
+        return __libc_stack_end;
     } else {
         static assert( false, "Operating system not supported." );
     }
