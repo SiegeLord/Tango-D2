@@ -8,11 +8,17 @@
                         Mar 2009: extracted from locale, and 
                                   converted to a struct
 
-        author:         John Chapman, Kris
+        author:         John Chapman, Kris, mwarning
 
         Support for formatting date/time values, in a locale-specific
         manner. See DateTimeLocale.format() for a description on how 
         formatting is performed (below).
+
+        Reference links:
+        ---
+        http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+        http://msdn.microsoft.com/en-us/library/system.globalization.datetimeformatinfo(VS.71).aspx
+        ---
 
 ******************************************************************************/
 
