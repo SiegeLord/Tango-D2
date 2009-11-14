@@ -153,7 +153,7 @@ class GreedyOutput : OutputFilter
 
 *******************************************************************************/
 
-debug (GreedyStream)
+debug (Greedy)
 {
         void main()
         {       

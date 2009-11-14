@@ -1397,7 +1397,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
 ******************************************************************************/
 
-debug (Buffer)
+debug (Buffered)
 {
         void main()
         {
