@@ -41,6 +41,8 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
 
         /***********************************************************************
 
+                Create a buffered utf input converter
+
         ***********************************************************************/
 
         this (InputStream stream)
@@ -48,6 +50,23 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
                 super (buffer = BufferedInput.create (stream));
         }
         
+        /***********************************************************************
+
+                Consume input of type T, and return the number of array 
+                elements comsumed. 
+
+                Returns Eof upon end-of-flow
+
+        ***********************************************************************/
+
+        final size_t consume (T[] dst)
+        {
+                auto x = read (dst);
+                if (x != Eof)
+                    x /= T.sizeof;
+                return x;
+        }
+
         /***********************************************************************
 
         ***********************************************************************/
@@ -118,11 +137,30 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
         /***********************************************************************
 
+                Create a buffered utf output converter
+
         ***********************************************************************/
 
         this (OutputStream stream)
         {
                 super (buffer = BufferedOutput.create (stream));
+        }
+
+        /***********************************************************************
+
+                Consume input of type T, and return the number of array 
+                elements consumed. 
+
+                Returns Eof upon end-of-flow
+
+        ***********************************************************************/
+
+        final size_t consume (S[] dst)
+        {
+                auto x = write (dst);
+                if (x != Eof)
+                    x /= S.sizeof;
+                return x;
         }
 
         /***********************************************************************
@@ -170,10 +208,10 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
                     
                    // write directly into buffered content and
                    // flush when the output is full
-                   if (buffer.write(&writer) is Eof)
+                   if (buffer.writer(&writer) is Eof)
                       {
                       buffer.flush;
-                      if (buffer.write(&writer) is Eof)
+                      if (buffer.writer(&writer) is Eof)
                           return Eof;
                       }
                    return consumed * S.sizeof;
@@ -188,6 +226,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
         
 debug (Utf)
 {
+        import tango.io.Stdout;
         import tango.io.device.Array;
 
         void main()
