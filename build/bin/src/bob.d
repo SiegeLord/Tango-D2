@@ -29,6 +29,7 @@ void main (char[][] arg)
         if (args.populate (arg[1..$]))
            {
            new Linux (args);
+           new Freebsd(args);
            new Windows (args);
            stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
            }
@@ -184,6 +185,110 @@ class Linux : FileFilter
 
 
 }
+
+class Freebsd : FileFilter
+{
+        this (ref Args args)
+        {
+                super (args);
+                include ("tango/sys/freebsd");
+                include ("tango/stdc/constants/freebsd");
+                register ("freebsd", "dmd", &dmd);
+                register ("freebsd", "ldc", &ldc);
+                register ("freebsd", "gdc", &gdc);
+        }
+
+        private void addToLib(char[] obj)
+        {
+            exec ("ar -r "~args.lib~".a "~obj);
+        }
+
+        private char[] compile (FilePath file, char[] cmd)
+        {
+                auto temp = objname (file, ".o");
+                exec (split(cmd~temp~" "~file.toString, " "), 
+                      Environment.get, null);
+                return temp;
+        }
+
+        private auto gcc = "gcc -c -o";
+        private auto gcc32 = "gcc -c -m32 -o";
+
+        int dmd ()
+        {
+                auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+
+                exclude ("tango/core/rt/compiler/dmd/windows");
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, dmd);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc32);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc32);
+                            addToLib(obj);
+                    }
+                }
+
+                return count;
+        }
+
+        int ldc ()
+        {
+                auto ldc = "ldc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, ldc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                return count;
+        }
+
+        int gdc ()
+        {
+                auto gdc = "gdc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, gdc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                return count;
+        }
+
+
+}
+
+
 
 /*******************************************************************************
       
