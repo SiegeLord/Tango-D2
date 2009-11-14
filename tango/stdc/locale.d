@@ -43,6 +43,7 @@ const LC_NUMERIC        = 1;
 const LC_TIME           = 2;
 const LC_COLLATE        = 3;
 const LC_MONETARY       = 4;
+const LC_MESSAGES       = 5;
 const LC_ALL            = 6;
 const LC_PAPER          = 7;
 const LC_NAME           = 8;
