@@ -154,14 +154,15 @@ class HttpParams : HttpTokens, HttpParamsView
                 return super.getDate (name, ret);
         }
 
+
         /**********************************************************************
 
                 Output the param list to the provided consumer
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol)
-        {       
-                super.produce (consume, eol);
+        void produce (size_t delegate(void[]) consume, char[] eol=null)
+        {
+                return super.produce (consume, eol);
         }
 }

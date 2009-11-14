@@ -210,17 +210,16 @@ class Uri : UriView
                 // include these as query symbols
                 map[';'] |= IncQuery | IncQueryAll;
                 map['/'] |= IncQuery | IncQueryAll;
-                map['?'] |= IncQueryAll;
                 map[':'] |= IncQuery | IncQueryAll;
                 map['@'] |= IncQuery | IncQueryAll;
-                map['&'] |= IncQueryAll;
                 map['='] |= IncQuery | IncQueryAll;
-                map['+'] |= IncQuery | IncQueryAll;
                 map['$'] |= IncQuery | IncQueryAll;
                 map[','] |= IncQuery | IncQueryAll;
 
                 // '%' are permitted inside queries when constructing output
                 map['%'] |= IncQueryAll;
+                map['?'] |= IncQueryAll;
+                map['&'] |= IncQueryAll;
         }
         
         /***********************************************************************
@@ -414,45 +413,47 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final Consumer produce (Consumer consume)
+        final size_t produce (Consumer consume)
         {
+                size_t ret;
+
                 if (scheme_.length)
-                    consume (scheme_), consume (":");
+                    ret += consume (scheme_), ret += consume (":");
 
 
                 if (userinfo_.length || host_.length || port_ != InvalidPort)
                    {
-                   consume ("//");
+                   ret += consume ("//");
 
                    if (userinfo_.length)
-                       encode (consume, userinfo_, IncUser) ("@");
+                       ret += encode (consume, userinfo_, IncUser), ret +=consume ("@");
 
                    if (host_.length)
-                       consume (host_);
+                       ret += consume (host_);
 
                    if (port_ != InvalidPort && port_ != getDefaultPort(scheme_))
                       {
                       char[8] tmp;
-                      consume (":"), consume (Integer.itoa (tmp, cast(uint) port_));
+                      ret += consume (":"), ret += consume (Integer.itoa (tmp, cast(uint) port_));
                       }
                    }
 
                 if (path_.length)
-                    encode (consume, path_, IncPath);
+                    ret += encode (consume, path_, IncPath);
 
                 if (query_.length)
                    {
-                   consume ("?");
-                   encode (consume, query_, IncQueryAll);
+                   ret += consume ("?");
+                   ret += encode (consume, query_, IncQueryAll);
                    }
 
                 if (fragment_.length)
                    {
-                   consume ("#");
-                   encode (consume, fragment_, IncQuery);
+                   ret += consume ("#");
+                   ret += encode (consume, fragment_, IncQuery);
                    }
 
-                return consume;
+                return ret;
         }
 
         /***********************************************************************
@@ -478,8 +479,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static Consumer encode (Consumer consume, char[] s, int flags)
+        static size_t encode (Consumer consume, char[] s, int flags)
         {
+                size_t  ret;
                 char[3] hex;
                 int     mark;
 
@@ -488,20 +490,20 @@ class Uri : UriView
                         {
                         if (! (map[c] & flags))
                            {
-                           consume (s[mark..i]);
+                           ret += consume (s[mark..i]);
                            mark = i+1;
                                 
                            hex[1] = hexDigits [(c >> 4) & 0x0f];
                            hex[2] = hexDigits [c & 0x0f];
-                           consume (hex);
+                           ret += consume (hex);
                            }
                         }
 
                 // add trailing section
                 if (mark < s.length)
-                    consume (s[mark..s.length]);
+                    ret += consume (s[mark..s.length]);
 
-                return consume;
+                return ret;
         }
 
         /***********************************************************************
@@ -513,7 +515,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static final char[] encode (char[] text, int flags)
+        static char[] encode (char[] text, int flags)
         {
                 void[] s;
                 encode ((void[] v) {return s ~= v, v.length;}, text, flags);
@@ -936,6 +938,6 @@ debug (Uri)
                 Cout (uri.getQuery).newline;
                 Cout (uri).newline;
 
-                Cout (uri.encode ("&#$%", uri.IncQuery)).newline;
+                Cout (uri.encode ("&#$%+", uri.IncQuery)).newline;
         }
 }

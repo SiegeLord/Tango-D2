@@ -274,9 +274,10 @@ class HttpClient
 
         ***********************************************************************/
 
-        void addCookie (Cookie cookie)
+        HttpClient addCookie (Cookie cookie)
         {
                 cookiesOut.add (cookie);
+                return this;
         }
 
         /***********************************************************************
@@ -302,12 +303,13 @@ class HttpClient
         
         ***********************************************************************/
 
-        void reset ()
+        HttpClient reset ()
         {
                 headersIn.reset;
                 headersOut.reset;
                 paramsOut.reset;
                 redirections = 0;
+                return this;
         }
 
         /***********************************************************************
@@ -316,9 +318,10 @@ class HttpClient
 
         ***********************************************************************/
 
-        void setRequest (RequestMethod method)
+        HttpClient setRequest (RequestMethod method)
         {
                 this.method = method;
+                return this;
         }
 
         /***********************************************************************
@@ -327,11 +330,12 @@ class HttpClient
 
         ***********************************************************************/
 
-        void setVersion (Version v)
+        HttpClient setVersion (Version v)
         {
                 static const char[][] versions = ["HTTP/1.0", "HTTP/1.1"];
 
                 httpVersion = versions[v];
+                return this;
         }
 
         /***********************************************************************
@@ -340,9 +344,10 @@ class HttpClient
         
         ***********************************************************************/
 
-        void enableRedirect (bool yes)
+        HttpClient enableRedirect (bool yes = true)
         {
                 doRedirect = yes;
+                return this;
         }
 
         /***********************************************************************
@@ -351,9 +356,10 @@ class HttpClient
         
         ***********************************************************************/
 
-        void setTimeout (float interval)
+        HttpClient setTimeout (float interval)
         {
                 timeout = interval;
+                return this;
         }
 
         /***********************************************************************
@@ -362,9 +368,10 @@ class HttpClient
 
         ***********************************************************************/
 
-        void keepAlive (bool yes)
+        HttpClient keepAlive (bool yes = true)
         {
                 keepalive = yes;
+                return this;
         }
 
         /***********************************************************************
@@ -373,9 +380,10 @@ class HttpClient
 
         ***********************************************************************/
 
-        void encodeUri (bool yes)
+        HttpClient encodeUri (bool yes = true)
         {
                 encode = yes;
+                return this;
         }
 
         /***********************************************************************
@@ -409,10 +417,31 @@ class HttpClient
 
         /***********************************************************************
         
+                Make a request for the resource specified via the constructor
+                using the specified timeout period (in micro-seconds), and a
+                user-defined callback for pumping additional data to the host.
+                The callback would be used when uploading data during a 'put'
+                operation (or equivalent). The return value represents the 
+                input buffer, from which all returned headers and content may 
+                be accessed.
+
+                Note that certain request-headers may generated automatically
+                if they are not present. These include a Host header and, in
+                the case of Post, both ContentType & ContentLength for a query
+                type of request. The latter two are *not* produced for Post
+                requests with 'pump' specified ~ when using 'pump' to output
+                additional content, you must explicitly set your own headers.
+
+                Note also that IOException instances may be thrown. These 
+                should be caught by the client to ensure a close() operation
+                is always performed
+                
         ***********************************************************************/
 
-        OutputBuffer openStart (Pump pump)
+        InputBuffer open (RequestMethod method, Pump pump)
         {
+            try {
+                this.method = method;
                 if (++redirections > redirectionLimit)
                     error ("too many redirections, or a circular redirection");
 
@@ -442,50 +471,44 @@ class HttpClient
                 if (keepalive is false)
                     headersOut.add (HttpHeader.Connection, "close");
 
-                // attach/extend query parameters if user has added some
-                tokens.clear;
-                auto query = uri.extendQuery (paramsOut.formatTokens(tokens, "&"));
+                // format encoded request 
+                output.append (method.name)
+                      .append (" ");
 
                 // patch request path?
                 auto path = uri.getPath;
                 if (path.length is 0)
                     path = "/";
 
-                // format encoded request 
-                output.append (method.name)
-                      .append (" ");
-
                 // emit path
                 if (encode)
                     uri.encode (&output.write, path, uri.IncPath);
                 else
-                    output.append (path);
+                   output.append (path);
 
-                // should we emit query as part of request line?
+                // attach/extend query parameters if user has added some
+                tokens.clear;
+                paramsOut.produce ((void[] p){if (tokens.readable) tokens.write("&"); 
+                                    return uri.encode(&tokens.write, cast(char[]) p, uri.IncQuery);});
+                auto query = cast(char[]) tokens.slice;
+
+                // emit query?
                 if (query.length)
                    {
-                   output.append ("?");
-                   if (encode)
-                       uri.encode (&output.write, query, uri.IncQueryAll);
-                   else
-                       output.append (query);
+                   output.append ("?").append(query);
                             
-                    if (method is Post && pump.funcptr is null)
-                       {
-                       // we're POSTing query text - add default info
-                       if (headersOut.get (HttpHeader.ContentType, null) is null)
-                           headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
+                   if (method is Post && pump.funcptr is null)
+                      {
+                      // we're POSTing query text - add default info
+                      if (headersOut.get (HttpHeader.ContentType, null) is null)
+                          headersOut.add (HttpHeader.ContentType, "application/x-www-form-urlencoded");
 
-                       if (headersOut.get (HttpHeader.ContentLength, null) is null)
-                          {
-                          if (encode)
-                              // TODO: this generates heap activity
-                              query = uri.encode (query, uri.IncQueryAll);
-
-                          headersOut.addInt (HttpHeader.ContentLength, query.length);
-                          pump = (OutputBuffer o){o.append(query);};
-                          }
-                       }
+                      if (headersOut.get (HttpHeader.ContentLength, null) is null)
+                         {
+                         headersOut.addInt (HttpHeader.ContentLength, query.length);
+                         pump = (OutputBuffer o){o.append(query);};
+                         }
+                      }
                    }
                 
                 // complete the request line, and emit headers too
@@ -498,15 +521,7 @@ class HttpClient
                 
                 if (pump.funcptr)
                     pump (output);
-                return output;
-        }
 
-        /***********************************************************************
-        
-        ***********************************************************************/
-
-        InputBuffer openFinish (Pump pump)
-        {
                 // send entire request
                 output.flush;
 
@@ -520,12 +535,6 @@ class HttpClient
                 while (line.next && line.get.length is 0) 
                       {}
 
-                // throw if we experienced a timeout
-version (OldTimer)
-{
-                if (socket.hadTimeout)
-                    error ("response timeout");
-}
                 // is this a bogus request?
                 if (line.get.length is 0)
                     error ("truncated response");
@@ -556,7 +565,7 @@ version (OldTimer)
                                 uri.relParse (redirect.dup);
 
                                 // decode the host name (may take a second or two)
-                                auto host = uri.getHost();
+                                auto host = uri.getHost;
                                 if (host)
                                     address = new InternetAddress (uri.getHost, uri.getValidPort);
                                 else
@@ -566,16 +575,17 @@ version (OldTimer)
                                 if (method is Get || method is Head)
                                     return open (method, pump);
                                 else
-                                    if (method is Post)
-                                        return redirectPost (pump, responseLine.getStatus);
-                                    else
-                                        error ("unexpected redirect for method "~method.name);
+                                   if (method is Post)
+                                       return redirectPost (pump, responseLine.getStatus);
+                                   else
+                                      error ("unexpected redirect for method "~method.name);
                            default:
-                               break;
+                                break;
                            }
 
                 // return the input buffer
                 return input;
+                } finally {redirections = 0;}
         }
 
         /***********************************************************************
@@ -670,40 +680,6 @@ version (OldTimer)
         protected Socket createSocket ()
         {
                 return new Socket;
-        }
-
-        /***********************************************************************
-        
-                Make a request for the resource specified via the constructor
-                using the specified timeout period (in micro-seconds), and a
-                user-defined callback for pumping additional data to the host.
-                The callback would be used when uploading data during a 'put'
-                operation (or equivalent). The return value represents the 
-                input buffer, from which all returned headers and content may 
-                be accessed.
-
-                Note that certain request-headers may generated automatically
-                if they are not present. These include a Host header and, in
-                the case of Post, both ContentType & ContentLength for a query
-                type of request. The latter two are *not* produced for Post
-                requests with 'pump' specified ~ when using 'pump' to output
-                additional content, you must explicitly set your own headers.
-
-                Note also that IOException instances may be thrown. These 
-                should be caught by the client to ensure a close() operation
-                is always performed
-                
-        ***********************************************************************/
-
-        private InputBuffer open (RequestMethod method, Pump pump)
-        {
-                try {
-                    this.method = method;
-                    openStart (pump);
-                    // user has additional data to send?
-   
-                    return openFinish (pump);
-                    } finally {redirections = 0;}
         }
 
         /**********************************************************************

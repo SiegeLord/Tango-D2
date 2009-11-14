@@ -244,31 +244,24 @@ class HttpTokens
                             }
                 return result;
         }
-/+
-        /**********************************************************************
 
-                Output the token list to the provided writer
-
-        **********************************************************************/
-
-        void write (IWriter writer)
-        {
-                produce (&writer.buffer.consume, HttpConst.Eol);
-        }
-+/
         /**********************************************************************
 
                 Output the token list to the provided consumer
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol)
+        void produce (size_t delegate(void[]) consume, char[] eol = null)
         {
                 foreach (Token token; stack)
                         {
-                        auto content = token.toString();
+                        auto content = token.toString;
                         if (content.length)
-                            consume (content), consume (eol);
+                           {
+                           consume (content);
+                           if (eol.length)
+                               consume (eol);
+                           }
                         }                           
         }
 
@@ -443,8 +436,6 @@ class HttpTokens
                            dst.write (content);
                            }
                         }    
-
-                //dst.truncate (dst.limit - adjust);
                 return cast(char[]) dst.slice;
         }
 

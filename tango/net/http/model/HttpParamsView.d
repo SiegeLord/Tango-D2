@@ -27,7 +27,7 @@ private import  tango.time.Time;
 
 ******************************************************************************/
 
-interface HttpParamsView //: IWritable
+interface HttpParamsView 
 {
         /**********************************************************************
 
@@ -70,5 +70,5 @@ interface HttpParamsView //: IWritable
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol);
+        void produce (size_t delegate(void[]) consume, char[] eol=null);
 }
