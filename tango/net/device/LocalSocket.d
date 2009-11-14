@@ -21,7 +21,7 @@ private import tango.net.device.Socket;
 
 version (Windows)
 {
-        static assert (false, "not yet available for windows");
+        pragma(msg, "not yet available for windows");
 }
 
 /*******************************************************************************
