@@ -153,18 +153,7 @@ class HttpParams : HttpTokens, HttpParamsView
         {
                 return super.getDate (name, ret);
         }
-/+
-        /**********************************************************************
 
-                Output the token list to the provided writer
-
-        **********************************************************************/
-
-        void write (IWriter writer)
-        {
-                super.write (writer);
-        }
-+/
         /**********************************************************************
 
                 Output the param list to the provided consumer
