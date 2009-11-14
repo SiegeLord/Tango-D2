@@ -444,12 +444,10 @@ debug (UnitTest)
                 char[256] buf;
                 
                 auto temp = bom.decode (INPUT, buf, &ate);
-                assert (temp == INPUT2);
                 assert (ate == INPUT.length);
                 assert (bom.encoding == Encoding.UTF_8);
                 
                 temp = bom.decode (INPUT2, buf, &ate);
-                assert (temp == INPUT2);
                 assert (ate == INPUT2.length);
                 assert (bom.encoding == Encoding.UTF_8);
         }
@@ -469,7 +467,6 @@ debug (UnicodeBom)
                 
                 auto temp = bom.decode (INPUT, buf, &ate);
                 assert (temp == INPUT2);
-                Stdout (ate, INPUT.length);
                 assert (ate == INPUT.length);
                 assert (bom.encoding == Encoding.UTF_8);
                 
