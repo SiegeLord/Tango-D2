@@ -459,7 +459,9 @@ class FileFilter : FileScan
                    scope (exit) proc.close;
                    if (workDir) 
                        proc.workDir = workDir;
-        
+                   if (env is null)
+                       proc.copyEnv (true);
+
                    proc.execute();
                    stdout.stream.copy (proc.stdout);
                    stdout.stream.copy (proc.stderr);
@@ -504,7 +506,7 @@ struct Args
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
-                auto o = args('o').params(1).defaults("-g");
+                auto o = args('o').params(1).defaults("-release -O");
                 auto l = args('l').params(1).defaults("tango");
                 auto p = args('p').params(1).defaults("windows");
                 auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
