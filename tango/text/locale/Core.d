@@ -1612,6 +1612,7 @@ version(Clone)
         break;
       case 'T':
         result ~= longTimePatterns;
+        break;
       case 'u':
         result ~= universalSortableDateTimePattern_;
         break;
