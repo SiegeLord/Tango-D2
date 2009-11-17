@@ -311,7 +311,7 @@ class JsonParser(T)
                    unexpectedEOF ("after number");
 
                 str.ptr = p;
-                return true;
+                return curLen > 0;
         }
         
         /***********************************************************************

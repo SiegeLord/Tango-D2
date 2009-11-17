@@ -387,6 +387,9 @@ class Json(T) : private JsonParser!(T)
                       array.content [array.index++] = parseValue;
                       }
 
+                if (super.curType != Token.EndArray)
+                    exception ("malformed array");
+
                 --nesting;
                 return array.content [start .. array.index];
         }
@@ -1131,6 +1134,12 @@ debug (Json)
                 Stdout.newline;
 
                 p.parse ("[-1]");
+                p.print (&emit, "  "); 
+                Stdout.newline;
+
+                p.parse(`["foo"]`);
+                p.print (&emit, "  "); 
+                Stdout.newline;
         }
 }
 
