@@ -14,20 +14,15 @@ module tango.io.vfs.model.Vfs;
 
 private import tango.io.model.IConduit;
 
+private import tango.io.model.IFile : FileInfo;
+
 /*******************************************************************************
 
-                Passed around during filtering
+        alias FileInfo for filtering
 
 *******************************************************************************/
 
-struct VfsFilterInfo
-{
-        char[]  path,                   // full path (sans virtual-path)
-                name;                   // name + ext
-        ulong   bytes;                  // file size, as applicable
-        bool    folder;                 // is this a folder?
-}
-
+alias FileInfo VfsFilterInfo;
 alias VfsFilterInfo* VfsInfo;
 
 // return false to exclude something

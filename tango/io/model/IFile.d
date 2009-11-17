@@ -103,3 +103,18 @@ interface FileConst
                 static const char[] NewlineString = "\n";
         }
 }
+
+/*******************************************************************************
+
+        Passed around during file-scanning
+
+*******************************************************************************/
+
+struct FileInfo
+{
+        char[]          path,
+                        name;
+        ulong           bytes;
+        bool            folder;
+}
+

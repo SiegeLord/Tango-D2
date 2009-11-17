@@ -260,7 +260,7 @@ class FileFolder : VfsFolder
 
                 foreach (info; Path.children (path))
                          if (info.folder is false)
-                             if (filter is null || filter(cast(VfsInfo) &info))
+                             if (filter is null || filter(&info))
                                 {
                                 files ~= Path.join (info.path, info.name);
                                 stats.bytes += info.bytes; 

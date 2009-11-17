@@ -55,9 +55,9 @@ module tango.io.Path;
 
 private import  tango.sys.Common;
 
-private import  tango.io.model.IFile : FileConst;
-
 public  import  tango.time.Time : Time, TimeSpan;
+
+private import  tango.io.model.IFile : FileConst, FileInfo;
 
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
@@ -114,20 +114,6 @@ package struct FS
                 Time    created,        /// time created
                         accessed,       /// last time accessed
                         modified;       /// last time modified
-        }
-
-        /***********************************************************************
-
-                Passed around during file-scanning
-
-        ***********************************************************************/
-
-        struct FileInfo
-        {
-                char[]  path,
-                        name;
-                ulong   bytes;
-                bool    folder;
         }
 
         /***********************************************************************
@@ -2069,4 +2055,13 @@ debug (UnitTest)
 }
 
 
+/*******************************************************************************
 
+*******************************************************************************/
+
+debug (Path)
+{
+        void main()
+        {
+        }
+}

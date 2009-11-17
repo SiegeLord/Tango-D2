@@ -1013,7 +1013,7 @@ class FilePath : PathView
 interface PathView
 {
         alias FS.Stamps         Stamps;
-        alias FS.FileInfo       FileInfo;
+        //alias FS.FileInfo       FileInfo;
 
         /***********************************************************************
 
