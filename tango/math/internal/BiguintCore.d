@@ -61,11 +61,11 @@ const int FASTDIVLIMIT; // crossover to recursive division
 
 // These constants are used by shift operations
 static if (BigDigit.sizeof == int.sizeof) {
-    enum { LG2BIGDIGITBITS = 5, BIGDIGITSHIFTMASK=31 };
+    enum { LG2BIGDIGITBITS = 5, BIGDIGITSHIFTMASK = 31 };
     alias ushort BIGHALFDIGIT;
 } else static if (BigDigit.sizeof == long.sizeof) {
     alias uint BIGHALFDIGIT;
-    enum { LG2BIGDIGITBITS = 6, BIGDIGITSHIFTMASK=63 };
+    enum { LG2BIGDIGITBITS = 6, BIGDIGITSHIFTMASK = 63 };
 } else static assert(0, "Unsupported BigDigit size");
 
 const BigDigit [] ZERO = [0];
@@ -78,18 +78,20 @@ public:
 /// BigUint performs memory management and wraps the low-level calls.
 struct BigUint {
 private:
-    invariant() { assert(data.length==1 || data[$-1]!=0); }
+    invariant() {
+        assert( data.length == 1 || data[$-1] != 0 );
+    }
     BigDigit [] data = ZERO; 
-    static BigUint opCall(BigDigit []x) {
+    static BigUint opCall(BigDigit [] x) {
        BigUint a;
-       a.data=x;
+       a.data = x;
        return a;
     }
 public: // for development only, will be removed eventually
     // Equivalent to BigUint[numbytes-$..$]
     BigUint sliceHighestBytes(uint numbytes) {
         BigUint x;
-        x.data = data[$-(numbytes>>2)..$];
+        x.data = data[$ - (numbytes>>2) .. $];
         return x;
     }
     // Length in uints
@@ -98,12 +100,12 @@ public: // for development only, will be removed eventually
             return data.length;
         } else static if (BigDigit.sizeof == ulong.sizeof) {
             return data.length * 2 - 
-            ((data[$-1]&0xFFFF_FFFF_0000_0000L)? 1 : 0);
+            ((data[$-1] & 0xFFFF_FFFF_0000_0000L) ? 1 : 0);
         }
     }
     int ulongLength() {
         static if (BigDigit.sizeof == uint.sizeof) {
-            return (data.length+1)>>1;
+            return (data.length + 1) >> 1;
         } else static if (BigDigit.sizeof == ulong.sizeof) {
             return data.length;
         }
@@ -112,11 +114,11 @@ public: // for development only, will be removed eventually
     // The value at (cast(ulong[])data)[n]
     ulong peekUlong(int n) {
         static if (BigDigit.sizeof == int.sizeof) {
-            if (data.length == n*2+1) return data[n*2];
+            if (data.length == n*2 + 1) return data[n*2];
             version(LittleEndian) {
-                return data[n*2] + ((cast(ulong)data[n*2+1])<<32);
+                return data[n*2] + ((cast(ulong)data[n*2 + 1]) << 32 );
             } else {
-                return data[n*2+1] + ((cast(ulong)data[n*2])<<32);
+                return data[n*2 + 1] + ((cast(ulong)data[n*2]) << 32 );
             }
         } else static if (BigDigit.sizeof == long.sizeof) {
             return data[n];
@@ -126,8 +128,8 @@ public: // for development only, will be removed eventually
         static if (BigDigit.sizeof == int.sizeof) {
             return data[n];
         } else {
-            ulong x = data[n>>1];
-            return (n&1) ? cast(uint)(x >> 32) : cast(uint)x;
+            ulong x = data[n >> 1];
+            return (n & 1) ? cast(uint)(x >> 32) : cast(uint)x;
         }
     }
 public:
@@ -154,7 +156,9 @@ public:
 ///
 int opCmp(BigUint y)
 {
-    if (data.length != y.data.length) return (data.length > y.data.length) ?  1 : -1;
+    if (data.length != y.data.length) {
+        return (data.length > y.data.length) ?  1 : -1;
+    }
     uint k = highestDifferentDigit(data, y.data);
     if (data[k] == y.data[k]) return 0;
     return data[k] > y.data[k] ? 1 : -1;
@@ -166,8 +170,10 @@ int opCmp(ulong y)
     if (data.length>2) return 1;
     uint ylo = cast(uint)(y & 0xFFFF_FFFF);
     uint yhi = cast(uint)(y >> 32);
-    if (data.length==2 && data[1]!=yhi) return data[1]>yhi ? 1: -1;
-    if (data[0]==ylo) return 0;
+    if (data.length == 2 && data[1] != yhi) {
+        return data[1] > yhi ? 1: -1;
+    }
+    if (data[0] == ylo) return 0;
     return data[0] > ylo ? 1: -1;
 }
 
@@ -200,14 +206,60 @@ char [] toDecimalString(int frontExtraBytes)
     return buff[sofar-frontExtraBytes..$];
 }
 
-char [] toHexString(int frontExtraBytes, char separator = 0)
+/** Convert to a hex string, printing a minimum number of digits 'minPadding',
+ *  allocating an additional 'frontExtraBytes' at the start of the string.
+ *  Padding is done with padChar, which may be '0' or ' '.
+ *  'separator' is a digit separation character. If non-zero, it is inserted
+ *  between every 8 digits.
+ *  Separator characters do not contribute to the minPadding.
+ */
+char [] toHexString(int frontExtraBytes, char separator = 0, int minPadding=0, char padChar = '0')
 {
-    int len = data.length*8 + frontExtraBytes + (separator? (data.length-1): 0);
-    char [] buff = new char[len];
-    biguintToHex(buff[frontExtraBytes..$], data, separator);
-    // Strip leading zeros.
+    // Calculate number of extra padding bytes
+    size_t extraPad = (minPadding > data.length * 2 * BigDigit.sizeof) 
+        ? minPadding - data.length * 2 * BigDigit.sizeof : 0;
+
+    // Length not including separator bytes                
+    size_t lenBytes = data.length * 2 * BigDigit.sizeof;
+
+    // Calculate number of separator bytes
+    size_t mainSeparatorBytes = separator ? (lenBytes  / 8) - 1 : 0;
+    size_t totalSeparatorBytes = separator ? ((extraPad + lenBytes + 7) / 8) - 1: 0;
+
+    char [] buff = new char[lenBytes + extraPad + totalSeparatorBytes + frontExtraBytes];
+    biguintToHex(buff[$ - lenBytes - mainSeparatorBytes .. $], data, separator);
+    if (extraPad > 0) {
+        if (separator) {
+            size_t start = frontExtraBytes; // first index to pad
+            if (extraPad &7) {
+                // Do 1 to 7 extra zeros.
+                buff[frontExtraBytes .. frontExtraBytes + (extraPad & 7)] = padChar;
+                buff[frontExtraBytes + (extraPad & 7)] = (padChar == ' ' ? ' ' : separator);
+                start += (extraPad & 7) + 1;
+            }
+            for (int i=0; i< (extraPad >> 3); ++i) {
+                buff[start .. start + 8] = padChar;
+                buff[start + 8] = (padChar == ' ' ? ' ' : separator);
+                start += 9;
+            }
+        } else {
+            buff[frontExtraBytes .. frontExtraBytes + extraPad]=padChar;
+        }
+    }
     int z = frontExtraBytes;
-    while (z< buff.length-1 && buff[z]=='0') ++z;
+    if (lenBytes > minPadding) {
+        // Strip leading zeros.
+        int maxStrip = lenBytes - minPadding;
+        while (z< buff.length-1 && (buff[z]=='0' || buff[z]==padChar) && maxStrip>0) {
+            ++z; --maxStrip;
+        }
+    }
+    if (padChar!='0') {
+        // Convert leading zeros into padChars.
+        for (size_t k= z; k< buff.length-1 && (buff[k]=='0' || buff[k]==padChar); ++k) {
+            if (buff[k]=='0') buff[k]=padChar;
+        }
+    }
     return buff[z-frontExtraBytes..$];
 }
 
@@ -216,7 +268,7 @@ bool fromHexString(char [] s)
 {
     //Strip leading zeros
     int firstNonZero = 0;    
-    while ((firstNonZero < s.length -1) && 
+    while ((firstNonZero < s.length - 1) && 
         (s[firstNonZero]=='0' || s[firstNonZero]=='_')) {
             ++firstNonZero;
     }    
@@ -230,8 +282,10 @@ bool fromHexString(char [] s)
         assert(i>=0);
         char c = s[i];
         if (s[i]=='_') continue;
-        uint x = (c>='0' && c<='9') ? c - '0' : c>='A' && c<='F' ? c-'A'+10 :
-            c>='a' && c<='f' ? c-'a' + 10 : 100;
+        uint x = (c>='0' && c<='9') ? c - '0' 
+               : (c>='A' && c<='F') ? c - 'A' + 10 
+               : (c>='a' && c<='f') ? c - 'a' + 10
+               : 100;
         if (x==100) return false;
         part >>= 4;
         part |= (x<<(32-4));
@@ -244,11 +298,11 @@ bool fromHexString(char [] s)
         }
     }
     if (part) {
-        for (;partcount!=8; ++partcount) part >>= 4;
-        data[sofar]=part;
+        for ( ; partcount != 8; ++partcount) part >>= 4;
+        data[sofar] = part;
         ++sofar;
     }
-    if (sofar==0) { data = ZERO; }
+    if (sofar == 0) data = ZERO;
     else data = data[0..sofar];
     return true;
 }
@@ -475,7 +529,7 @@ static BigUint pow(BigUint x, ulong y)
     
     // See if x can now fit into a single digit.            
     bool singledigit = ((x.data.length - firstnonzero) == 1);
-    // If true, then x0 is that digit, and we must calculate x0 ^ y0.
+    // If true, then x0 is that digit, and we must calculate x0 ^^ y0.
     BigDigit x0 = x.data[firstnonzero];
     assert(x0 !=0);
     size_t xlength = x.data.length;
@@ -501,8 +555,8 @@ static BigUint pow(BigUint x, ulong y)
         // x fits into a single digit. Raise it to the highest power we can
         // that still fits into a single digit, then reduce the exponent accordingly.
         // We're quite likely to have a residual multiply at the end.
-        // For example, 10^100 = (((5^13)^7) * 5^9) * 2^100.
-        // and 5^13 still fits into a uint.
+        // For example, 10^^100 = (((5^^13)^^7) * 5^^9) * 2^^100.
+        // and 5^^13 still fits into a uint.
         evenshiftbits  = cast(uint)( (evenbits * y) & BIGDIGITSHIFTMASK);
         if (x0 == 1) { // Perfect power of 2
              result = 1;
@@ -548,7 +602,7 @@ static BigUint pow(BigUint x, ulong y)
         r1[0..$] = x.data[firstnonzero..$];
     }    
 
-    if (y>1) {    // Set r1 = r1 ^ y.
+    if (y>1) {    // Set r1 = r1 ^^ y.
          
         // The secondary buffer only needs space for the multiplication results    
         BigDigit [] secondaryBuffer = new BigDigit[resultBuffer.length - result_start];
@@ -557,32 +611,32 @@ static BigUint pow(BigUint x, ulong y)
     
         int shifts = 63; // num bits in a long
         while(!(y & 0x8000_0000_0000_0000L)) {
-            y <<=1;
+            y <<= 1;
             --shifts;
         }
         y <<=1;
    
         while(y!=0) {
-            r2 = t2[0..r1.length*2];
+            r2 = t2[0 .. r1.length*2];
             squareInternal(r2, r1);
-            if (y&0x8000_0000_0000_0000L) {           
-                r1 = t1[0.. r2.length + xlength];
-                if (xlength==1) {
-                    r1[$-1] = multibyteMul(r1[0..$-1], r2, x0, 0);
+            if (y & 0x8000_0000_0000_0000L) {           
+                r1 = t1[0 .. r2.length + xlength];
+                if (xlength == 1) {
+                    r1[$-1] = multibyteMul(r1[0 .. $-1], r2, x0, 0);
                 } else {
                     mulInternal(r1, r2, x.data);
                 }
             } else {
-                r1 = t1[0..r2.length];
+                r1 = t1[0 .. r2.length];
                 r1[] = r2[];
             }
             y <<=1;
             shifts--;
         }
         while (shifts>0) {
-            r2 = t2[0..r1.length *2];
+            r2 = t2[0 .. r1.length * 2];
             squareInternal(r2, r1);
-            r1 = t1[0..r2.length];
+            r1 = t1[0 .. r2.length];
             r1[] = r2[];
             --shifts;
         }
@@ -591,21 +645,21 @@ static BigUint pow(BigUint x, ulong y)
     if (finalMultiplier!=1) {
         BigDigit carry = multibyteMul(r1, r1, finalMultiplier, 0);
         if (carry) {
-            r1 = t1[0..r1.length+1];
+            r1 = t1[0 .. r1.length + 1];
             r1[$-1] = carry;
         }
     }
     if (evenshiftbits) {
         BigDigit carry = multibyteShl(r1, r1, evenshiftbits);
         if (carry!=0) {
-            r1 = t1[0..r1.length+1];
-            r1[$-1] = carry;
+            r1 = t1[0 .. r1.length + 1];
+            r1[$ - 1] = carry;
         }
     }    
-    while(r1[$-1]==0) {
-        r1=r1[0..$-1];
+    while(r1[$ - 1]==0) {
+        r1=r1[0 .. $ - 1];
     }
-    result.data = resultBuffer[0..result_start + r1.length];
+    result.data = resultBuffer[0 .. result_start + r1.length];
     return result;
 }
 
@@ -616,8 +670,8 @@ static BigUint pow(BigUint x, ulong y)
 BigDigit[] removeLeadingZeros(BigDigit [] x)
 {
     size_t k = x.length;
-    while(k>1 && x[k-1]==0) --k;
-    return x[0..k];
+    while(k>1 && x[k - 1]==0) --k;
+    return x[0 .. k];
 }
 
 debug(UnitTest) {
@@ -633,7 +687,8 @@ unittest {
 
 
 debug (UnitTest) {
-unittest {   
+// Pow tests
+unittest {
     BigUint r, s;
     r.fromHexString("80000000_00000001");
     s = BigUint.pow(r, 5);
@@ -644,10 +699,30 @@ unittest {
     s = BigUint.pow(s, 39);
     r.fromDecimalString("1000000000000000000000000000000000000000");
     assert(s == r);
-   
     r.fromHexString("1_E1178E81_00000000");
-    s = BigUint.pow(r, 15); // this used to overflow array bounds
+    s = BigUint.pow(r, 15); // Regression test: this used to overflow array bounds
 
+}
+
+// Radix conversion tests
+unittest {   
+    BigUint r;
+    r.fromHexString("1_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 0) == "1_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 20) == "0001_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 16+8) == "00000001_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 16+9) == "0_00000001_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 16+8+8) ==   "00000000_00000001_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 16+8+8+1) ==      "0_00000000_00000001_E1178E81_00000000");
+    assert(r.toHexString(0, '_', 16+8+8+1, ' ') == "                  1_E1178E81_00000000");
+    assert(r.toHexString(0, 0, 16+8+8+1) == "00000000000000001E1178E8100000000");
+    r = 0;
+    assert(r.toHexString(0, '_', 0) == "0");
+    assert(r.toHexString(0, '_', 7) == "0000000");
+    assert(r.toHexString(0, '_', 7, ' ') == "      0");
+    assert(r.toHexString(0, '#', 9) == "0#00000000");
+    assert(r.toHexString(0, 0, 9) == "000000000");
+    
 }
 }
 
