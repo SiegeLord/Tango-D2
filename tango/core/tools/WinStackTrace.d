@@ -116,7 +116,7 @@ version(Windows) {
         });
     }
 
-#line 2 "parts/Main.di"
+//#line 2 "parts/Main.di"
 
 
 private extern(C) {
@@ -332,7 +332,7 @@ bool addrToSymbolDetails(size_t addr, HANDLE hProcess, void delegate(char[] func
 }
 
 
-#line 2 "parts/Memory.di"
+//#line 2 "parts/Memory.di"
 private {
     import tango.stdc.stdlib : cMalloc = malloc, cRealloc = realloc, cFree = free;
 }
@@ -477,7 +477,7 @@ void append(T, I)(inout T array, I elem, uint* realLength = null) {
     
     array[len] = elem;
 }
-#line 2 "parts/WinApi.di"
+//#line 2 "parts/WinApi.di"
 import tango.text.Util;
 import tango.io.Stdout;
 import tango.core.Thread;
@@ -891,7 +891,8 @@ extern (Windows) {
     
     BOOL IsBadReadPtr(void*, uint);
 }
-#line 2 "parts/DbgInfo.di"
+
+//#line 2 "parts/DbgInfo.di"
 import tango.text.Util;
 import tango.stdc.stdio;
 import tango.stdc.stringz;
@@ -1442,8 +1443,8 @@ class DebugInfo {
             int i;
             int datalen;
 
-            ushort cFile;
-            ushort cSeg;
+            short cFile;
+            short cSeg;
             uint *baseSrcFile;
             uint *segarray;
             ushort *segindexarray;
@@ -1467,7 +1468,7 @@ class DebugInfo {
             int i;
             int datalen;
 
-            ushort cSeg;
+            short cSeg;
             uint *baseSrcLn;
             uint *segarray;
             byte cFName;
@@ -1788,7 +1789,7 @@ struct OMFSourceModule {
     ushort  cSeg;
     uint    baseSrcFile[1];
 }
-#line 2 "parts/CInterface.di"
+//#line 2 "parts/CInterface.di"
 extern (C) {
     ModuleDebugInfo ModuleDebugInfo_new() {
         return new ModuleDebugInfo;
@@ -1815,7 +1816,7 @@ extern (C) {
         globalDebugInfo.removeDebugInfo(minfo);
     }
 }
-#line 2 "parts/Init.di"
+//#line 2 "parts/Init.di"
 static this() {
     loadWinAPIFunctions();
 
@@ -1837,7 +1838,7 @@ static this() {
     char[] modName = modNameBuf[0..modNameLen];
     SymSetOptions(SYMOPT_DEFERRED_LOADS/+ | SYMOPT_UNDNAME+/);
     SymInitialize(GetCurrentProcess(), null, false);
-    DWORD base;
+    DWORD64 base;
     if (0 == (base = SymLoadModule64(GetCurrentProcess(), HANDLE.init, modName.ptr, null, 0, 0))) {
         if (SysError.lastCode != 0) {
             throw new Exception("Could not SymLoadModule64: " ~ SysError.lastMsg);
