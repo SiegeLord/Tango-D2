@@ -463,8 +463,8 @@ class FileFilter : FileScan
                        proc.copyEnv (true);
 
                    proc.execute();
-                   stdout.stream.copy (proc.stdout);
                    stdout.stream.copy (proc.stderr);
+                   stdout.stream.copy (proc.stdout);
                    auto result = proc.wait;
                    if (result.reason != Process.Result.Exit)
                        throw new Exception (result.toString);
@@ -503,12 +503,19 @@ struct Args
         bool populate (char[][] arg)
         {       
                 auto args = new Arguments;
+                auto p = args('p').params(1);
+                version (Windows)
+                         p.defaults("windows");
+                else
+                version (linux)
+                         p.defaults("linux");
+                else
+                   auto p.required;
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
                 auto o = args('o').params(1).defaults("-release -O");
                 auto l = args('l').params(1).defaults("tango");
-                auto p = args('p').params(1).defaults("windows");
                 auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto r = args('r').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto n = args(null).params(1).required.title("tango-path");
