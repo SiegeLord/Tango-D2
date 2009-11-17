@@ -375,7 +375,7 @@ package struct FS
 
                         Return timestamp information
 
-                        Timstamps are returns in a format dictated by the 
+                        Timestamps are returns in a format dictated by the 
                         file-system. For example NTFS keeps UTC time, 
                         while FAT timestamps are based on the local time
 
@@ -396,6 +396,30 @@ package struct FS
                         time.accessed = convert (info.ftLastAccessTime);
                         time.created  = convert (info.ftCreationTime);
                         return time;
+                }
+
+                /***************************************************************
+
+                        Set the accessed and modified timestamps of the
+                        specified file
+
+                ***************************************************************/
+
+                static void timeStamps (char[] name, Time accessed, Time modified)
+                {
+                        void set (HANDLE h)
+                        {
+                                FILETIME m1, a1;
+                                auto m = modified - Time.epoch1601;
+                                auto a = accessed - Time.epoch1601;
+                                *cast(long*) &a1.dwLowDateTime = m.ticks;
+                                *cast(long*) &m1.dwLowDateTime = m.ticks;
+                                if (SetFileTime (h, null, &a1, &m1) is 0)
+                                    exception (name);
+                        }
+                                                
+                        createFile (name, &set);
+                        //int utime(const char *path, const struct utimbuf *times);
                 }
 
                 /***************************************************************
@@ -494,25 +518,7 @@ package struct FS
 
                 static void createFile (char[] name)
                 {
-                        HANDLE h;
-
-                        version (Win32SansUnicode)
-                                 h = CreateFileA (name.ptr, GENERIC_WRITE,
-                                                  0, null, CREATE_ALWAYS,
-                                                  FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
-                             else
-                                {
-                                wchar[MAX_PATH] tmp = void;
-                                h = CreateFileW (toString16(tmp, name).ptr, GENERIC_WRITE,
-                                                 0, null, CREATE_ALWAYS,
-                                                 FILE_ATTRIBUTE_NORMAL, cast(HANDLE) 0);
-                                }
-
-                        if (h is INVALID_HANDLE_VALUE)
-                            exception (name);
-
-                        if (! CloseHandle (h))
-                              exception (name);
+                        createFile (name, null);
                 }
 
                 /***************************************************************
@@ -621,6 +627,39 @@ package struct FS
 
                         return ret;
                 }
+
+                /***************************************************************
+
+                        Create a new file
+
+                ***************************************************************/
+
+                private static void createFile (char[] name, void delegate(HANDLE) dg)
+                {
+                        HANDLE h;
+
+                        auto flags = dg.ptr ? OPEN_EXISTING : CREATE_ALWAYS;
+                        version (Win32SansUnicode)
+                                 h = CreateFileA (name.ptr, GENERIC_WRITE,
+                                                  0, null, flags, FILE_ATTRIBUTE_NORMAL, 
+                                                  cast(HANDLE) 0);
+                             else
+                                {
+                                wchar[MAX_PATH] tmp = void;
+                                h = CreateFileW (toString16(tmp, name).ptr, GENERIC_WRITE,
+                                                 0, null, flags, FILE_ATTRIBUTE_NORMAL, 
+                                                 cast(HANDLE) 0);
+                                }
+
+                        if (h is INVALID_HANDLE_VALUE)
+                            exception (name);
+
+                        if (dg.ptr)
+                            dg(h);
+
+                        if (! CloseHandle (h))
+                              exception (name);
+                }
         }
 
         /***********************************************************************
@@ -714,7 +753,7 @@ package struct FS
 
                         Return timestamp information
 
-                        Timstamps are returns in a format dictated by the 
+                        Timestamps are returns in a format dictated by the 
                         file-system. For example NTFS keeps UTC time, 
                         while FAT timestamps are based on the local time
 
@@ -737,6 +776,22 @@ package struct FS
                         time.accessed = convert (stats.st_atime);
                         time.created  = convert (stats.st_ctime);
                         return time;
+                }
+
+                /***************************************************************
+
+                        Set the accessed and modified timestamps of the
+                        specified file
+
+                ***************************************************************/
+
+                static void timeStamps (char[] name, Time accessed, Time modified)
+                {
+                        utimbuf time = void;
+                        time.st_atime = (accessed - time.epoch1970).seconds;
+                        time.st_mtime = (modified - time.epoch1970).seconds;
+                        if (utime (name, &time) is -1)
+                            exception (name);
                 }
 
                 /***********************************************************************
@@ -1329,7 +1384,7 @@ bool isFile (char[] name)
 
         Return timestamp information
 
-        Timstamps are returns in a format dictated by the 
+        Timestamps are returns in a format dictated by the 
         file-system. For example NTFS keeps UTC time, 
         while FAT timestamps are based on the local time
 
@@ -1339,6 +1394,18 @@ FS.Stamps timeStamps (char[] name)
 {
         char[512] tmp = void;
         return FS.timeStamps (FS.strz(name, tmp));
+}
+
+/*******************************************************************************
+
+        Set the accessed and modified timestamps of the specified file
+
+*******************************************************************************/
+
+void timeStamps (char[] name, Time accessed, Time modified)
+{
+        char[512] tmp = void;
+        FS.timeStamps (FS.strz(name, tmp), accessed, modified);
 }
 
 /*******************************************************************************
