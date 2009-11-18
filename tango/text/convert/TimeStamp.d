@@ -131,7 +131,6 @@ T[] format(T) (T[] output, Time t)
                 return Integer.formatter!(T) (tmp, i, 'u', 0, 8);
         }
 
-
         assert (output.length >= 29);
         if (t is t.max)
             throw new IllegalArgumentException ("TimeStamp.format :: invalid Time argument");
@@ -203,11 +202,10 @@ T[] format8601(T) (T[] output, Time t)
 
 ******************************************************************************/
 
-
 Time parse(T) (T[] src, uint* ate = null)
 {
-        int     len;
-        Time    value;
+        size_t len;
+        Time   value;
 
         if ((len = rfc1123 (src, value)) > 0 || 
             (len = rfc850  (src, value)) > 0 || 
@@ -219,27 +217,35 @@ Time parse(T) (T[] src, uint* ate = null)
                *ate = len;
            return value;
            }
-
         return Time.max;
 }
 
 
+/******************************************************************************
+
+      Parse provided input and return a UTC epoch time. A return value 
+      of Time.max (or false, respectively) indicated a parse-failure.
+
+      An option is provided to return the count of characters parsed - 
+      an unchanged value here also indicates invalid input.
+
+******************************************************************************/
+
 bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, uint* ate = null)
 {
-    int     len;
+        size_t len;
     
-    if ((len = rfc1123 (src, tod, date)) > 0 || 
-        (len = rfc850  (src, tod, date)) > 0 || 
-        (len = iso8601  (src, tod, date)) > 0 || 
-        (len = dostime  (src, tod, date)) > 0 || 
-        (len = asctime (src, tod, date)) > 0)
-    {
-        if (ate)
-            *ate = len;
-        return true;
-    }
-    
-    return false;
+        if ((len = rfc1123 (src, tod, date)) > 0 || 
+           (len = rfc850   (src, tod, date)) > 0 || 
+           (len = iso8601  (src, tod, date)) > 0 || 
+           (len = dostime  (src, tod, date)) > 0 || 
+           (len = asctime (src, tod, date)) > 0)
+           {
+           if (ate)
+               *ate = len;
+           return true;
+           }
+        return false;
 }
 
 /******************************************************************************
@@ -251,16 +257,15 @@ bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, uint* ate = null)
 
 ******************************************************************************/
 
-int rfc1123(T) (T[] src, inout Time value)
+size_t rfc1123(T) (T[] src, inout Time value)
 {
-    TimeOfDay       tod;
-    Date            date;
+        TimeOfDay tod;
+        Date      date;
 
-    int r = rfc1123!(T)(src, tod, date);
-        
-    value = Gregorian.generic.toTime(date, tod);
-    
-    return r;
+        auto r = rfc1123!(T)(src, tod, date);
+        if (r)   
+            value = Gregorian.generic.toTime(date, tod);
+        return r;
 }
 
 
@@ -273,10 +278,10 @@ int rfc1123(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
+size_t rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
 {
-        T*              p = src.ptr;
-        T*              e = p + src.length;
+        T* p = src.ptr;
+        T* e = p + src.length;
 
         bool dt (inout T* p)
         {
@@ -298,7 +303,6 @@ int rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
             {
             return (p+3) - src.ptr;
             }
-
         return 0;
 }
 
@@ -312,16 +316,15 @@ int rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-int rfc850(T) (T[] src, inout Time value)
+size_t rfc850(T) (T[] src, inout Time value)
 {
-    TimeOfDay       tod;
-    Date            date;
+        TimeOfDay tod;
+        Date      date;
 
-    int r = rfc850!(T)(src, tod, date);
-        
-    value = Gregorian.generic.toTime (date, tod);
-    
-    return r;
+        auto r = rfc850!(T)(src, tod, date);
+        if (r)
+            value = Gregorian.generic.toTime (date, tod);
+        return r;
 }
 
 /******************************************************************************
@@ -333,10 +336,10 @@ int rfc850(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
+size_t rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
 {
-        T*              p = src.ptr;
-        T*              e = p + src.length;
+        T* p = src.ptr;
+        T* e = p + src.length;
 
         bool dt (inout T* p)
         {
@@ -364,7 +367,6 @@ int rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
             return (p+3) - src.ptr;
             }
-
         return 0;
 }
 
@@ -378,16 +380,15 @@ int rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-int asctime(T) (T[] src, inout Time value)
+size_t asctime(T) (T[] src, inout Time value)
 {
-    TimeOfDay       tod;
-    Date            date;
+        TimeOfDay tod;
+        Date      date;
     
-    int r = asctime!(T)(src, tod, date);
-    
-    value = Gregorian.generic.toTime(date, tod);
-    
-    return r;
+        auto r = asctime!(T)(src, tod, date);
+        if (r)
+            value = Gregorian.generic.toTime (date, tod);
+        return r;
 }
 
 /******************************************************************************
@@ -399,10 +400,10 @@ int asctime(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
+size_t asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 {
-        T*              p = src.ptr;
-        T*              e = p + src.length;
+        T* p = src.ptr;
+        T* e = p + src.length;
 
         bool dt (inout T* p)
         {
@@ -423,7 +424,6 @@ int asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
             {
             return p - src.ptr;
             }
-
         return 0;
 }
 
@@ -436,16 +436,15 @@ int asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-int dostime(T) (T[] src, inout Time value)
+size_t dostime(T) (T[] src, inout Time value)
 {
-    TimeOfDay       tod;
-    Date            date;
+        TimeOfDay tod;
+        Date      date;
     
-    int r = dostime!(T)(src, tod, date);
-    
-    value = Gregorian.generic.toTime(date, tod);
-    
-    return r;
+        auto r = dostime!(T)(src, tod, date);
+        if (r)
+            value = Gregorian.generic.toTime(date, tod);
+        return r;
 }
 
 
@@ -458,10 +457,10 @@ int dostime(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
+size_t dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 {
-        T*              p = src.ptr;
-        T*              e = p + src.length;
+        T* p = src.ptr;
+        T* e = p + src.length;
 
         bool dt (inout T* p)
         {
@@ -490,7 +489,6 @@ int dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
             
             return (p+2) - src.ptr;
             }
-
         return 0;
 }
 
@@ -510,16 +508,15 @@ int dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-int iso8601(T) (T[] src, inout Time value)
+size_t iso8601(T) (T[] src, inout Time value)
 {
-    TimeOfDay       tod;
-    Date            date;
+        TimeOfDay tod;
+        Date      date;
 
-    int r = iso8601!(T)(src, tod, date);
-    
-    value = Gregorian.generic.toTime(date, tod);
-    
-    return r;
+        int r = iso8601!(T)(src, tod, date);
+        if (r)   
+            value = Gregorian.generic.toTime(date, tod);
+        return r;
 }
 
 /******************************************************************************
@@ -538,10 +535,10 @@ int iso8601(T) (T[] src, inout Time value)
 
 ******************************************************************************/
 
-int iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
+size_t iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
 {
-        T*              p = src.ptr;
-        T*              e = p + src.length;
+        T* p = src.ptr;
+        T* e = p + src.length;
 
         bool dt (inout T* p)
         {
@@ -571,7 +568,6 @@ int iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
             
             return p - src.ptr;
             }
-
         return 0;
 }
 
@@ -643,7 +639,6 @@ private int parseMonth(T) (inout T* p)
                default:
                     return month;
                }
-
         p += 3;
         return month;
 }
@@ -685,7 +680,6 @@ private int parseShortDay(T) (inout T* p)
                default:
                     return -1;
                }
-
         p += 3;
         return day;
 }
@@ -699,16 +693,16 @@ private int parseShortDay(T) (inout T* p)
 
 private int parseFullDay(T) (inout T* p)
 {
-        static T[][] days =
-        [
-        "Sunday", 
-        "Monday", 
-        "Tuesday", 
-        "Wednesday", 
-        "Thursday", 
-        "Friday", 
-        "Saturday", 
-        ];
+        static  T[][] days =
+                [
+                "Sunday", 
+                "Monday", 
+                "Tuesday", 
+                "Wednesday", 
+                "Thursday", 
+                "Friday", 
+                "Saturday", 
+                ];
 
         foreach (i, day; days)
                  if (day == p[0..day.length])
@@ -744,20 +738,20 @@ debug (UnitTest)
 {
         unittest
         {
-                wchar[30] tmp;
-                wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+        wchar[30] tmp;
+        wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
                 
-                auto time = parse (test);
-                auto text = format (tmp, time);
-                assert (text == test);
+        auto time = parse (test);
+        auto text = format (tmp, time);
+        assert (text == test);
 
-                char[] garbageTest = "Wed Jun 11 17:22:07 20088";
-                garbageTest = garbageTest[0..$-1];
-                char[128] tmp2;
+        char[] garbageTest = "Wed Jun 11 17:22:07 20088";
+        garbageTest = garbageTest[0..$-1];
+        char[128] tmp2;
 
-                time = parse(garbageTest);
-                auto text2 = format(tmp2, time);
-                assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
+        time = parse(garbageTest);
+        auto text2 = format(tmp2, time);
+        assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
         }
 }
 
