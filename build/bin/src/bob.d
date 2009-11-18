@@ -510,6 +510,9 @@ struct Args
                 version (linux)
                          p.defaults("linux");
                 else
+                version (freebsd)
+                         p.defaults("freebsd");
+                else
                    p.required;
                 auto u = args('u');
                 auto i = args('i');
