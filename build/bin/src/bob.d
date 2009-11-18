@@ -510,7 +510,7 @@ struct Args
                 version (linux)
                          p.defaults("linux");
                 else
-                   auto p.required;
+                   p.required;
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
