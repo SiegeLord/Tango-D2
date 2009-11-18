@@ -788,7 +788,7 @@ package struct FS
                         utimbuf time = void;
                         time.actime = (accessed - Time.epoch1970).seconds;
                         time.modtime = (modified - Time.epoch1970).seconds;
-                        if (utime (name, &time) is -1)
+                        if (utime (name.ptr, &time) is -1)
                             exception (name);
                 }
 
