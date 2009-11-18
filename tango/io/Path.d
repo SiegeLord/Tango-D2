@@ -550,8 +550,6 @@ package struct FS
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
 
-                        Returns the number of files scanned.
-
                 ***************************************************************/
 
                 static int list (char[] folder, int delegate(ref FileInfo) dg)
@@ -908,8 +906,6 @@ package struct FS
                         Each path and filename is passed to the provided
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
-
-                        Returns the number of files scanned.
 
                 ***************************************************************/
 
