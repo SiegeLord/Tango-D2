@@ -786,8 +786,8 @@ package struct FS
                 static void timeStamps (char[] name, Time accessed, Time modified)
                 {
                         utimbuf time = void;
-                        time.actime = (accessed - time.epoch1970).seconds;
-                        time.modtime = (modified - time.epoch1970).seconds;
+                        time.actime = (accessed - Time.epoch1970).seconds;
+                        time.modtime = (modified - Time.epoch1970).seconds;
                         if (utime (name, &time) is -1)
                             exception (name);
                 }
