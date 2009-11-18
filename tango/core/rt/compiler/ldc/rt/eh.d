@@ -409,7 +409,7 @@ extern(C) void _d_throw_exception(Object e)
     if (e !is null)
     {
         _d_exception* exc_struct = new _d_exception;
-        exc_struct.unwind_info.exception_class = *cast(ulong*)_d_exception_class;
+        exc_struct.unwind_info.exception_class = *cast(ulong*)_d_exception_class.ptr;
         exc_struct.exception_object = e;
         _Unwind_Reason_Code ret = _Unwind_RaiseException(&exc_struct.unwind_info);
         console("_Unwind_RaiseException failed with reason code: ")(ret)("\n");
