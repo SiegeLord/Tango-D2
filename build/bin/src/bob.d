@@ -504,25 +504,32 @@ struct Args
         {       
                 auto args = new Arguments;
                 auto p = args('p').params(1);
-                version (Windows)
-                         p.defaults("windows");
-                else
-                version (linux)
-                         p.defaults("linux");
-                else
-                version (freebsd)
-                         p.defaults("freebsd");
-                else
-                   p.required;
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
-                auto o = args('o').params(1).defaults("-release -O");
-                auto l = args('l').params(1).defaults("tango");
+                auto l = args('l').params(1);
+                auto o = args('o').params(1).defaults("-release");
                 auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto r = args('r').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
+
+                version (Windows)
+                         p.defaults("windows");
+                   else
+                version (linux)
+                         p.defaults("linux");
+                   else
+                version (freebsd)
+                         p.defaults("freebsd");
+                   else
+                      p.required;
+                
+                version (Windows)
+                         l.defaults("tango");
+                   else
+                      l.defaults("libtango");
+
                 if (args.parse (arg))
                    {
                    user = u.set;
