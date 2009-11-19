@@ -501,22 +501,22 @@ class Arguments
                 alias void   delegate() Invoker;
                 alias void   delegate(char[] value) Inspector;
 
-                int             min,            // minimum params
-                                max,            // maximum params
-                                error;          // error condition
-                bool            set,            // arg is present
-                                req,            // arg is required
-                                cat,            // arg is smushable
-                                fail;           // fail the parse
-                char[]          name,           // arg name
-                                bogus;          // name of conflict
-                char[][]        values,         // assigned values
-                                options,        // validation options
-                                deefalts;       // configured defaults
-                Invoker         invoker;        // invocation callback
-                Inspector       inspector;      // inspection callback
-                Argument[]      dependees,      // who we require
-                                conflictees;    // who we conflict with
+                public int              min,            /// minimum params
+                                        max,            /// maximum params
+                                        error;          /// error condition
+                public  bool            set;            /// arg is present
+                private bool            req,            // arg is required
+                                        cat,            // arg is smushable
+                                        fail;           // fail the parse
+                private char[]          name,           // arg name
+                                        bogus;          // name of conflict
+                private char[][]        values,         // assigned values
+                                        options,        // validation options
+                                        deefalts;       // configured defaults
+                private Invoker         invoker;        // invocation callback
+                private Inspector       inspector;      // inspection callback
+                private Argument[]      dependees,      // who we require
+                                        conflictees;    // who we conflict with
                 
                 /***************************************************************
               
