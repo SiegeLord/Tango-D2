@@ -160,7 +160,7 @@ debug private import tango.io.Stdout;
         Returning to an earlier example we can declare some specifics:
         ---
         args('v').params(0);
-        assert (args.parse ("-v thisfile.txt thatfile.doc"));
+        assert (args.parse (`-v thisfile.txt thatfile.doc`));
         assert (args(null).assigned.length is 2);
         ---
 
@@ -179,7 +179,7 @@ debug private import tango.io.Stdout;
         Such parameter values should be quoted on the commandline, and be
         assigned explicitly rather than implicitly:
         ---
-        args.parse ("--comment=\"---- a comment ----\"");
+        args.parse (`--comment="-- a comment --"`);
         ---
 
         Without the explicit assignment, the text content might otherwise 
@@ -192,7 +192,7 @@ debug private import tango.io.Stdout;
         are considered to be implicit, and are assigned to preceding args
         in the usual right to left fashion (or to the null argument):
         ---
-        args.parse ("-- -thisfile --thatfile");
+        args.parse (`-- -thisfile --thatfile`);
         assert (args(null).assigned.length is 2);
         ---
         
