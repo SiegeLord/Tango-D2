@@ -143,7 +143,7 @@ EXCEPTION_DISPOSITION _d_framehandler(
                 ncatches = pci->ncatches;
                 for (i = 0; i < ncatches; i++)
                 {
-                    pcb = &pci->catch_block[i];
+                    pcb = pci->catch_block.ptr + i;
 
                     if (!ci)
                     {
@@ -616,7 +616,7 @@ void __stdcall _d_throw(Object *h)
         index = -1;
         for (int i = 0; i < dim; i++)
         {
-            phi = &handler_table->handler_info[i];
+            phi = handler_table->handler_info.ptr + i;
 
             if ((unsigned)retaddr >= funcoffset + phi->offset)
                 index = i;
@@ -626,7 +626,7 @@ void __stdcall _d_throw(Object *h)
         // with an index smaller than the current table_index
         for (ndx = index; ndx != -1; ndx = prev_ndx)
         {
-            phi = &handler_table->handler_info[ndx];
+            phi = handler_table->handler_info.ptr + ndx;
             prev_ndx = phi->prev_index;
             if (phi->cioffset)
             {
@@ -642,7 +642,7 @@ void __stdcall _d_throw(Object *h)
                     struct DCatchBlock *pcb;
                     ClassInfo *ci = **(ClassInfo ***)h;
 
-                    pcb = &pci->catch_block[i];
+                    pcb = pci->catch_block.ptr + i;
 
                     if (_d_isbaseof(ci, pcb->type))
                     {   // Matched the catch type, so we've found the handler.
