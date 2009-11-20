@@ -13,7 +13,7 @@ private import tango.stdc.stdint;
 public import tango.stdc.stddef;          // for size_t
 public import tango.stdc.posix.sys.types; // for off_t, mode_t
 public import tango.stdc.posix.sys.stat;  // for S_IFMT, etc.
-public import tango.stdc.constants.fcntl;
+public import tango.sys.consts.fcntl;
 extern (C):
 
 //

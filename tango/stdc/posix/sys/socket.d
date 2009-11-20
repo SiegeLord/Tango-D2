@@ -11,7 +11,7 @@ module tango.stdc.posix.sys.socket;
 private import tango.stdc.posix.config;
 public import tango.stdc.posix.sys.types; // for ssize_t, size_t
 public import tango.stdc.posix.sys.uio;   // for iovec
-public import tango.stdc.constants.socket;
+public import tango.sys.consts.socket;
 extern (C):
 
 //

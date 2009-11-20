@@ -12,7 +12,7 @@ module tango.stdc.posix.sys.statvfs;
 import tango.stdc.config;
 /+
 // possible errno:
-    public import tango.stdc.constants.errno:
+    public import tango.sys.consts.errno:
     EACCES, // (statfs()) Search permission is denied for a component of the path prefix of path. (See also path_resolution(2).) 
     EBADF, // (fstatfs()) fd is not a valid open file descriptor. 
     EFAULT, // buf or path points to an invalid address. 

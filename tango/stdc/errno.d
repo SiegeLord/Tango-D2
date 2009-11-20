@@ -7,7 +7,7 @@
  * Standards: ISO/IEC 9899:1999 (E)
  */
 module tango.stdc.errno;
-public import tango.stdc.constants.errno;
+public import tango.sys.consts.errno;
 
 private
 {
