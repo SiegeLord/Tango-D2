@@ -1,5 +1,5 @@
 module tango.sys.consts.sysctl;
-import tango.sys^.consts.constSupport;
+import tango.sys.consts.constSupport;
 
 version(X86) {
     version=X86_CPU;
