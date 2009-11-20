@@ -29,7 +29,7 @@ void main (char[][] arg)
         if (args.populate (arg[1..$]))
            {
            new Linux (args);
-           new Freebsd(args);
+           new Freebsd (args);
            new Windows (args);
            stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
            }
@@ -46,7 +46,6 @@ class Windows : FileFilter
                 super (args);
                 exclude ("tango/stdc/posix");
                 include ("tango/sys/win32");
-                include ("tango/stdc/constants/win");
                 register ("windows", "dmd", &dmd);
         }
 
@@ -89,11 +88,9 @@ class Linux : FileFilter
         {
                 super (args);
                 include ("tango/sys/linux");
-                include ("tango/stdc/constants/linux");
                 register ("linux", "dmd", &dmd);
                 register ("linux", "ldc", &ldc);
                 register ("linux", "gdc", &gdc);
-
         }
 
         private void addToLib(char[] obj)
@@ -104,8 +101,7 @@ class Linux : FileFilter
         private char[] compile (FilePath file, char[] cmd)
         {
                 auto temp = objname (file, ".o");
-                exec (split(cmd~temp~" "~file.toString, " "), 
-                      Environment.get, null);
+                exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
                 return temp;
         }
 
@@ -115,8 +111,6 @@ class Linux : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
-
-                exclude ("tango/core/rt/compiler/dmd/windows");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -192,7 +186,6 @@ class Freebsd : FileFilter
         {
                 super (args);
                 include ("tango/sys/freebsd");
-                include ("tango/stdc/constants/freebsd");
                 register ("freebsd", "dmd", &dmd);
                 register ("freebsd", "ldc", &ldc);
                 register ("freebsd", "gdc", &gdc);
@@ -206,8 +199,7 @@ class Freebsd : FileFilter
         private char[] compile (FilePath file, char[] cmd)
         {
                 auto temp = objname (file, ".o");
-                exec (split(cmd~temp~" "~file.toString, " "), 
-                      Environment.get, null);
+                exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
                 return temp;
         }
 
@@ -217,8 +209,6 @@ class Freebsd : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
-
-                exclude ("tango/core/rt/compiler/dmd/windows");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -344,13 +334,6 @@ class FileFilter : FileScan
                 exclude ("tango/sys/freebsd");
                 exclude ("tango/sys/linux");
                 exclude ("tango/sys/solaris");
-                exclude ("tango/sys/unix");
-                exclude ("tango/stdc/constants/win");
-                exclude ("tango/stdc/constants/autoconf");
-                exclude ("tango/stdc/constants/darwin");
-                exclude ("tango/stdc/constants/freebsd");
-                exclude ("tango/stdc/constants/linux");
-                exclude ("tango/stdc/constants/solaris");
 
                 exclude ("tango/core/rt/gc/stub");
                 exclude ("tango/core/rt/compiler/dmd");
