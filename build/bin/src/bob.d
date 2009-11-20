@@ -498,7 +498,7 @@ struct Args
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                        "\t[-p=windows|linux]\tdetermines package filtering\n";
+                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|freebsd)\n";
 
         bool populate (char[][] arg)
         {       
