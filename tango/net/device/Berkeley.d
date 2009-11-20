@@ -4,7 +4,7 @@ private import  tango.sys.Common;
 
 private import  tango.core.Exception;
 
-import  consts=tango.stdc.constants.socket;
+import  consts=tango.sys.consts.socket;
 
 /*******************************************************************************
 

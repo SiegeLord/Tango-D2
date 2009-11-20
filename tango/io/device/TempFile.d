@@ -101,7 +101,7 @@ else version( Posix )
     import tango.stdc.posix.unistd : access, getuid, lseek, unlink, W_OK;
     import tango.stdc.posix.sys.types : off_t;
     import tango.stdc.posix.sys.stat : stat, stat_t;
-    import tango.stdc.constants.fcntl : O_NOFOLLOW;
+    import tango.sys.consts.fcntl : O_NOFOLLOW;
     import tango.stdc.posix.stdlib : getenv;
     import tango.stdc.string : strlen;
 }
