@@ -1,4 +1,4 @@
-module tango.stdc.constants.freebsd.unistd;
+module tango.sys.freebsd.const.unistd;
 /+ http://opengroup.org/onlinepubs/007908799/xsh/unistd.h.html +/
 enum {
     STDIN_FILENO = 0,

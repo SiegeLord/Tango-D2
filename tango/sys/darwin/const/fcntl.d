@@ -1,4 +1,4 @@
-module tango.stdc.constants.darwin.fcntl;
+module tango.sys.darwin.const.fcntl;
      enum { F_GETLK = 7 }
      enum { F_SETLK = 8 }
      enum { F_SETLKW = 9 }

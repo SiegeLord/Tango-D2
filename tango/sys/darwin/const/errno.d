@@ -1,4 +1,4 @@
-module tango.stdc.constants.darwin.errno;
+module tango.sys.darwin.const.errno;
 enum {
     E2BIG = 7, // Argument list too long
     EACCES = 13, // Permission denied

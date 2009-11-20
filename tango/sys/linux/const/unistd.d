@@ -1,4 +1,4 @@
-module tango.stdc.constants.linux.unistd;
+module tango.sys.linux.const.unistd;
 /+ http://opengroup.org/onlinepubs/007908799/xsh/unistd.h.html +/
 enum {
     STDIN_FILENO = 0,

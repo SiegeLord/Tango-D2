@@ -1,4 +1,4 @@
-module tango.stdc.constants.win.socket;
+module tango.sys.win32.const.socket;
 
 /***************************************************************
 

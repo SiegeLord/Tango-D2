@@ -1,4 +1,4 @@
-module tango.stdc.constants.win.errno;
+module tango.sys.win32.const.errno;
 
     const EPERM             = 1;        // Operation not permitted
     const ENOENT            = 2;        // No such file or directory

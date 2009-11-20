@@ -1,6 +1,12 @@
-module tango.stdc.constants.linux.fcntl;
-import tango.stdc.posix.config;
-
+module tango.sys.solaris.const.fcntl;
+version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
+{
+  enum :bool {__USE_LARGEFILE64   = false}
+}
+else
+{
+  enum :bool {__USE_LARGEFILE64   = ((void*).sizeof==4)}
+}
 static if( __USE_LARGEFILE64 )
 {
     enum { F_GETLK = 12 }
@@ -28,7 +34,7 @@ enum { O_CREAT = 0100  }
 enum { O_EXCL = 0200  }
 enum { O_NOCTTY = 0400 }
 enum { O_TRUNC = 01000  }
-enum { O_NOFOLLOW = 00400000 }
+enum { O_NOFOLLOW = 0x20000 }
 enum { O_APPEND = 02000  }
 enum { O_NONBLOCK = 04000 }
 enum { O_SYNC = 010000  }

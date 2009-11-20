@@ -21,39 +21,39 @@ version(autoconf){
 } else version (Windows) {
     version (X86_CPU) {
         static if ((void*).sizeof==4)
-            public import tango.stdc.constants.win.unistd;
+            public import tango.sys.win32.const.unistd;
         else {
             pragma(msg,"constants not confirmed, please help out");
-            public import tango.stdc.constants.win.unistd;
+            public import tango.sys.win32.const.unistd;
         }
     } else {
         mixin undefinedConsts!("windows on non X86 CPU",__FILE__,__LINE__);
     }
 } else version (darwin) {
     version (X86_CPU) {
-        public import tango.stdc.constants.darwin.unistd;
+        public import tango.sys.darwin.const.unistd;
     } else version (PPC_CPU) {
-        public import tango.stdc.constants.darwin.unistd;
+        public import tango.sys.darwin.const.unistd;
     } else {
         mixin undefinedConsts!("mac on non X86 or PPC CPU",__FILE__,__LINE__);
     }
 } else version (linux) {
     version (X86_CPU) {
-        public import tango.stdc.constants.linux.unistd;
+        public import tango.sys.linux.const.unistd;
     } else version (PPC_CPU) {
-        public import tango.stdc.constants.linux.unistd;
+        public import tango.sys.linux.const.unistd;
     } else{
         mixin undefinedConsts!("linux on non X86 or PPC CPU",__FILE__,__LINE__);
     }
 } else version (freebsd) {
     version (X86) {
-        public import tango.stdc.constants.freebsd.unistd;
+        public import tango.sys.freebsd.const.unistd;
     } else {
         mixin undefinedConsts!("freebsd on non X86 ",__FILE__,__LINE__);
     }
 } else version (solaris) {
     version (X86) {
-        public import tango.stdc.constants.solaris.unistd;
+        public import tango.sys.solaris.const.unistd;
     } else {
         mixin undefinedConsts!("solaris on non X86 ",__FILE__,__LINE__);
     }

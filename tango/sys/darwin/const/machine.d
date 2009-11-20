@@ -1,5 +1,5 @@
 /+ sed -e 's///g' -e 's///g' -e 's///g' +/
-module tango.stdc.constants.darwin.machine;
+module tango.sys.darwin.const.machine;
 alias int cpu_type_t;
 alias int cpu_subtype_t;
 alias int cpu_threadtype_t;

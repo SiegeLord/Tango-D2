@@ -1,24 +1,7 @@
-module tango.stdc.constants.solaris.fcntl;
-version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
-{
-  enum :bool {__USE_LARGEFILE64   = false}
-}
-else
-{
-  enum :bool {__USE_LARGEFILE64   = ((void*).sizeof==4)}
-}
-static if( __USE_LARGEFILE64 )
-{
-    enum { F_GETLK = 12 }
-    enum { F_SETLK = 13 }
-    enum { F_SETLKW = 14 }
-}
-else
-{
+module tango.sys.freebsd.const.fcntl;
     enum { F_GETLK = 5  }
     enum { F_SETLK = 6  }
     enum { F_SETLKW = 7 }
-}
 enum { F_DUPFD = 0 }
 enum { F_GETFD = 1 }
 enum { F_SETFD = 2 }
@@ -34,7 +17,7 @@ enum { O_CREAT = 0100  }
 enum { O_EXCL = 0200  }
 enum { O_NOCTTY = 0400 }
 enum { O_TRUNC = 01000  }
-enum { O_NOFOLLOW = 0x20000 }
+enum { O_NOFOLLOW = 0x0100 }
 enum { O_APPEND = 02000  }
 enum { O_NONBLOCK = 04000 }
 enum { O_SYNC = 010000  }
