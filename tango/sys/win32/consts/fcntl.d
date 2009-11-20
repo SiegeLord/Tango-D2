@@ -1,1 +1,1 @@
-module tango.sys.win32.const.fcntl;
+module tango.sys.win32.consts.fcntl;

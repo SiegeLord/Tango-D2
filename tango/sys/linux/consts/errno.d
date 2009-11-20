@@ -1,4 +1,4 @@
-module tango.sys.linux.const.errno;
+module tango.sys.linux.consts.errno;
 version(X86) {
     version=X86_CPU;
 } else version(X86_64) {

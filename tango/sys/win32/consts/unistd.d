@@ -1,1 +1,1 @@
-module tango.sys.win32.const.unistd;
+module tango.sys.win32.consts.unistd;

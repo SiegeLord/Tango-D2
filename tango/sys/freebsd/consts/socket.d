@@ -1,5 +1,5 @@
-module tango.sys.freebsd.const.socket;
-    import tango.sys.freebsd.const.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.sys.freebsd.consts.socket;
+    import tango.sys.freebsd.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum
     {

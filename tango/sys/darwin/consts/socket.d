@@ -1,5 +1,5 @@
-module tango.sys.darwin.const.socket;
-    import tango.sys.darwin.const.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.sys.darwin.consts.socket;
+    import tango.sys.darwin.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum
     {

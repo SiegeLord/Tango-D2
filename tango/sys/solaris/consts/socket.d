@@ -1,5 +1,5 @@
-module tango.sys.solaris.const.socket;
-    import tango.sys.solaris.const.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.sys.solaris.consts.socket;
+    import tango.sys.solaris.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum
     {

@@ -1,1 +1,1 @@
-module tango.sys.linux.const.sysctl;
+module tango.sys.linux.consts.sysctl;

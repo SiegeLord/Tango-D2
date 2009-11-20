@@ -1,1 +1,1 @@
-module tango.sys.freebsd.const.sysctl;
+module tango.sys.freebsd.consts.sysctl;

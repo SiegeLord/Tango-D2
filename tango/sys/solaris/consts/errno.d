@@ -1,4 +1,4 @@
-module tango.sys.solaris.const.errno;
+module tango.sys.solaris.consts.errno;
 enum {
     E2BIG = 7, // Argument list too long
     EACCES = 13, // Permission denied

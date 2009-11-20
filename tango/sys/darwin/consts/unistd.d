@@ -1,4 +1,4 @@
-module tango.sys.darwin.const.unistd;
+module tango.sys.darwin.consts.unistd;
 /+ http://opengroup.org/onlinepubs/007908799/xsh/unistd.h.html +/
 enum {
     STDIN_FILENO = 0,

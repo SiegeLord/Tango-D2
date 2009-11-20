@@ -1,4 +1,4 @@
-module tango.sys.darwin.const.sysctl;
+module tango.sys.darwin.consts.sysctl;
 enum SysCtl{
 CTL_MAXNAME = 12 , /* largest number of components supported */
     /+

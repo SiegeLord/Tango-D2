@@ -1,5 +1,5 @@
-module tango.sys.linux.const.socket;
-    import tango.sys.linux.const.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+module tango.sys.linux.consts.socket;
+    import tango.sys.linux.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
     enum {SOCKET_ERROR = -1}
     enum
     {

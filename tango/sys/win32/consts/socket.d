@@ -1,4 +1,4 @@
-module tango.sys.win32.const.socket;
+module tango.sys.win32.consts.socket;
 
 /***************************************************************
 

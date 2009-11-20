@@ -1,4 +1,4 @@
-module tango.sys.freebsd.const.fcntl;
+module tango.sys.freebsd.consts.fcntl;
     enum { F_GETLK = 5  }
     enum { F_SETLK = 6  }
     enum { F_SETLKW = 7 }

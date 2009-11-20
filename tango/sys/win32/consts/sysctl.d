@@ -1,1 +1,1 @@
-module tango.sys.win32.const.sysctl;
+module tango.sys.win32.consts.sysctl;

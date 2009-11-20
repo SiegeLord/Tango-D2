@@ -1,4 +1,4 @@
-module tango.sys.linux.const.fcntl;
+module tango.sys.linux.consts.fcntl;
 import tango.stdc.posix.config;
 
 static if( __USE_LARGEFILE64 )

@@ -1,4 +1,4 @@
-module tango.sys.freebsd.const.errno;
+module tango.sys.freebsd.consts.errno;
 enum {
     EPERM             = 1,        // Operation not permitted
     ENOENT            = 2,        // No such file or directory

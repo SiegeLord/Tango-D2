@@ -1,1 +1,1 @@
-module tango.sys.solaris.const.sysctl;
+module tango.sys.solaris.consts.sysctl;

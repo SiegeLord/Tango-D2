@@ -1,4 +1,4 @@
-module tango.sys.solaris.const.fcntl;
+module tango.sys.solaris.consts.fcntl;
 version(SMALLFILE)  // Note: makes no difference in X86_64 mode.
 {
   enum :bool {__USE_LARGEFILE64   = false}
