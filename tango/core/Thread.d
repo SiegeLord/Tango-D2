@@ -2678,6 +2678,7 @@ private
  *
  * Authors: Based on a design by Mikola Lysenko.
  */
+
 class Fiber
 {
     static class Scheduler
@@ -2686,7 +2687,7 @@ class Fiber
 
         enum Type {Read=1, Write=2, Accept=3, Connect=4, Transfer=5}
 
-        void pause (uint ms=0) {}
+        void pause (uint ms) {}
 
         void ready (Fiber fiber) {}
 
@@ -2694,7 +2695,7 @@ class Fiber
 
         void close (Handle fd, char[] name) {}
 
-        void await (Handle fd, Type t, uint timeout=uint.max) {}
+        void await (Handle fd, Type t, uint timeout) {}
         
         void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
     }
@@ -2714,8 +2715,8 @@ class Fiber
         auto other = cast(Fiber) cast(void*) o;
         if (other)
            {
-           long x = cast(long) (event.clock - other.event.clock);
-           return ((x & 0x80000000) ? -1 : x is 0 ? 0 : 1);
+           auto x = cast(long) event.clock - cast(long) other.event.clock;
+           return (x < 0 ? -1 : x is 0 ? 0 : 1);
            }
         return 1;
     }
@@ -3049,7 +3050,7 @@ class Fiber
         Fiber cur = getThis;
         assert( cur, "Fiber.yield() called with no active fiber" );
         if (cur.event.scheduler)
-            cur.event.scheduler.pause;
+            cur.event.scheduler.pause (0);
         else
           cur.cede;
     }
@@ -3075,7 +3076,7 @@ class Fiber
         assert( cur, "Fiber.yield(obj) called with no active fiber" );
         cur.m_unhandled = obj;
         if (cur.event.scheduler)
-            cur.event.scheduler.pause;
+            cur.event.scheduler.pause (0);
         else
            cur.cede;
     }
