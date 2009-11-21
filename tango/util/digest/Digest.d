@@ -12,7 +12,7 @@
 
 ******************************************************************************/
 
-module tango.io.digest.Digest;
+module tango.util.digest.Digest;
 
 private import tango.stdc.stdlib : alloca;
 

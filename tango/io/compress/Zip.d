@@ -32,7 +32,7 @@ import tango.io.device.File : File;
 import tango.io.FilePath : FilePath, PathView;
 import tango.io.device.FileMap : FileMap;
 import tango.io.compress.ZlibStream : ZlibInput, ZlibOutput;
-import tango.io.digest.Crc32 : Crc32;
+import tango.util.digest.Crc32 : Crc32;
 import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.stream.Digester : DigestInput;
 import tango.time.Time : Time, TimeSpan;

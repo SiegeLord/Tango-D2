@@ -13,13 +13,13 @@
 
 *******************************************************************************/
 
-module tango.io.digest.Sha256;
+module tango.util.digest.Sha256;
 
 private import tango.core.ByteSwap;
 
-public  import tango.io.digest.Digest;
+public  import tango.util.digest.Digest;
 
-private import tango.io.digest.MerkleDamgard;
+private import tango.util.digest.MerkleDamgard;
 
 /*******************************************************************************
 

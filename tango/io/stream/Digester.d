@@ -14,7 +14,7 @@ module tango.io.stream.Digester;
 
 private import tango.io.device.Conduit;
 
-private import tango.io.digest.Digest;
+private import tango.util.digest.Digest;
 
 /*******************************************************************************
 
@@ -156,7 +156,7 @@ debug (DigestStream)
 {
         import tango.io.Stdout;
         import tango.io.device.Array;
-        import tango.io.digest.Md5;
+        import tango.util.digest.Md5;
         import tango.io.stream.FileStream;
 
         void main()

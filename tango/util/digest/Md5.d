@@ -13,11 +13,11 @@
 
 *******************************************************************************/
 
-module tango.io.digest.Md5;
+module tango.util.digest.Md5;
 
-public  import tango.io.digest.Md4;
+public  import tango.util.digest.Md4;
 
-private import tango.io.digest.MerkleDamgard;
+private import tango.util.digest.MerkleDamgard;
 
 /*******************************************************************************
 

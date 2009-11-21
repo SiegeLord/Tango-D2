@@ -29,7 +29,7 @@
 
 *******************************************************************************/
 
-module tango.io.encode.Base64;
+module tango.util.encode.Base64;
 
 /*******************************************************************************
 
@@ -417,7 +417,7 @@ version (Test)
             return Test.Status.Success;
         }
 
-        auto t = new Test("tango.io.encode.Base64");
+        auto t = new Test("tango.util.encode.Base64");
         t["Encode"] = &encodeTest;
         t["Encode Stream"] = &encodeChunktest;
         t["Decode"] = &decodeTest;

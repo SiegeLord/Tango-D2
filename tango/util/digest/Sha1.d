@@ -14,11 +14,11 @@
 
 *******************************************************************************/
 
-module tango.io.digest.Sha1;
+module tango.util.digest.Sha1;
 
-private import tango.io.digest.Sha01;
+private import tango.util.digest.Sha01;
 
-public  import tango.io.digest.Digest;
+public  import tango.util.digest.Digest;
 
 /*******************************************************************************
 

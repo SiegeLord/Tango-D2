@@ -20,11 +20,11 @@
 
 *******************************************************************************/
 
-module tango.io.digest.Ripemd160;
+module tango.util.digest.Ripemd160;
 
-private import tango.io.digest.MerkleDamgard;
+private import tango.util.digest.MerkleDamgard;
 
-public  import tango.io.digest.Digest;
+public  import tango.util.digest.Digest;
 
 /*******************************************************************************
 

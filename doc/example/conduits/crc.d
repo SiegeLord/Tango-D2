@@ -1,7 +1,7 @@
 import tango.io.Stdout;
 import tango.io.device.File;
-import tango.io.digest.Crc32;
-import tango.io.digest.Digest;
+import tango.util.digest.Crc32;
+import tango.util.digest.Digest;
 import tango.io.stream.Digester;
 
 char[] digestOfFile (Digest digest, char[] path)
