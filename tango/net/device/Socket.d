@@ -281,7 +281,7 @@ class Socket : Conduit, ISelectable
         package final bool wait (bool reading)
         {
                 // did user enable timeout checks?
-                if (timeout)
+                if (timeout != -1)
                    {
                    SocketSet read, write;
 

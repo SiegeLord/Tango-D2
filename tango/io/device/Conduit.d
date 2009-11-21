@@ -39,8 +39,8 @@ public  import tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
-        protected Fiber.Scheduler scheduler;           // optional scheduler
-        private   uint            duration = uint.max; // scheduling timeout
+        protected Fiber.Scheduler scheduler;            // optional scheduler
+        private   uint            duration = -1;        // scheduling timeout
 
         /***********************************************************************
 
