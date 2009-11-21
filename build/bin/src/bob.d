@@ -14,6 +14,7 @@ private import tango.text.Util;
 private import tango.io.Stdout;
 private import tango.sys.Process;
 private import tango.io.FileScan;
+private import Path = tango.io.Path;
 private import tango.io.device.File;
 private import tango.text.Arguments;
 private import tango.sys.Environment;
@@ -28,8 +29,11 @@ void main (char[][] arg)
 
         if (args.populate (arg[1..$]))
            {
+           try {
+               Path.remove (args.lib);
+               }catch (Object o){}
            new Linux (args);
-           new Freebsd (args);
+           new FreeBSD (args);
            new Windows (args);
            stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
            }
@@ -54,13 +58,14 @@ class Windows : FileFilter
                 void compile (char[] cmd, FilePath file, File list)
                 {
                         auto temp = objname (file);
-                        exec (cmd~temp~" "~file.toString);
+                        if (args.quick is false || isOverdue (file, temp))
+                            exec (cmd~temp~" "~file.toString);
                         list.write (temp ~ "\n");
                 }
 
                 auto outf = new File ("tango.lsp", File.ReadWriteCreate);
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
-                outf.write ("-c -n -p256\n"~args.lib~".lib\n");
+                outf.write ("-c -n -p256\n"~args.lib~"\n");
 
                 exclude ("tango/core/rt/compiler/dmd/posix");
                 foreach (file; scan(".d"))
@@ -73,7 +78,8 @@ class Windows : FileFilter
                     outf.write (args.root~"/tango/core/rt/compiler/dmd/minit.obj\n");
                 outf.close;
                 exec ("lib @tango.lsp");
-                exec ("cmd /q /c del tango.lsp *.obj");
+                //exec ("cmd /q /c del tango.lsp *.obj");
+                exec ("cmd /q /c del tango.lsp");
                 return count;
         }
 }
@@ -95,13 +101,14 @@ class Linux : FileFilter
 
         private void addToLib(char[] obj)
         {
-            exec ("ar -r "~args.lib~".a "~obj);
+            exec ("ar -r "~args.lib~" "~obj);
         }
 
         private char[] compile (FilePath file, char[] cmd)
         {
                 auto temp = objname (file, ".o");
-                exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                if (args.quick is false || isOverdue(file, temp))
+                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
                 return temp;
         }
 
@@ -111,6 +118,7 @@ class Linux : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                exclude ("tango/core/rt/compiler/dmd/windows");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -180,7 +188,11 @@ class Linux : FileFilter
 
 }
 
-class Freebsd : FileFilter
+/*******************************************************************************
+      
+*******************************************************************************/
+
+class FreeBSD : FileFilter
 {
         this (ref Args args)
         {
@@ -193,13 +205,14 @@ class Freebsd : FileFilter
 
         private void addToLib(char[] obj)
         {
-            exec ("ar -r "~args.lib~".a "~obj);
+            exec ("ar -r "~args.lib~" "~obj);
         }
 
         private char[] compile (FilePath file, char[] cmd)
         {
                 auto temp = objname (file, ".o");
-                exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                if (args.quick is false || isOverdue(file, temp))
+                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
                 return temp;
         }
 
@@ -209,6 +222,7 @@ class Freebsd : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                exclude ("tango/core/rt/compiler/dmd/windows"); 
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -277,8 +291,6 @@ class Freebsd : FileFilter
 
 
 }
-
-
 
 /*******************************************************************************
       
@@ -408,11 +420,25 @@ class FileFilter : FileScan
         
         private char[] objname (FilePath fp, char[] ext=".obj")
         {
-                auto tmp = fp.folder ~ fp.name ~ ext;
-                foreach (i, c; tmp)
-                         if (c != '.' && c != '/')
-                            return tmp[i..$].replace('/', '-');
-                return null;
+                auto tmp = fp.folder [args.root.length+1 .. $] ~ fp.name ~ args.flags;
+                foreach (i, ref c; tmp)
+                         if (c is '.' || c is '/' || c is '=' || c is ' ' || c is '"')
+                             c = '-';  
+                return tmp ~ ext ;
+        }
+
+        /***********************************************************************
+              
+        ***********************************************************************/
+        
+        private bool isOverdue (FilePath fp, char[] objfile)
+        {
+                if (! Path.exists (objfile))
+                      return true;
+
+                auto src = fp.timeStamps.modified;
+                auto obj = Path.modified (objfile);
+                return src >= obj;
         }
         
         /***********************************************************************
@@ -435,7 +461,8 @@ class FileFilter : FileScan
                    foreach (str; cmd)
                             stdout (str)(' ');
                    stdout.newline;
-                   }        
+                   }  
+                         
                 if (! args.inhibit)
                    {
                    scope proc = new Process (cmd, env);
@@ -455,6 +482,7 @@ class FileFilter : FileScan
         }
 }
 
+
 /*******************************************************************************
       
 *******************************************************************************/
@@ -463,6 +491,7 @@ struct Args
 {
         bool    core,
                 user,
+                quick,
                 inhibit,
                 verbose;
 
@@ -475,6 +504,7 @@ struct Args
 
         char[]  usage = "usage: bob tango-path\n"
                         "\t[-v]\t\t\tverbose output\n"
+                        "\t[-q]\t\t\tquick execution\n"
                         "\t[-i]\t\t\tinhibit execution\n"
                         "\t[-u]\t\t\tinclude user modules\n"
                         "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
@@ -487,6 +517,7 @@ struct Args
         {       
                 auto args = new Arguments;
                 auto p = args('p').params(1);
+                auto q = args('q');
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
@@ -499,32 +530,39 @@ struct Args
 
                 version (Windows)
                          p.defaults("windows");
-                   else
+                else
                 version (linux)
                          p.defaults("linux");
-                   else
+                else
                 version (freebsd)
                          p.defaults("freebsd");
-                   else
-                      p.required;
+                else
+                   p.required;
                 
                 version (Windows)
-                         l.defaults("tango");
-                   else
-                      l.defaults("libtango");
+                        {
+                        l.defaults("tango");
+                        auto libext = ".lib";
+                        }
+                     else
+                        {
+                        l.defaults("libtango");
+                        auto libext = ".a";
+                        }
 
                 if (args.parse (arg))
                    {
                    user = u.set;
                    core = r.set;
+                   quick = q.set;
                    inhibit = i.set;
                    verbose = v.set;
                    os = p.assigned[0];
-                   lib = l.assigned[0];
                    root = n.assigned[0];
                    flags = o.assigned[0];
                    target = r.assigned[0];
                    compiler = c.assigned[0];
+                   lib = l.assigned[0]~libext;
                    return true;
                    }
 
