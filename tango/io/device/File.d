@@ -534,8 +534,12 @@ class File : Device, Device.Seek
                 {
                         long newOffset; 
 
+                        // hack to ensure overlapped.Offset and file location 
+                        // are correctly in synch ...
                         if (anchor is Anchor.Current)
-                            offset += position;
+                            SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
+                                              &super.overlapped.Offset, 
+                                              cast(PLARGE_INTEGER) &newOffset, 0);
 
                         if (! SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
                                                 &offset, cast(PLARGE_INTEGER) 
@@ -735,11 +739,18 @@ debug (File)
 
         void main()
         {
-                auto foo = File.get("file.d");
+                char[10] ff;
+
                 auto file = new File("file.d");
                 auto content = cast(char[]) file.load (file);
-                Stdout (content).newline;
-                char[10] ff;
-                int f = file.read(ff);
+                assert (content.length is file.length);
+                assert (file.read(ff) is file.Eof);
+                assert (file.position is content.length);
+                file.seek (0);
+                assert (file.position is 0);
+                assert (file.read(ff) is 10);
+                assert (file.position is 10);
+                assert (file.seek(0, file.Anchor.Current) is 10);
+                assert (file.seek(0, file.Anchor.Current) is 10);
         }
 }
