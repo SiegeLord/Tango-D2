@@ -1,4 +1,4 @@
-        module runUnitTest_win;
+module runUnitTest_win;
 import tango.core.Array;
 import tango.core.Atomic;
 import tango.core.BitArray;
@@ -208,7 +208,6 @@ import tango.sys.consts.autoconf.machine;
 import tango.sys.consts.autoconf.socket;
 import tango.sys.consts.autoconf.sysctl;
 import tango.sys.consts.autoconf.unistd;
-import tango.sys.consts.constSupport;
 import tango.sys.darwin.consts.errno;
 import tango.sys.darwin.consts.fcntl;
 import tango.sys.darwin.consts.machine;
