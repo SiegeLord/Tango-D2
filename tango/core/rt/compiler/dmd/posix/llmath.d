@@ -5,7 +5,7 @@
 
 // Compiler runtime support for 64 bit longs
 
-module rt.compiler.dmd.rt.llmath;
+module rt.compiler.dmd.posix.llmath;
 
 extern (C):
 
