@@ -1389,6 +1389,8 @@ FS.Stamps timeStamps (char[] name)
 
         Set the accessed and modified timestamps of the specified file
 
+        Since 0.99.9
+
 *******************************************************************************/
 
 void timeStamps (char[] name, Time accessed, Time modified)
