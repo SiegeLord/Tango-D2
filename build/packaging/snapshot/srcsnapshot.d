@@ -1,13 +1,12 @@
-import tango.io.stream.Map;
-import tango.sys.Process;
-import tango.io.FileSystem;
-import tango.io.FilePath;
-import tango.io.device.File;
-import tango.io.model.IFile;
-
 import tango.io.Stdout;
+import tango.io.FilePath;
+import tango.io.stream.Map;
+import tango.io.device.File;
 
 import tango.time.WallClock;
+
+import tango.sys.Process;
+import tango.sys.Environment;
 
 char[] workdir;
 char[] wcdir;
@@ -63,12 +62,11 @@ int main(char[][] args)
     auto props = new MapInput!(char)(new File(args[1]));
     foreach (name, value; props)
              configReader (name, value);
-    //props.load(args[1], &configReader);
     props.close;
 
 
     // Enter work directory
-    FileSystem.setDirectory(workdir);
+    Environment.cwd (workdir);
     // Check out repository if working copy don't exist, update it if it do
     auto wc = new FilePath(wcdir);
     if (!wc.exists) {
@@ -83,7 +81,7 @@ int main(char[][] args)
     }
     else {
         Stdout("!! Updating working copy").newline;
-        FileSystem.setDirectory(wcdir);
+        Environment.cwd (wcdir);
         auto svnup = new Process("svn up", null);
         svnup.execute();
         auto result = svnup.wait();
@@ -94,7 +92,7 @@ int main(char[][] args)
     }
 
     // Make sure we're still in work directory
-    FileSystem.setDirectory(workdir);
+    Environment.cwd (workdir);
 
     // export wc to dir to be packaged, will need to have the name of the package
 
@@ -127,7 +125,7 @@ int main(char[][] args)
  
     // enter packagedir/lib
     Stdout("!! Generate files").newline;
-    FileSystem.setDirectory(packdirdate ~ FileConst.PathSeparatorString ~ "lib");
+    Environment.cwd (packdirdate ~ FileConst.PathSeparatorString ~ "lib");
 
     // run build-*.*
     auto bld = new Process(buildcmd, null);
@@ -140,7 +138,7 @@ int main(char[][] args)
     }
  
     // enter package root dir
-    FileSystem.setDirectory(workdir ~ FileConst.PathSeparatorString ~ packdirdate);
+    Environment.cwd (workdir ~ FileConst.PathSeparatorString ~ packdirdate);
 
     // change access to generated files
     Stdout("!! Changing access rights").newline;
@@ -165,7 +163,7 @@ int main(char[][] args)
     }
  
     // enter workdir
-    FileSystem.setDirectory(workdir);
+    Environment.cwd (workdir);
 
     // create zip, etc
     Stdout("!! Creating .tar.gz").newline;
