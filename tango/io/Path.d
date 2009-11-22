@@ -167,7 +167,9 @@ package struct FS
         /***********************************************************************
 
                 Return an adjusted path such that non-empty instances always
-                have a trailing separator
+                have a trailing separator.
+
+                Note: allocates memory where path is not already terminated
 
         ***********************************************************************/
 
@@ -197,6 +199,8 @@ package struct FS
                 Join a set of path specs together. A path separator is
                 potentially inserted between each of the segments.
 
+                Note: allocates memory
+
         ***********************************************************************/
 
         static char[] join (char[][] paths...)
@@ -213,6 +217,8 @@ package struct FS
 
                 Append a terminating null onto a string, cheaply where 
                 feasible
+
+                Note: allocates memory where the dst is too small
 
         ***********************************************************************/
 
@@ -419,7 +425,6 @@ package struct FS
                         }
                                                 
                         createFile (name, &set);
-                        //int utime(const char *path, const struct utimbuf *times);
                 }
 
                 /***************************************************************
@@ -542,6 +547,8 @@ package struct FS
                         Each path and filename is passed to the provided
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
+
+                        Note: allocates a small memory buffer
 
                 ***************************************************************/
 
@@ -791,6 +798,8 @@ package struct FS
                         reference to this class on success, or throws an IOException
                         upon failure.
 
+                        Note: allocates a memory buffer
+
                 ***********************************************************************/
 
                 static void copy (char[] source, char[] dest)
@@ -899,6 +908,8 @@ package struct FS
                         Each path and filename is passed to the provided
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
+
+                        Note: allocates and reuses a small memory buffer
 
                 ***************************************************************/
 
@@ -1015,6 +1026,8 @@ struct PathParser
         /***********************************************************************
 
                 Duplicate this path
+
+                Note: allocates memory for the path content
 
         ***********************************************************************/
 
@@ -1426,6 +1439,8 @@ bool remove (char[] name)
 
         Use with great caution
 
+        Note: may allocate memory
+
         Since: 0.99.9
 
 *******************************************************************************/
@@ -1557,6 +1572,8 @@ FS.Listing children (char[] path)
         and a set of matching names is returned as filepaths (including those 
         folders which match the pattern)
 
+        Note: allocates memory
+
         Since: 0.99.9
 
 *******************************************************************************/
@@ -1581,6 +1598,8 @@ char[][] collate (char[] path, char[] pattern, bool recurse=false)
 
         Join a set of path specs together. A path separator is
         potentially inserted between each of the segments.
+
+        Note: may allocate memory
 
 *******************************************************************************/
 
@@ -1939,6 +1958,8 @@ debug (UnitTest)
         -----
         normalize("/home/foo/./bar/../../john/doe"); // => "/home/john/doe"
         -----
+
+        Note: allocates memory
 
 *******************************************************************************/
 
