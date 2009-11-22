@@ -1412,12 +1412,15 @@ bool remove (char[] name)
 
 /*******************************************************************************
 
-        Remove all files and folders from the given path whose name matches
-        the given pattern. Folders will be traversed where recurse is enabled, 
-        and the return value indicates whether or not all matching names were 
-        successfully removed (including those folders that match the pattern).
-        Folders will not be successfully removed unless all contained entities
-        match the pattern.
+        Remove the files and folders listed in the provided paths. Where
+        folders are listed, they should be preceded by their contained
+        files in order to be successfuy removed. Returns a set of paths
+        that failed to be removed (where .length is zero upon success).
+
+        The collate() function can be used to provide the input paths:
+        ---
+        remove (collate (".", "*.d", true));
+        ---
 
         Use with great caution
 
@@ -1425,13 +1428,13 @@ bool remove (char[] name)
 
 *******************************************************************************/
 
-bool remove (char[] path, char[] pattern, bool recurse=false)
+char[][] remove (char[][] paths)
 {     
-        auto ret = true;
-        foreach (file; collate (path, pattern, recurse))
-                 if (! remove (file))
-                       ret = false;
-        return ret;
+        char[][] failed;
+        foreach (path; paths)
+                 if (! remove (path))
+                       failed ~= path;
+        return failed;
 }
 
 /*******************************************************************************
