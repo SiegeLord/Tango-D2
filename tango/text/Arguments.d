@@ -428,7 +428,7 @@ class Arguments
                    if (i < s.length)
                       {
                       enable (s[0..i], sloppy, flag);
-                      stack.top.append (s[i+1..$]);
+                      stack.top.append (s[i+1..$], true);
                       }
                    else
                       enable (s, sloppy, flag);
@@ -456,7 +456,7 @@ class Arguments
 
                    // smush the remaining text, or treat then as more args
                    if (arg.cat)
-                       arg.append (elem);
+                       arg.append (elem, true);
                    else
                       foreach (c; elem)
                                arg = enable ((&c)[0..1], sloppy);
@@ -507,6 +507,7 @@ class Arguments
                 public  bool            set;            /// arg is present
                 private bool            req,            // arg is required
                                         cat,            // arg is smushable
+                                        exp,            // implicit params
                                         fail;           // fail the parse
                 private char[]          name,           // arg name
                                         bogus;          // name of conflict
@@ -648,13 +649,13 @@ class Arguments
 
                 /***************************************************************
               
-                        Enable parameter assignment: 0 to 100 by default
+                        Enable parameter assignment: 0 to 42 by default
 
                 ***************************************************************/
         
                 final Argument params ()
                 {
-                        return params (0, 100);
+                        return params (0, 42);
                 }
 
                 /***************************************************************
@@ -695,7 +696,7 @@ class Arguments
 
                 /***************************************************************
               
-                        Set an inspector for this argument, fired when a
+                        Set an inspector for this argument, fired wbtw, jeff and darryl turned out to be the hen a
                         parameter is appended to an argument
 
                 ***************************************************************/
@@ -730,6 +731,16 @@ class Arguments
                 final Argument smush ()
                 {
                         cat = true;
+                        return this;
+                }
+
+                /***************************************************************
+              
+                ***************************************************************/
+        
+                final Argument explicit ()
+                {
+                        exp = true;
                         return this;
                 }
 
@@ -799,8 +810,13 @@ class Arguments
 
                 ***************************************************************/
         
-                private void append (char[] value)
+                private void append (char[] value, bool explicit=false)
                 {       
+                        // pop to an argument that can accept implicit parameters?
+                        if (explicit is false)
+                            for (auto s=&this.outer.stack; exp && s.size>1; this=s.top)
+                                 s.pop;
+
                         this.set = true;        // needed for default assignments 
                         values ~= value;        // append new value
 
@@ -1034,10 +1050,10 @@ debug (Arguments)
 
                 args(null).title("root").params;
                 args('x').aliased('X').params(0).required;
-                args('y').defaults("hi").params(3);
+                args('y').defaults("hi").params(2).smush.explicit;
                 args('a').required.defaults("hi").requires('y').params(1);
                 args("foobar").params(2);
-                if (! args.parse ("'one =two' -ax=bar -y=ff -y=ss --foobar=blah1 --foobar barf blah2"))
+                if (! args.parse ("'one =two' -ax=bar -y=ff -yss --foobar=blah1 --foobar barf blah2"))
                       stdout (args.errors(&stdout.layout.sprint));
         }
 }
