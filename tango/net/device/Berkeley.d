@@ -1074,11 +1074,17 @@ public class IPv4Address : Address
 
         struct sockaddr_in
         {
-                ushort sinfamily = AddressFamily.INET;
+                version ( freebsd ){
+                        ubyte sin_len;
+                        ubyte sinfamily  = AddressFamily.INET;
+                } else {
+                        ushort sinfamily = AddressFamily.INET;
+                }
                 ushort sin_port;
                 uint sin_addr; //in_addr
                 char[8] sin_zero = 0;
         }
+        static assert(sockaddr_in.sizeof is 16);
 
         /***********************************************************************
 
