@@ -449,37 +449,30 @@ package struct FS
 
                 /***************************************************************
 
-                        Remove the file/directory from the file-system
+                        Remove the file/directory from the file-system.
+                        Returns true on success - false otherwise
 
                 ***************************************************************/
 
-                static void remove (char[] name)
+                static bool remove (char[] name)
                 {
                         if (isFolder(name))
                            {
                            version (Win32SansUnicode)
-                                   {
-                                   if (! RemoveDirectoryA (name.ptr))
-                                         exception (name);
-                                   }
+                                    return RemoveDirectoryA (name.ptr) != 0;
                                 else
                                    {
                                    wchar[MAX_PATH] tmp = void;
-                                   if (! RemoveDirectoryW (toString16(tmp, name).ptr))
-                                         exception (name);
+                                   return RemoveDirectoryW (toString16(tmp, name).ptr) != 0;
                                    }
                            }
                         else
                            version (Win32SansUnicode)
-                                   {
-                                   if (! DeleteFileA (name.ptr))
-                                         exception (name);
-                                   }
+                                    return DeleteFileA (name.ptr) != 0;
                                 else
                                    {
                                    wchar[MAX_PATH] tmp = void;
-                                   if (! DeleteFileW (toString16(tmp, name).ptr))
-                                         exception (name);
+                                   return DeleteFileW (toString16(tmp, name).ptr) != 0;
                                    }
                 }
 
@@ -847,14 +840,14 @@ package struct FS
 
                 /***************************************************************
 
-                        Remove the file/directory from the file-system
+                        Remove the file/directory from the file-system. 
+                        Returns true on success - false otherwise.
 
                 ***************************************************************/
 
-                static void remove (char[] name)
+                static bool remove (char[] name)
                 {
-                        if (tango.stdc.stdio.remove (name.ptr) is -1)
-                            exception (name);
+                        return tango.stdc.stdio.remove(name.ptr) != -1;
                 }
 
                 /***************************************************************
@@ -1406,14 +1399,39 @@ void timeStamps (char[] name, Time accessed, Time modified)
 
 /*******************************************************************************
 
-        Remove the file/directory from the file-system
+        Remove the file/directory from the file-system. Returns true if
+        successful, false otherwise
 
 *******************************************************************************/
 
-void remove (char[] name)
+bool remove (char[] name)
 {      
         char[512] tmp = void;
-        FS.remove (FS.strz(name, tmp));
+        return FS.remove (FS.strz(name, tmp));
+}
+
+/*******************************************************************************
+
+        Remove all files and folders from the given path whose name matches
+        the given pattern. Folders will be traversed where recurse is enabled, 
+        and the return value indicates whether or not all matching names were 
+        successfully removed (including those folders that match the pattern).
+        Folders will not be successfully removed unless all contained entities
+        match the pattern.
+
+        Use with great caution
+
+        Since: 0.99.9
+
+*******************************************************************************/
+
+bool remove (char[] path, char[] pattern, bool recurse=false)
+{     
+        auto ret = true;
+        foreach (file; collate (path, pattern, recurse))
+                 if (! remove (file))
+                       ret = false;
+        return ret;
 }
 
 /*******************************************************************************
@@ -1526,6 +1544,33 @@ void copy (char[] src, char[] dst)
 FS.Listing children (char[] path)
 {
         return FS.Listing (path);
+}
+
+/*******************************************************************************
+
+        Collate all files and folders from the given path whose name matches
+        the given pattern. Folders will be traversed where recurse is enabled, 
+        and a set of matching names is returned as filepaths (including those 
+        folders which match the pattern)
+
+        Since: 0.99.9
+
+*******************************************************************************/
+
+char[][] collate (char[] path, char[] pattern, bool recurse=false)
+{      
+        char[][] list;
+
+        foreach (info; children (path))
+                {
+                auto file = join (info.path, info.name);
+                if (info.folder && recurse)
+                    list ~= collate (file, pattern, true);
+
+                if (patternMatch (info.name, pattern))
+                    list ~= file;
+                }
+        return list;
 }
 
 /*******************************************************************************
@@ -2124,7 +2169,11 @@ debug (UnitTest)
 
 debug (Path)
 {
+        import tango.io.Stdout;
+
         void main()
-        {
+        { 
+                foreach (file; collate (".", "*.d", true))
+                         Stdout (file).newline;      
         }
 }
