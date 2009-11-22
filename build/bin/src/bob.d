@@ -6,7 +6,7 @@
 
         version:        Oct 2009: Initial release
 
-        author:         various
+        author:         larsivi, sleets, kris
 
 *******************************************************************************/
 
@@ -15,6 +15,7 @@ private import tango.io.Stdout;
 private import tango.sys.Process;
 private import tango.io.FileScan;
 private import Path = tango.io.Path;
+private import tango.io.device.Array;
 private import tango.io.device.File;
 private import tango.text.Arguments;
 private import tango.sys.Environment;
@@ -55,28 +56,27 @@ class Windows : FileFilter
 
         int dmd ()
         {
-                void compile (char[] cmd, FilePath file, File list)
+                void compile (char[] cmd, FilePath file)
                 {
                         auto temp = objname (file);
                         if (args.quick is false || isOverdue (file, temp))
                             exec (cmd~temp~" "~file.toString);
-                        list.write (temp ~ "\n");
+                        addToLib (temp);
                 }
 
-                auto outf = new File ("tango.lsp", File.ReadWriteCreate);
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
-                outf.write ("-c -n -p256\n"~args.lib~"\n");
+                libs ("-c -n -p256\n"~args.lib~"\n");
 
                 exclude ("tango/core/rt/compiler/dmd/posix");
                 foreach (file; scan(".d"))
-                         compile (dmd, file, outf);
+                         compile (dmd, file);
 
                 foreach (file; scan(".c"))
-                         compile ("dmc -c -mn -6 -r -o", file, outf);
+                         compile ("dmc -c -mn -6 -r -o", file);
 
                 if (args.core)
-                    outf.write (args.root~"/tango/core/rt/compiler/dmd/minit.obj\n");
-                outf.close;
+                    addToLib (args.root~"/tango/core/rt/compiler/dmd/minit.obj");
+                File.set("tango.lsp", libs.slice);
                 exec ("lib @tango.lsp");
                 //exec ("cmd /q /c del tango.lsp *.obj");
                 exec ("cmd /q /c del tango.lsp");
@@ -97,11 +97,6 @@ class Linux : FileFilter
                 register ("linux", "dmd", &dmd);
                 register ("linux", "ldc", &ldc);
                 register ("linux", "gdc", &gdc);
-        }
-
-        private void addToLib(char[] obj)
-        {
-            exec ("ar -r "~args.lib~" "~obj);
         }
 
         private char[] compile (FilePath file, char[] cmd)
@@ -136,6 +131,7 @@ class Linux : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -159,6 +155,7 @@ class Linux : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -182,6 +179,7 @@ class Linux : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -201,11 +199,6 @@ class FreeBSD : FileFilter
                 register ("freebsd", "dmd", &dmd);
                 register ("freebsd", "ldc", &ldc);
                 register ("freebsd", "gdc", &gdc);
-        }
-
-        private void addToLib(char[] obj)
-        {
-            exec ("ar -r "~args.lib~" "~obj);
         }
 
         private char[] compile (FilePath file, char[] cmd)
@@ -240,6 +233,7 @@ class FreeBSD : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -263,6 +257,7 @@ class FreeBSD : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -286,6 +281,7 @@ class FreeBSD : FileFilter
                     }
                 }
 
+                makeLib;
                 return count;
         }
 
@@ -299,6 +295,8 @@ class FreeBSD : FileFilter
 class FileFilter : FileScan
 {
         alias int delegate()    Builder;
+
+        Array                   libs;
         Args                    args;
         int                     count;
         char[]                  suffix;
@@ -334,6 +332,8 @@ class FileFilter : FileScan
         this (ref Args args)
         {
                 this.args = args;
+
+                libs = new Array (0, 1024 * 16);
 
                 if (args.core is false)
                     exclude ("tango/core");
@@ -442,10 +442,34 @@ class FileFilter : FileScan
         }
         
         /***********************************************************************
+
+        ***********************************************************************/
+
+        private void addToLib (char[] obj)
+        {
+                version (Windows)
+                         const Eol = "\r\n";
+                else
+                         const Eol = " ";
+                if (Path.exists (obj))
+                    libs (obj)(Eol);
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        private void makeLib ()
+        {
+                if (libs.readable > 2)
+                    exec ("ar -r "~args.lib~" "~ cast(char[]) libs.slice[0..$-1]);
+        }
+
+        /***********************************************************************
               
         ***********************************************************************/
         
-        void exec(char[] cmd)
+        void exec (char[] cmd)
         {
                 exec (split(cmd, " "), null, null);
         }
