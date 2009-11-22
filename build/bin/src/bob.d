@@ -78,8 +78,12 @@ class Windows : FileFilter
                     addToLib (args.root~"/tango/core/rt/compiler/dmd/minit.obj");
                 File.set("tango.lsp", libs.slice);
                 exec ("lib @tango.lsp");
-                //exec ("cmd /q /c del tango.lsp *.obj");
-                exec ("cmd /q /c del tango.lsp");
+
+                // retain obj files only when -q is specified
+                if (args.quick)
+                    exec ("cmd /q /c del tango.lsp");
+                else
+                   exec ("cmd /q /c del tango.lsp *.obj");
                 return count;
         }
 }
@@ -462,7 +466,14 @@ class FileFilter : FileScan
         private void makeLib ()
         {
                 if (libs.readable > 2)
-                    exec ("ar -r "~args.lib~" "~ cast(char[]) libs.slice[0..$-1]);
+                   {
+                   auto files = cast(char[]) libs.slice [0..$-1];
+                   exec ("ar -r "~args.lib~" "~ files);
+        
+                   if (args.quick is false)
+                       // TODO: remove the list of filenames in 'files' 
+                      {}
+                   }
         }
 
         /***********************************************************************
