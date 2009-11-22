@@ -540,15 +540,15 @@ struct Args
         bool populate (char[][] arg)
         {       
                 auto args = new Arguments;
-                auto p = args('p').params(1);
                 auto q = args('q');
                 auto u = args('u');
                 auto i = args('i');
                 auto v = args('v');
-                auto l = args('l').params(1);
-                auto o = args('o').params(1).defaults("-release");
-                auto c = args('c').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
-                auto r = args('r').params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto l = args('l').smush.params(1);
+                auto p = args('p').smush.params(1);
+                auto o = args('o').smush.params(1).defaults("-release");
+                auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto r = args('r').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
 
