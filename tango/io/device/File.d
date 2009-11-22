@@ -129,7 +129,7 @@ version (Win32)
         
 *******************************************************************************/
 
-class File : Device, Device.Seek
+class File : Device, Device.Seek, Device.Truncate
 {
         public alias Device.read  read;
         public alias Device.write write;
@@ -513,7 +513,7 @@ class File : Device, Device.Seek
 
                 ***************************************************************/
 
-                void truncate (long size)
+                override void truncate (long size)
                 {
                         auto s = seek (size);
                         assert (s is size);
@@ -683,7 +683,7 @@ class File : Device, Device.Seek
 
                 ***************************************************************/
 
-                void truncate (long size)
+                override void truncate (long size)
                 {
                         // set filesize to be current seek-position
                         if (posix.ftruncate (handle, cast(off_t) size) is -1)

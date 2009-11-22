@@ -69,7 +69,23 @@ interface IConduit : InputStream, OutputStream
         ***********************************************************************/
 
         abstract void error (char[] msg);
+/+
+        /***********************************************************************
 
+                Set the active duration period for asynchronous IO calls
+
+        ***********************************************************************/
+
+        abstract void timeout (uint millisec);
+
+        /***********************************************************************
+
+                Get the active duration period for asynchronous IO calls
+
+        ***********************************************************************/
+
+        abstract uint timeout ();
++/
         /***********************************************************************
 
                 All streams now support seek(), so this is used to signal
@@ -78,6 +94,17 @@ interface IConduit : InputStream, OutputStream
         ***********************************************************************/
 
         interface Seek {}
+
+        /***********************************************************************
+
+                Indicates the conduit supports resize/truncation
+
+        ***********************************************************************/
+
+        interface Truncate 
+        {
+                void truncate (long size);
+        }
 }
 
 
@@ -132,7 +159,7 @@ interface IOStream
                 provided anchor point, and return adjusted position.
 
                 Those conduits which don't support seeking will throw
-                an IOException
+                an IOException (and don't implement IConduit.Seek)
 
         ***********************************************************************/
 

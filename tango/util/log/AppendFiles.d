@@ -33,7 +33,7 @@ public class AppendFiles : Filer
         private Mask            mask_;
         private char[][]        paths;
         private int             index;
-        private ulong           maxSize,
+        private long            maxSize,
                                 fileSize;
 
         /***********************************************************************
@@ -48,7 +48,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        this (char[] path, int count, ulong maxSize, Appender.Layout how = null)
+        this (char[] path, int count, long maxSize, Appender.Layout how = null)
         {
                 --count;
                 assert (path);
@@ -164,12 +164,9 @@ public class AppendFiles : Filer
 
                 // reset file size
                 if (reset)
-                   {
-                   fileSize = 0;
-                   conduit.truncate;
-                   }
+                    conduit.truncate (fileSize = 0);
                 else
-                   fileSize = cast(ulong) conduit.length;
+                   fileSize = conduit.length;
         }
 }
 
