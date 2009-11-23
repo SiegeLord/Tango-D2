@@ -14,6 +14,7 @@
 
 module tango.io.vfs.ZipFolder;
 
+import Path = tango.io.Path;
 import tango.io.device.File : File;
 import tango.io.FilePath : FilePath;
 import tango.io.device.TempFile : TempFile;
@@ -23,7 +24,7 @@ import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
        VfsFolders, VfsFiles, VfsFilter, VfsStats, VfsFilterInfo,
        VfsInfo, VfsSync;
-import Path = tango.io.Path;
+import tango.time.Time : Time;
 
 debug( ZipFolder )
 {
@@ -1173,7 +1174,13 @@ else
             return new ZipFile(archive, parent, name);
     }
 
-private:
+    ///
+    final Time modified()
+    {
+        return entry.file.zipEntry.info.modified;
+    }
+    
+    private:
     ZipFolder archive;
     Entry* entry;
 

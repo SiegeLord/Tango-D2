@@ -761,6 +761,17 @@ private class FileHost : VfsFile
                 ret.path = path.dup;
                 return ret;
         }
+        
+        /***********************************************************************
+
+                Modified time of the file
+
+        ***********************************************************************/
+
+        final Time modified ()
+        {
+                return Path.timeStamps(path.toString).modified;
+        }
 }
 
 
