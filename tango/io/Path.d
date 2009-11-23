@@ -1572,7 +1572,7 @@ FS.Listing children (char[] path)
         and a set of matching names is returned as filepaths (including those 
         folders which match the pattern)
 
-        Note: allocates memory
+        Note: allocates memory for returned paths
 
         Since: 0.99.9
 
@@ -1584,12 +1584,11 @@ char[][] collate (char[] path, char[] pattern, bool recurse=false)
 
         foreach (info; children (path))
                 {
-                auto file = join (info.path, info.name);
                 if (info.folder && recurse)
-                    list ~= collate (file, pattern, true);
+                    list ~= collate (join(info.path, info.name), pattern, true);
 
                 if (patternMatch (info.name, pattern))
-                    list ~= file;
+                    list ~= join (info.path, info.name);
                 }
         return list;
 }
