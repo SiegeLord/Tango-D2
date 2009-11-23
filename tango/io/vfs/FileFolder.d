@@ -144,13 +144,13 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Remove the folder subtree
+                Remove the folder subtree. Use with care!
 
         ***********************************************************************/
 
         final VfsFolder clear ()
         {
-                Path.remove (path);
+                Path.remove (Path.collate(path, "*", true));
                 return this;
         }
 
