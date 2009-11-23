@@ -56,7 +56,14 @@ dmdbugs() {
             echo " >> to experience problems."
         fi
 
-        if [ "$DMDVERSIONMIN" -gt "41" ]
+        if [ "$DMDVERSIONMIN" -gt "47" -a "$DMDVERSIONMIN" -lt "51" ]
+        then
+            echo ">> This version of DMD is broken and is not supported by Tango."
+            echo " >> Aborting."
+            exit 1
+        fi
+
+        if [ "$DMDVERSIONMIN" -gt "51" ]
         then
             echo ">> This version has not been tested with Tango prior to this release,"
             echo " >> so if you experience any problems, try reverting to DMD 1.041"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# A simple script to build libtango.a/libgtango
-# Copyright (C) 2007  Lars Ivar Igesund
+# A simple script to build libtango
+# Copyright (C) 2007-2009  Lars Ivar Igesund
 # Permission is granted to do anything you please with this software.
 # This software is provided with no warranty, express or implied, within the
 # bounds of applicable law.
@@ -23,12 +23,13 @@ Options:
   --debug: Will enable debug info
   --warn: Will enable warnings
   --verbose: Increase verbosity 
+  --user: Just user portion of library
+  --runtime: Just runtime portion of library
   <identifier> is one of {dmd, gdc, ldc, mac} and will build libtango.a,
                 libgtango.a or universal Mac binaries respectively
 
-  The script must be called from within lib/ and the resulting
-  binaries will be found there. The build requires that libtango-base-dmd.a/
-  libgphobos.a already was built.'
+  Without --user or --runtime, both will be built into the library.
+    '
     exit 0
 }
 
@@ -40,7 +41,14 @@ DEBUG=""
 RELEASE="-release -O"
 WARN=""
 VERBOSE=0
+USER=0
+RUNTIME=0
+USERLIB=""
+RTLIB=""
+GCC32="-m32"
+GCCRELEASE="-O3"
 
+pushd `dirname $0`
 # Compiler specific includes
 . dmdinclude
 
@@ -65,12 +73,36 @@ compilersettings() {
 filter() {
 
     FILE=$1
-    if [ "`echo $FILE | grep group`" ]
+
+    if [ "`echo $FILE | grep core.rt`" ]
+    then
+        if [ $RUNTIME == 0 ]
+        then
+            return 1
+        fi
+    else
+        if [ $USER == 0 ]
+        then
+            return 1
+        fi
+    fi
+
+    if [ "`echo $FILE | grep dmd`" -a ! "$DC" == "dmd" ]
     then
         return 1
     fi
 
-    if [ "`echo $FILE | grep win32`" -o "`echo $FILE | grep Win32`" ]
+    if [ "`echo $FILE | grep ldc`" -a ! "$DC" == "ldc" ]
+    then
+        return 1
+    fi
+
+    if [ "`echo $FILE | grep gdc`" -a ! "$DC" == "gdc" ]
+    then
+        return 1
+    fi
+
+    if [ "`echo $FILE | grep win32`" -o "`echo $FILE | grep Win32`" -o "`echo $FILE | grep windows`" ]
     then
         return 1
     fi
@@ -112,17 +144,36 @@ compile() {
     OBJNAME=`echo $1 | sed -e 's/\.d//' | sed -e 's/\//\./g'`
     OBJNAME=${OBJNAME}.o
 
-    if filter $OBJNAME
+    if filter $OBJNAME 
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango -of$OBJNAME $FILENAME
+        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. -Itango/core -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
         fi
-        ar -r lib/$LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
+        ar -r $LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
         rm $OBJNAME
     fi
+}
+
+compileGcc() {
+    FILENAME=$1
+    OBJNAME=`echo $1 | sed -e 's/\.c|\.S//' | sed -e 's/\//\./g'`
+    OBJNAME=${OBJNAME}.o
+
+    if filter $OBJNAME 
+    then
+        if [ $VERBOSE == 1 ]; then echo "[GCC] $FILENAME"; fi
+        gcc -c $GCC32 $GCCRELEASE -o$OBJNAME $FILENAME
+        if [ "$?" != 0 ]
+        then
+            return 1;
+        fi
+        ar -r $LIB $OBJNAME 2>&1 | grep -v "ranlib: .* has no symbols"
+        rm $OBJNAME
+    fi
+
 }
 
 # Build the libraries
@@ -130,6 +181,14 @@ build() {
 
     DC=$1
     LIB=$2
+    
+    echo Building $LIB
+
+    if [ $RUNTIME == 0 -a $USER == 0 ]
+    then
+        RUNTIME=1
+        USER=1
+    fi
 
     if ! which $DC >& /dev/null
     then
@@ -137,17 +196,18 @@ build() {
         return
     fi
 
+    if [ $DC == "gdc" ]
+    then
+        echo Runtime build for gdc not currently supported, disabling.
+        RUNTIME=0
+    fi
+
     # Check if the compiler used has known bugs
     compilerbugs
     # Setup compiler specific settings
     compilersettings
 
-    if [ ! -e "$3" ]
-    then
-        die "Dependency $3 not present, run build-yourcompiler.sh first" 1
-    fi
-
-    cd ..
+    cd ../..
     echo compiler call: $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango
 
     for file in `find tango -name '*.d'`
@@ -158,17 +218,21 @@ build() {
             die "Compilation of $file failed" 1 
         fi
     done
+    for file in `find tango -name '*.c' -o -name '*.S'`
+    do
+        compileGcc $file
+        if [ "$?" = 1 ]
+        then
+            die "Compilation of $file failed" 1 
+        fi
+    done
 
-    ranlib lib/$LIB 2>&1 | grep -v "ranlib: .* has no symbols"
+    ranlib $LIB 2>&1 | grep -v "ranlib: .* has no symbols"
 
-    cd lib
+    popd
+
+    echo Built $LIB
 }
-
-ORIGDIR=`pwd`
-if [ ! "`basename $ORIGDIR`" = "lib" ]
-then
-    die "You must run this script from the lib directory." 1
-fi
 
 if [ "$#" == "0" ]
 then
@@ -191,7 +255,7 @@ do
             RELEASE=""
             ;;
         --test)
-            RELEASE="-unittest -d-debug=UnitTest"
+            RELEASE="-unittest -d -debug=UnitTest"
 #            RELEASE="-release -O -d-debug=UnitTest"
 	    ;;
         --noinline)
@@ -200,15 +264,23 @@ do
         --verbose) 
             VERBOSE=1
             ;;
+        --user)
+            USER=1
+            USERLIB="-user"
+            ;;
+        --runtime)
+            RUNTIME=1
+            RTLIB="-base"
+            ;;
         dmd)
-            build dmd libtango-user-dmd.a libtango-base-dmd.a
+            build dmd libtango$USERLIB$RTLIB-dmd.a
             ;;
         gdc)
             POSIXFLAG="-version=Posix"
-            build gdmd libgtango.a libgphobos.a
+            build gdmd libgtango.a
             ;;
         ldc)
-            build ldmd libtango-user-ldc.a build-tango.sh
+            build ldmd libtango$USERLIB$RTLIB-ldc.a
             ;;
         mac)
             POSIXFLAG="-version=Posix"
