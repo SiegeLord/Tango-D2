@@ -149,6 +149,9 @@ public struct Log
         // support for old API
         public alias lookup getLogger;
 
+        // trivial usage via opCall
+        public alias formatln opCall;
+
         // internal use only
         private static Hierarchy base;
         private static Time beginTime;
@@ -320,7 +323,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static void opCall (char[] fmt, ...)
+        static void formatln (char[] fmt, ...)
         {
                 root.format (Level.Info, fmt, _arguments, _argptr);
         }
