@@ -115,6 +115,8 @@ struct FileInfo
         char[]          path,
                         name;
         ulong           bytes;
-        bool            folder;
+        bool            folder,
+                        hidden,
+                        system;
 }
 

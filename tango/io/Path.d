@@ -125,7 +125,8 @@ package struct FS
         struct Listing
         {
                 char[] folder;
-
+                bool   allFiles;
+                
                 int opApply (int delegate(ref FileInfo) dg)
                 {
                         char[256] tmp = void;
@@ -138,7 +139,7 @@ package struct FS
                                 assert (kosher, "attempting to use non-standard '\\' in a path for a folder listing");
                                 }
 
-                        return list (path, dg);
+                        return list (path, dg, allFiles);
                 }
         }
 
@@ -552,7 +553,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (char[] folder, int delegate(ref FileInfo) dg)
+                static int list (char[] folder, int delegate(ref FileInfo) dg, bool all=false)
                 {
                         HANDLE                  h;
                         int                     ret;
@@ -608,13 +609,15 @@ package struct FS
                                    }
 
                            // skip hidden/system files
-                           if ((fileinfo.dwFileAttributes & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) is 0)
+                           if (all || (fileinfo.dwFileAttributes & (FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN)) is 0)
                               {
                               FileInfo info = void;
                               info.name   = str;
                               info.path   = prefix;
                               info.bytes  = (cast(ulong) fileinfo.nFileSizeHigh << 32) + fileinfo.nFileSizeLow;
                               info.folder = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+                              info.hidden = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) != 0;
+                              info.system = (fileinfo.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) != 0;
 
                               // skip "..." names
                               if (str.length > 3 || str != "..."[0 .. str.length])
@@ -913,7 +916,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (char[] folder, int delegate(ref FileInfo) dg)
+                static int list (char[] folder, int delegate(ref FileInfo) dg, bool all=false)
                 {
                         int             ret;
                         DIR*            dir;
@@ -955,19 +958,22 @@ package struct FS
                                  {
                                  FileInfo info = void;
                                  info.bytes  = 0;
-                                 info.folder = false;
                                  info.name   = str;
                                  info.path   = prefix;
+                                 info.hidden = str[0] is '.';
+                                 info.folder = info.system = false;
                                  
                                  if (! stat (sfnbuf.ptr, &sbuf))
                                     {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
-                                    if ((sbuf.st_mode & S_IFREG) != 0)
-                                         info.bytes = cast(ulong) sbuf.st_size;
+                                    if ((sbuf.st_mode & S_IFREG) is 0)
+                                         info.system = true;
+                                    else
+                                       info.bytes = cast(ulong) sbuf.st_size;
                                     }
-
-                                 if ((ret = dg(info)) != 0)
-                                      break;
+                                 if (all || (info.hidden | info.system) is false)
+                                     if ((ret = dg(info)) != 0)
+                                          break;
                                  }
                               }
                         return ret;
@@ -1558,11 +1564,14 @@ void copy (char[] src, char[] dst)
         bool    folder
         ---
 
+        Argument 'all' controls whether hidden and system 
+        files are included - these are ignored by default
+
 *******************************************************************************/
 
-FS.Listing children (char[] path)
+FS.Listing children (char[] path, bool all=false)
 {
-        return FS.Listing (path);
+        return FS.Listing (path, all);
 }
 
 /*******************************************************************************
