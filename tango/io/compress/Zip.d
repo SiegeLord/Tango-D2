@@ -172,9 +172,6 @@ struct LocalFileHeader
                 || data.compression_method != h.data.compression_method
                 || data.modification_file_time != h.data.modification_file_time
                 || data.modification_file_date != h.data.modification_file_date
-                || data.crc_32 != h.data.crc_32
-                || data.compressed_size != h.data.compressed_size
-                || data.uncompressed_size != h.data.uncompressed_size
                 || file_name != h.file_name )
             return false;
         
@@ -1148,7 +1145,10 @@ private:
         LocalFileHeader.Data lhdata;
         auto chdata = entry.header.data;
         lhdata.extract_version = chdata.extract_version;
-        lhdata.general_flags = chdata.general_flags;
+
+        // Note: we need to mask off the data descriptor bit because we aren't
+        // going to write one.
+        lhdata.general_flags = chdata.general_flags & ~(1<<3);
         lhdata.compression_method = chdata.compression_method;
         lhdata.crc_32 = chdata.crc_32;
         lhdata.compressed_size = chdata.compressed_size;
