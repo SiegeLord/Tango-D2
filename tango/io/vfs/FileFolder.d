@@ -22,6 +22,7 @@ public import tango.io.vfs.model.Vfs;
 
 private import tango.io.model.IConduit;
 
+private import tango.time.Time : Time;
 
 /*******************************************************************************
 
