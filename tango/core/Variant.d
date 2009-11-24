@@ -40,7 +40,14 @@ version( DigitalMars )
 }
 else version( LDC )
 {
-    version( X86_64 )
+    version( X86 )
+    {
+        version( linux )
+        {
+            version=EnableVararg; // thanks rawler
+        }
+    }
+    else version( X86_64 )
     {
         version( linux )
         {
