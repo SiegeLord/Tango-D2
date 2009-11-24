@@ -15,10 +15,10 @@ extern (C):
 const CHAR_BIT      = 8;
 const SCHAR_MIN     = byte.min;
 const SCHAR_MAX     = byte.max;
-const UCHAR_MAX     = ubyte.min;
+const UCHAR_MAX     = ubyte.max;
 const CHAR_MIN      = char.min;
 const CHAR_MAX      = char.max;
-const MB_LEN_MAX    = 2;
+const MB_LEN_MAX    = 16;
 const SHRT_MIN      = short.min;
 const SHRT_MAX      = short.max;
 const USHRT_MAX     = ushort.max;
