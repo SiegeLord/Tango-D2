@@ -1752,8 +1752,6 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.finish;
 }
 
-import tango.io.Stdout;
-
 void extractArchive(char[] archive, char[] dest)
 {
     scope zr = new ZipBlockReader(archive);
