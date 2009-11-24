@@ -1739,7 +1739,15 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.method = method;
 
     foreach( file ; files )
-        zw.putFile(ZipEntryInfo(file), file);
+    {
+        scope fp = new FilePath(file);
+        
+        ZipEntryInfo zi;
+        zi.name = file;
+        zi.modified = fp.modified;
+
+        zw.putFile(zi, file);
+    }
 
     zw.finish;
 }
