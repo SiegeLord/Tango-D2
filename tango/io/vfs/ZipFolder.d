@@ -518,14 +518,26 @@ private:
             Stderr.formatln(" .. size of Entry: {0}, {0:x} bytes", Entry.sizeof);
 
         this.path = path;
-        this.readonly = readonly & !Path.isWritable(path);
+        this.readonly = readonly;
 
-        zr = new ZipBlockReader(path);
+        // Make sure the modified flag is set appropriately
+        scope(exit) modified = false;
 
         // First, create a root entry
         root = new Entry;
         root.type = EntryType.Dir;
         root.fullname = root.name = "/";
+
+        // If the user allowed writing, also allow creating a new archive.
+        // Note that we MUST drop out here if the archive DOES NOT exist,
+        // since Path.isWriteable will throw an exception if called on a
+        // non-existent path.
+        if( !this.readonly && !Path.exists(path) )
+            return;
+
+        // Update readonly to reflect the write-protected status of the
+        // archive.
+        this.readonly = this.readonly || !Path.isWritable(path);
 
         // Parse the contents of the archive
         foreach( zipEntry ; zr )
@@ -607,9 +619,6 @@ private:
                 }
             }
         }
-
-        // Make sure the modified flag is set appropriately
-        modified = false;
     }
 }
 
