@@ -136,7 +136,7 @@ class SnoopInput : InputStream
         final long seek (long offset, Anchor anchor = Anchor.Begin)
         {
                 auto s = host.seek (offset, anchor);
-                trace ("seeking to offset {} from anchor {}", offset, anchor);
+                trace ("{}: seek at offset {} from anchor {}", host.conduit, offset, anchor);
                 return s;
         }
 
@@ -278,7 +278,7 @@ class SnoopOutput : OutputStream
         final long seek (long offset, Anchor anchor = Anchor.Begin)
         {
                 auto s = host.seek (offset, anchor);
-                trace ("seeking to offset {} from anchor {}", offset, anchor);
+                trace ("{}: seek at offset {} from anchor {}", host.conduit, offset, anchor);
                 return s;
         }
 
