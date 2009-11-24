@@ -1752,6 +1752,8 @@ void createArchive(char[] archive, Method method, char[][] files...)
     zw.finish;
 }
 
+import tango.io.Stdout;
+
 void extractArchive(char[] archive, char[] dest)
 {
     scope zr = new ZipBlockReader(archive);
@@ -1763,9 +1765,25 @@ void extractArchive(char[] archive, char[] dest)
             entry.info.name[$-1] == '\\') continue;
 
         auto path = Path.join(dest, entry.info.name);
+        path = Path.normalize(path);
+
+        // Create the parent directory if necessary.
+        auto parent = Path.parse(path).parent;
+        if( !Path.exists(parent) )
+        {
+            Path.createPath(parent);
+        }
+
         path = Path.native(path);
+
+        // Write out the file
         scope fout = new File(path, File.WriteCreate);
         fout.copy(entry.open);
+        fout.close;
+
+        // Update timestamps
+        auto oldTS = Path.timeStamps(path);
+        Path.timeStamps(path, oldTS.accessed, entry.info.modified);
     }
 }
 
