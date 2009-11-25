@@ -22,12 +22,12 @@ version( LDC )
     import ldc.intrinsics;
 }
 
-extern(C) void thread_yield();
+private extern(C) void thread_yield();
 
 // NOTE: Strictly speaking, the x86 supports atomic operations on
 //       unaligned values.  However, this is far slower than the
 //       common case, so such behavior should be prohibited.
-template atomicValueIsProperlyAligned( T )
+private template atomicValueIsProperlyAligned( T )
 {
     bool atomicValueIsProperlyAligned( size_t addr )
     {
@@ -69,11 +69,11 @@ template atomicValueIsProperlyAligned( T )
 /// other process reorders loads (for example) and still sees things in the wrong order.
 version( LDC )
 {
-    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+    private void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         llvm_memory_barrier(ll,ls,sl,ss,device);
     }
 } else version(D_InlineAsm_X86){
-    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+    private void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         static if (device) {
             if (ls || sl || ll || ss){
                 // cpid should sequence even more than mfence
@@ -101,16 +101,16 @@ version( LDC )
         }
     }
 } else {
-    int dummy;
+    private int dummy;
     // acquires a lock... probably you will want to skip this
-    synchronized void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+    private synchronized void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         dummy=1;
     }
-    enum{LockVersion=true}
+    package enum{LockVersion=true}
 }
 
 static if (!is(typeof(LockVersion))) {
-    enum{LockVersion=false}
+    package enum{LockVersion=false}
 }
 
 /// atomic swap
@@ -167,7 +167,6 @@ version(LDC){
                 mov ECX, posVal;
                 lock; // lock always needed to make this op atomic
                 xchg [ECX], EAX;
-                setz EAX;
             }
         }
         else static if( T.sizeof == long.sizeof ) {
@@ -207,7 +206,6 @@ version(LDC){
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
                 xchg [RCX], EAX;
-                setz AL;
             }
         }
         else static if( T.sizeof == long.sizeof ) {
@@ -572,7 +570,7 @@ version(LDC){
 T atomicOp(T)(ref T val, T delegate(T) f){
     static assert( isIntegerType!(T) );
     synchronized(typeid(T)){
-        T oldV,newVal;
+        T oldV,newV;
         int i=0;
         bool success;
         do{
@@ -603,7 +601,7 @@ T flagGet(T)(ref T flag){
 
 /// sets a flag (ensuring that all pending writes are executed before this)
 /// the original value is returned
-T flagSet(T)(ref T flag,newVal){
+T flagSet(T)(ref T flag, T newVal){
     memoryBarrier!(false,strictFences,false,true)();
     return atomicSwap(flag,newVal);
 }
@@ -626,5 +624,21 @@ T flagAdd(T)(ref T flag,T incV=cast(T)1){
 /// useful for counters, and to generate unique values (fast)
 /// no barriers are implied
 T nextValue(T)(ref T val){
-    return atomicAdd(flag,cast(T)1);
+    return atomicAdd(val,cast(T)1);
+}
+
+
+
+debug (Atomic)
+{
+        void main()
+        {
+                int i;
+                flagSet (i, 1);
+                auto x = flagGet (i);
+                x = flagOp (i, (int i){return i;});
+                x = flagAdd (i, 1);
+                x = flagAdd (i,-1);
+                x = nextValue(i);
+        }
 }
