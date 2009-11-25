@@ -1653,7 +1653,7 @@ private
     {
         template testLoad( msync ms, T )
         {
-            void testLoad( T val = T.init + 1 )
+            void testLoad( T val = T.init + 1)
             {
                 T          base;
                 Atomic!(T) atom;
@@ -1668,7 +1668,7 @@ private
 
         template testStore( msync ms, T )
         {
-            void testStore( T val = T.init + 1 )
+            void testStore( T val = T.init + 1)
             {
                 T          base;
                 Atomic!(T) atom;
@@ -1683,7 +1683,7 @@ private
 
         template testStoreIf( msync ms, T )
         {
-            void testStoreIf( T val = T.init + 1 )
+            void testStoreIf( T val = T.init + 1)
             {
                 T          base;
                 Atomic!(T) atom;
@@ -1700,7 +1700,7 @@ private
 
         template testIncrement( msync ms, T )
         {
-            void testIncrement( T val = T.init + 1 )
+            void testIncrement( T val = T.init + 1)
             {
                 T          base = val;
                 T          incr = val;
@@ -1717,7 +1717,7 @@ private
 
         template testDecrement( msync ms, T )
         {
-            void testDecrement( T val = T.init + 1 )
+            void testDecrement( T val = T.init + 1)
             {
                 T          base = val;
                 T          decr = val;
@@ -1734,7 +1734,7 @@ private
 
         template testType( T )
         {
-            void testType( T val = T.init  +1 )
+            void testType( T val = T.init + 1)
             {
                 testLoad!(msync.raw, T)( val );
                 testLoad!(msync.hlb, T)( val );
@@ -1793,9 +1793,6 @@ debug( UnitTest )
         testType!(int)();
         testType!(uint)();
 
-        int x;
-        testType!(void*)( &x );
-
         version( Has64BitOps )
         {
             testType!(long)();
@@ -1817,3 +1814,26 @@ debug( UnitTest )
         }
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Unit Tests
+////////////////////////////////////////////////////////////////////////////////
+
+
+debug(Atomic)
+{
+        void main()
+        {
+                Atomic!(int) i;
+
+                i.store (1);
+                i.increment;
+                i.decrement;
+                auto x = i.load;
+                i.store (2);
+
+                x = atomicLoad (x);
+        }
+}
+
