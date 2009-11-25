@@ -966,10 +966,11 @@ package struct FS
                                  if (! stat (sfnbuf.ptr, &sbuf))
                                     {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
-                                    if ((sbuf.st_mode & S_IFREG) is 0)
-                                         info.system = true;
-                                    else
-                                       info.bytes = cast(ulong) sbuf.st_size;
+                                    if (info.folder is false)
+                                        if ((sbuf.st_mode & S_IFREG) is 0)
+                                             info.system = true;
+                                        else
+                                           info.bytes = cast(ulong) sbuf.st_size;
                                     }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
