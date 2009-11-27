@@ -23,6 +23,9 @@ private
     alias void delegate( Exception ) ExceptionHandler;
     extern (C) bool rt_init( ExceptionHandler dg = null );
     extern (C) bool rt_term( ExceptionHandler dg = null );
+
+    extern(C) void consoleInteger (ulong i);
+    extern(C) void consoleString  (char[] str);
 }
 
 
@@ -37,6 +40,30 @@ private
  */
 struct Runtime
 {
+    struct Console
+    {
+        alias stderr opCall;
+
+        Console stderr (char[] s)
+        {
+            consoleString (s);
+            return *this;
+        }
+
+        Console stderr (ulong i)
+        {
+            consoleInteger (i);
+            return *this;
+        }
+    }
+        
+
+    static Console console()
+    {
+        Console c;
+        return c;
+    }
+
     /**
      * Initializes the runtime.  This call is to be used in instances where the
      * standard program initialization process is not executed.  This is most

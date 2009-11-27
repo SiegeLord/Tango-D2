@@ -15,16 +15,21 @@ module rt.compiler.util.console;
 
 private import rt.compiler.util.string;
 
-version (Win32) {
+version (Win32) 
+        {
         private extern (Windows) int GetStdHandle (int);
         private extern (Windows) int WriteFile (int, char*, int, int*, void*);
-} else version (Posix){
-    import tango.stdc.posix.unistd;
-}
+        } 
+else 
+version (Posix)
+         size_t write(int, in void*, size_t);
+
 
 struct Console
 {
-    Console opCall (char[] s)
+    alias emit opCall;
+
+    Console emit (char[] s)
     {
             version (Win32)
                     {
@@ -40,12 +45,23 @@ struct Console
     }
 
     // emit an integer to the console
-    Console opCall (size_t i)
+    Console emit (ulong i)
     {
             char[25] tmp = void;
 
-            return console (ulongToUtf8 (tmp,cast(ulong) i));
+            return emit (ulongToUtf8 (tmp, cast(ulong) i));
     }
 }
 
 Console console;
+
+
+extern(C) void consoleString (char[] str)
+{
+        console.emit (str);
+}
+
+extern(C) void consoleInteger (ulong i)
+{
+        console.emit (i);
+}
