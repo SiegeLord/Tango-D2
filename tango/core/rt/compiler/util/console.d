@@ -22,7 +22,7 @@ version (Win32)
         } 
 else 
 version (Posix)
-         size_t write(int, in void*, size_t);
+         extern(C) ptrdiff_t write(int, in void*, size_t);
 
 
 struct Console
