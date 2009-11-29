@@ -199,8 +199,8 @@ struct DateTimeLocale
                            return format (output, dateTime, fmt);
                 else
                    {
-                   char tmp0[128] = void;
-                   char tmp1[128] = void;
+                   char[128] tmp0 = void;
+                   char[128] tmp1 = void;
                    return Utf.fromString8(format(tmp0, dateTime, Utf.toString(fmt, tmp1)), output);
                    }
         }

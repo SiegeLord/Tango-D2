@@ -443,7 +443,7 @@ else version( solaris )
         }
         union __pthread_mutex_lock {
             struct __pthread_mutex_lock64 {
-                uint8_t __pthread_mutex_pad[8];
+                uint8_t[8] __pthread_mutex_pad;
             }
             struct __pthread_mutex_lock32 {
                 uint32_t __pthread_ownerpid;

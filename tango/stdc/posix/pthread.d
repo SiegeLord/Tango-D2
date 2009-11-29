@@ -311,7 +311,7 @@ else version( solaris )
     alias void function(void*) _pthread_cleanup_routine;
 
     struct _pthread_cleanup_buffer {
-        uintptr_t   pthread_cleanup_pad[4];
+        uintptr_t[4]   pthread_cleanup_pad;
     }
     
     void __pthread_cleanup_push(_pthread_cleanup_routine, void*, caddr_t, _pthread_cleanup_buffer*);

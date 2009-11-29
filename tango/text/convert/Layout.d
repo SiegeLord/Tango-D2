@@ -745,8 +745,8 @@ version (WithVariant)
                           else
                              {
                              // TODO: this needs to be cleaned up
-                             char tmp0[128] = void;
-                             char tmp1[128] = void;
+                             char[128] tmp0 = void;
+                             char[128] tmp1 = void;
                              return Utf.fromString8(dateTime.format(tmp0, *cast(Time*) p, Utf.toString(format, tmp1)), result);
                              }
                    }

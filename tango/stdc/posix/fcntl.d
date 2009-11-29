@@ -130,7 +130,7 @@ else version( solaris )
         off_t   l_len;      /* len == 0 means until end of file */
         int     l_sysid;
         pid_t   l_pid;
-        c_long  l_pad[4];       /* reserve area */
+        c_long[4] l_pad;       /* reserve area */
     }
     
     int creat(in char*, mode_t);

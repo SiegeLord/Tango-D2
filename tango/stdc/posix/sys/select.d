@@ -133,7 +133,7 @@ else version( darwin )
 
     struct fd_set
     {
-        int fds_bits[(((FD_SETSIZE) + ((__DARWIN_NFDBITS) - 1)) / (__DARWIN_NFDBITS))];
+        int[(((FD_SETSIZE) + ((__DARWIN_NFDBITS) - 1)) / (__DARWIN_NFDBITS))] fds_bits;
     }
 }
 else version( freebsd )
@@ -145,7 +145,7 @@ else version( freebsd )
 	}
 	struct fd_set
 	{
-		c_ulong fds_bits[((FD_SETSIZE + (_NFDBITS - 1)) / _NFDBITS)];
+		c_ulong[((FD_SETSIZE + (_NFDBITS - 1)) / _NFDBITS)] fds_bits;
 	}
 }
 else version( solaris )

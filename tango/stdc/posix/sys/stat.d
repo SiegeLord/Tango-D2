@@ -213,7 +213,7 @@ else version( darwin )
         uint        st_flags;
         uint        st_gen;
         int         st_lspare;
-        long        st_qspare[2];
+        long[2]     st_qspare;
     }
 
     const S_IRUSR   = 0400;

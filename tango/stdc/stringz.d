@@ -143,7 +143,7 @@ debug (UnitTest)
 
         char* p = toStringz("foo");
         assert(strlenz(p) == 3);
-        char foo[] = "abbzxyzzy";
+        char[] foo = "abbzxyzzy";
         p = toStringz(foo[3..5]);
         assert(strlenz(p) == 2);
 

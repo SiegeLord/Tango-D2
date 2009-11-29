@@ -359,7 +359,7 @@ version( linux )
 
         union _sifields_t
         {
-            int _pad[__SI_PAD_SIZE];
+            int[__SI_PAD_SIZE] _pad;
 
             // kill()
             struct _kill_t
@@ -465,7 +465,7 @@ else version( darwin )
         void*   si_addr;
         sigval  si_value;
         int     si_band;
-        uint    pad[7];
+        uint[7] pad;
     }
 
     //SI_USER
@@ -490,7 +490,7 @@ else version( freebsd )
 {
     struct sigset_t
     {
-        uint __bits[4];
+        uint[4] __bits;
     }
 
     struct siginfo_t
@@ -597,7 +597,7 @@ else version( solaris )
     }
         union __data
         {
-            int __pad[SI_PAD];      /* for future growth    */
+            int[SI_PAD] __pad;      /* for future growth    */
 
             struct __proc           /* kill(), SIGCLD, siqqueue() */
             {
@@ -639,8 +639,8 @@ else version( solaris )
                 short       __syscall;      /* current syscall  */
                 char        __nsysarg;      /* number of arguments  */
                 char        __fault;        /* last fault type  */
-                long        __sysarg[8];    /* syscall arguments    */
-                int         __mstate[10];   /* see <sys/msacct.h>   */
+                long[8]     __sysarg;       /* syscall arguments    */
+                int[10]     __mstate;       /* see <sys/msacct.h>   */
             }
 
             struct __rctl {         /* SI_RCTL */
