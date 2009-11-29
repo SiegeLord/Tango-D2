@@ -110,7 +110,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(inout T[]) dg)
+        int opApply (int delegate(ref T[]) dg)
         {
                 bool more;
                 int  result;
@@ -129,7 +129,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(inout int, inout T[]) dg)
+        int opApply (int delegate(ref int, ref T[]) dg)
         {
                 bool more;
                 int  result,
@@ -150,7 +150,7 @@ class Iterator(T) : InputFilter
 
         **********************************************************************/
 
-        int opApply (int delegate(inout int, inout T[], inout T[]) dg)
+        int opApply (int delegate(ref int, ref T[], ref T[]) dg)
         {
                 bool more;
                 int  result,

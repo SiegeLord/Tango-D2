@@ -424,7 +424,7 @@ version(Test)
     {
         auto t2 = 1.0;
         loadOpenSSL();
-        Test.Status sslCTXTest(inout char[][] messages)
+        Test.Status sslCTXTest(ref char[][] messages)
         {
             auto s1 = new SSLSocket();
             if (s1)
@@ -465,7 +465,7 @@ version(Test)
             return Test.Status.Failure;
         }
 
-        Test.Status sslReadWriteTest(inout char[][] messages)
+        Test.Status sslReadWriteTest(ref char[][] messages)
         {
             auto s1 = new SSLSocket();
             auto address = new IPv4Address("209.20.65.224", 443);
@@ -483,7 +483,7 @@ version(Test)
             return Test.Status.Failure;
         }
 
-        Test.Status sslReadWriteTestWithTimeout(inout char[][] messages)
+        Test.Status sslReadWriteTestWithTimeout(ref char[][] messages)
         {
             auto s1 = new SSLSocket();
             auto address = new IPv4Address("209.20.65.224", 443);

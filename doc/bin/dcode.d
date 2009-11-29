@@ -8,7 +8,7 @@ int tabSpacing = 4;
 char[] lineSep = "\n";
 
 
-bool getArg(char[] prefix, char[] input, inout char[] output) {
+bool getArg(char[] prefix, char[] input, ref char[] output) {
 	if (input.length >= prefix.length && input[0 .. prefix.length] == prefix) {
 		output = input[prefix.length .. length];
 		return true;
@@ -492,7 +492,7 @@ Token[] tokenize(char[] data, TokenizerRule[] rules, char[] file)
 }
 
 
-void flattenComments(inout Token[] tokens)
+void flattenComments(ref Token[] tokens)
 {
     for (uint i = 0; i < tokens.length; ++i)
     {

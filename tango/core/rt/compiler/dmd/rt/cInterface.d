@@ -33,7 +33,7 @@ extern (C) void rt_finalize(void* p, bool det = true);
 extern (C) byte[] _d_arraysetlengthT(TypeInfo ti, size_t newlength, Array *p);
 extern (C) byte[] _d_arraysetlengthiT(TypeInfo ti, size_t newlength, Array *p);
 extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y);
-extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...);
+extern (C) byte[] _d_arrayappendcT(TypeInfo ti, ref byte[] x, ...);
 extern (C) byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y);
 extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...);
 extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...);

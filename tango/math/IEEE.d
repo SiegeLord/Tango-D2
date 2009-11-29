@@ -1398,7 +1398,7 @@ package {
  * initial value; this amount will also have zeros in all bits in the lower half
  * of its significand.
  */
-X splitSignificand(X)(inout X x)
+X splitSignificand(X)(ref X x)
 {
     if (fabs(x) !< X.infinity) return 0; // don't change NaN or infinity
     X y = x; // copy the original value

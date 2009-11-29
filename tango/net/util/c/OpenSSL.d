@@ -611,7 +611,7 @@ X509* PEM_read_bio_X509(BIO *b, X509 **x, pem_password_cb cb, void *u)
 }
 
 
-private void bindFunc(T)(inout T func, char[] funcName, SharedLib lib)
+private void bindFunc(T)(ref T func, char[] funcName, SharedLib lib)
 in
 {
     assert(funcName);

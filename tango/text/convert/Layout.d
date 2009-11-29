@@ -543,7 +543,7 @@ version (WithVariant)
                                         return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
                                    }
 
-                                   foreach (inout v; aa)
+                                   foreach (ref v; aa)
                                            {
                                            // the key is befor the value, so substrace with fixed key size from above
                                            auto pk = cast(Arg)( &v - roundUp(AK.sizeof));

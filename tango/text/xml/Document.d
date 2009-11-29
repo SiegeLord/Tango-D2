@@ -441,7 +441,7 @@ else
 
                 ***************************************************************/
         
-                int opApply (int delegate(inout Node) dg)
+                int opApply (int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -1960,7 +1960,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                int opApply (int delegate(inout Node) dg)
+                int opApply (int delegate(ref Node) dg)
                 {
                         int ret;
 

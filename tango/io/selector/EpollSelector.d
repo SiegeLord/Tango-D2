@@ -422,7 +422,7 @@ version (linux)
         /**
          * Iterate over all the Conduits that have received events.
          */
-        public int opApply(int delegate(inout SelectionKey) dg)
+        public int opApply(int delegate(ref SelectionKey) dg)
         {
             int rc = 0;
             SelectionKey key;

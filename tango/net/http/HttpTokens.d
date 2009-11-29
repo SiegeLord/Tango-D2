@@ -230,7 +230,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        int opApply (int delegate(inout HttpToken) dg)
+        int opApply (int delegate(ref HttpToken) dg)
         {
                 HttpToken element;
                 int       result = 0;
@@ -273,7 +273,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected bool handleMissingSeparator (char[] s, inout HttpToken element)
+        protected bool handleMissingSeparator (char[] s, ref HttpToken element)
         {
                 return false;
         }
@@ -284,7 +284,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        final private bool split (Token t, inout HttpToken element)
+        final private bool split (Token t, ref HttpToken element)
         {
                 auto s = t.toString();
 
@@ -352,7 +352,7 @@ class HttpTokens
 
                 **************************************************************/
 
-                int opApply (int delegate(inout HttpToken) dg)
+                int opApply (int delegate(ref HttpToken) dg)
                 {
                         HttpToken       element;
                         int             result = 0;

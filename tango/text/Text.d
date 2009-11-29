@@ -1343,7 +1343,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void pinIndex (inout int x)
+        private void pinIndex (ref int x)
         {
                 if (x > contentLength)
                     x = contentLength;
@@ -1355,7 +1355,7 @@ class Text(T) : TextView!(T)
 
         ***********************************************************************/
 
-        private void pinIndices (inout int start, inout int length)
+        private void pinIndices (ref int start, ref int length)
         {
                 if (start > contentLength)
                     start = contentLength;

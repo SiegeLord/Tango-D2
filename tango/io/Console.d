@@ -103,7 +103,7 @@ struct Console
 
                 **************************************************************/
 
-                final bool readln (inout char[] content, bool raw=false)
+                final bool readln (ref char[] content, bool raw=false)
                 {
                         size_t line (void[] input)
                         {

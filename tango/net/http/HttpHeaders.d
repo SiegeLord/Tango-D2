@@ -147,7 +147,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        int opApply (int delegate(inout HeaderElement) dg)
+        int opApply (int delegate(ref HeaderElement) dg)
         {
                 HeaderElement   element;
                 int             result = 0;
@@ -204,7 +204,7 @@ class HttpHeadersView : HttpTokens
 
                 **************************************************************/
 
-                int opApply (int delegate(inout HeaderElement) dg)
+                int opApply (int delegate(ref HeaderElement) dg)
                 {
                         HeaderElement   element;
                         int             result = 0;

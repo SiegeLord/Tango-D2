@@ -154,7 +154,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
         }
 
         // strip digits from the left of a normalized base-10 number
-        static int toDigit (inout NumType v, inout int count)
+        static int toDigit (ref NumType v, ref int count)
         {
                 int digit;
 

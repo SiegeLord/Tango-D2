@@ -195,7 +195,7 @@ class FileFolder : VfsFolder
 
         ***********************************************************************/
 
-        final int opApply (int delegate(inout VfsFolder) dg)
+        final int opApply (int delegate(ref VfsFolder) dg)
         {
                 int result;
 
@@ -341,7 +341,7 @@ class FileGroup : VfsFiles
 
         ***********************************************************************/
 
-        final int opApply (int delegate(inout VfsFile) dg)
+        final int opApply (int delegate(ref VfsFile) dg)
         {
                 int  result;
                 auto host = new FileHost;
@@ -419,7 +419,7 @@ private class FolderGroup : VfsFolders
 
         ***********************************************************************/
 
-        final int opApply (int delegate(inout VfsFolder) dg)
+        final int opApply (int delegate(ref VfsFolder) dg)
         {
                 int  result;
 

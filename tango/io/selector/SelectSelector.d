@@ -535,7 +535,7 @@ private class SelectSelectionSet: ISelectionSet
         return _eventCount;
     }
 
-    int opApply(int delegate(inout SelectionKey) dg)
+    int opApply(int delegate(ref SelectionKey) dg)
     {
         int rc = 0;
         ISelectable.Handle handle;

@@ -255,7 +255,7 @@ T[] chopr(T) (T[] source, T[] match)
 
 T[] replace(T) (T[] source, T match, T replacement)
 {
-        foreach (inout c; source)
+        foreach (ref c; source)
                  if (c is match)
                      c = replacement;
         return source;
@@ -1216,7 +1216,7 @@ private struct LineFruct(T)
 {
         private T[] src;
 
-        int opApply (int delegate (inout T[] line) dg)
+        int opApply (int delegate (ref T[] line) dg)
         {
                 int     ret;
                 size_t  pos,
@@ -1259,7 +1259,7 @@ private struct DelimFruct(T)
         private T[] src;
         private T[] set;
 
-        int opApply (int delegate (inout T[] token) dg)
+        int opApply (int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  pos,
@@ -1308,7 +1308,7 @@ private struct PatternFruct(T)
                     sub,
                     pattern;
 
-        int opApply (int delegate (inout T[] token) dg)
+        int opApply (int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  pos,
@@ -1346,7 +1346,7 @@ private struct QuoteFruct(T)
         private T[] src;
         private T[] set;
         
-        int opApply (int delegate (inout T[] token) dg)
+        int opApply (int delegate (ref T[] token) dg)
         {
                 int     ret;
                 size_t  mark;

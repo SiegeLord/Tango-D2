@@ -68,7 +68,7 @@ package bool tryParseTimeExact(char[] s, char[] format, DateTimeFormat dtf, out 
   return true;
 }
 
-private bool tryParseExactMultiple(char[] s, char[][] formats, DateTimeFormat dtf, inout DateTimeParseResult result) {
+private bool tryParseExactMultiple(char[] s, char[][] formats, DateTimeFormat dtf, ref DateTimeParseResult result) {
   foreach (char[] format; formats) {
     if (tryParseExact(s, format, dtf, result))
       return true;
@@ -76,11 +76,11 @@ private bool tryParseExactMultiple(char[] s, char[][] formats, DateTimeFormat dt
   return false;
 }
 
-private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout DateTimeParseResult result) {
+private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, ref DateTimeParseResult result) {
 
   bool doParse() {
 
-    int parseDigits(char[] s, inout int pos, int max) {
+    int parseDigits(char[] s, ref int pos, int max) {
       int result = s[pos++] - '0';
       while (max > 1 && pos < s.length && s[pos] >= '0' && s[pos] <= '9') {
         result = result * 10 + s[pos++] - '0';
@@ -89,14 +89,14 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
       return result;
     }
 
-    bool parseOne(char[] s, inout int pos, char[] value) {
+    bool parseOne(char[] s, ref int pos, char[] value) {
       if (s[pos .. pos + value.length] != value)
         return false;
       pos += value.length;
       return true;
     }
 
-    int parseMultiple(char[] s, inout int pos, char[][] values ...) {
+    int parseMultiple(char[] s, ref int pos, char[][] values ...) {
       int result = -1, max;
       foreach (int i, char[] value; values) {
         if (value.length == 0 || s.length - pos < value.length)
@@ -113,7 +113,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, inout D
       return result;
     }
 
-    TimeSpan parseTimeZoneOffset(char[] s, inout int pos) {
+    TimeSpan parseTimeZoneOffset(char[] s, ref int pos) {
       bool sign;
       if (pos < s.length) {
         if (s[pos] == '-') {

@@ -15,7 +15,7 @@ TracedExceptionInfo traceHandler( void* ptr = null )
                 m_trace = Trace.getTrace();
         }
 
-        int opApply( int delegate( inout char[] ) dg )
+        int opApply( int delegate( ref char[] ) dg )
         {
             int ret = 0;
             foreach( t; m_trace )

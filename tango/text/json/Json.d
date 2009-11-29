@@ -543,7 +543,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         private Attribute head;
         
-                        int opApply (int delegate(inout T[] key, ref Value val) dg)
+                        int opApply (int delegate(ref T[] key, ref Value val) dg)
                         {
                                 int res;
         

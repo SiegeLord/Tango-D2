@@ -990,7 +990,7 @@ class FTPConnection: Telnet
      data =            the data listener socket
      Changed Since: 0.99.8
      ********************************************************************************/
-    protected void prepareDataSocket(inout Socket data) {
+    protected void prepareDataSocket(ref Socket data) {
         switch(this.inf_.type) {
             default:
                 exception("unknown connection type");

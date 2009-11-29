@@ -289,7 +289,7 @@ class CookieStack
 
         **********************************************************************/
 
-        private final static void resize (inout Cookie[] cookies, int size)
+        private final static void resize (ref Cookie[] cookies, int size)
         {
                 int i = cookies.length;
                 
@@ -303,7 +303,7 @@ class CookieStack
 
         **********************************************************************/
 
-        int opApply (int delegate(inout Cookie) dg)
+        int opApply (int delegate(ref Cookie) dg)
         {
                 int result = 0;
 
@@ -676,7 +676,7 @@ class CookieParser : Iterator!(char)
 
         **********************************************************************/
 
-        final static char[] toLower (inout char[] src)
+        final static char[] toLower (ref char[] src)
         {
                 foreach (int i, char c; src)
                          if (c >= 'A' && c <= 'Z')

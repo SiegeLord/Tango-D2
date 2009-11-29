@@ -83,7 +83,7 @@ class Lines(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        final bool readln (inout T[] content)
+        final bool readln (ref T[] content)
         {
                 content = super.next;
                 return content.ptr !is null;

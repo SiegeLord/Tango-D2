@@ -149,7 +149,7 @@ class MemCache : private Thread
         
         **********************************************************************/
                 
-        final bool incr (void[] key, uint value, inout uint result)
+        final bool incr (void[] key, uint value, ref uint result)
         {
                 return select(key).bump ("incr", key, value, result);
         }
@@ -158,7 +158,7 @@ class MemCache : private Thread
         
         **********************************************************************/
                 
-        final bool decr (void[] key, uint value, inout uint result)
+        final bool decr (void[] key, uint value, ref uint result)
         {
                 return select(key).bump ("decr", key, value, result);
         }
@@ -557,7 +557,7 @@ private class Connection
         **********************************************************************/
                 
         private synchronized bool bump (char[] cmd, void[] key, uint value, 
-                                        inout uint result)
+                                        ref uint result)
         {
                 if (connected)
                     try {

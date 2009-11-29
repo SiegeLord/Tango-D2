@@ -175,7 +175,7 @@ wchar[] toString16 (char[] input, wchar[] output=null, uint* ate=null)
                 output.length = input.length;
 
         if (input.length)
-        foreach (inout wchar d; output)
+        foreach (ref wchar d; output)
                 {
                 pValid = pIn;
                 wchar b = cast(wchar) *pIn;
@@ -342,7 +342,7 @@ dchar[] toString32 (char[] input, dchar[] output=null, uint* ate=null)
                 output.length = input.length;
 
         if (input.length)
-        foreach (inout dchar d; output)
+        foreach (ref dchar d; output)
                 {
                 pValid = pIn;
                 dchar b = cast(dchar) *pIn;
@@ -496,7 +496,7 @@ dchar[] toString32 (wchar[] input, dchar[] output=null, uint* ate=null)
                 output.length = input.length;
 
         if (input.length)
-        foreach (inout dchar d; output)
+        foreach (ref dchar d; output)
                 {
                 pValid = pIn;
                 dchar b = cast(dchar) *pIn;
@@ -547,7 +547,7 @@ dchar[] toString32 (wchar[] input, dchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar decode (char[] src, inout uint ate)
+dchar decode (char[] src, ref uint ate)
 {
         dchar[1] ret;
         return toString32 (src, ret, &ate)[0];
@@ -560,7 +560,7 @@ dchar decode (char[] src, inout uint ate)
 
 *******************************************************************************/
 
-dchar decode (wchar[] src, inout uint ate)
+dchar decode (wchar[] src, ref uint ate)
 {
         dchar[1] ret;
         return toString32 (src, ret, &ate)[0];

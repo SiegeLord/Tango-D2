@@ -488,7 +488,7 @@ unittest
         cnt1++;
     }
     
-    foreach(inout Fiber c; ctx)
+    foreach(ref Fiber c; ctx)
     {
         c = new Fiber(&threadFunc, 1024);
     }
@@ -496,7 +496,7 @@ unittest
     assert(cnt0 == 0);
     assert(cnt1 == 0);
     
-    foreach(inout Fiber c; ctx)
+    foreach(ref Fiber c; ctx)
     {
         c.call;
     }
@@ -504,7 +504,7 @@ unittest
     assert(cnt0 == STRESS_SIZE);
     assert(cnt1 == 0);
     
-    foreach(inout Fiber c; ctx)
+    foreach(ref Fiber c; ctx)
     {
         c.call;
     }
@@ -512,7 +512,7 @@ unittest
     assert(cnt0 == STRESS_SIZE);
     assert(cnt1 == STRESS_SIZE);
     
-    foreach(inout Fiber c; ctx)
+    foreach(ref Fiber c; ctx)
     {
         delete c;
     }

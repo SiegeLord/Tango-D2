@@ -377,7 +377,7 @@ else {
     return null;
   }
 
-  package static CultureData* getDataFromRegionName(inout char[] name) {
+  package static CultureData* getDataFromRegionName(ref char[] name) {
     CultureData** data;
     if ((data = name in regionNameTable) !is null)
       return *data;

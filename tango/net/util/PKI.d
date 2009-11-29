@@ -1194,7 +1194,7 @@ version (Test)
     auto t2 = TimeSpan.fromDays(365); // can't set this up in delegate ..??
     unittest
     {
-        Test.Status _pkeyGenTest(inout char[][] messages)
+        Test.Status _pkeyGenTest(ref char[][] messages)
         {
             auto pkey = new PrivateKey(2048);
             char[] pem = pkey.pemFormat;
@@ -1215,7 +1215,7 @@ version (Test)
             return Test.Status.Failure;
         }
 
-        Test.Status _certGenTest(inout char[][] messages)
+        Test.Status _certGenTest(ref char[][] messages)
         {
             auto cert = new Certificate();
             auto pkey = new PrivateKey(2048);
@@ -1229,7 +1229,7 @@ version (Test)
             return Test.Status.Failure;
         }
 
-        Test.Status _chainValidation(inout char[][] messages)
+        Test.Status _chainValidation(ref char[][] messages)
         {
             auto caCert = new Certificate();
             auto caPkey = new PrivateKey(2048);
@@ -1269,7 +1269,7 @@ version (Test)
             return Test.Status.Failure;
         }   
 
-        Test.Status _rsaCrypto(inout char[][] messages)
+        Test.Status _rsaCrypto(ref char[][] messages)
         {
             auto key = new PrivateKey(2048);
             char[] pemData = key.publicKey.pemFormat;
@@ -1286,7 +1286,7 @@ version (Test)
             return Test.Status.Failure;
         }
 
-        Test.Status _rsaSignVerify(inout char[][] messages)
+        Test.Status _rsaSignVerify(ref char[][] messages)
         {
             auto key = new PrivateKey(1024);
             auto key2 = new PrivateKey(1024);

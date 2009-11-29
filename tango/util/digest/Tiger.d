@@ -260,7 +260,7 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        private static void round(inout ulong a, inout ulong b, inout ulong c, ulong x, ulong mul)
+        private static void round(ref ulong a, ref ulong b, ref ulong c, ulong x, ulong mul)
         {
                 c ^= x;
                 a -= t1[getByte(c,0)] ^ t2[getByte(c,2)] ^ t3[getByte(c,4)] ^ t4[getByte(c,4,2)];
@@ -272,7 +272,7 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        private static void pass(inout ulong a, inout ulong b, inout ulong c, ulong[8] x, ulong mul)
+        private static void pass(ref ulong a, ref ulong b, ref ulong c, ulong[8] x, ulong mul)
         {
                 round(a,b,c,x[0],mul);
                 round(b,c,a,x[1],mul);

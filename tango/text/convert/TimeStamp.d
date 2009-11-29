@@ -257,7 +257,7 @@ bool parse(T) (T[] src, ref TimeOfDay tod, ref Date date, uint* ate = null)
 
 ******************************************************************************/
 
-size_t rfc1123(T) (T[] src, inout Time value)
+size_t rfc1123(T) (T[] src, ref Time value)
 {
         TimeOfDay tod;
         Date      date;
@@ -283,7 +283,7 @@ size_t rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
         T* p = src.ptr;
         T* e = p + src.length;
 
-        bool dt (inout T* p)
+        bool dt (ref T* p)
         {
                 return ((date.day = parseInt(p, e)) > 0  &&
                          *p++ == ' '                     &&
@@ -316,7 +316,7 @@ size_t rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-size_t rfc850(T) (T[] src, inout Time value)
+size_t rfc850(T) (T[] src, ref Time value)
 {
         TimeOfDay tod;
         Date      date;
@@ -341,7 +341,7 @@ size_t rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
         T* p = src.ptr;
         T* e = p + src.length;
 
-        bool dt (inout T* p)
+        bool dt (ref T* p)
         {
                 return ((date.day = parseInt(p, e)) > 0  &&
                          *p++ == '-'                     &&
@@ -380,7 +380,7 @@ size_t rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-size_t asctime(T) (T[] src, inout Time value)
+size_t asctime(T) (T[] src, ref Time value)
 {
         TimeOfDay tod;
         Date      date;
@@ -405,7 +405,7 @@ size_t asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
         T* p = src.ptr;
         T* e = p + src.length;
 
-        bool dt (inout T* p)
+        bool dt (ref T* p)
         {
                 return ((date.month = parseMonth(p)) > 0  &&
                          *p++ == ' '                      &&
@@ -436,7 +436,7 @@ size_t asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-size_t dostime(T) (T[] src, inout Time value)
+size_t dostime(T) (T[] src, ref Time value)
 {
         TimeOfDay tod;
         Date      date;
@@ -462,7 +462,7 @@ size_t dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
         T* p = src.ptr;
         T* e = p + src.length;
 
-        bool dt (inout T* p)
+        bool dt (ref T* p)
         {
                 return ((date.month = parseInt(p, e)) > 0 &&
                          *p++ == '-'                      &&
@@ -508,7 +508,7 @@ size_t dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-size_t iso8601(T) (T[] src, inout Time value)
+size_t iso8601(T) (T[] src, ref Time value)
 {
         TimeOfDay tod;
         Date      date;
@@ -540,7 +540,7 @@ size_t iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
         T* p = src.ptr;
         T* e = p + src.length;
 
-        bool dt (inout T* p)
+        bool dt (ref T* p)
         {
                 return ((date.year = parseInt(p, e)) > 0   &&
                          *p++ == '-'                       &&
@@ -578,7 +578,7 @@ size_t iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
 
 ******************************************************************************/
 
-private bool time(T) (inout TimeOfDay time, inout T* p, T* e)
+private bool time(T) (ref TimeOfDay time, ref T* p, T* e)
 {
         return ((time.hours = parseInt(p, e)) >= 0   &&
                  *p++ == ':'                         &&
@@ -594,7 +594,7 @@ private bool time(T) (inout TimeOfDay time, inout T* p, T* e)
 
 ******************************************************************************/
 
-private int parseMonth(T) (inout T* p)
+private int parseMonth(T) (ref T* p)
 {
         int month;
 
@@ -650,7 +650,7 @@ private int parseMonth(T) (inout T* p)
 
 ******************************************************************************/
 
-private int parseShortDay(T) (inout T* p)
+private int parseShortDay(T) (ref T* p)
 {
         int day;
 
@@ -691,7 +691,7 @@ private int parseShortDay(T) (inout T* p)
 
 ******************************************************************************/
 
-private int parseFullDay(T) (inout T* p)
+private int parseFullDay(T) (ref T* p)
 {
         static  T[][] days =
                 [
@@ -720,7 +720,7 @@ private int parseFullDay(T) (inout T* p)
 
 ******************************************************************************/
 
-private static int parseInt(T) (inout T* p, T* e)
+private static int parseInt(T) (ref T* p, T* e)
 {
         int value;
 

@@ -45,7 +45,7 @@ char[] toLower (char[] src, char[] dst = null)
         else
            dst = src;
         
-        foreach (inout c; dst)
+        foreach (ref c; dst)
                  if (c>= 'A' && c <= 'Z')
                      c = cast(char)(c + 32);
         return dst [0  .. src.length];
@@ -68,7 +68,7 @@ char[] toUpper (char[] src, char[] dst = null)
         else
            dst = src;
         
-        foreach (inout c; dst)
+        foreach (ref c; dst)
                  if (c>= 'a' && c <= 'z')
                      c = cast(char)(c - 32);
         return dst[0 .. src.length];

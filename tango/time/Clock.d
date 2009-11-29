@@ -123,7 +123,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (inout DateTime dt)
+                static Time fromDate (ref DateTime dt)
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
@@ -248,7 +248,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (inout DateTime dt)
+                static Time fromDate (ref DateTime dt)
                 {
                         tm t = void;
 
@@ -271,7 +271,7 @@ struct Clock
 
                 ***************************************************************/
 
-                package static Time convert (inout timeval tv)
+                package static Time convert (ref timeval tv)
                 {
                         return Time.epoch1970 + 
                                TimeSpan.fromSeconds(tv.tv_sec) + 

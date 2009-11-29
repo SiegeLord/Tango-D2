@@ -1125,7 +1125,7 @@ version( DMD ) // TODO: DMD 1.024
 
     void function() ictor;      // module static constructor (order independent)
 }
-    static int opApply( int delegate( inout ModuleInfo ) dg )
+    static int opApply( int delegate( ref ModuleInfo ) dg )
     {
         int ret = 0;
 
@@ -1403,7 +1403,7 @@ extern (C) void rt_attachDisposeEvent(Object h, DEvent e)
         Monitor* m = getMonitor(h);
         assert(m.impl is null);
 
-        foreach (inout v; m.devt)
+        foreach (ref v; m.devt)
         {
             if (v is null || v == e)
             {

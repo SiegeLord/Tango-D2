@@ -1347,7 +1347,7 @@ else
         {
             size_t cnt = 0;
 
-            foreach( size_t pos, inout Elem cur; buf )
+            foreach( size_t pos, ref Elem cur; buf )
             {
                 if( pred( cur, pat ) )
                 {
@@ -1427,7 +1427,7 @@ else
         {
             size_t cnt = 0;
 
-            foreach( size_t pos, inout Elem cur; buf )
+            foreach( size_t pos, ref Elem cur; buf )
             {
                 if( pred( cur ) )
                 {
@@ -1477,9 +1477,9 @@ version( D_Ddoc )
      * performed using the supplied predicate or '==' if none is supplied.
      *
      * Params:
-     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *  buf  = The array to scan.  This parameter is not marked 'ref'
      *         to allow temporary slices to be modified.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         in any way, omitting the 'ref' qualifier has no effect on the
      *         result of this operation, even though it may be viewed as a
      *         side-effect.
      *  pat  = The pattern to match against.
@@ -1578,9 +1578,9 @@ version( D_Ddoc )
      * order of elements that do not satisfy pred will be preserved.
      *
      * Params:
-     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *  buf  = The array to scan.  This parameter is not marked 'ref'
      *         to allow temporary slices to be modified.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         in any way, omitting the 'ref' qualifier has no effect on the
      *         result of this operation, even though it may be viewed as a
      *         side-effect.
      *  pred = The evaluation predicate, which should return true if the
@@ -1671,9 +1671,9 @@ version( D_Ddoc )
      * predicate or '==' if none is supplied.
      *
      * Params:
-     *  buf  = The array to scan.  This parameter is not marked 'inout'
+     *  buf  = The array to scan.  This parameter is not marked 'ref'
      *         to allow temporary slices to be modified.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on the
+     *         in any way, omitting the 'ref' qualifier has no effect on the
      *         result of this operation, even though it may be viewed as a
      *         side-effect.
      *  pred = The evaluation predicate, which should return true if e1 is
@@ -1849,9 +1849,9 @@ version( D_Ddoc )
      * required to be stable.
      *
      * Params:
-     *  buf  = The array to partition.  This parameter is not marked 'inout'
+     *  buf  = The array to partition.  This parameter is not marked 'ref'
      *         to allow temporary slices to be sorted.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         in any way, omitting the 'ref' qualifier has no effect on
      *         the result of this operation, even though it may be viewed
      *         as a side-effect.
      *  pred = The evaluation predicate, which should return true if the
@@ -1952,9 +1952,9 @@ version( D_Ddoc )
      * none is supplied.  The algorithm is not required to be stable.
      *
      * Params:
-     *  buf  = The array to partition.  This parameter is not marked 'inout'
+     *  buf  = The array to partition.  This parameter is not marked 'ref'
      *         to allow temporary slices to be sorted.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         in any way, omitting the 'ref' qualifier has no effect on
      *         the result of this operation, even though it may be viewed
      *         as a side-effect.
      *  num  = The number of elements which are considered significant in
@@ -2077,9 +2077,9 @@ version( D_Ddoc )
      * 1993).
      *
      * Params:
-     *  buf  = The array to sort.  This parameter is not marked 'inout' to
+     *  buf  = The array to sort.  This parameter is not marked 'ref' to
      *         allow temporary slices to be sorted.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         in any way, omitting the 'ref' qualifier has no effect on
      *         the result of this operation, even though it may be viewed
      *         as a side-effect.
      *  pred = The evaluation predicate, which should return true if e1 is
@@ -2996,9 +2996,9 @@ version( D_Ddoc )
      * supplied.
      *
      * Params:
-     *  buf  = The array to convert.  This parameter is not marked 'inout' to
+     *  buf  = The array to convert.  This parameter is not marked 'ref' to
      *         allow temporary slices to be sorted.  As buf is not resized in
-     *         any way, omitting the 'inout' qualifier has no effect on the
+     *         any way, omitting the 'ref' qualifier has no effect on the
      *         result of this operation, even though it may be viewed as a
      *         side-effect.
      *  pred = The evaluation predicate, which should return true if e1 is
@@ -3127,14 +3127,14 @@ version( D_Ddoc )
      * Adds val to buf by appending it and adjusting it up the heap.
      *
      * Params:
-     *  buf  = The heap to modify.  This parameter is marked 'inout' because
+     *  buf  = The heap to modify.  This parameter is marked 'ref' because
      *         buf.length will be altered.
      *  val  = The element to push onto buf.
      *  pred = The evaluation predicate, which should return true if e1 is
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
-    void pushHeap( inout Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
+    void pushHeap( ref Elem[] buf, Elem val, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -3143,7 +3143,7 @@ else
         static assert( isCallableType!(Pred ) );
 
 
-        void fn( inout Elem[] buf, Elem val, Pred pred = Pred.init )
+        void fn( ref Elem[] buf, Elem val, Pred pred = Pred.init )
         {
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
@@ -3178,7 +3178,7 @@ else
 
     template pushHeap( Buf, Val )
     {
-        void pushHeap( inout Buf buf, Val val )
+        void pushHeap( ref Buf buf, Val val )
         {
             return pushHeap_!(ElemTypeOf!(Buf)).fn( buf, val );
         }
@@ -3187,7 +3187,7 @@ else
 
     template pushHeap( Buf, Val, Pred )
     {
-        void pushHeap( inout Buf buf, Val val, Pred pred )
+        void pushHeap( ref Buf buf, Val val, Pred pred )
         {
             return pushHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, val, pred );
         }
@@ -3249,13 +3249,13 @@ version( D_Ddoc )
      * adjusting it down the heap, and reducing the length of buf by one.
      *
      * Params:
-     *  buf  = The heap to modify.  This parameter is marked 'inout' because
+     *  buf  = The heap to modify.  This parameter is marked 'ref' because
      *         buf.length will be altered.
      *  pred = The evaluation predicate, which should return true if e1 is
      *         less than e2 and false if not.  This predicate may be any
      *         callable type.
      */
-    void popHeap( inout Elem[] buf, Pred2E pred = Pred2E.init );
+    void popHeap( ref Elem[] buf, Pred2E pred = Pred2E.init );
 }
 else
 {
@@ -3264,7 +3264,7 @@ else
         static assert( isCallableType!(Pred ) );
 
 
-        void fn( inout Elem[] buf, Pred pred = Pred.init )
+        void fn( ref Elem[] buf, Pred pred = Pred.init )
         {
             // NOTE: Indexes are passed instead of references because DMD does
             //       not inline the reference-based version.
@@ -3307,7 +3307,7 @@ else
 
     template popHeap( Buf )
     {
-        void popHeap( inout Buf buf )
+        void popHeap( ref Buf buf )
         {
             return popHeap_!(ElemTypeOf!(Buf)).fn( buf );
         }
@@ -3316,7 +3316,7 @@ else
 
     template popHeap( Buf, Pred )
     {
-        void popHeap( inout Buf buf, Pred pred )
+        void popHeap( ref Buf buf, Pred pred )
         {
             return popHeap_!(ElemTypeOf!(Buf), Pred).fn( buf, pred );
         }
@@ -3371,9 +3371,9 @@ version( D_Ddoc )
      * has the effect of sorting the array using the heapsort algorithm.
      *
      * Params:
-     *  buf  = The heap to sort.  This parameter is not marked 'inout' to
+     *  buf  = The heap to sort.  This parameter is not marked 'ref' to
      *         allow temporary slices to be sorted.  As buf is not resized
-     *         in any way, omitting the 'inout' qualifier has no effect on
+     *         in any way, omitting the 'ref' qualifier has no effect on
      *         the result of this operation, even though it may be viewed
      *         as a side-effect.
      *  pred = The evaluation predicate, which should return true if e1 is

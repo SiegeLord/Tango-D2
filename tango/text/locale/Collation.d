@@ -156,7 +156,7 @@ public class StringSorter {
     Params:
       array = The array of strings to _sort.
   */
-  public void sort(inout char[][] array) {
+  public void sort(ref char[][] array) {
     sort(array, 0, array.length);
   }
 
@@ -167,7 +167,7 @@ public class StringSorter {
       index = The starting index of the range.
       count = The number of elements in the range.
   */
-  public void sort(inout char[][] array, int index, int count) {
+  public void sort(ref char[][] array, int index, int count) {
 
     void qsort(int left, int right) {
       do {

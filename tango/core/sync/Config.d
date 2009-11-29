@@ -18,7 +18,7 @@ version( Posix )
     private import tango.stdc.posix.sys.time;
 
 
-    void getTimespec( inout timespec t )
+    void getTimespec( ref timespec t )
     {
         static if( is( typeof( clock_gettime ) ) )
         {
@@ -36,7 +36,7 @@ version( Posix )
     }
 
 
-    void adjTimespec( inout timespec t, double v )
+    void adjTimespec( ref timespec t, double v )
     {
         enum
         {

@@ -144,7 +144,7 @@ public struct ExtendedDate {
  * parseDate("abcdefgh",       t);    // January 1st, 0001; return value is 0
  * ---
  */
-public size_t parseDate(T)(T[] src, inout DT dt) {
+public size_t parseDate(T)(T[] src, ref DT dt) {
    auto fd = FullDate(dt);
 
    auto ret = parseDate(src, fd);
@@ -152,7 +152,7 @@ public size_t parseDate(T)(T[] src, inout DT dt) {
    return ret;
 }
 /** ditto */
-public size_t parseDate(T)(T[] src, inout FullDate fd, ubyte expanded = 0) {
+public size_t parseDate(T)(T[] src, ref FullDate fd, ubyte expanded = 0) {
    ubyte dummy = void;
    T* p = src.ptr;
    return doIso8601Date(p, src, fd, expanded, dummy);
@@ -160,8 +160,8 @@ public size_t parseDate(T)(T[] src, inout FullDate fd, ubyte expanded = 0) {
 
 private size_t doIso8601Date(T)(
 
-   inout T* p, T[] src,
-   inout FullDate fd,
+   ref T* p, T[] src,
+   ref FullDate fd,
    ubyte expanded,
    out ubyte separators
 
@@ -317,7 +317,7 @@ private size_t doIso8601Date(T)(
  * parseTime("21:32:43-12:34", t); // 10:06:43; day increased by one
  * ---
  */
-public size_t parseTime(T)(T[] src, inout DT dt) {
+public size_t parseTime(T)(T[] src, ref DT dt) {
    auto fd = FullDate(dt);
 
    auto ret = parseTime(src, fd);
@@ -325,7 +325,7 @@ public size_t parseTime(T)(T[] src, inout DT dt) {
    return ret;
 }
 /** ditto */
-public size_t parseTime(T)(T[] src, inout FullDate fd) {
+public size_t parseTime(T)(T[] src, ref FullDate fd) {
    bool dummy = void;
    T* p = src.ptr;
    return doIso8601Time(p, src, fd, WHATEVER, dummy);
@@ -337,8 +337,8 @@ private enum : ubyte { NO = 0, YES = 1, WHATEVER }
 // bothValid is used only to get parseDateAndTime() to catch errors correctly
 private size_t doIso8601Time(T)(
 
-   inout T* p, T[] src,
-   inout FullDate fd,
+   ref T* p, T[] src,
+   ref FullDate fd,
    ubyte separators,
    out bool bothValid
 
@@ -529,14 +529,14 @@ private size_t doIso8601Time(T)(
  * parseDateAndTime("1902-03-04T050607",        t);
  * ---
  */
-public size_t parseDateAndTime(T)(T[] src, inout DT dt) {
+public size_t parseDateAndTime(T)(T[] src, ref DT dt) {
    FullDate fd;
    auto ret = parseDateAndTime(src, fd);
    dt = fd.val;
    return ret;
 }
 /** ditto */
-public size_t parseDateAndTime(T)(T[] src, inout FullDate fd) {
+public size_t parseDateAndTime(T)(T[] src, ref FullDate fd) {
    T* p = src.ptr;
    ubyte sep;
    bool bothValid = false;
@@ -565,7 +565,7 @@ public size_t parseDateAndTime(T)(T[] src, inout FullDate fd) {
 private:
 
 // /([+-]Y{expanded})?(YYYY|YY)/
-bool parseYear(T)(inout T* p, ubyte expanded, inout FullDate fd) {
+bool parseYear(T)(ref T* p, ubyte expanded, ref FullDate fd) {
 
    int year = void;
 
@@ -603,7 +603,7 @@ bool parseYear(T)(inout T* p, ubyte expanded, inout FullDate fd) {
 // find the month and day given a calendar week and the day of the week
 // uses fd.year for leap year calculations
 // returns false if week and fd.year are incompatible
-bool getMonthAndDayFromWeek(inout FullDate fd, int week, int day = 1) {
+bool getMonthAndDayFromWeek(ref FullDate fd, int week, int day = 1) {
    if (week < 1 || week > 53 || day < 1 || day > 7)
       return false;
 
@@ -662,7 +662,7 @@ in {
 enum : ubyte { HOUR, MINUTE, SECOND }
 enum :  byte { BAD, FOUND, NOTFOUND }
 
-byte getDecimal(T)(inout T* p, inout FullDate fd, ubyte which) {
+byte getDecimal(T)(ref T* p, ref FullDate fd, ubyte which) {
    if (!(accept(p, ',') || accept(p, '.')))
       return NOTFOUND;
 
@@ -712,7 +712,7 @@ byte getDecimal(T)(inout T* p, inout FullDate fd, ubyte which) {
 // the DT is always UTC, so this just adds the offset to the date fields
 // another option would be to add time zone fields to DT and have this fill them
 
-byte getTimeZone(T)(inout T* p, inout FullDate fd, ubyte separators, bool delegate(T[]) done) {
+byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T[]) done) {
    if (accept(p, 'Z'))
       return FOUND;
 
@@ -766,7 +766,7 @@ byte getTimeZone(T)(inout T* p, inout FullDate fd, ubyte separators, bool delega
 
 \+ +++++++++++++++++++++++++++++++++++++++ +/
 
-bool accept(T)(inout T* p, char c) {
+bool accept(T)(ref T* p, char c) {
    if (*p == c) {
       ++p;
       return true;
@@ -774,7 +774,7 @@ bool accept(T)(inout T* p, char c) {
    return false;
 }
 
-bool demand(T)(inout T* p, char c) {
+bool demand(T)(ref T* p, char c) {
    return (*p++ == c);
 }
 
@@ -800,7 +800,7 @@ int daysPerMonth(int month, int year) {
    return Gregorian.generic.getDaysInMonth(year, month, era);
 }
 
-uint erafy(inout int year) {
+uint erafy(ref int year) {
    if (year < 0) {
       year *= -1;
       return Gregorian.BC_ERA;
@@ -816,7 +816,7 @@ uint erafy(inout int year) {
 
 // note: code relies on these always being positive, failing if *p == '-'
 
-int parseInt(T)(inout T* p) {
+int parseInt(T)(ref T* p) {
    int value = 0;
    while (*p >= '0' && *p <= '9')
       value = value * 10 + *p++ - '0';
@@ -825,7 +825,7 @@ int parseInt(T)(inout T* p) {
 
 // ... but accept no more than max digits
 
-int parseIntLimited(T)(inout T* p, size_t max) {
+int parseIntLimited(T)(ref T* p, size_t max) {
    size_t i = 0;
    int value = 0;
    while (p[i] >= '0' && p[i] <= '9' && i < max)
@@ -836,13 +836,13 @@ int parseIntLimited(T)(inout T* p, size_t max) {
 
 // ... and return the amount of digits processed
 
-size_t parseInt(T)(inout T* p, out int i) {
+size_t parseInt(T)(ref T* p, out int i) {
    T* p2 = p;
    i = parseInt(p);
    return p - p2;
 }
 
-size_t parseIntLimited(T)(inout T* p, size_t max, out int i) {
+size_t parseIntLimited(T)(ref T* p, size_t max, out int i) {
    T* p2 = p;
    i = parseIntLimited(p, max);
    return p - p2;
@@ -858,12 +858,12 @@ size_t parseIntLimited(T)(inout T* p, size_t max, out int i) {
 // as documented in tango.time.Time
 bool DTyear(int year) { return year >= -10000 && year <= 9999; }
 
-void addMonths(inout FullDate d, int n) { d.val = Gregorian.generic.addMonths(d.val, n-1); } // -1 due to initial being 1
-void addDays  (inout FullDate d, int n) { d.val += TimeSpan.fromDays   (n-1); } // ditto
-void addHours (inout FullDate d, int n) { d.val += TimeSpan.fromHours  (n); }
-void addMins  (inout FullDate d, int n) { d.val += TimeSpan.fromMinutes(n); }
-void addSecs  (inout FullDate d, int n) { d.val += TimeSpan.fromSeconds(n); }
-void addMs    (inout FullDate d, int n) { d.val += TimeSpan.fromMillis (n); }
+void addMonths(ref FullDate d, int n) { d.val = Gregorian.generic.addMonths(d.val, n-1); } // -1 due to initial being 1
+void addDays  (ref FullDate d, int n) { d.val += TimeSpan.fromDays   (n-1); } // ditto
+void addHours (ref FullDate d, int n) { d.val += TimeSpan.fromHours  (n); }
+void addMins  (ref FullDate d, int n) { d.val += TimeSpan.fromMinutes(n); }
+void addSecs  (ref FullDate d, int n) { d.val += TimeSpan.fromSeconds(n); }
+void addMs    (ref FullDate d, int n) { d.val += TimeSpan.fromMillis (n); }
 
 // years and secs always just get the DT value
 int years (FullDate d) { return Gregorian.generic.getYear      (d.val); }

@@ -97,7 +97,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout DateTime date)
+                static Time fromDate (ref DateTime date)
                 {
                         return (Clock.fromDate(date) + localBias);
                 }
@@ -219,7 +219,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (inout DateTime dt)
+                static Time fromDate (ref DateTime dt)
                 {
                         tm t = void;
 

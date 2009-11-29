@@ -358,7 +358,7 @@ public {
     The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
     already helped to spot many intricate bugs. 
 */
-void alloc(T, intT)(inout T array, intT numItems, bool init = true) 
+void alloc(T, intT)(ref T array, intT numItems, bool init = true) 
 in {
     assert (array is null);
     assert (numItems >= 0);
@@ -401,7 +401,7 @@ T clone(T)(T array) {
     foo.alloc(20);
     foo.realloc(10);        // <--
 */
-void realloc(T, intT)(inout T array, intT numItems, bool init = true)
+void realloc(T, intT)(ref T array, intT numItems, bool init = true)
 in {
     assert (numItems >= 0);
 }
@@ -424,7 +424,7 @@ body {
 /**
     Deallocate an array allocated with alloc()
 */
-void free(T)(inout T array)
+void free(T)(ref T array)
 out {
     assert (0 == array.length);
 }
@@ -458,7 +458,7 @@ body {
     assert (barLen == 4);
     ---
 */
-void append(T, I)(inout T array, I elem, uint* realLength = null) {
+void append(T, I)(ref T array, I elem, uint* realLength = null) {
     uint len = realLength is null ? array.length : *realLength;
     uint capacity = array.length;
     alias typeof(T[0]) ItemT;
@@ -1200,7 +1200,7 @@ class DebugInfo {
             return true;
         }
             
-        bool ReadSectionHeaders(FILE* debugfile, inout IMAGE_SECTION_HEADER[] secthdrs) {
+        bool ReadSectionHeaders(FILE* debugfile, ref IMAGE_SECTION_HEADER[] secthdrs) {
             for(int i=0;i<secthdrs.length;i++){
                 uint bytes_read;
                 bytes_read = fread((&secthdrs[i]), 1, IMAGE_SECTION_HEADER.sizeof, debugfile);
@@ -1256,7 +1256,7 @@ class DebugInfo {
         // blocks of debug data that reside at the end of the file (after the COFF
         // sections), including FPO data, COFF-style debug info, and the CodeView
         // we are *really* after.
-        bool ReadDebugDir(FILE* debugfile, inout IMAGE_DEBUG_DIRECTORY debugdirs[]) {
+        bool ReadDebugDir(FILE* debugfile, ref IMAGE_DEBUG_DIRECTORY debugdirs[]) {
             uint bytes_read;
             for(int i=0;i<debugdirs.length;i++) {
                 bytes_read = fread((&debugdirs[i]), 1, IMAGE_DEBUG_DIRECTORY.sizeof, debugfile);
@@ -1292,7 +1292,7 @@ class DebugInfo {
             return true;
         }
          
-        bool ReadCodeViewDirectory(FILE* debugfile, inout OMFDirEntry[] entries) {
+        bool ReadCodeViewDirectory(FILE* debugfile, ref OMFDirEntry[] entries) {
             uint bytes_read;
 
             for(int i=0;i<entries.length;i++){

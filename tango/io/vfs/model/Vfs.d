@@ -252,7 +252,7 @@ interface VfsFolder
 
         ***********************************************************************/
 
-        int opApply (int delegate(inout VfsFolder) dg);
+        int opApply (int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
@@ -311,7 +311,7 @@ interface VfsFolders
 
         ***********************************************************************/
 
-        int opApply (int delegate(inout VfsFolder) dg);
+        int opApply (int delegate(ref VfsFolder) dg);
 
         /***********************************************************************
 
@@ -385,7 +385,7 @@ interface VfsFiles
 
         ***********************************************************************/
 
-        int opApply (int delegate(inout VfsFile) dg);
+        int opApply (int delegate(ref VfsFile) dg);
 
         /***********************************************************************
 

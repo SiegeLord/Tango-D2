@@ -274,7 +274,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static bool fileInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
+                private static bool fileInfo (char[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -297,7 +297,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static DWORD getInfo (char[] name, inout WIN32_FILE_ATTRIBUTE_DATA info)
+                private static DWORD getInfo (char[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         if (! fileInfo (name, info))
                               exception (name);
@@ -677,7 +677,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static uint getInfo (char[] name, inout stat_t stats)
+                private static uint getInfo (char[] name, ref stat_t stats)
                 {
                         if (posix.stat (name.ptr, &stats))
                             exception (name);
@@ -1705,7 +1705,7 @@ char[] split (char[] path, out char[] head, out char[] tail)
 
 char[] replace (char[] path, char from, char to)
 {
-        foreach (inout char c; path)
+        foreach (ref char c; path)
                  if (c is from)
                      c = to;
         return path;

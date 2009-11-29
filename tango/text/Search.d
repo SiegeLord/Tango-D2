@@ -595,7 +595,7 @@ private struct SearchFruct(T)
                             content;
                 size_t      delegate(T[], size_t) call;
 
-                int opApply (int delegate (inout T[] token) dg)
+                int opApply (int delegate (ref T[] token) dg)
                 {
                         uint    ret,
                                 pos,

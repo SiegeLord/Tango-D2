@@ -259,7 +259,7 @@ private class List(T)
         --len;
     }
 
-    int elements(int delegate(inout Element) dg)
+    int elements(int delegate(ref Element) dg)
     {
         for ( Element e=head; e !is null; e = e.next )
         {
@@ -270,7 +270,7 @@ private class List(T)
         return 0;
     }
 
-    int elements_reverse(int delegate(inout Element) dg)
+    int elements_reverse(int delegate(ref Element) dg)
     {
         for ( Element e=tail; e !is null; e = e.prev )
         {
@@ -281,7 +281,7 @@ private class List(T)
         return 0;
     }
 
-    int opApply(int delegate(inout T) dg)
+    int opApply(int delegate(ref T) dg)
     {
         for ( Element e=head; e !is null; e = e.next )
         {
@@ -292,7 +292,7 @@ private class List(T)
         return 0;
     }
 
-    int opApplyReverse(int delegate(inout T) dg)
+    int opApplyReverse(int delegate(ref T) dg)
     {
         for ( Element e=tail; e !is null; e = e.prev )
         {
@@ -1724,7 +1724,7 @@ private final class TNFA(char_t)
 
         // set transition priorities
         List!(trans_t)[PriorityClass.max+1] trans;
-        foreach ( inout t; trans )
+        foreach ( ref t; trans )
             t = new List!(trans_t);
 
         Stack!(trans_t) todo;
@@ -3358,7 +3358,7 @@ private:
             {
                 foreach ( e; res.elms )
                 {
-                    foreach ( inout i; e.tags )
+                    foreach ( ref i; e.tags )
                     {
                         // mark index by making it negative
                         // to signal that it can be decremented
@@ -3753,7 +3753,7 @@ class RegExpT(char_t)
     }
 
     /** ditto */
-    public int opApply(int delegate(inout RegExpT!(char_t)) dg)
+    public int opApply(int delegate(ref RegExpT!(char_t)) dg)
     {
         int result;
         while ( !result && test() )
@@ -4464,7 +4464,7 @@ bool isValidDchar(dchar c)
  * thrown and idx remains unchanged.
  */
 
-dchar decode(in char[] s, inout size_t idx)
+dchar decode(in char[] s, ref size_t idx)
     {
         size_t len = s.length;
         dchar V;
@@ -4543,7 +4543,7 @@ dchar decode(in char[] s, inout size_t idx)
 
 /*  ditto */
 
-dchar decode(wchar[] s, inout size_t idx)
+dchar decode(wchar[] s, ref size_t idx)
     in
     {
         assert(idx >= 0 && idx < s.length);
@@ -4600,7 +4600,7 @@ dchar decode(wchar[] s, inout size_t idx)
 
 /*  ditto */
 
-dchar decode(dchar[] s, inout size_t idx)
+dchar decode(dchar[] s, ref size_t idx)
     in
     {
         assert(idx >= 0 && idx < s.length);
@@ -4627,7 +4627,7 @@ dchar decode(dchar[] s, inout size_t idx)
  * Encodes character c and appends it to array s[].
  */
 
-void encode(inout char[] s, dchar c)
+void encode(ref char[] s, dchar c)
     in
     {
         assert(isValidDchar(c));
@@ -4677,7 +4677,7 @@ void encode(inout char[] s, dchar c)
 
 /*  ditto */
 
-void encode(inout wchar[] s, dchar c)
+void encode(ref wchar[] s, dchar c)
     in
     {
         assert(isValidDchar(c));
@@ -4703,7 +4703,7 @@ void encode(inout wchar[] s, dchar c)
 
 /*  ditto */
 
-void encode(inout dchar[] s, dchar c)
+void encode(ref dchar[] s, dchar c)
     in
     {
         assert(isValidDchar(c));

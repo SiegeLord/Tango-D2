@@ -306,7 +306,7 @@ class FtpFolder: VfsFolder {
      useful for reflecting the hierarchy
      ***********************************************************************/
 
-    final int opApply(int delegate(inout VfsFolder) dg) {
+    final int opApply(int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
 
     
@@ -519,7 +519,7 @@ class FtpFolders: VfsFolders {
      Iterate over the set of contained VfsFolder instances
      ***********************************************************************/
 
-    final int opApply(int delegate(inout VfsFolder) dg) {
+    final int opApply(int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
 
     
@@ -1212,7 +1212,7 @@ class FtpFiles: VfsFiles {
      Iterate over the set of contained VfsFile instances
      ***********************************************************************/
 
-    final int opApply(int delegate(inout VfsFile) dg) {
+    final int opApply(int delegate(ref VfsFile) dg) {
         int result = 0;
 
         foreach(FtpFileInfo inf; infos_) {

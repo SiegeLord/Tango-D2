@@ -55,7 +55,7 @@ class TypedInput(T) : InputFilter
 
         ***********************************************************************/
 
-        final bool read (inout T x)
+        final bool read (ref T x)
         {
                 return source.read((&x)[0..1]) is T.sizeof;
         }

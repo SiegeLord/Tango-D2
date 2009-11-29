@@ -75,11 +75,11 @@ uint allocateEncodeSize(uint length)
     Params:
     data = what is to be encoded
     buff = buffer large enough to hold encoded data
-    bytesEncoded = inout that returns how much of the buffer was filled
+    bytesEncoded = ref that returns how much of the buffer was filled
 
 *******************************************************************************/
 
-int encodeChunk(ubyte[] data, char[] buff, inout int bytesEncoded)
+int encodeChunk(ubyte[] data, char[] buff, ref int bytesEncoded)
 {
     size_t tripletCount = data.length / 3;
     int rtn = 0;
@@ -346,7 +346,7 @@ version (Test)
 
     unittest    
     {
-        Test.Status encodeChunktest(inout char[][] messages)
+        Test.Status encodeChunktest(ref char[][] messages)
         {
             char[] str = "Hello, how are you today?";
             char[] encoded = new char[allocateEncodeSize(cast(ubyte[])str)];
@@ -357,7 +357,7 @@ version (Test)
                 return Test.Status.Success;
             return Test.Status.Failure;
         }
-        Test.Status encodeTest(inout char[][] messages)
+        Test.Status encodeTest(ref char[][] messages)
         {
             char[] encoded = new char[allocateEncodeSize(cast(ubyte[])"Hello, how are you today?")];
             char[] result = encode(cast(ubyte[])"Hello, how are you today?", encoded);
@@ -371,7 +371,7 @@ version (Test)
             return Test.Status.Failure;
         }
 
-        Test.Status decodeTest(inout char[][] messages)
+        Test.Status decodeTest(ref char[][] messages)
         {
             ubyte[1024] decoded;
             ubyte[] result = decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decoded);
@@ -384,7 +384,7 @@ version (Test)
             return Test.Status.Failure;
         }
         
-        Test.Status speedTest(inout char[][] messages)
+        Test.Status speedTest(ref char[][] messages)
         {
             Stdout("Reading...").newline;
             char[] data = cast(char[])File.get ("blah.b64");
@@ -400,7 +400,7 @@ version (Test)
             return Test.Status.Success;
         }
 
-        Test.Status speedTest2(inout char[][] messages)
+        Test.Status speedTest2(ref char[][] messages)
         {
             Stdout("Reading...").newline;
 //            ubyte[] data = cast(ubyte[])FileData("blah.txt").read;

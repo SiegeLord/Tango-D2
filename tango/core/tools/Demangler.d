@@ -1030,7 +1030,7 @@ public class Demangler
             {
                 case 'K':
                     consume (1);
-                    output.append ("inout ");
+                    output.append ("ref ");
                     break;
 
                 case 'J':

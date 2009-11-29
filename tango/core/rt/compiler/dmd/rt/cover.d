@@ -314,7 +314,7 @@ char[] chomp( char[] str, char[] delim = null )
 }
 
 
-bool readFile( char[] name, inout char[] buf )
+bool readFile( char[] name, ref char[] buf )
 {
     version( Win32 )
     {
@@ -380,7 +380,7 @@ bool readFile( char[] name, inout char[] buf )
 }
 
 
-void splitLines( char[] buf, inout char[][] lines )
+void splitLines( char[] buf, ref char[][] lines )
 {
     size_t  beg = 0,
             pos = 0;

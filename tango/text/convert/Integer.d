@@ -420,10 +420,10 @@ ulong convert(T) (T[] digits, uint radix=10, uint* ate=null)
 
 ******************************************************************************/
 
-uint trim(T, U=uint) (T[] digits, inout bool sign, inout U radix)
+uint trim(T, U=uint) (T[] digits, ref bool sign, ref U radix)
 {return trim!(T)(digits, sign, radix);}
 
-uint trim(T) (T[] digits, inout bool sign, inout uint radix)
+uint trim(T) (T[] digits, ref bool sign, ref uint radix)
 {
         T       c;
         T*      p = digits.ptr;

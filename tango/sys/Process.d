@@ -1684,7 +1684,7 @@ class Process
      * character can be used to specify arguments with embedded spaces.
      * e.g. first "second param" third
      */
-    protected static char[][] splitArgs(inout char[] command, char[] delims = " \t\r\n")
+    protected static char[][] splitArgs(ref char[] command, char[] delims = " \t\r\n")
     in
     {
         assert(!contains(delims, '"'),

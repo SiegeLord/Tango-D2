@@ -851,7 +851,7 @@ size_t newCapacity(size_t newlength, size_t size)
 /**
  *
  */
-extern (C) byte[] _d_arrayappendcT(TypeInfo ti, inout byte[] x, ...)
+extern (C) byte[] _d_arrayappendcT(TypeInfo ti, ref byte[] x, ...)
 {
     auto sizeelem = ti.next.tsize();            // array element size
     auto info = gc_query(x.ptr);

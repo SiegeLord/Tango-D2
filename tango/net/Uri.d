@@ -859,9 +859,9 @@ class Uri : UriView
 
         **********************************************************************/
 
-        private final static char[] toLower (inout char[] src)
+        private final static char[] toLower (ref char[] src)
         {
-                foreach (inout char c; src)
+                foreach (ref char c; src)
                          if (c >= 'A' && c <= 'Z')
                              c = cast(char)(c + ('a' - 'A'));
                 return src;

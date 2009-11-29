@@ -180,7 +180,7 @@ char[] formatDateTime (char[] output, Time dateTime, char[] format, DateTimeForm
 
         **********************************************************************/
 
-        char[] expandKnownFormat(char[] format, inout Time dateTime)
+        char[] expandKnownFormat(char[] format, ref Time dateTime)
         {
                 char[] f;
 
@@ -251,7 +251,7 @@ version (Full)
 
         **********************************************************************/
 
-        char[] formatCustom (inout Result result, Time dateTime, char[] format)
+        char[] formatCustom (ref Result result, Time dateTime, char[] format)
         {
 
                 int parseRepeat(char[] format, int pos, char c)
@@ -755,7 +755,7 @@ char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf
 
 *******************************************************************************/
 
-void formatGeneral (inout Number number, inout Result target, int length, char format, NumberFormat nf)
+void formatGeneral (ref Number number, ref Result target, int length, char format, NumberFormat nf)
 {
         int pos = number.scale;
 
@@ -789,7 +789,7 @@ void formatGeneral (inout Number number, inout Result target, int length, char f
 
 *******************************************************************************/
 
-void formatNumber (inout Number number, inout Result target, int length, NumberFormat nf)
+void formatNumber (ref Number number, ref Result target, int length, NumberFormat nf)
 {
         char[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern]
                                     : positiveNumberFormat;
@@ -819,7 +819,7 @@ void formatNumber (inout Number number, inout Result target, int length, NumberF
 
 *******************************************************************************/
 
-void formatCurrency (inout Number number, inout Result target, int length, NumberFormat nf)
+void formatCurrency (ref Number number, ref Result target, int length, NumberFormat nf)
 {
         char[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern]
                                     : positiveCurrencyFormats[nf.currencyPositivePattern];
@@ -853,7 +853,7 @@ void formatCurrency (inout Number number, inout Result target, int length, Numbe
 
 *******************************************************************************/
 
-void formatFixed (inout Number number, inout Result target, int length,
+void formatFixed (ref Number number, ref Result target, int length,
                   int[] groupSizes, char[] decimalSeparator, char[] groupSeparator)
 {
         int pos = number.scale;
@@ -951,7 +951,7 @@ void formatFixed (inout Number number, inout Result target, int length,
 
 ******************************************************************************/
 
-char[] toString (inout Number number, inout Result result, char format, int length, NumberFormat nf)
+char[] toString (ref Number number, ref Result result, char format, int length, NumberFormat nf)
 {
         switch (format)
                {
@@ -1304,7 +1304,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toStringFormat (inout Result result, char[] format, NumberFormat nf)
+        private char[] toStringFormat (ref Result result, char[] format, NumberFormat nf)
         {
                 bool hasGroups;
                 int groupCount;

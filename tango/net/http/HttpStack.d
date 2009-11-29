@@ -111,7 +111,7 @@ class HttpStack
 
         **********************************************************************/
 
-        int opApply (int delegate(inout Token) dg)
+        int opApply (int delegate(ref Token) dg)
         {
                 int result = 0;
 
@@ -202,7 +202,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final Token push (inout Token token)
+        final Token push (ref Token token)
         {
                 return push (token.toString());  
         }
@@ -241,7 +241,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final static bool isMatch (inout Token token, char[] match)
+        final static bool isMatch (ref Token token, char[] match)
         {
                 char[] target = token.toString();
 
@@ -264,7 +264,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final static void resize (inout Token[] tokens, int size)
+        final static void resize (ref Token[] tokens, int size)
         {
                 int i = tokens.length;
 

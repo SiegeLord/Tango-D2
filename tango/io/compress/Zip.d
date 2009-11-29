@@ -1932,7 +1932,7 @@ void write(T)(OutputStream s, T value)
 //
 // Endian garbage
 
-void swapAll(T)(inout T data)
+void swapAll(T)(ref T data)
 {
     static if( is(typeof(T.record_fields)) )
         const fields = T.record_fields;
@@ -1946,7 +1946,7 @@ void swapAll(T)(inout T data)
     }
 }
 
-void swap(T)(inout T data)
+void swap(T)(ref T data)
 {
     static if( T.sizeof == 1 )
         {}

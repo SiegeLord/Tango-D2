@@ -230,7 +230,7 @@ size_t toUTFindex(in dchar[] s, size_t n)
  * decoded character. If the character is not well formed, a UtfException is
  * thrown and idx remains unchanged.
  */
-dchar decode(in char[] s, inout size_t idx)
+dchar decode(in char[] s, ref size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -371,7 +371,7 @@ unittest
 
 /** ditto */
 
-dchar decode(in wchar[] s, inout size_t idx)
+dchar decode(in wchar[] s, ref size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -429,7 +429,7 @@ dchar decode(in wchar[] s, inout size_t idx)
 
 /** ditto */
 
-dchar decode(in dchar[] s, inout size_t idx)
+dchar decode(in dchar[] s, ref size_t idx)
     in
     {
 	assert(idx >= 0 && idx < s.length);
@@ -455,7 +455,7 @@ dchar decode(in dchar[] s, inout size_t idx)
 /*******************************
  * Encodes character c and appends it to array s[].
  */
-void encode(inout char[] s, dchar c)
+void encode(ref char[] s, dchar c)
     in
     {
 	assert(isValidDchar(c));
@@ -524,7 +524,7 @@ unittest
 
 /** ditto */
 
-void encode(inout wchar[] s, dchar c)
+void encode(ref wchar[] s, dchar c)
     in
     {
 	assert(isValidDchar(c));
@@ -549,7 +549,7 @@ void encode(inout wchar[] s, dchar c)
     }
 
 /** ditto */
-void encode(inout dchar[] s, dchar c)
+void encode(ref dchar[] s, dchar c)
     in
     {
 	assert(isValidDchar(c));

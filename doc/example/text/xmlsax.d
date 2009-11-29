@@ -63,7 +63,7 @@ private class EventsHandler(Ch = char) : SaxHandler!(Ch) {
 
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
                 events++;
-                foreach (inout attr; atts) {
+                foreach (ref attr; atts) {
                         events++;
                 }
         }
@@ -121,7 +121,7 @@ private class LengthHandler(Ch = char) : SaxHandler!(Ch) {
         public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts) {
                 elm++;
                 elmlen += localName.length;
-                foreach (inout attr; atts) {
+                foreach (ref attr; atts) {
                         att++;
                         attlen += attr.localName.length;
                 }

@@ -111161,15 +111161,15 @@ private {
 }
 
 static this() {
-	foreach(inout entry; internalUnicodeData)
+	foreach(ref entry; internalUnicodeData)
 		unicodeData[entry.code] = &entry;
 	unicodeData.rehash;
 	
-	foreach(inout entry; internalSpecialCaseData)
+	foreach(ref entry; internalSpecialCaseData)
 		specialCaseData[entry.code] = &entry;
 	specialCaseData.rehash;
 	
-	foreach(inout entry; internalFoldingCaseData)
+	foreach(ref entry; internalFoldingCaseData)
 		foldingCaseData[entry.code] = &entry;
 	foldingCaseData.rehash;
 }
