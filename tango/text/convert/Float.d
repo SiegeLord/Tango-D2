@@ -237,7 +237,13 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            if (exp)
               {
               *p++ = 'e';
-              *p++ = (exp < 0) ? (exp = -exp, '-') : '+';
+              if (exp < 0)
+                 {
+                 exp = -exp;
+                 *p++ = '-';
+                 }
+              else
+                 *p++ = '+';
 
               if (exp >= 1000)
                  {
@@ -370,10 +376,16 @@ NumType parse(T) (T[] src, uint* ate=null)
         else
            // was it was nan instead?
            if (p[0..3] == "inf")
-               p += 3, value = value.infinity;
+              {
+              p += 3;
+              value = value.infinity;
+              }
            else
               if (p[0..3] == "nan")
-                  p += 3, value = value.nan;
+                 {
+                 p += 3;
+                 value = value.nan;
+                 }
 
         // set parse length, and return value
         if (ate)

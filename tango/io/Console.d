@@ -123,8 +123,13 @@ struct Console
                                 return IConduit.Eof;
                         }
 
-                        return buffer.next(&line) || 
-                              (content = cast(char[]) buffer.slice(buffer.readable), false);
+                        // get next line, return true
+                        if (buffer.next (&line))
+                            return true;
+
+                        // assign trailing content and return false
+                        content = cast(char[]) buffer.slice (buffer.readable);
+                        return false;
                 }
 
                 /**************************************************************

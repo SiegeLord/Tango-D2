@@ -451,17 +451,20 @@ uint trim(T) (T[] digits, ref bool sign, ref uint radix)
                       {
                       case 'x':
                       case 'X':
-                           r = 16, ++p;
+                           ++p;
+                           r = 16;
                            break;
  
                       case 'b':
                       case 'B':
-                           r = 2, ++p;
+                           ++p;
+                           r = 2;
                            break;
  
                       case 'o':
                       case 'O':
-                           r = 8, ++p;
+                           ++p;
+                           r = 8;
                            break;
  
                       default: 

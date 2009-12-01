@@ -590,7 +590,7 @@ package struct FS
                                 }
 
                         if (h is INVALID_HANDLE_VALUE)
-                            return ret; //exception (folder);
+                            return ret; 
 
                         scope (exit)
                                FindClose (h);
@@ -928,7 +928,7 @@ package struct FS
 
                         dir = tango.stdc.posix.dirent.opendir (folder.ptr);
                         if (! dir)
-                              return ret; //exception (folder);
+                              return ret;
 
                         scope (exit)
                                tango.stdc.posix.dirent.closedir (dir);
@@ -939,9 +939,13 @@ package struct FS
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
                         
-                        // pentry is null at end of listing, or on an error 
-                        while (readdir_r (dir, &entry, &pentry), pentry !is null)
+                        while (true)
                               {
+                              // pentry is null at end of listing, or on an error 
+                              readdir_r (dir, &entry, &pentry);
+                              if (pentry !is null)
+                                  break;
+
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
                               auto str = entry.d_name.ptr [0 .. len];
                               ++len;  // include the null

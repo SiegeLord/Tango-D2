@@ -769,7 +769,10 @@ else
                                   len = parseRepeat (format, index, c);
                                   auto minutes = cast(int) (WallClock.zone.minutes);
                                   if (minutes < 0)
-                                      minutes = -minutes, result ~= '-';
+                                     {
+                                     minutes = -minutes;
+                                     result ~= '-';
+                                     }
                                   else
                                      result ~= '+';
                                   int hours = minutes / 60;

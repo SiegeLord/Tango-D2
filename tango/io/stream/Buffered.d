@@ -1021,7 +1021,8 @@ class BufferedOutput : OutputFilter, OutputBuffer
                           auto written = sink.write (src [0 .. length]);
                           if (written is Eof)
                               conduit.error (eofWrite);
-                          src += written, length -= written;
+                          length -= written;
+                          src += written; 
                           } while (length > dimension);
                     }
 
