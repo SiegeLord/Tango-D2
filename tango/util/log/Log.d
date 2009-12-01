@@ -1019,7 +1019,8 @@ private class Hierarchy : Logger.Context
                    // insert into linked list
                    insert (li);
 
-                   // look for and adjust children
+                   // look for and adjust children. Don't force 
+                   // property inheritance on existing loggers
                    update (li);
 
                    // insert into map
@@ -1059,7 +1060,8 @@ private class Hierarchy : Logger.Context
                              }
                       else
                          // find best match for parent of new entry
-                         propagate (l, curr);
+                         // and inherit relevant properties (level, etc)
+                         propagate (l, curr, true);
 
                       // remember where insertion point should be
                       prev = curr;  
