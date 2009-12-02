@@ -22,8 +22,6 @@ private import  tango.io.device.Device,
 version (Posix)
          private import tango.stdc.posix.unistd;  // needed for isatty()
 
-extern (C) int printf (char*, ...);
-
 /*******************************************************************************
 
         low level console IO support. 
