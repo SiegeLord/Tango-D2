@@ -18,6 +18,8 @@
         Log ("temperature is {} degrees", 75);
         ---
 
+        Generic usage:
+
         Loggers are named entities, sometimes shared, sometimes specific to 
         a particular portion of code. The names are generally hierarchical in 
         nature, using dot notation (with '.') to separate each named section. 
