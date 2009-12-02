@@ -22,6 +22,7 @@ private import  tango.io.device.Device,
 version (Posix)
          private import tango.stdc.posix.unistd;  // needed for isatty()
 
+extern (C) int printf (char*, ...);
 
 /*******************************************************************************
 
@@ -482,13 +483,13 @@ struct Console
                                 // may be patched later in some special cases
                                 if (handle != INVALID_HANDLE_VALUE)
                                    {
-                                   // are we redirecting?
                                    DWORD mode;
+                                   // are we redirecting? Note that we cannot
+                                   // use the 'appending' mode triggered via
+                                   // setting overlapped.Offset to -1, so we
+                                   // just track the byte-count instead
                                    if (! GetConsoleMode (handle, &mode))
-                                      {
-                                      *cast(long*) &overlapped.Offset = -1;
-                                      redirected = true;
-                                      }
+                                         redirected = super.track = true;
                                    }
                         }
 
