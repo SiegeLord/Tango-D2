@@ -29,6 +29,7 @@ private import  tango.net.device.Socket,
 
 public class AppendSocket : Appender
 {
+        private char[]          eol;
         private Mask            mask_;
         private Bout            buffer;
         private Socket          conduit;
@@ -41,10 +42,11 @@ public class AppendSocket : Appender
 
         ***********************************************************************/
 
-        this (InternetAddress address, Appender.Layout how = null)
+        this (InternetAddress address, Appender.Layout how = null, char[] eol=null)
         {
                 layout (how);
 
+                this.eol     = eol;
                 this.address = address;
                 this.conduit = new Socket;
                 this.buffer  = new Bout (conduit);
@@ -99,6 +101,8 @@ public class AppendSocket : Appender
                           }
 
                        layout.format (event, &buffer.write);
+                       if (eol.length)
+                           buffer.write (eol);
                        buffer.flush;
                        return;
                        } catch (Exception e)
