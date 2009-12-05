@@ -38,7 +38,8 @@ public class AppendSocket : Appender
 
         /***********************************************************************
                 
-                Create with the given Layout and address
+                Create with the given Layout and address. Specify an end-
+                of-line string if you want that appended to each message 
 
         ***********************************************************************/
 
