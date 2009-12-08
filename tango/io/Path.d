@@ -943,7 +943,7 @@ package struct FS
                               {
                               // pentry is null at end of listing, or on an error 
                               readdir_r (dir, &entry, &pentry);
-                              if (pentry !is null)
+                              if (pentry is null)
                                   break;
 
                               auto len = tango.stdc.string.strlen (entry.d_name.ptr);
