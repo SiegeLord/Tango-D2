@@ -45,6 +45,7 @@ class Socket : Conduit, ISelectable
         private Berkeley  berkeley;             // wrap a berkeley socket
 
 
+        /// see super.timeout(int)
         deprecated void setTimeout (double t) 
         {
                 timeout = cast(uint) (t * 1000);
