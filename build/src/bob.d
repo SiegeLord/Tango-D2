@@ -64,7 +64,7 @@ class Windows : FileFilter
                         addToLib (temp);
                 }
 
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 libs ("-c -n -p256\n"~args.lib~"\n");
 
                 exclude ("tango/core/rt/compiler/dmd/posix");
@@ -116,7 +116,7 @@ class Linux : FileFilter
 
         int dmd ()
         {
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 exclude ("tango/core/rt/compiler/dmd/windows");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
@@ -141,7 +141,7 @@ class Linux : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
@@ -218,7 +218,7 @@ class FreeBSD : FileFilter
 
         int dmd ()
         {
-                auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 exclude ("tango/core/rt/compiler/dmd/windows"); 
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
@@ -243,7 +243,7 @@ class FreeBSD : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" "~args.flags~" -of";
+                auto ldc = "ldc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
@@ -355,7 +355,9 @@ class FileFilter : FileScan
                 exclude ("tango/core/rt/compiler/dmd");
                 exclude ("tango/core/rt/compiler/gdc");
                 exclude ("tango/core/rt/compiler/ldc");
+                exclude ("tango/core/vendor");
                 include ("tango/core/rt/compiler/"~args.target);
+                include ("tango/core/vendor/"~args.target);
         }
         
         /***********************************************************************
