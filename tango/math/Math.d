@@ -197,7 +197,7 @@ unittest
 private {
     // Return the type which would be returned by a max or min operation
 template minmaxtype(T...){
-    static if(T.length == 1) alias typeof(T[0]) minmaxtype;
+    static if(T.length == 1) alias T[0] minmaxtype;
     else static if(T.length > 2)
         alias minmaxtype!(minmaxtype!(T[0..2]), T[2..$]) minmaxtype;
     else alias typeof (T[1] > T[0] ? T[1] : T[0]) minmaxtype;
