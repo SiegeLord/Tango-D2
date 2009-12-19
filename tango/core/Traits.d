@@ -351,6 +351,18 @@ template ReturnTypeOf( Fn )
         static assert( false, "Argument has no return type." );
 }
 
+/** 
+ * Returns the type that a T would evaluate to in an expression.
+ * Expr is not required to be a callable type
+ */ 
+template ExprTypeOf( Expr )
+{
+    static if(isCallableType!( Expr ))
+        alias ReturnTypeOf!( Expr ) ExprTypeOf;
+    else
+        alias Expr ExprTypeOf;
+}
+
 
 /**
  * Evaluates to the return type of fn.  fn is required to be callable.
