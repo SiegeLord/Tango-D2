@@ -93,6 +93,10 @@ version( Win32 )
     wchar_t* _wstrdate(wchar_t*);
     wchar_t* _wstrtime(wchar_t*);
 }
+else version( darwin )
+{
+    void tzset();
+}
 else version( linux )
 {
     void tzset();
