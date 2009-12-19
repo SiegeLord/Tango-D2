@@ -997,7 +997,7 @@ version( D_Ddoc )
      * Returns:
      *  True if an element equivalent to pat is found, false if not.
      */
-    size_t contains( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+    equals_t contains( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
 
     /**
@@ -1021,7 +1021,7 @@ else
 {
     template contains( Buf, Pat )
     {
-        size_t contains( Buf buf, Pat pat )
+        equals_t contains( Buf buf, Pat pat )
         {
             return cast(equals_t)(find( buf, pat ) != buf.length);
         }
