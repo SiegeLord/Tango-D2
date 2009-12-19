@@ -70,9 +70,9 @@ def main (arg)
 		
 		File.delete(args.lib) if File.exists?(args.lib)
 		
-		linux_dmd = "dmd -c -I" + args.root + "/tango/core -I" + args.root + " " + args.flags + " -of"
-		linux_ldc = "ldc -c -I" + args.root + "/tango/core -I" + args.root + "/tango/core/rt/compiler/ldc -I" + args.root + " " + args.flags + " -of"
-		linux_gdc = "gdc -c -I" + args.root + "/tango/core -I" + args.root + " " + args.flags + " -of"
+		linux_dmd = "dmd -c -I" + args.root + "/tango/core -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
+		linux_ldc = "ldc -c -I" + args.root + "/tango/core -I" + args.root + "/tango/core/rt/compiler/ldc -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
+		linux_gdc = "gdc -c -I" + args.root + "/tango/core -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
 		
 		darwin_dmd = linux_dmd[0 ... 4] + "-version=darwin " + linux_dmd[4 .. -1]
 		darwin_ldc = linux_ldc
@@ -126,8 +126,10 @@ class FileFilter
 		exclude("tango/core/rt/compiler/dmd");
 		exclude("tango/core/rt/compiler/gdc");
 		exclude("tango/core/rt/compiler/ldc");
+		exclude("tango/core/vendor")
 		
-		include("tango/core/rt/compiler/" + args.target);
+		include("tango/core/rt/compiler/" + args.target)
+		include("tango/core/vendor/" + args.target)
 	end
 	
 	def self.register (platform, compiler, symbol, object)
@@ -239,7 +241,7 @@ class Windows < FileFilter
 			addToLib(temp)
 		end
 
-		dmd = "dmd -c -I" + @args.root + "/tango/core -I" + @args.root + " " + @args.flags + " -of";
+		dmd = "dmd -c -I" + @args.root + "/tango/core -I" + @args.root + " -I" + @args.root + "/tango/core/vendor" + @args.flags + " -of";
 		libs("-c -n -p256\n" + @args.lib)
 		
 		exclude("tango/core/rt/compiler/dmd/posix")
