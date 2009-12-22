@@ -1491,6 +1491,25 @@ version( D_Ddoc )
      *  The number of elements that do not match pat.
      */
     size_t remove( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+
+    /**
+     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * elements matching pat to the end of the sequence.  The relative order of
+     * elements not matching pat will be preserved.  Comparisons will be
+     * performed '=='.
+     *
+     * Params:
+     *  buf  = The array to scan.  This parameter is not marked 'ref'
+     *         to allow temporary slices to be modified.  As buf is not resized
+     *         in any way, omitting the 'ref' qualifier has no effect on the
+     *         result of this operation, even though it may be viewed as a
+     *         side-effect.
+     *  pat  = The pattern to match against.
+     *
+     * Returns:
+     *  The number of elements that do not match pat.
+     */
+    size_t remove( Elem[] buf, Elem pat );
 }
 else
 {
