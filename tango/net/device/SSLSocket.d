@@ -45,7 +45,7 @@ private import tango.net.util.c.OpenSSL;
 
         s.write("GET / HTTP/1.0\r\n\r\n");
         auto bytesRead = s.read(buff);
-        if (byteRead != s.Eof)
+        if (bytesRead != s.Eof)
             Stdout.formatln("received: {}", buff[0..bytesRead]);
     }
     ---
