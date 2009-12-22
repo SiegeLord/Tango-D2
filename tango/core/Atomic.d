@@ -1563,79 +1563,108 @@ struct Atomic( T )
     // Numeric Functions
     ////////////////////////////////////////////////////////////////////////////
 
-
-    /**
-     * The following additional functions are available for integer types.
-     */
-    static if( isValidNumericType!(T) )
-    {
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Increment
-        ////////////////////////////////////////////////////////////////////////
-
-
-        template increment( msync ms = msync.seq )
-        {
-            static assert( ms == msync.raw || ms == msync.ssb ||
-                           ms == msync.acq || ms == msync.rel ||
-                           ms == msync.seq,
-                           "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
-
-            /**
-             * This operation is only legal for built-in value and pointer
-             * types, and is equivalent to an atomic "val = val + 1" operation.
-             * This function exists to facilitate use of the optimized
-             * increment instructions provided by some architecures.  If no
-             * such instruction exists on the target platform then the
-             * behavior will perform the operation using more traditional
-             * means.  This operation is both lock-free and atomic.
-             *
-             * Returns:
-             *  The result of an atomicLoad of val immediately following the
-             *  increment operation.  This value is not required to be equal to
-             *  the newly stored value.  Thus, competing writes are allowed to
-             *  occur between the increment and successive load operation.
-             */
-            T increment()
-            {
-                return atomicIncrement!(ms,T)( m_val );
-            }
-        }
+	version( D_Ddoc )
+	{
+		/**
+		 * The following additional functions are available for integer types.
+		 */
+		////////////////////////////////////////////////////////////////////////
+		// Atomic Increment
+		////////////////////////////////////////////////////////////////////////
 
 
-        ////////////////////////////////////////////////////////////////////////
-        // Atomic Decrement
-        ////////////////////////////////////////////////////////////////////////
+		template increment( msync ms = msync.seq )
+		{
+			/**
+			 * This operation is only legal for built-in value and pointer
+			 * types, and is equivalent to an atomic "val = val + 1" operation.
+			 * This function exists to facilitate use of the optimized
+			 * increment instructions provided by some architecures.  If no
+			 * such instruction exists on the target platform then the
+			 * behavior will perform the operation using more traditional
+			 * means.  This operation is both lock-free and atomic.
+			 *
+			 * Returns:
+			 *  The result of an atomicLoad of val immediately following the
+			 *  increment operation.  This value is not required to be equal to
+			 *  the newly stored value.  Thus, competing writes are allowed to
+			 *  occur between the increment and successive load operation.
+			 */
+			T increment()
+			{
+				return m_val;
+			}
+		}
 
 
-        template decrement( msync ms = msync.seq )
-        {
-            static assert( ms == msync.raw || ms == msync.ssb ||
-                           ms == msync.acq || ms == msync.rel ||
-                           ms == msync.seq,
-                           "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
+		////////////////////////////////////////////////////////////////////////
+		// Atomic Decrement
+		////////////////////////////////////////////////////////////////////////
 
-            /**
-             * This operation is only legal for built-in value and pointer
-             * types, and is equivalent to an atomic "val = val - 1" operation.
-             * This function exists to facilitate use of the optimized
-             * decrement instructions provided by some architecures.  If no
-             * such instruction exists on the target platform then the behavior
-             * will perform the operation using more traditional means.  This
-             * operation is both lock-free and atomic.
-             *
-             * Returns:
-             *  The result of an atomicLoad of val immediately following the
-             *  increment operation.  This value is not required to be equal to
-             *  the newly stored value.  Thus, competing writes are allowed to
-             *  occur between the increment and successive load operation.
-             */
-            T decrement()
-            {
-                return atomicDecrement!(ms,T)( m_val );
-            }
-        }
-    }
+
+		template decrement( msync ms = msync.seq )
+		{
+			/**
+			 * This operation is only legal for built-in value and pointer
+			 * types, and is equivalent to an atomic "val = val - 1" operation.
+			 * This function exists to facilitate use of the optimized
+			 * decrement instructions provided by some architecures.  If no
+			 * such instruction exists on the target platform then the behavior
+			 * will perform the operation using more traditional means.  This
+			 * operation is both lock-free and atomic.
+			 *
+			 * Returns:
+			 *  The result of an atomicLoad of val immediately following the
+			 *  increment operation.  This value is not required to be equal to
+			 *  the newly stored value.  Thus, competing writes are allowed to
+			 *  occur between the increment and successive load operation.
+			 */
+			T decrement()
+			{
+				return m_val;
+			}
+		}
+	}
+	else
+	{
+		static if( isValidNumericType!(T) )
+		{
+			////////////////////////////////////////////////////////////////////////
+			// Atomic Increment
+			////////////////////////////////////////////////////////////////////////
+
+
+			template increment( msync ms = msync.seq )
+			{
+				static assert( ms == msync.raw || ms == msync.ssb ||
+							   ms == msync.acq || ms == msync.rel ||
+							   ms == msync.seq,
+							   "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
+				T increment()
+				{
+					return atomicIncrement!(ms,T)( m_val );
+				}
+			}
+
+
+			////////////////////////////////////////////////////////////////////////
+			// Atomic Decrement
+			////////////////////////////////////////////////////////////////////////
+
+
+			template decrement( msync ms = msync.seq )
+			{
+				static assert( ms == msync.raw || ms == msync.ssb ||
+							   ms == msync.acq || ms == msync.rel ||
+							   ms == msync.seq,
+							   "ms must be one of: msync.raw, msync.ssb, msync.acq, msync.rel, msync.seq" );
+				T decrement()
+				{
+					return atomicDecrement!(ms,T)( m_val );
+				}
+			}
+		}
+	}
 
 private:
     T   m_val;
