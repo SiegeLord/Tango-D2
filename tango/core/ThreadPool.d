@@ -27,7 +27,7 @@ private import  tango.core.sync.Mutex,
  * --------------------
  * // create a new pool with two threads
  * auto pool = new ThreadPool!(int)(2);
- * void delegate(int) f = (int x) { Stdout(x).newline; };
+ * void delegate(int) f = (int x) { Log(x); };
  *
  * // Now we have three ways of telling the pool to execute our jobs
  * // First we can say we just want it done at some later point
@@ -37,9 +37,9 @@ private import  tango.core.sync.Mutex,
  * pool.assign(f, 2);
  * // Finally we can say we either want it done immediately or not at all
  * if (pool.tryAssign(f, 3))
- *     Stdout("Someone took the job!").newline;
+ *     Log("Someone took the job!");
  * else
- *     Stdout("No one was available to do the job right now").newline;
+ *     Log("No one was available to do the job right now");
  * // After giving the pool some jobs to do, we need to give it a chance to
  * // finish, so we can do one of two things.
  * // Choice no. 1 is to finish what has already been assigned to the threads,
