@@ -177,7 +177,7 @@ def main():
   create_index(TMP/"index.d", TANGO.SRC, FILES)
   write_tango_ddoc(TANGO_DDOC, TANGO.favicon, options.revision)
   DOC_FILES = [DIL.KANDIL.ddoc, TANGO_DDOC, TMP/"index.d"] + FILES
-  versions = ["Tango", "DDoc", "D_Ddoc"]
+  versions = ["Tango", "TangoDoc"]
   versions += ["Posix"] if options.posix else ["Windows", "Win32"]
   dil_options = ['-v', '-hl']
   if not options.pykandil:

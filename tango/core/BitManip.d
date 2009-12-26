@@ -8,7 +8,7 @@
 module tango.core.BitManip;
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Scans the bits in v starting with bit 0, looking

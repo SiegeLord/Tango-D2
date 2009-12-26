@@ -22,7 +22,7 @@ private import tango.text.convert.Integer;
 
 private import Ascii = tango.text.Ascii;
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Attempts to perform a value-preserving conversion of the given value

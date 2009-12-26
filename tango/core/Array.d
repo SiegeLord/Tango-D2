@@ -12,7 +12,7 @@ module tango.core.Array;
 private import tango.core.Traits;
 private import tango.stdc.stdlib : alloca, rand;
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     typedef int Num;
     typedef int Elem;
@@ -88,7 +88,7 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -238,7 +238,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
@@ -392,7 +392,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -574,7 +574,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
@@ -764,7 +764,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -829,7 +829,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
@@ -899,7 +899,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -980,7 +980,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -1079,7 +1079,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a parallel linear scan of bufA and bufB from $(LB)0 .. N$(RP)
@@ -1170,7 +1170,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -1248,7 +1248,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
@@ -1315,7 +1315,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
@@ -1397,7 +1397,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
@@ -1468,7 +1468,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
@@ -1589,7 +1589,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
@@ -1680,7 +1680,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
@@ -1789,7 +1789,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a linear scan of buf from $(LB)2 .. buf.length$(RP), exchanging
@@ -1860,7 +1860,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Partitions buf such that all elements that satisfy pred will be placed
@@ -1962,7 +1962,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Partitions buf with num - 1 as a pivot such that the first num elements
@@ -2086,7 +2086,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Sorts buf using the supplied predicate or '<' if none is supplied.  The
@@ -2330,7 +2330,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a binary search of buf, returning the index of the first
@@ -2414,7 +2414,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a binary search of buf, returning the index of the first
@@ -2498,7 +2498,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a binary search of buf, returning true if an element equivalent
@@ -2572,7 +2572,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Performs a parallel linear scan of setA and setB from $(LB)0 .. N$(RP)
@@ -2661,7 +2661,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Computes the union of setA and setB as a set operation and returns the
@@ -2747,7 +2747,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Computes the intersection of setA and setB as a set operation and
@@ -2831,7 +2831,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Returns a new array containing all elements in setA which are not
@@ -2918,7 +2918,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
    /**
      * Returns a new array containing all elements in setA which are not
@@ -3008,7 +3008,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Converts buf to a heap using the supplied predicate or '<' if none is
@@ -3140,7 +3140,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Adds val to buf by appending it and adjusting it up the heap.
@@ -3261,7 +3261,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Removes the top element from buf by swapping it with the bottom element,
@@ -3382,7 +3382,7 @@ else
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     /**
      * Sorts buf as a heap using the supplied predicate or '<' if none is

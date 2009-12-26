@@ -45,7 +45,7 @@ enum msync
 
 private
 {
-    version( D_Ddoc ) {} else
+    version( TangoDoc ) {} else
     {
         import tango.core.Traits;
 
@@ -91,7 +91,7 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 
-version( D_Ddoc )
+version( TangoDoc )
 {
     ////////////////////////////////////////////////////////////////////////////
     // Atomic Load
@@ -1563,7 +1563,7 @@ struct Atomic( T )
     // Numeric Functions
     ////////////////////////////////////////////////////////////////////////////
 
-	version( D_Ddoc )
+	version( TangoDoc )
 	{
 		/**
 		 * The following additional functions are available for integer types.
@@ -1678,7 +1678,7 @@ private:
 
 private
 {
-    version( D_Ddoc ) {} else
+    version( TangoDoc ) {} else
     {
         template testLoad( msync ms, T )
         {
