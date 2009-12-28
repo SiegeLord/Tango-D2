@@ -28,7 +28,7 @@ version (Posix)
     import tango.stdc.posix.pwd;
     import tango.stdc.errno;
 
-    private extern (C) int strlen (char *);
+    private extern (C) size_t strlen (in char *);
 }
 
 
