@@ -9,12 +9,12 @@ module tango.sys.freebsd.consts.socket;
         SO_DONTROUTE    = 0x0010,
         SO_ERROR        = 0x1007,
         SO_KEEPALIVE    = 0x0008,
-        SO_LINGER       = 0x1080,
+        SO_LINGER       = 0x0080,
         SO_OOBINLINE    = 0x0100,
         SO_RCVBUF       = 0x1002,
         SO_RCVLOWAT     = 0x1004,
         SO_RCVTIMEO     = 0x1006,
-        SO_REUSEADDR    = 0x1006,
+        SO_REUSEADDR    = 0x0004,
         SO_SNDBUF       = 0x1001,
         SO_SNDLOWAT     = 0x1003,
         SO_SNDTIMEO     = 0x1005,
@@ -45,7 +45,7 @@ module tango.sys.freebsd.consts.socket;
     private enum
       {
         IPPROTO_IP = 0, /* Dummy protocol for TCP.  */
-        IPPROTO_IPV4 = 0, /* Dummy protocol for TCP.  */
+        IPPROTO_IPV4 = 4, /* Dummy protocol for TCP.  */
         IPPROTO_IPV6 = 41, /* IPv6 header.  */
         IPPROTO_ICMP = 1, /* Internet Control Message Protocol.  */
         IPPROTO_IGMP = 2, /* Internet Group Management Protocol. */
