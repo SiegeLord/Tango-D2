@@ -34,8 +34,8 @@ module tango.sys.solaris.consts.socket;
     }
     enum
     {
-        SOCK_STREAM = 1 , /++ sequential, reliable +/
-        SOCK_DGRAM = 2, /++ connectionless unreliable, max length +/
+        SOCK_STREAM = 2 , /++ sequential, reliable +/
+        SOCK_DGRAM = 1, /++ connectionless unreliable, max length +/
         SOCK_SEQPACKET = 6, /++ sequential, reliable, max length +/
         SOCK_RAW = 4,
     }
@@ -80,8 +80,8 @@ module tango.sys.solaris.consts.socket;
         AF_UNSPEC = 0 ,
         AF_UNIX = 1 ,
         AF_INET = 2 ,
-        AF_IPX = 4 ,
-        AF_APPLETALK = 5 ,
+        AF_IPX = 23,
+        AF_APPLETALK = 16,
         AF_INET6 = 26 ,
     }
     enum : uint
@@ -95,12 +95,12 @@ module tango.sys.solaris.consts.socket;
     
     enum : uint
     {
-        MSG_CTRUNC      = 0x20,
+        MSG_CTRUNC      = 0x10,
         MSG_DONTROUTE   = 0x4,
         MSG_EOR         = 0x8,
         MSG_OOB         = 0x1,
         MSG_PEEK        = 0x2,
-        MSG_TRUNC       = 0x10,
+        MSG_TRUNC       = 0x20,
         MSG_WAITALL     = 0x40
     }
 
