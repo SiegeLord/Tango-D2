@@ -21,7 +21,7 @@ version( GNU )
 
 template va_start(T)
 {
-    void va_start( out va_list ap, inout T parmn )
+    void va_start( out va_list ap, ref T parmn )
     {
 
     }
@@ -29,7 +29,7 @@ template va_start(T)
 
 template va_arg(T)
 {
-    T va_arg( inout va_list ap )
+    T va_arg( ref va_list ap )
     {
         return T.init;
     }

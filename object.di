@@ -206,7 +206,7 @@ class ModuleInfo
     }
     
     /// loops on all the modules loaded
-    static int opApply( int delegate( inout ModuleInfo ) );
+    static int opApply( int delegate( ref ModuleInfo ) );
 }
 
 /// base class for all exceptions/errors

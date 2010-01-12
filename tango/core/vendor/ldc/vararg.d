@@ -18,7 +18,7 @@ else
 
 alias void* va_list;
 
-void va_start(T) ( out va_list ap, inout T parmn )
+void va_start(T) ( out va_list ap, ref T parmn )
 {
     // not needed !
 }
