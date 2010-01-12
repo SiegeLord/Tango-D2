@@ -272,7 +272,7 @@ class TypeInfo
     equals_t equals(in void* p1, in void* p2) { return p1 == p2; }
 
     /// Compares two instances for &lt;, ==, or &gt;.
-    int compare(in void* p1, in void* p2) { throw new Exception("non comparable",__FILE__,__LINE__); }
+    int compare(in void* p1, in void* p2) { return 0; } //throw new Exception("non comparable",__FILE__,__LINE__); 
 
     /// Returns size of the type.
     size_t tsize() { return 0; }
