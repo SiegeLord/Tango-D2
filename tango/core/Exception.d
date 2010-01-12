@@ -119,15 +119,16 @@ class FinalizeException : Exception
 {
     ClassInfo   info;
 
-    this( ClassInfo c, Exception e = null )
+    this( ClassInfo c, Exception e )
     {
         super( "Finalization error", e );
         info = c;
     }
 
-    char[] toString()
+    override char[] toString()
     {
-        return "An exception was thrown while finalizing an instance of class " ~ info.name;
+        auto other = super.next ? super.next.toString : "unknown";
+        return "An exception was thrown while finalizing an instance of class " ~ info.name ~ " :: "~other;
     }
 }
 
