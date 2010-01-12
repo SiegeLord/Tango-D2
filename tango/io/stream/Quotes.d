@@ -1,12 +1,12 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
+        copyright:      Copyright (c) 2006 Tango. All rights reserved
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: January 2006      
-        
-        author:         Kris
+        version:        Jan 2006: initial release
+
+        author:         Kris, Nthalk
 
 *******************************************************************************/
 
@@ -16,16 +16,11 @@ private import tango.io.stream.Iterator;
 
 /*******************************************************************************
 
-        Iterate across a set of text patterns.
+        Iterate over a set of delimited, optionally-quoted, text fields.
 
-        Each pattern is exposed to the client as a slice of the original
+        Each field is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
         exposed content, then you should .dup it appropriately. 
-
-        These iterators are based upon the IBuffer construct, and can
-        thus be used in conjunction with other Iterators and/or Reader
-        instances upon a common buffer ~ each will stay in lockstep via
-        state maintained within the IBuffer.
 
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
@@ -34,42 +29,34 @@ private import tango.io.stream.Iterator;
         introduce redundant copying or the compiler would have to support 
         read-only arrays.
 
-        See LineIterator, SimpleIterator, RegexIterator, QuotedIterator.
+        Usage:
+        ---
+        auto f = new File ("my.csv");
+        auto l = new LineIterator (f);
+        auto b = new Array (0);
+        auto q = new Quotes!(char)(",", b);
+        
+        foreach (line; l)
+                {
+                b.assign (line);
+                foreach (field, index; q)
+                         Stdout (index, field);
+                Stdout.newline;
+                }
+        ---
 
-
+        See Iterator, Lines, Patterns, Delimiters
+        
 *******************************************************************************/
 
 class Quotes(T) : Iterator!(T)
 {
-        private T[] delim;
-
+        private T[] delim; 
+      
         /***********************************************************************
-        
-                Construct an uninitialized iterator. For example:
-                ---
-                auto lines = new LineIterator!(char);
 
-                void somefunc (IBuffer buffer)
-                {
-                        foreach (line; lines.set(buffer))
-                                 Cout (line).newline;
-                }
-                ---
-
-                Construct a streaming iterator upon a buffer:
-                ---
-                void somefunc (IBuffer buffer)
-                {
-                        foreach (line; new LineIterator!(char) (buffer))
-                                 Cout (line).newline;
-                }
-                ---
-                
-                Construct a streaming iterator upon a conduit:
-                ---
-                foreach (line; new LineIterator!(char) (new File ("myfile")))
-                         Cout (line).newline;
-                ---
+                This splits on delimiters only. If there is a quote, it
+                suspends delimiter splitting until the quote is finished.
 
         ***********************************************************************/
 
@@ -78,38 +65,41 @@ class Quotes(T) : Iterator!(T)
                 super (stream);
                 this.delim = delim;
         }
-
+        
         /***********************************************************************
-         
-        ***********************************************************************/
 
-        private size_t pair (T[] content, T quote)
-        {
-                foreach (int i, T c; content)
-                         if (c is quote)
-                             return found (set (content.ptr, 0, i) + 1);
+                This splits on delimiters only. If there is a quote, it
+                suspends delimiter splitting until the quote is finished.
 
-                return notFound;
-        }
-
-        /***********************************************************************
-                
         ***********************************************************************/
 
         protected size_t scan (void[] data)
         {
+                T    quote = 0;
+                int  escape = 0;
                 auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 
-                foreach (int i, T c; content)
-                         if (has (delim, c))
-                             return found (set (content.ptr, 0, i, i));
+                foreach (i, c; content)
+                         // within a quote block?
+                         if (quote)
+                            {   
+                            if (c is '\\')
+                                ++escape;
+                            else
+                               {
+                               // matched the initial quote char?
+                               if (c is quote && escape % 2 is 0)
+                                   quote = 0;
+                               escape = 0;
+                               }
+                            }
                          else
+                            // begin a quote block?
                             if (c is '"' || c is '\'')
-                                if (i)
-                                    return found (set (content.ptr, 0, i));
-                                else
-                                   return pair (content[1 .. content.length], c);
-
+                                quote = c;
+                            else 
+                               if (has (delim, c))
+                                   return found (set (content.ptr, 0, i));
                 return notFound;
         }
 }
@@ -119,12 +109,38 @@ class Quotes(T) : Iterator!(T)
 
 *******************************************************************************/
 
-debug(UnitTest)
+debug (UnitTest)
 {
+        private import tango.io.Stdout;
+        private import tango.text.Util;
         private import tango.io.device.Array;
 
         unittest 
         {
-                auto p = new Quotes!(char) (", ", new Array("blah"));
+                char[][] expected = 
+                         [
+                         `0`
+                         ,``
+                         ,``
+                         ,`"3"`
+                         ,`""`
+                         ,`5`
+                         ,`",6"`
+                         ,`"7,"`
+                         ,`8`
+                         ,`"9,\\\","`
+                         ,`10`
+                         ,`',11",'`
+                         ,`"12"`
+                         ];
+
+                auto b = new Array (expected.join (","));
+                foreach (i, f; new Quotes!(char)(",", b))
+                         if (i >= expected.length)
+                            Stdout.formatln ("uhoh: unexpected match: {}, {}", i, f);
+                         else 
+                            if (f != expected[i])
+                                Stdout.formatln ("uhoh: bad match: {}, {}, {}", i, f, expected[i]);
         }
 }
+
