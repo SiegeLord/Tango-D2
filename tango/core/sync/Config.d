@@ -58,7 +58,7 @@ version( Posix )
 
             t.tv_sec  += cast(Secs) v;
             auto  ns   = cast(long)((v % 1.0) * SECS_TO_NANOS);
-            if( SECS_TO_NANOS - t.tv_nsec < ns )
+            if( SECS_TO_NANOS - t.tv_nsec <= ns )
             {
                 t.tv_sec += 1;
                 ns -= SECS_TO_NANOS;
