@@ -228,20 +228,21 @@ char[] appendFN( char[] path, char[] name )
 char[] baseName( char[] name, char[] ext = null )
 {
     auto i = name.length;
+    auto ret = name.dup;
+    version( Windows )
+    {
+        const DELIMITER = '\\';
+    }
+    else version( Posix )
+    {
+        const DELIMITER = '/';
+    }
     for( ; i > 0; --i )
     {
-        version( Windows )
-        {
-            if( name[i - 1] == ':' || name[i - 1] == '\\' )
-                break;
-        }
-        else version( Posix )
-        {
-            if( name[i - 1] == '/' )
-                break;
-        }
+        if( ret[i - 1] == ':' || ret[i - 1] == '\\'  || ret[i - 1] == '/' )
+            ret[i - 1] = '.';
     }
-    return chomp( name[i .. $], ext ? ext : "" );
+    return (dstpath ? dstpath ~ DELIMITER : "") ~ chomp( ret[i .. $], ext ? ext : "" );
 }
 
 
