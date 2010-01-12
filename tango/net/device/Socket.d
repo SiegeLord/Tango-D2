@@ -337,7 +337,7 @@ class Socket : Conduit, ISelectable
                         IPv4Address.sockaddr_in local;
         
                         auto handle = berkeley.sock;
-                        .bind (handle, cast(sockaddr*)&local, local.sizeof);
+                        .bind (handle, cast(Address.sockaddr*)&local, local.sizeof);
         
                         ConnectEx (handle, addr.name, addr.nameLen, null, 0, null, &overlapped);
                         wait (scheduler.Type.Connect);

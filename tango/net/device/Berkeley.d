@@ -1,8 +1,8 @@
 module tango.net.device.Berkeley;
 
-private import  tango.sys.Common;
+private import tango.sys.Common;
 
-private import  tango.core.Exception;
+private import tango.core.Exception;
 
 import  consts=tango.sys.consts.socket;
 
@@ -182,35 +182,35 @@ version (Win32)
 
         private typedef int socket_t = ~0;
 
-        extern (Windows)
+        package extern (Windows)
         {
                 alias closesocket close;
         
                 socket_t socket(int af, int type, int protocol);
                 int ioctlsocket(socket_t s, int cmd, uint* argp);
                 uint inet_addr(char* cp);
-                int bind(socket_t s, sockaddr* name, int namelen);
-                int connect(socket_t s, sockaddr* name, int namelen);
+                int bind(socket_t s, Address.sockaddr* name, int namelen);
+                int connect(socket_t s, Address.sockaddr* name, int namelen);
                 int listen(socket_t s, int backlog);
-                socket_t accept(socket_t s, sockaddr* addr, int* addrlen);
+                socket_t accept(socket_t s, Address.sockaddr* addr, int* addrlen);
                 int closesocket(socket_t s);
                 int shutdown(socket_t s, int how);
-                int getpeername(socket_t s, sockaddr* name, int* namelen);
-                int getsockname(socket_t s, sockaddr* name, int* namelen);
+                int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
+                int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
                 int send(socket_t s, void* buf, int len, int flags);
-                int sendto(socket_t s, void* buf, int len, int flags, sockaddr* to, int tolen);
+                int sendto(socket_t s, void* buf, int len, int flags, Address.sockaddr* to, int tolen);
                 int recv(socket_t s, void* buf, int len, int flags);
-                int recvfrom(socket_t s, void* buf, int len, int flags, sockaddr* from, int* fromlen);
-                int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);
+                int recvfrom(socket_t s, void* buf, int len, int flags, Address.sockaddr* from, int* fromlen);
+                int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                hostent* gethostbyname(char* name);
-                hostent* gethostbyaddr(void* addr, int len, int type);
+                NetHost.hostent* gethostbyname(char* name);
+                NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
         }
 
-        extern (Windows)
+        package extern (Windows)
         {
                 bool function (socket_t, uint, void*, DWORD, DWORD, DWORD, DWORD*, OVERLAPPED*) AcceptEx;
                 bool function (socket_t, HANDLE, DWORD, DWORD, OVERLAPPED*, void*, DWORD) TransmitFile;
@@ -256,31 +256,31 @@ else
 
         private typedef int socket_t = -1;
 
-        extern  (C)
-                {
+        package extern (C)
+        {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
                 uint inet_addr(char* cp);
-                int bind(socket_t s, sockaddr* name, int namelen);
-                int connect(socket_t s, sockaddr* name, int namelen);
+                int bind(socket_t s, Address.sockaddr* name, int namelen);
+                int connect(socket_t s, Address.sockaddr* name, int namelen);
                 int listen(socket_t s, int backlog);
-                socket_t accept(socket_t s, sockaddr* addr, int* addrlen);
+                socket_t accept(socket_t s, Address.sockaddr* addr, int* addrlen);
                 int close(socket_t s);
                 int shutdown(socket_t s, int how);
-                int getpeername(socket_t s, sockaddr* name, int* namelen);
-                int getsockname(socket_t s, sockaddr* name, int* namelen);
+                int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
+                int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
                 int send(socket_t s, void* buf, int len, int flags);
-                int sendto(socket_t s, void* buf, int len, int flags, sockaddr* to, int tolen);
+                int sendto(socket_t s, void* buf, int len, int flags, Address.sockaddr* to, int tolen);
                 int recv(socket_t s, void* buf, int len, int flags);
-                int recvfrom(socket_t s, void* buf, int len, int flags, sockaddr* from, int* fromlen);
-                int select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* errorfds, timeval* timeout);
+                int recvfrom(socket_t s, void* buf, int len, int flags, Address.sockaddr* from, int* fromlen);
+                int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                hostent* gethostbyname(char* name);
-                hostent* gethostbyaddr(void* addr, int len, int type);
-                }
+                NetHost.hostent* gethostbyname(char* name);
+                NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
+       }
 }
 
 
@@ -296,9 +296,7 @@ public struct Berkeley
         AddressFamily   family;
         ProtocolType    protocol;
 version (Windows)
-{
          bool           synchronous;
-}
 
         enum : socket_t 
         {
@@ -314,6 +312,7 @@ version (Windows)
         alias noDelay      setNoDelay;          // backward compatibility
         alias addressReuse setAddressReuse;     // backward compatibility
         
+
         /***********************************************************************
 
                 Configure this instance
@@ -732,7 +731,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        private int sendTo (void[] buf, int flags, sockaddr* to, int len)
+        private int sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
@@ -914,10 +913,16 @@ version (Windows)
 
 public abstract class Address
 {
-        abstract sockaddr*       name();
-        abstract int             nameLen();
-        abstract AddressFamily   addressFamily();
-        abstract char[]          toString();
+        public struct sockaddr
+        {
+                ushort   sa_family;
+                char[14] sa_data = 0;
+        }
+
+        abstract sockaddr*      name();
+        abstract int            nameLen();
+        abstract char[]         toString();
+        abstract AddressFamily  addressFamily();
 
         /***********************************************************************
 
@@ -1253,9 +1258,36 @@ debug(Unittest)
 
 public class NetHost
 {
-        char[] name;
-        char[][] aliases;
-        uint[] addrList;
+        char[]          name;
+        char[][]        aliases;
+        uint[]          addrList;
+
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        struct hostent
+        {
+                char* h_name;
+                char** h_aliases;
+                version (Win32)
+                        {
+                        short h_addrtype;
+                        short h_length;
+                        }
+                     else 
+                        {
+                        int h_addrtype;
+                        int h_length;
+                        }
+                char** h_addr_list;
+
+                char* h_addr()
+                {
+                        return h_addr_list[0];
+                }
+        }
 
         /***********************************************************************
 
@@ -1332,7 +1364,7 @@ public class NetHost
 
                 synchronized (NetHost.classinfo)
                              {
-                             hostent* he = gethostbyname(Address.convert2C (name, tmp));
+                             auto he = gethostbyname(Address.convert2C (name, tmp));
                              if(!he)
                                 return false;
                              validHostent(he);
@@ -1351,7 +1383,7 @@ public class NetHost
                 uint x = htonl(addr);
                 synchronized (NetHost.classinfo)
                              {
-                             hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
+                             auto he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                              if(!he)
                                  return false;
                              validHostent(he);
@@ -1373,7 +1405,7 @@ public class NetHost
                 synchronized (NetHost.classinfo)
                              {
                              uint x = inet_addr(Address.convert2C (addr, tmp));
-                             hostent* he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
+                             auto he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                              if(!he)
                                  return false;
                              validHostent(he);
@@ -1428,6 +1460,14 @@ public class SocketSet
 {
         private uint  nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
+
+        struct fd {}
+
+        struct timeval
+        {
+                int seconds; 
+                int microseconds; 
+        }
 
         version(Win32)
         {
@@ -1593,13 +1633,6 @@ public class SocketSet
                 }
         }
 
-version (OldSocket)
-{
-        void add(OldSocket s)
-        {
-                add(s.fileHandle);
-        }
-}
         void add(Berkeley* s)
         {
                 add(s.handle);
@@ -1652,13 +1685,6 @@ version (OldSocket)
                 }
         }
 
-version (OldSocket)
-{
-        void remove(OldSocket s)
-        {
-                remove(s.fileHandle);
-        }
-}
         void remove(Berkeley* s)
         {
                 remove(s.handle);
@@ -1690,13 +1716,6 @@ version (OldSocket)
                 }
         }
 
-version (OldSocket)
-{
-        int isSet(OldSocket s)
-        {
-                return isSet(s.fileHandle);
-        }
-}
         int isSet(Berkeley* s)
         {
                 return isSet(s.handle);
@@ -1707,9 +1726,9 @@ version (OldSocket)
                 return nbytes / socket_t.sizeof;
         }
 
-        fd_set* toFd_set()
+        fd* toFd_set()
         {
-                return cast(fd_set*)buf;
+                return cast(fd*)buf;
         }
 
         /***********************************************************************
@@ -1728,7 +1747,7 @@ version (OldSocket)
 
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, timeval* tv)
         {
-                fd_set* fr, fw, fe;
+                fd* fr, fw, fe;
 
                 //make sure none of the SocketSet's are the same object
                 if (checkRead)
@@ -1816,119 +1835,6 @@ version (OldSocket)
         {
                 return select (checkRead, checkWrite, checkError, null);
         }
-}
-
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
-private struct sockaddr
-{
-        ushort   sa_family;
-        char[14] sa_data = 0;
-}
-
-private struct timeval
-{
-        int seconds; 
-        int microseconds; 
-}
-
-private struct fd_set
-{
-}
-
-/*******************************************************************************
-
-
-*******************************************************************************/
-
-private struct hostent
-{
-        char* h_name;
-        char** h_aliases;
-        version(Win32)
-        {
-                short h_addrtype;
-                short h_length;
-        }
-        else 
-        {
-                int h_addrtype;
-                int h_length;
-        }
-        char** h_addr_list;
-
-        char* h_addr()
-        {
-                return h_addr_list[0];
-        }
-}
-
-
-/*******************************************************************************
-
-        Old implementation ... needs to be phased out
-
-*******************************************************************************/
-
-version (OldSocket)
-{
-
-alias Berkeley.Flags SocketFlags;
-alias Berkeley.Shutdown SocketShutdown;
-
-class OldSocket
-{
-        private Berkeley native;
-
-        /**
-         * Describe a socket flavor. If a single protocol type exists to support
-         * this socket type within the address family, the ProtocolType may be
-         * omitted.
-         */
-        this(AddressFamily family, SocketType type, ProtocolType protocol, bool create=true)
-        {
-                native.open (family, type, protocol, create);
-        }
-
-        package this() {}
-        socket_t fileHandle() {return native.handle;}
-        void reopen (socket_t sock = socket_t.init) {return native.init;}
-        override char[] toString() {return "<socket>";}
-        bool blocking() {return native.blocking;}
-        void blocking(bool yes) {native.blocking(yes);}
-        AddressFamily addressFamily() {return native.addressFamily;}
-        OldSocket bind(Address addr) {native.bind(addr); return this;}
-        OldSocket connect(Address to) {native.connect(to); return this;}
-        OldSocket listen(int backlog) {native.listen(backlog); return this;}
-        OldSocket accept() {auto s=new OldSocket; native.accept(s.native); return s;}
-        OldSocket accept (OldSocket t) {native.accept(t.native); return t;}
-        OldSocket shutdown(SocketShutdown how) {native.shutdown(how); return this;}
-        OldSocket setLingerPeriod (int period) {native.linger(period); return this;}
-        OldSocket setAddressReuse (bool y) {native.addressReuse(y); return this;}
-        OldSocket setNoDelay (bool y) {native.noDelay(y); return this;}
-        void joinGroup (IPv4Address address, bool onOff) {native.joinGroup(address, onOff);}
-        void detach() {native.detach;}
-        Address newFamilyObject() {return native.newFamilyObject;}
-        static char[] hostName() {return native.hostName;}
-        static uint hostAddress() {return native.hostAddress;}
-        Address remoteAddress() {return native.remoteAddress;}
-        Address localAddress() {return native.localAddress;}
-        bool isAlive() {return native.isAlive;}
-        int send(void[] buf, SocketFlags flags=SocketFlags.NONE){return native.send (buf, flags);}
-        int sendTo(void[] buf, SocketFlags flags, Address to) {return native.sendTo(buf, flags, to);}
-        int sendTo(void[] buf, Address to) {return native.sendTo(buf, to);}
-        int sendTo(void[] buf, SocketFlags flags=SocketFlags.NONE) {return native.sendTo(buf, flags);}
-        int receive(void[] buf, SocketFlags flags=SocketFlags.NONE) {return native.receive(buf, flags);}
-        int receiveFrom(void[] buf, SocketFlags flags, Address from) {return native.receiveFrom(buf, flags, from);}
-        int receiveFrom(void[] buf, Address from) {return native.receiveFrom(buf, from);}
-        int receiveFrom(void[] buf, SocketFlags flags=SocketFlags.NONE) {return native.receiveFrom(buf,flags);}
-        int getOption (SocketOptionLevel level, SocketOption option, void[] result) {return native.getOption (level, option, result);}
-        OldSocket setOption (SocketOptionLevel level, SocketOption option, void[] value) {native.setOption (level, option, value); return this;}
-}
 }
 
 
