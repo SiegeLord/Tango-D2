@@ -272,8 +272,8 @@ extern (C) int _d_run_main(int argc, char **argv, main_type main_func)
         _moduleCtor();
         if (runModuleUnitTests())
             tryExec(&runMain);
-        thread_joinAll();
         _d_isHalting = true;
+        thread_joinAll();
         _moduleDtor();
         gc_term();
     }
