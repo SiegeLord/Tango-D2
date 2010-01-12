@@ -385,31 +385,29 @@ class FTPConnection: Telnet
     }
 
     public this(char[] hostname, char[] username = "anonymous",
-            char[] password = "anonymous@anonymous", uint port = 21,
-            bool Utf8on = false) {
-        this.connect(hostname, username, password, port, Utf8on);
+            char[] password = "anonymous@anonymous", uint port = 21) {
+        this.connect(hostname, username, password, port);
     }
 
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public this(FtpAddress fad, bool Utf8on = false) {
+    public this(FtpAddress fad) {
         connect(fad);
     }
 
     /***********************************************************************
      Added Since: 0.99.8
      ***********************************************************************/
-    public void connect(FtpAddress fad, bool Utf8on = false) {
-        this.connect(fad.address, fad.user, fad.pass, fad.port, Utf8on);
+    public void connect(FtpAddress fad) {
+        this.connect(fad.address, fad.user, fad.pass, fad.port);
     }
 
     /************************************************************************
      Changed Since: 0.99.8
      ************************************************************************/
     public void connect(char[] hostname, char[] username = "anonymous",
-            char[] password = "anonymous@anonymous", uint port = 21,
-            bool Utf8on = false)
+            char[] password = "anonymous@anonymous", uint port = 21)
     in {
         // We definitely need a hostname and port.
         assert(hostname.length > 0);
@@ -444,8 +442,6 @@ class FTPConnection: Telnet
         if(response.code != "230" && response.code != "202") {
             exception(response);
         }
-        if(Utf8on)
-            this.enableUTF8();
     }
 
     public void close() {
