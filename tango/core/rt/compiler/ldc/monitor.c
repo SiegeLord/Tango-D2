@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #if _WIN32
-#elif linux || __APPLE__ || (defined (__SVR4) && defined (__sun))
+#elif linux || __APPLE__ || __FreeBSD__ || (defined (__SVR4) && defined (__sun))
 #define USE_PTHREADS	1
 #else
 #endif

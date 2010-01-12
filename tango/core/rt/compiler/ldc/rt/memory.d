@@ -41,6 +41,11 @@ else version(solaris)
 {
     version = GC_Use_Data_Proc_Maps;
 }
+else version(freebsd)
+{
+    version = GC_Use_Data_Proc_Maps;
+}
+
 
 version(GC_Use_Data_Proc_Maps)
 {
@@ -60,6 +65,19 @@ private
     {
         //version = SimpleLibcStackEnd;
 
+        version( SimpleLibcStackEnd )
+        {
+            extern (C) extern void* __libc_stack_end;
+        }
+        else
+        {
+            import tango.stdc.posix.dlfcn;
+        }
+    }
+    else version(freebsd)
+    {
+        //version = SimpleLibcStackEnd;
+ 
         version( SimpleLibcStackEnd )
         {
             extern (C) extern void* __libc_stack_end;
@@ -117,6 +135,26 @@ extern (C) void* rt_stackBottom()
                 }
                 return *libc_stack_end;
         }
+    }
+    else version( freebsd ) 
+    { 
+        version( SimpleLibcStackEnd ) 
+        { 
+            return __libc_stack_end; 
+        } 
+        else 
+        { 
+            // See discussion: http://autopackage.org/forums/viewtopic.php?t=22 
+            static void** libc_stack_end; 
+ 
+            if( libc_stack_end == libc_stack_end.init ) 
+            { 
+                void* handle = dlopen( null, RTLD_NOW ); 
+                libc_stack_end = cast(void**) dlsym( handle, "__libc_stack_end" ); 
+                dlclose( handle ); 
+            } 
+           return *libc_stack_end; 
+        } 
     }
     else version( darwin )
     {
@@ -193,6 +231,17 @@ private
 
         alias __data_start  Data_Start;
         alias _end          Data_End;
+    }
+    else version( freebsd ) 
+    { 
+        extern (C) 
+        { 
+            extern char etext; 
+            extern int _end; 
+        }
+         
+        alias etext Data_Start; 
+        alias _end Data_End; 
     }
     else version( solaris )
     {
@@ -295,6 +344,11 @@ void initStaticDataPtrs()
     {
         dataStart = adjust_up( &Data_Start );
         dataEnd   = adjust_down( &Data_End );
+    }
+    else version( freebsd ) 
+    { 
+        dataStart = adjust_up( &Data_Start ); 
+        dataEnd   = adjust_down( &Data_End ); 
     }
     else version(solaris)
     {
