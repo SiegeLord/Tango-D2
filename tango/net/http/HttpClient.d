@@ -599,22 +599,23 @@ class HttpClient
 
         ***********************************************************************/
 
-        void read (void delegate(void[]) sink, long len = long.max)
+        void read (void delegate(void[]) sink, size_t len = size_t.max)
         {
-                while (len > 0)
+                while (true)
                       {
                       auto content = input.slice;
-                      if ((len -= content.length) < 0)
+                      if (content.length > len)
                          {
-                         content = content [0 .. $ + cast(size_t) len];
-                         sink (content);
-                         input.skip (content.length);
+                         sink (content [0 .. len]);
+                         input.skip (len);
+                         break;
                          }
                       else
                          {
+                         len -= content.length;
                          sink (content);
                          input.clear;
-                         if (input.populate is socket.Eof)
+                         if (input.populate is input.Eof)
                              break;
                          }
                       }
@@ -783,7 +784,7 @@ debug (HttpClient)
         }
 
         // create client for a GET request
-        auto client = new HttpClient (HttpClient.Get, "http://www.yahoo.com");
+        auto client = new HttpClient (HttpClient.Get, "http://www.microsoft.com");
 
         // make request
         client.open;
@@ -791,11 +792,12 @@ debug (HttpClient)
         // check return status for validity
         if (client.isResponseOK)
            {
+           // display all returned headers
+           foreach (header; client.getResponseHeaders)
+                    Stdout.formatln ("{} {}", header.name.value, header.value);
+        
            // extract content length
            auto length = client.getResponseHeaders.getInt (HttpHeader.ContentLength);
-        
-           // display all returned headers
-           Stdout (client.getResponseHeaders);
         
            // display remaining content
            client.read (&sink, length);

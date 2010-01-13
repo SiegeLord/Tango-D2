@@ -60,6 +60,9 @@ class HttpPost : HttpClient
         this (Uri uri)
         {
                 super (HttpClient.Post, uri);
+
+                // enable header duplication
+                getResponseHeaders.retain (true);
         }
 
         /***********************************************************************
@@ -90,7 +93,7 @@ class HttpPost : HttpClient
                     if (status is HttpResponseCode.OK || 
                         status is HttpResponseCode.Created || 
                         status is HttpResponseCode.Accepted)
-                        buffer.load (getResponseHeaders.getInt (HttpHeader.ContentLength, uint.max));
+                        buffer.load (getResponseHeaders.getInt (HttpHeader.ContentLength));
                     } finally {close;}
 
                 return buffer.slice;

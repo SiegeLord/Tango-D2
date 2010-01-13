@@ -59,6 +59,9 @@ class HttpGet : HttpClient
         this (Uri uri)
         {
                 super (HttpClient.Get, uri);
+
+                // enable header duplication
+                getResponseHeaders.retain (true);
         }
 
         /***********************************************************************
@@ -92,5 +95,8 @@ debug (HttpGet)
 
                 // retrieve and flush display content
                 Cout (cast(char[]) page.read) ();
+
+                foreach (header; page.getResponseHeaders)
+                         Cout (header.name.value) (header.value).newline;
         }
 }

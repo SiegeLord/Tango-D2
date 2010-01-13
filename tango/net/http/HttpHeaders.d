@@ -47,6 +47,7 @@ class HttpHeadersView : HttpTokens
         alias HttpTokens.parse parse;
 
         private Lines!(char) line;
+        private bool         preserve;
 
         /**********************************************************************
                 
@@ -60,7 +61,7 @@ class HttpHeadersView : HttpTokens
                 // separator is a ':', and specify we want it included as
                 // part of the name whilst iterating
                 super (':', true);
-
+        
                 // construct a line tokenizer for later usage
                 line = new Lines!(char);
         }
@@ -74,6 +75,7 @@ class HttpHeadersView : HttpTokens
         this (HttpHeadersView source)
         {
                 super (source);
+                this.preserve = source.preserve;
         }
 
         /**********************************************************************
@@ -87,6 +89,24 @@ class HttpHeadersView : HttpTokens
                 return new HttpHeadersView (this);
         }
 
+        /***********************************************************************
+
+                Control whether headers are duplicated or not. Default 
+                behaviour is aliasing instead of copying, avoiding any
+                allocatation overhead. However, the default won't preserve
+                those headers once additional content has been read.
+
+                To retain headers across arbitrary buffering, you should 
+                set this option true
+
+        ***********************************************************************/
+
+        HttpHeadersView retain (bool yes = true)
+        {
+                preserve = yes;
+                return this;
+        }
+
         /**********************************************************************
                 
                 Read all header lines. Everything is mapped rather 
@@ -94,13 +114,13 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        void parse (InputBuffer input)
+        override void parse (InputBuffer input)
         {
                 setParsed (true);
                 line.set (input);
 
                 while (line.next && line.get.length)
-                       stack.push (line.get);
+                       stack.push (preserve ? line.get.dup : line.get);
         }
 
         /**********************************************************************
