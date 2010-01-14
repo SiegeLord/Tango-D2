@@ -47,6 +47,10 @@ private
 
     extern (C) void gc_removeRoot( void* p );
     extern (C) void gc_removeRange( void* p );
+
+    extern(C) Object gc_weakpointerGet (void* wp);
+    extern(C) void*  gc_weakpointerCreate (Object r);
+    extern(C) void   gc_weakpointerDestroy (void* wp);
 }
 
 
@@ -441,6 +445,38 @@ struct GC
         gc_removeRange( p );
     }
     
+
+    /**
+     * Create a weak pointer to the given object.
+     * Returns a pointer to an opaque struct allocated in C memory.
+     */
+    static void* weakPointerCreate( Object o )
+    {
+        return gc_weakpointerCreate (o);
+    }
+
+
+    /**
+     * Destroy a weak pointer returned by weakpointerCreate().
+     * If null is passed, nothing happens.
+     */
+    static void weakPointerDestroy( void* p )
+    {
+        return gc_weakpointerDestroy (p);
+    }
+
+
+    /**
+     * Query a weak pointer and return either the object passed to
+     * weakpointerCreate, or null if it was free'd in the meantime.
+     * If null is passed, null is returned.
+     */
+    static Object weakPointerGet( void* p )
+    {
+        return gc_weakpointerGet (p);
+    }
+
+
     /**
     * returns the amount to allocate to keep some extra space
     * for large allocations the extra allocated space decreases, but is still enough
@@ -449,30 +485,12 @@ struct GC
     * newlength = the number of elements to allocate
     * elSize = size of one element
     */
-    size_t growLength(size_t newlength,size_t elSize=1){
-        size_t newcap = newlength*elSize;
-        size_t newext = 0;
-        const size_t b=0; // flatness factor, how fast the extra space decreases with array size
-        const size_t a=100; // allocate at most a% of the requested size as extra space (rounding will change this)
-        const size_t minBits=1; // minimum bit size
-    
-
-        static size_t log2plusB(size_t c)
-        {
-            // could use the bsr bit op
-            size_t i=b+1;
-            while(c >>= 1){
-                ++i;
-            }
-            return i;
-        }
-        long mult = 100 + a*(minBits+b) / log2plusB(newlength);
-
-        newext = elSize*cast(size_t)(((newcap * mult)+99) / 100);
-        newcap = newext > newcap ? newext : newcap; // just to handle overflows
-        return newcap;
+    static size_t growLength (size_t newlength, size_t elSize=1)
+    {   
+        return growLength (newlength, elSize, 100, 0, 1);
     }
     
+
     /**
     * returns the amount to allocate to keep some extra space
     * for large allocations the extra allocated space decreases, but is still enough
@@ -484,20 +502,20 @@ struct GC
     * b = flatness factor, how fast the extra space decreases with array size (the larger the more constant)
     * minBits = minimum number of bits of newlength
     */
-    size_t growLength(size_t newlength, size_t elSize,size_t a, size_t b=0,size_t minBits=1){
-        size_t newcap = newlength*elSize;
-        size_t newext = 0;
+    static size_t growLength (size_t newlength, size_t elSize, size_t a, size_t b=0, size_t minBits=1)
+    {
         static size_t log2(size_t c)
         {
             // could use the bsr bit op
             size_t i=1;
-            while(c >>= 1){
-                ++i;
-            }
+            while(c >>= 1)
+                  ++i;
             return i;
         }
-        long mult = 100 + a*(minBits+b) / (log2(newlength)+b);
 
+        size_t newext = 0;
+        size_t newcap = newlength*elSize;
+        long mult = 100 + a*(minBits+b) / (log2(newlength)+b);
         newext = elSize*cast(size_t)(((newcap * mult)+99) / 100);
         newcap = newext > newcap ? newext : newcap; // just to handle overflows
         return newcap;

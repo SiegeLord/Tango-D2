@@ -88,6 +88,10 @@ private
 
     extern (C) void rt_finalize( void* p, bool det = true );
 
+    alias void delegate(Object) DEvent;
+    extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
+    extern (C) bool rt_detachDisposeEvent(Object h, DEvent e);
+
     alias void delegate( void*, void* ) scanFn;
 
     extern (C) void rt_scanStaticData( scanFn scan );
@@ -1337,6 +1341,92 @@ class GC
         stats.poolsize = psize;
         stats.usedsize = bsize - flsize;
         stats.freelistsize = flsize;
+    }
+
+    /******************* weak-reference support *********************/
+
+    //call locked if necessary
+    private T locked(T)(in T delegate() code) 
+    {
+        if (thread_needLock)
+            synchronized(gcLock) return code();
+        else
+           return code();
+    }
+
+    private struct WeakPointer 
+    {
+        Object reference;
+
+        void ondestroy(Object r) 
+        {
+            assert(r is reference);
+            //lock for memory consistency (parallel readers)
+            //
+            //also ensures that weakpointerDestroy can be called while another
+            //thread is freeing the reference with "delete"                    
+            locked!(void)({ reference = null; });
+        }
+    }
+
+    /**
+     * Create a weak pointer to the given object.
+     * Returns a pointer to an opaque struct allocated in C memory.
+     */
+    void* weakpointerCreate( Object r )
+    {
+        if (r)
+           {
+           //must be allocated in C memory
+           //1. to hide the reference from the GC
+           //2. the GC doesn't scan delegates added by rt_attachDisposeEvent for references
+           auto wp = cast(WeakPointer*)(.malloc(WeakPointer.sizeof));
+           if (!wp)
+               onOutOfMemoryError();
+           *wp = WeakPointer.init;
+           wp.reference = r;
+           rt_attachDisposeEvent(r, &wp.ondestroy);
+           return wp;
+           }
+        return null;
+    }
+
+    /**
+     * Destroy a weak pointer returned by weakpointerCreate().
+     * If null is passed, nothing happens.
+     */
+    void weakpointerDestroy( void* p )
+    {
+        if (p)        
+           {
+           auto wp = cast(WeakPointer*)p;
+           //must be extra careful about the GC or parallel threads finalizing the
+           //reference at the same time
+           locked!(void)({
+                   if (wp.reference)
+                       rt_detachDisposeEvent(wp.reference, &wp.ondestroy);
+                  });
+           .free(wp);
+           }
+    }
+
+    /**
+     * Query a weak pointer and return either the object passed to
+     * weakpointerCreate, or null if it was free'd in the meantime.
+     * If null is passed, null is returned.
+     */
+    Object weakpointerGet( void* p )
+    {
+        if (p)
+           {
+           //NOTE: could avoid the lock by using Fawzi style GC counters
+           // but that'd require core.sync.Atomic and lots of care about memory consistency
+           // it's an optional optimization
+           //see http://dsource.org/projects/tango/browser/trunk/user/tango/core/Lifetime.d?rev=5100#L158
+           return locked!(Object)({
+                  return (cast(WeakPointer*)p).reference;
+                  });
+           }
     }
 }
 

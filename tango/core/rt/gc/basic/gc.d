@@ -217,3 +217,18 @@ extern (C) void gc_removeRange( void *p )
 {
     _gc.removeRange( p );
 }
+
+extern (C) void* gc_weakpointerCreate( Object r )
+{
+    return _gc.weakpointerCreate(r);
+}
+
+extern (C) void gc_weakpointerDestroy( void* wp )
+{
+    _gc.weakpointerDestroy(wp);
+}
+
+extern (C) Object gc_weakpointerGet( void* wp )
+{
+    return _gc.weakpointerGet(wp);
+}

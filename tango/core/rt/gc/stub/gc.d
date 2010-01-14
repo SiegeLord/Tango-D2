@@ -163,3 +163,19 @@ extern (C) void gc_removeRange( void *p )
 {
 
 }
+
+//weakpointers are simply the pointers itself
+extern (C) void* gc_weakpointerCreate( Object r )
+{
+    return cast(void*)r;
+}
+
+extern (C) void gc_weakpointerDestroy( void* wp )
+{
+
+}
+
+extern (C) Object gc_weakpointerGet( void* wp )
+{
+    return cast(Object)wp;
+}
