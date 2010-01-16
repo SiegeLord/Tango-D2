@@ -1383,7 +1383,6 @@ class GC
            auto wp = cast(WeakPointer*)(.malloc(WeakPointer.sizeof));
            if (!wp)
                onOutOfMemoryError();
-           *wp = WeakPointer.init;
            wp.reference = r;
            rt_attachDisposeEvent(r, &wp.ondestroy);
            return wp;

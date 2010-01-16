@@ -42,7 +42,7 @@ class WeakReference (T : Object)
 
         this (T obj) 
         {
-                set (obj);
+                weakpointer = GC.weakPointerCreate (obj);
         }
 
         /**********************************************************************
