@@ -79,9 +79,7 @@ private import tango.text.convert.Layout;
         auto print = new FormatOutput!(char) (locale, ...);
         ---
 
-        Note that FormatOutput is *not* intended to be thread-safe. Use either
-        tango.util.log.Trace or the standard logging facilities in order 
-        to enable atomic console I/O
+        Note that FormatOutput is *not* intended to be thread-safe
         
 *******************************************************************************/
 
