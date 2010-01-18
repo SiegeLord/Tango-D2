@@ -29,11 +29,21 @@ alias int WINT;
 alias int LONG;
 alias ushort WORD;
 alias uint DWORD;
-alias int INT_PTR;
+version (Win64)
+{
+alias int  INT_PTR;
 alias uint UINT_PTR;
-alias int LONG_PTR;
+alias int  LONG_PTR;
 alias uint ULONG_PTR;
-alias DWORD DWORD_PTR;
+}
+else
+{
+alias long  INT_PTR;
+alias ulong UINT_PTR;
+alias long  LONG_PTR;
+alias ulong ULONG_PTR;
+}
+alias ULONG_PTR DWORD_PTR;
 alias uint PROPID;
 const BOOL FALSE = 0;
 const BOOL TRUE = -1;
