@@ -16,25 +16,31 @@ module tango.stdc.stringz;
  * Convert array of chars to a C-style 0 terminated string.
  * Providing a tmp will use that instead of the heap, where
  * appropriate.
+ * Returns an empty "\0" char* where either s.ptr or s.length
+ * is zero
  */
 
 char* toStringz (char[] s, char[] tmp=null)
 {
         static char[] empty = "\0";
 
-        auto len = s.length;
-        if (s.ptr)
-            if (len is 0)
-                s = empty;
-            else
-               if (s[len-1] != 0)
-                  {
-                  if (tmp.length <= len)
-                      tmp = new char[len+1];
-                  tmp [0..len] = s;
-                  tmp [len] = 0;
-                  s = tmp;
-                  }
+        if (s.ptr is null)
+            s = empty;
+        else
+           {
+           auto len = s.length;
+           if (len is 0)
+               s = empty;
+           else
+              if (s[len-1] != 0)
+                 {
+                 if (tmp.length <= len)
+                     tmp = new char[len+1];
+                 tmp [0..len] = s;
+                 tmp [len] = 0;
+                 s = tmp;
+                 }
+           }
         return s.ptr;
 }
 
@@ -81,9 +87,14 @@ char[] fromStringz (char* s)
 
 wchar* toString16z (wchar[] s)
 {
-        if (s.ptr)
-            if (! (s.length && s[$-1] is 0))
-                   s = s ~ "\0"w;
+        static wchar[] empty = "\0"w;
+
+        if (s.ptr is null || s.length is 0)
+            return empty.ptr;
+
+        if (s[$-1] !is 0)
+            s = s ~ empty;
+
         return s.ptr;
 }
 
@@ -102,9 +113,14 @@ wchar[] fromString16z (wchar* s)
 
 dchar* toString32z (dchar[] s)
 {
-        if (s.ptr)
-            if (! (s.length && s[$-1] is 0))
-                   s = s ~ "\0"d;
+        static dchar[] empty = "\0"d;
+
+        if (s.ptr is null || s.length is 0)
+            return empty.ptr;
+
+        if (s[$-1] !is 0)
+            s = s ~ empty;
+
         return s.ptr;
 }
 
