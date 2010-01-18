@@ -31,17 +31,17 @@ alias ushort WORD;
 alias uint DWORD;
 version (Win64)
 {
-alias int  INT_PTR;
-alias uint UINT_PTR;
-alias int  LONG_PTR;
-alias uint ULONG_PTR;
-}
-else
-{
 alias long  INT_PTR;
 alias ulong UINT_PTR;
 alias long  LONG_PTR;
 alias ulong ULONG_PTR;
+}
+else
+{
+alias int  INT_PTR;
+alias uint UINT_PTR;
+alias int  LONG_PTR;
+alias uint ULONG_PTR;
 }
 alias ULONG_PTR DWORD_PTR;
 alias uint PROPID;
