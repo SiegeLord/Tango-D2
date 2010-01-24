@@ -18,6 +18,10 @@ private import  tango.core.Runtime;
 private import  tango.io.model.IConduit;
 private import  tango.io.stream.Buffered;
 
+version (Quiet){} else
+         pragma (msg, "revision: net.SocketListener has been migrated to the Mango project");
+
+
 /******************************************************************************
 
         Abstract class to asynchronously listen for incoming data on a 
