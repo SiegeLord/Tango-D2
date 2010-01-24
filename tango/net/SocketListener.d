@@ -13,9 +13,10 @@
 module tango.net.SocketListener;
 
 private import  tango.core.Thread;
+private import  tango.core.Runtime;
 
-private import  tango.io.model.IBuffer,
-                tango.io.model.IConduit;
+private import  tango.io.model.IConduit;
+private import  tango.io.stream.Buffered;
 
 /******************************************************************************
 
@@ -34,7 +35,7 @@ class SocketListener
 {
         private bool                    quit;
         private Thread                  thread;
-        private IBuffer                 buffer;
+        private Bin                     buffer;
         private IConduit                conduit;
         private int                     limit = 3;
 
@@ -47,10 +48,10 @@ class SocketListener
 
         **********************************************************************/
 
-        this (IBuffer buffer)
+        this (Bin buffer)
         {
                 assert (buffer);
-                this (buffer.input, buffer);
+                this (buffer, buffer);
         }
 
         /**********************************************************************
@@ -62,7 +63,7 @@ class SocketListener
 
         **********************************************************************/
 
-        this (InputStream stream, IBuffer buffer)
+        this (InputStream stream, Bin buffer)
         {
                 assert (stream);
                 this.buffer = buffer;
@@ -79,7 +80,7 @@ class SocketListener
 
         ***********************************************************************/
 
-        abstract void notify (IBuffer buffer);
+        abstract void notify (InputBuffer buffer);
 
         /***********************************************************************
 
@@ -155,7 +156,7 @@ class SocketListener
                            // time to quit? Note that a v0.95 compiler bug 
                            // prohibits 'break' from exiting the try{} block
                            if (quit || 
-                              (result is conduit.Eof && !conduit.isAlive))
+                              (result is conduit.Eof && Runtime.isHalting))
                                lives = 0;
                            else
                               {
