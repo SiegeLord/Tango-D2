@@ -696,7 +696,7 @@ class Arguments
 
                 /***************************************************************
               
-                        Set an inspector for this argument, fired wbtw, jeff and darryl turned out to be the hen a
+                        Set an inspector for this argument, fired when a
                         parameter is appended to an argument
 
                 ***************************************************************/
