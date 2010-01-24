@@ -147,7 +147,7 @@ compile() {
     if filter $OBJNAME 
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. -Itango/core -version=Tango -of$OBJNAME $FILENAME
+        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. -Itango/core -Itango/core/vendor -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
