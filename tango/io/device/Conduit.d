@@ -184,7 +184,6 @@ class Conduit : IConduit
 
                 Close this conduit
                 
-                Remarks:
                 Both input and output are detached, and are no longer usable
 
         ***********************************************************************/
