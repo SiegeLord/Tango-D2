@@ -61,7 +61,8 @@ end
 
 def main (arg)
 	help_msg = "Use the `-h' flag or for help."	
-	banner = "Usage: #{File.basename(__FILE__)} tango-path"
+	banner = "Usage: #{File.basename(__FILE__)} path-to-tango-root\n" + 
+			 "Example: ./build/script/bob.rb -q -r dmd -c dmd ."
 	
 	begin 
 		args = Args.new
@@ -69,10 +70,11 @@ def main (arg)
 		populate(arg, args, help_msg, banner)
 		
 		File.delete(args.lib) if File.exists?(args.lib)
-		
-		linux_dmd = "dmd -c -I" + args.root + "/tango/core -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
-		linux_ldc = "ldc -c -I" + args.root + "/tango/core -I" + args.root + "/tango/core/rt/compiler/ldc -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
-		linux_gdc = "gdc -c -I" + args.root + "/tango/core -I" + args.root + " -I" + args.root + "/tango/core/vendor" + args.flags + " -of"
+		Dir.mkdir(args.objs) unless File.exists?(args.objs)
+
+		linux_dmd = "dmd -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
+		linux_ldc = "ldc -c -I#{args.root}/tango/core -I#{args.root}/tango/core/rt/compiler/ldc -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
+		linux_gdc = "gdc -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
 		
 		darwin_dmd = linux_dmd[0 ... 4] + "-version=darwin " + linux_dmd[4 .. -1]
 		darwin_ldc = linux_ldc
@@ -102,6 +104,7 @@ def main (arg)
 end
 
 class FileFilter
+	VERSION = 1.0
 	@@builders = {}
 	
 	def initialize (args)
@@ -241,7 +244,7 @@ class Windows < FileFilter
 			addToLib(temp)
 		end
 
-		dmd = "dmd -c -I" + @args.root + "/tango/core -I" + @args.root + " -I" + @args.root + "/tango/core/vendor" + @args.flags + " -of";
+		dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/";
 		libs("-c -n -p256\n" + @args.lib)
 		
 		exclude("tango/core/rt/compiler/dmd/posix")
@@ -294,7 +297,6 @@ class Posix < FileFilter
 	end
 	
 	def dmd ()
-		#dmd = "dmd -c -I" + args.root + "/tango/core -I" + args.root + " " + args.flags + " -of"
 		exclude("tango/core/rt/compiler/dmd/windows")
 		
 		scan(".d") do |file|
@@ -319,9 +321,7 @@ class Posix < FileFilter
 		return @count		
 	end
 	
-	def ldc ()
-		#ldc = "ldc -c -I" + args.root + "/tango/core -I" + args.root + "/tango/core/rt/compiler/ldc -I" + args.root + " " + args.flags + " -of"
-		
+	def ldc ()		
 		scan(".d") do |file|
 			obj = compile(file, @ldc)
 			addToLib(obj)
@@ -345,9 +345,7 @@ class Posix < FileFilter
 		return @count
 	end	
 	
-	def gdc ()
-		#gdc = "gdc -c -I" + args.root + "/tango/core -I" + args.root + " " + args.flags + " -of"
-		
+	def gdc ()		
 		scan(".d") do |file|
 			obj = compile(file, @gdc)
 			addToLib(obj)
@@ -372,7 +370,7 @@ class Posix < FileFilter
 end
 
 Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler, 
-				  :flags, :lib, :os, :core, :root, :filter, :quick) do
+				  :flags, :lib, :os, :core, :root, :filter, :quick, :objs) do
 					
 	def initialize
 		self.verbose = false
@@ -389,6 +387,7 @@ Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler,
 		self.root = ""
 		self.filter = false
 		self.quick = false
+		self.objs = File.expand_path("objs")
 		
 		self.os = ""
 		self.os = "darwin" if DARWIN
@@ -443,6 +442,10 @@ def populate (args, options, help_msg, banner)
 			options.lib = opt + libext
 		end
 		
+		opts.on(nil, "--objs PATH", "Specify the path where to place temporary object files") do |opt|
+			options.objs = File.expand_path(opt)
+		end
+		
 		filter_list = FILTERS.join(",")
 		
 		opts.on("-p", "--filter FILTER", FILTERS, "Determines package filtering", "\t(#{filter_list}).") do |opt|
@@ -456,7 +459,7 @@ def populate (args, options, help_msg, banner)
 		end
 		
 		opts.on(nil, '--version', 'Show version and exit.') do
-			puts Generator::VERSION
+			puts "bob.rb version " + FileFilter::VERSION.to_s
 			exit
 		end
 		
@@ -467,7 +470,7 @@ def populate (args, options, help_msg, banner)
 		else
 			opts.parse!(args)
 
-			die "No output directory given" if args.empty?
+			die "No path to Tango given" if args.empty?
 			
 			unless DARWIN || FREEBSD || LINUX || HAIKU || SOLARIS || WINDOWS
 				die "No package filter given" unless options.filter
@@ -476,7 +479,7 @@ def populate (args, options, help_msg, banner)
 			options.lib += ".lib" if WINDOWS
 			options.lib += ".a" unless WINDOWS
 			
-			options.root = args[0]
+			options.root = File.expand_path(args[0])
 		end
 	end
 end
