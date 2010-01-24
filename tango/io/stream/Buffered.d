@@ -17,8 +17,6 @@ public import tango.io.model.IConduit;
 
 private import tango.io.device.Conduit;
 
-extern (C) void printf (char*, ...);
-
 /******************************************************************************
 
 ******************************************************************************/
@@ -31,7 +29,8 @@ public alias BufferedOutput Bout;       /// ditto
 ******************************************************************************/
 
 extern (C)
-{
+{       
+        int printf (char*, ...);
         private void * memcpy (void *dst, void *src, size_t);
 }
 
@@ -296,6 +295,38 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
+                Write into this buffer
+
+                Params:
+                dg = the callback to provide buffer access to
+
+                Returns:
+                Returns whatever the delegate returns.
+
+                Remarks:
+                Exposes the raw data buffer at the current _write position,
+                The delegate is provided with a void[] representing space
+                available within the buffer at the current _write position.
+
+                The delegate should return the appropriate number of bytes
+                if it writes valid content, or IConduit.Eof on error.
+
+        ***********************************************************************/
+
+        public size_t writer (size_t delegate (void[]) dg)
+        {
+                auto count = dg (data [extent..dimension]);
+
+                if (count != Eof)
+                   {
+                   extent += count;
+                   assert (extent <= dimension);
+                   }
+                return count;
+        }
+
+        /***********************************************************************
+
                 Transfer content into the provided dst
 
                 Params:
@@ -530,7 +561,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         final BufferedInput compress ()
         {       
-                size_t r = readable;
+                auto r = readable;
 
                 if (index > 0 && r > 0)
                     // content may overlap ...
@@ -667,7 +698,8 @@ class BufferedInput : InputFilter, InputBuffer
                 index = extent = 0;
 
                 // clear the filter chain also
-                super.flush;
+                if (source) 
+                    super.flush;
                 return this;
         }
 
@@ -738,38 +770,6 @@ class BufferedInput : InputFilter, InputBuffer
                       }
                 return count;
         }       
-
-        /***********************************************************************
-
-                Write into this buffer
-
-                Params:
-                dg = the callback to provide buffer access to
-
-                Returns:
-                Returns whatever the delegate returns.
-
-                Remarks:
-                Exposes the raw data buffer at the current _write position,
-                The delegate is provided with a void[] representing space
-                available within the buffer at the current _write position.
-
-                The delegate should return the appropriate number of bytes
-                if it writes valid content, or IConduit.Eof on error.
-
-        ***********************************************************************/
-
-        private size_t writer (size_t delegate (void[]) dg)
-        {
-                auto count = dg (data [extent..dimension]);
-
-                if (count != Eof)
-                   {
-                   extent += count;
-                   assert (extent <= dimension);
-                   }
-                return count;
-        }
 
         /***********************************************************************
 
