@@ -588,24 +588,6 @@ class ZipBlockReader : ZipReader
         this(file_source);
     }
 
-version( none )
-{
-    /**
-     * Creates a ZipBlockReader using the provided File instance.  Where
-     * possible, the conduit will be wrapped in a memory-mapped buffer for
-     * optimum performance.  If you do not want the File memory-mapped,
-     * either cast it to an InputStream first, or pass source.input to the
-     * constructor.
-     */
-    this(File source)
-    {
-        // BUG: MappedBuffer doesn't implement IConduit.Seek
-        //mm_source = new MappedBuffer(source);
-        //this(mm_source);
-        this(source.input);
-    }
-}
-
     /**
      * Creates a ZipBlockReader using the provided InputStream.  Please note
      * that this InputStream must be attached to a conduit implementing the 
@@ -645,9 +627,6 @@ version( none )
           file_source.close;
           delete file_source;
           }
-
-        if( mm_source !is null )    
-            delete mm_source;
     }
 
     /**
@@ -742,7 +721,6 @@ private:
     // These should be killed when the reader is closed.
     ubyte[] cd_data;
     File file_source = null;
-    FileMap mm_source = null;
 
     /*
      * This function will read the contents of the central directory.  Split
