@@ -222,6 +222,16 @@ class ZlibInput : InputFilter
             throw new ZlibException(ret);
 
         zs_valid = true;
+
+        // Note that this is redundant when init is called from the ctor, but
+        // it is NOT REDUNDANT when called from reset.  source is declared in
+        // InputFilter.
+        //
+        // This code is a wee bit brittle, since if the ctor of InputFilter
+        // changes, this code might break in subtle, hard to find ways.
+        //
+        // See ticket #1837
+        this.source = stream;
     }
     
     ~this()
@@ -320,11 +330,10 @@ class ZlibInput : InputFilter
 
     override void close()
     {
-        check_valid();
-
         // Kill the stream.  Don't deallocate the buffer since the user may
         // yet reset the stream.
-        kill_zs();
+        if( zs_valid )
+            kill_zs();
 
         super.close();
     }
@@ -535,6 +544,9 @@ class ZlibOutput : OutputFilter
             throw new ZlibException(ret);
 
         zs_valid = true;
+
+        // This is NOT REDUNDANT.  See ZlibInput.init.
+        this.sink = stream;
     }
 
     ~this()
