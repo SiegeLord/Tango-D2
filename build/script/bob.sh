@@ -25,10 +25,10 @@ Options:
   --verbose: Increase verbosity 
   --user: Just user portion of library
   --runtime: Just runtime portion of library
-  <identifier> is one of {dmd, gdc, ldc, mac} and will build libtango.a,
-                libgtango.a or universal Mac binaries respectively
+  --libname <name>: The name that will be used for the built library (libtango.a is default)
+  <identifier> is one of {dmd, gdc, ldc}
 
-  Without --user or --runtime, both will be built into the library.
+  Building just the user library is the default if nothing is specified.
     '
     exit 0
 }
@@ -43,8 +43,7 @@ WARN=""
 VERBOSE=0
 USER=0
 RUNTIME=0
-USERLIB=""
-RTLIB=""
+LIBNAME="libtango.a"
 GCC32="-m32"
 GCCRELEASE="-O3"
 
@@ -186,7 +185,7 @@ build() {
 
     if [ $RUNTIME == 0 -a $USER == 0 ]
     then
-        RUNTIME=1
+        RUNTIME=0
         USER=1
     fi
 
@@ -208,7 +207,11 @@ build() {
     compilersettings
 
     cd ../..
-    echo compiler call: $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -version=Tango
+
+    if [ $VERBOSE = 1 ]
+    then
+        echo "D compiler call: $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. .Itango/core -Itango/core/vendor -version=Tango -of<object> <filename>"
+    fi
 
     for file in `find tango -name '*.d'`
     do
@@ -218,6 +221,12 @@ build() {
             die "Compilation of $file failed" 1 
         fi
     done
+
+    if [ $VERBOSE = 1 -a $RUNTIME = 1 ]
+    then
+        echo "C compiler call: gcc -c $GCC32 $GCCRELEASE -o<object> <filename>"
+    fi
+
     for file in `find tango -name '*.c' -o -name '*.S'`
     do
         compileGcc $file
@@ -254,10 +263,6 @@ do
         --norelease)
             RELEASE=""
             ;;
-        --test)
-            RELEASE="-unittest -d -debug=UnitTest"
-#            RELEASE="-release -O -d-debug=UnitTest"
-	    ;;
         --noinline)
             INLINE=""
             ;;
@@ -266,35 +271,23 @@ do
             ;;
         --user)
             USER=1
-            USERLIB="-user"
             ;;
         --runtime)
             RUNTIME=1
-            RTLIB="-base"
+            ;;
+        --libname)
+            shift
+            LIBNAME=$1
             ;;
         dmd)
-            build dmd libtango$USERLIB$RTLIB-dmd.a
+            build dmd $LIBNAME
             ;;
         gdc)
             POSIXFLAG="-version=Posix"
-            build gdmd libgtango.a
+            build gdmd $LIBNAME
             ;;
         ldc)
-            build ldmd libtango$USERLIB$RTLIB-ldc.a
-            ;;
-        mac)
-            POSIXFLAG="-version=Posix"
-            # build Universal Binary version of the Tango library
-            ARCH="-arch ppc"
-            build gdmd libgtango.a.ppc libgphobos.a.ppc
-            ARCH="-arch i386"
-            build gdmd libgtango.a.i386 libgphobos.a.i386   
-            ARCH="-arch ppc64"
-            build gdmd libgtango.a.ppc64 libgphobos.a.ppc64 
-            ARCH="-arch x86_64"
-            build gdmd libgtango.a.x86_64 libgphobos.a.x86_64
-            lipo -create -output libgtango.a libgtango.a.ppc libgtango.a.i386 \
-                                             libgtango.a.ppc64 libgtango.a.x86_64 
+            build ldmd $LIBNAME
             ;;
         *)
             usage
