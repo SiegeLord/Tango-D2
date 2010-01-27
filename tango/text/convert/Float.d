@@ -25,11 +25,19 @@ module tango.text.convert.Float;
 
 private import tango.core.Exception;
 
-private import Integer = tango.text.convert.Integer;
+private extern (C) real log10l (real x);
+private extern (C) double log10 (double x);
 
-private alias real NumType;
+/******************************************************************************
 
-private extern (C) NumType log10l(NumType x);
+        select a version
+                
+******************************************************************************/
+
+version (DavidGay)
+         private alias real NumType;
+   else
+      private alias real NumType;
 
 /******************************************************************************
 
@@ -111,6 +119,237 @@ dchar[] toString32 (NumType d, uint decimals=Dec, int e=Exp)
                
 /******************************************************************************
 
+        Truncate trailing '0' and '.' from a string, such that 200.000 
+        becomes 200, and 20.10 becomes 20.1
+
+        Returns a potentially shorter slice of what you give it.
+
+******************************************************************************/
+
+T[] truncate(T) (T[] s)
+{
+        auto tmp = s;
+        int i = tmp.length;
+        foreach (int idx, T c; tmp)
+                 if (c is '.')
+                     while (--i >= idx)
+                            if (tmp[i] != '0')
+                               {  
+                               if (tmp[i] is '.')
+                                   --i;
+                               s = tmp [0 .. i+1];
+                               while (--i >= idx)
+                                      if (tmp[i] is 'e')
+                                          return tmp;
+                               break;
+                               }
+        return s;
+}
+
+/******************************************************************************
+
+        Extract a sign-bit
+
+******************************************************************************/
+
+private bool negative (NumType x)
+{
+        static if (NumType.sizeof is 4) 
+                   return ((*cast(uint *)&x) & 0x8000_0000) != 0;
+        else
+           static if (NumType.sizeof is 8) 
+                      return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
+                else
+                   {
+                   auto pe = cast(ubyte *)&x;
+                   return (pe[9] & 0x80) != 0;
+                   }
+}
+
+
+/******************************************************************************
+
+        David Gay's extended conversions between string and floating-point
+        numeric representations. Use these where you need extended accuracy
+        for convertions. 
+
+        Note that this class requires the attendent file dtoa.c be compiled 
+        and linked to the application.
+
+******************************************************************************/
+
+version (DavidGay)
+{
+        extern(C)
+        {
+        // these should be linked in via dtoa.c
+        double strtod (char* s00, char** se);
+        char*  dtoa (double d, int mode, int ndigits, int* decpt, int* sign, char** rve);
+        }
+
+        /**********************************************************************
+
+                Convert a floating-point number to a string. Parameter 'mode'
+                should be specified thusly:
+
+                The e parameter controls the number of exponent places emitted, 
+                and can thus control where the output switches to the scientific 
+                notation. For example, setting e=2 for 0.01 or 10.0 would result
+                in normal output. Whereas setting e=1 would result in both those
+                values being rendered in scientific notation instead. Setting e
+                to 0 forces that notation on for everything.
+
+        **********************************************************************/
+
+        T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, U e=Exp)
+        {return format!(T)(dst, x, decimals, e);}
+
+        T[] format(T) (T[] dst, NumType x, uint decimals=Dec, uint e=Exp)
+        {
+                char*   end,
+                        str;
+                int     sign,
+                        decpt,
+                        mode=5;
+
+                if (x is 0)
+                    return "0";
+
+                // test exponent to determine mode
+                auto exp = cast(int) log10l (x < 0 ? -x : x);
+                if (exp < 0)
+                    exp = -exp;
+                if (exp > e)
+                    mode = 2, ++decimals;
+
+                str = dtoa (cast(double) x, mode, decimals, &decpt, &sign, &end);
+                auto len = end - str;
+                auto p = dst.ptr;
+
+                if (sign)
+                    *p++ = '-';
+
+                if (decpt is 9999)
+                    while (len--)
+                           *p++ = *str++;
+                else
+                   {
+                   if (exp > e)
+                      {
+                      *p++ = *str++;
+                      if (str !is end)
+                         {
+                         *p++ = '.';
+                         while (str < end)
+                                *p++ = *str++;
+                         }
+                      *p++ = 'e';
+                      *p++ = (decpt <= 0) ? '-' : '+';
+   
+                      if (exp >= 100)
+                         {
+                         *p++ = exp / 100 + '0';
+                         exp %= 100;
+                         }
+                      *p++ = exp / 10 + '0';
+                      *p++ = exp % 10 + '0';
+                      }
+                   else
+                      {
+                      if (decpt <= 0)
+                          *p++ = '0';
+                      else
+                         while (decpt > 0)
+                               {
+                               *p++ = (str < end) ? *str++ : '0';
+                               --decpt;
+                               }
+
+                      if (str < end)
+                         {
+                         *p++ = '.';
+                         while (decpt < 0)
+                               {
+                               *p++ = '0';
+                               ++decpt;
+                               }
+                         while (str < end)
+                                *p++ = *str++;
+                         }
+                      } 
+                   }
+
+                // stuff a C terminator in there too ...
+                *p = 0;
+                return dst[0..(p - dst.ptr)];
+        }
+
+        /**********************************************************************
+
+                Convert a formatted string of digits to a floating-
+                point number. 
+
+        **********************************************************************/
+
+        NumType parse (char[] src, uint* ate=null)
+        {
+                char* end;
+
+                auto value = strtod (src.ptr, &end);
+                assert (end <= src.ptr + src.length);
+                if (ate)
+                    *ate = end - src.ptr;
+                return value;
+        }
+
+        /**********************************************************************
+
+                Convert a formatted string of digits to a floating-
+                point number.
+
+        **********************************************************************/
+
+        NumType parse (wchar[] src, uint* ate=null)
+        {
+                // cheesy hack to avoid pre-parsing :: max digits == 100
+                char[100] tmp = void;
+                auto p = tmp.ptr;
+                auto e = p + tmp.length;
+                foreach (c; src)
+                         if (p < e && (c & 0x80) is 0)
+                             *p++ = c;
+                return parse (tmp[0..p-tmp.ptr], ate);
+        }
+
+        /**********************************************************************
+
+                Convert a formatted string of digits to a floating-
+                point number. 
+
+        **********************************************************************/
+
+        NumType parse (dchar[] src, uint* ate=null)
+        {
+                // cheesy hack to avoid pre-parsing :: max digits == 100
+                char[100] tmp = void;
+                auto p = tmp.ptr;
+                auto e = p + tmp.length;
+                foreach (c; src)
+                         if (p < e && (c & 0x80) is 0)
+                             *p++ = c;
+                return parse (tmp[0..p-tmp.ptr], ate);
+        }
+}
+
+else
+
+{
+version = strip;
+
+private import Integer = tango.text.convert.Integer;
+
+/******************************************************************************
+
         Convert a float to a string. This produces pretty good results
         for the most part, though one should use David Gay's dtoa package
         for best accuracy.
@@ -135,23 +374,8 @@ T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp)
 
 T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
 {
-        static T[] inf = "-inf";
-        static T[] nan = "-nan";
-
-        // extract the sign bit
-        static bool signed (NumType x)
-        {
-                static if (NumType.sizeof is 4) 
-                           return ((*cast(uint *)&x) & 0x8000_0000) != 0;
-                else
-                static if (NumType.sizeof is 8) 
-                           return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
-                       else
-                          {
-                          auto pe = cast(ubyte *)&x;
-                          return (pe[9] & 0x80) != 0;
-                          }
-        }
+        static T[] inf = "-Infinity";
+        static T[] nan = "-NaN";
 
         // strip digits from the left of a normalized base-10 number
         static int toDigit (ref NumType v, ref int count)
@@ -172,7 +396,7 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
         }
 
         // extract the sign
-        bool sign = signed (x);
+        bool sign = negative (x);
         if (sign)
             x = -x;
 
@@ -227,11 +451,21 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
            // emit first digit, and decimal point
            *p++ = cast(T)toDigit (x, count);
            if (decimals)
-               *p++ = '.';
+              {
+              *p++ = '.';
 
-           // emit rest of mantissa
-           while (decimals-- > 0)
-                  *p++ = cast(T)toDigit (x, count);
+              // emit rest of mantissa
+              while (decimals-- > 0)
+                     *p++ = cast(T) toDigit (x, count);
+              
+              version (strip)
+                      {
+                      while (*(p-1) is '0')
+                             --p;
+                      if (*(p-1) is '.')
+                           --p;
+                      }
+              }
 
            // emit exponent, if non zero
            if (exp)
@@ -277,16 +511,26 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
 
            // emit point
            if (decimals)
-               *p++ = '.';
+              {
+              *p++ = '.';
 
-           // emit leading fractional zeros?
-           for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
-                *p++ = '0';
+              // emit leading fractional zeros?
+              for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
+                   *p++ = '0';
 
-           // output remaining digits, if any. Trailing
-           // zeros are also returned from toDigit()
-           while (decimals-- > 0)
-                  *p++ = cast(T)toDigit (x, count);
+              // output remaining digits, if any. Trailing
+              // zeros are also returned from toDigit()
+              while (decimals-- > 0)
+                     *p++ = cast(T) toDigit (x, count);
+
+              version (strip)
+                      {
+                      while (*(p-1) is '0')
+                             --p;
+                      if (*(p-1) is '.')
+                           --p;
+                      }
+              }
            }
 
         return dst [0..(p - dst.ptr)];
@@ -309,6 +553,19 @@ NumType parse(T) (T[] src, uint* ate=null)
         bool            sign;
         uint            radix;
         NumType         value = 0.0;
+
+        static bool match (T* aa, T[] bb)
+        {
+                foreach (b; bb)
+                        {
+                        auto a = *aa++;
+                        if (a >= 'A' && a <= 'Z')
+                            a += 'a' - 'A';
+                        if (a != b)
+                            return false;
+                        }
+                return true;
+        }
 
         // remove leading space, and sign
         p = src.ptr + Integer.trim (src, sign, radix);
@@ -374,18 +631,27 @@ NumType parse(T) (T[] src, uint* ate=null)
               value *= pow10 (exp);
            }
         else
-           // was it was nan instead?
-           if (p[0..3] == "inf")
-              {
-              p += 3;
-              value = value.infinity;
-              }
-           else
-              if (p[0..3] == "nan")
-                 {
-                 p += 3;
-                 value = value.nan;
-                 }
+           if (end - p >= 3)
+               switch (*p)
+                      {
+                      case 'I': case 'i':
+                           if (match (p+1, "nf"))
+                              {
+                              value = value.infinity;
+                              p += 3;
+                              if (end - p >= 5 && match (p, "inity"))
+                                  p += 5;
+                              }
+                           break;
+
+                      case 'N': case 'n':
+                           if (match (p+1, "an"))
+                              {
+                              value = value.nan;
+                              p += 3;
+                              }
+                           break;
+                      }
 
         // set parse length, and return value
         if (ate)
@@ -394,35 +660,6 @@ NumType parse(T) (T[] src, uint* ate=null)
         if (sign)
             value = -value;
         return value;
-}
-
-/******************************************************************************
-
-        Truncate trailing '0' and '.' from a string, such that 200.000 
-        becomes 200, and 20.10 becomes 20.1
-
-        Returns a potentially shorter slice of what you give it.
-
-******************************************************************************/
-
-T[] truncate(T) (T[] s)
-{
-        auto tmp = s;
-        int i = tmp.length;
-        foreach (int idx, T c; tmp)
-                 if (c is '.')
-                     while (--i >= idx)
-                            if (tmp[i] != '0')
-                               {  
-                               if (tmp[i] is '.')
-                                   --i;
-                               s = tmp [0 .. i+1];
-                               while (--i >= idx)
-                                      if (tmp[i] is 'e')
-                                          return tmp;
-                               break;
-                               }
-        return s;
 }
 
 /******************************************************************************
@@ -465,6 +702,7 @@ private NumType pow10 (uint exp)
                 }
         return mult;
 }
+}
 
 
 /******************************************************************************
@@ -475,7 +713,7 @@ debug (UnitTest)
 {
         unittest
         {
-                char[64] tmp;
+                char[164] tmp;
 
                 auto f = parse ("nan");
                 assert (format(tmp, f) == "nan");
@@ -500,20 +738,27 @@ debug (Float)
 
         void main() 
         {
-                char[30] tmp;
+                char[500] tmp;
 
-                auto f = toFloat ("0.000000e+00");
-
+                Cout (format(tmp, double.max)).newline;
+                Cout (format(tmp, -double.nan)).newline;
+                Cout (format(tmp, -double.infinity)).newline;
+                Cout (format(tmp, toFloat("nan"w))).newline;
+                Cout (format(tmp, toFloat("-nan"d))).newline;
+                Cout (format(tmp, toFloat("inf"))).newline;
+                Cout (format(tmp, toFloat("-inf"))).newline;
+                Cout (format(tmp, toFloat ("0.000000e+00"))).newline;
+                Cout (format(tmp, toFloat("0x8000000000000000"))).newline;
                 Cout (format(tmp, 1)).newline;
-                Cout (format(tmp, 0)).newline;
+                Cout (format(tmp, -0)).newline;
                 Cout (format(tmp, 0.000001)).newline.newline;
 
                 Cout (format(tmp, 3.14159, 6, 0)).newline;
-                Cout (format(tmp, 3e100, 6, 3)).newline;
+                Cout (format(tmp, 3.0e10, 6, 3)).newline;
                 Cout (format(tmp, 314159, 6)).newline;
                 Cout (format(tmp, 314159123213, 6, 15)).newline;
                 Cout (format(tmp, 3.14159, 6, 2)).newline;
-                Cout (format(tmp, 3.14159, 6, 2)).newline;
+                Cout (format(tmp, 3.14159, 3, 2)).newline;
                 Cout (format(tmp, 0.00003333, 6, 2)).newline;
                 Cout (format(tmp, 0.00333333, 6, 3)).newline;
                 Cout (format(tmp, 0.03333333, 6, 2)).newline;
@@ -524,12 +769,13 @@ debug (Float)
                 Cout (format(tmp, -314159, 6)).newline;
                 Cout (format(tmp, -314159123213, 6, 15)).newline;
                 Cout (format(tmp, -3.14159, 6, 2)).newline;
-                Cout (format(tmp, -3.14159, 6, 2)).newline;
+                Cout (format(tmp, -3.14159, 2, 2)).newline;
                 Cout (format(tmp, -0.00003333, 6, 2)).newline;
                 Cout (format(tmp, -0.00333333, 6, 3)).newline;
                 Cout (format(tmp, -0.03333333, 6, 2)).newline;
                 Cout.newline;
 
+                Cout (format(tmp, -3.0e100, 6, 3)).newline;
                 Cout (truncate(format(tmp, 1.0, 6))).newline;
                 Cout (truncate(format(tmp, 30, 6))).newline;
                 Cout (truncate(format(tmp, 3.14159, 6, 0))).newline;
@@ -537,10 +783,13 @@ debug (Float)
                 Cout (truncate(format(tmp, 314159, 6))).newline;
                 Cout (truncate(format(tmp, 314159123213, 6, 15))).newline;
                 Cout (truncate(format(tmp, 3.14159, 6, 2))).newline;
-                Cout (truncate(format(tmp, 3.14159, 6, 2))).newline;
+                Cout (truncate(format(tmp, 3.14159, 4, 2))).newline;
                 Cout (truncate(format(tmp, 0.00003333, 6, 2))).newline;
                 Cout (truncate(format(tmp, 0.00333333, 6, 3))).newline;
                 Cout (truncate(format(tmp, 0.03333333, 6, 2))).newline;
-
+                Cout (format(tmp, double.max, 6)).newline;
+                Cout (format(tmp, -1)).newline;
+                Cout (format(tmp, toFloat(format(tmp, -1)))).newline;
+                Cout.newline;
         }
 }
