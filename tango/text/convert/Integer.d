@@ -536,6 +536,64 @@ T[] itoa(T) (T[] output, uint value, int radix = 10)
 
 /******************************************************************************
 
+        Consume a number from the input without converting it. Argument
+        'fp' enables floating-point consumption. Supports hex input for
+        numbers which are prefixed appropriately
+
+        Since version 0.99.9
+
+******************************************************************************/
+
+T[] consume(T) (T[] src, bool fp=false)
+{
+        T       c;
+        bool    sign;
+        uint    radix;
+
+        // remove leading space, and sign
+        auto e = src.ptr + src.length;
+        auto p = src.ptr + trim (src, sign, radix);
+        auto b = p;
+
+        // bail out if the string is empty
+        if (src.length is 0 || p > &src[$-1])
+            return null;
+
+        // read leading digits
+        for (c=*p; p < e && ((c >= '0' && c <= '9') || 
+            (radix is 16 && ((c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))));)
+             c = *++p;
+
+        if (fp)
+           {
+           // gobble up a point
+           if (c is '.' && p < e)
+               c = *++p;
+
+           // read fractional digits
+           while (c >= '0' && c <= '9' && p < e)
+                  c = *++p;
+
+           // did we consume anything?
+           if (p > b)
+              {
+              // consume exponent?
+              if ((c is 'e' || c is 'E') && p < e )
+                 {
+                 c = *++p;
+                 if (c is '+' || c is '-')
+                     c = *++p;
+                 while (c >= '0' && c <= '9' && p < e)
+                        c = *++p;
+                 }
+              }
+           }
+        return src [0 .. p-src.ptr];
+}
+
+
+/******************************************************************************
+
 ******************************************************************************/
 
 debug (UnitTest)
@@ -698,7 +756,19 @@ debug (Integer)
                 Stdout.formatln ("X6# '{}'", format(tmp, 10L, "X6#"));
 
                 Stdout.formatln ("b12# '{}'", format(tmp, 10L, "b12#"));
-                Stdout.formatln ("o12# '{}'", format(tmp, 10L, "o12#"));
+                Stdout.formatln ("o12# '{}'", format(tmp, 10L, "o12#")).newline;
+
+                Stdout.formatln (consume("10"));
+                Stdout.formatln (consume("0x1f"));
+                Stdout.formatln (consume("0.123"));
+                Stdout.formatln (consume("0.123", true));
+                Stdout.formatln (consume("0.123e-10", true)).newline;
+
+                Stdout.formatln (consume("10  s"));
+                Stdout.formatln (consume("0x1f   s"));
+                Stdout.formatln (consume("0.123  s"));
+                Stdout.formatln (consume("0.123  s", true));
+                Stdout.formatln (consume("0.123e-10  s", true)).newline;
         }
 }
 
