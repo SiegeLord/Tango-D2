@@ -1767,7 +1767,7 @@ class NetHost
 }
 
 
-debug (UnitText)
+debug (UnitTest)
 {
 extern (C) int printf(char*, ...);
 unittest
