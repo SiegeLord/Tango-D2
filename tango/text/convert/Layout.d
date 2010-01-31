@@ -781,29 +781,34 @@ version (WithVariant)
         {
                 T    style = 'f';
                 uint places = 2;
+                bool pad = false;
 
                 // extract formatting style and decimal-places
                 if (format.length)
                    {
-                   uint number;
                    auto p = format.ptr;
                    auto e = p + format.length;
                    style = *p;
-                   while (++p < e)
-                          if (*p >= '0' && *p <= '9')
-                              number = number * 10 + *p - '0';
-                          else
-                             break;
+
+                   // hex output for FP?
+                   if (style is 'x' || style is 'X')
+                      {
+                      double d = v;
+                      return integer (output, *cast(long*) &d, "x#");
+                      }
+
+                   uint n=0;
+                   while (++p < e && (*p >= '0' && *p <= '9'))
+                          n = n * 10 + *p - '0';
 
                    if (p - format.ptr > 1)
-                       places = number;
+                       places = n;
+                   if (p < e && *p is 'z')
+                       pad = true;                       
                    }
-
-                auto s = Float.format (output, v, places, 
-                                      (style is 'e' || style is 'E') ? 0 : 10);
-                if (style is 'g')
-                    s = Float.truncate (s);
-                return s;
+                
+                return Float.format (output, v, places, 
+                                    (style is 'e' || style is 'E') ? 0 : 10, pad);
         }
 
         /**********************************************************************
@@ -1059,18 +1064,18 @@ debug (UnitTest)
         // width specifier indicates number of decimal places
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
         assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
-        assert( Formatter( "{0:e4}", 0.0001) == "0.1000e-03");
+        assert( Formatter( "{0:e4}", 0.0001) == "1e-04");
 
         assert( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
         assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
-        assert( Formatter( "{0:e4}", 0.0001*1i) == "0.1000e-03*1i");
+        assert( Formatter( "{0:e4}", 0.0001*1i) == "1e-04*1i");
 
-        assert( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
-        assert( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
-        assert( Formatter( "{0:e4}", 0.0001+1i) == "0.1000e-03+1.0000*1i");
-        assert( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
-        assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
-        assert( Formatter( "{0:e4}", 0.0001-1i) == "0.1000e-03-1.0000*1i");
+        assert( Formatter( "{0:fz}", 1.23f+1i ) == "1.23+1.00*1i" );
+        assert( Formatter( "{0:f4z}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
+        assert( Formatter( "{0:e4z}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
+        assert( Formatter( "{0:fz}", 1.23f-1i ) == "1.23-1.00*1i" );
+        assert( Formatter( "{0:f4z}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
+        assert( Formatter( "{0:e4z}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
         // 'g' format truncates zeroes from floating decimals
         assert( Formatter( "{0:g4}", 1.230 ) == "1.23" );
@@ -1111,8 +1116,8 @@ debug (UnitTest)
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
-        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
-                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
+        assert( Formatter( "{}", f ) == "{1 => one, 3.14 => PI}" ||
+                Formatter( "{}", f ) == "{3.14 => PI, 1 => one}");
         }
 }
 
@@ -1139,11 +1144,12 @@ debug (Layout)
                 Cout (layout ("{:g1}", -0.0)).newline;
                 Cout (layout ("{:d2}", 56)).newline;
                 Cout (layout ("{:d4}", cast(byte) -56)).newline;
-                Cout (layout ("{:f4}", 0.001)).newline;
+                Cout (layout ("{:f4}", 1.0e+12)).newline;
+                Cout (layout ("{:f4}", 1.23e-2)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
-                Cout (layout ("{:e20}", 0.001)).newline;
-                Cout (layout ("{:e4}", 0.0000001)).newline;
-                Cout (layout ("{:g}", 1.231)).newline;
+                Cout (layout ("{:e20}", 1.23e-3)).newline;
+                Cout (layout ("{:e4}", 1.23e-07)).newline;
+                Cout (layout ("{:f6z}", 1.231)).newline;
                 Cout (layout ("ptr:{}", &layout)).newline;
                 Cout (layout ("ulong.max {}", ulong.max)).newline;
 
