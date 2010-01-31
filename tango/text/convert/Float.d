@@ -80,7 +80,7 @@ private extern (C)
 
 private enum 
 {
-        Pad = 1,                // default trailing decimal zero
+        Pad = 0,                // default trailing decimal zero
         Dec = 2,                // default decimal places
         Exp = 10,               // default switch to scientific notation
 }
