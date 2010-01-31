@@ -38,7 +38,7 @@ private alias real NumType;
 
 /******************************************************************************
 
-        optional match functions
+        optional math functions
                 
 ******************************************************************************/
 
@@ -211,7 +211,7 @@ private bool negative (NumType x)
         in normal output. Whereas setting e=1 would result in both those
         values being rendered in scientific notation instead. Setting e
         to 0 forces that notation on for everything. Parameter pad will
-        cause padding with trailing decimals when set ~ otherwise they
+        append trailing '0' decimals when set ~ otherwise trailing '0's 
         will be elided
 
 ******************************************************************************/
@@ -250,7 +250,8 @@ version (float_lib)
             *p++ = '-';
 
         if (exp is 9999)
-           {while ((*p++ = *str++) != 0) {} --p;}
+            while (*str) 
+                   *p++ = *str++;
         else
            {
            if (mode is 2)
