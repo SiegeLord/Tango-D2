@@ -4,7 +4,8 @@
 
         license:        BSD style: $(LICENSE)
         
-        version:        Initial release: Nov 2005
+        version:        Nov 2005: Initial release
+                        Jan 2010: added internal ecvt() 
 
         author:         Kris
 
@@ -25,19 +26,51 @@ module tango.text.convert.Float;
 
 private import tango.core.Exception;
 
-private extern (C) real log10l (real x);
-private extern (C) double log10 (double x);
-
 /******************************************************************************
 
-        select a version
+        select an internal version
                 
 ******************************************************************************/
 
-version (DavidGay)
-         private alias real NumType;
-   else
-      private alias real NumType;
+version = float_internal;
+
+private alias real NumType;
+
+/******************************************************************************
+
+        optional match functions
+                
+******************************************************************************/
+
+private extern (C)
+{
+        double log10 (double x);
+        double ceil (double num);
+        double modf (double num, double *i);
+        double pow  (double base, double exp);
+
+        real log10l (real x);
+        real ceill (real num);
+        real modfl (real num, real *i);
+        real powl  (real base, real exp);
+
+        int printf (char*, ...);
+        version (Windows)
+                {
+                alias ecvt econvert;
+                alias ecvt fconvert;
+                }
+        else
+           {
+           alias ecvtl econvert;
+           alias ecvtl fconvert;
+           }
+
+        char* ecvt (double d, int digits, int* decpt, int* sign);
+        char* fcvt (double d, int digits, int* decpt, int* sign);
+        char* ecvtl (real d, int digits, int* decpt, int* sign);
+        char* fcvtl (real d, int digits, int* decpt, int* sign);
+}
 
 /******************************************************************************
 
@@ -47,6 +80,7 @@ version (DavidGay)
 
 private enum 
 {
+        Pad = 1,                // default trailing decimal zero
         Dec = 2,                // default decimal places
         Exp = 10,               // default switch to scientific notation
 }
@@ -169,119 +203,228 @@ private bool negative (NumType x)
 
 /******************************************************************************
 
+        Convert a floating-point number to a string. 
+
+        The e parameter controls the number of exponent places emitted, 
+        and can thus control where the output switches to the scientific 
+        notation. For example, setting e=2 for 0.01 or 10.0 would result
+        in normal output. Whereas setting e=1 would result in both those
+        values being rendered in scientific notation instead. Setting e
+        to 0 forces that notation on for everything. Parameter pad will
+        cause padding with trailing decimals when set ~ otherwise they
+        will be elided
+
+******************************************************************************/
+
+T[] format(T, D=NumType, U=int) (T[] dst, D x, U decimals=Dec, U e=Exp, bool pad=Pad)
+{return format!(T)(dst, x, decimals, e, pad);}
+
+T[] format(T) (T[] dst, NumType x, int decimals=Dec, int e=Exp, bool pad=Pad)
+{
+        char*           end,
+                        str;
+        int             exp,
+                        sign,
+                        mode=5;
+        char[32]        buf = void;
+
+        // test exponent to determine mode
+        exp = (x is 0) ? 1 : cast(int) log10l (x < 0 ? -x : x);
+        if (exp <= -e || exp >= e)
+            mode = 2, ++decimals;
+
+version (float_internal)
+         str = convertl (buf.ptr, x, decimals, &exp, &sign, mode is 5);
+version (float_dtoa)
+         str = dtoa (x, mode, decimals, &exp, &sign, &end);
+version (float_lib)
+        {
+        if (mode is 5)
+            str = fconvert (x, decimals, &exp, &sign);
+        else
+           str = econvert (x, decimals, &exp, &sign);
+        }
+
+        auto p = dst.ptr;
+        if (sign)
+            *p++ = '-';
+
+        if (exp is 9999)
+            while ((*p++ = *str++) != 0) {}
+        else
+           {
+           if (mode is 2)
+              {
+              --exp;
+              *p++ = *str++;
+              if (*str || pad)
+                 {
+                 auto d = p;
+                 *p++ = '.';
+                 while (*str)
+                        *p++ = *str++;
+                 if (pad)
+                     while (p-d < decimals)
+                            *p++ = '0';
+                 }
+              *p++ = 'e';
+              if (exp < 0)
+                  *p++ = '-', exp = -exp;
+              else
+                 *p++ = '+';
+              if (exp >= 1000)
+                 {
+                 *p++ = cast(T)((exp/1000) + '0');
+                 exp %= 1000;
+                 }
+              if (exp >= 100)
+                 {
+                 *p++ = exp / 100 + '0';
+                 exp %= 100;
+                 }
+              *p++ = exp / 10 + '0';
+              *p++ = exp % 10 + '0';
+              }
+           else
+              {
+              if (exp <= 0)
+                  *p++ = '0';
+              else
+                 for (; exp > 0; --exp)
+                        *p++ = (*str) ? *str++ : '0';
+              if (*str || pad)
+                 {
+                 *p++ = '.';
+                 auto d = p;
+                 for (; exp < 0; ++exp)
+                        *p++ = '0';
+                 while (*str)
+                        *p++ = *str++;
+                 if (pad)
+                     while (p-d < decimals)
+                            *p++ = '0';
+                 }
+              } 
+           }
+
+        // stuff a C terminator in there too ...
+        *p = 0;
+        return dst[0..(p - dst.ptr)];
+}
+
+
+/******************************************************************************
+
+        ecvt() and fcvt() for 80bit FP, which DMD does not include. Based
+        upon the following:
+
+        Copyright (c) 2009 Ian Piumarta
+        
+        All rights reserved.
+
+        Permission is hereby granted, free of charge, to any person 
+        obtaining a copy of this software and associated documentation 
+        files (the 'Software'), to deal in the Software without restriction, 
+        including without limitation the rights to use, copy, modify, merge, 
+        publish, distribute, and/or sell copies of the Software, and to permit 
+        persons to whom the Software is furnished to do so, provided that the 
+        above copyright notice(s) and this permission notice appear in all 
+        copies of the Software.  
+
+******************************************************************************/
+
+version (float_internal)
+{
+private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign, int fflag)
+{
+        if ((*sign = negative(value)) != 0)
+             value = -value;
+
+        *decpt = 9999;
+        if (value !<>= value)
+            return "nan";
+
+        if (value is value.infinity)
+            return "inf";
+
+        int exp10 = (value is 0) ? !fflag : cast(int) ceill(log10l(value));
+        if (exp10 < -4931) 
+            exp10 = -4931;	
+        value *= powl (10.0, -exp10);
+        if (value) 
+           {
+           while (value <  0.1) { value *= 10;  --exp10; }
+           while (value >= 1.0) { value /= 10;  ++exp10; }
+           }
+        assert(value is 0 || (0.1 <= value && value < 1.0));
+        //auto zero = pad ? int.max : 1;
+        auto zero = 1;
+        if (fflag) 
+           {
+           // if (! pad)
+                 zero = exp10;
+           if (ndigit + exp10 < 0) 
+              {
+              *decpt= -ndigit;
+              return "\0";
+              }
+           ndigit += exp10;
+           }
+        *decpt = exp10;
+        int ptr = 1;
+
+        if (ndigit > real.dig) 
+            ndigit = real.dig;
+        //printf ("< flag %d, digits %d, exp10 %d, decpt %d\n", fflag, ndigit, exp10, *decpt);
+        while (ptr <= ndigit) 
+              {
+              real i = void;
+              value = modfl (value * 10, &i);
+              buf [ptr++]= '0' + cast(int) i;
+              }
+
+        if (value >= 0.5)
+            while (--ptr && ++buf[ptr] > '9')
+                   buf[ptr] = (ptr > zero) ? 0 : '0';
+        else
+           for (auto i=ptr; i && --i > zero && buf[i] is '0';)
+                buf[i] = 0;
+
+        if (ptr) 
+           {
+           buf [ndigit + 1]= 0;
+           return buf + 1;
+           }
+        if (fflag) 
+           {
+           ++ndigit;
+           ++*decpt;
+           }
+        buf[0]= '1';
+        buf[ndigit]= 0;
+        return buf;
+}
+}
+
+
+/******************************************************************************
+
         David Gay's extended conversions between string and floating-point
         numeric representations. Use these where you need extended accuracy
         for convertions. 
 
         Note that this class requires the attendent file dtoa.c be compiled 
-        and linked to the application.
+        and linked to the application
 
 ******************************************************************************/
 
-version (DavidGay)
+version (float_dtoa)
 {
-        extern(C)
+        private extern(C)
         {
         // these should be linked in via dtoa.c
         double strtod (char* s00, char** se);
         char*  dtoa (double d, int mode, int ndigits, int* decpt, int* sign, char** rve);
-        }
-
-        /**********************************************************************
-
-                Convert a floating-point number to a string. Parameter 'mode'
-                should be specified thusly:
-
-                The e parameter controls the number of exponent places emitted, 
-                and can thus control where the output switches to the scientific 
-                notation. For example, setting e=2 for 0.01 or 10.0 would result
-                in normal output. Whereas setting e=1 would result in both those
-                values being rendered in scientific notation instead. Setting e
-                to 0 forces that notation on for everything.
-
-        **********************************************************************/
-
-        T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, U e=Exp)
-        {return format!(T)(dst, x, decimals, e);}
-
-        T[] format(T) (T[] dst, NumType x, uint decimals=Dec, uint e=Exp)
-        {
-                char*   end,
-                        str;
-                int     sign,
-                        decpt,
-                        mode=5;
-
-                if (x is 0)
-                    return "0";
-
-                // test exponent to determine mode
-                auto exp = cast(int) log10l (x < 0 ? -x : x);
-                if (exp < 0)
-                    exp = -exp;
-                if (exp > e)
-                    mode = 2, ++decimals;
-
-                str = dtoa (cast(double) x, mode, decimals, &decpt, &sign, &end);
-                auto len = end - str;
-                auto p = dst.ptr;
-
-                if (sign)
-                    *p++ = '-';
-
-                if (decpt is 9999)
-                    while (len--)
-                           *p++ = *str++;
-                else
-                   {
-                   if (exp > e)
-                      {
-                      *p++ = *str++;
-                      if (str !is end)
-                         {
-                         *p++ = '.';
-                         while (str < end)
-                                *p++ = *str++;
-                         }
-                      *p++ = 'e';
-                      *p++ = (decpt <= 0) ? '-' : '+';
-   
-                      if (exp >= 100)
-                         {
-                         *p++ = exp / 100 + '0';
-                         exp %= 100;
-                         }
-                      *p++ = exp / 10 + '0';
-                      *p++ = exp % 10 + '0';
-                      }
-                   else
-                      {
-                      if (decpt <= 0)
-                          *p++ = '0';
-                      else
-                         while (decpt > 0)
-                               {
-                               *p++ = (str < end) ? *str++ : '0';
-                               --decpt;
-                               }
-
-                      if (str < end)
-                         {
-                         *p++ = '.';
-                         while (decpt < 0)
-                               {
-                               *p++ = '0';
-                               ++decpt;
-                               }
-                         while (str < end)
-                                *p++ = *str++;
-                         }
-                      } 
-                   }
-
-                // stuff a C terminator in there too ...
-                *p = 0;
-                return dst[0..(p - dst.ptr)];
         }
 
         /**********************************************************************
@@ -317,7 +460,10 @@ version (DavidGay)
                 auto e = p + tmp.length;
                 foreach (c; src)
                          if (p < e && (c & 0x80) is 0)
-                             *p++ = c;
+                             *p++ = c;                        
+                         else
+                            break;
+
                 return parse (tmp[0..p-tmp.ptr], ate);
         }
 
@@ -337,205 +483,14 @@ version (DavidGay)
                 foreach (c; src)
                          if (p < e && (c & 0x80) is 0)
                              *p++ = c;
+                         else
+                            break;
                 return parse (tmp[0..p-tmp.ptr], ate);
         }
 }
-
 else
-
 {
-version = strip;
-
 private import Integer = tango.text.convert.Integer;
-
-/******************************************************************************
-
-        Convert a float to a string. This produces pretty good results
-        for the most part, though one should use David Gay's dtoa package
-        for best accuracy.
-
-        Note that the approach first normalizes a base10 mantissa, then
-        pulls digits from the left side whilst emitting them (rightward)
-        to the output.
-
-        The e parameter controls the number of exponent places emitted, 
-        and can thus control where the output switches to the scientific 
-        notation. For example, setting e=2 for 0.01 or 10.0 would result
-        in normal output. Whereas setting e=1 would result in both those
-        values being rendered in scientific notation instead. Setting e
-        to 0 forces that notation on for everything.
-
-        TODO: this should be replaced, as it is not sufficiently accurate 
-
-******************************************************************************/
-
-T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp)
-{return format!(T)(dst, x, decimals, e);}
-
-T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp)
-{
-        static T[] inf = "-Infinity";
-        static T[] nan = "-NaN";
-
-        // strip digits from the left of a normalized base-10 number
-        static int toDigit (ref NumType v, ref int count)
-        {
-                int digit;
-
-                // Don't exceed max digits storable in a real
-                // (-1 because the last digit is not always storable)
-                if (--count <= 0)
-                    digit = 0;
-                else
-                   {
-                   // remove leading digit, and bump
-                   digit = cast(int) v;
-                   v = (v - digit) * 10.0;
-                   }
-                return digit + '0';
-        }
-
-        // extract the sign
-        bool sign = negative (x);
-        if (sign)
-            x = -x;
-
-        if (x !<>= x)
-            return sign ? nan : nan[1..$];
-
-        if (x is x.infinity)
-            return sign ? inf : inf[1..$];
-
-        // assume no exponent
-        int exp = 0;
-
-        // don't scale if zero
-        if (x > 0.0)
-           {
-           // extract base10 exponent
-           exp = cast(int) log10l (x);
-
-           // round up a bit
-           auto d = decimals;
-           if (exp < 0)
-               d -= exp;
-           x += 0.5 / pow10 (d);
-
-           // extract base10 exponent
-           exp = cast(int) log10l (x);
-
-           // normalize base10 mantissa (0 < m < 10)
-           int len = exp;
-           if (exp < 0)
-               x *= pow10 (len = -exp);
-           else
-              x /= pow10 (exp);
-
-           // switch to short display if not enough space
-           if (len >= e)
-               e = 0; 
-           }
-
-        T* p = dst.ptr;
-        int count = NumType.dig;
-
-        // emit sign
-        if (sign)
-            *p++ = '-';
-
-        // are we doing +/-exp format?
-        if (e is 0)
-           {
-           assert (dst.length > decimals + 7);
-
-           // emit first digit, and decimal point
-           *p++ = cast(T)toDigit (x, count);
-           if (decimals)
-              {
-              *p++ = '.';
-
-              // emit rest of mantissa
-              while (decimals-- > 0)
-                     *p++ = cast(T) toDigit (x, count);
-              
-              version (strip)
-                      {
-                      while (*(p-1) is '0')
-                             --p;
-                      if (*(p-1) is '.')
-                           --p;
-                      }
-              }
-
-           // emit exponent, if non zero
-           if (exp)
-              {
-              *p++ = 'e';
-              if (exp < 0)
-                 {
-                 exp = -exp;
-                 *p++ = '-';
-                 }
-              else
-                 *p++ = '+';
-
-              if (exp >= 1000)
-                 {
-                 *p++ = cast(T)((exp/1000) + '0');
-                 exp %= 1000;
-                 *p++ = cast(T)((exp/100) + '0');
-                 exp %= 100;
-                 }
-              else
-                 if (exp >= 100)
-                    {
-                    *p++ = cast(T)((exp/100) + '0');
-                    exp %= 100;
-                    }
-
-              *p++ = cast(T)((exp/10) + '0');
-              *p++ = cast(T)((exp%10) + '0');
-              }
-           }
-        else
-           {
-           assert (dst.length >= (((exp < 0) ? 0 : exp) + decimals + 1));
-
-           // if fraction only, emit a leading zero
-           if (exp < 0)
-               *p++ = '0';
-           else
-              // emit all digits to the left of point
-              for (; exp >= 0; --exp)
-                     *p++ = cast(T)toDigit (x, count);
-
-           // emit point
-           if (decimals)
-              {
-              *p++ = '.';
-
-              // emit leading fractional zeros?
-              for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
-                   *p++ = '0';
-
-              // output remaining digits, if any. Trailing
-              // zeros are also returned from toDigit()
-              while (decimals-- > 0)
-                     *p++ = cast(T) toDigit (x, count);
-
-              version (strip)
-                      {
-                      while (*(p-1) is '0')
-                             --p;
-                      if (*(p-1) is '.')
-                           --p;
-                      }
-              }
-           }
-
-        return dst [0..(p - dst.ptr)];
-}
-
 
 /******************************************************************************
 
@@ -704,6 +659,192 @@ private NumType pow10 (uint exp)
 }
 }
 
+version (float_old)
+{
+/******************************************************************************
+
+        Convert a float to a string. This produces pretty good results
+        for the most part, though one should use David Gay's dtoa package
+        for best accuracy.
+
+        Note that the approach first normalizes a base10 mantissa, then
+        pulls digits from the left side whilst emitting them (rightward)
+        to the output.
+
+        The e parameter controls the number of exponent places emitted, 
+        and can thus control where the output switches to the scientific 
+        notation. For example, setting e=2 for 0.01 or 10.0 would result
+        in normal output. Whereas setting e=1 would result in both those
+        values being rendered in scientific notation instead. Setting e
+        to 0 forces that notation on for everything.
+
+        TODO: this should be replaced, as it is not sufficiently accurate 
+
+******************************************************************************/
+
+T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp, bool pad=Pad)
+{return format!(T)(dst, x, decimals, e, pad);}
+
+T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
+{
+        static T[] inf = "-inf";
+        static T[] nan = "-nan";
+
+        // strip digits from the left of a normalized base-10 number
+        static int toDigit (ref NumType v, ref int count)
+        {
+                int digit;
+
+                // Don't exceed max digits storable in a real
+                // (-1 because the last digit is not always storable)
+                if (--count <= 0)
+                    digit = 0;
+                else
+                   {
+                   // remove leading digit, and bump
+                   digit = cast(int) v;
+                   v = (v - digit) * 10.0;
+                   }
+                return digit + '0';
+        }
+
+        // extract the sign
+        bool sign = negative (x);
+        if (sign)
+            x = -x;
+
+        if (x !<>= x)
+            return sign ? nan : nan[1..$];
+
+        if (x is x.infinity)
+            return sign ? inf : inf[1..$];
+
+        // assume no exponent
+        int exp = 0;
+        int abs = 0;
+
+        // don't scale if zero
+        if (x > 0.0)
+           {
+           // extract base10 exponent
+           exp = cast(int) log10l (x);
+
+           // round up a bit
+           auto d = decimals;
+           if (exp < 0)
+               d -= exp;
+           x += 0.5 / pow10 (d);
+
+           // normalize base10 mantissa (0 < m < 10)
+           abs = exp = cast(int) log10l (x);
+           if (exp > 0)
+               x /= pow10 (exp);
+           else
+              abs = -exp;
+
+           // switch to exponent display as necessary
+           if (abs >= e)
+               e = 0; 
+           }
+
+        T* p = dst.ptr;
+        int count = NumType.dig;
+
+        // emit sign
+        if (sign)
+            *p++ = '-';
+        
+        // are we doing +/-exp format?
+        if (e is 0)
+           {
+           assert (dst.length > decimals + 7);
+
+           if (exp < 0)
+               x *= pow10 (abs+1);
+
+           // emit first digit, and decimal point
+           *p++ = cast(T) toDigit (x, count);
+           if (decimals)
+              {
+              *p++ = '.';
+
+              // emit rest of mantissa
+              while (decimals-- > 0)
+                     *p++ = cast(T) toDigit (x, count);
+              
+              if (pad is false)
+                 {
+                 while (*(p-1) is '0')
+                        --p;
+                 if (*(p-1) is '.')
+                     --p;
+                 }
+              }
+
+           // emit exponent, if non zero
+           if (abs)
+              {
+              *p++ = 'e';
+              *p++ = (exp < 0) ? '-' : '+';
+              if (abs >= 1000)
+                 {
+                 *p++ = cast(T)((abs/1000) + '0');
+                 abs %= 1000;
+                 *p++ = cast(T)((abs/100) + '0');
+                 abs %= 100;
+                 }
+              else
+                 if (abs >= 100)
+                    {
+                    *p++ = cast(T)((abs/100) + '0');
+                    abs %= 100;
+                    }
+              *p++ = cast(T)((abs/10) + '0');
+              *p++ = cast(T)((abs%10) + '0');
+              }
+           }
+        else
+           {
+           assert (dst.length >= (((exp < 0) ? 0 : exp) + decimals + 1));
+
+           // if fraction only, emit a leading zero
+           if (exp < 0)
+              {
+              x *= pow10 (abs);
+              *p++ = '0';
+              }
+           else
+              // emit all digits to the left of point
+              for (; exp >= 0; --exp)
+                     *p++ = cast(T )toDigit (x, count);
+
+           // emit point
+           if (decimals)
+              {
+              *p++ = '.';
+
+              // emit leading fractional zeros?
+              for (++exp; exp < 0 && decimals > 0; --decimals, ++exp)
+                   *p++ = '0';
+
+              // output remaining digits, if any. Trailing
+              // zeros are also returned from toDigit()
+              while (decimals-- > 0)
+                     *p++ = cast(T) toDigit (x, count);
+
+              if (pad is false)
+                 {
+                 while (*(p-1) is '0')
+                        --p;
+                 if (*(p-1) is '.')
+                     --p;
+                 }
+              }
+           }
+
+        return dst [0..(p - dst.ptr)];
+}
+}
 
 /******************************************************************************
 
@@ -739,14 +880,15 @@ debug (Float)
         void main() 
         {
                 char[500] tmp;
-
-                Cout (format(tmp, double.max)).newline;
-                Cout (format(tmp, -double.nan)).newline;
-                Cout (format(tmp, -double.infinity)).newline;
+/+
+                Cout (format(tmp, NumType.max)).newline;
+                Cout (format(tmp, -NumType.nan)).newline;
+                Cout (format(tmp, -NumType.infinity)).newline;
                 Cout (format(tmp, toFloat("nan"w))).newline;
                 Cout (format(tmp, toFloat("-nan"d))).newline;
                 Cout (format(tmp, toFloat("inf"))).newline;
                 Cout (format(tmp, toFloat("-inf"))).newline;
++/
                 Cout (format(tmp, toFloat ("0.000000e+00"))).newline;
                 Cout (format(tmp, toFloat("0x8000000000000000"))).newline;
                 Cout (format(tmp, 1)).newline;
@@ -775,19 +917,20 @@ debug (Float)
                 Cout (format(tmp, -0.03333333, 6, 2)).newline;
                 Cout.newline;
 
+                Cout (format(tmp, -0.9999999, 7, 3)).newline;
                 Cout (format(tmp, -3.0e100, 6, 3)).newline;
-                Cout (truncate(format(tmp, 1.0, 6))).newline;
-                Cout (truncate(format(tmp, 30, 6))).newline;
-                Cout (truncate(format(tmp, 3.14159, 6, 0))).newline;
-                Cout (truncate(format(tmp, 3e100, 6, 3))).newline;
-                Cout (truncate(format(tmp, 314159, 6))).newline;
-                Cout (truncate(format(tmp, 314159123213, 6, 15))).newline;
-                Cout (truncate(format(tmp, 3.14159, 6, 2))).newline;
-                Cout (truncate(format(tmp, 3.14159, 4, 2))).newline;
-                Cout (truncate(format(tmp, 0.00003333, 6, 2))).newline;
-                Cout (truncate(format(tmp, 0.00333333, 6, 3))).newline;
-                Cout (truncate(format(tmp, 0.03333333, 6, 2))).newline;
-                Cout (format(tmp, double.max, 6)).newline;
+                Cout ((format(tmp, 1.0, 6))).newline;
+                Cout ((format(tmp, 30, 6))).newline;
+                Cout ((format(tmp, 3.14159, 6, 0))).newline;
+                Cout ((format(tmp, 3e100, 6, 3))).newline;
+                Cout ((format(tmp, 314159, 6))).newline;
+                Cout ((format(tmp, 314159123213.0, 3, 15))).newline;
+                Cout ((format(tmp, 3.14159, 6, 2))).newline;
+                Cout ((format(tmp, 3.14159, 4, 2))).newline;
+                Cout ((format(tmp, 0.00003333, 6, 2))).newline;
+                Cout ((format(tmp, 0.00333333, 6, 3))).newline;
+                Cout ((format(tmp, 0.03333333, 6, 2))).newline;
+                Cout (format(tmp, NumType.min, 6)).newline;
                 Cout (format(tmp, -1)).newline;
                 Cout (format(tmp, toFloat(format(tmp, -1)))).newline;
                 Cout.newline;
