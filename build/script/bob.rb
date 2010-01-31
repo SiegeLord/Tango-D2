@@ -3,7 +3,7 @@
 # copyright:      Copyright (c) 2009 Tango. All rights reserved
 # license:        BSD style: $(LICENSE)
 # version:        Oct 2009: Initial release
-# author:         larsivi, sleets, kris 
+# author:         larsivi, sleets, kris, Jacob Carlborg 
 # port to ruby:   Jacob Carlborg
 
 require "optparse"
@@ -104,7 +104,7 @@ def main (arg)
 end
 
 class FileFilter
-	VERSION = 1.0
+	VERSION = 1.1
 	@@builders = {}
 	
 	def initialize (args)
@@ -195,7 +195,7 @@ class FileFilter
 		eol = "\r\n" if WINDOWS
 		eol = " " unless WINDOWS
 		
-		file = File.join(@args.root, "tango", obj)
+		file = File.join(@args.objs, obj)
 		
 		@libs << file << eol if File.exists?(file)
 	end
@@ -279,8 +279,8 @@ class Posix < FileFilter
 		FileFilter.register(os, "ldc", :ldc, self)
 		FileFilter.register(os, "gdc", :gdc, self)
 		
-		@gcc = "gcc -c -o"
-		@gcc32 = "gcc -c -m32 -o"
+		@gcc = "gcc -c -o #{@args.objs}/"
+		@gcc32 = "gcc -c -m32 -o #{@args.objs}/"
 		@dmd = dmd
 		@ldc = ldc
 		@gdc = gdc
@@ -442,7 +442,7 @@ def populate (args, options, help_msg, banner)
 			options.lib = opt + libext
 		end
 		
-		opts.on(nil, "--objs PATH", "Specify the path where to place temporary object files") do |opt|
+		opts.on(nil, "--objs PATH", "Specify the path where to place temporary object files (defaults to ./objs)") do |opt|
 			options.objs = File.expand_path(opt)
 		end
 		
