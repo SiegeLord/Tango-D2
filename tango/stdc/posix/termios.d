@@ -167,6 +167,7 @@ version( darwin )
 
     const OPOST     = 0x0000001;
 
+    // Posix baudrates
     const B0        = 0;
     const B50       = 50;
     const B75       = 75;
@@ -183,6 +184,15 @@ version( darwin )
     const B9600     = 9600;
     const B19200    = 19200;
     const B38400    = 38400;
+
+    // Non-Posix baudrates
+    const B7200     = 7200;
+    const B14400    = 14400;
+    const B28800    = 28800;
+    const B57600    = 57600;
+    const B76800    = 76800;
+    const B115200   = 115200;
+    const B230400   = 230400;
 
     const CSIZE     = 0x0000300;
     const   CS5     = 0x0000000;
@@ -277,6 +287,7 @@ else version( linux )
 
     const OPOST     = 0000001;
 
+    // Posix baudrates
     const B0        = 0000000;
     const B50       = 0000001;
     const B75       = 0000002;
@@ -293,6 +304,23 @@ else version( linux )
     const B9600     = 0000015;
     const B19200    = 0000016;
     const B38400    = 0000017;
+
+    // Non-Posix baudrates
+    const B57600    = 0010001; 
+    const B115200   = 0010002; 
+    const B230400   = 0010003; 
+    const B460800   = 0010004; 
+    const B500000   = 0010005; 
+    const B576000   = 0010006; 
+    const B921600   = 0010007; 
+    const B1000000  = 0010010; 
+    const B1152000  = 0010011; 
+    const B1500000  = 0010012; 
+    const B2000000  = 0010013; 
+    const B2500000  = 0010014; 
+    const B3000000  = 0010015; 
+    const B3500000  = 0010016; 
+    const B4000000  = 0010017;
 
     const CSIZE     = 0000060;
     const   CS5     = 0000000;
@@ -385,6 +413,7 @@ else version ( freebsd )
 
     const OPOST     = 0x0000001;
 
+    // Posix baudrates
     const B0        = 0;
     const B50       = 50;
     const B75       = 75;
@@ -402,7 +431,18 @@ else version ( freebsd )
     const B19200    = 19200;
     const B38400    = 38400;
 
-    const CSIZE     = 0x0000300;
+    // Non-Posix baudrates
+    const B7200     = 7200;
+    const B14400    = 14400;
+    const B28800    = 28800;
+    const B57600    = 57600;
+    const B76800    = 76800;
+    const B115200   = 115200;
+    const B230400   = 230400;
+    const B460800   = 460800;
+    const B921600   = 921600;
+
+    const CSIZE     = 0x0000300; 
     const   CS5     = 0x0000000;
     const   CS6     = 0x0000100;
     const   CS7     = 0x0000200;
@@ -492,6 +532,7 @@ else version ( solaris )
 
     const OPOST     = 0000001;
 
+    // Posix baudrates
     const B0        = 0;
     const B50       = 1;
     const B75       = 2;
@@ -508,6 +549,15 @@ else version ( solaris )
     const B9600     = 13;
     const B19200    = 14;
     const B38400    = 15;
+
+    // Non-Posix baudrates
+    const B57600    = 16;
+    const B76800    = 17;
+    const B115200   = 18;
+    const B153600   = 19;
+    const B230400   = 20;
+    const B307200   = 21;
+    const B460800   = 22;
 
     const CSIZE     = 0000060;
     const   CS5     = 0000000;

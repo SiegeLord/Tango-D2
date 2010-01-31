@@ -83,6 +83,15 @@ class SerialPort : Device
             Sets the baud rate of this port. Usually, the baud rate can 
             only be set to fixed values (common values are 1200 * 2^n).
 
+            Note that for Posix, the specification only mandates speeds up
+            to 38400, excluding speeds such as 7200, 14400 and 28800.
+            Most Posix systems have chosen to support at least higher speeds
+            though.
+
+            See also: maxSpeed
+
+            Throws: IOException if speed is unsupported.
+
     ***************************************************************************/
 
     SerialPort speed (uint speed)
@@ -105,6 +114,48 @@ class SerialPort : Device
             if(!SetCommState(handle, &config)) error();
         }
         return this;
+    }
+ 
+    /***************************************************************************
+        
+            Returns the known max speed in bauds for the current platform.
+            Note that this is the theoretical max speed available by the local
+            device as the other end of the connection may not support the same.
+
+            Since: 0.99.9
+
+    ***************************************************************************/
+
+    static uint maxSpeed()
+    {
+        version (Windows) {
+            // TODO
+            // Requires using GetCommProperties on a given port. For this
+            // function it may make most sense to enumerate all and give
+            // the result for the fastest port?
+            return 0;
+        }
+        else version (Posix) {
+            version (linux) {
+                return 4000000;
+            }
+            else version (darwin) {
+                return 230400;
+            }
+            else version (freebsd) {
+                return 921600;
+            }
+            else version (solaris) {
+                return 460800;
+            }
+            else {
+                return 38400;
+            }
+        }
+        else {
+            // Not supported
+            return 0;
+        }
     }
     
     /***************************************************************************
@@ -224,6 +275,47 @@ class SerialPort : Device
             baudRates[4800] = B4800;
             baudRates[19200] = B19200;
             baudRates[38400] = B38400;
+
+            version( linux ) 
+            { 
+                baudRates[57600] = B57600; 
+                baudRates[115200] = B115200; 
+                baudRates[230400] = B230400; 
+                baudRates[460800] = B460800; 
+                baudRates[500000] = B500000; 
+                baudRates[576000] = B576000; 
+                baudRates[921600] = B921600; 
+                baudRates[1000000] = B1000000; 
+                baudRates[1152000] = B1152000; 
+                baudRates[1500000] = B1500000; 
+                baudRates[2000000] = B2000000; 
+                baudRates[2500000] = B2500000; 
+                baudRates[3000000] = B3000000; 
+                baudRates[3500000] = B3500000; 
+                baudRates[4000000] = B4000000; 
+            } 
+            else version( freebsd ) 
+            { 
+                baudRates[7200] = B7200; 
+                baudRates[14400] = B14400; 
+                baudRates[28800] = B28800; 
+                baudRates[57600] = B57600; 
+                baudRates[76800] = B76800; 
+                baudRates[115200] = B115200; 
+                baudRates[230400] = B230400; 
+                baudRates[460800] = B460800; 
+                baudRates[921600] = B921600; 
+            } 
+            else version( solaris ) 
+            { 
+                baudRates[57600] = B57600; 
+                baudRates[76800] = B76800; 
+                baudRates[115200] = B115200; 
+                baudRates[153600] = B153600; 
+                baudRates[230400] = B230400; 
+                baudRates[307200] = B307200; 
+                baudRates[460800] = B460800; 
+            }
         }
         
         private void create (char[] file)
