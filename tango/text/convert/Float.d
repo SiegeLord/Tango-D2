@@ -250,7 +250,7 @@ version (float_lib)
             *p++ = '-';
 
         if (exp is 9999)
-            while ((*p++ = *str++) != 0) {}
+           {while ((*p++ = *str++) != 0) {} --p;}
         else
            {
            if (mode is 2)
@@ -342,10 +342,10 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
 
         *decpt = 9999;
         if (value !<>= value)
-            return "nan";
+            return "nan\0";
 
         if (value is value.infinity)
-            return "inf";
+            return "inf\0";
 
         int exp10 = (value is 0) ? !fflag : cast(int) ceill(log10l(value));
         if (exp10 < -4931) 
@@ -852,6 +852,8 @@ T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
 
 debug (UnitTest)
 {
+        import tango.io.Console;
+      
         unittest
         {
                 char[164] tmp;
@@ -865,10 +867,10 @@ debug (UnitTest)
                 f = parse (" -inf");
                 assert (format(tmp, f) == "-inf");
 
-                assert (format (tmp, 3.14159, 6) == "3.141590");
+                assert (format (tmp, 3.14159, 6) == "3.14159");
                 assert (format (tmp, 3.14159, 4) == "3.1416");
                 assert (parse ("3.5") == 3.5);
-                assert (format(tmp, parse ("3.14159"), 6) == "3.141590");
+                assert (format(tmp, parse ("3.14159"), 6) == "3.14159");
         }
 }
 
