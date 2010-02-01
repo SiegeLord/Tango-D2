@@ -781,7 +781,7 @@ version (WithVariant)
         {
                 T    style = 'f';
                 uint places = 2;
-                bool pad = false;
+                bool pad = true;
 
                 // extract formatting style and decimal-places
                 if (format.length)
@@ -800,11 +800,11 @@ version (WithVariant)
                    uint n=0;
                    while (++p < e && (*p >= '0' && *p <= '9'))
                           n = n * 10 + *p - '0';
-
                    if (p - format.ptr > 1)
                        places = n;
-                   if (p < e && *p is 'z')
-                       pad = true;                       
+
+                   if (p < e && *p is '.')
+                       pad = false;                       
                    }
                 
                 return Float.format (output, v, places, 
