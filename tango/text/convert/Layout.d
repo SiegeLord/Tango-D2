@@ -779,36 +779,36 @@ version (WithVariant)
 
         protected T[] floater (T[] output, real v, T[] format)
         {
-                T    style = 'f';
-                uint places = 2;
+                uint dec = 2,
+                     exp = 10;
                 bool pad = true;
 
-                // extract formatting style and decimal-places
-                if (format.length)
-                   {
-                   auto p = format.ptr;
-                   auto e = p + format.length;
-                   style = *p;
-
-                   // hex output for FP?
-                   if (style is 'x' || style is 'X')
-                      {
-                      double d = v;
-                      return integer (output, *cast(long*) &d, "x#");
-                      }
-
-                   uint n=0;
-                   while (++p < e && (*p >= '0' && *p <= '9'))
-                          n = n * 10 + *p - '0';
-                   if (p - format.ptr > 1)
-                       places = n;
-
-                   if (p < e && *p is '.')
-                       pad = false;                       
-                   }
+                for (auto p=format.ptr, e=p+format.length; p < e; ++p)
+                     switch (*p)
+                            {
+                            case '.':
+                                 pad = false;
+                                 break;
+                            case 'e':
+                            case 'E':
+                                 exp = 0;
+                                 break;
+                            case 'x':
+                            case 'X':
+                                 double d = v;
+                                 return integer (output, *cast(long*) &d, "x#");
+                            default:
+                                 auto c = *p;
+                                 if (c >= '0' && c <= '9')
+                                    {
+                                    dec = c - '0', c = p[1];
+                                    if (c >= '0' && c <= '9' && ++p < e)
+                                        dec = dec * 10 + c - '0';
+                                    }
+                                 break;
+                            }
                 
-                return Float.format (output, v, places, 
-                                    (style is 'e' || style is 'E') ? 0 : 10, pad);
+                return Float.format (output, v, dec, exp, pad);
         }
 
         /**********************************************************************
@@ -1149,7 +1149,7 @@ debug (Layout)
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 1.23e-3)).newline;
                 Cout (layout ("{:e4.}", 1.23e-07)).newline;
-                Cout (layout ("{:f6.}", 1.231)).newline;
+                Cout (layout ("{:.}", 1.2)).newline;
                 Cout (layout ("ptr:{}", &layout)).newline;
                 Cout (layout ("ulong.max {}", ulong.max)).newline;
 
