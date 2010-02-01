@@ -2683,7 +2683,7 @@ class Fiber
 {
     static class Scheduler
     {
-        alias uint Handle;
+        alias void* Handle;
 
         enum Type {Read=1, Write=2, Accept=3, Connect=4, Transfer=5}
 
@@ -2709,9 +2709,11 @@ class Fiber
         Scheduler.Handle handle;        // IO request handle
         Scheduler        scheduler;     // associated scheduler (may be null)
     }
-
+/+
     final override int opCmp (Object o)
     {   
+        throw new Exception ("Invalid opCmp in Fiber");
+
         auto other = cast(Fiber) cast(void*) o;
         if (other)
            {
@@ -2720,21 +2722,7 @@ class Fiber
            }
         return 1;
     }
-
-    final char[] name ()
-    {
-        return m_name;
-    }
-
-    final void name (char[] s)
-    {
-        m_name = s;
-    }
-
-    override char[] toString ()
-    {
-        return (m_name.length) ? m_name : super.toString;
-    }
++/
 
     final static Scheduler scheduler ()
     {

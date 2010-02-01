@@ -77,7 +77,7 @@ class Socket : Conduit, ISelectable
         {
                 berkeley.open (family, type, protocol);
                 if (scheduler)
-                    scheduler.open (berkeley.sock, toString);
+                    scheduler.open (fileHandle, toString);
         }
 
         /***********************************************************************
@@ -348,17 +348,6 @@ class Socket : Conduit, ISelectable
         
                 ***************************************************************/
         
-                private static void patch (socket_t dst, uint how, socket_t* src=null)
-                {
-                        auto len = src ? src.sizeof : 0;
-                        if (setsockopt (dst, SocketOptionLevel.SOCKET, how, src, len))
-                            berkeley.exception ("patch :: ");
-                }
-        
-                /***************************************************************
-        
-                ***************************************************************/
-        
                 private void asyncCopy (Handle handle)
                 {
                         TransmitFile (berkeley.sock, cast(HANDLE) handle, 
@@ -435,13 +424,14 @@ class Socket : Conduit, ISelectable
                                      code is ERROR_IO_PENDING || 
                                      code is ERROR_IO_INCOMPLETE)
                                     {
-                                    if (code is ERROR_IO_INCOMPLETE)
-                                        super.error ("timeout"); //Stdout ("-").flush;
-                                    scheduler.await (berkeley.sock, type, timeout);
-
                                     DWORD flags;
-                                    if (WSAGetOverlappedResult (cast(HANDLE) berkeley.sock, 
-                                                       &overlapped, &bytes, false, &flags))
+
+                                    if (code is ERROR_IO_INCOMPLETE)
+                                        super.error ("timeout"); 
+
+                                    auto handle = fileHandle;
+                                    scheduler.await (handle, type, timeout);
+                                    if (WSAGetOverlappedResult (handle, &overlapped, &bytes, false, &flags))
                                         return bytes;
                                     }
                                  else
@@ -456,7 +446,20 @@ class Socket : Conduit, ISelectable
                         // should never get here
                         assert (false);
                 }
+        
+                /***************************************************************
+        
+                ***************************************************************/
+        
+                private static void patch (socket_t dst, uint how, socket_t* src=null)
+                {
+                        auto len = src ? src.sizeof : 0;
+                        if (setsockopt (dst, SocketOptionLevel.SOCKET, how, src, len))
+                            berkeley.exception ("patch :: ");
+                }
         }
+
+
         /***********************************************************************
  
         ***********************************************************************/

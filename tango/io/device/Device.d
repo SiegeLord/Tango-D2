@@ -72,9 +72,14 @@ class Device : Conduit, ISelectable
 
         version (Win32)
         {
-                protected bool          track;
-                protected HANDLE        handle;
-                protected OVERLAPPED    overlapped;
+                protected IO io;
+                struct IO
+                {
+                        OVERLAPPED      asynch; // must be the first attribute!!
+                        Handle          handle;
+                        bool            track;
+                        void*           task;
+                }
 
                 /***************************************************************
 
@@ -84,7 +89,7 @@ class Device : Conduit, ISelectable
 
                 protected void reopen (Handle handle)
                 {
-                        this.handle = cast(HANDLE) handle;
+                        io.handle = handle;
                 }
 
                 /***************************************************************
@@ -95,7 +100,19 @@ class Device : Conduit, ISelectable
 
                 final Handle fileHandle ()
                 {
-                        return cast(Handle) handle;
+                        return io.handle;
+                }
+
+                /***************************************************************
+
+                ***************************************************************/
+
+                override void dispose ()
+                {
+                        if (io.handle != INVALID_HANDLE_VALUE)
+                            if (scheduler)
+                                scheduler.close (io.handle, toString);
+                        detach();
                 }
 
                 /***************************************************************
@@ -110,10 +127,10 @@ class Device : Conduit, ISelectable
 
                 override void detach ()
                 {
-                        if (handle != INVALID_HANDLE_VALUE)
-                            CloseHandle (handle);
+                        if (io.handle != INVALID_HANDLE_VALUE)
+                            CloseHandle (io.handle);
 
-                        handle = INVALID_HANDLE_VALUE;
+                        io.handle = INVALID_HANDLE_VALUE;
                 }
 
                 /***************************************************************
@@ -131,9 +148,9 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        if (! ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped))
-                        //ReadFile (handle, dst.ptr, dst.length, &bytes, &overlapped);
-                              if ((bytes = wait (scheduler.Type.Read, bytes)) is Eof)
+                        if (! ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch))
+                        //ReadFile (io.handle, dst.ptr, dst.length, &bytes, &io.asynch);
+                              if ((bytes = wait (scheduler.Type.Read, bytes, timeout)) is Eof)
                                    return Eof;
 
                         // synchronous read of zero means Eof
@@ -141,8 +158,8 @@ class Device : Conduit, ISelectable
                             return Eof;
 
                         // update stream location?
-                        if (track)
-                           (*cast(long*) &overlapped.Offset) += bytes;
+                        if (io.track)
+                           (*cast(long*) &io.asynch.Offset) += bytes;
                         return bytes;
                 }
 
@@ -161,14 +178,14 @@ class Device : Conduit, ISelectable
                 {
                         DWORD bytes;
 
-                        if (! WriteFile (handle, src.ptr, src.length, &bytes, &overlapped))
-                        //WriteFile (handle, src.ptr, src.length, &bytes, &overlapped);
-                              if ((bytes = wait (scheduler.Type.Write, bytes)) is Eof)
-                                   return Eof;
+                        if (! WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch))
+                        //WriteFile (io.handle, src.ptr, src.length, &bytes, &io.asynch);
+                        if ((bytes = wait (scheduler.Type.Write, bytes, timeout)) is Eof)
+                             return Eof;
 
                         // update stream location?
-                        if (track)
-                           (*cast(long*) &overlapped.Offset) += bytes;
+                        if (io.track)
+                           (*cast(long*) &io.asynch.Offset) += bytes;
                         return bytes;
                 }
 
@@ -176,7 +193,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                protected final size_t wait (scheduler.Type type, uint bytes=0)
+                protected final size_t wait (scheduler.Type type, uint bytes, uint timeout)
                 {
                         while (true)
                               {
@@ -192,10 +209,11 @@ class Device : Conduit, ISelectable
                                      code is ERROR_IO_INCOMPLETE)
                                     {
                                     if (code is ERROR_IO_INCOMPLETE)
-                                        super.error ("timeout"); //Stdout ("+").flush;
+                                        super.error ("timeout"); 
 
-                                    scheduler.await (cast(Handle) handle, type, timeout);
-                                    if (GetOverlappedResult (handle, &overlapped, &bytes, false))
+                                    io.task = cast(void*) tango.core.Thread.Fiber.getThis;
+                                    scheduler.await (io.handle, type, timeout);
+                                    if (GetOverlappedResult (io.handle, &io.asynch, &bytes, false))
                                         return bytes;
                                     }
                                  else

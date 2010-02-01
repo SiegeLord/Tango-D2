@@ -115,8 +115,11 @@ interface IConduit : InputStream, OutputStream
 *******************************************************************************/
 
 interface ISelectable
-{      
-        typedef int Handle = -1;        /// opaque OS file-handle        
+{     
+        version (Windows) 
+                 alias void* Handle;   /// opaque OS file-handle         
+             else
+                typedef int Handle = -1;        /// opaque OS file-handle        
 
         /***********************************************************************
 
@@ -314,7 +317,11 @@ interface OutputStream : IOStream
 
 interface InputBuffer : InputStream
 {
+        // size_t fill (void[] dst, bool exact = false);
+
         void[] slice ();
+
+        // void[] slice (size_t size, bool eat = true);
 
         bool next (size_t delegate(void[]) scan);
 

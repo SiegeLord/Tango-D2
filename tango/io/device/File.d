@@ -448,10 +448,10 @@ class File : Device, Device.Seek, Device.Truncate
                         auto name = stdc.toStringz (path, zero);
 
                         version (Win32SansUnicode)
-                                 handle = CreateFileA (name, access, share, 
-                                                       null, create, 
-                                                       attr | FILE_ATTRIBUTE_NORMAL,
-                                                       null);
+                                 io.handle = CreateFileA (name, access, share, 
+                                                          null, create, 
+                                                          attr | FILE_ATTRIBUTE_NORMAL,
+                                                          null);
                              else
                                 {
                                 // convert to utf16
@@ -459,24 +459,27 @@ class File : Device, Device.Seek, Device.Truncate
                                 auto wide = Utf.toString16 (name[0..path.length+1], convert);
 
                                 // open the file
-                                handle = CreateFileW (wide.ptr, access, share,
-                                                      null, create, 
-                                                      attr | FILE_ATTRIBUTE_NORMAL,
-                                                      null);
+                                io.handle = CreateFileW (wide.ptr, access, share,
+                                                         null, create, 
+                                                         attr | FILE_ATTRIBUTE_NORMAL,
+                                                         null);
                                 }
 
-                        if (handle is INVALID_HANDLE_VALUE)
+                        if (io.handle is INVALID_HANDLE_VALUE)
                             return false;
+
+                        // reset extended error 
+                        SetLastError (ERROR_SUCCESS);
 
                         // move to end of file?
                         if (style.open is Open.Append)
-                            *(cast(long*) &super.overlapped.Offset) = -1;
+                            *(cast(long*) &io.asynch.Offset) = -1;
                         else
-                           super.track = true;
+                           io.track = true;
 
                         // monitor this handle for async I/O?
                         if (scheduler)
-                            scheduler.open (cast(int) handle, toString);
+                            scheduler.open (io.handle, toString);
 
                         return true;
                 }
@@ -519,7 +522,7 @@ class File : Device, Device.Seek, Device.Truncate
                         assert (s is size);
 
                         // must have Generic_Write access
-                        if (! SetEndOfFile (handle))
+                        if (! SetEndOfFile (io.handle))
                               error;                            
                 }               
 
@@ -537,16 +540,16 @@ class File : Device, Device.Seek, Device.Truncate
                         // hack to ensure overlapped.Offset and file location 
                         // are correctly in synch ...
                         if (anchor is Anchor.Current)
-                            SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
-                                              &super.overlapped.Offset, 
+                            SetFilePointerEx (io.handle, 
+                                              *cast(LARGE_INTEGER*) &io.asynch.Offset, 
                                               cast(PLARGE_INTEGER) &newOffset, 0);
 
-                        if (! SetFilePointerEx (handle, *cast(LARGE_INTEGER*) 
+                        if (! SetFilePointerEx (io.handle, *cast(LARGE_INTEGER*) 
                                                 &offset, cast(PLARGE_INTEGER) 
                                                 &newOffset, anchor)) 
                               error;
 
-                        return (*cast(long*) &super.overlapped.Offset) = newOffset;
+                        return (*cast(long*) &io.asynch.Offset) = newOffset;
                 } 
                               
                 /***************************************************************
@@ -557,7 +560,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 long position ()
                 {
-                        return *cast(long*) &super.overlapped.Offset;
+                        return *cast(long*) &io.asynch.Offset;
                 }               
 
                 /***************************************************************
@@ -570,7 +573,7 @@ class File : Device, Device.Seek, Device.Truncate
                 {
                         long len;
 
-                        if (! GetFileSizeEx (handle, cast(PLARGE_INTEGER) &len))
+                        if (! GetFileSizeEx (io.handle, cast(PLARGE_INTEGER) &len))
                               error;
                         return len;
                 }               

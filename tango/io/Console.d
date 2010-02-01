@@ -443,11 +443,11 @@ struct Console
 
                         *******************************************************/
 
-                        this (uint handle)
+                        this (size_t handle)
                         {
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
-                                reopen (cast(Handle) handle);
+                                reopen (handle);
                         }    
 
                         /*******************************************************
@@ -456,7 +456,7 @@ struct Console
 
                         *******************************************************/
 
-                        private override void reopen (Handle handle_)
+                        private void reopen (size_t handle_)
                         {
                                 static const DWORD[] id = [
                                                           cast(DWORD) -10, 
@@ -470,24 +470,24 @@ struct Console
                                                           ];
 
                                 assert (handle_ < 3);
-                                handle = GetStdHandle (id[handle_]);
-                                if (handle is null || handle is INVALID_HANDLE_VALUE)
-                                    handle = CreateFileA ( cast(PCHAR) f[handle_].ptr, 
-                                             GENERIC_READ | GENERIC_WRITE,  
-                                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                                             null, OPEN_EXISTING, 0, cast(HANDLE) 0);
+                                io.handle = GetStdHandle (id[handle_]);
+                                if (io.handle is null || io.handle is INVALID_HANDLE_VALUE)
+                                    io.handle = CreateFileA ( cast(PCHAR) f[handle_].ptr, 
+                                                GENERIC_READ | GENERIC_WRITE,  
+                                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                                null, OPEN_EXISTING, 0, cast(HANDLE) 0);
 
                                 // allow invalid handles to remain, since it
                                 // may be patched later in some special cases
-                                if (handle != INVALID_HANDLE_VALUE)
+                                if (io.handle != INVALID_HANDLE_VALUE)
                                    {
                                    DWORD mode;
                                    // are we redirecting? Note that we cannot
                                    // use the 'appending' mode triggered via
                                    // setting overlapped.Offset to -1, so we
                                    // just track the byte-count instead
-                                   if (! GetConsoleMode (handle, &mode))
-                                         redirected = super.track = true;
+                                   if (! GetConsoleMode (io.handle, &mode))
+                                         redirected = io.track = true;
                                    }
                         }
 
@@ -537,7 +537,7 @@ struct Console
                                           if ((p[len-1] & 0xfc00) is 0xdc00)
                                                --len;
                                           }
-                                       if (! WriteConsoleW (handle, p, len, &i, null))
+                                       if (! WriteConsoleW (io.handle, p, len, &i, null))
                                              error();
                                        }
                                    return src.length;
@@ -571,7 +571,7 @@ struct Console
                                        i = input.length;
                                        
                                    // read a chunk of wchars from the console
-                                   if (! ReadConsoleW (handle, input.ptr, i, &i, null))
+                                   if (! ReadConsoleW (io.handle, input.ptr, i, &i, null))
                                          error();
 
                                    // no input ~ go home
@@ -601,10 +601,10 @@ struct Console
 
                         *******************************************************/
 
-                        private this (Handle handle)
+                        private this (size_t handle)
                         {
-                                reopen (handle);
-                                redirected = (isatty(handle) is 0);
+                                io.handle = cast(Handle) handle;
+                                redirected = (isatty(io.handle) is 0);
                         }
                         }
         }

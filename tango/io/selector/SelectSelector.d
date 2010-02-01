@@ -193,7 +193,7 @@ public class SelectSelector: AbstractSelector
     public void register(ISelectable conduit, Event events, Object attachment = null)
     in
     {
-        assert(conduit !is null && conduit.fileHandle() >= 0);
+        assert(conduit !is null && conduit.fileHandle());
     }
     body
     {
@@ -444,7 +444,7 @@ public class SelectSelector: AbstractSelector
                 toTimeval(&tv, timeout);
 
                 // FIXME: Can a system call be interrupted on Windows?
-                _eventCount = .select(ISelectable.Handle.max, readfds, writefds, exceptfds, timeout is TimeSpan.max ? null : &tv);
+                _eventCount = .select(uint.max, readfds, writefds, exceptfds, timeout is TimeSpan.max ? null : &tv);
 
                 debug (selector)
                     Stdout.format("---   .select() returned {0}\n", _eventCount);
@@ -634,7 +634,7 @@ version (Windows)
         void set(ISelectable.Handle handle)
         in
         {
-            assert(handle >= 0);
+            assert(handle);
         }
         body
         {

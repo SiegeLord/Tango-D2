@@ -109,9 +109,9 @@ class SerialPort : Device
         }
         version(Win32) {
             DCB config;
-            GetCommState(handle, &config);
+            GetCommState(io.handle, &config);
             config.BaudRate = speed;
-            if(!SetCommState(handle, &config)) error();
+            if(!SetCommState(io.handle, &config)) error();
         }
         return this;
     }
@@ -240,18 +240,18 @@ class SerialPort : Device
         private void create (char[] port)
         {
             str = port;
-            handle = CreateFileA((`\\.\` ~ port).toStringz(), GENERIC_READ | GENERIC_WRITE, 0, null, OPEN_EXISTING, 0, null);
-            if(handle == INVALID_HANDLE_VALUE) {
+            io.handle = CreateFileA((`\\.\` ~ port).toStringz(), GENERIC_READ | GENERIC_WRITE, 0, null, OPEN_EXISTING, 0, null);
+            if(io.handle is INVALID_HANDLE_VALUE) {
                 error();
             }
             DCB config;
-            GetCommState(handle, &config);
+            GetCommState(io.handle, &config);
             config.BaudRate = 9600;
             config.ByteSize = 8;
             config.Parity = NOPARITY;
             config.StopBits = ONESTOPBIT;
             config.flag0 |= bm_DCB_fBinary | bm_DCB_fParity;
-            if(!SetCommState(handle, &config)) error();
+            if(!SetCommState(io.handle, &config)) error();
         }
     }
     

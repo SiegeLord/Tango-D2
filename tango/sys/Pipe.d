@@ -55,13 +55,9 @@ class PipeConduit : Device
      * style        = access flags for the pipe (readable, writable, etc.).
      * bufferSize   = buffer size.
      */
-    private this(ISelectable.Handle handle,
-                 uint bufferSize = DefaultBufferSize)
+    private this(Handle handle, uint bufferSize = DefaultBufferSize)
     {
-        version (Win32)
-                this.handle = cast(HANDLE) handle;
-        else
-           this.handle = handle;
+        io.handle = handle;
         _bufferSize = bufferSize;
     }
 
@@ -182,13 +178,13 @@ class Pipe
          */
         package this(uint bufferSize, SECURITY_ATTRIBUTES *sa)
         {
-            HANDLE sourceHandle;
             HANDLE sinkHandle;
+            HANDLE sourceHandle;
 
             if (CreatePipe(&sourceHandle, &sinkHandle, sa, cast(DWORD) bufferSize))
             {
-                _source = new PipeConduit(cast(ISelectable.Handle) sourceHandle);
-                _sink = new PipeConduit(cast(ISelectable.Handle) sinkHandle);
+                _source = new PipeConduit(sourceHandle);
+                _sink = new PipeConduit(sinkHandle);
             }
             else
             {
