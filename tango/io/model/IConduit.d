@@ -317,11 +317,7 @@ interface OutputStream : IOStream
 
 interface InputBuffer : InputStream
 {
-        // size_t fill (void[] dst, bool exact = false);
-
         void[] slice ();
-
-        // void[] slice (size_t size, bool eat = true);
 
         bool next (size_t delegate(void[]) scan);
 
