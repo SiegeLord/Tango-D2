@@ -115,48 +115,6 @@ class SerialPort : Device
         }
         return this;
     }
- 
-    /***************************************************************************
-        
-            Returns the known max speed in bauds for the current platform.
-            Note that this is the theoretical max speed available by the local
-            device as the other end of the connection may not support the same.
-
-            Since: 0.99.9
-
-    ***************************************************************************/
-
-    static uint maxSpeed()
-    {
-        version (Windows) {
-            // TODO
-            // Requires using GetCommProperties on a given port. For this
-            // function it may make most sense to enumerate all and give
-            // the result for the fastest port?
-            return 0;
-        }
-        else version (Posix) {
-            version (linux) {
-                return 4000000;
-            }
-            else version (darwin) {
-                return 230400;
-            }
-            else version (freebsd) {
-                return 921600;
-            }
-            else version (solaris) {
-                return 460800;
-            }
-            else {
-                return 38400;
-            }
-        }
-        else {
-            // Not supported
-            return 0;
-        }
-    }
     
     /***************************************************************************
     
