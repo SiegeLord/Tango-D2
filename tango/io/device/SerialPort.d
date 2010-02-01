@@ -316,6 +316,16 @@ class SerialPort : Device
                 baudRates[307200] = B307200; 
                 baudRates[460800] = B460800; 
             }
+            else version ( darwin )
+            {
+                baudRates[7200] = B7200;
+                baudRates[14400] = B14400; 
+                baudRates[28800] = B28800; 
+                baudRates[57600] = B57600; 
+                baudRates[76800] = B76800; 
+                baudRates[115200] = B115200; 
+                baudRates[230400] = B230400; 
+            }
         }
         
         private void create (char[] file)
