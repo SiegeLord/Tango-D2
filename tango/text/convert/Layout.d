@@ -1064,11 +1064,11 @@ debug (UnitTest)
         // width specifier indicates number of decimal places
         assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
         assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
-        assert( Formatter( "{0:e4}", 0.0001) == "1e-04");
+        assert( Formatter( "{0:e4}", 0.0001) == "1.0000e-04");
 
         assert( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
         assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
-        assert( Formatter( "{0:e4}", 0.0001*1i) == "1e-04*1i");
+        assert( Formatter( "{0:e4}", 0.0001*1i) == "1.0000e-04*1i");
 
         assert( Formatter( "{0:fz}", 1.23f+1i ) == "1.23+1.00*1i" );
         assert( Formatter( "{0:f4z}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
@@ -1078,13 +1078,13 @@ debug (UnitTest)
         assert( Formatter( "{0:e4z}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
         // 'g' format truncates zeroes from floating decimals
-        assert( Formatter( "{0:g4}", 1.230 ) == "1.23" );
-        assert( Formatter( "{0:g6}", 1.230 ) == "1.23" );
-        assert( Formatter( "{0:g1}", 1.230 ) == "1.2" );
-        assert( Formatter( "{0:g}", 1.233 ) == "1.23" );
-        assert( Formatter( "{0:g}", 1.237 ) == "1.24" );
-        assert( Formatter( "{0:g}", 1.000 ) == "1" );
-        assert( Formatter( "{0:g}", 200 ) == "200" );
+        assert( Formatter( "{:f4.}", 1.230 ) == "1.23" );
+        assert( Formatter( "{:f6.}", 1.230 ) == "1.23" );
+        assert( Formatter( "{:f1.}", 1.230 ) == "1.2" );
+        assert( Formatter( "{:f.}", 1.233 ) == "1.23" );
+        assert( Formatter( "{:f.}", 1.237 ) == "1.24" );
+        assert( Formatter( "{:f.}", 1.000 ) == "1" );
+        assert( Formatter( "{:f2.}", 200.001 ) == "200");
         
         // array output
         int[] a = [ 51, 52, 53, 54, 55 ];
@@ -1116,8 +1116,8 @@ debug (UnitTest)
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
-        assert( Formatter( "{}", f ) == "{1 => one, 3.14 => PI}" ||
-                Formatter( "{}", f ) == "{3.14 => PI, 1 => one}");
+        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
+                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
         }
 }
 
