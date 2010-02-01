@@ -127,7 +127,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Set the active duration period for asynchronous IO calls
+                Set the active timeout period for IO calls (in milliseconds)
 
         ***********************************************************************/
 
@@ -138,7 +138,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Get the active duration period for asynchronous IO calls
+                Get the active timeout period for IO calls (in milliseconds)
 
         ***********************************************************************/
 

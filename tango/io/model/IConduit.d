@@ -45,7 +45,7 @@ interface IConduit : InputStream, OutputStream
         ***********************************************************************/
 
         abstract char[] toString (); 
-                     
+
         /***********************************************************************
 
                 Is the conduit alive?
@@ -69,23 +69,7 @@ interface IConduit : InputStream, OutputStream
         ***********************************************************************/
 
         abstract void error (char[] msg);
-/+
-        /***********************************************************************
 
-                Set the active duration period for asynchronous IO calls
-
-        ***********************************************************************/
-
-        abstract void timeout (uint millisec);
-
-        /***********************************************************************
-
-                Get the active duration period for asynchronous IO calls
-
-        ***********************************************************************/
-
-        abstract uint timeout ();
-+/
         /***********************************************************************
 
                 All streams now support seek(), so this is used to signal
