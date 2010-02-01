@@ -1070,12 +1070,12 @@ debug (UnitTest)
         assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
         assert( Formatter( "{0:e4}", 0.0001*1i) == "1.0000e-04*1i");
 
-        assert( Formatter( "{0:fz}", 1.23f+1i ) == "1.23+1.00*1i" );
-        assert( Formatter( "{0:f4z}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
-        assert( Formatter( "{0:e4z}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
-        assert( Formatter( "{0:fz}", 1.23f-1i ) == "1.23-1.00*1i" );
-        assert( Formatter( "{0:f4z}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
-        assert( Formatter( "{0:e4z}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
+        assert( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
+        assert( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
         // 'f.' & 'e.' format truncates zeroes from floating decimals
         assert( Formatter( "{:f4.}", 1.230 ) == "1.23" );
@@ -1148,8 +1148,8 @@ debug (Layout)
                 Cout (layout ("{:f4}", 1.23e-2)).newline;
                 Cout (layout ("{:f8}", 3.14159)).newline;
                 Cout (layout ("{:e20}", 1.23e-3)).newline;
-                Cout (layout ("{:e4}", 1.23e-07)).newline;
-                Cout (layout ("{:f6z}", 1.231)).newline;
+                Cout (layout ("{:e4.}", 1.23e-07)).newline;
+                Cout (layout ("{:f6.}", 1.231)).newline;
                 Cout (layout ("ptr:{}", &layout)).newline;
                 Cout (layout ("ulong.max {}", ulong.max)).newline;
 
