@@ -1077,7 +1077,7 @@ debug (UnitTest)
         assert( Formatter( "{0:f4z}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
         assert( Formatter( "{0:e4z}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
-        // 'g' format truncates zeroes from floating decimals
+        // 'f.' & 'e.' format truncates zeroes from floating decimals
         assert( Formatter( "{:f4.}", 1.230 ) == "1.23" );
         assert( Formatter( "{:f6.}", 1.230 ) == "1.23" );
         assert( Formatter( "{:f1.}", 1.230 ) == "1.2" );
