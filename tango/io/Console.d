@@ -603,8 +603,8 @@ struct Console
 
                         private this (size_t handle)
                         {
-                                io.handle = cast(Handle) handle;
-                                redirected = (isatty(io.handle) is 0);
+                                this.handle = cast(Handle) handle;
+                                redirected = (isatty(handle) is 0);
                         }
                         }
         }

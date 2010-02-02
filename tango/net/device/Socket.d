@@ -76,8 +76,9 @@ class Socket : Conduit, ISelectable
         this (AddressFamily family, SocketType type, ProtocolType protocol)
         {
                 berkeley.open (family, type, protocol);
-                if (scheduler)
-                    scheduler.open (fileHandle, toString);
+                version (Windows)
+                         if (scheduler)
+                             scheduler.open (fileHandle, toString);
         }
 
         /***********************************************************************

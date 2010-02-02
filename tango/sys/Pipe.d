@@ -57,7 +57,10 @@ class PipeConduit : Device
      */
     private this(Handle handle, uint bufferSize = DefaultBufferSize)
     {
-        io.handle = handle;
+        version (Windows)
+                 io.handle = handle;
+            else
+               this.handle = handle;
         _bufferSize = bufferSize;
     }
 
