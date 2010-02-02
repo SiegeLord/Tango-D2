@@ -275,7 +275,8 @@ class Device : Conduit, ISelectable
                         if (handle >= 0)
                            {
                            if (scheduler)
-                               scheduler.close (handle, toString);
+                               // TODO Not supported on Posix
+                               // scheduler.close (handle, toString);
                            posix.close (handle);
                            }
                         handle = -1;
