@@ -498,6 +498,22 @@ template StringNum(T)
             is(typeof(T[0])==wchar) ? "16" : "32");
 }
 
+// Decodes a single dchar character from a string.  Yes, I know they're
+// actually code points, but I can't be bothered to type that much.  Although
+// I suppose I just typed MORE than that by writing this comment.  Meh.
+dchar firstCharOf(T)(T s, out size_t used)
+{
+    static if( is( T : char[] ) || is( T : wchar[] ) )
+    {
+        return tango.text.convert.Utf.decode(s, used);
+    }
+    else
+    {
+        used = 1;
+        return s[0];
+    }
+}
+
 // This mixin defines a general function for converting to a UDT.
 template toUDT()
 {
@@ -920,6 +936,35 @@ D toChar(D,S)(S value)
             throwConvError;
         }
     }
+    else static if( isString!(S) )
+    {
+        void fail()
+        {
+            mixin convError;
+            throwConvError;
+        }
+
+        if( value.length == 0 )
+            fail();
+
+        else
+        {
+            size_t used;
+            dchar c = firstCharOf(value, used);
+
+            if( used < value.length )
+            {
+                fail(); // TODO: Overflow error
+            }
+
+            if( (cast(size_t) c) > (cast(size_t) D.max) )
+            {
+                fail(); // TODO: Overflow error
+            }
+
+            return cast(D) c;
+        }
+    }
     else static if( isPOD!(S) || isObject!(S) )
     {
         mixin fromUDT;
@@ -1304,6 +1349,11 @@ unittest
 
     assert(ex( to!(char)(-1) ));
     assert(ex( to!(char)(10) ));
+
+    assert( to!(char)("a"d) == 'a' );
+    assert( to!(dchar)("ε"c) == 'ε' );
+
+    assert(ex( to!(char)("ε"d) ));
 
     /*
      * String-string
