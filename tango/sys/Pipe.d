@@ -21,6 +21,8 @@ debug (PipeConduit)
     private import tango.io.Stdout;
 }
 
+private enum {DefaultBufferSize = 8 * 1024}
+
 
 /**
  * Conduit for pipes.
@@ -40,8 +42,6 @@ class PipeConduit : Device
         alias Device.close       close;
         alias Device.error       error;
     }
-
-    static const uint DefaultBufferSize = 8 * 1024;
 
     private uint _bufferSize;
 
@@ -147,7 +147,7 @@ class Pipe
     /**
      * Create a Pipe.
      */
-    public this(uint bufferSize = PipeConduit.DefaultBufferSize)
+    public this(uint bufferSize = DefaultBufferSize)
     {
         version (Windows)
         {
