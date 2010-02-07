@@ -1057,9 +1057,6 @@ public class UnknownAddress : Address
 
 public class IPv4Address : Address
 {
-        char[8] _port;
-        sockaddr_in sin;
-
         /***********************************************************************
 
 
@@ -1089,7 +1086,65 @@ public class IPv4Address : Address
                 uint sin_addr; //in_addr
                 char[8] sin_zero = 0;
         }
+
         static assert(sockaddr_in.sizeof is 16);
+
+        private char[8] _port;
+        private sockaddr_in sin;
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        package this ()
+        {
+        }
+
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        this (ushort port)
+        {
+                sin.sin_addr = 0; //any, "0.0.0.0"
+                sin.sin_port = htons(port);
+        }
+
+        /***********************************************************************
+
+
+        ***********************************************************************/
+
+        this (uint addr, ushort port)
+        {
+                sin.sin_addr = htonl(addr);
+                sin.sin_port = htons(port);
+        }
+
+        /***********************************************************************
+
+                -port- can be PORT_ANY
+                -addr- is an IP address or host name
+
+        ***********************************************************************/
+
+        this (char[] addr, int port = PORT_ANY)
+        {
+                uint uiaddr = parse(addr);
+                if(ADDR_NONE == uiaddr)
+                {
+                        auto ih = new NetHost;
+                        if(!ih.getHostByName(addr))
+                          {
+                          char[16] tmp = void;
+                          exception ("Unable to resolve "~addr~":"~fromInt(tmp, port));
+                          }
+                        uiaddr = ih.addrList[0];
+                }
+                sin.sin_addr = htonl(uiaddr);
+                sin.sin_port = htons(cast(ushort) port);
+        }
 
         /***********************************************************************
 
@@ -1139,60 +1194,6 @@ public class IPv4Address : Address
         uint addr()
         {
                 return ntohl(sin.sin_addr);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        package this()
-        {
-        }
-
-        /***********************************************************************
-
-                -port- can be PORT_ANY
-                -addr- is an IP address or host name
-
-        ***********************************************************************/
-
-        this(char[] addr, int port = PORT_ANY)
-        {
-                uint uiaddr = parse(addr);
-                if(ADDR_NONE == uiaddr)
-                {
-                        auto ih = new NetHost;
-                        if(!ih.getHostByName(addr))
-                          {
-                          char[16] tmp = void;
-                          exception ("Unable to resolve "~addr~":"~fromInt(tmp, port));
-                          }
-                        uiaddr = ih.addrList[0];
-                }
-                sin.sin_addr = htonl(uiaddr);
-                sin.sin_port = htons(cast(ushort) port);
-        }
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        this(uint addr, ushort port)
-        {
-                sin.sin_addr = htonl(addr);
-                sin.sin_port = htons(port);
-        }
-
-        /***********************************************************************
-
-
-        ***********************************************************************/
-
-        this(ushort port)
-        {
-                sin.sin_addr = 0; //any, "0.0.0.0"
-                sin.sin_port = htons(port);
         }
 
         /***********************************************************************
