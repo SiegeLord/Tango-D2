@@ -1172,7 +1172,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/
-        public void parse(InputStream input) {
+        private void parse(InputStream input) {
                 //TODO turn into a Ch[] buffer
                 doParse();
         }
@@ -1199,7 +1199,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        public void parseUrl(Ch[] systemId) {
+        private void parseUrl(Ch[] systemId) {
                 //TODO turn url into a Ch[] buffer            
                 doParse();
         }
@@ -1687,7 +1687,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/
-        public void parse(InputStream input) {
+        private void parse(InputStream input) {
                 setupParse();
                 parent.parse(input);
         }
@@ -1722,7 +1722,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/
-        public void parseUrl(Ch[] systemId) {
+        private void parseUrl(Ch[] systemId) {
                 //TODO FIXME
                 //parse(new InputSource(systemId));
         }
@@ -2299,7 +2299,7 @@ public interface XMLReader(Ch = char) {
          * @see #setContentHandler
          * @see #setErrorHandler 
          *******************************************************************************/
-        public void parse(InputStream input);
+        private void parse(InputStream input);
 
         /*******************************************************************************
          * Parse an XML document from a system identifier (URI).
@@ -2323,7 +2323,7 @@ public interface XMLReader(Ch = char) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        public void parseUrl(Ch[] systemId);
+        private void parseUrl(Ch[] systemId);
 
         /*******************************************************************************
          * Parse an XML document from a character array.
