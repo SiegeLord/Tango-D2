@@ -607,6 +607,8 @@ NumType parse(T) (T[] src, uint* ate=null)
                               p += 3;
                               }
                            break;
+                      default:
+                           break;
                       }
 
         // set parse length, and return value
