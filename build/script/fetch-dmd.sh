@@ -16,7 +16,7 @@ pushd downloads
 rm -rf dmd
 if [ ! -e dmd.$VERSION.zip ]
 then
-    wget http://ftp.digitalmars.com/dmd.$VERSION.zip
+    curl http://ftp.digitalmars.com/dmd.$VERSION.zip -o dmd.$VERSION.zip
 fi
 unzip dmd.$VERSION.zip
 
