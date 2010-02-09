@@ -21,15 +21,15 @@ fi
 unzip dmd.$VERSION.zip
 
 # copy files
-cp dmd/$OS/bin/dmd ../bundle/bin/
-cp dmd/$OS/bin/dumpobj ../bundle/bin/
-cp dmd/$OS/bin/obj2asm ../bundle/bin/
-cp dmd/$OS/bin/rdmd ../bundle/bin/
-cp dmd/$OS/bin/README.TXT ../bundle/bin/
+cp dmd/$OS/bin/dmd ../tango-bundle/bin/
+cp dmd/$OS/bin/dumpobj ../tango-bundle/bin/
+cp dmd/$OS/bin/obj2asm ../tango-bundle/bin/
+cp dmd/$OS/bin/rdmd ../tango-bundle/bin/
+cp dmd/$OS/bin/README.TXT ../tango-bundle/bin/
 
-chmod +x ../bundle/bin/dmd
-chmod +x ../bundle/bin/dumpobj
-chmod +x ../bundle/bin/obj2asm
-chmod +x ../bundle/bin/rdmd
+chmod +x ../tango-bundle/bin/dmd
+chmod +x ../tango-bundle/bin/dumpobj
+chmod +x ../tango-bundle/bin/obj2asm
+chmod +x ../tango-bundle/bin/rdmd
 
 popd
