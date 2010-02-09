@@ -7,6 +7,8 @@
 
 # For a bundle with the compiler in it, use --dmd (only compiler supported sofar)
 
+DMD=0
+
 while [ "$#" != "0" ]
 do
     case "$1" in
@@ -32,7 +34,7 @@ mkdir -p tango-bundle/lib
 mkdir -p tango-bundle/import
 
 # copy binaries and config
-cp export/build/bin/linux$BITS/* tango-bundle/bin
+cp export/build/bin/$PLATFORM$BITS/* tango-bundle/bin
 cp dmd.conf tango-bundle/bin/
 
 # copy imports and .txt
