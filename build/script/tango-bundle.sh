@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Env variables PLATFORM and DC must be set before running this script
-# Env variable BITS should be set to 64 on 64 bit platforms, otherwise nothing
+# Env variable ARCH should be set to what best describes the platform (such as 64 for 64bit)
 # Env variable TANGOUPLOADPW must be set to a file holding "user:pass"
 # The compiler used must be on the path
 
@@ -34,7 +34,7 @@ mkdir -p tango-bundle/lib
 mkdir -p tango-bundle/import
 
 # copy binaries and config
-cp export/build/bin/$PLATFORM$BITS/* tango-bundle/bin
+cp export/build/bin/$PLATFORM$ARCH/* tango-bundle/bin
 cp dmd.conf tango-bundle/bin/
 
 # copy imports and .txt
@@ -45,7 +45,7 @@ rm -rf tango-bundle/import/tango/core/rt
 
 # create library
 pushd export
-build/bin/$PLATFORM$BITS/bob -v -u -r=$DC -c=$DC -p=$PLATFORM -l=libtango-$DC . 
+build/bin/$PLATFORM$ARCH/bob -v -u -r=$DC -c=$DC -p=$PLATFORM -l=libtango-$DC . 
 cp libtango-$DC.a ../tango-bundle/lib
 popd
 
@@ -56,10 +56,10 @@ then
     export/build/script/fetch-dmd.sh
     # name bundle file
     DMDVER=`cat dmd.version.txt`
-    BUNDLE=tango-bin-$PLATFORM$BITS-with-$DC.$DMDVER.tar.gz
+    BUNDLE=tango-bin-$PLATFORM$ARCH-with-$DC.$DMDVER.tar.gz
 else
     # name bundle file
-    BUNDLE=tango-bin-$PLATFORM$BITS-$DC.tar.gz
+    BUNDLE=tango-bin-$PLATFORM$ARCH-$DC.tar.gz
 fi
 
 #package
