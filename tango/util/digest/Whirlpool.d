@@ -16,7 +16,7 @@
 
 *******************************************************************************/
 
-module tango.io.digest.Whirlpool;
+module tango.util.digest.Whirlpool;
 
 private import tango.util.digest.MerkleDamgard;
 
