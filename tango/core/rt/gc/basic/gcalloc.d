@@ -23,7 +23,7 @@
  *     distribution.
  * Authors:   Walter Bright, David Friedman, Sean Kelly
  */
-module rt.basicgc.gcalloc;
+module rt.gc.basic.gcalloc;
 
 version (Win32)
 {
