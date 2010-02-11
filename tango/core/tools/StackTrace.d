@@ -282,11 +282,12 @@ version(ElfSymbolification){
                         fInfo.offsetSymb = cast(ptrdiff_t)ip - cast(ptrdiff_t)symAddr;
                         fInfo.baseSymb = cast(size_t)symAddr;
                         fInfo.func = symName;
-                        return true;
+                        break;
                     }
                 }
             }
         }
+        StaticSectionInfo.resolveLineNumber(fInfo);
         return true;
     }
 }

@@ -110,7 +110,7 @@ version(linux){
                 Elf64_Addr d_ptr;
             }
         }
-        const EI_NIDENT = 16;
+        enum { EI_NIDENT = 16 }
 
         struct Elf32_Ehdr{
             char        e_ident[EI_NIDENT]; /* Magic number and other info */
@@ -213,16 +213,18 @@ version(linux){
         Elf_Ehdr header;
         char[] stringTable;
         Elf_Sym[] sym;
+        ubyte[] debugLine;   //contents of the .debug_line section, if available
         char[] fileName;
         void* mmapBase;
         size_t mmapLen;
         /// initalizer
         static StaticSectionInfo opCall(Elf_Ehdr header, char[] stringTable, Elf_Sym[] sym,
-            char[] fileName, void* mmapBase=null, size_t mmapLen=0) {
+            ubyte[] debugLine, char[] fileName, void* mmapBase=null, size_t mmapLen=0) {
             StaticSectionInfo newV;
             newV.header=header;
             newV.stringTable=stringTable;
             newV.sym=sym;
+            newV.debugLine = debugLine;
             newV.fileName=fileName;
             newV.mmapBase=mmapBase;
             newV.mmapLen=mmapLen;
@@ -275,7 +277,7 @@ version(linux){
         }
         /// returns a new section to fill out
         static StaticSectionInfo *addGSection(Elf_Ehdr header,char[] stringTable, Elf_Sym[] sym,
-            char[] fileName,void *mmapBase=null, size_t mmapLen=0){
+            ubyte[] debugLine, char[] fileName,void *mmapBase=null, size_t mmapLen=0){
             if (_nGSections>=MAX_SECTS){
                 throw new Exception("too many static sections",__FILE__,__LINE__);
             }
@@ -288,13 +290,25 @@ version(linux){
                 newFileName=_fileNameBuf[_nFileBuf.._nFileBuf+len];
                 _nFileBuf+=len;
             }
-            _gSections[_nGSections]=StaticSectionInfo(header,stringTable,sym,newFileName,
+            _gSections[_nGSections]=StaticSectionInfo(header,stringTable,sym,debugLine,newFileName,
                                                       mmapBase,mmapLen);
             _nGSections++;
             return &(_gSections[_nGSections-1]);
         }
+
+        static void resolveLineNumber(ref Exception.FrameInfo info) {
+            foreach (ref section; _gSections[0.._nGSections]) {
+                //dwarf stores the directory component of filenames separately
+                //dmd doesn't care, and directory components are in the filename
+                //linked in gcc produced files still use them
+                char[] dir;
+                //assumption: if exactAddress=false, it's a return address
+                if (find_line_number(section.debugLine, info.address, !info.exactAddress, dir, info.file, info.line))
+                    break;
+            }
+        }
     }
-    
+
     private void scan_static(char *file){
         // should try to use mmap,for this reason the "original" format is kept
         // if copying (as now) one could discard the unused strings, and pack the symbols in
@@ -369,6 +383,7 @@ version(linux){
         /* find sections */
         char[] string_table;
         Elf_Sym[] symbs;
+        ubyte[] debug_line;
         for(ptrdiff_t i = header.e_shnum - 1; i > -1; i--){
             seek(header.e_shoff + i * header.e_shentsize);
             read(&section, section.sizeof);
@@ -420,13 +435,31 @@ version(linux){
                         read(symbs.ptr,symbs.length*Elf_Sym.sizeof);
                     }
                 }
+            } else if (strcmp(sectionStrs.ptr+section.sh_name,".debug_line")==0 && !debug_line) {
+                seek(section.sh_offset);
+                if (useShAddr && section.sh_addr){
+                    if (!may_read(cast(size_t)section.sh_addr)){
+                        fprintf(stderr,"section '%s' has invalid address, relocated?\n",
+                                &(sectionStrs[section.sh_name]));
+                    } else {
+                        debug_line=(cast(ubyte*)section.sh_addr)[0..section.sh_size];
+                    }
+                } else {
+                    auto p=malloc(section.sh_size);
+                    if (p is null)
+                        throw new Exception("failed alloc",__FILE__,__LINE__);
+                    debug_line=(cast(ubyte*)p)[0..section.sh_size];
+                    seek(section.sh_offset);
+                    read(debug_line.ptr,debug_line.length);
+                }
             }
-            
-            if (string_table && symbs) {
-                StaticSectionInfo.addGSection(header,string_table,symbs,file[0..strlen(file)]);
-                string_table=null;
-                symbs=null;
-            }
+        }
+
+        if (string_table && symbs) {
+            StaticSectionInfo.addGSection(header,string_table,symbs,debug_line,file[0..strlen(file)]);
+            string_table=null;
+            symbs=null;
+            debug_line=null;
         }
     }
 
@@ -547,4 +580,358 @@ Lsplit:
     static this() {
         find_symbols();
     }
+
+
+    private void dwarf_error(char[] msg) {
+        //this is wrong (this code could be executed within a singla handler, and
+        //fprintf() is most likely not signal-safe)
+        //(but StackTrace.d also uses fprintf())
+        fprintf(stderr, "Tango stacktracer DWARF error: %.*s\n", msg.length, msg.ptr);
+    }
+
+    alias short uhalf;
+
+    struct DwarfReader {
+        ubyte[] data;
+        size_t read_pos;
+        bool is_dwarf_64;
+
+        size_t left() {
+            return data.length - read_pos;
+        }
+
+        ubyte next() {
+            ubyte r = data[read_pos];
+            read_pos++;
+            return r;
+        }
+
+        //read the length field, and set the is_dwarf_64 flag accordingly
+        //return 0 on error
+        size_t read_initial_length() {
+            //64 bit applications normally use 32 bit DWARF information
+            //this means on 64 bit, we have to handle both 32 bit and 64 bit infos
+            //the 64 bit version seems to be rare, though
+            //independent from this, 32 bit DWARF still uses some 64 bit types in
+            //64 bit executables (at least the DW_LNE_set_address opcode does)
+            auto initlen = read!(uint)();
+            is_dwarf_64 = (initlen == 0xff_ff_ff_ff);
+            if (is_dwarf_64) {
+                //--can handle this, but need testing (this format seems to be uncommon)
+                //--remove the following 2 lines to see if it works, and fix the code if needed
+                dwarf_error("dwarf 64 detected, aborting");
+                abort();
+                //--
+                static if (size_t.sizeof > 4) {
+                    dwarf_error("64 bit DWARF in a 32 bit excecutable?");
+                    return 0;
+                }
+                return read!(ulong)();
+            } else {
+                if (initlen >= 0xff_ff_ff_00) {
+                    //see dwarf spec 7.5.1
+                    dwarf_error("corrupt debugging information?");
+                }
+                return initlen;
+            }
+        }
+
+        //adapted from example code in dwarf spec. appendix c
+        //defined max. size is 128 bit; we provide up to 64 bit
+        private ulong do_read_leb(bool sign_ext) {
+            ulong res;
+            int shift;
+            ubyte b;
+            do {
+                b = next();
+                res = res | ((b & 0x7f) << shift);
+                shift += 7;
+            } while (b & 0x80);
+            if (sign_ext && shift < ulong.sizeof*8 && (b & 0x40))
+                res = res - (1L << shift);
+            return res;
+        }
+        ulong uleb128() {
+            return do_read_leb(false);
+        }
+        long sleb128() {
+            return do_read_leb(true);
+        }
+
+        T read(T)() {
+            T r = *cast(T*)data[read_pos..read_pos+T.sizeof].ptr;
+            read_pos += T.sizeof;
+            return r;
+        }
+
+        size_t read_header_length() {
+            if (is_dwarf_64) {
+                return read!(ulong)();
+            } else {
+                return read!(uint)();
+            }
+        }
+
+        //null terminated string
+        char[] str() {
+            char* start = cast(char*)&data[read_pos];
+            size_t len = strlen(start);
+            read_pos += len + 1;
+            return start[0..len];
+        }
+    }
+
+    unittest {
+        //examples from dwarf spec section 7.6
+        ubyte[] bytes = [2,127,0x80,1,0x81,1,0x82,1,57+0x80,100,2,0x7e,127+0x80,0,
+            0x81,0x7f,0x80,1,0x80,0x7f,0x81,1,0x7f+0x80,0x7e];
+        ulong[] u = [2, 127, 128, 129, 130, 12857];
+        long[] s = [2, -2, 127, -127, 128, -128, 129, -129];
+        auto rd = DwarfReader(bytes);
+        foreach (x; u)
+            assert(rd.uleb128() == x);
+        foreach (x; s)
+            assert(rd.sleb128() == x);
+    }
+
+    //debug_line = contents of the .debug_line section
+    //is_return_address = true if address is a return address (found by stacktrace)
+    bool find_line_number(ubyte[] debug_line, size_t address, bool is_return_address,
+        ref char[] out_directory, ref char[] out_file, ref long out_line)
+    {
+        DwarfReader rd = DwarfReader(debug_line);
+
+
+        //NOTE:
+        //  - instead of saving the filenames when the debug infos are first parsed,
+        //    we only save a reference to the debug infos (with FileRef), and
+        //    reparse the debug infos when we need the actual filenames
+        //  - the same code is used for skipping over the debug infos, and for
+        //    getting the filenames later
+        //  - this is just for avoiding memory allocation
+
+        struct FileRef {
+            int file;           //file number
+            size_t directories; //offset to directory info
+            size_t filenames;   //offset to filename info
+        }
+
+        //include_directories
+        void reparse_dirs(void delegate(int idx, char[] d) entry) {
+            int idx = 1;
+            for (;;) {
+                auto s = rd.str();
+                if (!s.length)
+                    break;
+                if (entry)
+                    entry(idx, s);
+                idx++;
+            }
+        }
+        //file_names
+        void reparse_files(void delegate(int idx, int dir, char[] fn) entry) {
+            int idx = 1;
+            for (;;) {
+                auto s = rd.str();
+                if (!s.length)
+                    break;
+                int dir = rd.uleb128(); //directory index
+                rd.uleb128();           //last modification time (unused)
+                rd.uleb128();           //length of file (unused)
+                if (entry)
+                    entry(idx, dir, s);
+                idx++;
+            }
+        }
+
+        //associated with the found entry
+        FileRef found_file;
+        bool found = false;
+
+        //the section is made up of independent blocks of line number programs
+        blocks: while (rd.left > 0) {
+            size_t unit_length = rd.read_initial_length();
+
+            if (unit_length == 0)
+                return false;
+
+            size_t start = rd.read_pos;
+            size_t end = start + unit_length;
+
+            auto ver = rd.read!(uhalf)();
+            auto header_length = rd.read_header_length();
+
+            size_t header_start = rd.read_pos;
+
+            auto min_instr_len = rd.read!(ubyte)();
+            auto def_is_stmt = rd.read!(ubyte)();
+            auto line_base = rd.read!(byte)();
+            auto line_range = rd.read!(ubyte)();
+            auto opcode_base = rd.read!(ubyte)();
+            ubyte[256] sol_store; //to avoid heap allocation
+            ubyte[] standard_opcode_lengths = sol_store[0..opcode_base-1];
+            foreach (ref x; standard_opcode_lengths) {
+                x = rd.read!(ubyte)();
+            }
+
+            size_t dirs_offset = rd.read_pos;
+            reparse_dirs(null);
+            size_t files_offset = rd.read_pos;
+            reparse_files(null);
+
+            rd.read_pos = header_start + header_length;
+
+            //state machine registers
+            struct LineRegs {
+                bool valid() { return address != 0; }
+                int file = 1;               //file index
+                int line = 1;               //line number
+                size_t address = 0;         //absolute address
+                bool end_sequence = false;  //last row in a block
+            }
+
+            LineRegs regs;      //current row
+            LineRegs regs_prev; //row before
+
+            //append row to virtual line number table, using current register contents
+            //NOTE: reg_address is supposed to be increased only (within  a block)
+            //      reg_line can be increased or decreased randomly
+            void append() {
+                if (regs_prev.valid()) {
+                    if (is_return_address) {
+                        if (address >= regs_prev.address && address <= regs.address)
+                            found = true;
+                    } else {
+                        //some special case *shrug*
+                        if (regs_prev.address == address)
+                            found = true;
+                        //not special case
+                        if (address >= regs_prev.address && address < regs.address)
+                            found = true;
+                    }
+
+                    if (found) {
+                        out_line = regs_prev.line;
+                        found_file.file = regs_prev.file;
+                        found_file.directories = dirs_offset;
+                        found_file.filenames = files_offset;
+                    }
+                }
+
+                regs_prev = regs;
+            }
+
+            //actual line number program
+            loop: while (rd.read_pos < end) {
+                ubyte cur = rd.next();
+
+                if (found)
+                    break blocks;
+
+                //"special opcodes"
+                if (cur >= opcode_base) {
+                    int adj = cur - opcode_base;
+                    long addr_inc = (adj / line_range) * min_instr_len;
+                    long line_inc = line_base + (adj % line_range);
+                    regs.address += addr_inc;
+                    regs.line += line_inc;
+                    append();
+                    continue loop;
+                }
+
+                //standard opcodes
+                switch (cur) {
+                case 1: //DW_LNS_copy
+                    append();
+                    continue loop;
+                case 2: //DW_LNS_advance_pc
+                    regs.address += rd.uleb128() * min_instr_len;
+                    continue loop;
+                case 3: //DW_LNS_advance_line
+                    regs.line += rd.sleb128();
+                    continue loop;
+                case 4: //DW_LNS_set_file
+                    regs.file = rd.uleb128();
+                    continue loop;
+                case 8: //DW_LNS_const_add_pc
+                    //add address increment according to special opcode 255
+                    //sorry logic duplicated from special opcode handling above
+                    regs.address += ((255-opcode_base)/line_range)*min_instr_len;
+                    continue loop;
+                case 9: //DW_LNS_fixed_advance_pc
+                    regs.address += rd.read!(uhalf)();
+                    continue loop;
+                default:
+                }
+
+                //"unknown"/unhandled standard opcode, skip
+                if (cur != 0) {
+                    //skip parameters
+                    auto count = standard_opcode_lengths[cur-1];
+                    while (count--) {
+                        rd.uleb128();
+                    }
+                    continue loop;
+                }
+
+                //extended opcodes
+                size_t instr_len = rd.uleb128(); //length of this instruction
+                cur = rd.next();
+                switch (cur) {
+                case 1: //DW_LNE_end_sequence
+                    regs.end_sequence = true;
+                    append();
+                    //reset
+                    regs = LineRegs.init;
+                    regs_prev = LineRegs.init;
+                    continue loop;
+                case 2: //DW_LNE_set_address
+                    regs.address = rd.read!(size_t)();
+                    continue loop;
+                case 3: //DW_LNE_define_file
+                    //can't handle this lol
+                    //would need to append the file to the file table, but to avoid
+                    //memory allocation, we don't copy out and store the normal file
+                    //table; only a pointer to the original dwarf file entries
+                    //solutions:
+                    //  - give up and pre-parse debugging infos on program startup
+                    //  - give up and allocate heap memory (but: signal handlers?)
+                    //  - use alloca or a static array on the stack
+                    dwarf_error("can't handle DW_LNE_define_file yet");
+                    return false;
+                default:
+                }
+
+                //unknown extended opcode, skip
+                rd.read_pos += instr_len;
+                continue loop;
+            }
+
+            //ensure correct start of next block (?)
+            assert(rd.read_pos == end);
+        }
+
+        if (!found)
+            return false;
+
+        //resolve found_file to the actual filename & directory strings
+        int dir;
+        rd.read_pos = found_file.filenames;
+        reparse_files((int idx, int a_dir, char[] a_file) {
+            if (idx == found_file.file) {
+                dir = a_dir;
+                out_file = a_file;
+            }
+        });
+        rd.read_pos = found_file.directories;
+        reparse_dirs((int idx, char[] a_dir) {
+            if (idx == dir) {
+                out_directory = a_dir;
+            }
+        });
+
+        return true;
+    }
+
 }
+
