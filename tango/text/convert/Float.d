@@ -386,14 +386,14 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
 
         if (value >= 0.5)
             while (--ptr && ++buf[ptr] > '9')
-                   buf[ptr] = (ptr > zero) ? 0 : '0';
+                   buf[ptr] = (ptr > zero) ? '\0' : '0';
         else
            for (auto i=ptr; i && --i > zero && buf[i] is '0';)
-                buf[i] = 0;
+                buf[i] = '\0';
 
         if (ptr) 
            {
-           buf [ndigit + 1]= 0;
+           buf [ndigit + 1] = '\0';
            return buf + 1;
            }
         if (fflag) 
@@ -402,7 +402,7 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
            ++*decpt;
            }
         buf[0]= '1';
-        buf[ndigit]= 0;
+        buf[ndigit]= '\0';
         return buf;
 }
 }
