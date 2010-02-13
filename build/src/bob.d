@@ -640,7 +640,8 @@ struct Args
                 target,
                 compiler;
 
-        char[]  usage = "usage: bob tango-path\n"
+        char[]  usage = "usage: bob <options> tango-path\n"
+                        "example: bob -u -r=dmd -c=dmd -p=windows -l=tango mytangodir\n"
                         "\t[-v]\t\t\tverbose output\n"
                         "\t[-q]\t\t\tquick execution\n"
                         "\t[-i]\t\t\tinhibit execution\n"
