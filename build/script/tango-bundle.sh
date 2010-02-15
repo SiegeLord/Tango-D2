@@ -8,6 +8,9 @@
 # For a bundle with the compiler in it, use --dmd (only compiler supported sofar)
 
 DMD=0
+REL=""
+SOURCE="trunk"
+UPLOADFOLDER="snapshot"
 
 while [ "$#" != "0" ]
 do
@@ -15,18 +18,27 @@ do
         --dmd)
             DMD=1
             ;;
+        --rel)
+            shift
+            REL="$1"
+            UPLOADFOLDER=$REL
+            ;;
     esac
     shift
 done
  
 # clean old
-rm -rf tango-bundle export trunk 
+rm -rf tango-bundle export checkout 
 
 # check out
-svn co http://svn.dsource.org/projects/tango/trunk
+if [ "$REL" != "" ]
+then
+    SOURCE=tags/releases/$REL
+fi
+svn co http://svn.dsource.org/projects/tango/$SOURCE checkout
 
 # export
-svn export --force trunk export
+svn export --force checkout export
 
 # create tango-bundle dirs
 mkdir -p tango-bundle/bin
@@ -49,6 +61,11 @@ build/bin/$PLATFORM$ARCH/bob -v -u -r=$DC -c=$DC -p=$PLATFORM -l=libtango-$DC .
 cp libtango-$DC.a ../tango-bundle/lib
 popd
 
+if [ "$REL" != "" ] 
+then 
+    REL=-$REL
+fi
+
 BUNDLE=
 # deal with compiler
 if [ $DMD = 1 ]
@@ -56,15 +73,15 @@ then
     export/build/script/fetch-dmd.sh
     # name bundle file
     DMDVER=`cat dmd.version.txt`
-    BUNDLE=tango-bin-$PLATFORM$ARCH-with-$DC.$DMDVER.tar.gz
+    BUNDLE=tango$REL-bin-$PLATFORM$ARCH-with-$DC.$DMDVER.tar.gz
 else
     # name bundle file
-    BUNDLE=tango-bin-$PLATFORM$ARCH-$DC.tar.gz
+    BUNDLE=tango$REL-bin-$PLATFORM$ARCH-$DC.tar.gz
 fi
 
 #package
 tar -czf $BUNDLE tango-bundle 
 
 # upload
-curl --upload-file $BUNDLE --user `cat $TANGOUPLOADPW` http://downloads.dsource.org/projects/tango/snapshot/
+curl --upload-file $BUNDLE --user `cat $TANGOUPLOADPW` http://downloads.dsource.org/projects/tango/$UPLOADFOLDER/
 
