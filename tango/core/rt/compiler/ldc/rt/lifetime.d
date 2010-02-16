@@ -786,6 +786,7 @@ extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
     return *cast(long*)px;
 }
 
++/
 
 /**
  *
@@ -849,10 +850,11 @@ size_t newCapacity(size_t newlength, size_t size)
 
 
 /**
- *
+ * Appends a single element to an array.
  */
-extern (C) byte[] _d_arrayappendcT(TypeInfo ti, ref byte[] x, ...)
+extern (C) byte[] _d_arrayappendcT(TypeInfo ti, void* array, void* element)
 {
+    auto x = cast(byte[]*)array;
     auto sizeelem = ti.next.tsize();            // array element size
     auto info = gc_query(x.ptr);
     auto length = x.length;
@@ -879,16 +881,16 @@ extern (C) byte[] _d_arrayappendcT(TypeInfo ti, ref byte[] x, ...)
         assert(newcap >= newlength * sizeelem);
         newdata = cast(byte *)gc_malloc(newcap + 1, info.attr);
         memcpy(newdata, x.ptr, length * sizeelem);
-        (cast(void**)(&x))[1] = newdata;
+        (cast(void**)x)[1] = newdata;
     }
   L1:
-    byte *argp = cast(byte *)(&ti + 2);
+    byte *argp = cast(byte *)element;
 
-    *cast(size_t *)&x = newlength;
+    *cast(size_t *)x = newlength;
     x.ptr[length * sizeelem .. newsize] = argp[0 .. sizeelem];
     assert((cast(size_t)x.ptr & 15) == 0);
     assert(gc_sizeOf(x.ptr) > x.length * sizeelem);
-    return x;
+    return *x;
 }
 
 
@@ -1128,6 +1130,7 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     return result;
 }
 
+/+
 
 /**
  *
