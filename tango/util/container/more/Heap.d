@@ -11,7 +11,9 @@ module tango.util.container.more.Heap;
 
 private import tango.core.Exception;
 
-void defaultSwapCallback(T)(T t, uint index) {}
+bool minHeapCompare(T)(T a, T b) {return a <= b;}
+bool maxHeapCompare(T)(T a, T b) {return a >= b;}
+void defaultHeapSwap(T)(T t, uint index) {}
 
 /** A heap is a data structure where you can insert items in random order and extract them in sorted order. 
   * Pushing an element into the heap takes O(lg n) and popping the top of the heap takes O(lg n). Heaps are 
@@ -24,16 +26,16 @@ void defaultSwapCallback(T)(T t, uint index) {}
   * Note: always pass by reference when modifying a heap. 
   *
   * The template arguments to the heap are:
-  *     T = the element type
-  *     Min = true if it is a minheap (the smallest element is popped first), 
-  *             false for a maxheap (the greatest element is popped first)
-  *     onMove = a function called when swapping elements. Its signature should be void(T, uint).
-  *             The default does nothing, and should suffice for most users. You 
-  *             probably want to keep this function small; it's called O(log N) 
-  *             times per insertion or removal.
+  *     T       = the element type
+  *     Compare = a function called when ordering elements. Its signature should be bool(T, T).
+  *               see minHeapCompare() and maxHeapCompare() for examples.
+  *     Move    = a function called when swapping elements. Its signature should be void(T, uint).
+  *               The default does nothing, and should suffice for most users. You 
+  *               probably want to keep this function small; it's called O(log N) 
+  *               times per insertion or removal.
 */
 
-struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
+struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap!(T))
 {
         alias pop       remove;
         alias push      opCatAssign;
@@ -52,7 +54,7 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
                        heap.length = 2 * heap.length + 32;
 
                 heap [index] = t;
-                onMove (t, index);
+                Move (t, index);
                 fixup (index);
         }
 
@@ -112,11 +114,11 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
                 // if next == index, then we have nothing valid on the heap
                 // so popping does nothing but change the length
                 // the other calls are irrelevant, but we surely don't want to
-                // call onMove with invalid data
+                // call Move with invalid data
                 if (next > index)
                 {
                         heap[index] = heap[next];
-                        onMove(heap[index], index);
+                        Move(heap[index], index);
                         fixdown(index);
                 }
                 return t;
@@ -185,7 +187,7 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
         {
                 if (index == 0) return;
                 uint par = parent (index);
-                if (!comp(heap[par], heap[index]))
+                if (!Compare(heap[par], heap[index]))
                 {
                         swap (par, index);
                         fixup (par);
@@ -207,7 +209,7 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
                 {
                         down = left;
                 }
-                else if (comp (heap[left], heap[left + 1]))
+                else if (Compare (heap[left], heap[left + 1]))
                 {
                         down = left;
                 }
@@ -216,7 +218,7 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
                         down = left + 1;
                 }
 
-                if (!comp(heap[index], heap[down]))
+                if (!Compare(heap[index], heap[down]))
                 {
                         swap (index, down);
                         fixdown (down);
@@ -229,17 +231,9 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
                 auto t1 = heap[a];
                 auto t2 = heap[b];
                 heap[a] = t2;
-                onMove(t2, a);
+                Move(t2, a);
                 heap[b] = t1;
-                onMove(t1, b);
-        }
-
-        private bool comp (T parent, T child)
-        {
-                static if (Min == true)
-                           return parent <= child;
-                else
-                           return parent >= child;
+                Move(t1, b);
         }
 }
 
@@ -252,7 +246,7 @@ struct Heap (T, bool Min, alias onMove = defaultSwapCallback!(T))
 
 template MinHeap(T)
 {
-        alias Heap!(T, true) MinHeap;
+        alias Heap!(T, minHeapCompare) MinHeap;
 }
 
 /** A maxheap implementation. This will have the largest item as the top of the heap. 
@@ -263,7 +257,7 @@ template MinHeap(T)
 
 template MaxHeap(T)
 {
-        alias Heap!(T, false) MaxHeap;
+        alias Heap!(T, maxHeapCompare) MaxHeap;
 }
 
 
@@ -348,7 +342,7 @@ unittest
         // this tests that onMove is called with fixdown
         swapped = null;
         indices = null;
-        Heap!(long, true, onMove) h;
+        Heap!(long, minHeapCompare, onMove) h;
         // no swap
         h ~= 1;
         // no swap
@@ -369,7 +363,7 @@ unittest
         // this tests that onMove is called with fixup
         swapped = null;
         indices = null;
-        Heap!(long, true, onMove) h;
+        Heap!(long, minHeapCompare, onMove) h;
         // no swap
         h ~= 1;
         // no swap
