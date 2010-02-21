@@ -343,7 +343,7 @@ size_t index(T) (T[] source, T[] match, size_t start=0)
 
 ******************************************************************************/
 
-size_t rindex(T, U=size_t) (T[] source, T match[], U start=size_t.max)
+size_t rindex(T, U=size_t) (T[] source, T[] match, U start=size_t.max)
 {return rindex!(T)(source, match, start);}
 
 size_t rindex(T) (T[] source, T[] match, size_t start=size_t.max)
