@@ -375,7 +375,7 @@ class Arguments
 
         ***********************************************************************/
 
-        char[] errors (char[] delegate(char[] buf, char[] fmt, ...) dg)
+        final char[] errors (char[] delegate(char[] buf, char[] fmt, ...) dg)
         {
                 char[256] tmp;
                 char[] result;
@@ -404,10 +404,25 @@ class Arguments
 
         ***********************************************************************/
 
-        Arguments errors (char[][] errors)
+        final Arguments errors (char[][] errors)
         {
                 if (errors.length is errmsg.length)
                     msgs = errors;
+                return this;
+        }
+
+        /***********************************************************************
+                
+                Expose the configured set of help text, via the given 
+                delegate
+
+        ***********************************************************************/
+
+        final Arguments help (void delegate(char[] arg, char[] help) dg)
+        {
+                foreach (arg; args)
+                         if (arg.text.ptr)
+                             dg (arg.name, arg.text);
                 return this;
         }
 
@@ -510,6 +525,7 @@ class Arguments
                                         exp,            // implicit params
                                         fail;           // fail the parse
                 private char[]          name,           // arg name
+                                        text,           // help text
                                         bogus;          // name of conflict
                 private char[][]        values,         // assigned values
                                         options,        // validation options
@@ -736,6 +752,8 @@ class Arguments
 
                 /***************************************************************
               
+                        Disable implicit arguments
+
                 ***************************************************************/
         
                 final Argument explicit ()
@@ -754,6 +772,18 @@ class Arguments
                 final Argument title (char[] name)
                 {
                         this.name = name;
+                        return this;
+                }
+
+                /***************************************************************
+              
+                        Set the help text for this argument
+
+                ***************************************************************/
+        
+                final Argument help (char[] text)
+                {
+                        this.text = text;
                         return this;
                 }
 
@@ -1048,12 +1078,15 @@ debug (Arguments)
         {
                 auto args = new Arguments;
 
-                args(null).title("root").params;
-                args('x').aliased('X').params(0).required;
-                args('y').defaults("hi").params(2).smush.explicit;
-                args('a').required.defaults("hi").requires('y').params(1);
-                args("foobar").params(2);
+                args(null).title("root").params.help("root help");
+                args('x').aliased('X').params(0).required.help("x help");
+                args('y').defaults("hi").params(2).smush.explicit.help("y help");
+                args('a').required.defaults("hi").requires('y').params(1).help("a help");
+                args("foobar").params(2).help("foobar help");
                 if (! args.parse ("'one =two' -ax=bar -y=ff -yss --foobar=blah1 --foobar barf blah2"))
                       stdout (args.errors(&stdout.layout.sprint));
+                else
+                   if (args.get('x'))
+                       args.help ((char[] a, char[] b){Stdout.formatln ("{}{}\n\t{}", args.lp, a, b);});
         }
 }
