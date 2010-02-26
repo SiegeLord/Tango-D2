@@ -2032,40 +2032,31 @@ private char[] format (char[] msg, int value)
 
 debug (UnitTest)
 {
-    private import tango.io.stream.Lines;
-
     unittest
     {
-        char[][] params;
-        char[] command = "echo ";
-
-        params ~= "one";
-        params ~= "two";
-        params ~= "three";
-
-        command ~= '"';
-        foreach (i, param; params)
+        char[] message = "hello world";
+        version(Windows)
         {
-            command ~= param;
-            if (i != params.length - 1)
-            {
-                command ~= '\n';
-            }
+            char[] command = "cmd.exe /c echo " ~ message;
         }
-        command ~= '"';
+        else
+            char[] command = "echo " ~ message;
+
 
         try
         {
             auto p = new Process(command, null);
 
             p.execute();
-
-            foreach (i, line; new Lines!(char)(p.stdout))
-            {
-                if (i == params.length) // echo can add ending new line confusing this test
-                    break;
-                assert(line == params[i]);
-            }
+            char[1024] buffer;
+            auto nread = p.stdout.read(buffer);
+            assert(nread != p.stdout.Eof);
+            version(Windows)
+                assert(buffer[0..nread] == message ~ "\r\n");
+            else
+                assert(buffer[0..nread] == message ~ "\n");
+            nread = p.stdout.read(buffer);
+            assert(nread == p.stdout.Eof);
 
             auto result = p.wait();
 
