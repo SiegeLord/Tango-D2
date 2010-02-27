@@ -51,9 +51,10 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        void clear ()
+        Stack* clear ()
         {
                 depth = 0;
+                return this;
         }
 
         /***********************************************************************
@@ -115,7 +116,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        void push (V value)
+        Stack* push (V value)
         {
                 static if (Size == 0)
                           {
@@ -130,6 +131,7 @@ struct Stack (V, int Size = 0)
                           else
                              error (__LINE__);
                           }
+                return this;
         }
 
         /**********************************************************************
@@ -140,10 +142,11 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        void append (V[] value...)
+        Stack* append (V[] value...)
         {
                 foreach (v; value)
                          push (v);
+                return this;
         }
 
         /**********************************************************************
@@ -224,7 +227,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        void rotateLeft (uint d)
+        Stack* rotateLeft (uint d)
         {
                 if (d <= depth)
                    {
@@ -236,6 +239,7 @@ struct Stack (V, int Size = 0)
                    }
                 else
                    error (__LINE__);
+                return this;
         }
 
         /**********************************************************************
@@ -246,7 +250,7 @@ struct Stack (V, int Size = 0)
 
         **********************************************************************/
 
-        void rotateRight (uint d)
+        Stack* rotateRight (uint d)
         {
                 if (d <= depth)
                    {
@@ -258,6 +262,7 @@ struct Stack (V, int Size = 0)
                    }
                 else
                    error (__LINE__);
+                return this;
         }
 
         /**********************************************************************
