@@ -17,6 +17,8 @@ private import tango.util.container.more.Stack;
 
 debug private import tango.io.Stdout;
 
+version=dashdash;       // -- everything assigned to the null argument
+
 /*******************************************************************************
 
         Command-line argument parser. Simple usage is:
@@ -286,13 +288,13 @@ class Arguments
                          if (s.length)
                             {
                             debug stdout.formatln ("'{}'", s);
-                            if (! done)
-                                  if (s == "--")
-                                     {done=true; continue;}
-                                  else
-                                     if (argument (s, lp, sloppy, false) ||
-                                         argument (s, sp, sloppy, true))
-                                         continue;
+                            if (done is false)
+                                if (s == "--")
+                                   {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
+                                else
+                                   if (argument (s, lp, sloppy, false) ||
+                                       argument (s, sp, sloppy, true))
+                                       continue;
                             stack.top.append (s);
                             }  
                 foreach (arg; args)
@@ -334,8 +336,11 @@ class Arguments
         /***********************************************************************
               
                 Obtain an argument reference, creating an new instance where
-                necessary. Use array indexing or opCall syntax if you prefer
+                necessary. Use array indexing or opCall syntax if you prefer.
 
+                Pass null to access the 'default' argument (where unassigned
+                implicit parameters are gathered)
+                
         ***********************************************************************/
         
         final Argument get (char[] name)
@@ -441,10 +446,7 @@ class Arguments
                    s = s [p.length..$];
                    auto i = locate (s, eq);
                    if (i < s.length)
-                      {
-                      enable (s[0..i], sloppy, flag);
-                      stack.top.append (s[i+1..$], true);
-                      }
+                       enable (s[0..i], sloppy, flag).append (s[i+1..$], true);
                    else
                       enable (s, sloppy, flag);
                    return true;
@@ -853,7 +855,7 @@ class Arguments
                         if (inspector)
                             inspector (value);
 
-                        if (options.length && !error)
+                        if (options.length && error is None)
                            {
                            error = Option;
                            foreach (option; options)
@@ -969,8 +971,7 @@ debug(UnitTest)
         assert (args(null).assigned.length is 2);
         assert (x.assigned.length is 1);
         x.params(0);
-        assert (args.clear.parse ("-x=blah"));
-        assert (args(null).assigned.length is 1);
+        assert (!args.clear.parse ("-x=blah"));
 
 
         // multiple flags, with alias and sloppy
@@ -989,7 +990,8 @@ debug(UnitTest)
 
         // again, but without sloppy param declaration
         z.params(0);
-        assert (args.clear.parse ("-xyz=10"));
+        assert (!args.clear.parse ("-xyz=10"));
+        assert (args.clear.parse ("-xzy=10"));
         assert (args('y').assigned.length is 1);
         assert (args('x').assigned.length is 0);
         assert (args('z').assigned.length is 0);
@@ -1059,10 +1061,20 @@ debug(UnitTest)
 
         // "--" makes all subsequent be implicit parameters
         args = new Arguments;
-        args('f').params(2);
-        assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
-        assert (args('f').assigned.length is 2);
-        assert (args(null).assigned.length is 2);
+        version (dashdash)
+                {
+                args('f').params(0);
+                assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
+                assert (args('f').assigned.length is 0);
+                assert (args(null).assigned.length is 4);
+                }
+             else
+                {
+                args('f').params(2);
+                assert (args.parse ("-f -- -bar -wumpus -wombat --abc"));
+                assert (args('f').assigned.length is 2);
+                assert (args(null).assigned.length is 2);
+                }
         }
 }
 
@@ -1083,7 +1095,7 @@ debug (Arguments)
                 args('y').defaults("hi").params(2).smush.explicit.help("y help");
                 args('a').required.defaults("hi").requires('y').params(1).help("a help");
                 args("foobar").params(2).help("foobar help");
-                if (! args.parse ("'one =two' -ax=bar -y=ff -yss --foobar=blah1 --foobar barf blah2"))
+                if (! args.parse ("'one =two' -xa=bar -y=ff -yss --foobar=blah1 --foobar barf blah2 -- a b c d e"))
                       stdout (args.errors(&stdout.layout.sprint));
                 else
                    if (args.get('x'))
