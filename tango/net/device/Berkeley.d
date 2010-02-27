@@ -1464,14 +1464,14 @@ public class SocketSet
 
         struct fd {}
 
-        struct timeval
+        version(Windows)
         {
-                int seconds; 
-                int microseconds; 
-        }
+                struct timeval
+                {
+                        int seconds; 
+                        int microseconds; 
+                }
 
-        version(Win32)
-        {
                 uint count()
                 {
                         return *(cast(uint*)buf);
@@ -1491,8 +1491,14 @@ public class SocketSet
         }
         else version (Posix)
         {
+                import tango.stdc.config;
                 import tango.core.BitManip;
 
+                struct timeval
+                {
+                        c_long seconds; 
+                        c_long microseconds; 
+                }
 
                 uint nfdbits;
                 socket_t _maxfd = 0;
@@ -1820,8 +1826,8 @@ public class SocketSet
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, long microseconds)
         {       
                 timeval tv = {
-                             cast(int)(microseconds / 1000000), 
-                             cast(int)(microseconds % 1000000)
+                             cast(typeof(timeval.seconds)) (microseconds / 1000000), 
+                             cast(typeof(timeval.microseconds)) (microseconds % 1000000)
                              };
                 return select (checkRead, checkWrite, checkError, &tv);
         }
