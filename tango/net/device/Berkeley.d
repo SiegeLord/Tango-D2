@@ -376,6 +376,19 @@ version (Windows)
 
         /***********************************************************************
 
+                Return socket error status
+
+        ***********************************************************************/
+
+        int error ()
+        {
+                int errcode;
+                getOption (SocketOptionLevel.SOCKET, SocketOption.ERROR, (&errcode)[0..1]);
+                return errcode;
+        }
+
+        /***********************************************************************
+
                 Return the last error
 
         ***********************************************************************/
@@ -1459,6 +1472,13 @@ debug (UnitTest)
 
 public class SocketSet
 {
+        import tango.stdc.config;
+
+        struct timeval
+        {
+                c_long  seconds, microseconds; 
+        }
+
         private uint  nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
 
@@ -1466,17 +1486,10 @@ public class SocketSet
 
         version(Windows)
         {
-                struct timeval
-                {
-                        int seconds; 
-                        int microseconds; 
-                }
-
                 uint count()
                 {
                         return *(cast(uint*)buf);
                 }
-
 
                 void count(int setter)
                 {
@@ -1491,14 +1504,7 @@ public class SocketSet
         }
         else version (Posix)
         {
-                import tango.stdc.config;
                 import tango.core.BitManip;
-
-                struct timeval
-                {
-                        c_long seconds; 
-                        c_long microseconds; 
-                }
 
                 uint nfdbits;
                 socket_t _maxfd = 0;
