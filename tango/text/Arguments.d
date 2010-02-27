@@ -221,6 +221,7 @@ class Arguments
                 "argument '{0}' conflicts with '{4}'\n", 
                 "unexpected argument '{0}'\n", 
                 "argument '{0}' expects one of {5}\n", 
+                "invalid parameter '{4}' for argument '{0}'\n", 
                 ];
 
         /***********************************************************************
@@ -403,7 +404,7 @@ class Arguments
                 index 1: number of parameters
                 index 2: configured minimum parameters
                 index 3: configured maximum parameters
-                index 4: conflicting/dependent argument name
+                index 4: conflicting/dependent argument (or invalid param)
                 index 5: array of configured parameter options
                 ---
 
@@ -513,10 +514,10 @@ class Arguments
 
                 ***************************************************************/
         
-                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra, Option};
+                enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra, Option, Invalid};
 
                 alias void   delegate() Invoker;
-                alias void   delegate(char[] value) Inspector;
+                alias bool   delegate(char[] value) Inspector;
 
                 public int              min,            /// minimum params
                                         max,            /// maximum params
@@ -715,7 +716,9 @@ class Arguments
                 /***************************************************************
               
                         Set an inspector for this argument, fired when a
-                        parameter is appended to an argument
+                        parameter is appended to an argument. Return true 
+                        from the delegate when the value is ok, or false to 
+                        trigger an error message
 
                 ***************************************************************/
         
@@ -853,7 +856,8 @@ class Arguments
                         values ~= value;        // append new value
 
                         if (inspector)
-                            inspector (value);
+                            if (! inspector (value))
+                               {error = Invalid; bogus=value;}
 
                         if (options.length && error is None)
                            {
@@ -1093,7 +1097,7 @@ debug (Arguments)
                 args(null).title("root").params.help("root help");
                 args('x').aliased('X').params(0).required.help("x help");
                 args('y').defaults("hi").params(2).smush.explicit.help("y help");
-                args('a').required.defaults("hi").requires('y').params(1).help("a help");
+                args('a').required.defaults("hi").requires('y').params(1).help("a help").bind((char[]){return false;});
                 args("foobar").params(2).help("foobar help");
                 if (! args.parse ("'one =two' -xa=bar -y=ff -yss --foobar=blah1 --foobar barf blah2 -- a b c d e"))
                       stdout (args.errors(&stdout.layout.sprint));
