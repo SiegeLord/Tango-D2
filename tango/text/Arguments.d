@@ -221,7 +221,7 @@ class Arguments
                 "argument '{0}' conflicts with '{4}'\n", 
                 "unexpected argument '{0}'\n", 
                 "argument '{0}' expects one of {5}\n", 
-                "invalid parameter '{4}' for argument '{0}'\n", 
+                "invalid parameter for argument '{0}': {4}\n", 
                 ];
 
         /***********************************************************************
@@ -414,6 +414,8 @@ class Arguments
         {
                 if (errors.length is errmsg.length)
                     msgs = errors;
+                else
+                   assert (false);
                 return this;
         }
 
@@ -517,7 +519,7 @@ class Arguments
                 enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra, Option, Invalid};
 
                 alias void   delegate() Invoker;
-                alias bool   delegate(char[] value) Inspector;
+                alias char[] delegate(char[] value) Inspector;
 
                 public int              min,            /// minimum params
                                         max,            /// maximum params
@@ -716,9 +718,9 @@ class Arguments
                 /***************************************************************
               
                         Set an inspector for this argument, fired when a
-                        parameter is appended to an argument. Return true 
-                        from the delegate when the value is ok, or false to 
-                        trigger an error message
+                        parameter is appended to an argument. Return null
+                        from the delegate when the value is ok, or a text
+                        string describing the issue to trigger an error
 
                 ***************************************************************/
         
@@ -855,18 +857,20 @@ class Arguments
                         this.set = true;        // needed for default assignments 
                         values ~= value;        // append new value
 
-                        if (inspector)
-                            if (! inspector (value))
-                               {error = Invalid; bogus=value;}
-
-                        if (options.length && error is None)
+                        if (error is None)
                            {
-                           error = Option;
-                           foreach (option; options)
-                                    if (option == value)
-                                        error = None;
-                           }
+                           if (inspector)
+                               if ((bogus = inspector(value)).length)
+                                    error = Invalid;
 
+                           if (options.length)
+                              {
+                              error = Option;
+                              foreach (option; options)
+                                       if (option == value)
+                                           error = None;
+                              }
+                           }
                         // pop to an argument that can accept parameters
                         for (auto s=&this.outer.stack; values.length >= max && s.size>1; this=s.top)
                              s.pop;
@@ -1092,12 +1096,13 @@ debug (Arguments)
 
         void main()
         {
+                char[] crap = "crap";
                 auto args = new Arguments;
 
                 args(null).title("root").params.help("root help");
                 args('x').aliased('X').params(0).required.help("x help");
                 args('y').defaults("hi").params(2).smush.explicit.help("y help");
-                args('a').required.defaults("hi").requires('y').params(1).help("a help").bind((char[]){return false;});
+                args('a').required.defaults("hi").requires('y').params(1).help("a help");
                 args("foobar").params(2).help("foobar help");
                 if (! args.parse ("'one =two' -xa=bar -y=ff -yss --foobar=blah1 --foobar barf blah2 -- a b c d e"))
                       stdout (args.errors(&stdout.layout.sprint));
