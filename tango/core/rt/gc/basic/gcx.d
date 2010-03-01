@@ -75,6 +75,8 @@ struct BlkInfo
 
 private
 {
+    const USE_CACHE = true;
+
     enum BlkAttr : uint
     {
         FINALIZE = 0b0000_0001,
@@ -426,11 +428,10 @@ class GC
             return null;
         }
 
-        if (!thread_needLock())
-        {
-            return mallocNoSync(size, bits);
-        }
-        else synchronized (gcLock)
+        // Since a finalizer could launch a new thread, we always need to lock
+        // when collecting.  The safest way to do this is to simply always lock
+        // when allocating.
+        synchronized (gcLock)
         {
             return mallocNoSync(size, bits);
         }
@@ -468,37 +469,32 @@ class GC
 
         if (bin < B_PAGE)
         {
-            p = gcx.bucket[bin];
-            if (p is null)
-            {
-                if (!gcx.allocPage(bin) && !gcx.disabled)   // try to find a new page
-                {
-                    if (!thread_needLock())
-                    {
-                        /* Then we haven't locked it yet. Be sure
-                         * and lock for a collection, since a finalizer
-                         * may start a new thread.
-                         */
-                        synchronized (gcLock)
-                        {
-                            gcx.fullcollectshell();
-                        }
-                    }
-                    else if (!gcx.fullcollectshell())       // collect to find a new page
-                    {
-                        //gcx.newPool(1);
-                    }
-                }
-                if (!gcx.bucket[bin] && !gcx.allocPage(bin))
-                {   int result;
+            int  state     = gcx.disabled ? 1 : 0;
+            bool collected = false;
 
-                    gcx.newPool(1);         // allocate new pool to find a new page
-                    result = gcx.allocPage(bin);
-                    if (!result)
+            while (!gcx.bucket[bin] && !gcx.allocPage(bin))
+            {
+                switch (state)
+                {
+                case 0:
+                    gcx.fullcollectshell();
+                    collected = true;
+                    state = 1;
+                    continue;
+                case 1:
+                    gcx.newPool(1);
+                    state = 2;
+                    continue;
+                case 2:
+                    if (collected)
                         onOutOfMemoryError();
+                    state = 0;
+                    continue;
+                default:
+                    assert(false);
                 }
-                p = gcx.bucket[bin];
             }
+            p = gcx.bucket[bin];
 
             // Return next item from free list
             gcx.bucket[bin] = (cast(List*)p).next;
@@ -539,11 +535,10 @@ class GC
             return null;
         }
 
-        if (!thread_needLock())
-        {
-            return callocNoSync(size, bits);
-        }
-        else synchronized (gcLock)
+        // Since a finalizer could launch a new thread, we always need to lock
+        // when collecting.  The safest way to do this is to simply always lock
+        // when allocating.
+        synchronized (gcLock)
         {
             return callocNoSync(size, bits);
         }
@@ -569,11 +564,10 @@ class GC
      */
     void *realloc(void *p, size_t size, uint bits = 0)
     {
-        if (!thread_needLock())
-        {
-            return reallocNoSync(p, size, bits);
-        }
-        else synchronized (gcLock)
+        // Since a finalizer could launch a new thread, we always need to lock
+        // when collecting.  The safest way to do this is to simply always lock
+        // when allocating.
+        synchronized (gcLock)
         {
             return reallocNoSync(p, size, bits);
         }
@@ -790,10 +784,12 @@ class GC
         }
         else
             return 0;
-        debug (MEMSTOMP) cstring.memset(p + psize, 0xF0, (psz + sz) * PAGESIZE - psize);
-        cstring.memset(pool.pagetable + pagenum + psz, B_PAGEPLUS, sz);
-        gcx.p_cache = null;
-        gcx.size_cache = 0;
+        debug (MEMSTOMP) memset(p + psize, 0xF0, (psz + sz) * PAGESIZE - psize);
+        memset(pool.pagetable + pagenum + psz, B_PAGEPLUS, sz);
+        if (p == gcx.cached_size_key)
+            gcx.cached_size_val = (psz + sz) * PAGESIZE;
+        if (p == gcx.cached_info_key)
+            gcx.cached_info_val.size = (psz + sz) * PAGESIZE;
         return (psz + sz) * PAGESIZE;
     }
 
@@ -980,9 +976,6 @@ class GC
         }
         else
         {
-            if (p == gcx.p_cache)
-                return gcx.size_cache;
-
             size_t size = gcx.findSize(p);
 
             // Check for interior pointer
@@ -990,13 +983,7 @@ class GC
             // 1) size is a power of 2 for less than PAGESIZE values
             // 2) base of memory pool is aligned on PAGESIZE boundary
             if (cast(size_t)p & (size - 1) & (PAGESIZE - 1))
-                size = 0;
-            else
-            {
-                gcx.p_cache = p;
-                gcx.size_cache = size;
-            }
-
+                return 0;
             return size;
         }
     }
@@ -1247,13 +1234,9 @@ class GC
      */
     void fullCollectNoStack()
     {
-        if (!thread_needLock())
-        {
-            gcx.noStack++;
-            gcx.fullcollectshell();
-            gcx.noStack--;
-        }
-        else synchronized (gcLock)
+        // Since a finalizer could launch a new thread, we always need to lock
+        // when collecting.
+        synchronized (gcLock)
         {
             gcx.noStack++;
             gcx.fullcollectshell();
@@ -1496,9 +1479,12 @@ struct Gcx
     {
         void thread_Invariant() { }
     }
-
-    void *p_cache;
-    size_t size_cache;
+    
+    void *cached_size_key;
+    size_t cached_size_val;
+    
+    void *cached_info_key;
+    BlkInfo cached_info_val;
 
     size_t nroots;
     size_t rootdim;
@@ -1790,6 +1776,9 @@ struct Gcx
         Pool*  pool;
         size_t size = 0;
 
+        if (USE_CACHE && p == cached_size_key)
+            return cached_size_val;
+            
         pool = findPool(p);
         if (pool)
         {
@@ -1812,6 +1801,8 @@ struct Gcx
                 }
                 size = (i - pagenum) * PAGESIZE;
             }
+            cached_size_key = p;
+            cached_size_val = size;
         }
         return size;
     }
@@ -1824,6 +1815,9 @@ struct Gcx
     {
         Pool*   pool;
         BlkInfo info;
+        
+        if (USE_CACHE && p == cached_info_key)
+            return cached_info_val;
 
         pool = findPool(p);
         if (pool)
@@ -1876,6 +1870,9 @@ struct Gcx
             ////////////////////////////////////////////////////////////////////
 
             info.attr = getBits(pool, cast(size_t)(offset / 16));
+            
+            cached_info_key = p;
+            cached_info_val = info;
         }
         return info;
     }
@@ -1992,10 +1989,11 @@ struct Gcx
         size_t freedpages;
         void*  p;
         int    state;
+        bool   collected = false;
 
         npages = (size + PAGESIZE - 1) / PAGESIZE;
 
-        for (state = 0; ; )
+        for (state = disabled ? 1 : 0; ; )
         {
             // This code could use some refinement when repeatedly
             // allocating very large arrays.
@@ -2012,11 +2010,8 @@ struct Gcx
             switch (state)
             {
             case 0:
-                if (disabled)
-                {   state = 1;
-                    continue;
-                }
                 // Try collecting
+                collected = true;
                 freedpages = fullcollectshell();
                 if (freedpages >= npools * ((POOLSIZE / PAGESIZE) / 4))
                 {   state = 1;
@@ -2039,7 +2034,12 @@ struct Gcx
                 // Allocate new pool
                 pool = newPool(npages);
                 if (!pool)
-                    goto Lnomemory;
+                {
+                    if (collected)
+                        goto Lnomemory;
+                    state = 0;
+                    continue;
+                }
                 pn = pool.allocPages(npages);
                 assert(pn != OPFAIL);
                 goto L1;
@@ -2061,7 +2061,7 @@ struct Gcx
         return p;
 
       Lnomemory:
-        return null; // let mallocNoSync handle the error
+        return null; // let caller handle the error
     }
 
 
@@ -2353,8 +2353,10 @@ struct Gcx
 
         thread_suspendAll();
 
-        p_cache = null;
-        size_cache = 0;
+        cached_size_key = cached_size_key.init;
+        cached_size_val = cached_size_val.init;
+        cached_info_key = cached_info_key.init;
+        cached_info_val = cached_info_val.init;
 
         anychanges = 0;
         for (n = 0; n < npools; n++)
