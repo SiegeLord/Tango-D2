@@ -41,10 +41,11 @@ version(WithVariant)
 version(WithExtensions)
         private import tango.text.convert.Extensions;
 else
-   {
-   private import tango.time.Time;
-   private import tango.text.convert.DateTime;
-   }
+version (WithDateTime)
+        {
+        private import tango.time.Time;
+        private import tango.text.convert.DateTime;
+        }    
 
 
 /*******************************************************************************
@@ -83,8 +84,8 @@ class Layout(T)
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
        
-        version (WithExtensions) {} else
-                 private DateTimeLocale* dateTime = &DateTimeDefault;
+        static if (is (typeof(DateTimeLocale)))
+                   private DateTimeLocale* dateTime = &DateTimeDefault;
 
         /**********************************************************************
 
@@ -737,6 +738,7 @@ version (WithVariant)
                        "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
                 }
              else
+                version (WithDateTime)
                 {
                 if (type is typeid(Time))
                    {
@@ -750,9 +752,8 @@ version (WithVariant)
                              return Utf.fromString8(dateTime.format(tmp0, *cast(Time*) p, Utf.toString(format, tmp1)), result);
                              }
                    }
-
-                return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
                 }
+                return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
         }
 
         /**********************************************************************
@@ -1126,7 +1127,9 @@ debug (UnitTest)
 debug (Layout)
 {
         import tango.io.Console;
-        import tango.time.WallClock;
+
+        static if (is (typeof(Time)))
+                   import tango.time.WallClock;
 
         void main ()
         {
@@ -1160,6 +1163,8 @@ debug (Layout)
 
                 S s;
                 Cout (layout ("struct: {}", s)).newline;
-                Cout (layout ("time: {}", WallClock.now)).newline;
+
+                static if (is (typeof(Time)))
+                           Cout (layout ("time: {}", WallClock.now)).newline;
         }
 }
