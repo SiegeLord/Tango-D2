@@ -290,17 +290,24 @@ Object *_d_translate_se_to_d_exception(PCONTEXT context,EXCEPTION_RECORD *except
             if (exception_record->NumberParameters >= 2) {
                 unsigned accessType = (unsigned)exception_record->ExceptionInformation[0];
                 unsigned accessAddr = exception_record->ExceptionInformation[1];
-                char buffer[64];
+                //char buffer[64];
+                char* buffer;
                 int bufferLen = 0;
                 switch (accessType) {
                     case 0:
-                        bufferLen = sprintf(buffer, "Access Violation - Read at address 0x%x", accessAddr);
+//                        bufferLen = sprintf(buffer, "Access Violation - Read at address 0x%x", accessAddr);
+                          buffer = "Access Violation - Read at address 0x:%x";
+                          bufferLen = strlen(buffer);
                         break;
                     case 1:
-                        bufferLen = sprintf(buffer, "Access Violation - Write at address 0x%x", accessAddr);
+//                        bufferLen = sprintf(buffer, "Access Violation - Write at address 0x%x", accessAddr);
+                          buffer = "Access Violation - Write at address 0x%x";
+                          bufferLen = strlen(buffer);
                         break;
                     case 8:
-                        bufferLen = sprintf(buffer, "Access Violation - Data Execution Prevention violation at address 0x%x", accessAddr);
+//                        bufferLen = sprintf(buffer, "Access Violation - Data Execution Prevention violation at address 0x%x", accessAddr);
+                          buffer = "Access Violation - Data Execution Prevention violation at address 0x%x";
+                          bufferLen = strlen(buffer);
                         break;
                     default:
                         break;

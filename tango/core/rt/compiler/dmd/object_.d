@@ -41,7 +41,7 @@ private
 {
     import tango.stdc.string : memcmp, memcpy, memmove;
     import tango.stdc.stdlib : calloc, realloc, free;
-    import tango.stdc.stdio : snprintf;
+//    import tango.stdc.stdio : snprintf;
     import tango.core.Exception : onOutOfMemoryError;
     import rt.compiler.util.string;
     import rt.compiler.util.hash;
@@ -69,6 +69,13 @@ else
 
 alias size_t hash_t;
 alias int equals_t;
+
+version (PhobosCompatibility) 
+{ 
+        alias char[]  string;
+        alias wchar[] wstring;
+        alias dchar[] dstring;
+}
 
 /**
  * All D class objects inherit from Object.
@@ -984,34 +991,35 @@ class Exception : Object
         alias void function(FrameInfo*,void delegate(char[])) FramePrintHandler;
         static FramePrintHandler defaultFramePrintingFunction;
         void writeOut(void delegate(char[])sink){
+
             if (defaultFramePrintingFunction){
                 defaultFramePrintingFunction(this,sink);
             } else {
                 char[26] buf;
-                auto len=snprintf(buf.ptr,26,"[%8zx]",address);
-                sink(buf[0..len]);
-                len=snprintf(buf.ptr,26,"%8zx",baseImg);
-                sink(buf[0..len]);
-                len=snprintf(buf.ptr,26,"%+td ",offsetImg);
-                sink(buf[0..len]);
-                while (++len<6) sink(" ");
+                //auto len=snprintf(buf.ptr,26,"[%8zx]",address);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%8zx",baseImg);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetImg);
+                //sink(buf[0..len]);
+                //while (++len<6) sink(" ");
                 if (func.length) {
                     sink(func);
                 } else {
                     sink("???");
                 }
                 for (size_t i=func.length;i<80;++i) sink(" ");
-                len=snprintf(buf.ptr,26," @%zx",baseSymb);
-                sink(buf[0..len]);
-                len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
-                sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26," @%zx",baseSymb);
+                //sink(buf[0..len]);
+                //len=snprintf(buf.ptr,26,"%+td ",offsetSymb);
+                //sink(buf[0..len]);
                 if (extra.length){
                     sink(extra);
                     sink(" ");
                 }
                 sink(file);
-                len=snprintf(buf.ptr,26,":%ld ",line);
-                sink(buf[0..len]);
+                sink(":");
+                sink(ulongToUtf8(buf, line));
             }
         }
         
@@ -1077,8 +1085,7 @@ class Exception : Object
             sink("@");
             sink(file);
             sink("(");
-            auto len=snprintf(buf.ptr,26,"%ld",line);
-            sink(buf[0..len]);
+            sink(ulongToUtf8(buf, line));
             sink("): ");
             writeOutMsg(sink);
             sink("\n");
