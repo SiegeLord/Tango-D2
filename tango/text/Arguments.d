@@ -478,8 +478,9 @@ class Arguments
                    if (arg.cat)
                        arg.append (elem, true);
                    else
-                      foreach (c; elem)
-                               arg = enable ((&c)[0..1], sloppy);
+                      arg = enable (elem, sloppy, true);
+                      //foreach (c; elem)
+                      //   arg = enable ((&c)[0..1], sloppy);
                    return arg;
                    }
 
