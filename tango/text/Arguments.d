@@ -451,7 +451,11 @@ class Arguments
                    if (i < s.length)
                        enable (s[0..i], sloppy, flag).append (s[i+1..$], true);
                    else
-                      enable (s, sloppy, flag);
+                      // trap empty arguments; attach as param to null-arg
+                      if (s.length)
+                          enable (s, sloppy, flag);
+                      else
+                         get(null).append (p, true);
                    return true;
                    }
                 return false;
@@ -973,7 +977,6 @@ debug(UnitTest)
         assert (args(null).assigned.length is 1);
         assert (args(null).assigned[0] == "param2");
         
-
         // now with default params
         assert (args.clear.parse ("param1 param2 -x=blah"));
         assert (args[null].assigned.length is 2);
@@ -982,6 +985,10 @@ debug(UnitTest)
         x.params(0);
         assert (!args.clear.parse ("-x=blah"));
 
+        // args as parameter
+        assert (args.clear.parse ("- -x"));
+        assert (args[null].assigned.length is 1);
+        assert (args[null].assigned[0] == "-");
 
         // multiple flags, with alias and sloppy
         assert (args.clear.parse ("-xy"));
