@@ -24,6 +24,8 @@
 */ 
 module tango.math.internal.BiguintCore;
 
+version=TangoBignumNoAsm;       /// temporal: see ticket #1878
+
 version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(TangoBignumNoAsm) {
@@ -458,6 +460,7 @@ static BigUint divInt(BigUint x, uint y) {
         assert(y!=0, "BigUint division by zero");
         // perfect power of 2
         uint b = 0;
+        y >>= 1; // pre-shift once (kudos to Sage Rat)
         for (;y!=0; y>>=1) {
             ++b;
         }
