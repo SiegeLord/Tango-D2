@@ -143,6 +143,20 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
+                Return a text representation of this document
+
+        ***********************************************************************/
+
+        final T[] print (T[] separator = null)
+        {
+                T[] tmp;
+                void append (T[] s) {tmp ~= s;}
+                root.print (&append, separator);
+                return tmp;
+        }
+
+        /***********************************************************************
+        
                 Returns the root value of this document
 
         ***********************************************************************/
@@ -930,7 +944,7 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
-                Internal allocation mechansim
+                Internal allocation mechanism
 
         ***********************************************************************/
         
@@ -943,6 +957,8 @@ class Json(T) : private JsonParser!(T)
 
                 void reset ()
                 {
+                        // discard since prior lists are not initialized
+                        lists.length = 0;       
                         block = -1;
                         newlist;
                 }
@@ -962,7 +978,7 @@ class Json(T) : private JsonParser!(T)
                         if (++block >= lists.length)
                            {
                            lists.length = lists.length + 1;
-                           lists[$-1] = new T[128];
+                           lists[$-1] = new T[256];
                            }
                         list = lists [block];
                 }
@@ -1009,16 +1025,15 @@ debug (UnitTest)
         {
         with (new Json!(char))
              {
-             auto root = object
+             root = object
                   (
                   pair ("edgar", value("friendly")),
                   pair ("count", value(11.5)),
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value;
-             root.print((char[] c) { value ~= c; });
-             assert (value == `{"edgar":"friendly","count":11.50,"array":[1.00, 2.00]}`, value);
+             char[] value = print();
+             assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
              }
         }
         
@@ -1027,16 +1042,15 @@ debug (UnitTest)
         // check with a separator of the tab character
         with (new Json!(char))
              {
-             auto root = object
+             root = object
                   (
                   pair ("edgar", value("friendly")),
                   pair ("count", value(11.5)),
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value;
-             root.print((char[] c) { value ~= c; }, "\t");
-             assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.50,\n\t\"array\":[\n\t\t1.00, \n\t\t2.00\n\t]\n}", value);
+             char[] value = print ("\t");
+             assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
              }
         }
         
@@ -1045,16 +1059,15 @@ debug (UnitTest)
         // check with a separator of five spaces
         with (new Json!(dchar))
              {
-             auto root = object
+             root = object
                   ( 
                   pair ("edgar", value("friendly")),
                   pair ("count", value(11.5)),
                   pair ("array", value(array(1, 2)))
                   );
 
-             dchar[] value;
-             root.print((dchar[] c) { value ~= c; }, "     ");
-             assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.50,\n     \"array\":[\n          1.00, \n          2.00\n     ]\n}");
+             dchar[] value = print("     ");
+             assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.5,\n     \"array\":[\n          1, \n          2\n     ]\n}");
              }
         }
 }
@@ -1123,23 +1136,27 @@ debug (Json)
                 
                 auto p = new Json!(char);
                 auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
-                void emit (char[] s) {Stdout(s);}
-                p.print (&emit); 
-                Stdout.newline;
+                Stdout.formatln ("{}", p.print);
         
                 with (p)
                       value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
         
-                p.print (&emit, "  "); 
-                Stdout.newline;
+                Stdout.formatln ("{}", p.print);
 
                 p.parse ("[-1]");
-                p.print (&emit, "  "); 
-                Stdout.newline;
+                Stdout.formatln ("{}", p.print);
 
                 p.parse(`["foo"]`);
-                p.print (&emit, "  "); 
-                Stdout.newline;
+                Stdout.formatln ("{}", p.print);
+
+                p.parse(`{"foo": {"ff" : "ffff"}`);
+                Stdout.formatln ("{}", p.print);
+
+                with (new Json!(char))
+                     {
+                     root = object(pair("array", array(null)));
+                     Stdout.formatln ("{}", print);
+                     }
         }
 }
 
