@@ -18,7 +18,7 @@ import Path = tango.io.Path;
 import tango.io.device.File : File;
 import tango.io.FilePath : FilePath;
 import tango.io.device.TempFile : TempFile;
-import tango.io.compress.Zip : ZipReader, ZipBlockReader,
+import tango.util.compress.Zip : ZipReader, ZipBlockReader,
        ZipWriter, ZipBlockWriter, ZipEntry, ZipEntryInfo, Method;
 import tango.io.model.IConduit : IConduit, InputStream, OutputStream;
 import tango.io.vfs.model.Vfs : VfsFolder, VfsFolderEntry, VfsFile,
