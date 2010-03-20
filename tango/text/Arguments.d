@@ -286,7 +286,7 @@ class Arguments
                 debug stdout.formatln ("\ncmdline: '{}'", input);
                 stack.push (get(null));
                 foreach (s; input)
-                         if (s.length)
+                         //if (s.length)
                             {
                             debug stdout.formatln ("'{}'", s);
                             if (done is false)
