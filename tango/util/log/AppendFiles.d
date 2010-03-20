@@ -24,7 +24,7 @@ private import  tango.util.log.Log,
 
 /*******************************************************************************
 
-        Append log messages to a file set. 
+        Append log messages to a file set 
 
 *******************************************************************************/
 
@@ -38,13 +38,13 @@ public class AppendFiles : Filer
 
         /***********************************************************************
                 
-                Create a RollingFileAppender upon a file-set with the 
-                specified path and optional layout. The minimal file
-                count is two and the maximum is 1000. Note that files
+                Create an AppendFiles upon a file-set with the specified 
+                path and optional layout. The minimal file count is two 
+                and the maximum is 1000 (explicitly 999). Note that files
                 are numbered starting with zero rather than one.
 
                 Where a file set already exists, we resume appending to 
-                the one with the most recent activity timestamp.
+                the one with the most recent activity timestamp
 
         ***********************************************************************/
 
@@ -57,15 +57,16 @@ public class AppendFiles : Filer
                 // Get a unique fingerprint for this instance
                 mask_ = register (path);
 
+                // split the path into components
+                auto c = Path.parse (path);
+
                 char[3] x;
                 Time mostRecent;
-
                 for (int i=0; i <= count; ++i)
                     {
                     x[0] = cast(char)('0' + i/100);
                     x[1] = cast(char)('0' + i/10%10);
                     x[2] = cast(char)('0' + i%10);
-                    auto c = Path.parse (path);
                     auto p = c.toString[0..$-c.suffix.length] ~ x ~ c.suffix;
                     paths ~= p;
 
@@ -116,7 +117,7 @@ public class AppendFiles : Filer
 
         /***********************************************************************
                 
-                Append an event to the output.
+                Append an event to the output
                  
         ***********************************************************************/
 

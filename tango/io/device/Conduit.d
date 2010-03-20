@@ -344,7 +344,9 @@ class Conduit : IConduit
 
 /*******************************************************************************
 
-        Base class for input stream filtering
+        Base class for input stream filtering. The provided source stream 
+        should generally never be null, though some filters have a need to 
+        set this lazily
 
 *******************************************************************************/
 
@@ -458,9 +460,9 @@ class InputFilter : InputStream
 
 /*******************************************************************************
 
-         Base class for output stream filtering. The provided sink stream 
-                should generally never be null, though some filters have a
-                need to set this lazily
+        Base class for output stream filtering. The provided sink stream 
+        should generally never be null, though some filters have a need to 
+        set this lazily
 
 *******************************************************************************/
 

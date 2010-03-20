@@ -12,7 +12,7 @@
         A more direct route to the file-system than FilePath. Use this 
         if you don't need path editing features. For example, if all you 
         want is to check some path exists, using this module would likely 
-        be more convenient than FilePath. For example:
+        be more convenient than FilePath:
         ---
         if (exists ("some/file/path")) 
             ...
@@ -22,9 +22,9 @@
         generally attach a null to the filename for each underlying O/S
         call. Use Path when you need pedestrian access to the file-system, 
         and are not manipulating the path components. Use FilePath where
-        path editing or mutation is desired.
+        path-editing or mutation is desired.
 
-        We encourage the use of "scoped import" with this module, such as
+        We encourage the use of "named import" with this module, such as
         ---
         import Path = tango.io.Path;
 
@@ -33,7 +33,8 @@
         ---
 
         Also residing here is a lightweight path-parser, which splits a 
-        filepath into constituent components. See PathParser below:
+        filepath into constituent components. FilePath is based upon the
+        same PathParser:
         ---
         auto p = Path.parse ("some/file/path");
         auto path = p.path;
@@ -42,7 +43,7 @@
         ...
         ---
 
-        Path normalization and pattern-matching is also hosted here, via
+        Path normalization and pattern-matching is also hosted here via
         the normalize() and pattern() functions. See the doc towards the
         end of this module.
 
@@ -431,8 +432,7 @@ package struct FS
                 /***************************************************************
 
                         Transfer the content of another file to this one. 
-                        Returns a reference to this class on success, or 
-                        throws an IOException upon failure.
+                        Throws an IOException upon failure.
 
                 ***************************************************************/
 
@@ -484,8 +484,7 @@ package struct FS
 
                 /***************************************************************
 
-                       change the name or location of a file/directory, and
-                       adopt the provided Path
+                       Change the name or location of a file/directory
 
                 ***************************************************************/
 
@@ -864,8 +863,7 @@ package struct FS
 
                 /***************************************************************
 
-                       change the name or location of a file/directory, and
-                       adopt the provided FilePath
+                       change the name or location of a file/directory
 
                 ***************************************************************/
 
@@ -904,6 +902,7 @@ package struct FS
                         if (posix.mkdir (name.ptr, 0777))
                             exception (name);
                 }
+
                 /***************************************************************
 
                         List the set of filenames within this folder.
@@ -1440,7 +1439,7 @@ bool remove (char[] name)
 
         Remove the files and folders listed in the provided paths. Where
         folders are listed, they should be preceded by their contained
-        files in order to be successfuy removed. Returns a set of paths
+        files in order to be successfully removed. Returns a set of paths
         that failed to be removed (where .length is zero upon success).
 
         The collate() function can be used to provide the input paths:

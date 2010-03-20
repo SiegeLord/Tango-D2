@@ -35,7 +35,7 @@ public  import tango.util.container.Container;
 
         This is great for keeping commonly accessed items around, while
         limiting the amount of memory used. Typically, the queue size 
-        would be set in the thousands
+        would be set in the thousands (via the ctor)
 
 ******************************************************************************/
 
@@ -69,7 +69,6 @@ class CacheMap (K, V, alias Hash = Container.hash,
                 hash = new Map;
                 this.capacity = capacity;
                 hash.buckets (capacity, 0.75);
-                //links = (cast(Ref) calloc(capacity, Type.sizeof))[0..capacity];
                 links.length = capacity;
 
                 // create empty list
@@ -80,17 +79,6 @@ class CacheMap (K, V, alias Hash = Container.hash,
                         tail.next = &link;
                         tail = &link;
                         }
-        }
-
-        /***********************************************************************
-
-                clean up when done
-                
-        ***********************************************************************/
-
-        ~this ()
-        {
-//                free (links.ptr);
         }
 
         /***********************************************************************
@@ -301,8 +289,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
         /**********************************************************************
         
                 A doubly-linked list entry, used as a wrapper for queued 
-                cache entries. Note that this class itself is a valid cache 
-                entry.
+                cache entries
         
         **********************************************************************/
         

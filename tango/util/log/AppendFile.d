@@ -24,8 +24,8 @@ private import  tango.io.model.IFile,
 /*******************************************************************************
 
         Append log messages to a file. This basic version has no rollover 
-        support, so it just keeps on adding to the file. There's also a
-        RollingFileAppender that may suit your needs.
+        support, so it just keeps on adding to the file. There is also an
+        AppendFiles that may suit your needs.
 
 *******************************************************************************/
 

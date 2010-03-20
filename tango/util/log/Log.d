@@ -30,7 +30,7 @@
         auto log = Log.lookup ("mail.send.writer");
 
         log.info  ("an informational message");
-        log.error ("an exception message: {}", exception.toString);
+        log.error ("an exception message: {}", exception);
 
         etc ...
         ---
@@ -63,7 +63,7 @@
         log.warn (log.format (buf, "a very long message: {}", someLongMessage));
         ---
 
-        To avoid overhead when constructing argument passed to formatted 
+        To avoid overhead when constructing arguments passed to formatted 
         messages, you should check to see whether a logger is active or not:
         ---
         if (log.warn)
@@ -117,7 +117,7 @@ version (GNU)
 
 extern (C)
 {
-        private int memcmp (void *, void *, int);
+        private int memcmp (void *, void *, size_t);
 }
 
 version (Win32)
@@ -759,8 +759,7 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Format text using the formatter configured in the associated
-                hierarchy 
+                Return a formatted string from the given arguments
 
         ***********************************************************************/
 
@@ -771,8 +770,7 @@ public class Logger : ILogger
 
         /***********************************************************************
 
-                Format text using the formatter configured in the associated
-                hierarchy. 
+                Format and emit text from the given arguments
 
         ***********************************************************************/
 
@@ -1092,8 +1090,8 @@ private class Hierarchy : Logger.Context
         /***********************************************************************
         
                 Propagate changes in the hierarchy downward to child Loggers.
-                Note that while 'parent' and 'breakpoint' are always forced
-                to update, the update of 'level' is selectable.
+                Note that while 'parent' is always changed, the adjustment of 
+                'level' is selectable.
 
         ***********************************************************************/
 
