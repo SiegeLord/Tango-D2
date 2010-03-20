@@ -69,6 +69,17 @@ class Socket : Conduit, ISelectable
 
         /***********************************************************************
         
+                Create an Internet Socket with the provided characteristics
+
+        ***********************************************************************/
+
+        this (Address addr) 
+        { 
+                this (addr.addressFamily, SocketType.STREAM, ProtocolType.TCP); 
+        }
+                                
+        /***********************************************************************
+        
                 Create an Internet socket
 
         ***********************************************************************/
@@ -546,6 +557,7 @@ class ServerSocket : Socket
 
         this (Address addr, int backlog=32, bool reuse=false)
         {
+                super (addr);
                 berkeley.addressReuse(reuse).bind(addr).listen(backlog);
         }
 

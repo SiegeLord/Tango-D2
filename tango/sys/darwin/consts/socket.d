@@ -84,3 +84,41 @@ module tango.sys.darwin.consts.socket;
         SHUT_WR = 1,
         SHUT_RDWR = 2
     }
+
+ enum: int
+ {
+        AI_PASSIVE = 0x00000001, /// get address to use bind()
+        AI_CANONNAME = 0x00000002, /// fill ai_canonname
+        AI_NUMERICHOST = 0x00000004, /// prevent host name resolution
+        AI_NUMERICSERV = 0x00000008, /// prevent service name resolution valid flags for addrinfo (not a standard def, apps should not use it)
+        AI_ALL = 0x00000100, /// IPv6 and IPv4-mapped (with AI_V4MAPPED) 
+        AI_V4MAPPED_CFG = 0x00000200, /// accept IPv4-mapped if kernel supports
+        AI_ADDRCONFIG = 0x00000400, /// only if any address is assigned
+        AI_V4MAPPED = 0x00000800, /// accept IPv4-mapped IPv6 address special recommended flags for getipnodebyname
+        AI_MASK = (AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG),
+        AI_DEFAULT = (AI_V4MAPPED_CFG | AI_ADDRCONFIG),
+ }
+
+enum
+{
+        EAI_BADFLAGS = 3,       /// Invalid value for `ai_flags' field.
+        EAI_NONAME = 8, /// NAME or SERVICE is unknown.
+        EAI_AGAIN = 2,  /// Temporary failure in name resolution.
+        EAI_FAIL = 4,   /// Non-recoverable failure in name res.
+        EAI_NODATA = 7, /// No address associated with NAME.
+        EAI_FAMILY = 5, /// `ai_family' not supported.
+        EAI_SOCKTYPE = 10,      /// `ai_socktype' not supported.
+        EAI_SERVICE = 9,        /// SERVICE not supported for `ai_socktype'.
+        EAI_MEMORY = 6, /// Memory allocation failure.
+}       
+
+enum
+{
+        NI_MAXHOST = 1025,
+        NI_MAXSERV = 32,
+        NI_NUMERICHOST = 0x00000002,    /// Don't try to look up hostname.
+        NI_NUMERICSERV = 0x00000008,    /// Don't convert port number to name.
+        NI_NOFQDN = 0x00000001, /// Only return nodename portion.
+        NI_NAMEREQD = 0x00000004,       /// Don't return numeric addresses.
+        NI_DGRAM = 0x00000010,  /// Look up UDP service rather than TCP.
+}       

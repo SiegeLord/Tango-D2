@@ -109,7 +109,45 @@ module tango.sys.linux.consts.socket;
       SHUT_WR, /* No more transmissions.  */
       SHUT_RDWR /* No more receptions or transmissions.  */
     }
-    
+                                
+enum: int
+{
+        AI_PASSIVE      = 0x0001,       /// Socket address is intended for `bind'
+        AI_CANONNAME =  0x0002, /// Request for canonical name.
+        AI_NUMERICHOST = 0x0004,        /// Don't use name resolution.
+        AI_V4MAPPED = 0x0008,   /// IPv4 mapped addresses are acceptable.
+        AI_ALL = 0x0010,        /// Return IPv4 mapped and IPv6 addresses.
+        AI_ADDRCONFIG = 0x0020, /// Use configuration of this host to choose returned address type.
+        AI_NUMERICSERV = 0x0400,        /// Don't use name resolution.  
+        AI_MASK = (AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG),
+        AI_DEFAULT = (AI_V4MAPPED | AI_ADDRCONFIG),
+}
+
+enum
+{
+        EAI_BADFLAGS = -1,      /// Invalid value for `ai_flags' field.
+        EAI_NONAME = -2,        /// NAME or SERVICE is unknown.
+        EAI_AGAIN = -3, /// Temporary failure in name resolution.
+        EAI_FAIL = -4,  /// Non-recoverable failure in name res.
+        EAI_NODATA = -5,        /// No address associated with NAME.
+        EAI_FAMILY = -6,        /// `ai_family' not supported.
+        EAI_SOCKTYPE = -7,      /// `ai_socktype' not supported.
+        EAI_SERVICE = -8,       /// SERVICE not supported for `ai_socktype'.
+        EAI_MEMORY = -10,       /// Memory allocation failure.
+}       
+
+enum
+{
+        NI_MAXHOST = 1025,
+        NI_MAXSERV = 32,
+        NI_NUMERICHOST = 1,     /// Don't try to look up hostname.
+        NI_NUMERICSERV = 2,     /// Don't convert port number to name.
+        NI_NOFQDN = 4,  /// Only return nodename portion.
+        NI_NAMEREQD = 8,        /// Don't return numeric addresses.
+        NI_DGRAM = 16,  /// Look up UDP service rather than TCP.
+}       
+
+        
     // non cross platform.
     /+
         /* Bits in the FLAGS argument to `send', `recv', et al.  */

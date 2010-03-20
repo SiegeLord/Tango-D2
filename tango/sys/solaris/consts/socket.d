@@ -1,5 +1,6 @@
 module tango.sys.solaris.consts.socket;
-    import tango.sys.solaris.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+import tango.sys.solaris.consts.fcntl: F_GETFL, F_SETFL,O_NONBLOCK;
+
     enum {SOCKET_ERROR = -1}
     enum
     {
@@ -39,6 +40,7 @@ module tango.sys.solaris.consts.socket;
         SOCK_SEQPACKET = 6, /++ sequential, reliable, max length +/
         SOCK_RAW = 4,
     }
+
     /* Standard well-defined IP protocols.  */
     enum
       {
@@ -111,3 +113,40 @@ module tango.sys.solaris.consts.socket;
         SHUT_RDWR = 2
     }
         
+enum: int
+{
+         AI_PASSIVE = 0x0008,   /// intended for bind() + listen()
+         AI_CANONNAME = 0x0010, /// return canonical version of host
+         AI_NUMERICHOST = 0x0020,       /// use numeric node address string
+         AI_NUMERICSERV = 0x0040,       /// servname is assumed numeric
+         AI_V4MAPPED = 0x0001,  /// IPv4 mapped addresses if no IPv6
+         AI_ALL = 0x0002,       /// IPv6 and IPv4 mapped addresses
+         AI_ADDRCONFIG = 0x0004,        /// AAAA or A records only if IPv6/IPv4 cnfg'd
+         AI_MASK = (AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST | AI_NUMERICSERV | AI_ADDRCONFIG),
+         AI_DEFAULT = (AI_V4MAPPED | AI_ADDRCONFIG),
+}
+
+enum
+{
+        EAI_BADFLAGS = 3,       /// Invalid value for `ai_flags' field.
+        EAI_NONAME = 8, /// NAME or SERVICE is unknown.
+        EAI_AGAIN = 2,  /// Temporary failure in name resolution.
+        EAI_FAIL = 4,   /// Non-recoverable failure in name res.
+        EAI_NODATA = 7, /// No address associated with NAME.
+        EAI_FAMILY = 5, /// `ai_family' not supported.
+        EAI_SOCKTYPE = 10,      /// `ai_socktype' not supported.
+        EAI_SERVICE = 9,        /// SERVICE not supported for `ai_socktype'.
+        EAI_MEMORY = 6, /// Memory allocation failure.
+}       
+
+enum
+{
+        NI_MAXHOST = 1025,
+        NI_MAXSERV = 32,
+        NI_NUMERICHOST = 0x0002,        /// Don't try to look up hostname.
+        NI_NUMERICSERV = 0x0008,        /// Don't convert port number to name.
+        NI_NOFQDN = 0x0001,     /// Only return nodename portion.
+        NI_NAMEREQD = 0x0004,   /// Don't return numeric addresses.
+        NI_DGRAM = 0x0010,      /// Look up UDP service rather than TCP.
+}       
+
