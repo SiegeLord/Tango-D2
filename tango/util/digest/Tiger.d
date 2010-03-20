@@ -89,7 +89,7 @@ final class Tiger : MerkleDamgard
 
         override void createDigest(ubyte[] buf)
         {
-                version (LittleEndian)
+                version (BigEndian)
                         ByteSwap.swap64 (context.ptr, context.length * ulong.sizeof);
                 buf[] = cast(ubyte[]) context;
         }
@@ -846,7 +846,7 @@ private static ulong[1024] table =
 
 debug(UnitTest)
 {
-        unittest 
+        unittest
         {
         static char[][] strings = [
                 "",
@@ -856,19 +856,19 @@ debug(UnitTest)
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ=abcdefghijklmnopqrstuvwxyz+0123456789",
                 "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham",
                 "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham, proceedings of Fast Software Encryption 3, Cambridge.",
-                "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham, proceedings of Fast Software Encryption 3, Cambridge, 1996.",
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-"
+                "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
+                x"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000",
         ];
         static char[][] results = [
-                "24f0130c63ac933216166e76b1bb925ff373de2d49584e7a",
-                "f258c1e88414ab2a527ab541ffc5b8bf935f7b951c132951",
-                "9f00f599072300dd276abb38c8eb6dec37790c116f9d2bdf",
-                "87fb2a9083851cf7470d2cf810e6df9eb586445034a5a386",
-                "467db80863ebce488df1cd1261655de957896565975f9197",
-                "0c410a042968868a1671da5a3fd29a725ec1e457d3cdb303",
-                "ebf591d5afa655ce7f22894ff87f54ac89c811b6b0da3193",
-                "3d9aeb03d1bd1a6357b2774dfd6d5b24dd68151d503974fc",
-                "00b83eb4e53440c576ac6aaee0a7485825fd15e70a59ffe4"
+                "3293ac630c13f0245f92bbb1766e16167a4e58492dde73f3",
+                "2aab1484e8c158f2bfb8c5ff41b57a525129131c957b5f93",
+                "dd00230799f5009fec6debc838bb6a27df2b9d6f110c7937",
+                "f71c8583902afb879edfe610f82c0d4786a3a534504486b5",
+                "48ceeb6308b87d46e95d656112cdf18d97915f9765658957",
+                "8a866829040a410c729ad23f5ada711603b3cdd357e4c15e",
+                "ce55a6afd591f5ebac547ff84f89227f9331dab0b611c889",
+                "0f7bf9a19b9c58f2b7610df7e84f0ac3a71c631e7b53f78e",
+                "5ab6ff5b263acfab2013c3068c03a82979ea6db287a3ecdd",
         ];
 
         Tiger h = new Tiger();
@@ -881,16 +881,5 @@ debug(UnitTest)
                 assert(d == results[i],":("~s~")("~d~")!=("~results[i]~")");
 
         }
-
-        ubyte[65536] buffer;
-
-        for (uint i = 0; i < 65536; i++)
-                buffer[i] = cast(ubyte) i;
-
-                h.update(buffer);
-                char[] e = h.hexDigest();
-
-        assert(e == "8ef43951b3f5f4fd1d41afe51b420e710462f233c3aaa8e1",
-                ":(65k)("~e~")!=(8ef43951b3f5f4fd1d41afe51b420e710462f233c3aaa8e1)");
         }
 }
