@@ -11,6 +11,13 @@ alias size_t hash_t;
 /// type returned by equality comparisons
 alias int equals_t;
 
+version (PhobosCompatibility) 
+{ 
+        alias char[]  string;
+        alias wchar[] wstring;
+        alias dchar[] dstring;
+}
+
 /// root class for all objects in D
 class Object
 {
