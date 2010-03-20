@@ -24,7 +24,7 @@
 */ 
 module tango.math.internal.BiguintCore;
 
-version=TangoBignumNoAsm;       /// temporal: see ticket #1878
+//version=TangoBignumNoAsm;       /// temporal: see ticket #1878
 
 version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
