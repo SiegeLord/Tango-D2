@@ -71,19 +71,323 @@ struct Container
 
         static size_t hash(K) (K k, size_t length)
         {
-                static if (is(K : int) || is(K : uint) || 
-                           is(K : long) || is(K : ulong) || 
+                static if (is(K : int)   || is(K : uint)   || 
+                           is(K : long)  || is(K : ulong)  || 
                            is(K : short) || is(K : ushort) ||
-                           is(K : byte) || is(K : ubyte) ||
-                           is(K : char) || is(K : wchar) || is (K : dchar))
+                           is(K : byte)  || is(K : ubyte)  ||
+                           is(K : char)  || is(K : wchar)  || is (K : dchar))
                            return cast(size_t) (k % length);
                 else
                    return (typeid(K).getHash(&k) & 0x7FFFFFFF) % length;
         }
 
+
+        /***********************************************************************
+        
+                GC Chunk allocator
+
+                Can save approximately 30% memory for small elements (tested 
+                with integer elements and a chunk size of 1000), and is at 
+                least twice as fast at adding elements when compared to the 
+                generic allocator (approximately 50x faster with LinkedList)
+        
+                Operates safely with GC managed entities
+
+        ***********************************************************************/
+        
+        struct ChunkGC(T)
+        {
+                static assert (T.sizeof >= (T*).sizeof, "The ChunkGC allocator can only be used for data sizes of at least " ~ ((T*).sizeof).stringof[0..$-1] ~ " bytes!");
+
+                private struct Cache {Cache* next;}
+
+                private Cache*  cache;
+                private T[][]   lists;
+                private size_t  chunks = 256;
+
+                /***************************************************************
+        
+                        allocate a T-sized memory chunk
+                        
+                ***************************************************************/
+
+                T* allocate ()
+                {
+                        if (cache is null)
+                            newlist;
+                        auto p = cache;
+                        cache = p.next;
+                        return cast(T*) p;
+                }
+        
+                /***************************************************************
+        
+                        allocate an array of T* sized memory chunks
+                        
+                ***************************************************************/
+        
+                T*[] allocate (size_t count)
+                {
+                        auto p = (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
+                        GC.addRoot (cast(void*) p);
+                        return p;
+                }
+        
+                /***************************************************************
+        
+                        Invoked when a specific T*[] is discarded
+                        
+                ***************************************************************/
+        
+                void collect (T*[] t)
+                {      
+                        assert (t.ptr);
+                        GC.removeRoot (t.ptr);
+                        free (t.ptr);
+                }
+
+                /***************************************************************
+        
+                        Invoked when a specific T is discarded
+                        
+                ***************************************************************/
+        
+                void collect (T* p)
+                {      
+                        assert (p);
+                        auto d = cast(Cache*) p;
+                        d.next = cache;
+                        cache = d;
+                }
+        
+                /***************************************************************
+        
+                        Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls
+                        
+                ***************************************************************/
+        
+                bool collect (bool all = true)
+                {
+                        if (all)
+                           {
+                           foreach (ref list; lists)
+                                   {
+                                   GC.removeRoot (list.ptr);
+                                   free (list.ptr);
+                                   list = null;
+                                   }
+                           cache = null;
+                           lists = null;
+                           return true;
+                           }
+                        return false;
+                }
+              
+                /***************************************************************
+        
+                        set the chunk size and prepopulate with nodes
+                        
+                ***************************************************************/
+        
+                void config (size_t chunks, int allocate=0)
+                {
+                        this.chunks = chunks;
+                        if (allocate)
+                            for (int i=allocate/chunks+1; i--;)
+                                 newlist;
+                }
+        
+                /***************************************************************
+        
+                        list manager
+                        
+                ***************************************************************/
+        
+                private void newlist ()
+                {
+                        lists.length = lists.length + 1;
+                        auto p = (cast(T*) calloc (chunks, T.sizeof)) [0 .. chunks];
+                        lists[$-1] = p;
+                        GC.addRoot (p.ptr);
+                        auto head = cache;
+                        foreach (ref node; p)
+                                {
+                                auto d = cast(Cache*) &node;
+                                d.next = head;
+                                head = d;
+                                }
+                        cache = head;
+                }
+        }        
+
+
+        /***********************************************************************
+        
+                Chunk allocator (non GC)
+
+                Can save approximately 30% memory for small elements (tested 
+                with integer elements and a chunk size of 1000), and is at 
+                least twice as fast at adding elements when compared to the 
+                default allocator (approximately 50x faster with LinkedList)
+        
+                Note that, due to GC behaviour, you should not configure
+                a custom allocator for containers holding anything managed
+                by the GC. For example, you cannot use a MallocAllocator
+                to manage a container of classes or strings where those 
+                were allocated by the GC. Once something is owned by a GC
+                then it's lifetime must be managed by GC-managed entities
+                (otherwise the GC may think there are no live references
+                and prematurely collect container contents).
+        
+                You can explicity manage the collection of keys and values
+                yourself by providing a reaper delegate. For example, if 
+                you use a MallocAllocator to manage key/value pairs which
+                are themselves allocated via malloc, then you should also
+                provide a reaper delegate to collect those as required.
+
+                The primary benefit of this allocator is to avoid the GC
+                scanning the date-structures involved. Use ChunkGC where
+                that option is unwarranted, or if you have GC-managed data
+                instead
+              
+        ***********************************************************************/
+        
+        struct Chunk(T)
+        {
+                static assert (T.sizeof >= (T*).sizeof, "The Chunk allocator can only be used for data sizes of at least " ~ ((T*).sizeof).stringof[0..$-1] ~ " bytes!");
+
+                private struct Cache {Cache* next;}
+
+                private Cache*  cache;
+                private T[][]   lists;
+                private size_t  chunks = 256;
+
+                /***************************************************************
+        
+                        allocate a T-sized memory chunk
+                        
+                ***************************************************************/
+
+                T* allocate ()
+                {
+                        if (cache is null)
+                            newlist;
+                        auto p = cache;
+                        cache = p.next;
+                        return cast(T*) p;
+                }
+        
+                /***************************************************************
+        
+                        allocate an array of T* sized memory chunks
+                        
+                ***************************************************************/
+        
+                T*[] allocate (size_t count)
+                {
+                        return (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
+                }
+        
+                /***************************************************************
+        
+                        Invoked when a specific T*[] is discarded
+                        
+                ***************************************************************/
+        
+                void collect (T*[] t)
+                {      
+                        assert (t.ptr);
+                        free (t.ptr);
+                }
+
+                /***************************************************************
+        
+                        Invoked when a specific T is discarded
+                        
+                ***************************************************************/
+        
+                void collect (T* p)
+                {      
+                        assert (p);
+                        auto d = cast(Cache*) p;
+                        d.next = cache;
+                        cache = d;
+                }
+        
+                /***************************************************************
+        
+                        Invoked when clear/reset is called on the host. 
+                        This is a shortcut to clear everything allocated.
+        
+                        Should return true if supported, or false otherwise. 
+                        False return will cause a series of discrete collect
+                        calls
+                        
+                ***************************************************************/
+        
+                bool collect (bool all = true)
+                {
+                        if (all)
+                           {
+                           foreach (ref list; lists)
+                                   {
+                                   free (list.ptr);
+                                   list = null;
+                                   }
+                           cache = null;
+                           lists = null;
+                           return true;
+                           }
+                        return false;
+                }
+              
+                /***************************************************************
+        
+                        set the chunk size and prepopulate with nodes
+                        
+                ***************************************************************/
+        
+                void config (size_t chunks, int allocate=0)
+                {
+                        this.chunks = chunks;
+                        if (allocate)
+                            for (int i=allocate/chunks+1; i--;)
+                                 newlist;
+                }
+        
+                /***************************************************************
+        
+                        list manager
+                        
+                ***************************************************************/
+        
+                private void newlist ()
+                {
+                        lists.length = lists.length + 1;
+                        auto p = (cast(T*) calloc (chunks, T.sizeof)) [0 .. chunks];
+                        lists[$-1] = p;
+                        auto head = cache;
+                        foreach (ref node; p)
+                                {
+                                auto d = cast(Cache*) &node;
+                                d.next = head;
+                                head = d;
+                                }
+                        cache = head;
+                }
+        }        
+
+
         /***********************************************************************
         
                 generic GC allocation manager
+
+                Slow and expensive in memory costs
                 
         ***********************************************************************/
         
@@ -149,6 +453,16 @@ struct Container
                 bool collect (bool all = true)
                 {
                         return false;
+                }
+
+                /***************************************************************
+        
+                        set the chunk size and prepopulate with nodes
+                        
+                ***************************************************************/
+        
+                void config (size_t chunks, int allocate=0)
+                {
                 }
         }        
         
@@ -237,182 +551,21 @@ struct Container
                 {
                         return false;
                 }
+
+                /***************************************************************
+        
+                        set the chunk size and prepopulate with nodes
+                        
+                ***************************************************************/
+        
+                void config (size_t chunks, int allocate=0)
+                {
+                }
         }        
         
         
-        /***********************************************************************
-        
-                Chunk allocator
-
-                Can save approximately 30% memory for small elements (tested 
-                with integer elements and a chunk size of 1000), and is at 
-                least twice as fast at adding elements when compared to the 
-                default allocator (approximately 50x faster with LinkedList)
-        
-                Note that, due to GC behaviour, you should not configure
-                a custom allocator for containers holding anything managed
-                by the GC. For example, you cannot use a MallocAllocator
-                to manage a container of classes or strings where those 
-                were allocated by the GC. Once something is owned by a GC
-                then it's lifetime must be managed by GC-managed entities
-                (otherwise the GC may think there are no live references
-                and prematurely collect container contents).
-        
-                You can explicity manage the collection of keys and values
-                yourself by providing a reaper delegate. For example, if 
-                you use a MallocAllocator to manage key/value pairs which
-                are themselves allocated via malloc, then you should also
-                provide a reaper delegate to collect those as required.
-        
-        ***********************************************************************/
-        
-        struct Chunk(T)
-        {
-                static assert (T.sizeof >= (T*).sizeof, "The Chunk allocator can only be used for data sizes of at least " ~ ((T*).sizeof).stringof[0..$-1] ~ " bytes!");
-                
-                private T[]     list;
-                private T[][]   lists;
-                private size_t     index;
-                private size_t     freelists;
-                private size_t     presize = 0;
-                private size_t     chunks = 1000;
-
-                private struct Discarded
-                {
-                        Discarded* next;
-                }
-                private Discarded* discarded;
-                
-                /***************************************************************
-        
-                        set the chunk size and preallocate lists
-                        
-                ***************************************************************/
-        
-                void config (size_t chunks, size_t presize)
-                {
-                        this.chunks = chunks;
-                        this.presize = presize;
-                        lists.length = presize;
-
-                        foreach (ref list; lists)
-                                 list = block;
-                }
-        
-                /***************************************************************
-        
-                        allocate an array of T sized memory chunks
-                        
-                ***************************************************************/
-
-                T* allocate ()
-                {
-                        if (index >= list.length)
-                            if (discarded)
-                               {    
-                               auto p = discarded;
-                               discarded = p.next;
-                               return cast(T*) p;
-                               }
-                            else
-                               newlist;
-       
-                        return (&list[index++]);
-                }
-        
-                /***************************************************************
-        
-                        allocate an array of T sized memory chunks
-                        
-                ***************************************************************/
-        
-                T*[] allocate (size_t count)
-                {
-                        return (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
-                }
-        
-                /***************************************************************
-        
-                        Invoked when a specific T[] is discarded
-                        
-                ***************************************************************/
-        
-                void collect (T*[] t)
-                {      
-                        if (t.length)
-                            free (t.ptr);
-                }
-
-                /***************************************************************
-        
-                        Invoked when a specific T is discarded
-                        
-                ***************************************************************/
-        
-                void collect (T* p)
-                {      
-                        if (p)
-                           {
-                           assert (T.sizeof >= (T*).sizeof);
-                           auto d = cast(Discarded*) p;
-                           d.next = discarded;
-                           discarded = d;
-                           }
-                }
-        
-                /***************************************************************
-        
-                        Invoked when clear/reset is called on the host. 
-                        This is a shortcut to clear everything allocated.
-        
-                        Should return true if supported, or false otherwise. 
-                        False return will cause a series of discrete collect
-                        calls
-                        
-                ***************************************************************/
-        
-                bool collect (bool all = true)
-                {
-                        freelists = 0;
-                        newlist;
-                        if (all)
-                           {
-                           foreach (list; lists)
-                                    free (list.ptr);
-                           lists.length = 0;
-                           }
-                        return true;
-                }
-              
-                /***************************************************************
-        
-                        list manager
-                        
-                ***************************************************************/
-        
-                private void newlist ()
-                {
-                        index = 0;
-                        if (freelists >= lists.length)
-                           {
-                           lists.length = lists.length + 1;
-                           lists[$-1] = block;
-                           }
-                        list = lists[freelists++];
-                }
-        
-                /***************************************************************
-        
-                        list allocator
-                        
-                ***************************************************************/
-        
-                private T[] block ()
-                {
-                        return (cast(T*) calloc (chunks, T.sizeof)) [0 .. chunks];
-                }
-        }        
-
+version (prior_allocator)
+{
         /***********************************************************************
         
                 GCChunk allocator
@@ -424,6 +577,7 @@ struct Container
                 allocator for a Hashmap!(int, int).
         
         ***********************************************************************/
+
         struct GCChunk(T, uint chunkSize)
         {
             static if(T.sizeof < (void*).sizeof)
@@ -686,6 +840,9 @@ struct Container
                 return true;
             }
 
+            void config (size_t chunks, int allocate=0)
+            {
+            }
         }
 
         /***********************************************************************
@@ -712,6 +869,10 @@ struct Container
             // any pointers in it, this would allow automatic usage of the
             // Chunk allocator for added speed.
         }
+}
+else
+   template DefaultCollect(T) {alias ChunkGC!(T) DefaultCollect;}
+
 }
 
 

@@ -127,17 +127,6 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return the configured allocator
-                
-        ***********************************************************************/
-
-        final Alloc allocator ()
-        {
-                return heap;
-        }
-
-        /***********************************************************************
-
                 Return a generic iterator for contained elements
                 
         ***********************************************************************/
@@ -168,6 +157,22 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 Iterator i = iterator (forward);
                 i.node = count ? tree.findFirst(key, cmp, forward) : null;
                 return i;
+        }
+
+        /***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final SortedMap cache (size_t chunk, size_t count=0)
+        {
+                heap.config (chunk, count);
+                return this;
         }
 
         /***********************************************************************
@@ -1075,7 +1080,7 @@ debug (SortedMap)
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new SortedMap!(int, int, Container.reap, Container.Chunk);
-                test.allocator.config (1000, 500);
+                test.cache (1000, 500_000);
                 const count = 500_000;
                 StopWatch w;
                 

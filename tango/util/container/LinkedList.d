@@ -132,17 +132,6 @@ class LinkedList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return the configured allocator
-                
-        ***********************************************************************/
-
-        final Alloc allocator ()
-        {
-                return heap;
-        }
-
-        /***********************************************************************
-
                 Return a generic iterator for contained elements
                 
         ***********************************************************************/
@@ -155,6 +144,22 @@ class LinkedList (V, alias Reap = Container.reap,
                 i.prior = null;
                 i.owner = this;
                 return i;
+        }
+
+        /***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final LinkedList cache (size_t chunk, size_t count=0)
+        {
+                heap.config (chunk, count);
+                return this;
         }
 
         /***********************************************************************
@@ -1122,7 +1127,7 @@ debug (LinkedList)
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new LinkedList!(int, Container.reap, Container.Chunk);
-                test.allocator.config (2000, 500);
+                test.cache (2000, 1_000_000);
                 const count = 1_000_000;
                 StopWatch w;
 

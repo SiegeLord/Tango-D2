@@ -103,17 +103,6 @@ class HashSet (V, alias Hash = Container.hash,
 
         /***********************************************************************
 
-                Return the configured allocator
-                
-        ***********************************************************************/
-
-        final Alloc allocator ()
-        {
-                return heap;
-        }
-
-        /***********************************************************************
-
                 Return a generic iterator for contained elements
                 
         ***********************************************************************/
@@ -413,13 +402,14 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (size_t cap)
+        final HashSet buckets (size_t cap)
         {
                 if (cap < Container.defaultInitialBuckets)
                     cap = Container.defaultInitialBuckets;
 
                 if (cap !is buckets)
                     resize (cap);
+                return this;
         }
 
         /***********************************************************************
@@ -449,6 +439,22 @@ class HashSet (V, alias Hash = Container.hash,
                 loadFactor = desired;
                 if (table)
                     checkLoad;
+        }
+
+        /***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final HashSet cache (size_t chunk, size_t count=0)
+        {
+                heap.config (chunk, count);
+                return this;
         }
 
         /***********************************************************************
@@ -840,7 +846,7 @@ debug (HashSet)
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new HashSet!(int, Container.hash, Container.reap, Container.Chunk);
-                test.allocator.config (1000, 1000);
+                test.cache (1000, 1_000_000);
                 test.buckets = 1_500_000;
                 const count = 1_000_000;
                 StopWatch w;

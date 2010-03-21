@@ -61,7 +61,6 @@ private import tango.core.Exception : NoSuchElementException;
         float threshold ()
         void buckets (size_t cap)
         void threshold (float desired)
-        Allocator allocator()
         ---
 
 *******************************************************************************/
@@ -113,17 +112,6 @@ class HashMap (K, V, alias Hash = Container.hash,
         ~this ()
         {
                 reset;
-        }
-
-        /***********************************************************************
-
-                Return the configured allocator
-                
-        ***********************************************************************/
-
-        final Alloc allocator ()
-        {
-                return heap;
         }
 
         /***********************************************************************
@@ -715,13 +703,14 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (size_t cap)
+        final HashMap buckets (size_t cap)
         {
                 if (cap < Container.defaultInitialBuckets)
                     cap = Container.defaultInitialBuckets;
 
                 if (cap !is buckets)
                     resize (cap);
+                return this;
         }
 
         /***********************************************************************
@@ -733,10 +722,26 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final void buckets (size_t cap, float threshold)
+        final HashMap buckets (size_t cap, float threshold)
         {
                 loadFactor = threshold;
-                buckets (cast(size_t)(cap / threshold) + 1);
+                return buckets (cast(size_t)(cap / threshold) + 1);
+        }
+
+        /***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final HashMap cache (size_t chunk, size_t count=0)
+        {
+                heap.config (chunk, count);
+                return this;
         }
 
         /***********************************************************************
@@ -1122,6 +1127,7 @@ debug (HashMap)
 
         void main()
         {
+/+
                 // usage examples ...
                 auto map = new HashMap!(char[], int);
                 map.add ("foo", 1);
@@ -1159,14 +1165,17 @@ debug (HashMap)
                 // remove first element ...
                 while (map.take(v))
                        Stdout.formatln ("taking {}, {} left", v, map.size);
-                
++/ int v;
+                  
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
-                auto test = new HashMap!(int, int, Container.hash, Container.reap, Container.Chunk);
-                test.allocator.config (1000, 1000);
-                test.buckets = 1_500_000;
+                auto test = new HashMap!(int, int);//, Container.hash, Container.reap, Container.ChunkGC);
+                test.buckets(1_500_000);//.cache(8000, 1000000);
                 const count = 1_000_000;
                 StopWatch w;
+
+                GC.collect;
+                test.check;
 
                 // benchmark adding
                 w.start;
@@ -1201,8 +1210,7 @@ debug (HashMap)
                 test.check;
 
                 auto aa = new HashMap!(long, int, Container.hash, Container.reap, Container.Chunk);
-                aa.allocator.config (5000, 1000);
-                aa.buckets = 7_500_000;
+                aa.buckets(7_500_000).cache(100000, 5_000_000);
                 w.start;
                 for (int i=5_000_000; i--;)
                      aa.add (i, 0);

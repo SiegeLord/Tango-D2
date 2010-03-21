@@ -130,17 +130,6 @@ class CircularList (V, alias Reap = Container.reap,
 
         /***********************************************************************
 
-                Return the configured allocator
-                
-        ***********************************************************************/
-
-        final Alloc allocator ()
-        {
-                return heap;
-        }
-
-        /***********************************************************************
-
                 Return a generic iterator for contained elements
                 
         ***********************************************************************/
@@ -156,6 +145,22 @@ class CircularList (V, alias Reap = Container.reap,
                 i.count = count;
                 i.index = 0;
                 return i;
+        }
+
+        /***********************************************************************
+
+                Configure the assigned allocator with the size of each
+                allocation block (number of nodes allocated at one time)
+                and the number of nodes to pre-populate the cache with.
+                
+                Time complexity: O(n)
+
+        ***********************************************************************/
+
+        final CircularList cache (size_t chunk, size_t count=0)
+        {
+                heap.config (chunk, count);
+                return this;
         }
 
         /***********************************************************************
@@ -1186,7 +1191,7 @@ debug (CircularList)
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
                 auto test = new CircularList!(uint, Container.reap, Container.Chunk);
-                test.allocator.config (1000, 1000);
+                test.cache (1000, 1_000_000);
                 const count = 1_000_000;
                 StopWatch w;
 
