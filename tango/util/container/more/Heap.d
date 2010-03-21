@@ -351,6 +351,10 @@ unittest
         h ~= 1;
         // no swap
         h ~= 3;
+
+        // onMove() is called for all insertions
+        swapped = null;
+        indices = null;
         // pop: you replace the top with the last and
         // percolate down. So you have to swap once when
         // popping at a minimum, and that's if you have only two
@@ -374,18 +378,19 @@ unittest
         h ~= 3;
         // swap: move 0 to position 0, 1 to position 2
         h ~= 0;
-        if (swapped[0] == 0)
+        int n=3; // onMove() called for insertions too
+        if (swapped[n] == 0)
         {
-                assert (swapped[1] == 1);
-                assert (indices[0] == 0);
-                assert (indices[1] == 2);
+                assert (swapped[n+1] == 1);
+                assert (indices[n+0] == 0);
+                assert (indices[n+1] == 2);
         }
         else
         {
-                assert (swapped[1] == 0);
-                assert (swapped[0] == 1);
-                assert (indices[0] == 2);
-                assert (indices[1] == 0);
+                assert (swapped[n+1] == 0);
+                assert (swapped[n+0] == 1);
+                assert (indices[n+0] == 2);
+                assert (indices[n+1] == 0);
         }
 }
 
@@ -408,4 +413,6 @@ unittest
         assert (h.pop is 2, "cloned heap shares data with original heap");
         assert (h.pop is 1, "cloned heap shares data with original heap");
 }
+
+void main(){}
 }
