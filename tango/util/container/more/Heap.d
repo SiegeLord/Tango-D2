@@ -120,6 +120,10 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
                         heap[index] = heap[next];
                         Move(heap[index], index);
                         fixdown(index);
+
+                        // added via ticket 1885 (kudos to wolfwood)
+                        if (heap[index] is heap[next])
+                            fixup(index);
                 }
                 return t;
         }
