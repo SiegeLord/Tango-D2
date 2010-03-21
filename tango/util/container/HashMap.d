@@ -1127,7 +1127,6 @@ debug (HashMap)
 
         void main()
         {
-/+
                 // usage examples ...
                 auto map = new HashMap!(char[], int);
                 map.add ("foo", 1);
@@ -1165,7 +1164,6 @@ debug (HashMap)
                 // remove first element ...
                 while (map.take(v))
                        Stdout.formatln ("taking {}, {} left", v, map.size);
-+/ int v;
                   
                 // setup for benchmark, with a set of integers. We
                 // use a chunk allocator, and presize the bucket[]
@@ -1208,13 +1206,13 @@ debug (HashMap)
 
                 GC.collect;
                 test.check;
-
+/+
                 auto aa = new HashMap!(long, int, Container.hash, Container.reap, Container.Chunk);
                 aa.buckets(7_500_000).cache(100000, 5_000_000);
                 w.start;
                 for (int i=5_000_000; i--;)
                      aa.add (i, 0);
                 Stdout.formatln ("{} test iteration: {}/s", aa.size, aa.size/w.stop);
-
++/
         }
 }

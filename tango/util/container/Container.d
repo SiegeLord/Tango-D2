@@ -141,9 +141,11 @@ struct Container
         
                 void collect (T*[] t)
                 {      
-                        assert (t.ptr);
-                        GC.removeRoot (t.ptr);
-                        free (t.ptr);
+                        if (t.ptr)
+                           {
+                           GC.removeRoot (t.ptr);
+                           free (t.ptr);
+                           }
                 }
 
                 /***************************************************************
@@ -156,6 +158,7 @@ struct Container
                 {      
                         assert (p);
                         auto d = cast(Cache*) p;
+                        //*p = T.init;
                         d.next = cache;
                         cache = d;
                 }
@@ -301,8 +304,8 @@ struct Container
         
                 void collect (T*[] t)
                 {      
-                        assert (t.ptr);
-                        free (t.ptr);
+                        if (t.ptr)
+                            free (t.ptr);
                 }
 
                 /***************************************************************
