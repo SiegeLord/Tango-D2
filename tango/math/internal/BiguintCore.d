@@ -460,8 +460,7 @@ static BigUint divInt(BigUint x, uint y) {
         assert(y!=0, "BigUint division by zero");
         // perfect power of 2
         uint b = 0;
-        y >>= 1; // pre-shift once (kudos to Sage Rat)
-        for (;y!=0; y>>=1) {
+        for (;y!=1; y>>=1) {
             ++b;
         }
         multibyteShr(result, x.data, b);
@@ -835,7 +834,9 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
             multibyteSub(result[0..last+1], x[0..last+1], y[0..last+1], 0);
             *negative = false;
         }
-        if (result.length >1 && result[$-1]==0) return result[0..$-1];
+        while (result.length > 1 && result[$-1] == 0) {
+            result = result[0..$-1];
+        }
         return result;
     }
     // Lengths are different
@@ -847,7 +848,6 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
         *negative = false;
         large = x; small = y;
     }
-    // result.length will be equal to larger length, or could decrease by 1.
     
     BigDigit [] result = new BigDigit[large.length];
     BigDigit carry = multibyteSub(result[0..small.length], large[0..small.length], small, 0);
@@ -855,7 +855,9 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
     if (carry) {
         multibyteIncrementAssign!('-')(result[small.length..$], carry);
     }
-    if (result.length >1 && result[$-1]==0) return result[0..$-1];
+    while (result.length > 1 && result[$-1] == 0) {
+        result = result[0..$-1];
+    }    
     return result;
 }
 
