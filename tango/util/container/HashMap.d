@@ -71,7 +71,11 @@ class HashMap (K, V, alias Hash = Container.hash,
                      : IContainer!(V)
 {
         // bucket types
-        private alias Slink!(V, K) Type;
+        version (HashCache)
+                 private alias Slink!(V, K, false, true) Type;
+            else
+                private alias Slink!(V, K) Type;
+
         private alias Type         *Ref;
 
         // allocator type
@@ -895,7 +899,10 @@ class HashMap (K, V, alias Hash = Container.hash,
                          while (bucket)
                                {
                                auto n = bucket.next;
-                               auto h = Hash (bucket.key, newCap);
+                               version (HashCache)
+                                        auto h = n.cache;
+                                  else
+                                     auto h = Hash (bucket.key, newCap);
                                bucket.next = newtab[h];
                                newtab[h] = bucket;
                                bucket = n;

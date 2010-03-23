@@ -31,21 +31,27 @@ private import tango.util.container.model.IContainer;
         
         Note that when K is specified, support for keys are enabled. When
         Identity is stipulated as 'true', those keys are compared using an
-        identity-comparison instead of equality (using 'is').
+        identity-comparison instead of equality (using 'is'). Similarly, if
+        HashCache is set true, an additional attribute is create in order to
+        retain the hash of K
 
 *******************************************************************************/
 
 private typedef int KeyDummy;
 
-struct Slink (V, K=KeyDummy, bool Identity = false)
+struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
 {
-        alias Slink!(V, K)      Type;
-        alias Type              *Ref;
-        alias Compare!(V)       Comparator;
+        alias Slink!(V, K, Identity, HashCache) Type;
+        alias Type                              *Ref;
+        alias Compare!(V)                       Comparator;
 
+        Ref             next;           // pointer to next
+        V               value;          // element value
 
-        Ref     next;           // pointer to next
-        V       value;          // element value
+        static if (HashCache == true)
+        {
+        hash_t       cache;             // retain hash value?
+        }
                 
         /***********************************************************************
 
