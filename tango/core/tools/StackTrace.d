@@ -384,7 +384,7 @@ version(Posix){
         fault_action.sa_handler = cast(typeof(fault_action.sa_handler)) &tango_stacktrace_fault_handler;
         sigemptyset(&fault_action.sa_mask);
         fault_action.sa_flags = SA_SIGINFO;
-        foreach (sig;[SIGSEGV,SIGFPE,SIGILL,SIGBUS,SIGKILL,SIGINT]){
+        foreach (sig;[SIGSEGV,SIGFPE,SIGILL,SIGBUS,SIGINT]){
             sigaction(sig, &fault_action, null);
         }
     }
