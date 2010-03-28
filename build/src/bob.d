@@ -344,7 +344,7 @@ class FreeBSD : FileFilter
 
         int ldc ()
         {
-                auto ldc = "ldc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
