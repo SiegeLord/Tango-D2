@@ -209,10 +209,10 @@ class MemCache : private Thread
                 while (active)
                        try {
                            Thread.sleep (watchdog);
-                           debug Cout ("testing connections ...").newline;
+                           debug(TangoMemCache) Cout ("testing connections ...").newline;
                            connect (hosts);
                            } catch (Exception e)
-                                    debug Cout ("memcache watchdog: ") (e.toString).newline;
+                                    debug(TangoMemCache) Cout ("memcache watchdog: ") (e.toString).newline;
         }
 
         /**********************************************************************
@@ -419,9 +419,9 @@ private class Connection
                       try {
                           conduit.connect (address);
                           connected = true;
-                          debug Cout ("connected to ") (host).newline;
+                          debug(TangoMemCache) Cout ("connected to ") (host).newline;
                           } catch (Object o)
-                                   debug Cout ("failed to connect to ")(host).newline;
+                                   debug(TangoMemCache) Cout ("failed to connect to ")(host).newline;
         }
         
         /**********************************************************************
@@ -612,7 +612,7 @@ private class Connection
 }       
 
 
-debug (MemCache)
+debug (TangoMemCache)
 {
 /******************************************************************************
 

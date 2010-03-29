@@ -32,7 +32,7 @@ module arraycat;
 private
 {
     import tango.stdc.string;
-    debug import tango.stdc.stdio;
+    debug(ARRAY_COPY) import tango.stdc.stdio;
 }
 
 extern (C):

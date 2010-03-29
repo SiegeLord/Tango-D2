@@ -68,7 +68,7 @@
 *******************************************************************************/
 module tango.text.Regex;
 
-debug import tango.io.Stdout;
+debug(TangoRegex) import tango.io.Stdout;
 
 /* *****************************************************************************
     A simple pair
@@ -1349,7 +1349,7 @@ private final class TNFA(char_t)
     /* ********************************************************************************************
         Print the TNFA (tabular representation of the delta function)
     **********************************************************************************************/
-    debug void print()
+    debug(TangoRegex) void print()
     {
         foreach ( int i, s; states )
         {
@@ -2704,7 +2704,7 @@ private class TDFA(char_t)
             }
         }
 
-        debug
+        debug(TangoRegex)
         {
             foreach ( ref v; registers )
             {
@@ -2729,7 +2729,7 @@ private class TDFA(char_t)
     /* ********************************************************************************************
         Print the TDFA (tabular representation of the delta function)
     **********************************************************************************************/
-    debug void print()
+    debug(TangoRegex) void print()
     {
         Stdout.formatln("#tags = {}", num_tags);
 
@@ -3700,8 +3700,8 @@ class RegExpT(char_t)
         tnfa_.swapMatchingBracketSyntax = swapMBS;
         tnfa_.parse(unanchored);
         if ( printNFA ) {
-            debug Stdout.formatln("\nTNFA:");
-            debug tnfa_.print;
+            debug(TangoRegex) Stdout.formatln("\nTNFA:");
+            debug(TangoRegex) tnfa_.print;
         }
         tdfa_ = new tdfa_t(tnfa_);
         registers_.length = tdfa_.num_regs;
@@ -3791,7 +3791,7 @@ class RegExpT(char_t)
         auto inp = input_[next_start_ .. $];
         auto s = tdfa_.start;
 
-        debug(regex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
+        debug(TangoRegex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp);
         LmainLoop: for ( size_t p, next_p; p < inp.length; )
         {
         Lread_char:
@@ -3802,7 +3802,7 @@ class RegExpT(char_t)
                 next_p = p+1;
 
         Lprocess_char:
-            debug(regex) Stdout.formatln("{} (0x{:x})", c, cast(int)c);
+            debug(TangoRegex) Stdout.formatln("{} (0x{:x})", c, cast(int)c);
 
             tdfa_t.Transition t = void;
             switch ( s.mode )
@@ -3810,7 +3810,7 @@ class RegExpT(char_t)
                 case s.Mode.LOOKUP:
                     if ( c < s.LOOKUP_LENGTH )
                     {
-                        debug(regex) Stdout.formatln("lookup");
+                        debug(TangoRegex) Stdout.formatln("lookup");
                         auto i = s.lookup[c];
                         if ( i == s.INVALID_STATE )
                             break LmainLoop;
@@ -3824,7 +3824,7 @@ class RegExpT(char_t)
                 case s.Mode.MIXED:
                     if ( c < s.LOOKUP_LENGTH )
                     {
-                        debug(regex) Stdout.formatln("mixed");
+                        debug(TangoRegex) Stdout.formatln("mixed");
                         auto i = s.lookup[c];
                         if ( i == s.INVALID_STATE )
                             break;
@@ -3848,43 +3848,43 @@ class RegExpT(char_t)
                 {
                     // single char
                     case predicate_t.MatchMode.single_char:
-                        debug(regex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
+                        debug(TangoRegex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lconsume;
                     case predicate_t.MatchMode.single_char_l:
-                        debug(regex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
+                        debug(TangoRegex) Stdout.formatln("single char 0x{:x} == 0x{:x}", cast(int)c, cast(int)t.predicate.data_chr);
                         if ( c != t.predicate.data_chr )
                             continue Ltrans_loop;
                         goto Lno_consume;
 
                     // bitmap
                     case predicate_t.MatchMode.bitmap:
-                        debug(regex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        debug(TangoRegex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
                         if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
                             goto Lconsume;
                         continue Ltrans_loop;
                     case predicate_t.MatchMode.bitmap_l:
-                        debug(regex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
+                        debug(TangoRegex) Stdout.formatln("bitmap {}\n{}", c, t.predicate.toString);
                         if ( c <= predicate_t.MAX_BITMAP_LENGTH && ( t.predicate.data_bmp[c/8] & (1 << (c&7)) ) )
                             goto Lno_consume;
                         continue Ltrans_loop;
 
                     // string search
                     case predicate_t.MatchMode.string_search:
-                        debug(regex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        debug(TangoRegex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
                         if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
                             continue Ltrans_loop;
                         goto Lconsume;
                     case predicate_t.MatchMode.string_search_l:
-                        debug(regex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
+                        debug(TangoRegex) Stdout.formatln("string search {} in {}", c, t.predicate.data_str);
                         if ( indexOf(t.predicate.data_str.ptr, c, t.predicate.data_str.length) >= t.predicate.data_str.length )
                             continue Ltrans_loop;
                         goto Lno_consume;
 
                     // generic
                     case predicate_t.MatchMode.generic:
-                        debug(regex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        debug(TangoRegex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
                         for ( auto cmp = t.predicate.data_str.ptr,
                             cmpend = cmp + t.predicate.data_str.length;
                             cmp < cmpend; ++cmp )
@@ -3899,7 +3899,7 @@ class RegExpT(char_t)
                         }
                         continue Ltrans_loop;
                     case predicate_t.MatchMode.generic_l:
-                        debug(regex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
+                        debug(TangoRegex) Stdout.formatln("generic {}\n{}", c, t.predicate.toString);
                         for ( auto cmp = t.predicate.data_str.ptr,
                             cmpend = cmp + t.predicate.data_str.length;
                             cmp < cmpend; ++cmp )
@@ -3923,8 +3923,8 @@ class RegExpT(char_t)
             Lno_consume:
 
                 s = t.target;
-                debug(regex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
-                debug(regex) Stdout.formatln("{} commands", t.commands.length);
+                debug(TangoRegex) Stdout.formatln("{}{}: {}", s.accept?"*":" ", s.index, inp[p..$]);
+                debug(TangoRegex) Stdout.formatln("{} commands", t.commands.length);
 
                 foreach ( cmd; t.commands )
                 {
@@ -4386,7 +4386,7 @@ class RegExpT(char_t)
     size_t      next_start_,
                 last_start_;
 
-    debug tnfa_t tnfa_;
+    debug(TangoRegex) tnfa_t tnfa_;
     tdfa_t      tdfa_;
 private:
     const int   PREALLOC = 16;

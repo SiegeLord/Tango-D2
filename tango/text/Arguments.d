@@ -15,7 +15,7 @@ module tango.text.Arguments;
 private import tango.text.Util;
 private import tango.util.container.more.Stack;
 
-debug private import tango.io.Stdout;
+debug(TangoArguments) private import tango.io.Stdout;
 
 version=dashdash;       // -- everything assigned to the null argument
 
@@ -283,12 +283,12 @@ class Arguments
                 bool    done;
                 int     error;
 
-                debug stdout.formatln ("\ncmdline: '{}'", input);
+                debug(TangoArguments) stdout.formatln ("\ncmdline: '{}'", input);
                 stack.push (get(null));
                 foreach (s; input)
                          //if (s.length)
                             {
-                            debug stdout.formatln ("'{}'", s);
+                            debug(TangoArguments) stdout.formatln ("'{}'", s);
                             if (done is false)
                                 if (s == "--")
                                    {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
@@ -916,7 +916,7 @@ class Arguments
                                         }
                                   }
 
-                        debug stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
+                        debug(TangoArguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
                                                deefalts, dependees);
@@ -1098,7 +1098,7 @@ debug(UnitTest)
       
 *******************************************************************************/
 
-debug (Arguments)
+debug (TangoArguments)
 {       
         import tango.io.Stdout;
 

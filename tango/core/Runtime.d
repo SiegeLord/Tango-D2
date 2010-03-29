@@ -7,7 +7,7 @@
  */
 module tango.core.Runtime;
 
-debug private extern(C) int printf(char*,...);
+debug(TangoRuntime) private extern(C) int printf(char*,...);
 
 private
 {
@@ -187,16 +187,16 @@ extern (C) bool runModuleUnitTests()
 {
     if( Runtime.sm_moduleUnitTester is null )
     {
-        debug printf("unittest start\n");
+        debug(TangoRuntime) printf("unittest start\n");
         foreach( m; ModuleInfo )
         {
             if( m.unitTest ) {
                 char[] name=m.name~"\n\0";
-                debug printf(name.ptr);
+                debug(TangoRuntime) printf(name.ptr);
                 m.unitTest();
             }
         }
-        debug printf("unittest end\n");
+        debug(TangoRuntime) printf("unittest end\n");
         return true;
     }
     return Runtime.sm_moduleUnitTester();

@@ -52,9 +52,8 @@ private import rt.gc.basic.gcalloc;
 
 private import cstdlib = tango.stdc.stdlib : calloc, free, malloc, realloc;
 private import cstring = tango.stdc.string : memcpy, memmove, memset;
-debug(THREADINVARIANT) private import tango.stdc.posix.pthread;
-debug(PRINTF) private import tango.stdc.posix.pthread : pthread_self, pthread_t;
-debug private import tango.stdc.stdio : printf;
+debug(THREADINVARIANT) private import tango.stdc.posix.pthread : pthread_self, pthread_t;
+debug(PRINTF) private import tango.stdc.stdio : printf;
 
 version (GNU)
 {

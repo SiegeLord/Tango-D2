@@ -158,7 +158,7 @@ extern (Windows) void _d_throw(Object *h)
 {
     uint regebp;
 
-    debug
+    debug(deh)
     {
         printf("_d_throw(h = %p, &h = %p)\n", h, &h);
         printf("\tvptr = %p\n", *cast(void **)h);
@@ -190,25 +190,25 @@ extern (Windows) void _d_throw(Object *h)
         regebp = __eh_find_caller(regebp,&retaddr);
         if (!regebp)
         {   // if end of call chain
-            debug printf("end of call chain\n");
+            debug(deh) printf("end of call chain\n");
             printf("unhandled exception\n");
             exit(1);
             break;
         }
 
-        debug printf("found caller, EBP = x%x, retaddr = x%x\n", regebp, retaddr);
+        debug(deh) printf("found caller, EBP = x%x, retaddr = x%x\n", regebp, retaddr);
 //if (++count == 12) *(char*)0=0;
         handler_table = __eh_finddata(cast(void *)retaddr);   // find static data associated with function
         if (!handler_table)         // if no static data
         {
-            debug printf("no handler table\n");
+            debug(deh) printf("no handler table\n");
             continue;
         }
         funcoffset = cast(uint)handler_table.fptr;
         spoff = handler_table.espoffset;
         retoffset = handler_table.retoffset;
 
-        debug
+        debug(deh)
         {
             printf("retaddr = x%x\n",cast(uint)retaddr);
             printf("regebp=x%04x, funcoffset=x%04x, spoff=x%x, retoffset=x%x\n",
@@ -218,7 +218,7 @@ extern (Windows) void _d_throw(Object *h)
         // Find start index for retaddr in static data
         dim = handler_table.nhandlers;
 
-        debug
+        debug(deh)
         {
             printf("handler_info[]:\n");
             for (int i = 0; i < dim; i++)
@@ -234,12 +234,12 @@ extern (Windows) void _d_throw(Object *h)
         {
             phi = handler_table.handler_info.ptr + i;
 
-            debug printf("i = %d, phi.offset = %04x\n", i, funcoffset + phi.offset);
+            debug(deh) printf("i = %d, phi.offset = %04x\n", i, funcoffset + phi.offset);
             if (cast(uint)retaddr > funcoffset + phi.offset &&
                 cast(uint)retaddr <= funcoffset + phi.endoffset)
                 index = i;
         }
-        debug printf("index = %d\n", index);
+        debug(deh) printf("index = %d\n", index);
 
         // walk through handler table, checking each handler
         // with an index smaller than the current table_index
