@@ -210,7 +210,7 @@ done:
  *
  * Approximates the integral
  *
- *   K(m) = $(INTEGRATE 0, &pi/2) dt/ (sqrt( 1- m $(POWER sin, 2) t))
+ *   K(m) = $(INTEGRATE 0, &pi;/2) dt/ (sqrt( 1- m $(POWER sin, 2) t))
  *
  * where m = 1 - x, using the approximation
  *
@@ -225,7 +225,7 @@ done:
  *
  * This is equivalent to ellipticF(PI_2, 1-x).
  *
- * K(0) = &pi/2.
+ * K(0) = &pi;/2.
  */
 
 real ellipticKComplete(real x)
@@ -279,7 +279,7 @@ const real [] Q = [
  *
  * Approximates the integral
  *
- * E(m) = $(INTEGRATE 0, &pi/2) sqrt( 1- m $(POWER sin, 2) t) dt
+ * E(m) = $(INTEGRATE 0, &pi;/2) sqrt( 1- m $(POWER sin, 2) t) dt
  *
  * where m = 1 - x, using the approximation
  *
@@ -288,7 +288,7 @@ const real [] Q = [
  * Though there are no singularities, the argument m1 is used
  * rather than m for compatibility with ellipticKComplete().
  *
- * E(1) = 1; E(0) = &pi/2.
+ * E(1) = 1; E(0) = &pi;/2.
  * m must be in the range 0 <= m <= 1.
  */
 

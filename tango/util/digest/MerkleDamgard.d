@@ -33,7 +33,7 @@ public  import tango.util.digest.Digest;
 
         In addition there exist two further abstract methods; these methods
         have empty default implementations since in some cases they are not 
-        required:
+        required$(CLN)
         ---
         protected abstract void padLength(ubyte[] data, ulong length);
         protected abstract void extend();

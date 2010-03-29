@@ -50,6 +50,7 @@ _PI = $(PI $0)
 D = <span class="inlcode">$0</span>
 LE = <=
 GT = <
+CLN = :
 %(favicon)s
 """ % locals()
   )
