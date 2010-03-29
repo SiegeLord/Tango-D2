@@ -3689,7 +3689,7 @@ class RegExpT(char_t)
     {
         pattern_ = pattern;
 
-        debug {}
+        debug(TangoRegex) {}
         else { scope tnfa_t tnfa_; }
         static if ( is(char_t == dchar) ) {
             tnfa_ = new tnfa_t(pattern_);
