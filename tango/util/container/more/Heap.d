@@ -266,7 +266,7 @@ template MaxHeap(T)
 
 
 
-version (UnitTest)
+debug (UnitTest)
 {
 unittest
 {

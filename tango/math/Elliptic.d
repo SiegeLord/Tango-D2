@@ -331,6 +331,8 @@ const real [] Q = [
     return 1.0L + x * poly(x,P) - log(x) * (x * poly(x,Q) );
 }
 
+debug (UnitTest)
+{
 unittest {
     assert( ellipticF(1, 0)==1);
     assert(ellipticEComplete(0)==1);
@@ -342,6 +344,7 @@ unittest {
     real x=0.5653L;
     assert(ellipticKComplete(1-x) == ellipticF(PI_2, x) );
     assert(ellipticEComplete(1-x) == ellipticE(PI_2, x) );
+}
 }
 
 

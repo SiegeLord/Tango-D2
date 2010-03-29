@@ -344,62 +344,64 @@ class Blowfish : BlockCipher
         }
     }
     
-    /** Some Blowfish test vectors from Schneier's site. */
-    debug (UnitTest)
+
+}
+
+/** Some Blowfish test vectors from Schneier's site. */
+debug (UnitTest)
+{
+    unittest
     {
-        unittest
-        {
-            static string[] test_keys = [
-                "0000000000000000",
-                "ffffffffffffffff",
-                "57686f206973204a6f686e2047616c743f", // I don't know, do you?
-                "1111111111111111",
-                "0123456789abcdef",
-                "1111111111111111",
-                "fedcba9876543210"
-            ];
-                 
-            static string[] test_plaintexts = [
-                "0000000000000000",
-                "ffffffffffffffff",
-                "fedcba9876543210",
-                "1111111111111111",
-                "1111111111111111",
-                "0123456789abcdef",
-                "0123456789abcdef"
-            ];
-                
-            static string[] test_ciphertexts = [
-                "4ef997456198dd78",
-                "51866fd5b85ecb8a",
-                "cc91732b8022f684",
-                "2466dd878b963c9d",
-                "61f9c3802281b096",
-                "7d0cc630afda1ec7",
-                "0aceab0fc6a0a28d"
-            ];
-                
-            Blowfish t = new Blowfish();
-            foreach (uint i, string test_key; test_keys)
-            {
-                ubyte[] buffer = new ubyte[t.blockSize];
-                string result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
-                
-                // Encryption
-                t.init(true, key);
-                t.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
-                result = ByteConverter.hexEncode(buffer);
-                assert(result == test_ciphertexts[i],
-                        t.name~": ("~result~") != ("~test_ciphertexts[i]~")");
+        static string[] test_keys = [
+            "0000000000000000",
+            "ffffffffffffffff",
+            "57686f206973204a6f686e2047616c743f", // I don't know, do you?
+            "1111111111111111",
+            "0123456789abcdef",
+            "1111111111111111",
+            "fedcba9876543210"
+        ];
+             
+        static string[] test_plaintexts = [
+            "0000000000000000",
+            "ffffffffffffffff",
+            "fedcba9876543210",
+            "1111111111111111",
+            "1111111111111111",
+            "0123456789abcdef",
+            "0123456789abcdef"
+        ];
             
-                // Decryption
-                t.init(false, key);
-                t.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
-                result = ByteConverter.hexEncode(buffer);
-                assert(result == test_plaintexts[i],
-                        t.name~": ("~result~") != ("~test_plaintexts[i]~")");
-            }
+        static string[] test_ciphertexts = [
+            "4ef997456198dd78",
+            "51866fd5b85ecb8a",
+            "cc91732b8022f684",
+            "2466dd878b963c9d",
+            "61f9c3802281b096",
+            "7d0cc630afda1ec7",
+            "0aceab0fc6a0a28d"
+        ];
+            
+        Blowfish t = new Blowfish();
+        foreach (uint i, string test_key; test_keys)
+        {
+            ubyte[] buffer = new ubyte[t.blockSize];
+            string result;
+            SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+            
+            // Encryption
+            t.init(true, key);
+            t.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
+            result = ByteConverter.hexEncode(buffer);
+            assert(result == test_ciphertexts[i],
+                    t.name~": ("~result~") != ("~test_ciphertexts[i]~")");
+        
+            // Decryption
+            t.init(false, key);
+            t.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
+            result = ByteConverter.hexEncode(buffer);
+            assert(result == test_plaintexts[i],
+                    t.name~": ("~result~") != ("~test_plaintexts[i]~")");
         }
     }
 }

@@ -1571,7 +1571,7 @@ public class IPv4Address : Address
 
 *******************************************************************************/
 
-debug(Unittest)
+debug(UnitTest)
 {
         unittest
         {
@@ -1802,7 +1802,7 @@ protected:
 
 *******************************************************************************/
 
-debug(Unittest)
+debug(UnitTest)
 {
         unittest
         {

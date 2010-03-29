@@ -41,6 +41,8 @@ uint multibyteAddSub(char op)(uint[] dest, uint [] src1, uint [] src2, uint carr
     return cast(uint)c;
 }
 
+debug (UnitTest)
+{
 unittest
 {
     uint [] a = new uint[40];
@@ -81,6 +83,7 @@ unittest
        carry = multibyteAddSub!('-')(a[0..q], a[0..q], b[0..q], 0);
        assert(a[q-2]==0);
     }
+}
 }
 
 
@@ -143,6 +146,8 @@ void multibyteShr(uint [] dest, uint [] src, uint numbits)
    }
 }
 
+debug (UnitTest)
+{
 unittest
 {
     
@@ -161,6 +166,7 @@ unittest
 	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 
 	    && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
 }
+}
 
 /** dest[] = src[] * multiplier + carry.
  * Returns carry.
@@ -177,11 +183,14 @@ uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
     return cast(uint)c;
 }
 
+debug (UnitTest)
+{
 unittest
 {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteMul(aa[1..4], aa[1..4], 16, 0);
 	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+}
 }
 
 /**
@@ -207,6 +216,8 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     return cast(uint)c;    
 }
 
+debug (UnitTest)
+{
 unittest {
     
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
@@ -215,6 +226,7 @@ unittest {
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
 	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
+}
 }
 
 
@@ -253,6 +265,8 @@ uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
     return cast(uint)c;
 }
 
+debug (UnitTest)
+{
 unittest {
     uint [] aa = new uint[101];
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
@@ -262,6 +276,8 @@ unittest {
     assert(r==0x33FF_7461);
 
 }
+}
+
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
 void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
 {

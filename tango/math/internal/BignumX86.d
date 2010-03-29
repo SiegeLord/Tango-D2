@@ -89,9 +89,12 @@ char [] indexedLoopUnroll(int n, char [] s)
     }
     return u;    
 }
-unittest
+
+debug (UnitTest)
+{unittest
 {
 assert(indexedLoopUnroll(3, "@*23;")=="0*23;1*23;2*23;");
+}
 }
 
 public:
@@ -174,6 +177,8 @@ done:
     } 
 }
 
+debug (UnitTest)
+{
 unittest
 {
     uint [] a = new uint[40];
@@ -214,6 +219,7 @@ unittest
        carry = multibyteAddSub!('-')(a[0..q], a[0..q], b[0..q], 0);
        assert(a[q-2]==0);
     }
+}
 }
 
 /** dest[#] += carry, or dest[#] -= carry.
@@ -519,6 +525,8 @@ L_last:
      }
 }
 
+debug (UnitTest)
+{
 unittest
 {
 
@@ -555,6 +563,7 @@ unittest
         
     aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     r = multibyteShl(aa[0..4], aa[1..5], 31);    
+}
 }
 
 /** dest[#] = src[#] * multiplier + carry.
@@ -620,11 +629,14 @@ L_odd:
      }
 }
 
+debug (UnitTest)
+{
 unittest
 {
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
     multibyteMul(aa[1..4], aa[1..4], 16, 0);
     assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+}
 }
 
 // The inner multiply-and-add loop, together with the Even entry point.
@@ -786,6 +798,8 @@ L_enter_odd:
     mixin(asmMulAdd_enter_odd(OP, "ESP+LASTPARAM"));
 }
 
+debug (UnitTest)
+{
 unittest {
     
     uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
@@ -794,6 +808,7 @@ unittest {
     assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
         && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
+}
 }
 
 /** 
@@ -1001,6 +1016,8 @@ Lc:
     }
 }
 
+debug (UnitTest)
+{
 unittest {
     uint [] aa = new uint[101];
     for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
@@ -1008,6 +1025,7 @@ unittest {
     uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
     for (int i=0; i<aa.length-1; ++i) assert(aa[i] == 0x8765_4321 * (i+3));
     assert(r==0x33FF_7461);
+}
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
@@ -1052,7 +1070,8 @@ L1:
 	ret 4*4;
  }
 }
-
+debug (UnitTest)
+{
 unittest {
     uint [] aa = new uint[13];
 	uint [] bb = new uint[6];
@@ -1062,6 +1081,7 @@ unittest {
     multibyteAddDiagonalSquares(aa[0..$-1], bb);
 	assert(aa[$-1]==7);
 	for (int i=0; i<bb.length; ++i) { assert(aa[2*i]==0x8000_0000+i*i); assert(aa[2*i+1]==0x8000_0000); }
+}
 }
 
 void multibyteTriangleAccumulateD(uint[] dest, uint[] x)
@@ -1192,6 +1212,8 @@ length_is_3:
         mixin(asmMulAdd_enter_odd("add", "ESP"));
 }
 
+debug (UnitTest)
+{
 unittest {
 uint [] aa = new uint[200];
    uint [] a  = aa[0..100];
@@ -1232,6 +1254,7 @@ uint [] aa = new uint[200];
    assert(a[4]==0xcf384241);
    assert(a[5]== 0x4a17fc8);
    assert(a[6]==0x4d549025);
+}
 }
 
 

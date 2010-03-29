@@ -1662,6 +1662,8 @@ void headTail(char[] path, out char[] head, out char[] tail)
     tail = null;
 }
 
+debug (UnitTest)
+{
 unittest
 {
     char[] h,t;
@@ -1681,6 +1683,7 @@ unittest
     headTail("a", h, t);
     assert( h == "a" );
     assert( t == "" );
+}
 }
 
 // ************************************************************************** //
