@@ -487,7 +487,7 @@ else
 
 *******************************************************************************/
 
-private extern (C) private char* ecvt(double d, int digits, out int decpt, out bool sign);
+private extern (C) char* ecvt(double d, int digits, out int decpt, out bool sign);
 
 /*******************************************************************************
 
