@@ -534,7 +534,7 @@ class PublicKey
 
         Please see the encrypt notes.
 
-        Parmas:
+        Params:
             data = the data to encrypt
 
     *******************************************************************************/
