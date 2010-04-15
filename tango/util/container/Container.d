@@ -129,7 +129,7 @@ struct Container
                 T*[] allocate (size_t count)
                 {
                         auto p = (cast(T**) calloc(count, (T*).sizeof)) [0 .. count];
-                        GC.addRoot (cast(void*) p);
+                        GC.addRange (cast(void*) p, count * (T*).sizeof);
                         return p;
                 }
         
@@ -143,7 +143,7 @@ struct Container
                 {      
                         if (t.ptr)
                            {
-                           GC.removeRoot (t.ptr);
+                           GC.removeRange (t.ptr);
                            free (t.ptr);
                            }
                 }
@@ -180,7 +180,7 @@ struct Container
                            {
                            foreach (ref list; lists)
                                    {
-                                   GC.removeRoot (list.ptr);
+                                   GC.removeRange (list.ptr);
                                    free (list.ptr);
                                    list = null;
                                    }
@@ -216,7 +216,7 @@ struct Container
                         lists.length = lists.length + 1;
                         auto p = (cast(T*) calloc (chunks, T.sizeof)) [0 .. chunks];
                         lists[$-1] = p;
-                        GC.addRoot (p.ptr);
+                        GC.addRange (p.ptr, T.sizeof * chunks);
                         auto head = cache;
                         foreach (ref node; p)
                                 {
