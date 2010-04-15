@@ -208,7 +208,7 @@ body
     Example:
     ---
     char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==");
-    Stdout(myDecodeString).newline; 
+    Stdout(myDecodedString).newline; // Hello, how are you today?
     ---
 
 *******************************************************************************/
@@ -243,7 +243,7 @@ body
     ---
     ubyte[512] decodebuf;
     char[] myDecodedString = cast(char[])decode("SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==", decodebuf);
-    Stdout(myDecodeString).newline; 
+    Stdout(myDecodedString).newline; // Hello, how are you today?
     ---
 
 *******************************************************************************/
