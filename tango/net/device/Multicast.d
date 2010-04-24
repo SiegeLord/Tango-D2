@@ -96,7 +96,17 @@ class Multicast : Datagram
                 super ();
 
                 this.group = group;
-                native.addressReuse(reuse).bind(new InternetAddress(group.port));
+                /* Posix also seems to require to bind to the specific group, while
+                 * Windows does not allow binding to multicast groups. The most
+                 * portable way seems to always bind for posix, but not for other
+                 * systems.
+                 * Reference; http://markmail.org/thread/co53qzbsvqivqxgc
+                 */
+                version (Posix) {
+                    native.addressReuse(reuse).bind(group);
+                } else {
+                    native.addressReuse(reuse).bind(new InternetAddress(group.port));
+                }
         }
         
         /***********************************************************************
