@@ -155,7 +155,6 @@ version (Posix)
         if (last_char == path.length)
             {
             username = path[1..$] ~ '\0';
-            last_char = username.length + 1;
             }
         else
             {
@@ -163,7 +162,7 @@ version (Posix)
             }
 
         assert(last_char > 1);
-
+ 
         // Reserve C memory for the getpwnam_r() function.
         passwd result;
         int extra_memory_size = 5 * 1024;
