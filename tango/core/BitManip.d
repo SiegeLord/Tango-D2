@@ -93,19 +93,19 @@ version( TangoDoc )
         array[0] = 2;
         array[1] = 0x100;
 
-        printf("btc(array, 35) = %d\n", <b>btc</b>(array, 35));
+        printf("btc(array, 35) = %d\n", btc(array, 35));
         printf("array = [0]:x%x, [1]:x%x\n", array[0], array[1]);
 
-        printf("btc(array, 35) = %d\n", <b>btc</b>(array, 35));
+        printf("btc(array, 35) = %d\n", btc(array, 35));
         printf("array = [0]:x%x, [1]:x%x\n", array[0], array[1]);
 
-        printf("bts(array, 35) = %d\n", <b>bts</b>(array, 35));
+        printf("bts(array, 35) = %d\n", bts(array, 35));
         printf("array = [0]:x%x, [1]:x%x\n", array[0], array[1]);
 
-        printf("btr(array, 35) = %d\n", <b>btr</b>(array, 35));
+        printf("btr(array, 35) = %d\n", btr(array, 35));
         printf("array = [0]:x%x, [1]:x%x\n", array[0], array[1]);
 
-        printf("bt(array, 1) = %d\n", <b>bt</b>(array, 1));
+        printf("bt(array, 1) = %d\n", bt(array, 1));
         printf("array = [0]:x%x, [1]:x%x\n", array[0], array[1]);
 
         return 0;
