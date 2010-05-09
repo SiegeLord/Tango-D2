@@ -12,6 +12,8 @@
 
 module tango.text.xml.DocPrinter;
 
+private import tango.io.model.IConduit;
+
 private import tango.text.xml.Document;
 
 /*******************************************************************************
@@ -21,8 +23,11 @@ private import tango.text.xml.Document;
 
 *******************************************************************************/
 
-class DocPrinter(T) : IXmlPrinter!(T)
+class DocPrinter(T)
 {
+        public alias Document!(T) Doc;          /// the typed document
+        public alias Doc.Node Node;             /// generic document node
+
         private bool quick = true;
         private uint indentation = 2;
 
@@ -70,6 +75,17 @@ class DocPrinter(T) : IXmlPrinter!(T)
 
                 print (doc.tree, (T[][] s...){foreach(t; s) content ~= t;});
                 return content;
+        }
+        
+        /***********************************************************************
+        
+                Generate a text representation of the document tree
+
+        ***********************************************************************/
+        
+        final void print (Doc doc, OutputStream stream)
+        {       
+                print (doc.tree, (T[][] s...){foreach(t; s) stream.write(t);});
         }
         
         /***********************************************************************
@@ -192,9 +208,7 @@ debug (DocPrinter)
                 auto doc = new Document!(char);
                 doc.parse (document);
 
-                void test (char[][] s...){foreach (t; s) Stdout(t).flush;}
-
                 auto p = new DocPrinter!(char);
-                p (doc.tree, &test);
+                p.print (doc, stdout);
         }
 }

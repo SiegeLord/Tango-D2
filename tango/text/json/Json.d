@@ -15,6 +15,8 @@ module tango.text.json.Json;
 
 private import tango.core.Vararg;
 
+private import tango.io.model.IConduit;
+
 private import tango.text.json.JsonEscape;
 
 private import tango.text.json.JsonParser;
@@ -131,28 +133,13 @@ class Json(T) : private JsonParser!(T)
 
         /***********************************************************************
         
-                Emit a text representation of this document to the given
-                delegate
-
-        ***********************************************************************/
-        
-        final void print (void delegate(T[]) append, T[] separator = null)
-        {
-                root.print (append, separator);
-        }
-
-        /***********************************************************************
-        
                 Return a text representation of this document
 
         ***********************************************************************/
 
-        final T[] print (T[] separator = null)
+        final T[] toString (T[] separator = null)
         {
-                T[] tmp;
-                void append (T[] s) {tmp ~= s;}
-                root.print (&append, separator);
-                return tmp;
+                return root.print (separator);
         }
 
         /***********************************************************************
@@ -591,7 +578,8 @@ class Json(T) : private JsonParser!(T)
                 }
         
                 public Type type;               /// the type of this node
-        
+                alias reset set;                /// alternate name for reset
+
                 /***************************************************************
         
                         return true if this node is of the given type
@@ -763,13 +751,38 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                alias reset set;
                 Value reset ()
                 {
                         type = Type.Null;
                         return this;
                 }
                 
+                /***************************************************************
+        
+                        Return a text representation of this value
+
+                ***************************************************************/
+
+                T[] print (T[] separator = null)
+                {
+                        T[] tmp;
+                        void append (T[] s) {tmp ~= s;}
+                        print (&append, separator);
+                        return tmp;
+                }
+
+                /***************************************************************
+        
+                        Emit a text representation of this value to the 
+                        given OutputStream
+
+                ***************************************************************/
+
+                Value print (OutputStream s, T[] separator = null)
+                {
+                        return print ((T[] t){s.write(t);}, separator);
+                }
+
                 /***************************************************************
                         
                         Emit a text representation of this value to the
@@ -1136,26 +1149,26 @@ debug (Json)
                 
                 auto p = new Json!(char);
                 auto v = p.parse (`{"t": true, "f":false, "n":null, "hi":["world", "big", 123, [4, 5, ["foo"]]]}`);       
-                Stdout.formatln ("{}", p.print);
+                Stdout.formatln ("{}", p.toString);
         
                 with (p)
                       value = object(pair("a", array(null, true, false, 30, object(pair("foo")))), pair("b", value(10)));
         
-                Stdout.formatln ("{}", p.print);
+                Stdout.formatln ("{}", p.toString);
 
                 p.parse ("[-1]");
-                Stdout.formatln ("{}", p.print);
+                Stdout.formatln ("{}", p.toString);
 
                 p.parse(`["foo"]`);
-                Stdout.formatln ("{}", p.print);
+                Stdout.formatln ("{}", p.toString);
 
                 p.parse(`{"foo": {"ff" : "ffff"}`);
-                Stdout.formatln ("{}", p.print);
+                Stdout.formatln ("{}", p.toString);
 
                 with (new Json!(char))
                      {
                      root = object(pair("array", array(null)));
-                     Stdout.formatln ("{}", print);
+                     Stdout.formatln ("{}", toString());
                      }
         }
 }
