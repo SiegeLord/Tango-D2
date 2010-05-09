@@ -288,6 +288,8 @@ version (Win32)
                 bool function (socket_t, uint, void*, DWORD, DWORD, DWORD, DWORD*, OVERLAPPED*) AcceptEx;
                 bool function (socket_t, HANDLE, DWORD, DWORD, OVERLAPPED*, void*, DWORD) TransmitFile;
                 bool function (socket_t, void*, int, void*, DWORD, DWORD*, OVERLAPPED*) ConnectEx;
+								
+                char* inet_ntop(int af, void *src, char *dst, int len);
         }
 
         private HMODULE lib;				
@@ -405,6 +407,8 @@ else
                 and getnameinfo to a human readable string, suitable for error reporting. (C) MAN
                 */
                 char* gai_strerror(int errcode); 
+								
+                char* inet_ntop(int af, void *src, char *dst, int len);
        }
 }
 
@@ -725,7 +729,11 @@ version (Windows)
 
         Address newFamilyObject ()
         {
-                return (family is AddressFamily.INET) ? new IPv4Address : new UnknownAddress;
+                if (family is AddressFamily.INET)
+                   return new IPv4Address;
+                if (family is AddressFamily.INET6)
+		    return new IPv6Address;
+                new UnknownAddress;
         }
 
         /***********************************************************************
@@ -978,14 +986,10 @@ version (Windows)
 
         bool blocking()
         {
-                version(Windows)
-                {
-                        return synchronous;
-                }
+                version (Windows)
+                         return synchronous;
                 else
-                {
-                        return !(fcntl(sock, F_GETFL, 0) & O_NONBLOCK);
-                }
+                   return !(fcntl(sock, F_GETFL, 0) & O_NONBLOCK);
         }
 
         /***********************************************************************
@@ -1064,8 +1068,6 @@ public abstract class Address
 
         abstract sockaddr*      name();
         abstract int            nameLen();
-        //abstract char[]         toString();
-        //abstract AddressFamily  addressFamily();
 
         /***********************************************************************
 
@@ -1415,7 +1417,6 @@ public class IPv4Address : Address
 
         static assert(sockaddr_in.sizeof is 16);
 
-        private char[8] _port;
         private sockaddr_in sin;
 
         /***********************************************************************
@@ -1463,7 +1464,7 @@ public class IPv4Address : Address
                       {
                       char[16] tmp = void;
                       exception ("Unable to resolve "~addr~":"~fromInt(tmp, port));
-                       }
+                      }
                    uiaddr = ih.addrList[0];
                    }
                 sin.sin_addr = htonl(uiaddr);
@@ -1528,9 +1529,10 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        synchronized char[] toAddrString()
+        char[] toAddrString()
         {
-                return convert2D(inet_ntoa(sin.sin_addr)).dup;
+                char[16] buff = 0;
+                return convert2D(inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, 16)).dup;
         }
 
         /***********************************************************************
@@ -1539,7 +1541,8 @@ public class IPv4Address : Address
 
         char[] toPortString()
         {
-                return fromInt (_port, port());
+                char[8] _port;
+                return fromInt (_port, port()).dup;
         }
 
         /***********************************************************************
@@ -1685,6 +1688,10 @@ protected:
         { 
         } 
  
+        /***********************************************************************
+
+        ***********************************************************************/
+
         this (sockaddr* sa) 
         { 
                 sin = *cast(sockaddr_in6*)sa; 
@@ -1707,7 +1714,18 @@ protected:
         { 
                 return sin.sizeof; 
         } 
+ 
  public: 
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        AddressFamily addressFamily()
+        {
+                return AddressFamily.INET6;
+        }
+
  
         const ushort PORT_ANY = 0; 
   
@@ -1792,6 +1810,28 @@ protected:
   
         ***********************************************************************/ 
  
+ 
+        char[] toAddrString()
+        {
+				
+                char[100] buff = 0;
+                return fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)).dup;
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        char[] toPortString()
+        {
+                char[8] _port;
+                return fromInt (_port, port()).dup;
+        }
+ 
+        /***********************************************************************
+
+        ***********************************************************************/
+
         char[] toString() 
         { 
                 return "[" ~ toAddrString ~ "]:" ~ toPortString; 
@@ -1807,7 +1847,7 @@ debug(UnitTest)
         unittest
         {
         IPv6Address ia = new IPv6Address("7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d", 8080);
-        assert(ia.toString() == "[7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d]:8080");
+        assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
         }
 }
 
