@@ -14,6 +14,10 @@ private import  tango.core.Thread,
 private import  tango.core.sync.Mutex,
                 tango.core.sync.Condition;
 
+private import  tango.stdc.string: memmove;
+
+private version = Queued;
+
 /**
  * A thread pool is a way to process multiple jobs in parallel without creating
  * a new thread for each job. This way the overhead of creating a thread is
@@ -226,9 +230,18 @@ private:
             }
             else
             {
-                // A stack -- should be a queue
-                job = q[$ - 1];
-                q.length = q.length - 1;
+                version (Queued) // #1896
+                        {
+                        job = q[0];
+                        memmove(q.ptr, q.ptr + 1, (q.length - 1) * typeof(*q).sizeof);
+                        q.length = q.length - 1;
+                        }
+                     else
+                        {
+                        // A stack -- should be a queue
+                        job = q[$ - 1];
+                        q.length = q.length - 1;
+                        }
             }
 
             // Make sure we unlock before we start doing the calculations
