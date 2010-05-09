@@ -563,7 +563,7 @@ class Text(T) : TextView!(T)
                 return Search!(T) (this, match);
         }
 
-        Search!(T) search (T match)
+        Search!(T) search (ref T match)
         {
                 return search ((&match)[0..1]);
         }
@@ -1656,7 +1656,7 @@ debug (UnitTest)
         assert (s.append(array) == "hhelloello");
 
         s = "hello";
-        s.select ("hello");
+        s.search("hello").next;
         assert (s.selection == "hello");
         s.replace ("1");
         assert (s.selection == "1");
@@ -1669,13 +1669,13 @@ debug (UnitTest)
 
         s ~= "fubar";
         assert (s.selection == "12345fubar");
-        assert (s.select('5'));
+        assert (s.search("5").next);
         assert (s.selection == "5");
         assert (s.remove == "1234fubar");
-        assert (s.select("fubar"));
+        assert (s.search("fubar").next);
         assert (s.selection == "fubar");
-        assert (s.select("wumpus") is false);
-        assert (s.selection == "fubar");
+        assert (s.search("wumpus").next is false);
+        assert (s.selection == "");
 
         assert (s.clear.format("{:f4}", 1.2345) == "1.2345");
 
@@ -1728,9 +1728,9 @@ debug (Text)
                 assert (s.count is 0);
 
                 t.point = 0;
-                assert (t.select ("hellO"));
+                assert (t.search("hellO").next);
                 assert (t.selection == "hellO");
-                assert (t.select ("hellO"));
+                assert (t.search("hellO").next);
                 assert (t.selection == "hellO");
         }
 }
