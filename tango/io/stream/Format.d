@@ -91,7 +91,8 @@ class FormatOutput(T) : OutputFilter
         private Layout!(T)      convert;
         private bool            flushLines;
 
-        public alias print      opCall;
+        public alias print      opCall;         /// opCall -> print
+        public alias newline    nl;             /// nl -> newline
 
         version (Win32)
                  private const T[] Eol = "\r\n";
