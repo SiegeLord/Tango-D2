@@ -59,7 +59,7 @@ public extern (C) void onUnicodeError (char[] msg, size_t idx = 0);
 
 *******************************************************************************/
 
-char[] toString (char[] src, char[] dst, uint* ate=null) {return src;}
+char[]  toString (char[] src, char[] dst, uint* ate=null) {return src;}
 wchar[] toString (wchar[] src, wchar[] dst, uint* ate=null) {return src;}
 dchar[] toString (dchar[] src, dchar[] dst, uint* ate=null) {return src;}
 
@@ -86,6 +86,13 @@ dchar[] toString (dchar[] src, dchar[] dst, uint* ate=null) {return src;}
         if (result.length > output.length)
             output = result;
         ---
+
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
 
 *******************************************************************************/
 
@@ -160,6 +167,13 @@ char[] toString (wchar[] input, char[] output=null, uint* ate=null)
         Returns a slice of the output buffer, corresponding to the
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
+
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
 
 *******************************************************************************/
 
@@ -245,6 +259,13 @@ wchar[] toString16 (char[] input, wchar[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
+
 *******************************************************************************/
 
 char[] toString (dchar[] input, char[] output=null, uint* ate=null)
@@ -327,6 +348,13 @@ char[] toString (dchar[] input, char[] output=null, uint* ate=null)
         Returns a slice of the output buffer, corresponding to the
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
+
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
 
 *******************************************************************************/
 
@@ -418,6 +446,13 @@ dchar[] toString32 (char[] input, dchar[] output=null, uint* ate=null)
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
 
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
+
 *******************************************************************************/
 
 wchar[] toString16 (dchar[] input, wchar[] output=null, uint* ate=null)
@@ -481,6 +516,13 @@ wchar[] toString16 (dchar[] input, wchar[] output=null, uint* ate=null)
         Returns a slice of the output buffer, corresponding to the
         converted characters. For optimum performance, the returned
         buffer should be specified as 'output' on subsequent calls.
+
+        Where 'ate' is provided, it will be set to the number of 
+        elements consumed from the input, and the output buffer 
+        will not be resized (or allocated). This represents a
+        streaming mode, where slices of the input are processed
+        in sequence rather than all at one time (should use 'ate'
+        as an index for slicing into unconsumed input).
 
 *******************************************************************************/
 

@@ -129,7 +129,9 @@ class UnicodeBom(T) : BomSniffer
                 encoding expects one to be present.
 
                 Where 'ate' is provided, it will be set to the number of 
-                bytes consumed from the input (not the number of elements)
+                elements consumed from the input and the decoder operates 
+                in streaming-mode. That is: 'dst' should be supplied since 
+                it is not resized or allocated.
 
         ***********************************************************************/
 
@@ -208,6 +210,13 @@ class UnicodeBom(T) : BomSniffer
         
         /***********************************************************************
       
+                Convert from 'type' into the given T.
+
+                Where 'ate' is provided, it will be set to the number of 
+                elements consumed from the input and the decoder operates 
+                in streaming-mode. That is: 'dst' should be supplied since 
+                it is not resized or allocated.
+
         ***********************************************************************/
 
         static T[] into (void[] x, uint type, T[] dst=null, uint* ate = null)
@@ -266,6 +275,13 @@ class UnicodeBom(T) : BomSniffer
 
 
         /***********************************************************************
+      
+                Convert from T into the given 'type'.
+
+                Where 'ate' is provided, it will be set to the number of 
+                elements consumed from the input and the decoder operates 
+                in streaming-mode. That is: 'dst' should be supplied since 
+                it is not resized or allocated.
 
         ***********************************************************************/
 
@@ -328,6 +344,8 @@ class UnicodeBom(T) : BomSniffer
 
 
 /*******************************************************************************
+
+        Handle byte-order-mark prefixes  
 
 *******************************************************************************/
 
@@ -432,6 +450,10 @@ class BomSniffer
                 return null;
         }
 }
+
+/*******************************************************************************
+
+*******************************************************************************/
 
 debug (UnitTest)
 {
