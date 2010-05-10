@@ -1095,6 +1095,8 @@ struct PathParser
                 ---
                 normal:  /x/y/z => /x/y
                 special: /x/y/  => /x
+                normal:  /x     => /
+                normal:  /      => [empty]
                 ---
 
                 Note that this returns a path suitable for splitting into
@@ -1113,6 +1115,28 @@ struct PathParser
                             break;
                             }
                 return FS.stripped (p);
+        }
+
+        /***********************************************************************
+
+                Pop the rightmost element off this path, stripping off a
+                trailing '/' as appropriate:
+                ---
+                /x/y/z => /x/y
+                /x/y/  => /x/y  (note trailing '/' in the original)
+                /x/y   => /x
+                /x     => /
+                /      => [empty]
+                ---
+
+                Note that this returns a path suitable for splitting into
+                path and name components (there's no trailing separator).
+
+        ***********************************************************************/
+
+        char[] pop ()
+        {
+                return FS.stripped (path);
         }
 
         /***********************************************************************
@@ -1661,15 +1685,37 @@ char[] native (char[] path)
         case concerning a trailing '/':
         ---
         normal:  /x/y/z => /x/y
+        normal:  /x/y/  => /x/y
         special: /x/y/  => /x
-        final:   /x     => empty
+        normal:  /x     => /
+        normal:  /      => empty
         ---
+
+        The result can be split via parse()
+
+*******************************************************************************/
+
+char[] parent (char[] path)
+{
+        return pop (FS.stripped (path));
+}
+
+/*******************************************************************************
+
+        Returns a path representing the parent of this one:
+        ---
+        normal:  /x/y/z => /x/y
+        normal:  /x/y/  => /x/y
+        normal:  /x     => /
+        normal:  /      => empty
+        ---
+
+        The result can be split via parse()
 
 *******************************************************************************/
 
 char[] pop (char[] path)
 {
-        path = FS.stripped (path);
         int i = path.length;
         while (i && path[--i] != '/') {}
         return path [0..i];
@@ -1718,7 +1764,7 @@ char[] replace (char[] path, char from, char to)
 
         Parse a path into its constituent components. 
         
-        Note that the provided path is not duplicated
+        Note that the provided path is sliced, not duplicated
 
 *******************************************************************************/
 

@@ -466,8 +466,6 @@ class FilePath : PathView
 
         final FilePath isFolder (bool folder)
         {
-                if (folder && name.length)
-                    throw new IllegalArgumentException(toString~" should have a trailing '/'");
                 dir_ = folder;
                 return this;
         }
@@ -559,14 +557,17 @@ class FilePath : PathView
         /***********************************************************************
 
                 Pop to the parent of the current filepath (in situ - mutates
-                this FilePath)
+                this FilePath). Note that this differs from parent() in that
+                it does not include any special cases
 
         ***********************************************************************/
 
         final FilePath pop ()
-        {
-                auto path = parent();
-                p.end_ = path.length;
+        {       
+                version (SpecialPop)
+                         p.end_ = p.parent.length;
+                   else
+                      p.end_ = p.pop.length;
                 p.fp[p.end_] = '\0';
                 return parse;
         }
@@ -767,7 +768,7 @@ class FilePath : PathView
 
         static FilePath from (ref FileInfo info)
         {
-                char[513] tmp = void;
+                char[512] tmp = void;
 
                 auto len = info.path.length + info.name.length;
                 assert (tmp.length - len > 1);
@@ -775,8 +776,6 @@ class FilePath : PathView
                 // construct full pathname
                 tmp [0 .. info.path.length] = info.path;
                 tmp [info.path.length .. len] = info.name;
-                if (info.folder)
-                    tmp[len++] = '/';
                 return FilePath(tmp[0 .. len]).isFolder(info.folder);
         }
 
