@@ -466,6 +466,8 @@ class FilePath : PathView
 
         final FilePath isFolder (bool folder)
         {
+                if (folder && name.length)
+                    throw new IllegalArgumentException(toString~" should have a trailing '/'");
                 dir_ = folder;
                 return this;
         }
@@ -754,7 +756,6 @@ class FilePath : PathView
                         else
                            delete p;
                         }
-
                 return paths;
         }
 
@@ -766,15 +767,16 @@ class FilePath : PathView
 
         static FilePath from (ref FileInfo info)
         {
-                char[512] tmp = void;
+                char[513] tmp = void;
 
                 auto len = info.path.length + info.name.length;
-                assert (len < tmp.length);
+                assert (tmp.length - len > 1);
 
                 // construct full pathname
                 tmp [0 .. info.path.length] = info.path;
                 tmp [info.path.length .. len] = info.name;
-
+                if (info.folder)
+                    tmp[len++] = '/';
                 return FilePath(tmp[0 .. len]).isFolder(info.folder);
         }
 
@@ -1440,6 +1442,8 @@ debug (FilePath)
         {
                 assert (FilePath("/foo/").create.exists);
                 Cout (FilePath("c:/temp/").file("foo.bar")).newline;
+                foreach (path; FilePath("/foo/").toList)
+                         Cout(path)("::")(path.path).newline;
         }
 
 }
