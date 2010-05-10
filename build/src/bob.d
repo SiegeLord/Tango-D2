@@ -54,6 +54,7 @@ class Windows : FileFilter
                 exclude ("tango/stdc/posix");
                 include ("tango/sys/win32");
                 register ("windows", "dmd", &dmd);
+                register ("windows", "ldc", &ldc);
         }
 
         int dmd ()
@@ -86,6 +87,46 @@ class Windows : FileFilter
                     exec ("cmd /q /c del tango.lsp");
                 else
                    exec ("cmd /q /c del tango.lsp *.obj");
+                return count;
+        }
+
+        int ldc ()
+        {
+                char[] compile (FilePath file, char[] cmd)
+                {
+                        auto temp = objname (file, ".o");
+                        if (args.quick is false || isOverdue (file, temp))
+                            exec (cmd~temp~" "~file.toString);
+                        return temp;
+                }
+
+                auto gcc = "gcc -c -o";
+                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, ldc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                File.set("tango.lsp", libs.slice);
+                exec ("ar -r "~args.lib~" @tango.lsp");
+                exec ("cmd /q /c del tango.lsp");
+
+                // retain object files only when -q is specified
+                if (!args.quick)
+                    exec ("cmd /q /c del *.o");
+
                 return count;
         }
 }

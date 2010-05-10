@@ -14,8 +14,6 @@ module tango.io.device.Device;
 
 private import  tango.sys.Common;
 
-private import  tango.core.Exception;
-
 public  import  tango.io.device.Conduit;
 
 /*******************************************************************************
@@ -72,7 +70,6 @@ class Device : Conduit, ISelectable
 
         version (Win32)
         {
-                protected IO io;
                 struct IO
                 {
                         OVERLAPPED      asynch; // must be the first attribute!!
@@ -80,6 +77,8 @@ class Device : Conduit, ISelectable
                         bool            track;
                         void*           task;
                 }
+
+                protected IO io;
 
                 /***************************************************************
 
@@ -318,6 +317,3 @@ class Device : Conduit, ISelectable
                 }
         }
 }
-
-
-
