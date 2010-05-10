@@ -32,5 +32,5 @@ import tango.util.digest.Md5;
 /** Generates a UUID as described above. */
 Uuid newUuid(Uuid namespace, char[] name)
 {
-        return Uuid.Uuid.byName(namespace, name, new Md5, 3);
+        return Uuid.byName(namespace, name, new Md5, 3);
 }
