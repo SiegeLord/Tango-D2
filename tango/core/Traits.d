@@ -7,10 +7,20 @@
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
- * Authors:   Sean Kelly, Fawzi Mohamed
+ * Authors:   Sean Kelly, Fawzi Mohamed, Abscissa
  */
 module tango.core.Traits;
 
+
+/**
+ * Evaluates to true if T is char[], wchar[], or dchar[].
+ */
+template isStringType( T )
+{
+    const bool isStringType = is( T : char[] )  ||
+                              is( T : wchar[] ) ||
+                              is( T : dchar[] );
+}
 
 /**
  * Evaluates to true if T is char, wchar, or dchar.
