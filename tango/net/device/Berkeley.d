@@ -1061,8 +1061,16 @@ public abstract class Address
                 int       ai_socktype; 
                 int       ai_protocol; 
                 uint      ai_addrlen; 
-                sockaddr* ai_addr; 
-                char*     ai_canonname; 
+                version (freebsd)
+                        {
+                        char*     ai_canonname; 
+                        sockaddr* ai_addr; 
+                        }
+                     else
+                        {
+                        sockaddr* ai_addr; 
+                        char*     ai_canonname; 
+                        }
                 addrinfo* ai_next; 
         } 
 
