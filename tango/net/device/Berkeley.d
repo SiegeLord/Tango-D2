@@ -257,7 +257,7 @@ version (Win32)
                 freeaddrinfo and getnameinfo to a human readable string, suitable 
                 for error reporting. (C) MAN
                 */
-                char* gai_strerror(int errcode);
+                //char* gai_strerror(int errcode);
 
                 /**
                 Given node and service, which identify an Internet host and a service, 
@@ -289,7 +289,7 @@ version (Win32)
                 bool function (socket_t, HANDLE, DWORD, DWORD, OVERLAPPED*, void*, DWORD) TransmitFile;
                 bool function (socket_t, void*, int, void*, DWORD, DWORD*, OVERLAPPED*) ConnectEx;
 								
-                char* inet_ntop(int af, void *src, char *dst, int len);
+                //char* inet_ntop(int af, void *src, char *dst, int len);
         }
 
         private HMODULE lib;				
@@ -1235,7 +1235,7 @@ public abstract class Address
                 hints.ai_socktype = SocketType.STREAM; 
                 int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info); 
                 if (error != 0)  
-                    throw new AddressException(fromStringz(gai_strerror(error))); 
+                    throw new AddressException("couldn't resolve " ~ host); 
 
                 retVal.length = 16; 
                 retVal.length = 0; 
@@ -1532,7 +1532,10 @@ public class IPv4Address : Address
         char[] toAddrString()
         {
                 char[16] buff = 0;
-                return convert2D(inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, 16)).dup;
+                version (Windows)
+                         return convert2D(inet_ntoa(sin.sin_addr)).dup;
+                else
+                   return convert2D(inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, 16)).dup;
         }
 
         /***********************************************************************
@@ -1768,7 +1771,7 @@ protected:
                 hints.ai_family = AddressFamily.INET6; 
                 int error = getaddrinfo((addr ~ '\0').ptr, null, &hints, &info); 
                 if (error != 0)  
-                    exception(fromStringz(gai_strerror(error))); 
+                    exception("failed to create IPv6Address: "); 
                  
                 sin = *cast(sockaddr_in6*)(info.ai_addr); 
                 sin.sin_port = htons(port); 
@@ -1793,7 +1796,7 @@ protected:
                 hints.ai_family = AddressFamily.INET6; 
                 int error = getaddrinfo((addr ~ '\0').ptr, (service ~ '\0').ptr, &hints, &info); 
                 if (error != 0)  
-                    exception (fromStringz(gai_strerror(error))); 
+                    exception ("failed to create IPv6Address: "); 
                 sin = *cast(sockaddr_in6*)(info.ai_addr); 
         } 
  
@@ -1810,7 +1813,7 @@ protected:
   
         ***********************************************************************/ 
  
- 
+        version (Posix)
         char[] toAddrString()
         {
 				
@@ -1847,7 +1850,8 @@ debug(UnitTest)
         unittest
         {
         IPv6Address ia = new IPv6Address("7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d", 8080);
-        assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
+        //assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
+        assert(ia.toString() == "[7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d]:8080");
         }
 }
 
@@ -2012,8 +2016,6 @@ debug (UnitTest)
         extern (C) int printf(char*, ...);
         unittest
         {
-        try
-        {
         NetHost ih = new NetHost;
         ih.getHostByName(Berkeley.hostName());
         assert(ih.addrList.length > 0);
@@ -2031,11 +2033,6 @@ debug (UnitTest)
         foreach(int i, char[] s; ih.aliases)
         {
                 printf("aliases[%d] = %.*s\n", i, s);
-                }
-        }
-        catch( Object o )
-        {
-            assert( false );
         }
         }
 }
