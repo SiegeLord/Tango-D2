@@ -10,10 +10,11 @@
  */
 module tango.core.tools.StackTrace;
 import tango.core.tools.Demangler;
+import tango.core.Runtime;
 import tango.core.Thread;
 import tango.core.Traits: ctfe_i2a;
 import tango.stdc.string;
-import tango.stdc.stdio:printf,fprintf,stderr,fflush;
+import tango.stdc.stringz : fromStringz;
 import tango.stdc.stdlib: abort;
 version(Windows){
     import tango.core.tools.WinStackTrace;
@@ -314,7 +315,7 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
             scope(exit) recursiveStackTraces.val=recursiveStackTraces.val-1;
             // printf("tracer %d\n",recursiveStackTraces.val);
             if (recursiveStackTraces.val>10) {
-                printf("hit maximum recursive tracing (tracer asserting...?)\n");
+                Runtime.console.stderr("hit maximum recursive tracing (tracer asserting...?)\n");
                 abort();
                 return null;
             }
@@ -322,13 +323,14 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
         res=new BasicTraceInfo();
         res.trace(cast(TraceContext*)ptr);
     } catch (Exception e){
-        printf("tracer got exception:\n");
-        printf((e.msg~"\n\0").ptr);
-        e.writeOut((char[]s){ printf((s~"\0").ptr); });
-        printf("\n");
+        Runtime.console.stderr("tracer got exception:\n");
+        Runtime.console.stderr(e.msg);
+        e.writeOut((char[]s){ Runtime.console.stderr(s); });
+        Runtime.console.stderr("\n");
     } catch (Object o){
-        printf("tracer got object exception:\n");
-        printf((o.toString~"\n\0").ptr);
+        Runtime.console.stderr("tracer got object exception:\n");
+        Runtime.console.stderr(o.toString());
+        Runtime.console.stderr("\n");
     }
     return res;
 }
@@ -344,8 +346,8 @@ version(Posix){
     }
 
     extern(C) void tango_stacktrace_fault_handler (int sn, siginfo_t * si, void *ctx){
-        fprintf(stderr, "%s encountered at:\n", strsignal(sn));
-        fflush(stderr);
+        Runtime.console.stderr(fromStringz(strsignal(sn)));
+        Runtime.console.stderr(" encountered at:\n");
         ucontext_t * context = cast(ucontext_t *) ctx;
         version(haveSegfaultTrace){
             void* stack;
@@ -364,17 +366,16 @@ version(Posix){
             fInfo.address=cast(size_t)code;
             rt_symbolizeFrameInfo(fInfo,null,buf1);
             fInfo.func = demangler.demangle(fInfo.func,buf2);
-            fInfo.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); });
-            fflush(stderr);
+            fInfo.writeOut((char[] s) { Runtime.console.stderr(s); });
         }
-        fprintf(stderr, "\n Stacktrace:\n");
+        Runtime.console.stderr("\n Stacktrace:\n");
         TraceContext tc;
         tc.hasContext=ctx is null;
         if (tc.hasContext) tc.context=*(cast(ucontext_t*)ctx);
         Exception.TraceInfo info=basicTracer(&tc);
-        info.writeOut((char[] s) { fprintf(stderr, "%.*s", s.length,s.ptr); fflush(stderr); });
+        info.writeOut((char[] s) { Runtime.console.stderr(s); });
 
-        fprintf(stderr, "Stacktrace signal handler abort().\n");
+        Runtime.console.stderr("Stacktrace signal handler abort().\n");
         abort();
     }
 

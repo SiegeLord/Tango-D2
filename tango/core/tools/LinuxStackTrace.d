@@ -16,13 +16,15 @@ module tango.core.tools.LinuxStackTrace;
 
 version(linux){
     import tango.stdc.stdlib;
-    import tango.stdc.stdio;
+    import tango.stdc.stdio : FILE, fopen, fread, fseek, fclose, SEEK_SET, fgets, sscanf;
     import tango.stdc.string : strcmp, strlen,memcmp;
+    import tango.stdc.stringz : fromStringz;
     import tango.stdc.signal;
     import tango.stdc.errno: errno, EFAULT;
     import tango.stdc.posix.unistd: access;
     import tango.text.Util : delimit;
     import tango.core.Array : find, rfind;
+    import tango.core.Runtime;
 
     class SymbolException:Exception {
         this(char[]msg,char[]file,long lineNr,Exception next=null){
@@ -356,7 +358,9 @@ version(linux){
                 if (section.sh_name<section.sh_size) {
                     if (useShAddr && section.sh_addr) {
                         if (!may_read(cast(size_t)section.sh_addr)){
-                            fprintf(stderr,"section '%d' has invalid address, relocated?\n",i);
+                            Runtime.console.stderr("section '");
+                            Runtime.console.stderr(i);
+                            Runtime.console.stderr("' has invalid address, relocated?\n");
                         } else {
                             sectionStrs=(cast(char*)section.sh_addr)[0..section.sh_size];
                         }
@@ -390,8 +394,9 @@ version(linux){
             debug(none) printf("[%i] %i\n", i, section.sh_type);
 
             if (section.sh_name>=sectionStrs.length) {
-                fprintf(stderr,"could not find name for ELF section at %d\n",
-                        section.sh_name);
+                Runtime.console.stderr("could not find name for ELF section at ");
+                Runtime.console.stderr(section.sh_name);
+                Runtime.console.stderr("\n");
                 continue;
             }
             debug(elf) printf("Elf section %s\n",sectionStrs.ptr+section.sh_name);
@@ -402,8 +407,9 @@ version(linux){
                     seek(section.sh_offset);
                     if (useShAddr && section.sh_addr){
                         if (!may_read(cast(size_t)section.sh_addr)){
-                            fprintf(stderr,"section '%s' has invalid address, relocated?\n",
-                                    &(sectionStrs[section.sh_name]));
+                            Runtime.console.stderr("section '");
+                            Runtime.console.stderr(fromStringz(&(sectionStrs[section.sh_name])));
+                            Runtime.console.stderr("' has invalid address, relocated?\n");
                         } else {
                             string_table=(cast(char*)section.sh_addr)[0..section.sh_size];
                         }
@@ -418,8 +424,9 @@ version(linux){
                 if (strcmp(sectionStrs.ptr+section.sh_name,".symtab")==0 && !symbs) {
                     if (useShAddr && section.sh_addr){
                         if (!may_read(cast(size_t)section.sh_addr)){
-                            fprintf(stderr,"section '%s' has invalid address, relocated?\n",
-                                    &(sectionStrs[section.sh_name]));
+                            Runtime.console.stderr("section '");
+                            Runtime.console.stderr(fromStringz(&(sectionStrs[section.sh_name])));
+                            Runtime.console.stderr("' has invalid address, relocated?\n");
                         } else {
                             symbs=(cast(Elf_Sym*)section.sh_addr)[0..section.sh_size/Elf_Sym.sizeof];
                         }
@@ -439,8 +446,9 @@ version(linux){
                 seek(section.sh_offset);
                 if (useShAddr && section.sh_addr){
                     if (!may_read(cast(size_t)section.sh_addr)){
-                        fprintf(stderr,"section '%s' has invalid address, relocated?\n",
-                                &(sectionStrs[section.sh_name]));
+                        Runtime.console.stderr("section '");
+                        Runtime.console.stderr(fromStringz(&(sectionStrs[section.sh_name])));
+                        Runtime.console.stderr("' has invalid address, relocated?\n");
                     } else {
                         debug_line=(cast(ubyte*)section.sh_addr)[0..section.sh_size];
                     }
@@ -547,8 +555,14 @@ Lsplit:
                 continue;
             }
             if(!may_read(cast(size_t)start)){
-                fprintf(stderr, "got invalid start ptr from %s\n",source.ptr);
-                fprintf(stderr, "ignoring error in %*s:%ld\n",__FILE__.length,__FILE__.ptr,__LINE__);
+                Runtime.console.stderr("got invalid start ptr from '");
+                Runtime.console.stderr(fromStringz(source.ptr));
+                Runtime.console.stderr("'\n");
+                Runtime.console.stderr("ignoring error in ");
+                Runtime.console.stderr(__FILE__);
+                Runtime.console.stderr(":");
+                Runtime.console.stderr(__FILE__);
+                Runtime.console.stderr("\n");
                 return;
             }
             if(memcmp(start, marker.ptr, marker.length) != 0){
@@ -565,12 +579,15 @@ Lsplit:
                     printf("XX symbols end\n");
                 }
             } catch (Exception e) {
-                fprintf(stderr, "failed reading symbols from %s\n", source.ptr);
-                fprintf(stderr, "ignoring error in %*s:%ld\n",__FILE__.length,__FILE__.ptr,__LINE__);
-                e.writeOut((char[]s){
-                        fprintf(stderr,"%*s",s.length,s.ptr);
-                        fflush(stderr);
-                    });
+                Runtime.console.stderr("failed reading symbols from '");
+                Runtime.console.stderr(fromStringz(source.ptr));
+                Runtime.console.stderr("'\n");
+                Runtime.console.stderr("ignoring error in ");
+                Runtime.console.stderr(__FILE__);
+                Runtime.console.stderr(":");
+                Runtime.console.stderr(__FILE__);
+                Runtime.console.stderr("\n");
+                e.writeOut((char[]s){ Runtime.console.stderr(s); });
                 return;
             }
                 
@@ -583,10 +600,9 @@ Lsplit:
 
 
     private void dwarf_error(char[] msg) {
-        //this is wrong (this code could be executed within a singla handler, and
-        //fprintf() is most likely not signal-safe)
-        //(but StackTrace.d also uses fprintf())
-        fprintf(stderr, "Tango stacktracer DWARF error: %.*s\n", msg.length, msg.ptr);
+        Runtime.console.stderr("Tango stacktracer DWARF error: ");
+        Runtime.console.stderr(msg);
+        Runtime.console.stderr("\n");
     }
 
     alias short uhalf;
