@@ -31,13 +31,13 @@ abstract class Cipher
      *
      * Returns: The amount of encrypted data processed.
      */
-    uint update(void[] input_, void[] output_);
+    abstract uint update(void[] input_, void[] output_);
     
     /** Returns: The name of the algorithm of this cipher. */
-    string name();
+    abstract string name();
     
     /** Reset cipher to its state immediately subsequent the last init. */
-    void reset();
+    abstract void reset();
    
     /**
      * throw an InvalidArgument exception
@@ -63,7 +63,7 @@ abstract class Cipher
 abstract class BlockCipher : Cipher
 {
     /** Returns: The block size in bytes that this cipher will operate on. */
-    uint blockSize();
+    abstract uint blockSize();
 }
 
 
@@ -78,7 +78,7 @@ abstract class StreamCipher : Cipher
      *
      * Returns: One byte of input XORed with the keystream.
      */
-    ubyte returnByte(ubyte input);
+    abstract ubyte returnByte(ubyte input);
 }
 
  
@@ -86,7 +86,7 @@ abstract class StreamCipher : Cipher
  abstract class BlockCipherPadding
  {
     /** Returns: The name of the padding scheme implemented. */
-    string name();
+    abstract string name();
 
     /**
     * Generate padding to a specific length.
@@ -96,7 +96,7 @@ abstract class StreamCipher : Cipher
     *
     * Returns: The padding bytes to be added.
     */ 
-    ubyte[] pad(uint len);
+    abstract ubyte[] pad(uint len);
 
     /**
     * Return the number of pad bytes in the block.
@@ -109,7 +109,7 @@ abstract class StreamCipher : Cipher
     * Throws: dcrypt.crypto.errors.InvalidPaddingError if 
     *         pad length cannot be discerned.
     */
-    uint unpad(void[] input_);
+    abstract uint unpad(void[] input_);
  }
 
 

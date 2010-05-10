@@ -12,6 +12,8 @@
 
 module tango.text.locale.Win32;
 
+version (Windows)
+{
 alias tango.text.locale.Win32 nativeMethods;
 
 extern (Windows)
@@ -50,4 +52,6 @@ int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] s
   wchar[] string2 = toUnicode(stringB, offsetB, lengthB, len2);
 
   return CompareStringW(sortId, ignoreCase ? 0x1 : 0x0, string1.ptr, len1, string2.ptr, len2) - 2;
+}
+
 }
