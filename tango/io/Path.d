@@ -1249,19 +1249,23 @@ struct PathParser
 
         /***********************************************************************
 
-                Does this path equate to the given text?
+                Does this path equate to the given text? We ignore trailing
+                path-separators when testing equivalence
 
         ***********************************************************************/
 
         int opEquals (char[] s)
-        {
-                return toString == s;
+        {       
+                return FS.stripped(s) == FS.stripped(toString);
         }
 
         /***********************************************************************
 
                 Parse the path spec with explicit end point. A '\' is 
-                considered illegal in the path.
+                considered illegal in the path and should be normalized
+                out before this is invoked (the content managed here is
+                considered immutable, and thus cannot be changed by this
+                function)
 
         ***********************************************************************/
 

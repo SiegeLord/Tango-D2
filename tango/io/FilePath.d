@@ -270,17 +270,20 @@ class FilePath : PathView
         /***********************************************************************
 
                 Returns true if all fields are identical. Note that some 
-                combinations of operations will not produce an identical
+                combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
                 FilePath("/foo").append("bar").pop == "/foo";
                 FilePath("/foo/").append("bar").pop != "/foo/";
                 ---
 
-                The latter does not match due to variance in how append
+                The latter is different due to variance in how append
                 injects data, and how pop is expected to operate under 
                 different circumstances (both examples produce the same 
                 pop result, although the initial path is not identical).
+
+                However, opEquals() can overlook minor distinctions such
+                as this example, and will return a match.
 
         ***********************************************************************/
 
@@ -292,17 +295,20 @@ class FilePath : PathView
         /***********************************************************************
 
                 Does this FilePath match the given text? Note that some 
-                combinations of operations will not produce an identical
+                combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
                 FilePath("/foo").append("bar").pop == "/foo";
                 FilePath("/foo/").append("bar").pop != "/foo/";
                 ---
 
-                The latter does not match due to variance in how append
+                The latter Is Different due to variance in how append
                 injects data, and how pop is expected to operate under 
                 different circumstances (both examples produce the same 
                 pop result, although the initial path is not identical).
+
+                However, opEquals() can overlook minor distinctions such
+                as this example, and will return a match.
 
         ***********************************************************************/
 
@@ -1227,6 +1233,9 @@ debug (UnitTest)
         {
                 version(Win32)
                 {
+                assert (FilePath("/foo").append("bar").pop == "/foo");
+                assert (FilePath("/foo/").append("bar").pop == "/foo");
+
                 auto fp = new FilePath(r"C:/home/foo/bar");
                 fp ~= "john";
                 assert (fp == r"C:/home/foo/bar/john");
@@ -1250,7 +1259,7 @@ debug (UnitTest)
         
                 // special case for popping empty names
                 fp.set (r"C:/home/foo/bar/john/");
-                assert (fp.pop == r"C:/home/foo/bar");
+                assert (fp.parent == r"C:/home/foo/bar");
 
                 fp = new FilePath;
                 fp.set (r"C:/home/foo/bar/john/");
@@ -1463,8 +1472,6 @@ debug (FilePath)
         {
                 assert (FilePath("/foo/").create.exists);
                 Cout (FilePath("c:/temp/").file("foo.bar")).newline;
-                foreach (path; FilePath("/foo/").toList)
-                         Cout(path)("::")(path.path).newline;
         }
 
 }
