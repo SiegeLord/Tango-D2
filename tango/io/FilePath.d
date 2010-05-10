@@ -269,18 +269,40 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns true if all fields are equal.
+                Returns true if all fields are identical. Note that some 
+                combinations of operations will not produce an identical
+                set of fields. For example:
+                ---
+                FilePath("/foo").append("bar").pop == "/foo";
+                FilePath("/foo/").append("bar").pop != "/foo/";
+                ---
+
+                The latter does not match due to variance in how append
+                injects data, and how pop is expected to operate under 
+                different circumstances (both examples produce the same 
+                pop result, although the initial path is not identical).
 
         ***********************************************************************/
 
         final override int opEquals (Object o)
         {
-                return (this is o) || (o && toString == o.toString);
+                return (this is o) || (o && opEquals(o.toString));
         }
 
         /***********************************************************************
 
-                Does this FilePath equate to the given text?
+                Does this FilePath match the given text? Note that some 
+                combinations of operations will not produce an identical
+                set of fields. For example:
+                ---
+                FilePath("/foo").append("bar").pop == "/foo";
+                FilePath("/foo/").append("bar").pop != "/foo/";
+                ---
+
+                The latter does not match due to variance in how append
+                injects data, and how pop is expected to operate under 
+                different circumstances (both examples produce the same 
+                pop result, although the initial path is not identical).
 
         ***********************************************************************/
 
