@@ -95,6 +95,41 @@ version(linux){
     }    
 }
 
+version(solaris)
+{
+    const _FSTYPSZ = 16;
+
+    alias c_ulong fsblkcnt_t;
+    alias c_ulong fsfilcnt_t;
+
+    struct statvfs_t {
+        c_ulong f_bsize; /* fundamental file system block size */
+        c_ulong f_frsize; /* fragment size */
+        fsblkcnt_t f_blocks; /* total blocks of f_frsize on fs */
+        fsblkcnt_t f_bfree; /* total free blocks of f_frsize */
+        fsblkcnt_t f_bavail; /* free blocks avail to non-superuser */
+        fsfilcnt_t f_files; /* total file nodes (inodes) */
+        fsfilcnt_t f_ffree; /* total free file nodes */
+        fsfilcnt_t f_favail; /* free nodes avail to non-superuser */
+        c_ulong f_fsid;  /* file system id (dev for now) */
+        char[_FSTYPSZ]  f_basetype; /* target fs type name, */
+                                                        /* null-terminated */
+        c_ulong f_flag;  /* bit-mask of flags */
+        c_ulong f_namemax; /* maximum file name length */
+        char[32] f_fstr; /* filesystem-specific string */
+        static if(size_t.sizeof == 8) //#if !defined(_LP64)
+        {
+            c_ulong[16]  f_filler; /* reserved for future expansion */
+        }
+	};
+
+    enum
+    {
+        ST_RDONLY = 1,
+        ST_NOSUID = 2,
+    }
+}
+
 extern(C){
     int fstatvfs(int, statvfs_t *);
     int statvfs(char * , statvfs_t *);

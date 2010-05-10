@@ -220,6 +220,102 @@ version( freebsd ) {
     }
 }
 
+version(solaris)
+{
+    alias uint[4] upad128_t;
+
+    version( X86 )
+    {
+        const  NGREG = 19;
+        typedef int greg_t;
+        
+        /*
+        * This definition of the floating point structure is binary
+        * compatible with the Intel386 psABI definition, and source
+        * compatible with that specification for x87-style floating point.
+        * It also allows SSE/SSE2 state to be accessed on machines that
+        * possess such hardware capabilities.
+        */
+        struct fpregset_t {
+            union fp_reg_set_ {
+                struct fpchip_state_ {
+                    uint[27] state;	/* 287/387 saved state */
+                    uint status;	/* saved at exception */
+                    uint mxcsr;		/* SSE control and status */
+                    uint xstatus;	/* SSE mxcsr at exception */
+                    uint[2] __pad;	/* align to 128-bits */
+                    upad128_t[8] xmm;	/* %xmm0-%xmm7 */
+                };
+                fpchip_state_ fpchip_state;
+                struct fp_emul_space_ {		/* for emulator(s) */
+                    ubyte[246]	fp_emul;
+                    ubyte[2]	fp_epad;
+                };
+                fp_emul_space_ fp_emul_space;
+                uint[95]	f_fpregs;	/* union of the above */
+            };
+            fp_reg_set_ fp_reg_set;
+        };
+    }
+    else version( X86_64 )
+    {
+        const NGREG = 28;
+        typedef c_long greg_t;
+
+        struct fpregset_t {
+            union fp_reg_set_ {
+                struct fpchip_state_ {
+                    ushort cw;
+                    ushort sw;
+                    ubyte  fctw;
+                    ubyte  __fx_rsvd;
+                    ushort fop;
+                    ulong rip;
+                    ulong rdp;
+                    uint mxcsr;
+                    uint mxcsr_mask;
+                    union st_ {
+                        ushort[5] fpr_16;
+                        upad128_t __fpr_pad;
+                    };
+                    st_[8] st;
+                    upad128_t[16] xmm;
+                    upad128_t[6] __fx_ign2;
+                    uint status;	/* sw at exception */
+                    uint xstatus;	/* mxcsr at exception */
+                } 
+                fpchip_state_   fpchip_state;
+                uint[130] f_fpregs;
+            };
+            fp_reg_set_ fp_reg_set;
+        };
+    }
+    
+    typedef greg_t[NGREG] gregset_t;
+
+    struct mcontext_t
+    {
+        gregset_t	gregs;		/* general register set */
+        fpregset_t	fpregs;		/* floating point register set */
+    }
+
+    struct stack_t
+    {
+        void* ss_sp;
+        size_t ss_size;
+        int ss_flags;
+    }
+    
+    struct ucontext_t /* from /usr/include/sys/ucontext.h*/
+    {
+        c_ulong uc_flags;
+        ucontext_t *uc_link;
+        sigset_t uc_sigmask;
+        stack_t uc_stack;
+        mcontext_t 	uc_mcontext;
+        c_long[5] uc_filler;	/* see ABI spec for Intel386 */
+    }
+}
 
 //
 // Obsolescent (OB)

@@ -1001,6 +1001,34 @@ version(darwin){
     const int SA_SIGINFO   = 0x0040;
     const int SA_USERTRAMP = 0x0100;
 }
+version(solaris)
+{
+    const SA_ONSTACK = 0x00000001;
+    const SA_RESETHAND = 0x00000002;
+    const SA_RESTART = 0x00000004;
+    const SA_SIGINFO = 0x00000008;
+
+    /* this is only valid for SIGCLD */
+    const SA_NOCLDWAIT = 0x00010000; /* don't save zombie children  */
+
+    const SA_NODEFER = 0x00000010;
+    const SS_ONSTACK = 0x00000001;
+    const SS_DISABLE = 0x00000002;
+    const MINSIGSTKSZ = 2048;
+    const SIGSTKSZ = 8192;
+
+    struct stack_t {
+        void* ss_sp;
+        size_t ss_size;
+        int ss_flags;
+    };
+
+
+    struct sigstack {
+        void* ss_sp;
+        int ss_onstack;
+    };
+}
 
 
 //

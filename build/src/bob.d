@@ -36,6 +36,7 @@ void main (char[][] arg)
            new Linux (args);
            new MacOSX (args);
            new FreeBSD (args);
+           new Solaris (args);
            new Windows (args);
            stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
            }
@@ -393,6 +394,105 @@ class FreeBSD : FileFilter
 
 }
 
+class Solaris : FileFilter
+{
+        this (ref Args args)
+        {
+                super (args);
+                include ("tango/sys/solaris");
+                register ("solaris", "dmd", &dmd);
+                register ("solaris", "ldc", &ldc);
+                register ("solaris", "gdc", &gdc);
+        }
+
+        private char[] compile (FilePath file, char[] cmd)
+        {
+                auto temp = objname (file, ".o");
+                if (args.quick is false || isOverdue(file, temp))
+                    exec (split(cmd~temp~" "~file.toString, " "), Environment.get, null);
+                return temp;
+        }
+
+        private auto gcc = "gcc -c -o";
+        private auto gcc32 = "gcc -c -m32 -o";
+
+        int dmd ()
+        {
+                auto dmd = "dmd -version=solaris -c -I"~args.root~"/tango/core -I"~args.root~" 
+-I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                exclude ("tango/core/rt/compiler/dmd/windows"); 
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, dmd);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc32);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc32);
+                            addToLib(obj);
+                    }
+                }
+
+                makeLib;
+                return count;
+        }
+
+        int ldc ()
+        {
+                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" 
+-I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, ldc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                makeLib;
+                return count;
+        }
+
+        int gdc ()
+        {
+                auto gdc = "gdc -version=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                foreach (file; scan(".d")) {
+                         auto obj = compile (file, gdc);
+                         addToLib(obj);
+                }
+
+                if (args.core) {
+                    foreach (file; scan(".c")) {
+                             auto obj = compile (file, gcc);
+                             addToLib(obj);
+                    }
+
+                    foreach (file; scan(".S")) {
+                            auto obj = compile (file, gcc);
+                            addToLib(obj);
+                    }
+                }
+
+                makeLib;
+                return count;
+        }
+}
+
+
 /*******************************************************************************
       
 *******************************************************************************/
@@ -650,7 +750,7 @@ struct Args
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd)\n";
+                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n";
 
         bool populate (char[][] arg)
         {       
@@ -678,6 +778,9 @@ struct Args
                 else
                 version (freebsd)
                          p.defaults("freebsd");
+                else
+                version (solaris)
+                         p.defaults("solaris");
                 else
                    p.required;
                 
