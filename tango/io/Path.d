@@ -1788,13 +1788,10 @@ debug(UnitTest)
 {
         unittest
         {
-                assert(exists("Path.d"));
-                    
-                auto p = parse ("d:/foo/bar/file.ext");
-                assert (p == "d:/foo/bar/file.ext");
-                assert (p.root == "d:");
+                auto p = parse ("/foo/bar/file.ext");
+                assert (p == "/foo/bar/file.ext");
                 assert (p.folder == "/foo/bar/");
-                assert (p.path == "d:/foo/bar/");
+                assert (p.path == "/foo/bar/");
                 assert (p.file == "file.ext");
                 assert (p.name == "file");
                 assert (p.suffix == ".ext");
