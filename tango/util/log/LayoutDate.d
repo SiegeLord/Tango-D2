@@ -31,8 +31,6 @@ public class LayoutDate : Appender.Layout
 {
         private bool localTime;
 
-        private static char[6] spaces = ' ';
-
         /***********************************************************************
         
                 Ctor with indicator for local vs UTC time. Default is 
