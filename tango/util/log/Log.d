@@ -743,13 +743,15 @@ public class Logger : ILogger
                          { 
                          auto mask = appender.mask;
 
-                         // have we used this appender already?
+                         // have we visited this appender already?
                          if ((masks & mask) is 0)
-                            {
-                            // no - append message and update mask
-                            appender.append (event);
-                            masks |= mask;
-                            }
+                              // is appender enabled for this level?
+                              if (appender.level <= event.level)
+                                 {
+                                 // append message and update mask
+                                 appender.append (event);
+                                 masks |= mask;
+                                 }
                          // process all appenders for this node
                          appender = appender.next;
                          }
@@ -1272,6 +1274,7 @@ public class Appender
         typedef int Mask;
 
         private Appender        next_;
+        private Level           level_;
         private Layout          layout_;
         private static Layout   generic;
 
@@ -1335,6 +1338,29 @@ public class Appender
         static this ()
         {
                 generic = new LayoutTimer;
+        }
+
+        /***********************************************************************
+              
+                Return the current Level setting
+
+        ***********************************************************************/
+
+        final Level level ()
+        {
+                return level_;
+        }
+
+        /***********************************************************************
+              
+                Return the current Level setting
+
+        ***********************************************************************/
+
+        final Appender level (Level l)
+        {
+                level_ = l;
+                return this;
         }
 
         /***********************************************************************
