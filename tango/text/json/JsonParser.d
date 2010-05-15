@@ -43,7 +43,7 @@ class JsonParser(T)
                 }
         }
 
-        private Iterator                str;
+        protected Iterator              str;
         private Stack!(State, 16)       state;
         private T*                      curLoc;
         private int                     curLen;
@@ -135,9 +135,27 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        private void expected (char[] token)
+        protected final void expected (char[] token)
         {
-                throw new Exception ("Expected " ~ token);
+                throw new Exception ("expected " ~ token);
+        }
+        
+        /***********************************************************************
+        
+        ***********************************************************************/
+        
+        protected final void expected (char[] token, T* point)
+        {
+                static char[] itoa (char[] buf, int i)
+                {
+                        auto p = buf.ptr+buf.length;
+                        do {
+                           *--p = '0' + i % 10;
+                           } while (i /= 10);
+                        return p[0..(buf.ptr+buf.length)-p];
+                }
+                char[16] tmp = void;
+                expected (token ~ " @input[" ~ itoa(tmp, point-str.text.ptr)~"]");
         }
         
         /***********************************************************************
@@ -146,7 +164,7 @@ class JsonParser(T)
         
         private void unexpectedEOF (char[] msg)
         {
-                throw new Exception ("Unexpected EOF: " ~ msg);
+                throw new Exception ("unexpected end-of-input: " ~ msg);
         }
                 
         /***********************************************************************
@@ -161,7 +179,7 @@ class JsonParser(T)
                 if (c is '[') 
                     return push (Token.BeginArray, State.Array);
 
-                expected ("{ or [ at start of document");
+                expected ("'{' or '[' at start of document");
         }
 
         /***********************************************************************
@@ -183,7 +201,10 @@ class JsonParser(T)
                        ++p;
 
                 if (*p != '"')
-                    expected ("\" before member name");
+                    if (*p == '}')
+                        expected ("an attribute-name after (a potentially trailing) ','", p);
+                    else
+                       expected ("'\"' before attribute-name", p);
 
                 curLoc = p+1;
                 curType = Token.Name;
@@ -195,7 +216,7 @@ class JsonParser(T)
                 if (p < e) 
                     curLen = p - curLoc;
                 else
-                   unexpectedEOF ("in member name");
+                   unexpectedEOF ("in attribute-name");
 
                 str.ptr = p + 1;
                 return true;
@@ -210,7 +231,7 @@ class JsonParser(T)
                 auto p = str.ptr;
 
                 if(*p != ':') 
-                   expected (": before member value");
+                   expected ("':' before attribute-value", p);
 
                 auto e = str.end;
                 while (++p < e && *p <= 32) {}
@@ -238,17 +259,17 @@ class JsonParser(T)
                        case 'n':
                             if (match ("null", Token.Null))
                                 return true;
-                            expected ("null");
+                            expected ("'null'", str.ptr);
 
                        case 't':
                             if (match ("true", Token.True))
                                 return true;
-                            expected ("true");
+                            expected ("'true'", str.ptr);
 
                        case 'f':
                             if (match ("false", Token.False))
                                 return true;
-                            expected ("false");
+                            expected ("'false'", str.ptr);
 
                        default:
                             break;
@@ -572,5 +593,5 @@ debug (JsonParser)
         {
                 auto json = new JsonParser!(char);
         }
-
 }
+

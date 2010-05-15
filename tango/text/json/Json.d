@@ -353,12 +353,12 @@ class Json(T) : private JsonParser!(T)
                           return o;
 
                       if (super.curType != Token.Name)
-                          exception ("missing name in document");
+                          super.expected ("an attribute-name", super.str.ptr);
                         
                       auto name = super.value;
                         
                       if (! super.next)
-                            exception ("missing value in document");
+                            super.expected ("an attribute-value", super.str.ptr);
                         
                       o.append (attrib.allocate.set (name, parseValue));
                       }
