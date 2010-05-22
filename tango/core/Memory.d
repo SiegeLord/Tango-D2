@@ -48,9 +48,10 @@ private
     extern (C) void gc_removeRoot( void* p );
     extern (C) void gc_removeRange( void* p );
 
-    extern(C) Object gc_weakpointerGet (void* wp);
-    extern(C) void*  gc_weakpointerCreate (Object r);
-    extern(C) void   gc_weakpointerDestroy (void* wp);
+    extern(C) Object gc_weakpointerGet(void* wp);
+    extern(C) void*  gc_weakpointerCreate(Object r);
+    extern(C) void   gc_weakpointerDestroy(void* wp);
+    extern(D) void   gc_monitor( void delegate() begin, void delegate(int, int) end );
 }
 
 
@@ -443,6 +444,20 @@ struct GC
     static void removeRange( void* p )
     {
         gc_removeRange( p );
+    }
+    
+    /**
+     * Removes the memory block referenced by p from an internal list of ranges
+     * to be scanned during a collection.  If p is null or does not represent
+     * a value previously passed to add(void*, size_t) then no operation is
+     * performed.
+     *
+     * Params:
+     *  p  = A pointer to a valid memory address or to null.
+     */
+    static void monitor( void delegate() begin, void delegate(int, int) end )
+    {
+        gc_monitor( begin, end );
     }
     
 

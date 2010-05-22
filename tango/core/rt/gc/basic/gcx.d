@@ -21,7 +21,7 @@
  *     be misrepresented as being the original software.
  *  o  This notice may not be removed or altered from any source
  *     distribution.
- * Authors:   Walter Bright, David Friedman, Sean Kelly
+ * Authors:   Walter Bright, David Friedman, Sean Kelly, Kris
  */
 module rt.gc.basic.gcx;
 // D Programming Language Garbage Collector implementation
@@ -237,9 +237,9 @@ class GC
 
     Gcx *gcx;                   // implementation
     static ClassInfo gcLock;    // global lock
+    
 
-
-    void initialize()
+    final void initialize()
     {
         gcLock = GCLock.classinfo;
         gcx = cast(Gcx*)cstdlib.calloc(1, Gcx.sizeof);
@@ -250,7 +250,7 @@ class GC
     }
 
 
-    void Dtor()
+    final void Dtor()
     {
         version (linux)
         {
@@ -275,11 +275,16 @@ class GC
         }
     }
 
+    final void monitor (void delegate() begin, void delegate(int, int) end)
+    {
+        gcx.collectBegin = begin;
+        gcx.collectEnd = end;
+    }
 
     /**
      *
      */
-    void enable()
+    final void enable()
     {
         if (!thread_needLock())
         {
@@ -297,7 +302,7 @@ class GC
     /**
      *
      */
-    void disable()
+    final void disable()
     {
         if (!thread_needLock())
         {
@@ -313,7 +318,7 @@ class GC
     /**
      *
      */
-    uint getAttr(void* p)
+    final uint getAttr(void* p)
     {
         if (!p)
         {
@@ -348,7 +353,7 @@ class GC
     /**
      *
      */
-    uint setAttr(void* p, uint mask)
+    final uint setAttr(void* p, uint mask)
     {
         if (!p)
         {
@@ -384,7 +389,7 @@ class GC
     /**
      *
      */
-    uint clrAttr(void* p, uint mask)
+    final uint clrAttr(void* p, uint mask)
     {
         if (!p)
         {
@@ -420,7 +425,7 @@ class GC
     /**
      *
      */
-    void *malloc(size_t size, uint bits = 0)
+    final void *malloc(size_t size, uint bits = 0)
     {
         if (!size)
         {
@@ -527,7 +532,7 @@ class GC
     /**
      *
      */
-    void *calloc(size_t size, uint bits = 0)
+    final void *calloc(size_t size, uint bits = 0)
     {
         if (!size)
         {
@@ -561,7 +566,7 @@ class GC
     /**
      *
      */
-    void *realloc(void *p, size_t size, uint bits = 0)
+    final void *realloc(void *p, size_t size, uint bits = 0)
     {
         // Since a finalizer could launch a new thread, we always need to lock
         // when collecting.  The safest way to do this is to simply always lock
@@ -720,7 +725,7 @@ class GC
      *  0 if could not extend p,
      *  total size of entire memory block if successful.
      */
-    size_t extend(void* p, size_t minsize, size_t maxsize)
+    final size_t extend(void* p, size_t minsize, size_t maxsize)
     {
         if (!thread_needLock())
         {
@@ -796,7 +801,7 @@ class GC
     /**
      *
      */
-    size_t reserve(size_t size)
+    final size_t reserve(size_t size)
     {
         if (!size)
         {
@@ -829,7 +834,7 @@ class GC
     /**
      *
      */
-    void free(void *p)
+    final void free(void *p)
     {
         if (!p)
         {
@@ -899,7 +904,7 @@ class GC
      * Determine the base address of the block containing p.  If p is not a gc
      * allocated pointer, return null.
      */
-    void* addrOf(void *p)
+    final void* addrOf(void *p)
     {
         if (!p)
         {
@@ -920,7 +925,7 @@ class GC
     //
     //
     //
-    void* addrOfNoSync(void *p)
+    final void* addrOfNoSync(void *p)
     {
         if (!p)
         {
@@ -935,7 +940,7 @@ class GC
      * Determine the allocated size of pointer p.  If p is an interior pointer
      * or not a gc allocated pointer, return 0.
      */
-    size_t sizeOf(void *p)
+    final size_t sizeOf(void *p)
     {
         if (!p)
         {
@@ -992,7 +997,7 @@ class GC
      * Determine the base address of the block containing p.  If p is not a gc
      * allocated pointer, return null.
      */
-    BlkInfo query(void *p)
+    final BlkInfo query(void *p)
     {
         if (!p)
         {
@@ -1014,7 +1019,7 @@ class GC
     //
     //
     //
-    BlkInfo queryNoSync(void *p)
+    final BlkInfo queryNoSync(void *p)
     {
         assert(p);
 
@@ -1028,7 +1033,7 @@ class GC
      *  2) points to the start of an allocated piece of memory
      *  3) is not on a free list
      */
-    void check(void *p)
+    final void check(void *p)
     {
         if (!p)
         {
@@ -1116,7 +1121,7 @@ class GC
     /**
      * add p to list of roots
      */
-    void addRoot(void *p)
+    final void addRoot(void *p)
     {
         if (!p)
         {
@@ -1137,7 +1142,7 @@ class GC
     /**
      * remove p from list of roots
      */
-    void removeRoot(void *p)
+    final void removeRoot(void *p)
     {
         if (!p)
         {
@@ -1158,7 +1163,7 @@ class GC
     /**
      * add range to scan for roots
      */
-    void addRange(void *p, size_t sz)
+    final void addRange(void *p, size_t sz)
     {
         if (!p || !sz)
         {
@@ -1181,7 +1186,7 @@ class GC
     /**
      * remove range
      */
-    void removeRange(void *p)
+    final void removeRange(void *p)
     {
         if (!p)
         {
@@ -1202,7 +1207,7 @@ class GC
     /**
      * do full garbage collection
      */
-    void fullCollect()
+    final void fullCollect()
     {
         debug(PRINTF) printf("GC.fullCollect()\n");
 
@@ -1231,7 +1236,7 @@ class GC
     /**
      * do full garbage collection ignoring roots
      */
-    void fullCollectNoStack()
+    final void fullCollectNoStack()
     {
         // Since a finalizer could launch a new thread, we always need to lock
         // when collecting.
@@ -1247,7 +1252,7 @@ class GC
     /**
      * minimize free space usage
      */
-    void minimize()
+    final void minimize()
     {
         if (!thread_needLock())
         {
@@ -1264,7 +1269,7 @@ class GC
      * Retrieve statistics about garbage collection.
      * Useful for debugging and tuning.
      */
-    void getStats(out GCStats stats)
+    final void getStats(out GCStats stats)
     {
         if (!thread_needLock())
         {
@@ -1355,7 +1360,7 @@ class GC
      * Create a weak pointer to the given object.
      * Returns a pointer to an opaque struct allocated in C memory.
      */
-    void* weakpointerCreate( Object r )
+    final void* weakpointerCreate( Object r )
     {
         if (r)
            {
@@ -1376,7 +1381,7 @@ class GC
      * Destroy a weak pointer returned by weakpointerCreate().
      * If null is passed, nothing happens.
      */
-    void weakpointerDestroy( void* p )
+    final void weakpointerDestroy( void* p )
     {
         if (p)        
            {
@@ -1396,7 +1401,7 @@ class GC
      * weakpointerCreate, or null if it was free'd in the meantime.
      * If null is passed, null is returned.
      */
-    Object weakpointerGet( void* p )
+    final Object weakpointerGet( void* p )
     {
         if (p)
            {
@@ -1508,6 +1513,9 @@ struct Gcx
 
     List *bucket[B_MAX];        // free list for each size
 
+
+    void delegate() collectBegin;
+    void delegate(int freed, int pagebytes) collectEnd;
 
     void initialize()
     {   int dummy;
@@ -2349,6 +2357,8 @@ struct Gcx
         Pool*  pool;
 
         debug(COLLECT_PRINTF) printf("Gcx.fullcollect()\n");
+        if (collectBegin.ptr)
+            collectBegin();
 
         thread_suspendAll();
 
@@ -2643,6 +2653,8 @@ struct Gcx
 
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
+        if (collectEnd.ptr)
+            collectEnd(freed, (freedpages + recoveredpages) * PAGESIZE);
 
         return freedpages + recoveredpages;
     }

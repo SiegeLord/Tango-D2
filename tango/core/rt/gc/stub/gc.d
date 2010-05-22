@@ -179,3 +179,7 @@ extern (C) Object gc_weakpointerGet( void* wp )
 {
     return cast(Object)wp;
 }
+
+void gc_monitor( void delegate() begin, void delegate(int, int) end )
+{
+}

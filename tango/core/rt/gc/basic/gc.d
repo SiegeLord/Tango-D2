@@ -21,7 +21,7 @@
  *     be misrepresented as being the original software.
  *  o  This notice may not be removed or altered from any source
  *     distribution.
- * Authors:   Walter Bright, Sean Kelly
+ * Authors:   Walter Bright, Sean Kelly, Kris
  */
 module rt.gc.basic.gc;
 
@@ -231,4 +231,9 @@ extern (C) void gc_weakpointerDestroy( void* wp )
 extern (C) Object gc_weakpointerGet( void* wp )
 {
     return _gc.weakpointerGet(wp);
+}
+
+void gc_monitor( void delegate() begin, void delegate(int, int) end )
+{
+    _gc.monitor (begin, end);
 }
