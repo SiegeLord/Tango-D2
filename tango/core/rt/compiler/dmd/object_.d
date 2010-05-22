@@ -48,6 +48,9 @@ private
     import rt.compiler.dmd.rt.aaA;
     debug(PRINTF) import tango.stdc.stdio: printf;
     extern (C) Object _d_newclass(ClassInfo ci);
+    
+    version (darwin)
+        import rt.compiler.dmd.darwin.Image;
 }
 
 // NOTE: For some reason, this declaration method doesn't work
@@ -1220,15 +1223,6 @@ version( freebsd )
     extern (C) ModuleReference *_Dmodule_ref;   // start of linked list 
 }
 
-version( OSX )
-{
-    extern (C)
-    {
-    extern void* _minfo_beg;
-    extern void* _minfo_end;
-    }
-}
-
 ModuleInfo[] _moduleinfo_dtors;
 uint         _moduleinfo_dtors_i;
 
@@ -1280,9 +1274,14 @@ extern (C) void _moduleCtor()
      * and __minfo_end. The variables _minfo_beg and _minfo_end
      * are of zero size and are in the two bracketing segments,
      * respectively.
+     * 
+     * The __minfo_beg and __minfo_end sections are not put into
+     * dynamic libraries therefore we cannot use them or the
+     * _minfo_beg and _minfo_end variables. Instead we loop through
+     * all the loaded images (executables and dynamic libraries) and
+     * collect all the ModuleInfo references.
      */
-        size_t length = cast(ModuleInfo*)&_minfo_end - cast(ModuleInfo*)&_minfo_beg;
-        _moduleinfo_array = (cast(ModuleInfo*)&_minfo_beg)[0 .. length];
+        _moduleinfo_array = getSectionData!(ModuleInfo, "__DATA", "__minfodata");        
         debug(PRINTF) printf("moduleinfo: ptr = %p, length = %d\n", _moduleinfo_array.ptr, _moduleinfo_array.length);
 
         debug(PRINTF) foreach (m; _moduleinfo_array)

@@ -104,7 +104,7 @@ def main (arg)
 end
 
 class FileFilter
-	VERSION = 1.1
+	VERSION = 1.2
 	@@builders = {}
 	
 	def initialize (args)
@@ -201,8 +201,16 @@ class FileFilter
 	end
 	
 	def makeLib
-		exec("ar -r " + @args.lib + " " + @libs.string) if (@libs.length > 0)
-	end	
+		if @libs.length > 0
+			if @args.dynamic
+				options = "-dynamiclib -install_name @rpath/#{File.basename(@args.lib)} -Xlinker -headerpad_max_install_names" if DARWIN
+
+				exec("gcc #{options} -o #{@args.lib} #{@libs.string} -lz -lbz2")
+			else
+				exec("ar -r #{@args.lib} #{@libs.string}")
+			end
+		end
+	end
 	
 	def exec (cmd)
 		exec2(cmd, nil, nil)
@@ -248,6 +256,7 @@ class Windows < FileFilter
 		libs("-c -n -p256\n" + @args.lib)
 		
 		exclude("tango/core/rt/compiler/dmd/posix")
+		exclude("tango/core/rt/compiler/dmd/darwin")
 		
 		scan(".d") do |file|
 			compile(dmd, file)
@@ -275,6 +284,7 @@ class Posix < FileFilter
 	def initialize (args, os, dmd, ldc, gdc)
 		super(args)
 		include("tango/sys/" + os)
+				
 		FileFilter.register(os, "dmd", :dmd, self)
 		FileFilter.register(os, "ldc", :ldc, self)
 		FileFilter.register(os, "gdc", :gdc, self)
@@ -284,6 +294,7 @@ class Posix < FileFilter
 		@dmd = dmd
 		@ldc = ldc
 		@gdc = gdc
+		@os = os
 	end
 	
 	def compile (file, cmd)
@@ -296,7 +307,8 @@ class Posix < FileFilter
 		return temp
 	end
 	
-	def dmd ()
+	def dmd ()		
+		exclude("tango/core/rt/compiler/dmd/darwin") unless @os == "darwin"		
 		exclude("tango/core/rt/compiler/dmd/windows")
 		
 		scan(".d") do |file|
@@ -370,7 +382,8 @@ class Posix < FileFilter
 end
 
 Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler, 
-				  :flags, :lib, :os, :core, :root, :filter, :quick, :objs) do
+				  :flags, :lib, :os, :core, :root, :filter, :quick,
+				  :objs, :dynamic) do
 					
 	def initialize
 		self.verbose = false
@@ -388,6 +401,7 @@ Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler,
 		self.filter = false
 		self.quick = false
 		self.objs = File.expand_path("objs")
+		self.dynamic = false
 		
 		self.os = ""
 		self.os = "darwin" if DARWIN
@@ -434,12 +448,20 @@ def populate (args, options, help_msg, banner)
 			options.compiler = opt
 		end
 		
+		opts.on("-d", "--dynamic", "Build Tango as a dynamic/shared library") do |opt|
+			if DARWIN
+				options.dynamic = true
+			else
+				die "Building Tango as a dynamic/shared library is currently not supported on this platform."
+			end
+		end
+		
 		opts.on("-o", "--options OPTIONS", "Specify D compiler options") do |opt|
 			options.flags = opt
 		end
 		
 		opts.on("-l", "--library NAME", "Specify library name (sans .ext)") do |opt|
-			options.lib = opt + libext
+			options.lib = opt
 		end
 		
 		opts.on(nil, "--objs PATH", "Specify the path where to place temporary object files (defaults to ./objs)") do |opt|
@@ -476,8 +498,18 @@ def populate (args, options, help_msg, banner)
 				die "No package filter given" unless options.filter
 			end
 			
-			options.lib += ".lib" if WINDOWS
-			options.lib += ".a" unless WINDOWS
+			if options.dynamic
+				if DARWIN
+					options.lib += ".dylib"
+				elsif WINDOWS
+					options.lib += ".dll"
+				else
+					options.lib += ".so"
+				end
+			else
+				options.lib += ".lib" if WINDOWS
+				options.lib += ".a" unless WINDOWS
+			end
 			
 			options.root = File.expand_path(args[0])
 		end

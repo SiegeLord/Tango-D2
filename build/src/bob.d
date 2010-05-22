@@ -71,6 +71,7 @@ class Windows : FileFilter
                 libs ("-c -n -p256\n"~args.lib~"\n");
 
                 exclude ("tango/core/rt/compiler/dmd/posix");
+                exclude ("tango/core/rt/compiler/dmd/darwin");
                 foreach (file; scan(".d"))
                          compile (dmd, file);
 
@@ -161,6 +162,7 @@ class Linux : FileFilter
         {
                 auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 exclude ("tango/core/rt/compiler/dmd/windows");
+                exclude ("tango/core/rt/compiler/dmd/darwin");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -246,6 +248,7 @@ class MacOSX : FileFilter
                 register ("osx", "dmd", &dmd);
                 register ("osx", "ldc", &ldc);
                 register ("osx", "gdc", &gdc);
+                include ("tango/core/rt/util/darwin");
         }
 
         private char[] compile (FilePath file, char[] cmd)
@@ -362,7 +365,8 @@ class FreeBSD : FileFilter
         int dmd ()
         {
                 auto dmd = "dmd -version=freebsd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
-                exclude ("tango/core/rt/compiler/dmd/windows"); 
+                exclude ("tango/core/rt/compiler/dmd/windows");
+                exclude ("tango/core/rt/compiler/dmd/darwin"); 
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -462,6 +466,7 @@ class Solaris : FileFilter
                 auto dmd = "dmd -version=solaris -c -I"~args.root~"/tango/core -I"~args.root~" 
 -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 exclude ("tango/core/rt/compiler/dmd/windows"); 
+                exclude ("tango/core/rt/compiler/dmd/darwin");
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, dmd);
                          addToLib(obj);
@@ -712,7 +717,21 @@ class FileFilter : FileScan
                 if (libs.readable > 2)
                    {
                    auto files = cast(char[]) libs.slice [0..$-1];
-                   exec ("ar -r "~args.lib~" "~ files);
+                   
+                   if (args.dynamic)
+                   {
+                       version (osx)
+                       {
+                           auto path = Path.parse(args.lib);
+                           auto name = path.file;
+                           auto options = "-dynamiclib -install_name @rpath/" ~ name ~ " -Xlinker -headerpad_max_install_names";
+                           exec ("gcc " ~ options ~ " -o " ~ args.lib ~ " " ~ files ~ " -lz -lbz2");                        
+                       }
+                       
+                   }
+                   
+                   else
+                       exec ("ar -r "~args.lib~" "~ files);        
         
                    if (args.quick is false)
                        // TODO: remove the list of filenames in 'files' 
@@ -772,7 +791,8 @@ struct Args
                 user,
                 quick,
                 inhibit,
-                verbose;
+                verbose,
+                dynamic;
 
         char[]  os,
                 lib,
@@ -787,8 +807,9 @@ struct Args
                         "\t[-q]\t\t\tquick execution\n"
                         "\t[-i]\t\t\tinhibit execution\n"
                         "\t[-u]\t\t\tinclude user modules\n"
+                        "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
                         "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
-                        "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"
+                        "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
                         "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n";
@@ -807,6 +828,7 @@ struct Args
                 auto r = args('r').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
+                auto d = args('d');
 
                 version (Windows)
                          p.defaults("windows");
@@ -843,12 +865,31 @@ struct Args
                    quick = q.set;
                    inhibit = i.set;
                    verbose = v.set;
+                   dynamic = d.set;
                    os = p.assigned[0];
                    root = n.assigned[0];
                    flags = o.assigned[0];
                    target = r.assigned[0];
                    compiler = c.assigned[0];
-                   lib = l.assigned[0]~libext;
+                   lib = l.assigned[0];
+                   
+                   if (dynamic)
+                   {
+                       version (osx)
+                           lib ~= ".dylib";
+                       else
+                           throw new Exception("Building Tango as a dynamic library is currently only supported on Mac OS X", __FILE__, __LINE__);
+                   }
+                   
+                   else
+                   {
+                       version (Windows)
+                           lib ~= ".lib";
+                           
+                       else
+                           lib ~= ".a";
+                   }
+                   
                    return true;
                    }
 

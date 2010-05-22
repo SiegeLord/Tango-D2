@@ -89,6 +89,13 @@ extern (C) bool rt_trapExceptions = true;
 
 void _d_criticalInit()
 {
+    static bool hasBeenCalled;
+    
+    if (hasBeenCalled)
+        return;
+        
+    hasBeenCalled = true;
+    
     version (Posix)
     {
         _STI_monitor_staticctor();
@@ -100,6 +107,11 @@ alias void delegate( Exception ) ExceptionHandler;
 
 extern (C) bool rt_init( ExceptionHandler dg = null )
 {
+    static bool result;
+    
+    if (result)
+        return result;
+    
     _d_criticalInit();
 
     try
@@ -108,7 +120,7 @@ extern (C) bool rt_init( ExceptionHandler dg = null )
         version (Win32)
             _minit();
         _moduleCtor();
-        return true;
+        return result = true;
     }
     catch( Exception e )
     {
@@ -120,11 +132,18 @@ extern (C) bool rt_init( ExceptionHandler dg = null )
 
     }
     _d_criticalTerm();
-    return false;
+    return result = false;
 }
 
 void _d_criticalTerm()
 {
+    static bool hasBeenCalled;
+    
+    if (hasBeenCalled)
+        return;
+        
+    hasBeenCalled = true;
+    
     version (Posix)
     {
         _STD_critical_term();
@@ -134,13 +153,18 @@ void _d_criticalTerm()
 
 extern (C) bool rt_term( ExceptionHandler dg = null )
 {
+    static bool result;
+    
+    if (result)
+        return result;
+    
     try
     {
-        thread_joinAll();
         _d_isHalting = true;
+        thread_joinAll();        
         _moduleDtor();
         gc_term();
-        return true;
+        return result = true;
     }
     catch( Exception e )
     {
@@ -155,7 +179,7 @@ extern (C) bool rt_term( ExceptionHandler dg = null )
     {
         _d_criticalTerm();
     }
-    return false;
+    return result = false;
 }
 
 version (OSX)
@@ -215,11 +239,9 @@ extern (C) int main(int argc, char **argv)
 	 */
 	__libc_stack_end = cast(void*)&argv;
     }
+    
     version (Posix)
-    {
-        _STI_monitor_staticctor();
-        _STI_critical_init();
-    }
+        _d_criticalInit();
 
     version (Win32)
     {
@@ -305,24 +327,16 @@ extern (C) int main(int argc, char **argv)
 
     void runAll()
     {
-        gc_init();
-        version (Win32)
-            _minit();
-        _moduleCtor();
+        rt_init();
         if (runModuleUnitTests())
             tryExec(&runMain);
-        _d_isHalting = true;
-        thread_joinAll();
-        _moduleDtor();
-        gc_term();
+        rt_term();
     }
 
     tryExec(&runAll);
 
     version (Posix)
-    {
-        _STD_critical_term();
-        _STD_monitor_staticdtor();
-    }
+        _d_criticalTerm();
+        
     return result;
 }

@@ -29,10 +29,18 @@ module rt.compiler.dmd.posix.deh;
 import tango.stdc.stdio : printf;
 import tango.stdc.stdlib : exit;
 
+version (darwin)
+    import rt.compiler.dmd.darwin.Image;
+
 extern (C)
 {
-    extern void* _deh_beg;
-    extern void* _deh_end;
+    version (darwin) {}
+    
+    else
+    {
+        extern void* _deh_beg;
+        extern void* _deh_end;
+    }
 
     int _d_isbaseof(ClassInfo oc, ClassInfo c);
 }
@@ -99,26 +107,49 @@ void terminate()
 
 DHandlerTable *__eh_finddata(void *address)
 {
-    FuncTable *ft;
-
-//    debug printf("__eh_finddata(address = x%x)\n", address);
-//    debug printf("_deh_beg = x%x, _deh_end = x%x\n", &_deh_beg, &_deh_end);
-    for (ft = cast(FuncTable *)&_deh_beg;
-         ft < cast(FuncTable *)&_deh_end;
-         ft++)
+    version (darwin)
     {
-//      debug printf("\tfptr = x%x, fsize = x%03x, handlertable = x%x\n",
-//              ft.fptr, ft.fsize, ft.handlertable);
-
-        if (ft.fptr <= address &&
-            address < cast(void *)(cast(char *)ft.fptr + ft.fsize))
+        static FuncTable[] functionTables;
+        static bool hasFunctionTables;
+        
+        if (!hasFunctionTables)
         {
-//          debug printf("\tfound handler table\n");
-            return ft.handlertable;
+            functionTables = getSectionData!(FuncTable, "__DATA", "__deh_eh");
+            hasFunctionTables = true;
         }
+        
+        foreach (ft ; functionTables)
+        {
+            if (ft.fptr <= address && address < cast(void *)(cast(char *)ft.fptr + ft.fsize))
+                return ft.handlertable;
+        }
+                
+        return null;
     }
-//    debug printf("\tnot found\n");
-    return null;
+    
+    else
+    {
+        FuncTable *ft;
+
+    //      debug printf("__eh_finddata(address = x%x)\n", address);
+    //    debug printf("_deh_beg = x%x, _deh_end = x%x\n", &_deh_beg, &_deh_end);
+        for (ft = cast(FuncTable *)&_deh_beg;
+             ft < cast(FuncTable *)&_deh_end;
+             ft++)
+        {
+    //      debug printf("\tfptr = x%x, fsize = x%03x, handlertable = x%x\n",
+    //              ft.fptr, ft.fsize, ft.handlertable);
+
+            if (ft.fptr <= address &&
+                address < cast(void *)(cast(char *)ft.fptr + ft.fsize))
+            {
+    //          debug printf("\tfound handler table\n");
+                return ft.handlertable;
+            }
+        }
+    //    debug printf("\tnot found\n");
+        return null;
+    }
 }
 
 
