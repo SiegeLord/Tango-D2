@@ -76,16 +76,8 @@ private
     }
     else version(freebsd)
     {
-        //version = SimpleLibcStackEnd;
- 
-        version( SimpleLibcStackEnd )
-        {
-            extern (C) extern void* __libc_stack_end;
-        }
-        else
-        {
-            import tango.stdc.posix.dlfcn;
-        }
+        import tango.sys.freebsd.consts.sysctl;
+        extern (C) int sysctl(int *, uint, void *, size_t *, void *, size_t);
     }
     pragma(intrinsic, "llvm.frameaddress")
     {
@@ -138,23 +130,18 @@ extern (C) void* rt_stackBottom()
     }
     else version( freebsd ) 
     { 
-        version( SimpleLibcStackEnd ) 
-        { 
-            return __libc_stack_end; 
-        } 
-        else 
-        { 
-            // See discussion: http://autopackage.org/forums/viewtopic.php?t=22 
-            static void** libc_stack_end; 
- 
-            if( libc_stack_end == libc_stack_end.init ) 
-            { 
-                void* handle = dlopen( null, RTLD_NOW ); 
-                libc_stack_end = cast(void**) dlsym( handle, "__libc_stack_end" ); 
-                dlclose( handle ); 
-            } 
-           return *libc_stack_end; 
-        } 
+        int    mib[2];
+        uint   userStack;	// vm_size_t
+        size_t len;
+        int    retval;
+
+        mib[]  = [ SysCtl.CTL_KERN, SysCtl.KERN_USRSTACK ];
+        len    = userStack.sizeof;
+        retval = sysctl(cast(int*)&mib, 2, &userStack, &len, null, 0);
+        if (retval < 0)
+		assert(false, "cannot get the stack end address");
+
+        return cast(void*)userStack;
     }
     else version( darwin )
     {
