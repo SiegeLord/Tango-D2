@@ -69,7 +69,7 @@ extern (C) char[] _adReverseChar(char[] a)
         char[6] tmp;
         char[6] tmplo;
         char* lo = a.ptr;
-        char* hi = &a[length - 1];
+        char* hi = &(a[a.length - 1]);
 
         while (lo < hi)
         {   auto clo = *lo;
@@ -86,20 +86,20 @@ extern (C) char[] _adReverseChar(char[] a)
                 continue;
             }
 
-            uint stridelo = UTF8stride[clo];
+            int stridelo = UTF8stride[clo];
             if (stridelo > 6) { // invalid UTF-8 0xFF 
                 stridelo = 1; 
                 hadErrors=true;
             }
 
-            uint stridehi = 1;
+            int stridehi = 1;
             while ((chi & 0xC0) == 0x80 && hi >= lo)
             {
                 chi = *--hi;
                 stridehi++;
             }
-            if (lo >= hi) {
-                if (lo > hi) {
+            if (lo+stridelo> hi) {
+                if (lo != hi) {
                     hadErrors = true;
                 }
                 break;
@@ -129,7 +129,7 @@ extern (C) char[] _adReverseChar(char[] a)
             memcpy(hi + stridehi - stridelo, tmplo.ptr, stridelo);
 
             lo += stridehi;
-            hi = hi - 1 + (stridehi - stridelo);
+            hi = hi - 1 + cast(ptrdiff_t)(stridehi - stridelo);
         }
     }
     if (hadErrors)
@@ -144,22 +144,30 @@ unittest
     char[] r = a.dup.reverse;
     //writefln(r);
     assert(r == "dcba");
+    r=r.reverse;
+    assert(r==a);
 
     a = "a\u1235\u1234c";
     //writefln(a);
     r = a.dup.reverse;
     //writefln(r);
     assert(r == "c\u1234\u1235a");
+    r=r.reverse;
+    assert(r==a);
 
     a = "ab\u1234c";
     //writefln(a);
     r = a.dup.reverse;
     //writefln(r);
     assert(r == "c\u1234ba");
+    r=r.reverse;
+    assert(r==a);
 
     a = "\u3026\u2021\u3061\n";
     r = a.dup.reverse;
     assert(r == "\n\u3061\u2021\u3026");
+    r=r.reverse;
+    assert(r==a);
 }
 
 
@@ -314,7 +322,7 @@ unittest
     size_t i;
 
     for (i = 0; i < 5; i++)
-        a[i] = i;
+        a[i] = cast(int)i;
     b = a.reverse;
     assert(b is a);
     for (i = 0; i < 5; i++)
@@ -330,7 +338,7 @@ unittest
     X20[] d;
 
     for (i = 0; i < 5; i++)
-    {   c[i].a = i;
+    {   c[i].a = cast(int)i;
         c[i].e = 10;
     }
     d = c.reverse;
