@@ -149,6 +149,15 @@ class ThreadPool(Args...)
         return active_jobs.load();
     }
 
+    /// Block until all pending jobs complete, but do not shut down.  This allows more tasks to be added later.
+    void wait()
+    {    
+        m.lock();
+        while (q.length > 0 || active_jobs.load() > 0)
+               workerActivity.wait();
+        m.unlock();
+    } 
+
     /// Finish currently executing jobs and drop all pending.
     void shutdown()
     {
@@ -166,10 +175,7 @@ class ThreadPool(Args...)
     /// Complete all pending jobs and shutdown.
     void finish()
     {
-        m.lock();
-        while (q.length > 0 || active_jobs.load() > 0)
-            workerActivity.wait();
-        m.unlock();
+        wait();
         shutdown();
     }
 
