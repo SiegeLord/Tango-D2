@@ -11,9 +11,9 @@ require "stringio"
 
 COMPILERS = %w[dmd gdc ldc]
 RUNTIMES = COMPILERS
-FILTERS = %w[darwin freebsd linux haiku solaris windows]
+FILTERS = %w[osx freebsd linux haiku solaris windows]
 
-DARWIN = RUBY_PLATFORM =~ /darwin/ ? true : false
+OSX = RUBY_PLATFORM =~ /darwin/ ? true : false
 FREEBSD = RUBY_PLATFORM =~ /freebsd/ ? true : false
 LINUX = RUBY_PLATFORM =~ /linux/ ? true : false
 HAIKU = RUBY_PLATFORM =~ /haiku/ ? true : false
@@ -76,9 +76,9 @@ def main (arg)
 		linux_ldc = "ldc -c -I#{args.root}/tango/core -I#{args.root}/tango/core/rt/compiler/ldc -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
 		linux_gdc = "gdc -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
 		
-		darwin_dmd = linux_dmd[0 ... 4] + "-version=darwin " + linux_dmd[4 .. -1]
-		darwin_ldc = linux_ldc
-		darwin_gdc = linux_gdc
+		osx_dmd = linux_dmd[0 ... 4] + "-version=darwin -version=osx " + linux_dmd[4 .. -1]
+		osx_ldc = linux_ldc
+		osx_gdc = linux_gdc
 		
 		freebsd_dmd = linux_dmd[0 ... 4] + "-version=freebsd " + linux_dmd[4 .. -1]
 		freebsd_ldc = linux_ldc
@@ -88,7 +88,7 @@ def main (arg)
 		solaris_ldc = linux_ldc
 		solaris_gdc = linux_gdc		
 				
-		Posix.new(args, "darwin", darwin_dmd, darwin_ldc, darwin_gdc)
+		Posix.new(args, "osx", osx_dmd, osx_ldc, osx_gdc)
 		Posix.new(args, "linux", linux_dmd, linux_ldc, linux_gdc)
 		Posix.new(args, "freebsd", freebsd_dmd, freebsd_ldc, freebsd_gdc)
 		Posix.new(args, "solaris", solaris_dmd, solaris_ldc, solaris_gdc)
@@ -284,8 +284,8 @@ end
 class Posix < FileFilter
 	def initialize (args, os, dmd, ldc, gdc)
 		super(args)
-		include("tango/sys/" + os)
-				
+		include("tango/sys/darwin") if os == "osx"
+		include("tango/sys/#{os}") unless os == "osx"
 		FileFilter.register(os, "dmd", :dmd, self)
 		FileFilter.register(os, "ldc", :ldc, self)
 		FileFilter.register(os, "gdc", :gdc, self)
@@ -405,7 +405,7 @@ Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler,
 		self.dynamic = false
 		
 		self.os = ""
-		self.os = "darwin" if DARWIN
+		self.os = "osx" if OSX
 		self.os = "freebsd" if FREEBSD
 		self.os = "linux" if LINUX
 		self.os = "haiku" if HAIKU
@@ -495,7 +495,7 @@ def populate (args, options, help_msg, banner)
 
 			die "No path to Tango given" if args.empty?
 			
-			unless DARWIN || FREEBSD || LINUX || HAIKU || SOLARIS || WINDOWS
+			unless OSX || FREEBSD || LINUX || HAIKU || SOLARIS || WINDOWS
 				die "No package filter given" unless options.filter
 			end
 			
