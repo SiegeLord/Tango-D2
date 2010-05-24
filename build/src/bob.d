@@ -180,7 +180,7 @@ class Linux : FileFilter
                     }
                 }
 
-                makeLib;
+                makeLib(true);
                 return count;
         }
 
@@ -283,7 +283,7 @@ class MacOSX : FileFilter
                     }
                 }
 
-                makeLib;
+                makeLib(true);
                 return count;
         }
 
@@ -384,7 +384,7 @@ class FreeBSD : FileFilter
                     }
                 }
 
-                makeLib;
+                makeLib(true);
                 return count;
         }
 
@@ -484,7 +484,7 @@ class Solaris : FileFilter
                     }
                 }
 
-                makeLib;
+                makeLib(true);
                 return count;
         }
 
@@ -712,7 +712,7 @@ class FileFilter : FileScan
 
         ***********************************************************************/
 
-        private void makeLib ()
+        private void makeLib (bool use32bit = false)
         {
                 if (libs.readable > 2)
                    {
@@ -725,7 +725,8 @@ class FileFilter : FileScan
                            auto path = Path.parse(args.lib);
                            auto name = path.file;
                            auto options = "-dynamiclib -install_name @rpath/" ~ name ~ " -Xlinker -headerpad_max_install_names";
-                           exec ("gcc " ~ options ~ " -o " ~ args.lib ~ " " ~ files ~ " -lz -lbz2");                        
+                           auto gcc = use32bit ? "gcc -m32 " : "gcc ";
+                           exec (gcc ~ options ~ " -o " ~ args.lib ~ " " ~ files ~ " -lz -lbz2");                        
                        }
                        
                    }

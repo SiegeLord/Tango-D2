@@ -200,12 +200,13 @@ class FileFilter
 		@libs << file << eol if File.exists?(file)
 	end
 	
-	def makeLib
+	def makeLib (use32bit = false)
 		if @libs.length > 0
 			if @args.dynamic
+				gcc = use32bit ? "gcc -m32" : "gcc"				
 				options = "-dynamiclib -install_name @rpath/#{File.basename(@args.lib)} -Xlinker -headerpad_max_install_names" if DARWIN
 
-				exec("gcc #{options} -o #{@args.lib} #{@libs.string} -lz -lbz2")
+				exec("#{gcc} #{options} -o #{@args.lib} #{@libs.string} -lz -lbz2")
 			else
 				exec("ar -r #{@args.lib} #{@libs.string}")
 			end
@@ -328,7 +329,7 @@ class Posix < FileFilter
 			end
 		end
 		
-		makeLib()
+		makeLib(true)
 				
 		return @count		
 	end
