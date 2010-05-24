@@ -183,10 +183,12 @@ class FileFilter
 	end
 	
 	def isOverdue (file, objfile)
-		return true unless File.exists?(objfile)
+		newObjFile = File.join(@args.objs, objfile)
+		
+		return true unless File.exists?(newObjFile)
 		
 		src = File.mtime(file)
-		obj = File.mtime(objfile)
+		obj = File.mtime(newObjFile)
 		
 		return src >= obj
 	end
