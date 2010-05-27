@@ -15,7 +15,8 @@ DC=
 LIB=
 
 usage() {
-    echo 'Usage: build-tango.sh <options> identifier
+    echo 'Usage: bob.sh <options> identifier
+Example: build/script/bob.sh --user --runtime --verbose dmd
 Options:
   --help: Will print this help text
   --noinline: Will turn off inlining
