@@ -382,7 +382,9 @@ else
                 p.lastChild = 
                 p.firstAttr =
                 p.lastAttr = null;
-                p.rawValue = null;
+                p.rawValue = 
+                p.localName = 
+                p.prefixed = null;
                 return p;
         }
 
