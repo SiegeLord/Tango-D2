@@ -15,6 +15,9 @@ module tango.text.xml.Document;
 
 package import tango.text.xml.PullParser;
 
+version(Clear)
+        extern (C) void* memset(void* s, int c, size_t n);
+
 version=discrete;
 
 /*******************************************************************************
@@ -231,7 +234,18 @@ class Document(T) : package PullParser!(T)
         final Document reset ()
         {
                 root.lastChild = root.firstChild = null;
+version(Clear)
+{
+                while (freelists)
+                      {
+                      auto list = lists[--freelists];
+                      memset (list.ptr, 0, NodeImpl.sizeof * list.length);
+                      }
+}
+else
+{
                 freelists = 0;
+}
                 newlist;
                 index = 1;
 version(d)
@@ -373,8 +387,11 @@ else
                     newlist;
 
                 auto p = &list[index++];
-                p.start = p.end = null;
                 p.doc = this;
+version(Clear){}
+else
+{
+                p.start = p.end = null;
                 p.host =
                 p.prevSibling = 
                 p.nextSibling = 
@@ -385,6 +402,7 @@ else
                 p.rawValue = 
                 p.localName = 
                 p.prefixed = null;
+}
                 return p;
         }
 
@@ -2173,7 +2191,8 @@ debug (Document)
                          Stdout.formatln ("{}: {}", node.parent.name, node.value);
 
                 // emit the result
-                auto print = new DocPrinter!(char);
-                Stdout(print(doc)).newline;
+                auto printer = new DocPrinter!(char);
+                printer.print (doc, stdout);
+                doc.reset;
         }
 }
