@@ -17,11 +17,12 @@ private import Util = tango.text.Util;
 /******************************************************************************
 
         Convert XML entity patterns to normal characters
-        ---
+        
+        <pre>
         &amp; => ;
-        &quot => "
-        etc
-        ---
+        &quot; => "
+        etc.
+        </pre>
         
 ******************************************************************************/
 

@@ -49,13 +49,13 @@ class MapInput(T) : Lines!(T)
                 and rValue pairs from each one, The expected file format is
                 as follows:
 
-                ---
+                <pre>
                 x = y
                 abc = 123
                 x.y.z = this is a single property
 
                 # this is a comment line
-                ---
+                </pre>
 
                 Note that the provided name and value are actually slices
                 and should be copied if you intend to retain them (using

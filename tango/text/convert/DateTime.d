@@ -112,7 +112,8 @@ struct DateTimeLocale
                 using the specified layout. The layout can be a generic
                 variant or a custom one, where generics are indicated
                 via a single character:
-                ---
+                
+                <pre>
                 "t" = 7:04
                 "T" = 7:04:02 PM 
                 "d" = 3/30/2009
@@ -127,11 +128,12 @@ struct DateTimeLocale
                 "R" = Mon, 30 Mar 2009 19:04:02 GMT
                 "s" = 2009-03-30T19:04:02
                 "u" = 2009-03-30 19:04:02Z
-                ---
+                </pre>
         
                 For the US locale, these generic layouts are expanded in the 
                 following manner:
-                ---
+                
+                <pre>
                 "t" = "h:mm" 
                 "T" = "h:mm:ss tt"
                 "d" = "M/d/yyyy"  
@@ -146,7 +148,7 @@ struct DateTimeLocale
                 "R" = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'"
                 "s" = "yyyy'-'MM'-'dd'T'HH':'mm':'ss"      
                 "u" = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'"   
-                ---
+                </pre>
 
                 Custom layouts are constructed using a combination of the 
                 character codes indicated on the right, above. For example, 
