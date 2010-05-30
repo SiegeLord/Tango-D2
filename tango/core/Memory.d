@@ -51,7 +51,11 @@ private
     extern(C) Object gc_weakpointerGet(void* wp);
     extern(C) void*  gc_weakpointerCreate(Object r);
     extern(C) void   gc_weakpointerDestroy(void* wp);
-    extern(D) void   gc_monitor( void delegate() begin, void delegate(int, int) end );
+
+    alias extern(D) void delegate() ddel;
+    alias extern(D) void delegate(int, int) dint;
+
+    extern (C) void gc_monitor(ddel begin, dint end );
 }
 
 

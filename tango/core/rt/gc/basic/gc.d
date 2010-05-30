@@ -233,7 +233,10 @@ extern (C) Object gc_weakpointerGet( void* wp )
     return _gc.weakpointerGet(wp);
 }
 
-void gc_monitor( void delegate() begin, void delegate(int, int) end )
+private alias extern(D) void delegate() ddel;
+private alias extern(D) void delegate(int, int) dint;
+
+extern (C) void gc_monitor( ddel begin, dint end )
 {
-    _gc.monitor (begin, end);
+    _gc.monitor (begin,end);
 }
