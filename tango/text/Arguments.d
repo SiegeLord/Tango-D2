@@ -15,8 +15,6 @@ module tango.text.Arguments;
 private import tango.text.Util;
 private import tango.util.container.more.Stack;
 
-debug(TangoArguments) private import tango.io.Stdout;
-
 version=dashdash;       // -- everything assigned to the null argument
 
 /*******************************************************************************
@@ -283,21 +281,20 @@ class Arguments
                 bool    done;
                 int     error;
 
-                debug(TangoArguments) stdout.formatln ("\ncmdline: '{}'", input);
+                debug(Arguments) stdout.formatln ("\ncmdline: '{}'", input);
                 stack.push (get(null));
                 foreach (s; input)
-                         //if (s.length)
-                            {
-                            debug(TangoArguments) stdout.formatln ("'{}'", s);
-                            if (done is false)
-                                if (s == "--")
-                                   {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
-                                else
-                                   if (argument (s, lp, sloppy, false) ||
-                                       argument (s, sp, sloppy, true))
-                                       continue;
-                            stack.top.append (s);
-                            }  
+                        {
+                        debug(Arguments) stdout.formatln ("'{}'", s);
+                        if (done is false)
+                            if (s == "--")
+                               {done=true; version(dashdash){stack.clear.push(get(null));} continue;}
+                            else
+                               if (argument (s, lp, sloppy, false) ||
+                                   argument (s, sp, sloppy, true))
+                                   continue;
+                        stack.top.append (s);
+                        }  
                 foreach (arg; args)
                          error |= arg.valid;
                 return error is 0;
@@ -478,13 +475,13 @@ class Arguments
                    auto arg = enable (elem[0..1], sloppy);
                    elem = elem[1..$];
 
-                   // smush the remaining text, or treat then as more args
-                   if (arg.cat)
-                       arg.append (elem, true);
-                   else
-                      arg = enable (elem, sloppy, true);
-                      //foreach (c; elem)
-                      //   arg = enable ((&c)[0..1], sloppy);
+                   // drop further processing of this flag where in error
+                   if (arg.error is arg.None)
+                       // smush remaining text or treat as additional args
+                       if (arg.cat)
+                           arg.append (elem, true);
+                       else
+                          arg = enable (elem, sloppy, true);
                    return arg;
                    }
 
@@ -756,9 +753,9 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument smush ()
+                final Argument smush (bool yes=true)
                 {
-                        cat = true;
+                        cat = yes;
                         return this;
                 }
 
@@ -916,7 +913,7 @@ class Arguments
                                         }
                                   }
 
-                        debug(TangoArguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
+                        debug(Arguments) stdout.formatln ("{}: error={}, set={}, min={}, max={}, "
                                                "req={}, values={}, defaults={}, requires={}", 
                                                name, error, set, min, max, req, values, 
                                                deefalts, dependees);
@@ -1098,7 +1095,7 @@ debug(UnitTest)
       
 *******************************************************************************/
 
-debug (TangoArguments)
+debug (Arguments)
 {       
         import tango.io.Stdout;
 
