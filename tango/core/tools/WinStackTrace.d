@@ -479,7 +479,6 @@ void append(T, I)(ref T array, I elem, uint* realLength = null) {
 }
 //#line 2 "parts/WinApi.di"
 import tango.text.Util;
-import tango.io.Stdout;
 import tango.core.Thread;
 import tango.core.Array;
 import tango.sys.Common : SysError;
@@ -1830,7 +1829,7 @@ static this() {
         }
     }
     
-    version (StacktraceSpam) Stdout.formatln("found Thread.Fiber.run at {:x} with length {:x}",
+    version (StacktraceSpam) printf ("found Thread.Fiber.run at %p with length %x",
             &D5tango4core6Thread5Fiber3runMFZv, fiberRunFuncLength);
 
     char modNameBuf[512] = 0;
@@ -1853,10 +1852,9 @@ static this() {
     if (SymFromName(GetCurrentProcess(), "__initLGPLHostExecutableDebugInfo", &sym)) {
         initTrace = cast(typeof(initTrace))sym.Address;
         assert (initTrace !is null); 
-        //Stdout.formatln("Initializing the TangoTrace LGPL stuff");
         initTrace(modName);
     } else {
-        Stdout.formatln("Can't initialize the TangoTrace LGPL stuff");
+        throw new Exception ("Can't initialize the TangoTrace LGPL stuff");
     }
 }
 
