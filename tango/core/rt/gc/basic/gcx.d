@@ -1413,6 +1413,7 @@ class GC
                   return (cast(WeakPointer*)p).reference;
                   });
            }
+        return null;
     }
 }
 
