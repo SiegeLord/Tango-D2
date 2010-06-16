@@ -86,11 +86,11 @@ struct Vector (V, int Size = 0)
 
         Vector clone ()
         {       
-                Vector v = void;
+                Vector v;
                 static if (Size == 0)
                            v.vector.length = vector.length;
                 
-                v.vector[] = vector;
+                v.vector[0..depth] = vector[0..depth];
                 v.depth = depth;
                 return v;
         }
