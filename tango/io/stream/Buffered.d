@@ -31,7 +31,7 @@ public alias BufferedOutput Bout;       /// ditto
 extern (C)
 {       
         int printf (char*, ...);
-        private void * memcpy (void *dst, void *src, size_t);
+        private void * memmove (void *dst, void *src, size_t);
 }
 
 /******************************************************************************
@@ -565,7 +565,7 @@ class BufferedInput : InputFilter, InputBuffer
 
                 if (index > 0 && r > 0)
                     // content may overlap ...
-                    memcpy (&data[0], &data[index], r);
+                    memmove (&data[0], &data[index], r);
 
                 index = 0;
                 extent = r;
@@ -1030,7 +1030,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 if (length)
                    {
                    // content may overlap ...
-                   memcpy (&data[extent], src, length);
+                   memmove (&data[extent], src, length);
                    extent += length;
                    }
                 return this;
@@ -1384,7 +1384,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
                 if (index > 0 && r > 0)
                     // content may overlap ...
-                    memcpy (&data[0], &data[index], r);
+                    memmove (&data[0], &data[index], r);
 
                 index = 0;
                 extent = r;
