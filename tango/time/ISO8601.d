@@ -183,7 +183,7 @@ private size_t doIso8601Date(T)(
       return onlyYear;
 
    if (accept(p, '-'))
-      separators = true;
+      separators = YES;
 
    if (accept(p, 'W')) {
       // (year)-Www-D
@@ -200,15 +200,27 @@ private size_t doIso8601Date(T)(
                return eaten();
 
          // (year)-Www-D
-         } else if (demand(p, '-'))
-            if (getMonthAndDayFromWeek(fd, i, *p++ - '0'))
+         } else if (demand(p, '-')) {
+            if (separators == NO) {
+               // (year)Www after all
+               if (getMonthAndDayFromWeek(fd, i))
+                  return eaten() - 1;
+
+            } else if (getMonthAndDayFromWeek(fd, i, *p++ - '0'))
                return eaten();
+         }
 
-      } else if (p - p2 == 3)
-         // (year)WwwD
-         if (getMonthAndDayFromWeek(fd, i / 10, i % 10))
+      } else if (p - p2 == 3) {
+         // (year)WwwD, i == wwD
+
+         if (separators == YES) {
+            // (year)-Www after all
+            if (getMonthAndDayFromWeek(fd, i / 10))
+               return eaten() - 1;
+
+         } else if (getMonthAndDayFromWeek(fd, i / 10, i % 10))
             return eaten();
-
+      }
       return onlyYear;
    }
 
@@ -232,7 +244,7 @@ private size_t doIso8601Date(T)(
          auto onlyMonth = eaten();
 
          // (year)-MM
-         if (done("-") || !demand(p, '-'))
+         if (done("-") || !demand(p, '-') || separators == NO)
             return onlyMonth;
 
          int day = parseIntLimited(p, cast(size_t)2);
@@ -250,6 +262,13 @@ private size_t doIso8601Date(T)(
 
          int month = i / 100;
          int day   = i % 100;
+
+         if (separators == YES) {
+            // Don't accept the day: behave as though we only got the month
+            p -= 2;
+            i = month;
+            goto case 2;
+         }
 
          // (year)MMDD
          if (
@@ -274,7 +293,6 @@ private size_t doIso8601Date(T)(
 
       default: break;
    }
-
    return eaten();
 }
 
@@ -345,16 +363,7 @@ private size_t doIso8601Time(T)(
 ) {
    size_t eaten() { return p - src.ptr; }
    bool done(T[] s) { return .done(eaten(), src.length, *p, s); }
-
-   bool checkColon() {
-      if (separators == WHATEVER)
-         accept(p, ':');
-
-      else if (accept(p, ':') != separators)
-         return false;
-
-      return true;
-   }
+   bool checkColon() { return .checkColon(p, separators); }
 
    byte getTimeZone() { return .getTimeZone(p, fd, separators, &done); }
 
@@ -662,6 +671,17 @@ in {
 enum : ubyte { HOUR, MINUTE, SECOND }
 enum :  byte { BAD, FOUND, NOTFOUND }
 
+bool checkColon(T)(ref T* p, ref ubyte separators) {
+   ubyte foundSep = accept(p, ':') ? YES : NO;
+   if (foundSep != separators) {
+      if (separators == WHATEVER)
+         separators = foundSep;
+      else
+         return false;
+   }
+   return true;
+}
+
 byte getDecimal(T)(ref T* p, ref FullDate fd, ubyte which) {
    if (!(accept(p, ',') || accept(p, '.')))
       return NOTFOUND;
@@ -713,6 +733,8 @@ byte getDecimal(T)(ref T* p, ref FullDate fd, ubyte which) {
 // another option would be to add time zone fields to DT and have this fill them
 
 byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T[]) done) {
+   bool checkColon() { return .checkColon(p, separators); }
+
    if (accept(p, 'Z'))
       return FOUND;
 
@@ -739,14 +761,17 @@ byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T
    if (done("012345:"))
       return FOUND;
 
-   if (separators == WHATEVER)
-      accept(p, ':');
-   else if (accept(p, ':') != separators)
+   auto afterHours = p;
+
+   if (!checkColon())
       return BAD;
 
    int minute = void;
-   if (parseIntLimited(p, cast(size_t)2, minute) != 2)
-      return BAD;
+   if (parseIntLimited(p, cast(size_t)2, minute) != 2) {
+      // The hours were valid even if the minutes weren't
+      p = afterHours;
+      return FOUND;
+   }
 
    addMins(fd, factor * minute);
 
@@ -989,6 +1014,14 @@ debug (UnitTest) {
       assert (years(fd)  == 1995);
       assert (months(fd) == INIT_MONTH);
 
+      assert (d("2007-0201") == 7);
+      assert (years(fd)  == 2007);
+      assert (months(fd) ==    2);
+
+      assert (d("200702-01") == 6);
+      assert (years(fd)  == 2007);
+      assert (months(fd) ==    2);
+
       assert (d("+001985-04-12", 2) == 13);
       assert (years(fd)  == 1985);
       assert (fd.year    == 1985);
@@ -1007,6 +1040,16 @@ debug (UnitTest) {
       assert (days(fd)   ==    8);
 
       assert (d("2008-W01") == 8);
+      assert (years(fd)  == 2007);
+      assert (months(fd) ==   12);
+      assert (days(fd)   ==   31);
+
+      assert (d("2008-W012") == 8);
+      assert (years(fd)  == 2007);
+      assert (months(fd) ==   12);
+      assert (days(fd)   ==   31);
+
+      assert (d("2008W01-2") == 7);
       assert (years(fd)  == 2007);
       assert (months(fd) ==   12);
       assert (days(fd)   ==   31);
@@ -1198,6 +1241,14 @@ debug (UnitTest) {
 
       assert (t("30") == 0);
 
+      assert (t("T15") == 3);
+      assert (hours(fd) == 15);
+      assert (mins(fd)  ==  0);
+      assert (secs(fd)  ==  0);
+
+      assert (t("T1") == 0);
+      assert (t("T") == 0);
+
       assert (t("2004") == 4);
       assert (hours(fd) == 20);
       assert (mins(fd)  ==  4);
@@ -1225,6 +1276,14 @@ debug (UnitTest) {
       assert (mins(fd)   == 59);
       assert (secs(fd)   == 59);
       assert (fd.seconds == 60);
+
+      assert (t("12:3456") == 5);
+      assert (hours(fd) == 12);
+      assert (mins(fd)  == 34);
+
+      assert (t("1234:56") == 4);
+      assert (hours(fd) == 12);
+      assert (mins(fd)  == 34);
 
       assert (t("16:49:30,001") == 12);
       assert (hours(fd) == 16);
@@ -1294,7 +1353,7 @@ debug (UnitTest) {
       assert (mins(fd)  ==  6);
       assert (secs(fd)  == 43);
 
-      assert (t("12:34,5+0000") == 12);
+      assert (t("12:34,5+00:00") == 13);
       assert (hours(fd) == 12);
       assert (mins(fd)  == 34);
       assert (secs(fd)  == 30);
@@ -1409,13 +1468,18 @@ debug (UnitTest) {
       assert (b("200512-01T10:02") == 0);
       assert (b("1985-04-1210:15:30+04:00") == 0);
       assert (b("1985-04-12T10:15:30+0400") == 0);
-      assert (b("1985-04-12T10:15:30-05:4") == 0);
-      assert (b("1985-04-12T10:15:30-06:4b") == 0);
       assert (b("19020304T05:06:07") == 0);
       assert (b("1902-03-04T050607") == 0);
       assert (b("19020304T05:06:07abcd") == 0);
       assert (b("1902-03-04T050607abcd") == 0);
 
+      assert (b("1985-04-12T10:15:30-05:4") == 22);
+      assert (years(fd)  == 1985);
+      assert (months(fd) ==    4);
+      assert (days(fd)   ==   12);
+      assert (hours(fd)  ==   15);
+      assert (mins(fd)   ==   15);
+      assert (secs(fd)   ==   30);
       assert (b("2009-04-13T23:00-01") == 19);
       assert (fd.endOfDay);
       assert (years(fd)  == 2009);
