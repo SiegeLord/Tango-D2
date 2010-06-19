@@ -206,7 +206,7 @@ class FileFilter
 		if @libs.length > 0
 			if @args.dynamic
 				gcc = use32bit ? "gcc -m32" : "gcc"				
-				options = "-dynamiclib -install_name @rpath/#{File.basename(@args.lib)} -Xlinker -headerpad_max_install_names" if DARWIN
+				options = "-dynamiclib -install_name @rpath/#{File.basename(@args.lib)} -Xlinker -headerpad_max_install_names" if OSX
 
 				exec("#{gcc} #{options} -o #{@args.lib} #{@libs.string} -lz -lbz2")
 			else
@@ -311,7 +311,7 @@ class Posix < FileFilter
 	end
 	
 	def dmd ()		
-		exclude("tango/core/rt/compiler/dmd/darwin") unless @os == "darwin"		
+		exclude("tango/core/rt/compiler/dmd/darwin") unless @os == "osx"		
 		exclude("tango/core/rt/compiler/dmd/windows")
 		
 		scan(".d") do |file|
@@ -452,7 +452,7 @@ def populate (args, options, help_msg, banner)
 		end
 		
 		opts.on("-d", "--dynamic", "Build Tango as a dynamic/shared library") do |opt|
-			if DARWIN
+			if OSX
 				options.dynamic = true
 			else
 				die "Building Tango as a dynamic/shared library is currently not supported on this platform."
@@ -502,7 +502,7 @@ def populate (args, options, help_msg, banner)
 			end
 			
 			if options.dynamic
-				if DARWIN
+				if OSX
 					options.lib += ".dylib"
 				elsif WINDOWS
 					options.lib += ".dll"
