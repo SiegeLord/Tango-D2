@@ -32,6 +32,7 @@ public import tango.time.Time;
 public import tango.time.chrono.Gregorian;
 
 import tango.core.Exception : IllegalArgumentException;
+import tango.math.Math : min;
 
 private alias Time DT;
 private alias ExtendedDate FullDate;
@@ -171,9 +172,10 @@ private size_t doIso8601Date(T)(
          "ISO8601 :: year expanded by more than 5 digits does not fit in int");
 
    size_t eaten() { return p - src.ptr; }
-   bool done(T[] s) { return .done(eaten(), src.length, *p, s); }
+   size_t remaining() { return src.length - eaten(); }
+   bool done(T[] s) { return .done(eaten(), src.length, p, s); }
 
-   if (!parseYear(p, expanded, fd))
+   if (!parseYear(p, src.length, expanded, fd))
       return 0;
 
    auto onlyYear = eaten();
@@ -182,15 +184,17 @@ private size_t doIso8601Date(T)(
    if (done("-0123W"))
       return onlyYear;
 
-   if (accept(p, '-'))
+   if (accept(p, '-')) {
       separators = YES;
 
-   if (accept(p, 'W')) {
-      // (year)-Www-D
+      if (remaining() == 0)
+         return eaten() - 1;
+   }
 
+   if (accept(p, 'W')) {
       T* p2 = p;
 
-      int i = parseIntLimited(p, cast(size_t)3);
+      int i = parseInt(p, min(cast(size_t)3, remaining()));
 
       if (i) if (p - p2 == 2) {
 
@@ -201,6 +205,9 @@ private size_t doIso8601Date(T)(
 
          // (year)-Www-D
          } else if (demand(p, '-')) {
+            if (remaining() == 0)
+               return eaten() - 1;
+
             if (separators == NO) {
                // (year)Www after all
                if (getMonthAndDayFromWeek(fd, i))
@@ -228,7 +235,7 @@ private size_t doIso8601Date(T)(
 
    T* p2 = p;
 
-   int i = parseInt(p);
+   int i = parseInt(p, remaining());
    if (!i)
       return onlyYear;
 
@@ -247,7 +254,7 @@ private size_t doIso8601Date(T)(
          if (done("-") || !demand(p, '-') || separators == NO)
             return onlyMonth;
 
-         int day = parseIntLimited(p, cast(size_t)2);
+         int day = parseInt(p, min(cast(size_t)2, remaining()));
 
          // (year)-MM-DD
          if (day && day <= daysPerMonth(months(fd), fd.year))
@@ -362,16 +369,17 @@ private size_t doIso8601Time(T)(
 
 ) {
    size_t eaten() { return p - src.ptr; }
-   bool done(T[] s) { return .done(eaten(), src.length, *p, s); }
+   size_t remaining() { return src.length - eaten(); }
+   bool done(T[] s) { return .done(eaten(), src.length, p, s); }
    bool checkColon() { return .checkColon(p, separators); }
 
-   byte getTimeZone() { return .getTimeZone(p, fd, separators, &done); }
+   byte getTimeZone() { return .getTimeZone(p, remaining(), fd, separators, &done); }
 
    if (separators == WHATEVER)
       accept(p, 'T');
 
    int hour = void;
-   if (parseIntLimited(p, cast(size_t)2, hour) != 2 || hour > 24)
+   if (parseInt(p, min(cast(size_t)2, remaining()), hour) != 2 || hour > 24)
       return 0;
 
    if (hour == 24)
@@ -387,7 +395,7 @@ private size_t doIso8601Time(T)(
    if (done("+,-.012345:"))
       return onlyHour;
 
-   switch (getDecimal(p, fd, HOUR)) {
+   switch (getDecimal(p, remaining(), fd, HOUR)) {
       case NOTFOUND: break;
       case    FOUND:
          auto onlyDecimal = eaten();
@@ -411,16 +419,16 @@ private size_t doIso8601Time(T)(
    if (!checkColon())
       return onlyHour;
 
-   int min = void;
+   int mins = void;
    if (
-      parseIntLimited(p, cast(size_t)2, min) != 2 ||
-      min > 59 ||
+      parseInt(p, min(cast(size_t)2, remaining()), mins) != 2 ||
+      mins > 59 ||
       // end of day is only for 24:00:00
-      (fd.endOfDay && min != 0)
+      (fd.endOfDay && mins != 0)
    )
       return onlyHour;
 
-   addMins(fd, min);
+   addMins(fd, mins);
 
    auto onlyMinute = eaten();
 
@@ -430,7 +438,7 @@ private size_t doIso8601Time(T)(
       return onlyMinute;
    }
 
-   switch (getDecimal(p, fd, MINUTE)) {
+   switch (getDecimal(p, remaining(), fd, MINUTE)) {
       case NOTFOUND: break;
       case    FOUND:
          auto onlyDecimal = eaten();
@@ -457,14 +465,14 @@ private size_t doIso8601Time(T)(
 
    int sec = void;
    if (
-      parseIntLimited(p, cast(size_t)2, sec) != 2 ||
+      parseInt(p, min(cast(size_t)2, remaining()), sec) != 2 ||
       sec > 60 ||
       (fd.endOfDay && sec != 0)
    )
       return onlyMinute;
 
    if (sec == 60) {
-      if (hours(fd) != 23 && mins(fd) != 59)
+      if (hours(fd) != 23 && .mins(fd) != 59)
          return onlyMinute;
 
       fd.setLeap();
@@ -480,7 +488,7 @@ private size_t doIso8601Time(T)(
       return onlySecond;
    }
 
-   switch (getDecimal(p, fd, SECOND)) {
+   switch (getDecimal(p, remaining(), fd, SECOND)) {
       case NOTFOUND: break;
       case    FOUND:
          auto onlyDecimal = eaten();
@@ -555,6 +563,7 @@ public size_t parseDateAndTime(T)(T[] src, ref FullDate fd) {
 
       // by mutual agreement this T may be omitted
       // but this is just a convenience method for date+time anyway
+      src.length - (p - src.ptr) >= 1 &&
       demand(p, 'T') &&
 
       doIso8601Time(p, src, fd, sep, bothValid) &&
@@ -574,14 +583,14 @@ public size_t parseDateAndTime(T)(T[] src, ref FullDate fd) {
 private:
 
 // /([+-]Y{expanded})?(YYYY|YY)/
-bool parseYear(T)(ref T* p, ubyte expanded, ref FullDate fd) {
+bool parseYear(T)(ref T* p, size_t len, ubyte expanded, ref FullDate fd) {
 
    int year = void;
 
    bool doParse() {
       T* p2 = p;
 
-      if (!parseIntLimited(p, cast(size_t)(expanded + 4), year))
+      if (!parseInt(p, min(cast(size_t)(expanded + 4), len), year))
          return false;
 
       // it's Y{expanded}YY, Y{expanded}YYYY, or unacceptable
@@ -682,14 +691,14 @@ bool checkColon(T)(ref T* p, ref ubyte separators) {
    return true;
 }
 
-byte getDecimal(T)(ref T* p, ref FullDate fd, ubyte which) {
+byte getDecimal(T)(ref T* p, size_t len, ref FullDate fd, ubyte which) {
    if (!(accept(p, ',') || accept(p, '.')))
       return NOTFOUND;
 
    T* p2 = p;
 
    int i = void;
-   auto iLen = parseInt(p, i);
+   auto iLen = parseInt(p, len-1, i);
 
    if (
       iLen == 0 ||
@@ -732,8 +741,13 @@ byte getDecimal(T)(ref T* p, ref FullDate fd, ubyte which) {
 // the DT is always UTC, so this just adds the offset to the date fields
 // another option would be to add time zone fields to DT and have this fill them
 
-byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T[]) done) {
+byte getTimeZone(T)(ref T* p, size_t len, ref FullDate fd, ubyte separators, bool delegate(T[]) done) {
    bool checkColon() { return .checkColon(p, separators); }
+
+   if (len == 0)
+      return NOTFOUND;
+
+   auto p0 = p;
 
    if (accept(p, 'Z'))
       return FOUND;
@@ -746,7 +760,7 @@ byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T
       return NOTFOUND;
 
    int hour = void;
-   if (parseIntLimited(p, cast(size_t)2, hour) != 2 || hour > 12 || (hour == 0 && factor == 1))
+   if (parseInt(p, min(cast(size_t)2, len-1), hour) != 2 || hour > 12 || (hour == 0 && factor == 1))
       return BAD;
 
    addHours(fd, factor * hour);
@@ -767,7 +781,7 @@ byte getTimeZone(T)(ref T* p, ref FullDate fd, ubyte separators, bool delegate(T
       return BAD;
 
    int minute = void;
-   if (parseIntLimited(p, cast(size_t)2, minute) != 2) {
+   if (parseInt(p, min(cast(size_t)2, len - (p-p0)), minute) != 2) {
       // The hours were valid even if the minutes weren't
       p = afterHours;
       return FOUND;
@@ -803,20 +817,20 @@ bool demand(T)(ref T* p, char c) {
    return (*p++ == c);
 }
 
-bool done(T)(size_t eaten, size_t srcLen, T p, T[] s) {
+bool done(T)(size_t eaten, size_t srcLen, T* p, T[] s) {
    if (eaten == srcLen)
       return true;
 
    // s is the array of characters which may come next
-   // (i.e. which p may be)
+   // (i.e. which *p may be)
    // sorted in ascending order
+   T t = *p;
    foreach (c; s) {
-      if (p < c)
+      if (t < c)
          return true;
-      else if (p == c)
+      else if (t == c)
          break;
    }
-
    return false;
 }
 
@@ -835,25 +849,16 @@ uint erafy(ref int year) {
 
 /+ +++++++++++++++++++++++++++++++++++++++ +\
 
-   Extract an integer from the input
+   Extract an integer from the input, accept no more than max digits
 
 \+ +++++++++++++++++++++++++++++++++++++++ +/
 
 // note: code relies on these always being positive, failing if *p == '-'
 
-int parseInt(T)(ref T* p) {
-   int value = 0;
-   while (*p >= '0' && *p <= '9')
-      value = value * 10 + *p++ - '0';
-   return value;
-}
-
-// ... but accept no more than max digits
-
-int parseIntLimited(T)(ref T* p, size_t max) {
+int parseInt(T)(ref T* p, size_t max) {
    size_t i = 0;
    int value = 0;
-   while (p[i] >= '0' && p[i] <= '9' && i < max)
+   while (i < max && p[i] >= '0' && p[i] <= '9')
       value = value * 10 + p[i++] - '0';
    p += i;
    return value;
@@ -861,15 +866,9 @@ int parseIntLimited(T)(ref T* p, size_t max) {
 
 // ... and return the amount of digits processed
 
-size_t parseInt(T)(ref T* p, out int i) {
+size_t parseInt(T)(ref T* p, size_t max, out int i) {
    T* p2 = p;
-   i = parseInt(p);
-   return p - p2;
-}
-
-size_t parseIntLimited(T)(ref T* p, size_t max, out int i) {
-   T* p2 = p;
-   i = parseIntLimited(p, max);
+   i = parseInt(p, max);
    return p - p2;
 }
 
@@ -905,6 +904,8 @@ int ms    (FullDate d) { return d.val.time.millis;  }
 
 debug (UnitTest) {
    // void main() {}
+
+   debug (Tango_ISO8601_Valgrind) import tango.stdc.stdlib : malloc, free;
 
    unittest {
       FullDate fd;
@@ -1498,5 +1499,85 @@ debug (UnitTest) {
       assert (secs(fd)   ==    0);
 
       // unimplemented: intervals, durations, recurring intervals
+
+      debug (Tango_ISO8601_Valgrind) {
+         size_t valgrind(size_t delegate(char[]) f, char[] s) {
+            auto p = cast(char*)malloc(s.length);
+            auto ps = p[0..s.length];
+            ps[] = s[];
+            auto result = f(ps);
+            free(p);
+            return result;
+         }
+         size_t vd(char[] s) {
+            size_t date(char[] ss) { return d(ss); }
+            return valgrind(&date, s);
+         }
+         size_t vt(char[] s) { return valgrind(&t, s); }
+         size_t vb(char[] s) { return valgrind(&b, s); }
+
+         assert (vd("1") == 0);
+         assert (vd("19") == 2);
+         assert (vd("199") == 0);
+         assert (vd("1999") == 4);
+         assert (vd("1999-") == 4);
+         assert (vd("1999-W") == 4);
+         assert (vd("1999-W0") == 4);
+         assert (vd("1999-W01") == 8);
+         assert (vd("1999-W01-") == 8);
+         assert (vd("1999-W01-3") == 10);
+         assert (vd("1999W") == 4);
+         assert (vd("1999W0") == 4);
+         assert (vd("1999W01") == 7);
+         assert (vd("1999W01-") == 7);
+         assert (vd("1999W01-3") == 7);
+         assert (vd("1999W013") == 8);
+         assert (vd("1999-0") == 4);
+         assert (vd("1999-01") == 7);
+         assert (vd("1999-01-") == 7);
+         assert (vd("1999-01-0") == 7);
+         assert (vd("1999-01-01") == 10);
+         assert (vd("1999-0101") == 7);
+         assert (vd("1999-365") == 8);
+         assert (vd("1999365") == 7);
+
+         assert (vt("1") == 0);
+         assert (vt("15") == 2);
+         assert (vt("15:") == 2);
+         assert (vt("15:3") == 2);
+         assert (vt("15:30") == 5);
+         assert (vt("153") == 2);
+         assert (vt("1530") == 4);
+         assert (vt("1530:") == 4);
+         assert (vt("15304") == 4);
+         assert (vt("153045") == 6);
+         assert (vt("15:30:") == 5);
+         assert (vt("15:30:4") == 5);
+         assert (vt("15:30:45") == 8);
+         assert (vt("T15") == 3);
+         assert (vt("T1") == 0);
+         assert (vt("T") == 0);
+         assert (vt("15,") == 2);
+         assert (vt("15,2") == 4);
+         assert (vt("1530,") == 4);
+         assert (vt("1530,2") == 6);
+         assert (vt("15:30:45,") == 8);
+         assert (vt("15:30:45,2") == 10);
+         assert (vt("153045,") == 6);
+         assert (vt("153045,2") == 8);
+         assert (vt("153045,22") == 9);
+         assert (vt("153045,222") == 10);
+         assert (vt("15Z") == 3);
+         assert (vt("15+") == 2);
+         assert (vt("15-") == 2);
+         assert (vt("15+0") == 2);
+         assert (vt("15+00") == 5);
+         assert (vt("15+00:") == 5);
+         assert (vt("15+00:0") == 5);
+         assert (vt("15+00:00") == 8);
+         assert (vb("1999-01-01") == 0);
+         assert (vb("1999-01-01T") == 0);
+         assert (vb("1999-01-01T15:30:45") == 19);
+      }
    }
 }
