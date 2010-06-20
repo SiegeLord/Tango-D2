@@ -233,8 +233,8 @@ interface InputStream : IOStream
         /***********************************************************************
 
                 Load the bits from a stream, and return them all in an
-                array. The dst array can be provided as an option, which
-                will be expanded as necessary to consume the input.
+                array. The optional max value indicate the number of bytes
+                to be read.
 
                 Returns an array representing the content, and throws
                 IOException on error
