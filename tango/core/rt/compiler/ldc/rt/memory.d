@@ -131,7 +131,7 @@ extern (C) void* rt_stackBottom()
     else version( freebsd ) 
     { 
         int    mib[2];
-        uint   userStack;	// vm_size_t
+        size_t userStack;	// vm_size_t
         size_t len;
         int    retval;
 
@@ -223,11 +223,13 @@ private
     { 
         extern (C) 
         { 
-            extern char etext; 
+            version(X86) { extern char etext; }
+            else { extern char __preinit_array_start; }
             extern int _end; 
         }
          
-        alias etext Data_Start; 
+        version(X86) { alias etext Data_Start; }
+        else { alias __preinit_array_start Data_Start; } 
         alias _end Data_End; 
     }
     else version( solaris )
