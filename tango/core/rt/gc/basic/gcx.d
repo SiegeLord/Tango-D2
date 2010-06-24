@@ -2358,7 +2358,7 @@ struct Gcx
         Pool*  pool;
 
         debug(COLLECT_PRINTF) printf("Gcx.fullcollect()\n");
-        if (collectBegin.ptr)
+        if (collectBegin.funcptr)
             collectBegin();
 
         thread_suspendAll();
@@ -2654,7 +2654,7 @@ struct Gcx
 
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
-        if (collectEnd.ptr)
+        if (collectEnd.funcptr)
             collectEnd(freed, (freedpages + recoveredpages) * PAGESIZE);
 
         return freedpages + recoveredpages;
