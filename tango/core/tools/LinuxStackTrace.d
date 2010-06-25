@@ -463,7 +463,7 @@ version(linux){
             }
         }
 
-        if (string_table && symbs) {
+        if (string_table.ptr && symbs.ptr) {
             StaticSectionInfo.addGSection(header,string_table,symbs,debug_line,file[0..strlen(file)]);
             string_table=null;
             symbs=null;
