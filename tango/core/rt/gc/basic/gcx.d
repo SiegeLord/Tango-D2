@@ -1292,7 +1292,6 @@ class GC
         size_t flsize = 0;
 
         size_t n;
-        size_t bsize = 0;
 
         //debug(PRINTF) printf("getStats()\n");
         cstring.memset(&stats, 0, GCStats.sizeof);
@@ -1307,9 +1306,14 @@ class GC
                 if (bin == B_FREE)
                     stats.freeblocks++;
                 else if (bin == B_PAGE)
+                {
                     stats.pageblocks++;
+                    usize += PAGESIZE;
+                }
+                else if (bin == B_PAGEPLUS)
+                    usize += PAGESIZE;
                 else if (bin < B_PAGE)
-                    bsize += PAGESIZE;
+                    usize += binsize[bin];
             }
         }
 
@@ -1323,10 +1327,8 @@ class GC
             }
         }
 
-        usize = bsize - flsize;
-
         stats.poolsize = psize;
-        stats.usedsize = bsize - flsize;
+        stats.usedsize = usize;
         stats.freelistsize = flsize;
     }
 
