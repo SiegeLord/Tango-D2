@@ -328,6 +328,15 @@ version (Posix)
             }
             return SelectionKey.init;
         }
+        
+        /**
+         * Return the number of keys resulting from the registration of a conduit
+         * to the selector.
+         */
+        public abstract size_t count()
+        {
+            return _keys.length;
+        }
 
         /**
          * Iterate through the currently registered selection keys.  Note that

@@ -308,6 +308,12 @@ abstract class AbstractSelector: ISelector
     public abstract SelectionKey key(ISelectable conduit);
 
     /**
+     * Return the number of keys resulting from the registration of a conduit
+     * to the selector.
+     */
+    public abstract size_t count();
+
+    /**
      * Cast the time duration to a C timeval struct.
     */
     public timeval* toTimeval(timeval* tv, TimeSpan interval)
