@@ -1970,7 +1970,6 @@ struct Gcx
             }
             if (pn < ncommitted)
             {
-                n++;
                 continue;
             }
             pool.Dtor();
@@ -1978,9 +1977,10 @@ struct Gcx
             cstring.memmove(pooltable + n,
                             pooltable + n + 1,
                             (--npools - n) * (Pool*).sizeof);
-            minAddr = pooltable[0].baseAddr;
-            maxAddr = pooltable[npools - 1].topAddr;
+            n--; // without this, we are skipping the first moved pool
         }
+        minAddr = pooltable[0].baseAddr;
+        maxAddr = pooltable[npools - 1].topAddr;
     }
 
 
