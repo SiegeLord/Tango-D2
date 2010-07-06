@@ -694,6 +694,35 @@ else
                                      result ~= formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len);
                                   break;
 
+                            case 'f':
+                                len = parseRepeat (format, index, c);
+                                auto num = Integer.itoa (tmp, time.millis);
+                                if(len > num.length)
+                                {
+                                    result ~= num;
+                                    
+                                    // append '0's
+                                    static char[8] zeros = '0';
+                                    auto zc = len - num.length;
+                                    zc = (zc > zeros.length) ? zeros.length : zc;
+                                    result ~= zeros[0..zc];
+                                }
+                                else
+                                    result ~= num[0..len];
+                                break;
+
+                            case 'F':
+                                len = parseRepeat (format, index, c);
+                                auto num = Integer.itoa (tmp, time.millis);
+                                auto idx = (len < num.length) ? len : num.length;
+
+                                // strip '0's
+                                while(idx && num[idx-1] is '0')
+                                    --idx;
+
+                                result ~= num[0..idx];
+                                break;
+
                              // month
                              case 'M':  
                                   len = parseRepeat (format, index, c);
