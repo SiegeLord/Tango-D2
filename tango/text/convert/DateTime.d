@@ -448,7 +448,7 @@ else
 
                 void put(char[] str)
                 {
-                        assert((len+str.length) < ret.length);
+                        assert((len+str.length) <= ret.length);
                         ret[len..len+str.length] = str;
                         len += str.length;
                 }
@@ -459,7 +459,9 @@ else
 
                     if (c != '%')
                        {
-                       put([c]);
+                        assert((len+1) <= ret.length);
+                        ret[len] = str;
+                        len += 1;
                        continue;
                        }
 
@@ -577,6 +579,7 @@ else
                                 //truncated to an integer) as a decimal number [00-99]
                            case 'j': //day of the year as a decimal number [001,366]
                                 assert(0);
+                                break;
 
                            case 'y': //year without century as a decimal number [00,99]
                                 put("yy"); // The year without the century. If the year without
