@@ -151,7 +151,7 @@ void _STI_monitor_staticctor()
 	pthread_mutexattr_init(&_monitors_attr);
 	pthread_mutexattr_settype(&_monitors_attr, PTHREAD_MUTEX_RECURSIVE);
 #endif
-	pthread_mutex_init(&_monitor_critsec, 0); // the global critical section doesn't need to be recursive
+	pthread_mutex_init(&_monitor_critsec, &_monitors_attr); // the global critical section doesn't need to be recursive
 	inited = 1;
     }
 }

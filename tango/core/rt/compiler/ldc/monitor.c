@@ -142,7 +142,7 @@ void _STI_monitor_staticctor()
     {
 	pthread_mutexattr_init(&_monitors_attr);
 	pthread_mutexattr_settype(&_monitors_attr, PTHREAD_MUTEX_RECURSIVE_NP);
-	pthread_mutex_init(&_monitor_critsec, 0);
+	pthread_mutex_init(&_monitor_critsec, &_monitors_attr);
 	inited = 1;
     }
 }
