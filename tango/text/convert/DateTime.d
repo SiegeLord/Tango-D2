@@ -460,7 +460,7 @@ else
                     if (c != '%')
                        {
                         assert((len+1) <= ret.length);
-                        ret[len] = str;
+                        ret[len] = c;
                         len += 1;
                        continue;
                        }
