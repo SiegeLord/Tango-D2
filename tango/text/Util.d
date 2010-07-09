@@ -289,7 +289,8 @@ size_t count(T) (T[] source, T[] match)
 
         foreach (s; patterns (source, match))
                     ++c;
-        return c;
+        assert(c > 0);
+        return c - 1;
 }
 
 /******************************************************************************
