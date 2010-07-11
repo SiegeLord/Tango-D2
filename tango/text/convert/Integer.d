@@ -468,6 +468,7 @@ uint trim(T) (T[] digits, ref bool sign, ref uint radix)
                            break;
  
                       default: 
+                            --p;
                            break;
                       } 
 
@@ -478,7 +479,7 @@ uint trim(T) (T[] digits, ref bool sign, ref uint radix)
               // explicit radix must match (optional) prefix
               if (radix != r)
                   if (radix)
-                      --p;
+                      p -= 2;
                   else
                      radix = r;
            }
