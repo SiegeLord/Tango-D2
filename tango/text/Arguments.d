@@ -123,7 +123,7 @@ version=dashdash;       // -- everything assigned to the null argument
         ---
         args.parse ("--foo --bar -abc", true);
         assert (args("foo").set);
-        assert (args("bar".set);
+        assert (args("bar").set);
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
@@ -150,7 +150,7 @@ version=dashdash;       // -- everything assigned to the null argument
         auto args = new Args ("/", "-", ':');
         args.parse ("-foo:param -bar /abc");
         assert (args("foo").set);
-        assert (args("bar".set);
+        assert (args("bar").set);
         assert (args("a").set);
         assert (args("b").set);
         assert (args("c").set);
