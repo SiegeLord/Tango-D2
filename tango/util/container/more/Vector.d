@@ -15,8 +15,7 @@
 module tango.util.container.more.Vector;
 
 private import tango.core.Exception : ArrayBoundsException;
-
-private extern(C) void memmove (void*, void*, int);
+private import tango.stdc.string : memmove;
 
 /******************************************************************************
 

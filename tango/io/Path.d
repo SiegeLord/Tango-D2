@@ -62,7 +62,7 @@ private import  tango.io.model.IFile : FileConst, FileInfo;
 
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
-private extern (C) void memmove (void* dst, void* src, uint bytes);
+private import tango.stdc.string : memmove;
 
 
 /*******************************************************************************

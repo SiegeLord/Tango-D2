@@ -211,12 +211,7 @@ private import  Float = tango.text.convert.Float;
 
 private import  Integer = tango.text.convert.Integer;
 
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-private extern (C) void memmove (void* dst, void* src, uint bytes);
+private import tango.stdc.string : memmove;
 
 
 /*******************************************************************************

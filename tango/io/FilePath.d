@@ -27,11 +27,7 @@ private import  tango.io.Path;
 
 private import  tango.io.model.IFile : FileConst, FileInfo;
 
-/*******************************************************************************
-
-*******************************************************************************/
-
-private extern (C) void memmove (void* dst, void* src, uint bytes);
+private import tango.stdc.string : memmove;
 
 /*******************************************************************************
 
