@@ -32,7 +32,7 @@ private import tango.io.stream.Iterator;
         Usage:
         ---
         auto f = new File ("my.csv");
-        auto l = new LineIterator (f);
+        auto l = new Lines (f);
         auto b = new Array (0);
         auto q = new Quotes!(char)(",", b);
         

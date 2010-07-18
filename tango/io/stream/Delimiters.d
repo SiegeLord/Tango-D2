@@ -34,7 +34,7 @@ private import tango.io.stream.Iterator;
         introduce redundant copying or the compiler would have to support
         read-only arrays.
 
-        See LineIterator, SimpleIterator, RegexIterator, QuotedIterator.
+        See Lines and Quotes.
 
 *******************************************************************************/
 
@@ -46,7 +46,7 @@ class Delimiters(T) : Iterator!(T)
         
                 Construct an uninitialized iterator. For example:
                 ---
-                auto lines = new LineIterator!(char);
+                auto lines = new Lines!(char);
 
                 void somefunc (IBuffer buffer)
                 {
@@ -59,14 +59,14 @@ class Delimiters(T) : Iterator!(T)
                 ---
                 void somefunc (IBuffer buffer)
                 {
-                        foreach (line; new LineIterator!(char) (buffer))
+                        foreach (line; new Lines!(char) (buffer))
                                  Cout (line).newline;
                 }
                 ---
                 
                 Construct a streaming iterator upon a conduit:
                 ---
-                foreach (line; new LineIterator!(char) (new File ("myfile")))
+                foreach (line; new Lines!(char) (new File ("myfile")))
                          Cout (line).newline;
                 ---
 
