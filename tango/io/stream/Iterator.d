@@ -45,7 +45,7 @@ protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream
         introduce redundant copying or the compiler would have to support
         read-only arrays (now in D2).
 
-        See Lines, Quotes.
+        See Delimiters, Lines, Patterns, Quotes
 
 *******************************************************************************/
 

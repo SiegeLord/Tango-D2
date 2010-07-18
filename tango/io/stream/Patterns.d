@@ -24,11 +24,6 @@ private import tango.io.stream.Iterator;
         content, where the slice is transient. If you need to retain the
         exposed content, then you should .dup it appropriately. 
 
-        These iterators are based upon the IBuffer construct, and can
-        thus be used in conjunction with other Iterators and/or Reader
-        instances upon a common buffer ~ each will stay in lockstep via
-        state maintained within the IBuffer.
-
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
         possible a user could mutate the content through a get() slice.
@@ -36,8 +31,7 @@ private import tango.io.stream.Iterator;
         introduce redundant copying or the compiler would have to support 
         read-only arrays.
 
-        See Lines, Quotes.
-
+        See Delimiters, Lines, Quotes
 
 *******************************************************************************/
 
@@ -52,18 +46,18 @@ class Patterns : Iterator!(char)
                 ---
                 auto lines = new Lines!(char);
 
-                void somefunc (IBuffer buffer)
+                void somefunc (InputStream stream)
                 {
-                        foreach (line; lines.set(buffer))
+                        foreach (line; lines.set(stream))
                                  Cout (line).newline;
                 }
                 ---
 
-                Construct a streaming iterator upon a buffer:
+                Construct a streaming iterator upon a stream:
                 ---
-                void somefunc (IBuffer buffer)
+                void somefunc (InputStream stream)
                 {
-                        foreach (line; new Lines!(char) (buffer))
+                        foreach (line; new Lines!(char) (stream))
                                  Cout (line).newline;
                 }
                 ---
