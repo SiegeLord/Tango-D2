@@ -1045,7 +1045,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value = print();
+             char[] value = toString();
              assert (value == `{"edgar":"friendly","count":11.5,"array":[1, 2]}`, value);
              }
         }
@@ -1062,7 +1062,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value = print ("\t");
+             char[] value = toString ("\t");
              assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
              }
         }
@@ -1079,7 +1079,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             dchar[] value = print("     ");
+             dchar[] value = toString ("     ");
              assert (value == "{\n     \"edgar\":\"friendly\",\n     \"count\":11.5,\n     \"array\":[\n          1, \n          2\n     ]\n}");
              }
         }
