@@ -697,6 +697,7 @@ else
                                      result ~= formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len);
                                   break;
 
+                             // millis
                             case 'f':
                                 len = parseRepeat (format, index, c);
                                 auto num = Integer.itoa (tmp, time.millis);
@@ -714,6 +715,7 @@ else
                                     result ~= num[0..len];
                                 break;
 
+                             // millis, no trailing zeros
                             case 'F':
                                 len = parseRepeat (format, index, c);
                                 auto num = Integer.itoa (tmp, time.millis);
