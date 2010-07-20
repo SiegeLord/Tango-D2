@@ -369,6 +369,30 @@ class File : Device, Device.Seek, Device.Truncate
                 file.write (content);
         }
 
+	/***********************************************************************
+
+		Instructs the OS to flush it's internal buffers to the disk
+                device.
+                NOTE: due to OS and hardware design, data flushed cannot be
+                guaranteed to be actually on disk-platters. Actual durability
+                of data depends on write-caches, barriers, presence of 
+                battery-backup, filesystem and OS-support.
+
+	***************************************************************/
+
+	void sync ()
+	{
+                version (Win32) {
+                        if (!FlushFileBuffers(io.handle))
+                                error;
+                } else version (Posix) {
+                        if (fsync(handle))
+                                error;
+                } else {
+                        static assert(false, "Needs implementation");
+                }
+	}        
+            
 
         /***********************************************************************
 

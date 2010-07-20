@@ -137,16 +137,12 @@ else
 //
 // File Synchronization (FSC)
 //
-/*
 int fsync(int);
-*/
 
 //
 // Synchronized I/O (SIO)
 //
-/*
 int fdatasync(int);
-*/
 
 //
 // XOpen (XSI)
