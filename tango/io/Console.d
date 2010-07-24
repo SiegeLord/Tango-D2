@@ -651,20 +651,11 @@ static this ()
 
 static ~this()
 {
-        // workaround LDC bug for now ...
-        version (LDC)
-                {
-                Cout.flush;
-                Cerr.flush;
-                }
-        else
-           {
-           synchronized (Cout)
-                         Cout.flush;
+   synchronized (Cout)
+        Cout.flush;
 
-           synchronized (Cerr)
-                         Cerr.flush;
-           }
+   synchronized (Cerr)
+        Cerr.flush;
 }
 
 
@@ -676,6 +667,6 @@ debug (Console)
 {
         void main()
         {
-                Cout ("hello world").newline;
+            Cout ("hello world").newline;
         }
 }
