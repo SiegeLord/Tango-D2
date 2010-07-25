@@ -248,7 +248,6 @@ class MacOSX : FileFilter
                 register ("osx", "dmd", &dmd);
                 register ("osx", "ldc", &ldc);
                 register ("osx", "gdc", &gdc);
-                include ("tango/core/rt/util/darwin");
         }
 
         private char[] compile (FilePath file, char[] cmd)
@@ -589,9 +588,6 @@ class FileFilter : FileScan
                 if (args.core is false)
                     exclude ("tango/core");
 
-                exclude ("tango/net/cluster");
-                exclude ("tango/io/protocol");
-
                 exclude ("tango/sys/win32");
                 exclude ("tango/sys/darwin");
                 exclude ("tango/sys/freebsd");
@@ -602,9 +598,14 @@ class FileFilter : FileScan
                 exclude ("tango/core/rt/compiler/dmd");
                 exclude ("tango/core/rt/compiler/gdc");
                 exclude ("tango/core/rt/compiler/ldc");
-                exclude ("tango/core/vendor");
+                
+                exclude ("tango/core/vendor/ldc");
+                exclude ("tango/core/vendor/gdc");
+                exclude ("tango/core/vendor/std");
+                
                 include ("tango/core/rt/compiler/"~args.target);
-                include ("tango/core/vendor/"~args.target);
+                //dmd has the std module name hardcoded :(
+                include ("tango/core/vendor/"~ ((args.target == "dmd") ? "std" : args.target));
         }
         
         /***********************************************************************
@@ -638,6 +639,8 @@ class FileFilter : FileScan
 
         final void exclude (char[] path)
         {
+                assert(FilePath(path).exists, "FileFilter.exclude: Path does not exist: " ~ path);
+                assert(path[$-1] != '/', "FileFilter.exclude: Inconsistent path syntax, no trailing '/' allowed: " ~ path);
                 excluded[path] = true;
         }
 
@@ -647,6 +650,7 @@ class FileFilter : FileScan
 
         final void include (char[] path)
         {
+                assert(path in excluded, "FileFilter.include: Path need to be excluded first: " ~ path);
                 excluded.remove (path);
         }
 
