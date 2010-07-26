@@ -8,6 +8,9 @@
 
 require "optparse"
 require "stringio"
+require "test/unit/assertions"
+
+include Test::Unit::Assertions
 
 COMPILERS = %w[dmd gdc ldc]
 RUNTIMES = COMPILERS
@@ -114,10 +117,7 @@ class FileFilter
 		@suffix = ""
 		@excluded = {}		
 		
-		excluded("tango/core") unless @args.core
-
-		exclude("tango/net/cluster");
-		exclude("tango/io/protocol");
+		excluded("tango/core") unless @args.core;
 
 		exclude("tango/sys/win32");
 		exclude("tango/sys/darwin");
@@ -129,10 +129,13 @@ class FileFilter
 		exclude("tango/core/rt/compiler/dmd");
 		exclude("tango/core/rt/compiler/gdc");
 		exclude("tango/core/rt/compiler/ldc");
-		exclude("tango/core/vendor")
+		
+		exclude("tango/core/vendor/ldc")
+		exclude("tango/core/vendor/gdc")
+		exclude("tango/core/vendor/std")
 		
 		include("tango/core/rt/compiler/" + args.target)
-		include("tango/core/vendor/" + args.target)
+		include("tango/core/vendor/" + ((args.target == "dmd") ? "std" : args.target))
 	end
 	
 	def self.register (platform, compiler, symbol, object)
@@ -167,10 +170,13 @@ class FileFilter
 	end	
 	
 	def exclude (path)
+		assert File.exists?(path), "FileFilter.exclude: Path does not exists: #{path}"
+		assert path[-1 .. -1] != '/', "FileFilter.exclude: Inconsistent path sytax, no trailing \"/\" allowed: #{path}"
 		@excluded[path] = true
 	end
 	
 	def include (path)
+		assert @excluded.key?(path), "FileFilter.include: Path need to be excluded first: #{path}"
 		@excluded.delete(path)
 	end
 	
