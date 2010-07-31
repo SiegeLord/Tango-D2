@@ -651,10 +651,10 @@ static this ()
 
 static ~this()
 {
-   synchronized (Cout)
+   synchronized (Cout.stream)
         Cout.flush;
 
-   synchronized (Cerr)
+   synchronized (Cerr.stream)
         Cerr.flush;
 }
 
