@@ -344,7 +344,7 @@ size_t index(T) (T[] source, T[] match, size_t start=0)
 
 ******************************************************************************/
 
-size_t rindex(T, U=size_t) (T[] source, T[] match, U start=size_t.max)
+size_t rindex(T, U=size_t) (T[] source, T[] match, U start=U.max)
 {return rindex!(T)(source, match, start);}
 
 size_t rindex(T) (T[] source, T[] match, size_t start=size_t.max)
@@ -382,7 +382,7 @@ size_t locate(T) (T[] source, T match, size_t start=0)
 
 ******************************************************************************/
 
-size_t locatePrior(T, U=size_t) (T[] source, T match, U start=size_t.max)
+size_t locatePrior(T, U=size_t) (T[] source, T match, U start=U.max)
 {return locatePrior!(T)(source, match, start);}
 
 size_t locatePrior(T) (T[] source, T match, size_t start=size_t.max)
@@ -439,7 +439,7 @@ size_t locatePattern(T) (T[] source, T[] match, size_t start=0)
 
 ******************************************************************************/
 
-size_t locatePatternPrior(T, U=size_t) (T[] source, T[] match, U start=size_t.max)
+size_t locatePatternPrior(T, U=size_t) (T[] source, T[] match, U start=U.max)
 {return locatePatternPrior!(T)(source, match, start);}
 
 size_t locatePatternPrior(T) (T[] source, T[] match, size_t start=size_t.max)
