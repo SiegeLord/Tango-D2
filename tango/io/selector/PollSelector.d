@@ -333,7 +333,7 @@ version (Posix)
          * Return the number of keys resulting from the registration of a conduit
          * to the selector.
          */
-        public abstract size_t count()
+        public size_t count()
         {
             return _keys.length;
         }
