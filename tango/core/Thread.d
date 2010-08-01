@@ -1,15 +1,32 @@
 /**
  * The thread module provides support for thread creation and management.
  *
- * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
+ * If AtomicSuspendCount is used for speed reasons all signals are sent together.
+ * When debugging gdb funnels all signals through one single handler, and if
+ * the signals arrive quickly enough they will be coalesced in a single signal,
+ * (discarding the second) thus it is possible to loose signals, which blocks
+ * the program. Thus when debugging it is better to use the slower SuspendOneAtTime
+ * version.
+ *
+ * Copyright: Copyright (C) 2005-2006 Sean Kelly, Fawzi.  All rights reserved.
  * License:   BSD style: $(LICENSE)
- * Authors:   Sean Kelly
+ * Authors:   Sean Kelly, Fawzi Mohamed
  */
 module tango.core.Thread;
+
+import tango.core.sync.Atomic;
+debug(Thread)
+    import tango.stdc.stdio : printf;
 
 
 // this should be true for most architectures
 version = StackGrowsDown;
+version(darwin){
+    version=AtomicSuspendCount;
+}
+version(linux){
+    version=AtomicSuspendCount;
+}
 
 public
 {
@@ -262,9 +279,8 @@ else version( Posix )
         //
         // used to track the number of suspended threads
         //
-        version(darwin){
-            semaphore_t suspendCount;
-            task_t rootMatchTask;
+        version(AtomicSuspendCount){
+            int suspendCount;
         } else {
             sem_t   suspendCount;
         }
@@ -363,12 +379,14 @@ else version( Posix )
                 status = sigdelset( &sigres, SIGUSR2 );
                 assert( status == 0 );
 
-                version (darwin){
-                    status=semaphore_signal( suspendCount );
+                version (AtomicSuspendCount){
+                    auto oldV=flagAdd(suspendCount,1);
                 } else {
                     status = sem_post( &suspendCount );
+                    assert( status == 0 );
                 }
-                assert( status == 0 );
+
+                // here one could do some work (like scan the current stack in this thread...)
 
                 sigsuspend( &sigres );
 
@@ -407,17 +425,31 @@ else version( Posix )
         }
         body
         {
-            version(Posix){
-                int status;
-                version (darwin){
-                    status=semaphore_signal( suspendCount );
-                } else {
-                    status = sem_post( &suspendCount );
-                }
-                assert( status == 0 );
+            int status;
+            version (AtomicSuspendCount){
+                auto oldV=flagAdd(suspendCount,-1);
+            } else {
+                status = sem_post( &suspendCount );
             }
+            assert( status == 0 );
         }
     }
+    
+    alias void function(int) sHandler;
+    sHandler _thread_abortHandler=null;
+    
+    extern (C) void thread_abortHandler( int sig ){
+        if (_thread_abortHandler!is null){
+            _thread_abortHandler(sig);
+        } else {
+            exit(-1);
+        }
+    }
+    
+    extern (C) void setthread_abortHandler(sHandler f){
+        _thread_abortHandler=f;
+    }
+
 }
 else
 {
@@ -1057,16 +1089,24 @@ class Thread
      */
     static Thread[] getAll()
     {
-        synchronized( slock )
-        {
-            size_t   pos = 0;
-            Thread[] buf = new Thread[sm_tlen];
-
-            foreach( Thread t; Thread )
+        Thread[] buf;
+        while(1){
+            if (buf) delete buf;
+            buf = new Thread[sm_tlen];
+            synchronized( slock )
             {
-                buf[pos++] = t;
+                size_t   pos = 0;
+                if (buf.length<sm_tlen) {
+                    continue;
+                } else {
+                    buf.length=sm_tlen;
+                }
+                foreach( Thread t; Thread )
+                {
+                    buf[pos++] = t;
+                }
+                return buf;
             }
-            return buf;
         }
     }
 
@@ -1304,7 +1344,7 @@ private:
     {
         HANDLE          m_hndl;
     }
-    ThreadAddr          m_addr;
+    public ThreadAddr          m_addr;
     Call                m_call;
     char[]              m_name;
     union
@@ -1318,7 +1358,7 @@ private:
         bool            m_isRunning;
     }
     bool                m_isDaemon;
-    Object              m_unhandled;
+    public Object              m_unhandled;
 
 
 private:
@@ -1385,7 +1425,7 @@ private:
     }
 
 
-    static struct Context
+    public static struct Context
     {
         void*           bstack,
                         tstack;
@@ -1622,11 +1662,13 @@ extern (C) void thread_init()
         int         status;
         sigaction_t sigusr1 = void;
         sigaction_t sigusr2 = void;
+        sigaction_t sigabrt = void;
 
         // This is a quick way to zero-initialize the structs without using
         // memset or creating a link dependency on their static initializer.
         (cast(byte*) &sigusr1)[0 .. sigaction_t.sizeof] = 0;
         (cast(byte*) &sigusr2)[0 .. sigaction_t.sizeof] = 0;
+        (cast(byte*) &sigabrt)[0 .. sigaction_t.sizeof] = 0;
 
         // NOTE: SA_RESTART indicates that system calls should restart if they
         //       are interrupted by a signal, but this is not available on all
@@ -1640,6 +1682,8 @@ extern (C) void thread_init()
         //       sa_mask to indicate this.
         status = sigfillset( &sigusr1.sa_mask );
         assert( status == 0 );
+        status = sigdelset( &sigusr1.sa_mask , SIGABRT);
+        assert( status == 0 );
 
         // NOTE: Since SIGUSR2 should only be issued for threads within the
         //       suspend handler, we don't want this signal to trigger a
@@ -1650,6 +1694,8 @@ extern (C) void thread_init()
         //       sa_mask to indicate this.
         status = sigfillset( &sigusr2.sa_mask );
         assert( status == 0 );
+        status = sigdelset( &sigusr2.sa_mask , SIGABRT);
+        assert( status == 0 );
 
         status = sigaction( SIGUSR1, &sigusr1, null );
         assert( status == 0 );
@@ -1657,12 +1703,24 @@ extern (C) void thread_init()
         status = sigaction( SIGUSR2, &sigusr2, null );
         assert( status == 0 );
 
-        version(darwin){
-            rootMatchTask=mach_task_self();
-            status=semaphore_create(rootMatchTask,
-                                   &suspendCount,
-                                   MACH_SYNC_POLICY.SYNC_POLICY_FIFO,
-                                   0);
+        // NOTE: SA_RESTART indicates that system calls should restart if they
+        //       are interrupted by a signal, but this is not available on all
+        //       Posix systems, even those that support multithreading.
+        static if( is( typeof( SA_RESTART ) ) )
+            sigabrt.sa_flags = SA_RESTART;
+        else
+            sigabrt.sa_flags   = 0;
+        sigabrt.sa_handler = &thread_abortHandler;
+        // NOTE: We want to ignore all signals while in this handler, so fill
+        //       sa_mask to indicate this.
+        status = sigfillset( &sigabrt.sa_mask );
+        assert( status == 0 );
+        
+        status = sigaction( SIGABRT, &sigabrt, null );
+        assert( status == 0 );
+
+        version(AtomicSuspendCount){
+            suspendCount=0;
         } else {
             status = sem_init( &suspendCount, 0, 0 );
         }
@@ -1805,6 +1863,7 @@ private uint suspendDepth = 0;
  */
 extern (C) void thread_suspendAll()
 {
+    int suspendedCount=0;
     /**
      * Suspend the specified thread and load stack and register information for
      * use by thread_scanAll.  If the supplied thread is the calling thread,
@@ -1863,19 +1922,25 @@ extern (C) void thread_suspendAll()
                     }
                     throw new ThreadException( "Unable to suspend thread" );
                 }
-                // NOTE: It's really not ideal to wait for each thread to signal
-                //       individually -- rather, it would be better to suspend
-                //       them all and wait once at the end.  However, semaphores
-                //       don't really work this way, and the obvious alternative
-                //       (looping on an atomic suspend count) requires either
-                //       the atomic module (which only works on x86) or other
-                //       specialized functionality.  It would also be possible
-                //       to simply loop on sem_wait at the end, but I'm not
-                //       convinced that this would be much faster than the
-                //       current approach.
-                version (darwin){
-                    auto status=semaphore_wait(suspendCount);
-                    assert(status==0);
+                version (AtomicSuspendCount){
+                    ++suspendedCount;
+                    version(AtomicSuspendCount){
+                        version(SuspendOneAtTime){ // when debugging suspending all threads at once might give "lost" signals
+                            int icycle=0;
+                            suspendLoop: while (flagGet(suspendCount)!=suspendedCount){
+                                for (size_t i=1000;i!=0;--i){
+                                    if (flagGet(suspendCount)==suspendedCount) break suspendLoop;
+                                    if (++icycle==100_000){
+                                        debug(Thread)
+                                            printf("waited %d cycles for thread suspension,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,suspendedCount);
+                                    }
+                                    Thread.yield();
+                                }
+                                Thread.sleep(0.0001);
+                            }
+                        }
+                    }
+                    
                 } else {
                     sem_wait( &suspendCount );
                     // shouldn't the return be checked and maybe a loop added for further interrupts
@@ -1905,8 +1970,9 @@ extern (C) void thread_suspendAll()
     //       expectation that the foreach loop will never be entered.
     if( !multiThreadedFlag && Thread.sm_tbeg )
     {
-        if( ++suspendDepth == 1 )
+        if( ++suspendDepth == 1 ) {
             suspend( Thread.getThis() );
+        }
         return;
     }
     _d_monitorenter(Thread.slock);
@@ -1922,16 +1988,28 @@ extern (C) void thread_suspendAll()
         //       abort, and Bad Things to occur.
         for( Thread t = Thread.sm_tbeg; t; t = t.next )
         {
-            if( t.isRunning )
+            if( t.isRunning ){
                 suspend( t );
-            else
+            } else
                 Thread.remove( t );
         }
 
         version( Posix )
         {
-            // wait on semaphore -- see note in suspend for
-            // why this is currently not implemented
+            version(AtomicSuspendCount){
+                int icycle=0;
+                suspendLoop2: while (flagGet(suspendCount)!=suspendedCount){
+                    for (size_t i=1000;i!=0;--i){
+                        if (flagGet(suspendCount)==suspendedCount) break suspendLoop2;
+                        if (++icycle==1000_000){
+                            debug(Thread)
+                                printf("waited %d cycles for thread suspension,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,suspendedCount);
+                        }
+                        Thread.yield();
+                    }
+                    Thread.sleep(0.0001);
+                }
+            }
         }
     }
 }
@@ -1955,6 +2033,7 @@ in
 }
 body
 {
+    version(AtomicSuspendCount) version(SuspendOneAtTime) auto suspendedCount=flagGet(suspendCount);
     /**
      * Resume the specified thread and unload stack and register information.
      * If the supplied thread is the calling thread, stack and register
@@ -2000,9 +2079,22 @@ body
                     }
                     throw new ThreadException( "Unable to resume thread" );
                 }
-                version (darwin){
-                    auto status=semaphore_wait(suspendCount);
-                    assert(status==0);
+                version (AtomicSuspendCount){
+                    version(SuspendOneAtTime){ // when debugging suspending all threads at once might give "lost" signals
+                        --suspendedCount;
+                        int icycle=0;
+                        recoverLoop: while(flagGet(suspendCount)>suspendedCount){
+                            for (size_t i=1000;i!=0;--i){
+                                if (flagGet(suspendCount)==suspendedCount) break recoverLoop;
+                                if (++icycle==100_000){
+                                    debug(Thread)
+                                        printf("waited %d cycles for thread recover,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,suspendedCount);
+                                }
+                                Thread.yield();
+                            }
+                            Thread.sleep(0.0001);
+                        }
+                    }
                 } else {
                     sem_wait( &suspendCount );
                     // shouldn't the return be checked and maybe a loop added for further interrupts
@@ -2033,6 +2125,20 @@ body
             for( Thread t = Thread.sm_tbeg; t; t = t.next )
             {
                 resume( t );
+            }
+            version(AtomicSuspendCount){
+                int icycle=0;
+                recoverLoop2: while(flagGet(suspendCount)>0){
+                    for (size_t i=1000;i!=0;--i){
+                        Thread.yield();
+                        if (flagGet(suspendCount)==0) break recoverLoop2;
+                        if (++icycle==100_000){
+                            debug(Thread)
+                                printf("waited %d cycles for thread recovery,  suspendCount=%d, should be %d\nAtomic ops do not work?\nContinuing wait...\n",icycle,suspendCount,0);
+                        }
+                    }
+                    Thread.sleep(0.0001);
+                }
             }
         }
     }
@@ -2580,9 +2686,13 @@ private
                 sub RSP, 4;
                 stmxcsr [RSP];
                 sub RSP, 4;
-                fnstcw [RSP];
-                fnclex;
-                fwait;
+                //version(SynchroFloatExcept){
+                    fstcw [RSP];
+                    fwait;
+                //} else {
+                //    fnstcw [RSP];
+                //    fnclex;
+                //}
 
                 // store oldp again with more accurate address
                 mov [RDI], RSP;
@@ -2623,6 +2733,17 @@ private
 // Fiber
 ////////////////////////////////////////////////////////////////////////////////
 
+private char[] ptrToStr(size_t addr){
+    char[] digits="0123456789ABCDEF";
+    enum{ nDigits=size_t.sizeof*2 }
+    char[] res=new char[](nDigits);
+    size_t addrAtt=addr;
+    for (int i=nDigits;i!=0;--i){
+        res[i-1]=digits[addrAtt&0xF];
+        addrAtt>>=4;
+    }
+    return res;
+}
 
 /**
  * This class provides a cooperative concurrency mechanism integrated with the
@@ -2733,6 +2854,20 @@ class Fiber
     // Initialization
     ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Initializes an empty fiber object
+     *
+     * (useful to reset it)
+     */
+    this(size_t sz){
+        m_dg    = null;
+        m_fn    = null;
+        m_call  = Call.NO;
+        m_state = State.TERM;
+        m_unhandled = null;
+        
+        allocStack( sz );
+    }
 
     /**
      * Initializes a fiber object which is associated with a static
@@ -2969,6 +3104,12 @@ class Fiber
     }
     body
     {
+        if (m_state != State.TERM){
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this)~" in unexpected state "~ptrToStr(m_state),__FILE__,__LINE__);
+        }
+        if (m_ctxt.tstack != m_ctxt.bstack){
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this)~" bstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.bstack)~" != tstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.tstack),__FILE__,__LINE__);
+        }
         m_dg    = null;
         m_fn    = null;
         m_call  = Call.NO;
@@ -3006,6 +3147,10 @@ class Fiber
     final State state()
     {
         return m_state;
+    }
+    
+    size_t stackSize(){
+        return m_size;
     }
 
 
@@ -3422,7 +3567,7 @@ private:
             push( 0x00000000_00000000 );                            // R13
             push( 0x00000000_00000000 );                            // R14
             push( 0x00000000_00000000 );                            // R15
-            push( 0x00001f80_01df0000 );                            // MXCSR (32 bits), x87 control (16 bits), (unused)
+            push( 0x00001f80_0000037f );                            // MXCSR (32 bits), unused (16 bits) , x87 control (16 bits)
         }
         else version( AsmPPC_Posix )
         {
@@ -3466,8 +3611,8 @@ private:
     }
 
 
-    Thread.Context* m_ctxt;
-    size_t          m_size;
+    public Thread.Context* m_ctxt;
+    public size_t          m_size;
     void*           m_pmem;
 
     static if( is( ucontext_t ) )

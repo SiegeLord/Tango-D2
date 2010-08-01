@@ -185,9 +185,9 @@ version( linux )
 
     extern (D) size_t CMSG_FIRSTHDR( msghdr* mhdr )
     {
-        return cast(size_t)( mhdr.msg_controllen >= cmsghdr.sizeof
-                             ? cast(cmsghdr*) mhdr.msg_control
-                             : cast(cmsghdr*) 0 );
+        return ( mhdr.msg_controllen >= cmsghdr.sizeof
+                             ? cast(size_t) mhdr.msg_control
+                             : cast(size_t) 0 );
     }
 
     struct linger

@@ -225,6 +225,10 @@ else version( solaris )
     const SIGJVM2   = 40;   /* reserved signal for Java Virtual Machine */
 +/
 }
+else
+{
+   static assert(0, "Platform not supported...");
+}
 
 struct sigaction_t
 {
@@ -492,7 +496,11 @@ else version( freebsd )
     {
         uint[4] __bits;
     }
-
+   
+    const SIG_BLOCK = 2;
+    const SIG_UNBLOCK = 1;
+    const SIG_SETMASK = 3;
+   
     struct siginfo_t
     {
         int si_signo;
@@ -1164,6 +1172,14 @@ else version ( solaris )
         void function(sigval)   sigev_notify_function;
         pthread_attr_t*         sigev_notify_attributes;
         private int             __sigev_pad2;
+    }
+} else version (darwin){
+    struct sigevent {
+     int sigev_notify;
+     int sigev_signo;
+     sigval sigev_value;
+     void function(sigval) sigev_notify_function;
+     pthread_attr_t *sigev_notify_attributes;
     }
 }
 

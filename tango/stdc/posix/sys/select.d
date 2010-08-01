@@ -127,6 +127,19 @@ else version( darwin )
     {
         const uint __DARWIN_NBBY = 8;                               /* bits in a byte */
         const uint __DARWIN_NFDBITS = (int.sizeof * __DARWIN_NBBY); /* bits per mask */
+
+        alias uint __fd_mask;
+        const __NFDBITS = 8 * __fd_mask.sizeof;
+
+        extern (D) int __FDELT( int d )
+        {
+            return d / __NFDBITS;
+        }
+
+        extern (D) __fd_mask __FDMASK( int d )
+        {
+            return cast(__fd_mask) 1 << ( d % __NFDBITS );
+        }
     }
 
     const FD_SETSIZE = 1024;
@@ -135,6 +148,27 @@ else version( darwin )
     {
         int[(((FD_SETSIZE) + ((__DARWIN_NFDBITS) - 1)) / (__DARWIN_NFDBITS))] fds_bits;
     }
+    
+    extern (D) void FD_CLR( int fd, fd_set* fdset )
+    {
+        fdset.fds_bits[__FDELT( fd )] &= ~__FDMASK( fd );
+    }
+
+    extern (D) int  FD_ISSET( int fd, fd_set* fdset )
+    {
+        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+    }
+
+    extern (D) void FD_SET( int fd, fd_set* fdset )
+    {
+        fdset.fds_bits[__FDELT( fd )] |= __FDMASK( fd );
+    }
+
+    extern (D) void FD_ZERO( fd_set* fdset )
+    {
+        fdset.fds_bits[0 .. $] = 0;
+    }
+    
 }
 else version( freebsd )
 {
@@ -142,11 +176,43 @@ else version( freebsd )
 	{
 		const uint FD_SETSIZE = 1024;
 		const uint _NFDBITS = c_ulong.sizeof * 8;
+
+        alias c_long __fd_mask;
+        const _NFDBITS = 8 * __fd_mask.sizeof;
+
+        extern (D) int __FDELT( int d )
+        {
+            return d / _NFDBITS;
+        }
+
+        extern (D) __fd_mask __FDMASK( int d )
+        {
+            return cast(__fd_mask) 1 << ( d % _NFDBITS );
+        }
 	}
 	struct fd_set
 	{
 		c_ulong[((FD_SETSIZE + (_NFDBITS - 1)) / _NFDBITS)] fds_bits;
 	}
+    extern (D) void FD_CLR( int fd, fd_set* fdset )
+    {
+        fdset.fds_bits[__FDELT( fd )] &= ~__FDMASK( fd );
+    }
+
+    extern (D) int  FD_ISSET( int fd, fd_set* fdset )
+    {
+        return fdset.fds_bits[__FDELT( fd )] & __FDMASK( fd );
+    }
+
+    extern (D) void FD_SET( int fd, fd_set* fdset )
+    {
+        fdset.fds_bits[__FDELT( fd )] |= __FDMASK( fd );
+    }
+
+    extern (D) void FD_ZERO( fd_set* fdset )
+    {
+        fdset.fds_bits[0 .. $] = 0;
+    }
 }
 else version( solaris )
 {
@@ -161,7 +227,7 @@ else version( solaris )
             return d / FD_NFDBITS;
         }
 
-        extern (D) int __FDMASK( int d )
+        extern (D) __fd_mask __FDMASK( int d )
         {
             return cast(__fd_mask) 1 << ( d % FD_NFDBITS );
         }
