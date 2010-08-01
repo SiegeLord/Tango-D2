@@ -9,7 +9,7 @@
 module tango.core.ThreadPool;
 
 private import  tango.core.Thread,
-                tango.core.sync.Atomic;
+                tango.core.Atomic;
 
 private import  tango.core.sync.Mutex,
                 tango.core.sync.Condition;
