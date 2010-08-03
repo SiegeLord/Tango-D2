@@ -24,7 +24,7 @@
   - http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html
   - "What every programmer should know about memory",
      Ulrich Depper, Red Hat, Inc., (2007). 
-   
+
 AUTHORS:  Don Clugston,
           Tomas Lindquist Olsen &lt;tomas@famolsen.dk&gt;
 COPYRIGHT:  Public Domain
@@ -82,7 +82,7 @@ public:
     /// Returns vendor string, for display purposes only.
     /// Do NOT use this to determine features!
     /// Note that some CPUs have programmable vendorIDs.
-    char[] vendor()     {return vendorID;}
+    char[] vendor()     {return cast(char[]) vendorID;}
     /// Returns processor string, for display purposes only
     char[] processor()  {return processorName;}    
     
@@ -107,8 +107,6 @@ public:
     bool sse42()        {return (miscfeatures&SSE42_BIT)!=0;}
     /// Is SSE4a supported?
     bool sse4a()        {return (amdmiscfeatures&SSE4A_BIT)!=0;}
-    /// Is SSE5 supported?
-    bool sse5()         {return (amdmiscfeatures&SSE5_BIT)!=0;}
     /// Is AMD 3DNOW supported?
     bool amd3dnow()     {return (amdfeatures&AMD_3DNOW_BIT)!=0;}
     /// Is AMD 3DNOW Ext supported?
@@ -125,6 +123,15 @@ public:
     bool hasCmpxchg8b()     {return (features&CMPXCHG8B_BIT)!=0;}
     /// Is cmpxchg8b supported?
     bool hasCmpxchg16b()    {return (miscfeatures&CMPXCHG16B_BIT)!=0;}
+    /// Is SYSENTER/SYSEXIT supported?
+    bool hasSysEnterSysExit()     {
+        // The SYSENTER/SYSEXIT features were buggy on Pentium Pro and early PentiumII.
+        // (REF: www.geoffchappell.com).
+        if (probablyIntel && (family < 6 || (family==6 && (model< 3 || (model==3 && stepping<3)))))
+            return false;
+        return (features & SYSENTERSYSEXIT_BIT)!=0;
+    }
+    
     /// Is 3DNow prefetch supported?
     bool has3dnowPrefetch()
         {return (amdmiscfeatures&AMD_3DNOW_PREFETCH_BIT)!=0;}
@@ -156,7 +163,7 @@ public:
     /// (1) Intel P6 (PentiumPro, PII, PIII, PM, Core, Core2).
     /// (2) AMD Athlon (K7, K8, K10).
     /// (3) Intel NetBurst (Pentium 4, Pentium D).
-    /// (4) In-order Pentium (Pentium1, PMMX)
+    /// (4) In-order Pentium (Pentium1, PMMX, Atom)
     /// Other early CPUs (Nx586, AMD K5, K6, Centaur C3, Transmeta,
     ///   Cyrix, Rise) were mostly in-order.
     /// Some new processors do not fit into the existing categories:
@@ -165,7 +172,7 @@ public:
     ///
     /// Within each dynasty, the optimisation techniques are largely
     /// identical (eg, use instruction pairing for group 4). Major
-    /// instruction set improvements occur within each group.
+    /// instruction set improvements occur within each dynasty.
     
     /// Does this CPU perform better on AMD K7 code than PentiumPro..Core2 code?
     bool preferAthlon() { return probablyAMD && family >=6; }
@@ -182,9 +189,9 @@ public:
 private:
     bool probablyIntel; // true = _probably_ an Intel processor, might be faking
     bool probablyAMD; // true = _probably_ an AMD processor
-    char [12] vendorID;
-    char [] processorName;
-    char [48] processorNameBuffer;
+    char[12] vendorID;
+    char[] processorName;
+    char[48] processorNameBuffer;
     uint features = 0;     // mmx, sse, sse2, hyperthreading, etc
     uint miscfeatures = 0; // sse3, etc.
     uint amdfeatures = 0;  // 3DNow!, mmxext, etc
@@ -201,6 +208,7 @@ private:
         TIMESTAMP_BIT = 1<<4, // rdtsc
         MDSR_BIT = 1<<5,      // RDMSR/WRMSR
         CMPXCHG8B_BIT = 1<<8,
+        SYSENTERSYSEXIT_BIT = 1<<11,
         CMOV_BIT = 1<<15,
         MMX_BIT = 1<<23,
         FXSR_BIT = 1<<24,
@@ -263,8 +271,7 @@ version(X86_64) {
         LAHFSAHF_BIT = 1,
         LZCNT_BIT = 1<<5,
         SSE4A_BIT = 1<<6,       
-        AMD_3DNOW_PREFETCH_BIT = 1<<8,
-        SSE5_BIT = 1<<11
+        AMD_3DNOW_PREFETCH_BIT = 1<<8
     }
 
 version(GNU){
@@ -274,8 +281,7 @@ version(GNU){
 }
 
 version(Really_D_InlineAsm_X86) {
-// Note that this code will also work for Itanium, after changing the
-// register names in the asm code.
+// Note that this code will also work for Itanium in x86 mode.
 
 uint max_cpuid, max_extended_cpuid;
 
@@ -289,29 +295,37 @@ void getcacheinfoCPUID2()
         // Values from http://www.sandpile.org/ia32/cpuid.htm.
         // Includes Itanium and non-Intel CPUs.
         //
-        ubyte [] ids = [
-            0x0A, 0x0C, 0x2C, 0x60, 0x0E, 0x66, 0x67, 0x68,
+        static ubyte[63] ids = [
+            0x0A, 0x0C, 0x0D, 0x2C, 0x60, 0x0E, 0x66, 0x67, 0x68,
             // level 2 cache
             0x41, 0x42, 0x43, 0x44, 0x45, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7F,
             0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x49, 0x4E,
             0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x48, 0x80, 0x81,
             // level 3 cache
-            0x22, 0x23, 0x25, 0x29, 0x46, 0x47, 0x4A, 0x4B, 0x4C, 0x4D
+            0x22, 0x23, 0x25, 0x29, 0x46, 0x47, 0x4A, 0x4B, 0x4C, 0x4D,
+            
+            0xD0, 0xD1, 0xD2, 0xD6, 0xD7, 0xD8, 0xDC, 0xDD, 0xDE,
+            0xE2, 0xE3, 0xE4, 0xEA, 0xEB, 0xEC
         ];
-        uint [] sizes = [
-            8, 16, 32, 16, 24, 8, 16, 32,
+        static uint[63] sizes = [
+            8, 16, 16, 64, 16, 24, 8, 16, 32,
             128, 256, 512, 1024, 2048, 1024, 128, 256, 512, 1024, 2048, 512,
             256, 512, 1024, 2048, 512, 1024, 4096, 6*1024,
             128, 192, 128, 256, 384, 512, 3072, 512, 128,           
-            512, 1024, 2048, 4096, 4096, 8192, 6*1024, 8192, 12*1024, 16*1024
+            512, 1024, 2048, 4096, 4096, 8192, 6*1024, 8192, 12*1024, 16*1024,
+            
+            512, 1024, 2048, 1024, 2048, 4096, 1024+512, 3*1024, 6*1024,
+            2*1024, 4*1024, 8*1024, 12*1024, 28*1024, 24*1024
         ];
     // CPUBUG: Pentium M reports 0x2C but tests show it is only 4-way associative
-        ubyte [] ways = [
-            2, 4, 8, 8, 6, 4, 4, 4,
+        static ubyte[63] ways = [
+            2, 4, 4, 8, 8, 6, 4, 4, 4,
             4, 4, 4, 4, 4, 4, 8, 8, 8, 8, 8, 2,
             8, 8, 8, 8, 4, 8, 16, 24,
             4, 6, 2, 4, 6, 4, 12, 8, 8,
-            4, 8, 8, 8, 4, 8, 12, 16, 12, 16
+            4, 8, 8, 8, 4, 8, 12, 16, 12, 16,
+            4, 4, 4, 8, 8, 8, 12, 12, 12,
+            16, 16, 16, 24, 24, 24            
         ];
         enum { FIRSTDATA2 = 8, FIRSTDATA3 = 28+9 }
         for (int i=0; i< ids.length; ++i) {
@@ -320,9 +334,9 @@ void getcacheinfoCPUID2()
                 if (x==0x49 && family==0xF && model==0x6) level=2;
                 datacache[level].size=sizes[i];
                 datacache[level].associativity=ways[i];
-                if (level == 3 || x==0x2C || (x>=0x48 && x<=0x80) 
-                    || x==0x86 || x==0x87
-                    || (x>=0x66 && x<=0x68) || (x>=0x39 && x<=0x3E) ){
+                if (level == 3 || x==0x2C || x==0x0D || (x>=0x48 && x<=0x80) 
+                                   || x==0x86 || x==0x87
+                                   || (x>=0x66 && x<=0x68) || (x>=0x39 && x<=0x3E)){
                     datacache[level].lineSize = 64;
                 } else datacache[level].lineSize = 32;
             }
@@ -399,11 +413,11 @@ void getcacheinfoCPUID4()
         datacache[level].lineSize = (b & 0xFFF)+ 1; // system coherency line size
         uint line_partitions = ((b >> 12)& 0x3FF) + 1;
         // Size = number of sets * associativity * cachelinesize * linepartitions
-        // and must convert to Kb, also dividing by the number of cores.
+        // and must convert to Kb, also dividing by the number of hyperthreads using this cache.
         ulong sz = (datacache[level].associativity< ubyte.max)? number_of_sets *
             datacache[level].associativity : number_of_sets;        
         datacache[level].size = cast(uint)(
-                (sz * datacache[level].lineSize * line_partitions ) / (numcores *1024));
+                (sz * datacache[level].lineSize * line_partitions ) / (numthreads *1024));
         if (level == 0 && (a&0xF)==3) {
             // Halve the size for unified L1 caches
             datacache[level].size/=2;
@@ -459,6 +473,32 @@ void getAMDcacheinfo()
     }
 }
 
+// For Intel CoreI7 and later, use function 0x0B
+// to determine number of processors.
+void getCpuInfo0B()
+{
+    int level=0;
+    uint a, b, c, d;
+    do {
+        asm {
+            mov EAX, 0x0B;
+            mov ECX, level;
+            cpuid;
+            mov a, EAX;
+            mov b, EBX;
+            mov c, ECX;
+            mov d, EDX;        
+        }
+        if (b!=0) {
+           // I'm not sure about this. The docs state that there
+           // are 2 hyperthreads per core if HT is factory enabled.
+            if (level==0) maxThreads = b & 0xFFFF;
+            else if (level==1) maxCores = b & 0xFFFF;
+            
+        }
+        ++level;
+    } while (a!=0 || b!=0);
+}
 
 void cpuidX86()
 {
@@ -622,12 +662,18 @@ void cpuidX86()
             datacache[0].lineSize = 32;
         }       
     }
-    if (hyperThreadingBit) maxThreads = (apic>>>16) & 0xFF;
-    else maxThreads = maxCores;
+    if (max_cpuid >=0x0B) {
+        // For Intel i7 and later, use function 0x0B to determine
+        // cores and hyperthreads.
+        getCpuInfo0B();    
+    } else {
+        if (hyperThreadingBit) maxThreads = (apic>>>16) & 0xFF;
+        else maxThreads = maxCores;
+    }
 }
 
 // Return true if the cpuid instruction is supported.
-// BUG(WONTFIX): Doesn't work for Cyrix 6x86 and 6x86L.
+// BUG(WONTFIX): Returns false for Cyrix 6x86 and 6x86L. They will be treated as 486 machines.
 bool hasCPUID()
 {
     uint flags;
