@@ -24,6 +24,10 @@
   - http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html
   - "What every programmer should know about memory",
      Ulrich Depper, Red Hat, Inc., (2007). 
+  - "CPU Identification by the Windows Kernel", G. Chappell (2009).
+    http://www.geoffchappell.com/viewer.htm?doc=studies/windows/km/cpu/cx8.htm
+  - "Intel(R) Processor Identification and the CPUID Instruction, Application
+     Note 485" (2009).
 
 AUTHORS:  Don Clugston,
           Tomas Lindquist Olsen &lt;tomas@famolsen.dk&gt;
