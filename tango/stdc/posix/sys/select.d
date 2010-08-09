@@ -175,8 +175,6 @@ else version( freebsd )
 	private
 	{
 		const uint FD_SETSIZE = 1024;
-		const uint _NFDBITS = c_ulong.sizeof * 8;
-
         alias c_long __fd_mask;
         const _NFDBITS = 8 * __fd_mask.sizeof;
 
