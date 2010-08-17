@@ -413,7 +413,7 @@ class FreeBSD : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                auto gdc = "gdc -fversion=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -514,7 +514,7 @@ class Solaris : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -version=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                auto gdc = "gdc -fversion=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -877,6 +877,9 @@ struct Args
                    target = r.assigned[0];
                    compiler = c.assigned[0];
                    lib = l.assigned[0];
+                       
+                    if(compiler == "gdc" && flags == "-release")
+                        flags = "-frelease";
                    
                    if (dynamic)
                    {
@@ -885,7 +888,6 @@ struct Args
                        else
                            throw new Exception("Building Tango as a dynamic library is currently only supported on Mac OS X", __FILE__, __LINE__);
                    }
-                   
                    else
                    {
                        version (Windows)
