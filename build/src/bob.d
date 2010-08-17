@@ -210,7 +210,7 @@ class Linux : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -312,7 +312,7 @@ class MacOSX : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -413,7 +413,7 @@ class FreeBSD : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto gdc = "gdc -version=freebsd  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -514,7 +514,7 @@ class Solaris : FileFilter
 
         int gdc ()
         {
-                auto gdc = "gdc -version=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -of";
+                auto gdc = "gdc -version=solaris  -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
