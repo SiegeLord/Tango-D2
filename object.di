@@ -49,16 +49,6 @@ struct Interface
     ptrdiff_t   offset;
 }
 
-version (GNU){
-}else version (DigitalMars)
-{
-    static if (__VERSION__ >= 1045) {
-        version=ClassInfoHasTypeInfo;
-    }
-} else {
-    version=ClassInfoHasTypeInfo;
-}
-
 /// class information
 class ClassInfo : Object
 {
@@ -79,10 +69,8 @@ class ClassInfo : Object
     void*       deallocator;
     OffsetTypeInfo[] offTi; /// offsets of its members (not supported by all compilers)
     void*       defaultConstructor; /// compiler dependent storage of constructor function pointer
-    version(ClassInfoHasTypeInfo){
-        /// TypeInfo information about this class
-        TypeInfo typeinfo;
-    }
+    /// TypeInfo information about this class
+    TypeInfo typeinfo;
     /// finds the classinfo of the class with the given name
     static ClassInfo find(char[] classname);
     /// creates an instance of this class (works only if there is a constructor without arguments)
