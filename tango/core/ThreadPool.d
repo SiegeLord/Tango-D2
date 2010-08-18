@@ -8,7 +8,8 @@
 
 module tango.core.ThreadPool;
 
-private import  tango.core.Thread,
+private import tango.core.Thread,
+                tango.core.sync.Atomic,
                 tango.core.sync.Mutex,
                 tango.core.sync.Condition;
 
@@ -78,9 +79,9 @@ class ThreadPool(Args...)
         poolActivity = new Condition(m);
         workerActivity = new Condition(m);
 
-        priority_job.store(cast(Job*)null);
-        active_jobs.store(cast(size_t) 0);
-        done.store(false);
+        flagSet(priority_job, cast(Job*) null);
+        flagSet(active_jobs, cast(size_t) 0);
+        flagSet(done, false);
 
         for (size_t i = 0; i < workers; i++)
         {
@@ -102,10 +103,10 @@ class ThreadPool(Args...)
         m.lock();
         scope(exit) m.unlock();
         auto j = Job(job, args);
-        priority_job.store(&j);
+        flagSet(priority_job, &j);
         poolActivity.notify();
         // Wait until someone has taken the job
-        while (priority_job.load() !is null)
+        while (flagGet(priority_job) !is null)
             workerActivity.wait();
     }
 
@@ -115,7 +116,7 @@ class ThreadPool(Args...)
      */
     bool tryAssign(JobD job, Args args)
     {
-        if (active_jobs.load() >= pool.length)
+        if (flagGet(active_jobs) >= pool.length)
             return false;
         assign(job, args);
         return true;
@@ -144,14 +145,14 @@ class ThreadPool(Args...)
     /// Get the number of jobs being executed
     size_t activeJobs()
     {
-        return active_jobs.load();
+        return flagGet(active_jobs);
     }
 
     /// Block until all pending jobs complete, but do not shut down.  This allows more tasks to be added later.
     void wait()
     {    
         m.lock();
-        while (q.length > 0 || active_jobs.load() > 0)
+        while (q.length > 0 || flagGet(active_jobs) > 0)
                workerActivity.wait();
         m.unlock();
     } 
@@ -159,7 +160,7 @@ class ThreadPool(Args...)
     /// Finish currently executing jobs and drop all pending.
     void shutdown()
     {
-        done.store(true);
+        flagSet(done, true);
         m.lock();
         q.length = 0;
         m.unlock();
@@ -191,7 +192,7 @@ private:
     // This is to store a single job for immediate execution, which hopefully
     // means that any program using only assign and tryAssign wont need any
     // heap allocations after startup.
-    Atomic!(Job*) priority_job;
+    Job* priority_job;
 
     // This should be used when accessing the job queue
     Mutex m;
@@ -207,29 +208,29 @@ private:
     Condition workerActivity;
 
     // Are we in the shutdown phase?
-    Atomic!(bool) done;
+    bool done;
 
     // Counter for the number of jobs currently being calculated
-    Atomic!(size_t) active_jobs;
+    size_t active_jobs;
 
     // Thread delegate:
     void doJob()
     {
-        while (!done.load())
+        while (!flagGet(done))
         {
             m.lock();
-            while (q.length == 0 && priority_job.load() is null && !done.load())
+            while (q.length == 0 && flagGet(priority_job) is null && !flagGet(done))
                 poolActivity.wait();
-            if (done.load()) {
+            if (flagGet(done)) {
                 m.unlock(); // not using scope(exit), need to manually unlock
                 break;
             }
             Job job;
-            Job* jobPtr = priority_job.load();
+            Job* jobPtr = flagGet(priority_job);
             if (jobPtr !is null)
             {
                 job = *jobPtr;
-                priority_job.store(cast(Job*)null);
+                flagSet(priority_job, cast(Job*)null);
                 workerActivity.notify();
             }
             else
@@ -252,11 +253,11 @@ private:
             m.unlock();
 
             // Do the actual job
-            active_jobs.increment();
+            flagAdd!(size_t)(active_jobs, 1);
             try {
                 job.dg(job.args);
             } catch (Exception ex) { }
-            active_jobs.decrement();
+            flagAdd!(size_t)(active_jobs, -1);
 
             // Tell the pool that we are done with something
             m.lock();
