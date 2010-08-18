@@ -590,6 +590,7 @@ in {
         static assert(ClassPtr!(T).sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
     volatile newVal=val;
+    return val;
 }
 
 /*
