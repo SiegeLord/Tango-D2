@@ -9,9 +9,7 @@
 module tango.core.ThreadPool;
 
 private import  tango.core.Thread,
-                tango.core.Atomic;
-
-private import  tango.core.sync.Mutex,
+                tango.core.sync.Mutex,
                 tango.core.sync.Condition;
 
 private import  tango.stdc.string: memmove;
