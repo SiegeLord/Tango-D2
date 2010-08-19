@@ -753,7 +753,11 @@ extern (C) Array _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
                 goto L1;
             }
         }
-        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, info.attr);
+        uint attr = info.attr;
+        // If this is the first allocation, set the NO_SCAN attribute appropriately
+        if (info.base is null && ti.next.flags() == 0)
+            attr = BlkAttr.NO_SCAN;
+        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, attr);
         memcpy(newdata, px.data, length * sizeelem);
         px.data = newdata;
     }
@@ -853,7 +857,11 @@ extern (C) byte[] _d_arrayappendcTp(TypeInfo ti, ref byte[] x, void *argp)
         debug(PRINTF) printf("_d_arrayappendcTp(length = %d, newlength = %d, cap = %d)\n", length, newlength, info.size);
         auto newcap = newCapacity(newlength, sizeelem);
         assert(newcap >= newlength * sizeelem);
-        newdata = cast(byte *)gc_malloc(newcap + 1, info.attr);
+        uint attr = info.attr;
+        // If this is the first allocation, set the NO_SCAN attribute appropriately
+        if (info.base is null && ti.next.flags() == 0)
+            attr = BlkAttr.NO_SCAN;
+        newdata = cast(byte *)gc_malloc(newcap + 1, attr);
         memcpy(newdata, x.ptr, length * sizeelem);
         (cast(void**)(&x))[1] = newdata;
     }
