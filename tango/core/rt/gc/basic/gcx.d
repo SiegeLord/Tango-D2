@@ -1288,7 +1288,6 @@ class GC
     private void getStatsNoSync(out GCStats stats)
     {
         size_t psize = 0;
-        size_t usize = 0;
         size_t flsize = 0;
 
         size_t n;
@@ -1308,12 +1307,7 @@ class GC
                 else if (bin == B_PAGE)
                 {
                     stats.pageblocks++;
-                    usize += PAGESIZE;
                 }
-                else if (bin == B_PAGEPLUS)
-                    usize += PAGESIZE;
-                else if (bin < B_PAGE)
-                    usize += binsize[bin];
             }
         }
 
@@ -1328,7 +1322,7 @@ class GC
         }
 
         stats.poolsize = psize;
-        stats.usedsize = usize;
+        stats.usedsize = psize - (flsize + stats.freeblocks * PAGESIZE);
         stats.freelistsize = flsize;
     }
 
@@ -2657,7 +2651,7 @@ struct Gcx
         debug(COLLECT_PRINTF) printf("recovered pages = %d\n", recoveredpages);
         debug(COLLECT_PRINTF) printf("\tfree'd %u bytes, %u pages from %u pools\n", freed, freedpages, npools);
         if (collectEnd.funcptr)
-            collectEnd(freed, (freedpages + recoveredpages) * PAGESIZE);
+            collectEnd(freed + freedpages * PAGESIZE, (freedpages + recoveredpages) * PAGESIZE);
 
         return freedpages + recoveredpages;
     }
