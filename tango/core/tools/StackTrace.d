@@ -22,6 +22,7 @@ version(Windows){
     import tango.stdc.posix.ucontext;
     import tango.stdc.posix.sys.types: pid_t,pthread_t;
     import tango.stdc.signal;
+    import tango.stdc.stdlib;
 }
 version(linux){
     import tango.core.tools.LinuxStackTrace;
@@ -382,9 +383,18 @@ version(Posix){
     sigaction_t fault_action;
         
     void setupSegfaultTracer(){
+        //use an alternative stack; this is useful when infinite recursion
+        //  triggers a SIGSEGV
+        void* altstack = malloc(SIGSTKSZ);
+        if (altstack) {
+            stack_t stack;
+            stack.ss_sp = altstack;
+            stack.ss_size = SIGSTKSZ;
+            sigaltstack(&stack, null);
+        }
         fault_action.sa_handler = cast(typeof(fault_action.sa_handler)) &tango_stacktrace_fault_handler;
         sigemptyset(&fault_action.sa_mask);
-        fault_action.sa_flags = SA_SIGINFO;
+        fault_action.sa_flags = SA_SIGINFO | SA_ONSTACK;
         foreach (sig;[SIGSEGV,SIGFPE,SIGILL,SIGBUS,SIGINT]){
             sigaction(sig, &fault_action, null);
         }
