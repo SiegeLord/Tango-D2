@@ -489,6 +489,7 @@ else version( darwin )
     int sigprocmask(int, in sigset_t*, sigset_t*);
     int sigsuspend(in sigset_t*);
     int sigwait(in sigset_t*, int*);
+    int sigaltstack(void * , void * );
 }
 else version( freebsd )
 {
@@ -1008,6 +1009,8 @@ version(darwin){
     const int SA_NOCLDWAIT = 0x0020;
     const int SA_SIGINFO   = 0x0040;
     const int SA_USERTRAMP = 0x0100;
+    const MINSIGSTKSZ = 32768;
+    const SIGSTKSZ = 131072;
 }
 version(solaris)
 {
