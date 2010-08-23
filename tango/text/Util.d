@@ -563,20 +563,35 @@ T[][] split(T) (T[] src, T[] pattern)
 
 ******************************************************************************/
 
-T[][] splitLines(T) (T[] src)
+alias toLines splitLines;
+T[][] toLines(T) (T[] src)
 {
-        int count;
-        
-        foreach (line; lines (src))
-                 ++count;
-        
-        T[][] result = new T[][count];
 
-        count = 0;
-        foreach (line; lines (src))
-                 result [count++] = line;
+        T[][] result;
 
+        foreach (line; lines (src))
+                 result ~= line;
         return result;
+}
+
+/******************************************************************************
+
+        Return the indexed line, where each line is identified by a \n 
+        or \r\n combination. The line terminator is stripped from the 
+        resultant line
+
+        Note that src content is not duplicated by this function, but
+        is sliced instead.
+
+******************************************************************************/
+
+T[] lineOf(T) (T[] src, size_t index)
+{
+        int i = 0;
+        foreach (line; lines (src))
+                 if (i++ is index)
+                     return line;
+        return null;
 }
 
 /******************************************************************************
