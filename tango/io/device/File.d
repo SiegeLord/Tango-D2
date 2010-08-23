@@ -331,8 +331,13 @@ class File : Device, Device.Seek, Device.Truncate
 
                 // allocate enough space for the entire file
                 auto len = cast(size_t) file.length;
-                if (dst.length < len)
-                    dst.length = len;
+                if (dst.length < len){
+                    if (dst is null){ // avoid setting the noscan attribute, one should maybe change the return type
+                        dst=new ubyte[](len);
+                    } else {
+                        dst.length = len;
+                    }
+                }
 
                 //read the content
                 len = file.read (dst);
