@@ -256,8 +256,6 @@ class File : Device, Device.Seek, Device.Truncate
         const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
 
 
-
-
         // the file we're working with 
         private char[]  path_;
 
@@ -369,31 +367,6 @@ class File : Device, Device.Seek, Device.Truncate
                 file.write (content);
         }
 
-	/***********************************************************************
-
-		Instructs the OS to flush it's internal buffers to the disk
-                device.
-                NOTE: due to OS and hardware design, data flushed cannot be
-                guaranteed to be actually on disk-platters. Actual durability
-                of data depends on write-caches, barriers, presence of 
-                battery-backup, filesystem and OS-support.
-
-	***************************************************************/
-
-	void sync ()
-	{
-                version (Win32) {
-                        if (!FlushFileBuffers(io.handle))
-                                error;
-                } else version (Posix) {
-                        if (fsync(handle))
-                                error;
-                } else {
-                        static assert(false, "Needs implementation");
-                }
-	}        
-            
-
         /***********************************************************************
 
                 Windows-specific code
@@ -407,8 +380,7 @@ class File : Device, Device.Seek, Device.Truncate
                     Low level open for sub-classes that need to apply specific
                     attributes.
 
-                    Return:
-                        false in case of failure
+                    Return: false in case of failure
 
                 ***************************************************************/
 
@@ -504,7 +476,6 @@ class File : Device, Device.Seek, Device.Truncate
                         // monitor this handle for async I/O?
                         if (scheduler)
                             scheduler.open (io.handle, toString);
-
                         return true;
                 }
 
@@ -601,6 +572,25 @@ class File : Device, Device.Seek, Device.Truncate
                               error;
                         return len;
                 }               
+
+	        /***************************************************************
+
+		        Instructs the OS to flush it's internal buffers to 
+                        the disk device.
+
+                        NOTE: due to OS and hardware design, data flushed 
+                        cannot be guaranteed to be actually on disk-platters. 
+                        Actual durability of data depends on write-caches, 
+                        barriers, presence of battery-backup, filesystem and 
+                        OS-support.
+
+                ***************************************************************/
+
+	        void sync ()
+	        {
+                         if (! FlushFileBuffers (io.handle))
+                               error;
+                }
         }
 
 
@@ -756,6 +746,25 @@ class File : Device, Device.Seek, Device.Truncate
                             error;
                         return cast(long) stats.st_size;
                 }               
+
+	        /***************************************************************
+
+		        Instructs the OS to flush it's internal buffers to 
+                        the disk device.
+
+                        NOTE: due to OS and hardware design, data flushed 
+                        cannot be guaranteed to be actually on disk-platters. 
+                        Actual durability of data depends on write-caches, 
+                        barriers, presence of battery-backup, filesystem and 
+                        OS-support.
+
+                ***************************************************************/
+
+	        void sync ()
+	        {
+                         if (fsync (handle))
+                             error;
+                }                            
         }
 }
 
