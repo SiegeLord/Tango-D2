@@ -493,9 +493,8 @@ struct Console
 
                         /*******************************************************
 
-                                Write a chunk of bytes to the console from the 
-                                provided array (typically that belonging to 
-                                an IBuffer)
+                                Write a chunk of bytes to the console from 
+                                the provided array 
 
                         *******************************************************/
 
@@ -547,9 +546,8 @@ struct Console
                         
                         /*******************************************************
 
-                                Read a chunk of bytes from the console into the 
-                                provided array (typically that belonging to 
-                                an IBuffer)
+                                Read a chunk of bytes from the console into 
+                                the provided array 
 
                         *******************************************************/
 
