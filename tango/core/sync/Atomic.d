@@ -584,7 +584,7 @@ in {
  *
  * Remove this? I know no actual architecture where this would be different.
 */
-T atomicStore(T)(ref T val, T newVal)
+void atomicStore(T)(ref T val, T newVal)
 in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ), "invalid alignment" );
         static assert(ClassPtr!(T).sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
@@ -614,7 +614,8 @@ version(LDC){
         }
     }
 } else version (D_InlineAsm_X86){
-    T atomicAdd(T)(ref T val, T incV){
+    T atomicAdd(T,U=T)(ref T val, U incV_){
+        T incV=cast(T)incV_;
         static if (isIntegerType!(T)||isPointerOrClass!(T)){
             T* posVal=&val;
             T res;
@@ -654,7 +655,8 @@ version(LDC){
         }
     }
 } else version (D_InlineAsm_X86_64){
-    T atomicAdd(T)(ref T val, T incV){
+    T atomicAdd(T,U=T)(ref T val, U incV_){
+        T incV=cast(T)incV_;
         static if (isIntegerType!(T)||isPointerOrClass!(T)){
             T* posVal=&val;
             T res;
@@ -702,7 +704,8 @@ version(LDC){
     }
 } else {
     static if (LockVersion){
-        T atomicAdd(T)(ref T val, T incV){
+        T atomicAdd(T,U=T)(ref T val, U incV_){
+            T incV=cast(T)incV_;
             static assert( isIntegerType!(T)||isPointerOrClass!(T),"invalid type: "~T.stringof );
             synchronized(typeid(T)){
                 T oldV=val;
@@ -711,7 +714,8 @@ version(LDC){
             }
         }
     } else {
-        T atomicAdd(T)(ref T val, T incV){
+        T atomicAdd(T,U=T)(ref T val, U incV_){
+            T incV=cast(T)incV_;
             static assert( isIntegerType!(T)||isPointerOrClass!(T),"invalid type: "~T.stringof );
             synchronized(typeid(T)){
                 T oldV,newVal,nextVal;
