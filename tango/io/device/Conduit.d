@@ -29,11 +29,11 @@ public  import tango.io.model.IConduit;
         expose a pair of streams, are modelled by tango.io.model.IConduit, 
         and are implemented via classes such as File & SocketConduit. 
 
-        Additional kinds of conduit are easy to construct: one either
-        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit.
-        A conduit typically reads and writes from/to a Buffer in large
-        chunks, typically the entire buffer. Alternatively, one can invoke
-        input.read(dst[]) and/or output.write(src[]) directly.
+        Additional kinds of conduit are easy to construct: either subclass 
+        tango.io.device.Conduit, or implement tango.io.model.IConduit. A
+        conduit typically reads and writes via a Buffer in large chunks, 
+        typically the entire buffer. Alternatively, one can invoke method
+        read(dst[]) and/or write(src[]) directly
 
 *******************************************************************************/
 
@@ -195,6 +195,17 @@ class Conduit : IConduit
 
         /***********************************************************************
 
+                Throw an IOException, with the provided message
+
+        ***********************************************************************/
+
+        final void error (char[] msg)
+        {
+                throw new IOException (msg);
+        }
+
+        /***********************************************************************
+
                 Return the input stream 
 
         ***********************************************************************/
@@ -217,14 +228,41 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Throw an IOException, with the provided message
+                Emit fixed-length content from 'src' into this conduit, 
+                throwing an IOException upon Eof
 
         ***********************************************************************/
 
-        final void error (char[] msg)
+        final Conduit put (void[] src)
         {
-                throw new IOException (msg);
+                put (src, this);
+                return this;
         }
+
+        /***********************************************************************
+
+                Consume fixed-length content into 'dst' from this conduit, 
+                throwing an IOException upon Eof
+
+        ***********************************************************************/
+
+        final Conduit get (void[] dst)
+        {
+               get (dst, this);
+               return this; 
+        }
+
+        /***********************************************************************
+        
+                Rewind to beginning of file
+
+        ***********************************************************************/
+
+        final Conduit rewind ()
+        {
+                seek (0);
+                return this;
+        }               
 
         /***********************************************************************
 
@@ -237,6 +275,34 @@ class Conduit : IConduit
         {
                 transfer (src, this, max);
                 return this;
+        }
+
+        /***********************************************************************
+        
+                Seek on this stream. Source conduits that don't support
+                seeking will throw an IOException
+
+        ***********************************************************************/
+
+        long seek (long offset, Anchor anchor = Anchor.Begin)
+        {
+                error (this.toString ~ " does not support seek requests");
+                return 0;
+        }
+
+        /***********************************************************************
+
+                Load text from a stream, and return them all in an
+                array. 
+
+                Returns an array representing the content, and throws
+                IOException on error
+                
+        ***********************************************************************/
+
+        char[] text(T=char) (size_t max = -1)
+        {
+                return cast(T[]) load (max);
         }
 
         /***********************************************************************
@@ -253,19 +319,6 @@ class Conduit : IConduit
         void[] load (size_t max = -1)
         {
                 return load (this, max);
-        }
-
-        /***********************************************************************
-        
-                Seek on this stream. Source conduits that don't support
-                seeking will throw an IOException
-
-        ***********************************************************************/
-
-        long seek (long offset, Anchor anchor = Anchor.Begin)
-        {
-                error (this.toString ~ " does not support seek requests");
-                return 0;
         }
 
         /***********************************************************************
@@ -302,6 +355,42 @@ class Conduit : IConduit
                       }
 
                 return dst [0 .. len];
+        }
+
+        /***********************************************************************
+
+                Emit fixed-length content from 'src' into 'output', 
+                throwing an IOException upon Eof
+
+        ***********************************************************************/
+
+        static void put (void[] src, OutputStream output)
+        {
+                while (src.length)
+                      {
+                      auto i = output.write (src);
+                      if (i is Eof)
+                          output.conduit.error ("Conduit.put :: eof while writing");
+                      src = src [i..$];
+                      }
+        }
+
+        /***********************************************************************
+
+                Consume fixed-length content into 'dst' from 'input', 
+                throwing an IOException upon Eof
+
+        ***********************************************************************/
+
+        static void get (void[] dst, InputStream input)
+        {
+                while (dst.length)
+                      {
+                      auto i = input.read (dst);
+                      if (i is Eof)
+                          input.conduit.error ("Conduit.get :: eof while reading");
+                      dst = dst [i..$];
+                      }
         }
 
         /***********************************************************************
