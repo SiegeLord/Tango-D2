@@ -663,9 +663,9 @@ final class RandomG(SourceT=DefaultEngine)
     body {
         static if (is(T==int)||is(T==long)||is(T==uint)||is(T==ulong)){
             return from+uniformR(to-from);
-        } else if (is(T==char) || is(T==byte) || is(T==ubyte)){
+        } else static if (is(T==char) || is(T==byte) || is(T==ubyte) || is(T==short) || is(T==ushort)){
             int d=cast(int)to-cast(int)from;
-            int nV=uniformR(d);
+            int nV=uniformR!(int)(d);
             return cast(T)(nV+cast(int)from);
         } else static if (is(T==float) || is(T==double) || is(T==real)){
             T res=from+(to-from)*uniform!(T,false);
