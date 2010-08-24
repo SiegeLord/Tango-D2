@@ -913,7 +913,7 @@ else version( freebsd )
 
     struct stack_t
     {
-        char* ss_sp;
+        void* ss_sp;
         size_t ss_size;
         int ss_flags;
     }
