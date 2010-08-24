@@ -202,13 +202,6 @@ version( freebsd ) {
         _MC_FPOWNED_PCB         = 0x20002,  /* FP state came from PCB */
     }
 
-
-    struct stack_t { /* from   /usr/src/lib/libc/sys/sigaltstack.2 */
-        void* ss_sp;
-        size_t  ss_size;
-        c_int     ss_flags;
-    } 
-
     alias uint sigset_t;
     struct ucontext_t { /* from /usr/include/ucontext.h */
         sigset_t 		uc_sigmask;

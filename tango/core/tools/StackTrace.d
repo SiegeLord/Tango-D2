@@ -385,7 +385,11 @@ version(Posix){
     void setupSegfaultTracer(){
         //use an alternative stack; this is useful when infinite recursion
         //  triggers a SIGSEGV
+        version(freebsd) {
+        char* altstack = cast(char*) malloc(SIGSTKSZ);
+        } else {
         void* altstack = malloc(SIGSTKSZ);
+               }
         if (altstack) {
             stack_t stack;
             stack.ss_sp = altstack;
