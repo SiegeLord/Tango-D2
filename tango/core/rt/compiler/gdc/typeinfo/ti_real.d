@@ -1,7 +1,7 @@
 
 // real
 
-module rt.compiler.typeinfo.ti_real;
+module rt.compiler.gdc.typeinfo.ti_real;
 private import rt.compiler.util.hash;
 
 class TypeInfo_e : TypeInfo

@@ -1,7 +1,7 @@
 
 // double
 
-module rt.compiler.typeinfo.ti_double;
+module rt.compiler.gdc.typeinfo.ti_double;
 private import rt.compiler.util.hash;
 
 class TypeInfo_d : TypeInfo

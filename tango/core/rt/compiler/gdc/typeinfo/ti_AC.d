@@ -1,4 +1,4 @@
-module rt.compiler.typeinfo.ti_AC;
+module rt.compiler.gdc.typeinfo.ti_AC;
 private import rt.compiler.util.hash;
 
 // Object[]

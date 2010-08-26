@@ -17,8 +17,8 @@
 */
 /* GNU/GCC unwind interface declarations for D.  This must match unwind.h */
 
-module gcc.unwind;
-private import gcc.builtins;
+module rt.compiler.gdc.gcc.unwind;
+private import rt.compiler.gdc.gcc.builtins;
 private import tango.stdc.stdlib; // for abort
 
 

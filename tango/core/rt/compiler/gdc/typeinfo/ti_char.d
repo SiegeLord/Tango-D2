@@ -1,5 +1,5 @@
 
-module rt.compiler.typeinfo.ti_char;
+module rt.compiler.gdc.typeinfo.ti_char;
 
 class TypeInfo_a : TypeInfo
 {

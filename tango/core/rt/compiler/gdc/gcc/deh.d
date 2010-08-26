@@ -19,9 +19,9 @@
   This code is based on the libstdc++ exception handling routines.
 */
 
-module gcc.deh; 
-private import gcc.unwind;
-private import gcc.builtins;
+module rt.compiler.gdc.gcc.deh; 
+private import rt.compiler.gdc.gcc.unwind;
+private import rt.compiler.gdc.gcc.builtins;
 //private import gc;
 private import tango.stdc.stdlib;
 

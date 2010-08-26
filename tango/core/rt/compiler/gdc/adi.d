@@ -45,7 +45,7 @@ private
 {
     import tango.stdc.string;
     import tango.stdc.stdlib;
-    import rt.util.utf;
+    import rt.compiler.util.utf;
 
     enum BlkAttr : uint
     {

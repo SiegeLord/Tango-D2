@@ -1,7 +1,7 @@
 
 // cdouble
 
-module rt.compiler.typeinfo.ti_cdouble;
+module rt.compiler.gdc.typeinfo.ti_cdouble;
 private import rt.compiler.util.hash;
 
 class TypeInfo_r : TypeInfo

@@ -21,9 +21,9 @@
  *     distribution.
  */
 
-module rt.compiler.typeinfo.ti_Acfloat;
+module rt.compiler.gdc.typeinfo.ti_Acfloat;
 
-private import rt.compiler.typeinfo.ti_cfloat;
+private import rt.compiler.gdc.typeinfo.ti_cfloat;
 private import rt.compiler.util.hash;
 
 // cfloat[]

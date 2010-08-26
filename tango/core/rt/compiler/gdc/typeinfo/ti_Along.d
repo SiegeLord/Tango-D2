@@ -1,5 +1,5 @@
 
-module rt.compiler.typeinfo.ti_Along;
+module rt.compiler.gdc.typeinfo.ti_Along;
 
 private import tango.stdc.string : memcmp;
 private import rt.compiler.util.hash;

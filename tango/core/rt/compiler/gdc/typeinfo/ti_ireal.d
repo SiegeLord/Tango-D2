@@ -1,9 +1,9 @@
 
 // ireal
 
-module rt.compiler.typeinfo.ti_ireal;
+module rt.compiler.gdc.typeinfo.ti_ireal;
 
-private import rt.compiler.typeinfo.ti_real;
+private import rt.compiler.gdc.typeinfo.ti_real;
 
 class TypeInfo_j : TypeInfo_e
 {

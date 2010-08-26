@@ -16,8 +16,8 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-module gcc.threadsem;
-private import gcc.config;
+module rt.compiler.gdc.gcc.threadsem;
+private import tango.stdc.config;
 
 version (GNU_Semaphore_POSIX)
 {

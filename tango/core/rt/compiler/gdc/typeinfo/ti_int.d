@@ -1,7 +1,7 @@
 
 // int
 
-module rt.compiler.typeinfo.ti_int;
+module rt.compiler.gdc.typeinfo.ti_int;
 
 class TypeInfo_i : TypeInfo
 {

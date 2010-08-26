@@ -16,6 +16,6 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-module gcc.configext;
+module rt.compiler.gdc.gcc.configext;
 
 // this is empty now...

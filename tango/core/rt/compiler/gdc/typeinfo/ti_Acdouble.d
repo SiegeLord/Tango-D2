@@ -21,9 +21,9 @@
  *     distribution.
  */
 
-module rt.compiler.typeinfo.ti_Acdouble;
+module rt.compiler.gdc.typeinfo.ti_Acdouble;
 
-private import rt.compiler.typeinfo.ti_cdouble;
+private import rt.compiler.gdc.typeinfo.ti_cdouble;
 private import rt.compiler.util.hash;
 // cdouble[]
 

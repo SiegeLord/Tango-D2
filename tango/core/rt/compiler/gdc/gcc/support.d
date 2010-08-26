@@ -16,7 +16,7 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-module gcc.support;
+module rt.compiler.gdc.gcc.support;
 
 /* Binary compatibility for an earlier bug.  This will be removed
    in a later version. */

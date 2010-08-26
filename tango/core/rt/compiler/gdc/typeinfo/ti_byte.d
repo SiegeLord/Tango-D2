@@ -1,7 +1,7 @@
 
 // byte
 
-module rt.compiler.typeinfo.ti_byte;
+module rt.compiler.gdc.typeinfo.ti_byte;
 
 class TypeInfo_g : TypeInfo
 {

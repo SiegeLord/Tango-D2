@@ -1,7 +1,7 @@
 
 // long
 
-module rt.compiler.typeinfo.ti_long;
+module rt.compiler.gdc.typeinfo.ti_long;
 private import rt.compiler.util.hash;
 
 class TypeInfo_l : TypeInfo

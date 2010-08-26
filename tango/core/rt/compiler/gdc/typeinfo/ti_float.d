@@ -1,7 +1,7 @@
 
 // float
 
-module rt.compiler.typeinfo.ti_float;
+module rt.compiler.gdc.typeinfo.ti_float;
 
 class TypeInfo_f : TypeInfo
 {

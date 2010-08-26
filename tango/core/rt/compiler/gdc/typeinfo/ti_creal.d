@@ -1,7 +1,7 @@
 
 // creal
 
-module rt.compiler.typeinfo.ti_creal;
+module rt.compiler.gdc.typeinfo.ti_creal;
 private import rt.compiler.util.hash;
 
 class TypeInfo_c : TypeInfo

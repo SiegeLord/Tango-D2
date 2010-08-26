@@ -21,9 +21,9 @@
  *     distribution.
  */
 
-module rt.compiler.typeinfo.ti_Acreal;
+module rt.compiler.gdc.typeinfo.ti_Acreal;
 
-private import rt.compiler.typeinfo.ti_creal;
+private import rt.compiler.gdc.typeinfo.ti_creal;
 private import rt.compiler.util.hash;
 
 // creal[]

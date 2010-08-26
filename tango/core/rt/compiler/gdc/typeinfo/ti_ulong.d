@@ -1,7 +1,7 @@
 
 // ulong
 
-module rt.compiler.typeinfo.ti_ulong;
+module rt.compiler.gdc.typeinfo.ti_ulong;
 private import rt.compiler.util.hash;
 
 class TypeInfo_m : TypeInfo

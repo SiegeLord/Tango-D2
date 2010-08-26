@@ -1,5 +1,5 @@
 
-module rt.compiler.typeinfo.ti_Ag;
+module rt.compiler.gdc.typeinfo.ti_Ag;
 
 private import rt.compiler.util.string;
 private import rt.compiler.util.hash;

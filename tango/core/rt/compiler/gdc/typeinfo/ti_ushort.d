@@ -1,7 +1,7 @@
 
 // ushort
 
-module rt.compiler.typeinfo.ti_ushort;
+module rt.compiler.gdc.typeinfo.ti_ushort;
 
 class TypeInfo_t : TypeInfo
 {

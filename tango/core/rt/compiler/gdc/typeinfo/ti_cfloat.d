@@ -1,7 +1,7 @@
 
 // cfloat
 
-module rt.compiler.typeinfo.ti_cfloat;
+module rt.compiler.gdc.typeinfo.ti_cfloat;
 private import rt.compiler.util.hash;
 
 class TypeInfo_q : TypeInfo

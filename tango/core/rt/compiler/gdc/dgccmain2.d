@@ -9,8 +9,8 @@
 module dgccmain2;
 private
 {
-    import memory;
-    import rt.util.console;
+    import rt.compiler.gdc.memory;
+    import rt.compiler.util.console;
 
     import tango.stdc.stddef;
     import tango.stdc.stdlib;

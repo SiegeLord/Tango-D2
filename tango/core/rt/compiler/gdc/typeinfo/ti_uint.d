@@ -1,7 +1,7 @@
 
 // uint
 
-module rt.compiler.typeinfo.ti_uint;
+module rt.compiler.gdc.typeinfo.ti_uint;
 
 class TypeInfo_k : TypeInfo
 {
