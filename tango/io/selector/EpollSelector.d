@@ -130,6 +130,10 @@ version (linux)
          * to select().
          */
         private epoll_event[] _events;
+        /**
+         * Persistent ISelectionSet-impl.
+         */
+        private ISelectionSet _selectionSetIface;
         /** Number of events resulting from the call to select() */
         private int _eventCount = 0;
 
@@ -167,6 +171,7 @@ version (linux)
         body
         {
             _events = new epoll_event[maxEvents];
+            _selectionSetIface = new EpollSelectionSet;
 
             _epfd = epoll_create(cast(int) size);
             if (_epfd < 0)
@@ -348,6 +353,51 @@ version (linux)
         }
 
         /**
+        * Class used to hold the list of Conduits that have received events.
+        * See_Also: ISelectionSet
+        */
+        protected class EpollSelectionSet: ISelectionSet
+        {
+            public uint length()
+            {
+                return _events.length;
+            }
+
+            /**
+            * Iterate over all the Conduits that have received events.
+            */
+            public int opApply(int delegate(ref SelectionKey) dg)
+            {
+                int rc = 0;
+                SelectionKey key;
+
+                debug (selector)
+                    Stdout.format("--- EpollSelectionSet.opApply() ({0} events)\n", _events.length);
+
+                foreach (epoll_event event; _events[0.._eventCount])
+                {
+                    // Only invoke the delegate if there is an event for the conduit.
+                    if (event.events != 0)
+                    {
+                        key = *(cast(SelectionKey *)event.data.ptr);
+                        key.events = cast(Event) event.events;
+
+                        debug (selector)
+                            Stdout.format("---   Event 0x{0:x} for handle {1}\n",
+                                        cast(uint) event.events, cast(int) key.conduit.fileHandle());
+
+                        rc = dg(key);
+                        if (rc != 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return rc;
+            }
+        }
+
+        /**
          * Return the selection set resulting from the call to any of the
          * select() methods.
          *
@@ -357,7 +407,7 @@ version (linux)
          */
         public ISelectionSet selectedSet()
         {
-            return (_eventCount > 0 ? new EpollSelectionSet(_events[0.._eventCount]) : null);
+            return (_eventCount > 0 ? _selectionSetIface : null);
         }
 
         /**
@@ -399,57 +449,6 @@ version (linux)
 
         unittest
         {
-        }
-    }
-
-    /**
-     * Class used to hold the list of Conduits that have received events.
-     */
-    private class EpollSelectionSet: ISelectionSet
-    {
-        private epoll_event[] _events;
-
-        protected this(epoll_event[] events)
-        {
-            _events = events;
-        }
-
-        public uint length()
-        {
-            return _events.length;
-        }
-
-        /**
-         * Iterate over all the Conduits that have received events.
-         */
-        public int opApply(int delegate(ref SelectionKey) dg)
-        {
-            int rc = 0;
-            SelectionKey key;
-
-            debug (selector)
-                Stdout.format("--- EpollSelectionSet.opApply() ({0} events)\n", _events.length);
-
-            foreach (epoll_event event; _events)
-            {
-                // Only invoke the delegate if there is an event for the conduit.
-                if (event.events != 0)
-                {
-                    key = *(cast(SelectionKey *)event.data.ptr);
-                    key.events = cast(Event) event.events;
-
-                    debug (selector)
-                        Stdout.format("---   Event 0x{0:x} for handle {1}\n",
-                                      cast(uint) event.events, cast(int) key.conduit.fileHandle());
-
-                    rc = dg(key);
-                    if (rc != 0)
-                    {
-                        break;
-                    }
-                }
-            }
-            return rc;
         }
     }
 }
