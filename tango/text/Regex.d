@@ -640,25 +640,24 @@ struct CharRange(char_t)
     string toString()
     {
         string str;
-        auto layout = Layout!(char).instance;
         if ( l_ == r_ )
         {
             if ( l_ > 0x20 && l_ < 0x7f )
-                str = layout.convert("'{}'", l_);
+                str = Format.convert("'{}'", l_);
             else
-                str = layout.convert("({:x})", cast(int)l_);
+                str = Format.convert("({:x})", cast(int)l_);
         }
         else
         {
             if ( l_ > 0x20 && l_ < 0x7f )
-                str = layout.convert("'{}'", l_);
+                str = Format.convert("'{}'", l_);
             else
-                str = layout.convert("({:x})", cast(int)l_);
+                str = Format.convert("({:x})", cast(int)l_);
             str ~= "-";
             if ( r_ > 0x20 && r_ < 0x7f )
-                str ~= layout.convert("'{}'", r_);
+                str ~= Format.convert("'{}'", r_);
             else
-                str ~= layout.convert("({:x})", cast(int)r_);
+                str ~= Format.convert("({:x})", cast(int)r_);
         }
         return str;
     }
@@ -1191,7 +1190,7 @@ private struct Predicate(char_t)
     }
 }
 import Utf = tango.text.convert.Utf;
-import tango.text.convert.Layout;
+import tango.text.convert.Format;
 
 /* ************************************************************************************************
 
@@ -1381,7 +1380,6 @@ private final class TNFA(char_t)
     **********************************************************************************************/
     void parse(bool unanchored)
     {
-        auto                layout = Layout!(char).instance;
         List!(frag_t)       frags       = new List!(frag_t);
         Stack!(Operator)    opStack;
         Stack!(uint)        tagStack;
@@ -1445,7 +1443,7 @@ private final class TNFA(char_t)
                     if ( opStack.top == Operator.open_par )
                     {
                         if ( tagStack.empty )
-                            throw new RegExpException(layout.convert("Missing opening parentheses for closing parentheses at char {} \"{}\"", cursor, Utf.toString(pattern[cursor..$])));
+                            throw new RegExpException(Format.convert("Missing opening parentheses for closing parentheses at char {} \"{}\"", cursor, Utf.toString(pattern[cursor..$])));
                         constructBracket(frags, tagStack.top);
                         tagStack.pop;
                     }
@@ -1459,7 +1457,7 @@ private final class TNFA(char_t)
                     return true;
                 case Act.err:
                 default:
-                    throw new RegExpException(layout.convert("Unexpected operand at char {} \"{}\" in \"{}\"", cursor, Utf.toString(pattern[cursor..$]), Utf.toString(pattern)));
+                    throw new RegExpException(Format.convert("Unexpected operand at char {} \"{}\" in \"{}\"", cursor, Utf.toString(pattern[cursor..$]), Utf.toString(pattern)));
             }
 
             return false;
@@ -1687,7 +1685,7 @@ private final class TNFA(char_t)
                         default:
                             frags ~= constructSingleChar(c, pred_type);
                             break;
-//                            throw new RegExpException(layout.convert("Unknown escape sequence \\{}", c));
+//                            throw new RegExpException(Format.convert("Unknown escape sequence \\{}", c));
                     }
                     break;
 
@@ -2328,8 +2326,7 @@ private class TDFA(char_t)
 
         string toString()
         {
-            auto layout = Layout!(char).instance;
-            return layout.convert("{}<-{}", dst, src==CURRENT_POSITION_REGISTER?"p":layout.convert("{}", src));
+            return Format.convert("{}<-{}", dst, src==CURRENT_POSITION_REGISTER?"p":Format.convert("{}", src));
         }
 
         /* ****************************************************************************************
@@ -2821,11 +2818,10 @@ private:
         string toString()
         {
             string str;
-            auto layout = Layout!(char).instance;
-            str = layout.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
+            str = Format.convert("{} p{}.{} {{", nfa_state.index, maxPriority, lastPriority);
             bool first = true;
             foreach ( k, v; tags ) {
-                str ~= layout.convert("{}m({},{})", first?"":",", k, v);
+                str ~= Format.convert("{}m({},{})", first?"":",", k, v);
                 first = false;
             }
             str ~= "}";
@@ -4167,15 +4163,14 @@ class RegExpT(char_t)
             str_type = "wchar[]";
         static if ( is(char_t == dchar) )
             str_type = "dchar[]";
-        auto layout = Layout!(char).instance;
 
         if ( lexer )
-            code = layout.convert("// {}\nbool {}({} input, out uint token, out {} match", pattern_, func_name, str_type, str_type);
+            code = Format.convert("// {}\nbool {}({} input, out uint token, out {} match", pattern_, func_name, str_type, str_type);
         else {
-            code = layout.convert("// {}\nbool match({} input", pattern_, str_type);
-            code ~= layout.convert(", ref {}[] groups", str_type);
+            code = Format.convert("// {}\nbool match({} input", pattern_, str_type);
+            code ~= Format.convert(", ref {}[] groups", str_type);
         }
-        code ~= layout.convert(")\n{{\n    uint s = {};", tdfa_.start.index);
+        code ~= Format.convert(")\n{{\n    uint s = {};", tdfa_.start.index);
 
         uint num_vars = tdfa_.num_regs;
         if ( num_vars > 0 )
@@ -4203,7 +4198,7 @@ class RegExpT(char_t)
                 if ( used > 0 && used % 10 == 0 )
                     code ~= "\n        ";
                 ++used;
-                code ~= layout.convert("r{}", i);
+                code ~= Format.convert("r{}", i);
 
                 if ( hasInit )
                     code ~= "=0";
@@ -4220,7 +4215,7 @@ class RegExpT(char_t)
         uint[] finish_states;
         foreach ( s; tdfa_.states )
         {
-            code ~= layout.convert("\n            case {}:", s.index);
+            code ~= Format.convert("\n            case {}:", s.index);
 
             if ( s.accept )
             {
@@ -4267,16 +4262,16 @@ class RegExpT(char_t)
                     else
                         code ~= " || ";
                     if ( cr.l == cr.r )
-                        code ~= layout.convert("c == 0x{:x}", cast(int)cr.l);
+                        code ~= Format.convert("c == 0x{:x}", cast(int)cr.l);
                     else
-                        code ~= layout.convert("c >= 0x{:x} && c <= 0x{:x}", cast(int)cr.l, cast(int)cr.r);
+                        code ~= Format.convert("c >= 0x{:x} && c <= 0x{:x}", cast(int)cr.l, cast(int)cr.r);
                 }
-                code ~= layout.convert(" ) {{\n                    s = {};", t.target.index);
+                code ~= Format.convert(" ) {{\n                    s = {};", t.target.index);
 
                 if ( t.predicate.type == typeof(t.predicate.type).consume )
                     code ~= "\n                    p = next_p;";
                 foreach ( cmd; t.commands )
-                    code ~= compileCommand(layout, cmd, "                    ");
+                    code ~= compileCommand(cmd, "                    ");
 /*
                 // if inp ends here and we do not already accept, try to add an explicit string/line end
                 if ( p >= inp.length && !s.accept && c != 0 ) {
@@ -4288,12 +4283,12 @@ class RegExpT(char_t)
             }
 
             if ( !first_if )
-                code ~= layout.convert(
+                code ~= Format.convert(
                     "\n                else\n                    {};\n                break;",
-                    s.accept?layout.convert("goto finish{}", s.index):"return false"
+                    s.accept?Format.convert("goto finish{}", s.index):"return false"
                 );
             else
-                code ~= layout.convert("\n                {};", s.accept?layout.convert("goto finish{}", s.index):"return false");
+                code ~= Format.convert("\n                {};", s.accept?Format.convert("goto finish{}", s.index):"return false");
         }
 
         // create finisher groups
@@ -4333,7 +4328,7 @@ class RegExpT(char_t)
         foreach ( group, states; finisherGroup )
         {
             foreach ( s; states )
-                code ~= layout.convert("\n        case {}: finish{}:", s, s);
+                code ~= Format.convert("\n        case {}: finish{}:", s, s);
 
             foreach ( cmd; tdfa_.states[group].finishers )
             {
@@ -4342,11 +4337,11 @@ class RegExpT(char_t)
                     if ( tdfa_.states[group].finishers.length > 1 )
                         throw new RegExpException("Lexer error: more than one finisher in flm lexer!");
                     if ( cmd.dst % 2 == 0 || cmd.dst >= tdfa_.num_tags )
-                        throw new RegExpException(layout.convert("Lexer error: unexpected dst register {} in flm lexer!", cmd.dst));
-                    code ~= layout.convert("\n            match = input[0 .. r{}];\n            token = {};", cmd.src, cmd.dst/2);
+                        throw new RegExpException(Format.convert("Lexer error: unexpected dst register {} in flm lexer!", cmd.dst));
+                    code ~= Format.convert("\n            match = input[0 .. r{}];\n            token = {};", cmd.src, cmd.dst/2);
                 }
                 else
-                    code ~= compileCommand(layout, cmd, "            ");
+                    code ~= compileCommand(cmd, "            ");
             }
 
             code ~= "\n            break;";
@@ -4355,9 +4350,9 @@ class RegExpT(char_t)
 
         if ( !lexer )
         {
-            code ~= layout.convert("\n    groups.length = {};", tdfa_.num_tags/2);
+            code ~= Format.convert("\n    groups.length = {};", tdfa_.num_tags/2);
             for ( int i = 0; i < tdfa_.num_tags/2; ++i )
-                code ~= layout.convert("\n    if ( r{} > -1 && r{} > -1 )\n        groups[{}] = input[r{} .. r{}];", 2*i, 2*i+1, i, 2*i, 2*i+1);
+                code ~= Format.convert("\n    if ( r{} > -1 && r{} > -1 )\n        groups[{}] = input[r{} .. r{}];", 2*i, 2*i+1, i, 2*i, 2*i+1);
         }
 
         code ~= "\n    return true;\n}";
@@ -4393,15 +4388,15 @@ private:
     char_t[]    input_,
                 pattern_;
 
-    string compileCommand(Layout!(char) layout, tdfa_t.Command cmd, char_t[] indent)
+    string compileCommand(tdfa_t.Command cmd, char_t[] indent)
     {
         string  code,
                 dst;
-        code ~= layout.convert("\n{}r{} = ", indent, cmd.dst);
+        code ~= Format.convert("\n{}r{} = ", indent, cmd.dst);
         if ( cmd.src == tdfa_.CURRENT_POSITION_REGISTER )
             code ~= "p;";
         else
-            code ~= layout.convert("r{};", cmd.src);
+            code ~= Format.convert("r{};", cmd.src);
         return code;
     }
 }
