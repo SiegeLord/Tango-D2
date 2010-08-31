@@ -806,8 +806,9 @@ struct Args
                 target,
                 compiler;
 
-        char[]  usage = "usage: bob <options> tango-path\n"
-                        "example: bob -u -r=dmd -c=dmd -p=windows -l=tango mytangodir\n"
+        char[]  usage = "Bob is a build tool for the sole purpose to compile the Tango library.\n"
+                        "Usage: bob <options> tango-path\n"
+                        "Arguments:\n"
                         "\t[-v]\t\t\tverbose output\n"
                         "\t[-q]\t\t\tquick execution\n"
                         "\t[-i]\t\t\tinhibit execution\n"
@@ -817,7 +818,8 @@ struct Args
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
-                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n";
+                        "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
+                        "Example: .\\build\\bin\\win32\\bob.exe -vu -r=dmd -c=dmd .\n\n";
 
         bool populate (char[][] arg)
         {       
