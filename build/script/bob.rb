@@ -21,7 +21,7 @@ FREEBSD = RUBY_PLATFORM =~ /freebsd/ ? true : false
 LINUX = RUBY_PLATFORM =~ /linux/ ? true : false
 HAIKU = RUBY_PLATFORM =~ /haiku/ ? true : false
 SOLARIS = RUBY_PLATFORM =~ /solaris/ ? true : false
-WINDOWS = RUBY_PLATFORM =~ /windows/ ? true : false
+WINDOWS = RUBY_PLATFORM =~ /windows/ || RUBY_PLATFORM =~ /mingw/ ? true : false
 
 class Functor
 	def initialize (symbol, object)
@@ -199,11 +199,12 @@ class FileFilter
 		return src >= obj
 	end
 	
-	def addToLib (obj)
+	def addToLib (obj, append_objs_path = true)
 		eol = "\r\n" if WINDOWS
 		eol = " " unless WINDOWS
 		
-		file = File.join(@args.objs, obj)
+		file = File.join(@args.objs, obj) if append_objs_path
+		file = obj unless append_objs_path
 		
 		@libs << file << eol if File.exists?(file)
 	end
@@ -237,7 +238,7 @@ class FileFilter
 	
 	def check_command (cmd, line)
 		if $?.to_i != 0
-			raise "#{cmd} returned #{$?.to_int/256} exit status\nline was: #{line}"
+			raise "#{cmd} returned #{$?.to_i/256} exit status\nline was: #{line}"
 		end
 	end
 end
@@ -255,14 +256,14 @@ class Windows < FileFilter
 			temp = objname(file)
 			
 			if !@args.quick || isOverdue(file, temp)
-				exec(cmd + tmp + " " + file)
+				exec(cmd + temp + " " + file)
 			end
 			
 			addToLib(temp)
 		end
 
 		dmd = "dmd -c -I#{@args.root}/tango/core -I#{@args.root} -I#{@args.root}/tango/core/vendor #{@args.flags} -of#{@args.objs}/";
-		libs("-c -n -p256\n" + @args.lib)
+		@libs << "-c -n -p256\n#{@args.lib}\n"
 		
 		exclude("tango/core/rt/compiler/dmd/posix")
 		exclude("tango/core/rt/compiler/dmd/darwin")
@@ -272,17 +273,16 @@ class Windows < FileFilter
 		end
 		
 		scan(".c") do |file|
-			compile("dmc -c -mn -6 -r -o", file)
-		end
+			compile("dmc -c -mn -6 -r -o#{@args.objs}/", file)
+		end		
 		
-		addToLib(@args.root + "/tango/core/rt/compiler/dmd/minit.obj") if @args.core
+		addToLib(@args.root + "/tango/core/rt/compiler/dmd/minit.obj", false) if @args.core
 		
 		File.open("tango.lsp", "w+") do |file|
 			file.puts(@libs.string)
 		end		
 		
 		exec("lib @tango.lsp")
-		#exec("cmd /q /c del tango.lsp *.obj")
 		exec("cmd /q /c del tango.lsp")
 		
 		return @count
