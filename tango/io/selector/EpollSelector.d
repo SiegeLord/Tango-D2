@@ -197,6 +197,15 @@ version (linux)
             _events = null;
             _eventCount = 0;
         }
+		/**
+		 * Return the number of keys resulting from the registration of a conduit 
+		 * to the selector. 
+		 */ 
+		public size_t count()
+		{
+			return _keys.length;
+		}
+
 
         /**
          * Associate a conduit to the selector and track specific I/O events.
