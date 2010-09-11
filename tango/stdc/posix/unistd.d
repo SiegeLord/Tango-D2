@@ -27,6 +27,7 @@ int     optopt;
 int     access(in char*, int);
 uint    alarm(uint);
 int     chdir(in char*);
+int     chroot(in char*);
 int     chown(in char*, uid_t, gid_t);
 int     close(int);
 size_t  confstr(int, char*, size_t);
