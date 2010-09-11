@@ -56,7 +56,7 @@ class ThreadPipe : Conduit
      */
     this(size_t bufferSize=(1024*16))
     {
-        _buf = new void[bufferSize];
+        _buf = new ubyte[bufferSize];
         _closed = false;
         _readIdx = _remaining = 0;
         _mutex = new Mutex;
