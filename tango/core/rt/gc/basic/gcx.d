@@ -1889,8 +1889,8 @@ struct Gcx
             // getBits
             ////////////////////////////////////////////////////////////////////
 
-            info.attr = getBits(pool, (info.base - pool.baseAddr) / 16);
-
+            info.attr = getBits(pool, cast(size_t)(offset / 16));
+            
             cached_info_key = p;
             cached_info_val = info;
         }
