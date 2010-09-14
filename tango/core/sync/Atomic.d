@@ -589,7 +589,7 @@ in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ), "invalid alignment" );
         static assert(ClassPtr!(T).sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
-    volatile T newVal=val;
+    volatile val=newVal;
 }
 
 /*
