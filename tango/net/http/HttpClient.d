@@ -81,7 +81,7 @@ private import  Integer = tango.text.convert.Integer;
 
 class HttpClient
 {       
-        // callback for sending PUT content
+        /// callback for sending PUT content
         alias void delegate (OutputBuffer) Pump;
         
         // this is struct rather than typedef to avoid compiler bugs
