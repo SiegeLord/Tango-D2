@@ -32,6 +32,7 @@ private
     - ProcessException
     - ThreadException
       - FiberException
+    - ThreadPoolException  
     - SyncException
     - IOException
       - SocketException
@@ -187,6 +188,18 @@ class ThreadException : PlatformException
  * Base class for fiber exceptions.
  */
 class FiberException : ThreadException
+{
+    this( char[] msg )
+    {
+        super( msg );
+    }
+}
+
+
+/**
+ * Base class for ThreadPoolException
+ */
+class ThreadPoolException : Exception
 {
     this( char[] msg )
     {

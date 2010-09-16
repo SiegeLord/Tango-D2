@@ -100,6 +100,11 @@ class ThreadPool(Args...)
      */
     void assign(JobD job, Args args)
     {
+        if(this.pool.length == 0)
+        {
+            throw new ThreadPoolException("No workers available!");
+        }
+
         m.lock();
         scope(exit) m.unlock();
         auto j = Job(job, args);
@@ -129,6 +134,11 @@ class ThreadPool(Args...)
      */
     void append(JobD job, Args args)
     {
+        if(this.pool.length == 0)
+        {
+            throw new ThreadPoolException("No workers available!");        
+        }
+
         m.lock();
         q ~= Job(job, args);
         m.unlock();
@@ -167,6 +177,9 @@ class ThreadPool(Args...)
         poolActivity.notifyAll();
         foreach (thread; pool)
             thread.join();
+
+        pool.length = 0;
+
         m.lock();
         m.unlock();
     }
