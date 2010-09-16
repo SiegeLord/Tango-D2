@@ -666,6 +666,9 @@ class Thread
      */
     final Object join( bool rethrow = true )
     {
+        if(!isRunning())
+            return null;
+
         version( Win32 )
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
