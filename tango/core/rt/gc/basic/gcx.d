@@ -1467,9 +1467,9 @@ struct Range
 }
 
 
-const uint binsize[B_MAX] = [ 16,32,64,128,256,512,1024,2048,4096 ];
-const uint notbinsize[B_MAX] = [ ~(16u-1),~(32u-1),~(64u-1),~(128u-1),~(256u-1),
-                                ~(512u-1),~(1024u-1),~(2048u-1),~(4096u-1) ];
+const size_t binsize[B_MAX] = [ 16,32,64,128,256,512,1024,2048,4096 ];
+const size_t notbinsize[B_MAX] = [ ~(16-1),~(32-1),~(64-1),~(128-1),~(256-1),
+                                ~(512-1),~(1024-1),~(2048-1),~(4096-1) ];
 
 /* ============================ Gcx =============================== */
 
@@ -1888,9 +1888,10 @@ struct Gcx
             ////////////////////////////////////////////////////////////////////
             // getBits
             ////////////////////////////////////////////////////////////////////
-
-            info.attr = getBits(pool, cast(size_t)(offset / 16));
             
+            assert(p >= info.base && p< info.base + info.size);
+            info.attr = getBits(pool, cast(size_t) (info.base - pool.baseAddr) / 16);
+
             cached_info_key = p;
             cached_info_val = info;
         }
