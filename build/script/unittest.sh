@@ -30,7 +30,7 @@ fi
 
 if [ $DC == "ldc" ]
 then
-    OPTIONS="-d-debug -d-debug=UnitTest"
+    OPTIONS="-oq -d-debug -d-debug=UnitTest"
 fi
 
 build/bin/$PLATFORM$ARCH/bob -v -r=$DC -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o="-g -unittest $OPTIONS" . 

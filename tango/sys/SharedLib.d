@@ -41,7 +41,7 @@ private {
 }
 
 version (Posix) {
-    version (GNU) { } else { pragma (lib, "dl"); }
+    version (freebsd) { } else { pragma (lib, "dl"); }
 }
 
 
