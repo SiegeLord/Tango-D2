@@ -52,30 +52,30 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
     uint oprod = 0;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
-        UnicodeData **d = (ch in unicodeData);
-        if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-            SpecialCaseData **s = (ch in specialCaseData);
+        UnicodeData *d = getUnicodeData(ch);
+        if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+            SpecialCaseData *s = getSpecialCaseData(ch);
             debug {
                 assert(s !is null);
             }
-            if((*s).upperCaseMapping !is null) {
+            if(s.upperCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // since the length of an UpperCaseMapping list is at most 4
                 // Make sure no relocation is made in the toString Method
                 // better allocation algorithm ?
-                int len = (*s).upperCaseMapping.length;
+                int len = s.upperCaseMapping.length;
                 if(produced + len >= working.length)
                     working.length = working.length + working.length / 2 +  len;
                 oprod = produced;
                 produced += len;
-                working[oprod..produced] = (*s).upperCaseMapping;
+                working[oprod..produced] = s.upperCaseMapping;
                 continue;
             }
         }
         // Make sure no relocation is made in the toString Method
         if(produced + 1 >= output.length)
             working.length = working.length + working.length / 2 + 1;
-        working[produced++] =  d is null ? ch:(*d).simpleUpperCaseMapping;
+        working[produced++] =  d is null ? ch:d.simpleUpperCaseMapping;
     }
     return toString(working[0..produced],output);
 }
@@ -101,22 +101,22 @@ char[] toUpper(char[] input, char[] output = null) {
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
-        UnicodeData **d = (ch in unicodeData);
-        if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-            SpecialCaseData **s = (ch in specialCaseData);
+        UnicodeData *d = getUnicodeData(ch);
+        if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+            SpecialCaseData *s = getSpecialCaseData(ch);
             debug {
                 assert(s !is null);
             }
-            if((*s).upperCaseMapping !is null) {
+            if(s.upperCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // since the length of an UpperCaseMapping list is at most 4
                 // Make sure no relocation is made in the toString Method
                 // better allocation algorithm ?
-                if(produced + (*s).upperCaseMapping.length * 4 >= output.length)
-                        output.length = output.length + output.length / 2 +  (*s).upperCaseMapping.length * 4;
-                char[] res = toString((*s).upperCaseMapping, output[produced..output.length], &ate);
+                if(produced + s.upperCaseMapping.length * 4 >= output.length)
+                        output.length = output.length + output.length / 2 +  s.upperCaseMapping.length * 4;
+                char[] res = toString(s.upperCaseMapping, output[produced..output.length], &ate);
                 debug {
-                    assert(ate == (*s).upperCaseMapping.length);
+                    assert(ate == s.upperCaseMapping.length);
                     assert(res.ptr == output[produced..output.length].ptr);
                 }
                 produced += res.length;
@@ -126,7 +126,7 @@ char[] toUpper(char[] input, char[] output = null) {
         // Make sure no relocation is made in the toString Method
         if(produced + 4 >= output.length)
             output.length = output.length + output.length / 2 + 4;
-        buf[0] = d is null ? ch:(*d).simpleUpperCaseMapping;
+        buf[0] = d is null ? ch:d.simpleUpperCaseMapping;
         char[] res = toString(buf, output[produced..output.length], &ate);
         debug {
             assert(ate == 1);
@@ -157,21 +157,21 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
-        UnicodeData **d = (ch in unicodeData);
-        if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-            SpecialCaseData **s = (ch in specialCaseData);
+        UnicodeData *d = getUnicodeData(ch);
+        if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+            SpecialCaseData *s = getSpecialCaseData(ch);
             debug {
                 assert(s !is null);
             }
-            if((*s).upperCaseMapping !is null) {
+            if(s.upperCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // Make sure no relocation is made in the toString16 Method
                 // better allocation algorithm ?
-                if(produced + (*s).upperCaseMapping.length * 2 >= output.length)
-                    output.length = output.length + output.length / 2 +  (*s).upperCaseMapping.length * 3;
-                wchar[] res = toString16((*s).upperCaseMapping, output[produced..output.length], &ate);
+                if(produced + s.upperCaseMapping.length * 2 >= output.length)
+                    output.length = output.length + output.length / 2 +  s.upperCaseMapping.length * 3;
+                wchar[] res = toString16(s.upperCaseMapping, output[produced..output.length], &ate);
                 debug {
-                    assert(ate == (*s).upperCaseMapping.length);
+                    assert(ate == s.upperCaseMapping.length);
                     assert(res.ptr == output[produced..output.length].ptr);
                 }
                 produced += res.length;
@@ -181,7 +181,7 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
         // Make sure no relocation is made in the toString16 Method
         if(produced + 4 >= output.length)
             output.length = output.length + output.length / 2 + 3;
-        buf[0] = d is null ? ch:(*d).simpleUpperCaseMapping;
+        buf[0] = d is null ? ch:d.simpleUpperCaseMapping;
         wchar[] res = toString16(buf, output[produced..output.length], &ate);
         debug {
             assert(ate == 1);
@@ -210,17 +210,17 @@ dchar[] toUpper(dchar[] input, dchar[] output = null) {
     if (input.length)
         foreach(dchar orig; input) {
             // TODO Conditional Case Mapping
-            UnicodeData **d = (orig in unicodeData);
-            if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-                SpecialCaseData **s = (orig in specialCaseData);
+            UnicodeData *d = getUnicodeData(orig);
+            if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+                SpecialCaseData *s = getSpecialCaseData(orig);
                 debug {
                     assert(s !is null);
                 }
-                if((*s).upperCaseMapping !is null) {
+                if(s.upperCaseMapping !is null) {
                     // Better resize strategy ???
-                    if(produced + (*s).upperCaseMapping.length  > output.length)
-                        output.length = output.length + output.length / 2 + (*s).upperCaseMapping.length;
-                    foreach(ch; (*s).upperCaseMapping) {
+                    if(produced + s.upperCaseMapping.length  > output.length)
+                        output.length = output.length + output.length / 2 + s.upperCaseMapping.length;
+                    foreach(ch; s.upperCaseMapping) {
                         output[produced++] = ch;
                     }
                 }
@@ -228,7 +228,7 @@ dchar[] toUpper(dchar[] input, dchar[] output = null) {
             }
             if(produced >= output.length)
                 output.length = output.length + output.length / 2;
-            output[produced++] = d is null ? orig:(*d).simpleUpperCaseMapping;
+            output[produced++] = d is null ? orig:d.simpleUpperCaseMapping;
         }
     return output[0..produced];
 }
@@ -253,22 +253,22 @@ char[] toLower(char[] input, char[] output = null) {
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
-        UnicodeData **d = (ch in unicodeData);
-        if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-            SpecialCaseData **s = (ch in specialCaseData);
+        UnicodeData *d = getUnicodeData(ch);
+        if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+            SpecialCaseData *s = getSpecialCaseData(ch);
             debug {
                 assert(s !is null);
             }
-            if((*s).lowerCaseMapping !is null) {
+            if(s.lowerCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // since the length of an LowerCaseMapping list is at most 4
                 // Make sure no relocation is made in the toString Method
                 // better allocation algorithm ?
-                if(produced + (*s).lowerCaseMapping.length * 4 >= output.length)
-                        output.length = output.length + output.length / 2 +  (*s).lowerCaseMapping.length * 4;
-                char[] res = toString((*s).lowerCaseMapping, output[produced..output.length], &ate);
+                if(produced + s.lowerCaseMapping.length * 4 >= output.length)
+                        output.length = output.length + output.length / 2 +  s.lowerCaseMapping.length * 4;
+                char[] res = toString(s.lowerCaseMapping, output[produced..output.length], &ate);
                 debug {
-                    assert(ate == (*s).lowerCaseMapping.length);
+                    assert(ate == s.lowerCaseMapping.length);
                     assert(res.ptr == output[produced..output.length].ptr);
                 }
                 produced += res.length;
@@ -278,7 +278,7 @@ char[] toLower(char[] input, char[] output = null) {
         // Make sure no relocation is made in the toString Method
         if(produced + 4 >= output.length)
             output.length = output.length + output.length / 2 + 4;
-        buf[0] = d is null ? ch:(*d).simpleLowerCaseMapping;
+        buf[0] = d is null ? ch:d.simpleLowerCaseMapping;
         char[] res = toString(buf, output[produced..output.length], &ate);
         debug {
             assert(ate == 1);
@@ -309,21 +309,21 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
-        UnicodeData **d = (ch in unicodeData);
-        if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-            SpecialCaseData **s = (ch in specialCaseData);
+        UnicodeData *d = getUnicodeData(ch);
+        if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+            SpecialCaseData *s = getSpecialCaseData(ch);
             debug {
                 assert(s !is null);
             }
-            if((*s).lowerCaseMapping !is null) {
+            if(s.lowerCaseMapping !is null) {
                 // To speed up, use worst case for memory prealocation
                 // Make sure no relocation is made in the toString16 Method
                 // better allocation algorithm ?
-                if(produced + (*s).lowerCaseMapping.length * 2 >= output.length)
-                    output.length = output.length + output.length / 2 +  (*s).lowerCaseMapping.length * 3;
-                wchar[] res = toString16((*s).lowerCaseMapping, output[produced..output.length], &ate);
+                if(produced + s.lowerCaseMapping.length * 2 >= output.length)
+                    output.length = output.length + output.length / 2 +  s.lowerCaseMapping.length * 3;
+                wchar[] res = toString16(s.lowerCaseMapping, output[produced..output.length], &ate);
                 debug {
-                    assert(ate == (*s).lowerCaseMapping.length);
+                    assert(ate == s.lowerCaseMapping.length);
                     assert(res.ptr == output[produced..output.length].ptr);
                 }
                 produced += res.length;
@@ -333,7 +333,7 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
         // Make sure no relocation is made in the toString16 Method
         if(produced + 4 >= output.length)
             output.length = output.length + output.length / 2 + 3;
-        buf[0] = d is null ? ch:(*d).simpleLowerCaseMapping;
+        buf[0] = d is null ? ch:d.simpleLowerCaseMapping;
         wchar[] res = toString16(buf, output[produced..output.length], &ate);
         debug {
             assert(ate == 1);
@@ -363,17 +363,17 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
     if (input.length)
         foreach(dchar orig; input) {
             // TODO Conditional Case Mapping
-            UnicodeData **d = (orig in unicodeData);
-            if(d !is null && ((*d).generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
-                SpecialCaseData **s = (orig in specialCaseData);
+            UnicodeData *d = getUnicodeData(orig);
+            if(d !is null && (d.generalCategory & UnicodeData.GeneralCategory.SpecialMapping)) {
+                SpecialCaseData *s = getSpecialCaseData(orig);
                 debug {
                     assert(s !is null);
                 }
-                if((*s).lowerCaseMapping !is null) {
+                if(s.lowerCaseMapping !is null) {
                     // Better resize strategy ???
-                    if(produced + (*s).lowerCaseMapping.length  > output.length)
-                        output.length = output.length + output.length / 2 + (*s).lowerCaseMapping.length;
-                    foreach(ch; (*s).lowerCaseMapping) {
+                    if(produced + s.lowerCaseMapping.length  > output.length)
+                        output.length = output.length + output.length / 2 + s.lowerCaseMapping.length;
+                    foreach(ch; s.lowerCaseMapping) {
                         output[produced++] = ch;
                     }
                 }
@@ -381,7 +381,7 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
             }
             if(produced >= output.length)
                 output.length = output.length + output.length / 2;
-            output[produced++] = d is null ? orig:(*d).simpleLowerCaseMapping;
+            output[produced++] = d is null ? orig:d.simpleLowerCaseMapping;
         }
     return output[0..produced];
 }
@@ -405,17 +405,17 @@ char[] toFold(char[] input, char[] output = null) {
     uint produced = 0;
     uint ate;
     foreach(dchar ch; input) {
-        FoldingCaseData **s = (ch in foldingCaseData);
+        FoldingCaseData *s = getFoldingCaseData(ch);
         if(s !is null) {
             // To speed up, use worst case for memory prealocation
             // since the length of an UpperCaseMapping list is at most 4
             // Make sure no relocation is made in the toString Method
             // better allocation algorithm ?
-            if(produced + (*s).mapping.length * 4 >= output.length)
-                output.length = output.length + output.length / 2 +  (*s).mapping.length * 4;
-            char[] res = toString((*s).mapping, output[produced..output.length], &ate);
+            if(produced + s.mapping.length * 4 >= output.length)
+                output.length = output.length + output.length / 2 +  s.mapping.length * 4;
+            char[] res = toString(s.mapping, output[produced..output.length], &ate);
             debug {
-                assert(ate == (*s).mapping.length);
+                assert(ate == s.mapping.length);
                 assert(res.ptr == output[produced..output.length].ptr);
             }
             produced += res.length;
@@ -454,16 +454,16 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
     uint produced = 0;
     uint ate;
     foreach(dchar ch; input) {
-        FoldingCaseData **s = (ch in foldingCaseData);
+        FoldingCaseData *s = getFoldingCaseData(ch);
         if(s !is null) {
             // To speed up, use worst case for memory prealocation
             // Make sure no relocation is made in the toString16 Method
             // better allocation algorithm ?
-            if(produced + (*s).mapping.length * 2 >= output.length)
-                output.length = output.length + output.length / 2 +  (*s).mapping.length * 3;
-            wchar[] res = toString16((*s).mapping, output[produced..output.length], &ate);
+            if(produced + s.mapping.length * 2 >= output.length)
+                output.length = output.length + output.length / 2 +  s.mapping.length * 3;
+            wchar[] res = toString16(s.mapping, output[produced..output.length], &ate);
             debug {
-                assert(ate == (*s).mapping.length);
+                assert(ate == s.mapping.length);
                 assert(res.ptr == output[produced..output.length].ptr);
             }
             produced += res.length;
@@ -501,12 +501,12 @@ dchar[] toFold(dchar[] input, dchar[] output = null) {
     uint produced = 0;
     if (input.length)
         foreach(dchar orig; input) {
-            FoldingCaseData **d = (orig in foldingCaseData);
+            FoldingCaseData *d = getFoldingCaseData(orig);
             if(d !is null ) {
                 // Better resize strategy ???
-                if(produced + (*d).mapping.length  > output.length)
-                    output.length = output.length + output.length / 2 + (*d).mapping.length;
-                foreach(ch; (*d).mapping) {
+                if(produced + d.mapping.length  > output.length)
+                    output.length = output.length + output.length / 2 + d.mapping.length;
+                foreach(ch; d.mapping) {
                     output[produced++] = ch;
                 }
                 continue;
@@ -527,8 +527,8 @@ dchar[] toFold(dchar[] input, dchar[] output = null) {
  *     ch = the character to be inspected
  */
 bool isDigit(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & UnicodeData.GeneralCategory.Nd);
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory & UnicodeData.GeneralCategory.Nd);
 }
 
 
@@ -539,8 +539,8 @@ bool isDigit(dchar ch) {
  *     ch = the character to be inspected
  */
 bool isLetter(int ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory &
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory &
         ( UnicodeData.GeneralCategory.Lu
         | UnicodeData.GeneralCategory.Ll
         | UnicodeData.GeneralCategory.Lt
@@ -556,8 +556,8 @@ bool isLetter(int ch) {
  *     ch = the character to be inspected
  */
 bool isLetterOrDigit(int ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory &
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory &
         ( UnicodeData.GeneralCategory.Lu
         | UnicodeData.GeneralCategory.Ll
         | UnicodeData.GeneralCategory.Lt
@@ -572,8 +572,8 @@ bool isLetterOrDigit(int ch) {
  *     ch = the character to be inspected
  */
 bool isLower(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & UnicodeData.GeneralCategory.Ll);
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory & UnicodeData.GeneralCategory.Ll);
 }
 
 /**
@@ -585,8 +585,8 @@ bool isLower(dchar ch) {
  *     ch = the character to be inspected
  */
 bool isTitle(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & UnicodeData.GeneralCategory.Lt);
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory & UnicodeData.GeneralCategory.Lt);
 }
 
 /**
@@ -595,8 +595,8 @@ bool isTitle(dchar ch) {
  *     ch = the character to be inspected
  */
 bool isUpper(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory & UnicodeData.GeneralCategory.Lu);
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory & UnicodeData.GeneralCategory.Lu);
 }
 
 /**
@@ -616,8 +616,8 @@ bool isUpper(dchar ch) {
 bool isWhitespace(dchar ch) {
     if((ch >= 0x0009 && ch <= 0x000D) || (ch >= 0x001C && ch <= 0x001F))
         return true;
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory &
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory &
             ( UnicodeData.GeneralCategory.Zs
             | UnicodeData.GeneralCategory.Zl
             | UnicodeData.GeneralCategory.Zp))
@@ -637,8 +637,8 @@ bool isWhitespace(dchar ch) {
  *     ch = the character to be inspected
  */
 bool isSpace(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && ((*d).generalCategory &
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && (d.generalCategory &
             ( UnicodeData.GeneralCategory.Zs
             | UnicodeData.GeneralCategory.Zl
             | UnicodeData.GeneralCategory.Zp));
@@ -653,8 +653,8 @@ bool isSpace(dchar ch) {
  *     ch = the character to be inspected
  */
 bool isPrintable(dchar ch) {
-    UnicodeData **d = (ch in unicodeData);
-    return (d !is null) && !((*d).generalCategory &
+    UnicodeData *d = getUnicodeData(ch);
+    return (d !is null) && !(d.generalCategory &
             ( UnicodeData.GeneralCategory.Cn
             | UnicodeData.GeneralCategory.Cc
             | UnicodeData.GeneralCategory.Cf
