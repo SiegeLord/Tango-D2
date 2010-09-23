@@ -69,11 +69,24 @@ class DocPrinter(T)
 
         ***********************************************************************/
         
-        final T[] print (Doc doc)
-        {       
-                T[] content;
-
-                print (doc.tree, (T[][] s...){foreach(t; s) content ~= t;});
+        final T[] print (Doc doc, T[] content=null)
+        {                      
+                if(content !is null)  
+                    print (doc.tree, (T[][] s...)
+                        {
+                            size_t i=0; 
+                            foreach(t; s) 
+                            { 
+                                if(i+t.length >= content.length) 
+                                    throw new XmlException("Buffer is to small"); 
+                                
+                                content[i..t.length] = t; 
+                                i+=t.length; 
+                            } 
+                            content.length = i; 
+                        });
+                else
+                    print (doc.tree, (T[][] s...){foreach(t; s) content ~= t;});
                 return content;
         }
         
@@ -196,19 +209,23 @@ class DocPrinter(T)
 }
 
 
-debug (DocPrinter)
+debug import tango.text.xml.Document;
+debug import tango.util.log.Trace;
+
+unittest
 {
-        import tango.io.Stdout;
-        import tango.text.xml.Document;
 
-        void main()
-        {
-                char[] document = "<blah><xml>foo</xml></blah>";
+    char[] document = "<blah><xml>foo</xml></blah>";
 
-                auto doc = new Document!(char);
-                doc.parse (document);
+    auto doc = new Document!(char);
+    doc.parse (document);
 
-                auto p = new DocPrinter!(char);
-                p.print (doc, stdout);
-        }
+    auto p = new DocPrinter!(char);
+    char[1024] buf;
+    auto newbuf = p.print (doc, buf);
+    assert(document == newbuf);
+    assert(buf.ptr == newbuf.ptr);
+    assert(document == p.print(doc));
+    
+
 }
