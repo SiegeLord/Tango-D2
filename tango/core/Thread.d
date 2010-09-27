@@ -1659,6 +1659,8 @@ extern (C) void thread_init()
     {
         Thread.sm_this = TlsAlloc();
         assert( Thread.sm_this != TLS_OUT_OF_INDEXES );
+        Fiber.sm_this = TlsAlloc();
+        assert( Thread.sm_this != TLS_OUT_OF_INDEXES );
     }
     else version( Posix )
     {
@@ -1730,6 +1732,8 @@ extern (C) void thread_init()
         assert( status == 0 );
 
         status = pthread_key_create( &Thread.sm_this, null );
+        assert( status == 0 );
+        status = pthread_key_create( &Fiber.sm_this, null );
         assert( status == 0 );
     }
 
@@ -2736,10 +2740,11 @@ private
 // Fiber
 ////////////////////////////////////////////////////////////////////////////////
 
-private char[] ptrToStr(size_t addr){
+private char[] ptrToStr(size_t addr,char[]buf){
     char[] digits="0123456789ABCDEF";
     enum{ nDigits=size_t.sizeof*2 }
-    char[] res=new char[](nDigits);
+    if (nDigits>buf.length) assert(0);
+    char[] res=buf[0..nDigits];
     size_t addrAtt=addr;
     for (int i=nDigits;i!=0;--i){
         res[i-1]=digits[addrAtt&0xF];
@@ -3108,10 +3113,12 @@ class Fiber
     body
     {
         if (m_state != State.TERM){
-            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this)~" in unexpected state "~ptrToStr(m_state),__FILE__,__LINE__);
+            char[20] buf;
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf)~" in unexpected state "~ptrToStr(m_state,buf),__FILE__,__LINE__);
         }
         if (m_ctxt.tstack != m_ctxt.bstack){
-            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this)~" bstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.bstack)~" != tstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.tstack),__FILE__,__LINE__);
+            char[20] buf;
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf)~" bstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.bstack,buf)~" != tstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.tstack,buf),__FILE__,__LINE__);
         }
         m_dg    = null;
         m_fn    = null;
@@ -3720,6 +3727,7 @@ private:
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
+        tobj=Thread.getThis();
         volatile tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
