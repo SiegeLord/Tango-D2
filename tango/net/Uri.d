@@ -927,10 +927,10 @@ private struct HeapSlice
         
 *******************************************************************************/
 
-debug
+debug (UnitTest)
 { 
     import tango.util.log.Trace;
-}
+
 unittest
 {
     auto uri = new Uri;
@@ -964,4 +964,6 @@ unittest
     //Cout (uri).newline;
     //Cout (uri.encode ("&#$%", uri.IncQuery)).newline;
         
+}
+
 }
