@@ -11,7 +11,8 @@ module tango.core.ThreadPool;
 private import tango.core.Thread,
                 tango.core.sync.Atomic,
                 tango.core.sync.Mutex,
-                tango.core.sync.Condition;
+                tango.core.sync.Condition,
+                tango.core.Exception;
 
 private import  tango.stdc.string: memmove;
 
