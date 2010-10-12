@@ -55,7 +55,9 @@ version (Posix)
 
 struct Kiss
 {
+        ///
         public alias natural  toInt;
+        ///
         public alias fraction toReal;
         
         private uint kiss_k;
