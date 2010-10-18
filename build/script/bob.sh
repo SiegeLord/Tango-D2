@@ -24,8 +24,8 @@ Options:
   --debug: Will enable debug info
   --warn: Will enable warnings
   --verbose: Increase verbosity 
-  --user: Just user portion of library
-  --runtime: Just runtime portion of library
+  --user: Build user portion of library
+  --runtime: Build runtime portion of library
   --libname <name>: The name that will be used for the built library (libtango.a is default)
   <identifier> is one of {dmd, gdc, ldc}
 
@@ -179,7 +179,7 @@ compileGcc() {
 # Build the libraries
 build() {
 
-    DC=$1
+    WRAPPER=$1
     LIB=$2
     
     echo Building $LIB
@@ -190,9 +190,9 @@ build() {
         USER=1
     fi
 
-    if ! which $DC >& /dev/null
+    if ! which $WRAPPER >& /dev/null
     then
-        echo "$DC not found on your \$PATH!"
+        echo "$WRAPPER not found on your \$PATH!"
         return
     fi
 
@@ -211,7 +211,7 @@ build() {
 
     if [ $VERBOSE = 1 ]
     then
-        echo "D compiler call: $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. .Itango/core -Itango/core/vendor -version=Tango -of<object> <filename>"
+        echo "D compiler call: $WRAPPER $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. .Itango/core -Itango/core/vendor -version=Tango -of<object> <filename>"
     fi
 
     for file in `find tango -name '*.d'`
