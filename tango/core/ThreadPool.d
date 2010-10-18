@@ -12,7 +12,7 @@ private import tango.core.Thread,
                 tango.core.sync.Atomic,
                 tango.core.sync.Mutex,
                 tango.core.sync.Condition,
-                tango.core.Exception;
+                tango.core.Exception : ThreadPoolException;
 
 private import  tango.stdc.string: memmove;
 
