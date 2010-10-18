@@ -76,8 +76,8 @@ def main (arg)
 		Dir.mkdir(args.objs) unless File.exists?(args.objs)
 
 		linux_dmd = "dmd -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
-		linux_ldc = "ldc -c -I#{args.root}/tango/core -I#{args.root}/tango/core/rt/compiler/ldc -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
-		linux_gdc = "gdc -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
+		linux_ldc = "ldmd -c -I#{args.root}/tango/core -I#{args.root}/tango/core/rt/compiler/ldc -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
+		linux_gdc = "gdmd -c -I#{args.root}/tango/core -I#{args.root} -I#{args.root}/tango/core/vendor #{args.flags} -of#{args.objs}/"
 		
 		osx_dmd = linux_dmd[0 ... 4] + "-version=darwin -version=osx " + linux_dmd[4 .. -1]
 		osx_ldc = linux_ldc
