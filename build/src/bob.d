@@ -595,6 +595,8 @@ class FileFilter : FileScan
                 exclude ("tango/sys/solaris");
 
                 exclude ("tango/core/rt/gc/stub");
+                exclude ("tango/core/rt/gc/basic");
+
                 exclude ("tango/core/rt/compiler/dmd");
                 exclude ("tango/core/rt/compiler/gdc");
                 exclude ("tango/core/rt/compiler/ldc");
@@ -604,6 +606,7 @@ class FileFilter : FileScan
                 exclude ("tango/core/vendor/std");
                 
                 include ("tango/core/rt/compiler/"~args.target);
+                include ("tango/core/rt/gc/"~args.gc);
                 //dmd has the std module name hardcoded :(
                 include ("tango/core/vendor/"~ ((args.target == "dmd") ? "std" : args.target));
         }
@@ -800,6 +803,7 @@ struct Args
                 dynamic;
 
         char[]  os,
+                gc,
                 lib,
                 root,
                 flags,
@@ -816,6 +820,7 @@ struct Args
                         "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
                         "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
+                        "\t[-g=basic|stub]\t\tspecify the GC implementation to include in the runtime\n"
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
                         "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
@@ -833,6 +838,7 @@ struct Args
                 auto o = args('o').smush.params(1).defaults("-release");
                 auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto r = args('r').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
+                auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "stub");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
                 auto d = args('d');
@@ -878,6 +884,7 @@ struct Args
                    flags = o.assigned[0];
                    target = r.assigned[0];
                    compiler = c.assigned[0];
+                   gc = g.assigned[0];
                    lib = l.assigned[0];
                        
                     if(compiler == "gdc" && flags == "-release")
