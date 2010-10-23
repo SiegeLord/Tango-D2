@@ -60,6 +60,7 @@ module Bob
 	RUNTIMES = COMPILERS
 	FILTERS = %w[osx freebsd linux haiku solaris windows]
 	ARCHS = %w[i386 x86_64]
+	GARBAGE_COLLECTORS = %w[basic stub]
 
 	OSX = RUBY_PLATFORM =~ /darwin/ ? true : false
 	FREEBSD = RUBY_PLATFORM =~ /freebsd/ ? true : false
@@ -70,7 +71,7 @@ module Bob
 	
 	Args = Struct.new(:verbose, :inhibit, :include, :target, :compiler, 
 					  :flags, :lib, :os, :core, :root, :filter, :quick,
-					  :objs, :dynamic, :universal, :arch) do
+					  :objs, :dynamic, :universal, :arch, :gc) do
 
 		def initialize
 			self.verbose = false
@@ -91,6 +92,7 @@ module Bob
 			self.dynamic = false
 			self.universal = false
 			self.arch = ""
+			self.gc = "basic"
 
 			self.os = ""
 			self.os = "osx" if OSX
@@ -212,6 +214,12 @@ module Bob
 
 				opts.on("-c", "--compiler COMPILER", COMPILERS, "Specify a compiler to use.", "\t(#{compiler_list}).") do |opt|
 					options.compiler = opt
+				end
+				
+				gc_list = GARBAGE_COLLECTORS.join(",")
+
+				opts.on("-g", "--gc GC", GARBAGE_COLLECTORS, "Specify the GC implementation to include in the runtime.", "\t(#{gc_list}).") do |opt|
+					options.gc = opt
 				end
 
 				opts.on("-d", "--dynamic", "Build Tango as a dynamic/shared library.") do |opt|
@@ -391,6 +399,8 @@ module Bob
 			exclude("tango/sys/solaris");
 
 			exclude("tango/core/rt/gc/stub");
+			exclude("tango/core/rt/gc/basic");
+			
 			exclude("tango/core/rt/compiler/dmd");
 			exclude("tango/core/rt/compiler/gdc");
 			exclude("tango/core/rt/compiler/ldc");
@@ -401,6 +411,7 @@ module Bob
 
 			include("tango/core/rt/compiler/" + args.target)
 			include("tango/core/vendor/" + ((args.target == "dmd") ? "std" : args.target))
+			include("tango/core/rt/gc/#{@args.gc}")
 		end
 
 		def self.register (platform, compiler, symbol, object)
