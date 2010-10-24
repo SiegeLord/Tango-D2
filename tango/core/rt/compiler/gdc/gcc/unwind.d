@@ -204,8 +204,6 @@ _Unwind_Reason_Code _Unwind_SjLj_Resume_or_Rethrow (_Unwind_Exception *);
    compatible with the standard ABI for IA-64, we inline these.  */
 
 version (IA64) {
-private import std.c.process;
-
 _Unwind_Ptr
 _Unwind_GetDataRelBase (_Unwind_Context *_C)
 {
