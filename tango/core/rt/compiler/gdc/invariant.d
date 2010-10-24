@@ -4,7 +4,10 @@
  * written by Walter Bright
  * www.digitalmars.com
  */
-module invariant_;
+
+private {
+    extern(C) int printf(char*,...);
+}
 void _d_invariant(Object o)
 {   ClassInfo c;
 

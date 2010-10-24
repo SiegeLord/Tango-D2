@@ -4,29 +4,15 @@
  * www.digitalmars.com
  */
 
-
-
 /* NOTE: This file has been patched from the original DMD distribution to
-
    work with the GDC compiler.
-
-
-
-   Modified by David Friedman, September 2004
-
 */
-
-
-
-#include "config.h"
-
-
 
 /* ================================= Win32 ============================ */
 
 #if _WIN32
 
-#include	<windows.h>
+#include <windows.h>
 
 /******************************************
  * Enter/exit critical section.
@@ -93,27 +79,15 @@ void _STD_critical_term()
 
 /* ================================= linux ============================ */
 
+#if linux || __APPLE__ || __FreeBSD__ || __sun&&__SVR4
 
-
-#if linux || PHOBOS_USE_PTHREADS
-
-
-
-
-
+#include	<stdio.h>
+#include	<stdlib.h>
 #include	<pthread.h>
 
-
-
-#ifndef HAVE_PTHREAD_MUTEX_RECURSIVE
-
-#define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
-
+#ifndef PTHREAD_MUTEX_RECURSIVE
+#    define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
-
-
-
-
 
 /******************************************
  * Enter/exit critical section.
@@ -151,14 +125,10 @@ void _d_criticalenter(D_CRITICAL_SECTION *dcs)
 	{
 	    dcs->next = dcs_list;
 	    dcs_list = dcs;
-
 #ifndef PTHREAD_MUTEX_ALREADY_RECURSIVE
-
 	    pthread_mutex_init(&dcs->cs, &_criticals_attr);
-
 #else
 	    pthread_mutex_init(&dcs->cs, NULL);
-
 #endif
 	}
 	pthread_mutex_unlock(&critical_section.cs);
@@ -176,17 +146,10 @@ void _STI_critical_init()
 {
     if (!dcs_list)
     {	//printf("_STI_critical_init()\n");
-
 #ifndef PTHREAD_MUTEX_ALREADY_RECURSIVE
-
 	pthread_mutexattr_init(&_criticals_attr);
-
 	pthread_mutexattr_settype(&_criticals_attr, PTHREAD_MUTEX_RECURSIVE);
-
 #endif
-
-
-
 	// The global critical section doesn't need to be recursive
 	pthread_mutex_init(&critical_section.cs, 0);
 	dcs_list = &critical_section;

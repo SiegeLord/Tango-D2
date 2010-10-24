@@ -5,10 +5,6 @@
  * www.digitalmars.com
  */
 
-/*
- *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
- */
-
 #include <stddef.h>
 #include <sys/types.h>
 
@@ -67,14 +63,6 @@ typedef struct Exception
 
     size_t msglen;
     char *msg;
-
-    size_t filelen;
-    char *file;
-
-    size_t line;
-
-    struct Interface *info;
-    struct Exception *next;
 } Exception;
 
 typedef struct Array
@@ -83,14 +71,15 @@ typedef struct Array
     void *ptr;
 } Array;
 
-typedef struct Delegate
+struct Delegate
 {
     void *thisptr;
     void (*funcptr)();
-} Delegate;
+};
 
 void _d_monitorenter(Object *h);
 void _d_monitorexit(Object *h);
+void _d_monitorrelease(Object *h);
 
 int _d_isbaseof(ClassInfo *b, ClassInfo *c);
 Object *_d_dynamic_cast(Object *o, ClassInfo *ci);
