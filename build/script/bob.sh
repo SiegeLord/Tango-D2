@@ -147,7 +147,7 @@ compile() {
     if filter $OBJNAME 
     then
         if [ $VERBOSE == 1 ]; then echo "[$DC] $FILENAME"; fi
-        $DC $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. -Itango/core -Itango/core/vendor -version=Tango -of$OBJNAME $FILENAME
+        $WRAPPER $ARCH $WARN -c $INLINE $DEBUG $RELEASE $POSIXFLAG -I. -Itango/core -Itango/core/vendor -version=Tango -of$OBJNAME $FILENAME
         if [ "$?" != 0 ]
         then
             return 1;
@@ -194,12 +194,6 @@ build() {
     then
         echo "$WRAPPER not found on your \$PATH!"
         return
-    fi
-
-    if [ $DC == "gdc" ]
-    then
-        echo Runtime build for gdc not currently supported, disabling.
-        RUNTIME=0
     fi
 
     # Check if the compiler used has known bugs
@@ -281,13 +275,16 @@ do
             LIBNAME=$1
             ;;
         dmd)
+            DC="dmd"
             build dmd $LIBNAME
             ;;
         gdc)
+            DC="gdc"
             POSIXFLAG="-version=Posix"
             build gdmd $LIBNAME
             ;;
         ldc)
+            DC="ldc"
             build ldmd $LIBNAME
             ;;
         *)
