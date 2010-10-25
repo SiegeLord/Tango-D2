@@ -13,7 +13,7 @@
 private import tango.text.Util;
 private import tango.io.Stdout;
 private import tango.sys.Process;
-private import tango.io.FileScan;
+private import tango.io.FilePath;
 private import Path = tango.io.Path;
 private import tango.io.device.Array;
 private import tango.io.device.File;
@@ -542,7 +542,7 @@ class Solaris : FileFilter
       
 *******************************************************************************/
 
-class FileFilter : FileScan
+class FileFilter
 {
         alias int delegate()    Builder;
 
@@ -610,32 +610,46 @@ class FileFilter : FileScan
                 //dmd has the std module name hardcoded :(
                 include ("tango/core/vendor/"~ ((args.target == "dmd") ? "std" : args.target));
         }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        final FilePath[] scan (char[] suffix)
+        {
+                this.suffix = suffix;
+                auto files = sweep (FilePath(args.root~"/tango"));
+                foreach(file; files)
+                    if(args.user || containsPattern(file.folder, "core"))
+                        this.count++;
+                return files;
+        }
         
         /***********************************************************************
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref FilePath) dg)
+        final FilePath[] sweep(FilePath root)
         {
-                int result;
-                foreach (path; super.files)  
-                         if (args.user || containsPattern(path.folder, "core"))
-                             if (++count, (result = dg(path)) != 0)
-                                  break;
-                return result;
+            FilePath[] files;
+            FilePath[] folders;
+            
+            foreach (path; root.toList(&filter))
+            {
+                if(path.isFolder)
+                    folders ~= path;
+                else
+                    files ~= path;
+            }
+            
+            foreach(folder; folders)
+            {
+                files ~= sweep(folder);
+            }
+            
+            return files;
         }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        final FileFilter scan (char[] suffix)
-        {
-                this.suffix = suffix;
-                super.sweep (args.root~"/tango", &filter);
-                return this;
-        }
-
+        
         /***********************************************************************
 
         ***********************************************************************/
