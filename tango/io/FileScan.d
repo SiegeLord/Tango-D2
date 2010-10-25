@@ -17,6 +17,10 @@ public  import tango.io.FilePath;
 
 private import tango.core.Exception;
 
+pragma(msg, "tango.io.FileScan is deprecated. Please use tango.io.FilePath.toList or tango.io.vfs.* instead.");
+
+deprecated:
+
 /*******************************************************************************
 
         Recursively scan files and directories, adding filtered files to
