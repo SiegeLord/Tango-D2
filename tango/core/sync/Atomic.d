@@ -195,8 +195,8 @@ version( LDC )
     pragma(msg,"WARNING: this is *slow* you probably want to change this!");
     int dummy;
     // acquires a lock... probably you will want to skip this
-    synchronized void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
-        dummy=1;
+    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+        synchronized { dummy=1; }
     }
     enum{LockVersion=true}
 }
