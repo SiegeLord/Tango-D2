@@ -45,7 +45,7 @@ VERBOSE=0
 USER=0
 RUNTIME=0
 LIBNAME="libtango.a"
-GCC32=""#"-m32"
+GCC32=""
 GCCRELEASE="-O3"
 
 pushd `dirname $0`
