@@ -182,11 +182,20 @@ uint __eh_find_caller(uint regbp, uint *pretaddr)
 }
 
 /***********************************
- * Throw a D object.
- */
+* Deprecated because of Bugzilla 4398,
+* keep for the moment for backwards compatibility.
+*/
 
 extern (Windows) void _d_throw(Object *h)
 {
+    _d_throwc(h);
+}
+
+/***********************************
+* Throw a D object.
+*/
+
+extern(C) void _d_throwc(Object *h){
     uint regebp;
 
     debug(deh)
