@@ -978,15 +978,15 @@ final class RandomG(SourceT=DefaultEngine)
         T from,to;
         RandomG r;
         /// initializes the probability distribution
-        static UniformRDistribution create(RandomG r,T from, T to){
-            UniformRDistribution res;
+        static UniformR2Distribution create(RandomG r,T from, T to){
+            UniformR2Distribution res;
             res.r=r;
             res.from=from;
             res.to=to;
             return res;
         }
         /// chainable call style initialization of variables (thorugh a call to randomize)
-        UniformRDistribution opCall(U,S...)(ref U a,S args){
+        UniformR2Distribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
             return *this;
         }
@@ -995,7 +995,7 @@ final class RandomG(SourceT=DefaultEngine)
             return r.uniformR2!(T,boundCheck)(from,to);
         }
         /// initialize a
-        U randomize(ref U a){
+        U randomize(U)(ref U a){
             return r.randomizeUniformR2!(U,T,T,boundCheck)(a,from,to);
         }
     }
@@ -1140,7 +1140,7 @@ final class RandomG(SourceT=DefaultEngine)
     UniformRSymmDistribution!(T,false,isFloat!(T)) uniformRSymmBoundsD(T)(T to){
         return UniformRSymmDistribution!(T,false,isFloat!(T)).create(this,to);
     }
-    /// uniform distribution [from;to) fro ints and (from;to) for reals
+    /// uniform distribution [from;to) for ints and (from;to) for reals
     UniformR2Distribution!(T,true) uniformR2D(T)(T from, T to){
         return UniformR2Distribution!(T,true).create(this,from,to);
     }
