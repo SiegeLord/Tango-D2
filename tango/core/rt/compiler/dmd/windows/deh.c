@@ -227,15 +227,19 @@ int _d_exception_filter(struct _EXCEPTION_POINTERS *eptrs,
 /***********************************
  * Throw a D object.
  */
+ void _d_throwc(Object *h)
+ {
+     //printf("_d_throw(h = %p, &h = %p)\n", h, &h);
+     //printf("\tvptr = %p\n", *(void **)h);
+     RaiseException(STATUS_DIGITAL_MARS_D_EXCEPTION,
+                    EXCEPTION_NONCONTINUABLE,
+                    1, (DWORD *)&h);
+ }
 
-void __stdcall _d_throw(Object *h)
-{
-    //printf("_d_throw(h = %p, &h = %p)\n", h, &h);
-    //printf("\tvptr = %p\n", *(void **)h);
-    RaiseException(STATUS_DIGITAL_MARS_D_EXCEPTION,
-                   EXCEPTION_NONCONTINUABLE,
-                   1, (DWORD *)&h);
-}
+ void __stdcall _d_throw(Object *h)
+ {
+     _d_throwc(h);
+ }
 
 /***********************************
  * Create an exception object
