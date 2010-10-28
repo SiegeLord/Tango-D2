@@ -215,25 +215,37 @@ void _d_monitor_unlock(Object *h)
     //printf("-_d_monitor_release(%p)\n", h);
 }
 
-#else // NO_SYSTEM
+/* ================================= No System ============================ */
+
+#else
 
 void _STI_monitor_staticctor() { }
 void _STD_monitor_staticdtor() { }
 
-void _d_monitorenter(Object *h)
+void _d_monitor_create(Object *h)
 {
-    if (! h->monitor)
-        h->monitor = (Monitor *)calloc(sizeof(Monitor), 1);
+    Monitor *cs = NULL;
+    if (!h->monitor)
+    {
+        cs = (Monitor *)calloc(sizeof(Monitor), 1);
+        assert(cs);
+        h->monitor = (void *)cs;
+        cs = NULL;
+    }
 }
-void _d_monitorexit(Object *h)
+
+int _d_monitor_lock(Object *h)
 {
 }
-void _d_monitorrelease(Object *h)
+
+void _d_monitor_unlock(Object *h)
+{
+}
+
+void _d_monitor_destroy(Object *h)
 {
     if (h->monitor)
     {
-        _d_notify_release(h);
-        // We can improve this by making a free list of monitors
         free((void *)h->monitor);
         h->monitor = NULL;
     }
