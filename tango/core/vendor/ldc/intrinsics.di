@@ -101,8 +101,16 @@ pragma(intrinsic, "llvm.readcyclecounter")
 // Note that, unlike the standard libc function, the llvm.memcpy.* intrinsics do
 // not return a value, and takes an extra alignment argument.
 
-pragma(intrinsic, "llvm.memcpy.i#")
-    void llvm_memcpy(T)(void* dst, void* src, T len, uint alignment);
+version(LDC_LLVMPre28)
+{
+    pragma(intrinsic, "llvm.memcpy.i#")
+        void llvm_memcpy(T)(void* dst, void* src, T len, uint alignment);
+}
+else
+{
+    pragma(intrinsic, "llvm.memcpy.p0i8.p0i8.i#")
+        void llvm_memcpy(T)(void* dst, void* src, T len, uint alignment, bool volatile_);
+}
 
 deprecated {
     alias llvm_memcpy!(uint)  llvm_memcpy_i32;
@@ -116,8 +124,16 @@ deprecated {
 // Note that, unlike the standard libc function, the llvm.memmove.* intrinsics
 // do not return a value, and takes an extra alignment argument.
 
-pragma(intrinsic, "llvm.memmove.i#")
-    void llvm_memmove(T)(void* dst, void* src, T len, uint alignment);
+version(LDC_LLVMPre28)
+{
+    pragma(intrinsic, "llvm.memmove.i#")
+        void llvm_memmove(T)(void* dst, void* src, T len, uint alignment);
+}
+else
+{
+    pragma(intrinsic, "llvm.memmove.p0i8.p0i8.i#")
+        void llvm_memmove(T)(void* dst, void* src, T len, uint alignment, bool volatile_);
+}
 
 deprecated {
     alias llvm_memmove!(uint)  llvm_memmove_i32;
@@ -130,8 +146,16 @@ deprecated {
 // Note that, unlike the standard libc function, the llvm.memset intrinsic does
 // not return a value, and takes an extra alignment argument.
 
-pragma(intrinsic, "llvm.memset.i#")
-    void llvm_memset(T)(void* dst, ubyte val, T len, uint alignment);
+version(LDC_LLVMPre28)
+{
+    pragma(intrinsic, "llvm.memset.i#")
+        void llvm_memset(T)(void* dst, ubyte val, T len, uint alignment);
+}
+else
+{
+    pragma(intrinsic, "llvm.memset.p0i8.i#")
+        void llvm_memset(T)(void* dst, ubyte val, T len, uint alignment, bool volatile_);
+}
 
 deprecated {
     alias llvm_memset!(uint)  llvm_memset_i32;

@@ -114,7 +114,10 @@ void _d_array_init_mem(void* a, size_t na, void* v, size_t nv)
     auto p = a;
     auto end = a + na*nv;
     while (p !is end) {
-        llvm_memcpy(p,v,nv,0);
+        version(LDC_LLVMPre28)
+            llvm_memcpy(p,v,nv,0);
+        else
+            llvm_memcpy(p,v,nv,1, false);
         p += nv;
     }
 }
@@ -164,7 +167,12 @@ void _d_array_slice_copy(void* dst, size_t dstlen, void* src, size_t srclen)
     if (dstlen != srclen)
         throw new Exception("lengths don't match for array copy");
     else if (dst+dstlen <= src || src+srclen <= dst)
-        llvm_memcpy(dst, src, dstlen, 0);
+    {
+        version(LDC_LLVMPre28)
+            llvm_memcpy(dst, src, dstlen, 0);
+        else
+            llvm_memcpy(dst, src, dstlen, 1, false);
+    }
     else
         throw new Exception("overlapping array copy");
 }
