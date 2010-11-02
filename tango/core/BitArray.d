@@ -587,7 +587,7 @@ struct BitArray
     }
     body
     {
-        return cast(bool)bt( ptr, pos );
+        return cast(bool)bt( cast(size_t*)ptr, pos );
     }
 
 
@@ -927,9 +927,9 @@ struct BitArray
     body
     {
         if( b )
-            bts( ptr, pos );
+            bts( cast(size_t*)ptr, pos );
         else
-            btr( ptr, pos );
+            btr( cast(size_t*)ptr, pos );
         return b;
     }
 

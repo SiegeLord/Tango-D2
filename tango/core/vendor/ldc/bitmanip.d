@@ -26,10 +26,10 @@ int bsf(uint v)
     return i; // supposed to be undefined
 }
 
-int bsr(uint v)
+int bsr(size_t v)
 {
-    uint m = 0x80000000;
-    uint i;
+    size_t m = 0x80000000;
+    size_t i;
     for (i = 32; i ; i--,m>>>=1) {
     if (v&m)
         return i-1;
@@ -37,33 +37,33 @@ int bsr(uint v)
     return i; // supposed to be undefined
 }
 
-int bt(uint *p, uint bitnum)
+int bt(size_t* p, size_t bitnum)
 {
-    return (p[bitnum / (uint.sizeof*8)] & (1<<(bitnum & ((uint.sizeof*8)-1)))) ? -1 : 0 ;
+    return (p[bitnum / (size_t.sizeof*8)] & (1<<(bitnum & ((size_t.sizeof*8)-1)))) ? -1 : 0 ;
 }
 
-int btc(uint *p, uint bitnum)
+int btc(size_t* p, size_t bitnum)
 {
-    uint * q = p + (bitnum / (uint.sizeof*8));
-    uint mask = 1 << (bitnum & ((uint.sizeof*8) - 1));
+    size_t* q = p + (bitnum / (size_t.sizeof*8));
+    size_t mask = 1 << (bitnum & ((size_t.sizeof*8) - 1));
     int result = *q & mask;
     *q ^= mask;
     return result ? -1 : 0;
 }
 
-int btr(uint *p, uint bitnum)
+int btr(size_t* p, size_t bitnum)
 {
-    uint * q = p + (bitnum / (uint.sizeof*8));
-    uint mask = 1 << (bitnum & ((uint.sizeof*8) - 1));
+    size_t* q = p + (bitnum / (size_t.sizeof*8));
+    size_t mask = 1 << (bitnum & ((size_t.sizeof*8) - 1));
     int result = *q & mask;
     *q &= ~mask;
     return result ? -1 : 0;
 }
 
-int bts(uint *p, uint bitnum)
+int bts(size_t* p, size_t bitnum)
 {
-    uint * q = p + (bitnum / (uint.sizeof*8));
-    uint mask = 1 << (bitnum & ((uint.sizeof*8) - 1));
+    size_t* q = p + (bitnum / (size_t.sizeof*8));
+    size_t mask = 1 << (bitnum & ((size_t.sizeof*8) - 1));
     int result = *q & mask;
     *q |= mask;
     return result ? -1 : 0;
