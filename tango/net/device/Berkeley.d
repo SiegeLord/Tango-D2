@@ -733,7 +733,7 @@ version (Windows)
                    return new IPv4Address;
                 if (family is AddressFamily.INET6)
 		    return new IPv6Address;
-                new UnknownAddress;
+		return new UnknownAddress;
         }
 
         /***********************************************************************
