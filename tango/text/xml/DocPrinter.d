@@ -16,6 +16,8 @@ private import tango.io.model.IConduit;
 
 private import tango.text.xml.Document;
 
+private import tango.core.Exception : XmlException;
+
 /*******************************************************************************
 
         Simple Document printer, with support for serialization caching 
