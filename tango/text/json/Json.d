@@ -137,9 +137,9 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
 
-        final T[] toString (T[] separator = null)
+        final T[] toString (T[] space=null, int decimals=2)
         {
-                return root.print (separator);
+                return root.print (space, decimals);
         }
 
         /***********************************************************************
@@ -763,11 +763,11 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                T[] print (T[] separator = null)
+                T[] print (T[] space=null, int decimals=2)
                 {
                         T[] tmp;
                         void append (T[] s) {tmp ~= s;}
-                        print (&append, separator);
+                        print (&append, space, decimals);
                         return tmp;
                 }
 
@@ -778,9 +778,9 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                Value print (OutputStream s, T[] separator = null)
+                Value print (OutputStream s, T[] space=null, int decimals=2)
                 {
-                        return print ((T[] t){s.write(t);}, separator);
+                        return print ((T[] t){s.write(t);}, space, decimals);
                 }
 
                 /***************************************************************
@@ -790,17 +790,17 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
                 
-                Value print (void delegate(T[]) append, T[] separator = null)
+                Value print (void delegate(T[]) append, T[] space=null, int decimals=2)
                 {
                         auto indent = 0;
         
                         void newline ()
                         {
-                                if (separator.length)
+                                if (space.length)
                                    {
                                    append ("\n");
                                    for (auto i=0; i < indent; i++)
-                                        append (separator);
+                                        append (space);
                                    }
                         }
         
@@ -864,7 +864,7 @@ class Json(T) : private JsonParser!(T)
                                             break;
         
                                        case Type.Number:
-                                            append (Float.format (tmp, val.toNumber));
+                                            append (Float.format (tmp, val.toNumber, decimals));
                                             break;
         
                                        case Type.Object:
@@ -1157,7 +1157,10 @@ debug (Json)
                 Stdout.formatln ("{}", p.toString);
 
                 p.parse ("[-1]");
-                Stdout.formatln ("{}", p.toString);
+                Stdout.formatln ("{}", p.toString(null));
+
+                p.parse ("[11.23477]");
+                Stdout.formatln ("{}", p.toString(null, 4));
 
                 p.parse(`["foo"]`);
                 Stdout.formatln ("{}", p.toString);
