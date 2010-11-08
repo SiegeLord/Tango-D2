@@ -124,12 +124,19 @@ extern (C) bool rt_init( ExceptionHandler dg = null )
     }
     catch( Exception e )
     {
-        if( dg )
+        if( dg ){
             dg( e );
+        } else {
+            console("exception while executing module initializers:\n");
+            e.writeOut(delegate void(char[]s){
+                console(s);
+            });
+            console();
+        }
     }
     catch
     {
-
+        console("error while executing module initializers\n");
     }
     _d_criticalTerm();
     return result = false;
