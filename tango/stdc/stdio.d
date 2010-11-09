@@ -347,11 +347,20 @@ else version( darwin )
 }
 else version( freebsd )
 {
-    extern(C) extern FILE[3] __sF;
+    extern(C) extern FILE* __stdinp;
+    extern(C) extern FILE* __stdoutp;
+    extern(C) extern FILE* __stderrp;
 
-    FILE* stdin  = &__sF[0];
-    FILE* stdout = &__sF[1];
-    FILE* stderr = &__sF[2];
+    FILE* stdin;
+    FILE* stdout;
+    FILE* stderr;
+
+    static this()
+    {
+        stdin  = __stdinp;
+        stdout = __stdoutp;
+        stderr = __stderrp;
+    }
 }
 else version( solaris )
 {
