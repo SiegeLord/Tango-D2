@@ -96,7 +96,7 @@ struct ByteSwap
 
         ***********************************************************************/
 
-        final static void swap16 (void *dst, uint bytes)
+        final static void swap16 (void *dst, size_t bytes)
         {
                 assert ((bytes & 0x01) is 0);
 
@@ -119,7 +119,7 @@ struct ByteSwap
 
         ***********************************************************************/
 
-        final static void swap32 (void *dst, uint bytes)
+        final static void swap32 (void *dst, size_t bytes)
         {
                 assert ((bytes & 0x03) is 0);
 
@@ -139,7 +139,7 @@ struct ByteSwap
 
         ***********************************************************************/
 
-        final static void swap64 (void *dst, uint bytes)
+        final static void swap64 (void *dst, size_t bytes)
         {
                 assert ((bytes & 0x07) is 0);
 
@@ -162,7 +162,7 @@ struct ByteSwap
 
         ***********************************************************************/
 
-        final static void swap80 (void *dst, uint bytes)
+        final static void swap80 (void *dst, size_t bytes)
         {
                 assert ((bytes % 10) is 0);
                

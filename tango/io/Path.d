@@ -821,12 +821,12 @@ package struct FS
 
                         // copy content
                         ubyte[] buf = new ubyte [16 * 1024];
-                        int read = posix.read (src, buf.ptr, buf.length);
+                        auto read = posix.read (src, buf.ptr, buf.length);
                         while (read > 0)
                               {
                               auto p = buf.ptr;
                               do {
-                                 int written = posix.write (dst, p, read);
+                                 auto written = posix.write (dst, p, read);
                                  p += written;
                                  read -= written;
                                  if (written is -1)

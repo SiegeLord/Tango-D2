@@ -198,7 +198,7 @@ body
         if (val & 0b1000_0000)
             continue;
         if (even) {
-            buff[i] = val << 4; // Store val in high for bits
+            buff[i] = cast(ubyte) (val << 4); // Store val in high for bits
         } else {
             buff[i] |= val;     // OR-in low 4 bits,
             i += 1;             // and move on to next

@@ -1710,7 +1710,7 @@ class Process
         // and the current position in the 'command' string as the source.
         void appendChunksAsArg()
         {
-            uint argPos;
+            size_t argPos;
 
             if (chunks.length > 0)
             {
@@ -1867,13 +1867,14 @@ class Process
             if (src !is null)
             {
                 char*[] dest = new char*[src.length + 1];
-                int     i = src.length;
+                size_t i = src.length;
 
                 // Add terminating null pointer to the array
                 dest[i] = null;
 
-                while (--i >= 0)
+                while (i > 0)
                 {
+                    --i;
                     // Add a terminating null character to each string
                     dest[i] = toStringz(src[i]);
                 }

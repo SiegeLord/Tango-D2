@@ -107,7 +107,7 @@ body
     if (remainlen)
         buff[i++] = _encodeTable[(remainder<<(5-remainlen))&0b11111];
     if (pad) {
-        for (ubyte padCount=(-i%8);padCount > 0; padCount--)
+        for (ubyte padCount= cast(ubyte) (-i%8);padCount > 0; padCount--)
             buff[i++] = base32_PAD;
     }
 
@@ -217,7 +217,7 @@ body
             continue;
         remainder = (remainder<<5) | dec;
         for (remainlen += 5; remainlen >= 8; remainlen -= 8)
-            buff[oIndex++] = remainder >> (remainlen-8);
+            buff[oIndex++] = cast(ubyte) (remainder >> (remainlen-8));
     }
 
     return buff[0..oIndex];

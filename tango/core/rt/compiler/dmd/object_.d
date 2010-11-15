@@ -1022,7 +1022,7 @@ class Exception : Object
                 }
                 sink(file);
                 sink(":");
-                sink(ulongToUtf8(buf, line));
+                sink(ulongToUtf8(buf, cast(size_t) line));
             }
         }
         

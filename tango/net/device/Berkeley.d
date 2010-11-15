@@ -364,10 +364,10 @@ else
                 int shutdown(socket_t s, int how);
                 int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
-                int send(socket_t s, void* buf, int len, int flags);
-                int sendto(socket_t s, void* buf, int len, int flags, Address.sockaddr* to, int tolen);
-                int recv(socket_t s, void* buf, int len, int flags);
-                int recvfrom(socket_t s, void* buf, int len, int flags, Address.sockaddr* from, int* fromlen);
+                ssize_t send(socket_t s, void* buf, size_t len, int flags);
+                ssize_t sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
+                ssize_t recv(socket_t s, void* buf, size_t len, int flags);
+                ssize_t recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
@@ -807,7 +807,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        ssize_t send (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {       
                 if (buf.length is 0)
                     return 0;
@@ -834,7 +834,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags, Address to)
+        ssize_t sendTo (void[] buf, SocketFlags flags, Address to)
         {
                 return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
@@ -845,7 +845,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, Address to)
+        ssize_t sendTo (void[] buf, Address to)
         {
                 return sendTo (buf, SocketFlags.NONE, to);
         }
@@ -856,7 +856,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        ssize_t sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return sendTo (buf, cast(int) flags, null, 0);
         }
@@ -871,7 +871,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        private int sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
+        private ssize_t sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
@@ -899,7 +899,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        ssize_t receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -917,7 +917,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags, Address from)
+        ssize_t receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -933,7 +933,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Address from)
+        ssize_t receiveFrom (void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
@@ -944,7 +944,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
+        ssize_t receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -961,7 +961,7 @@ version (Windows)
 
         int getOption (SocketOptionLevel level, SocketOption option, void[] result)
         {
-                int len = result.length;
+                int len = cast(int) result.length;
                 if(Error == .getsockopt (sock, cast(int)level, cast(int)option, result.ptr, &len))
                    exception ("Unable to get socket option: ");
                 return len;
@@ -973,7 +973,7 @@ version (Windows)
 
         Berkeley* setOption (SocketOptionLevel level, SocketOption option, void[] value)
         {
-                if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, value.length))
+                if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length))
                    exception ("Unable to set socket option: ");
                 return this;
         }
@@ -1131,7 +1131,7 @@ public abstract class Address
 
         private static char[] fromInt (char[] tmp, int i)
         {
-                int j = tmp.length;
+                size_t j = tmp.length;
                 do {
                    tmp[--j] = cast(char)(i % 10 + '0');
                    } while (i /= 10);
@@ -1462,7 +1462,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        this (char[] addr, int port = PORT_ANY)
+        this (char[] addr, ushort port = PORT_ANY)
         {
                 uint uiaddr = parse(addr);
                 if (ADDR_NONE == uiaddr)
@@ -1476,7 +1476,7 @@ public class IPv4Address : Address
                    uiaddr = ih.addrList[0];
                    }
                 sin.sin_addr = htonl(uiaddr);
-                sin.sin_port = htons(cast(ushort) port);
+                sin.sin_port = htons(port);
         }
 
         /***********************************************************************
@@ -1782,7 +1782,7 @@ protected:
                     exception("failed to create IPv6Address: "); 
                  
                 sin = *cast(sockaddr_in6*)(info.ai_addr); 
-                sin.sin_port = htons(port); 
+                sin.sin_port = htons(cast(ushort) port); 
         } 
                
         /*********************************************************************** 

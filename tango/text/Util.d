@@ -805,7 +805,7 @@ size_t indexOf(T) (T* str, T match, size_t length)
                    e += size_t.sizeof/T.sizeof;
                    while (p < e)
                           if (*p++ is match)
-                              return p - str - 1;
+                              return cast(size_t) (p - str - 1);
                    }
                 return length;
         }
@@ -814,7 +814,7 @@ size_t indexOf(T) (T* str, T match, size_t length)
                 auto len = length;
                 for (auto p=str-1; len--;)
                      if (*++p is match)
-                         return p - str;
+                         return cast(size_t) (p - str);
                 return length;
         }
 }
@@ -988,7 +988,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
         static T[] badarg   = "{index out of range}";
         static T[] toosmall = "{output buffer too small}";
         
-        int     pos,
+        size_t  pos,
                 args;
         bool    state;
 
@@ -1005,7 +1005,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                          {
                          T[] x = layout[index+1];
 
-                         int limit = pos + x.length;
+                         size_t limit = pos + x.length;
                          if (limit < output.length)
                             {
                             output [pos .. limit] = x;

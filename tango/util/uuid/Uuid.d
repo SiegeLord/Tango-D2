@@ -113,26 +113,26 @@ struct Uuid
                 {
                         // This is verbose, but it's simple, and it gets around endian
                         // issues if you try parsing an integer at a time.
-                        ub[0] = Integer.parse(value[0..2], 16);
-                        ub[1] = Integer.parse(value[2..4], 16);
-                        ub[2] = Integer.parse(value[4..6], 16);
-                        ub[3] = Integer.parse(value[6..8], 16);
+                        ub[0] = cast(ubyte) Integer.parse(value[0..2], 16);
+                        ub[1] = cast(ubyte) Integer.parse(value[2..4], 16);
+                        ub[2] = cast(ubyte) Integer.parse(value[4..6], 16);
+                        ub[3] = cast(ubyte) Integer.parse(value[6..8], 16);
 
-                        ub[4] = Integer.parse(value[9..11], 16);
-                        ub[5] = Integer.parse(value[11..13], 16);
+                        ub[4] = cast(ubyte) Integer.parse(value[9..11], 16);
+                        ub[5] = cast(ubyte) Integer.parse(value[11..13], 16);
 
-                        ub[6] = Integer.parse(value[14..16], 16);
-                        ub[7] = Integer.parse(value[16..18], 16);
+                        ub[6] = cast(ubyte) Integer.parse(value[14..16], 16);
+                        ub[7] = cast(ubyte) Integer.parse(value[16..18], 16);
 
-                        ub[8] = Integer.parse(value[19..21], 16);
-                        ub[9] = Integer.parse(value[21..23], 16);
+                        ub[8] = cast(ubyte) Integer.parse(value[19..21], 16);
+                        ub[9] = cast(ubyte) Integer.parse(value[21..23], 16);
 
-                        ub[10] = Integer.parse(value[24..26], 16);
-                        ub[11] = Integer.parse(value[26..28], 16);
-                        ub[12] = Integer.parse(value[28..30], 16);
-                        ub[13] = Integer.parse(value[30..32], 16);
-                        ub[14] = Integer.parse(value[32..34], 16);
-                        ub[15] = Integer.parse(value[34..36], 16);
+                        ub[10] = cast(ubyte) Integer.parse(value[24..26], 16);
+                        ub[11] = cast(ubyte) Integer.parse(value[26..28], 16);
+                        ub[12] = cast(ubyte) Integer.parse(value[28..30], 16);
+                        ub[13] = cast(ubyte) Integer.parse(value[30..32], 16);
+                        ub[14] = cast(ubyte) Integer.parse(value[32..34], 16);
+                        ub[15] = cast(ubyte) Integer.parse(value[34..36], 16);
                 }
 
                 return true;
@@ -228,7 +228,7 @@ struct Uuid
           */
         public ubyte format()
         {
-                return _data.ub[6] >> 4;
+                return cast(ubyte) (_data.ub[6] >> 4);
         }
 
         /** Get the canonical string representation of a UUID.

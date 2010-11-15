@@ -48,7 +48,7 @@ class RC6 : BlockCipher
     {
         _encrypt = encrypt;
         
-        uint len = keyParams.key.length;
+        auto len = keyParams.key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16/24/32 bytes)");
         
@@ -138,7 +138,7 @@ class RC6 : BlockCipher
     
     private void setup(ubyte[] key)
     {
-        uint c = key.length/4;
+        size_t c = key.length/4;
         uint[] L = new uint[c];
         for (int i = 0, j = 0; i < c; i++, j+=4)
             L[i] = ByteConverter.LittleEndian.to!(uint)(key[j..j+int.sizeof]);

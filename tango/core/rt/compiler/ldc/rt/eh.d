@@ -183,6 +183,7 @@ private size_t base_of_encoded(_Unwind_Context_Ptr context, ubyte encoding)
 
     default: fatalerror("Unrecognized base for DWARF value");
   }
+  assert(0);
 }
 
 // Only defined for fixed-size encodings
@@ -200,6 +201,7 @@ private size_t size_of_encoded(ubyte encoding)
 
     default: fatalerror("Unrecognized fixed-size DWARF value encoding");
   }
+  assert(0);
 }
 
 // Actual value readers below: read a value from the given ubyte* into the

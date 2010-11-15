@@ -641,7 +641,7 @@ Lsplit:
                     dwarf_error("64 bit DWARF in a 32 bit excecutable?");
                     return 0;
                 }
-                return read!(ulong)();
+                return cast(size_t) read!(ulong)();
             } else {
                 if (initlen >= 0xff_ff_ff_00) {
                     //see dwarf spec 7.5.1
@@ -670,7 +670,7 @@ Lsplit:
             return do_read_leb(false);
         }
         long sleb128() {
-            return do_read_leb(true);
+            return cast(size_t) do_read_leb(true);
         }
 
         T read(T)() {

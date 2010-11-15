@@ -301,7 +301,7 @@ size_t rfc1123(T) (T[] src, ref TimeOfDay tod, ref Date date)
             *p++ == ' '           &&
             p[0..3] == "GMT")
             {
-            return (p+3) - src.ptr;
+            return cast(size_t) ((p+3) - src.ptr);
             }
         return 0;
 }
@@ -365,7 +365,7 @@ size_t rfc850(T) (T[] src, ref TimeOfDay tod, ref Date date)
                if (date.year < 100)
                    date.year += 1900;
 
-            return (p+3) - src.ptr;
+            return cast(size_t) ((p+3) - src.ptr);
             }
         return 0;
 }
@@ -422,7 +422,7 @@ size_t asctime(T) (T[] src, ref TimeOfDay tod, ref Date date)
             *p++ == ' '           &&
             (date.year = parseInt (p, e)) > 0)
             {
-            return p - src.ptr;
+            return cast(size_t) (p - src.ptr);
             }
         return 0;
 }
@@ -487,7 +487,7 @@ size_t dostime(T) (T[] src, ref TimeOfDay tod, ref Date date)
                if (date.year < 100)
                    date.year += 1900;
             
-            return (p+2) - src.ptr;
+            return cast(size_t) ((p+2) - src.ptr);
             }
         return 0;
 }
@@ -513,7 +513,7 @@ size_t iso8601(T) (T[] src, ref Time value)
         TimeOfDay tod;
         Date      date;
 
-        int r = iso8601!(T)(src, tod, date);
+        size_t r = iso8601!(T)(src, tod, date);
         if (r)   
             value = Gregorian.generic.toTime(date, tod);
         return r;
@@ -566,7 +566,7 @@ size_t iso8601(T) (T[] src, ref TimeOfDay tod, ref Date date)
             } else
                 tod.millis = 0;
             
-            return p - src.ptr;
+            return cast(size_t) (p - src.ptr);
             }
         return 0;
 }

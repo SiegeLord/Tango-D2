@@ -663,7 +663,7 @@ class AES : BlockCipher
     {
         _encrypt = encrypt;
         
-        uint len = keyParams.key.length;
+        size_t len = keyParams.key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16, 24 or 32 bytes)");
                         
@@ -844,7 +844,7 @@ class AES : BlockCipher
 
     private void setup(ubyte[] key)
     {
-        uint nk = key.length / 4;
+        size_t nk = key.length / 4;
         ROUNDS = nk + 6;
         w = new uint[4*(ROUNDS+1)];
         

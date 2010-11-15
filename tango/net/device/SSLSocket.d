@@ -173,7 +173,7 @@ class SSLSocket : Socket
         int bytes = BIO_write(sslSocket, src.ptr, src.length);
         if (bytes <= 0)
             return Eof;
-        return bytes;
+        return cast(size_t) bytes;
     }
 
     /*******************************************************************************
@@ -252,7 +252,7 @@ class SSLSocket : Socket
         int bytes = BIO_read(sslSocket, dst.ptr, dst.length);
         if (bytes <= 0)
             return Eof;
-        return bytes;
+        return cast(size_t) bytes;
     }
 
     /*******************************************************************************

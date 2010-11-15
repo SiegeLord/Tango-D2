@@ -147,7 +147,8 @@ class Socket : Conduit, ISelectable
 
         Socket connect (char[] address, uint port)
         {
-                scope addr = new IPv4Address (address, port);
+                assert(port < ushort.max);
+                scope addr = new IPv4Address (address, cast(ushort) port);
                 return connect (addr);
         }
 

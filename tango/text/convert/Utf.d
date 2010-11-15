@@ -103,7 +103,7 @@ char[] toString (wchar[] input, char[] output=null, uint* ate=null)
         else
            {
            // potentially reallocate output
-           int estimate = input.length * 2 + 3;
+           size_t estimate = input.length * 2 + 3;
            if (output.length < estimate)
                output.length = estimate;
            }
@@ -124,7 +124,7 @@ char[] toString (wchar[] input, char[] output=null, uint* ate=null)
                       }
 
                    // reallocate the output buffer
-                   int len = pOut - output.ptr;
+                   auto len = pOut - output.ptr;
                    output.length = len + len / 2;
                    pOut = output.ptr + len;
                    pMax = output.ptr + output.length - 3;
@@ -275,7 +275,7 @@ char[] toString (dchar[] input, char[] output=null, uint* ate=null)
         else
            {
            // potentially reallocate output
-           int estimate = input.length * 2 + 4;
+           size_t estimate = input.length * 2 + 4;
            if (output.length < estimate)
                output.length = estimate;
            }
@@ -296,7 +296,7 @@ char[] toString (dchar[] input, char[] output=null, uint* ate=null)
                       }
 
                    // reallocate the output buffer
-                   int len = pOut - output.ptr;
+                   auto len = pOut - output.ptr;
                    output.length = len + len / 2;
                    pOut = output.ptr + len;
                    pMax = output.ptr + output.length - 4;
@@ -482,7 +482,7 @@ wchar[] toString16 (dchar[] input, wchar[] output=null, uint* ate=null)
                       }
 
                    // reallocate the output buffer
-                   int len = pOut - output.ptr;
+                   size_t len = pOut - output.ptr;
                    output.length = len + len / 2;
                    pOut = output.ptr + len;
                    pMax = output.ptr + output.length - 2;
@@ -746,14 +746,14 @@ T[] cropRight(T) (T[] s)
 {
         if (s.length)
            {
-           uint i = s.length - 1;
+           size_t i = s.length - 1;
            static if (is (T == char))
                       while (i && (s[i] & 0x80))
                              if ((s[i] & 0xc0) is 0xc0)
                                 {
                                 // located the first byte of a sequence
                                 ubyte b = s[i];
-                                int d = s.length - i;
+                                size_t d = s.length - i;
 
                                 // is it a 3 byte sequence?
                                 if (b & 0x20)

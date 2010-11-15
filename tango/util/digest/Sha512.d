@@ -142,7 +142,8 @@ final class Sha512 : MerkleDamgard
         protected override void padLength(ubyte[] data, ulong length)
         {
                 length <<= 3;
-                for(int j = data.length-1; j >= 0; j--) {
+                for(size_t j = data.length; j > 0;) {
+                        j--;
                         data[data.length-j-1] = cast(ubyte) (length >> j*8);
                 }
                 data[0..8] = 0;

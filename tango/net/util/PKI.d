@@ -421,7 +421,7 @@ class PublicKey
     *******************************************************************************/
     this (char[] publicPemData)
     {
-        BIO *bp = BIO_new_mem_buf(publicPemData.ptr, publicPemData.length);
+        BIO *bp = BIO_new_mem_buf(publicPemData.ptr, cast(int) publicPemData.length);
         if (bp)
         {
             _evpKey = PEM_read_bio_RSAPublicKey(bp, null, null, null);
@@ -493,7 +493,7 @@ class PublicKey
         MD5_Update(&c, data.ptr, data.length);
         MD5_Final(digest.ptr, &c);
         
-        if (RSA_verify(NID_md5, digest.ptr, MD5_DIGEST_LENGTH, signature.ptr, signature.length, _evpKey))
+        if (RSA_verify(NID_md5, digest.ptr, MD5_DIGEST_LENGTH, signature.ptr, cast(uint) signature.length, _evpKey))
             return true;
         return false;
     }
@@ -520,7 +520,7 @@ class PublicKey
         if (data.length > maxSize)
             throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
         ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_public_encrypt(data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_OAEP_PADDING);
+        int numBytes = RSA_public_encrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_OAEP_PADDING);
         if (numBytes >= 0)
             rtn = tmpRtn[0..numBytes];
         if (rtn is null)
@@ -545,7 +545,7 @@ class PublicKey
 
         uint maxSize = RSA_size(_evpKey);
         ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_public_decrypt(data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_PADDING);
+        int numBytes = RSA_public_decrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, _evpKey, RSA_PKCS1_PADDING);
         if (numBytes >= 0)
             rtn = tmpRtn[0..numBytes];
         if (rtn is null)
@@ -588,7 +588,7 @@ class PrivateKey
 
     this (char[] privatePemData, char[] certPass = null)
     {
-        BIO *bp = BIO_new_mem_buf(privatePemData.ptr, privatePemData.length);
+        BIO *bp = BIO_new_mem_buf(privatePemData.ptr, cast(int) privatePemData.length);
         if (bp)
         {
             _evpKey = PEM_read_bio_PrivateKey(bp, null, null, certPass ? toStringz(certPass) : null);
@@ -710,8 +710,8 @@ class PrivateKey
         MD5_Update(&c, data.ptr, data.length);
         MD5_Final(digest.ptr, &c);
 
-        uint len = sigbuf.length;
-        if (RSA_sign(NID_md5, digest.ptr, digest.length, sigbuf.ptr, &len, cast(RSA *)_evpKey.pkey))
+        uint len = cast(uint) sigbuf.length;
+        if (RSA_sign(NID_md5, digest.ptr, cast(uint) digest.length, sigbuf.ptr, &len, cast(RSA *)_evpKey.pkey))
             return sigbuf[0..len];
         else
             throwOpenSSLError;
@@ -740,7 +740,7 @@ class PrivateKey
         if (data.length > maxSize)
             throw new Exception("The specified data is larger than the size that can be encrypted by this public key.");
         ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_private_encrypt(data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_PADDING);
+        int numBytes = RSA_private_encrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_PADDING);
         if (numBytes >= 0)
             rtn = tmpRtn[0..numBytes];
         if (rtn is null)
@@ -765,7 +765,7 @@ class PrivateKey
 
         uint maxSize = RSA_size(cast(RSA *)_evpKey.pkey);
         ubyte[] tmpRtn = new ubyte[maxSize];
-        int numBytes = RSA_private_decrypt(data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_OAEP_PADDING);
+        int numBytes = RSA_private_decrypt(cast(int) data.length, data.ptr, tmpRtn.ptr, cast(RSA *)_evpKey.pkey, RSA_PKCS1_OAEP_PADDING);
         if (numBytes >= 0)
             rtn = tmpRtn[0..numBytes];
         if (rtn is null)
@@ -821,7 +821,7 @@ class Certificate
     *******************************************************************************/
     this(char[] publicPemData)
     {
-        BIO *data = BIO_new_mem_buf(publicPemData.ptr, publicPemData.length);
+        BIO *data = BIO_new_mem_buf(publicPemData.ptr, cast(int) publicPemData.length);
         if (data)
         {
             _cert = PEM_read_bio_X509(data, null, null, null);
@@ -1173,7 +1173,7 @@ class Certificate
 
     private void addNameEntry(X509_NAME *name, char *type, char[] value)
     {
-        if (!X509_NAME_add_entry_by_txt(name, type, MBSTRING_ASC, toStringz(value), value.length, -1, 0))
+        if (!X509_NAME_add_entry_by_txt(name, type, MBSTRING_ASC, toStringz(value), cast(int) value.length, -1, 0))
             throwOpenSSLError();
     }
 

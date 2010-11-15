@@ -26,7 +26,7 @@ private import  Integer = tango.text.convert.Integer;
         
 *******************************************************************************/
 
-extern (C) char* memchr (char *, char, uint);
+extern (C) char* memchr (char *, int, size_t);
 
 
 /*******************************************************************************
@@ -545,7 +545,7 @@ class Uri : UriView
                         return c;
                 }
                 
-                int length = s.length;
+                auto length = s.length;
 
                 // take a peek first, to see if there's work to do
                 if (length && memchr (s.ptr, '%', length))
@@ -557,7 +557,7 @@ class Uri : UriView
                    p = cast(char*) decoded.expand (length);
 
                    // scan string, stripping % encodings as we go
-                   for (int i; i < length; ++i, ++j, ++p)
+                   for (auto i = 0; i < length; ++i, ++j, ++p)
                        {
                        int c = s[i];
 

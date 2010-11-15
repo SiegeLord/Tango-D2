@@ -52,7 +52,7 @@ char*[] toStringz (char[] tmp, char*[] dst, char[][] strings...)
 {
         assert (dst.length >= strings.length);
 
-        int len = strings.length;
+        auto len = strings.length;
         foreach (s; strings)
                  len += s.length;
         if (tmp.length < len)

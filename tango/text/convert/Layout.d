@@ -121,11 +121,11 @@ class Layout(T)
         public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
-                int available = result.length;
+                size_t available = result.length;
 
                 uint sink (T[] s)
                 {
-                        int len = s.length;
+                        size_t len = s.length;
                         if (len > available)
                             len = available;
 
@@ -136,7 +136,7 @@ class Layout(T)
                 }
 
                 convert (&sink, arguments, args, formatStr);
-                return result [0 .. p-result.ptr];
+                return result [0 .. cast(size_t) (p-result.ptr)];
         }
 
         /**********************************************************************
@@ -371,7 +371,7 @@ version (old)
                              ++s;
 
                       // emit fragment
-                      length += sink (fragment [0 .. s - fragment]);
+                      length += sink (fragment [0 .. cast(size_t) (s - fragment)]);
 
                       // all done?
                       if (s is end)
@@ -437,7 +437,7 @@ version (old)
                          // eat everything up to closing brace
                          while (s < end && *s != '}')
                                 ++s;
-                         format = fs [0 .. s - fs];
+                         format = fs [0 .. cast(size_t) (s - fs)];
                          }
 
                       // insist on a closing brace
@@ -539,7 +539,7 @@ version (WithVariant)
                                    length += sink ("{");
                                    bool first = true;
                                   
-                                   int roundUp (int sz)
+                                   size_t roundUp (size_t sz)
                                    {
                                         return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
                                    }
@@ -827,7 +827,7 @@ version (WithVariant)
 
         private uint spaces (Sink sink, int count)
         {
-                uint ret;
+                size_t ret;
 
                 static const T[32] Spaces = ' ';
                 while (count > Spaces.length)

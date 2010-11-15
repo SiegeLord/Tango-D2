@@ -8,8 +8,8 @@ package void error(char[] msg) {
 
 package int compareString(char[] strA, char[] strB) {
   // Comparison ignores case
-  int strALength = strA.length;
-  int strBLength = strB.length;
+  size_t strALength = strA.length;
+  size_t strBLength = strB.length;
   int l = strALength;
   if (strBLength < l)
     l = strBLength;

@@ -301,7 +301,7 @@ final class SharedLib {
         Returns the total number of libraries currently loaded by SharedLib
       */
     static uint numLoadedLibs() {
-        return loadedLibs.keys.length;
+        return cast(uint) loadedLibs.keys.length;
     }
 
 

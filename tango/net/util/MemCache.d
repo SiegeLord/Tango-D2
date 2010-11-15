@@ -240,14 +240,14 @@ class MemCache : private Thread
         
         static class Buffer
         {
-                private uint    extent;
+                private size_t    extent;
                 private void[]  content;
         
                 /**************************************************************
                         
                 **************************************************************/
         
-                private this (uint size)
+                private this (size_t size)
                 {
                         this.content = new byte [size];
                 }
@@ -256,7 +256,7 @@ class MemCache : private Thread
                         
                 **************************************************************/
         
-                bool expand (uint size)
+                bool expand (size_t size)
                 {
                         if (size > content.length)
                             content.length = size;
@@ -267,7 +267,7 @@ class MemCache : private Thread
                         
                 **************************************************************/
         
-                void[] set (uint size)
+                void[] set (size_t size)
                 {
                         extent = size;
                         return get();
@@ -324,7 +324,7 @@ class MemCache : private Thread
 	
 	        a = b = 0x9e3779b9; 
 	
-	        uint len = x.length;
+            auto len = x.length;
 	        ubyte* k = cast(ubyte *) x.ptr;
 	
 	        // handle most of the key 
@@ -497,12 +497,12 @@ private class Connection
                            char[] content = line.get;
                            if (content.length > 4 && content[0..5] == "VALUE")
                               {
-                              int i;
+                              size_t i = 0;
         
                               // parse the incoming content-length
                               for (i=content.length; content[--i] != ' ';) 
                                   {}
-                              i = cast(int)Integer.parse (content[i .. $]);
+                              i = cast(size_t) Integer.parse (content[i .. $]);
         
                               // ensure output buffer has enough space
                               buffer.expand (i);

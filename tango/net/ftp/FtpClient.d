@@ -931,8 +931,8 @@ class FTPConnection: Telnet
 
             // Now put it into something std.socket will understand.
             char[] address = r.match(1) ~ "." ~ r.match(2) ~ "." ~ r.match(3) ~ "." ~ r.match(4);
-            uint port = (((cast(int) Integer.parse(r.match(5))) << 8) + (r.match(7).
-                           length > 0 ? cast(int) Integer.parse(r.match(7)) : 0));
+            ushort port = (((cast(int) Integer.parse(r.match(5))) << 8) + (r.match(7).
+                           length > 0 ? cast(ushort) Integer.parse(r.match(7)) : 0));
 
             // Okay, we've got it!
             connect_to = new IPv4Address(address, port);

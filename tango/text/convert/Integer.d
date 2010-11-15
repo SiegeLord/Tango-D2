@@ -228,7 +228,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                 ];
 
         ubyte index;
-        int   len = dst.length;
+        int len = dst.length;
 
         if (len)
            {
@@ -427,7 +427,7 @@ uint trim(T) (T[] digits, ref bool sign, ref uint radix)
 {
         T       c;
         T*      p = digits.ptr;
-        int     len = digits.length;
+        size_t     len = digits.length;
 
         if (len)
            {
@@ -531,7 +531,7 @@ T[] itoa(T) (T[] output, uint value, int radix = 10)
         do {
            *--p = cast(T)(value % radix + '0');
            } while (value /= radix);
-        return output[p-output.ptr .. $];
+        return output[cast(size_t) (p-output.ptr) .. $];
 }
 
 
