@@ -1858,8 +1858,8 @@ debug(UnitTest)
         unittest
         {
         IPv6Address ia = new IPv6Address("7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d", 8080);
-        //assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
-        assert(ia.toString() == "[7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d]:8080");
+        assert(ia.toString() == "[7628:d18:11a3:9d7:1f34:8a2e:7a0:765d]:8080");
+        //assert(ia.toString() == "[7628:0d18:11a3:09d7:1f34:8a2e:07a0:765d]:8080");
         }
 }
 
