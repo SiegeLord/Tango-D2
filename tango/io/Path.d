@@ -209,10 +209,14 @@ package struct FS
         {
                 char[] result;
 
-                foreach (path; paths)
-                         result ~= padded (path);
-
-                return result.length ? result [0 .. $-1] : "";
+                if (paths.length)
+                   {
+                   foreach (path; paths[0 .. $-1])
+                            result ~= padded (path);
+                   result ~= paths [$-1];
+                   return result;
+                   }                            
+                return "";
         }
 
         /***********************************************************************
