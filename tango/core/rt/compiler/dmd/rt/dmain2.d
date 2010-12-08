@@ -212,6 +212,13 @@ version (Solaris)
  */
 int main(char[][] args);
 
+version(NoCMain)
+{
+	
+}
+else
+{
+
 /***********************************
  * Substitutes for the C main() function.
  * It's purpose is to wrap the call to the D main()
@@ -346,4 +353,6 @@ extern (C) int main(int argc, char **argv)
         _d_criticalTerm();
         
     return result;
+}
+
 }
