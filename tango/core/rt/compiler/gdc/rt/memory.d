@@ -31,6 +31,8 @@
 */
 module rt.compiler.gdc.rt.memory;
 
+import gcc.builtins;
+
 version = GC_Use_Dynamic_Ranges;
 
 version(darwin)
@@ -186,11 +188,8 @@ extern (C) void* rt_stackTop()
     }
     else
     {
-	// TODO: add builtin for using stack pointer rtx
-	int dummy;
-	void * p = & dummy + 1; // +1 doesn't help much; also assume stack grows down
-	p = cast(void*)( (cast(size_t) p) & ~(size_t.sizeof - 1));
-	return p;
+        // This works, even if frame pointer is omitted.
+        return __builtin_frame_address(0);
     }
 }
 
