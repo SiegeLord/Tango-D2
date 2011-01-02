@@ -71,7 +71,7 @@ private
 {
     version( linux )
     {
-        //version = SimpleLibcStackEnd;
+        version = SimpleLibcStackEnd;
 
         version( SimpleLibcStackEnd )
         {
