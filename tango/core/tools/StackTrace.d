@@ -2,11 +2,11 @@
 /**
  *   Stacktracing
  *
- *   Functions to generate a stacktrace
+ *   Functions to generate a stacktrace.
  *
- *  Copyright: 2009 Fawzi
- *  License:   tango license
- *  Authors:   Fawzi Mohamed
+ *  Copyright: Copyright (C) 2009 Fawzi
+ *  License:   Tango License
+ *  Author:    Fawzi Mohamed
  */
 module tango.core.tools.StackTrace;
 import tango.core.tools.Demangler;
@@ -56,22 +56,22 @@ static this(){
     symbolizeFrameInfoFnc=&defaultSymbolizeFrameInfo;
 }
 
-/// sets the function used for address stacktraces
+/// Sets the function used for address stacktraces.
 extern(C) void rt_setAddrBacktraceFnc(AddrBacktraceFunc f){
     addrBacktraceFnc=f;
 }
-/// sets the function used to symbolize a FrameInfo
+/// Sets the function used to symbolize a FrameInfo.
 extern(C) void rt_setSymbolizeFrameInfoFnc(SymbolizeFrameInfoFnc f){
     symbolizeFrameInfoFnc=f;
 }
-/// creates a stack trace (defined in the runtime)
+/// Creates a stack trace (defined in the runtime.)
 extern(C) Exception.TraceInfo rt_createTraceContext( void* ptr );
 
 alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
 
-/// builds a backtrace of addresses, the addresses are addresses of the *next* instruction, 
+/// Builds a backtrace of addresses, the addresses are addresses of the *next* instruction,
 /// *return* addresses, the most likely the calling instruction is the one before them
-/// (stack top excluded)
+/// (stack top excluded.)
 extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOut,size_t*traceBuf,size_t bufLength,int *flags){
     if (addrBacktraceFnc !is null){
         return addrBacktraceFnc(context,contextOut,traceBuf,bufLength,flags);
@@ -80,10 +80,10 @@ extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOu
     }
 }
 
-/// tries to sybolize a frame information, this should try to build the best
+/// Tries to sybolize a frame information, this should try to build the best
 /// backtrace information, if possible finding the calling context, thus 
 /// if fInfo.exactAddress is false the address might be changed to the one preceding it
-/// returns true if it managed to at least find the function name
+/// returns true if it managed to at least find the function name.
 extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext* context,char[]buf){
     if (symbolizeFrameInfoFnc !is null){
         return symbolizeFrameInfoFnc(fInfo,context,buf);
@@ -114,9 +114,9 @@ static this(){
     internalFuncs["_D2rt6dmain24mainUiPPaZi7tryExecMFDFZvZv"]=1;
 }
 
-/// returns the name of the function at the given adress (if possible)
+/// Returns the name of the function at the given adress (if possible)
 /// function@ and then the address. For delegates you can use .funcptr
-/// does not demangle
+/// does not demangle.
 char[] nameOfFunctionAt(void* addr, char[] buf){
     Exception.FrameInfo fInfo;
     fInfo.clear();
@@ -133,22 +133,22 @@ char[] nameOfFunctionAt(void * addr){
     return nameOfFunctionAt(addr,buf).dup;
 }
 
-/// precision of the addresses given by the backtrace function
+/// Precision of the addresses given by the backtrace function.
 enum AddrPrecision{
     AllReturn=0,
     TopExact=1,
     AllExact=3
 }
 
-/// basic class that represents a stacktrace
+/// Basic class that represents a stacktrace.
 class BasicTraceInfo: Exception.TraceInfo{
     size_t[] traceAddresses;
     size_t[128] traceBuf;
     AddrPrecision addrPrecision;
     TraceContext context;
-    /// cretes an empty stacktrace
+    /// Creates an empty stacktrace.
     this(){}
-    /// creates a stacktrace with the given traceAddresses
+    /// Creates a stacktrace with the given traceAddresses.
     this(size_t[] traceAddresses,AddrPrecision addrPrecision){
         this.traceAddresses[]=traceAddresses;
         if (traceAddresses.length<=traceBuf.length){
@@ -158,7 +158,7 @@ class BasicTraceInfo: Exception.TraceInfo{
         }
         this.addrPrecision=addrPrecision;
     }
-    /// takes a stacktrace
+    /// Takes a stacktrace.
     void trace(TraceContext *contextIn=null,int skipFrames=0){
         int flags;
         size_t nFrames=rt_addrBacktrace(contextIn,&context,traceBuf.ptr,traceBuf.length,&flags);
@@ -167,7 +167,7 @@ class BasicTraceInfo: Exception.TraceInfo{
         if (flags==AddrPrecision.TopExact && skipFrames!=0)
             addrPrecision=AddrPrecision.AllReturn;
     }
-    /// loops on the stacktrace
+    /// Loops on the stacktrace.
     int opApply( int delegate( ref Exception.FrameInfo fInfo ) loopBody){
         Exception.FrameInfo fInfo;
         for (size_t iframe=0;iframe<traceAddresses.length;++iframe){
@@ -187,7 +187,7 @@ class BasicTraceInfo: Exception.TraceInfo{
         }
         return 0;
     }
-    /// writes out the stacktrace
+    /// Writes out the stacktrace.
     void writeOut(void delegate(char[]) sink){
         foreach (ref fInfo; this){
             if (!fInfo.internalFunction){
@@ -211,7 +211,7 @@ version(LibCBacktrace){
     extern(C)int backtrace(void**,int);
 }
 
-/// default (tango given) backtrace function
+/// Default (tango given) backtrace function.
 size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
     size_t*traceBuf,size_t length,int*flags){
     version(LibCBacktrace){
@@ -294,7 +294,7 @@ version(ElfSymbolification){
     }
 }
 
-/// loads symbols for the given frame info with the methods defined in tango itself
+/// Loads symbols for the given frame info with the methods defined in tango itself.
 bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *context,char[]buf){
     version(ElfSymbolification) {
         return elfSymbolizeFrameInfo(fInfo,context,buf);
@@ -307,7 +307,7 @@ bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *conte
     }
 }
 
-/// function that generates a trace (handler compatible with old TraceInfo)
+/// Function that generates a trace (handler compatible with old TraceInfo.)
 Exception.TraceInfo basicTracer( void* ptr = null ){
     BasicTraceInfo res;
     try{

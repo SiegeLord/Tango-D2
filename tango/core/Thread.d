@@ -476,7 +476,6 @@ else
  *
  * Example:
  * -----------------------------------------------------------------------------
- *
  * class DerivedThread : Thread
  * {
  *     this()
@@ -503,7 +502,6 @@ else
  * // start both threads
  * derived.start();
  * composed.start();
- *
  * -----------------------------------------------------------------------------
  */
 class Thread
@@ -899,10 +897,8 @@ class Thread
      *
      * Example:
      * -------------------------------------------------------------------------
-     *
      * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
      * Thread.sleep( 5 );    // sleep for 5 seconds
-     *
      * -------------------------------------------------------------------------
      */
     static void sleep( double period )
@@ -960,10 +956,8 @@ class Thread
      *
      * Example:
      * -------------------------------------------------------------------------
-     *
      * Thread.sleep( TimeSpan.milliseconds( 50 ) ); // sleep for 50 milliseconds
      * Thread.sleep( TimeSpan.seconds( 5 ) );       // sleep for 5 seconds
-     *
      * -------------------------------------------------------------------------
      */
     static void sleep( TimeSpan period )
@@ -1022,10 +1016,8 @@ class Thread
      *
      * Example:
      * -------------------------------------------------------------------------
-     *
      * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
      * Thread.sleep( 5 );    // sleep for 5 seconds
-     *
      * -------------------------------------------------------------------------
      */
     static void sleep( double period )
@@ -2767,7 +2759,6 @@ private char[] ptrToStr(size_t addr,char[]buf){
  *
  * Example:
  * ----------------------------------------------------------------------
- *
  * class DerivedFiber : Fiber
  * {
  *     this()
@@ -2802,7 +2793,6 @@ private char[] ptrToStr(size_t addr,char[]buf){
  * // since each fiber has run to completion, each should have state TERM
  * assert( derived.state == Fiber.State.TERM );
  * assert( composed.state == Fiber.State.TERM );
- *
  * ----------------------------------------------------------------------
  *
  * Authors: Based on a design by Mikola Lysenko.
@@ -3072,7 +3062,7 @@ class Fiber
 
 
     /**
-     * reinitializes a fiber object which is associated with a dynamic
+     * Reinitializes a fiber object which is associated with a dynamic
      * D function.
      *
      * Params:

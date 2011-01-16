@@ -3,9 +3,9 @@
  * is-expressions, as well as some functionality that is only available at runtime, using 
  * runtime type information. 
  * 
- * Authors: Chris Wright (dhasenan) <dhasenan@gmail.com>
- * License: tango license, apache 2.0
- * Copyright (c) 2009, CHRISTOPHER WRIGHT
+ * Authors: Chris Wright (dhasenan) $(EMAIL dhasenan@gmail.com)
+ * License: Tango License, Apache 2.0
+ * Copyright: Copyright (c) 2009, CHRISTOPHER WRIGHT
  */
 module tango.core.RuntimeTraits;
 

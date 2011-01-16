@@ -91,7 +91,7 @@ private
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -110,7 +110,7 @@ version( TangoDoc )
 
 
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -241,7 +241,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * Performs a linear scan of buf from $(LP)buf.length .. 0], returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -260,7 +260,7 @@ version( TangoDoc )
 
 
     /**
-     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * Performs a linear scan of buf from $(LP)buf.length .. 0], returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -395,7 +395,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -419,7 +419,7 @@ version( TangoDoc )
 
 
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -577,7 +577,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * Performs a linear scan of buf from $(LP)buf.length .. 0], returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -601,7 +601,7 @@ version( TangoDoc )
 
 
     /**
-     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * Performs a linear scan of buf from $(LP)buf.length .. 0], returning
      * the index of the first element matching pat, or buf.length if no match
      * was found.  Comparisons will be performed using the supplied predicate
      * or '==' if none is supplied.
@@ -767,7 +767,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element where pred returns true.
      *
      * Params:
@@ -832,7 +832,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LP)buf.length .. 0$(RB), returning
+     * Performs a linear scan of buf from $(LP)buf.length .. 0], returning
      * the index of the first element where pred returns true.
      *
      * Params:
@@ -902,7 +902,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * the index of the first element that compares equal to the next element
      * in the sequence.  Comparisons will be performed using the supplied
      * predicate or '==' if none is supplied.
@@ -983,7 +983,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * true if an element matching pat is found.  Comparisons will be performed
      * using the supplied predicate or '<' if none is supplied.
      *
@@ -1001,7 +1001,7 @@ version( TangoDoc )
 
 
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * true if a sequence matching pat is found.  Comparisons will be performed
      * using the supplied predicate or '<' if none is supplied.
      *
@@ -1082,8 +1082,8 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a parallel linear scan of bufA and bufB from $(LB)0 .. N$(RP)
-     * where N = min$(LP)bufA.length, bufB.length$(RP), returning the index of
+     * Performs a parallel linear scan of bufA and bufB from [0 .. N$(RP)
+     * where N = min(bufA.length, bufB.length), returning the index of
      * the first element in bufA which does not match the corresponding element
      * in bufB or N if no mismatch occurs.  Comparisons will be performed using
      * the supplied predicate or '==' if none is supplied.
@@ -1173,7 +1173,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * a count of the number of elements matching pat.  Comparisons will be
      * performed using the supplied predicate or '==' if none is supplied.
      *
@@ -1251,7 +1251,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), returning
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), returning
      * a count of the number of elements where pred returns true.
      *
      * Params:
@@ -1318,7 +1318,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), replacing
      * occurrences of pat with val.  Comparisons will be performed using the
      * supplied predicate or '==' if none is supplied.
      *
@@ -1400,7 +1400,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), replacing
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), replacing
      * elements where pred returns true with val.
      *
      * Params:
@@ -1471,7 +1471,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), moving all
      * elements matching pat to the end of the sequence.  The relative order of
      * elements not matching pat will be preserved.  Comparisons will be
      * performed using the supplied predicate or '==' if none is supplied.
@@ -1493,7 +1493,7 @@ version( TangoDoc )
     size_t remove( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
 
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), moving all
      * elements matching pat to the end of the sequence.  The relative order of
      * elements not matching pat will be preserved.  Comparisons will be
      * performed '=='.
@@ -1592,7 +1592,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), moving all
      * elements that satisfy pred to the end of the sequence.  The relative
      * order of elements that do not satisfy pred will be preserved.
      *
@@ -1683,7 +1683,7 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)0 .. buf.length$(RP), moving all
+     * Performs a linear scan of buf from [0 .. buf.length$(RP), moving all
      * but the first element of each consecutive group of duplicate elements to
      * the end of the sequence.  The relative order of all remaining elements
      * will be preserved.  Comparisons will be performed using the supplied
@@ -1792,14 +1792,14 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a linear scan of buf from $(LB)2 .. buf.length$(RP), exchanging
-     * each element with an element in the range $(LB)0 .. pos$(RP), where pos
+     * Performs a linear scan of buf from [2 .. buf.length$(RP), exchanging
+     * each element with an element in the range [0 .. pos$(RP), where pos
      * represents the current array position.
      *
      * Params:
      *  buf  = The array to shuffle.
      *  oper = The randomize operation, which should return a number in the
-     *         range $(LB)0 .. N$(RP) for any supplied value N.  This routine
+     *         range [0 .. N$(RP) for any supplied value N.  This routine
      *         may be any callable type.
      */
     void shuffle( Elem[] buf, Oper1A oper = Oper1A.init );
@@ -2575,8 +2575,8 @@ else
 version( TangoDoc )
 {
     /**
-     * Performs a parallel linear scan of setA and setB from $(LB)0 .. N$(RP)
-     * where N = min$(LP)setA.length, setB.length$(RP), returning true if setA
+     * Performs a parallel linear scan of setA and setB from [0 .. N$(RP)
+     * where N = min(setA.length, setB.length), returning true if setA
      * includes all elements in setB and false if not.  Both setA and setB are
      * required to be sorted, and duplicates in setB require an equal number of
      * duplicates in setA.  Comparisons will be performed using the supplied
@@ -2590,7 +2590,7 @@ version( TangoDoc )
      *         callable type.
      *
      * Returns:
-     *  true if setA includes all elements in setB, false if not.
+     *  True if setA includes all elements in setB, false if not.
      */
     bool includes( Elem[] setA, Elem[] setB, Pred2E pred = Pred2E.init );
 }

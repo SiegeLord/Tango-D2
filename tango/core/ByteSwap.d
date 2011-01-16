@@ -8,7 +8,7 @@
 
         version:        Feb 20th 2005 - Asm version removed by Aleksey Bobnev
 
-        author:         Kris, Aleksey Bobnev
+        authors:         Kris, Aleksey Bobnev
 
 *******************************************************************************/
 
@@ -31,7 +31,7 @@ import tango.core.BitManip;
         auto b = x.dup;
         ByteSwap.swap32(b);
         assert(b == [cast(ubyte) 0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05]);
-	
+
         auto c = x.dup;
         ByteSwap.swap64(c);
         assert(c == [cast(ubyte) 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01]);

@@ -1,11 +1,11 @@
 /**
  *   Stacktracing
  *
- *   Inclusion of this module activates traced exceptions using the tango own tracers if possible
+ *   Inclusion of this module activates traced exceptions using the tango own tracers if possible.
  *
- *  Copyright: 2009 h3r3tic 
- *  License:   tango license, apache 2.0
- *  Authors:   Tomasz Stachowiak (h3r3tic)
+ *  Copyright: Copyright (C) 2009 h3r3tic
+ *  License:   Tango License, Apache 2.0
+ *  Author:    Tomasz Stachowiak (h3r3tic)
  */
 module tango.core.tools.WinStackTrace;
 version(Windows) {
@@ -346,14 +346,15 @@ public {
     Allocate the array using malloc
     
     Params:
-    array = the array which will be resized
-    numItems = number of items to be allocated in the array
-    init = whether to init the allocated items to their default values or not
+    array = The array which will be resized.
+    numItems = Number of items to be allocated in the array.
+    init = Whether to init the allocated items to their default values or not.
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
-    
+    ---
     Remarks:
     The array must be null and empty for this function to succeed. The rationale behind this is that the coder should state his decision clearly. This will help and has
     already helped to spot many intricate bugs. 
@@ -390,16 +391,18 @@ T clone(T)(T array) {
 
 
 /**
-    Realloc the contents of an array
-    
-    array = the array which will be resized
-    numItems = the new size for the array
-    init = whether to init the newly allocated items to their default values or not
+    Realloc the contents of an array.
+    Params:
+    array = The array which will be resized.
+    numItems = The new size for the array.
+    init = Whether to init the newly allocated items to their default values or not.
     
     Examples:
+    ---
     int[] foo;
     foo.alloc(20);
     foo.realloc(10);        // <--
+    ---
 */
 void realloc(T, intT)(ref T array, intT numItems, bool init = true)
 in {
@@ -422,7 +425,7 @@ body {
 
 
 /**
-    Deallocate an array allocated with alloc()
+    Deallocate an array allocated with alloc().
 */
 void free(T)(ref T array)
 out {
@@ -435,15 +438,15 @@ body {
 
 
 /**
-    Append an item to an array. Optionally keep track of an external 'real length', while doing squared reallocation of the array
+    Append an item to an array. Optionally keep track of an external 'real length', while doing squared reallocation of the array.
     
     Params:
-    array = the array to append the item to
-    elem = the new item to be appended
-    realLength = the optional external 'real length'
+    array = The array to append the item to.
+    elem = The new item to be appended.
+    realLength = The optional external 'real length'.
     
     Remarks:
-    if realLength isn't null, the array is not resized by one, but allocated in a std::vector manner. The array's length becomes it's capacity, while 'realLength'
+    If realLength isn't null, the array is not resized by one, but allocated in a std::vector manner. The array's length becomes it's capacity, while 'realLength'
     is the number of items in the array.
     
     Examples:

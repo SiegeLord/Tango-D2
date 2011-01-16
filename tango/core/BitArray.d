@@ -444,7 +444,7 @@ struct BitArray
      *  rhs = The array to compare against.
      *
      * Returns:
-     *  zero if not equal and non-zero otherwise.
+     *  Zero if not equal and non-zero otherwise.
      */
     int opEquals( BitArray rhs )
     {

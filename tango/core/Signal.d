@@ -4,7 +4,7 @@
  *
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
- * Authors:   Sean Kelly
+ * Author:    Sean Kelly
  */
 module tango.core.Signal;
 
@@ -24,7 +24,6 @@ private import tango.core.Array;
  *
  * Example:
  * -----------------------------------------------------------------------------
- *
  * class Button
  * {
  *     Signal!(Button) press;
@@ -39,7 +38,6 @@ private import tango.core.Array;
  *
  * b.press.attach( &wasPressed );
  * b.press( b );
- *
  * -----------------------------------------------------------------------------
  *
  * Please note that this implementation does not use weak pointers to store
@@ -60,7 +58,7 @@ struct Signal( Args... )
     /**
      * The signal procedure.  When called, each of the attached slots will be
      * called synchronously.
-     *
+     * Params:
      * args = The signal arguments.
      */
     void opCall( Args args )
@@ -94,7 +92,7 @@ struct Signal( Args... )
      * Attaches a delegate to this signal.  A delegate may be either attached
      * or detached, so successive calls to attach for the same delegate will
      * have no effect.
-     *
+     * Params:
      * dg = The delegate to attach.
      */
     void attach( SlotDg dg )
@@ -119,7 +117,7 @@ struct Signal( Args... )
      * Attaches a function to this signal.  A function may be either attached
      * or detached, so successive calls to attach for the same function will
      * have no effect.
-     *
+     * Params:
      * fn = The function to attach.
      */
     void attach( SlotFn fn )
@@ -142,7 +140,7 @@ struct Signal( Args... )
 
     /**
      * Detaches a delegate from this signal.
-     *
+     * Params:
      * dg = The delegate to detach.
      */
     void detach( SlotDg dg )
@@ -158,7 +156,7 @@ struct Signal( Args... )
 
     /**
      * Detaches a function from this signal.
-     *
+     * Params:
      * fn = The function to detach.
      */
     void detach( SlotFn fn )

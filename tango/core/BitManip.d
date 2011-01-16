@@ -3,7 +3,7 @@
  *
  * Copyright: Public Domain
  * License:   Public Domain
- * Authors:   Sean Kelly
+ * Author:    Sean Kelly
  */
 module tango.core.BitManip;
 
@@ -14,8 +14,8 @@ version( TangoDoc )
      * Scans the bits in v starting with bit 0, looking
      * for the first set bit.
      * Returns:
-     *	The bit number of the first bit set.
-     *	The return value is undefined if v is zero.
+     *  The bit number of the first bit set.
+     *  The return value is undefined if v is zero.
      */
     int bsf( uint v );
 
@@ -25,8 +25,8 @@ version( TangoDoc )
      * to the least significant bit, looking
      * for the first set bit.
      * Returns:
-     *	The bit number of the first bit set.
-     *	The return value is undefined if v is zero.
+     *  The bit number of the first bit set.
+     *  The return value is undefined if v is zero.
      * Example:
      * ---
      * import tango.core.BitManip;
@@ -45,7 +45,7 @@ version( TangoDoc )
      * }
      * ---
      * Output:
-     *  bsf(x21) = 0<br>
+     *  bsf(x21) = 0$(BR)
      *  bsr(x21) = 5
      */
     int bsr( size_t v );
@@ -79,8 +79,8 @@ version( TangoDoc )
     p[index / (size_t.sizeof*8)] & (1 << (index & ((size_t.sizeof*8) - 1)))
     ---
      * Returns:
-     * 	A non-zero value if the bit was set, and a zero
-     *	if it was clear.
+     *  A non-zero value if the bit was set, and a zero
+     *  if it was clear.
      *
      * Example:
      * ---
@@ -112,18 +112,18 @@ version( TangoDoc )
     }
      * ---
      * Output:
-    <pre>
-    btc(array, 35) = 0
-    array = [0]:x2, [1]:x108
-    btc(array, 35) = -1
-    array = [0]:x2, [1]:x100
-    bts(array, 35) = 0
-    array = [0]:x2, [1]:x108
-    btr(array, 35) = -1
-    array = [0]:x2, [1]:x100
-    bt(array, 1) = -1
-    array = [0]:x2, [1]:x100
-    </pre>
+     *<pre>
+     *btc(array, 35) = 0
+     *array = [0]:x2, [1]:x108
+     *btc(array, 35) = -1
+     *array = [0]:x2, [1]:x100
+     *bts(array, 35) = 0
+     *array = [0]:x2, [1]:x108
+     *btr(array, 35) = -1
+     *array = [0]:x2, [1]:x100
+     *bt(array, 1) = -1
+     *array = [0]:x2, [1]:x100
+     *</pre>
      */
     int bts( size_t* p, size_t bitnum );
 

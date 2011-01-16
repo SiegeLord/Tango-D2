@@ -20,7 +20,6 @@ module tango.core.Tuple;
  *
  * Example:
  * ----------------------------------------------------------------------
- *
  * alias Tuple!(int, real) T1;
  * alias Tuple!(int, long) T2;
  * struct Wrap( Vals... )
@@ -35,7 +34,6 @@ module tango.core.Tuple;
  *     ret.val[1] = val[0] * cast(long) val[1];
  *     return ret;
  * }
- *
  * ----------------------------------------------------------------------
  *
  * This is the original tuple example, and demonstates what should be possible
@@ -44,7 +42,6 @@ module tango.core.Tuple;
  *
  * Example:
  * ----------------------------------------------------------------------
- *
  * alias Tuple!(int, real) T1;
  * alias Tuple!(int, long) T2;
  *
@@ -63,7 +60,6 @@ module tango.core.Tuple;
  *
  * // tuples are equivalent to a set of function parameters of the same type
  * RetTuple t = func( 1, 2.3 );
- *
  * ----------------------------------------------------------------------
  */
 template Tuple( TList... )

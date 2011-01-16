@@ -497,7 +497,7 @@ struct GC
 
 
     /**
-    * returns the amount to allocate to keep some extra space
+    * Returns the amount to allocate to keep some extra space
     * for large allocations the extra allocated space decreases, but is still enough
     * so that the number of reallocations when linearly growing stays logaritmic
     * Params:
@@ -511,7 +511,7 @@ struct GC
     
 
     /**
-    * returns the amount to allocate to keep some extra space
+    * Returns the amount to allocate to keep some extra space
     * for large allocations the extra allocated space decreases, but is still enough
     * so that the number of reallocations when linearly growing stays logaritmic
     * Params:

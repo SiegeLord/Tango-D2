@@ -5,32 +5,34 @@
  Some of this information was extremely difficult to track down. Some of the
  documents below were found only in cached versions stored by search engines!
   This code relies on information found in:
-    
-  - "Intel(R) 64 and IA-32 Architectures Software Developers Manual,
-      Volume 2A: Instruction Set Reference, A-M" (2007).
-  - "AMD CPUID Specification", Advanced Micro Devices, Rev 2.28 (2008).
-  - "AMD Processor Recognition Application Note For Processors Prior to AMD
-      Family 0Fh Processors", Advanced Micro Devices, Rev 3.13 (2005).
-  - "AMD Geode(TM) GX Processors Data Book",
-      Advanced Micro Devices, Publication ID 31505E, (2005).
-  - "AMD K6 Processor Code Optimisation", Advanced Micro Devices, Rev D (2000).
-  - "Application note 106: Software Customization for the 6x86 Family",
-      Cyrix Corporation, Rev 1.5 (1998)
-  - http://ftp.intron.ac/pub/document/cpu/cpuid.htm
-  - "Geode(TM) GX1 Processor Series Low Power Integrated X86 Solution",
-      National Semiconductor, (2002)
-  - "The VIA Isaiah Architecture", G. Glenn Henry, Centaur Technology, Inc (2008).
-  - http://www.sandpile.org/ia32/cpuid.htm
-  - http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html
-  - "What every programmer should know about memory",
-     Ulrich Depper, Red Hat, Inc., (2007). 
-  - "CPU Identification by the Windows Kernel", G. Chappell (2009).
-    http://www.geoffchappell.com/viewer.htm?doc=studies/windows/km/cpu/cx8.htm
-  - "Intel(R) Processor Identification and the CPUID Instruction, Application
-     Note 485" (2009).
+
+$(UL
+  $(LI "Intel(R) 64 and IA-32 Architectures Software Developers Manual,
+      Volume 2A: Instruction Set Reference, A-M" (2007).)
+  $(LI "AMD CPUID Specification", Advanced Micro Devices, Rev 2.28 (2008).)
+  $(LI "AMD Processor Recognition Application Note For Processors Prior to AMD
+      Family 0Fh Processors", Advanced Micro Devices, Rev 3.13 (2005).)
+  $(LI "AMD Geode(TM) GX Processors Data Book",
+      Advanced Micro Devices, Publication ID 31505E, (2005).)
+  $(LI "AMD K6 Processor Code Optimisation", Advanced Micro Devices, Rev D (2000).)
+  $(LI "Application note 106: Software Customization for the 6x86 Family",
+      Cyrix Corporation, Rev 1.5 (1998))
+  $(LI $(LINK http://ftp.intron.ac/pub/document/cpu/cpuid.htm))
+  $(LI "Geode(TM) GX1 Processor Series Low Power Integrated X86 Solution",
+      National Semiconductor, (2002))
+  $(LI "The VIA Isaiah Architecture", G. Glenn Henry, Centaur Technology, Inc (2008).)
+  $(LI $(LINK http://www.sandpile.org/ia32/cpuid.htm))
+  $(LI $(LINK http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html))
+  $(LI "What every programmer should know about memory",
+     Ulrich Depper, Red Hat, Inc., (2007).)
+  $(LI "CPU Identification by the Windows Kernel", G. Chappell (2009).
+    $(LINK http://www.geoffchappell.com/viewer.htm?doc=studies/windows/km/cpu/cx8.htm))
+  $(LI "Intel(R) Processor Identification and the CPUID Instruction, Application
+     Note 485" (2009).)
+)
 
 AUTHORS:  Don Clugston,
-          Tomas Lindquist Olsen &lt;tomas@famolsen.dk&gt;
+          Tomas Lindquist Olsen $(EMAIL tomas@famolsen.dk)
 COPYRIGHT:  Public Domain
 
 BUGS:   Currently only works on x86 CPUs.
@@ -64,7 +66,7 @@ module tango.core.tools.Cpuid;
 
 public:
 
-/// Cache size and behaviour
+/// Cache size and behaviour.
 struct CacheInfo
 {
     /// Size of the cache, in kilobytes, per CPU.
@@ -72,10 +74,10 @@ struct CacheInfo
     /// (we don't halve it for larger sizes, since normally
     /// data size is much greater than code size for critical loops).
     uint size;
-    /// Number of ways of associativity, eg:
-    /// 1 = direct mapped
-    /// 2 = 2-way set associative
-    /// 3 = 3-way set associative
+    /// Number of ways of associativity, eg:$(BR)
+    /// 1 = direct mapped$(BR)
+    /// 2 = 2-way set associative$(BR)
+    /// 3 = 3-way set associative$(BR)
     /// ubyte.max = fully associative
     ubyte associativity;
     /// Number of bytes read into the cache when a cache miss occurs.

@@ -13,7 +13,7 @@
  *
  * Copyright: Copyright (C) 2008-2010 the blip developer group
  * License:   BSD style: $(LICENSE)
- * Authors:   Fawzi Mohamed
+ * Author:    Fawzi Mohamed
  */
 
 module tango.core.sync.Atomic;
@@ -208,15 +208,15 @@ static if (!is(typeof(LockVersion))) {
 // use stricter fences
 enum{strictFences=false}
 
-/// utility function for a write barrier (disallow store and store reorderig)
+/// Utility function for a write barrier (disallow store and store reorderig.)
 void writeBarrier(){
     memoryBarrier!(false,false,strictFences,true)();
 }
-/// utility function for a read barrier (disallow load and load reorderig)
+/// Utility function for a read barrier (disallow load and load reorderig.)
 void readBarrier(){
     memoryBarrier!(true,strictFences,false,false)();
 }
-/// utility function for a full barrier (disallow reorderig)
+/// Utility function for a full barrier (disallow reorderig.)
 void fullBarrier(){
     memoryBarrier!(true,true,true,true)();
 }

@@ -6,7 +6,7 @@
 
         version:        Jan 2010: Initial release
 
-        author:         wm4, kris
+        authors:         wm4, kris
 
 ******************************************************************************/
 
@@ -16,7 +16,7 @@ private import tango.core.Memory;
 
 /******************************************************************************
 
-        A generic WeakReference
+        A generic WeakReference.
 
 ******************************************************************************/
 
@@ -25,18 +25,18 @@ alias WeakReference!(Object) WeakRef;
 /******************************************************************************
 
         Implements a Weak reference. The get() method returns null once 
-        the object pointed to has been collected
+        the object pointed to has been collected.
 
 ******************************************************************************/
 
 class WeakReference (T : Object) 
 {
-        public alias get opCall;        /// alternative get() call
+        public alias get opCall;        /// Alternative get() call.
         private void* weakpointer;      // what the GC gives us back
 
         /**********************************************************************
         
-                initializes a weak reference
+                Initializes a weak reference.
         
         **********************************************************************/
 
@@ -47,7 +47,7 @@ class WeakReference (T : Object)
 
         /**********************************************************************
         
-                clean up when we are no longer referenced
+                Clean up when we are no longer referenced.
 
         **********************************************************************/
 
@@ -58,7 +58,7 @@ class WeakReference (T : Object)
 
         /**********************************************************************
         
-                host a different object reference 
+                Host a different object reference.
 
         **********************************************************************/
 
@@ -70,7 +70,7 @@ class WeakReference (T : Object)
 
         /**********************************************************************
         
-                clear the weak reference - get() will always return null
+                Clear the weak reference - get() will always return null.
         
         **********************************************************************/
 
@@ -82,8 +82,8 @@ class WeakReference (T : Object)
 
         /**********************************************************************
         
-                returns the weak reference - returns null if the object 
-                was deallocated in the meantime
+                Returns the weak reference - returns null if the object
+                was deallocated in the meantime.
 
         **********************************************************************/
 
