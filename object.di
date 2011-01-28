@@ -11,8 +11,8 @@ alias size_t hash_t;
 /// type returned by equality comparisons
 alias int equals_t;
 
-version (PhobosCompatibility) 
-{ 
+version (PhobosCompatibility)
+{
         alias char[]  string;
         alias wchar[] wstring;
         alias dchar[] dstring;
@@ -31,7 +31,7 @@ class Object
     int    opCmp(Object o);
     /// returns 0 if this==o
     equals_t    opEquals(Object o);
-    
+
     interface Monitor
     {
         void lock();
@@ -47,6 +47,29 @@ struct Interface
     void*[]     vtbl;
     /// offset to Interface 'this' from Object 'this'
     ptrdiff_t   offset;
+}
+
+struct PointerMap
+{
+    // Conservative pointer mask (one word, scan it, we don't know if it's
+    // really a pointer)
+    size_t[] bits = [1, 1, 0];
+
+    size_t size();
+    bool mustScanWordAt(size_t offset);
+    bool isPointerAt(size_t offset);
+    bool canUpdatePointers();
+}
+
+struct PointerMapBuilder
+{
+    private size_t[] m_bits = null;
+    private size_t m_size = 0;
+
+    void size(size_t bytes);
+    void mustScanWordAt(size_t offset);
+    void inlineAt(size_t offset, PointerMap pm);
+    PointerMap convertToPointerMap();
 }
 
 /// class information
@@ -71,6 +94,9 @@ class ClassInfo : Object
     void*       defaultConstructor; /// compiler dependent storage of constructor function pointer
     /// TypeInfo information about this class
     TypeInfo typeinfo;
+    version (D_HavePointerMap) {
+        PointerMap pointermap;
+    }
     /// finds the classinfo of the class with the given name
     static ClassInfo find(char[] classname);
     /// creates an instance of this class (works only if there is a constructor without arguments)
@@ -102,6 +128,7 @@ class TypeInfo
     void[]   init();
     /// flags, 1: has possible pointers into GC memory
     uint     flags();
+    PointerMap pointermap();
     /// offsets of the various elements
     OffsetTypeInfo[] offTi();
 }
@@ -126,6 +153,10 @@ class TypeInfo_Array : TypeInfo
 {
     /// typeinfo of the elements, might be null for basic arrays, it is safer to use next()
     TypeInfo value;
+
+    //ensure derived array TypeInfos use correct method
+    //if this declaration is forgotten, e.g. TypeInfo_Ai will have a wrong vtbl entry
+    PointerMap pointermap();
 }
 
 class TypeInfo_StaticArray : TypeInfo
@@ -171,6 +202,10 @@ class TypeInfo_Struct : TypeInfo
     char[] function()   xtoString;
 
     uint m_flags;
+
+    version (D_HavePointerMap) {
+        PointerMap m_pointermap;
+    }
 }
 
 class TypeInfo_Tuple : TypeInfo
@@ -199,7 +234,7 @@ class ModuleInfo
         void* xgetMembers;
         void function() ictor;
     }
-    
+
     /// loops on all the modules loaded
     static int opApply( int delegate( ref ModuleInfo ) );
 }

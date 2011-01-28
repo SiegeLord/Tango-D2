@@ -23,9 +23,9 @@ private
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
 
-    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
-    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
-    extern (C) void*  gc_realloc( void* p, size_t sz, uint ba = 0 );
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init);
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init);
+    extern (C) void*  gc_realloc( void* p, size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init);
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) size_t gc_reserve( size_t sz );
     extern (C) void   gc_free( void* p );
@@ -62,6 +62,13 @@ private
 /**
  * This struct encapsulates all garbage collection functionality for the D
  * programming language.
+ *
+ * Documentation of runtime configuration:
+ *
+ * The environment variable D_PRECISE_HEAP can be used to control the behavior
+ * of the GC at runtime.
+ *  D_PRECISE_HEAP=1 enable precise scanning
+ *  D_PRECISE_HEAP=0 disable precise scanning (may save space because no bitmasks need to be stored)
  */
 struct GC
 {
@@ -201,6 +208,7 @@ struct GC
      * Params:
      *  sz = The desired allocation size in bytes.
      *  ba = A bitmask of the attributes to set on this block.
+     *  bitMask = The pointer offset information for precise heap scanning.
      *
      * Returns:
      *  A reference to the allocated memory or null if insufficient memory
@@ -209,9 +217,10 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    static void* malloc( size_t sz, uint ba = 0 )
+    static void* malloc( size_t sz, uint ba = 0,
+        PointerMap bitMask = PointerMap.init )
     {
-        return gc_malloc( sz, ba );
+        return gc_malloc( sz, ba, bitMask );
     }
 
 
@@ -226,6 +235,7 @@ struct GC
      * Params:
      *  sz = The desired allocation size in bytes.
      *  ba = A bitmask of the attributes to set on this block.
+     *  bitMask = The pointer offset information for precise heap scanning.
      *
      * Returns:
      *  A reference to the allocated memory or null if insufficient memory
@@ -234,9 +244,10 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    static void* calloc( size_t sz, uint ba = 0 )
+    static void* calloc( size_t sz, uint ba = 0,
+        PointerMap bitMask = PointerMap.init )
     {
-        return gc_calloc( sz, ba );
+        return gc_calloc( sz, ba, bitMask );
     }
 
 
@@ -258,12 +269,15 @@ struct GC
      * reallocation is required.  If ba is not zero and p references the head
      * of a valid, known memory block then the bits in ba will replace those on
      * the current memory block and will also be set on the new block if a
-     * reallocation is required.
+     * reallocation is required.  Similarly, if bitMask is non-null, then
+     * the bitmask for the current block will propagated to the new block.
+     * Otherwise, the bitmask provided will be propagated to the old block.
      *
      * Params:
      *  p  = A pointer to the root of a valid memory block or to null.
      *  sz = The desired allocation size in bytes.
      *  ba = A bitmask of the attributes to set on this block.
+     *  bitMask = The pointer offset information for precise heap scanning.
      *
      * Returns:
      *  A reference to the allocated memory on success or null if sz is
@@ -272,9 +286,10 @@ struct GC
      * Throws:
      *  OutOfMemoryException on allocation failure.
      */
-    static void* realloc( void* p, size_t sz, uint ba = 0 )
+    static void* realloc( void* p, size_t sz, uint ba = 0,
+        PointerMap bitMask = PointerMap.init )
     {
-        return gc_realloc( p, sz, ba );
+        return gc_realloc( p, sz, ba, bitMask );
     }
 
 

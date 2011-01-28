@@ -144,17 +144,17 @@ extern (C) uint gc_clrAttr( void* p, uint a )
     return _gc.clrAttr( p, a );
 }
 
-extern (C) void* gc_malloc( size_t sz, uint ba = 0 )
+extern (C) void* gc_malloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init)
 {
     return _gc.malloc( sz, ba );
 }
 
-extern (C) void* gc_calloc( size_t sz, uint ba = 0 )
+extern (C) void* gc_calloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init)
 {
     return _gc.calloc( sz, ba );
 }
 
-extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0 )
+extern (C) void* gc_realloc( void* p, size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init)
 {
     return _gc.realloc( p, sz, ba );
 }

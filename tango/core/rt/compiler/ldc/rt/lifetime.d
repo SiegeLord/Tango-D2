@@ -59,8 +59,8 @@ private
     extern (C) uint gc_setAttr( void* p, uint a );
     extern (C) uint gc_clrAttr( void* p, uint a );
 
-    extern (C) void*  gc_malloc( size_t sz, uint ba = 0 );
-    extern (C) void*  gc_calloc( size_t sz, uint ba = 0 );
+    extern (C) void*  gc_malloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init);
+    extern (C) void*  gc_calloc( size_t sz, uint ba = 0, PointerMap bitMask = PointerMap.init);
     extern (C) size_t gc_extend( void* p, size_t mx, size_t sz );
     extern (C) void   gc_free( void* p );
 
@@ -125,8 +125,13 @@ extern (C) Object _d_allocclass(ClassInfo ci)
     else
     +/
     {
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ci.pointermap;
+        }
         p = gc_malloc(ci.init.length,
-                      BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0));
+                      BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0),
+                      pm);
         debug(PRINTF2) printf(" p = %p\n", p);
     }
 
@@ -233,7 +238,11 @@ extern (C) void* _d_newarrayT(TypeInfo ti, size_t length)
 
     size = length_adjust(size, length);
 
-    p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    PointerMap pm;
+    version (D_HavePointerMap) {
+        pm = ti.next.pointermap();
+    }
+    p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0, pm);
     debug(PRINTF) printf(" p = %p\n", p);
     memset(p, 0, size);
 
@@ -261,7 +270,13 @@ extern (C) void* _d_newarrayiT(TypeInfo ti, size_t length)
 
         size = length_adjust(size, length);
 
-        auto p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
+        auto p = gc_malloc(size + 1,
+                !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                pm);
         debug(PRINTF) printf(" p = %p\n", p);
         if (isize == 1)
             memset(p, *cast(ubyte*)q, size);
@@ -300,7 +315,11 @@ extern (C) void* _d_newarrayvT(TypeInfo ti, size_t length)
 
     size = length_adjust(size, length);
 
-    p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    PointerMap pm;
+    version (D_HavePointerMap) {
+        pm = ti.next.pointermap();
+    }
+    p = gc_malloc(size + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0, pm);
     debug(PRINTF) printf(" p = %p\n", p);
     return p;
 }
@@ -472,7 +491,11 @@ void* _d_allocmemory(size_t nbytes)
  */
 extern (C) void* _d_allocmemoryT(TypeInfo ti)
 {
-    return gc_malloc(ti.tsize(), !(ti.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    PointerMap pm;
+    version (D_HavePointerMap) {
+        pm = ti.pointermap();
+    }
+    return gc_malloc(ti.tsize(), !(ti.flags() & 1) ? BlkAttr.NO_SCAN : 0, pm);
 }
 
 /**
@@ -631,7 +654,13 @@ body
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+                    PointerMap pm;
+                    version (D_HavePointerMap) {
+                        pm = ti.next.pointermap();
+                    }
+                    newdata = cast(byte *)gc_malloc(newsize + 1,
+                            !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                            pm);
                     newdata[0 .. size] = pdata[0 .. size];
                 }
              L1:
@@ -640,7 +669,13 @@ body
         }
         else
         {
-            newdata = cast(byte *)gc_calloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+            PointerMap pm;
+            version (D_HavePointerMap) {
+                pm = ti.next.pointermap();
+            }
+            newdata = cast(byte *)gc_calloc(newsize + 1,
+                    !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                    pm);
         }
     }
     else
@@ -670,9 +705,8 @@ in
 body
 {
     byte* newdata;
-    TypeInfo tinext = ti.next;
-    size_t sizeelem = tinext.tsize();
-    void[] initializer = tinext.init();
+    size_t sizeelem = ti.next.tsize();
+    void[] initializer = ti.next.init();
     size_t initsize = initializer.length;
 
     assert(sizeelem);
@@ -710,7 +744,13 @@ body
                             goto L1;
                         }
                     }
-                    newdata = cast(byte *)gc_malloc(newsize + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+                    PointerMap pm;
+                    version (D_HavePointerMap) {
+                        pm = ti.next.pointermap();
+                    }
+                    newdata = cast(byte *)gc_malloc(newsize + 1,
+                            !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                            pm);
                     newdata[0 .. size] = pdata[0 .. size];
                 L1: ;
                 }
@@ -718,7 +758,13 @@ body
         }
         else
         {
-            newdata = cast(byte *)gc_malloc(newsize + 1, !(tinext.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+            PointerMap pm;
+            version (D_HavePointerMap) {
+                pm = ti.next.pointermap();
+            }
+            newdata = cast(byte *)gc_malloc(newsize + 1,
+                    !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                    pm);
         }
 
         auto q = initializer.ptr; // pointer to initializer
@@ -776,8 +822,16 @@ extern (C) long _d_arrayappendT(TypeInfo ti, Array *px, byte[] y)
                 goto L1;
             }
         }
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
         uint attr = !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0;
-        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, attr);
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
+        newdata = cast(byte *)gc_malloc(newCapacity(newlength, sizeelem) + 1, attr, pm);
         memcpy(newdata, px.data, length * sizeelem);
         px.data = newdata;
     }
@@ -877,11 +931,15 @@ extern (C) byte[] _d_arrayappendcT(TypeInfo ti, void* array, void* element)
                 goto L1;
             }
         }
-        debug(PRINTF) printf("_d_arrayappendcT(length = %d, newlength = %d, cap = %d)\n", length, newlength, info.size);
+        debug(PRINTF) printf("_d_arrayappendcT(length = %d, newlength = %d, cap = %d, ti=%.*s)\n", length, newlength, info.size, ti.toString());
         auto newcap = newCapacity(newlength, sizeelem);
         assert(newcap >= newlength * sizeelem);
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
         uint attr = !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0;
-        newdata = cast(byte *)gc_malloc(newcap + 1, attr);
+        newdata = cast(byte *)gc_malloc(newcap + 1, attr, pm);
         memcpy(newdata, x.ptr, length * sizeelem);
         (cast(void**)x)[1] = newdata;
     }
@@ -1083,7 +1141,13 @@ body
     if (!len)
         return null;
 
-    byte* p = cast(byte*)gc_malloc(len + 1, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    PointerMap pm;
+    version (D_HavePointerMap) {
+        pm = ti.next.pointermap();
+    }
+    byte* p = cast(byte*)gc_malloc(len + 1,
+            !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+            pm);
     memcpy(p, x.ptr, xlen);
     memcpy(p + xlen, y.ptr, ylen);
     p[len] = 0;
@@ -1112,7 +1176,11 @@ extern (C) byte[] _d_arraycatnT(TypeInfo ti, uint n, ...)
     if (!length)
         return null;
 
-    a = gc_malloc(length * size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+    PointerMap pm;
+    version (D_HavePointerMap) {
+        pm = ti.next.pointermap();
+    }
+    a = gc_malloc(length * size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0, pm);
     p = cast(byte[]*)(&n + 1);
 
     uint j = 0;
@@ -1147,7 +1215,13 @@ extern (C) void* _d_arrayliteralT(TypeInfo ti, size_t length, ...)
         result = null;
     else
     {
-        result = gc_malloc(length * sizeelem, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
+        result = gc_malloc(length * sizeelem,
+                !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0,
+                pm);
 
         va_list q;
         va_start!(size_t)(q, length);
@@ -1200,7 +1274,11 @@ body
     {
         auto sizeelem = ti.next.tsize();                // array element size
         auto size = a.length * sizeelem;
-        ptr = gc_malloc(size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0);
+        PointerMap pm;
+        version (D_HavePointerMap) {
+            pm = ti.next.pointermap();
+        }
+        ptr = gc_malloc(size, !(ti.next.flags() & 1) ? BlkAttr.NO_SCAN : 0, pm);
         memcpy(ptr, a.ptr, size);
     }
     return ptr[0 .. a.length];

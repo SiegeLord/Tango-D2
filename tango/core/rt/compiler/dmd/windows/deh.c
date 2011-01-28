@@ -39,7 +39,7 @@ extern ClassInfo D9Exception7__ClassZ;
 
 typedef int (__pascal *fp_t)();   // function pointer in ambient memory model
 
-void* gc_calloc(size_t sz, unsigned ba);
+void* gc_calloc_noscan(size_t sz);
 
 // The layout of DEstablisherFrame is the same for C++
 
@@ -317,7 +317,7 @@ Object *_d_translate_se_to_d_exception(PCONTEXT context,EXCEPTION_RECORD *except
                         break;
                 }
                 if (bufferLen > 0) {
-                    char* msg = gc_calloc(bufferLen+1, 2 /* NO_SCAN */);
+                    char* msg = gc_calloc_noscan(bufferLen+1);
                     if (msg != 0) {
                         memcpy(msg, buffer, bufferLen);
                         msg[bufferLen] = 0;

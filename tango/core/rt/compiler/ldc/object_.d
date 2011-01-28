@@ -150,6 +150,140 @@ struct Interface
 }
 
 /**
+ * Pointer map for precise heap scanning.
+ * Format:
+ *  PointerMap pm = typeid(T).pointermap;
+ *  pm.bits = [header] ~ scan_bits ~ pointer_bits
+ *  size_t header is the number of pointer sized units in T (T.sizeof/size_t.sizeof)
+ *  size_t[] scan_bits is the bitmap; each bit covers size_t bytes of T, meaning:
+ *      0: guaranteed not to be a pointer, don't scan
+ *      1: possibly a pointer, must scan
+ *  size_t[] pointer_bits is a second bitmap similar to scan_bits. If the
+ *  corrsponding bit in scan_bits is 0, the bit is 0; otherwise its meaning is:
+ *      0: pointer can not be moved, because it's possibly an integer
+ *      1: pointer can be moved, the corresponding word is always a pointer
+ *  Note that not the bit-arrays are concatenated, but the size_t arrays.
+ * This implies all GC-aware pointers must be aligned on size_t boundaries.
+ * The compiler won't set any bits for unaligned pointer fields.
+ * The least significant bit of a size_t item is considered the first bit.
+ * PointerMap.init is a conservative scanning mask equivelant to void*[]
+ */
+struct PointerMap
+{
+    size_t[] bits = [1, 1, 0];
+
+    private const size_t BITS = size_t.sizeof * 8;
+
+    /// return size in bytes (aligned)
+    size_t size()
+    {
+        return bits[0] * size_t.sizeof;
+    }
+
+    private bool getbit(size_t offset, bool pointer_bit)
+    {
+        assert(offset < size);
+
+        if ((offset & (size_t.sizeof - 1)) != 0)
+            return false;
+
+        size_t elem = offset / size_t.sizeof;
+        size_t start = 1; //scan_bits offset
+        if (pointer_bit)
+            start += (bits[0] + BITS - 1) / BITS; //pointer_bits offset
+        return !!(bits[start + elem / BITS] & (1 << (elem % BITS)));
+    }
+
+    /// return if the (aligned) field starting at byte offset is a pointer
+    /// Warning: the GC may access the internal data structure directly instead
+    /// of using this method to make scanning faster
+    bool mustScanWordAt(size_t offset)
+    {
+        return getbit(offset, false);
+    }
+
+    /// return if the (aligned) field starting at byte offset is a moveable pointer
+    /// "moveable pointer" means that the memory block referenced by the pointer can
+    /// be moved by the GC (the pointer field will be updated with the new address)
+    bool isPointerAt(size_t offset)
+    {
+        return getbit(offset, true);
+    }
+
+    /// return true if and only if there are integer fields overlapping with pointer
+    /// fields in this type
+    bool canUpdatePointers()
+    {
+        auto len = (bits.length - 1) / 2;
+        return bits[1 .. 1 + len] == bits[1 + len .. $];
+    }
+
+}
+
+/// code for manually building PointerMaps
+/// separate struct from PointerMap because for some representations, it may be
+/// hard to handle arbitrary pointerAt() calls to update the internal data structure
+/// (think of pointer maps encoded as lists of runs etc.)
+/// xxx untested
+struct PointerMapBuilder
+{
+    private size_t[] m_bits = null;
+    private size_t m_size = 0;
+
+    private const size_t BITS = size_t.sizeof * 8;
+
+    /// set the underlying type's size in bytes
+    void size(size_t bytes)
+    {
+        size_t nelem = bytes / size_t.sizeof;
+        m_bits.length = 1 + ((nelem + BITS - 1) / BITS) * 2;
+        m_bits[] = 0;
+        m_bits[0] = nelem;
+        m_size = bytes;
+    }
+
+    /// mark the pointer sized field at byte offset as pointer
+    /// if the offset is unaligned, it does nothing
+    void mustScanWordAt(size_t offset)
+    {
+        assert(offset < m_size);
+
+        if ((offset & (size_t.sizeof - 1)) != 0)
+            return;
+
+        size_t elem = offset / size_t.sizeof;
+        m_bits[1 + elem / BITS] |= 1 << (elem % BITS);
+    }
+
+    /// starting at the given byte offset, call pointerAt() for each pointer in pm
+    void inlineAt(size_t offset, PointerMap pm)
+    {
+        assert(offset + pm.size <= m_size);
+
+        for (size_t n = 0; n < pm.size; n += size_t.sizeof)
+        {
+            if (pm.mustScanWordAt(n))
+                mustScanWordAt(offset + n);
+        }
+    }
+
+    /// create a PointerMap instance
+    /// accessing this PointerMapBuilder after calling this method is not allowed
+    PointerMap convertToPointerMap() {
+        //no un-moveable pointer stuff supported => imply all pointers are moveable
+        size_t len = (m_bits[0] + BITS - 1) / BITS;
+        assert(len == (m_bits.length - 1) / 2);
+        m_bits[1 + len .. $] = m_bits[1 .. 1 + len];
+
+        auto res = PointerMap(m_bits);
+        *this = PointerMapBuilder.init; //invalidate this instance
+        return res;
+    }
+}
+
+//static const PointerMap cPointerMapNoScan = PointerMap([1, 0, 0]);
+
+/**
  * Runtime type information about a class. Can be retrieved for any class type
  * or instance by using the .classinfo property.
  * A pointer to this appears as the first entry in the class's vtbl[].
@@ -175,6 +309,10 @@ class ClassInfo : Object
     OffsetTypeInfo[] offTi;
     void* defaultConstructor;   // default Constructor. Only use as delegate.funcptr!
     TypeInfo typeinfo;
+
+    version (D_HavePointerMap) {
+        PointerMap pointermap;
+    }
 
     /**
      * Search all modules for ClassInfo corresponding to classname.
@@ -299,6 +437,35 @@ class TypeInfo
     /// Get flags for type: 1 means GC should scan for pointers
     uint flags() { return 0; }
 
+    /// Get a pointer to PointerMap; used for GC scanning
+    PointerMap pointermap() {
+        if (flags() & 1) {
+            return PointerMap.init;
+        } else {
+            //return cPointerMapNoScan;
+            //work around for dmd bug #4397 (triggers infinite recursion)
+            static size_t[3] g_arr;
+            static PointerMap pm;
+            pm.bits = g_arr;
+            pm.bits[0] = 1;
+            pm.bits[1] = 0;
+            pm.bits[2] = 0;
+            return pm;
+        }
+    }
+
+    //return PointerMap for a single, moveable pointer
+    //also just a workaround for dmd bug #4397; should be a const variable
+    private PointerMap exactpointer() {
+        static size_t[3] g_arr;
+        static PointerMap pm;
+        pm.bits = g_arr;
+        pm.bits[0] = 1;
+        pm.bits[1] = 1;
+        pm.bits[2] = 1;
+        return pm;
+    }
+
     /// Get type information on the contents of the type; null if not available
     OffsetTypeInfo[] offTi() { return null; }
 }
@@ -324,6 +491,7 @@ class TypeInfo_Typedef : TypeInfo
 
     override TypeInfo next() { return base; }
     override uint flags() { return base.flags(); }
+    override PointerMap pointermap() { return base.pointermap(); }
     override void[] init() { return m_init.length ? m_init : base.init(); }
 
     TypeInfo base;
@@ -382,6 +550,7 @@ class TypeInfo_Pointer : TypeInfo
 
     override TypeInfo next() { return m_next; }
     override uint flags() { return 1; }
+    override PointerMap pointermap() { return exactpointer(); }
 
     TypeInfo m_next;
 }
@@ -462,6 +631,21 @@ class TypeInfo_Array : TypeInfo
     }
 
     override uint flags() { return 1; }
+
+    override PointerMap pointermap()
+    {
+        //return static mask for arrays
+        //  word 0: length
+        //  word 1: pointer
+        //work around for dmd bug #4397 (triggers infinite recursion)
+        static size_t[3] g_arr;
+        static PointerMap pm;
+        pm.bits = g_arr;
+        pm.bits[0] = 2;
+        pm.bits[1] = 0b10;
+        pm.bits[2] = 0b10; //moveable
+        return pm;
+    }
 }
 
 class TypeInfo_StaticArray : TypeInfo
@@ -546,6 +730,20 @@ class TypeInfo_StaticArray : TypeInfo
     override TypeInfo next() { return value; }
     override uint flags() { return value.flags(); }
 
+    override PointerMap pointermap()
+    {
+        //assert(0);
+        //this is kind of a hack to make arrays of static arrays work
+        //e.g. T[2][] (typeid(T[2]) would be this instance)
+        //because the GC repeats GC bitmasks shorter than the allocation size,
+        //  this should work well
+        //it's a hack because pointermap() is supposed to return a map that
+        //  covers the whole type (i.e. doesn't rely on repeat)
+        //this also might prevent subtle bugs, when a static array is resized
+        //  as dynamic array, and the bitmask is reused (can that happen at all?)
+        return value.pointermap();
+    }
+
     TypeInfo value;
     size_t   len;
 }
@@ -613,6 +811,7 @@ class TypeInfo_AssociativeArray : TypeInfo
 
     override TypeInfo next() { return value; }
     override uint flags() { return 1; }
+    override PointerMap pointermap() { return exactpointer(); }
 
     TypeInfo value;
     TypeInfo key;
@@ -684,6 +883,21 @@ class TypeInfo_Delegate : TypeInfo
 
     override uint flags() { return 1; }
 
+    override PointerMap pointermap()
+    {
+        //return static mask for delegates
+        //  word 0: context pointer
+        //  word 1: function pointer (not scanned)
+        //work around for dmd bug #4397 (triggers infinite recursion)
+        static size_t[3] g_arr;
+        static PointerMap pm;
+        pm.bits = g_arr;
+        pm.bits[0] = 2;
+        pm.bits[1] = 0b01;
+        pm.bits[2] = 0b01; //moveable
+        return pm;
+    }
+
     TypeInfo next;
 }
 
@@ -741,6 +955,7 @@ class TypeInfo_Class : TypeInfo
     }
 
     override uint flags() { return 1; }
+    override PointerMap pointermap() { return exactpointer(); }
 
     override OffsetTypeInfo[] offTi()
     {
@@ -810,6 +1025,7 @@ class TypeInfo_Interface : TypeInfo
     }
 
     override uint flags() { return 1; }
+    override PointerMap pointermap() { return exactpointer(); }
 
     ClassInfo info;
 }
@@ -905,6 +1121,12 @@ class TypeInfo_Struct : TypeInfo
     char[] function()   xtoString;
 
     uint m_flags;
+
+    version (D_HavePointerMap) {
+        PointerMap m_pointermap;
+
+        override PointerMap pointermap() { return m_pointermap; }
+    }
 }
 
 class TypeInfo_Tuple : TypeInfo
@@ -964,6 +1186,11 @@ class TypeInfo_Tuple : TypeInfo
     }
 
     override void swap(void* p1, void* p2)
+    {
+        assert(0);
+    }
+
+    override PointerMap pointermap()
     {
         assert(0);
     }
