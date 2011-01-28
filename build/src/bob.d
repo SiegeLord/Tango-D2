@@ -596,6 +596,7 @@ class FileFilter
 
                 exclude ("tango/core/rt/gc/stub");
                 exclude ("tango/core/rt/gc/basic");
+                exclude ("tango/core/rt/gc/cdgc");
 
                 exclude ("tango/core/rt/compiler/dmd");
                 exclude ("tango/core/rt/compiler/gdc");
@@ -834,7 +835,7 @@ struct Args
                         "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
                         "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
-                        "\t[-g=basic|stub]\t\tspecify the GC implementation to include in the runtime\n"
+                        "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
                         "\t[-o=\"options\"]\t\tspecify D compiler options\n"
                         "\t[-l=libname]\t\tspecify lib name (sans .ext)\n"
                         "\t[-p=sysname]\t\tdetermines package filtering (windows|linux|osx|freebsd|solaris)\n\n"
@@ -852,7 +853,7 @@ struct Args
                 auto o = args('o').smush.params(1).defaults("-release");
                 auto c = args('c').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
                 auto r = args('r').smush.params(1).defaults("dmd").restrict("dmd", "gdc", "ldc");
-                auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "stub");
+                auto g = args('g').smush.params(1).defaults("basic").restrict("basic", "cdgc", "stub");
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
                 auto d = args('d');
