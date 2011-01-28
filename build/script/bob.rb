@@ -60,7 +60,7 @@ module Bob
 	RUNTIMES = COMPILERS
 	FILTERS = %w[osx freebsd linux haiku solaris windows]
 	ARCHS = %w[i386 x86_64]
-	GARBAGE_COLLECTORS = %w[basic stub]
+	GARBAGE_COLLECTORS = %w[basic cdgc stub]
 
 	OSX = RUBY_PLATFORM =~ /darwin/ ? true : false
 	FREEBSD = RUBY_PLATFORM =~ /freebsd/ ? true : false
@@ -400,7 +400,8 @@ module Bob
 
 			exclude("tango/core/rt/gc/stub");
 			exclude("tango/core/rt/gc/basic");
-			
+			exclude("tango/core/rt/gc/cdgc");
+            
 			exclude("tango/core/rt/compiler/dmd");
 			exclude("tango/core/rt/compiler/gdc");
 			exclude("tango/core/rt/compiler/ldc");
