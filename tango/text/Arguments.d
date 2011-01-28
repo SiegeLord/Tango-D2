@@ -527,6 +527,7 @@ class Arguments
                                         max,            /// maximum params
                                         error;          /// error condition
                 public  bool            set;            /// arg is present
+                public  char[]          aliases;        /// Array of aliases
                 private bool            req,            // arg is required
                                         cat,            // arg is smushable
                                         exp,            // implicit params
@@ -587,6 +588,7 @@ class Arguments
                 final Argument aliased (char name)
                 {
                         this.outer.aliases[(&name)[0..1].dup] = this;
+                        this.aliases ~= name;
                         return this;
                 }
 
