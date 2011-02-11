@@ -20,7 +20,7 @@ private import tango.io.stream.Iterator;
 
         Each pattern is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
-        exposed content, then you should .dup it appropriately. 
+        exposed content, then you should .dup it appropriately.
 
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
@@ -29,7 +29,7 @@ private import tango.io.stream.Iterator;
         introduce redundant copying or the compiler would have to support
         read-only arrays.
 
-        See Lines, Patterns, Quotes
+        See Lines, Patterns, Quotes.
 
 *******************************************************************************/
 
@@ -38,7 +38,7 @@ class Delimiters(T) : Iterator!(T)
         private T[] delim;
 
         /***********************************************************************
-        
+
                 Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new Lines!(char);
@@ -58,7 +58,7 @@ class Delimiters(T) : Iterator!(T)
                                  Cout (line).newline;
                 }
                 ---
-                
+
                 Construct a streaming iterator upon a conduit:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
@@ -106,7 +106,7 @@ debug(UnitTest)
 {
         private import tango.io.device.Array;
 
-        unittest 
+        unittest
         {
                 auto p = new Delimiters!(char) (", ", new Array("blah"));
         }

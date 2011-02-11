@@ -22,7 +22,7 @@ private alias void delegate(char[]) Snoop;
 /*******************************************************************************
 
         Stream to expose call behaviour. By default, activity trace is
-        sent to Cerr
+        sent to Cerr.
 
 *******************************************************************************/
 
@@ -33,7 +33,7 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Attach to the provided stream
+                Attach to the provided stream.
 
         ***********************************************************************/
 
@@ -46,18 +46,18 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Return the upstream host of this filter
-                        
+                Return the upstream host of this filter.
+
         ***********************************************************************/
 
         InputStream input ()
         {
                 return host;
-        }            
+        }
 
         /***********************************************************************
 
-                Return the hosting conduit
+                Return the hosting conduit.
 
         ***********************************************************************/
 
@@ -68,11 +68,11 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.
 
                 Returns the number of bytes read, which may be less than
-                requested in dst
+                requested in dst.
 
         ***********************************************************************/
 
@@ -90,8 +90,8 @@ class SnoopInput : InputStream
                 will be expanded as necessary to consume the input.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                              
+                IOException on error.
+
         ***********************************************************************/
 
         void[] load (size_t max=-1)
@@ -103,7 +103,7 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Clear any buffered content
+                Clear any buffered content.
 
         ***********************************************************************/
 
@@ -116,7 +116,7 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Close the input
+                Close the input.
 
         ***********************************************************************/
 
@@ -127,9 +127,9 @@ class SnoopInput : InputStream
         }
 
         /***********************************************************************
-        
+
                 Seek on this stream. Target conduits that don't support
-                seeking will throw an IOException
+                seeking will throw an IOException.
 
         ***********************************************************************/
 
@@ -142,7 +142,7 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Internal trace handler
+                Internal trace handler.
 
         ***********************************************************************/
 
@@ -153,7 +153,7 @@ class SnoopInput : InputStream
 
         /***********************************************************************
 
-                Internal trace handler
+                Internal trace handler.
 
         ***********************************************************************/
 
@@ -168,7 +168,7 @@ class SnoopInput : InputStream
 /*******************************************************************************
 
         Stream to expose call behaviour. By default, activity trace is
-        sent to Cerr
+        sent to Cerr.
 
 *******************************************************************************/
 
@@ -179,7 +179,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Attach to the provided stream
+                Attach to the provided stream.
 
         ***********************************************************************/
 
@@ -191,15 +191,15 @@ class SnoopOutput : OutputStream
         }
 
         /***********************************************************************
-        
-                Return the upstream host of this filter
-                        
+
+                Return the upstream host of this filter.
+
         ***********************************************************************/
 
         OutputStream output ()
         {
                 return host;
-        }              
+        }
 
         /***********************************************************************
 
@@ -207,7 +207,7 @@ class SnoopOutput : OutputStream
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                be less than the quantity provided.
 
         ***********************************************************************/
 
@@ -220,7 +220,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Return the hosting conduit
+                Return the hosting conduit.
 
         ***********************************************************************/
 
@@ -231,7 +231,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Emit/purge buffered content
+                Emit/purge buffered content.
 
         ***********************************************************************/
 
@@ -244,7 +244,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Close the output
+                Close the output.
 
         ***********************************************************************/
 
@@ -269,9 +269,9 @@ class SnoopOutput : OutputStream
         }
 
         /***********************************************************************
-        
+
                 Seek on this stream. Target conduits that don't support
-                seeking will throw an IOException
+                seeking will throw an IOException.
 
         ***********************************************************************/
 
@@ -284,7 +284,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Internal trace handler
+                Internal trace handler.
 
         ***********************************************************************/
 
@@ -295,7 +295,7 @@ class SnoopOutput : OutputStream
 
         /***********************************************************************
 
-                Internal trace handler
+                Internal trace handler.
 
         ***********************************************************************/
 

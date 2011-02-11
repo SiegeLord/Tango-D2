@@ -4,10 +4,10 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2004: Initial release
+        version:        Mar 2004: Initial release$(BR)
                         Dec 2006: Outback release
 
-        authors:        Kris
+        author:        Kris
 
 *******************************************************************************/
 
@@ -65,7 +65,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Ensure the buffer remains valid between method calls
+                Ensure the buffer remains valid between method calls.
 
         ***********************************************************************/
 
@@ -77,12 +77,12 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                capacity = the number of bytes to make available
-                growing  = chunk size of a growable instance, or zero
-                           to prohibit expansion
+                capacity = The number of bytes to make available.
+                growing  = Chunk size of a growable instance, or zero
+                           to prohibit expansion.
 
                 Remarks:
                 Construct a Buffer with the specified number of bytes
@@ -98,10 +98,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                data = the backing array to buffer within
+                data = The backing array to buffer within.
 
                 Remarks:
                 Prime a buffer with an application-supplied array. All content
@@ -117,12 +117,12 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                data =     the backing array to buffer within
-                readable = the number of bytes initially made
-                           readable
+                data =     The backing array to buffer within.
+                readable = The number of bytes initially made
+                           readable.
 
                 Remarks:
                 Prime buffer with an application-supplied array, and
@@ -142,7 +142,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Return the name of this conduit
+                Return the name of this conduit.
 
         ***********************************************************************/
 
@@ -150,16 +150,16 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         {
                 return "<array>";
         }
-      
+
         /***********************************************************************
 
-                Transfer content into the provided dst
+                Transfer content into the provided dst.
 
                 Params:
-                dst = destination of the content
+                dst = Destination of the content.
 
                 Returns:
-                return the number of bytes read, which may be less than
+                Return the number of bytes read, which may be less than
                 dst.length. Eof is returned when no further content is
                 available.
 
@@ -190,13 +190,13 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Emulate OutputStream.write()
+                Emulate OutputStream.write().
 
                 Params:
-                src = the content to write
+                src = The content to write.
 
                 Returns:
-                return the number of bytes written, which may be less than
+                Return the number of bytes written, which may be less than
                 provided (conceptually). Returns Eof when the buffer becomes
                 full.
 
@@ -224,7 +224,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O
+                Return a preferred size for buffering conduit I/O.
 
         ***********************************************************************/
 
@@ -235,7 +235,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Release external resources
+                Release external resources.
 
         ***********************************************************************/
 
@@ -244,8 +244,8 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         }
 
         /***********************************************************************
-        
-                Seek within the constraints of assigned content
+
+                Seek within the constraints of assigned content.
 
         ***********************************************************************/
 
@@ -279,17 +279,17 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Reset the buffer content
+                Reset the buffer content.
 
                 Params:
-                data =  the backing array to buffer within. All content
-                        is considered valid
+                data =  The backing array to buffer within. All content
+                        is considered valid.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
-                Set the backing array with all content readable. 
+                Set the backing array with all content readable.
 
         ***********************************************************************/
 
@@ -303,15 +303,15 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 Reset the buffer content
 
                 Params:
-                data     = the backing array to buffer within
-                readable = the number of bytes within data considered
-                           valid
+                data     = The backing array to buffer within.
+                readable = The number of bytes within data considered
+                           valid.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
-                Set the backing array with some content readable. Use clear() 
+                Set the backing array with some content readable. Use clear()
                 to reset the content (make it all writable).
 
         ***********************************************************************/
@@ -330,10 +330,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Access buffer content
+                Access buffer content.
 
                 Remarks:
-                Return the entire backing array. 
+                Return the entire backing array.
 
         ***********************************************************************/
 
@@ -343,9 +343,9 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         }
 
         /***********************************************************************
-        
+
                 Return a void[] read of the buffer from start to end, where
-                end is exclusive
+                end is exclusive.
 
         ***********************************************************************/
 
@@ -357,10 +357,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Retrieve all readable content
+                Retrieve all readable content.
 
                 Returns:
-                a void[] read of the buffer
+                A void[] read of the buffer.
 
                 Remarks:
                 Return a void[] read of the buffer, from the current position
@@ -376,14 +376,14 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Access buffer content
+                Access buffer content.
 
                 Params:
-                size =  number of bytes to access
-                eat =   whether to consume the content or not
+                size = Number of bytes to access.
+                eat =  Whether to consume the content or not.
 
                 Returns:
-                the corresponding buffer slice when successful, or
+                The corresponding buffer slice when successful, or
                 null if there's not enough data available (Eof; Eob).
 
                 Remarks:
@@ -394,8 +394,8 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
                 Note that the slice cannot be larger than the size of
                 the buffer ~ use method read(void[]) instead where you
-                simply want the content copied. 
-                
+                simply want the content copied.
+
                 Note also that the slice should be .dup'd if you wish to
                 retain it.
 
@@ -423,17 +423,18 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Append content
+                Append content.
 
                 Params:
-                src = the content to _append
-                length = the number of bytes in src
+                src = The content to _append.
+                length = The number of bytes in src.
 
-                Returns a chaining reference if all content was written.
+                Returns:
+                A chaining reference if all content was written.
                 Throws an IOException indicating eof or eob if not.
 
                 Remarks:
-                Append an array to this buffer
+                Append an array to this buffer.
 
         ***********************************************************************/
 
@@ -446,10 +447,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Iterator support
+                Iterator support.
 
                 Params:
-                scan = the delagate to invoke with the current content
+                scan = The delagate to invoke with the current content
 
                 Returns:
                 Returns true if a token was isolated, false otherwise.
@@ -458,7 +459,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
                 Upon success, the delegate should return the byte-based
                 index of the consumed pattern (tail end of it). Failure
                 to match a pattern should be indicated by returning an
-                IConduit.Eof
+                IConduit.Eof.
 
                 Note that additional iterator and/or reader instances
                 will operate in lockstep when bound to a common buffer.
@@ -472,11 +473,11 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Available content
+                Available content.
 
                 Remarks:
                 Return count of _readable bytes remaining in buffer. This is
-                calculated simply as limit() - position()
+                calculated simply as limit() - position().
 
         ***********************************************************************/
 
@@ -487,11 +488,11 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Available space
+                Available space.
 
                 Remarks:
                 Return count of _writable bytes available in buffer. This is
-                calculated simply as capacity() - limit()
+                calculated simply as capacity() - limit().
 
         ***********************************************************************/
 
@@ -502,7 +503,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Access buffer limit
+                Access buffer limit.
 
                 Returns:
                 Returns the limit of readable content within this buffer.
@@ -522,10 +523,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Access buffer capacity
+                Access buffer capacity.
 
                 Returns:
-                Returns the maximum capacity of this buffer
+                Returns the maximum capacity of this buffer.
 
                 Remarks:
                 Each buffer has a capacity, a limit, and a position. The
@@ -542,7 +543,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Access buffer read position
+                Access buffer read position.
 
                 Returns:
                 Returns the current read-position within this buffer
@@ -562,7 +563,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Clear array content
+                Clear array content.
 
                 Remarks:
                 Reset 'position' and 'limit' to zero. This effectively
@@ -578,7 +579,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Emit/purge buffered content
+                Emit/purge buffered content.
 
         ***********************************************************************/
 
@@ -589,10 +590,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Write into this buffer
+                Write into this buffer.
 
                 Params:
-                dg = the callback to provide buffer access to
+                dg = The callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -621,10 +622,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Read directly from this buffer
+                Read directly from this buffer.
 
                 Params:
-                dg = callback to provide buffer access to
+                dg = Callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -654,16 +655,16 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         /***********************************************************************
 
-                Expand existing buffer space
+                Expand existing buffer space.
 
                 Returns:
-                Available space, without any expansion
+                Available space, without any expansion.
 
                 Remarks:
-                Make some additional room in the buffer, of at least the 
+                Make some additional room in the buffer, of at least the
                 given size. Should not be public in order to avoid issues
-                with non-growable subclasses
-                                     
+                with non-growable subclasses.
+
         ***********************************************************************/
 
         private final size_t expand (size_t size)
@@ -682,7 +683,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
                 Cast to a target type without invoking the wrath of the
                 runtime checks for misalignment. Instead, we truncate the
-                array length
+                array length.
 
         ***********************************************************************/
 
@@ -702,16 +703,16 @@ debug (Array)
         import tango.io.Stdout;
 
         void main()
-        {       
+        {
                 auto b = new Array(6, 10);
                 b.seek (0);
                 b.write ("fubar");
 
-                Stdout.formatln ("extent {}, pos {}, read {}, bufsize {}", 
+                Stdout.formatln ("extent {}, pos {}, read {}, bufsize {}",
                                   b.limit, b.position, cast(char[]) b.slice, b.bufferSize);
 
                 b.write ("fubar");
-                Stdout.formatln ("extent {}, pos {}, read {}, bufsize {}", 
+                Stdout.formatln ("extent {}, pos {}, read {}, bufsize {}",
                                   b.limit, b.position, cast(char[]) b.slice, b.bufferSize);
         }
 }

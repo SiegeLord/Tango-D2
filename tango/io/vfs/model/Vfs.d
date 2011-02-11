@@ -20,7 +20,7 @@ private import tango.io.model.IFile : FileInfo;
 
 /*******************************************************************************
 
-        alias FileInfo for filtering
+        alias FileInfo for filtering.
 
 *******************************************************************************/
 
@@ -37,9 +37,9 @@ alias bool delegate(VfsInfo) VfsFilter;
 
 struct VfsStats
 {
-        ulong   bytes;                  // byte count of files
-        uint    files,                  // number of files
-                folders;                // number of folders
+        ulong bytes;   /// Byte count of files.
+        uint  files;   /// Number of files.
+        uint  folders; /// Number of folders.
 }
 
 /*******************************************************************************
@@ -55,8 +55,8 @@ interface VfsHost : VfsFolder
                 tree of virtual folders are detected and trapped.
 
                 The second argument represents an optional name that the
-                mount should be known as, instead of the name exposed by 
-                the provided folder (it is not an alias).
+                mount should be known as, instead of the name exposed by
+                the provided folder (it is not an alias.)
 
         **********************************************************************/
 
@@ -64,8 +64,8 @@ interface VfsHost : VfsFolder
 
         /***********************************************************************
 
-                Add a set of child folders. The children cannot 'overlap' 
-                with others in the tree of the same type. Circular references 
+                Add a set of child folders. The children cannot 'overlap'
+                with others in the tree of the same type. Circular references
                 are detected and trapped.
 
         ***********************************************************************/
@@ -74,7 +74,7 @@ interface VfsHost : VfsFolder
 
         /**********************************************************************
 
-                Unhook a child folder 
+                Unhook a child folder.
 
         **********************************************************************/
 
@@ -83,7 +83,7 @@ interface VfsHost : VfsFolder
         /**********************************************************************
 
                 Add a symbolic link to another file. These are referenced
-                by file() alone, and do not show up in tree traversals
+                by file() alone, and do not show up in tree traversals.
 
         **********************************************************************/
 
@@ -92,7 +92,7 @@ interface VfsHost : VfsFolder
         /***********************************************************************
 
                 Add a symbolic link to another folder. These are referenced
-                by folder() alone, and do not show up in tree traversals
+                by folder() alone, and do not show up in tree traversals.
 
         ***********************************************************************/
 
@@ -128,8 +128,8 @@ interface VfsHost : VfsFolder
         auto folders = folder.tree;
         ---
 
-        Filtering can be applied to the tree resulting in a sub-group. 
-        Group operations remain applicable. Note that various wildcard 
+        Filtering can be applied to the tree resulting in a sub-group.
+        Group operations remain applicable. Note that various wildcard
         characters may be used in the filtering:
         ---
         // select a subset of the resultant tree
@@ -175,7 +175,7 @@ interface VfsHost : VfsFolder
 
         root.folder("myExistingFolder").open;
         ---
-      
+
         File manipulation is handled in much the same way:
         ---
         root.file("myNewFile").create;
@@ -184,12 +184,12 @@ interface VfsHost : VfsFolder
         root.file("myCopiedFile").copy(source);
         ---
 
-        The principal benefits of these approaches are twofold: 1) it 
-        turns out to be notably more efficient in terms of traversal, and 
-        2) there's no casting required, since there is a clean separation 
+        The principal benefits of these approaches are twofold: 1) it
+        turns out to be notably more efficient in terms of traversal, and
+        2) there's no casting required, since there is a clean separation
         between files and folders.
-        
-        See VfsFile for more information on file handling
+
+        See VfsFile for more information on file handling.
 
 *******************************************************************************/
 
@@ -197,7 +197,7 @@ interface VfsFolder
 {
         /***********************************************************************
 
-                Return a short name
+                Return a short name.
 
         ***********************************************************************/
 
@@ -205,7 +205,7 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Return a long name
+                Return a long name.
 
         ***********************************************************************/
 
@@ -213,7 +213,7 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Return a contained file representation 
+                Return a contained file representation.
 
         ***********************************************************************/
 
@@ -221,7 +221,7 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Return a contained folder representation 
+                Return a contained folder representation.
 
         ***********************************************************************/
 
@@ -229,8 +229,8 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Returns a folder set containing only this one. Statistics 
-                are inclusive of entries within this folder only
+                Returns a folder set containing only this one. Statistics
+                are inclusive of entries within this folder only.
 
         ***********************************************************************/
 
@@ -238,8 +238,8 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Returns a subtree of folders. Statistics are inclusive of 
-                files within this folder and all others within the tree
+                Returns a subtree of folders. Statistics are inclusive of
+                files within this folder and all others within the tree.
 
         ***********************************************************************/
 
@@ -247,8 +247,8 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Iterate over the set of immediate child folders. This is 
-                useful for reflecting the hierarchy
+                Iterate over the set of immediate child folders. This is
+                useful for reflecting the hierarchy.
 
         ***********************************************************************/
 
@@ -256,7 +256,7 @@ interface VfsFolder
 
         /***********************************************************************
 
-                Clear all content from this folder and subordinates
+                Clear all content from this folder and subordinates.
 
         ***********************************************************************/
 
@@ -274,8 +274,8 @@ interface VfsFolder
 
                 Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
-                combining multiple files together, or possibly copying to a 
-                remote location
+                combining multiple files together, or possibly copying to a
+                remote location.
 
         ***********************************************************************/
 
@@ -283,9 +283,9 @@ interface VfsFolder
 
         /***********************************************************************
 
-                A folder is being added or removed from the hierarchy. Use 
-                this to test for validity (or whatever) and throw exceptions 
-                as necessary
+                A folder is being added or removed from the hierarchy. Use
+                this to test for validity (or whatever) and throw exceptions
+                as necessary.
 
         ***********************************************************************/
 
@@ -299,7 +299,7 @@ interface VfsFolder
 
 /*******************************************************************************
 
-        Operations upon a set of folders 
+        Operations upon a set of folders.
 
 *******************************************************************************/
 
@@ -307,7 +307,7 @@ interface VfsFolders
 {
         /***********************************************************************
 
-                Iterate over the set of contained VfsFolder instances
+                Iterate over the set of contained VfsFolder instances.
 
         ***********************************************************************/
 
@@ -315,7 +315,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the number of files 
+                Return the number of files.
 
         ***********************************************************************/
 
@@ -323,7 +323,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the number of folders 
+                Return the number of folders.
 
         ***********************************************************************/
 
@@ -331,7 +331,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the total number of entries (files + folders)
+                Return the total number of entries (files + folders.)
 
         ***********************************************************************/
 
@@ -339,7 +339,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return the total size of contained files 
+                Return the total size of contained files.
 
         ***********************************************************************/
 
@@ -347,7 +347,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return a subset of folders matching the given pattern
+                Return a subset of folders matching the given pattern.
 
         ***********************************************************************/
 
@@ -355,7 +355,7 @@ interface VfsFolders
 
        /***********************************************************************
 
-                Return a set of files matching the given pattern
+                Return a set of files matching the given pattern.
 
         ***********************************************************************/
 
@@ -363,7 +363,7 @@ interface VfsFolders
 
         /***********************************************************************
 
-                Return a set of files matching the given filter
+                Return a set of files matching the given filter.
 
         ***********************************************************************/
 
@@ -373,7 +373,7 @@ interface VfsFolders
 
 /*******************************************************************************
 
-        Operations upon a set of files
+        Operations upon a set of files.
 
 *******************************************************************************/
 
@@ -381,7 +381,7 @@ interface VfsFiles
 {
         /***********************************************************************
 
-                Iterate over the set of contained VfsFile instances
+                Iterate over the set of contained VfsFile instances.
 
         ***********************************************************************/
 
@@ -389,7 +389,7 @@ interface VfsFiles
 
         /***********************************************************************
 
-                Return the total number of entries 
+                Return the total number of entries.
 
         ***********************************************************************/
 
@@ -397,7 +397,7 @@ interface VfsFiles
 
         /***********************************************************************
 
-                Return the total size of all files 
+                Return the total size of all files.
 
         ***********************************************************************/
 
@@ -407,15 +407,15 @@ interface VfsFiles
 
 /*******************************************************************************
 
-        A specific file representation 
+        A specific file representation.
 
 *******************************************************************************/
 
-interface VfsFile 
+interface VfsFile
 {
         /***********************************************************************
 
-                Return a short name
+                Return a short name.
 
         ***********************************************************************/
 
@@ -423,7 +423,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Return a long name
+                Return a long name.
 
         ***********************************************************************/
 
@@ -439,7 +439,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Return the file size
+                Return the file size.
 
         ***********************************************************************/
 
@@ -447,7 +447,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Create and copy the given source
+                Create and copy the given source.
 
         ***********************************************************************/
 
@@ -455,7 +455,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Create and copy the given source, and remove the source
+                Create and copy the given source, and remove the source.
 
         ***********************************************************************/
 
@@ -463,7 +463,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Create a new file instance
+                Create a new file instance.
 
         ***********************************************************************/
 
@@ -471,7 +471,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Create a new file instance and populate with stream
+                Create a new file instance and populate with stream.
 
         ***********************************************************************/
 
@@ -479,7 +479,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Remove this file
+                Remove this file.
 
         ***********************************************************************/
 
@@ -487,7 +487,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Return the input stream. Don't forget to close it
+                Return the input stream. Don't forget to close it.
 
         ***********************************************************************/
 
@@ -495,7 +495,7 @@ interface VfsFile
 
         /***********************************************************************
 
-                Return the output stream. Don't forget to close it
+                Return the output stream. Don't forget to close it.
 
         ***********************************************************************/
 
@@ -503,18 +503,18 @@ interface VfsFile
 
         /***********************************************************************
 
-                Duplicate this entry
+                Duplicate this entry.
 
         ***********************************************************************/
 
         VfsFile dup ();
-        
+
         /***********************************************************************
-        
-                The modified time of the folder
-        
+
+                The modified time of the folder.
+
         ***********************************************************************/
-        
+
         Time modified ();
 }
 
@@ -525,11 +525,11 @@ interface VfsFile
 
 *******************************************************************************/
 
-interface VfsFolderEntry 
+interface VfsFolderEntry
 {
         /***********************************************************************
 
-                Open a folder
+                Open a folder.
 
         ***********************************************************************/
 
@@ -537,7 +537,7 @@ interface VfsFolderEntry
 
         /***********************************************************************
 
-                Create a new folder
+                Create a new folder.
 
         ***********************************************************************/
 
@@ -545,7 +545,7 @@ interface VfsFolderEntry
 
         /***********************************************************************
 
-                Test to see if a folder exists
+                Test to see if a folder exists.
 
         ***********************************************************************/
 

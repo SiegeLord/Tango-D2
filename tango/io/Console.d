@@ -7,7 +7,7 @@
         version:        Feb 2005: Initial release
                         Nov 2005: Heavily revised for unicode
                         Dec 2006: Outback release
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -18,26 +18,26 @@ private import  tango.sys.Common;
 
 private import  tango.io.device.Device,
                 tango.io.stream.Buffered;
-              
+
 version (Posix)
          private import tango.stdc.posix.unistd;  // needed for isatty()
 
 /*******************************************************************************
 
-        low level console IO support. 
-        
-        Note that for a while this was templated for each of char, wchar, 
+        Low-level console IO support.
+
+        Note that for a while this was templated for each of char, wchar,
         and dchar. It became clear after some usage that the console is
-        more useful if it sticks to Utf8 only. See Console.Conduit below 
+        more useful if it sticks to UTF8 only. See Console.Conduit below
         for details.
 
-        Redirecting the standard IO handles (via a shell) operates as one 
-        would expect, though the redirected content should likely restrict 
-        itself to utf8 
+        Redirecting the standard IO handles (via a shell) operates as one
+        would expect, though the redirected content should likely restrict
+        itself to UTF8.
 
 *******************************************************************************/
 
-struct Console 
+struct Console
 {
         version (Win32)
                  const char[] Eol = "\r\n";
@@ -47,7 +47,7 @@ struct Console
 
         /**********************************************************************
 
-                Model console input as a buffer. Note that we read utf8
+                Model console input as a buffer. Note that we read UTF8
                 only.
 
         **********************************************************************/
@@ -61,7 +61,7 @@ struct Console
 
                 /**************************************************************
 
-                        Attach console input to the provided device
+                        Attach console input to the provided device.
 
                 **************************************************************/
 
@@ -73,13 +73,13 @@ struct Console
 
                 /**************************************************************
 
-                        Return the next line available from the console, 
+                        Return the next line available from the console,
                         or null when there is nothing available. The value
                         returned is a duplicate of the buffer content (it
-                        has .dup applied). 
+                        has .dup applied).
 
                         Each line ending is removed unless parameter raw is
-                        set to true
+                        set to true.
 
                 **************************************************************/
 
@@ -93,11 +93,11 @@ struct Console
                 /**************************************************************
 
                         Retreive a line of text from the console and map
-                        it to the given argument. The input is sliced, 
+                        it to the given argument. The input is sliced,
                         not copied, so use .dup appropriately. Each line
-                        ending is removed unless parameter raw is set to 
+                        ending is removed unless parameter raw is set to
                         true.
-                        
+
                         Returns false when there is no more input.
 
                 **************************************************************/
@@ -133,7 +133,7 @@ struct Console
 
                 /**************************************************************
 
-                        Return the associated stream
+                        Return the associated stream.
 
                 **************************************************************/
 
@@ -150,25 +150,25 @@ struct Console
                         True if redirected, false otherwise.
 
                         Remarks:
-                        Reflects the console redirection status from when 
-                        this module was instantiated
+                        Reflects the console redirection status from when
+                        this module was instantiated.
 
                 **************************************************************/
 
                 final bool redirected ()
                 {
                         return redirect;
-                }           
+                }
 
                 /**************************************************************
 
-                        Set redirection state to the provided boolean
+                        Set redirection state to the provided boolean.
 
                         Remarks:
-                        Configure the console redirection status, where 
-                        a redirected console is more efficient (dictates 
-                        whether newline() performs automatic flushing or 
-                        not)
+                        Configure the console redirection status, where
+                        a redirected console is more efficient (dictates
+                        whether newline() performs automatic flushing or
+                        not.)
 
                 **************************************************************/
 
@@ -176,41 +176,41 @@ struct Console
                 {
                          redirect = yes;
                          return this;
-                }           
+                }
 
                 /**************************************************************
 
                         Returns the configured source
 
                         Remarks:
-                        Provides access to the underlying mechanism for 
+                        Provides access to the underlying mechanism for
                         console input. Use this to retain prior state
-                        when temporarily switching inputs 
-                        
+                        when temporarily switching inputs.
+
                 **************************************************************/
 
                 final InputStream input ()
                 {
                         return buffer.input;
-                }           
+                }
 
                 /**************************************************************
 
-                        Divert input to an alternate source
-                        
+                        Divert input to an alternate source.
+
                 **************************************************************/
 
                 final Input input (InputStream source)
                 {
                         buffer.input = source;
                         return this;
-                }           
+                }
         }
 
 
         /**********************************************************************
 
-                Console output accepts utf8 only
+                Console output accepts UTF8 only.
 
         **********************************************************************/
 
@@ -224,7 +224,7 @@ struct Console
 
                 /**************************************************************
 
-                        Attach console output to the provided device
+                        Attach console output to the provided device.
 
                 **************************************************************/
 
@@ -238,7 +238,7 @@ struct Console
 
                         Append to the console. We accept UTF8 only, so
                         all other encodings should be handled via some
-                        higher level API
+                        higher level API.
 
                 **************************************************************/
 
@@ -246,27 +246,27 @@ struct Console
                 {
                         buffer.append (x.ptr, x.length);
                         return this;
-                } 
-                          
+                }
+
                 /**************************************************************
 
-                        Append content
+                        Append content.
 
                         Params:
-                        other = an object with a useful toString() method
+                        other = An object with a useful toString() method.
 
                         Returns:
-                        Returns a chaining reference if all content was 
-                        written. Throws an IOException indicating eof or 
-                        eob if not.
+                        Returns a chaining reference if all content was
+                        written. Throws an IOException indicating Eof or
+                        Eob if not.
 
                         Remarks:
-                        Append the result of other.toString() to the console
+                        Append the result of other.toString() to the console.
 
                 **************************************************************/
 
-                final Output append (Object other)        
-                {           
+                final Output append (Object other)
+                {
                         return append (other.toString);
                 }
 
@@ -277,8 +277,8 @@ struct Console
                         automatically.
 
                         Returns:
-                        Returns a chaining reference if content was written. 
-                        Throws an IOException indicating eof or eob if not.
+                        Returns a chaining reference if content was written.
+                        Throws an IOException indicating Eof or Eob if not.
 
                         Remarks:
                         Emit a newline into the buffer, and autoflush the
@@ -295,18 +295,18 @@ struct Console
                             buffer.flush;
 
                         return this;
-                }           
+                }
 
                 /**************************************************************
 
-                        Explicitly flush console output
+                        Explicitly flush console output.
 
                         Returns:
-                        Returns a chaining reference if content was written. 
-                        Throws an IOException indicating eof or eob if not.
+                        Returns a chaining reference if content was written.
+                        Throws an IOException indicating Eof or Eob if not.
 
                         Remarks:
-                        Flushes the console buffer to attached conduit
+                        Flushes the console buffer to attached conduit.
 
                 **************************************************************/
 
@@ -314,11 +314,11 @@ struct Console
                 {
                         buffer.flush;
                         return this;
-                }           
+                }
 
                 /**************************************************************
 
-                        Return the associated stream
+                        Return the associated stream.
 
                 **************************************************************/
 
@@ -335,24 +335,24 @@ struct Console
                         True if redirected, false otherwise.
 
                         Remarks:
-                        Reflects the console redirection status
+                        Reflects the console redirection status.
 
                 **************************************************************/
 
                 final bool redirected ()
                 {
                         return redirect;
-                }           
+                }
 
                 /**************************************************************
 
-                        Set redirection state to the provided boolean
+                        Set redirection state to the provided boolean.
 
                         Remarks:
-                        Configure the console redirection status, where 
-                        a redirected console is more efficient (dictates 
-                        whether newline() performs automatic flushing or 
-                        not)
+                        Configure the console redirection status, where
+                        a redirected console is more efficient (dictates
+                        whether newline() performs automatic flushing or
+                        not.)
 
                 **************************************************************/
 
@@ -360,27 +360,27 @@ struct Console
                 {
                          redirect = yes;
                          return this;
-                }           
+                }
 
                 /**************************************************************
 
-                        Returns the configured output sink
+                        Returns the configured output sink.
 
                         Remarks:
-                        Provides access to the underlying mechanism for 
+                        Provides access to the underlying mechanism for
                         console output. Use this to retain prior state
-                        when temporarily switching outputs 
-                        
+                        when temporarily switching outputs.
+
                 **************************************************************/
 
                 final OutputStream output ()
                 {
                         return buffer.output;
-                }           
+                }
 
                 /**************************************************************
 
-                        Divert output to an alternate sink
+                        Divert output to an alternate sink.
 
                 **************************************************************/
 
@@ -388,23 +388,23 @@ struct Console
                 {
                         buffer.output = sink;
                         return this;
-                }           
+                }
         }
 
 
         /***********************************************************************
 
-                Conduit for specifically handling the console devices. This 
-                takes care of certain implementation details on the Win32 
+                Conduit for specifically handling the console devices. This
+                takes care of certain implementation details on the Win32
                 platform.
 
-                Note that the console is fixed at Utf8 for both linux and
-                Win32. The latter is actually Utf16 native, but it's just
+                Note that the console is fixed at UTF8 for both linux and
+                Win32. The latter is actually UTF16 native, but it's just
                 too much hassle for a developer to handle the distinction
                 when it really should be a no-brainer. In particular, the
                 Win32 console functions don't work with redirection. This
                 causes additional difficulties that can be ameliorated by
-                asserting console I/O is always Utf8, in all modes.
+                asserting console I/O is always UTF8, in all modes.
 
         ***********************************************************************/
 
@@ -414,7 +414,7 @@ struct Console
 
                 /***********************************************************************
 
-                        Return the name of this conduit
+                        Return the name of this conduit.
 
                 ***********************************************************************/
 
@@ -425,7 +425,7 @@ struct Console
 
                 /***************************************************************
 
-                        Windows-specific code
+                        Windows-specific code.
 
                 ***************************************************************/
 
@@ -436,10 +436,10 @@ struct Console
 
                         /*******************************************************
 
-                                Associate this device with a given handle. 
+                                Associate this device with a given handle.
 
-                                This is strictly for adapting existing 
-                                devices such as Stdout and friends
+                                This is strictly for adapting existing
+                                devices such as Stdout and friends.
 
                         *******************************************************/
 
@@ -448,33 +448,33 @@ struct Console
                                 input = new wchar [1024 * 1];
                                 output = new wchar [1024 * 1];
                                 reopen (handle);
-                        }    
+                        }
 
                         /*******************************************************
 
-                                Gain access to the standard IO handles 
+                                Gain access to the standard IO handles.
 
                         *******************************************************/
 
                         private void reopen (size_t handle_)
                         {
                                 static const DWORD[] id = [
-                                                          cast(DWORD) -10, 
-                                                          cast(DWORD) -11, 
+                                                          cast(DWORD) -10,
+                                                          cast(DWORD) -11,
                                                           cast(DWORD) -12
                                                           ];
                                 static const char[][] f = [
-                                                          "CONIN$\0", 
-                                                          "CONOUT$\0", 
+                                                          "CONIN$\0",
+                                                          "CONOUT$\0",
                                                           "CONOUT$\0"
                                                           ];
 
                                 assert (handle_ < 3);
                                 io.handle = GetStdHandle (id[handle_]);
                                 if (io.handle is null || io.handle is INVALID_HANDLE_VALUE)
-                                    io.handle = CreateFileA ( cast(PCHAR) f[handle_].ptr, 
-                                                GENERIC_READ | GENERIC_WRITE,  
-                                                FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                                    io.handle = CreateFileA ( cast(PCHAR) f[handle_].ptr,
+                                                GENERIC_READ | GENERIC_WRITE,
+                                                FILE_SHARE_READ | FILE_SHARE_WRITE,
                                                 null, OPEN_EXISTING, 0, cast(HANDLE) 0);
 
                                 // allow invalid handles to remain, since it
@@ -493,13 +493,13 @@ struct Console
 
                         /*******************************************************
 
-                                Write a chunk of bytes to the console from 
-                                the provided array 
+                                Write a chunk of bytes to the console from
+                                the provided array.
 
                         *******************************************************/
 
-                        version (Win32SansUnicode) 
-                                {} 
+                        version (Win32SansUnicode)
+                                {}
                              else
                                 {
                                 override size_t write (void[] src)
@@ -519,16 +519,16 @@ struct Console
                                        output.length = i;
 
                                    // convert into output buffer
-                                   i = MultiByteToWideChar (CP_UTF8, 0, cast(PCHAR) src.ptr, i, 
+                                   i = MultiByteToWideChar (CP_UTF8, 0, cast(PCHAR) src.ptr, i,
                                                             output.ptr, output.length);
-                                            
+
                                    // flush produced output
                                    for (wchar* p=output.ptr, end=output.ptr+i; p < end; p+=i)
                                        {
                                        const int MAX = 16 * 1024;
 
-                                       // avoid console limitation of 64KB 
-                                       DWORD len = end - p; 
+                                       // avoid console limitation of 64KB
+                                       DWORD len = end - p;
                                        if (len > MAX)
                                           {
                                           len = MAX;
@@ -543,16 +543,16 @@ struct Console
                                    }
                                 }
                                 }
-                        
+
                         /*******************************************************
 
-                                Read a chunk of bytes from the console into 
-                                the provided array 
+                                Read a chunk of bytes from the console into
+                                the provided array.
 
                         *******************************************************/
 
-                        version (Win32SansUnicode) 
-                                {} 
+                        version (Win32SansUnicode)
+                                {}
                              else
                                 {
                                 protected override size_t read (void[] dst)
@@ -567,7 +567,7 @@ struct Console
 
                                    if (i > input.length)
                                        i = input.length;
-                                       
+
                                    // read a chunk of wchars from the console
                                    if (! ReadConsoleW (io.handle, input.ptr, i, &i, null))
                                          error();
@@ -577,7 +577,7 @@ struct Console
                                        return Eof;
 
                                    // translate to utf8, directly into dst
-                                   i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i, 
+                                   i = WideCharToMultiByte (CP_UTF8, 0, input.ptr, i,
                                                             cast(PCHAR) dst.ptr, dst.length, null, null);
                                    if (i is 0)
                                        error ();
@@ -592,10 +592,10 @@ struct Console
                         {
                         /*******************************************************
 
-                                Associate this device with a given handle. 
+                                Associate this device with a given handle.
 
-                                This is strictly for adapting existing 
-                                devices such as Stdout and friends
+                                This is strictly for adapting existing
+                                devices such as Stdout and friends.
 
                         *******************************************************/
 
@@ -611,18 +611,18 @@ struct Console
 
 /******************************************************************************
 
-        Globals representing Console IO
+        Globals representing Console IO.
 
 ******************************************************************************/
 
-static Console.Input    Cin;                    /// the standard input stream
-static Console.Output   Cout,                   /// the standard output stream
-                        Cerr;                   /// the standard error stream
+static Console.Input  Cin;  /// The standard input stream.
+static Console.Output Cout; /// The standard output stream.
+static Console.Output Cerr; /// The standard error stream.
 
 
 /******************************************************************************
 
-        Instantiate Console access
+        Instantiate Console access.
 
 ******************************************************************************/
 
@@ -641,9 +641,9 @@ static this ()
 
 /******************************************************************************
 
-        Flush outputs before we exit
+        Flush outputs before we exit.
 
-        (good idea from Frits Van Bommel)
+        (Good idea from Frits Van Bommel.)
 
 ******************************************************************************/
 

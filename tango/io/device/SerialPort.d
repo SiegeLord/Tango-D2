@@ -17,13 +17,13 @@ private import  tango.core.Exception,
                 tango.stdc.stringz,
                 tango.sys.Common;
 
-version(Windows) 
+version(Windows)
 {
 private import Integer = tango.text.convert.Integer;
 private import tango.stdc.stringz;
-} 
-else 
-version(Posix) 
+}
+else
+version(Posix)
 {
 private import  tango.io.FilePath,
                 tango.stdc.posix.termios;
@@ -46,31 +46,31 @@ class SerialPort : Device
 {
     private char[]              str;
     private static char[][]     _ports;
-    
+
     /***************************************************************************
-    
-            Create a new SerialPort instance. The port will be opened and 
+
+            Create a new SerialPort instance. The port will be opened and
             set to raw mode with 9600-8N1.
-            
+
             Params:
-            port = A string identifying the port. On Posix, this must be a 
-                   device file like /dev/ttyS0. If the input doesn't begin 
-                   with "/", "/dev/" is automatically prepended, so "ttyS0" 
-                   is sufficent. On Windows, this must be a device name like 
-                   COM1
-            
+            port = A string identifying the port. On Posix, this must be a
+                   device file like /dev/ttyS0. If the input doesn't begin
+                   with "/", "/dev/" is automatically prepended, so "ttyS0"
+                   is sufficent. On Windows, this must be a device name like
+                   COM1.
+
     ***************************************************************************/
 
     this (char[] port)
     {
         create (port);
     }
-    
+
     /***************************************************************************
-    
+
             Returns a string describing this serial port.
-            For example: "ttyS0", "COM1", "cuad0"
-    
+            For example: "ttyS0", "COM1", "cuad0".
+
     ***************************************************************************/
 
     override char[] toString ()
@@ -80,7 +80,7 @@ class SerialPort : Device
 
     /***************************************************************************
 
-            Sets the baud rate of this port. Usually, the baud rate can 
+            Sets the baud rate of this port. Usually, the baud rate can
             only be set to fixed values (common values are 1200 * 2^n).
 
             Note that for Posix, the specification only mandates speeds up
@@ -88,7 +88,7 @@ class SerialPort : Device
             Most Posix systems have chosen to support at least higher speeds
             though.
 
-            See also: maxSpeed
+            See_also: maxSpeed
 
             Throws: IOException if speed is unsupported.
 
@@ -101,7 +101,7 @@ class SerialPort : Device
             if(baud is null) {
                 throw new IOException("Invalid baud rate.");
             }
-            
+
             termios options;
             tcgetattr(handle, &options);
             cfsetospeed(&options, *baud);
@@ -115,23 +115,23 @@ class SerialPort : Device
         }
         return this;
     }
-    
+
     /***************************************************************************
-    
+
             Tries to enumerate all serial ports. While this usually works on
-            Windows, it's more problematic on other OS. Posix provides no way 
-            to list serial ports, and the only option is searching through 
+            Windows, it's more problematic on other OS. Posix provides no way
+            to list serial ports, and the only option is searching through
             "/dev".
-            
+
             Because there's no naming standard for the device files, this method
             must be ported for each OS. This method is also unreliable because
             the user could have created invalid device files, or deleted them.
-            
+
             Returns:
             A string array of all the serial ports that could be found, in
-            alphabetical order. Every string is formatted as a valid argument 
+            alphabetical order. Every string is formatted as a valid argument
             to the constructor, but the port may not be accessible.
-    
+
     ***************************************************************************/
 
     static char[][] ports ()
@@ -193,7 +193,7 @@ class SerialPort : Device
         sort(_ports);
         return _ports;
     }
-    
+
     version(Win32) {
         private void create (char[] port)
         {
@@ -212,10 +212,10 @@ class SerialPort : Device
             if(!SetCommState(io.handle, &config)) error();
         }
     }
-    
+
     version(Posix) {
         private static speed_t[uint] baudRates;
-        
+
         static this()
         {
             baudRates[50] = B50;
@@ -234,68 +234,68 @@ class SerialPort : Device
             baudRates[19200] = B19200;
             baudRates[38400] = B38400;
 
-            version( linux ) 
-            { 
-                baudRates[57600] = B57600; 
-                baudRates[115200] = B115200; 
-                baudRates[230400] = B230400; 
-                baudRates[460800] = B460800; 
-                baudRates[500000] = B500000; 
-                baudRates[576000] = B576000; 
-                baudRates[921600] = B921600; 
-                baudRates[1000000] = B1000000; 
-                baudRates[1152000] = B1152000; 
-                baudRates[1500000] = B1500000; 
-                baudRates[2000000] = B2000000; 
-                baudRates[2500000] = B2500000; 
-                baudRates[3000000] = B3000000; 
-                baudRates[3500000] = B3500000; 
-                baudRates[4000000] = B4000000; 
-            } 
-            else version( freebsd ) 
-            { 
-                baudRates[7200] = B7200; 
-                baudRates[14400] = B14400; 
-                baudRates[28800] = B28800; 
-                baudRates[57600] = B57600; 
-                baudRates[76800] = B76800; 
-                baudRates[115200] = B115200; 
-                baudRates[230400] = B230400; 
-                baudRates[460800] = B460800; 
-                baudRates[921600] = B921600; 
-            } 
-            else version( solaris ) 
-            { 
-                baudRates[57600] = B57600; 
-                baudRates[76800] = B76800; 
-                baudRates[115200] = B115200; 
-                baudRates[153600] = B153600; 
-                baudRates[230400] = B230400; 
-                baudRates[307200] = B307200; 
-                baudRates[460800] = B460800; 
+            version( linux )
+            {
+                baudRates[57600] = B57600;
+                baudRates[115200] = B115200;
+                baudRates[230400] = B230400;
+                baudRates[460800] = B460800;
+                baudRates[500000] = B500000;
+                baudRates[576000] = B576000;
+                baudRates[921600] = B921600;
+                baudRates[1000000] = B1000000;
+                baudRates[1152000] = B1152000;
+                baudRates[1500000] = B1500000;
+                baudRates[2000000] = B2000000;
+                baudRates[2500000] = B2500000;
+                baudRates[3000000] = B3000000;
+                baudRates[3500000] = B3500000;
+                baudRates[4000000] = B4000000;
+            }
+            else version( freebsd )
+            {
+                baudRates[7200] = B7200;
+                baudRates[14400] = B14400;
+                baudRates[28800] = B28800;
+                baudRates[57600] = B57600;
+                baudRates[76800] = B76800;
+                baudRates[115200] = B115200;
+                baudRates[230400] = B230400;
+                baudRates[460800] = B460800;
+                baudRates[921600] = B921600;
+            }
+            else version( solaris )
+            {
+                baudRates[57600] = B57600;
+                baudRates[76800] = B76800;
+                baudRates[115200] = B115200;
+                baudRates[153600] = B153600;
+                baudRates[230400] = B230400;
+                baudRates[307200] = B307200;
+                baudRates[460800] = B460800;
             }
             else version ( darwin )
             {
                 baudRates[7200] = B7200;
-                baudRates[14400] = B14400; 
-                baudRates[28800] = B28800; 
-                baudRates[57600] = B57600; 
-                baudRates[76800] = B76800; 
-                baudRates[115200] = B115200; 
-                baudRates[230400] = B230400; 
+                baudRates[14400] = B14400;
+                baudRates[28800] = B28800;
+                baudRates[57600] = B57600;
+                baudRates[76800] = B76800;
+                baudRates[115200] = B115200;
+                baudRates[230400] = B230400;
             }
         }
-        
+
         private void create (char[] file)
         {
             if(file.length == 0) throw new IOException("Empty port name");
             if(file[0] != '/') file = "/dev/" ~ file;
-            
+
             if(file.length > 5 && file[0..5] == "/dev/")
                 str = file[5..$];
             else
                 str = "SerialPort@" ~ file;
-            
+
             handle = posix.open(file.toStringz(), O_RDWR | O_NOCTTY | O_NONBLOCK);
             if(handle == -1) {
                 error();
@@ -303,7 +303,7 @@ class SerialPort : Device
             if(posix.fcntl(handle, F_SETFL, 0) == -1) { // disable O_NONBLOCK
                 error();
             }
-            
+
             termios options;
             if(tcgetattr(handle, &options) == -1) {
                 error();
@@ -313,7 +313,7 @@ class SerialPort : Device
             makeRaw(&options); // disable echo and special characters
             tcsetattr(handle, TCSANOW, &options);
         }
-        
+
         private void makeRaw (termios *options)
         {
             options.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
@@ -330,13 +330,13 @@ class SerialPort : Device
             if(str[0..prefix.length] != prefix) return null;
             return str[prefix.length..$];
         }
-    
+
         private static bool isInRange (char[] str, char lower, char upper) {
             foreach(c; str) {
                 if(c < lower || c > upper) return false;
             }
             return true;
         }
-    }    
+    }
 }
 

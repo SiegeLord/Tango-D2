@@ -22,25 +22,25 @@ private import tango.text.convert.Layout;
         the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
-        dchar (utf8, utf16, or utf32). 
-        
+        dchar (UTF8, UTF16, or UTF32).
+
         FormatOutput exposes this style of usage:
         ---
         auto print = new FormatOutput!(char) (...);
 
-        print ("hello");                        => hello
-        print (1);                              => 1
-        print (3.14);                           => 3.14
-        print ('b');                            => b
-        print (1, 2, 3);                        => 1, 2, 3         
-        print ("abc", 1, 2, 3);                 => abc, 1, 2, 3        
-        print ("abc", 1, 2) ("foo");            => abc, 1, 2foo        
-        print ("abc") ("def") (3.14);           => abcdef3.14
+        print ("hello");                    // => hello
+        print (1);                          // => 1
+        print (3.14);                       // => 3.14
+        print ('b');                        // => b
+        print (1, 2, 3);                    // => 1, 2, 3
+        print ("abc", 1, 2, 3);             // => abc, 1, 2, 3
+        print ("abc", 1, 2) ("foo");        // => abc, 1, 2foo
+        print ("abc") ("def") (3.14);       // => abcdef3.14
 
-        print.format ("abc {}", 1);             => abc 1
-        print.format ("abc {}:{}", 1, 2);       => abc 1:2
-        print.format ("abc {1}:{0}", 1, 2);     => abc 2:1
-        print.format ("abc ", 1);               => abc
+        print.format ("abc {}", 1);         // => abc 1
+        print.format ("abc {}:{}", 1, 2);   // => abc 1:2
+        print.format ("abc {1}:{0}", 1, 2); // => abc 2:1
+        print.format ("abc ", 1);           // => abc
         ---
 
         Note that the last example does not throw an exception. There
@@ -48,7 +48,7 @@ private import tango.text.convert.Layout;
         so we're currently not enforcing any particular trap mechanism.
 
         Flushing the output is achieved through the flush() method, or
-        via an empty pair of parens: 
+        via an empty pair of parens:
         ---
         print ("hello world") ();
         print ("hello world").flush;
@@ -56,11 +56,11 @@ private import tango.text.convert.Layout;
         print.format ("hello {}", "world") ();
         print.format ("hello {}", "world").flush;
         ---
-        
+
         Special character sequences, such as "\n", are written directly to
         the output without any translation (though an output-filter could
-        be inserted to perform translation as required). Platform-specific 
-        newlines are generated instead via the newline() method, which also 
+        be inserted to perform translation as required). Platform-specific
+        newlines are generated instead via the newline() method, which also
         flushes the output when configured to do so:
         ---
         print ("hello ") ("world").newline;
@@ -68,9 +68,9 @@ private import tango.text.convert.Layout;
         print.formatln ("hello {}", "world");
         ---
 
-        The format() method supports the range of formatting options 
-        exposed by tango.text.convert.Layout and extensions thereof; 
-        including the full I18N extensions where configured in that 
+        The format() method supports the range of formatting options
+        exposed by tango.text.convert.Layout and extensions thereof;
+        including the full I18N extensions where configured in that
         manner. To create a French instance of FormatOutput:
         ---
         import tango.text.locale.Locale;
@@ -79,12 +79,12 @@ private import tango.text.convert.Layout;
         auto print = new FormatOutput!(char) (locale, ...);
         ---
 
-        Note that FormatOutput is *not* intended to be thread-safe
-        
+        Note that FormatOutput is *not* intended to be thread-safe.
+
 *******************************************************************************/
 
 class FormatOutput(T) : OutputFilter
-{       
+{
         public  alias OutputFilter.flush flush;
 
         private T[]             eol;
@@ -102,7 +102,7 @@ class FormatOutput(T) : OutputFilter
         /**********************************************************************
 
                 Construct a FormatOutput instance, tying the provided stream
-                to a layout formatter
+                to a layout formatter.
 
         **********************************************************************/
 
@@ -114,7 +114,7 @@ class FormatOutput(T) : OutputFilter
         /**********************************************************************
 
                 Construct a FormatOutput instance, tying the provided stream
-                to a layout formatter
+                to a layout formatter.
 
         **********************************************************************/
 
@@ -130,7 +130,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Layout using the provided formatting specification
+                Layout using the provided formatting specification.
 
         **********************************************************************/
 
@@ -142,7 +142,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Layout using the provided formatting specification
+                Layout using the provided formatting specification.
 
         **********************************************************************/
 
@@ -154,8 +154,8 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Unformatted layout, with commas inserted between args. 
-                Currently supports a maximum of 24 arguments
+                Unformatted layout, with commas inserted between args.
+                Currently supports a maximum of 24 arguments.
 
         **********************************************************************/
 
@@ -171,13 +171,13 @@ class FormatOutput(T) : OutputFilter
                     sink.flush;
                 else
                    convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
-                         
+
                 return this;
         }
 
         /***********************************************************************
 
-                Output a newline and optionally flush
+                Output a newline and optionally flush.
 
         ***********************************************************************/
 
@@ -204,7 +204,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Return the associated output stream
+                Return the associated output stream.
 
         **********************************************************************/
 
@@ -215,7 +215,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Set the associated output stream
+                Set the associated output stream.
 
         **********************************************************************/
 
@@ -227,7 +227,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Return the associated Layout
+                Return the associated Layout.
 
         **********************************************************************/
 
@@ -238,7 +238,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Set the associated Layout
+                Set the associated Layout.
 
         **********************************************************************/
 
@@ -250,7 +250,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Sink for passing to the formatter
+                Sink for passing to the formatter.
 
         **********************************************************************/
 
@@ -265,9 +265,9 @@ class FormatOutput(T) : OutputFilter
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (Format)
 {
         import tango.io.device.Array;

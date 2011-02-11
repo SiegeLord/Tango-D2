@@ -2,13 +2,13 @@
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
-        license:        BSD:  
-                        AFL 3.0: 
+        license:        BSD:
+                        AFL 3.0:
 
         version:        Mar 2004: Initial release
         version:        Feb 2007: Now using mutating paths
 
-        author:         Kris, Chris Sauls (Win95 file support)
+        authors:        Kris, Chris Sauls (Win95 file support)
 
 *******************************************************************************/
 
@@ -32,7 +32,7 @@ version (Win32)
         private extern (Windows) DWORD GetLogicalDriveStringsA (DWORD, LPSTR);
         private import tango.stdc.stringz : fromString16z, fromStringz;
 
-        enum {        
+        enum {
             FILE_DEVICE_DISK = 7,
             IOCTL_DISK_BASE = FILE_DEVICE_DISK,
             METHOD_BUFFERED = 0,
@@ -68,13 +68,13 @@ struct FileSystem
         /***********************************************************************
 
                 Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
+                current working directory where prefix is not provided.
+                If the given path is already an absolute path, return it
                 intact.
 
                 Returns the provided path, adjusted as necessary
 
-                deprecated: see FilePath.absolute
+                deprecated: See FilePath.absolute().
 
         ***********************************************************************/
 
@@ -93,13 +93,13 @@ struct FileSystem
         /***********************************************************************
 
                 Convert the provided path to an absolute path, using the
-                current working directory where prefix is not provided. 
-                If the given path is already an absolute path, return it 
+                current working directory where prefix is not provided.
+                If the given path is already an absolute path, return it
                 intact.
 
                 Returns the provided path, adjusted as necessary
 
-                deprecated: see FilePath.absolute
+                deprecated: See FilePath.absolute().
 
         ***********************************************************************/
 
@@ -118,7 +118,7 @@ struct FileSystem
 
                 Returns true if the paths are equivalent, false otherwise
 
-                deprecated: see FilePath.equals
+                deprecated: See FilePath.equals().
 
         ***********************************************************************/
 
@@ -139,7 +139,7 @@ struct FileSystem
         }
 
         /***********************************************************************
-        
+
                 Windows specifics
 
         ***********************************************************************/
@@ -165,9 +165,9 @@ struct FileSystem
                         private static void windowsPath(char[] path, ref wchar[] result)
                         {
                                 assert (path.length < result.length);
-                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
-                                                              cast(PCHAR)path.ptr, 
-                                                              path.length, 
+                                auto i = MultiByteToWideChar (CP_UTF8, 0,
+                                                              cast(PCHAR)path.ptr,
+                                                              path.length,
                                                               result.ptr, result.length);
                                 result[i] = 0;
                         }
@@ -175,9 +175,9 @@ struct FileSystem
 
                 /***************************************************************
 
-                        Set the current working directory
+                        Set the current working directory.
 
-                        deprecated: see Environment.cwd()
+                        deprecated: See Environment.cwd().
 
                 ***************************************************************/
 
@@ -197,8 +197,8 @@ struct FileSystem
                                 // convert into output buffer
                                 wchar[MAX_PATH+1] tmp = void;
                                 assert (path.length < tmp.length);
-                                auto i = MultiByteToWideChar (CP_UTF8, 0, 
-                                                              cast(PCHAR)path.ptr, path.length, 
+                                auto i = MultiByteToWideChar (CP_UTF8, 0,
+                                                              cast(PCHAR)path.ptr, path.length,
                                                               tmp.ptr, tmp.length);
                                 tmp[i] = 0;
 
@@ -209,9 +209,9 @@ struct FileSystem
 
                 /***************************************************************
 
-                        Return the current working directory
+                        Return the current working directory.
 
-                        deprecated: see Environment.cwd()
+                        deprecated: See Environment.cwd().
 
                 ***************************************************************/
 
@@ -226,7 +226,7 @@ struct FileSystem
                                 GetCurrentDirectoryA (len, dir.ptr);
                                 if (len)
                                    {
-                                   dir[len-1] = '/';                                   
+                                   dir[len-1] = '/';
                                    path = standard (dir);
                                    }
                                 else
@@ -239,8 +239,8 @@ struct FileSystem
                                 auto len = GetCurrentDirectoryW (0, null);
                                 assert (len < tmp.length);
                                 auto dir = new char [len * 3];
-                                GetCurrentDirectoryW (len, tmp.ptr); 
-                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, len, 
+                                GetCurrentDirectoryW (len, tmp.ptr);
+                                auto i = WideCharToMultiByte (CP_UTF8, 0, tmp.ptr, len,
                                                               cast(PCHAR)dir.ptr, dir.length, null, null);
                                 if (len && i)
                                    {
@@ -255,8 +255,8 @@ struct FileSystem
                 }
 
                 /***************************************************************
-                        
-                        List the set of root devices (C:, D: etc)
+
+                        List the set of root devices (C:, D: etc.)
 
                 ***************************************************************/
 
@@ -282,7 +282,7 @@ struct FileSystem
                 private enum {
                     volumePathBufferLen = MAX_PATH + 6
                 }
-                
+
                 private static TCHAR[] getVolumePath(char[] folder, TCHAR[] volPath_,
                                                      bool trailingBackslash)
                 in {
@@ -305,9 +305,9 @@ struct FileSystem
                     // we'd like to open a volume
                     volPath_[0..4] = `\\.\`;
 
-                    if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4)) 
+                    if (!GetVolumePathName(tmp.ptr, volPath_.ptr+4, volPath_.length-4))
                         exception ("GetVolumePathName failed");
-                    
+
                     TCHAR[] volPath;
 
                     // the path could have the volume/network prefix already
@@ -325,20 +325,20 @@ struct FileSystem
 
                     return volPath;
                 }
- 
+
                 /***************************************************************
- 
-                        Request how much free space in bytes is available on the 
+
+                        Request how much free space in bytes is available on the
                         disk/mountpoint where folder resides.
 
-                        If a quota limit exists for this area, that will be taken 
+                        If a quota limit exists for this area, that will be taken
                         into account unless superuser is set to true.
 
-                        If a user has exceeded the quota, a negative number can 
+                        If a user has exceeded the quota, a negative number can
                         be returned.
 
                         Note that the difference between total available space
-                        and free space will not equal the combined size of the 
+                        and free space will not equal the combined size of the
                         contents on the file system, since the numbers for the
                         functions here are calculated from the used blocks,
                         including those spent on metadata and file nodes.
@@ -346,7 +346,7 @@ struct FileSystem
                         If actual used space is wanted one should use the
                         statistics functionality of tango.io.vfs.
 
-                        See also: totalSpace()
+                        See_also: totalSpace()
 
                         Since: 0.99.9
 
@@ -356,7 +356,7 @@ struct FileSystem
                 {
                     scope fp = new FilePath(folder);
 
-                    const bool wantTrailingBackslash = true;                    
+                    const bool wantTrailingBackslash = true;
                     TCHAR[volumePathBufferLen] volPathBuf;
                     auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
 
@@ -385,7 +385,7 @@ struct FileSystem
                         set to true may only be available if the program is
                         run in superuser mode.
 
-                        See also: freeSpace()
+                        See_also: freeSpace()
 
                         Since: 0.99.9
 
@@ -400,10 +400,10 @@ struct FileSystem
                         alias GetDiskFreeSpaceExW GetDiskFreeSpaceEx;
                         alias CreateFileW CreateFile;
                     }
-                    
+
                     scope fp = new FilePath(folder);
 
-                    bool wantTrailingBackslash = (false == superuser);                    
+                    bool wantTrailingBackslash = (false == superuser);
                     TCHAR[volumePathBufferLen] volPathBuf;
                     auto volPath = getVolumePath(fp.native.toString, volPathBuf, wantTrailingBackslash);
 
@@ -414,16 +414,16 @@ struct FileSystem
                         GET_LENGTH_INFORMATION lenInfo;
                         DWORD numBytes;
                         OVERLAPPED overlap;
-                        
+
                         HANDLE h = CreateFile(
                                 volPath.ptr, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                 null, OPEN_EXISTING, 0, null
                         );
-                        
+
                         if (h == INVALID_HANDLE_VALUE) {
                             exception ("Failed to open volume for reading");
                         }
-                                               
+
                         if (0 == DeviceIoControl(
                                 h, IOCTL_DISK_GET_LENGTH_INFO, null , 0,
                                 cast(void*)&lenInfo, lenInfo.sizeof, &numBytes, &overlap
@@ -449,9 +449,9 @@ struct FileSystem
         {
                 /***************************************************************
 
-                        Set the current working directory
+                        Set the current working directory.
 
-                        deprecated: see Environment.cwd()
+                        deprecated: See Environment.cwd().
 
                 ***************************************************************/
 
@@ -467,9 +467,9 @@ struct FileSystem
 
                 /***************************************************************
 
-                        Return the current working directory
+                        Return the current working directory.
 
-                        deprecated: see Environment.cwd()
+                        deprecated: See Environment.cwd().
 
                 ***************************************************************/
 
@@ -507,10 +507,10 @@ struct FileSystem
                             auto fc = new File("/etc/mtab");
                             scope (exit)
                                    fc.close;
-                            
+
                             auto content = new char[cast(int) fc.length];
                             fc.input.read (content);
-                            
+
                             for(int i = 0; i < content.length; i++)
                             {
                                 if(content[i] == ' ') spaces++;
@@ -530,24 +530,24 @@ struct FileSystem
                                     else path ~= content[i];
                                 }
                             }
-                            
+
                             return list;
                         }
                 }
 
                 /***************************************************************
- 
-                        Request how much free space in bytes is available on the 
+
+                        Request how much free space in bytes is available on the
                         disk/mountpoint where folder resides.
 
-                        If a quota limit exists for this area, that will be taken 
+                        If a quota limit exists for this area, that will be taken
                         into account unless superuser is set to true.
 
-                        If a user has exceeded the quota, a negative number can 
+                        If a user has exceeded the quota, a negative number can
                         be returned.
 
                         Note that the difference between total available space
-                        and free space will not equal the combined size of the 
+                        and free space will not equal the combined size of the
                         contents on the file system, since the numbers for the
                         functions here are calculated from the used blocks,
                         including those spent on metadata and file nodes.
@@ -555,7 +555,7 @@ struct FileSystem
                         If actual used space is wanted one should use the
                         statistics functionality of tango.io.vfs.
 
-                        See also: totalSpace()
+                        See_also: totalSpace()
 
                         Since: 0.99.9
 
@@ -590,7 +590,7 @@ struct FileSystem
                         set to true may only be available if the program is
                         run in superuser mode.
 
-                        See also: freeSpace()
+                        See_also: freeSpace()
 
                         Since: 0.99.9
 
@@ -630,7 +630,7 @@ debug (FileSystem)
         Stdout("suffix: ") (path.suffix).newline.newline;
         }
 
-        void main() 
+        void main()
         {
         Stdout.formatln ("dir: {}", FileSystem.getDirectory);
 
@@ -638,13 +638,13 @@ debug (FileSystem)
         foo (path);
 
         path.set ("..");
-        foo (path); 
+        foo (path);
 
         path.set ("...");
-        foo (path); 
+        foo (path);
 
         path.set (r"/x/y/.file");
-        foo (path); 
+        foo (path);
 
         path.suffix = ".foo";
         foo (path);

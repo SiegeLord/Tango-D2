@@ -19,17 +19,17 @@ private import tango.util.digest.Digest;
 /*******************************************************************************
 
         Inject a digest filter into an input stream, updating the digest
-        as information flows through it
+        as information flows through it.
 
 *******************************************************************************/
 
 class DigestInput : InputFilter, InputFilter.Mutator
 {
         private Digest filter;
-        
+
         /***********************************************************************
 
-                Accepts any input stream, and any digest derivation
+                Accepts any input stream, and any digest derivation.
 
         ***********************************************************************/
 
@@ -41,11 +41,11 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.
 
                 Returns the number of bytes read, which may be less than
-                requested in dst (or IOStream.Eof for end-of-flow)
+                requested in dst (or IOStream.Eof for end-of-flow.)
 
         ***********************************************************************/
 
@@ -59,26 +59,26 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
         /***********************************************************************
 
-                Slurp remaining stream content and return this
-                
+                Slurp remaining stream content and return this.
+
         ***********************************************************************/
 
         final DigestInput slurp (void[] dst = null)
         {
                 if (dst.length is 0)
                     dst.length = conduit.bufferSize;
-                
+
                 while (read(dst) != Eof) {}
                 return this;
         }
 
         /********************************************************************
-             
+
                 Return the Digest instance we were created with. Use this
-                to access the resultant binary or hex digest value
+                to access the resultant binary or hex digest value.
 
         *********************************************************************/
-    
+
         final Digest digest()
         {
                 return filter;
@@ -87,7 +87,7 @@ class DigestInput : InputFilter, InputFilter.Mutator
 
 
 /*******************************************************************************
-        
+
         Inject a digest filter into an output stream, updating the digest
         as information flows through it. Here's an example where we calculate
         an MD5 digest as a side-effect of copying a file:
@@ -106,7 +106,7 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
 
         /***********************************************************************
 
-                Accepts any output stream, and any digest derivation
+                Accepts any output stream, and any digest derivation.
 
         ***********************************************************************/
 
@@ -117,12 +117,12 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
         }
 
         /***********************************************************************
-        
+
                 Write to conduit from a source array. The provided src
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided
+                be less than the quantity provided.
 
         ***********************************************************************/
 
@@ -135,12 +135,12 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
         }
 
         /********************************************************************
-             
+
                 Return the Digest instance we were created with. Use this
-                to access the resultant binary or hex digest value
+                to access the resultant binary or hex digest value.
 
         *********************************************************************/
-    
+
         final Digest digest()
         {
                 return filter;
@@ -149,9 +149,9 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (DigestStream)
 {
         import tango.io.Stdout;

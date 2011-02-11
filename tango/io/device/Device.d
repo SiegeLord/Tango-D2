@@ -20,7 +20,7 @@ public  import  tango.io.device.Conduit;
 
         Implements a means of reading and writing a file device. Conduits
         are the primary means of accessing external data, and this one is
-        used as a superclass for the console, for files, sockets etc
+        used as a superclass for the console, for files, sockets etc.
 
 *******************************************************************************/
 
@@ -28,11 +28,11 @@ class Device : Conduit, ISelectable
 {
         /// expose superclass definition also
         public alias Conduit.error error;
-            
+
         /***********************************************************************
 
-                Throw an IOException noting the last error
-        
+                Throw an IOException noting the last error.
+
         ***********************************************************************/
 
         final void error ()
@@ -42,7 +42,7 @@ class Device : Conduit, ISelectable
 
         /***********************************************************************
 
-                Return the name of this device
+                Return the name of this device.
 
         ***********************************************************************/
 
@@ -53,7 +53,7 @@ class Device : Conduit, ISelectable
 
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O
+                Return a preferred size for buffering conduit I/O.
 
         ***********************************************************************/
 
@@ -64,7 +64,7 @@ class Device : Conduit, ISelectable
 
         /***********************************************************************
 
-                Windows-specific code
+                Windows-specific code.
 
         ***********************************************************************/
 
@@ -82,7 +82,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Allow adjustment of standard IO handles
+                        Allow adjustment of standard IO handles.
 
                 ***************************************************************/
 
@@ -93,7 +93,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
+                        Return the underlying OS handle of this Conduit.
 
                 ***************************************************************/
 
@@ -120,7 +120,7 @@ class Device : Conduit, ISelectable
                         is not thrown on error, as doing so can induce some
                         spaggetti into error handling. Instead, we need to
                         change this to return a bool instead, so the caller
-                        can decide what to do.                        
+                        can decide what to do.
 
                 ***************************************************************/
 
@@ -135,7 +135,7 @@ class Device : Conduit, ISelectable
                 /***************************************************************
 
                         Read a chunk of bytes from the file into the provided
-                        array. Returns the number of bytes read, or Eof where 
+                        array. Returns the number of bytes read, or Eof where
                         there is no further data.
 
                         Operates asynchronously where the hosting thread is
@@ -165,7 +165,7 @@ class Device : Conduit, ISelectable
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
-                        array. Returns the number of bytes written, or Eof if 
+                        array. Returns the number of bytes written, or Eof if
                         the output is no longer available.
 
                         Operates asynchronously where the hosting thread is
@@ -203,12 +203,12 @@ class Device : Conduit, ISelectable
 
                               if (scheduler)
                                  {
-                                 if (code is ERROR_SUCCESS || 
-                                     code is ERROR_IO_PENDING || 
+                                 if (code is ERROR_SUCCESS ||
+                                     code is ERROR_IO_PENDING ||
                                      code is ERROR_IO_INCOMPLETE)
                                     {
                                     if (code is ERROR_IO_INCOMPLETE)
-                                        super.error ("timeout"); 
+                                        super.error ("timeout");
 
                                     io.task = cast(void*) tango.core.Thread.Fiber.getThis;
                                     scheduler.await (io.handle, type, timeout);
@@ -243,7 +243,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Allow adjustment of standard IO handles
+                        Allow adjustment of standard IO handles.
 
                 ***************************************************************/
 
@@ -254,7 +254,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Return the underlying OS handle of this Conduit
+                        Return the underlying OS handle of this Conduit.
 
                 ***************************************************************/
 
@@ -265,7 +265,7 @@ class Device : Conduit, ISelectable
 
                 /***************************************************************
 
-                        Release the underlying file
+                        Release the underlying file.
 
                 ***************************************************************/
 
@@ -284,7 +284,7 @@ class Device : Conduit, ISelectable
                 /***************************************************************
 
                         Read a chunk of bytes from the file into the provided
-                        array. Returns the number of bytes read, or Eof where 
+                        array. Returns the number of bytes read, or Eof where
                         there is no further data.
 
                 ***************************************************************/
@@ -303,7 +303,7 @@ class Device : Conduit, ISelectable
                 /***************************************************************
 
                         Write a chunk of bytes to the file from the provided
-                        array. Returns the number of bytes written, or Eof if 
+                        array. Returns the number of bytes written, or Eof if
                         the output is no longer available.
 
                 ***************************************************************/

@@ -2,7 +2,7 @@
  *
  * copyright:   Copyright &copy; 2007 Daniel Keep.  All rights reserved.
  * license:     BSD style: $(LICENSE)
- * version:     Dec 2007: Initial release
+ * version:     Dec 2007: Initial release$(BR)
  *              May 2009: Inherit File
  * authors:     Daniel Keep
  * credits:     Thanks to John Reimer for helping test this module under
@@ -67,7 +67,7 @@ version( Win32 )
                 throw new Exception("could not obtain temporary path");
 
             auto dir = new char [len * 3];
-            auto i = WideCharToMultiByte (CP_UTF8, 0, result.ptr, len, 
+            auto i = WideCharToMultiByte (CP_UTF8, 0, result.ptr, len,
                                           cast(PCHAR) dir.ptr, dir.length, null, null);
             return Path.standard (dir[0..i]);
         }
@@ -131,19 +131,19 @@ else version( Posix )
  * -----
  *  {
  *      scope temp = new TempFile;
- *      
+ *
  *      // Use temp as a normal conduit; it will be automatically closed when
  *      // it goes out of scope.
  *  }
  * -----
  *
- * $(B Important):
+ * Important:
  * It is recommended that you $(I do not) use files created by this class to
  * store sensitive information.  There are several known issues with the
  * current implementation that could allow an attacker to access the contents
  * of these temporary files.
  *
- * $(B Todo): Detail security properties and guarantees.
+ * Todo: Detail security properties and guarantees.
  *
  ******************************************************************************/
 
@@ -164,7 +164,7 @@ class TempFile : File
     }+/
 
     /**************************************************************************
-     * 
+     *
      * This enumeration is used to control whether the temporary file should
      * persist after the TempFile object has been destroyed.
      *
@@ -213,7 +213,7 @@ class TempFile : File
     }+/
 
     /**************************************************************************
-     * 
+     *
      * This structure is used to determine how the temporary files should be
      * opened and used.
      *
@@ -292,11 +292,11 @@ class TempFile : File
         private static const DEFAULT_PREFIX = "~t";
         private static const DEFAULT_SUFFIX = ".tmp";
 
-        private static const JUNK_CHARS = 
+        private static const JUNK_CHARS =
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
-         * 
+         *
          * Returns the path to the directory where temporary files will be
          * created.  The returned path is safe to mutate.
          *
@@ -316,7 +316,7 @@ class TempFile : File
             // otherwise, we could spin trying to make a file when it's
             // actually not possible.
 
-            Style filestyle = {Access.ReadWrite, Open.New, 
+            Style filestyle = {Access.ReadWrite, Open.New,
                                Share.None, Cache.None};
 
             DWORD attr;
@@ -341,12 +341,12 @@ class TempFile : File
         // Use "~" to work around a bug in DMD where it elides empty constants
         private static const DEFAULT_SUFFIX = "~";
 
-        private static const JUNK_CHARS = 
+        private static const JUNK_CHARS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz0123456789";
 
        /**********************************************************************
-         * 
+         *
          * Returns the path to the directory where temporary files will be
          * created.  The returned path is safe to mutate.
          *
@@ -357,7 +357,7 @@ class TempFile : File
             char* ptr = getenv ("TMPDIR");
             if (ptr is null)
                 return "/tmp/";
-            else 
+            else
                 return ptr[0 .. strlen (ptr)].dup;
         }
 
@@ -384,7 +384,7 @@ class TempFile : File
                 auto pwe = getpwnam("root");
                 if( pwe is null ) error("could not get root's uid");
                 auto root_uid = pwe.pw_uid;
-                
+
                 // Make sure either we or root are the owner
                 if( !(sb.st_uid == root_uid || sb.st_uid == getuid) )
                     error("temporary directory owned by neither root nor user");
@@ -396,7 +396,7 @@ class TempFile : File
 
             // Create file
             {
-                Style filestyle = {Access.ReadWrite, Open.New, 
+                Style filestyle = {Access.ReadWrite, Open.New,
                                    Share.None, Cache.None};
 
                 auto addflags = O_NOFOLLOW;
@@ -443,7 +443,7 @@ class TempFile : File
 
         return prefix~junk~suffix;
     }
-    
+
     override void detach()
     {
         static assert( !is(Sensitivity) );

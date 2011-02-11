@@ -19,7 +19,7 @@ private import tango.io.stream.Data;
 /*******************************************************************************
 
         Composes a seekable file with buffered binary input. A seek causes
-        the input buffer to be cleared
+        the input buffer to be cleared.
 
 *******************************************************************************/
 
@@ -29,7 +29,7 @@ class DataFileInput : DataInput
 
         /***********************************************************************
 
-                Compose a FileStream              
+                Compose a FileStream.
 
         ***********************************************************************/
 
@@ -40,7 +40,7 @@ class DataFileInput : DataInput
 
         /***********************************************************************
 
-                Wrap a File instance
+                Wrap a File instance.
 
         ***********************************************************************/
 
@@ -51,21 +51,21 @@ class DataFileInput : DataInput
 
         /***********************************************************************
 
-                Return the underlying conduit
+                Return the underlying conduit.
 
         ***********************************************************************/
 
         final File file ()
-        {       
+        {
                 return conduit;
         }
 }
 
 
 /*******************************************************************************
-       
+
         Composes a seekable file with buffered binary output. A seek causes
-        the output buffer to be flushed first
+        the output buffer to be flushed first.
 
 *******************************************************************************/
 
@@ -75,7 +75,7 @@ class DataFileOutput : DataOutput
 
         /***********************************************************************
 
-                Compose a FileStream              
+                Compose a FileStream.
 
         ***********************************************************************/
 
@@ -86,7 +86,7 @@ class DataFileOutput : DataOutput
 
         /***********************************************************************
 
-                Wrap a FileConduit instance
+                Wrap a FileConduit instance.
 
         ***********************************************************************/
 
@@ -97,12 +97,12 @@ class DataFileOutput : DataOutput
 
         /***********************************************************************
 
-                Return the underlying conduit
+                Return the underlying conduit.
 
         ***********************************************************************/
 
         final File file ()
-        {       
+        {
                 return conduit;
         }
 }

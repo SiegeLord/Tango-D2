@@ -1,10 +1,8 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
-
-module tango.io.selector.Selector;
 
 /**
  * A multiplexor of conduit I/O events.
@@ -62,7 +60,7 @@ module tango.io.selector.Selector;
  * When select() returns you will receive an integer; if this integer is
  * bigger than 0, it indicates the number of conduits that have been selected.
  * If this number is 0, the it means that the selector reached a timeout, and
- * if it's -1, then it means that there was an error. A normal block that deals 
+ * if it's -1, then it means that there was an error. A normal block that deals
  * with the selection process would look like this:
  *
  * ---
@@ -122,6 +120,8 @@ module tango.io.selector.Selector;
  * }
  * ---
  */
+module tango.io.selector.Selector;
+
 version (linux)
 {
     public import tango.io.selector.EpollSelector;

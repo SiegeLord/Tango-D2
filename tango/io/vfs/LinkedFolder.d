@@ -19,14 +19,14 @@ private import tango.core.Exception;
 private import tango.io.vfs.VirtualFolder;
 
 /*******************************************************************************
-        
-        LinkedFolder is derived from VirtualFolder, and behaves exactly the 
-        same in all but one aspect: it treats mounted folders as an ordered 
-        list of alternatives to look for a file. This supports the notion of 
-        file 'overrides', whereby "customized" files can be inserted into a 
+
+        LinkedFolder is derived from VirtualFolder, and behaves exactly the
+        same in all but one aspect: it treats mounted folders as an ordered
+        list of alternatives to look for a file. This supports the notion of
+        file 'overrides', whereby "customized" files can be inserted into a
         chain of alternatives.
 
-        (overridden folders are not currently supported)
+        (Overridden folders are not currently supported.)
 
 *******************************************************************************/
 
@@ -37,7 +37,7 @@ class LinkedFolder : VirtualFolder
 
         /***********************************************************************
 
-                Linked-list of folders
+                Linked-list of folders.
 
         ***********************************************************************/
 
@@ -56,8 +56,8 @@ class LinkedFolder : VirtualFolder
 
         /***********************************************************************
 
-                All folder must have a name. No '.' or '/' chars are 
-                permitted
+                All folder must have a name. No '.' or '/' chars are
+                permitted.
 
         ***********************************************************************/
 
@@ -73,10 +73,10 @@ class LinkedFolder : VirtualFolder
                 tree of virtual folders are detected and trapped.
 
                 We add the new child at the end of an ordered list, which
-                we subsequently traverse when looking up a file
+                we subsequently traverse when looking up a file.
 
                 The second argument represents an optional name that the
-                mount should be known as, instead of the name exposed by 
+                mount should be known as, instead of the name exposed by
                 the provided folder (it is not an alias).
 
         ***********************************************************************/
@@ -91,13 +91,13 @@ class LinkedFolder : VirtualFolder
                 // hook up the new folder
                 *link = Link (folder);
 
-                // and let superclass deal with it 
+                // and let superclass deal with it
                 return super.mount (folder, name);
         }
 
         /***********************************************************************
 
-                TODO: unhook a child folder.
+                TODO: Unhook a child folder.
 
         ***********************************************************************/
 
@@ -109,13 +109,13 @@ class LinkedFolder : VirtualFolder
         /***********************************************************************
 
                 Return a file representation of the given path. If the
-                path-head does not refer to an immediate child folder, 
+                path-head does not refer to an immediate child folder,
                 and does not match a symbolic link, it is considered to
                 be unknown.
 
                 We scan the set of mounted folders, in the order mounted,
                 looking for a match. Where one is found, we test to see
-                that it really exists before returning the reference
+                that it really exists before returning the reference.
 
         ***********************************************************************/
 
@@ -153,7 +153,7 @@ void main()
         auto sub  = new VirtualFolder ("sub");
         sub.mount (new FileFolder (r"d:/d/import/temp"));
         sub.map (sub.file(r"temp/subtree/test.txt"), "wumpus");
-        
+
         root.mount (new FileFolder (r"d:/d/import/tango"))
             .mount (new FileFolder (r"c:/"), "windows");
         root.mount (sub);

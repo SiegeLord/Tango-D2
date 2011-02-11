@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: December 2005      
-        
+        version:        Initial release: December 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -18,9 +18,9 @@ public  import tango.text.convert.UnicodeBom;
 
 /*******************************************************************************
 
-        Read and write unicode files
+        Read and write Unicode files
 
-        For our purposes, unicode files are an encoding of textual material.
+        For our purposes, Unicode files are an encoding of textual material.
         The goal of this module is to interface that external-encoding with
         a programmer-defined internal-encoding. This internal encoding is
         declared via the template argument T, whilst the external encoding
@@ -31,48 +31,51 @@ public  import tango.text.convert.UnicodeBom;
         returns an array of the type, whilst write() and append() expect an
         array of said type.
 
-        Supported external encodings are as follow:
+        Supported external encodings are as follows:
 
-                $(UL Encoding.Unknown)
-                $(UL Encoding.UTF_8)
-                $(UL Encoding.UTF_8N)
-                $(UL Encoding.UTF_16)
-                $(UL Encoding.UTF_16BE)
-                $(UL Encoding.UTF_16LE) 
-                $(UL Encoding.UTF_32)
-                $(UL Encoding.UTF_32BE)
-                $(UL Encoding.UTF_32LE) 
+        $(UL
+          $(LI Encoding.Unknown)
+          $(LI Encoding.UTF_8)
+          $(LI Encoding.UTF_8N)
+          $(LI Encoding.UTF_16)
+          $(LI Encoding.UTF_16BE)
+          $(LI Encoding.UTF_16LE)
+          $(LI Encoding.UTF_32)
+          $(LI Encoding.UTF_32BE)
+          $(LI Encoding.UTF_32LE))
 
-        These can be divided into implicit and explicit encodings. Here are
+        These can be divided into implicit and explicit encodings. Here is
         the implicit subset:
 
-                $(UL Encoding.Unknown)
-                $(UL Encoding.UTF_8)
-                $(UL Encoding.UTF_16)
-                $(UL Encoding.UTF_32) 
+        $(UL
+          $(LI Encoding.Unknown)
+          $(LI Encoding.UTF_8)
+          $(LI Encoding.UTF_16)
+          $(LI Encoding.UTF_32))
 
         Implicit encodings may be used to 'discover'
         an unknown encoding, by examining the first few bytes of the file
-        content for a signature. This signature is optional for all files, 
+        content for a signature. This signature is optional for all files,
         but is often written such that the content is self-describing. When
         the encoding is unknown, using one of the non-explicit encodings will
-        cause the read() method to look for a signature and adjust itself 
-        accordingly. It is possible that a ZWNBSP character might be confused 
-        with the signature; today's files are supposed to use the WORD-JOINER 
+        cause the read() method to look for a signature and adjust itself
+        accordingly. It is possible that a ZWNBSP character might be confused
+        with the signature; today's files are supposed to use the WORD-JOINER
         character instead.
 
         Explicit encodings are as follows:
-       
-                $(UL Encoding.UTF_8N)
-                $(UL Encoding.UTF_16BE)
-                $(UL Encoding.UTF_16LE) 
-                $(UL Encoding.UTF_32BE)
-                $(UL Encoding.UTF_32LE) 
-        
+
+        $(UL
+          $(LI Encoding.UTF_8N)
+          $(LI Encoding.UTF_16BE)
+          $(LI Encoding.UTF_16LE)
+          $(LI Encoding.UTF_32BE)
+          $(LI Encoding.UTF_32LE))
+
         This group of encodings are for use when the file encoding is
         known. These *must* be used when writing or appending, since written
         content must be in a known format. It should be noted that, during a
-        read operation, the presence of a signature is in conflict with these 
+        read operation, the presence of a signature is in conflict with these
         explicit varieties.
 
         Method read() returns the current content of the file, whilst write()
@@ -86,11 +89,12 @@ public  import tango.text.convert.UnicodeBom;
         superclass.
 
         See these links for more info:
-        $(UL $(LINK http://www.utf-8.com/))
-        $(UL $(LINK http://www.hackcraft.net/xmlUnicode/))
-        $(UL $(LINK http://www.unicode.org/faq/utf_bom.html/))
-        $(UL $(LINK http://www.azillionmonkeys.com/qed/unicode.html/))
-        $(UL $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/))
+      $(UL
+        $(LI $(LINK http://www.utf-8.com/))
+        $(LI $(LINK http://www.hackcraft.net/xmlUnicode/))
+        $(LI $(LINK http://www.unicode.org/faq/utf_bom.html/))
+        $(LI $(LINK http://www.azillionmonkeys.com/qed/unicode.html/))
+        $(LI $(LINK http://icu.sourceforge.net/docs/papers/forms_of_unicode/)))
 
 *******************************************************************************/
 
@@ -100,13 +104,13 @@ class UnicodeFile(T)
         private char[]          path_;
 
         /***********************************************************************
-        
-                Construct a UnicodeFile from the provided FilePath. The given 
+
+                Construct a UnicodeFile from the provided FilePath. The given
                 encoding represents the external file encoding, and should
-                be one of the Encoding.xx types 
+                be one of the Encoding.* types.
 
         ***********************************************************************/
-                                  
+
         this (char[] path, Encoding encoding)
         {
                 bom_ = new UnicodeBom!(T)(encoding);
@@ -115,9 +119,9 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
-                Call-site shortcut to create a UnicodeFile instance. This 
+                Call-site shortcut to create a UnicodeFile instance. This
                 enables the same syntax as struct usage, so may expose
-                a migration path
+                a migration path.
 
         ***********************************************************************/
 
@@ -128,7 +132,7 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
-                Return the associated file path
+                Return the associated file path.
 
         ***********************************************************************/
 
@@ -136,7 +140,7 @@ class UnicodeFile(T)
         {
                 return path_;
         }
-        
+
         /***********************************************************************
 
                 Return the current encoding. This is either the originally
@@ -150,11 +154,11 @@ class UnicodeFile(T)
         {
                 return bom_.encoding;
         }
-        
+
         /***********************************************************************
 
                 Return the associated bom instance. Use this to find more
-                information about the encoding status
+                information about the encoding status.
 
         ***********************************************************************/
 
@@ -165,7 +169,7 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
-                Return the content of the file. The content is inspected 
+                Return the content of the file. The content is inspected
                 for a bom signature, which is stripped. An exception is
                 thrown if a signature is present when, according to the
                 encoding type, it should not be. Conversely, An exception
@@ -188,12 +192,12 @@ class UnicodeFile(T)
         ***********************************************************************/
 
         final void write (T[] content, bool writeBom)
-        {       
+        {
                 // convert to external representation (may throw an exeption)
                 void[] converted = bom_.encode (content);
 
                 // open file after conversion ~ in case of exceptions
-                scope conduit = new File (path_, File.ReadWriteCreate);  
+                scope conduit = new File (path_, File.ReadWriteCreate);
                 scope (exit)
                        conduit.close;
 
@@ -206,10 +210,10 @@ class UnicodeFile(T)
 
         /***********************************************************************
 
-                Append content to the file; the content will be encoded 
+                Append content to the file; the content will be encoded
                 accordingly.
 
-                Note that it is your responsibility to ensure the 
+                Note that it is your responsibility to ensure the
                 existing and current encodings are correctly matched.
 
         ***********************************************************************/
@@ -231,7 +235,7 @@ debug (UnicodeFile)
         import tango.io.Stdout;
 
         void main()
-        {       
+        {
                 auto file = UnicodeFile!(char)("UnicodeFile.d", Encoding.UTF_8);
                 auto content = file.read;
                 Stdout (content).newline;

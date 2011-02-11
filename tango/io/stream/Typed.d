@@ -21,12 +21,12 @@ private import tango.io.stream.Buffered;
 
 /*******************************************************************************
 
-        Type T is the target or destination type
+        Type T is the target or destination type.
 
 *******************************************************************************/
 
 class TypedInput(T) : InputFilter
-{       
+{
         /***********************************************************************
 
         ***********************************************************************/
@@ -35,10 +35,10 @@ class TypedInput(T) : InputFilter
         {
                 super (BufferedInput.create (stream));
         }
-        
+
         /***********************************************************************
 
-                Override this to give back a useful chaining reference
+                Override this to give back a useful chaining reference.
 
         ***********************************************************************/
 
@@ -50,8 +50,8 @@ class TypedInput(T) : InputFilter
 
         /***********************************************************************
 
-                Read a value from the stream. Returns false when all 
-                content has been consumed
+                Read a value from the stream. Returns false when all
+                content has been consumed.
 
         ***********************************************************************/
 
@@ -62,7 +62,7 @@ class TypedInput(T) : InputFilter
 
         /***********************************************************************
 
-                Iterate over all content
+                Iterate over all content.
 
         ***********************************************************************/
 
@@ -81,13 +81,13 @@ class TypedInput(T) : InputFilter
 
 
 /*******************************************************************************
-        
+
         Type T is the target or destination type.
 
 *******************************************************************************/
 
 class TypedOutput(T) : OutputFilter
-{       
+{
         /***********************************************************************
 
         ***********************************************************************/
@@ -98,8 +98,8 @@ class TypedOutput(T) : OutputFilter
         }
 
         /***********************************************************************
-        
-                Append a value to the output stream
+
+                Append a value to the output stream.
 
         ***********************************************************************/
 
@@ -111,9 +111,9 @@ class TypedOutput(T) : OutputFilter
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (UnitTest)
 {
         import tango.io.Stdout;

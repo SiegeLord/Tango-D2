@@ -9,7 +9,7 @@
         author:         Kris
 
         Streams for swapping endian-order. The stream is treated as a set
-        of same-sized elements. Note that partial elements are not mutated
+        of same-sized elements. Note that partial elements are not mutated.
 
 *******************************************************************************/
 
@@ -23,13 +23,13 @@ private import tango.io.stream.Buffered;
 
 /*******************************************************************************
 
-        Type T is the element type
+        Type T is the element type.
 
 *******************************************************************************/
 
 class EndianInput(T) : InputFilter, InputFilter.Mutator
-{       
-        static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
+{
+        static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8))
                     pragma (msg, "EndianInput :: type should be of length 2, 4, or 8 bytes");
 
         /***********************************************************************
@@ -40,16 +40,16 @@ class EndianInput(T) : InputFilter, InputFilter.Mutator
         {
                 super (BufferedInput.create (stream));
         }
-        
+
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.
 
                 Returns the number of bytes read, which may be less than
                 requested in dst (or IOStream.Eof for end-of-flow). Note
                 that a trailing partial element will be placed into dst,
-                but the returned length will effectively ignore it
+                but the returned length will effectively ignore it.
 
         ***********************************************************************/
 
@@ -77,14 +77,14 @@ class EndianInput(T) : InputFilter, InputFilter.Mutator
 
 
 /*******************************************************************************
-        
-        Type T is the element type
+
+        Type T is the element type.
 
 *******************************************************************************/
 
 class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
-{       
-        static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8)) 
+{
+        static if ((T.sizeof != 2) && (T.sizeof != 4) && (T.sizeof != 8))
                     pragma (msg, "EndianOutput :: type should be of length 2, 4, or 8 bytes");
 
         private OutputBuffer output;
@@ -99,13 +99,13 @@ class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
         }
 
         /***********************************************************************
-        
-                Write to output stream from a source array. The provided 
+
+                Write to output stream from a source array. The provided
                 src content will be consumed and left intact.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided. Note that any partial 
-                elements will not be consumed
+                be less than the quantity provided. Note that any partial
+                elements will not be consumed.
 
         ***********************************************************************/
 
@@ -138,13 +138,13 @@ class EndianOutput (T) : OutputFilter, OutputFilter.Mutator
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (UnitTest)
 {
         import tango.io.device.Array;
-        
+
         unittest
         {
                 auto inp = new EndianInput!(dchar)(new Array("hello world"d));

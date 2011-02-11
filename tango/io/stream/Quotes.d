@@ -20,13 +20,13 @@ private import tango.io.stream.Iterator;
 
         Each field is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
-        exposed content, then you should .dup it appropriately. 
+        exposed content, then you should .dup it appropriately.
 
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
         possible a user could mutate the content through a get() slice.
-        To enforce the desired read-only aspect, the code would have to 
-        introduce redundant copying or the compiler would have to support 
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
         read-only arrays.
 
         Usage:
@@ -35,7 +35,7 @@ private import tango.io.stream.Iterator;
         auto l = new Lines (f);
         auto b = new Array (0);
         auto q = new Quotes!(char)(",", b);
-        
+
         foreach (line; l)
                 {
                 b.assign (line);
@@ -45,14 +45,14 @@ private import tango.io.stream.Iterator;
                 }
         ---
 
-        See Iterator, Lines, Patterns, Delimiters
-        
+        See Iterator, Lines, Patterns, Delimiters.
+
 *******************************************************************************/
 
 class Quotes(T) : Iterator!(T)
 {
-        private T[] delim; 
-      
+        private T[] delim;
+
         /***********************************************************************
 
                 This splits on delimiters only. If there is a quote, it
@@ -65,7 +65,7 @@ class Quotes(T) : Iterator!(T)
                 super (stream);
                 this.delim = delim;
         }
-        
+
         /***********************************************************************
 
                 This splits on delimiters only. If there is a quote, it
@@ -82,7 +82,7 @@ class Quotes(T) : Iterator!(T)
                 foreach (i, c; content)
                          // within a quote block?
                          if (quote)
-                            {   
+                            {
                             if (c is '\\')
                                 ++escape;
                             else
@@ -97,7 +97,7 @@ class Quotes(T) : Iterator!(T)
                             // begin a quote block?
                             if (c is '"' || c is '\'')
                                 quote = c;
-                            else 
+                            else
                                if (has (delim, c))
                                    return found (set (content.ptr, 0, i));
                 return notFound;
@@ -115,9 +115,9 @@ debug (UnitTest)
         private import tango.text.Util;
         private import tango.io.device.Array;
 
-        unittest 
+        unittest
         {
-                char[][] expected = 
+                char[][] expected =
                          [
                          `0`
                          ,``
@@ -138,7 +138,7 @@ debug (UnitTest)
                 foreach (i, f; new Quotes!(char)(",", b))
                          if (i >= expected.length)
                             Stdout.formatln ("uhoh: unexpected match: {}, {}", i, f);
-                         else 
+                         else
                             if (f != expected[i])
                                 Stdout.formatln ("uhoh: bad match: {}, {}, {}", i, f, expected[i]);
         }

@@ -18,7 +18,7 @@ private import tango.io.stream.Text;
 
 /*******************************************************************************
 
-        Composes a file with line-oriented input. The input is buffered
+        Composes a file with line-oriented input. The input is buffered.
 
 *******************************************************************************/
 
@@ -26,7 +26,7 @@ class TextFileInput : TextInput
 {
         /***********************************************************************
 
-                compose a FileStream              
+                Compose a FileStream.
 
         ***********************************************************************/
 
@@ -37,7 +37,7 @@ class TextFileInput : TextInput
 
         /***********************************************************************
 
-                Wrap a FileConduit instance
+                Wrap a FileConduit instance.
 
         ***********************************************************************/
 
@@ -49,8 +49,8 @@ class TextFileInput : TextInput
 
 
 /*******************************************************************************
-       
-        Composes a file with formatted text output. Output is buffered
+
+        Composes a file with formatted text output. Output is buffered.
 
 *******************************************************************************/
 
@@ -58,7 +58,7 @@ class TextFileOutput : TextOutput
 {
         /***********************************************************************
 
-                compose a FileStream              
+                Compose a FileStream.
 
         ***********************************************************************/
 
@@ -69,7 +69,7 @@ class TextFileOutput : TextOutput
 
         /***********************************************************************
 
-                Wrap a File instance
+                Wrap a File instance.
 
         ***********************************************************************/
 
@@ -92,6 +92,6 @@ debug (TextFile)
         {
                 auto t = new TextFileInput ("TextFile.d");
                 foreach (line; t)
-                         Cout(line).newline;                  
+                         Cout(line).newline;
         }
 }

@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.AbstractSelector;
@@ -151,9 +151,9 @@ abstract class AbstractSelector: ISelector
      * Initialize the selector.
      *
      * Params:
-     * size         = value that provides a hint for the maximum amount of
-     *                conduits that will be registered
-     * maxEvents    = value that provides a hint for the maximum amount of
+     * size         = Value that provides a hint for the maximum amount of
+     *                conduits that will be registered.
+     * maxEvents    = Value that provides a hint for the maximum amount of
      *                conduit events that will be returned in the selection
      *                set per call to select.
      */
@@ -174,11 +174,11 @@ abstract class AbstractSelector: ISelector
      * Associate a conduit to the selector and track specific I/O events.
      *
      * Params:
-     * conduit      = conduit that will be associated to the selector
-     * events       = bit mask of Event values that represent the events that
-     *                will be tracked for the conduit.
-     * attachment   = optional object with application-specific data that will
-     *                be available when an event is triggered for the conduit
+     * conduit    = Conduit that will be associated to the selector.
+     * events     = Bit mask of Event values that represent the events that
+     *              will be tracked for the conduit.
+     * attachment = Optional object with application-specific data that will
+     *              be available when an event is triggered for the conduit.
      *
      * Examples:
      * ---
@@ -193,7 +193,7 @@ abstract class AbstractSelector: ISelector
                                   Object attachment);
 
     /**
-     * Deprecated, use register instead
+     * Deprecated, use register instead.
      */
     deprecated public final void reregister(ISelectable conduit, Event events,
             Object attachment = null)
@@ -205,7 +205,7 @@ abstract class AbstractSelector: ISelector
      * Remove a conduit from the selector.
      *
      * Params:
-     * conduit      = conduit that had been previously associated to the
+     * conduit      = Conduit that had been previously associated to the
      *                selector; it can be null.
      *
      * Remarks:
@@ -240,7 +240,7 @@ abstract class AbstractSelector: ISelector
      * specified period.  For more accuracy, use the TimeSpan version.
      *
      * Params:
-     * timeout  = the maximum amount of time in seconds that the
+     * timeout  = The maximum amount of time in seconds that the
      *            selector will wait for events from the conduits; the
      *            amount of time is relative to the current system time
      *            (i.e. just the number of milliseconds that the selector
@@ -333,18 +333,22 @@ abstract class AbstractSelector: ISelector
      * throw an exception with the description of the error.
      *
      * Params:
-     * file     = name of the source file where the check is being made; you
+     * file     = Name of the source file where the check is being made; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where this method was called;
+     * line     = Line number of the source file where this method was called;
      *            you would normally use __LINE__ for this parameter.
      *
      * Throws:
-     * RegisteredConduitException when the conduit should not be registered
-     * but it is (EEXIST); UnregisteredConduitException when the conduit
-     * should be registered but it isn't (ENOENT);
-     * InterruptedSystemCallException when a system call has been interrupted
-     * (EINTR); OutOfMemoryException if a memory allocation fails (ENOMEM);
-     * SelectorException for any of the other cases in which errno is not 0.
+     * $(UL
+     * $(LI $(B RegisteredConduitException) when the conduit
+     *      should not be registered but it is (EEXIST).)
+     * $(LI $(B UnregisteredConduitException) when the conduit
+     *      should be registered but it isn't (ENOENT).)
+     * $(LI $(B InterruptedSystemCallException) when a system call has been
+     *      interrupted (EINTR).)
+     * $(LI $(B OutOfMemoryException) if a memory allocation fails (ENOMEM).)
+     * $(LI $(B SelectorException) for any of the other cases
+     *      in which errno is not 0.))
      */
     protected void checkErrno(char[] file, size_t line)
     {

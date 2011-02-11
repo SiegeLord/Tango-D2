@@ -18,7 +18,7 @@ private import tango.io.device.Conduit;
 /*******************************************************************************
 
         A conduit filter that ensures its input is read in full. There's
-        also an optional readExact() for more explicit requests         
+        also an optional readExact() for more explicit requests.
 
 *******************************************************************************/
 
@@ -26,7 +26,7 @@ class GreedyInput : InputFilter
 {
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -39,7 +39,7 @@ class GreedyInput : InputFilter
 
                 Fill the provided array. Returns the number of bytes
                 actually read, which will be less that dst.length when
-                Eof has been reached, and then Eof thereafter
+                Eof has been reached, and then Eof thereafter.
 
         ***********************************************************************/
 
@@ -53,17 +53,17 @@ class GreedyInput : InputFilter
                       if (i is Eof)
                           return (len ? len : i);
                       len += i;
-                      } 
+                      }
                 return len;
         }
 
         /***********************************************************************
-        
+
                 Read from a stream into a target array. The provided dst
-                will be fully populated with content from the input. 
+                will be fully populated with content from the input.
 
                 This differs from read in that it will throw an exception
-                where an Eof condition is reached before input has completed
+                where an Eof condition is reached before input has completed.
 
         ***********************************************************************/
 
@@ -77,7 +77,7 @@ class GreedyInput : InputFilter
                       dst = dst [i .. $];
                       }
                 return this;
-        }          
+        }
 }
 
 
@@ -85,7 +85,7 @@ class GreedyInput : InputFilter
 /*******************************************************************************
 
         A conduit filter that ensures its output is written in full. There's
-        also an optional writeExact() for more explicit requests   
+        also an optional writeExact() for more explicit requests.
 
 *******************************************************************************/
 
@@ -93,7 +93,7 @@ class GreedyOutput : OutputFilter
 {
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -106,8 +106,8 @@ class GreedyOutput : OutputFilter
 
                 Consume everything we were given. Returns the number of
                 bytes written which will be less than src.length only
-                when an Eof condition is reached, and Eof from that point 
-                forward
+                when an Eof condition is reached, and Eof from that point
+                forward.
 
         ***********************************************************************/
 
@@ -121,17 +121,17 @@ class GreedyOutput : OutputFilter
                       if (i is Eof)
                           return (len ? len : i);
                       len += i;
-                      } 
+                      }
                 return len;
         }
-                             
+
         /***********************************************************************
-        
-                Write to stream from a source array. The provided src content 
+
+                Write to stream from a source array. The provided src content
                 will be written in full to the output.
 
                 This differs from write in that it will throw an exception
-                where an Eof condition is reached before output has completed
+                where an Eof condition is reached before output has completed.
 
         ***********************************************************************/
 
@@ -145,7 +145,7 @@ class GreedyOutput : OutputFilter
                       src = src [i .. $];
                       }
                 return this;
-        }       
+        }
 }
 
 
@@ -156,7 +156,7 @@ class GreedyOutput : OutputFilter
 debug (Greedy)
 {
         void main()
-        {       
+        {
                 auto s = new GreedyInput (null);
         }
 }

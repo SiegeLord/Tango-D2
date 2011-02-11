@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: January 2006      
-        
+        version:        Initial release: January 2006
+
         author:         Kris
 
 *******************************************************************************/
@@ -20,23 +20,23 @@ private import tango.io.stream.Iterator;
 
         Each pattern is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
-        exposed content, then you should .dup it appropriately. 
+        exposed content, then you should .dup it appropriately.
 
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
         possible a user could mutate the content through a get() slice.
-        To enforce the desired read-only aspect, the code would have to 
-        introduce redundant copying or the compiler would have to support 
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
         read-only arrays.
 
-        See Delimiters, Patterns, Quotes
+        See Delimiters, Patterns, Quotes.
 
 *******************************************************************************/
 
 class Lines(T) : Iterator!(T)
 {
         /***********************************************************************
-        
+
                 Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new Lines!(char);
@@ -56,7 +56,7 @@ class Lines(T) : Iterator!(T)
                                  Cout (line).newline;
                 }
                 ---
-                
+
                 Construct a streaming iterator upon a conduit:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
@@ -84,10 +84,10 @@ class Lines(T) : Iterator!(T)
         }
 
         /***********************************************************************
-        
+
                 Scanner implementation for this iterator. Find a '\n',
-                and eat any immediately preceeding '\r'
-                
+                and eat any immediately preceeding '\r'.
+
         ***********************************************************************/
 
         protected size_t scan (void[] data)
@@ -118,7 +118,7 @@ debug(UnitTest)
 {
         private import tango.io.device.Array;
 
-        unittest 
+        unittest
         {
                 auto p = new Lines!(char) (new Array("blah"));
         }

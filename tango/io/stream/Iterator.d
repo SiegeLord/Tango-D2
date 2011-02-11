@@ -36,7 +36,7 @@ protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream
 
         Each pattern is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
-        exposed content, then you should .dup it appropriately. 
+        exposed content, then you should .dup it appropriately.
 
         The content provided to these iterators is intended to be fully
         read-only. All current tokenizers abide by this rule, but it is
@@ -45,11 +45,11 @@ protected import tango.io.device.Conduit : InputFilter, InputBuffer, InputStream
         introduce redundant copying or the compiler would have to support
         read-only arrays (now in D2).
 
-        See Delimiters, Lines, Patterns, Quotes
+        See Delimiters, Lines, Patterns, Quotes.
 
 *******************************************************************************/
 
-class Iterator(T) : InputFilter 
+class Iterator(T) : InputFilter
 {
         private InputBuffer     source;
         protected T[]           slice,
@@ -57,7 +57,7 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                The pattern scanner, implemented via subclasses
+                The pattern scanner, implemented via subclasses.
 
         ***********************************************************************/
 
@@ -65,12 +65,12 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Instantiate with a buffer
+                Instantiate with a buffer.
 
         ***********************************************************************/
 
         this (InputStream stream = null)
-        {       
+        {
                 super (stream);
                 if (stream)
                     set (stream);
@@ -78,7 +78,7 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Set the provided stream as the scanning source
+                Set the provided stream as the scanning source.
 
         ***********************************************************************/
 
@@ -92,7 +92,7 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Return the current token as a slice of the content
+                Return the current token as a slice of the content.
 
         ***********************************************************************/
 
@@ -105,7 +105,7 @@ class Iterator(T) : InputFilter
 
                 Iterate over the set of tokens. This should really
                 provide read-only access to the tokens, but D does
-                not support that at this time
+                not support that at this time.
 
         **********************************************************************/
 
@@ -123,8 +123,8 @@ class Iterator(T) : InputFilter
 
         /**********************************************************************
 
-                Iterate over a set of tokens, exposing a token count 
-                starting at zero
+                Iterate over a set of tokens, exposing a token count
+                starting at zero.
 
         **********************************************************************/
 
@@ -144,8 +144,8 @@ class Iterator(T) : InputFilter
 
         /**********************************************************************
 
-                Iterate over a set of tokens and delimiters, exposing a 
-                token count starting at zero
+                Iterate over a set of tokens and delimiters, exposing a
+                token count starting at zero.
 
         **********************************************************************/
 
@@ -187,7 +187,7 @@ class Iterator(T) : InputFilter
                 foreach (line; new Lines!(char) (new File("myfile")))
                          Cout(line).newline;
                 ---
-                
+
         ***********************************************************************/
 
         final T[] next ()
@@ -199,8 +199,8 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Set the content of the current slice to the provided 
-                start and end points
+                Set the content of the current slice to the provided
+                start and end points.
 
         ***********************************************************************/
 
@@ -212,9 +212,9 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Set the content of the current slice to the provided 
+                Set the content of the current slice to the provided
                 start and end points, and delimiter to the segment
-                between end & next (inclusive)
+                between end &amp; next (inclusive.)
 
         ***********************************************************************/
 
@@ -229,7 +229,7 @@ class Iterator(T) : InputFilter
 
                 Called when a scanner fails to find a matching pattern.
                 This may cause more content to be loaded, and a rescan
-                initiated
+                initiated.
 
         ***********************************************************************/
 
@@ -254,7 +254,7 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                See if set of characters holds a particular instance
+                See if set of characters holds a particular instance.
 
         ***********************************************************************/
 
@@ -268,8 +268,8 @@ class Iterator(T) : InputFilter
 
         /***********************************************************************
 
-                Consume the next token and place it in 'slice'. Returns 
-                true when there are potentially more tokens
+                Consume the next token and place it in 'slice'. Returns
+                true when there are potentially more tokens.
 
         ***********************************************************************/
 
@@ -279,10 +279,10 @@ class Iterator(T) : InputFilter
                     return true;
 
                 // consume trailing token
-                source.reader ((void[] arr) 
-                              { 
+                source.reader ((void[] arr)
+                              {
                               slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
-                              return cast(size_t)arr.length; 
+                              return cast(size_t)arr.length;
                               });
                 return false;
         }

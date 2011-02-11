@@ -4,12 +4,12 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2004: Initial release     
-                        Dec 2006: Outback release
+        version:        Mar 2004: Initial release$(BR)
+                        Dec 2006: Outback release$(BR)
                         Nov 2008: relocated and simplified
-                        
-        author:         Kris, 
-                        John Reimer, 
+
+        authors:        Kris,
+                        John Reimer,
                         Anders F Bjorklund (Darwin patches),
                         Chris Sauls (Win95 file support)
 
@@ -40,8 +40,8 @@ version (Win32)
         Implements a means of reading and writing a generic file. Conduits
         are the primary means of accessing external data, and File
         extends the basic pattern by providing file-specific methods to
-        set the file size, seek to a specific file position and so on. 
-        
+        set the file size, seek to a specific file position and so on.
+
         Serial input and output is straightforward. In this example we
         copy a file directly to the console:
         ---
@@ -64,7 +64,7 @@ version (Win32)
         to.copy.close;
         from.close;
         ---
-        
+
         You can use InputStream.load() to load a file directly into memory:
         ---
         auto file = new File ("test.txt");
@@ -100,7 +100,7 @@ version (Win32)
         ---
 
         There are equivalent static functions, File.set() and
-        File.append(), which set or append file content respectively
+        File.append(), which set or append file content respectively.
 
         File can happily handle random I/O. Here we use seek() to
         relocate the file pointer:
@@ -124,9 +124,9 @@ version (Win32)
         Note that File is unbuffered by default - wrap an instance within
         tango.io.stream.Buffered for buffered I/O.
 
-        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
+        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
         support.
-        
+
 *******************************************************************************/
 
 class File : Device, Device.Seek, Device.Truncate
@@ -135,17 +135,17 @@ class File : Device, Device.Seek, Device.Truncate
         public alias Device.write write;
 
         /***********************************************************************
-        
+
                 Fits into 32 bits ...
 
         ***********************************************************************/
 
          align(1) struct Style
         {
-                Access          access;                 /// access rights
-                Open            open;                   /// how to open
-                Share           share;                  /// how to share
-                Cache           cache;                  /// how to cache
+                Access          access;                 /// Access rights.
+                Open            open;                   /// How to open.
+                Share           share;                  /// How to share.
+                Cache           cache;                  /// How to cache.
         }
 
         /***********************************************************************
@@ -153,121 +153,121 @@ class File : Device, Device.Seek, Device.Truncate
         ***********************************************************************/
 
         enum Access : ubyte     {
-                                Read      = 0x01,       /// is readable
-                                Write     = 0x02,       /// is writable
-                                ReadWrite = 0x03,       /// both
+                                Read      = 0x01,       /// Is readable.
+                                Write     = 0x02,       /// Is writable.
+                                ReadWrite = 0x03,       /// Both.
                                 }
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         enum Open : ubyte       {
-                                Exists=0,               /// must exist
-                                Create,                 /// create or truncate
-                                Sedate,                 /// create if necessary
-                                Append,                 /// create if necessary
-                                New,                    /// can't exist
+                                Exists=0,               /// Must exist.
+                                Create,                 /// Create or truncate.
+                                Sedate,                 /// Create if necessary.
+                                Append,                 /// Create if necessary.
+                                New,                    /// Can't exist.
                                 };
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         enum Share : ubyte      {
-                                None=0,                 /// no sharing
-                                Read,                   /// shared reading
-                                ReadWrite,              /// open for anything
+                                None=0,                 /// No sharing.
+                                Read,                   /// Shared reading.
+                                ReadWrite,              /// Open for anything.
                                 };
 
         /***********************************************************************
-        
+
         ***********************************************************************/
 
         enum Cache : ubyte      {
-                                None      = 0x00,       /// don't optimize
-                                Random    = 0x01,       /// optimize for random
-                                Stream    = 0x02,       /// optimize for stream
-                                WriteThru = 0x04,       /// backing-cache flag
+                                None      = 0x00,       /// Don't optimize.
+                                Random    = 0x01,       /// Optimize for random.
+                                Stream    = 0x02,       /// Optimize for stream.
+                                WriteThru = 0x04,       /// Backing-cache flag.
                                 };
 
         /***********************************************************************
 
-            Read an existing file
-        
+            Read an existing file.
+
         ***********************************************************************/
 
         const Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
 
-            Read an existing file
-        
+            Read an existing file.
+
         ***********************************************************************/
 
         const Style ReadShared = {Access.Read, Open.Exists, Share.Read};
 
         /***********************************************************************
-        
-                Write on an existing file. Do not create
+
+            Write on an existing file. Do not create.
 
         ***********************************************************************/
 
         const Style WriteExisting = {Access.Write, Open.Exists};
 
         /***********************************************************************
-        
-                Write on a clean file. Create if necessary
+
+                Write on a clean file. Create if necessary.
 
         ***********************************************************************/
 
         const Style WriteCreate = {Access.Write, Open.Create};
 
         /***********************************************************************
-        
-                Write at the end of the file
+
+                Write at the end of the file.
 
         ***********************************************************************/
 
         const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
-        
-                Read and write an existing file
+
+                Read and write an existing file.
 
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
+        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists};
 
         /***********************************************************************
-        
-                Read & write on a clean file. Create if necessary
+
+                Read &amp; write on a clean file. Create if necessary.
 
         ***********************************************************************/
 
-        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
+        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create};
 
         /***********************************************************************
-        
-                Read and Write. Use existing file if present
+
+                Read and Write. Use existing file if present.
 
         ***********************************************************************/
 
-        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
+        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
 
 
-        // the file we're working with 
+        // the file we're working with
         private char[]  path_;
 
         // the style we're opened with
         private Style   style_;
 
         /***********************************************************************
-        
-                Create a File for use with open()
 
-                Note that File is unbuffered by default - wrap an instance 
-                within tango.io.stream.Buffered for buffered I/O
+                Create a File for use with open().
+
+                Note that File is unbuffered by default - wrap an instance
+                within tango.io.stream.Buffered for buffered I/O.
 
         ***********************************************************************/
 
@@ -276,11 +276,11 @@ class File : Device, Device.Seek, Device.Truncate
         }
 
         /***********************************************************************
-        
+
                 Create a File with the provided path and style.
 
-                Note that File is unbuffered by default - wrap an instance 
-                within tango.io.stream.Buffered for buffered I/O
+                Note that File is unbuffered by default - wrap an instance
+                within tango.io.stream.Buffered for buffered I/O.
 
         ***********************************************************************/
 
@@ -290,7 +290,7 @@ class File : Device, Device.Seek, Device.Truncate
         }
 
         /***********************************************************************
-        
+
                 Return the Style used for this file.
 
         ***********************************************************************/
@@ -298,10 +298,10 @@ class File : Device, Device.Seek, Device.Truncate
         Style style ()
         {
                 return style_;
-        }               
+        }
 
         /***********************************************************************
-        
+
                 Return the path used by this file.
 
         ***********************************************************************/
@@ -309,7 +309,7 @@ class File : Device, Device.Seek, Device.Truncate
         override char[] toString ()
         {
                 return path_;
-        }               
+        }
 
         /***********************************************************************
 
@@ -321,13 +321,13 @@ class File : Device, Device.Seek, Device.Truncate
                 Content size is determined via the file-system, per
                 File.length, although that may be misleading for some
                 *nix systems. An alternative is to use File.load which
-                loads content until an Eof is encountered
+                loads content until an Eof is encountered.
 
         ***********************************************************************/
 
         static void[] get (char[] path, void[] dst = null)
         {
-                scope file = new File (path);  
+                scope file = new File (path);
 
                 // allocate enough space for the entire file
                 auto len = cast(size_t) file.length;
@@ -349,43 +349,43 @@ class File : Device, Device.Seek, Device.Truncate
 
         /***********************************************************************
 
-                Convenience function to set file content and length to 
-                reflect the given array
+                Convenience function to set file content and length to
+                reflect the given array.
 
         ***********************************************************************/
 
         static void set (char[] path, void[] content)
         {
-                scope file = new File (path, ReadWriteCreate);  
+                scope file = new File (path, ReadWriteCreate);
                 file.write (content);
         }
 
         /***********************************************************************
 
-                Convenience function to append content to a file
+                Convenience function to append content to a file.
 
         ***********************************************************************/
 
         static void append (char[] path, void[] content)
         {
-                scope file = new File (path, WriteAppending);  
+                scope file = new File (path, WriteAppending);
                 file.write (content);
         }
 
         /***********************************************************************
 
                 Windows-specific code
-        
+
         ***********************************************************************/
 
         version(Win32)
         {
                 /***************************************************************
-                  
+
                     Low level open for sub-classes that need to apply specific
                     attributes.
 
-                    Return: false in case of failure
+                    Return: False in case of failure.
 
                 ***************************************************************/
 
@@ -398,15 +398,15 @@ class File : Device, Device.Seek, Device.Truncate
 
                         alias DWORD[] Flags;
 
-                        static const Flags Access =  
+                        static const Flags Access =
                                         [
                                         0,                      // invalid
                                         GENERIC_READ,
                                         GENERIC_WRITE,
                                         GENERIC_READ | GENERIC_WRITE,
                                         ];
-                                                
-                        static const Flags Create =  
+
+                        static const Flags Create =
                                         [
                                         OPEN_EXISTING,          // must exist
                                         CREATE_ALWAYS,          // truncate always
@@ -414,15 +414,15 @@ class File : Device, Device.Seek, Device.Truncate
                                         OPEN_ALWAYS,            // (for appending)
                                         CREATE_NEW              // can't exist
                                         ];
-                                                
-                        static const Flags Share =   
+
+                        static const Flags Share =
                                         [
                                         0,
                                         FILE_SHARE_READ,
                                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                                         ];
-                                                
-                        static const Flags Attr =   
+
+                        static const Flags Attr =
                                         [
                                         0,
                                         FILE_FLAG_RANDOM_ACCESS,
@@ -449,8 +449,8 @@ class File : Device, Device.Seek, Device.Truncate
                         auto name = stdc.toStringz (path, zero);
 
                         version (Win32SansUnicode)
-                                 io.handle = CreateFileA (name, access, share, 
-                                                          null, create, 
+                                 io.handle = CreateFileA (name, access, share,
+                                                          null, create,
                                                           attr | FILE_ATTRIBUTE_NORMAL,
                                                           null);
                              else
@@ -461,7 +461,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                                 // open the file
                                 io.handle = CreateFileW (wide.ptr, access, share,
-                                                         null, create, 
+                                                         null, create,
                                                          attr | FILE_ATTRIBUTE_NORMAL,
                                                          null);
                                 }
@@ -469,7 +469,7 @@ class File : Device, Device.Seek, Device.Truncate
                         if (io.handle is INVALID_HANDLE_VALUE)
                             return false;
 
-                        // reset extended error 
+                        // reset extended error
                         SetLastError (ERROR_SUCCESS);
 
                         // move to end of file?
@@ -498,7 +498,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 /***************************************************************
 
-                        Set the file size to be that of the current seek 
+                        Set the file size to be that of the current seek
                         position. The file must be writable for this to
                         succeed.
 
@@ -507,12 +507,12 @@ class File : Device, Device.Seek, Device.Truncate
                 void truncate ()
                 {
                         truncate (position);
-                }               
+                }
 
                 /***************************************************************
 
-                        Set the file size to be the specified length. The 
-                        file must be writable for this to succeed. 
+                        Set the file size to be the specified length. The
+                        file must be writable for this to succeed.
 
                 ***************************************************************/
 
@@ -523,48 +523,48 @@ class File : Device, Device.Seek, Device.Truncate
 
                         // must have Generic_Write access
                         if (! SetEndOfFile (io.handle))
-                              error;                            
-                }               
+                              error;
+                }
 
                 /***************************************************************
 
                         Set the file seek position to the specified offset
-                        from the given anchor. 
+                        from the given anchor.
 
                 ***************************************************************/
 
                 override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
-                        long newOffset; 
+                        long newOffset;
 
-                        // hack to ensure overlapped.Offset and file location 
+                        // hack to ensure overlapped.Offset and file location
                         // are correctly in synch ...
                         if (anchor is Anchor.Current)
-                            SetFilePointerEx (io.handle, 
-                                              *cast(LARGE_INTEGER*) &io.asynch.Offset, 
+                            SetFilePointerEx (io.handle,
+                                              *cast(LARGE_INTEGER*) &io.asynch.Offset,
                                               cast(PLARGE_INTEGER) &newOffset, 0);
 
-                        if (! SetFilePointerEx (io.handle, *cast(LARGE_INTEGER*) 
-                                                &offset, cast(PLARGE_INTEGER) 
-                                                &newOffset, anchor)) 
+                        if (! SetFilePointerEx (io.handle, *cast(LARGE_INTEGER*)
+                                                &offset, cast(PLARGE_INTEGER)
+                                                &newOffset, anchor))
                               error;
 
                         return (*cast(long*) &io.asynch.Offset) = newOffset;
-                } 
-                              
+                }
+
                 /***************************************************************
-                
+
                         Return the current file position.
-                
+
                 ***************************************************************/
 
                 long position ()
                 {
                         return *cast(long*) &io.asynch.Offset;
-                }               
+                }
 
                 /***************************************************************
-        
+
                         Return the total length of this file.
 
                 ***************************************************************/
@@ -576,23 +576,23 @@ class File : Device, Device.Seek, Device.Truncate
                         if (! GetFileSizeEx (io.handle, cast(PLARGE_INTEGER) &len))
                               error;
                         return len;
-                }               
+                }
 
-	        /***************************************************************
+          /***************************************************************
 
-		        Instructs the OS to flush it's internal buffers to 
+            Instructs the OS to flush it's internal buffers to
                         the disk device.
 
-                        NOTE: due to OS and hardware design, data flushed 
-                        cannot be guaranteed to be actually on disk-platters. 
-                        Actual durability of data depends on write-caches, 
-                        barriers, presence of battery-backup, filesystem and 
+                        NOTE: Due to OS and hardware design, data flushed
+                        cannot be guaranteed to be actually on disk-platters.
+                        Actual durability of data depends on write-caches,
+                        barriers, presence of battery-backup, filesystem and
                         OS-support.
 
                 ***************************************************************/
 
-	        void sync ()
-	        {
+          void sync ()
+          {
                          if (! FlushFileBuffers (io.handle))
                                error;
                 }
@@ -601,8 +601,8 @@ class File : Device, Device.Seek, Device.Truncate
 
         /***********************************************************************
 
-                 Unix-specific code. Note that some methods are 32bit only
-        
+                 Unix-specific code. Note that some methods are 32bit only.
+
         ***********************************************************************/
 
         version (Posix)
@@ -613,7 +613,7 @@ class File : Device, Device.Seek, Device.Truncate
                     attributes.
 
                     Return:
-                        false in case of failure
+                        False in case of failure.
 
                 ***************************************************************/
 
@@ -624,15 +624,15 @@ class File : Device, Device.Seek, Device.Truncate
 
                         const O_LARGEFILE = 0x8000;
 
-                        static const Flags Access =  
+                        static const Flags Access =
                                         [
                                         0,                      // invalid
                                         O_RDONLY,
                                         O_WRONLY,
                                         O_RDWR,
                                         ];
-                                                
-                        static const Flags Create =  
+
+                        static const Flags Create =
                                         [
                                         0,                      // open existing
                                         O_CREAT | O_TRUNC,      // truncate always
@@ -641,12 +641,12 @@ class File : Device, Device.Seek, Device.Truncate
                                         O_CREAT | O_EXCL,       // can't exist
                                         ];
 
-                        static const short[] Locks =   
+                        static const short[] Locks =
                                         [
                                         F_WRLCK,                // no sharing
                                         F_RDLCK,                // shared read
                                         ];
-                                                
+
                         // remember our settings
                         assert(path);
                         path_ = path;
@@ -658,7 +658,7 @@ class File : Device, Device.Seek, Device.Truncate
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = posix.open (name, mode | O_LARGEFILE | addflags, 
+                        handle = posix.open (name, mode | O_LARGEFILE | addflags,
                                              access);
                         if (handle is -1)
                             return false;
@@ -670,12 +670,12 @@ class File : Device, Device.Seek, Device.Truncate
 
                         Open a file with the provided style.
 
-                        Note that files default to no-sharing. That is, 
-                        they are locked exclusively to the host process 
+                        Note that files default to no-sharing. That is,
+                        they are locked exclusively to the host process
                         unless otherwise stipulated. We do this in order
-                        to expose the same default behaviour as Win32
+                        to expose the same default behaviour as Win32.
 
-                        NO FILE LOCKING FOR BORKED POSIX
+                        $(B No file locking for borked POSIX.)
 
                 ***************************************************************/
 
@@ -687,7 +687,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 /***************************************************************
 
-                        Set the file size to be that of the current seek 
+                        Set the file size to be that of the current seek
                         position. The file must be writable for this to
                         succeed.
 
@@ -696,11 +696,11 @@ class File : Device, Device.Seek, Device.Truncate
                 void truncate ()
                 {
                         truncate (position);
-                }               
+                }
 
                 /***************************************************************
 
-                        Set the file size to be the specified length. The 
+                        Set the file size to be the specified length. The
                         file must be writable for this to succeed.
 
                 ***************************************************************/
@@ -710,12 +710,12 @@ class File : Device, Device.Seek, Device.Truncate
                         // set filesize to be current seek-position
                         if (posix.ftruncate (handle, cast(off_t) size) is -1)
                             error;
-                }               
+                }
 
                 /***************************************************************
 
                         Set the file seek position to the specified offset
-                        from the given anchor. 
+                        from the given anchor.
 
                 ***************************************************************/
 
@@ -725,22 +725,22 @@ class File : Device, Device.Seek, Device.Truncate
                         if (result is -1)
                             error;
                         return result;
-                }               
+                }
 
                 /***************************************************************
-                
+
                         Return the current file position.
-                
+
                 ***************************************************************/
 
                 long position ()
                 {
                         return seek (0, Anchor.Current);
-                }               
+                }
 
                 /***************************************************************
-        
-                        Return the total length of this file. 
+
+                        Return the total length of this file.
 
                 ***************************************************************/
 
@@ -750,26 +750,26 @@ class File : Device, Device.Seek, Device.Truncate
                         if (posix.fstat (handle, &stats))
                             error;
                         return cast(long) stats.st_size;
-                }               
+                }
 
-	        /***************************************************************
+          /***************************************************************
 
-		        Instructs the OS to flush it's internal buffers to 
+            Instructs the OS to flush it's internal buffers to
                         the disk device.
 
-                        NOTE: due to OS and hardware design, data flushed 
-                        cannot be guaranteed to be actually on disk-platters. 
-                        Actual durability of data depends on write-caches, 
-                        barriers, presence of battery-backup, filesystem and 
+                        NOTE: due to OS and hardware design, data flushed
+                        cannot be guaranteed to be actually on disk-platters.
+                        Actual durability of data depends on write-caches,
+                        barriers, presence of battery-backup, filesystem and
                         OS-support.
 
                 ***************************************************************/
 
-	        void sync ()
-	        {
+          void sync ()
+          {
                          if (fsync (handle))
                              error;
-                }                            
+                }
         }
 }
 

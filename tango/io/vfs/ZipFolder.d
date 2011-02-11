@@ -4,7 +4,7 @@
 
     license:    BSD style: $(LICENSE)
 
-    version:    The Great Namechange: February 2008
+    version:    The Great Namechange: February 2008$(BR)
 
                 Initial release: December 2007
 
@@ -40,7 +40,7 @@ version = Bug_HeapCorruption;
 private
 {
     enum EntryType { Dir, File }
-   
+
     /*
      * Entries are what make up the internal tree that describes the
      * filesystem of the archive.  Each Entry is either a directory or a file.
@@ -175,7 +175,7 @@ private
                     {
                         auto zi = file.zipEntry.open;
                         scope(exit) zi.close;
-    
+
                         file.tempFile = new TempFile;
                         file.tempFile.copy(zi).close;
 
@@ -208,7 +208,7 @@ private
         void dispose()
         {
             fullname = name = null;
-            
+
             with( vfsFilterInfo )
             {
                 name = path = null;
@@ -319,7 +319,7 @@ class ZipSubFolder : VfsFolder, VfsSync
         if (dir.length > 0 && '/' == dir[$-1]) {
             dir = dir[0..$-1];
         }
-		
+
         // If the file is in another directory, then we need to look up that
         // up first.
         if( dir.nz() )
@@ -687,7 +687,7 @@ version( ZipFolder_NonMutating )
 else
 {
         enforce_mutable;
-        
+
         // First, we need to determine if we have any zip entries.  If we
         // don't, then we can write directly to the path.  If there *are*
         // zip entries, then we'll need to write to a temporary path instead.
@@ -769,7 +769,7 @@ else
         debug( ZipFolder )
             Stderr(" sync: reset archive").newline;
         this.resetArchive(path, readonly);
-        
+
         debug( ZipFolder )
             Stderr(" sync: reset folder").newline;
         this.reset(this, root);
@@ -889,7 +889,7 @@ private:
                     assert( curent.isDir );
                     if( auto nextent = (h in curent.dir.children) )
                         curent = *nextent;
-                    
+
                     else
                     {
                         // Create new directory entry
@@ -1165,7 +1165,7 @@ else
 {
         // MUTATE
         enforce_mutable;
-        
+
         // Don't call mutate; defer that until the user actually writes to or
         // modifies the underlying stream.
         return archive.mutateStream(entry.openOutput);
@@ -1188,7 +1188,7 @@ else
     {
         return entry.file.zipEntry.info.modified;
     }
-    
+
     private:
     ZipFolder archive;
     Entry* entry;
@@ -1348,7 +1348,7 @@ else
         if( this.exists )
             error("ZipSubFolderEntry.create: cannot create folder that already "
                     "exists, and believe me, I *tried*");
-        
+
         // Ok, I suppose I can do this for ya...
         auto entry = new Entry;
         entry.type = EntryType.Dir;
@@ -1397,7 +1397,7 @@ private:
     {
         return (archive !is null) && !archive.closed;
     }
-    
+
     final void enforce_mutable()
     in { assert( valid ); }
     body

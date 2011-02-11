@@ -43,29 +43,29 @@ deprecated:
         ---
 
         This is unlikely the most efficient method to scan a vast number of
-        files, but operates in a convenient manner
-        
+        files, but operates in a convenient manner.
+
 *******************************************************************************/
 
 class FileScan
-{       
+{
         alias sweep     opCall;
 
         FilePath[]      fileSet;
         char[][]        errorSet;
         FilePath[]      folderSet;
-        
+
         /***********************************************************************
 
-            Alias for Filter delegate. Accepts a FilePath & a bool as 
+            Alias for Filter delegate. Accepts a FilePath & a bool as
             arguments and returns a bool.
 
-            The FilePath argument represents a file found by the scan, 
+            The FilePath argument represents a file found by the scan,
             and the bool whether the FilePath represents a folder.
 
             The filter should return true, if matched by the filter. Note
-            that returning false where the path is a folder will result 
-            in all files contained being ignored. To always recurse folders, 
+            that returning false where the path is a folder will result
+            in all files contained being ignored. To always recurse folders,
             do something like this:
             ---
             return (isDir || match (fp.name));
@@ -77,7 +77,7 @@ class FileScan
 
        /***********************************************************************
 
-                Return all the errors found in the last scan
+                Return all the errors found in the last scan.
 
         ***********************************************************************/
 
@@ -88,7 +88,7 @@ class FileScan
 
         /***********************************************************************
 
-                Return all the files found in the last scan
+                Return all the files found in the last scan.
 
         ***********************************************************************/
 
@@ -98,8 +98,8 @@ class FileScan
         }
 
         /***********************************************************************
-        
-                Return all directories found in the last scan
+
+                Return all directories found in the last scan.
 
         ***********************************************************************/
 
@@ -111,10 +111,10 @@ class FileScan
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, with no filtering applied
-        
+                path, with no filtering applied.
+
         ***********************************************************************/
-        
+
         FileScan sweep (char[] path, bool recurse=true)
         {
                 return sweep (path, cast(Filter) null, recurse);
@@ -123,10 +123,10 @@ class FileScan
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the given suffix
-        
+                path, where the files are filtered by the given suffix.
+
         ***********************************************************************/
-        
+
         FileScan sweep (char[] path, char[] match, bool recurse=true)
         {
                 return sweep (path, (FilePath fp, bool isDir)
@@ -136,10 +136,10 @@ class FileScan
         /***********************************************************************
 
                 Sweep a set of files and directories from the given parent
-                path, where the files are filtered by the provided delegate
+                path, where the files are filtered by the provided delegate.
 
         ***********************************************************************/
-        
+
         FileScan sweep (char[] path, Filter filter, bool recurse=true)
         {
                 errorSet = null, fileSet = folderSet = null;
@@ -149,15 +149,15 @@ class FileScan
         /***********************************************************************
 
                 Internal routine to locate files and sub-directories. We
-                skip entries with names composed only of '.' characters. 
+                skip entries with names composed only of '.' characters.
 
         ***********************************************************************/
 
-        private FileScan scan (FilePath folder, Filter filter, bool recurse) 
+        private FileScan scan (FilePath folder, Filter filter, bool recurse)
         {
                 try {
                     auto paths = folder.toList (filter);
-                
+
                     auto count = fileSet.length;
                     foreach (path; paths)
                              if (! path.isFolder)
@@ -165,7 +165,7 @@ class FileScan
                              else
                                 if (recurse)
                                     scan (path, filter, recurse);
-                
+
                     // add packages only if there's something in them
                     if (fileSet.length > count)
                         folderSet ~= folder;

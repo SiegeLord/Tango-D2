@@ -20,20 +20,20 @@ public  import tango.io.model.IConduit;
 /*******************************************************************************
 
         Conduit abstract base-class, implementing interface IConduit.
-        Only the conduit-specific read(), write(), detach() and 
-        bufferSize() need to be implemented for a concrete conduit 
+        Only the conduit-specific read(), write(), detach() and
+        bufferSize() need to be implemented for a concrete conduit
         implementation. See File for an example.
 
         Conduits provide virtualized access to external content, and
         represent things like files or Internet connections. Conduits
-        expose a pair of streams, are modelled by tango.io.model.IConduit, 
-        and are implemented via classes such as File & SocketConduit. 
+        expose a pair of streams, are modelled by tango.io.model.IConduit,
+        and are implemented via classes such as File & SocketConduit.
 
-        Additional kinds of conduit are easy to construct: either subclass 
+        Additional kinds of conduit are easy to construct: either subclass
         tango.io.device.Conduit, or implement tango.io.model.IConduit. A
-        conduit typically reads and writes via a Buffer in large chunks, 
+        conduit typically reads and writes via a Buffer in large chunks,
         typically the entire buffer. Alternatively, one can invoke method
-        read(dst[]) and/or write(src[]) directly
+        read(dst[]) and/or write(src[]) directly.
 
 *******************************************************************************/
 
@@ -49,8 +49,8 @@ class Conduit : IConduit
                 (b) there is a scheduler attached to the fiber at the time
                 this is invoked.
 
-                Note that fibers may schedule just one outstanding I/O 
-                request at a time
+                Note that fibers may schedule just one outstanding I/O
+                request at a time.
 
         ***********************************************************************/
 
@@ -63,7 +63,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Clean up when collected. See method detach()
+                Clean up when collected. See method detach().
 
         ***********************************************************************/
 
@@ -73,16 +73,16 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-        
-                Return the name of this conduit
+
+                Return the name of this conduit.
 
         ***********************************************************************/
 
-        abstract char[] toString (); 
-                     
+        abstract char[] toString ();
+
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O
+                Return a preferred size for buffering conduit I/O.
 
         ***********************************************************************/
 
@@ -90,11 +90,11 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.
 
                 Returns the number of bytes read, which may be less than
-                requested in dst. Eof is returned whenever an end-of-flow 
+                requested in dst. Eof is returned whenever an end-of-flow
                 condition arises.
 
         ***********************************************************************/
@@ -107,7 +107,7 @@ class Conduit : IConduit
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided. Eof is returned when 
+                be less than the quantity provided. Eof is returned when
                 an end-of-flow condition arises.
 
         ***********************************************************************/
@@ -119,7 +119,7 @@ class Conduit : IConduit
                 Disconnect this conduit. Note that this may be invoked
                 both explicitly by the user, and implicitly by the GC.
                 Be sure to manage multiple detachment requests correctly:
-                set a flag, or sentinel value as necessary
+                set a flag, or sentinel value as necessary.
 
         ***********************************************************************/
 
@@ -127,7 +127,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Set the active timeout period for IO calls (in milliseconds)
+                Set the active timeout period for IO calls (in milliseconds.)
 
         ***********************************************************************/
 
@@ -138,7 +138,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Get the active timeout period for IO calls (in milliseconds)
+                Get the active timeout period for IO calls (in milliseconds.)
 
         ***********************************************************************/
 
@@ -149,7 +149,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Is the conduit alive? Default behaviour returns true
+                Is the conduit alive? Default behaviour returns true.
 
         ***********************************************************************/
 
@@ -159,8 +159,8 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-        
-                Return the host. This is part of the Stream interface
+
+                Return the host. This is part of the Stream interface.
 
         ***********************************************************************/
 
@@ -168,23 +168,23 @@ class Conduit : IConduit
         {
                 return this;
         }
-                            
+
         /***********************************************************************
 
-                Emit buffered output or reset buffered input
+                Emit buffered output or reset buffered input.
 
         ***********************************************************************/
 
-        IOStream flush () 
+        IOStream flush ()
         {
                 return this;
         }
 
         /***********************************************************************
 
-                Close this conduit
-                
-                Both input and output are detached, and are no longer usable
+                Close this conduit.
+
+                Both input and output are detached, and are no longer usable.
 
         ***********************************************************************/
 
@@ -195,7 +195,7 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Throw an IOException, with the provided message
+                Throw an IOException, with the provided message.
 
         ***********************************************************************/
 
@@ -206,10 +206,10 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the input stream 
+                Return the input stream.
 
         ***********************************************************************/
-        
+
         final InputStream input ()
         {
                 return this;
@@ -217,10 +217,10 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Return the output stream
+                Return the output stream.
 
         ***********************************************************************/
-        
+
         final OutputStream output ()
         {
                 return this;
@@ -228,8 +228,8 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Emit fixed-length content from 'src' into this conduit, 
-                throwing an IOException upon Eof
+                Emit fixed-length content from 'src' into this conduit,
+                throwing an IOException upon Eof.
 
         ***********************************************************************/
 
@@ -241,20 +241,20 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Consume fixed-length content into 'dst' from this conduit, 
-                throwing an IOException upon Eof
+                Consume fixed-length content into 'dst' from this conduit,
+                throwing an IOException upon Eof.
 
         ***********************************************************************/
 
         final Conduit get (void[] dst)
         {
                get (dst, this);
-               return this; 
+               return this;
         }
 
         /***********************************************************************
-        
-                Rewind to beginning of file
+
+                Rewind to beginning of file.
 
         ***********************************************************************/
 
@@ -262,7 +262,7 @@ class Conduit : IConduit
         {
                 seek (0);
                 return this;
-        }               
+        }
 
         /***********************************************************************
 
@@ -278,9 +278,9 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-        
+
                 Seek on this stream. Source conduits that don't support
-                seeking will throw an IOException
+                seeking will throw an IOException.
 
         ***********************************************************************/
 
@@ -293,11 +293,11 @@ class Conduit : IConduit
         /***********************************************************************
 
                 Load text from a stream, and return them all in an
-                array. 
+                array.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                
+                IOException on error.
+
         ***********************************************************************/
 
         char[] text(T=char) (size_t max = -1)
@@ -312,8 +312,8 @@ class Conduit : IConduit
                 will be expanded as necessary to consume the input.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                
+                IOException on error.
+
         ***********************************************************************/
 
         void[] load (size_t max = -1)
@@ -328,8 +328,8 @@ class Conduit : IConduit
                 will be expanded as necessary to consume input.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                
+                IOException on error.
+
         ***********************************************************************/
 
         static void[] load (InputStream src, size_t max=-1)
@@ -359,8 +359,8 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Emit fixed-length content from 'src' into 'output', 
-                throwing an IOException upon Eof
+                Emit fixed-length content from 'src' into 'output',
+                throwing an IOException upon Eof.
 
         ***********************************************************************/
 
@@ -377,8 +377,8 @@ class Conduit : IConduit
 
         /***********************************************************************
 
-                Consume fixed-length content into 'dst' from 'input', 
-                throwing an IOException upon Eof
+                Consume fixed-length content into 'dst' from 'input',
+                throwing an IOException upon Eof.
 
         ***********************************************************************/
 
@@ -394,11 +394,11 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-                
-                Low-level data transfer, where max represents the maximum
-                number of bytes to transfer. 
 
-                Returns Eof on failure, number of bytes copied on success
+                Low-level data transfer, where max represents the maximum
+                number of bytes to transfer.
+
+                Returns Eof on failure, number of bytes copied on success.
 
         ***********************************************************************/
 
@@ -433,9 +433,9 @@ class Conduit : IConduit
 
 /*******************************************************************************
 
-        Base class for input stream filtering. The provided source stream 
-        should generally never be null, though some filters have a need to 
-        set this lazily
+        Base class for input stream filtering. The provided source stream
+        should generally never be null, though some filters have a need to
+        set this lazily.
 
 *******************************************************************************/
 
@@ -445,9 +445,9 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Attach to the provided stream. The provided source stream 
+                Attach to the provided stream. The provided source stream
                 should generally never be null, though some filters have a
-                need to set this lazily
+                need to set this lazily.
 
         ***********************************************************************/
 
@@ -458,7 +458,7 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Return the hosting conduit
+                Return the hosting conduit.
 
         ***********************************************************************/
 
@@ -469,11 +469,11 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Read from conduit into a target array. The provided dst 
-                will be populated with content from the conduit. 
+                Read from conduit into a target array. The provided dst
+                will be populated with content from the conduit.
 
                 Returns the number of bytes read, which may be less than
-                requested in dst. Eof is returned whenever an end-of-flow 
+                requested in dst. Eof is returned whenever an end-of-flow
                 condition arises.
 
         ***********************************************************************/
@@ -490,8 +490,8 @@ class InputFilter : InputStream
                 will be expanded as necessary to consume the input.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                              
+                IOException on error.
+
         ***********************************************************************/
 
         void[] load (size_t max = -1)
@@ -501,7 +501,7 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Clear any buffered content
+                Clear any buffered content.
 
         ***********************************************************************/
 
@@ -512,9 +512,9 @@ class InputFilter : InputStream
         }
 
         /***********************************************************************
-        
+
                 Seek on this stream. Target conduits that don't support
-                seeking will throw an IOException
+                seeking will throw an IOException.
 
         ***********************************************************************/
 
@@ -525,18 +525,18 @@ class InputFilter : InputStream
 
         /***********************************************************************
 
-                Return the upstream host of this filter
-                        
+                Return the upstream host of this filter.
+
         ***********************************************************************/
 
         InputStream input ()
         {
                 return source;
-        }            
+        }
 
         /***********************************************************************
 
-                Close the input
+                Close the input.
 
         ***********************************************************************/
 
@@ -549,9 +549,9 @@ class InputFilter : InputStream
 
 /*******************************************************************************
 
-        Base class for output stream filtering. The provided sink stream 
-        should generally never be null, though some filters have a need to 
-        set this lazily
+        Base class for output stream filtering. The provided sink stream
+        should generally never be null, though some filters have a need to
+        set this lazily.
 
 *******************************************************************************/
 
@@ -561,7 +561,7 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Attach to the provided stream
+                Attach to the provided stream.
 
         ***********************************************************************/
 
@@ -572,7 +572,7 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Return the hosting conduit
+                Return the hosting conduit.
 
         ***********************************************************************/
 
@@ -587,7 +587,7 @@ class OutputFilter : OutputStream
                 content will be written to the conduit.
 
                 Returns the number of bytes written from src, which may
-                be less than the quantity provided. Eof is returned when 
+                be less than the quantity provided. Eof is returned when
                 an end-of-flow condition arises.
 
         ***********************************************************************/
@@ -612,7 +612,7 @@ class OutputFilter : OutputStream
 
         /***********************************************************************
 
-                Emit/purge buffered content
+                Emit/purge buffered content.
 
         ***********************************************************************/
 
@@ -623,9 +623,9 @@ class OutputFilter : OutputStream
         }
 
         /***********************************************************************
-        
+
                 Seek on this stream. Target conduits that don't support
-                seeking will throw an IOException
+                seeking will throw an IOException.
 
         ***********************************************************************/
 
@@ -635,19 +635,19 @@ class OutputFilter : OutputStream
         }
 
         /***********************************************************************
-        
-                Return the upstream host of this filter
-                        
+
+                Return the upstream host of this filter.
+
         ***********************************************************************/
 
         OutputStream output ()
         {
                 return sink;
-        }              
+        }
 
         /***********************************************************************
 
-                Close the output
+                Close the output.
 
         ***********************************************************************/
 

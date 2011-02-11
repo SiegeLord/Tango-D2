@@ -1,38 +1,38 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
-        copyright:      Normalization & Patterns copyright (c) 2006-2009 
+        copyright:      Normalization & Patterns copyright (c) 2006-2009
                         Max Samukha, Thomas Kühne, Grzegorz Adam Hankiewicz
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2008: Initial version
+        version:        Mar 2008: Initial version$(BR)
                         Oct 2009: Added PathUtil code
 
-        A more direct route to the file-system than FilePath. Use this 
-        if you don't need path editing features. For example, if all you 
-        want is to check some path exists, using this module would likely 
+        A more direct route to the file-system than FilePath. Use this
+        if you don't need path editing features. For example, if all you
+        want is to check some path exists, using this module would likely
         be more convenient than FilePath:
         ---
-        if (exists ("some/file/path")) 
+        if (exists ("some/file/path"))
             ...
         ---
 
-        These functions may be less efficient than FilePath because they 
+        These functions may be less efficient than FilePath because they
         generally attach a null to the filename for each underlying O/S
-        call. Use Path when you need pedestrian access to the file-system, 
+        call. Use Path when you need pedestrian access to the file-system,
         and are not manipulating the path components. Use FilePath where
         path-editing or mutation is desired.
 
-        We encourage the use of "named import" with this module, such as
+        We encourage the use of "named import" with this module, such as:
         ---
         import Path = tango.io.Path;
 
-        if (Path.exists ("some/file/path")) 
+        if (Path.exists ("some/file/path"))
             ...
         ---
 
-        Also residing here is a lightweight path-parser, which splits a 
+        Also residing here is a lightweight path-parser, which splits a
         filepath into constituent components. FilePath is based upon the
         same PathParser:
         ---
@@ -47,7 +47,7 @@
         the normalize() and pattern() functions. See the doc towards the
         end of this module.
 
-        Compile with -version=Win32SansUnicode to enable Win95 & Win32s 
+        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s
         file support.
 
 *******************************************************************************/
@@ -97,8 +97,8 @@ version (Posix)
 /*******************************************************************************
 
         Wraps the O/S specific calls with a D API. Note that these accept
-        null-terminated strings only, which is why it's not public. We need 
-        this declared first to avoid forward-reference issues
+        null-terminated strings only, which is why it's not public. We need
+        this declared first to avoid forward-reference issues.
 
 *******************************************************************************/
 
@@ -106,20 +106,20 @@ package struct FS
 {
         /***********************************************************************
 
-                TimeStamp information. Accurate to whatever the F/S supports
+                TimeStamp information. Accurate to whatever the F/S supports.
 
         ***********************************************************************/
 
         struct Stamps
         {
-                Time    created,        /// time created
-                        accessed,       /// last time accessed
-                        modified;       /// last time modified
+                Time created;  /// Time created.
+                Time accessed; /// Last time accessed.
+                Time modified; /// Last time modified.
         }
 
         /***********************************************************************
 
-                Some fruct glue for directory listings
+                Some fruct glue for directory listings.
 
         ***********************************************************************/
 
@@ -127,7 +127,7 @@ package struct FS
         {
                 char[] folder;
                 bool   allFiles;
-                
+
                 int opApply (int delegate(ref FileInfo) dg)
                 {
                         char[256] tmp = void;
@@ -146,7 +146,7 @@ package struct FS
 
         /***********************************************************************
 
-                Throw an exception using the last known error
+                Throw an exception using the last known error.
 
         ***********************************************************************/
 
@@ -157,7 +157,7 @@ package struct FS
 
         /***********************************************************************
 
-                Throw an IO exception 
+                Throw an IO exception.
 
         ***********************************************************************/
 
@@ -171,7 +171,7 @@ package struct FS
                 Return an adjusted path such that non-empty instances always
                 have a trailing separator.
 
-                Note: allocates memory where path is not already terminated
+                Note: Allocates memory where path is not already terminated.
 
         ***********************************************************************/
 
@@ -185,7 +185,7 @@ package struct FS
         /***********************************************************************
 
                 Return an adjusted path such that non-empty instances do not
-                have a trailing separator
+                have a trailing separator.
 
         ***********************************************************************/
 
@@ -201,7 +201,7 @@ package struct FS
                 Join a set of path specs together. A path separator is
                 potentially inserted between each of the segments.
 
-                Note: allocates memory
+                Note: Allocates memory.
 
         ***********************************************************************/
 
@@ -215,16 +215,16 @@ package struct FS
                             result ~= padded (path);
                    result ~= paths [$-1];
                    return result;
-                   }                            
+                   }
                 return "";
         }
 
         /***********************************************************************
 
-                Append a terminating null onto a string, cheaply where 
-                feasible
+                Append a terminating null onto a string, cheaply where
+                feasible.
 
-                Note: allocates memory where the dst is too small
+                Note: Allocates memory where the dst is too small.
 
         ***********************************************************************/
 
@@ -248,7 +248,7 @@ package struct FS
         {
                 /***************************************************************
 
-                        return a wchar[] instance of the path
+                        Return a wchar[] instance of the path.
 
                 ***************************************************************/
 
@@ -262,7 +262,7 @@ package struct FS
 
                 /***************************************************************
 
-                        return a char[] instance of the path
+                        Return a char[] instance of the path.
 
                 ***************************************************************/
 
@@ -275,7 +275,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Get info about this path
+                        Get info about this path.
 
                 ***************************************************************/
 
@@ -298,7 +298,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Get info about this path
+                        Get info about this path.
 
                 ***************************************************************/
 
@@ -311,7 +311,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Get flags for this path
+                        Get flags for this path.
 
                 ***************************************************************/
 
@@ -324,7 +324,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Return whether the file or path exists
+                        Return whether the file or path exists.
 
                 ***************************************************************/
 
@@ -337,7 +337,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Return the file length (in bytes)
+                        Return the file length (in bytes.)
 
                 ***************************************************************/
 
@@ -385,11 +385,11 @@ package struct FS
 
                 /***************************************************************
 
-                        Return timestamp information
+                        Return timestamp information.
 
-                        Timestamps are returns in a format dictated by the 
-                        file-system. For example NTFS keeps UTC time, 
-                        while FAT timestamps are based on the local time
+                        Timestamps are returns in a format dictated by the
+                        file-system. For example NTFS keeps UTC time,
+                        while FAT timestamps are based on the local time.
 
                 ***************************************************************/
 
@@ -413,7 +413,7 @@ package struct FS
                 /***************************************************************
 
                         Set the accessed and modified timestamps of the
-                        specified file
+                        specified file.
 
                 ***************************************************************/
 
@@ -429,13 +429,13 @@ package struct FS
                                 if (SetFileTime (h, null, &a1, &m1) is 0)
                                     exception (name);
                         }
-                                                
+
                         createFile (name, &set);
                 }
 
                 /***************************************************************
 
-                        Transfer the content of another file to this one. 
+                        Transfer the content of another file to this one.
                         Throws an IOException upon failure.
 
                 ***************************************************************/
@@ -460,7 +460,7 @@ package struct FS
                 /***************************************************************
 
                         Remove the file/directory from the file-system.
-                        Returns true on success - false otherwise
+                        Returns true on success - false otherwise.
 
                 ***************************************************************/
 
@@ -488,7 +488,7 @@ package struct FS
 
                 /***************************************************************
 
-                       Change the name or location of a file/directory
+                       Change the name or location of a file/directory.
 
                 ***************************************************************/
 
@@ -514,7 +514,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Create a new file
+                        Create a new file.
 
                 ***************************************************************/
 
@@ -525,7 +525,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Create a new directory
+                        Create a new directory.
 
                 ***************************************************************/
 
@@ -552,7 +552,7 @@ package struct FS
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
 
-                        Note: allocates a small memory buffer
+                        Note: Allocates a small memory buffer.
 
                 ***************************************************************/
 
@@ -563,7 +563,7 @@ package struct FS
                         char[]                  prefix;
                         char[MAX_PATH+1]        tmp = void;
                         FIND_DATA               fileinfo = void;
-                        
+
                         version (Win32SansUnicode)
                                  alias char T;
                               else
@@ -593,7 +593,7 @@ package struct FS
                                 }
 
                         if (h is INVALID_HANDLE_VALUE)
-                            return ret; 
+                            return ret;
 
                         scope (exit)
                                FindClose (h);
@@ -634,7 +634,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Create a new file
+                        Create a new file.
 
                 ***************************************************************/
 
@@ -645,13 +645,13 @@ package struct FS
                         auto flags = dg.ptr ? OPEN_EXISTING : CREATE_ALWAYS;
                         version (Win32SansUnicode)
                                  h = CreateFileA (name.ptr, GENERIC_WRITE,
-                                                  0, null, flags, FILE_ATTRIBUTE_NORMAL, 
+                                                  0, null, flags, FILE_ATTRIBUTE_NORMAL,
                                                   cast(HANDLE) 0);
                              else
                                 {
                                 wchar[MAX_PATH] tmp = void;
                                 h = CreateFileW (toString16(tmp, name).ptr, GENERIC_WRITE,
-                                                 0, null, flags, FILE_ATTRIBUTE_NORMAL, 
+                                                 0, null, flags, FILE_ATTRIBUTE_NORMAL,
                                                  cast(HANDLE) 0);
                                 }
 
@@ -668,7 +668,7 @@ package struct FS
 
         /***********************************************************************
 
-                Posix-specific code
+                Posix-specific code.
 
         ***********************************************************************/
 
@@ -676,7 +676,7 @@ package struct FS
         {
                 /***************************************************************
 
-                        Get info about this path
+                        Get info about this path.
 
                 ***************************************************************/
 
@@ -690,7 +690,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Return whether the file or path exists
+                        Return whether the file or path exists.
 
                 ***************************************************************/
 
@@ -702,7 +702,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Return the file length (in bytes)
+                        Return the file length (in bytes.)
 
                 ***************************************************************/
 
@@ -755,11 +755,11 @@ package struct FS
 
                 /***************************************************************
 
-                        Return timestamp information
+                        Return timestamp information.
 
-                        Timestamps are returns in a format dictated by the 
-                        file-system. For example NTFS keeps UTC time, 
-                        while FAT timestamps are based on the local time
+                        Timestamps are returns in a format dictated by the
+                        file-system. For example NTFS keeps UTC time,
+                        while FAT timestamps are based on the local time.
 
                 ***************************************************************/
 
@@ -785,7 +785,7 @@ package struct FS
                 /***************************************************************
 
                         Set the accessed and modified timestamps of the
-                        specified file
+                        specified file.
 
                 ***************************************************************/
 
@@ -804,7 +804,7 @@ package struct FS
                         reference to this class on success, or throws an IOException
                         upon failure.
 
-                        Note: allocates a memory buffer
+                        Note: Allocates a memory buffer.
 
                 ***********************************************************************/
 
@@ -855,7 +855,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Remove the file/directory from the file-system. 
+                        Remove the file/directory from the file-system.
                         Returns true on success - false otherwise.
 
                 ***************************************************************/
@@ -867,7 +867,7 @@ package struct FS
 
                 /***************************************************************
 
-                       change the name or location of a file/directory
+                       Change the name or location of a file/directory.
 
                 ***************************************************************/
 
@@ -879,7 +879,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Create a new file
+                        Create a new file.
 
                 ***************************************************************/
 
@@ -897,7 +897,7 @@ package struct FS
 
                 /***************************************************************
 
-                        Create a new directory
+                        Create a new directory.
 
                 ***************************************************************/
 
@@ -915,7 +915,7 @@ package struct FS
                         delegate, along with the path prefix and whether
                         the entry is a folder or not.
 
-                        Note: allocates and reuses a small memory buffer
+                        Note: Allocates and reuses a small memory buffer.
 
                 ***************************************************************/
 
@@ -941,10 +941,10 @@ package struct FS
 
                         // prepare our filename buffer
                         sfnbuf = prefix.dup;
-                        
+
                         while (true)
                               {
-                              // pentry is null at end of listing, or on an error 
+                              // pentry is null at end of listing, or on an error
                               readdir_r (dir, &entry, &pentry);
                               if (pentry is null)
                                   break;
@@ -969,7 +969,7 @@ package struct FS
                                  info.path   = prefix;
                                  info.hidden = str[0] is '.';
                                  info.folder = info.system = false;
-                                 
+
                                  if (! stat (sfnbuf.ptr, &sbuf))
                                     {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
@@ -992,7 +992,7 @@ package struct FS
 
 /*******************************************************************************
 
-        Parse a file path
+        Parses a file path.
 
         File paths containing non-ansi characters should be UTF-8 encoded.
         Supporting Unicode in this manner was deemed to be more suitable
@@ -1001,24 +1001,24 @@ package struct FS
 
         Note that patterns of adjacent '.' separators are treated specially
         in that they will be assigned to the name where there is no distinct
-        suffix. In addition, a '.' at the start of a name signifies it does 
+        suffix. In addition, a '.' at the start of a name signifies it does
         not belong to the suffix i.e. ".file" is a name rather than a suffix.
         Patterns of intermediate '.' characters will otherwise be assigned
         to the suffix, such that "file....suffix" includes the dots within
         the suffix itself. See method ext() for a suffix without dots.
 
-        Note also that normalization of path-separators does *not* occur by 
+        Note also that normalization of path-separators does *not* occur by
         default. This means that usage of '\' characters should be explicitly
         converted beforehand into '/' instead (an exception is thrown in those
         cases where '\' is present). On-the-fly conversion is avoided because
         (a) the provided path is considered immutable and (b) we avoid taking
-        a copy of the original path. Module FilePath exists at a higher level, 
+        a copy of the original path. Module FilePath exists at a higher level,
         without such contraints.
 
 *******************************************************************************/
 
 struct PathParser
-{       
+{
         package char[]  fp;                     // filepath with trailing
         package int     end_,                   // before any trailing 0
                         ext_,                   // after rightmost '.'
@@ -1028,7 +1028,7 @@ struct PathParser
 
         /***********************************************************************
 
-                Parse the path spec
+                Parse the path spec.
 
         ***********************************************************************/
 
@@ -1039,9 +1039,9 @@ struct PathParser
 
         /***********************************************************************
 
-                Duplicate this path
+                Duplicate this path.
 
-                Note: allocates memory for the path content
+                Note: Allocates memory for the path content.
 
         ***********************************************************************/
 
@@ -1054,7 +1054,7 @@ struct PathParser
 
         /***********************************************************************
 
-                Return the complete text of this filepath
+                Return the complete text of this filepath.
 
         ***********************************************************************/
 
@@ -1066,7 +1066,7 @@ struct PathParser
         /***********************************************************************
 
                 Return the root of this path. Roots are constructs such as
-                "c:"
+                "C:".
 
         ***********************************************************************/
 
@@ -1081,7 +1081,7 @@ struct PathParser
                 The root path is "/" and an unspecified path is returned as
                 an empty string. Directory paths may be split such that the
                 directory name is placed into the 'name' member; directory
-                paths are treated no differently than file paths
+                paths are treated no differently than file paths.
 
         ***********************************************************************/
 
@@ -1094,14 +1094,13 @@ struct PathParser
 
                 Returns a path representing the parent of this one. This
                 will typically return the current path component, though
-                with a special case where the name component is empty. In 
+                with a special case where the name component is empty. In
                 such cases, the path is scanned for a prior segment:
-                ---
-                normal:  /x/y/z => /x/y
-                special: /x/y/  => /x
-                normal:  /x     => /
-                normal:  /      => [empty]
-                ---
+                $(UL
+                  $(LI normal:  /x/y/z => /x/y)
+                  $(LI special: /x/y/  => /x)
+                  $(LI normal:  /x     => /)
+                  $(LI normal:  /      => [empty]))
 
                 Note that this returns a path suitable for splitting into
                 path and name components (there's no trailing separator).
@@ -1125,13 +1124,12 @@ struct PathParser
 
                 Pop the rightmost element off this path, stripping off a
                 trailing '/' as appropriate:
-                ---
-                /x/y/z => /x/y
-                /x/y/  => /x/y  (note trailing '/' in the original)
-                /x/y   => /x
-                /x     => /
-                /      => [empty]
-                ---
+                $(UL
+                  $(LI /x/y/z => /x/y)
+                  $(LI /x/y/  => /x/y  (note trailing '/' in the original))
+                  $(LI /x/y   => /x)
+                  $(LI /x     => /)
+                  $(LI /      => [empty]))
 
                 Note that this returns a path suitable for splitting into
                 path and name components (there's no trailing separator).
@@ -1159,7 +1157,7 @@ struct PathParser
                 Ext is the tail of the filename, rightward of the rightmost
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
                 patterns of adjacent separators are treated specially - for
-                example, ".." will wind up with no ext at all
+                example, ".." will wind up with no ext at all.
 
         ***********************************************************************/
 
@@ -1182,7 +1180,7 @@ struct PathParser
         /***********************************************************************
 
                 Suffix is like ext, but includes the separator e.g. path
-                "foo.bar" has suffix ".bar"
+                "foo.bar" has suffix ".bar".
 
         ***********************************************************************/
 
@@ -1193,7 +1191,7 @@ struct PathParser
 
         /***********************************************************************
 
-                return the root + folder combination
+                Return the root + folder combination.
 
         ***********************************************************************/
 
@@ -1204,7 +1202,7 @@ struct PathParser
 
         /***********************************************************************
 
-                return the name + suffix combination
+                Return the name + suffix combination.
 
         ***********************************************************************/
 
@@ -1216,7 +1214,7 @@ struct PathParser
         /***********************************************************************
 
                 Returns true if this path is *not* relative to the
-                current working directory
+                current working directory.
 
         ***********************************************************************/
 
@@ -1228,7 +1226,7 @@ struct PathParser
 
         /***********************************************************************
 
-                Returns true if this FilePath is empty
+                Returns true if this FilePath is empty.
 
         ***********************************************************************/
 
@@ -1242,7 +1240,7 @@ struct PathParser
                 Returns true if this path has a parent. Note that a
                 parent is defined by the presence of a path-separator in
                 the path. This means 'foo' within "/foo" is considered a
-                child of the root
+                child of the root.
 
         ***********************************************************************/
 
@@ -1254,22 +1252,22 @@ struct PathParser
         /***********************************************************************
 
                 Does this path equate to the given text? We ignore trailing
-                path-separators when testing equivalence
+                path-separators when testing equivalence.
 
         ***********************************************************************/
 
         int opEquals (char[] s)
-        {       
+        {
                 return FS.stripped(s) == FS.stripped(toString);
         }
 
         /***********************************************************************
 
-                Parse the path spec with explicit end point. A '\' is 
+                Parse the path spec with explicit end point. A '\' is
                 considered illegal in the path and should be normalized
                 out before this is invoked (the content managed here is
                 considered immutable, and thus cannot be changed by this
-                function)
+                function.)
 
         ***********************************************************************/
 
@@ -1337,13 +1335,13 @@ bool exists (char[] name)
 
         Returns the time of the last modification. Accurate
         to whatever the F/S supports, and in a format dictated
-        by the file-system. For example NTFS keeps UTC time, 
-        while FAT timestamps are based on the local time. 
+        by the file-system. For example NTFS keeps UTC time,
+        while FAT timestamps are based on the local time.
 
 *******************************************************************************/
 
 Time modified (char[] name)
-{       
+{
         return timeStamps(name).modified;
 }
 
@@ -1351,7 +1349,7 @@ Time modified (char[] name)
 
         Returns the time of the last access. Accurate to
         whatever the F/S supports, and in a format dictated
-        by the file-system. For example NTFS keeps UTC time, 
+        by the file-system. For example NTFS keeps UTC time,
         while FAT timestamps are based on the local time.
 
 *******************************************************************************/
@@ -1365,7 +1363,7 @@ Time accessed (char[] name)
 
         Returns the time of file creation. Accurate to
         whatever the F/S supports, and in a format dictated
-        by the file-system. For example NTFS keeps UTC time,  
+        by the file-system. For example NTFS keeps UTC time,
         while FAT timestamps are based on the local time.
 
 *******************************************************************************/
@@ -1377,7 +1375,7 @@ Time created (char[] name)
 
 /*******************************************************************************
 
-        Return the file length (in bytes)
+        Return the file length (in bytes.)
 
 *******************************************************************************/
 
@@ -1426,11 +1424,11 @@ bool isFile (char[] name)
 
 /*******************************************************************************
 
-        Return timestamp information
+        Return timestamp information.
 
-        Timestamps are returns in a format dictated by the 
-        file-system. For example NTFS keeps UTC time, 
-        while FAT timestamps are based on the local time
+        Timestamps are returns in a format dictated by the
+        file-system. For example NTFS keeps UTC time,
+        while FAT timestamps are based on the local time.
 
 *******************************************************************************/
 
@@ -1442,9 +1440,9 @@ FS.Stamps timeStamps (char[] name)
 
 /*******************************************************************************
 
-        Set the accessed and modified timestamps of the specified file
+        Set the accessed and modified timestamps of the specified file.
 
-        Since 0.99.9
+        Since: 0.99.9
 
 *******************************************************************************/
 
@@ -1457,12 +1455,12 @@ void timeStamps (char[] name, Time accessed, Time modified)
 /*******************************************************************************
 
         Remove the file/directory from the file-system. Returns true if
-        successful, false otherwise
+        successful, false otherwise.
 
 *******************************************************************************/
 
 bool remove (char[] name)
-{      
+{
         char[512] tmp = void;
         return FS.remove (FS.strz(name, tmp));
 }
@@ -1479,16 +1477,16 @@ bool remove (char[] name)
         remove (collate (".", "*.d", true));
         ---
 
-        Use with great caution
+        Use with great caution.
 
-        Note: may allocate memory
+        Note: May allocate memory.
 
         Since: 0.99.9
 
 *******************************************************************************/
 
 char[][] remove (char[][] paths)
-{     
+{
         char[][] failed;
         foreach (path; paths)
                  if (! remove (path))
@@ -1498,7 +1496,7 @@ char[][] remove (char[][] paths)
 
 /*******************************************************************************
 
-        Create a new file
+        Create a new file.
 
 *******************************************************************************/
 
@@ -1510,7 +1508,7 @@ void createFile (char[] name)
 
 /*******************************************************************************
 
-        Create a new directory
+        Create a new directory.
 
 *******************************************************************************/
 
@@ -1529,10 +1527,10 @@ void createFolder (char[] name)
         Note that each segment is created as a folder, including the
         trailing segment.
 
-        Throws: IOException upon system errors
+        Throws: IOException upon system errors.
 
-        Throws: IllegalArgumentException if a segment exists but as a 
-        file instead of a folder
+        Throws: IllegalArgumentException if a segment exists but as a
+        file instead of a folder.
 
 *******************************************************************************/
 
@@ -1556,7 +1554,7 @@ void createPath (char[] path)
 
 /*******************************************************************************
 
-       change the name or location of a file/directory
+       Change the name or location of a file/directory.
 
 *******************************************************************************/
 
@@ -1569,7 +1567,7 @@ void rename (char[] src, char[] dst)
 
 /*******************************************************************************
 
-        Transfer the content of one file to another. Throws 
+        Transfer the content of one file to another. Throws
         an IOException upon failure.
 
 *******************************************************************************/
@@ -1586,7 +1584,7 @@ void copy (char[] src, char[] dst)
         Provides foreach support via a fruct, as in
         ---
         foreach (info; children("myfolder"))
-                 ...
+            ...
         ---
 
         Each path and filename is passed to the foreach
@@ -1600,8 +1598,8 @@ void copy (char[] src, char[] dst)
         bool    folder
         ---
 
-        Argument 'all' controls whether hidden and system 
-        files are included - these are ignored by default
+        Argument 'all' controls whether hidden and system
+        files are included - these are ignored by default.
 
 *******************************************************************************/
 
@@ -1613,18 +1611,18 @@ FS.Listing children (char[] path, bool all=false)
 /*******************************************************************************
 
         Collate all files and folders from the given path whose name matches
-        the given pattern. Folders will be traversed where recurse is enabled, 
-        and a set of matching names is returned as filepaths (including those 
-        folders which match the pattern)
+        the given pattern. Folders will be traversed where recurse is enabled,
+        and a set of matching names is returned as filepaths (including those
+        folders which match the pattern.)
 
-        Note: allocates memory for returned paths
+        Note: Allocates memory for returned paths.
 
         Since: 0.99.9
 
 *******************************************************************************/
 
 char[][] collate (char[] path, char[] pattern, bool recurse=false)
-{      
+{
         char[][] list;
 
         foreach (info; children (path))
@@ -1643,7 +1641,7 @@ char[][] collate (char[] path, char[] pattern, bool recurse=false)
         Join a set of path specs together. A path separator is
         potentially inserted between each of the segments.
 
-        Note: may allocate memory
+        Note: May allocate memory.
 
 *******************************************************************************/
 
@@ -1655,13 +1653,13 @@ char[] join (char[][] paths...)
 /*******************************************************************************
 
         Convert path separators to a standard format, using '/' as
-        the path separator. This is compatible with Uri and all of 
+        the path separator. This is compatible with Uri and all of
         the contemporary O/S which Tango supports. Known exceptions
         include the Windows command-line processor, which considers
         '/' characters to be switches instead. Use the native()
         method to support that.
 
-        Note: mutates the provided path.
+        Note: Mutates the provided path.
 
 *******************************************************************************/
 
@@ -1673,9 +1671,9 @@ char[] standard (char[] path)
 /*******************************************************************************
 
         Convert to native O/S path separators where that is required,
-        such as when dealing with the Windows command-line. 
-        
-        Note: mutates the provided path. Use this pattern to obtain a 
+        such as when dealing with the Windows command-line.
+
+        Note: Mutates the provided path. Use this pattern to obtain a
         copy instead: native(path.dup);
 
 *******************************************************************************/
@@ -1689,17 +1687,16 @@ char[] native (char[] path)
 
 /*******************************************************************************
 
-        Returns a path representing the parent of this one, with a special 
+        Returns a path representing the parent of this one, with a special
         case concerning a trailing '/':
-        ---
-        normal:  /x/y/z => /x/y
-        normal:  /x/y/  => /x/y
-        special: /x/y/  => /x
-        normal:  /x     => /
-        normal:  /      => empty
-        ---
+        $(UL
+          $(LI normal:  /x/y/z => /x/y)
+          $(LI normal:  /x/y/  => /x/y)
+          $(LI special: /x/y/  => /x)
+          $(LI normal:  /x     => /)
+          $(LI normal:  /      => empty))
 
-        The result can be split via parse()
+        The result can be split via parse().
 
 *******************************************************************************/
 
@@ -1711,14 +1708,13 @@ char[] parent (char[] path)
 /*******************************************************************************
 
         Returns a path representing the parent of this one:
-        ---
-        normal:  /x/y/z => /x/y
-        normal:  /x/y/  => /x/y
-        normal:  /x     => /
-        normal:  /      => empty
-        ---
+        $(UL
+          $(LI normal:  /x/y/z => /x/y)
+          $(LI normal:  /x/y/  => /x/y)
+          $(LI normal:  /x     => /)
+          $(LI normal:  /      => empty))
 
-        The result can be split via parse()
+        The result can be split via parse().
 
 *******************************************************************************/
 
@@ -1731,11 +1727,10 @@ char[] pop (char[] path)
 
 /*******************************************************************************
 
-        Break a path into "head" and "tail" components. For example: 
-        ---
-        "/a/b/c" -> "/a","b/c" 
-        "a/b/c" -> "a","b/c" 
-        ---
+        Break a path into "head" and "tail" components. For example:
+        $(UL
+          $(LI "/a/b/c" -> "/a","b/c")
+          $(LI "a/b/c" -> "a","b/c"))
 
 *******************************************************************************/
 
@@ -1756,7 +1751,7 @@ char[] split (char[] path, out char[] head, out char[] tail)
 /*******************************************************************************
 
         Replace all path 'from' instances with 'to', in place (overwrites
-        the provided path)
+        the provided path).
 
 *******************************************************************************/
 
@@ -1770,16 +1765,16 @@ char[] replace (char[] path, char from, char to)
 
 /*******************************************************************************
 
-        Parse a path into its constituent components. 
-        
-        Note that the provided path is sliced, not duplicated
+        Parse a path into its constituent components.
+
+        Note that the provided path is sliced, not duplicated.
 
 *******************************************************************************/
 
 PathParser parse (char[] path)
 {
         PathParser p;
-        
+
         p.parse (path);
         return p;
 }
@@ -1812,19 +1807,25 @@ debug(UnitTest)
         Matches a pattern against a filename.
 
         Some characters of pattern have special a meaning (they are
-        <i>meta-characters</i>) and <b>can't</b> be escaped. These are:
-        <p><table>
-        <tr><td><b>*</b></td>
-        <td>Matches 0 or more instances of any character.</td></tr>
-        <tr><td><b>?</b></td>
-        <td>Matches exactly one instances of any character.</td></tr>
-        <tr><td><b>[</b><i>chars</i><b>]</b></td>
-        <td>Matches one instance of any character that appears
-        between the brackets.</td></tr>
-        <tr><td><b>[!</b><i>chars</i><b>]</b></td>
-        <td>Matches one instance of any character that does not appear
-        between the brackets after the exclamation mark.</td></tr>
-        </table><p>
+        $(EM meta-characters)) and $(B can't) be escaped. These are:
+
+        $(TABLE
+          $(TR
+            $(TD $(B *))
+            $(TD Matches 0 or more instances of any character.))
+          $(TR
+            $(TD $(B ?))
+            $(TD Matches exactly one instances of any character.))
+          $(TR
+            $(TD $(B [)$(EM chars)$(B ]))
+            $(TD Matches one instance of any character that appears
+          between the brackets.))
+          $(TR
+            $(TD $(B [!)$(EM chars)$(B ]))
+            $(TD Matches one instance of any character that does not appear
+          between the brackets after the exclamation mark.))
+        )
+
         Internally individual character comparisons are done calling
         charMatch(), so its rules apply here too. Note that path
         separators and dots don't stop a meta-character from matching
@@ -1835,21 +1836,21 @@ debug(UnitTest)
         Throws: Nothing.
         -----
         version (Win32)
-                {
-                patternMatch("foo.bar", "*") // => true
-                patternMatch(r"foo/foo\bar", "f*b*r") // => true
-                patternMatch("foo.bar", "f?bar") // => false
-                patternMatch("Goo.bar", "[fg]???bar") // => true
-                patternMatch(r"d:\foo\bar", "d*foo?bar") // => true
-                }
+        {
+          patternMatch("foo.bar", "*"); // => true
+          patternMatch(r"foo/foo\bar", "f*b*r"); // => true
+          patternMatch("foo.bar", "f?bar"); // => false
+          patternMatch("Goo.bar", "[fg]???bar"); // => true
+          patternMatch(r"d:\foo\bar", "d*foo?bar"); // => true
+        }
         version (Posix)
-                {
-                patternMatch("Go*.bar", "[fg]???bar") // => false
-                patternMatch("/foo*home/bar", "?foo*bar") // => true
-                patternMatch("foobar", "foo?bar") // => true
-                }
+        {
+          patternMatch("Go*.bar", "[fg]???bar"); // => false
+          patternMatch("/foo*home/bar", "?foo*bar"); // => true
+          patternMatch("foobar", "foo?bar"); // => true
+        }
         -----
-    
+
 ******************************************************************************/
 
 bool patternMatch (char[] filename, char[] pattern)
@@ -1978,7 +1979,7 @@ debug (UnitTest)
         assert(patternMatch("foo", "Foo"));
         version (Posix)
         assert(!patternMatch("foo", "Foo"));
-        
+
         assert(patternMatch("foo", "*"));
         assert(patternMatch("foo.bar", "*"));
         assert(patternMatch("foo.bar", "*.*"));
@@ -1988,7 +1989,7 @@ debug (UnitTest)
         assert(patternMatch("foo.bar", "f???bar"));
         assert(patternMatch("foo.bar", "[fg]???bar"));
         assert(patternMatch("foo.bar", "[!gh]*bar"));
-        
+
         assert(!patternMatch("foo", "bar"));
         assert(!patternMatch("foo", "*.*"));
         assert(!patternMatch("foo.bar", "f*baz"));
@@ -2002,13 +2003,12 @@ debug (UnitTest)
 
 /*******************************************************************************
 
-        Normalizes a path component
-        ---
-        . segments are removed
-        <segment>/.. are removed
-        ---
+        Normalizes a path component.
+        $(UL
+          $(LI $(B .) segments are removed)
+          $(LI &lt;segment&gt;$(B /..) are removed))
 
-        Multiple consecutive forward slashes are replaced with a single 
+        Multiple consecutive forward slashes are replaced with a single
         forward slash. On Windows, \ will be converted to / prior to any
         normalization.
 
@@ -2022,7 +2022,7 @@ debug (UnitTest)
         normalize("/home/foo/./bar/../../john/doe"); // => "/home/john/doe"
         -----
 
-        Note: allocates memory
+        Note: Allocates memory.
 
 *******************************************************************************/
 
@@ -2033,13 +2033,13 @@ char[] normalize (char[] path, char[] buf = null)
         bool    isAbsolute;     // Whether the path is absolute
         enum    {NodeStackLength = 64}
 
-        // Starting positions of regular path segments are pushed 
-        // on this stack to avoid backward scanning when .. segments 
+        // Starting positions of regular path segments are pushed
+        // on this stack to avoid backward scanning when .. segments
         // are encountered
         size_t[NodeStackLength] nodeStack;
         size_t nodeStackTop;
 
-        // Moves the path tail starting at the current position to 
+        // Moves the path tail starting at the current position to
         // moveTo. Then sets the current position to moveTo.
         void move ()
         {
@@ -2049,9 +2049,9 @@ char[] normalize (char[] path, char[] buf = null)
                 idx = moveTo;
         }
 
-        // Checks if the character at the current position is a 
-        // separator. If true, normalizes the separator to '/' on 
-        // Windows and advances the current position to the next 
+        // Checks if the character at the current position is a
+        // separator. If true, normalizes the separator to '/' on
+        // Windows and advances the current position to the next
         // character.
         bool isSep (ref size_t i)
         {
@@ -2089,7 +2089,7 @@ char[] normalize (char[] path, char[] buf = null)
                       path[0] = c - 32;
                       idx = 2;
                       }
-                   else 
+                   else
                       if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
                           idx = 2;
                    }
@@ -2113,7 +2113,7 @@ char[] normalize (char[] path, char[] buf = null)
 
               if (path[idx] == '.')
                  {
-                 // leave the current position at the start of 
+                 // leave the current position at the start of
                  // the segment
                  auto i = idx + 1;
                  if (i < path.length && path[i] == '.')
@@ -2121,19 +2121,19 @@ char[] normalize (char[] path, char[] buf = null)
                     i++;
                     if (i == path.length || isSep(i))
                        {
-                       // It is a '..' segment. If the stack is not 
+                       // It is a '..' segment. If the stack is not
                        // empty, set moveTo and the current position
-                       // to the start position of the last found 
+                       // to the start position of the last found
                        // regular segment
                        if (nodeStackTop > 0)
                            moveTo = nodeStack[--nodeStackTop];
 
-                       // If no regular segment start positions on the 
-                       // stack, drop the .. segment if it is absolute 
-                       // path or, otherwise, advance moveTo and the 
-                       // current position to the character after the 
+                       // If no regular segment start positions on the
+                       // stack, drop the .. segment if it is absolute
+                       // path or, otherwise, advance moveTo and the
+                       // current position to the character after the
                        // '..' segment
-                       else 
+                       else
                           if (!isAbsolute)
                              {
                              if (moveTo != idx)
@@ -2143,12 +2143,12 @@ char[] normalize (char[] path, char[] buf = null)
                                 }
                              moveTo = i;
                              }
-        
+
                        idx = i;
                        continue;
                        }
                     }
-        
+
                  // If it is '.' segment, skip it.
                  if (i == path.length || isSep(i))
                     {
@@ -2157,19 +2157,19 @@ char[] normalize (char[] path, char[] buf = null)
                     }
                  }
 
-              // Remove excessive '/', '.' and/or '..' preceeding the 
+              // Remove excessive '/', '.' and/or '..' preceeding the
               // segment
               if (moveTo != idx)
                   move();
 
-              // Push the start position of the regular segment on the 
+              // Push the start position of the regular segment on the
               // stack
               assert (nodeStackTop < NodeStackLength);
               nodeStack[nodeStackTop++] = idx;
 
-              // Skip the regular segment and set moveTo to the position 
+              // Skip the regular segment and set moveTo to the position
               // after the segment (including the trailing '/' if present)
-              for (; idx < path.length && !isSep(idx); idx++) 
+              for (; idx < path.length && !isSep(idx); idx++)
                   {}
               moveTo = idx;
               }
@@ -2225,7 +2225,7 @@ debug (UnitTest)
         assert (ret.ptr == buf.ptr);
         assert (ret == "foo/bar/baz");
 
-        version (Windows) 
+        version (Windows)
                 {
                 assert (normalize ("\\foo\\..\\john") == "/john");
                 assert (normalize ("foo\\..\\john") == "john");
@@ -2260,8 +2260,8 @@ debug (Path)
         import tango.io.Stdout;
 
         void main()
-        { 
+        {
                 foreach (file; collate (".", "*.d", true))
-                         Stdout (file).newline;      
+                         Stdout (file).newline;
         }
 }

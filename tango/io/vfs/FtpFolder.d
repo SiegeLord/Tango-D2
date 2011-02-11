@@ -111,7 +111,7 @@ class FtpFolderEntry: VfsFolderEntry {
     }
 
     /***********************************************************************
-     Open a folder
+     Open a folder.
      ***********************************************************************/
 
     final VfsFolder open() {
@@ -119,7 +119,7 @@ class FtpFolderEntry: VfsFolderEntry {
     }
 
     /***********************************************************************
-     Create a new folder
+     Create a new folder.
      ***********************************************************************/
 
     final VfsFolder create() {
@@ -142,13 +142,13 @@ class FtpFolderEntry: VfsFolderEntry {
     }
 
     /***********************************************************************
-     Test to see if a folder exists
+     Test to see if a folder exists.
      ***********************************************************************/
 
     final bool exists() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -208,7 +208,7 @@ class FtpFolder: VfsFolder {
     }
 
     /***********************************************************************
-     Return a short name
+     Return a short name.
      ***********************************************************************/
 
     final char[] name() {
@@ -216,7 +216,7 @@ class FtpFolder: VfsFolder {
     }
 
     /***********************************************************************
-     Return a long name
+     Return a long name.
      ***********************************************************************/
 
     final char[] toString() {
@@ -224,7 +224,7 @@ class FtpFolder: VfsFolder {
     }
 
     /***********************************************************************
-     Return a contained file representation
+     Return a contained file representation.
      ***********************************************************************/
 
     final VfsFile file(char[] path) {
@@ -233,7 +233,7 @@ class FtpFolder: VfsFolder {
     }
 
     /***********************************************************************
-     Return a contained folder representation
+     Return a contained folder representation.
      ***********************************************************************/
 
     final VfsFolderEntry folder(char[] path) {
@@ -243,13 +243,13 @@ class FtpFolder: VfsFolder {
 
     /***********************************************************************
      Returns a folder set containing only this one. Statistics
-     are inclusive of entries within this folder only
+     are inclusive of entries within this folder only.
      ***********************************************************************/
 
     final VfsFolders self() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -273,13 +273,13 @@ class FtpFolder: VfsFolder {
 
     /***********************************************************************
      Returns a subtree of folders. Statistics are inclusive of
-     files within this folder and all others within the tree
+     files within this folder and all others within the tree.
      ***********************************************************************/
 
     final VfsFolders tree() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -303,13 +303,13 @@ class FtpFolder: VfsFolder {
 
     /***********************************************************************
      Iterate over the set of immediate child folders. This is
-     useful for reflecting the hierarchy
+     useful for reflecting the hierarchy.
      ***********************************************************************/
 
     final int opApply(int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -342,7 +342,7 @@ class FtpFolder: VfsFolder {
     }
 
     /***********************************************************************
-     Clear all content from this folder and subordinates
+     Clear all content from this folder and subordinates.
      ***********************************************************************/
 
     final VfsFolder clear() {
@@ -430,7 +430,7 @@ class FtpFolder: VfsFolder {
      Close and/or synchronize changes made to this folder. Each
      driver should take advantage of this as appropriate, perhaps
      combining multiple files together, or possibly copying to a
-     remote location
+     remote location.
      ***********************************************************************/
 
     VfsFolder close(bool commit = true) {
@@ -440,7 +440,7 @@ class FtpFolder: VfsFolder {
     /***********************************************************************
      A folder is being added or removed from the hierarchy. Use
      this to test for validity (or whatever) and throw exceptions
-     as necessary
+     as necessary.
      ***********************************************************************/
 
     void verify(VfsFolder folder, bool mounting) {
@@ -491,7 +491,7 @@ class FtpFolders: VfsFolders {
 
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -516,13 +516,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Iterate over the set of contained VfsFolder instances
+     Iterate over the set of contained VfsFolder instances.
      ***********************************************************************/
 
     final int opApply(int delegate(ref VfsFolder) dg) {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -547,7 +547,7 @@ class FtpFolders: VfsFolders {
         foreach(FtpFileInfo fi; info) {
             VfsFolder x = new FtpFolder(toString_, checkLast(checkCat(name_, fi.name)),
                 username_, password_, port_);
-    
+
             // was
             // VfsFolder x = new FtpFolder(toString_ ~ "/" ~ name_, fi.name,
             // username_, password_, port_);
@@ -559,13 +559,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return the number of files
+     Return the number of files.
      ***********************************************************************/
 
     final uint files() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -587,13 +587,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return the number of folders
+     Return the number of folders.
      ***********************************************************************/
 
     final uint folders() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -615,13 +615,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return the total number of entries (files + folders)
+     Return the total number of entries (files + folders.)
      ***********************************************************************/
 
     final uint entries() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -643,13 +643,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return the total size of contained files
+     Return the total size of contained files.
      ***********************************************************************/
 
     final ulong bytes() {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -677,13 +677,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return a subset of folders matching the given pattern
+     Return a subset of folders matching the given pattern.
      ***********************************************************************/
 
     final VfsFolders subset(char[] pattern) {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -716,13 +716,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return a set of files matching the given pattern
+     Return a set of files matching the given pattern.
      ***********************************************************************/
 
     final VfsFiles catalog(char[] pattern) {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -757,13 +757,13 @@ class FtpFolders: VfsFolders {
     }
 
     /***********************************************************************
-     Return a set of files matching the given filter
+     Return a set of files matching the given filter.
      ***********************************************************************/
 
     final VfsFiles catalog(VfsFilter filter = null) {
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -826,7 +826,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Return a short name
+     Return a short name.
      ***********************************************************************/
 
     final char[] name() {
@@ -834,7 +834,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Return a long name
+     Return a long name.
      ***********************************************************************/
 
     final char[] toString() {
@@ -880,7 +880,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Return the file size
+     Return the file size.
      ***********************************************************************/
 
     final ulong size() {
@@ -910,7 +910,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Create and copy the given source
+     Create and copy the given source.
      ***********************************************************************/
 
     final VfsFile copy(VfsFile source) {
@@ -919,7 +919,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Create and copy the given source, and remove the source
+     Create and copy the given source, and remove the source.
      ***********************************************************************/
 
     final VfsFile move(VfsFile source) {
@@ -929,7 +929,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Create a new file instance
+     Create a new file instance.
      ***********************************************************************/
 
     final VfsFile create() {
@@ -939,7 +939,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Create a new file instance and populate with stream
+     Create a new file instance and populate with stream.
      ***********************************************************************/
 
     final VfsFile create(InputStream stream) {
@@ -948,7 +948,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Remove this file
+     Remove this file.
      ***********************************************************************/
 
     final VfsFile remove() {
@@ -985,7 +985,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Return the input stream. Don't forget to close it
+     Return the input stream. Don't forget to close it.
      ***********************************************************************/
 
     final InputStream input() {
@@ -1012,7 +1012,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Return the output stream. Don't forget to close it
+     Return the output stream. Don't forget to close it.
      ***********************************************************************/
 
     final OutputStream output() {
@@ -1039,7 +1039,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Duplicate this entry
+     Duplicate this entry.
      ***********************************************************************/
 
     final VfsFile dup() {
@@ -1047,7 +1047,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Time modified
+     Time modified.
      ***********************************************************************/
 
     final Time mtime() {
@@ -1081,7 +1081,7 @@ class FtpFile: VfsFile {
     }
 
     /***********************************************************************
-     Time created
+     Time created.
      ***********************************************************************/
 
     final Time ctime() {
@@ -1143,10 +1143,10 @@ class FtpFile: VfsFile {
 
         return conn.getFileInfo(name_).modify;
     }
-        
+
         /***********************************************************************
 
-                Modified time of the file
+                Modified time of the file.
 
         ***********************************************************************/
 
@@ -1187,7 +1187,7 @@ class FtpFiles: VfsFiles {
 
         FTPConnection conn;
 
-    
+
 
         scope(exit) {
             if(conn !is null)
@@ -1209,7 +1209,7 @@ class FtpFiles: VfsFiles {
     }
 
     /***********************************************************************
-     Iterate over the set of contained VfsFile instances
+     Iterate over the set of contained VfsFile instances.
      ***********************************************************************/
 
     final int opApply(int delegate(ref VfsFile) dg) {
@@ -1226,7 +1226,7 @@ class FtpFiles: VfsFiles {
     }
 
     /***********************************************************************
-     Return the total number of entries
+     Return the total number of entries.
      ***********************************************************************/
 
     final uint files() {
@@ -1234,7 +1234,7 @@ class FtpFiles: VfsFiles {
     }
 
     /***********************************************************************
-     Return the total size of all files
+     Return the total size of all files.
      ***********************************************************************/
 
     final ulong bytes() {

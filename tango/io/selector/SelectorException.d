@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.SelectorException;
@@ -19,9 +19,9 @@ public class SelectorException: Exception
      * Construct a selector exception with the provided text string
      *
      * Params:
-     * file     = name of the source file where the exception was thrown; you
+     * file     = Name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where the exception was
+     * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
     public this(char[] msg, char[] file, uint line)
@@ -41,9 +41,9 @@ public class UnregisteredConduitException: SelectorException
      * Construct a selector exception with the provided text string
      *
      * Params:
-     * file     = name of the source file where the exception was thrown; you
+     * file     = Name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where the exception was
+     * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
     public this(char[] file, uint line)
@@ -62,9 +62,9 @@ public class RegisteredConduitException: SelectorException
      * Construct a selector exception with the provided text string
      *
      * Params:
-     * file     = name of the source file where the exception was thrown; you
+     * file     = Name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where the exception was
+     * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
     public this(char[] file, uint line)
@@ -83,9 +83,9 @@ public class InterruptedSystemCallException: SelectorException
      * Construct a selector exception with the provided text string
      *
      * Params:
-     * file     = name of the source file where the exception was thrown; you
+     * file     = Name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where the exception was
+     * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
     public this(char[] file, uint line)
@@ -103,9 +103,9 @@ public class OutOfMemoryException: SelectorException
      * Construct a selector exception with the provided text string
      *
      * Params:
-     * file     = name of the source file where the exception was thrown; you
+     * file     = Name of the source file where the exception was thrown; you
      *            would normally use __FILE__ for this parameter.
-     * line     = line number of the source file where the exception was
+     * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
     public this(char[] file, uint line)

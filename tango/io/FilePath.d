@@ -9,15 +9,15 @@
         version:        Feb 2007: Mutating version
         version:        Mar 2007: Folded FileProxy in
         version:        Nov 2007: VFS dictates '/' always be used
-        version:        Feb 2008: Split file-system calls into a struct
+        version:        Feb 2008: Split file system calls into a struct
 
         author:         Kris
 
-        FilePath provides a means to efficiently edit path components and 
-        of accessing the underlying file system.
+        FilePath provides a means to efficiently edit path components and
+        to access the underlying file system.
 
         Use module Path.d instead when you need pedestrian access to the
-        file-system, and are not mutating the path components themselves
+        file system, and are not mutating the path components themselves
 
 *******************************************************************************/
 
@@ -46,7 +46,7 @@ private import tango.stdc.string : memmove;
 
         Note that patterns of adjacent '.' separators are treated specially
         in that they will be assigned to the name where there is no distinct
-        suffix. In addition, a '.' at the start of a name signifies it does 
+        suffix. In addition, a '.' at the start of a name signifies it does
         not belong to the suffix i.e. ".file" is a name rather than a suffix.
         Patterns of intermediate '.' characters will otherwise be assigned
         to the suffix, such that "file....suffix" includes the dots within
@@ -67,7 +67,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Filter used for screening paths via toList()
+                Filter used for screening paths via toList().
 
         ***********************************************************************/
 
@@ -77,7 +77,7 @@ class FilePath : PathView
 
                 Call-site shortcut to create a FilePath instance. This
                 enables the same syntax as struct usage, so may expose
-                a migration path
+                a migration path.
 
         ***********************************************************************/
 
@@ -113,10 +113,10 @@ class FilePath : PathView
         {
                 set (filepath, true);
         }
-        
+
         /***********************************************************************
 
-                Return the complete text of this filepath
+                Return the complete text of this filepath.
 
         ***********************************************************************/
 
@@ -127,7 +127,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Duplicate this path
+                Duplicate this path.
 
         ***********************************************************************/
 
@@ -144,7 +144,7 @@ class FilePath : PathView
 
                 Note that the nul is always embedded within the string
                 maintained by FilePath, so there's no heap overhead when
-                making a C call
+                making a C call.
 
         ***********************************************************************/
 
@@ -156,7 +156,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Return the root of this path. Roots are constructs such as
-                "c:"
+                "C:".
 
         ***********************************************************************/
 
@@ -167,11 +167,13 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Return the file path. Paths may start and end with a "/".
+                Return the file path.
+
+                Paths may start and end with a "/".
                 The root path is "/" and an unspecified path is returned as
                 an empty string. Directory paths may be split such that the
                 directory name is placed into the 'name' member; directory
-                paths are treated no differently than file paths
+                paths are treated no differently than file paths.
 
         ***********************************************************************/
 
@@ -184,18 +186,17 @@ class FilePath : PathView
 
                 Returns a path representing the parent of this one. This
                 will typically return the current path component, though
-                with a special case where the name component is empty. In 
+                with a special case where the name component is empty. In
                 such cases, the path is scanned for a prior segment:
-                ---
-                normal:  /x/y/z => /x/y
-                special: /x/y/  => /x
-                ---
+                $(UL
+                  $(LI normal:  /x/y/z => /x/y)
+                  $(LI special: /x/y/  => /x))
 
                 Note that this returns a path suitable for splitting into
                 path and name components (there's no trailing separator).
 
                 See pop() also, which is generally more useful when working
-                with FilePath instances
+                with FilePath instances.
 
         ***********************************************************************/
 
@@ -220,7 +221,7 @@ class FilePath : PathView
                 Ext is the tail of the filename, rightward of the rightmost
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
                 patterns of adjacent separators are treated specially; for
-                example, ".." will wind up with no ext at all
+                example, ".." will wind up with no ext at all.
 
         ***********************************************************************/
 
@@ -232,7 +233,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Suffix is like ext, but includes the separator e.g. path
-                "foo.bar" has suffix ".bar"
+                "foo.bar" has suffix ".bar".
 
         ***********************************************************************/
 
@@ -243,7 +244,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                return the root + folder combination
+                Return the root + folder combination.
 
         ***********************************************************************/
 
@@ -254,7 +255,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                return the name + suffix combination
+                Return the name + suffix combination.
 
         ***********************************************************************/
 
@@ -265,7 +266,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns true if all fields are identical. Note that some 
+                Returns true if all fields are identical. Note that some
                 combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
@@ -274,8 +275,8 @@ class FilePath : PathView
                 ---
 
                 The latter is different due to variance in how append
-                injects data, and how pop is expected to operate under 
-                different circumstances (both examples produce the same 
+                injects data, and how pop is expected to operate under
+                different circumstances (both examples produce the same
                 pop result, although the initial path is not identical).
 
                 However, opEquals() can overlook minor distinctions such
@@ -290,7 +291,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Does this FilePath match the given text? Note that some 
+                Does this FilePath match the given text? Note that some
                 combinations of operations may not produce an identical
                 set of fields. For example:
                 ---
@@ -299,8 +300,8 @@ class FilePath : PathView
                 ---
 
                 The latter Is Different due to variance in how append
-                injects data, and how pop is expected to operate under 
-                different circumstances (both examples produce the same 
+                injects data, and how pop is expected to operate under
+                different circumstances (both examples produce the same
                 pop result, although the initial path is not identical).
 
                 However, opEquals() can overlook minor distinctions such
@@ -316,7 +317,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Returns true if this FilePath is *not* relative to the
-                current working directory
+                current working directory.
 
         ***********************************************************************/
 
@@ -327,7 +328,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath is empty
+                Returns true if this FilePath is empty.
 
         ***********************************************************************/
 
@@ -341,7 +342,7 @@ class FilePath : PathView
                 Returns true if this FilePath has a parent. Note that a
                 parent is defined by the presence of a path-separator in
                 the path. This means 'foo' within "\foo" is considered a
-                child of the root
+                child of the root.
 
         ***********************************************************************/
 
@@ -352,7 +353,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace all 'from' instances with 'to'
+                Replace all 'from' instances with 'to'.
 
         ***********************************************************************/
 
@@ -365,7 +366,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Convert path separators to a standard format, using '/' as
-                the path separator. This is compatible with URI and all of 
+                the path separator. This is compatible with URI and all of
                 the contemporary O/S which Tango supports. Known exceptions
                 include the Windows command-line processor, which considers
                 '/' characters to be switches instead. Use the native()
@@ -384,9 +385,9 @@ class FilePath : PathView
         /***********************************************************************
 
                 Convert to native O/S path separators where that is required,
-                such as when dealing with the Windows command-line. 
-                
-                Note: mutates the current path. Use this pattern to obtain a 
+                such as when dealing with the Windows command-line.
+
+                Note: Mutates the current path. Use this pattern to obtain a
                 copy instead: path.dup.native
 
         ***********************************************************************/
@@ -400,7 +401,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Concatenate text to this path; no separators are added.
-                See join() also
+                See_also: $(SYMLINK FilePath.join, join)()
 
         ***********************************************************************/
 
@@ -420,7 +421,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Append a folder to this path. A leading separator is added
-                as required
+                as required.
 
         ***********************************************************************/
 
@@ -434,7 +435,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Prepend a folder to this path. A trailing separator is added
-                if needed
+                if needed.
 
         ***********************************************************************/
 
@@ -447,7 +448,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Reset the content of this path to that of another and
-                reparse
+                reparse.
 
         ***********************************************************************/
 
@@ -460,7 +461,7 @@ class FilePath : PathView
 
                 Reset the content of this path, and reparse. There's an
                 optional boolean flag to convert the path into standard
-                form, before parsing (converting '\' into '/')
+                form, before parsing (converting '\' into '/').
 
         ***********************************************************************/
 
@@ -483,7 +484,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Sidestep the normal lookup for paths that are known to
-                be folders. Where folder is true, file-system lookups
+                be folders. Where folder is true, file system lookups
                 will be skipped.
 
         ***********************************************************************/
@@ -496,7 +497,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the root portion of this path
+                Replace the root portion of this path.
 
         ***********************************************************************/
 
@@ -512,7 +513,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Replace the folder portion of this path. The folder will be
-                padded with a path-separator as required
+                padded with a path-separator as required.
 
         ***********************************************************************/
 
@@ -526,7 +527,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Replace the name portion of this path
+                Replace the name portion of this path.
 
         ***********************************************************************/
 
@@ -540,7 +541,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Replace the suffix portion of this path. The suffix will be
-                prefixed with a file-separator as required
+                prefixed with a file-separator as required.
 
         ***********************************************************************/
 
@@ -554,7 +555,7 @@ class FilePath : PathView
 
                 Replace the root and folder portions of this path and
                 reparse. The replacement will be padded with a path
-                separator as required
+                separator as required.
 
         ***********************************************************************/
 
@@ -568,7 +569,7 @@ class FilePath : PathView
 
                 Replace the file and suffix portions of this path and
                 reparse. The replacement will be prefixed with a suffix
-                separator as required
+                separator as required.
 
         ***********************************************************************/
 
@@ -582,12 +583,12 @@ class FilePath : PathView
 
                 Pop to the parent of the current filepath (in situ - mutates
                 this FilePath). Note that this differs from parent() in that
-                it does not include any special cases
+                it does not include any special cases.
 
         ***********************************************************************/
 
         final FilePath pop ()
-        {       
+        {
                 version (SpecialPop)
                          p.end_ = p.parent.length;
                    else
@@ -614,7 +615,7 @@ class FilePath : PathView
                 prefix as necessary. If this FilePath is already absolute,
                 return it intact.
 
-                Returns this FilePath, adjusted as necessary
+                Returns this FilePath, adjusted as necessary.
 
         ***********************************************************************/
 
@@ -628,7 +629,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Return an adjusted path such that non-empty instances do not
-                have a trailing separator
+                have a trailing separator.
 
         ***********************************************************************/
 
@@ -640,7 +641,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Return an adjusted path such that non-empty instances always
-                have a trailing separator
+                have a trailing separator.
 
         ***********************************************************************/
 
@@ -652,7 +653,7 @@ class FilePath : PathView
         /***********************************************************************
 
                 Return an adjusted path such that non-empty instances always
-                have a prefixed separator
+                have a prefixed separator.
 
         ***********************************************************************/
 
@@ -665,7 +666,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Parse the path spec, and mutate '\' into '/' as necessary
+                Parse the path spec, and mutate '\' into '/' as necessary.
 
         ***********************************************************************/
 
@@ -677,7 +678,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Potentially make room for more content
+                Potentially make room for more content.
 
         ***********************************************************************/
 
@@ -690,7 +691,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Insert/delete internal content
+                Insert/delete internal content.
 
         ***********************************************************************/
 
@@ -721,9 +722,9 @@ class FilePath : PathView
         }
 
 
-        /**********************************************************************/
-        /********************** file-system methods ***************************/
-        /**********************************************************************/
+        /* ****************************************************************** */
+        /* ******************** file system methods ************************* */
+        /* ****************************************************************** */
 
 
         /***********************************************************************
@@ -731,22 +732,22 @@ class FilePath : PathView
                 Create an entire path consisting of this folder along with
                 all parent folders. The path must not contain '.' or '..'
                 segments. Related methods include PathUtil.normalize() and
-                absolute()
+                absolute().
 
                 Note that each segment is created as a folder, including the
                 trailing segment.
 
-                Returns: a chaining reference (this)
+                Returns: A chaining reference (this).
 
-                Throws: IOException upon systen errors
+                Throws: IOException upon systen errors.
 
-                Throws: IllegalArgumentException if a segment exists but as 
-                a file instead of a folder
+                Throws: IllegalArgumentException if a segment exists but as
+                a file instead of a folder.
 
         ***********************************************************************/
 
         final FilePath create ()
-        {       
+        {
                 createPath (this.toString);
                 return this;
         }
@@ -756,7 +757,7 @@ class FilePath : PathView
                 List the set of filenames within this folder, using
                 the provided filter to control the list:
                 ---
-                bool delegate (FilePath path, bool isFolder) Filter
+                bool delegate (FilePath path, bool isFolder) Filter;
                 ---
 
                 Returning true from the filter includes the given path,
@@ -786,7 +787,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Construct a FilePath from the given FileInfo
+                Construct a FilePath from the given FileInfo.
 
         ***********************************************************************/
 
@@ -805,7 +806,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Does this path currently exist?
+                Does this path currently exist?.
 
         ***********************************************************************/
 
@@ -818,8 +819,8 @@ class FilePath : PathView
 
                 Returns the time of the last modification. Accurate
                 to whatever the OS supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time, 
-                while FAT timestamps are based on the local time. 
+                by the file system. For example NTFS keeps UTC time,
+                while FAT timestamps are based on the local time.
 
         ***********************************************************************/
 
@@ -832,7 +833,7 @@ class FilePath : PathView
 
                 Returns the time of the last access. Accurate to
                 whatever the OS supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time, 
+                by the file system. For example NTFS keeps UTC time,
                 while FAT timestamps are based on the local time.
 
         ***********************************************************************/
@@ -846,7 +847,7 @@ class FilePath : PathView
 
                 Returns the time of file creation. Accurate to
                 whatever the OS supports, and in a format dictated
-                by the file-system. For example NTFS keeps UTC time,  
+                by the file system. For example NTFS keeps UTC time,
                 while FAT timestamps are based on the local time.
 
         ***********************************************************************/
@@ -858,8 +859,8 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                change the name or location of a file/directory, and
-                adopt the provided Path
+                Change the name or location of a file/directory, and
+                adopt the provided Path.
 
         ***********************************************************************/
 
@@ -885,7 +886,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Return the file length (in bytes)
+                Return the file length (in bytes).
 
         ***********************************************************************/
 
@@ -935,11 +936,11 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Return timestamp information
+                Return timestamp information.
 
-                Timstamps are returns in a format dictated by the 
-                file-system. For example NTFS keeps UTC time, 
-                while FAT timestamps are based on the local time
+                Timstamps are returns in a format dictated by the
+                file system. For example NTFS keeps UTC time,
+                while FAT timestamps are based on the local time.
 
         ***********************************************************************/
 
@@ -964,12 +965,12 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Remove the file/directory from the file-system
+                Remove the file/directory from the file system.
 
         ***********************************************************************/
 
         final FilePath remove ()
-        {      
+        {
                 FS.remove (cString);
                 return this;
         }
@@ -977,7 +978,7 @@ class FilePath : PathView
         /***********************************************************************
 
                change the name or location of a file/directory, and
-               adopt the provided Path
+               adopt the provided Path.
 
         ***********************************************************************/
 
@@ -989,7 +990,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Create a new file
+                Create a new file.
 
         ***********************************************************************/
 
@@ -1001,7 +1002,7 @@ class FilePath : PathView
 
         /***********************************************************************
 
-                Create a new directory
+                Create a new directory.
 
         ***********************************************************************/
 
@@ -1042,7 +1043,7 @@ interface PathView
 
         /***********************************************************************
 
-                Return the complete text of this filepath
+                Return the complete text of this filepath.
 
         ***********************************************************************/
 
@@ -1050,7 +1051,7 @@ interface PathView
 
         /***********************************************************************
 
-                Return the complete text of this filepath
+                Return the complete text of this filepath.
 
         ***********************************************************************/
 
@@ -1059,7 +1060,7 @@ interface PathView
         /***********************************************************************
 
                 Return the root of this path. Roots are constructs such as
-                "c:"
+                "C:".
 
         ***********************************************************************/
 
@@ -1071,7 +1072,7 @@ interface PathView
                 The root path is "/" and an unspecified path is returned as
                 an empty string. Directory paths may be split such that the
                 directory name is placed into the 'name' member; directory
-                paths are treated no differently than file paths
+                paths are treated no differently than file paths.
 
         ***********************************************************************/
 
@@ -1091,7 +1092,7 @@ interface PathView
                 Ext is the tail of the filename, rightward of the rightmost
                 '.' separator e.g. path "foo.bar" has ext "bar". Note that
                 patterns of adjacent separators are treated specially; for
-                example, ".." will wind up with no ext at all
+                example, ".." will wind up with no ext at all.
 
         ***********************************************************************/
 
@@ -1100,7 +1101,7 @@ interface PathView
         /***********************************************************************
 
                 Suffix is like ext, but includes the separator e.g. path
-                "foo.bar" has suffix ".bar"
+                "foo.bar" has suffix ".bar".
 
         ***********************************************************************/
 
@@ -1108,7 +1109,7 @@ interface PathView
 
         /***********************************************************************
 
-                return the root + folder combination
+                Return the root + folder combination.
 
         ***********************************************************************/
 
@@ -1116,7 +1117,7 @@ interface PathView
 
         /***********************************************************************
 
-                return the name + suffix combination
+                Return the name + suffix combination.
 
         ***********************************************************************/
 
@@ -1133,7 +1134,7 @@ interface PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath is empty
+                Returns true if this FilePath is empty.
 
         ***********************************************************************/
 
@@ -1141,7 +1142,7 @@ interface PathView
 
         /***********************************************************************
 
-                Returns true if this FilePath has a parent
+                Returns true if this FilePath has a parent.
 
         ***********************************************************************/
 
@@ -1158,7 +1159,7 @@ interface PathView
         /***********************************************************************
 
                 Returns the time of the last modification. Accurate
-                to whatever the OS supports
+                to whatever the OS supports.
 
         ***********************************************************************/
 
@@ -1167,7 +1168,7 @@ interface PathView
         /***********************************************************************
 
                 Returns the time of the last access. Accurate to
-                whatever the OS supports
+                whatever the OS supports.
 
         ***********************************************************************/
 
@@ -1176,7 +1177,7 @@ interface PathView
         /***********************************************************************
 
                 Returns the time of file creation. Accurate to
-                whatever the OS supports
+                whatever the OS supports.
 
         ***********************************************************************/
 
@@ -1184,7 +1185,7 @@ interface PathView
 
         /***********************************************************************
 
-                Return the file length (in bytes)
+                Return the file length (in bytes).
 
         ***********************************************************************/
 
@@ -1208,7 +1209,7 @@ interface PathView
 
         /***********************************************************************
 
-                Return timestamp information
+                Return timestamp information.
 
         ***********************************************************************/
 
@@ -1252,7 +1253,7 @@ debug (UnitTest)
                 assert (fp.pop == r"C:/home");
                 assert (fp.pop == r"C:");
                 assert (fp.pop == r"C:");
-        
+
                 // special case for popping empty names
                 fp.set (r"C:/home/foo/bar/john/");
                 assert (fp.parent == r"C:/home/foo/bar");
@@ -1454,17 +1455,17 @@ debug (UnitTest)
                 fp = new FilePath(r"C:/foo/bar/test.bar");
                 assert (fp.asExt(null) == r"C:/foo/bar/test");
                 assert (fp.asExt("foo") == r"C:/foo/bar/test.foo");
-+/      
++/
                 }
         }
 }
 
 
 debug (FilePath)
-{       
+{
         import tango.io.Console;
 
-        void main() 
+        void main()
         {
                 assert (FilePath("/foo/").create.exists);
                 Cout (FilePath("c:/temp/").file("foo.bar")).newline;

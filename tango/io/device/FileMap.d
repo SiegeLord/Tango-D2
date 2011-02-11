@@ -3,9 +3,9 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-      
+
         version:        Initial release: March 2004
-        
+
         author:         Kris
 
 *******************************************************************************/
@@ -19,12 +19,12 @@ private import tango.io.device.File,
 
 /*******************************************************************************
 
-        External declarations
+        External declarations.
 
 *******************************************************************************/
 
 version (Win32)
-         private extern (Windows) 
+         private extern (Windows)
                         {
                         BOOL   UnmapViewOfFile    (LPCVOID);
                         BOOL   FlushViewOfFile    (LPCVOID, DWORD);
@@ -46,9 +46,9 @@ class FileMap : Array
 
         /***********************************************************************
 
-                Construct a FileMap upon the given path. 
+                Construct a FileMap upon the given path.
 
-                You should use resize() to setup the available 
+                You should use resize() to setup the available
                 working space.
 
         ***********************************************************************/
@@ -62,7 +62,7 @@ class FileMap : Array
         /***********************************************************************
 
                 Resize the file and return the remapped content. Usage of
-                map() is not required following this call
+                map() is not required following this call.
 
         ***********************************************************************/
 
@@ -75,7 +75,7 @@ class FileMap : Array
 
         /***********************************************************************
 
-                Release external resources
+                Release external resources.
 
         ***********************************************************************/
 
@@ -99,9 +99,9 @@ class MappedFile
 
         /***********************************************************************
 
-                Construct a FileMap upon the given path. 
+                Construct a FileMap upon the given path.
 
-                You should use resize() to setup the available 
+                You should use resize() to setup the available
                 working space.
 
         ***********************************************************************/
@@ -132,7 +132,7 @@ class MappedFile
         /***********************************************************************
 
                 Resize the file and return the remapped content. Usage of
-                map() is not required following this call
+                map() is not required following this call.
 
         ***********************************************************************/
 
@@ -153,8 +153,8 @@ class MappedFile
 
                 /***************************************************************
 
-                        return a slice representing file content as a 
-                        memory-mapped array
+                        Return a slice representing file content as a
+                        memory-mapped array.
 
                 ***************************************************************/
 
@@ -173,7 +173,7 @@ class MappedFile
                         flags = PAGE_READONLY;
                         if (access & host.Access.Write)
                             flags = PAGE_READWRITE;
- 
+
                         auto handle = cast(HANDLE) host.fileHandle;
                         mmFile = CreateFileMappingA (handle, null, flags, 0, 0, null);
                         if (mmFile is null)
@@ -186,13 +186,13 @@ class MappedFile
                         base = MapViewOfFile (mmFile, flags, 0, 0, 0);
                         if (base is null)
                             host.error;
-  
+
                         return (cast(ubyte*) base) [0 .. size];
                 }
 
                 /***************************************************************
 
-                        Release this mapping without flushing
+                        Release this mapping without flushing.
 
                 ***************************************************************/
 
@@ -214,7 +214,7 @@ class MappedFile
                             UnmapViewOfFile (base);
 
                         if (mmFile)
-                            CloseHandle (mmFile);       
+                            CloseHandle (mmFile);
 
                         mmFile = null;
                         base = null;
@@ -239,20 +239,20 @@ class MappedFile
         }
 
         /***********************************************************************
-                
+
         ***********************************************************************/
 
         version (Posix)
-        {               
+        {
                 // Linux code: not yet tested on other POSIX systems.
                 private void*   base;           // array pointer
                 private size_t  size;           // length of file
 
                 /***************************************************************
 
-                        return a slice representing file content as a 
+                        Return a slice representing file content as a
                         memory-mapped array. Use this to remap content
-                        each time the file size is changed
+                        each time the file size is changed.
 
                 ***************************************************************/
 
@@ -272,20 +272,20 @@ class MappedFile
                         auto access = host.style.access;
                         if (access & host.Access.Write)
                             protection |= PROT_WRITE;
-                                
+
                         base = mmap (null, size, protection, flags, host.fileHandle, 0);
                         if (base is MAP_FAILED)
                            {
                            base = null;
                            host.error;
                            }
-                                
+
                         return (cast(ubyte*) base) [0 .. size];
-                }    
+                }
 
                 /***************************************************************
 
-                        Release this mapped buffer without flushing
+                        Release this mapped buffer without flushing.
 
                 ***************************************************************/
 
@@ -305,22 +305,22 @@ class MappedFile
                 {
                         // NOTE: When a process ends, all mmaps belonging to that process
                         //       are automatically unmapped by system (Linux).
-                        //       On the other hand, this is NOT the case when the related 
+                        //       On the other hand, this is NOT the case when the related
                         //       file descriptor is closed.  This function unmaps explicitly.
                         if (base)
                             if (munmap (base, size))
                                 host.error;
 
-                        base = null;    
+                        base = null;
                 }
 
                 /***************************************************************
 
-                        Flush dirty content out to the drive. 
+                        Flush dirty content out to the drive.
 
                 ***************************************************************/
 
-                final MappedFile flush () 
+                final MappedFile flush ()
                 {
                         // MS_ASYNC: delayed flush; equivalent to "add-to-queue"
                         // MS_SYNC: function flushes file immediately; no return until flush complete

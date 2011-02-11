@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2004: Initial release
+        version:        Mar 2004: Initial release$(BR)
                         Dec 2006: Outback release
 
         authors:        Kris
@@ -21,7 +21,7 @@ private import tango.io.device.Conduit;
 
 ******************************************************************************/
 
-public alias BufferedInput  Bin;        /// shorthand alias
+public alias BufferedInput  Bin;        /// Shorthand aliases.
 public alias BufferedOutput Bout;       /// ditto
 
 /******************************************************************************
@@ -29,7 +29,7 @@ public alias BufferedOutput Bout;       /// ditto
 ******************************************************************************/
 
 extern (C)
-{       
+{
         int printf (char*, ...);
         private void * memmove (void *dst, void *src, size_t);
 }
@@ -46,28 +46,28 @@ private static char[] overflow  = "output buffer is full";
 
 /*******************************************************************************
 
-        Buffers the flow of data from a upstream input. A downstream 
-        neighbour can locate and use this buffer instead of creating 
-        another instance of their own. 
+        Buffers the flow of data from a upstream input. A downstream
+        neighbour can locate and use this buffer instead of creating
+        another instance of their own.
 
-        (note that upstream is closer to the source, and downstream is
-        further away)
+        (Note that upstream is closer to the source, and downstream is
+        further away.)
 
 *******************************************************************************/
 
 class BufferedInput : InputFilter, InputBuffer
 {
-        alias flush             clear;          /// clear/flush are the same
-        alias InputFilter.input input;          /// access the source 
+        alias flush             clear;          /// Clear/flush are the same.
+        alias InputFilter.input input;          /// Access the source.
 
-        private void[]        data;             // the raw data buffer
-        private size_t        index;            // current read position
-        private size_t        extent;           // limit of valid content
-        private size_t        dimension;        // maximum extent of content
+        private void[]        data;             // The raw data buffer.
+        private size_t        index;            // Current read position.
+        private size_t        extent;           // Limit of valid content.
+        private size_t        dimension;        // Maximum extent of content.
 
         /***********************************************************************
 
-                Ensure the buffer remains valid between method calls
+                Ensure the buffer remains valid between method calls.
 
         ***********************************************************************/
 
@@ -79,11 +79,11 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                stream = an input stream
-                capacity = desired buffer capacity
+                stream = An input stream.
+                capacity = Desired buffer capacity.
 
                 Remarks:
                 Construct a Buffer upon the provided input stream.
@@ -98,11 +98,11 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                stream = an input stream
-                capacity = desired buffer capacity
+                stream = An input stream.
+                capacity = Desired buffer capacity.
 
                 Remarks:
                 Construct a Buffer upon the provided input stream.
@@ -121,7 +121,7 @@ class BufferedInput : InputFilter, InputBuffer
                 where there's not one available.
 
                 Params:
-                stream = an input stream
+                stream = An input stream.
 
                 Remarks:
                 If an upstream Buffer instances is visible, it will be shared.
@@ -144,19 +144,19 @@ class BufferedInput : InputFilter, InputBuffer
                       source = source.input;
                       assert (source);
                       }
-                      
+
                 return new BufferedInput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
-        
+
                 Place more data from the source stream into this buffer, and
                 return the number of bytes added. This does not compress the
                 current buffer content, so consider doing that explicitly.
-                
-                Returns: number of bytes added, which will be Eof when there
+
+                Returns: Number of bytes added, which will be Eof when there
                          is no further input available. Zero is also a valid
-                         response, meaning no data was actually added. 
+                         response, meaning no data was actually added.
 
         ***********************************************************************/
 
@@ -166,9 +166,9 @@ class BufferedInput : InputFilter, InputBuffer
         }
 
         /***********************************************************************
-        
+
                 Return a void[] slice of the buffer from start to end, where
-                end is exclusive
+                end is exclusive.
 
         ***********************************************************************/
 
@@ -180,10 +180,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Retrieve the valid content
+                Retrieve the valid content.
 
                 Returns:
-                a void[] slice of the buffer
+                A void[] slice of the buffer.
 
                 Remarks:
                 Return a void[] slice of the buffer, from the current position
@@ -199,14 +199,14 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Access buffer content
+                Access buffer content.
 
                 Params:
-                size =  number of bytes to access
-                eat =   whether to consume the content or not
+                size =  Number of bytes to access.
+                eat =   Whether to consume the content or not.
 
                 Returns:
-                the corresponding buffer slice when successful, or
+                The corresponding buffer slice when successful, or
                 null if there's not enough data available (Eof; Eob).
 
                 Remarks:
@@ -262,10 +262,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Read directly from this buffer
+                Read directly from this buffer.
 
                 Params:
-                dg = callback to provide buffer access to
+                dg = Callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -295,10 +295,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Write into this buffer
+                Write into this buffer.
 
                 Params:
-                dg = the callback to provide buffer access to
+                dg = The callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -327,13 +327,13 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Transfer content into the provided dst
+                Transfer content into the provided dst.
 
                 Params:
-                dst = destination of the content
+                dst = Destination of the content.
 
                 Returns:
-                return the number of bytes read, which may be less than
+                Return the number of bytes read, which may be less than
                 dst.length. Eof is returned when no further content is
                 available.
 
@@ -380,9 +380,9 @@ class BufferedInput : InputFilter, InputBuffer
                 Eof has been reached and Eof thereafter.
 
                 Params:
-                dst = where data should be placed 
-                exact = whether to throw an exception when dst is not
-                        filled (an Eof occurs first). Defaults to false
+                dst = Where data should be placed.
+                exact = Whether to throw an exception when dst is not
+                        filled (an Eof occurs first). Defaults to false.
 
         **********************************************************************/
 
@@ -406,10 +406,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Move the current read location
+                Move the current read location.
 
                 Params:
-                size = the number of bytes to move
+                size = The number of bytes to move.
 
                 Returns:
                 Returns true if successful, false otherwise.
@@ -442,7 +442,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Move the current read location
+                Move the current read location.
 
         ***********************************************************************/
 
@@ -478,10 +478,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Iterator support
+                Iterator support.
 
                 Params:
-                scan = the delegate to invoke with the current content
+                scan = The delegate to invoke with the current content.
 
                 Returns:
                 Returns true if a token was isolated, false otherwise.
@@ -525,15 +525,15 @@ class BufferedInput : InputFilter, InputBuffer
         /***********************************************************************
 
                 Reserve the specified space within the buffer, compressing
-                existing content as necessary to make room
+                existing content as necessary to make room.
 
                 Returns the current read point, after compression if that
-                was required
+                was required.
 
         ***********************************************************************/
 
         final size_t reserve (size_t space)
-        {       
+        {
                 assert (space < dimension);
 
                 if ((dimension - index) < space)
@@ -543,10 +543,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Compress buffer space
+                Compress buffer space.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
                 If we have some data left after an export, move it to
@@ -560,7 +560,7 @@ class BufferedInput : InputFilter, InputBuffer
         ***********************************************************************/
 
         final BufferedInput compress ()
-        {       
+        {
                 auto r = readable;
 
                 if (index > 0 && r > 0)
@@ -574,10 +574,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Drain buffer content to the specific conduit
+                Drain buffer content to the specific conduit.
 
                 Returns:
-                Returns the number of bytes written, or Eof
+                Returns the number of bytes written, or Eof.
 
                 Remarks:
                 Write as much of the buffer that the associated conduit
@@ -597,7 +597,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Access buffer limit
+                Access buffer limit.
 
                 Returns:
                 Returns the limit of readable content within this buffer.
@@ -617,10 +617,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Access buffer capacity
+                Access buffer capacity.
 
                 Returns:
-                Returns the maximum capacity of this buffer
+                Returns the maximum capacity of this buffer.
 
                 Remarks:
                 Each buffer has a capacity, a limit, and a position. The
@@ -637,10 +637,10 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Access buffer read position
+                Access buffer read position.
 
                 Returns:
-                Returns the current read-position within this buffer
+                Returns the current read-position within this buffer.
 
                 Remarks:
                 Each buffer has a capacity, a limit, and a position. The
@@ -657,11 +657,11 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Available content
+                Available content.
 
                 Remarks:
                 Return count of _readable bytes remaining in buffer. This is
-                calculated simply as limit() - position()
+                calculated simply as limit() - position().
 
         ***********************************************************************/
 
@@ -674,7 +674,7 @@ class BufferedInput : InputFilter, InputBuffer
 
                 Cast to a target type without invoking the wrath of the
                 runtime checks for misalignment. Instead, we truncate the
-                array length
+                array length.
 
         ***********************************************************************/
 
@@ -685,7 +685,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Clear buffer content
+                Clear buffer content.
 
                 Remarks:
                 Reset 'position' and 'limit' to zero. This effectively
@@ -698,14 +698,14 @@ class BufferedInput : InputFilter, InputBuffer
                 index = extent = 0;
 
                 // clear the filter chain also
-                if (source) 
+                if (source)
                     super.flush;
                 return this;
         }
 
         /***********************************************************************
 
-                Set the input stream
+                Set the input stream.
 
         ***********************************************************************/
 
@@ -716,15 +716,15 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Load the bits from a stream, up to an indicated length, and 
+                Load the bits from a stream, up to an indicated length, and
                 return them all in an array. The function may consume more
                 than the indicated size where additional data is available
-                during a block read operation, but will not wait for more 
+                during a block read operation, but will not wait for more
                 than specified. An Eof terminates the operation.
 
                 Returns an array representing the content, and throws
-                IOException on error
-                              
+                IOException on error.
+
         ***********************************************************************/
 
         final override void[] load (size_t max = size_t.max)
@@ -732,22 +732,22 @@ class BufferedInput : InputFilter, InputBuffer
                 load (super.input, super.conduit.bufferSize, max);
                 return slice;
         }
-                
+
         /***********************************************************************
 
-                Import content from the specified conduit, expanding 
-                as necessary up to the indicated maximum or until an 
-                Eof occurs
+                Import content from the specified conduit, expanding
+                as necessary up to the indicated maximum or until an
+                Eof occurs.
 
                 Returns the number of bytes contained.
-        
+
         ***********************************************************************/
 
         private size_t load (InputStream src, size_t increment, size_t max)
         {
                 size_t  len,
                         count;
-                
+
                 // make some room
                 compress;
 
@@ -755,13 +755,13 @@ class BufferedInput : InputFilter, InputBuffer
                 if (max != max.max)
                     if ((len = writable) < max)
                          increment = max - len;
-                        
+
                 while (count < max)
                       {
                       if (! writable)
                          {
                          dimension += increment;
-                         data.length = dimension;               
+                         data.length = dimension;
                          }
                       if ((len = writer(&src.read)) is Eof)
                            break;
@@ -769,19 +769,19 @@ class BufferedInput : InputFilter, InputBuffer
                          count += len;
                       }
                 return count;
-        }       
+        }
 
         /***********************************************************************
 
-                Reset the buffer content
+                Reset the buffer content.
 
                 Params:
-                data =          the backing array to buffer within
-                readable =      the number of bytes within data considered
-                                valid
+                data =          The backing array to buffer within.
+                readable =      The number of bytes within data considered
+                                valid.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
                 Set the backing array with some content readable. Writing
@@ -805,11 +805,11 @@ class BufferedInput : InputFilter, InputBuffer
 
         /***********************************************************************
 
-                Available space
+                Available space.
 
                 Remarks:
                 Return count of _writable bytes available in buffer. This is
-                calculated simply as capacity() - limit()
+                calculated simply as capacity() - limit().
 
         ***********************************************************************/
 
@@ -823,12 +823,12 @@ class BufferedInput : InputFilter, InputBuffer
 
 /*******************************************************************************
 
-        Buffers the flow of data from a upstream output. A downstream 
-        neighbour can locate and use this buffer instead of creating 
+        Buffers the flow of data from a upstream output. A downstream
+        neighbour can locate and use this buffer instead of creating
         another instance of their own.
 
-        (note that upstream is closer to the source, and downstream is
-        further away)
+        (Note that upstream is closer to the source, and downstream is
+        further away.)
 
         Don't forget to flush() buffered content before closing.
 
@@ -845,7 +845,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Ensure the buffer remains valid between method calls
+                Ensure the buffer remains valid between method calls.
 
         ***********************************************************************/
 
@@ -857,11 +857,11 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                stream = an input stream
-                capacity = desired buffer capacity
+                stream = An input stream.
+                capacity = Desired buffer capacity.
 
                 Remarks:
                 Construct a Buffer upon the provided input stream.
@@ -876,11 +876,11 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Construct a buffer
+                Construct a buffer.
 
                 Params:
-                stream = an input stream
-                capacity = desired buffer capacity
+                stream = An input stream.
+                capacity = Desired buffer capacity.
 
                 Remarks:
                 Construct a Buffer upon the provided input stream.
@@ -899,7 +899,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 instance where there's not a shared one available.
 
                 Params:
-                stream = an output stream
+                stream = An output stream.
 
                 Remarks:
                 Where an upstream instance is visible it will be returned.
@@ -922,16 +922,16 @@ class BufferedOutput : OutputFilter, OutputBuffer
                       sink = sink.output;
                       assert (sink);
                       }
-                      
+
                 return new BufferedOutput (stream, conduit.bufferSize);
         }
 
         /***********************************************************************
 
-                Retrieve the valid content
+                Retrieve the valid content.
 
                 Returns:
-                a void[] slice of the buffer
+                A void[] slice of the buffer.
 
                 Remarks:
                 Return a void[] slice of the buffer, from the current position
@@ -947,13 +947,13 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Emulate OutputStream.write()
+                Emulate OutputStream.write().
 
                 Params:
-                src = the content to write
+                src = The content to write.
 
                 Returns:
-                return the number of bytes written, which may be less than
+                Return the number of bytes written, which may be less than
                 provided (conceptually).
 
                 Remarks:
@@ -971,13 +971,13 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Append content
+                Append content.
 
                 Params:
-                src = the content to _append
+                src = The content to _append.
 
                 Returns a chaining reference if all content was written.
-                Throws an IOException indicating eof or eob if not.
+                Throws an IOException indicating Eof or Eob if not.
 
                 Remarks:
                 Append an array to this buffer, and flush to the
@@ -993,14 +993,14 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Append content
+                Append content.
 
                 Params:
-                src = the content to _append
-                length = the number of bytes in src
+                src = The content to _append.
+                length = The number of bytes in src.
 
                 Returns a chaining reference if all content was written.
-                Throws an IOException indicating eof or eob if not.
+                Throws an IOException indicating Eof or Eob if not.
 
                 Remarks:
                 Append an array to this buffer, and flush to the
@@ -1022,7 +1022,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                           if (written is Eof)
                               conduit.error (eofWrite);
                           length -= written;
-                          src += written; 
+                          src += written;
                           } while (length > dimension);
                     }
 
@@ -1038,11 +1038,11 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Available space
+                Available space.
 
                 Remarks:
                 Return count of _writable bytes available in buffer. This is
-                calculated as capacity() - limit()
+                calculated as capacity() - limit().
 
         ***********************************************************************/
 
@@ -1053,7 +1053,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Access buffer limit
+                Access buffer limit.
 
                 Returns:
                 Returns the limit of readable content within this buffer.
@@ -1073,10 +1073,10 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Access buffer capacity
+                Access buffer capacity.
 
                 Returns:
-                Returns the maximum capacity of this buffer
+                Returns the maximum capacity of this buffer.
 
                 Remarks:
                 Each buffer has a capacity, a limit, and a position. The
@@ -1093,7 +1093,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Truncate buffer content
+                Truncate buffer content.
 
                 Remarks:
                 Truncate the buffer within its extent. Returns true if
@@ -1115,7 +1115,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
                 Cast to a target type without invoking the wrath of the
                 runtime checks for misalignment. Instead, we truncate the
-                array length
+                array length.
 
         ***********************************************************************/
 
@@ -1126,7 +1126,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Flush all buffer content to the specific conduit
+                Flush all buffer content to the specific conduit.
 
                 Remarks:
                 Flush the contents of this buffer. This will block until
@@ -1163,7 +1163,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
                 until there is no more content available. The buffer
                 content should be explicitly flushed by the caller.
 
-                Throws an IOException on premature eof
+                Throws an IOException on premature Eof.
 
         ***********************************************************************/
 
@@ -1186,10 +1186,10 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Drain buffer content to the specific conduit
+                Drain buffer content to the specific conduit.
 
                 Returns:
-                Returns the number of bytes written, or Eof
+                Returns the number of bytes written, or Eof.
 
                 Remarks:
                 Write as much of the buffer that the associated conduit
@@ -1209,7 +1209,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Clear buffer content
+                Clear buffer content.
 
                 Remarks:
                 Reset 'position' and 'limit' to zero. This effectively
@@ -1225,7 +1225,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Set the output stream
+                Set the output stream.
 
         ***********************************************************************/
 
@@ -1236,24 +1236,24 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Seek within this stream. Any and all buffered output is 
+                Seek within this stream. Any and all buffered output is
                 disposed before the upstream is invoked. Use an explicit
-                flush() to emit content prior to seeking
+                flush() to emit content prior to seeking.
 
         ***********************************************************************/
 
         final override long seek (long offset, Anchor start = Anchor.Begin)
-        {       
+        {
                 clear;
                 return super.seek (offset, start);
         }
 
         /***********************************************************************
 
-                Write into this buffer
+                Write into this buffer.
 
                 Params:
-                dg = the callback to provide buffer access to
+                dg = The callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -1282,10 +1282,10 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Read directly from this buffer
+                Read directly from this buffer.
 
                 Params:
-                dg = callback to provide buffer access to
+                dg = Callback to provide buffer access to.
 
                 Returns:
                 Returns whatever the delegate returns.
@@ -1315,11 +1315,11 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Available content
+                Available content.
 
                 Remarks:
                 Return count of _readable bytes remaining in buffer. This is
-                calculated simply as limit() - position()
+                calculated simply as limit() - position().
 
         ***********************************************************************/
 
@@ -1330,15 +1330,15 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Reset the buffer content
+                Reset the buffer content.
 
                 Params:
-                data =     the backing array to buffer within
-                readable = the number of bytes within data considered
-                           valid
+                data =     The backing array to buffer within.
+                readable = The number of bytes within data considered
+                           valid.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
                 Set the backing array with some content readable. Writing
@@ -1362,10 +1362,10 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         /***********************************************************************
 
-                Compress buffer space
+                Compress buffer space.
 
                 Returns:
-                the buffer instance
+                The buffer instance.
 
                 Remarks:
                 If we have some data left after an export, move it to
@@ -1379,7 +1379,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
         ***********************************************************************/
 
         private final BufferedOutput compress ()
-        {       
+        {
                 size_t r = readable;
 
                 if (index > 0 && r > 0)

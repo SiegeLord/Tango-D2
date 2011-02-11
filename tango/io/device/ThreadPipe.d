@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-        copyright:      Copyright (c) 2008 Steven Schveighoffer. 
+        copyright:      Copyright (c) 2008 Steven Schveighoffer.
                         All rights reserved
 
         license:        BSD style: $(LICENSE)
@@ -27,7 +27,7 @@ private import tango.core.sync.Condition;
  *
  * It works by maintaining a circular buffer, where data is written to, and
  * read from, in a FIFO fashion.
- * -----------
+ * ---
  * auto tc = new ThreadPipe;
  * void outFunc()
  * {
@@ -39,6 +39,7 @@ private import tango.core.sync.Condition;
  * tc.write("hello, thread!");
  * tc.close();
  * t.join();
+ * ---
  */
 class ThreadPipe : Conduit
 {
@@ -52,7 +53,7 @@ class ThreadPipe : Conduit
      * Create a new ThreadPipe with the given buffer size.
      *
      * Params:
-     * bufferSize = the size to allocate the buffer. 
+     * bufferSize = The size to allocate the buffer.
      */
     this(size_t bufferSize=(1024*16))
     {
@@ -64,7 +65,7 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Implements IConduit.bufferSize
+     * Implements IConduit.bufferSize.
      *
      * Returns the appropriate buffer size that should be used to buffer the
      * ThreadPipe.  Note that this is simply the buffer size passed in, and
@@ -99,7 +100,7 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Return the number of bytes remaining to be read in the circular buffer
+     * Return the number of bytes remaining to be read in the circular buffer.
      */
     size_t remaining()
     {
@@ -108,7 +109,7 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Return the number of bytes that can be written to the circular buffer
+     * Return the number of bytes that can be written to the circular buffer.
      */
     size_t writable()
     {
@@ -148,7 +149,7 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Implements InputStream.read
+     * Implements InputStream.read.
      *
      * Read from the conduit into a target array.  The provided dst will be
      * populated with content from the stream.
@@ -204,9 +205,9 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Implements InputStream.clear()
+     * Implements InputStream.clear().
      *
-     * Clear any buffered content
+     * Clear any buffered content.
      */
     ThreadPipe clear()
     {
@@ -227,7 +228,7 @@ class ThreadPipe : Conduit
     }
 
     /**
-     * Implements OutputStream.write
+     * Implements OutputStream.write.
      *
      * Write to stream from a source array. The provided src content will be
      * written to the stream.

@@ -38,10 +38,10 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Create a file folder with the given path. 
+                Create a file folder with the given path.
 
-                Option 'create' will create the path when set true, 
-                or reference an existing path otherwise
+                Option 'create' will create the path when set true,
+                or reference an existing path otherwise.
 
         ***********************************************************************/
 
@@ -52,7 +52,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                create a FileFolder as a Group member
+                Create a FileFolder as a Group member.
 
         ***********************************************************************/
 
@@ -63,7 +63,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                explicitly create() or open() a named folder
+                Explicitly create() or open() a named folder.
 
         ***********************************************************************/
 
@@ -75,7 +75,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Return a short name
+                Return a short name.
 
         ***********************************************************************/
 
@@ -86,7 +86,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Return a long name
+                Return a long name.
 
         ***********************************************************************/
 
@@ -97,8 +97,8 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                A folder is being added or removed from the hierarchy. Use 
-                this to test for validity (or whatever) and throw exceptions 
+                A folder is being added or removed from the hierarchy. Use
+                this to test for validity (or whatever) and throw exceptions
                 as necessary
 
                 Here we test for folder overlap, and bail-out when found.
@@ -106,7 +106,7 @@ class FileFolder : VfsFolder
         ***********************************************************************/
 
         final void verify (VfsFolder folder, bool mounting)
-        {       
+        {
                 if (mounting && cast(FileFolder) folder)
                    {
                    auto src = Path.FS.padded (this.toString);
@@ -123,7 +123,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Return a contained file representation 
+                Return a contained file representation.
 
         ***********************************************************************/
 
@@ -134,7 +134,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Return a contained folder representation 
+                Return a contained folder representation.
 
         ***********************************************************************/
 
@@ -168,7 +168,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Returns content information about this folder
+                Returns content information about this folder.
 
         ***********************************************************************/
 
@@ -179,7 +179,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Returns a subtree of folders matching the given name
+                Returns a subtree of folders matching the given name.
 
         ***********************************************************************/
 
@@ -190,8 +190,8 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Iterate over the set of immediate child folders. This is 
-                useful for reflecting the hierarchy
+                Iterate over the set of immediate child folders. This is
+                useful for reflecting the hierarchy.
 
         ***********************************************************************/
 
@@ -199,9 +199,9 @@ class FileFolder : VfsFolder
         {
                 int result;
 
-                foreach (folder; folders(true))  
+                foreach (folder; folders(true))
                         {
-                        VfsFolder x = folder;  
+                        VfsFolder x = folder;
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -212,8 +212,8 @@ class FileFolder : VfsFolder
 
                 Close and/or synchronize changes made to this folder. Each
                 driver should take advantage of this as appropriate, perhaps
-                combining multiple files together, or possibly copying to a 
-                remote location
+                combining multiple files together, or possibly copying to a
+                remote location.
 
         ***********************************************************************/
 
@@ -223,8 +223,8 @@ class FileFolder : VfsFolder
         }
 
         /***********************************************************************
-        
-                Sweep owned folders 
+
+                Sweep owned folders.
 
         ***********************************************************************/
 
@@ -242,16 +242,16 @@ class FileFolder : VfsFolder
                             }
                          else
                             {
-                            stats.bytes += info.bytes; 
+                            stats.bytes += info.bytes;
                            ++stats.files;
                             }
 
-                return folders;         
+                return folders;
         }
 
         /***********************************************************************
 
-                Sweep owned files
+                Sweep owned files.
 
         ***********************************************************************/
 
@@ -264,16 +264,16 @@ class FileFolder : VfsFolder
                              if (filter is null || filter(&info))
                                 {
                                 files ~= Path.join (info.path, info.name);
-                                stats.bytes += info.bytes; 
+                                stats.bytes += info.bytes;
                                 ++stats.files;
                                 }
 
-                return files;         
+                return files;
         }
 
         /***********************************************************************
 
-                Throw an exception
+                Throw an exception.
 
         ***********************************************************************/
 
@@ -284,7 +284,7 @@ class FileFolder : VfsFolder
 
         /***********************************************************************
 
-                Create or open the given path, and detect path errors
+                Create or open the given path, and detect path errors.
 
         ***********************************************************************/
 
@@ -308,7 +308,7 @@ class FileFolder : VfsFolder
 /*******************************************************************************
 
         Represents a group of files (need this declared here to avoid
-        a bunch of bizarre compiler warnings)
+        a bunch of bizarre compiler warnings.)
 
 *******************************************************************************/
 
@@ -337,7 +337,7 @@ class FileGroup : VfsFiles
 
         /***********************************************************************
 
-                Iterate over the set of contained VfsFile instances
+                Iterate over the set of contained VfsFile instances.
 
         ***********************************************************************/
 
@@ -346,19 +346,19 @@ class FileGroup : VfsFiles
                 int  result;
                 auto host = new FileHost;
 
-                foreach (file; group)    
-                        {    
+                foreach (file; group)
+                        {
                         VfsFile x = host;
                         host.path.parse (file);
                         if ((result = dg(x)) != 0)
                              break;
-                        } 
+                        }
                 return result;
         }
 
         /***********************************************************************
 
-                Return the total number of entries 
+                Return the total number of entries.
 
         ***********************************************************************/
 
@@ -369,7 +369,7 @@ class FileGroup : VfsFiles
 
         /***********************************************************************
 
-                Return the total size of all files 
+                Return the total size of all files.
 
         ***********************************************************************/
 
@@ -382,10 +382,10 @@ class FileGroup : VfsFiles
 
 /*******************************************************************************
 
-        A set of folders representing a selection. This is where file 
+        A set of folders representing a selection. This is where file
         selection is made, and pattern-matched folder subsets can be
         extracted. You need one of these to expose statistics (such as
-        file or folder count) of a selected folder group 
+        file or folder count) of a selected folder group.
 
 *******************************************************************************/
 
@@ -395,7 +395,7 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Create a subset group
+                Create a subset group.
 
         ***********************************************************************/
 
@@ -404,18 +404,18 @@ private class FolderGroup : VfsFolders
         /***********************************************************************
 
                 Create a folder group including the provided folder and
-                (optionally) all child folders
+                (optionally) all child folders.
 
         ***********************************************************************/
 
         private this (FileFolder root, bool recurse)
         {
-                members = root ~ scan (root, recurse);   
+                members = root ~ scan (root, recurse);
         }
 
         /***********************************************************************
 
-                Iterate over the set of contained VfsFolder instances
+                Iterate over the set of contained VfsFolder instances.
 
         ***********************************************************************/
 
@@ -423,9 +423,9 @@ private class FolderGroup : VfsFolders
         {
                 int  result;
 
-                foreach (folder; members)  
+                foreach (folder; members)
                         {
-                        VfsFolder x = folder;  
+                        VfsFolder x = folder;
                         if ((result = dg(x)) != 0)
                              break;
                         }
@@ -434,7 +434,7 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Return the number of files in this group
+                Return the number of files in this group.
 
         ***********************************************************************/
 
@@ -448,7 +448,7 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Return the total size of all files in this group
+                Return the total size of all files in this group.
 
         ***********************************************************************/
 
@@ -463,7 +463,7 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Return the number of folders in this group
+                Return the number of folders in this group.
 
         ***********************************************************************/
 
@@ -476,7 +476,7 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Return the total number of entries in this group
+                Return the total number of entries in this group.
 
         ***********************************************************************/
 
@@ -487,24 +487,24 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Return a subset of folders matching the given pattern
+                Return a subset of folders matching the given pattern.
 
         ***********************************************************************/
 
         final VfsFolders subset (char[] pattern)
-        {  
+        {
                 Path.PathParser parser;
                 auto set = new FolderGroup;
 
-                foreach (folder; members)    
+                foreach (folder; members)
                          if (Path.patternMatch (parser.parse(folder.path).name, pattern))
-                             set.members ~= folder; 
+                             set.members ~= folder;
                 return set;
         }
 
         /***********************************************************************
 
-                Return a set of files matching the given pattern
+                Return a set of files matching the given pattern.
 
         ***********************************************************************/
 
@@ -520,22 +520,22 @@ private class FolderGroup : VfsFolders
 
         /***********************************************************************
 
-                Returns a set of files conforming to the given filter
+                Returns a set of files conforming to the given filter.
 
         ***********************************************************************/
 
         final FileGroup catalog (VfsFilter filter = null)
-        {       
+        {
                 return new FileGroup (this, filter);
         }
 
         /***********************************************************************
 
-                Internal routine to traverse the folder tree
+                Internal routine to traverse the folder tree.
 
         ***********************************************************************/
 
-        private final FileFolder[] scan (FileFolder root, bool recurse) 
+        private final FileFolder[] scan (FileFolder root, bool recurse)
         {
                 auto folders = root.folders (recurse);
                 if (recurse)
@@ -548,13 +548,13 @@ private class FolderGroup : VfsFolders
 
 /*******************************************************************************
 
-        A host for folders, currently used to harbor create() and open() 
-        methods only
+        A host for folders, currently used to harbor create() and open()
+        methods only.
 
 *******************************************************************************/
 
 private class FolderHost : VfsFolderEntry
-{       
+{
         private char[]          path;
         private FileFolder      parent;
 
@@ -588,7 +588,7 @@ private class FolderHost : VfsFolderEntry
 
         /***********************************************************************
 
-                Test to see if a folder exists
+                Test to see if a folder exists.
 
         ***********************************************************************/
 
@@ -605,7 +605,7 @@ private class FolderHost : VfsFolderEntry
 
 /*******************************************************************************
 
-        Represents things you can do with a file 
+        Represents things you can do with a file.
 
 *******************************************************************************/
 
@@ -624,7 +624,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Return a short name
+                Return a short name.
 
         ***********************************************************************/
 
@@ -635,7 +635,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Return a long name
+                Return a long name.
 
         ***********************************************************************/
 
@@ -657,7 +657,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Return the file size
+                Return the file size.
 
         ***********************************************************************/
 
@@ -668,7 +668,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Create a new file instance
+                Create a new file instance.
 
         ***********************************************************************/
 
@@ -680,7 +680,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Create a new file instance and populate with stream
+                Create a new file instance and populate with stream.
 
         ***********************************************************************/
 
@@ -692,7 +692,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Create and copy the given source
+                Create and copy the given source.
 
         ***********************************************************************/
 
@@ -705,7 +705,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Create and copy the given source, and remove the source
+                Create and copy the given source, and remove the source.
 
         ***********************************************************************/
 
@@ -718,7 +718,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Return the input stream. Don't forget to close it
+                Return the input stream. Don't forget to close it.
 
         ***********************************************************************/
 
@@ -729,7 +729,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Return the output stream. Don't forget to close it
+                Return the output stream. Don't forget to close it.
 
         ***********************************************************************/
 
@@ -740,7 +740,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Remove this file
+                Remove this file.
 
         ***********************************************************************/
 
@@ -752,7 +752,7 @@ private class FileHost : VfsFile
 
         /***********************************************************************
 
-                Duplicate this entry
+                Duplicate this entry.
 
         ***********************************************************************/
 
@@ -762,10 +762,10 @@ private class FileHost : VfsFile
                 ret.path = path.dup;
                 return ret;
         }
-        
+
         /***********************************************************************
 
-                Modified time of the file
+                Modified time of the file.
 
         ***********************************************************************/
 

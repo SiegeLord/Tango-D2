@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.PollSelector;
@@ -87,9 +87,9 @@ version (Posix)
          * Open the poll()-based selector.
          *
          * Params:
-         * size         = maximum amount of conduits that will be registered;
+         * size         = Maximum amount of conduits that will be registered;
          *                it will grow dynamically if needed.
-         * maxEvents    = maximum amount of conduit events that will be
+         * maxEvents    = Maximum amount of conduit events that will be
          *                returned in the selection set per call to select();
          *                this value is currently not used by this selector.
          */
@@ -124,11 +124,11 @@ version (Posix)
          * attachment.
          *
          * Params:
-         * conduit      = conduit that will be associated to the selector;
+         * conduit      = Conduit that will be associated to the selector;
          *                must be a valid conduit (i.e. not null and open).
-         * events       = bit mask of Event values that represent the events
+         * events       = Bit mask of Event values that represent the events
          *                that will be tracked for the conduit.
-         * attachment   = optional object with application-specific data that
+         * attachment   = Optional object with application-specific data that
          *                will be available when an event is triggered for the
          *                conduit
          *
@@ -183,7 +183,7 @@ version (Posix)
          * Remove a conduit from the selector.
          *
          * Params:
-         * conduit      = conduit that had been previously associated to the
+         * conduit      = Conduit that had been previously associated to the
          *                selector; it can be null.
          *
          * Remarks:
@@ -328,10 +328,10 @@ version (Posix)
             }
             return SelectionKey.init;
         }
-        
+
         /**
-         * Return the number of keys resulting from the registration of a conduit
-         * to the selector.
+         * Return the number of keys resulting from the registration
+         * of a conduit to the selector.
          */
         public size_t count()
         {

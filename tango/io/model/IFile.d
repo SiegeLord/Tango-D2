@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2005      
-        
+        version:        Initial release: March 2005
+
         author:         Kris
 
 *******************************************************************************/
@@ -14,99 +14,99 @@ module tango.io.model.IFile;
 
 /*******************************************************************************
 
-        Generic file-oriented attributes
+        Generic file-oriented attributes.
 
 *******************************************************************************/
 
 interface FileConst
 {
         /***********************************************************************
-        
+
                 A set of file-system specific constants for file and path
                 separators (chars and strings).
 
-                Keep these constants mirrored for each OS
+                Keep these constants mirrored for each OS.
 
         ***********************************************************************/
 
         version (Win32)
         {
                 ///
-                enum : char 
+                enum : char
                 {
-                        /// The current directory character
+                        /// The current directory character.
                         CurrentDirChar = '.',
-                        
-                        /// The file separator character
+
+                        /// The file separator character.
                         FileSeparatorChar = '.',
-                        
-                        /// The path separator character
+
+                        /// The path separator character.
                         PathSeparatorChar = '/',
-                        
-                        /// The system path character
+
+                        /// The system path character.
                         SystemPathChar = ';',
                 }
 
-                /// The parent directory string
+                /// The parent directory string.
                 static const char[] ParentDirString = "..";
-                
-                /// The current directory string
+
+                /// The current directory string.
                 static const char[] CurrentDirString = ".";
-                
-                /// The file separator string
+
+                /// The file separator string.
                 static const char[] FileSeparatorString = ".";
-                
-                /// The path separator string
+
+                /// The path separator string.
                 static const char[] PathSeparatorString = "/";
-                
-                /// The system path string
+
+                /// The system path string.
                 static const char[] SystemPathString = ";";
 
-                /// The newline string
+                /// The newline string.
                 static const char[] NewlineString = "\r\n";
         }
 
         version (Posix)
         {
                 ///
-                enum : char 
+                enum : char
                 {
-                        /// The current directory character
+                        /// The current directory character.
                         CurrentDirChar = '.',
-                        
-                        /// The file separator character
+
+                        /// The file separator character.
                         FileSeparatorChar = '.',
-                        
-                        /// The path separator character
+
+                        /// The path separator character.
                         PathSeparatorChar = '/',
-                        
-                        /// The system path character
+
+                        /// The system path character.
                         SystemPathChar = ':',
                 }
 
-                /// The parent directory string
+                /// The parent directory string.
                 static const char[] ParentDirString = "..";
-                
-                /// The current directory string
+
+                /// The current directory string.
                 static const char[] CurrentDirString = ".";
-                
-                /// The file separator string
+
+                /// The file separator string.
                 static const char[] FileSeparatorString = ".";
-                
-                /// The path separator string
+
+                /// The path separator string.
                 static const char[] PathSeparatorString = "/";
-                
-                /// The system path string
+
+                /// The system path string.
                 static const char[] SystemPathString = ":";
 
-                /// The newline string
+                /// The newline string.
                 static const char[] NewlineString = "\n";
         }
 }
 
 /*******************************************************************************
 
-        Passed around during file-scanning
+        Passed around during file-scanning.
 
 *******************************************************************************/
 

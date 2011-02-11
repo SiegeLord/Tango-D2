@@ -8,7 +8,7 @@
 
         author:         Kris
 
-        Simple serialization for text-based name/value pairs
+        Simple serialization for text-based name/value pairs.
 
 *******************************************************************************/
 
@@ -24,7 +24,7 @@ private import tango.io.device.Conduit;
 /*******************************************************************************
 
         Provides load facilities for a properties stream. That is, a file
-        or other medium containing lines of text with a name=value layout
+        or other medium containing lines of text with a name=value layout.
 
 *******************************************************************************/
 
@@ -32,7 +32,7 @@ class MapInput(T) : Lines!(T)
 {
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -49,17 +49,16 @@ class MapInput(T) : Lines!(T)
                 and rValue pairs from each one, The expected file format is
                 as follows:
 
-                <pre>
-                x = y
-                abc = 123
-                x.y.z = this is a single property
-
-                # this is a comment line
-                </pre>
+        * $(PRE
+        *x = y
+        *abc = 123
+        *x.y.z = this is a single property
+        *
+        *# this is a comment line)
 
                 Note that the provided name and value are actually slices
                 and should be copied if you intend to retain them (using
-                name.dup and value.dup where appropriate)
+                name.dup and value.dup where appropriate.)
 
         ***********************************************************************/
 
@@ -92,14 +91,14 @@ class MapInput(T) : Lines!(T)
 
         /***********************************************************************
 
-                Load the input stream into an AA
+                Load the input stream into an AA.
 
         ***********************************************************************/
 
         final MapInput load (ref T[][T[]] properties)
         {
                 foreach (name, value; this)
-                         properties[name.dup] = value.dup;  
+                         properties[name.dup] = value.dup;
                 return this;
         }
 }
@@ -108,8 +107,8 @@ class MapInput(T) : Lines!(T)
 /*******************************************************************************
 
         Provides write facilities on a properties stream. That is, a file
-        or other medium which will contain lines of text with a name=value 
-        layout
+        or other medium which will contain lines of text with a name=value
+        layout.
 
 *******************************************************************************/
 
@@ -126,7 +125,7 @@ class MapOutput(T) : OutputFilter
 
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -138,7 +137,7 @@ class MapOutput(T) : OutputFilter
 
         /***********************************************************************
 
-                Append a newline to the provided stream
+                Append a newline to the provided stream.
 
         ***********************************************************************/
 
@@ -150,7 +149,7 @@ class MapOutput(T) : OutputFilter
 
         /***********************************************************************
 
-                Append a comment to the provided stream
+                Append a comment to the provided stream.
 
         ***********************************************************************/
 
@@ -164,7 +163,7 @@ class MapOutput(T) : OutputFilter
 
         /***********************************************************************
 
-                Append name & value to the provided stream
+                Append name & value to the provided stream.
 
         ***********************************************************************/
 
@@ -179,7 +178,7 @@ class MapOutput(T) : OutputFilter
 
         /***********************************************************************
 
-                Append AA properties to the provided stream
+                Append AA properties to the provided stream.
 
         ***********************************************************************/
 
@@ -194,14 +193,14 @@ class MapOutput(T) : OutputFilter
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (UnitTest)
 {
         import tango.io.Stdout;
         import tango.io.device.Array;
-        
+
         unittest
         {
                 auto buf = new Array(200);

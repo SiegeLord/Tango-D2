@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
+  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
 *******************************************************************************/
 
 module tango.io.selector.model.ISelector;
@@ -44,8 +44,8 @@ enum Event: uint
  * member. This member is very convenient to keep application-specific data
  * that will be needed when the tracked events are triggered.
  *
- * See $(LINK $(CODEURL)tango.io.selector.ISelector),
- * $(LINK $(CODEURL)tango.io.selector.ISelectionSet)
+ * See_also: $(SYMLINK ISelector, ISelector),
+ *           $(SYMLINK ISelectionSet, ISelectionSet)
  */
 struct SelectionKey
 {
@@ -238,9 +238,9 @@ interface ISelector
      * Initialize the selector.
      *
      * Params:
-     * size         = value that provides a hint for the maximum amount of
+     * size         = Value that provides a hint for the maximum amount of
      *                conduits that will be registered
-     * maxEvents    = value that provides a hint for the maximum amount of
+     * maxEvents    = Value that provides a hint for the maximum amount of
      *                conduit events that will be returned in the selection
      *                set per call to select.
      */
@@ -263,11 +263,11 @@ interface ISelector
      * atachment.
      *
      * Params:
-     * conduit      = conduit that will be associated to the selector;
+     * conduit      = Conduit that will be associated to the selector;
      *                must be a valid conduit (i.e. not null and open).
-     * events       = bit mask of Event values that represent the events that
+     * events       = Bit mask of Event values that represent the events that
      *                will be tracked for the conduit.
-     * attachment   = optional object with application-specific data that will
+     * attachment   = Optional object with application-specific data that will
      *                be available when an event is triggered for the conduit
      *
      * Examples:
@@ -284,7 +284,7 @@ interface ISelector
 
 
     /**
-     * Deprecated, use register instead
+     * Deprecated, use register instead.
      */
     deprecated public abstract void reregister(ISelectable conduit, Event
             events, Object attachment = null);
@@ -293,7 +293,7 @@ interface ISelector
      * Remove a conduit from the selector.
      *
      * Params:
-     * conduit      = conduit that had been previously associated to the
+     * conduit      = Conduit that had been previously associated to the
      *                selector; it can be null.
      *
      * Remarks:
@@ -344,7 +344,7 @@ interface ISelector
      * -------
      *
      * Params:
-     * timeout  = the maximum amount of time in seconds that the
+     * timeout  = The maximum amount of time in seconds that the
      *            selector will wait for events from the conduits; the
      *            amount of time is relative to the current system time
      *            (i.e. just the number of milliseconds that the selector

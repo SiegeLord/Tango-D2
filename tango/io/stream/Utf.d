@@ -8,9 +8,9 @@
 
         author:         Kris
 
-        UTF conversion streams, supporting cross-translation of char, wchar 
+        UTF conversion streams, supporting cross-translation of char, wchar
         and dchar variants. For supporting endian variations, configure the
-        appropriate EndianStream upstream of this one (closer to the source)
+        appropriate EndianStream upstream of this one (closer to the source.)
 
 *******************************************************************************/
 
@@ -24,24 +24,24 @@ private import Utf = tango.text.convert.Utf;
 
 /*******************************************************************************
 
-        Streaming UTF converter. Type T is the target or destination type, 
+        Streaming UTF converter. Type T is the target or destination type,
         while S is the source type. Both types are either char/wchar/dchar.
 
 *******************************************************************************/
 
 class UtfInput(T, S) : InputFilter, InputFilter.Mutator
-{       
-        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
+{
+        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar))
                     pragma (msg, "Source type must be char, wchar, or dchar");
 
-        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
+        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar))
                     pragma (msg, "Target type must be char, wchar, or dchar");
 
         private InputBuffer buffer;
 
         /***********************************************************************
 
-                Create a buffered utf input converter
+                Create a buffered utf input converter.
 
         ***********************************************************************/
 
@@ -49,13 +49,13 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
         {
                 super (buffer = BufferedInput.create (stream));
         }
-        
+
         /***********************************************************************
 
-                Consume input of type T, and return the number of array 
-                elements comsumed. 
+                Consume input of type T, and return the number of array
+                elements comsumed.
 
-                Returns Eof upon end-of-flow
+                Returns Eof upon end-of-flow.
 
         ***********************************************************************/
 
@@ -116,20 +116,20 @@ class UtfInput(T, S) : InputFilter, InputFilter.Mutator
 
 
 /*******************************************************************************
-        
-        Streaming UTF converter. Type T is the target or destination type, 
+
+        Streaming UTF converter. Type T is the target or destination type,
         while S is the source type. Both types are either char/wchar/dchar.
 
-        Note that the arguments are reversed from those of UtfInput
+        Note that the arguments are reversed from those of UtfInput.
 
 *******************************************************************************/
 
 class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
-{       
-        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar)) 
+{
+        static if (!is (S == char) && !is (S == wchar) && !is (S == dchar))
                     pragma (msg, "Source type must be char, wchar, or dchar");
 
-        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar)) 
+        static if (!is (T == char) && !is (T == wchar) && !is (T == dchar))
                     pragma (msg, "Target type must be char, wchar, or dchar");
 
 
@@ -137,7 +137,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
         /***********************************************************************
 
-                Create a buffered utf output converter
+                Create a buffered utf output converter.
 
         ***********************************************************************/
 
@@ -148,10 +148,10 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
         /***********************************************************************
 
-                Consume input of type T, and return the number of array 
-                elements consumed. 
+                Consume input of type T, and return the number of array
+                elements consumed.
 
-                Returns Eof upon end-of-flow
+                Returns Eof upon end-of-flow.
 
         ***********************************************************************/
 
@@ -164,14 +164,14 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
         }
 
         /***********************************************************************
-        
-                Write to the output stream from a source array. The provided 
+
+                Write to the output stream from a source array. The provided
                 src content is converted as necessary. Note that an attached
                 output buffer must be at least four bytes wide to accommodate
                 a conversion.
 
                 Returns the number of bytes consumed from src, which may be
-                less than the quantity provided
+                less than the quantity provided.
 
         ***********************************************************************/
 
@@ -186,7 +186,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
                    size_t writer (void[] dst)
                    {
-                        // buffer must be at least 4 bytes wide 
+                        // buffer must be at least 4 bytes wide
                         // to contain a generic conversion
                         if (dst.length < 4)
                             return Eof;
@@ -205,7 +205,7 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
                         return produced * T.sizeof;
                    }
-                    
+
                    // write directly into buffered content and
                    // flush when the output is full
                    if (buffer.writer(&writer) is Eof)
@@ -221,9 +221,9 @@ class UtfOutput (S, T) : OutputFilter, OutputFilter.Mutator
 
 
 /*******************************************************************************
-        
+
 *******************************************************************************/
-        
+
 debug (Utf)
 {
         import tango.io.Stdout;

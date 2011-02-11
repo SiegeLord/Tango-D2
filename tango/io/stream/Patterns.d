@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: January 2006      
-        
+        version:        Initial release: January 2006
+
         author:         Kris
 
 *******************************************************************************/
@@ -13,7 +13,7 @@
 module tango.io.stream.Patterns;
 
 private import tango.text.Regex;
-    
+
 private import tango.io.stream.Iterator;
 
 /*******************************************************************************
@@ -22,16 +22,16 @@ private import tango.io.stream.Iterator;
 
         Each pattern is exposed to the client as a slice of the original
         content, where the slice is transient. If you need to retain the
-        exposed content, then you should .dup it appropriately. 
+        exposed content, then you should .dup it appropriately.
 
         The content exposed via an iterator is supposed to be entirely
         read-only. All current iterators abide by this rule, but it is
         possible a user could mutate the content through a get() slice.
-        To enforce the desired read-only aspect, the code would have to 
-        introduce redundant copying or the compiler would have to support 
+        To enforce the desired read-only aspect, the code would have to
+        introduce redundant copying or the compiler would have to support
         read-only arrays.
 
-        See Delimiters, Lines, Quotes
+        See Delimiters, Lines, Quotes.
 
 *******************************************************************************/
 
@@ -39,9 +39,9 @@ class Patterns : Iterator!(char)
 {
         private Regex regex;
         private alias char T;
-        
+
         /***********************************************************************
-        
+
                 Construct an uninitialized iterator. For example:
                 ---
                 auto lines = new Lines!(char);
@@ -61,7 +61,7 @@ class Patterns : Iterator!(char)
                                  Cout (line).newline;
                 }
                 ---
-                
+
                 Construct a streaming iterator upon a conduit:
                 ---
                 foreach (line; new Lines!(char) (new File ("myfile")))
@@ -77,7 +77,7 @@ class Patterns : Iterator!(char)
         }
 
         /***********************************************************************
-                
+
         ***********************************************************************/
 
         protected size_t scan (void[] data)
@@ -89,7 +89,7 @@ class Patterns : Iterator!(char)
                    int start = regex.registers_[0];
                    int finish = regex.registers_[1];
                    set (content.ptr, 0, start);
-                   return found (finish-1);        
+                   return found (finish-1);
                    }
 
                 return notFound;
@@ -105,7 +105,7 @@ debug(UnitTest)
 {
         private import tango.io.device.Array;
 
-        unittest 
+        unittest
         {
                 auto p = new Patterns ("b.*", new Array("blah"));
         }

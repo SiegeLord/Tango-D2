@@ -6,12 +6,11 @@
 
     author:     Daniel Keep
 
-    version:    Feb 08: Added support for different stream encodings, removed
-                        old "window bits" ctors.
-                        
-                Dec 07: Added support for "window bits", needed for Zip support.
-                
-                Jul 07: Initial release.
+    version:
+      Feb 08: Added support for different stream encodings, removed
+              old "window bits" ctors.$(BR)
+      Dec 07: Added support for "window bits", needed for Zip support.$(BR)
+      Jul 07: Initial release.
 
 *******************************************************************************/
 
@@ -50,7 +49,7 @@ private enum { CHUNKSIZE = 256 * 1024 };
 private enum { WINDOWBITS_DEFAULT = 15 };
 
 /*******************************************************************************
-  
+
     This input filter can be used to perform decompression of zlib streams.
 
 *******************************************************************************/
@@ -58,10 +57,10 @@ private enum { WINDOWBITS_DEFAULT = 15 };
 class ZlibInput : InputFilter
 {
     /***************************************************************************
-    
+
         This enumeration allows you to specify the encoding of the compressed
         stream.
-    
+
     ***************************************************************************/
 
     enum Encoding : int
@@ -95,7 +94,7 @@ class ZlibInput : InputFilter
         z_stream zs;
         ubyte[] in_chunk;
     }
-    
+
     /***************************************************************************
 
         Constructs a new zlib decompression filter.  You need to pass in the
@@ -112,18 +111,18 @@ class ZlibInput : InputFilter
         specified.  Additionally, the windowBits parameter may be negative to
         indicate that zlib should omit the standard zlib header and trailer,
         with the window size being -windowBits.
-        
+
       Params:
-        stream = compressed input stream.
-        
+        stream = Compressed input stream.
+
         encoding =
-            stream encoding.  Defaults to Encoding.Guess, which
+            Stream encoding.  Defaults to Encoding.Guess, which
             should be sufficient unless the stream was compressed with
             no encoding; in this case, you must manually specify
             Encoding.None.
-            
+
         windowBits =
-            the base two logarithm of the window size, and should be in the
+            The base two logarithm of the window size, and should be in the
             range 8-15, defaulting to 15 if not specified.
 
     ***************************************************************************/
@@ -137,7 +136,7 @@ class ZlibInput : InputFilter
         super(stream);
         in_chunk = new ubyte[CHUNKSIZE];
     }
-    
+
     /// ditto
     this(InputStream stream)
     {
@@ -162,19 +161,19 @@ class ZlibInput : InputFilter
     {
         /*
          * Here's how windowBits works, according to zlib.h:
-         * 
+         *
          * 8 .. 15
          *      zlib encoding.
-         *      
+         *
          * (8 .. 15) + 16
          *      gzip encoding.
-         *      
+         *
          * (8 .. 15) + 32
          *      auto-detect encoding.
-         *      
+         *
          * (8 .. 15) * -1
          *      raw/no encoding.
-         *      
+         *
          * Since we're going to be playing with the value, we DO care whether
          * windowBits is in the expected range, so we'll check it.
          */
@@ -184,13 +183,13 @@ class ZlibInput : InputFilter
             throw new ZlibException("invalid windowBits argument"
                 ~ .toString(windowBits));
         }
-        
+
         switch( encoding )
         {
         case Encoding.Zlib:
             // no-op
             break;
-            
+
         case Encoding.Gzip:
             windowBits += 16;
             break;
@@ -198,7 +197,7 @@ class ZlibInput : InputFilter
         case Encoding.Guess:
             windowBits += 32;
             break;
-            
+
         case Encoding.None:
             windowBits *= -1;
             break;
@@ -206,7 +205,7 @@ class ZlibInput : InputFilter
         default:
             assert (false);
         }
-        
+
         // Allocate inflate state
         with( zs )
         {
@@ -233,7 +232,7 @@ class ZlibInput : InputFilter
         // See ticket #1837
         this.source = stream;
     }
-    
+
     ~this()
     {
         if( zs_valid )
@@ -241,7 +240,7 @@ class ZlibInput : InputFilter
     }
 
     /***************************************************************************
-        
+
         Resets and re-initialises this instance.
 
         If you are creating compression streams inside a loop, you may wish to
@@ -250,7 +249,7 @@ class ZlibInput : InputFilter
 
         The stream must have already been closed before calling reset.
 
-    ***************************************************************************/ 
+    ***************************************************************************/
 
     void reset(InputStream stream, Encoding encoding,
             int windowBits = WINDOWBITS_DEFAULT)
@@ -258,7 +257,7 @@ class ZlibInput : InputFilter
         // If the stream is still valid, bail.
         if( zs_valid )
             throw new ZlibStillOpenException;
-        
+
         init(stream, encoding, windowBits);
     }
 
@@ -276,7 +275,7 @@ class ZlibInput : InputFilter
         Returns the number of bytes stored into dst, which may be less than
         requested.
 
-    ***************************************************************************/ 
+    ***************************************************************************/
 
     override size_t read(void[] dst)
     {
@@ -326,7 +325,7 @@ class ZlibInput : InputFilter
 
         Closes the compression stream.
 
-    ***************************************************************************/ 
+    ***************************************************************************/
 
     override void close()
     {
@@ -364,7 +363,7 @@ class ZlibInput : InputFilter
 }
 
 /*******************************************************************************
-  
+
     This output filter can be used to perform compression of data into a zlib
     stream.
 
@@ -408,10 +407,10 @@ class ZlibOutput : OutputFilter
     }
 
     /***************************************************************************
-    
+
         This enumeration allows you to specify what the encoding of the
         compressed stream should be.
-    
+
     ***************************************************************************/
 
     enum Encoding : int
@@ -466,7 +465,7 @@ class ZlibOutput : OutputFilter
         super(stream);
         out_chunk = new ubyte[CHUNKSIZE];
     }
-    
+
     /// ditto
     this(OutputStream stream, Level level = Level.Normal)
     {
@@ -486,22 +485,22 @@ class ZlibOutput : OutputFilter
     {
         /*
          * Here's how windowBits works, according to zlib.h:
-         * 
+         *
          * 8 .. 15
          *      zlib encoding.
-         *      
+         *
          * (8 .. 15) + 16
          *      gzip encoding.
-         *      
+         *
          * (8 .. 15) + 32
          *      auto-detect encoding.
-         *      
+         *
          * (8 .. 15) * -1
          *      raw/no encoding.
-         *      
+         *
          * Since we're going to be playing with the value, we DO care whether
          * windowBits is in the expected range, so we'll check it.
-         * 
+         *
          * Also, note that OUR Encoding enum doesn't contain the 'Guess'
          * member.  I'm still waiting on tango.io.psychic...
          */
@@ -511,17 +510,17 @@ class ZlibOutput : OutputFilter
             throw new ZlibException("invalid windowBits argument"
                 ~ .toString(windowBits));
         }
-        
+
         switch( encoding )
         {
         case Encoding.Zlib:
             // no-op
             break;
-            
+
         case Encoding.Gzip:
             windowBits += 16;
             break;
-            
+
         case Encoding.None:
             windowBits *= -1;
             break;
@@ -529,7 +528,7 @@ class ZlibOutput : OutputFilter
         default:
             assert (false);
         }
-        
+
         // Allocate deflate state
         with( zs )
         {
@@ -556,7 +555,7 @@ class ZlibOutput : OutputFilter
     }
 
     /***************************************************************************
-        
+
         Resets and re-initialises this instance.
 
         If you are creating compression streams inside a loop, you may wish to
@@ -566,7 +565,7 @@ class ZlibOutput : OutputFilter
         The stream must have already been closed or committed before calling
         reset.
 
-    ***************************************************************************/ 
+    ***************************************************************************/
 
     void reset(OutputStream stream, Level level, Encoding encoding,
             int windowBits = WINDOWBITS_DEFAULT)
@@ -753,7 +752,7 @@ class ZlibOutput : OutputFilter
 }
 
 /*******************************************************************************
-  
+
     This exception is thrown if you attempt to perform a read, write or flush
     operation on a closed zlib filter stream.  This can occur if the input
     stream has finished, or an output stream was flushed.
@@ -769,7 +768,7 @@ class ZlibClosedException : IOException
 }
 
 /*******************************************************************************
-  
+
     This exception is thrown if you attempt to reset a compression stream that
     is still open.  You must either close or commit a stream before it can be
     reset.
@@ -785,7 +784,7 @@ class ZlibStillOpenException : IOException
 }
 
 /*******************************************************************************
-  
+
     This exception is thrown when an error occurs in the underlying zlib
     library.  Where possible, it will indicate both the name of the error, and
     any textural message zlib has provided.
@@ -802,7 +801,7 @@ class ZlibException : IOException
     {
         super(msg);
     }
-    
+
     /*
      * code is the error code returned by zlib.  The exception message will
      * be the name of the error code.
@@ -860,11 +859,11 @@ void check_array(char[] FILE=__FILE__, int LINE=__LINE__)(
         FILE ~":"~ toString(LINE) ~ ": " ~ msg()
         ~ "array lengths differ (" ~ toString(as.length)
         ~ " vs " ~ toString(bs.length) ~ ")" );
-    
+
     foreach( i, a ; as )
     {
         auto b = bs[i];
-        
+
         assert( a == b,
             FILE ~":"~ toString(LINE) ~ ": " ~ msg()
             ~ "arrays differ at " ~ toString(i)
@@ -877,10 +876,10 @@ unittest
 {
     // One ring to rule them all, one ring to find them,
     // One ring to bring them all and in the darkness bind them.
-    const char[] message = 
+    const char[] message =
         "Ash nazg durbatulûk, ash nazg gimbatul, "
         "ash nazg thrakatulûk, agh burzum-ishi krimpatul.";
-    
+
     static assert( message.length == 90 );
 
     // This compressed data was created using Python 2.5's built in zlib
@@ -896,34 +895,34 @@ unittest
             0x2a,0xcd,0xd5,0xcd,0x2c,0xce,0xc8,0x54,
             0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
             0x01,0x00,0x1f,0xe3,0x22,0x99];
-    
+
         scope cond_z = new Array(2048);
         scope comp = new ZlibOutput(cond_z);
         comp.write (message);
         comp.close;
-    
+
         assert( comp.written == message_z.length );
-        
+
         /+
         Stdout("message_z:").newline;
         foreach( b ; cast(ubyte[]) cond_z.slice )
             Stdout.format("0x{0:x2},", b);
         Stdout.newline.newline;
         +/
-    
+
         //assert( message_z == cast(ubyte[])(cond_z.slice) );
         check_array!(__FILE__,__LINE__)
             ( message_z, cast(ubyte[]) cond_z.slice, "message_z " );
-    
+
         scope decomp = new ZlibInput(cond_z);
         auto buffer = new ubyte[256];
         buffer = buffer[0 .. decomp.read(buffer)];
-    
+
         //assert( cast(ubyte[])message == buffer );
         check_array!(__FILE__,__LINE__)
             ( cast(ubyte[]) message, buffer, "message (zlib) " );
     }
-    
+
     // This compressed data was created using the Cygwin gzip program
     // with default options.  The original file was called "testdata.txt".
     {
@@ -939,7 +938,7 @@ unittest
             0xc8,0x2e,0xca,0xcc,0x2d,0x00,0xc9,0xea,
             0x01,0x00,0x45,0x38,0xbc,0x58,0x5a,0x00,
             0x00,0x00];
-        
+
         // Compresses the original message, and outputs the bytes.  You can use
         // this to test the output of ZlibOutput with gzip.  If you use this,
         // don't forget to import Stdout somewhere.
@@ -948,13 +947,13 @@ unittest
         scope comp = new ZlibOutput(comp_gz, ZlibOutput.Level.Normal, ZlibOutput.Encoding.Gzip, WINDOWBITS_DEFAULT);
         comp.write(message);
         comp.close;
-        
+
         Stdout.format("message_gz ({0} bytes):", comp_gz.slice.length).newline;
         foreach( b ; cast(ubyte[]) comp_gz.slice )
             Stdout.format("0x{0:x2},", b);
         Stdout.newline;
         +/
-        
+
         // We aren't going to test that we can compress to a gzip stream
         // since gzip itself always adds stuff like the filename, timestamps,
         // etc.  We'll just make sure we can DECOMPRESS gzip streams.
@@ -962,7 +961,7 @@ unittest
         scope decomp = new ZlibInput(decomp_gz);
         auto buffer = new ubyte[256];
         buffer = buffer[0 .. decomp.read(buffer)];
-        
+
         //assert( cast(ubyte[]) message == buffer );
         check_array!(__FILE__,__LINE__)
             ( cast(ubyte[]) message, buffer, "message (gzip) ");

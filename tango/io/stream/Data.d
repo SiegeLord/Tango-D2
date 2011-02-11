@@ -44,7 +44,7 @@ private import tango.io.stream.Buffered;
 
 class DataInput : InputFilter
 {
-        public alias array     get;             /// old name alias
+        public alias array     get;             /// Old name aliases.
         public alias boolean   getBool;         /// ditto
         public alias int8      getByte;         /// ditto
         public alias int16     getShort;        /// ditto
@@ -53,12 +53,13 @@ class DataInput : InputFilter
         public alias float32   getFloat;        /// ditto
         public alias float64   getDouble;       /// ditto
 
-        public enum                             /// endian variations
+        /// Endian variations.
+        public enum
         {
-                Native  = 0,
-                Network = 1,
-                Big     = 1,
-                Little  = 2
+                Native  = 0, ///
+                Network = 1, ///
+                Big     = 1, ///
+                Little  = 2  ///
         }
 
         private bool            flip;
@@ -69,7 +70,7 @@ class DataInput : InputFilter
 
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -82,7 +83,7 @@ class DataInput : InputFilter
 
         /***********************************************************************
 
-                Set the array allocator
+                Set the array allocator.
 
         ***********************************************************************/
 
@@ -94,7 +95,7 @@ class DataInput : InputFilter
 
         /***********************************************************************
 
-                set current endian translation
+                Set current endian translation.
 
         ***********************************************************************/
 
@@ -114,11 +115,11 @@ class DataInput : InputFilter
                 the array, and the actual number of bytes is returned.
 
                 Note that the size of the array is written as an integer
-                prefixing the array content itself.  Use read(void[]) to 
+                prefixing the array content itself.  Use read(void[]) to
                 eschew this prefix.
 
         ***********************************************************************/
-        
+
         final uint array (void[] dst)
         {
                 auto len = int32;
@@ -144,7 +145,7 @@ class DataInput : InputFilter
                 ---
                 auto text = cast(char[]) input.get;
                 ---
-                
+
         ***********************************************************************/
 
         final void[] array ()
@@ -265,7 +266,7 @@ class DataInput : InputFilter
                           input.conduit.error ("DataInput :: unexpected eof while reading");
                       bytes -= i;
                       dst += i;
-                      } 
+                      }
          }
 }
 
@@ -286,8 +287,8 @@ class DataInput : InputFilter
 *******************************************************************************/
 
 class DataOutput : OutputFilter
-{       
-        public alias array      put;            /// old name alias
+{
+        public alias array      put;            /// Old name aliases.
         public alias boolean    putBool;        /// ditto
         public alias int8       putByte;        /// ditto
         public alias int16      putShort;       /// ditto
@@ -296,12 +297,13 @@ class DataOutput : OutputFilter
         public alias float32    putFloat;       /// ditto
         public alias float64    putFloat;       /// ditto
 
-        public enum                             /// endian variations
+        /// Endian variations.
+        public enum
         {
-                Native  = 0,
-                Network = 1,
-                Big     = 1,
-                Little  = 2
+                Native  = 0, ///
+                Network = 1, ///
+                Big     = 1, ///
+                Little  = 2  ///
         }
 
         private bool            flip;
@@ -309,7 +311,7 @@ class DataOutput : OutputFilter
 
         /***********************************************************************
 
-                Propagate ctor to superclass
+                Propagate ctor to superclass.
 
         ***********************************************************************/
 
@@ -320,7 +322,7 @@ class DataOutput : OutputFilter
 
         /***********************************************************************
 
-                Set current endian translation
+                Set current endian translation.
 
         ***********************************************************************/
 
@@ -335,8 +337,8 @@ class DataOutput : OutputFilter
 
         /***********************************************************************
 
-                Write an array to the target stream. Note that the size 
-                of the array is written as an integer prefixing the array 
+                Write an array to the target stream. Note that the size
+                of the array is written as an integer prefixing the array
                 content itself. Use write(void[]) to eschew this prefix.
 
         ***********************************************************************/
