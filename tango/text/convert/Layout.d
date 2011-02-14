@@ -69,14 +69,6 @@ else version(LDC)
         alias void* Arg;
         alias va_list ArgList;
         }
-else version(DigitalMars)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-
-        version(X86_64) version = DigitalMarsX64;
-        }
      else
         {
         alias void* Arg;
@@ -101,7 +93,7 @@ class Layout(T)
         /**********************************************************************
 
                 Return shared instance
-
+                
                 Note that this is not threadsafe, and that static-ctor
                 usage doesn't get invoked appropriately (compiler bug)
 
@@ -122,18 +114,7 @@ class Layout(T)
 
         public final T[] sprint (T[] result, const(T[]) formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return vprint (result, formatStr, _arguments, ap);
-                }
-                else
-                    return vprint (result, formatStr, _arguments, _argptr);
+                return vprint (result, formatStr, _arguments, _argptr);
         }
 
         /**********************************************************************
@@ -143,11 +124,11 @@ class Layout(T)
         public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
-                auto available = result.length;
+                size_t available = result.length;
 
                 size_t sink (const(T[]) s)
                 {
-                        auto len = s.length;
+                        size_t len = s.length;
                         if (len > available)
                             len = available;
 
@@ -197,18 +178,7 @@ class Layout(T)
 
         public final T[] convert (const(T[]) formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (_arguments, ap, formatStr);
-                }
-                else
-                    return convert (_arguments, _argptr, formatStr);
+                return convert (_arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -217,18 +187,7 @@ class Layout(T)
 
         public final uint convert (Sink sink, const(T[]) formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (sink, _arguments, ap, formatStr);
-                }
-                else
-                    return convert (sink, _arguments, _argptr, formatStr);
+                return convert (sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -247,19 +206,7 @@ class Layout(T)
                         return output.write(s);
                 }
 
-
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (&sink, _arguments, ap, formatStr);
-                }
-                else
-                    return convert (&sink, _arguments, _argptr, formatStr);
+                return convert (&sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -284,11 +231,11 @@ class Layout(T)
 
         **********************************************************************/
 
-        version (old) public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
+        public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
                 return dispatch (result, null, ti, arg);
         }
-
+}
         /**********************************************************************
 
         **********************************************************************/
@@ -306,7 +253,7 @@ class Layout(T)
 
                         Arg[64] arglist = void;
                         ArgU[64] storedArgs = void;
-
+        
                         foreach (i, arg; arguments)
                                 {
                                 static if (is(typeof(args.ptr)))
@@ -390,48 +337,15 @@ class Layout(T)
                                    }
                                 }
                         }
-                    else version(DigitalMarsX64)
-                    {
-                        Arg[64] arglist = void;
-                        void[] buffer;
-                        uint len = 0;
-
-                        foreach(i, argType; arguments)
-                            len +=  (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
-
-                        buffer.length = len;
-                        len = 0;
-                        foreach(i, argType; arguments)
+                     else
                         {
-                            //printf("type: %s\n", argType.classinfo.name.ptr);
-
-                            va_arg(args, argType, buffer.ptr+len);
-
-                            if(argType.classinfo.name.length != 25 && argType.classinfo.name[9] == TypeCode.ARRAY &&
-                                (argType.classinfo.name[10] == TypeCode.USHORT ||
-                                argType.classinfo.name[10] == TypeCode.SHORT))
-                                {
-                                    printf("Warning: (u)short[] is broken for varargs in x86_64");
-                                    // simply disable the array for now
-                                    (cast(short[]*) (buffer.ptr+len)).length = 0;
-                                }
-
-                            arglist[i] = &buffer[len];
-
-                            len+= (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
-                        }
-
-                        scope (exit) delete buffer;
-                    }
-                    else 
-                    {
                         Arg[64] arglist = void;
                         foreach (i, arg; arguments)
                                 {
                                 arglist[i] = args;
                                 args += (arg.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                                 }
-                    }
+                        }
                 return parse (formatStr, arguments, arglist, sink);
         }
 
@@ -619,7 +533,7 @@ version (WithVariant)
                                        }
                                    length += sink ("]");
                                    }
-                                else
+                                else 
                                 if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
                                    {
                                    auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
@@ -634,16 +548,10 @@ version (WithVariant)
 
                                    length += sink ("{");
                                    bool first = true;
-
-                                   size_t roundUp (size_t tsize)
+                                  
+                                   size_t roundUp (size_t sz)
                                    {
-                                        //return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-
-                                        version (X86_64)
-                                            // Size of key needed to align value on 16 bytes
-                                            return (tsize + 15) & ~(15);
-                                        else
-                                            return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
+                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
                                    }
 
                                    foreach (ref v; aa)
@@ -662,16 +570,16 @@ version (WithVariant)
                                            }
                                    length += sink ("}");
                                    }
-                                else
+                                else 
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
-                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]) || _ti is typeid(const(char)[]))
+                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]))
                                        emit (Utf.fromString8 (*cast(char[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]) || _ti is typeid(const(wchar)[]))
+                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]))        
                                        emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]) || _ti is typeid(const(dchar)[]))
+                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]))
                                        emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
                                    else
                                       {
@@ -698,7 +606,7 @@ version (WithVariant)
                                    emit (dispatch (result, format, _ti, _arg));
                       }
 
-
+                      
                       // process this argument
                       if (index >= ti.length)
                           emit ("{invalid index}");
@@ -1045,7 +953,7 @@ private enum TypeCode
 /*******************************************************************************
 
 *******************************************************************************/
-import tango.stdc.stdio : printf;
+
 debug (UnitTest)
 {
         unittest
@@ -1188,7 +1096,7 @@ debug (UnitTest)
         assert( Formatter( "{:f.}", 1.237 ) == "1.24" );
         assert( Formatter( "{:f.}", 1.000 ) == "1" );
         assert( Formatter( "{:f2.}", 200.001 ) == "200");
-
+        
         // array output
         int[] a = [ 51, 52, 53, 54, 55 ];
         assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
@@ -1198,33 +1106,24 @@ debug (UnitTest)
         int[][] b = [ [ 51, 52 ], [ 53, 54, 55 ] ];
         assert( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
 
-        char[1024] static_buffer;
-        static_buffer[0..10] = "1234567890";
+        ushort[3] c = [ cast(ushort)51, 52, 53 ];
+        assert( Formatter( "{}", c ) == "[51, 52, 53]" );
 
-        assert (Formatter( "{}", static_buffer[0..10]) == "1234567890");
-
-        version(X86)
-        {
-            ushort[3] c = [ cast(ushort)51, 52, 53 ];
-            assert( Formatter( "{}", c ) == "[51, 52, 53]" );
-        }
-
-        // integer AA
+        // integer AA 
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
-
         assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
                 Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
-
-        // bool/string AA
+        
+        // bool/string AA 
         bool[char[]] e;
         e[ "key" ] = true;
         e[ "value" ] = false;
         assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
                 Formatter( "{}", e ) == "{value => false, key => true}");
 
-        // string/double AA
+        // string/double AA 
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
@@ -1269,7 +1168,7 @@ debug (Layout)
 
                 struct S
                 {
-                   char[] toString () {return "foo";}
+                   char[] toString () {return "foo";}      
                 }
 
                 S s;

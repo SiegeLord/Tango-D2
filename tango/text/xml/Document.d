@@ -264,9 +264,9 @@ version(d)
         final Document header (const(T)[] encoding = null)
         {
                 if (encoding.length)
-                   encoding = `xml version="1.0" encoding="`~encoding~`"`;
+                   encoding = `xml version="1.0" encoding="`.dup ~ encoding.dup ~ `"`.dup;
                 else
-                   encoding = `xml version="1.0" encoding="UTF-8"`;
+                   encoding = `xml version="1.0" encoding="UTF-8"`.dup;
 
                 root.prepend (root.create(XmlNodeType.PI, encoding));
                 return this;
@@ -2163,23 +2163,23 @@ debug (Document)
 
                 // attach an element with some attributes, plus 
                 // a child element with an attached data value
-                doc.tree.element   (null, "root")
-                        .attribute (null, "attrib1", "value")
-                        .attribute (null, "attrib2", "other")
-                        .element   (null, "child")
-                        .cdata     ("some text");
+                doc.tree.element   (null, "root".dup)
+                        .attribute (null, "attrib1".dup, "value".dup)
+                        .attribute (null, "attrib2".dup, "other".dup)
+                        .element   (null, "child".dup)
+                        .cdata     ("some text".dup);
 
                 // attach a sibling to the interior elements
-                doc.elements.element (null, "sibling");
+                doc.elements.element (null, "sibling".dup);
         
                 bool foo (doc.Node node)
                 {
-                        node = node.attributes.name(null, "attrib1");
-                        return node && "value" == node.value;
+                        node = node.attributes.name(null, "attrib1".dup);
+                        return node && "value".dup == node.value;
                 }
 
-                foreach (node; doc.query.descendant("root").filter(&foo).child)
-                         Stdout.formatln(">> {}", node.name);
+                foreach (node; doc.query.descendant("root".dup).filter(&foo).child)
+                         Stdout.formatln(">> {}".dup, node.name);
 
                 foreach (node; doc.elements.attributes)
                          Stdout.formatln("<< {}", node.name);

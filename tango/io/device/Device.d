@@ -309,7 +309,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override size_t write (const(void)[] src)
+                override size_t write (const(void[]) src)
                 {
                         size_t written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)

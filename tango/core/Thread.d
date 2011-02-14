@@ -597,7 +597,7 @@ class Thread
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = 0 )
+    this(scope void delegate() dg, size_t sz = 0 )
     in
     {
         assert( dg );
@@ -677,7 +677,7 @@ class Thread
         //       and causing memory to be collected that is still in use.
         synchronized( slock )
         {
-            volatile multiThreadedFlag = true;
+            synchronized multiThreadedFlag = true;
             version( Win32 )
             {
                 m_hndl = cast(HANDLE) _beginthreadex( null, m_sz, &thread_entryPoint, cast(void*) this, 0, &m_addr );
@@ -723,8 +723,8 @@ class Thread
                 throw new ThreadException( "Unable to join thread" );
             // NOTE: m_addr must be cleared before m_hndl is closed to avoid
             //       a race condition with isRunning.  The operation is labeled
-            //       volatile to prevent compiler reordering.
-            volatile m_addr = m_addr.init;
+            //       synchronized to prevent compiler reordering.
+            synchronized m_addr = m_addr.init;
             CloseHandle( m_hndl );
             m_hndl = m_hndl.init;
         }
@@ -736,7 +736,7 @@ class Thread
             //       which is normally called by the dtor.  Setting m_addr
             //       to zero ensures that pthread_detach will not be called
             //       on object destruction.
-            volatile m_addr = m_addr.init;
+            synchronized m_addr = m_addr.init;
         }
         if( m_unhandled )
         {
@@ -2410,7 +2410,7 @@ class ThreadGroup
      * Returns:
      *  A reference to the newly created thread.
      */
-    final Thread create( void delegate() dg )
+    final Thread create( scope void delegate() dg )
     {
         Thread t = new Thread( dg );
 
@@ -2616,7 +2616,7 @@ private
         assert( obj );
 
         assert( Thread.getThis().m_curr is obj.m_ctxt );
-        volatile Thread.getThis().m_lock = false;
+        synchronized Thread.getThis().m_lock = false;
         obj.m_ctxt.tstack = obj.m_ctxt.bstack;
         obj.m_state = Fiber.State.EXEC;
 
@@ -2915,7 +2915,7 @@ class Fiber
 
         void await (Handle fd, Type t, uint timeout) {}
         
-        void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
+        void spawn (char[] name, scope void delegate() dg, size_t stack=8192) {}    
     }
 
     struct Event                        // scheduler support 
@@ -3003,7 +3003,7 @@ class Fiber
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
+    this( scope void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
     in
     {
         assert( dg );
@@ -3171,7 +3171,7 @@ class Fiber
      *  This fiber must be in state TERM.
      *  dg must not be null.
      */
-    final void reset( void delegate() dg )
+    final void reset( scope void delegate() dg )
     in
     {
         assert( dg );
@@ -3776,7 +3776,7 @@ private:
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
         *oldp = getStackTop();
-        volatile tobj.m_lock = true;
+        synchronized tobj.m_lock = true;
         tobj.pushContext( m_ctxt );
 
         fiber_switchContext( oldp, newp );
@@ -3784,7 +3784,7 @@ private:
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
         tobj.popContext();
-        volatile tobj.m_lock = false;
+        synchronized tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 
@@ -3810,14 +3810,14 @@ private:
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
         *oldp = getStackTop();
-        volatile tobj.m_lock = true;
+        synchronized tobj.m_lock = true;
 
         fiber_switchContext( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
         tobj=Thread.getThis();
-        volatile tobj.m_lock = false;
+        synchronized tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 }

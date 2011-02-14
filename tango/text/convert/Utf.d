@@ -226,7 +226,7 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toString16 : incomplete utf8 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString16 : incomplete utf8 input".dup, pIn - input.ptr);
                        }
                     else
                        break;
@@ -238,7 +238,7 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString16 : utf8 overflow".dup, pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];
@@ -329,7 +329,7 @@ char[] toString (const(dchar[]) input, char[] output=null, size_t* ate=null)
                             pOut += 4;
                             }
                          else
-                            onUnicodeError ("Unicode.toString : invalid dchar", eaten);
+                            onUnicodeError ("Unicode.toString : invalid dchar".dup, eaten);
                 }
 
         // return the produced output
@@ -397,7 +397,7 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                           b = (b << 6) | (pIn[3] & 0x3f);
 
                           if (b >= 0x110000)
-                              onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
+                              onUnicodeError ("Unicode.toString32 : invalid utf8 input".dup, pIn - input.ptr);
                           pIn += 3;
                           }
 
@@ -415,7 +415,7 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toString32 : incomplete utf8 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString32 : incomplete utf8 input".dup, pIn - input.ptr);
                        }
                     else
                        break;
@@ -427,7 +427,7 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString32 : utf8 overflow".dup, pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];
@@ -489,7 +489,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
                    }
 
                 if (b < 0x10000)
-                    *pOut++ = cast(wchar)b;
+                    *pOut++ = cast(char)b;
                 else
                    if (b < 0x110000)
                       {
@@ -498,7 +498,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
                       pOut += 2;
                       }
                    else
-                      onUnicodeError ("Unicode.toString16 : invalid dchar", eaten);
+                      onUnicodeError ("Unicode.toString16 : invalid dchar".dup, eaten);
                 }
 
         // return the produced output
@@ -548,7 +548,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                     b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
 
                 if (b >= 0x110000)
-                    onUnicodeError ("Unicode.toString32 : invalid utf16 input", pIn - input.ptr);
+                    onUnicodeError ("Unicode.toString32 : invalid utf16 input".dup, pIn - input.ptr);
 
                 d = b;
                 ++produced;
@@ -563,7 +563,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
                           --produced;
                           break;
                           }
-                       onUnicodeError ("Unicode.toString32 : incomplete utf16 input", pIn - input.ptr);
+                       onUnicodeError ("Unicode.toString32 : incomplete utf16 input".dup, pIn - input.ptr);
                        }
                     else
                        break;
@@ -575,7 +575,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
         else
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toString32 : utf16 overflow", pIn - input.ptr);
+               onUnicodeError ("Unicode.toString32 : utf16 overflow".dup, pIn - input.ptr);
 
         // return the produced output
         return output [0..produced];

@@ -420,14 +420,14 @@ ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
 
 ******************************************************************************/
 
-size_t trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
+uint trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
 {return trim!(T)(digits, sign, radix);}
 
-size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
+uint trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
 {
         T       c;
         const (T)*      p = digits.ptr;
-        auto     len = digits.length;
+        size_t     len = digits.length;
 
         if (len)
            {
@@ -599,7 +599,6 @@ T[] consume(T) (T[] src, bool fp=false)
 
 debug (UnitTest)
 {
-
         unittest
         {
         char[64] tmp;

@@ -39,10 +39,7 @@ public  import tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
-        version(TangoRuntime)
-        {
-            protected Fiber.Scheduler scheduler;            // optional scheduler
-        }
+        protected Fiber.Scheduler scheduler;            // optional scheduler
         private   uint            duration = -1;        // scheduling timeout
 
         /***********************************************************************
@@ -60,11 +57,8 @@ class Conduit : IConduit
         this ()
         {
                 auto f = Fiber.getThis;
-                version(TangoRuntime)
-                {
-                    if (f)
-                        scheduler = f.event.scheduler;
-                }
+                if (f)
+                    scheduler = f.event.scheduler;
         }
 
         /***********************************************************************
@@ -79,16 +73,16 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-
-                Return the name of this conduit.
+        
+                Return the name of this conduit
 
         ***********************************************************************/
 
         abstract immutable(char)[] toString (); 
-
+                     
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O.
+                Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
@@ -118,7 +112,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract size_t write (const(void)[] src);
+        abstract size_t write (const(void[]) src);
 
         /***********************************************************************
 
@@ -598,7 +592,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        size_t write (const(void)[] src)
+        size_t write (const(void[]) src)
         {
                 return sink.write (src);
         }
