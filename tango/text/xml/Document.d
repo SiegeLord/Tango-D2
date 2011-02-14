@@ -264,9 +264,9 @@ version(d)
         final Document header (T[] encoding = null)
         {
                 if (encoding.length)
-                    encoding = `xml version="1.0" encoding="`~encoding~`"`;
+                   encoding = `xml version="1.0" encoding="`.dup~encoding~`"`.dup;
                 else
-                   encoding = `xml version="1.0" encoding="UTF-8"`;
+                   encoding = `xml version="1.0" encoding="UTF-8"`.dup;
 
                 root.prepend (root.create(XmlNodeType.PI, encoding));
                 return this;
@@ -694,7 +694,7 @@ version (Filter)
                 Node prefix (T[] replace)
                 {
                         prefixed = replace;
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -717,7 +717,7 @@ version (Filter)
                 Node name (T[] replace)
                 {
                         localName = replace;
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -828,7 +828,7 @@ version(discrete)
         
                 final XmlPath!(T).NodeSet query ()
                 {
-                        return doc.xpath.start (this);
+                        return doc.xpath.start (&this);
                 }
 
                 /***************************************************************
@@ -1039,7 +1039,7 @@ else
                 { 
                         auto node = create (XmlNodeType.Attribute, value);
                         attrib (node.set (prefix, local));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1051,7 +1051,7 @@ else
                 private Node data_ (T[] data)
                 {
                         append (create (XmlNodeType.Data, data));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1063,7 +1063,7 @@ else
                 private Node cdata_ (T[] cdata)
                 {
                         append (create (XmlNodeType.CData, cdata));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1075,7 +1075,7 @@ else
                 private Node comment_ (T[] comment)
                 {
                         append (create (XmlNodeType.Comment, comment));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1087,7 +1087,7 @@ else
                 private Node pi_ (T[] pi, T[] patch)
                 {
                         append (create(XmlNodeType.PI, pi).patch(patch));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1099,7 +1099,7 @@ else
                 private Node doctype_ (T[] doctype)
                 {
                         append (create (XmlNodeType.Doctype, doctype));
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1112,7 +1112,7 @@ else
                 private void attrib (Node node)
                 {
                         assert (node.parent is null);
-                        node.host = this;
+                        node.host = &this;
                         if (lastAttr) 
                            {
                            lastAttr.nextSibling = node;
@@ -1133,7 +1133,7 @@ else
                 private void append (Node node)
                 {
                         assert (node.parent is null);
-                        node.host = this;
+                        node.host = &this;
                         if (lastChild) 
                            {
                            lastChild.nextSibling = node;
@@ -1154,7 +1154,7 @@ else
                 private void prepend (Node node)
                 {
                         assert (node.parent is null);
-                        node.host = this;
+                        node.host = &this;
                         if (firstChild) 
                            {
                            firstChild.prevSibling = node;
@@ -1175,7 +1175,7 @@ else
                 {
                         this.localName = local;
                         this.prefixed = prefix;
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1201,7 +1201,7 @@ else
                 private Node remove()
                 {
                         if (! host) 
-                              return this;
+                              return &this;
                         
                         mutate;
                         if (prevSibling && nextSibling) 
@@ -1215,7 +1215,7 @@ else
                         else 
                            if (nextSibling)
                               {
-                              debug assert(host.firstChild == this);
+                              debug assert(host.firstChild == &this);
                               parent.firstChild = nextSibling;
                               nextSibling.prevSibling = null;
                               nextSibling = null;
@@ -1226,7 +1226,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    debug assert(host.lastChild == this);
+                                    debug assert(host.lastChild == &this);
                                     host.lastChild = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1234,8 +1234,8 @@ else
                                     }
                                  else
                                     {
-                                    debug assert(host.firstChild == this);
-                                    debug assert(host.lastChild == this);
+                                    debug assert(host.firstChild == &this);
+                                    debug assert(host.lastChild == &this);
                                     host.firstChild = null;
                                     host.lastChild = null;
                                     host = null;
@@ -1245,7 +1245,7 @@ else
                                  {
                                  if (prevSibling)
                                     {
-                                    debug assert(host.lastAttr == this);
+                                    debug assert(host.lastAttr == &this);
                                     host.lastAttr = prevSibling;
                                     prevSibling.nextSibling = null;
                                     prevSibling = null;
@@ -1253,15 +1253,15 @@ else
                                     }
                                  else
                                     {
-                                    debug assert(host.firstAttr == this);
-                                    debug assert(host.lastAttr == this);
+                                    debug assert(host.firstAttr == &this);
+                                    debug assert(host.lastAttr == &this);
                                     host.firstAttr = null;
                                     host.lastAttr = null;
                                     host = null;
                                     }
                                  }
 
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -1279,7 +1279,7 @@ else
                 {
                         end = text.ptr + text.length;
                         start = text.ptr;
-                        return this;
+                        return &this;
                 }
         
                 /***************************************************************
@@ -1291,12 +1291,12 @@ else
         
                 private Node mutate ()
                 {
-                        auto node = this;
+                        auto node = &this;
                         do {
                            node.end = null;
                            } while ((node = node.host) !is null);
 
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -2010,7 +2010,7 @@ private class XmlPath(T)
                 private NodeSet assign (uint mark)
                 {
                         nodes = host.slice (mark);
-                        return *this;
+                        return this;
                 }
 
                 /***************************************************************
@@ -2152,7 +2152,7 @@ interface IXmlPrinter(T)
 debug (Document)
 {
         import tango.io.Stdout;
-        import tango.text.xml.DocPrinter;
+        //import tango.text.xml.DocPrinter;
 
         void main()
         {
@@ -2163,23 +2163,23 @@ debug (Document)
 
                 // attach an element with some attributes, plus 
                 // a child element with an attached data value
-                doc.tree.element   (null, "root")
-                        .attribute (null, "attrib1", "value")
-                        .attribute (null, "attrib2", "other")
-                        .element   (null, "child")
-                        .cdata     ("some text");
+                doc.tree.element   (null, "root".dup)
+                        .attribute (null, "attrib1".dup, "value".dup)
+                        .attribute (null, "attrib2".dup, "other".dup)
+                        .element   (null, "child".dup)
+                        .cdata     ("some text".dup);
 
                 // attach a sibling to the interior elements
-                doc.elements.element (null, "sibling");
+                doc.elements.element (null, "sibling".dup);
         
                 bool foo (doc.Node node)
                 {
-                        node = node.attributes.name(null, "attrib1");
-                        return node && "value" == node.value;
+                        node = node.attributes.name(null, "attrib1".dup);
+                        return node && "value".dup == node.value;
                 }
 
-                foreach (node; doc.query.descendant("root").filter(&foo).child)
-                         Stdout.formatln(">> {}", node.name);
+                foreach (node; doc.query.descendant("root".dup).filter(&foo).child)
+                         Stdout.formatln(">> {}".dup, node.name);
 
                 foreach (node; doc.elements.attributes)
                          Stdout.formatln("<< {}", node.name);
@@ -2191,8 +2191,8 @@ debug (Document)
                          Stdout.formatln ("{}: {}", node.parent.name, node.value);
 
                 // emit the result
-                auto printer = new DocPrinter!(char);
-                printer.print (doc, stdout);
-                doc.reset;
+                //auto printer = new DocPrinter!(char);
+                //printer.print (doc, stdout);
+               // doc.reset;
         }
 }

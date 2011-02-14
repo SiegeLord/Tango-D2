@@ -306,9 +306,9 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        override char[] toString ()
+        override immutable(char)[] toString ()
         {
-                return path_;
+                return path_.idup;
         }               
 
         /***********************************************************************
@@ -342,7 +342,7 @@ class File : Device, Device.Seek, Device.Truncate
                 //read the content
                 len = file.read (dst);
                 if (len is file.Eof)
-                    file.error ("File.read :: unexpected eof");
+                    file.error ("File.read :: unexpected eof".dup);
 
                 return dst [0 .. len];
         }
@@ -782,7 +782,7 @@ debug (File)
         {
                 char[10] ff;
 
-                auto file = new File("file.d");
+                auto file = new File("file.d".dup);
                 auto content = cast(char[]) file.load (file);
                 assert (content.length is file.length);
                 assert (file.read(ff) is file.Eof);

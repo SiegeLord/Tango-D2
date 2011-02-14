@@ -46,7 +46,7 @@ class Device : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override char[] toString ()
+        override immutable(char)[] toString ()
         {
                 return "<device>";
         }

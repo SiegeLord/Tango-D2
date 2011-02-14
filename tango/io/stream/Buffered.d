@@ -38,10 +38,10 @@ extern (C)
 
 ******************************************************************************/
 
-private static char[] underflow = "input buffer is empty";
-private static char[] eofRead   = "end-of-flow whilst reading";
-private static char[] eofWrite  = "end-of-flow whilst writing";
-private static char[] overflow  = "output buffer is full";
+private enum char[] underflow = "input buffer is empty".dup;
+private enum char[] eofRead   = "end-of-flow whilst reading".dup;
+private enum char[] eofWrite  = "end-of-flow whilst writing".dup;
+private enum char[] overflow  = "output buffer is full".dup;
 
 
 /*******************************************************************************
@@ -513,7 +513,7 @@ class BufferedInput : InputFilter, InputBuffer
                       else
                          // no more space in the buffer?
                          if (writable is 0)
-                             conduit.error ("BufferedInput.next :: input buffer is full");
+                             conduit.error ("BufferedInput.next :: input buffer is full".dup);
 
                       // read another chunk of data
                       if (writer(&source.read) is Eof)

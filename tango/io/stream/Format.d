@@ -95,9 +95,9 @@ class FormatOutput(T) : OutputFilter
         public alias newline    nl;             /// nl -> newline
 
         version (Win32)
-                 private const T[] Eol = "\r\n";
+                 private enum T[] Eol = "\r\n".dup;
              else
-                private const T[] Eol = "\n";
+                private enum T[] Eol = "\n".dup;
 
         /**********************************************************************
 
@@ -161,9 +161,9 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput print (...)
         {
-                static  T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                     "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                     "{}, {}, {}, {}, {}, {}, {}, {}, ";
+                enum T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                  "{}, {}, {}, {}, {}, {}, {}, {}, ".dup;
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
@@ -258,7 +258,7 @@ class FormatOutput(T) : OutputFilter
         {
                 auto count = sink.write (s);
                 if (count is Eof)
-                    conduit.error ("FormatOutput :: unexpected Eof");
+                    conduit.error ("FormatOutput :: unexpected Eof".dup);
                 return count;
         }
 }

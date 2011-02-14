@@ -20,7 +20,7 @@ module tango.stdc.stringz;
 
 char* toStringz (char[] s, char[] tmp=null)
 {
-        static char[] empty = "\0";
+        enum char[] empty = "\0".dup;
 
         auto len = s.length;
         if (s.ptr)

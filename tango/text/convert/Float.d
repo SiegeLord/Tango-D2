@@ -280,11 +280,11 @@ version (float_lib)
                  }
               if (exp >= 100)
                  {
-                 *p++ = exp / 100 + '0';
+                 *p++ = cast(char)(exp / 100 + '0');
                  exp %= 100;
                  }
-              *p++ = exp / 10 + '0';
-              *p++ = exp % 10 + '0';
+              *p++ = cast(char)(exp / 10 + '0');
+              *p++ = cast(char)(exp % 10 + '0');
               }
            else
               {
@@ -343,10 +343,10 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
 
         *decpt = 9999;
         if (value !<>= value)
-            return "nan\0";
+            return cast(char*)"nan\0";
 
         if (value is value.infinity)
-            return "inf\0";
+            return cast(char*)"inf\0";
 
         int exp10 = (value is 0) ? !fflag : cast(int) ceill(log10l(value));
         if (exp10 < -4931) 
@@ -367,7 +367,7 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
            if (ndigit + exp10 < 0) 
               {
               *decpt= -ndigit;
-              return "\0";
+              return cast(char*)"\0";
               }
            ndigit += exp10;
            }
@@ -381,7 +381,7 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
               {
               real i = void;
               value = modfl (value * 10, &i);
-              buf [ptr++]= '0' + cast(int) i;
+              buf [ptr++]= cast(char)('0' + cast(int) i);
               }
 
         if (value >= 0.5)
@@ -510,7 +510,7 @@ NumType parse(T) (T[] src, uint* ate=null)
         uint            radix;
         NumType         value = 0.0;
 
-        static bool match (T* aa, T[] bb)
+        static bool match (T* aa, immutable(T)[] bb)
         {
                 foreach (b; bb)
                         {

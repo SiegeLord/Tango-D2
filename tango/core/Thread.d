@@ -627,7 +627,7 @@ class Thread
         //       and causing memory to be collected that is still in use.
         synchronized( slock )
         {
-            volatile multiThreadedFlag = true;
+            synchronized multiThreadedFlag = true;
             version( Win32 )
             {
                 m_hndl = cast(HANDLE) _beginthreadex( null, m_sz, &thread_entryPoint, cast(void*) this, 0, &m_addr );
@@ -673,8 +673,8 @@ class Thread
                 throw new ThreadException( "Unable to join thread" );
             // NOTE: m_addr must be cleared before m_hndl is closed to avoid
             //       a race condition with isRunning.  The operation is labeled
-            //       volatile to prevent compiler reordering.
-            volatile m_addr = m_addr.init;
+            //       synchronized to prevent compiler reordering.
+            synchronized m_addr = m_addr.init;
             CloseHandle( m_hndl );
             m_hndl = m_hndl.init;
         }
@@ -686,7 +686,7 @@ class Thread
             //       which is normally called by the dtor.  Setting m_addr
             //       to zero ensures that pthread_detach will not be called
             //       on object destruction.
-            volatile m_addr = m_addr.init;
+            synchronized m_addr = m_addr.init;
         }
         if( m_unhandled )
         {
@@ -2566,7 +2566,7 @@ private
         assert( obj );
 
         assert( Thread.getThis().m_curr is obj.m_ctxt );
-        volatile Thread.getThis().m_lock = false;
+        synchronized Thread.getThis().m_lock = false;
         obj.m_ctxt.tstack = obj.m_ctxt.bstack;
         obj.m_state = Fiber.State.EXEC;
 
@@ -2733,7 +2733,7 @@ private
 ////////////////////////////////////////////////////////////////////////////////
 
 private char[] ptrToStr(size_t addr,char[]buf){
-    char[] digits="0123456789ABCDEF";
+    enum char[] digits="0123456789ABCDEF".dup;
     enum{ nDigits=size_t.sizeof*2 }
     if (nDigits>buf.length) assert(0);
     char[] res=buf[0..nDigits];
@@ -3104,11 +3104,11 @@ class Fiber
     {
         if (m_state != State.TERM){
             char[20] buf;
-            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf)~" in unexpected state "~ptrToStr(m_state,buf),__FILE__,__LINE__);
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf).idup~" in unexpected state "~ptrToStr(m_state,buf).idup,__FILE__,__LINE__);
         }
         if (m_ctxt.tstack != m_ctxt.bstack){
             char[20] buf;
-            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf)~" bstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.bstack,buf)~" != tstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.tstack,buf),__FILE__,__LINE__);
+            throw new Exception("Fiber@"~ptrToStr(cast(size_t)cast(void*)this,buf).idup~" bstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.bstack,buf).idup~" != tstack="~ptrToStr(cast(size_t)cast(void*)m_ctxt.tstack,buf).idup,__FILE__,__LINE__);
         }
         m_dg    = null;
         m_fn    = null;
@@ -3594,7 +3594,7 @@ private:
                 pstack += int.sizeof * 20;
             }
 
-            assert( cast(uint) pstack & 0x0f == 0 );
+            assert( (cast(uint) pstack & 0x0f) == 0 );
         }
         else static if( is( ucontext_t ) )
         {
@@ -3677,7 +3677,7 @@ private:
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
         *oldp = getStackTop();
-        volatile tobj.m_lock = true;
+        synchronized tobj.m_lock = true;
         tobj.pushContext( m_ctxt );
 
         fiber_switchContext( oldp, newp );
@@ -3685,7 +3685,7 @@ private:
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
         tobj.popContext();
-        volatile tobj.m_lock = false;
+        synchronized tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 
@@ -3711,14 +3711,14 @@ private:
         //       that it points to exactly the correct stack location so the
         //       successive pop operations will succeed.
         *oldp = getStackTop();
-        volatile tobj.m_lock = true;
+        synchronized tobj.m_lock = true;
 
         fiber_switchContext( oldp, newp );
 
         // NOTE: As above, these operations must be performed in a strict order
         //       to prevent Bad Things from happening.
         tobj=Thread.getThis();
-        volatile tobj.m_lock = false;
+        synchronized tobj.m_lock = false;
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 }
