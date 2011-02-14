@@ -183,7 +183,7 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
             type = 'd';
         else
            {
-           type = fmt[0];
+           type = cast(char)fmt[0];
            if (fmt.length > 1)
               {
               auto p = &fmt[1];
@@ -191,7 +191,7 @@ private void decode(T) (T[] fmt, ref char type, out char pre, out int width)
                    if (*p >= '0' && *p <= '9')
                        width = width * 10 + (*p - '0');
                    else
-                      pre = *p;
+                      pre = cast(char)*p;
               }
            }
 } 
@@ -210,21 +210,21 @@ private struct _FormatterInfo(T)
 
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
-        const T[] lower = "0123456789abcdef";
-        const T[] upper = "0123456789ABCDEF";
+        enum T[] lower = cast(T[])"0123456789abcdef".dup;
+        enum T[] upper = cast(T[])"0123456789ABCDEF".dup;
         
         alias _FormatterInfo!(T) Info;
 
-        const   Info[] formats = 
+        enum   Info[] formats = 
                 [
                 {10, null, lower}, 
-                {10, "-",  lower}, 
-                {10, " ",  lower}, 
-                {10, "+",  lower}, 
-                { 2, "0b", lower}, 
-                { 8, "0o", lower}, 
-                {16, "0x", lower}, 
-                {16, "0X", upper},
+                {10, cast(T[])"-".dup,  lower}, 
+                {10, cast(T[])" ".dup,  lower}, 
+                {10, cast(T[])"+".dup,  lower}, 
+                { 2, cast(T[])"0b".dup, lower}, 
+                { 8, cast(T[])"0o".dup, lower}, 
+                {16, cast(T[])"0x".dup, lower}, 
+                {16, cast(T[])"0X".dup, upper},
                 ];
 
         ubyte index;
@@ -273,7 +273,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                        break;
 
                   default:
-                        return cast(T[])"{unknown format '"~cast(T)type~"'}";
+                        return cast(T[])"{unknown format '".dup~cast(T)type~cast(T[])"'}".dup;
                   }
 
            auto info = &formats[index];
@@ -320,7 +320,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
               }
            }
         
-        return "{output width too small}";
+        return cast(T[])"{output width too small}".dup;
 } 
 
 
@@ -599,114 +599,120 @@ T[] consume(T) (T[] src, bool fp=false)
 
 debug (UnitTest)
 {
+    
+        private T[] S(T)(immutable(T)[] s)
+        {
+            return cast(T[])s;
+        }
+        
         unittest
         {
         char[64] tmp;
         
-        assert (toInt("1") is 1);
-        assert (toLong("1") is 1);
-        assert (toInt("1", 10) is 1);
-        assert (toLong("1", 10) is 1);
+        assert (toInt("1".dup) is 1);
+        assert (toLong("1".dup) is 1);
+        assert (toInt("1".dup, 10) is 1);
+        assert (toLong("1".dup, 10) is 1);
 
-        assert (atoi ("12345") is 12345);
-        assert (itoa (tmp, 12345) == "12345");
+        assert (atoi ("12345".dup) is 12345);
+        assert (itoa (tmp, 12345) == "12345".dup);
 
-        assert(parse( "0"w ) ==  0 );
-        assert(parse( "1"w ) ==  1 );
-        assert(parse( "-1"w ) ==  -1 );
-        assert(parse( "+1"w ) ==  1 );
+        assert(parse( "0"w.dup ) ==  0 );
+        assert(parse( "1"w.dup ) ==  1 );
+        assert(parse( "-1"w.dup ) ==  -1 );
+        assert(parse( "+1"w.dup ) ==  1 );
 
         // numerical limits
-        assert(parse( "-2147483648" ) == int.min );
-        assert(parse(  "2147483647" ) == int.max );
-        assert(parse(  "4294967295" ) == uint.max );
+        assert(parse( "-2147483648".dup ) == int.min );
+        assert(parse(  "2147483647".dup ) == int.max );
+        assert(parse(  "4294967295".dup ) == uint.max );
 
-        assert(parse( "-9223372036854775808" ) == long.min );
-        assert(parse( "9223372036854775807" ) == long.max );
-        assert(parse( "18446744073709551615" ) == ulong.max );
+        assert(parse( "-9223372036854775808".dup ) == long.min );
+        assert(parse( "9223372036854775807".dup ) == long.max );
+        assert(parse( "18446744073709551615".dup ) == ulong.max );
 
         // hex
-        assert(parse( "a", 16) == 0x0A );
-        assert(parse( "b", 16) == 0x0B );
-        assert(parse( "c", 16) == 0x0C );
-        assert(parse( "d", 16) == 0x0D );
-        assert(parse( "e", 16) == 0x0E );
-        assert(parse( "f", 16) == 0x0F );
-        assert(parse( "A", 16) == 0x0A );
-        assert(parse( "B", 16) == 0x0B );
-        assert(parse( "C", 16) == 0x0C );
-        assert(parse( "D", 16) == 0x0D );
-        assert(parse( "E", 16) == 0x0E );
-        assert(parse( "F", 16) == 0x0F );
-        assert(parse( "FFFF", 16) == ushort.max );
-        assert(parse( "ffffFFFF", 16) == uint.max );
-        assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
+        assert(parse( "a".dup, 16) == 0x0A );
+        assert(parse( "b".dup, 16) == 0x0B );
+        assert(parse( "c".dup, 16) == 0x0C );
+        assert(parse( "d".dup, 16) == 0x0D );
+        assert(parse( "e".dup, 16) == 0x0E );
+        assert(parse( "f".dup, 16) == 0x0F );
+        assert(parse( "A".dup, 16) == 0x0A );
+        assert(parse( "B".dup, 16) == 0x0B );
+        assert(parse( "C".dup, 16) == 0x0C );
+        assert(parse( "D".dup, 16) == 0x0D );
+        assert(parse( "E".dup, 16) == 0x0E );
+        assert(parse( "F".dup, 16) == 0x0F );
+        assert(parse( "FFFF".dup, 16) == ushort.max );
+        assert(parse( "ffffFFFF".dup, 16) == uint.max );
+        assert(parse( "ffffFFFFffffFFFF".dup, 16u ) == ulong.max );
         // oct
-        assert(parse( "55", 8) == 055 );
-        assert(parse( "100", 8) == 0100 );
+        assert(parse( "55".dup, 8) == 055 );
+        assert(parse( "100".dup, 8) == 0100 );
         // bin
-        assert(parse( "10000", 2) == 0x10 );
+        assert(parse( "10000".dup, 2) == 0x10 );
         // trim
-        assert(parse( "    \t20") == 20 );
-        assert(parse( "    \t-20") == -20 );
-        assert(parse( "-    \t 20") == -20 );
+        assert(parse( "    \t20".dup) == 20 );
+        assert(parse( "    \t-20".dup) == -20 );
+        assert(parse( "-    \t 20".dup) == -20 );
         // recognise radix prefix
-        assert(parse( "0xFFFF" ) == ushort.max );
-        assert(parse( "0XffffFFFF" ) == uint.max );
-        assert(parse( "0o55") == 055 );
-        assert(parse( "0O55" ) == 055 );
-        assert(parse( "0b10000") == 0x10 );
-        assert(parse( "0B10000") == 0x10 );
+        assert(parse( "0xFFFF".dup ) == ushort.max );
+        assert(parse( "0XffffFFFF".dup ) == uint.max );
+        assert(parse( "0o55".dup) == 055 );
+        assert(parse( "0O55".dup ) == 055 );
+        assert(parse( "0b10000".dup) == 0x10 );
+        assert(parse( "0B10000".dup) == 0x10 );
 
         // prefix tests
-        char[] str = "0x";
+        char[] str = "0x".dup;
         assert(parse( str[0..1] ) ==  0 );
-        assert(parse("0x10", 10) == 0);
-        assert(parse("0b10", 10) == 0);
-        assert(parse("0o10", 10) == 0);
-        assert(parse("0b10") == 0b10);
-        assert(parse("0o10") == 010);
-        assert(parse("0b10", 2) == 0b10);
-        assert(parse("0o10", 8) == 010);
+        assert(parse("0x10".dup, 10) == 0);
+        assert(parse("0b10".dup, 10) == 0);
+        assert(parse("0o10".dup, 10) == 0);
+        assert(parse("0b10".dup) == 0b10);
+        assert(parse("0o10".dup) == 010);
+        assert(parse("0b10".dup, 2) == 0b10);
+        assert(parse("0o10".dup, 8) == 010);
 
         // revised tests
-        assert (format(tmp, 10, "d") == "10");
-        assert (format(tmp, -10, "d") == "-10");
+        assert (format(tmp, 10, "d".dup) == "10".dup);
+        assert (format(tmp, -10, "d".dup) == "-10".dup);
 
-        assert (format(tmp, 10L, "u") == "10");
-        assert (format(tmp, 10L, "U") == "10");
-        assert (format(tmp, 10L, "g") == "10");
-        assert (format(tmp, 10L, "G") == "10");
-        assert (format(tmp, 10L, "o") == "12");
-        assert (format(tmp, 10L, "O") == "12");
-        assert (format(tmp, 10L, "b") == "1010");
-        assert (format(tmp, 10L, "B") == "1010");
-        assert (format(tmp, 10L, "x") == "a");
-        assert (format(tmp, 10L, "X") == "A");
+        assert (format(tmp, 10L, "u".dup) == "10".dup);
+        assert (format(tmp, 10L, "U".dup) == "10".dup);
+        assert (format(tmp, 10L, "g".dup) == "10".dup);
+        assert (format(tmp, 10L, "G".dup) == "10".dup);
+        assert (format(tmp, 10L, "o".dup) == "12".dup);
+        assert (format(tmp, 10L, "O".dup) == "12".dup);
+        assert (format(tmp, 10L, "b".dup) == "1010".dup);
+        assert (format(tmp, 10L, "B".dup) == "1010".dup);
+        assert (format(tmp, 10L, "x".dup) == "a".dup);
+        assert (format(tmp, 10L, "X".dup) == "A".dup);
 
-        assert (format(tmp, 10L, "d+") == "+10");
-        assert (format(tmp, 10L, "d ") == " 10");
-        assert (format(tmp, 10L, "d#") == "10");
-        assert (format(tmp, 10L, "x#") == "0xa");
-        assert (format(tmp, 10L, "X#") == "0XA");
-        assert (format(tmp, 10L, "b#") == "0b1010");
-        assert (format(tmp, 10L, "o#") == "0o12");
+        assert (format(tmp, 10L, "d+".dup) == "+10".dup);
+        assert (format(tmp, 10L, "d ".dup) == " 10".dup);
+        assert (format(tmp, 10L, "d#".dup) == "10".dup);
+        assert (format(tmp, 10L, "x#".dup) == "0xa".dup);
+        assert (format(tmp, 10L, "X#".dup) == "0XA".dup);
+        assert (format(tmp, 10L, "b#".dup) == "0b1010".dup);
+        assert (format(tmp, 10L, "o#".dup) == "0o12".dup);
 
-        assert (format(tmp, 10L, "d1") == "10");
-        assert (format(tmp, 10L, "d8") == "00000010");
-        assert (format(tmp, 10L, "x8") == "0000000a");
-        assert (format(tmp, 10L, "X8") == "0000000A");
-        assert (format(tmp, 10L, "b8") == "00001010");
-        assert (format(tmp, 10L, "o8") == "00000012");
+        assert (format(tmp, 10L, "d1".dup) == "10".dup);
+        assert (format(tmp, 10L, "d8".dup) == "00000010".dup);
+        assert (format(tmp, 10L, "x8".dup) == "0000000a".dup);
+        assert (format(tmp, 10L, "X8".dup) == "0000000A".dup);
+        assert (format(tmp, 10L, "b8".dup) == "00001010".dup);
+        assert (format(tmp, 10L, "o8".dup) == "00000012".dup);
 
-        assert (format(tmp, 10L, "d1#") == "10");
-        assert (format(tmp, 10L, "d6#") == "000010");
-        assert (format(tmp, 10L, "x6#") == "0x00000a");
-        assert (format(tmp, 10L, "X6#") == "0X00000A");
+        assert (format(tmp, 10L, "d1#".dup) == "10".dup);
+        assert (format(tmp, 10L, "d6#".dup) == "000010".dup);
+        assert (format(tmp, 10L, "x6#".dup) == "0x00000a".dup);
+        assert (format(tmp, 10L, "X6#".dup) == "0X00000A".dup);
 
         char[8] tmp1;
-        assert (format(tmp1, 10L, "b12#") == "0b001010");
-        assert (format(tmp1, 10L, "o12#") == "0o000012");
+        assert (format(tmp1, 10L, "b12#".dup) == "0b001010".dup);
+        assert (format(tmp1, 10L, "o12#".dup) == "0o000012".dup);
         }
 }
 

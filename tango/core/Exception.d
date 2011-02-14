@@ -61,12 +61,12 @@ private
  */
 class OutOfMemoryException : Exception
 {
-    this( char[] file, long line )
+    this( immutable(char)[] file, size_t line )
     {
         super( "Memory allocation failed", file, line );
     }
 
-    char[] toString()
+    immutable(char)[] toString()
     {
         return msg ? super.toString() : "Memory allocation failed";
     }
@@ -78,7 +78,7 @@ class OutOfMemoryException : Exception
  */
 class PlatformException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -89,12 +89,12 @@ class PlatformException : Exception
  */
 class AssertException : Exception
 {
-    this( char[] file, long line )
+    this( immutable(char)[] file, size_t line )
     {
         super( "Assertion failure", file, line );
     }
 
-    this( char[] msg, char[] file, long line )
+    this( immutable(char)[] msg, immutable(char)[] file, size_t line )
     {
         super( msg, file, line );
     }
@@ -106,7 +106,7 @@ class AssertException : Exception
  */
 class ArrayBoundsException : Exception
 {
-    this( char[] file, long line )
+    this( immutable(char)[] file, size_t line )
     {
         super( "Array index out of bounds", file, line );
     }
@@ -126,7 +126,7 @@ class FinalizeException : Exception
         info = c;
     }
 
-    override char[] toString()
+    override immutable(char)[] toString()
     {
         auto other = super.next ? super.next.toString : "unknown";
         return "An exception was thrown while finalizing an instance of class " ~ info.name ~ " :: "~other;
@@ -139,7 +139,7 @@ class FinalizeException : Exception
  */
 class SwitchException : Exception
 {
-    this( char[] file, long line )
+    this( immutable(char)[] file, size_t line )
     {
         super( "No appropriate switch clause found", file, line );
     }
@@ -151,7 +151,7 @@ class SwitchException : Exception
  */
 class TextException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -164,7 +164,7 @@ class UnicodeException : TextException
 {
     size_t idx;
 
-    this( char[] msg, size_t idx )
+    this( immutable(char)[] msg, size_t idx )
     {
         super( msg );
         this.idx = idx;
@@ -177,7 +177,7 @@ class UnicodeException : TextException
  */
 class ThreadException : PlatformException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -189,7 +189,7 @@ class ThreadException : PlatformException
  */
 class FiberException : ThreadException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -201,7 +201,7 @@ class FiberException : ThreadException
  */
 class ThreadPoolException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -213,7 +213,7 @@ class ThreadPoolException : Exception
  */
 class SyncException : PlatformException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -227,7 +227,7 @@ class SyncException : PlatformException
  */
 class IOException : PlatformException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -238,7 +238,7 @@ class IOException : PlatformException
  */
 class VfsException : IOException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -249,7 +249,7 @@ class VfsException : IOException
  */
 class ClusterException : IOException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -260,7 +260,7 @@ class ClusterException : IOException
  */
 class SocketException : IOException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -274,7 +274,7 @@ version (SocketSpecifics)
  */
 class HostException : IOException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -286,7 +286,7 @@ class HostException : IOException
  */
 class AddressException : IOException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -298,7 +298,7 @@ class AddressException : IOException
  */
 class SocketAcceptException : SocketException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -310,7 +310,7 @@ class SocketAcceptException : SocketException
  */
 class ProcessException : PlatformException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -322,7 +322,7 @@ class ProcessException : PlatformException
  */
 class RegexException : TextException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -334,7 +334,7 @@ class RegexException : TextException
  */
 class LocaleException : TextException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -346,7 +346,7 @@ class LocaleException : TextException
  */
 class XmlException : TextException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -360,7 +360,7 @@ class XmlException : TextException
  */
 class RegistryException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -372,7 +372,7 @@ class RegistryException : Exception
  */
 class IllegalArgumentException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -388,7 +388,7 @@ class IllegalArgumentException : Exception
  */
 class IllegalElementException : IllegalArgumentException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -400,7 +400,7 @@ class IllegalElementException : IllegalArgumentException
  */
 class NoSuchElementException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -412,7 +412,7 @@ class NoSuchElementException : Exception
  */
 class CorruptedIteratorException : NoSuchElementException
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -450,11 +450,11 @@ void setAssertHandler( assertHandlerType h )
  *  file = The name of the file that signaled this error.
  *  line = The line number on which this error occurred.
  */
-extern (C) void onAssertError( char[] file, size_t line )
+extern (C) void onAssertError( immutable(char)[] file, size_t line )
 {
     if( assertHandler is null )
-        throw new AssertException( file, cast(long)line );
-    assertHandler( file, line );
+        throw new AssertException( file, line );
+    assertHandler( file.dup, line );
 }
 
 
@@ -468,11 +468,11 @@ extern (C) void onAssertError( char[] file, size_t line )
  *  line = The line number on which this error occurred.
  *  msg  = An error message supplied by the user.
  */
-extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
+extern (C) void onAssertErrorMsg( immutable(char)[] file, size_t line, immutable(char)[] msg )
 {
     if( assertHandler is null )
-        throw new AssertException( msg, file, cast(long)line );
-    assertHandler( file, line, msg );
+        throw new AssertException( msg, file, line );
+    assertHandler( file.dup, line, msg.dup );
 }
 
 
@@ -492,9 +492,9 @@ extern (C) void onAssertErrorMsg( char[] file, size_t line, char[] msg )
  * Throws:
  *  ArrayBoundsException.
  */
-extern (C) void onArrayBoundsError( char[] file, size_t line )
+extern (C) void onArrayBoundsError( immutable(char)[] file, size_t line )
 {
-    throw new ArrayBoundsException( file, cast(long)line );
+    throw new ArrayBoundsException( file, line );
 }
 
 
@@ -538,9 +538,9 @@ extern (C) void onOutOfMemoryError()
  * Throws:
  *  SwitchException.
  */
-extern (C) void onSwitchError( char[] file, size_t line )
+extern (C) void onSwitchError( immutable(char)[] file, size_t line )
 {
-    throw new SwitchException( file, cast(long)line );
+    throw new SwitchException( file, line );
 }
 
 
@@ -554,7 +554,7 @@ extern (C) void onSwitchError( char[] file, size_t line )
  * Throws:
  *  UnicodeException.
  */
-extern (C) void onUnicodeError( char[] msg, size_t idx )
+extern (C) void onUnicodeError( immutable(char)[] msg, size_t idx )
 {
     throw new UnicodeException( msg, idx );
 }

@@ -40,9 +40,9 @@ version (Posix)
 struct Console
 {
         version (Win32)
-                 const char[] Eol = "\r\n";
+                 enum char[] Eol = "\r\n".dup;
               else
-                 const char[] Eol = "\n";
+                 enum char[] Eol = "\n".dup;
 
 
         /**********************************************************************
@@ -265,9 +265,9 @@ struct Console
 
                 **************************************************************/
 
-                final Output append (Object other)
-                {
-                        return append (other.toString);
+                final Output append (Object other)        
+                {           
+                        return append (cast(char[])other.toString);
                 }
 
                 /**************************************************************
@@ -418,7 +418,7 @@ struct Console
 
                 ***********************************************************************/
 
-                override char[] toString()
+                override immutable(char)[] toString()
                 {
                         return "<console>";
                 }

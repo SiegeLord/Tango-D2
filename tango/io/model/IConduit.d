@@ -44,7 +44,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract char[] toString ();
+        abstract immutable(char)[] toString (); 
 
         /***********************************************************************
 
@@ -126,7 +126,7 @@ interface ISelectable
 
 interface IOStream
 {
-        const Eof = -1;         /// The End-of-Flow identifer.
+        enum Eof = -1;         /// the End-of-Flow identifer
 
         /***********************************************************************
 
