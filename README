@@ -1,0 +1,28 @@
+This is a half-hearted effort to port Tango (http://www.dsource.org/projects/tango/) to the D2 programming language. I am doing this quickly, and in a haphazard fashion. I primarily care that it compiles, and passes the unittests (or my own quick tests). I am sure the parts I ported don't work 100%.
+
+Anyway, this port follows the following "philosophy"/guidelines:
+
+- D1 support is to be abandoned: if you want D1, use D1 Tango. I think making the code work for both D versions will make the code ugly.
+- Const-correctness is added only when truly necessary. So far this has been only in parts that directly interact with the runtime, notably the exceptions and the toString method. Many methods won't work when the user calls them with string literals as a result (e.g. Layout).
+- Avoid new runtime allocations. This means that immutable(char[]) is converted to char[] via .dup only in error messages (with some exceptions)
+- Otherwise, string literals are converted to char[]'s by casting away the constness
+
+I see this as a rough first pass at porting this library... making it work with string literals should be the second pass.
+
+What works so far:
+
+tango.io.Stdout and the imported modules (notably tango.io.Console, tango.text.convert.Layout and tango.core.Thread (maybe))
+tango.text.xml.Document and the imported modules
+tango.io.device.File
+
+What will work next:
+
+Who knows... I'm porting stuff rather randomly. Probably tango.core.Array.
+
+What won't work for awhile:
+
+Anything that's hard to port... like intrinsics/anything that's Tango's runtime specific
+
+How to use it:
+
+Just manually import/compile modules you want. Tools like xfbuild (https://bitbucket.org/h3r3tic/xfbuild/wiki/Home) are of great help here. Building the whole library won't be supported for awhile.
