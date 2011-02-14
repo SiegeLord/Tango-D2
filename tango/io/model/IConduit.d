@@ -31,20 +31,20 @@ module tango.io.model.IConduit;
 interface IConduit : InputStream, OutputStream
 {
         /***********************************************************************
-
-                Return a preferred size for buffering conduit I/O.
+        
+                Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
-        abstract size_t bufferSize ();
-
+        abstract size_t bufferSize (); 
+                     
         /***********************************************************************
-
-                Return the name of this conduit.
+        
+                Return the name of this conduit
 
         ***********************************************************************/
 
-        abstract char[] toString ();
+        abstract immutable(char)[] toString (); 
 
         /***********************************************************************
 
@@ -119,18 +119,18 @@ interface ISelectable
 
 
 /*******************************************************************************
-
-        The common attributes of streams.
+        
+        The common attributes of streams
 
 *******************************************************************************/
 
-interface IOStream
+interface IOStream 
 {
-        const Eof = -1;         /// The End-of-Flow identifer.
+        enum Eof = -1;         /// the End-of-Flow identifer
 
         /***********************************************************************
-
-                The anchor positions supported by seek().
+        
+                The anchor positions supported by seek()
 
         ***********************************************************************/
 

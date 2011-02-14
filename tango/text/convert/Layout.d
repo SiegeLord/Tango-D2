@@ -33,7 +33,10 @@ private import  Utf = tango.text.convert.Utf;
 private import  Float = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
 
-private import  tango.io.model.IConduit : OutputStream;
+version(DigitalMars)
+    private import  tango.io.model.IConduit;
+else
+    private import  tango.io.model.IConduit : OutputStream;
 
 version(WithVariant)
         private import tango.core.Variant;
@@ -91,14 +94,14 @@ class Layout(T)
 {
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
-
-        static if (is (DateTimeLocale))
+       
+        static if (is (typeof(DateTimeLocale)))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
 
         /**********************************************************************
 
                 Return shared instance
-
+                
                 Note that this is not threadsafe, and that static-ctor
                 usage doesn't get invoked appropriately (compiler bug)
 
@@ -119,18 +122,7 @@ class Layout(T)
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return vprint (result, formatStr, _arguments, ap);
-                }
-                else
-                    return vprint (result, formatStr, _arguments, _argptr);
+                return vprint (result, formatStr, _arguments, _argptr);
         }
 
         /**********************************************************************
@@ -140,11 +132,11 @@ class Layout(T)
         public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
-                auto available = result.length;
+                size_t available = result.length;
 
                 uint sink (T[] s)
                 {
-                        auto len = s.length;
+                        size_t len = s.length;
                         if (len > available)
                             len = available;
 
@@ -194,18 +186,7 @@ class Layout(T)
 
         public final T[] convert (T[] formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (_arguments, ap, formatStr);
-                }
-                else
-                    return convert (_arguments, _argptr, formatStr);
+                return convert (_arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -214,18 +195,7 @@ class Layout(T)
 
         public final uint convert (Sink sink, T[] formatStr, ...)
         {
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (sink, _arguments, ap, formatStr);
-                }
-                else
-                    return convert (sink, _arguments, _argptr, formatStr);
+                return convert (sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -244,19 +214,7 @@ class Layout(T)
                         return output.write(s);
                 }
 
-
-                version (DigitalMarsX64)
-                {
-                    va_list ap;
-
-                    va_start(ap, __va_argsave);
-
-                    scope(exit) va_end(ap);
-
-                    return convert (&sink, _arguments, ap, formatStr);
-                }
-                else
-                    return convert (&sink, _arguments, _argptr, formatStr);
+                return convert (&sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -281,11 +239,11 @@ class Layout(T)
 
         **********************************************************************/
 
-        version (old) public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
+        public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
                 return dispatch (result, null, ti, arg);
         }
-
+}
         /**********************************************************************
 
         **********************************************************************/
@@ -303,7 +261,7 @@ class Layout(T)
 
                         Arg[64] arglist = void;
                         ArgU[64] storedArgs = void;
-
+        
                         foreach (i, arg; arguments)
                                 {
                                 static if (is(typeof(args.ptr)))
@@ -387,18 +345,7 @@ class Layout(T)
                                    }
                                 }
                         }
-                    else version(DigitalMarsX64)
-                    {
-                        Arg[64] arglist = void;
-                        void[] buffer;
-                        uint len = 0;
-
-                        foreach(i, argType; arguments)
-                            len +=  (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
-
-                        buffer.length = len;
-                        len = 0;
-                        foreach(i, argType; arguments)
+                     else
                         {
                             //printf("type: %s\n", argType.classinfo.name.ptr);
 
@@ -428,7 +375,7 @@ class Layout(T)
                                 arglist[i] = args;
                                 args += (arg.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                                 }
-                    }
+                        }
                 return parse (formatStr, arguments, arglist, sink);
         }
 
@@ -527,7 +474,7 @@ class Layout(T)
                       // insist on a closing brace
                       if (*s != '}')
                          {
-                         length += sink ("{malformed format}");
+                         length += sink (cast(T[])"{malformed format}".dup);
                          continue;
                          }
 
@@ -550,13 +497,13 @@ class Layout(T)
                                       {
                                       if (left)
                                          {
-                                         length += sink ("...");
+                                         length += sink (cast(T[])"...");
                                          length += sink (Utf.cropLeft (str[-padding..$]));
                                          }
                                       else
                                          {
                                          length += sink (Utf.cropRight (str[0..width]));
-                                         length += sink ("...");
+                                         length += sink (cast(T[])"...");
                                          }
                                       }
                                    else
@@ -598,17 +545,17 @@ version (WithVariant)
                                    {
                                    auto tiStat = cast(TypeInfo_StaticArray)_ti;
                                    auto p = _arg;
-                                   length += sink ("[");
+                                   length += sink (cast(T[])"[");
                                    for (int i = 0; i < tiStat.len; i++)
                                        {
                                        if (p !is _arg )
-                                           length += sink (", ");
+                                           length += sink (cast(T[])", ");
                                        process (tiStat.value, p);
                                        p += tiStat.tsize/tiStat.len;
                                        }
-                                   length += sink ("]");
+                                   length += sink (cast(T[])"]");
                                    }
-                                else
+                                else 
                                 if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
                                    {
                                    auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
@@ -621,18 +568,12 @@ version (WithVariant)
                                    alias ubyte AK;
                                    auto aa = *cast(AV[AK]*) _arg;
 
-                                   length += sink ("{");
+                                   length += sink (cast(T[])"{");
                                    bool first = true;
-
-                                   size_t roundUp (size_t tsize)
+                                  
+                                   size_t roundUp (size_t sz)
                                    {
-                                        //return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-
-                                        version (X86_64)
-                                            // Size of key needed to align value on 16 bytes
-                                            return (tsize + 15) & ~(15);
-                                        else
-                                            return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
+                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
                                    }
 
                                    foreach (ref v; aa)
@@ -643,24 +584,24 @@ version (WithVariant)
                                            auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
 
                                            if (!first)
-                                                length += sink (", ");
+                                                length += sink (cast(T[])", ");
                                            process (tiKey, pk);
-                                           length += sink (" => ");
+                                           length += sink (cast(T[])" => ");
                                            process (tiVal, pv);
                                            first = false;
                                            }
-                                   length += sink ("}");
+                                   length += sink (cast(T[])"}");
                                    }
-                                else
+                                else 
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
-                                   if (_ti is typeid(char[]))
+                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]))
                                        emit (Utf.fromString8 (*cast(char[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(wchar[]))
+                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]))        
                                        emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(dchar[]))
+                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]))
                                        emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
                                    else
                                       {
@@ -670,16 +611,16 @@ version (WithVariant)
                                       auto ptr = cast(Arg) arr.ptr;
                                       auto elTi = _ti.next();
                                       auto size = elTi.tsize();
-                                      length += sink ("[");
+                                      length += sink (cast(T[])"[");
                                       while (len > 0)
                                             {
                                             if (ptr !is arr.ptr)
-                                                length += sink (", ");
+                                                length += sink (cast(T[])", ");
                                             process (elTi, ptr);
                                             len -= 1;
                                             ptr += size;
                                             }
-                                      length += sink ("]");
+                                      length += sink (cast(T[])"]");
                                       }
                                    }
                                 else
@@ -687,10 +628,10 @@ version (WithVariant)
                                    emit (dispatch (result, format, _ti, _arg));
                       }
 
-
+                      
                       // process this argument
                       if (index >= ti.length)
-                          emit ("{invalid index}");
+                          emit (cast(T[])"{invalid index}".dup);
                       else
                          process (ti[index], args[index]);
                       }
@@ -706,8 +647,8 @@ version (WithVariant)
                 switch (type.classinfo.name[9])
                        {
                        case TypeCode.BOOL:
-                            static T[] t = "true";
-                            static T[] f = "false";
+                            enum T[] t = cast(T[])"true";
+                            enum T[] f = cast(T[])"false";
                             return (*cast(bool*) p) ? t : f;
 
                        case TypeCode.BYTE:
@@ -715,22 +656,22 @@ version (WithVariant)
 
                        case TypeCode.VOID:
                        case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format, ubyte.max, "u");
+                            return integer (result, *cast(ubyte*) p, format, ubyte.max, cast(T[])"u");
 
                        case TypeCode.SHORT:
                             return integer (result, *cast(short*) p, format, ushort.max);
 
                        case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format, ushort.max, "u");
+                            return integer (result, *cast(ushort*) p, format, ushort.max, cast(T[])"u");
 
                        case TypeCode.INT:
                             return integer (result, *cast(int*) p, format, uint.max);
 
                        case TypeCode.UINT:
-                            return integer (result, *cast(uint*) p, format, uint.max, "u");
+                            return integer (result, *cast(uint*) p, format, uint.max, cast(T[])"u");
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format, ulong.max, "u");
+                            return integer (result, *cast(long*) p, format, ulong.max, cast(T[])"u");
 
                        case TypeCode.LONG:
                             return integer (result, *cast(long*) p, format, ulong.max);
@@ -772,12 +713,13 @@ version (WithVariant)
                             return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, size_t.max, "x");
+                            return integer (result, *cast(size_t*) p, format, size_t.max, cast(T[])"x");
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
                             if (c)
-                                return Utf.fromString8 (c.toString, result);
+                                /* Possibly bad dup */
+                                return Utf.fromString8 (c.toString.dup, result);
                             break;
 
                        case TypeCode.STRUCT:
@@ -797,7 +739,8 @@ version (WithVariant)
                                {
                                auto pi = **cast(Interface ***) x;
                                auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return Utf.fromString8 (o.toString, result);
+                               /* Possibly bad dup */
+                               return Utf.fromString8 (o.toString.dup, result);
                                }
                             break;
 
@@ -844,7 +787,7 @@ version (WithVariant)
                              }
                    }
                 }
-                return "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
+                return cast(T[])"{unhandled argument type: ".dup ~ cast(T[])Utf.fromString8 (type.toString.dup, result) ~ cast(T[])"}".dup;
         }
 
         /**********************************************************************
@@ -853,7 +796,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T[] def="d")
+        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T[] def=cast(T[])"d")
         {
                 if (format.length is 0)
                     format = def;
@@ -888,7 +831,7 @@ version (WithVariant)
                             case 'x':
                             case 'X':
                                  double d = v;
-                                 return integer (output, *cast(long*) &d, "x#");
+                                 return integer (output, *cast(long*) &d, cast(T[])"x#");
                             default:
                                  auto c = *p;
                                  if (c >= '0' && c <= '9')
@@ -909,7 +852,7 @@ version (WithVariant)
 
         private void error (char[] msg)
         {
-                throw new IllegalArgumentException (msg);
+                throw new IllegalArgumentException (cast(immutable(char)[])msg);
         }
 
         /**********************************************************************
@@ -920,7 +863,7 @@ version (WithVariant)
         {
                 size_t ret;
 
-                static const T[32] Spaces = ' ';
+                enum T[] Spaces = cast(T[])"                                ";
                 while (count > Spaces.length)
                       {
                       ret += sink (Spaces);
@@ -937,7 +880,7 @@ version (WithVariant)
 
         private T[] imaginary (T[] result, ireal val, T[] format)
         {
-                return floatingTail (result, val.im, format, "*1i");
+                return floatingTail (result, val.im, format, cast(T[])"*1i");
         }
 
         /**********************************************************************
@@ -961,10 +904,10 @@ version (WithVariant)
                                   return (pe[9] & 0x80) != 0;
                                   }
                 }
-                static T[] plus = "+";
+                static T[] plus = cast(T[])"+";
 
                 auto len = floatingTail (result, val.re, format, signed(val.im) ? null : plus).length;
-                return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];
+                return result [0 .. len + floatingTail (result[len..$], val.im, format, cast(T[])"*1i").length];
         }
 
         /**********************************************************************

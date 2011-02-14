@@ -40,9 +40,9 @@ version (Posix)
 struct Console
 {
         version (Win32)
-                 const char[] Eol = "\r\n";
+                 enum char[] Eol = "\r\n".dup;
               else
-                 const char[] Eol = "\n";
+                 enum char[] Eol = "\n".dup;
 
 
         /**********************************************************************
@@ -256,18 +256,18 @@ struct Console
                         other = An object with a useful toString() method.
 
                         Returns:
-                        Returns a chaining reference if all content was
-                        written. Throws an IOException indicating Eof or
-                        Eob if not.
+                        Returns a chaining reference if all content was 
+                        written. Throws an IOException indicating eof or 
+                        eob if not.
 
                         Remarks:
-                        Append the result of other.toString() to the console.
+                        Append the result of other.toString() to the console
 
                 **************************************************************/
 
-                final Output append (Object other)
-                {
-                        return append (other.toString);
+                final Output append (Object other)        
+                {           
+                        return append (cast(char[])other.toString);
                 }
 
                 /**************************************************************
@@ -418,7 +418,7 @@ struct Console
 
                 ***********************************************************************/
 
-                override char[] toString()
+                override immutable(char)[] toString()
                 {
                         return "<console>";
                 }

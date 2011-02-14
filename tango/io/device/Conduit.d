@@ -73,16 +73,16 @@ class Conduit : IConduit
         }
 
         /***********************************************************************
-
-                Return the name of this conduit.
+        
+                Return the name of this conduit
 
         ***********************************************************************/
 
-        abstract char[] toString ();
-
+        abstract immutable(char)[] toString (); 
+                     
         /***********************************************************************
 
-                Return a preferred size for buffering conduit I/O.
+                Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
@@ -201,7 +201,7 @@ class Conduit : IConduit
 
         final void error (char[] msg)
         {
-                throw new IOException (msg);
+                throw new IOException (msg.idup);
         }
 
         /***********************************************************************
@@ -286,7 +286,7 @@ class Conduit : IConduit
 
         long seek (long offset, Anchor anchor = Anchor.Begin)
         {
-                error (this.toString ~ " does not support seek requests");
+                error ((this.toString ~ " does not support seek requests").dup);
                 return 0;
         }
 
@@ -370,7 +370,7 @@ class Conduit : IConduit
                       {
                       auto i = output.write (src);
                       if (i is Eof)
-                          output.conduit.error ("Conduit.put :: eof while writing");
+                          output.conduit.error ("Conduit.put :: eof while writing".dup);
                       src = src [i..$];
                       }
         }
@@ -388,7 +388,7 @@ class Conduit : IConduit
                       {
                       auto i = input.read (dst);
                       if (i is Eof)
-                          input.conduit.error ("Conduit.get :: eof while reading");
+                          input.conduit.error ("Conduit.get :: eof while reading".dup);
                       dst = dst [i..$];
                       }
         }

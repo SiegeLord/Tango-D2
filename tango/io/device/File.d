@@ -4,12 +4,12 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2004: Initial release$(BR)
-                        Dec 2006: Outback release$(BR)
+        version:        Mar 2004: Initial release     
+                        Dec 2006: Outback release
                         Nov 2008: relocated and simplified
-
-        authors:        Kris,
-                        John Reimer,
+                        
+        author:         Kris, 
+                        John Reimer, 
                         Anders F Bjorklund (Darwin patches),
                         Chris Sauls (Win95 file support)
 
@@ -124,7 +124,7 @@ version (Win32)
         Note that File is unbuffered by default - wrap an instance within
         tango.io.stream.Buffered for buffered I/O.
 
-        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
+        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.
 
 *******************************************************************************/
@@ -140,12 +140,12 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-         align(1) struct Style
+        align(1) struct Style
         {
-                Access          access;                 /// Access rights.
-                Open            open;                   /// How to open.
-                Share           share;                  /// How to share.
-                Cache           cache;                  /// How to cache.
+                Access          access;                 /// access rights
+                Open            open;                   /// how to open
+                Share           share;                  /// how to share
+                Cache           cache;                  /// how to cache
         }
 
         /***********************************************************************
@@ -232,42 +232,42 @@ class File : Device, Device.Seek, Device.Truncate
         const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
-
-                Read and write an existing file.
+        
+                Read and write an existing file
 
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists};
+        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
 
         /***********************************************************************
-
-                Read &amp; write on a clean file. Create if necessary.
+        
+                Read & write on a clean file. Create if necessary
 
         ***********************************************************************/
 
-        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create};
+        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
 
         /***********************************************************************
-
-                Read and Write. Use existing file if present.
+        
+                Read and Write. Use existing file if present
 
         ***********************************************************************/
 
-        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
+        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
 
 
-        // the file we're working with
+        // the file we're working with 
         private char[]  path_;
 
         // the style we're opened with
         private Style   style_;
 
         /***********************************************************************
+        
+                Create a File for use with open()
 
-                Create a File for use with open().
-
-                Note that File is unbuffered by default - wrap an instance
-                within tango.io.stream.Buffered for buffered I/O.
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
 
         ***********************************************************************/
 
@@ -279,8 +279,8 @@ class File : Device, Device.Seek, Device.Truncate
 
                 Create a File with the provided path and style.
 
-                Note that File is unbuffered by default - wrap an instance
-                within tango.io.stream.Buffered for buffered I/O.
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
 
         ***********************************************************************/
 
@@ -306,10 +306,10 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        override char[] toString ()
+        override immutable(char)[] toString ()
         {
-                return path_;
-        }
+                return path_.idup;
+        }               
 
         /***********************************************************************
 
@@ -342,7 +342,7 @@ class File : Device, Device.Seek, Device.Truncate
                 //read the content
                 len = file.read (dst);
                 if (len is file.Eof)
-                    file.error ("File.read :: unexpected eof");
+                    file.error ("File.read :: unexpected eof".dup);
 
                 return dst [0 .. len];
         }
@@ -670,12 +670,12 @@ class File : Device, Device.Seek, Device.Truncate
 
                         Open a file with the provided style.
 
-                        Note that files default to no-sharing. That is,
-                        they are locked exclusively to the host process
+                        Note that files default to no-sharing. That is, 
+                        they are locked exclusively to the host process 
                         unless otherwise stipulated. We do this in order
-                        to expose the same default behaviour as Win32.
+                        to expose the same default behaviour as Win32
 
-                        $(B No file locking for borked POSIX.)
+                        NO FILE LOCKING FOR BORKED POSIX
 
                 ***************************************************************/
 
@@ -782,7 +782,7 @@ debug (File)
         {
                 char[10] ff;
 
-                auto file = new File("file.d");
+                auto file = new File("file.d".dup);
                 auto content = cast(char[]) file.load (file);
                 assert (content.length is file.length);
                 assert (file.read(ff) is file.Eof);
