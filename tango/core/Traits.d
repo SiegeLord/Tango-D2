@@ -450,7 +450,7 @@ template staticArraySize(T)
 {
     static assert(isStaticArrayType!(T),"staticArraySize needs a static array as type");
     static assert(rankOfArray!(T)==1,"implemented only for 1d arrays...");
-    const size_t staticArraySize=(T).sizeof / typeof(T.init).sizeof;
+    const size_t staticArraySize=(T).sizeof / typeof(*T.ptr).sizeof;
 }
 
 /// is T is static array returns a dynamic array, otherwise returns T
@@ -475,7 +475,7 @@ debug( UnitTest )
     static assert( is(ValTypeOfAA!(char[int])==char));
     static assert( is(KeyTypeOfAA!(char[int])==int));
     static assert( is(ValTypeOfAA!(char[][int])==char[]));
-    static assert( is(KeyTypeOfAA!(char[][int[]])==int[]));
+    static assert( is(KeyTypeOfAA!(char[][int[]])==const(int)[]));
     static assert( isAssocArrayType!(char[][int[]]));
     static assert( !isAssocArrayType!(char[]));
     static assert( is(DynamicArrayType!(char[2])==DynamicArrayType!(char[])));

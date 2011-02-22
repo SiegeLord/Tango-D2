@@ -14,10 +14,12 @@ What works so far:
 tango.io.Stdout and the imported modules (notably tango.io.Console, tango.text.convert.Layout and tango.core.Thread (maybe))
 tango.text.xml.Document and the imported modules
 tango.io.device.File
+tango.core.Array
+tango.core.Traits
 
 What will work next:
 
-Who knows... I'm porting stuff rather randomly. Probably tango.core.Array.
+Who knows... I'm porting stuff rather randomly.
 
 What won't work for awhile:
 
