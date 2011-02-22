@@ -89,29 +89,29 @@ version(LDC)
  * Constants
  */
 
-const real E =          2.7182818284590452354L;  /** e */ // 3.32193 fldl2t 0x1.5BF0A8B1_45769535_5FF5p+1L
-const real LOG2T =      0x1.a934f0979a3715fcp+1; /** $(SUB log, 2)10 */ // 1.4427 fldl2e
-const real LOG2E =      0x1.71547652b82fe178p+0; /** $(SUB log, 2)e */ // 0.30103 fldlg2
-const real LOG2 =       0x1.34413509f79fef32p-2; /** $(SUB log, 10)2 */
-const real LOG10E =     0.43429448190325182765;  /** $(SUB log, 10)e */
-const real LN2 =        0x1.62e42fefa39ef358p-1; /** ln 2 */  // 0.693147 fldln2
-const real LN10 =       2.30258509299404568402;  /** ln 10 */
-const real PI =         0x1.921fb54442d1846ap+1; /** $(_PI) */ // 3.14159 fldpi
-const real PI_2 =       1.57079632679489661923;  /** $(PI) / 2 */
-const real PI_4 =       0.78539816339744830962;  /** $(PI) / 4 */
-const real M_1_PI =     0.31830988618379067154;  /** 1 / $(PI) */
-const real M_2_PI =     0.63661977236758134308;  /** 2 / $(PI) */
-const real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / $(SQRT)$(PI) */
-const real SQRT2 =      1.41421356237309504880;  /** $(SQRT)2 */
-const real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
+enum real E =          2.7182818284590452354L;  /** e */ // 3.32193 fldl2t 0x1.5BF0A8B1_45769535_5FF5p+1L
+enum real LOG2T =      0x1.a934f0979a3715fcp+1; /** $(SUB log, 2)10 */ // 1.4427 fldl2e
+enum real LOG2E =      0x1.71547652b82fe178p+0; /** $(SUB log, 2)e */ // 0.30103 fldlg2
+enum real LOG2 =       0x1.34413509f79fef32p-2; /** $(SUB log, 10)2 */
+enum real LOG10E =     0.43429448190325182765;  /** $(SUB log, 10)e */
+enum real LN2 =        0x1.62e42fefa39ef358p-1; /** ln 2 */  // 0.693147 fldln2
+enum real LN10 =       2.30258509299404568402;  /** ln 10 */
+enum real PI =         0x1.921fb54442d1846ap+1; /** $(_PI) */ // 3.14159 fldpi
+enum real PI_2 =       1.57079632679489661923;  /** $(PI) / 2 */
+enum real PI_4 =       0.78539816339744830962;  /** $(PI) / 4 */
+enum real M_1_PI =     0.31830988618379067154;  /** 1 / $(PI) */
+enum real M_2_PI =     0.63661977236758134308;  /** 2 / $(PI) */
+enum real M_2_SQRTPI = 1.12837916709551257390;  /** 2 / $(SQRT)$(PI) */
+enum real SQRT2 =      1.41421356237309504880;  /** $(SQRT)2 */
+enum real SQRT1_2 =    0.70710678118654752440;  /** $(SQRT)$(HALF) */
 
-//const real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
-//const real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
-//const real SQRTE   = 1.64872127070012814684865078781416357L; /** &radic;(e) */
+//enum real SQRTPI  = 1.77245385090551602729816748334114518279754945612238L; /** &radic;&pi; */
+//enum real SQRT2PI = 2.50662827463100050242E0L; /** &radic;(2 &pi;) */
+//enum real SQRTE   = 1.64872127070012814684865078781416357L; /** &radic;(e) */
 
-const real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
-const real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
-const real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992L; /** Euler-Mascheroni constant 0.57721566.. */
+enum real MAXLOG = 0x1.62e42fefa39ef358p+13L;  /** log(real.max) */
+enum real MINLOG = -0x1.6436716d5406e6d8p+13L; /** log(real.min*real.epsilon) */
+enum real EULERGAMMA = 0.57721_56649_01532_86060_65120_90082_40243_10421_59335_93992L; /** Euler-Mascheroni enumant 0.57721566.. */
 
 /*
  * Primitives
@@ -200,7 +200,7 @@ template minmaxtype(T...){
     static if(T.length == 1) alias T[0] minmaxtype;
     else static if(T.length > 2)
         alias minmaxtype!(minmaxtype!(T[0..2]), T[2..$]) minmaxtype;
-    else alias typeof (T[1] > T[0] ? T[1] : T[0]) minmaxtype;
+    else alias typeof (T[1].init > T[0].init ? T[1].init : T[0].init) minmaxtype;
 }
 }
 
@@ -1723,7 +1723,7 @@ real hypot(real x, real y)
      * Direct inquiries to 30 Frost Street, Cambridge, MA 02140
      */
 
-    const int PRECL = real.mant_dig/2; // = 32
+    enum int PRECL = real.mant_dig/2; // = 32
 
     real xx, yy, b, re, im;
     int ex, ey, e;
@@ -1830,8 +1830,8 @@ in
 body
 {
   version (Naked_D_InlineAsm_X86) {
-      const bool Use_D_InlineAsm_X86 = true;
-  } else const bool Use_D_InlineAsm_X86 = false;
+      enum bool Use_D_InlineAsm_X86 = true;
+  } else enum bool Use_D_InlineAsm_X86 = false;
   
   // BUG (Inherited from Phobos): This code assumes a frame pointer in EBP.
   // This is not in the spec.
@@ -1903,7 +1903,7 @@ debug(UnitTest) {
 unittest
 {
     real x = 3.1;
-    const real pp[] = [56.1L, 32.7L, 6L];
+    enum real pp[] = [56.1L, 32.7L, 6L];
 
     assert( poly(x, pp) == (56.1L + (32.7L + 6L * x) * x) );
 
@@ -1929,7 +1929,7 @@ private enum : int { MANTDIG_2 = real.mant_dig/2 } // Compiler workaround
 bool feq(int precision = MANTDIG_2, XReal=real, YReal=real)(XReal x, YReal y)
 {
     static assert(is( XReal: real) && is(YReal : real));
-    return tango.math.IEEE.feqrel(x, y) >= precision;
+    return tango.math.IEEE.feqrel(cast(real)x, cast(real)y) >= precision;
 }
 
 unittest{
