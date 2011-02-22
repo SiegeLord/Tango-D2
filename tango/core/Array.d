@@ -672,9 +672,9 @@ else
             //
             for( size_t m = 0, i = pat.length - 1; i > 0; --i )
             {
-                while( ( m > 0 ) && !pred( pat[length - m - 1], pat[i - 1] ) )
-                    m = func[length - m];
-                if( pred( pat[length - m - 1], pat[i - 1] ) )
+                while( ( m > 0 ) && !pred( pat[$ - m - 1], pat[i - 1] ) )
+                    m = func[$ - m];
+                if( pred( pat[$ - m - 1], pat[i - 1] ) )
                     ++m;
                 func[i - 1] = m;
             }
@@ -687,9 +687,9 @@ else
             do
             {
                 --i;
-                while( ( m > 0 ) && !pred( pat[length - m - 1], buf[i] ) )
-                    m = func[length - m - 1];
-                if( pred( pat[length - m - 1], buf[i] ) )
+                while( ( m > 0 ) && !pred( pat[$ - m - 1], buf[i] ) )
+                    m = func[$ - m - 1];
+                if( pred( pat[$ - m - 1], buf[i] ) )
                 {
                     ++m;
                     if ( m == pat.length )
@@ -966,10 +966,10 @@ else
     {
       unittest
       {
-        assert( findAdj( "aabcdef" ) == 0 );
-        assert( findAdj( "abcddef" ) == 3 );
-        assert( findAdj( "abcdeff" ) == 5 );
-        assert( findAdj( "abcdefg" ) == 7 );
+        assert( findAdj( "aabcdef".dup ) == 0 );
+        assert( findAdj( "abcddef".dup ) == 3 );
+        assert( findAdj( "abcdeff".dup ) == 5 );
+        assert( findAdj( "abcdefg".dup ) == 7 );
       }
     }
 }
@@ -1774,11 +1774,11 @@ else
             }
         }
 
-        test( "abcdefghij".dup, "abcdefghij" );
-        test( "aabcdefghi".dup, "abcdefghi" );
-        test( "bcdefghijj".dup, "bcdefghij" );
-        test( "abccdefghi".dup, "abcdefghi" );
-        test( "abccdddefg".dup, "abcdefg" );
+        test( "abcdefghij".dup, "abcdefghij".dup );
+        test( "aabcdefghi".dup, "abcdefghi".dup );
+        test( "bcdefghijj".dup, "bcdefghij".dup );
+        test( "abccdefghi".dup, "abcdefghi".dup );
+        test( "abccdddefg".dup, "abcdefg".dup );
       }
     }
 }
@@ -1844,7 +1844,7 @@ else
     {
       unittest
       {
-        char[] buf = "abcdefghijklmnopqrstuvwxyz";
+        char[] buf = "abcdefghijklmnopqrstuvwxyz".dup;
         char[] tmp = buf.dup;
 
         assert( tmp == buf );
