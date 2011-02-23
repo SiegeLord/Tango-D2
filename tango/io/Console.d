@@ -615,9 +615,9 @@ struct Console
 
 ******************************************************************************/
 
-static Console.Input    Cin;                    /// the standard input stream
-static Console.Output   Cout,                   /// the standard output stream
-                        Cerr;                   /// the standard error stream
+static __gshared Console.Input    Cin;                    /// the standard input stream
+static __gshared Console.Output   Cout,                   /// the standard output stream
+                                  Cerr;                   /// the standard error stream
 
 
 /******************************************************************************
