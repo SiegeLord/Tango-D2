@@ -71,11 +71,11 @@ private:
  * Each instance of '@' in s is replaced by 0,1,...n-1. This is a helper
  * function for some of the asm routines.
  */
-char [] indexedLoopUnroll(int n, char [] s)
+immutable(char) [] indexedLoopUnroll(int n, immutable(char) [] s)
 {
-    char [] u;
+    immutable(char) [] u;
     for (int i = 0; i<n; ++i) {
-        char [] nstr= (i>9 ? ""~ cast(char)('0'+i/10) : "") ~ cast(char)('0' + i%10);
+        immutable(char) [] nstr= (i>9 ? ""~ cast(char)('0'+i/10) : "") ~ cast(char)('0' + i%10);
         
         int last = 0;
         for (int j = 0; j<s.length; ++j) {
@@ -111,7 +111,7 @@ enum : int { KARATSUBASQUARELIMIT=26 }; // Minimum value for which square Karats
  * Returns carry or borrow (0 or 1).
  * Set op == '+' for addition, '-' for subtraction.
  */
-uint multibyteAddSub(char op)(uint[] dest, uint [] src1, uint [] src2, uint carry)
+uint multibyteAddSub(char op)(uint[] dest, in uint [] src1, in uint [] src2, uint carry)
 {
     // Timing:
     // Pentium M: 2.25/int
@@ -256,7 +256,7 @@ L2:     dec EAX;
  *  numbits must be in the range 1..31
  *  Returns the overflow
  */
-uint multibyteShlNoMMX(uint [] dest, uint [] src, uint numbits)
+uint multibyteShlNoMMX(uint [] dest, in uint [] src, uint numbits)
 {
     // Timing: Optimal for P6 family.
     // 2.0 cycles/int on PPro..PM (limited by execution port p0)
@@ -307,7 +307,7 @@ L_last:
  *  numbits must be in the range 1..31
  * This version uses MMX.
  */
-uint multibyteShl(uint [] dest, uint [] src, uint numbits)
+uint multibyteShl(uint [] dest, in uint [] src, uint numbits)
 {
     // Timing:
     // K7 1.2/int. PM 1.7/int P4 5.3/int
@@ -391,7 +391,7 @@ L_length1:
    }
 }
 
-void multibyteShr(uint [] dest, uint [] src, uint numbits)
+void multibyteShr(uint [] dest, in uint [] src, uint numbits)
 {
     enum { LASTPARAM = 4*4 } // 3* pushes + return address.
     asm {
@@ -478,7 +478,7 @@ L_length1:
 /** dest[#] = src[#] >> numbits
  *  numbits must be in the range 1..31
  */
-void multibyteShrNoMMX(uint [] dest, uint [] src, uint numbits)
+void multibyteShrNoMMX(uint [] dest, in uint [] src, uint numbits)
 {
     // Timing: Optimal for P6 family.
     // 2.0 cycles/int on PPro..PM (limited by execution port p0)
@@ -569,7 +569,7 @@ unittest
 /** dest[#] = src[#] * multiplier + carry.
  * Returns carry.
  */
-uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMul(uint[] dest, in uint[] src, uint multiplier, uint carry)
 {
     // Timing: definitely not optimal.
     // Pentium M: 5.0 cycles/operation, has 3 resource stalls/iteration
@@ -584,7 +584,7 @@ uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
     }
     else
     {
-        static int zero = 0;
+        static __gshared int zero = 0;
     }
     asm {
         naked;      
@@ -643,7 +643,7 @@ unittest
 // Multiples by M_ADDRESS which should be "ESP+LASTPARAM" or "ESP". OP must be "add" or "sub"
 // This is the most time-critical code in the BigInt library.
 // It is used by both MulAdd, multiplyAccumulate, and triangleAccumulate
-char [] asmMulAdd_innerloop(char [] OP, char [] M_ADDRESS) {
+immutable(char) [] asmMulAdd_innerloop(immutable(char) [] OP, immutable(char) [] M_ADDRESS) {
     // The bottlenecks in this code are extremely complicated. The MUL, ADD, and ADC
     // need 4 cycles on each of the ALUs units p0 and p1. So we use memory load 
     // (unit p2) for initializing registers to zero.
@@ -714,9 +714,9 @@ L_done: " ~ OP ~ " [-8+EDI+4*EBX], ECX;
 		// final carry is now in EBP
 }
 
-char [] asmMulAdd_enter_odd(char [] OP, char [] M_ADDRESS) {
+immutable(char) [] asmMulAdd_enter_odd(immutable(char) [] OP, immutable(char) [] M_ADDRESS) {
 return "asm {
-        mul int ptr [" ~M_ADDRESS ~"];
+        mul int ptr [" ~M_ADDRESS ~ "];
         mov EBP, zero;   
         add ECX, EAX;
         mov EAX, [4+ESI+4*EBX];
@@ -735,7 +735,7 @@ return "asm {
  * where op == '+' or '-'
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
-uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMulAdd(char op)(uint [] dest, in uint[] src, uint multiplier, uint carry)
 {
     // Timing: This is the most time-critical bignum function.
     // Pentium M: 5.4 cycles/operation, still has 2 resource stalls + 1load block/iteration
@@ -751,15 +751,15 @@ uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint ca
     // EDI = dest
     // ESI = src
     
-    const char [] OP = (op=='+')? "add" : "sub";
+    enum OP = (op=='+')? "add" : "sub";
     version(D_PIC) {
         enum { zero = 0 }
     } else {
         // use p2 (load unit) instead of the overworked p0 or p1 (ALU units)
         // when initializing registers to zero.
-        static int zero = 0;
+        static __gshared int zero = 0;
         // use p3/p4 units 
-        static int storagenop; // write-only
+        static __gshared int storagenop; // write-only
     }
     
     enum { LASTPARAM = 5*4 } // 4* pushes + return address.
@@ -823,7 +823,7 @@ unittest {
     }
     ----
  */
-void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
+void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
 {
     // Register usage
     // EDX:EAX = used in multiply
@@ -839,9 +839,9 @@ void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
     } else {
         // use p2 (load unit) instead of the overworked p0 or p1 (ALU units)
         // when initializing registers to zero.
-        static int zero = 0;
+        static __gshared int zero = 0;
         // use p3/p4 units 
-        static int storagenop; // write-only
+        static __gshared int storagenop; // write-only
     }
     
     enum { LASTPARAM = 6*4 } // 4* pushes + local + return address.
@@ -1029,7 +1029,7 @@ unittest {
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
-void multibyteAddDiagonalSquares(uint [] dest, uint [] src)
+void multibyteAddDiagonalSquares(uint [] dest, in uint [] src)
 {
     /* Unlike mulAdd, the carry is only 1 bit, 
 	   since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
@@ -1084,7 +1084,7 @@ unittest {
 }
 }
 
-void multibyteTriangleAccumulateD(uint[] dest, uint[] x)
+void multibyteTriangleAccumulateD(uint[] dest, in uint[] x)
 {
     for (int i = 0; i < x.length-3; ++i) {
         dest[i+x.length] = multibyteMulAdd!('+')(
@@ -1106,7 +1106,7 @@ length2:
 //dest += src[0]*src[1...$] + src[1]*src[2..$] + ... + src[$-3]*src[$-2..$]+ src[$-2]*src[$-1]
 // assert(dest.length = src.length*2);
 // assert(src.length >= 3);
-void multibyteTriangleAccumulateAsm(uint[] dest, uint[] src)
+void multibyteTriangleAccumulateAsm(uint[] dest, in uint[] src)
 {
     // Register usage
     // EDX:EAX = used in multiply
@@ -1122,9 +1122,9 @@ void multibyteTriangleAccumulateAsm(uint[] dest, uint[] src)
     } else {
         // use p2 (load unit) instead of the overworked p0 or p1 (ALU units)
         // when initializing registers to zero.
-        static int zero = 0;
+        static __gshared int zero = 0;
         // use p3/p4 units 
-        static int storagenop; // write-only
+        static __gshared int storagenop; // write-only
     }
 
     enum { LASTPARAM = 6*4 } // 4* pushes + local + return address.
@@ -1268,7 +1268,7 @@ void multibyteSquare(BigDigit[] result, BigDigit [] x)
     }
     //  Do half a square multiply.
     //  dest += src[0]*src[1...$] + src[1]*src[2..$] + ... + src[$-3]*src[$-2..$]+ src[$-2]*src[$-1]
-    result[x.length] = multibyteMul!('+')(result[1 .. x.length], x[1..$], x[0], 0);
+    result[x.length] = multibyteMul(result[1 .. x.length], x[1..$], x[0], 0);
     multibyteTriangleAccumulateAsm(result[2..$], x[1..$]);
     // Multiply by 2 
     result[$-1] = multibyteShlNoMMX(result[1..$-1], result[1..$-1], 1);
