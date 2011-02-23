@@ -24,16 +24,16 @@ version (Posix)
 
 /*******************************************************************************
 
-        Low-level console IO support.
-
-        Note that for a while this was templated for each of char, wchar,
+        low level console IO support. 
+        
+        Note that for a while this was templated for each of char, wchar, 
         and dchar. It became clear after some usage that the console is
-        more useful if it sticks to UTF8 only. See Console.Conduit below
+        more useful if it sticks to Utf8 only. See Console.Conduit below 
         for details.
 
-        Redirecting the standard IO handles (via a shell) operates as one
-        would expect, though the redirected content should likely restrict
-        itself to UTF8.
+        Redirecting the standard IO handles (via a shell) operates as one 
+        would expect, though the redirected content should likely restrict 
+        itself to utf8 
 
 *******************************************************************************/
 
@@ -615,9 +615,15 @@ struct Console
 
 ******************************************************************************/
 
+<<<<<<< HEAD
 static Console.Input  Cin;  /// The standard input stream.
 static Console.Output Cout; /// The standard output stream.
 static Console.Output Cerr; /// The standard error stream.
+=======
+static __gshared Console.Input    Cin;                    /// the standard input stream
+static __gshared Console.Output   Cout,                   /// the standard output stream
+                                  Cerr;                   /// the standard error stream
+>>>>>>> A few __gshared's here and there and stuff does not crash anymore
 
 
 /******************************************************************************

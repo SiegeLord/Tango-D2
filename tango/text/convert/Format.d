@@ -21,7 +21,7 @@ private import tango.text.convert.Layout;
 
 ******************************************************************************/
 
-public Layout!(char) Format;
+public __gshared Layout!(char) Format;
 
 static this()
 {
