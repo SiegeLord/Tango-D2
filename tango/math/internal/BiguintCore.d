@@ -155,6 +155,11 @@ public:
         }
     }
     
+    void opAssign(BigUint a)
+    {
+		data = a.data;
+	}
+    
 ///
 int opCmp(BigUint y)
 {
@@ -179,11 +184,11 @@ int opCmp(ulong y)
     return data[0] > ylo ? 1: -1;
 }
 
-int opEquals(BigUint y) {
+const bool opEquals(const ref BigUint y) {
        return y.data[] == data[];
 }
 
-int opEquals(ulong y) {
+const bool opEquals(ulong y) {
     if (data.length>2) return 0;
     uint ylo = cast(uint)(y & 0xFFFF_FFFF);
     uint yhi = cast(uint)(y >> 32);
@@ -354,7 +359,7 @@ BigUint opShr(ulong y)
 BigUint opShl(ulong y)
 {
     assert(y>0);
-    if (isZero()) return *this;
+    if (isZero()) return this;
     uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
     assert ((y>>LG2BIGDIGITBITS) < cast(ulong)(uint.max));
     uint words = cast(uint)(y >> LG2BIGDIGITBITS);
@@ -474,7 +479,7 @@ static BigUint divInt(BigUint x, uint y) {
 // return x%y
 static uint modInt(BigUint x, uint y) {
     assert(y!=0);
-    if (y&(-y)==y) { // perfect power of 2        
+    if ((y&(-y))==y) { // perfect power of 2        
         return x.data[0]&(y-1);   
     } else {
         // horribly inefficient - malloc, copy, & store are unnecessary.
@@ -692,16 +697,16 @@ debug (UnitTest) {
 // Pow tests
 unittest {
     BigUint r, s;
-    r.fromHexString("80000000_00000001");
+    r.fromHexString("80000000_00000001".dup);
     s = BigUint.pow(r, 5);
-    r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000"
-      ~ "_00000002_80000000_00000001");
+    r.fromHexString("08000000_00000000_50000000_00000001_40000000_00000002_80000000".dup
+      ~ "_00000002_80000000_00000001".dup);
     assert(s == r);
     s = 10;
     s = BigUint.pow(s, 39);
-    r.fromDecimalString("1000000000000000000000000000000000000000");
+    r.fromDecimalString("1000000000000000000000000000000000000000".dup);
     assert(s == r);
-    r.fromHexString("1_E1178E81_00000000");
+    r.fromHexString("1_E1178E81_00000000".dup);
     s = BigUint.pow(r, 15); // Regression test: this used to overflow array bounds
 
 }
@@ -709,7 +714,7 @@ unittest {
 // Radix conversion tests
 unittest {   
     BigUint r;
-    r.fromHexString("1_E1178E81_00000000");
+    r.fromHexString("1_E1178E81_00000000".dup);
     assert(r.toHexString(0, '_', 0) == "1_E1178E81_00000000");
     assert(r.toHexString(0, '_', 20) == "0001_E1178E81_00000000");
     assert(r.toHexString(0, '_', 16+8) == "00000001_E1178E81_00000000");
@@ -821,7 +826,7 @@ unittest {
 /*  General unsigned subtraction routine for bigints.
  *  Sets result = x - y. If the result is negative, negative will be true.
  */
-BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
+BigDigit [] sub(in BigDigit[] x, in BigDigit[] y, bool *negative)
 {
     if (x.length == y.length) {
         // There's a possibility of cancellation, if x and y are almost equal.
@@ -840,7 +845,7 @@ BigDigit [] sub(BigDigit[] x, BigDigit[] y, bool *negative)
         return result;
     }
     // Lengths are different
-    BigDigit [] large, small;
+    const (BigDigit) [] large, small;
     if (x.length < y.length) {
         *negative = true;
         large = y; small = x;
@@ -924,7 +929,7 @@ BigDigit [] subInt(BigDigit[] x, ulong y)
  *  unbalanced case. (But I doubt it would be faster in practice).
  *  
  */
-void mulInternal(BigDigit[] result, BigDigit[] x, BigDigit[] y)
+void mulInternal(BigDigit[] result, in BigDigit[] x, in BigDigit[] y)
 {
     assert( result.length == x.length + y.length );
     assert( y.length > 0 );
@@ -1262,7 +1267,7 @@ private:
 // with COW.
 
 // Classic 'schoolbook' multiplication.
-void mulSimple(BigDigit[] result, BigDigit [] left, BigDigit[] right)
+void mulSimple(BigDigit[] result, in BigDigit [] left, in BigDigit[] right)
 in {    
     assert(result.length == left.length + right.length);
     assert(right.length>1);
@@ -1354,7 +1359,7 @@ BigDigit addOrSubAssignSimple(BigDigit [] result, BigDigit [] right, bool wantSu
 
 
 // return true if x<y, considering leading zeros
-bool less(BigDigit[] x, BigDigit[] y)
+bool less(in BigDigit[] x, in BigDigit[] y)
 {
     assert(x.length >= y.length);
     uint k = x.length-1;
@@ -1365,7 +1370,7 @@ bool less(BigDigit[] x, BigDigit[] y)
 }
 
 // Set result = abs(x-y), return true if result is negative(x<y), false if x<=y.
-bool inplaceSub(BigDigit[] result, BigDigit[] x, BigDigit[] y)
+bool inplaceSub(BigDigit[] result, in BigDigit[] x, in BigDigit[] y)
 {
     assert(result.length == (x.length >= y.length) ? x.length : y.length);
     
@@ -1378,7 +1383,7 @@ bool inplaceSub(BigDigit[] result, BigDigit[] x, BigDigit[] y)
        minlen = x.length;
        negative = !less(y, x);
     }
-    BigDigit[] large, small;
+    const(BigDigit)[] large, small;
     if (negative) { large = y; small=x; } else { large=x; small=y; }
        
     BigDigit carry = multibyteSub(result[0..minlen], large[0..minlen], small[0..minlen], 0);
@@ -1409,7 +1414,7 @@ uint karatsubaRequiredBuffSize(uint xlen)
 * Params:
 * scratchbuff      An array long enough to store all the temporaries. Will be destroyed.
 */
-void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] scratchbuff)
+void mulKaratsuba(BigDigit [] result, in BigDigit [] x, in BigDigit[] y, BigDigit [] scratchbuff)
 {
     assert(x.length >= y.length);
 	  assert(result.length < uint.max, "Operands too large");
@@ -1433,10 +1438,10 @@ void mulKaratsuba(BigDigit [] result, BigDigit [] x, BigDigit[] y, BigDigit [] s
     // half length, round up.
     uint half = (x.length >> 1) + (x.length & 1);
     
-    BigDigit [] x0 = x[0 .. half];
-    BigDigit [] x1 = x[half .. $];    
-    BigDigit [] y0 = y[0 .. half];
-    BigDigit [] y1 = y[half .. $];
+    const(BigDigit) [] x0 = x[0 .. half];
+    const(BigDigit) [] x1 = x[half .. $];    
+    const(BigDigit) [] y0 = y[0 .. half];
+    const(BigDigit) [] y1 = y[half .. $];
     BigDigit [] mid = scratchbuff[0 .. half*2];
     BigDigit [] newscratchbuff = scratchbuff[half*2 .. $];
     BigDigit [] resultLow = result[0 .. 2*half];
@@ -1653,7 +1658,7 @@ private:
     
 // Returns the highest value of i for which left[i]!=right[i],
 // or 0 if left[]==right[]
-int highestDifferentDigit(BigDigit [] left, BigDigit [] right)
+int highestDifferentDigit(in BigDigit [] left, in BigDigit [] right)
 {
     assert(left.length == right.length);
     for (int i=left.length-1; i>0; --i) {
