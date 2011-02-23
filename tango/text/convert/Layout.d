@@ -109,7 +109,7 @@ class Layout(T)
 
         static Layout instance ()
         {
-                static Layout common;
+                static __gshared Layout common;
 
                 if (common is null)
                     common = new Layout!(T);

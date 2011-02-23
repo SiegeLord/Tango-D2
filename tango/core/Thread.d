@@ -93,7 +93,7 @@ version( Win32 )
         import tango.stdc.stdint : uintptr_t; // for _beginthreadex decl below
         import tango.sys.win32.UserGdi;
 
-        const DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
+        enum DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
 
         //
         // avoid multiple imports via tango.sys.windows.process
@@ -145,7 +145,7 @@ version( Win32 )
         //
         HANDLE GetCurrentThreadHandle()
         {
-            const uint DUPLICATE_SAME_ACCESS = 0x00000002;
+            enum uint DUPLICATE_SAME_ACCESS = 0x00000002;
 
             HANDLE curr = GetCurrentThread(),
                    proc = GetCurrentProcess(),
@@ -856,7 +856,7 @@ class Thread
      * represents the minimum valid priority for the scheduling policy of
      * the process.
      */
-    static const int PRIORITY_MIN;
+    static __gshared const int PRIORITY_MIN;
 
 
     /**
@@ -865,7 +865,7 @@ class Thread
      * represents the minimum valid priority for the scheduling policy of
      * the process.
      */
-    static const int PRIORITY_MAX;
+    static __gshared const int PRIORITY_MAX;
 
 
     /**
@@ -1372,8 +1372,8 @@ private:
     //
     // Local storage
     //
-    static bool[LOCAL_MAX]  sm_local;
-    static TLSKey           sm_this;
+    static __gshared bool[LOCAL_MAX]  sm_local;
+    static __gshared TLSKey           sm_this;
 
     void*[LOCAL_MAX]        m_local;
 
@@ -1531,11 +1531,11 @@ private:
     }
 
 
-    static Context*     sm_cbeg;
-    static size_t       sm_clen;
+    static __gshared Context*     sm_cbeg;
+    static __gshared size_t       sm_clen;
 
-    static Thread       sm_tbeg;
-    static size_t       sm_tlen;
+    static __gshared Thread       sm_tbeg;
+    static __gshared size_t       sm_tlen;
 
     //
     // Used for ordering threads in the global thread list.
@@ -3714,7 +3714,7 @@ private:
     {
         // NOTE: The static ucontext instance is used to represent the context
         //       of the main application thread.
-        static ucontext_t   sm_utxt = void;
+        static __gshared ucontext_t   sm_utxt = void;
         ucontext_t          m_utxt  = void;
         ucontext_t*         m_ucur  = null;
     }
@@ -3742,7 +3742,7 @@ private:
     }
 
 
-    static Thread.TLSKey    sm_this;
+    static __gshared Thread.TLSKey    sm_this;
 
 
 private:

@@ -108,10 +108,10 @@ private import tango.text.convert.Layout;
 
 private alias FormatOutput!(char) Output;
 
-public static Output Stdout; /// Global standard output.
-public static Output Stderr; /// Global error output.
-public alias Stdout  stdout; /// Alternative.
-public alias Stderr  stderr; /// Alternative.
+public static __gshared Output Stdout; /// global standard output
+public static __gshared Output Stderr; /// global error output
+public alias Stdout            stdout; /// alternative
+public alias Stderr            stderr; /// alternative
 
 static this ()
 {
