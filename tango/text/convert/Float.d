@@ -399,9 +399,9 @@ private char *convertl (char* buf, real value, int ndigit, int *decpt, int *sign
         if (fflag) 
            {
            ++ndigit;
-           ++*decpt;
            }
         buf[0]= '1';
+        ++*decpt;
         buf[ndigit]= '\0';
         return buf;
 }
@@ -874,6 +874,7 @@ debug (UnitTest)
                 assert (format (tmp, 3.14159, 4) == "3.1416");
                 assert (parse ("3.5") == 3.5);
                 assert (format(tmp, parse ("3.14159"), 6) == "3.14159");
+                assert (format(tmp, 0.09999, 2,  0, true) == "1.00e-01");
         }
 }
 
