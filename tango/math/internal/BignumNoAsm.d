@@ -29,7 +29,7 @@ enum : int { KARATSUBASQUARELIMIT=12 }; // Minimum value for which square Karats
  * Returns carry or borrow (0 or 1).
  * Set op == '+' for addition, '-' for subtraction.
  */
-uint multibyteAddSub(char op)(uint[] dest, uint [] src1, uint [] src2, uint carry)
+uint multibyteAddSub(char op)(uint[] dest, in uint [] src1, in uint [] src2, uint carry)
 {
     ulong c = carry;
     for (uint i = 0; i < src2.length; ++i) {
@@ -171,7 +171,7 @@ unittest
 /** dest[] = src[] * multiplier + carry.
  * Returns carry.
  */
-uint multibyteMul(uint[] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMul(uint[] dest, in uint[] src, uint multiplier, uint carry)
 {
     assert(dest.length==src.length);
     ulong c = carry;
@@ -197,7 +197,7 @@ unittest
  * dest[] += src[] * multiplier + carry(0..FFFF_FFFF).
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
-uint multibyteMulAdd(char op)(uint [] dest, uint[] src, uint multiplier, uint carry)
+uint multibyteMulAdd(char op)(uint [] dest, in uint[] src, uint multiplier, uint carry)
 {
     assert(dest.length == src.length);
     ulong c = carry;
@@ -242,7 +242,7 @@ unittest {
     }
     ----
  */
-void multibyteMultiplyAccumulate(uint [] dest, uint[] left, uint [] right)
+void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
 {
     for (int i = 0; i< right.length; ++i) {
         dest[left.length + i] = multibyteMulAdd!('+')(dest[i..left.length+i],
@@ -279,7 +279,7 @@ unittest {
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
-void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
+void multibyteAddDiagonalSquares(uint[] dest, in uint[] src)
 {
     ulong c = 0;
     for(int i = 0; i < src.length; ++i){
@@ -293,7 +293,7 @@ void multibyteAddDiagonalSquares(uint[] dest, uint[] src)
 }
 
 // Does half a square multiply. (square = diagonal + 2*triangle)
-void multibyteTriangleAccumulate(uint[] dest, uint[] x)
+void multibyteTriangleAccumulate(uint[] dest, in uint[] x)
 {
     // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
     dest[x.length] = multibyteMul(dest[1 .. x.length], x[1..$], x[0], 0);
