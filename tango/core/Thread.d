@@ -268,7 +268,7 @@ else version( Posix )
             {
                 obj.run();
             }
-            catch( Object o )
+            catch( Throwable o )
             {
                 obj.m_unhandled = o;
             }
@@ -1353,7 +1353,7 @@ private:
         bool            m_isRunning;
     }
     bool                m_isDaemon;
-    public Object              m_unhandled;
+    public Throwable              m_unhandled;
 
 
 private:
@@ -2574,7 +2574,7 @@ private
         {
             obj.run();
         }
-        catch( Object o )
+        catch( Throwable o )
         {
             obj.m_unhandled = o;
         }
@@ -2998,7 +2998,7 @@ class Fiber
         }
         if( m_unhandled )
         {
-            Object obj  = m_unhandled;
+            Throwable obj  = m_unhandled;
             m_unhandled = null;
             if( rethrow )
                 throw obj;
@@ -3198,7 +3198,7 @@ class Fiber
      * In:
      *  obj must not be null.
      */
-    static void yieldAndThrow( Object obj )
+    static void yieldAndThrow( Throwable obj )
     in
     {
         assert( obj );
@@ -3321,7 +3321,7 @@ private:
         void delegate() m_dg;
     }
     bool                m_isRunning;
-    Object              m_unhandled;
+    Throwable              m_unhandled;
     State               m_state;
     char[]              m_name;
 public:
