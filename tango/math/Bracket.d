@@ -317,7 +317,7 @@ in {
 }
 body{
     // Based on the original Algol code by R.P. Brent.
-    const real GOLDENRATIO = 0.3819660112501051; // (3 - sqrt(5))/2 = 1 - 1/phi
+    enum real GOLDENRATIO = 0.3819660112501051; // (3 - sqrt(5))/2 = 1 - 1/phi
 
     T stepBeforeLast = 0.0;
     T lastStep;
@@ -331,7 +331,7 @@ body{
     for (;;) {
         ++numiter;
         T xmid = 0.5 * (xlo + xhi);
-        const real SQRTEPSILON = 3e-10L; // sqrt(real.epsilon)
+        enum real SQRTEPSILON = 3e-10L; // sqrt(real.epsilon)
         T tol1 = SQRTEPSILON * fabs(bestx);
         T tol2 = 2.0 * tol1;
         if (fabs(bestx - xmid) <= (tol2 - 0.5*(xhi - xlo)) ) {
@@ -608,7 +608,7 @@ unittest {
     // http://www.embedded.com/columns/programmerstoolbox/9900609
    // This has a minimum of cbrt(0.5).
    real crenshawcos(real x) { return cos(2*PI*x*x*x); }
-   minx = findMinimum(&crenshawcos, 0.0L, 1.0L, 0.1L, minval);
+   minx = findMinimum(&crenshawcos, 0.0L, 1.L, 0.1L, minval);
    assert(feqrel(minx*minx*minx, 0.5L)<=real.mant_dig-4);
    
 }
