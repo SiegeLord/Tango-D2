@@ -1867,7 +1867,7 @@ class Process
             if (src !is null)
             {
                 char*[] dest = new char*[src.length + 1];
-                size_t i = src.length;
+                auto i = src.length;
 
                 // Add terminating null pointer to the array
                 dest[i] = null;

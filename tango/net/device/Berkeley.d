@@ -221,7 +221,7 @@ else
 version (Win32)
 {
         pragma (lib, "ws2_32.lib");
-        
+    
         private import tango.sys.win32.WsaSock;
 
         private typedef int socket_t = ~0;
@@ -364,10 +364,10 @@ else
                 int shutdown(socket_t s, int how);
                 int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
-                ssize_t send(socket_t s, void* buf, size_t len, int flags);
-                ssize_t sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
-                ssize_t recv(socket_t s, void* buf, size_t len, int flags);
-                ssize_t recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
+                int send(socket_t s, void* buf, size_t len, int flags);
+                int sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
+                int recv(socket_t s, void* buf, size_t len, int flags);
+                int recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
@@ -807,7 +807,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t send (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {       
                 if (buf.length is 0)
                     return 0;
@@ -834,7 +834,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t sendTo (void[] buf, SocketFlags flags, Address to)
+        int sendTo (void[] buf, SocketFlags flags, Address to)
         {
                 return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
@@ -845,7 +845,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t sendTo (void[] buf, Address to)
+        int sendTo (void[] buf, Address to)
         {
                 return sendTo (buf, SocketFlags.NONE, to);
         }
@@ -856,7 +856,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return sendTo (buf, cast(int) flags, null, 0);
         }
@@ -871,7 +871,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        private ssize_t sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
+        private int sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
@@ -899,7 +899,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -917,7 +917,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t receiveFrom (void[] buf, SocketFlags flags, Address from)
+        int receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -933,7 +933,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t receiveFrom (void[] buf, Address from)
+        int receiveFrom (void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
@@ -944,7 +944,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        ssize_t receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
+        int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");

@@ -103,7 +103,7 @@ char[] toString (wchar[] input, char[] output=null, uint* ate=null)
         else
            {
            // potentially reallocate output
-           size_t estimate = input.length * 2 + 3;
+           auto estimate = input.length * 2 + 3;
            if (output.length < estimate)
                output.length = estimate;
            }
@@ -275,7 +275,7 @@ char[] toString (dchar[] input, char[] output=null, uint* ate=null)
         else
            {
            // potentially reallocate output
-           size_t estimate = input.length * 2 + 4;
+           auto estimate = input.length * 2 + 4;
            if (output.length < estimate)
                output.length = estimate;
            }

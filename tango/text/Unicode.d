@@ -63,7 +63,7 @@ deprecated char[] blockToUpper(char[] input, char[] output = null, dchar[] worki
                 // since the length of an UpperCaseMapping list is at most 4
                 // Make sure no relocation is made in the toString Method
                 // better allocation algorithm ?
-                size_t len = s.upperCaseMapping.length;
+                auto len = s.upperCaseMapping.length;
                 if(produced + len >= working.length)
                     working.length = working.length + working.length / 2 +  len;
                 oprod = produced;
@@ -97,7 +97,7 @@ char[] toUpper(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
@@ -153,7 +153,7 @@ wchar[] toUpper(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
@@ -249,7 +249,7 @@ char[] toLower(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
@@ -305,7 +305,7 @@ wchar[] toLower(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         // TODO Conditional Case Mapping
@@ -359,7 +359,7 @@ dchar[] toLower(dchar[] input, dchar[] output = null) {
     if (input.length > output.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     if (input.length)
         foreach(dchar orig; input) {
             // TODO Conditional Case Mapping
@@ -402,7 +402,7 @@ char[] toFold(char[] input, char[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         FoldingCaseData *s = getFoldingCaseData(ch);
@@ -451,7 +451,7 @@ wchar[] toFold(wchar[] input, wchar[] output = null) {
     if (output.length < input.length)
         output.length = input.length;
 
-    size_t produced = 0;
+    auto produced = 0;
     uint ate;
     foreach(dchar ch; input) {
         FoldingCaseData *s = getFoldingCaseData(ch);

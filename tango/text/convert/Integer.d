@@ -427,7 +427,7 @@ uint trim(T) (T[] digits, ref bool sign, ref uint radix)
 {
         T       c;
         T*      p = digits.ptr;
-        size_t     len = digits.length;
+        auto     len = digits.length;
 
         if (len)
            {

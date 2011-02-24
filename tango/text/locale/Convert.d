@@ -49,7 +49,7 @@ private struct Result
 
         private void opCatAssign (char[] rhs)
         {
-                size_t end = index + rhs.length;
+                auto end = index + rhs.length;
 
                 target_[index .. end] = rhs;
                 index = end;
@@ -540,7 +540,7 @@ char[] longToString (char[] buffer, long value, int digits, char[] negativeSign)
         if (digits < 1)
             digits = 1;
 
-        size_t n = buffer.length;
+        auto n = buffer.length;
         ulong uv = (value >= 0) ? value : cast(ulong) -value;
 
         if (uv > uint.max)
@@ -580,7 +580,7 @@ char[] longToHexString (char[] buffer, ulong value, int digits, char format)
         if (digits < 1)
             digits = 1;
 
-        size_t n = buffer.length;
+        auto n = buffer.length;
         while (--digits >= 0 || value != 0)
               {
               auto v = cast(uint) value & 0xF;
@@ -600,7 +600,7 @@ char[] longToBinString (char[] buffer, ulong value, int digits)
         if (digits < 1)
             digits = 1;
 
-        size_t n = buffer.length;
+        auto n = buffer.length;
         while (--digits >= 0 || value != 0)
               {
               buffer[--n] = cast(char)((value & 1) + '0');
@@ -892,7 +892,7 @@ void formatFixed (ref Number number, ref Result target, int length,
               // questionable: use the back end of the output buffer to
               // format the separators, and then copy back to start
               char[] temp = target.scratch;
-              size_t ii = temp.length;
+              auto ii = temp.length;
 
               for (int c, i = pos - 1; i >= 0; i--)
                   {

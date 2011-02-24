@@ -497,7 +497,7 @@ private class Connection
                            char[] content = line.get;
                            if (content.length > 4 && content[0..5] == "VALUE")
                               {
-                              size_t i = 0;
+                              auto i = 0;
         
                               // parse the incoming content-length
                               for (i=content.length; content[--i] != ' ';) 

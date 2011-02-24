@@ -121,11 +121,11 @@ class Layout(T)
         public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
-                size_t available = result.length;
+                auto available = result.length;
 
                 uint sink (T[] s)
                 {
-                        size_t len = s.length;
+                        auto len = s.length;
                         if (len > available)
                             len = available;
 

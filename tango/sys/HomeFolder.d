@@ -150,7 +150,7 @@ version (Posix)
 
         // Extract username, searching for path separator.
         char[] username;
-        size_t last_char = TextUtil.locate(path, '/');
+        auto last_char = TextUtil.locate(path, '/');
 
         if (last_char == path.length)
             {

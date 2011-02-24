@@ -663,7 +663,7 @@ class AES : BlockCipher
     {
         _encrypt = encrypt;
         
-        size_t len = keyParams.key.length;
+        auto len = keyParams.key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16, 24 or 32 bytes)");
                         
