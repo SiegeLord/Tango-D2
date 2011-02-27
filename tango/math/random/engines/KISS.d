@@ -19,8 +19,8 @@ struct Kiss99{
     private uint nBytes = 0;
     private uint restB  = 0;
     
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
@@ -42,7 +42,7 @@ struct Kiss99{
         }
     }
     uint next(){
-        const ulong a = 698769069UL;
+        enum ulong a = 698769069UL;
         ulong t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
@@ -77,7 +77,7 @@ struct Kiss99{
         foreach (val;[kiss_x,kiss_y,kiss_z,kiss_c,nBytes,restB]){
             res[i]='_';
             ++i;
-            Integer.format(res[i..i+8],val,"x8");
+            Integer.format(res[i..i+8],val,cast(char[])"x8");
             i+=8;
         }
         assert(i==res.length,"unexpected size");
