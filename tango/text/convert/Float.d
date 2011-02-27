@@ -510,7 +510,7 @@ NumType parse(T) (T[] src, uint* ate=null)
         uint            radix;
         NumType         value = 0.0;
 
-        static bool match (T* aa, immutable(T)[] bb)
+        static bool match (T* aa, T[] bb)
         {
                 foreach (b; bb)
                         {
@@ -591,17 +591,17 @@ NumType parse(T) (T[] src, uint* ate=null)
                switch (*p)
                       {
                       case 'I': case 'i':
-                           if (match (p+1, "nf"))
+                           if (match (p+1, cast(char[])"nf"))
                               {
                               value = value.infinity;
                               p += 3;
-                              if (end - p >= 5 && match (p, "inity"))
+                              if (end - p >= 5 && match (p, cast(char[])"inity"))
                                   p += 5;
                               }
                            break;
 
                       case 'N': case 'n':
-                           if (match (p+1, "an"))
+                           if (match (p+1, cast(char[])"an"))
                               {
                               value = value.nan;
                               p += 3;
@@ -690,8 +690,8 @@ T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp, bool p
 
 T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
 {
-        static T[] inf = "-inf";
-        static T[] nan = "-nan";
+        enum T[] inf = cast(T[])"-inf";
+        enum T[] nan = cast(T[])"-nan";
 
         // strip digits from the left of a normalized base-10 number
         static int toDigit (ref NumType v, ref int count)
@@ -861,19 +861,20 @@ debug (UnitTest)
         {
                 char[164] tmp;
 
-                auto f = parse ("nan");
+                auto f = parse ("nan".dup);
                 assert (format(tmp, f) == "nan");
-                f = parse ("inf");
+                f = parse ("inf".dup);
                 assert (format(tmp, f) == "inf");
-                f = parse ("-nan");
+                f = parse ("-nan".dup);
                 assert (format(tmp, f) == "-nan");
-                f = parse (" -inf");
+                f = parse (" -inf".dup);
                 assert (format(tmp, f) == "-inf");
 
                 assert (format (tmp, 3.14159, 6) == "3.14159");
                 assert (format (tmp, 3.14159, 4) == "3.1416");
-                assert (parse ("3.5") == 3.5);
-                assert (format(tmp, parse ("3.14159"), 6) == "3.14159");
+
+                assert (parse ("3.5".dup) == 3.5);
+                assert (format(tmp, parse ("3.14159".dup), 6) == "3.14159");
                 assert (format(tmp, 0.09999, 2,  0, true) == "1.00e-01");
         }
 }
