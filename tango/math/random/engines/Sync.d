@@ -16,8 +16,8 @@ struct Sync(E){
     E engine;
     Mutex lock;
     
-    const int canCheckpoint=E.canCheckpoint;
-    const int canSeed=E.canSeed;
+    enum int canCheckpoint=E.canCheckpoint;
+    enum int canSeed=E.canSeed;
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
@@ -49,7 +49,7 @@ struct Sync(E){
     /// writes the current status in a string
     char[] toString(){
         synchronized(lock){
-            return "Sync"~engine.toString();
+            return "Sync".dup~engine.toString();
         }
     }
     /// reads the current status from a string (that should have been trimmed)
