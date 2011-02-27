@@ -54,8 +54,8 @@ struct Twister
         UPPER_MASK = 0x80000000,        //  most significant w-r bits 
         LOWER_MASK = 0x7fffffff,        // least significant r bits
     }
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
 
     private uint[N] mt;                     // the array for the state vector  
     private uint mti=mt.length+1;           // mti==mt.length+1 means mt[] is not initialized 
@@ -151,16 +151,16 @@ struct Twister
     char[] toString(){
         char[] res=new char[7+(N+1)*9];
         int i=0;
-        res[i..i+7]="Twister";
+        res[i..i+7]="Twister"[];
         i+=7;
         res[i]='_';
         ++i;
-        Integer.format(res[i..i+8],mti,"x8");
+        Integer.format(res[i..i+8],mti,cast(char[])"x8");
         i+=8;
         foreach (val;mt){
             res[i]='_';
             ++i;
-            Integer.format(res[i..i+8],val,"x8");
+            Integer.format(res[i..i+8],val,cast(char[])"x8");
             i+=8;
         }
         assert(i==res.length,"unexpected size");
