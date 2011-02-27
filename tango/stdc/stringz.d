@@ -141,13 +141,13 @@ debug (UnitTest)
         {
         debug(string) printf("stdc.stringz.unittest\n");
 
-        char* p = toStringz("foo");
+        char* p = toStringz("foo".dup);
         assert(strlenz(p) == 3);
-        char[] foo = "abbzxyzzy";
+        char[] foo = "abbzxyzzy".dup;
         p = toStringz(foo[3..5]);
         assert(strlenz(p) == 2);
 
-        char[] test = "\0";
+        char[] test = "\0".dup;
         p = toStringz(test);
         assert(*p == 0);
         assert(p == test.ptr);
