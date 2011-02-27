@@ -11,6 +11,8 @@ I see this as a rough first pass at porting this library... making it work with 
 
 What works so far:
 
+See 'ported_modules' file. More modules may work, but only the listed ones pass the import + unittest test.
+
 tango.io.Stdout and the imported modules (notably tango.io.Console, tango.text.convert.Layout and tango.core.Thread (maybe))
 tango.text.xml.Document and the imported modules
 tango.io.device.File
