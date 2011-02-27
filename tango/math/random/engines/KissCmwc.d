@@ -23,8 +23,8 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     uint nBytes = 0;
     uint restB  = 0;
 
-    const int canCheckpoint=true;
-    const int canSeed=true;
+    enum int canCheckpoint=true;
+    enum int canSeed=true;
     
     void skip(uint n){
         for (int i=n;i!=n;--i){
@@ -46,9 +46,9 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         }
     }
     uint next(){
-        const uint rMask=cmwc_r-1u;
+        enum uint rMask=cmwc_r-1u;
         static assert((rMask&cmwc_r)==0,"cmwc_r is supposed to be a power of 2"); // put a more stringent test?
-        const uint m=0xFFFF_FFFE;
+        enum uint m=0xFFFF_FFFE;
         cmwc_i=(cmwc_i+1)&rMask;
         ulong t=cmwc_a*cmwc_q[cmwc_i]+cmwc_c;
         cmwc_c=cast(uint)(t>>32);
@@ -56,7 +56,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         if (x<cmwc_c) {
             ++x; ++cmwc_c;
         }
-        const ulong a = 698769069UL;
+        enum ulong a = 698769069UL;
         ulong k_t;
         kiss_x = 69069*kiss_x+12345;
         kiss_y ^= (kiss_y<<13); kiss_y ^= (kiss_y>>17); kiss_y ^= (kiss_y<<5);
@@ -108,24 +108,24 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     char[] toString(){
         char[] res=new char[11+16+(cmwc_r+9)*9];
         int i=0;
-        res[i..i+11]="CMWC+KISS99";
+        res[i..i+11]="CMWC+KISS99"[];
         i+=11;
-        Integer.format(res[i..i+16],cmwc_a,"x16");
+        Integer.format(res[i..i+16],cmwc_a,cast(char[])"x16");
         i+=16;
         res[i]='_';
         ++i;
-        Integer.format(res[i..i+8],cmwc_r,"x8");
+        Integer.format(res[i..i+8],cmwc_r,cast(char[])"x8");
         i+=8;
         foreach (val;cmwc_q){
             res[i]='_';
             ++i;
-            Integer.format(res[i..i+8],val,"x8");
+            Integer.format(res[i..i+8],val,cast(char[])"x8");
             i+=8;
         }
         foreach (val;[cmwc_i,cmwc_c,nBytes,restB,kiss_x,kiss_y,kiss_z,kiss_c]){
             res[i]='_';
             ++i;
-            Integer.format(res[i..i+8],val,"x8");
+            Integer.format(res[i..i+8],val,cast(char[])"x8");
             i+=8;
         }
         assert(i==res.length,"unexpected size");
@@ -138,14 +138,14 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         size_t i=0;
         assert(s[i..i+11]=="CMWC+KISS99","unexpected kind, expected CMWC+KISS99");
         i+=11;
-        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
+        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16".dup),"unexpected cmwc_a".dup);
         i+=16;
         assert(s[i]=='_',"unexpected format, expected _");
         i++;
-        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
+        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8".dup),"unexpected cmwc_r".dup);
         i+=8;
         foreach (ref val;cmwc_q){
-            assert(s[i]=='_',"no separator _ found");
+            assert(s[i]=='_',"no separator _ found".dup);
             ++i;
             uint ate;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
