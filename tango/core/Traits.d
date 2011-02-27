@@ -487,10 +487,10 @@ debug( UnitTest )
 
 /// compile time integer to string
 char [] ctfe_i2a(int i){
-    char[] digit="0123456789";
-    char[] res="";
+    char[] digit="0123456789".dup;
+    char[] res="".dup;
     if (i==0){
-        return "0";
+        return "0".dup;
     }
     bool neg=false;
     if (i<0){
@@ -508,10 +508,10 @@ char [] ctfe_i2a(int i){
 }
 /// ditto
 char [] ctfe_i2a(long i){
-    char[] digit="0123456789";
-    char[] res="";
+    char[] digit="0123456789".dup;
+    char[] res="".dup;
     if (i==0){
-        return "0";
+        return "0".dup;
     }
     bool neg=false;
     if (i<0){
@@ -529,10 +529,10 @@ char [] ctfe_i2a(long i){
 }
 /// ditto
 char [] ctfe_i2a(uint i){
-    char[] digit="0123456789";
-    char[] res="";
+    char[] digit="0123456789".dup;
+    char[] res="".dup;
     if (i==0){
-        return "0";
+        return "0".dup;
     }
     bool neg=false;
     while (i>0) {
@@ -543,10 +543,10 @@ char [] ctfe_i2a(uint i){
 }
 /// ditto
 char [] ctfe_i2a(ulong i){
-    char[] digit="0123456789";
-    char[] res="";
+    char[] digit="0123456789".dup;
+    char[] res="".dup;
     if (i==0){
-        return "0";
+        return "0".dup;
     }
     bool neg=false;
     while (i>0) {
