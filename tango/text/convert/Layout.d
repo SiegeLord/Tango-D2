@@ -565,13 +565,13 @@ version (WithVariant)
                                 else 
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
-                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]))
+                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]) || _ti is typeid(const(char)[]))
                                        emit (Utf.fromString8 (*cast(char[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]))        
+                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]) || _ti is typeid(const(wchar)[]))        
                                        emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]))
+                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]) || _ti is typeid(const(dchar)[]))
                                        emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
                                    else
                                       {
