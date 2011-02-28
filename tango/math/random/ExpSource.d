@@ -73,7 +73,7 @@ final class ExpSource(RandG,T){
         /// chainable call style initialization of variables (thorugh a call to randomize)
         ExpDistribution opCall(U,S...)(ref U a,S args){
             randomize(a,args);
-            return *this;
+            return this;
         }
         /// returns a single number
         T getRandom(){

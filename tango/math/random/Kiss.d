@@ -68,8 +68,8 @@ struct Kiss
         private uint kiss_w = 8;
         private uint kiss_carry = 0;
         
-        private const double M_RAN_INVM32 = 2.32830643653869628906e-010,
-                             M_RAN_INVM52 = 2.22044604925031308085e-016;
+        private enum double M_RAN_INVM32 = 2.32830643653869628906e-010,
+                            M_RAN_INVM52 = 2.22044604925031308085e-016;
       
         /**********************************************************************
 
@@ -231,25 +231,25 @@ debug (Kiss)
                 double v1;
                 for (int i=count; --i;)
                      v1 = dbl.fraction;
-                Stdout.formatln ("{} fraction, {}/s, {:f10}", count, count/w.stop, v1);
+                Stdout.formatln ("{} fraction, {}/s, {:f10}".dup, count, count/w.stop, v1);
 
                 w.start;
                 for (int i=count; --i;)
                      v1 = dbl.fractionEx;
-                Stdout.formatln ("{} fractionEx, {}/s, {:f10}", count, count/w.stop, v1);
+                Stdout.formatln ("{} fractionEx, {}/s, {:f10}".dup, count, count/w.stop, v1);
 
                 for (int i=count; --i;)
                     {
                     auto v = dbl.fraction;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("fraction {:f10}", v);
+                       Stdout.formatln ("fraction {:f10}".dup, v);
                        break;
                        }
                     v = dbl.fractionEx;
                     if (v <= 0.0 || v >= 1.0)
                        {
-                       Stdout.formatln ("fractionEx {:f10}", v);
+                       Stdout.formatln ("fractionEx {:f10}".dup, v);
                        break;
                        }
                     }
