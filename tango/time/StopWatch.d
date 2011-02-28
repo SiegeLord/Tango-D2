@@ -170,6 +170,6 @@ debug (StopWatch)
 
                 for (int i=0; i < 100_000_000; ++i)
                     {}
-                Stdout.format ("{:f9}", t.stop).newline;
+                Stdout.format ("{:f9}".dup, t.stop).newline;
         }
 }
