@@ -238,7 +238,7 @@ struct Twister
 
         void seed (uint s, bool pAddEntropy = false)
         {
-                mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) this : 0)) & 0xffffffffU;
+                mt[0]= (s + (pAddEntropy ? vLastRand + cast(uint) &this : 0)) & 0xffffffffU;
                 for (mti=1; mti<mt.length; mti++){
                         mt[mti] = (1812433253U * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
                         mt[mti] &= 0xffffffffU;

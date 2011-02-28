@@ -30,6 +30,12 @@ tango/math/random/engines/KISS.d
 tango/math/random/engines/Sync.d
 tango/math/random/engines/Twister.d
 tango/math/random/engines/URandom.d
+tango/math/random/ExpSource.d
+tango/math/random/Kiss.d
+tango/math/random/NormalSource.d
+tango/math/random/Random.d
+tango/math/random/Twister.d
+tango/math/random/Ziggurat.d
 tango/stdc/errno.d
 tango/stdc/stringz.d
 tango/sys/Common.d
@@ -39,3 +45,4 @@ tango/text/convert/Layout.d
 tango/text/convert/Utf.d
 tango/text/xml/Document.d
 tango/text/xml/PullParser.d
+tango/time/StopWatch.d

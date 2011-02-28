@@ -19,7 +19,7 @@ import tango.core.Traits;
 /// Call style initialization avoided on purpose (this is a big structure, you don't want to return it)
 struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=true){
     static assert(isRealType!(T),T.stringof~" not acceptable, only floating point variables supported");
-    const int nBlocks=256;
+    enum int nBlocks=256;
     T[nBlocks+1] posBlock;
     T[nBlocks+1] fVal;
     RandG r;
@@ -103,7 +103,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
             { 
                 uint i0=r.uniform!(uint)();
                 uint i=i0 & 0xFFU;
-                const T scaleF=(cast(T)1)/(cast(T)uint.max+1);
+                enum T scaleF=(cast(T)1)/(cast(T)uint.max+1);
                 T u= (cast(T)i0+cast(T)0.5)*scaleF;
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return ((i0 & 0x100u)?x:-x);
@@ -117,7 +117,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
             { 
                 uint i0=r.uniform!(uint);
                 uint i= i0 & 0xFFU;
-                const T scaleF=(cast(T)1)/(cast(T)uint.max+1);
+                enum T scaleF=(cast(T)1)/(cast(T)uint.max+1);
                 T u= (cast(T)i0+cast(T)0.5)*scaleF;
                 T x = posBlock[i]*u;
                 if (x<posBlock[i+1]) return x;
