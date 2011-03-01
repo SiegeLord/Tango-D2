@@ -93,7 +93,7 @@ private enum
         
 ******************************************************************************/
 
-NumType toFloat(T) (T[] src)
+NumType toFloat(T) (const(T[]) src)
 {
         uint len;
 
@@ -501,20 +501,20 @@ private import Integer = tango.text.convert.Integer;
 
 ******************************************************************************/
 
-NumType parse(T) (T[] src, uint* ate=null)
+NumType parse(T) (const(T[]) src, uint* ate=null)
 {
         T               c;
-        T*              p;
+        const(T)*       p;
         int             exp;
         bool            sign;
         uint            radix;
         NumType         value = 0.0;
 
-        static bool match (T* aa, T[] bb)
+        static bool match (const(T)* aa, const(T[]) bb)
         {
                 foreach (b; bb)
                         {
-                        auto a = *aa++;
+                        auto a = cast(T)*aa++;
                         if (a >= 'A' && a <= 'Z')
                             a += 'a' - 'A';
                         if (a != b)
@@ -591,17 +591,17 @@ NumType parse(T) (T[] src, uint* ate=null)
                switch (*p)
                       {
                       case 'I': case 'i':
-                           if (match (p+1, cast(char[])"nf"))
+                           if (match (p+1, "nf"))
                               {
                               value = value.infinity;
                               p += 3;
-                              if (end - p >= 5 && match (p, cast(char[])"inity"))
+                              if (end - p >= 5 && match (p, "inity"))
                                   p += 5;
                               }
                            break;
 
                       case 'N': case 'n':
-                           if (match (p+1, cast(char[])"an"))
+                           if (match (p+1, "an"))
                               {
                               value = value.nan;
                               p += 3;
@@ -861,13 +861,13 @@ debug (UnitTest)
         {
                 char[164] tmp;
 
-                auto f = parse ("nan".dup);
+                auto f = parse ("nan");
                 assert (format(tmp, f) == "nan");
-                f = parse ("inf".dup);
+                f = parse ("inf");
                 assert (format(tmp, f) == "inf");
-                f = parse ("-nan".dup);
+                f = parse ("-nan");
                 assert (format(tmp, f) == "-nan");
-                f = parse (" -inf".dup);
+                f = parse (" -inf");
                 assert (format(tmp, f) == "-inf");
 
                 assert (format (tmp, 3.14159, 6) == "3.14159");
