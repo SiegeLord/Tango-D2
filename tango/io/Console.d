@@ -242,7 +242,7 @@ struct Console
 
                 **************************************************************/
 
-                final Output append (char[] x)
+                final Output append (const(char[]) x)
                 {
                         buffer.append (x.ptr, x.length);
                         return this;
@@ -267,7 +267,7 @@ struct Console
 
                 final Output append (Object other)        
                 {           
-                        return append (cast(char[])other.toString);
+                        return append (other.toString);
                 }
 
                 /**************************************************************
