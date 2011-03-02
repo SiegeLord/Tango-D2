@@ -18,7 +18,7 @@ module tango.stdc.stringz;
  * appropriate.
  */
 
-char* toStringz (char[] s, char[] tmp=null)
+const(char)* toStringz (const(char)[] s, char[] tmp=null)
 {
         enum char[] empty = "\0".dup;
 
@@ -48,7 +48,7 @@ char* toStringz (char[] s, char[] tmp=null)
  * Since: 0.99.7
  */
 
-char*[] toStringz (char[] tmp, char*[] dst, char[][] strings...)
+const(char)*[] toStringz (char[] tmp, const(char)*[] dst, const(char[][]) strings...)
 {
         assert (dst.length >= strings.length);
 
@@ -70,7 +70,7 @@ char*[] toStringz (char[] tmp, char*[] dst, char[][] strings...)
  * Convert a C-style 0 terminated string to an array of char
  */
 
-char[] fromStringz (char* s)
+inout(char[]) fromStringz (inout(char*) s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -79,7 +79,7 @@ char[] fromStringz (char* s)
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
 
-wchar* toString16z (wchar[] s)
+const(wchar)* toString16z (const(wchar)[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
@@ -91,7 +91,7 @@ wchar* toString16z (wchar[] s)
  * Convert a C-style 0 terminated string to an array of wchar
  */
 
-wchar[] fromString16z (wchar* s)
+inout(wchar[]) fromString16z (inout(wchar*) s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -100,7 +100,7 @@ wchar[] fromString16z (wchar* s)
  * Convert array of dchars s[] to a C-style 0 terminated string.
  */
 
-dchar* toString32z (dchar[] s)
+const(dchar)* toString32z (const(dchar)[] s)
 {
         if (s.ptr)
             if (! (s.length && s[$-1] is 0))
@@ -112,7 +112,7 @@ dchar* toString32z (dchar[] s)
  * Convert a C-style 0 terminated string to an array of dchar
  */
 
-dchar[] fromString32z (dchar* s)
+inout(dchar[]) fromString32z (inout(dchar*) s)
 {
         return s ? s[0 .. strlenz(s)] : null;
 }
@@ -141,13 +141,13 @@ debug (UnitTest)
         {
         debug(string) printf("stdc.stringz.unittest\n");
 
-        char* p = toStringz("foo".dup);
+        const(char)* p = toStringz("foo");
         assert(strlenz(p) == 3);
-        char[] foo = "abbzxyzzy".dup;
+        const(char)[] foo = "abbzxyzzy";
         p = toStringz(foo[3..5]);
         assert(strlenz(p) == 2);
 
-        char[] test = "\0".dup;
+        const(char)[] test = "\0";
         p = toStringz(test);
         assert(*p == 0);
         assert(p == test.ptr);
