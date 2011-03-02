@@ -204,27 +204,27 @@ T[] formatter(T, U=long, X=char, Y=char) (T[] dst, U i, X type, Y pre, int width
 private struct _FormatterInfo(T)
 {
 		uint    radix;
-		T[]     prefix;
-		T[]     numbers;
+		immutable(T)[]     prefix;
+		immutable(T)[]     numbers;
 }
 
 T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 {
-        enum T[] lower = cast(T[])"0123456789abcdef".dup;
-        enum T[] upper = cast(T[])"0123456789ABCDEF".dup;
+        enum immutable(T)[] lower = "0123456789abcdef";
+        enum immutable(T)[] upper = "0123456789ABCDEF";
         
         alias _FormatterInfo!(T) Info;
 
         enum   Info[] formats = 
                 [
                 {10, null, lower}, 
-                {10, cast(T[])"-".dup,  lower}, 
-                {10, cast(T[])" ".dup,  lower}, 
-                {10, cast(T[])"+".dup,  lower}, 
-                { 2, cast(T[])"0b".dup, lower}, 
-                { 8, cast(T[])"0o".dup, lower}, 
-                {16, cast(T[])"0x".dup, lower}, 
-                {16, cast(T[])"0X".dup, upper},
+                {10, "-",  lower}, 
+                {10, " ",  lower}, 
+                {10, "+",  lower}, 
+                { 2, "0b", lower}, 
+                { 8, "0o", lower}, 
+                {16, "0x", lower}, 
+                {16, "0X", upper},
                 ];
 
         ubyte index;
@@ -599,11 +599,6 @@ T[] consume(T) (T[] src, bool fp=false)
 
 debug (UnitTest)
 {
-    
-        private T[] S(T)(immutable(T)[] s)
-        {
-            return cast(T[])s;
-        }
         
         unittest
         {
