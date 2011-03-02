@@ -690,8 +690,8 @@ T[] format(T, D=double, U=uint) (T[] dst, D x, U decimals=Dec, int e=Exp, bool p
 
 T[] format(T) (T[] dst, NumType x, uint decimals=Dec, int e=Exp, bool pad=Pad)
 {
-        enum T[] inf = cast(T[])"-inf";
-        enum T[] nan = cast(T[])"-nan";
+        enum immutable(T)[] inf = "-inf";
+        enum immutable(T)[] nan = "-nan";
 
         // strip digits from the left of a normalized base-10 number
         static int toDigit (ref NumType v, ref int count)

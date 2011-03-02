@@ -446,7 +446,7 @@ version (old)
                       // insist on a closing brace
                       if (*s != '}')
                          {
-                         length += sink (cast(T[])"{malformed format}".dup);
+                         length += sink ("{malformed format}");
                          continue;
                          }
 
@@ -459,7 +459,7 @@ version (old)
                       fragment = ++s;
 
                       // handle alignment
-                      void emit (T[] str)
+                      void emit (const(T[]) str)
                       {
                                 int padding = width - str.length;
 
@@ -469,13 +469,13 @@ version (old)
                                       {
                                       if (left)
                                          {
-                                         length += sink (cast(T[])"...");
+                                         length += sink ("...");
                                          length += sink (Utf.cropLeft (str[-padding..$]));
                                          }
                                       else
                                          {
                                          length += sink (Utf.cropRight (str[0..width]));
-                                         length += sink (cast(T[])"...");
+                                         length += sink ("...");
                                          }
                                       }
                                    else
@@ -517,15 +517,15 @@ version (WithVariant)
                                    {
                                    auto tiStat = cast(TypeInfo_StaticArray)_ti;
                                    auto p = _arg;
-                                   length += sink (cast(T[])"[");
+                                   length += sink ("[");
                                    for (int i = 0; i < tiStat.len; i++)
                                        {
                                        if (p !is _arg )
-                                           length += sink (cast(T[])", ");
+                                           length += sink (", ");
                                        process (tiStat.value, p);
                                        p += tiStat.tsize/tiStat.len;
                                        }
-                                   length += sink (cast(T[])"]");
+                                   length += sink ("]");
                                    }
                                 else 
                                 if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
@@ -539,7 +539,7 @@ version (WithVariant)
                                    alias ubyte AK;
                                    auto aa = *cast(AV[AK]*) _arg;
 
-                                   length += sink (cast(T[])"{");
+                                   length += sink ("{");
                                    bool first = true;
                                   
                                    size_t roundUp (size_t sz)
@@ -555,13 +555,13 @@ version (WithVariant)
                                            auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
 
                                            if (!first)
-                                                length += sink (cast(T[])", ");
+                                                length += sink (", ");
                                            process (tiKey, pk);
-                                           length += sink (cast(T[])" => ");
+                                           length += sink (" => ");
                                            process (tiVal, pv);
                                            first = false;
                                            }
-                                   length += sink (cast(T[])"}");
+                                   length += sink ("}");
                                    }
                                 else 
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
@@ -582,16 +582,16 @@ version (WithVariant)
                                       auto ptr = cast(Arg) arr.ptr;
                                       auto elTi = _ti.next();
                                       auto size = elTi.tsize();
-                                      length += sink (cast(T[])"[");
+                                      length += sink ("[");
                                       while (len > 0)
                                             {
                                             if (ptr !is arr.ptr)
-                                                length += sink (cast(T[])", ");
+                                                length += sink (", ");
                                             process (elTi, ptr);
                                             len -= 1;
                                             ptr += size;
                                             }
-                                      length += sink (cast(T[])"]");
+                                      length += sink ("]");
                                       }
                                    }
                                 else
@@ -602,7 +602,7 @@ version (WithVariant)
                       
                       // process this argument
                       if (index >= ti.length)
-                          emit (cast(T[])"{invalid index}".dup);
+                          emit ("{invalid index}");
                       else
                          process (ti[index], args[index]);
                       }
@@ -627,22 +627,22 @@ version (WithVariant)
 
                        case TypeCode.VOID:
                        case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format, ubyte.max, cast(T[])"u");
+                            return integer (result, *cast(ubyte*) p, format, ubyte.max, "u");
 
                        case TypeCode.SHORT:
                             return integer (result, *cast(short*) p, format, ushort.max);
 
                        case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format, ushort.max, cast(T[])"u");
+                            return integer (result, *cast(ushort*) p, format, ushort.max, "u");
 
                        case TypeCode.INT:
                             return integer (result, *cast(int*) p, format, uint.max);
 
                        case TypeCode.UINT:
-                            return integer (result, *cast(uint*) p, format, uint.max, cast(T[])"u");
+                            return integer (result, *cast(uint*) p, format, uint.max, "u");
 
                        case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format, ulong.max, cast(T[])"u");
+                            return integer (result, *cast(long*) p, format, ulong.max, "u");
 
                        case TypeCode.LONG:
                             return integer (result, *cast(long*) p, format, ulong.max);
@@ -684,13 +684,12 @@ version (WithVariant)
                             return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
 
                        case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, size_t.max, cast(T[])"x");
+                            return integer (result, *cast(size_t*) p, format, size_t.max, "x");
 
                        case TypeCode.CLASS:
                             auto c = *cast(Object*) p;
                             if (c)
-                                /* Possibly bad dup */
-                                return Utf.fromString8 (c.toString.dup, result);
+                                return cast(T[])Utf.fromString8 (c.toString, result);
                             break;
 
                        case TypeCode.STRUCT:
@@ -710,8 +709,7 @@ version (WithVariant)
                                {
                                auto pi = **cast(Interface ***) x;
                                auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               /* Possibly bad dup */
-                               return Utf.fromString8 (o.toString.dup, result);
+                               return cast(T[])Utf.fromString8 (o.toString, result);
                                }
                             break;
 
@@ -758,7 +756,7 @@ version (WithVariant)
                              }
                    }
                 }
-                return cast(T[])"{unhandled argument type: ".dup ~ cast(T[])Utf.fromString8 (type.toString.dup, result) ~ cast(T[])"}".dup;
+                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 (type.toString, result) ~ cast(T[])"}";
         }
 
         /**********************************************************************
@@ -802,7 +800,7 @@ version (WithVariant)
                             case 'x':
                             case 'X':
                                  double d = v;
-                                 return integer (output, *cast(long*) &d, cast(T[])"x#");
+                                 return integer (output, *cast(long*) &d, "x#");
                             default:
                                  auto c = cast(T)*p;
                                  if (c >= '0' && c <= '9')
@@ -834,7 +832,7 @@ version (WithVariant)
         {
                 size_t ret;
 
-                enum T[] Spaces = cast(T[])"                                ";
+                enum immutable(T)[] Spaces = "                                ";
                 while (count > Spaces.length)
                       {
                       ret += sink (Spaces);
@@ -851,7 +849,7 @@ version (WithVariant)
 
         private T[] imaginary (T[] result, ireal val, const(T[]) format)
         {
-                return floatingTail (result, val.im, format, cast(T[])"*1i");
+                return floatingTail (result, val.im, format, "*1i");
         }
         
         /**********************************************************************
@@ -875,10 +873,10 @@ version (WithVariant)
                                   return (pe[9] & 0x80) != 0;
                                   }
                 }
-                static T[] plus = cast(T[])"+";
+                enum immutable(T)[] plus = "+";
 
                 auto len = floatingTail (result, val.re, format, signed(val.im) ? null : plus).length;
-                return result [0 .. len + floatingTail (result[len..$], val.im, format, cast(T[])"*1i").length];
+                return result [0 .. len + floatingTail (result[len..$], val.im, format, "*1i").length];
         }
 
         /**********************************************************************
@@ -887,7 +885,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] floatingTail (T[] result, real val, const(T[]) format, T[] tail)
+        private T[] floatingTail (T[] result, real val, const(T[]) format, const(T[]) tail)
         {
                 assert (result.length > tail.length);
 
@@ -956,174 +954,174 @@ debug (UnitTest)
         auto Formatter = Layout!(char).instance;
 
         // basic layout tests
-        assert( Formatter( "abc".dup ) == "abc" );
-        assert( Formatter( "{0}".dup, 1 ) == "1" );
-        assert( Formatter( "{0}".dup, -1 ) == "-1" );
+        assert( Formatter( "abc" ) == "abc" );
+        assert( Formatter( "{0}", 1 ) == "1" );
+        assert( Formatter( "{0}", -1 ) == "-1" );
 
-        assert( Formatter( "{}".dup, 1 ) == "1" );
-        assert( Formatter( "{} {}".dup, 1, 2) == "1 2" );
-        assert( Formatter( "{} {0} {}".dup, 1, 3) == "1 1 3" );
-        assert( Formatter( "{} {0} {} {}".dup, 1, 3) == "1 1 3 {invalid index}" );
-        assert( Formatter( "{} {0} {} {:x}".dup, 1, 3) == "1 1 3 {invalid index}" );
+        assert( Formatter( "{}", 1 ) == "1" );
+        assert( Formatter( "{} {}", 1, 2) == "1 2" );
+        assert( Formatter( "{} {0} {}", 1, 3) == "1 1 3" );
+        assert( Formatter( "{} {0} {} {}", 1, 3) == "1 1 3 {invalid index}" );
+        assert( Formatter( "{} {0} {} {:x}", 1, 3) == "1 1 3 {invalid index}" );
 
-        assert( Formatter( "{0}".dup, true ) == "true" , Formatter( "{0}".dup, true ));
-        assert( Formatter( "{0}".dup, false ) == "false" );
+        assert( Formatter( "{0}", true ) == "true" , Formatter( "{0}", true ));
+        assert( Formatter( "{0}", false ) == "false" );
 
-        assert( Formatter( "{0}".dup, cast(byte)-128 ) == "-128" );
-        assert( Formatter( "{0}".dup, cast(byte)127 ) == "127" );
-        assert( Formatter( "{0}".dup, cast(ubyte)255 ) == "255" );
+        assert( Formatter( "{0}", cast(byte)-128 ) == "-128" );
+        assert( Formatter( "{0}", cast(byte)127 ) == "127" );
+        assert( Formatter( "{0}", cast(ubyte)255 ) == "255" );
 
-        assert( Formatter( "{0}".dup, cast(short)-32768  ) == "-32768" );
-        assert( Formatter( "{0}".dup, cast(short)32767 ) == "32767" );
-        assert( Formatter( "{0}".dup, cast(ushort)65535 ) == "65535" );
-        assert( Formatter( "{0:x4}".dup, cast(ushort)0xafe ) == "0afe" );
-        assert( Formatter( "{0:X4}".dup, cast(ushort)0xafe ) == "0AFE" );
+        assert( Formatter( "{0}", cast(short)-32768  ) == "-32768" );
+        assert( Formatter( "{0}", cast(short)32767 ) == "32767" );
+        assert( Formatter( "{0}", cast(ushort)65535 ) == "65535" );
+        assert( Formatter( "{0:x4}", cast(ushort)0xafe ) == "0afe" );
+        assert( Formatter( "{0:X4}", cast(ushort)0xafe ) == "0AFE" );
 
-        assert( Formatter( "{0}".dup, -2147483648 ) == "-2147483648" );
-        assert( Formatter( "{0}".dup, 2147483647 ) == "2147483647" );
-        assert( Formatter( "{0}".dup, 4294967295 ) == "4294967295" );
+        assert( Formatter( "{0}", -2147483648 ) == "-2147483648" );
+        assert( Formatter( "{0}", 2147483647 ) == "2147483647" );
+        assert( Formatter( "{0}", 4294967295 ) == "4294967295" );
 
         // large integers
-        assert( Formatter( "{0}".dup, -9223372036854775807L) == "-9223372036854775807" );
-        assert( Formatter( "{0}".dup, 0x8000_0000_0000_0000L) == "9223372036854775808" );
-        assert( Formatter( "{0}".dup, 9223372036854775807L ) == "9223372036854775807" );
-        assert( Formatter( "{0:X}".dup, 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
-        assert( Formatter( "{0:x}".dup, 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
-        assert( Formatter( "{0:x}".dup, 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
-        assert( Formatter( "{0:x19}".dup, 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
-        assert( Formatter( "{0}".dup, 18446744073709551615UL ) == "18446744073709551615" );
-        assert( Formatter( "{0}".dup, 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0}", -9223372036854775807L) == "-9223372036854775807" );
+        assert( Formatter( "{0}", 0x8000_0000_0000_0000L) == "9223372036854775808" );
+        assert( Formatter( "{0}", 9223372036854775807L ) == "9223372036854775807" );
+        assert( Formatter( "{0:X}", 0xFFFF_FFFF_FFFF_FFFF) == "FFFFFFFFFFFFFFFF" );
+        assert( Formatter( "{0:x}", 0xFFFF_FFFF_FFFF_FFFF) == "ffffffffffffffff" );
+        assert( Formatter( "{0:x}", 0xFFFF_1234_FFFF_FFFF) == "ffff1234ffffffff" );
+        assert( Formatter( "{0:x19}", 0x1234_FFFF_FFFF) == "00000001234ffffffff" );
+        assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
+        assert( Formatter( "{0}", 18446744073709551615UL ) == "18446744073709551615" );
 
         // fragments before and after
-        assert( Formatter( "d{0}d".dup, "s" ) == "dsd" );
-        assert( Formatter( "d{0}d".dup, "1234567890" ) == "d1234567890d" );
+        assert( Formatter( "d{0}d", "s" ) == "dsd" );
+        assert( Formatter( "d{0}d", "1234567890" ) == "d1234567890d" );
 
         // brace escaping
-        assert( Formatter( "d{0}d".dup, "<string>" ) == "d<string>d");
-        assert( Formatter( "d{{0}d".dup, "<string>" ) == "d{0}d");
-        assert( Formatter( "d{{{0}d".dup, "<string>" ) == "d{<string>d");
-        assert( Formatter( "d{0}}d".dup, "<string>" ) == "d<string>}d");
+        assert( Formatter( "d{0}d", "<string>" ) == "d<string>d");
+        assert( Formatter( "d{{0}d", "<string>" ) == "d{0}d");
+        assert( Formatter( "d{{{0}d", "<string>" ) == "d{<string>d");
+        assert( Formatter( "d{0}}d", "<string>" ) == "d<string>}d");
 
         // hex conversions, where width indicates leading zeroes
-        assert( Formatter( "{0:x}".dup, 0xafe0000 ) == "afe0000" );
-        assert( Formatter( "{0:x7}".dup, 0xafe0000 ) == "afe0000" );
-        assert( Formatter( "{0:x8}".dup, 0xafe0000 ) == "0afe0000" );
-        assert( Formatter( "{0:X8}".dup, 0xafe0000 ) == "0AFE0000" );
-        assert( Formatter( "{0:X9}".dup, 0xafe0000 ) == "00AFE0000" );
-        assert( Formatter( "{0:X13}".dup, 0xafe0000 ) == "000000AFE0000" );
-        assert( Formatter( "{0:x13}".dup, 0xafe0000 ) == "000000afe0000" );
+        assert( Formatter( "{0:x}", 0xafe0000 ) == "afe0000" );
+        assert( Formatter( "{0:x7}", 0xafe0000 ) == "afe0000" );
+        assert( Formatter( "{0:x8}", 0xafe0000 ) == "0afe0000" );
+        assert( Formatter( "{0:X8}", 0xafe0000 ) == "0AFE0000" );
+        assert( Formatter( "{0:X9}", 0xafe0000 ) == "00AFE0000" );
+        assert( Formatter( "{0:X13}", 0xafe0000 ) == "000000AFE0000" );
+        assert( Formatter( "{0:x13}", 0xafe0000 ) == "000000afe0000" );
 
         // decimal width
-        assert( Formatter( "{0:d6}".dup, 123 ) == "000123" );
-        assert( Formatter( "{0,7:d6}".dup, 123 ) == " 000123" );
-        assert( Formatter( "{0,-7:d6}".dup, 123 ) == "000123 " );
+        assert( Formatter( "{0:d6}", 123 ) == "000123" );
+        assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+        assert( Formatter( "{0,-7:d6}", 123 ) == "000123 " );
 
         // width & sign combinations
-        assert( Formatter( "{0:d7}".dup, -123 ) == "-0000123" );
-        assert( Formatter( "{0,7:d6}".dup, 123 ) == " 000123" );
-        assert( Formatter( "{0,7:d7}".dup, -123 ) == "-0000123" );
-        assert( Formatter( "{0,8:d7}".dup, -123 ) == "-0000123" );
-        assert( Formatter( "{0,5:d7}".dup, -123 ) == "-0000123" );
+        assert( Formatter( "{0:d7}", -123 ) == "-0000123" );
+        assert( Formatter( "{0,7:d6}", 123 ) == " 000123" );
+        assert( Formatter( "{0,7:d7}", -123 ) == "-0000123" );
+        assert( Formatter( "{0,8:d7}", -123 ) == "-0000123" );
+        assert( Formatter( "{0,5:d7}", -123 ) == "-0000123" );
 
         // Negative numbers in various bases
-        assert( Formatter( "{:b}".dup, cast(byte) -1 ) == "11111111" );
-        assert( Formatter( "{:b}".dup, cast(short) -1 ) == "1111111111111111" );
-        assert( Formatter( "{:b}".dup, cast(int) -1 )
+        assert( Formatter( "{:b}", cast(byte) -1 ) == "11111111" );
+        assert( Formatter( "{:b}", cast(short) -1 ) == "1111111111111111" );
+        assert( Formatter( "{:b}", cast(int) -1 )
                 == "11111111111111111111111111111111" );
-        assert( Formatter( "{:b}".dup, cast(long) -1 )
+        assert( Formatter( "{:b}", cast(long) -1 )
                 == "1111111111111111111111111111111111111111111111111111111111111111" );
 
-        assert( Formatter( "{:o}".dup, cast(byte) -1 ) == "377" );
-        assert( Formatter( "{:o}".dup, cast(short) -1 ) == "177777" );
-        assert( Formatter( "{:o}".dup, cast(int) -1 ) == "37777777777" );
-        assert( Formatter( "{:o}".dup, cast(long) -1 ) == "1777777777777777777777" );
+        assert( Formatter( "{:o}", cast(byte) -1 ) == "377" );
+        assert( Formatter( "{:o}", cast(short) -1 ) == "177777" );
+        assert( Formatter( "{:o}", cast(int) -1 ) == "37777777777" );
+        assert( Formatter( "{:o}", cast(long) -1 ) == "1777777777777777777777" );
 
-        assert( Formatter( "{:d}".dup, cast(byte) -1 ) == "-1" );
-        assert( Formatter( "{:d}".dup, cast(short) -1 ) == "-1" );
-        assert( Formatter( "{:d}".dup, cast(int) -1 ) == "-1" );
-        assert( Formatter( "{:d}".dup, cast(long) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(byte) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(short) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(int) -1 ) == "-1" );
+        assert( Formatter( "{:d}", cast(long) -1 ) == "-1" );
 
-        assert( Formatter( "{:x}".dup, cast(byte) -1 ) == "ff" );
-        assert( Formatter( "{:x}".dup, cast(short) -1 ) == "ffff" );
-        assert( Formatter( "{:x}".dup, cast(int) -1 ) == "ffffffff" );
-        assert( Formatter( "{:x}".dup, cast(long) -1 ) == "ffffffffffffffff" );
+        assert( Formatter( "{:x}", cast(byte) -1 ) == "ff" );
+        assert( Formatter( "{:x}", cast(short) -1 ) == "ffff" );
+        assert( Formatter( "{:x}", cast(int) -1 ) == "ffffffff" );
+        assert( Formatter( "{:x}", cast(long) -1 ) == "ffffffffffffffff" );
 
         // argument index
-        assert( Formatter( "a{0}b{1}c{2}".dup, "x", "y", "z" ) == "axbycz" );
-        assert( Formatter( "a{2}b{1}c{0}".dup, "x", "y", "z" ) == "azbycx" );
-        assert( Formatter( "a{1}b{1}c{1}".dup, "x", "y", "z" ) == "aybycy" );
+        assert( Formatter( "a{0}b{1}c{2}", "x", "y", "z" ) == "axbycz" );
+        assert( Formatter( "a{2}b{1}c{0}", "x", "y", "z" ) == "azbycx" );
+        assert( Formatter( "a{1}b{1}c{1}", "x", "y", "z" ) == "aybycy" );
 
         // alignment does not restrict the length
-        assert( Formatter( "{0,5}".dup, "hellohello" ) == "hellohello" );
+        assert( Formatter( "{0,5}", "hellohello" ) == "hellohello" );
 
         // alignment fills with spaces
-        assert( Formatter( "->{0,-10}<-".dup, "hello" ) == "->hello     <-" );
-        assert( Formatter( "->{0,10}<-".dup, "hello" ) == "->     hello<-" );
-        assert( Formatter( "->{0,-10}<-".dup, 12345 ) == "->12345     <-" );
-        assert( Formatter( "->{0,10}<-".dup, 12345 ) == "->     12345<-" );
+        assert( Formatter( "->{0,-10}<-", "hello" ) == "->hello     <-" );
+        assert( Formatter( "->{0,10}<-", "hello" ) == "->     hello<-" );
+        assert( Formatter( "->{0,-10}<-", 12345 ) == "->12345     <-" );
+        assert( Formatter( "->{0,10}<-", 12345 ) == "->     12345<-" );
 
         // chop at maximum specified length; insert ellipses when chopped
-        assert( Formatter( "->{.5}<-".dup, "hello" ) == "->hello<-" );
-        assert( Formatter( "->{.4}<-".dup, "hello" ) == "->hell...<-" );
-        assert( Formatter( "->{.-3}<-".dup, "hello" ) == "->...llo<-" );
+        assert( Formatter( "->{.5}<-", "hello" ) == "->hello<-" );
+        assert( Formatter( "->{.4}<-", "hello" ) == "->hell...<-" );
+        assert( Formatter( "->{.-3}<-", "hello" ) == "->...llo<-" );
 
         // width specifier indicates number of decimal places
-        assert( Formatter( "{0:f}".dup, 1.23f ) == "1.23" );
-        assert( Formatter( "{0:f4}".dup, 1.23456789L ) == "1.2346" );
-        assert( Formatter( "{0:e4}".dup, 0.0001) == "1.0000e-04");
+        assert( Formatter( "{0:f}", 1.23f ) == "1.23" );
+        assert( Formatter( "{0:f4}", 1.23456789L ) == "1.2346" );
+        assert( Formatter( "{0:e4}", 0.0001) == "1.0000e-04");
 
-        assert( Formatter( "{0:f}".dup, 1.23f*1i ) == "1.23*1i");
-        assert( Formatter( "{0:f4}".dup, 1.23456789L*1i ) == "1.2346*1i" );
-        assert( Formatter( "{0:e4}".dup, 0.0001*1i) == "1.0000e-04*1i");
+        assert( Formatter( "{0:f}", 1.23f*1i ) == "1.23*1i");
+        assert( Formatter( "{0:f4}", 1.23456789L*1i ) == "1.2346*1i" );
+        assert( Formatter( "{0:e4}", 0.0001*1i) == "1.0000e-04*1i");
 
-        assert( Formatter( "{0:f}".dup, 1.23f+1i ) == "1.23+1.00*1i" );
-        assert( Formatter( "{0:f4}".dup, 1.23456789L+1i ) == "1.2346+1.0000*1i" );
-        assert( Formatter( "{0:e4}".dup, 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
-        assert( Formatter( "{0:f}".dup, 1.23f-1i ) == "1.23-1.00*1i" );
-        assert( Formatter( "{0:f4}".dup, 1.23456789L-1i ) == "1.2346-1.0000*1i" );
-        assert( Formatter( "{0:e4}".dup, 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
+        assert( Formatter( "{0:f}", 1.23f+1i ) == "1.23+1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L+1i ) == "1.2346+1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001+1i) == "1.0000e-04+1.0000e+00*1i");
+        assert( Formatter( "{0:f}", 1.23f-1i ) == "1.23-1.00*1i" );
+        assert( Formatter( "{0:f4}", 1.23456789L-1i ) == "1.2346-1.0000*1i" );
+        assert( Formatter( "{0:e4}", 0.0001-1i) == "1.0000e-04-1.0000e+00*1i");
 
         // 'f.' & 'e.' format truncates zeroes from floating decimals
-        assert( Formatter( "{:f4.}".dup, 1.230 ) == "1.23" );
-        assert( Formatter( "{:f6.}".dup, 1.230 ) == "1.23" );
-        assert( Formatter( "{:f1.}".dup, 1.230 ) == "1.2" );
-        assert( Formatter( "{:f.}".dup, 1.233 ) == "1.23" );
-        assert( Formatter( "{:f.}".dup, 1.237 ) == "1.24" );
-        assert( Formatter( "{:f.}".dup, 1.000 ) == "1" );
-        assert( Formatter( "{:f2.}".dup, 200.001 ) == "200");
+        assert( Formatter( "{:f4.}", 1.230 ) == "1.23" );
+        assert( Formatter( "{:f6.}", 1.230 ) == "1.23" );
+        assert( Formatter( "{:f1.}", 1.230 ) == "1.2" );
+        assert( Formatter( "{:f.}", 1.233 ) == "1.23" );
+        assert( Formatter( "{:f.}", 1.237 ) == "1.24" );
+        assert( Formatter( "{:f.}", 1.000 ) == "1" );
+        assert( Formatter( "{:f2.}", 200.001 ) == "200");
         
         // array output
         int[] a = [ 51, 52, 53, 54, 55 ];
-        assert( Formatter( "{}".dup, a ) == "[51, 52, 53, 54, 55]" );
-        assert( Formatter( "{:x}".dup, a ) == "[33, 34, 35, 36, 37]" );
-        assert( Formatter( "{,-4}".dup, a ) == "[51  , 52  , 53  , 54  , 55  ]" );
-        assert( Formatter( "{,4}".dup, a ) == "[  51,   52,   53,   54,   55]" );
+        assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
+        assert( Formatter( "{:x}", a ) == "[33, 34, 35, 36, 37]" );
+        assert( Formatter( "{,-4}", a ) == "[51  , 52  , 53  , 54  , 55  ]" );
+        assert( Formatter( "{,4}", a ) == "[  51,   52,   53,   54,   55]" );
         int[][] b = [ [ 51, 52 ], [ 53, 54, 55 ] ];
-        assert( Formatter( "{}".dup, b ) == "[[51, 52], [53, 54, 55]]" );
+        assert( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
 
         ushort[3] c = [ cast(ushort)51, 52, 53 ];
-        assert( Formatter( "{}".dup, c ) == "[51, 52, 53]" );
+        assert( Formatter( "{}", c ) == "[51, 52, 53]" );
 
         // integer AA 
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
-        assert( Formatter( "{}".dup, d ) == "{234 => 2, 345 => 3}" ||
-                Formatter( "{}".dup, d ) == "{345 => 3, 234 => 2}");
+        assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
+                Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
         
         // bool/string AA 
         bool[char[]] e;
         e[ "key" ] = true;
         e[ "value" ] = false;
-        assert( Formatter( "{}".dup, e ) == "{key => true, value => false}" ||
-                Formatter( "{}".dup, e ) == "{value => false, key => true}");
+        assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
+                Formatter( "{}", e ) == "{value => false, key => true}");
 
         // string/double AA 
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
-        assert( Formatter( "{}".dup, f ) == "{1.00 => one, 3.14 => PI}" ||
-                Formatter( "{}".dup, f ) == "{3.14 => PI, 1.00 => one}");
+        assert( Formatter( "{}", f ) == "{1.00 => one, 3.14 => PI}" ||
+                Formatter( "{}", f ) == "{3.14 => PI, 1.00 => one}");
         }
 }
 
