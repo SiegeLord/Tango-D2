@@ -256,8 +256,8 @@ class File : Device, Device.Seek, Device.Truncate
         const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
 
 
-        // the file we're working with
-        private char[]  path_;
+        // the file we're working with 
+        private const(char)[]  path_;
 
         // the style we're opened with
         private Style   style_;
@@ -284,7 +284,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        this (char[] path, Style style = ReadExisting)
+        this (const(char[]) path, Style style = ReadExisting)
         {
                 open (path, style);
         }
@@ -389,7 +389,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                protected bool open (char[] path, Style style, DWORD addattr)
+                protected bool open (const(char[]) path, Style style, DWORD addattr)
                 {
                         DWORD   attr,
                                 share,
@@ -490,7 +490,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                void open (char[] path, Style style = ReadExisting)
+                void open (const(char[]) path, Style style = ReadExisting)
                 {
                     if (! open (path, style, 0))
                           error;
@@ -617,7 +617,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                protected bool open (char[] path, Style style,
+                protected bool open (const(char[]) path, Style style,
                                      int addflags, int access = 0666)
                 {
                         alias int[] Flags;
@@ -679,7 +679,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                void open (char[] path, Style style = ReadExisting)
+                void open (const(char[]) path, Style style = ReadExisting)
                 {
                     if (! open (path, style, 0))
                           error;
@@ -782,7 +782,7 @@ debug (File)
         {
                 char[10] ff;
 
-                auto file = new File("file.d".dup);
+                auto file = new File("file.d");
                 auto content = cast(char[]) file.load (file);
                 assert (content.length is file.length);
                 assert (file.read(ff) is file.Eof);
