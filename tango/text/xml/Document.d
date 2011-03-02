@@ -261,12 +261,12 @@ version(d)
 
         ***********************************************************************/
         
-        final Document header (T[] encoding = null)
+        final Document header (const(T)[] encoding = null)
         {
                 if (encoding.length)
-                   encoding = `xml version="1.0" encoding="`.dup~encoding~`"`.dup;
+                   encoding = `xml version="1.0" encoding="`~encoding~`"`;
                 else
-                   encoding = `xml version="1.0" encoding="UTF-8"`.dup;
+                   encoding = `xml version="1.0" encoding="UTF-8"`;
 
                 root.prepend (root.create(XmlNodeType.PI, encoding));
                 return this;
@@ -280,7 +280,7 @@ version(d)
 
         ***********************************************************************/
         
-        final void parse(T[] xml)
+        final void parse(const(T[]) xml)
         {       
                 assert (xml);
                 reset;
@@ -481,7 +481,7 @@ else
 
                 ***************************************************************/
 
-                Node name (T[] prefix, T[] local, bool delegate(Node) dg=null)
+                Node name (const(T[]) prefix, const(T[]) local, bool delegate(Node) dg=null)
                 {
                         for (auto n=node; n; n = n.nextSibling)
                             {
@@ -508,7 +508,7 @@ else
 
                 ***************************************************************/
         
-                bool hasName (T[] prefix, T[] local)
+                bool hasName (const(T[]) prefix, const(T[]) local)
                 {
                         return name (prefix, local) != null;
                 }
@@ -524,7 +524,7 @@ else
                 ***************************************************************/
 version (Filter)
 {        
-                Node value (T[] prefix, T[] local, T[] value)
+                Node value (const(T[]) prefix, const(T[]) local, const(T[]) value)
                 {
                         if (value.ptr)
                             return name (prefix, local, (Node n){return value == n.rawValue;});
@@ -541,7 +541,7 @@ version (Filter)
 
                 ***************************************************************/
 
-                Node value (T[] match)
+                Node value (const(T[]) match)
                 {
                         if (match.ptr)
                             for (auto n=node; n; n = n.nextSibling)
@@ -560,7 +560,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                bool hasValue (T[] match)
+                bool hasValue (const(T[]) match)
                 {
                         return value(match) != null;
                 }
@@ -578,9 +578,9 @@ version (Filter)
                 public void*            user;           /// open for usage
                 package Document        doc;            // owning document
                 package XmlNodeType     id;             // node type
-                package T[]             prefixed;       // namespace
-                package T[]             localName;      // name
-                package T[]             rawValue;       // data value
+                package const(T)[]      prefixed;       // namespace
+                package const(T)[]      localName;      // name
+                package const(T)[]      rawValue;       // data value
                 
                 package Node            host,           // parent node
                                         prevSibling,    // prior
@@ -590,7 +590,7 @@ version (Filter)
                                         firstAttr,      // head
                                         lastAttr;       // tail
 
-                package T*              end,            // slice of the  ...
+                package const(T)*       end,            // slice of the  ...
                                         start;          // original xml text 
 
                 /***************************************************************
@@ -680,7 +680,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                T[] prefix ()
+                const(T[]) prefix ()
                 {
                         return prefixed;
                 }
@@ -691,7 +691,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node prefix (T[] replace)
+                Node prefix (const(T[]) replace)
                 {
                         prefixed = replace;
                         return &this;
@@ -703,7 +703,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                T[] name ()
+                const(T[]) name ()
                 {
                         return localName;
                 }
@@ -714,7 +714,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                Node name (T[] replace)
+                Node name (const(T[]) replace)
                 {
                         localName = replace;
                         return &this;
@@ -726,7 +726,7 @@ version (Filter)
 
                 ***************************************************************/
         
-                T[] value ()
+                const(T[]) value ()
                 {
 version(discrete)
 {
@@ -745,7 +745,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                void value (T[] val)
+                void value (const(T[]) val)
                 {
 version(discrete)
 {
@@ -766,7 +766,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                T[] toString (T[] output = null)
+                const(T[]) toString (T[] output = null)
                 {
                         if (prefixed.length)
                            {
@@ -935,7 +935,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node element (T[] prefix, T[] local, T[] value = null)
+                Node element (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 {
                         return element_ (prefix, local, value).mutate;
                 }
@@ -946,7 +946,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node attribute (T[] prefix, T[] local, T[] value = null)
+                Node attribute (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 { 
                         return attribute_ (prefix, local, value).mutate;
                 }
@@ -957,7 +957,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node data (T[] data)
+                Node data (const(T[]) data)
                 {
                         return data_ (data).mutate;
                 }
@@ -968,7 +968,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node cdata (T[] cdata)
+                Node cdata (const(T[]) cdata)
                 {
                         return cdata_ (cdata).mutate;
                 }
@@ -979,7 +979,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node comment (T[] comment)
+                Node comment (const(T[]) comment)
                 {
                         return comment_ (comment).mutate;
                 }
@@ -990,7 +990,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node doctype (T[] doctype)
+                Node doctype (const(T[]) doctype)
                 {
                         return doctype_ (doctype).mutate;
                 }
@@ -1001,7 +1001,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                Node pi (T[] pi)
+                Node pi (const(T[]) pi)
                 {
                         return pi_ (pi, null).mutate;
                 }
@@ -1013,7 +1013,7 @@ version(discrete)
 
                 ***************************************************************/
         
-                private Node element_ (T[] prefix, T[] local, T[] value = null)
+                private Node element_ (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 {
                         auto node = create (XmlNodeType.Element, null);
                         append (node.set (prefix, local));
@@ -1035,7 +1035,7 @@ else
 
                 ***************************************************************/
         
-                private Node attribute_ (T[] prefix, T[] local, T[] value = null)
+                private Node attribute_ (const(T[]) prefix, const(T[]) local, const(T[]) value = null)
                 { 
                         auto node = create (XmlNodeType.Attribute, value);
                         attrib (node.set (prefix, local));
@@ -1048,7 +1048,7 @@ else
 
                 ***************************************************************/
         
-                private Node data_ (T[] data)
+                private Node data_ (const(T[]) data)
                 {
                         append (create (XmlNodeType.Data, data));
                         return &this;
@@ -1060,7 +1060,7 @@ else
 
                 ***************************************************************/
         
-                private Node cdata_ (T[] cdata)
+                private Node cdata_ (const(T[]) cdata)
                 {
                         append (create (XmlNodeType.CData, cdata));
                         return &this;
@@ -1072,7 +1072,7 @@ else
 
                 ***************************************************************/
         
-                private Node comment_ (T[] comment)
+                private Node comment_ (const(T[]) comment)
                 {
                         append (create (XmlNodeType.Comment, comment));
                         return &this;
@@ -1084,7 +1084,7 @@ else
 
                 ***************************************************************/
         
-                private Node pi_ (T[] pi, T[] patch)
+                private Node pi_ (const(T[]) pi, const(T[]) patch)
                 {
                         append (create(XmlNodeType.PI, pi).patch(patch));
                         return &this;
@@ -1096,7 +1096,7 @@ else
 
                 ***************************************************************/
         
-                private Node doctype_ (T[] doctype)
+                private Node doctype_ (const(T[]) doctype)
                 {
                         append (create (XmlNodeType.Doctype, doctype));
                         return &this;
@@ -1171,7 +1171,7 @@ else
         
                 ***************************************************************/
         
-                private Node set (T[] prefix, T[] local)
+                private Node set (const(T[]) prefix, const(T[]) local)
                 {
                         this.localName = local;
                         this.prefixed = prefix;
@@ -1184,7 +1184,7 @@ else
 
                 ***************************************************************/
         
-                private Node create (XmlNodeType type, T[] value)
+                private Node create (XmlNodeType type, const(T[]) value)
                 {
                         auto node = document.allocate;
                         node.rawValue = value;
@@ -1275,7 +1275,7 @@ else
 
                 ***************************************************************/
         
-                private Node patch (T[] text)
+                private Node patch (const(T[]) text)
                 {
                         end = text.ptr + text.length;
                         start = text.ptr;
@@ -1630,7 +1630,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet opIndex (T[] name)
+                NodeSet opIndex (const(T[]) name)
                 {
                         return child (name);
                 }
@@ -1642,7 +1642,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet parent (T[] name = null)
+                NodeSet parent (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return parent ((Node node){return node.name == name;});
@@ -1657,7 +1657,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet data (T[] value = null)
+                NodeSet data (const(T[]) value = null)
                 {
                         if (value.ptr)
                             return child ((Node node){return node.value == value;}, 
@@ -1673,7 +1673,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet cdata (T[] value = null)
+                NodeSet cdata (const(T[]) value = null)
                 {
                         if (value.ptr)
                             return child ((Node node){return node.value == value;}, 
@@ -1689,7 +1689,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet attribute (T[] name = null)
+                NodeSet attribute (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return attribute ((Node node){return node.name == name;});
@@ -1703,7 +1703,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet descendant (T[] name = null)
+                NodeSet descendant (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return descendant ((Node node){return node.name == name;});
@@ -1717,7 +1717,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet child (T[] name = null)
+                NodeSet child (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return child ((Node node){return node.name == name;});
@@ -1732,7 +1732,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet ancestor (T[] name = null)
+                NodeSet ancestor (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return ancestor ((Node node){return node.name == name;});
@@ -1747,7 +1747,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet prev (T[] name = null)
+                NodeSet prev (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return prev ((Node node){return node.name == name;});
@@ -1762,7 +1762,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet next (T[] name = null)
+                NodeSet next (const(T[]) name = null)
                 {
                         if (name.ptr)
                             return next ((Node node){return node.name == name;});
@@ -2163,23 +2163,23 @@ debug (Document)
 
                 // attach an element with some attributes, plus 
                 // a child element with an attached data value
-                doc.tree.element   (null, "root".dup)
-                        .attribute (null, "attrib1".dup, "value".dup)
-                        .attribute (null, "attrib2".dup, "other".dup)
-                        .element   (null, "child".dup)
-                        .cdata     ("some text".dup);
+                doc.tree.element   (null, "root")
+                        .attribute (null, "attrib1", "value")
+                        .attribute (null, "attrib2", "other")
+                        .element   (null, "child")
+                        .cdata     ("some text");
 
                 // attach a sibling to the interior elements
-                doc.elements.element (null, "sibling".dup);
+                doc.elements.element (null, "sibling");
         
                 bool foo (doc.Node node)
                 {
-                        node = node.attributes.name(null, "attrib1".dup);
-                        return node && "value".dup == node.value;
+                        node = node.attributes.name(null, "attrib1");
+                        return node && "value" == node.value;
                 }
 
-                foreach (node; doc.query.descendant("root".dup).filter(&foo).child)
-                         Stdout.formatln(">> {}".dup, node.name);
+                foreach (node; doc.query.descendant("root").filter(&foo).child)
+                         Stdout.formatln(">> {}", node.name);
 
                 foreach (node; doc.elements.attributes)
                          Stdout.formatln("<< {}", node.name);
