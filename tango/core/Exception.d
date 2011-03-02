@@ -554,7 +554,7 @@ extern (C) void onSwitchError( immutable(char)[] file, size_t line )
  * Throws:
  *  UnicodeException.
  */
-extern (C) void onUnicodeError( immutable(char)[] msg, size_t idx )
+extern (C) void onUnicodeError( const(char[]) msg, size_t idx )
 {
-    throw new UnicodeException( msg, idx );
+    throw new UnicodeException( msg.idup, idx );
 }
