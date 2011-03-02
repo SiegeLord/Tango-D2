@@ -3,9 +3,8 @@ This is a half-hearted effort to port Tango (http://www.dsource.org/projects/tan
 Anyway, this port follows the following "philosophy"/guidelines:
 
 - D1 support is to be abandoned: if you want D1, use D1 Tango. I think making the code work for both D versions will make the code ugly.
-- Const-correctness is added only when truly necessary. So far this has been only in parts that directly interact with the runtime, notably the exceptions and the toString method. Many methods won't work when the user calls them with string literals as a result (e.g. Layout).
-- Avoid new runtime allocations. This means that immutable(char[]) is converted to char[] via .dup only in error messages (with some exceptions)
-- Otherwise, string literals are converted to char[]'s by casting away the constness
+- string is not to be used for anything except string literals. Most input strings will be made const(char)[] or const(char[]).
+- Avoid new runtime allocations.
 
 I see this as a rough first pass at porting this library... making it work with string literals should be the second pass.
 
