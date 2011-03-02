@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004$(BR)
+        version:        Initial release: March 2004      
                         Outback release: December 2006
 
         author:         Kris
@@ -15,15 +15,15 @@ module tango.io.model.IConduit;
 
 /*******************************************************************************
 
-        Conduits provide virtualized access to external content, and
-        represent things like files or Internet connections. Conduits
-        expose a pair of streams, are modelled by tango.io.model.IConduit,
-        and are implemented via classes such as File &amp; SocketConduit.
-
-        Additional kinds of conduit are easy to construct: one either
-        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit.
-        A conduit typically reads and writes from/to an IBuffer in large
-        chunks, typically the entire buffer. Alternatively, one can invoke
+        Conduits provide virtualized access to external content, and 
+        represent things like files or Internet connections. Conduits 
+        expose a pair of streams, are modelled by tango.io.model.IConduit, 
+        and are implemented via classes such as File & SocketConduit. 
+        
+        Additional kinds of conduit are easy to construct: one either 
+        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit. 
+        A conduit typically reads and writes from/to an IBuffer in large 
+        chunks, typically the entire buffer. Alternatively, one can invoke 
         input.read(dst[]) and/or output.write(src[]) directly.
 
 *******************************************************************************/
@@ -68,7 +68,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract void error (char[] msg);
+        abstract void error (const(char[]) msg);
 
         /***********************************************************************
 
@@ -99,18 +99,18 @@ interface IConduit : InputStream, OutputStream
 *******************************************************************************/
 
 interface ISelectable
-{
-        version (Windows)
-                 alias void* Handle;   /// Opaque OS file-handle.
+{     
+        version (Windows) 
+                 alias void* Handle;   /// opaque OS file-handle         
              else
-                typedef int Handle = -1;        /// Opaque OS file-handle.
+                typedef int Handle = -1;        /// opaque OS file-handle        
 
         /***********************************************************************
 
-                Models a handle-oriented device.
+                Models a handle-oriented device. 
 
-                TODO: Figure out how to avoid exposing this in the general
-                case.
+                TODO: figure out how to avoid exposing this in the general
+                case
 
         ***********************************************************************/
 
@@ -272,8 +272,8 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        size_t write (void[] src);
-
+        size_t write (const(void[]) src);     
+        
         /***********************************************************************
 
                 Transfer the content of another stream to this one. Returns
@@ -303,9 +303,9 @@ interface InputBuffer : InputStream
 {
         void[] slice ();
 
-        bool next (size_t delegate(void[]) scan);
+        bool next (size_t delegate(const(void[])) scan);
 
-        size_t reader (size_t delegate(void[]) consumer);
+        size_t reader (size_t delegate(const(void[])) consumer);
 }
 
 /*******************************************************************************
@@ -319,8 +319,8 @@ interface OutputBuffer : OutputStream
         alias append opCall;
 
         void[] slice ();
-
-        OutputBuffer append (void[]);
+        
+        OutputBuffer append (const(void[]));
 
         size_t writer (size_t delegate(void[]) producer);
 }

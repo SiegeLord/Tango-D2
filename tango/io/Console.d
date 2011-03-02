@@ -40,9 +40,9 @@ version (Posix)
 struct Console
 {
         version (Win32)
-                 enum char[] Eol = "\r\n".dup;
+                 enum immutable(char)[] Eol = "\r\n";
               else
-                 enum char[] Eol = "\n".dup;
+                 enum immutable(char)[] Eol = "\n";
 
 
         /**********************************************************************
@@ -104,9 +104,9 @@ struct Console
 
                 final bool readln (ref char[] content, bool raw=false)
                 {
-                        size_t line (void[] input)
+                        size_t line (const(void[]) input)
                         {
-                                auto text = cast(char[]) input;
+                                auto text = cast(const(char[])) input;
                                 foreach (i, c; text)
                                          if (c is '\n')
                                             {
@@ -116,7 +116,7 @@ struct Console
                                             else
                                                if (j && (text[j-1] is '\r'))
                                                    --j;
-                                            content = text [0 .. j];
+                                            content = cast(char[])text [0 .. j];
                                             return i+1;
                                             }
                                 return IConduit.Eof;

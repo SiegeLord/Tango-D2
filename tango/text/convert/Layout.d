@@ -85,7 +85,7 @@ else version(LDC)
 class Layout(T)
 {
         public alias convert opCall;
-        public alias uint delegate (T[]) Sink;
+        public alias uint delegate (const(T[])) Sink;
        
         static if (is (typeof(DateTimeLocale)))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
@@ -112,7 +112,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, T[] formatStr, ...)
+        public final T[] sprint (T[] result, const(T[]) formatStr, ...)
         {
                 return vprint (result, formatStr, _arguments, _argptr);
         }
@@ -121,12 +121,12 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] vprint (T[] result, T[] formatStr, TypeInfo[] arguments, ArgList args)
+        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
                 size_t available = result.length;
 
-                uint sink (T[] s)
+                uint sink (const(T[]) s)
                 {
                         size_t len = s.length;
                         if (len > available)
@@ -176,7 +176,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (T[] formatStr, ...)
+        public final T[] convert (const(T[]) formatStr, ...)
         {
                 return convert (_arguments, _argptr, formatStr);
         }
@@ -185,7 +185,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, T[] formatStr, ...)
+        public final uint convert (Sink sink, const(T[]) formatStr, ...)
         {
                 return convert (sink, _arguments, _argptr, formatStr);
         }
@@ -199,9 +199,9 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (OutputStream output, T[] formatStr, ...)
+        public final uint convert (OutputStream output, const(T[]) formatStr, ...)
         {
-                uint sink (T[] s)
+                uint sink (const(T[]) s)
                 {
                         return output.write(s);
                 }
@@ -213,11 +213,11 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, ArgList args, T[] formatStr)
+        public final T[] convert (TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
         {
                 T[] output;
 
-                uint sink (T[] s)
+                uint sink (const(T[]) s)
                 {
                         output ~= s;
                         return s.length;
@@ -240,7 +240,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, T[] formatStr)
+        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
         {
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
@@ -356,15 +356,15 @@ class Layout(T)
 
         **********************************************************************/
 
-        private uint parse (T[] layout, TypeInfo[] ti, Arg[] args, Sink sink)
+        private uint parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
         {
                 T[512] result = void;
                 int length, nextIndex;
 
 
-                T* s = layout.ptr;
-                T* fragment = s;
-                T* end = s + layout.length;
+                const(T)* s = layout.ptr;
+                const(T)* fragment = s;
+                const(T)* end = s + layout.length;
 
                 while (true)
                       {
@@ -428,12 +428,12 @@ class Layout(T)
                                 ++s;
                          }
 
-                      T[] format;
+                      const(T)[] format;
 
                       // has a format string?
                       if (*s is ':' && s < end)
                          {
-                         T* fs = ++s;
+                         const(T)* fs = ++s;
 
                          // eat everything up to closing brace
                          while (s < end && *s != '}')
@@ -612,7 +612,7 @@ version (WithVariant)
 
         ***********************************************************************/
 
-        private T[] dispatch (T[] result, T[] format, TypeInfo type, Arg p)
+        private T[] dispatch (T[] result, const(T[]) format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -733,7 +733,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] unknown (T[] result, T[] format, TypeInfo type, Arg p)
+        protected T[] unknown (T[] result, const(T[]) format, TypeInfo type, Arg p)
         {
         version (WithExtensions)
                 {
@@ -766,7 +766,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, T[] format, ulong mask = ulong.max, T[] def=cast(T[])"d")
+        protected T[] integer (T[] output, long v, const(T)[] format, ulong mask = ulong.max, const(T[]) def="d")
         {
                 if (format.length is 0)
                     format = def;
@@ -782,7 +782,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] floater (T[] output, real v, T[] format)
+        protected T[] floater (T[] output, real v, const(T[]) format)
         {
                 uint dec = 2,
                      exp = 10;
@@ -803,7 +803,7 @@ version (WithVariant)
                                  double d = v;
                                  return integer (output, *cast(long*) &d, cast(T[])"x#");
                             default:
-                                 auto c = *p;
+                                 auto c = cast(T)*p;
                                  if (c >= '0' && c <= '9')
                                     {
                                     dec = c - '0', c = p[1];
@@ -848,7 +848,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] imaginary (T[] result, ireal val, T[] format)
+        private T[] imaginary (T[] result, ireal val, const(T[]) format)
         {
                 return floatingTail (result, val.im, format, cast(T[])"*1i");
         }
@@ -859,7 +859,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] complex (T[] result, creal val, T[] format)
+        private T[] complex (T[] result, creal val, const(T[]) format)
         {
                 static bool signed (real x)
                 {
@@ -886,7 +886,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] floatingTail (T[] result, real val, T[] format, T[] tail)
+        private T[] floatingTail (T[] result, real val, const(T[]) format, T[] tail)
         {
                 assert (result.length > tail.length);
 
