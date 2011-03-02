@@ -83,14 +83,14 @@ public enum XmlTokenType {Done, StartElement, Attribute, EndElement,
 class PullParser(Ch = char)
 {
         public int                      depth;
-        public Ch[]                     prefix;    
-        public Ch[]                     rawValue;
-        public Ch[]                     localName;     
+        public const(Ch)[]              prefix;    
+        public const(Ch)[]              rawValue;
+        public const(Ch)[]              localName;     
         public XmlTokenType             type = XmlTokenType.None;
 
         package XmlText!(Ch)            text;
         private bool                    stream;
-        private char[]                  errMsg;
+        private const(char)[]           errMsg;
 
         /***********************************************************************
                 
@@ -98,7 +98,7 @@ class PullParser(Ch = char)
 
         ***********************************************************************/
 
-        this(Ch[] content = null)
+        this(const(Ch[]) content = null)
         {
                 reset (content);
         }
@@ -197,7 +197,7 @@ version (partialwhite)
                                      text.point = p + 9;
                                      return doDoctype;
                                      }
-                            return doUnexpected("!".dup, p);
+                            return doUnexpected("!", p);
 
                        case '\?':
                             // must be PI data
@@ -236,7 +236,7 @@ version (partialwhite)
                                text.point = q + 1;
                                return type = XmlTokenType.EndElement;
                                }
-                            return doExpected(">".dup, q);
+                            return doExpected(">", q);
 
                        default:
                             // scan new element name
@@ -327,11 +327,11 @@ version (partialwhite)
                                return endOfInput; 
 
                           default: 
-                               return doExpected("\' or \"".dup, q);
+                               return doExpected("\' or \"", q);
                           }
                    }
                 
-                return doExpected ("=".dup, q);
+                return doExpected ("=", q);
         }
 
         /***********************************************************************
@@ -346,7 +346,7 @@ version (partialwhite)
                    text.point += 2;
                    return type = XmlTokenType.EndEmptyElement;
                    }
-                return doExpected("/>".dup, text.point);
+                return doExpected("/>", text.point);
        }
         
         /***********************************************************************
@@ -479,7 +479,7 @@ version (partialwhite)
         private XmlTokenType endOfInput ()
         {
                 if (depth && (stream is false))
-                    error ("Unexpected EOF".dup);
+                    error ("Unexpected EOF");
 
                 return XmlTokenType.Done;
         }
@@ -488,35 +488,35 @@ version (partialwhite)
         
         ***********************************************************************/
 
-        private XmlTokenType doUnexpected (char[] msg, Ch* p)
+        private XmlTokenType doUnexpected (const(char[]) msg, const(Ch)* p)
         {
-                return position ("parse error :: unexpected  ".dup ~ msg, p);
+                return position ("parse error :: unexpected  " ~ msg, p);
         }
         
         /***********************************************************************
         
         ***********************************************************************/
 
-        private XmlTokenType doExpected (char[] msg, Ch* p)
+        private XmlTokenType doExpected (const(char[]) msg, const(Ch)* p)
         {
                 char[6] tmp = void;
-                return position ("parse error :: expected  ".dup ~ msg ~ " instead of ".dup ~ Utf.toString(p[0..1], tmp), p);
+                return position ("parse error :: expected  " ~ msg ~ " instead of " ~ Utf.toString(p[0..1], tmp), p);
         }
         
         /***********************************************************************
         
         ***********************************************************************/
 
-        private XmlTokenType position (char[] msg, Ch* p)
+        private XmlTokenType position (const(char[]) msg, const(Ch)* p)
         {
-                return error (msg ~ " at position ".dup ~ Integer.toString(p-text.text.ptr));
+                return error (msg ~ " at position " ~ Integer.toString(p-text.text.ptr));
         }
 
         /***********************************************************************
         
         ***********************************************************************/
 
-        protected final XmlTokenType error (char[] msg)
+        protected final XmlTokenType error (const(char[]) msg)
         {
                 errMsg = msg;
                 throw new XmlException (msg.idup);
@@ -528,7 +528,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        final Ch[] value()
+        final const(Ch[]) value()
         {
                 return rawValue;
         }
@@ -539,10 +539,10 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        final Ch[] name()
+        final const(Ch[]) name()
         {
                 if (prefix.length)
-                    return prefix ~ ":".dup ~ localName;
+                    return prefix ~ ":" ~ localName;
                 return localName;
         }
                 
@@ -552,7 +552,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        final char[] error()
+        final const(char[]) error()
         {
                 return errMsg;
         }
@@ -576,7 +576,7 @@ version (partialwhite)
 
         ***********************************************************************/
 
-        final void reset(Ch[] newText)
+        final void reset(const(Ch[]) newText)
         {
                 text.reset (newText);
                 reset_;                
@@ -640,12 +640,12 @@ version (partialwhite)
 
 package struct XmlText(Ch)
 {
-        package Ch*     end;
+        package const(Ch)*     end;
         package size_t  len;
-        package Ch[]    text;
-        package Ch*     point;
+        package const(Ch)[]    text;
+        package const(Ch)*     point;
 
-        final void reset(Ch[] newText)
+        final void reset(const(Ch[]) newText)
         {
                 this.text = newText;
                 this.len = newText.length;
@@ -745,9 +745,9 @@ debug (UnitTest)
 	
 	***********************************************************************/
 	
-	static enum char[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
+	static enum immutable(char)[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
 	    "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = "
-	    "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>".dup;
+	    "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>";
 	
 	unittest
 	{       
