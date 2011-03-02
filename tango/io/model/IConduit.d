@@ -68,7 +68,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract void error (char[] msg);
+        abstract void error (const(char[]) msg);
 
         /***********************************************************************
 
@@ -272,7 +272,8 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        size_t write (void[] src);
+        size_t write (const(void[]) src);
+        
 
         /***********************************************************************
 
@@ -303,9 +304,9 @@ interface InputBuffer : InputStream
 {
         void[] slice ();
 
-        bool next (size_t delegate(void[]) scan);
+        bool next (size_t delegate(const(void[])) scan);
 
-        size_t reader (size_t delegate(void[]) consumer);
+        size_t reader (size_t delegate(const(void[])) consumer);
 }
 
 /*******************************************************************************
@@ -319,8 +320,8 @@ interface OutputBuffer : OutputStream
         alias append opCall;
 
         void[] slice ();
-
-        OutputBuffer append (void[]);
+        
+        OutputBuffer append (const(void[]));
 
         size_t writer (size_t delegate(void[]) producer);
 }

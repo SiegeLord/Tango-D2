@@ -99,7 +99,7 @@ class FormatOutput(T) : OutputFilter
 {
         public  alias OutputFilter.flush flush;
 
-        private T[]             eol;
+        private const(T[])             eol;
         private Layout!(T)      convert;
         private bool            flushLines;
 
@@ -107,9 +107,9 @@ class FormatOutput(T) : OutputFilter
         public alias newline    nl;             /// nl -> newline
 
         version (Win32)
-                 private enum T[] Eol = "\r\n".dup;
+                 private enum immutable(T)[] Eol = "\r\n";
              else
-                private enum T[] Eol = "\n".dup;
+                private enum immutable(T)[] Eol = "\n";
 
         /**********************************************************************
 
@@ -118,7 +118,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (OutputStream output, T[] eol = Eol)
+        this (OutputStream output, const(T[]) eol = Eol)
         {
                 this (Layout!(T).instance, output, eol);
         }
@@ -130,7 +130,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (Layout!(T) convert, OutputStream output, T[] eol = Eol)
+        this (Layout!(T) convert, OutputStream output, const(T[]) = Eol)
         {
                 assert (convert);
                 assert (output);
@@ -146,7 +146,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput format (T[] fmt, ...)
+        final FormatOutput format (const(T[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -170,7 +170,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput formatln (T[] fmt, ...)
+        final FormatOutput formatln (const(T[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -197,9 +197,9 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput print ( ... )
         {
-                enum T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                  "{}, {}, {}, {}, {}, {}, {}, {}, ".dup;
+                enum immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                             "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                             "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
@@ -303,11 +303,11 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final uint emit (T[] s)
+        private final uint emit (const(T[]) s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)
-                    conduit.error ("FormatOutput :: unexpected Eof".dup);
+                    conduit.error ("FormatOutput :: unexpected Eof");
                 return count;
         }
 }
