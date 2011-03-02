@@ -499,6 +499,14 @@ version (old)
                       // an astonishing number of typehacks needed to handle arrays :(
                       void process (TypeInfo _ti, Arg _arg)
                       {
+                                if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
+                                    (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
+                                    (_ti.classinfo.name.length is 15  && _ti.classinfo.name[9..$] == "Shared") ||
+                                    (_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Inout"))
+                                {
+                                    process((cast(TypeInfo_Const)_ti).next, _arg);
+                                    return;
+                                }
                                 // Because Variants can contain AAs (and maybe
                                 // even static arrays someday), we need to
                                 // process them here.
