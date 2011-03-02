@@ -130,7 +130,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (Layout!(T) convert, OutputStream output, const(T[]) = Eol)
+        this (Layout!(T) convert, OutputStream output, const(T[]) eol = Eol)
         {
                 assert (convert);
                 assert (output);
