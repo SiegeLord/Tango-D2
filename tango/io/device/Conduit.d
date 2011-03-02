@@ -112,7 +112,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract size_t write (void [] src);
+        abstract size_t write (const(void[]) src);
 
         /***********************************************************************
 
@@ -199,7 +199,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final void error (char[] msg)
+        final void error (const(char[]) msg)
         {
                 throw new IOException (msg.idup);
         }
@@ -286,7 +286,7 @@ class Conduit : IConduit
 
         long seek (long offset, Anchor anchor = Anchor.Begin)
         {
-                error ((this.toString ~ " does not support seek requests").dup);
+                error (this.toString ~ " does not support seek requests");
                 return 0;
         }
 
@@ -370,7 +370,7 @@ class Conduit : IConduit
                       {
                       auto i = output.write (src);
                       if (i is Eof)
-                          output.conduit.error ("Conduit.put :: eof while writing".dup);
+                          output.conduit.error ("Conduit.put :: eof while writing");
                       src = src [i..$];
                       }
         }
@@ -388,7 +388,7 @@ class Conduit : IConduit
                       {
                       auto i = input.read (dst);
                       if (i is Eof)
-                          input.conduit.error ("Conduit.get :: eof while reading".dup);
+                          input.conduit.error ("Conduit.get :: eof while reading");
                       dst = dst [i..$];
                       }
         }
@@ -592,7 +592,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        size_t write (void[] src)
+        size_t write (const(void[]) src)
         {
                 return sink.write (src);
         }

@@ -31,17 +31,17 @@ public alias BufferedOutput Bout;       /// ditto
 extern (C)
 {       
         int printf (char*, ...);
-        private void * memmove (void *dst, void *src, size_t);
+        private void * memmove (void *dst, const(void) *src, size_t);
 }
 
 /******************************************************************************
 
 ******************************************************************************/
 
-private enum char[] underflow = "input buffer is empty".dup;
-private enum char[] eofRead   = "end-of-flow whilst reading".dup;
-private enum char[] eofWrite  = "end-of-flow whilst writing".dup;
-private enum char[] overflow  = "output buffer is full".dup;
+private enum immutable(char)[] underflow = "input buffer is empty";
+private enum immutable(char)[] eofRead   = "end-of-flow whilst reading";
+private enum immutable(char)[] eofWrite  = "end-of-flow whilst writing";
+private enum immutable(char)[] overflow  = "output buffer is full";
 
 
 /*******************************************************************************
@@ -281,7 +281,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t reader (size_t delegate (void[]) dg)
+        final size_t reader (size_t delegate (const(void[])) dg)
         {
                 auto count = dg (data [index..extent]);
 
@@ -502,7 +502,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool next (size_t delegate (void[]) scan)
+        final bool next (size_t delegate (const(void[])) scan)
         {
                 while (reader(scan) is Eof)
                       {
@@ -513,7 +513,7 @@ class BufferedInput : InputFilter, InputBuffer
                       else
                          // no more space in the buffer?
                          if (writable is 0)
-                             conduit.error ("BufferedInput.next :: input buffer is full".dup);
+                             conduit.error ("BufferedInput.next :: input buffer is full");
 
                       // read another chunk of data
                       if (writer(&source.read) is Eof)
@@ -963,7 +963,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void[]) src)
         {
                 append (src.ptr, src.length);
                 return src.length;
@@ -986,7 +986,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferedOutput append (void[] src)
+        final BufferedOutput append (const(void[]) src)
         {
                 return append (src.ptr, src.length);
         }
@@ -1009,7 +1009,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferedOutput append (void* src, size_t length)
+        final BufferedOutput append (const(void)* src, size_t length)
         {
                 if (length > writable)
                    {
@@ -1301,7 +1301,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final size_t reader (size_t delegate (void[]) dg)
+        private final size_t reader (size_t delegate (const(void[])) dg)
         {
                 auto count = dg (data [index..extent]);
 
