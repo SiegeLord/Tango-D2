@@ -532,9 +532,9 @@ class Arguments
                                         cat,            // arg is smushable
                                         exp,            // implicit params
                                         fail;           // fail the parse
-                private char[]          name,           // arg name
-                                        text,           // help text
-                                        bogus;          // name of conflict
+                public  char[]          name,           // arg name
+                                        text;           // help text
+                private char[]          bogus;          // name of conflict
                 private char[][]        values,         // assigned values
                                         options,        // validation options
                                         deefalts;       // configured defaults
