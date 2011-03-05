@@ -475,7 +475,7 @@ body {
 
 private {
 // Evaluate Chebyshev series
-double evalCheby(double x, double [] poly)
+double evalCheby(double x, const(double []) poly)
 {
     double b0, b1, b2;
     

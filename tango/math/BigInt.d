@@ -34,8 +34,8 @@ public:
     /// It may have a leading + or - sign; followed by "0x" if hexadecimal.
     /// Underscores are permitted.
     /// BUG: Should throw a IllegalArgumentException/ConvError if invalid character found
-    static BigInt opCall(T : char[])(T z) {
-        char [] s = z;
+    static BigInt opCall(T : char[])(const(T) z) {
+        const(char) [] s = z;
         BigInt r;
         bool neg = false;
         if (s[0] == '-') {
@@ -394,12 +394,12 @@ debug(UnitTest)
 {
 unittest {
     // Radix conversion
-    assert( BigInt("-1_234_567_890_123_456_789".dup).toDecimalString 
+    assert( BigInt("-1_234_567_890_123_456_789").toDecimalString 
         == "-1234567890123456789");
-    assert( BigInt("0x1234567890123456789".dup).toHex == "123_45678901_23456789");
-    assert( BigInt("0x00000000000000000000000000000000000A234567890123456789".dup).toHex
+    assert( BigInt("0x1234567890123456789").toHex == "123_45678901_23456789");
+    assert( BigInt("0x00000000000000000000000000000000000A234567890123456789").toHex
         == "A23_45678901_23456789");
-    assert( BigInt("0x000_00_000000_000_000_000000000000_000000_".dup).toHex == "0");
+    assert( BigInt("0x000_00_000000_000_000_000000000000_000000_").toHex == "0");
     
     assert(BigInt(-0x12345678).toInt() == -0x12345678);
     assert(BigInt(-0x12345678).toLong() == -0x12345678);

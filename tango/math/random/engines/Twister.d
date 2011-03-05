@@ -168,7 +168,7 @@ struct Twister
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    size_t fromString(char[] s){
+    size_t fromString(const(char[]) s){
         size_t i;
         assert(s[0..7]=="Twister","unexpected kind, expected Twister");
         i+=7;
