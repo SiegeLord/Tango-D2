@@ -11,6 +11,21 @@
  */
 module tango.core.Traits;
 
+/**
+ * Strips the qualifiers from a type
+ */
+
+template BaseTypeOf( T )
+{
+    static if (is(T S : const(S)))
+        alias S BaseTypeOf;
+    else static if (is(T S : shared(S)))
+        alias S BaseTypeOf;
+    else static if (is(T S : shared(const(S))))
+        alias S BaseTypeOf;
+    else
+        alias T BaseTypeOf;
+}
 
 /**
  * Evaluates to true if T is char[], wchar[], or dchar[].
@@ -207,6 +222,10 @@ debug( UnitTest )
 {
     unittest
     {
+        static assert( is(BaseTypeOf!(const(int))==int) );
+        static assert( is(BaseTypeOf!(immutable(int))==int) );
+        static assert( is(BaseTypeOf!(shared(int))==int) );
+        static assert( is(BaseTypeOf!(inout(int))==int) );
         static assert( isPointerType!(void*) );
         static assert( !isPointerType!(char[]) );
         static assert( isPointerType!(char[]*) );
