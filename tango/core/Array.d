@@ -916,7 +916,7 @@ version( TangoDoc )
      * Returns:
      *  The index of the first match or buf.length if no match was found.
      */
-    size_t findAdj( Elem[] buf, Elem pat, Pred2E pred = Pred2E.init );
+    size_t findAdj( Elem[] buf, Pred2E pred = Pred2E.init );
 
 }
 else
@@ -931,13 +931,13 @@ else
             if( buf.length < 2 )
                 return buf.length;
 
-            Elem sav = buf[0];
+            auto sav = cast(BaseTypeOf!(Elem))buf[0];
 
             foreach( size_t pos, Elem cur; buf[1 .. $] )
             {
                 if( pred( cur, sav ) )
                     return pos;
-                sav = cur;
+                sav = cast(BaseTypeOf!(Elem))cur;
             }
             return buf.length;
         }
@@ -966,10 +966,10 @@ else
     {
       unittest
       {
-        assert( findAdj( "aabcdef".dup ) == 0 );
-        assert( findAdj( "abcddef".dup ) == 3 );
-        assert( findAdj( "abcdeff".dup ) == 5 );
-        assert( findAdj( "abcdefg".dup ) == 7 );
+        assert( findAdj( "aabcdef" ) == 0 );
+        assert( findAdj( "abcddef" ) == 3 );
+        assert( findAdj( "abcdeff" ) == 5 );
+        assert( findAdj( "abcdefg" ) == 7 );
       }
     }
 }
