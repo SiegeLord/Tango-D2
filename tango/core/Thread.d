@@ -593,7 +593,7 @@ class Thread
      * In:
      *  dg must not be null.
      */
-    this(scope void delegate() dg, size_t sz = 0 )
+    this( void delegate() dg, size_t sz = 0 )
     in
     {
         assert( dg );
@@ -2406,7 +2406,7 @@ class ThreadGroup
      * Returns:
      *  A reference to the newly created thread.
      */
-    final Thread create( scope void delegate() dg )
+    final Thread create( void delegate() dg )
     {
         Thread t = new Thread( dg );
 
@@ -2911,7 +2911,7 @@ class Fiber
 
         void await (Handle fd, Type t, uint timeout) {}
         
-        void spawn (char[] name, scope void delegate() dg, size_t stack=8192) {}    
+        void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
     }
 
     struct Event                        // scheduler support 
@@ -2999,7 +2999,7 @@ class Fiber
      * In:
      *  dg must not be null.
      */
-    this( scope void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
+    this( void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
     in
     {
         assert( dg );
@@ -3167,7 +3167,7 @@ class Fiber
      *  This fiber must be in state TERM.
      *  dg must not be null.
      */
-    final void reset( scope void delegate() dg )
+    final void reset( void delegate() dg )
     in
     {
         assert( dg );
