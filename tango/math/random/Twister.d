@@ -252,7 +252,7 @@ struct Twister
                 
         **********************************************************************/
 
-        void init (uint[] init_key, bool pAddEntropy = false)
+        void init (const(uint[]) init_key, bool pAddEntropy = false)
         {
                 int i, j, k;
                 i=1;

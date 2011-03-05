@@ -85,7 +85,7 @@ struct Kiss99{
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    size_t fromString(char[] s){
+    size_t fromString(const(char[]) s){
         size_t i=0;
         assert(s[i..i+4]=="KISS","unexpected kind, expected KISS");
         assert(s[i+4..i+7]=="99_","unexpected version, expected 99");

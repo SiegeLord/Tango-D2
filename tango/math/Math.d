@@ -1822,7 +1822,7 @@ unittest
  * Params:
  *      A =     array of coefficients $(SUB a, 0), $(SUB a, 1), etc.
  */
-T poly(T)(T x, T[] A)
+T poly(T)(T x, const(T[]) A)
 in
 {
     assert(A.length > 0);
@@ -1912,7 +1912,7 @@ unittest
 }
 
 package {
-T rationalPoly(T)(T x, T [] numerator, T [] denominator)
+T rationalPoly(T)(T x, const(T []) numerator, const(T []) denominator)
 {
     return poly(x, numerator)/poly(x, denominator);
 }

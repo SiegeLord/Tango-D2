@@ -133,19 +133,19 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    size_t fromString(char[] s){
+    size_t fromString(const(char[]) s){
         char[16] tmpC;
         size_t i=0;
         assert(s[i..i+11]=="CMWC+KISS99","unexpected kind, expected CMWC+KISS99");
         i+=11;
-        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16".dup),"unexpected cmwc_a".dup);
+        assert(s[i..i+16]==Integer.format(tmpC,cmwc_a,"x16"),"unexpected cmwc_a");
         i+=16;
         assert(s[i]=='_',"unexpected format, expected _");
         i++;
-        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8".dup),"unexpected cmwc_r".dup);
+        assert(s[i..i+8]==Integer.format(tmpC,cmwc_r,"x8"),"unexpected cmwc_r");
         i+=8;
         foreach (ref val;cmwc_q){
-            assert(s[i]=='_',"no separator _ found".dup);
+            assert(s[i]=='_',"no separator _ found");
             ++i;
             uint ate;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);

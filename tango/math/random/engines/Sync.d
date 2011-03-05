@@ -49,12 +49,12 @@ struct Sync(E){
     /// writes the current status in a string
     char[] toString(){
         synchronized(lock){
-            return "Sync".dup~engine.toString();
+            return "Sync"~engine.toString();
         }
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    size_t fromString(char[] s){
+    size_t fromString(const(char[]) s){
         size_t i;
         assert(s[0..4]=="Sync","unexpected kind, expected Sync");
         synchronized(lock){
