@@ -271,7 +271,7 @@ char [] toHexString(int frontExtraBytes, char separator = 0, int minPadding=0, c
 }
 
 // return false if invalid character found
-bool fromHexString(char [] s)
+bool fromHexString(const(char []) s)
 {
     //Strip leading zeros
     int firstNonZero = 0;    
@@ -315,7 +315,7 @@ bool fromHexString(char [] s)
 }
 
 // return true if OK; false if erroneous characters found
-bool fromDecimalString(char [] s)
+bool fromDecimalString(const(char []) s)
 {
     //Strip leading zeros
     int firstNonZero = 0;    
@@ -1182,7 +1182,7 @@ int biguintToDecimal(char [] buff, BigDigit [] data){
  * Returns:
  *    the highest index of data which was used.
  */
-int biguintFromDecimal(BigDigit [] data, char [] s) {
+int biguintFromDecimal(BigDigit [] data, const(char []) s) {
     // Convert to base 1e19 = 10_000_000_000_000_000_000.
     // (this is the largest power of 10 that will fit into a long).
     // The length will be less than 1 + s.length/log2(10) = 1 + s.length/3.3219.

@@ -678,7 +678,7 @@ final class RandomG(SourceT=DefaultEngine)
         } else static assert(0,T.stringof~" unsupported type for uniformR2 distribution");
     }
     /// returns a random element of the given array (which must be non empty)
-    T uniformEl(T)(T[] arr){
+    T uniformEl(T)(const(T[]) arr){
         assert(arr.length>0,"array has to be non empty");
         return arr[uniformR(arr.length)];
     }
@@ -1203,7 +1203,7 @@ final class RandomG(SourceT=DefaultEngine)
     }
     /// reads the current status from a string (that should have been trimmed)
     /// returns the number of chars read
-    size_t fromString(char[] s){
+    size_t fromString(const(char[]) s){
         return source.fromString(s);
     }
     
@@ -1319,7 +1319,7 @@ debug(UnitTest){
     void testRandSource(RandS)(){
         auto r=new RandomG!(RandS)();
         // r.fromString("KISS99_b66dda10_49340130_8f3bf553_224b7afa_00000000_00000000"); // to reproduce a given test...
-        char[] initialState=r.toString().dup; // so that you can reproduce things...
+        const(char[]) initialState=r.toString(); // so that you can reproduce things...
         bool allStats=false; // set this to true to show all statistics (helpful to track an error)
         try{
             r.uniform!(uint);
@@ -1335,7 +1335,7 @@ debug(UnitTest){
                 assert(0<rr && rr<1,"double out of bounds");
             }
             // checkpoint status (str)
-            char[] status=r.toString().dup;
+            const(char[]) status=r.toString();
             uint tVal=r.uniform!(uint);
             ubyte t2Val=r.uniform!(ubyte);
             ulong t3Val=r.uniform!(ulong);

@@ -39,7 +39,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new File(cast(char[])"/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
@@ -54,7 +54,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new File(cast(char[])"/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
@@ -69,7 +69,7 @@ version(has_urandom) {
             }
             ToVoidA el;
             synchronized(lock){
-                auto fn = new File(cast(char[])"/dev/urandom", readStyle); 
+                auto fn = new File("/dev/urandom", readStyle); 
                 if(fn.read(el.a)!=el.a.length){
                     throw new Exception("could not write the requested bytes from urandom");
                 }
@@ -81,12 +81,12 @@ version(has_urandom) {
         void seed(uint delegate() r) { }
         /// writes the current status in a string
         char[] toString(){
-            return cast(char[])"URandom";
+            return "URandom".dup;
         }
         /// reads the current status from a string (that should have been trimmed)
         /// returns the number of chars read
-        size_t fromString(char[] s){
-            char[] r=cast(char[])"URandom";
+        size_t fromString(const(char[]) s){
+            const(char)[] r="URandom";
             assert(s[0.. r.length]==r,"unxepected string instad of URandom:"~s);
             return r.length;
         }
