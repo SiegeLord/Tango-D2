@@ -40,7 +40,7 @@ struct Sync(E){
         }
     }
     
-    void seed(uint delegate() r){
+    void seed(scope uint delegate() r){
         if (!lock) lock=new Mutex();
         synchronized(lock){
             engine.seed(r);

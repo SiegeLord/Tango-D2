@@ -78,7 +78,7 @@ version(has_urandom) {
             return el.l;
         }
         /// does nothing
-        void seed(uint delegate() r) { }
+        void seed(scope uint delegate() r) { }
         /// writes the current status in a string
         char[] toString(){
             return "URandom".dup;

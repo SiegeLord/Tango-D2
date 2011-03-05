@@ -93,7 +93,7 @@ else version(DigitalMars)
 class Layout(T)
 {
         public alias convert opCall;
-        public alias uint delegate (const(T[])) Sink;
+        public alias scope uint delegate (const(T[])) Sink;
        
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;

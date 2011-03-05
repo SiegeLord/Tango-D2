@@ -112,7 +112,7 @@ struct Twister
         }
     }
     /// adds entropy to the generator
-    void addEntropy(uint delegate() r){
+    void addEntropy(scope uint delegate() r){
         int i, j, k;
         i=1;
         j=0;
@@ -143,7 +143,7 @@ struct Twister
         mti=0;
     }
     /// seeds the generator
-    void seed(uint delegate() r){
+    void seed(scope uint delegate() r){
         seed (19650218UL);
         addEntropy(r);
     }
