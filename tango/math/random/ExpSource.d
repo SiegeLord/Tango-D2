@@ -55,7 +55,7 @@ final class ExpSource(RandG,T){
         return source.randomizeOp((T el){ return el*cast(T)beta; },x);
     }
     /// initializes the given variable with an exponentially distribued number and maps op on it
-    U randomizeOp(U,S)(S delegate(T)op,ref U a){
+    U randomizeOp(U,S)(scope S delegate(T)op,ref U a){
         return source.randomizeOp(op,a);
     }
     /// exp distribution with different default scale parameter beta

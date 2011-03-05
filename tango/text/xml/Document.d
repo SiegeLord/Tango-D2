@@ -461,7 +461,7 @@ else
 
                 ***************************************************************/
         
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -481,7 +481,7 @@ else
 
                 ***************************************************************/
 
-                Node name (const(T[]) prefix, const(T[]) local, bool delegate(Node) dg=null)
+                Node name (const(T[]) prefix, const(T[]) local, scope bool delegate(Node) dg=null)
                 {
                         for (auto n=node; n; n = n.nextSibling)
                             {
@@ -1776,7 +1776,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet filter (bool delegate(Node) filter)
+                NodeSet filter (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1794,7 +1794,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet child (bool delegate(Node) filter, 
+                NodeSet child (scope bool delegate(Node) filter, 
                                XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1815,7 +1815,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet attribute (bool delegate(Node) filter)
+                NodeSet attribute (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1834,7 +1834,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet descendant (bool delegate(Node) filter, 
+                NodeSet descendant (scope bool delegate(Node) filter, 
                                     XmlNodeType type = XmlNodeType.Element)
                 {
                         void traverse (Node parent)
@@ -1864,7 +1864,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet parent (bool delegate(Node) filter)
+                NodeSet parent (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1894,7 +1894,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet ancestor (bool delegate(Node) filter)
+                NodeSet ancestor (scope bool delegate(Node) filter)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -1928,7 +1928,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet next (bool delegate(Node) filter, 
+                NodeSet next (scope bool delegate(Node) filter, 
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1955,7 +1955,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet prev (bool delegate(Node) filter, 
+                NodeSet prev (scope bool delegate(Node) filter, 
                               XmlNodeType type = XmlNodeType.Element)
                 {
                         NodeSet set = {host};
@@ -1980,7 +1980,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                int opApply (int delegate(ref Node) dg)
+                int opApply (scope int delegate(ref Node) dg)
                 {
                         int ret;
 
@@ -2021,7 +2021,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                private void test (bool delegate(Node) filter, Node node)
+                private void test (scope bool delegate(Node) filter, Node node)
                 {
                         auto pop = host.push;
                         auto add = filter (node);
@@ -2139,7 +2139,7 @@ interface IXmlPrinter(T)
 
         ***********************************************************************/
         
-        void print (Node root, void delegate(T[][]...) emit);
+        void print (Node root, scope void delegate(T[][]...) emit);
 }
 }
 

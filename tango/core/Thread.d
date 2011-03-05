@@ -547,7 +547,7 @@ class Thread
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = 0 )
+    this(scope void delegate() dg, size_t sz = 0 )
     in
     {
         assert( dg );
@@ -1116,7 +1116,7 @@ class Thread
      * Returns:
      *  Zero if all elemented are visited, nonzero if not.
      */
-    static int opApply( int delegate( ref Thread ) dg )
+    static int opApply(scope int delegate( ref Thread ) dg )
     {
         synchronized( slock )
         {
@@ -2144,7 +2144,7 @@ body
 }
 
 
-private alias void delegate( void*, void* ) scanAllThreadsFn;
+private alias scope void delegate( void*, void* ) scanAllThreadsFn;
 
 
 /**
@@ -2360,7 +2360,7 @@ class ThreadGroup
      * Returns:
      *  A reference to the newly created thread.
      */
-    final Thread create( void delegate() dg )
+    final Thread create( scope void delegate() dg )
     {
         Thread t = new Thread( dg );
 
@@ -2423,7 +2423,7 @@ class ThreadGroup
     /**
      * Operates on all threads currently tracked by this object.
      */
-    final int opApply( int delegate( ref Thread ) dg )
+    final int opApply( scope int delegate( ref Thread ) dg )
     {
         synchronized( this )
         {
@@ -2816,7 +2816,7 @@ class Fiber
 
         void await (Handle fd, Type t, uint timeout) {}
         
-        void spawn (char[] name, void delegate() dg, size_t stack=8192) {}    
+        void spawn (char[] name, scope void delegate() dg, size_t stack=8192) {}    
     }
 
     struct Event                        // scheduler support 
@@ -2904,7 +2904,7 @@ class Fiber
      * In:
      *  dg must not be null.
      */
-    this( void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
+    this( scope void delegate() dg, size_t sz = PAGESIZE, Scheduler s = null )
     in
     {
         assert( dg );
@@ -3072,7 +3072,7 @@ class Fiber
      *  This fiber must be in state TERM.
      *  dg must not be null.
      */
-    final void reset( void delegate() dg )
+    final void reset( scope void delegate() dg )
     in
     {
         assert( dg );

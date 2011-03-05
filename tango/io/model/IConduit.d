@@ -303,9 +303,9 @@ interface InputBuffer : InputStream
 {
         void[] slice ();
 
-        bool next (size_t delegate(const(void[])) scan);
+        bool next (scope size_t delegate(const(void[])) scan);
 
-        size_t reader (size_t delegate(const(void[])) consumer);
+        size_t reader (scope size_t delegate(const(void[])) consumer);
 }
 
 /*******************************************************************************

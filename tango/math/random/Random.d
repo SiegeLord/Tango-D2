@@ -256,7 +256,7 @@ final class RandomG(SourceT=DefaultEngine)
         return this;
     }
     /// if source.canSeed seeds the generator using the given source of uints
-    RandomG seed (uint delegate() seedSource)
+    RandomG seed (scope uint delegate() seedSource)
     {
         static if(source.canSeed){
             source.seed(seedSource);
