@@ -202,7 +202,7 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         }
     }
     /// initializes the variable with the result of mapping op on the random numbers (of type T)
-    U randomizeOp(U,S)(S delegate(T) op,ref U a){
+    U randomizeOp(U,S)(scope S delegate(T) op,ref U a){
         static if(is(U S:S[])){
             alias BaseTypeOfArrays!(U) TT;
             uint aL=a.length;

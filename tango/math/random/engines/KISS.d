@@ -54,7 +54,7 @@ struct Kiss99{
         return ((cast(ulong)next)<<32)+cast(ulong)next;
     }
     
-    void seed(uint delegate() r){
+    void seed(scope uint delegate() r){
         kiss_x = r();
         for (int i=0;i<100;++i){
             kiss_y=r();

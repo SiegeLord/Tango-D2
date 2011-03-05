@@ -69,7 +69,7 @@ struct KissCmwc(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         return ((cast(ulong)next)<<32)+cast(ulong)next;
     }
     
-    void seed(uint delegate() rSeed){
+    void seed(scope uint delegate() rSeed){
         cmwc_i=cmwc_r-1u; // randomize also this?
         for (int ii=0;ii<10;++ii){
             for (uint i=0;i<cmwc_r;++i){
