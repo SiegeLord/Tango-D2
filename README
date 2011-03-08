@@ -1,12 +1,8 @@
 This is a half-hearted effort to port Tango (http://www.dsource.org/projects/tango/) to the D2 programming language. I am doing this quickly, and in a haphazard fashion. I primarily care that it compiles, and passes the unittests (or my own quick tests). I am sure the parts I ported don't work 100%.
 
-Anyway, this port follows the following "philosophy"/guidelines:
+This port roughly follows the guidelines outlined in the 'porting_guidelines' file. If you want to help out, please follow that procedure.
 
-- D1 support is to be abandoned: if you want D1, use D1 Tango. I think making the code work for both D versions will make the code ugly.
-- string is not to be used for anything except string literals. Most input strings will be made const(char)[] or const(char[]).
-- Avoid new runtime allocations.
-
-I see this as a rough first pass at porting this library... making it work with string literals should be the second pass.
+I see this as a rough first pass at porting this library... making it more D2 like will be the second pass.
 
 What works so far:
 
@@ -32,3 +28,7 @@ Anything that's hard to port... like intrinsics/anything that's Tango's runtime 
 How to use it:
 
 Just manually import/compile modules you want. Tools like xfbuild (https://bitbucket.org/h3r3tic/xfbuild/wiki/Home) are of great help here. Building the whole library won't be supported for awhile.
+
+Contact:
+
+You can message me on github, or find me on IRC on #d and #d.tango @ irc.freenode.net

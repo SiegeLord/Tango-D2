@@ -1,0 +1,28 @@
+Here are the (WIP + partial) guidelines for this porting effort:
+
+Ovearching ideals:
+- D1 support is abandoned. For better or worse, D1 is being phased out. It is my opinion that both D2 and Tango will benefit from each other. I don't believe it is possible to write clean code that compiles both in D2 and D1, however, so this port from the beginning is meant to be D2 only.
+- Semantics of Tango functions are not to be changed except in extreme circumstances
+- Tango philosophy is to be maintained (avoid template bloat, minimize runtime allocations, no mixins, avoid type inference)
+- The purpose of D2 constructs is then to codify and enforce pre-existing Tango semantics
+
+Specific cases:
+- const has changed meanings in D2, so change every single const appearance to enum
+- Global variables are now implicitly shared in D2, while Tango often relies upon them being non-shared, so prefix all
+global and static variables with '__gshared'
+- Tango generally avoids the 'string' type, written like that. Immutable character strings should be typed explicitly as 'immutable(char)[]'
+- That said, avoid that type as much as possible. Generally 99% of the string parameters should be 'const(char[])' or 'const(char)[]'
+- Don't use pure and @safe yet.
+- Make member functions const correct (i.e. getters should be const, if possible)
+- If a function uses a delegate but does not store it, make the delegate parameter a scope delegate. Otherwise, keep it unchanged
+- Most other things will be caught as compiler errors
+
+Other issues:
+- Tango code is an old code base... it sometimes uses outdated constructs. If you ever see a constant looking variable that is nonetheless typed 'static', change it to enum (I guess 'static' used to mean 'const' in D1).
+
+Porting procedure I follow:
+- Replace all consts by enums
+- Compile + modify the module until it compiles and passes the unit tests
+- For highly suspect cases, test with const and immutable parameters and see what happens (this is the case for text/array utility functions, for example)
+- Make the members const correct
+- Add the module to the ported_modules list
