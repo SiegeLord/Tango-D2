@@ -45,5 +45,6 @@ tango/text/convert/Layout.d
 tango/text/convert/Utf.d
 tango/text/xml/Document.d
 tango/text/xml/PullParser.d
+tango/time/Clock.d
 tango/time/StopWatch.d
 tango/time/Time.d

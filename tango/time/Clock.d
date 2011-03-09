@@ -35,7 +35,7 @@ private import  tango.core.Exception;
 struct Clock
 {
         // copied from Gregorian.  Used while we rely on OS for toDate.
-        package static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        package enum uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         package static void setDoy(ref DateTime dt)
         {
             uint doy = dt.date.day + DaysToMonthCommon[dt.date.month - 1];
@@ -86,7 +86,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static DateTime toDate (Time time)
+                static DateTime toDate (const(Time) time)
                 {
                         DateTime dt = void;
                         SYSTEMTIME sTime = void;
@@ -123,7 +123,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (ref DateTime dt)
+                static Time fromDate (ref const(DateTime) dt)
                 {
                         SYSTEMTIME sTime = void;
                         FILETIME   fTime = void;
@@ -147,7 +147,7 @@ struct Clock
 
                 ***************************************************************/
 
-                package static Time convert (FILETIME time)
+                package static Time convert (const(FILETIME) time)
                 {
                         auto t = *cast(long*) &time;
                         t *= 100 / TimeSpan.NanosecondsPerTick;
@@ -160,7 +160,7 @@ struct Clock
 
                 ***************************************************************/
 
-                package static FILETIME convert (Time dt)
+                package static FILETIME convert (const(Time) dt)
                 {
                         FILETIME time = void;
 
@@ -211,7 +211,7 @@ struct Clock
 
                 **************************************************************/
 
-                static DateTime toDate (Time time)
+                static DateTime toDate (const(Time) time)
                 {
                         DateTime dt = void;
                         auto timeval = convert (time);
@@ -248,7 +248,7 @@ struct Clock
 
                 ***************************************************************/
 
-                static Time fromDate (ref DateTime dt)
+                static Time fromDate (ref const(DateTime) dt)
                 {
                         tm t = void;
 
@@ -271,7 +271,7 @@ struct Clock
 
                 ***************************************************************/
 
-                package static Time convert (ref timeval tv)
+                package static Time convert (ref const(timeval) tv)
                 {
                         return Time.epoch1970 + 
                                TimeSpan.fromSeconds(tv.tv_sec) + 
@@ -284,7 +284,7 @@ struct Clock
 
                 ***************************************************************/
 
-                package static timeval convert (Time time)
+                package static timeval convert (const(Time) time)
                 {
                         timeval tv = void;
 
