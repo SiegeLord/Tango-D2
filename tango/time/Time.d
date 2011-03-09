@@ -83,17 +83,17 @@ struct TimeSpan
         /**
          * Minimum TimeSpan
          */
-        static const TimeSpan min = {long.min};
+        enum TimeSpan min = {long.min};
 
         /**
          * Maximum TimeSpan
          */
-        static const TimeSpan max = {long.max};
+        enum TimeSpan max = {long.max};
 
         /**
          * Zero TimeSpan.  Useful for comparisons.
          */
-        static const TimeSpan zero = {0};
+        enum TimeSpan zero = {0};
 
         /**
          * Get the number of ticks that this timespan represents.  This can be
@@ -104,7 +104,7 @@ struct TimeSpan
          * TimeSpan copyOfMyTimeSpan = TimeSpan(ticks);
          * --------
          */
-        long ticks()
+        const long ticks()
         {
                 return ticks_;
         }
@@ -112,7 +112,7 @@ struct TimeSpan
         /**
          * Determines whether two TimeSpan values are equal
          */
-        bool opEquals(TimeSpan t)
+        const bool opEquals(ref const(TimeSpan) t)
         {
                 return ticks_ is t.ticks_;
         }
@@ -120,7 +120,7 @@ struct TimeSpan
         /**
          * Compares this object against another TimeSpan value.
          */
-        int opCmp(TimeSpan t)
+        const int opCmp(const(TimeSpan) t)
         {
                 if (ticks_ < t.ticks_)
                     return -1;
@@ -137,7 +137,7 @@ struct TimeSpan
          * Params: t = A TimeSpan value to add
          * Returns: A TimeSpan value that is the sum of this instance and t.
          */
-        TimeSpan opAdd(TimeSpan t)
+        const TimeSpan opBinary(immutable(char)[] o : "+")(const(TimeSpan) t)
         {
                 return TimeSpan(ticks_ + t.ticks_);
         }
@@ -149,10 +149,10 @@ struct TimeSpan
          * Params: t = A TimeSpan value to add
          * Returns: a copy of this instance after adding t.
          */
-        TimeSpan opAddAssign(TimeSpan t)
+        TimeSpan opOpAssign(immutable(char)[] o : "+")(const(TimeSpan) t)
         {
                 ticks_ += t.ticks_;
-                return *this;
+                return this;
         }
 
         /**
@@ -162,7 +162,7 @@ struct TimeSpan
          * Returns: A new timespan which is the difference between this
          * instance and t
          */
-        TimeSpan opSub(TimeSpan t)
+        const TimeSpan opBinary(immutable(char)[] o : "-")(const(TimeSpan) t)
         {
                 return TimeSpan(ticks_ - t.ticks_);
         }
@@ -174,10 +174,10 @@ struct TimeSpan
          * Params: t = A TimeSpan to subtract
          * Returns: A copy of this instance after subtracting t.
          */
-        TimeSpan opSubAssign(TimeSpan t)
+        TimeSpan opOpAssign(immutable(char)[] o : "-")(const(TimeSpan) t)
         {
                 ticks_ -= t.ticks_;
-                return *this;
+                return this;
         }
 
         /**
@@ -190,7 +190,7 @@ struct TimeSpan
          * Params: v = A multiplier to use for scaling this time span.
          * Returns: A new TimeSpan that is scaled by v
          */
-        TimeSpan opMul(long v)
+        const TimeSpan opBinary(immutable(char)[] o : "*")(long v)
         {
                 return TimeSpan(ticks_ * v);
         }
@@ -201,10 +201,10 @@ struct TimeSpan
          * Params: v = A multipler to use for scaling
          * Returns: A copy of this instance after scaling
          */
-        TimeSpan opMulAssign(long v)
+        TimeSpan opOpAssign(immutable(char)[] o : "*")(long v)
         {
                 ticks_ *= v;
-                return *this;
+                return this;
         }
 
         /**
@@ -218,7 +218,7 @@ struct TimeSpan
          * Params: v = A divisor to use for scaling this time span.
          * Returns: A new TimeSpan that is divided by v
          */
-        TimeSpan opDiv(long v)
+        const TimeSpan opBinary(immutable(char)[] o : "/")(long v)
         {
                 return TimeSpan(ticks_ / v);
         }
@@ -229,10 +229,10 @@ struct TimeSpan
          * Params: v = A multipler to use for dividing
          * Returns: A copy of this instance after dividing
          */
-        TimeSpan opDivAssign(long v)
+        TimeSpan opOpAssign(immutable(char)[] o : "/")(long v)
         {
                 ticks_ /= v;
-                return *this;
+                return this;
         }
 
         /**
@@ -242,7 +242,7 @@ struct TimeSpan
          * Returns: The result of integer division between this instance and
          * t.
          */
-        long opDiv(TimeSpan t)
+        const long opBinary(immutable(char)[] o : "/")(const(TimeSpan) t)
         {
                 return ticks_ / t.ticks;
         }
@@ -252,7 +252,7 @@ struct TimeSpan
          *
          * Returns: The negative equivalent to this time span
          */
-        TimeSpan opNeg()
+        const TimeSpan opUnary(immutable(char)[] o : "-")()
         {
                 return TimeSpan(-ticks_);
         }
@@ -265,7 +265,7 @@ struct TimeSpan
          *
          * Returns: The number of nanoseconds that this TimeSpan represents.
          */
-        long nanos()
+        const long nanos()
         {
                 return ticks_ * NanosecondsPerTick;
         }
@@ -275,7 +275,7 @@ struct TimeSpan
          *
          * Returns: The number of microseconds that this TimeSpan represents.
          */
-        long micros()
+        const long micros()
         {
                 return ticks_ / TicksPerMicrosecond;
         }
@@ -285,7 +285,7 @@ struct TimeSpan
          *
          * Returns: The number of milliseconds that this TimeSpan represents.
          */
-        long millis()
+        const long millis()
         {
                 return ticks_ / TicksPerMillisecond;
         }
@@ -295,7 +295,7 @@ struct TimeSpan
          *
          * Returns: The number of seconds that this TimeSpan represents.
          */
-        long seconds()
+        const long seconds()
         {
                 return ticks_ / TicksPerSecond;
         }
@@ -305,7 +305,7 @@ struct TimeSpan
          *
          * Returns: The number of minutes that this TimeSpan represents.
          */
-        long minutes()
+        const long minutes()
         {
                 return ticks_ / TicksPerMinute;
         }
@@ -315,7 +315,7 @@ struct TimeSpan
          *
          * Returns: The number of hours that this TimeSpan represents.
          */
-        long hours()
+        const long hours()
         {
                 return ticks_ / TicksPerHour;
         }
@@ -325,7 +325,7 @@ struct TimeSpan
          *
          * Returns: The number of days that this TimeSpan represents.
          */
-        long days()
+        const long days()
         {
                 return ticks_ / TicksPerDay;
         }
@@ -339,7 +339,7 @@ struct TimeSpan
          * Returns: An interval representing the seconds and fractional
          * seconds that this TimeSpan represents.
          */
-        double interval()
+        const double interval()
         {
                 return (cast(double) ticks_) / TicksPerSecond;
         }
@@ -349,7 +349,7 @@ struct TimeSpan
          *
          * Returns: the TimeOfDay this TimeSpan represents.
          */
-        TimeOfDay time()
+        const TimeOfDay time()
         {
                 return TimeOfDay(ticks_);
         }
@@ -480,17 +480,17 @@ struct Time
         }
 
         /// Represents the smallest and largest Time value.
-        static const Time min       = {minimum},
-                          max       = {maximum};
+        enum Time min       = {minimum},
+                  max       = {maximum};
 
         /// Represents the epoch (1/1/0001)
-        static const Time epoch     = {0};
+        enum Time epoch     = {0};
 
         /// Represents the epoch of 1/1/1601 (Commonly used in Windows systems)
-        static const Time epoch1601 = {TimeSpan.Epoch1601};
+        enum Time epoch1601 = {TimeSpan.Epoch1601};
 
         /// Represents the epoch of 1/1/1970 (Commonly used in Unix systems)
-        static const Time epoch1970 = {TimeSpan.Epoch1970};
+        enum Time epoch1970 = {TimeSpan.Epoch1970};
 
         /**********************************************************************
 
@@ -509,7 +509,7 @@ struct Time
 
         **********************************************************************/
 
-        long ticks ()
+        const long ticks ()
         {
                 return ticks_;
         }
@@ -523,7 +523,7 @@ struct Time
 
         **********************************************************************/
 
-        int opEquals (Time t) 
+        const bool opEquals (ref const(Time) t) 
         {
                 return ticks_ is t.ticks_;
         }
@@ -534,7 +534,7 @@ struct Time
 
         **********************************************************************/
 
-        int opCmp (Time t) 
+        const int opCmp (const(Time) t) 
         {
                 if (ticks_ < t.ticks_)
                     return -1;
@@ -555,7 +555,7 @@ struct Time
 
         **********************************************************************/
 
-        Time opAdd (TimeSpan t) 
+        const Time opBinary(immutable(char)[] o : "+") (const(TimeSpan) t) 
         {
                 return Time (ticks_ + t.ticks_);
         }
@@ -571,10 +571,10 @@ struct Time
 
         **********************************************************************/
 
-        Time opAddAssign (TimeSpan t) 
+        Time opOpAssign(immutable(char)[] o : "+") (const(TimeSpan) t) 
         {
                 ticks_ += t.ticks_;
-                return *this;
+                return this;
         }
 
         /**********************************************************************
@@ -588,7 +588,7 @@ struct Time
 
         **********************************************************************/
 
-        Time opSub (TimeSpan t) 
+        const Time opBinary(immutable(char)[] o : "-") (const(TimeSpan) t) 
         {
                 return Time (ticks_ - t.ticks_);
         }
@@ -604,7 +604,7 @@ struct Time
 
         **********************************************************************/
 
-        TimeSpan opSub (Time t)
+        const TimeSpan opBinary(immutable(char)[] o : "-") (const(Time) t)
         {
                 return TimeSpan(ticks_ - t.ticks_);
         }
@@ -620,10 +620,10 @@ struct Time
 
         **********************************************************************/
 
-        Time opSubAssign (TimeSpan t) 
+        Time opOpAssign(immutable(char)[] o : "-") (const(TimeSpan) t) 
         {
                 ticks_ -= t.ticks_;
-                return *this;
+                return this;
         }
 
         /**********************************************************************
@@ -635,9 +635,9 @@ struct Time
 
         **********************************************************************/
 
-        Time date () 
+        const Time date () 
         {
-                return *this - TimeOfDay.modulo24(ticks_);
+                return this - TimeOfDay.modulo24(ticks_);
         }
 
         /**********************************************************************
@@ -649,7 +649,7 @@ struct Time
 
         **********************************************************************/
 
-        TimeOfDay time () 
+        const TimeOfDay time () 
         {
                 return TimeOfDay (ticks_);
         }
@@ -662,7 +662,7 @@ struct Time
 
         **********************************************************************/
 
-        TimeSpan span () 
+        const TimeSpan span () 
         {
                 return TimeSpan (ticks_);
         }
@@ -682,7 +682,7 @@ struct Time
 
         **********************************************************************/
 
-        TimeSpan unix()
+        const TimeSpan unix()
         {
                 return TimeSpan(ticks_ - epoch1970.ticks_);
         }
@@ -801,7 +801,7 @@ struct TimeOfDay
          * normalized, so the hours wrap.  If you pass in 25 hours, the
          * resulting TimeOfDay will have a hour component of 1.
          */
-        TimeSpan span ()
+        const TimeSpan span ()
         {
                 return TimeSpan.fromHours(hours) +
                        TimeSpan.fromMinutes(minutes) + 
@@ -887,6 +887,13 @@ debug (UnitTest)
                 assert (TimeSpan.fromMinutes(5000).time.minutes is 5000 % 60);
                 assert (TimeSpan.fromHours(23).time.hours is 23);
                 assert (TimeSpan.fromHours(5000).time.hours is 5000 % 24);
+
+                auto ts = TimeSpan.fromHours(20);
+                assert (TimeSpan.fromHours(10) + TimeSpan.fromHours(10) == ts);
+                assert (TimeSpan.fromHours(30) - TimeSpan.fromHours(10) == ts);
+                auto ts2 = TimeSpan.fromHours(10);
+                ts2 += TimeSpan.fromHours(10);
+                assert(ts2 == ts);
 
                 auto tod = TimeOfDay (25, 2, 3, 4);
                 tod = tod.span.time;
