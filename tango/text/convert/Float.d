@@ -424,7 +424,7 @@ version (float_dtoa)
         private extern(C)
         {
         // these should be linked in via dtoa.c
-        double strtod (char* s00, char** se);
+        double strtod (const(char*) s00, const(char*)* se);
         char*  dtoa (double d, int mode, int ndigits, int* decpt, int* sign, char** rve);
         }
 
@@ -435,9 +435,9 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (char[] src, uint* ate=null)
+        NumType parse (const(char[]) src, uint* ate=null)
         {
-                char* end;
+                const(char)* end;
 
                 auto value = strtod (src.ptr, &end);
                 assert (end <= src.ptr + src.length);
@@ -453,7 +453,7 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (wchar[] src, uint* ate=null)
+        NumType parse (const(wchar[]) src, uint* ate=null)
         {
                 // cheesy hack to avoid pre-parsing :: max digits == 100
                 char[100] tmp = void;
@@ -475,7 +475,7 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (dchar[] src, uint* ate=null)
+        NumType parse (const(dchar[]) src, uint* ate=null)
         {
                 // cheesy hack to avoid pre-parsing :: max digits == 100
                 char[100] tmp = void;
