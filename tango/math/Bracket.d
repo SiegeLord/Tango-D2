@@ -67,7 +67,7 @@ private:
  *             bounds have been obtained.
  */
 BracketResult!(T, R) findRoot(T,R)(scope R delegate(T) f, T ax, T bx, R fax, R fbx,
-    bool delegate(BracketResult!(T,R) r) tolerance)
+    scope bool delegate(BracketResult!(T,R) r) tolerance)
 in {
     assert(ax<=bx, "Parameters ax and bx out of order.");
     assert(ax<>=0 && bx<>=0, "Limits must not be NaN");
