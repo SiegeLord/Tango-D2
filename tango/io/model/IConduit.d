@@ -52,7 +52,7 @@ interface IConduit : InputStream, OutputStream
 
         ***********************************************************************/
 
-        abstract bool isAlive ();
+        abstract const bool isAlive ();
 
         /***********************************************************************
 

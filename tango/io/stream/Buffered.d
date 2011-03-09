@@ -610,7 +610,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t limit ()
+        final const size_t limit ()
         {
                 return extent;
         }
@@ -630,7 +630,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t capacity ()
+        final const size_t capacity ()
         {
                 return dimension;
         }
@@ -650,7 +650,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t position ()
+        final const size_t position ()
         {
                 return index;
         }
@@ -665,7 +665,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t readable ()
+        final const size_t readable ()
         {
                 return extent - index;
         }
@@ -813,7 +813,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        private final size_t writable ()
+        private final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -1046,7 +1046,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final size_t writable ()
+        final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -1066,7 +1066,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final size_t limit ()
+        final const size_t limit ()
         {
                 return extent;
         }
@@ -1086,7 +1086,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final size_t capacity ()
+        final const size_t capacity ()
         {
                 return dimension;
         }
@@ -1323,7 +1323,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final size_t readable ()
+        private final const size_t readable ()
         {
                 return extent - index;
         }

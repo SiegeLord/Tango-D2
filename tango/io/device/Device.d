@@ -57,7 +57,7 @@ class Device : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t bufferSize ()
+        override const size_t bufferSize ()
         {
                 return 1024 * 16;
         }
