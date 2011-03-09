@@ -48,3 +48,4 @@ tango/text/xml/PullParser.d
 tango/time/Clock.d
 tango/time/StopWatch.d
 tango/time/Time.d
+tango/time/WallClock.d

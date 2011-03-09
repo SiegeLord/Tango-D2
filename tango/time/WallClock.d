@@ -86,7 +86,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime toDate (Time utc)
+                static DateTime toDate (const(Time) utc)
                 {
                         return Clock.toDate (utc - localBias);
                 }
@@ -97,7 +97,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (ref DateTime date)
+                static Time fromDate (ref const(DateTime) date)
                 {
                         return (Clock.fromDate(date) + localBias);
                 }
@@ -191,7 +191,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static DateTime toDate (Time utc)
+                static DateTime toDate (const(Time) utc)
                 {
                         DateTime dt = void;
                         auto timeval = Clock.convert (utc);
@@ -219,7 +219,7 @@ struct WallClock
 
                 ***************************************************************/
 
-                static Time fromDate (ref DateTime dt)
+                static Time fromDate (ref const(DateTime) dt)
                 {
                         tm t = void;
 
@@ -240,7 +240,7 @@ struct WallClock
 
         ***********************************************************************/
         
-        static Time toLocal (Time utc)
+        static Time toLocal (const(Time) utc)
         {
                 auto mod = utc.ticks % TimeSpan.TicksPerMillisecond;
                 auto date=toDate(utc);
@@ -251,7 +251,7 @@ struct WallClock
 
         ***********************************************************************/
         
-        static Time toUtc (Time wall)
+        static Time toUtc (const(Time) wall)
         {
                 auto mod = wall.ticks % TimeSpan.TicksPerMillisecond;
                 auto date=Clock.toDate(wall);
