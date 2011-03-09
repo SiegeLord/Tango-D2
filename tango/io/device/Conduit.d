@@ -86,7 +86,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract size_t bufferSize ();
+        abstract const size_t bufferSize ();
 
         /***********************************************************************
 
@@ -142,7 +142,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        final uint timeout ()
+        final const uint timeout ()
         {
                 return duration;
         }
@@ -153,7 +153,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        bool isAlive ()
+        const bool isAlive ()
         {
                 return true;
         }

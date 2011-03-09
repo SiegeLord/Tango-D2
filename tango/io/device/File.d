@@ -197,7 +197,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadExisting = {Access.Read, Open.Exists};
+        enum Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
 
@@ -205,7 +205,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadShared = {Access.Read, Open.Exists, Share.Read};
+        enum Style ReadShared = {Access.Read, Open.Exists, Share.Read};
 
         /***********************************************************************
 
@@ -213,7 +213,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteExisting = {Access.Write, Open.Exists};
+        enum Style WriteExisting = {Access.Write, Open.Exists};
 
         /***********************************************************************
 
@@ -221,7 +221,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteCreate = {Access.Write, Open.Create};
+        enum Style WriteCreate = {Access.Write, Open.Create};
 
         /***********************************************************************
 
@@ -229,7 +229,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style WriteAppending = {Access.Write, Open.Append};
+        enum Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
         
@@ -237,7 +237,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
+        enum Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
 
         /***********************************************************************
         
@@ -245,7 +245,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
+        enum Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
 
         /***********************************************************************
         
@@ -253,7 +253,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
+        enum Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
 
 
         // the file we're working with 
@@ -295,7 +295,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        Style style ()
+        const Style style ()
         {
                 return style_;
         }
@@ -558,7 +558,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long position ()
+                const long position ()
                 {
                         return *cast(long*) &io.asynch.Offset;
                 }
@@ -569,7 +569,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 ***************************************************************/
 
-                long length ()
+                const long length ()
                 {
                         long len;
 
@@ -622,17 +622,17 @@ class File : Device, Device.Seek, Device.Truncate
                 {
                         alias int[] Flags;
 
-                        const O_LARGEFILE = 0x8000;
+                        enum O_LARGEFILE = 0x8000;
 
-                        static const Flags Access =
+                        enum Flags Access =  
                                         [
                                         0,                      // invalid
                                         O_RDONLY,
                                         O_WRONLY,
                                         O_RDWR,
                                         ];
-
-                        static const Flags Create =
+                                                
+                        enum Flags Create =  
                                         [
                                         0,                      // open existing
                                         O_CREAT | O_TRUNC,      // truncate always
@@ -641,7 +641,7 @@ class File : Device, Device.Seek, Device.Truncate
                                         O_CREAT | O_EXCL,       // can't exist
                                         ];
 
-                        static const short[] Locks =
+                        enum short[] Locks =   
                                         [
                                         F_WRLCK,                // no sharing
                                         F_RDLCK,                // shared read

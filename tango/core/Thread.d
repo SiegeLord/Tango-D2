@@ -755,7 +755,7 @@ class Thread
      * Returns:
      *  The name of this thread.
      */
-    final char[] name()
+    const final const(char[]) name()
     {
         synchronized( this )
         {
@@ -770,7 +770,7 @@ class Thread
      * Params:
      *  val = The new name of this thread.
      */
-    final void name( char[] val )
+    final void name( const(char[]) val )
     {
         synchronized( this )
         {
@@ -789,7 +789,7 @@ class Thread
      * Returns:
      *  true if this is a daemon thread.
      */
-    final bool isDaemon()
+    const final bool isDaemon()
     {
         synchronized( this )
         {
@@ -823,7 +823,7 @@ class Thread
      * Returns:
      *  true if the thread is running, false if not.
      */
-    final bool isRunning()
+    const final bool isRunning()
     {
         if( m_addr == m_addr.init )
         {
@@ -874,7 +874,7 @@ class Thread
      * Returns:
      *  The scheduling priority of this thread.
      */
-    final int priority()
+    const final int priority()
     {
         version( Win32 )
         {
@@ -1387,7 +1387,7 @@ private:
     }
     public ThreadAddr          m_addr;
     Call                m_call;
-    char[]              m_name;
+    const(char)[]       m_name;
     union
     {
         void function() m_fn;
@@ -3239,12 +3239,12 @@ class Fiber
      * Returns:
      *  The state of this fiber as an enumerated value.
      */
-    final State state()
+    const final State state()
     {
         return m_state;
     }
     
-    size_t stackSize(){
+    const size_t stackSize(){
         return m_size;
     }
 
