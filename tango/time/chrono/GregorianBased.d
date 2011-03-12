@@ -25,7 +25,7 @@ class GregorianBased : Gregorian {
 
   private EraRange[] eraRanges_;
   private int maxYear_, minYear_;
-  private int currentEra_ = -1;
+  /*private int currentEra_ = -1;*/
 
   this() 
   {
@@ -34,11 +34,11 @@ class GregorianBased : Gregorian {
     minYear_ = eraRanges_[0].minEraYear;
   }
 
-  public override Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
+  public override const Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
     year = getGregorianYear(year, era);
     return super.toTime(year, month, day, hour, minute, second, millisecond, era);
   }
-  public override uint getYear(Time time) {
+  public override const uint getYear(const(Time) time) {
     auto ticks = time.ticks;
     auto year = extractPart(time.ticks, DatePart.Year);
     foreach (EraRange eraRange; eraRanges_) {
@@ -48,7 +48,7 @@ class GregorianBased : Gregorian {
     throw new IllegalArgumentException("Value was out of range.");
   }
 
-  public override uint getEra(Time time) {
+  public override const uint getEra(const(Time) time) {
     auto ticks = time.ticks;
     foreach (EraRange eraRange; eraRanges_) {
       if (ticks >= eraRange.ticks)
@@ -57,14 +57,14 @@ class GregorianBased : Gregorian {
     throw new IllegalArgumentException("Value was out of range.");
   }
 
-  public override uint[] eras() {
+  public override const uint[] eras() {
     uint[] result;
     foreach (EraRange eraRange; eraRanges_)
       result ~= eraRange.era;
     return result;
   }
 
-  private uint getGregorianYear(uint year, uint era) {
+  private const uint getGregorianYear(uint year, uint era) {
     if (era == 0)
       era = currentEra;
     foreach (EraRange eraRange; eraRanges_) {
@@ -77,10 +77,11 @@ class GregorianBased : Gregorian {
     throw new IllegalArgumentException("Era value was not valid.");
   }
 
-  protected uint currentEra() {
-    if (currentEra_ == -1)
+  protected const uint currentEra() {
+    /*if (currentEra_ == -1)
       currentEra_ = EraRange.getCurrentEra(id);
-    return currentEra_;
+    return currentEra_;*/
+    return EraRange.getCurrentEra(id);
   }
 }
 
