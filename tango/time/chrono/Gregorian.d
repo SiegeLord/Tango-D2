@@ -34,7 +34,7 @@ class Gregorian : Calendar
         alias Calendar.toTime toTime;
 
         /// static shared instance
-        public static Gregorian generic;
+        public static __gshared Gregorian generic;
 
         enum Type 
         {
@@ -53,9 +53,9 @@ class Gregorian : Calendar
         */
         enum {AD_ERA = 1, BC_ERA = 2, MAX_YEAR = 9999};
 
-        private static final uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        private static enum uint[] DaysToMonthCommon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
-        private static final uint[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
+        private static enum uint[] DaysToMonthLeap   = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
         /**
         * create a generic instance of this calendar
@@ -87,7 +87,7 @@ class Gregorian : Calendar
         *   era = An integer representing the _era.
         * Returns: A Time set to the specified date and time.
         */
-        override Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era)
+        override const Time toTime (uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era)
         {
                 return Time (getDateTicks(year, month, day, era) + getTimeTicks(hour, minute, second)) + TimeSpan.fromMillis(millisecond);
         }
@@ -97,7 +97,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: A DayOfWeek value representing the day of the week of time.
         */
-        override DayOfWeek getDayOfWeek(Time time) 
+        override const DayOfWeek getDayOfWeek(const(Time) time) 
         {
                 auto ticks = time.ticks;
                 int offset = 1;
@@ -118,7 +118,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the day of the month of time.
         */
-        override uint getDayOfMonth(Time time) 
+        override const uint getDayOfMonth(const(Time) time) 
         {
                 return extractPart(time.ticks, DatePart.Day);
         }
@@ -128,7 +128,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the day of the year of time.
         */
-        override uint getDayOfYear(Time time) 
+        override const uint getDayOfYear(const(Time) time) 
         {
                 return extractPart(time.ticks, DatePart.DayOfYear);
         }
@@ -138,7 +138,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the month in time.
         */
-        override uint getMonth(Time time) 
+        override const uint getMonth(const(Time) time) 
         {
                 return extractPart(time.ticks, DatePart.Month);
         }
@@ -148,7 +148,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the year in time.
         */
-        override uint getYear(Time time) 
+        override const uint getYear(const(Time) time) 
         {
                 return extractPart(time.ticks, DatePart.Year);
         }
@@ -158,7 +158,7 @@ class Gregorian : Calendar
         * Params: time = A Time value.
         * Returns: An integer representing the era in time.
         */
-        override uint getEra(Time time) 
+        override const uint getEra(const(Time) time) 
         {
                 if(time < time.epoch)
                         return BC_ERA;
@@ -174,7 +174,7 @@ class Gregorian : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year and _month of the specified _era.
         */
-        override uint getDaysInMonth(uint year, uint month, uint era) 
+        override const uint getDaysInMonth(uint year, uint month, uint era) 
         {
                 //
                 // verify args.  isLeapYear verifies the year is valid.
@@ -192,7 +192,7 @@ class Gregorian : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of days in the specified _year in the specified _era.
         */
-        override uint getDaysInYear(uint year, uint era) 
+        override const uint getDaysInYear(uint year, uint era) 
         {
                 return isLeapYear(year, era) ? 366 : 365;
         }
@@ -204,7 +204,7 @@ class Gregorian : Calendar
         *   era = An integer representing the _era.
         * Returns: The number of months in the specified _year in the specified _era.
         */
-        override uint getMonthsInYear(uint year, uint era) 
+        override const uint getMonthsInYear(uint year, uint era) 
         {
                 return 12;
         }
@@ -215,7 +215,7 @@ class Gregorian : Calendar
         * Params: era = An integer representing the _era.
         * Returns: true is the specified _year is a leap _year; otherwise, false.
         */
-        override bool isLeapYear(uint year, uint era) 
+        override const bool isLeapYear(uint year, uint era) 
         {
                 return staticIsLeapYear(year, era);
         }
@@ -224,7 +224,7 @@ class Gregorian : Calendar
         * $(I Property.) Retrieves the GregorianTypes value indicating the language version of the Gregorian.
         * Returns: The Gregorian.Type value indicating the language version of the Gregorian.
         */
-        Type calendarType() 
+        const Type calendarType() 
         {
                 return type_;
         }
@@ -233,7 +233,7 @@ class Gregorian : Calendar
         * $(I Property.) Overridden. Retrieves the list of eras in the current calendar.
         * Returns: An integer array representing the eras in the current calendar.
         */
-        override uint[] eras() 
+        override const uint[] eras() 
         {       
                 uint[] tmp = [AD_ERA, BC_ERA];
                 return tmp.dup;
@@ -243,7 +243,7 @@ class Gregorian : Calendar
         * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
         * Returns: An integer representing the identifier of the current calendar.
         */
-        override uint id() 
+        override const uint id() 
         {
                 return cast(int) type_;
         }
@@ -254,7 +254,7 @@ class Gregorian : Calendar
          * given components.  Note that this doesn't handle the time of day,
          * as that is calculated directly from the Time struct.
          */
-        override void split(Time time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
+        override const void split(const(Time) time, ref uint year, ref uint month, ref uint day, ref uint doy, ref uint dow, ref uint era)
         {
             splitDate(time.ticks, year, month, day, doy, era);
             dow = getDayOfWeek(time);
@@ -281,7 +281,7 @@ class Gregorian : Calendar
          * Returns: A Time that represents the provided time with the number
          * of months added.
          */
-        override Time addMonths(Time t, int nMonths, bool truncateDay=false)
+        override const Time addMonths(const(Time) t, int nMonths, bool truncateDay=false)
         {
                 //
                 // We know all years are 12 months, so use the to/from date
@@ -338,7 +338,7 @@ class Gregorian : Calendar
          * Returns: A Time that represents the provided time with the number
          * of years added.
          */
-        override Time addYears(Time t, int nYears)
+        override const Time addYears(const(Time) t, int nYears)
         {
                 return addMonths(t, nYears * 12);
         }
@@ -464,9 +464,9 @@ class Gregorian : Calendar
                 return false;
         }
 
-        package static void argumentError(char[] str)
+        package static void argumentError(const(char[]) str)
         {
-                throw new IllegalArgumentException(str);
+                throw new IllegalArgumentException(str.idup);
         }
 }
 
