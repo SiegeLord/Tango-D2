@@ -25,7 +25,7 @@ public class ThaiBuddhist : GregorianBased {
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
    * Returns: An integer representing the identifier of the current calendar.
    */
-  public override uint id() {
+  public override const uint id() {
     return THAI;
   }
 
