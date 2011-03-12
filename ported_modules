@@ -48,6 +48,7 @@ tango/text/xml/PullParser.d
 tango/time/chrono/Calendar.d
 tango/time/chrono/Gregorian.d
 tango/time/chrono/GregorianBased.d
+tango/time/chrono/Hebrew.d
 tango/time/Clock.d
 tango/time/StopWatch.d
 tango/time/Time.d
