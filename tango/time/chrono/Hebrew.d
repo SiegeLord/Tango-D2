@@ -25,7 +25,7 @@ private import tango.time.chrono.Calendar;
  */
 public class Hebrew : Calendar {
 
-  private const uint[14][7] MonthDays = [
+  private enum uint[14][7] MonthDays = [
     // month                                                    // year type
     [ 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  ], 
     [ 0, 30, 29, 29, 29, 30, 29, 0,  30, 29, 30, 29, 30, 29 ],  // 1
@@ -36,15 +36,15 @@ public class Hebrew : Calendar {
     [ 0, 30, 30, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29 ]   // 6
   ];
 
-  private const uint YearOfOneAD = 3760;
-  private const uint DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
+  private enum uint YearOfOneAD = 3760;
+  private enum uint DaysToOneAD = cast(int)(YearOfOneAD * 365.2735);
 
-  private const uint PartsPerHour = 1080;
-  private const uint PartsPerDay = 24 * PartsPerHour;
-  private const uint DaysPerMonth = 29;
-  private const uint DaysPerMonthFraction = 12 * PartsPerHour + 793;
-  private const uint PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
-  private const uint FirstNewMoon = 11 * PartsPerHour + 204;
+  private enum uint PartsPerHour = 1080;
+  private enum uint PartsPerDay = 24 * PartsPerHour;
+  private enum uint DaysPerMonth = 29;
+  private enum uint DaysPerMonthFraction = 12 * PartsPerHour + 793;
+  private enum uint PartsPerMonth = DaysPerMonth * PartsPerDay + DaysPerMonthFraction;
+  private enum uint FirstNewMoon = 11 * PartsPerHour + 204;
 
   private uint minYear_ = YearOfOneAD + 1583;
   private uint maxYear_ = YearOfOneAD + 2240;
@@ -52,7 +52,7 @@ public class Hebrew : Calendar {
   /**
    * Represents the current era.
    */
-  public const uint HEBREW_ERA = 1;
+  public enum uint HEBREW_ERA = 1;
 
   /**
    * Overridden. Returns a Time value set to the specified date and time in the specified _era.
@@ -67,7 +67,7 @@ public class Hebrew : Calendar {
    *   era = An integer representing the _era.
    * Returns: A Time set to the specified date and time.
    */
-  public override Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
+  public override const Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
     checkYear(year, era);
     return getGregorianTime(year, month, day, hour, minute, second, millisecond);
   }
@@ -77,7 +77,7 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: A DayOfWeek value representing the day of the week of time.
    */
-  public override DayOfWeek getDayOfWeek(Time time) {
+  public override const DayOfWeek getDayOfWeek(const(Time) time) {
     return cast(DayOfWeek) cast(uint) ((time.ticks / TimeSpan.TicksPerDay + 1) % 7);
   }
 
@@ -86,7 +86,7 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the day of the month of time.
    */
-  public override uint getDayOfMonth(Time time) {
+  public override const uint getDayOfMonth(const(Time) time) {
     auto year = getYear(time);
     auto yearType = getYearType(year);
     auto days = getStartOfYear(year) - DaysToOneAD;
@@ -104,7 +104,7 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the day of the year of time.
    */
-  public override uint getDayOfYear(Time time) {
+  public override const uint getDayOfYear(const(Time) time) {
     auto year = getYear(time);
     auto days = getStartOfYear(year) - DaysToOneAD;
     return (cast(uint)(time.ticks / TimeSpan.TicksPerDay) - days) + 1;
@@ -115,7 +115,7 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the month in time.
    */
-  public override uint getMonth(Time time) {
+  public override const uint getMonth(const(Time) time) {
     auto year = getYear(time);
     auto yearType = getYearType(year);
     auto days = getStartOfYear(year) - DaysToOneAD;
@@ -133,9 +133,9 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the year in time.
    */
-  public override uint getYear(Time time) {
+  public override const uint getYear(const(Time) time) {
     auto day = cast(uint)(time.ticks / TimeSpan.TicksPerDay) + DaysToOneAD;
-    auto low = minYear_, high = maxYear_;
+    uint low = minYear_, high = maxYear_;
     // Perform a binary search.
     while (low <= high) {
       auto mid = low + (high - low) / 2;
@@ -155,7 +155,7 @@ public class Hebrew : Calendar {
    * Params: time = A Time value.
    * Returns: An integer representing the ear in time.
    */
-  public override uint getEra(Time time) {
+  public override const uint getEra(const(Time) time) {
     return HEBREW_ERA;
   }
 
@@ -167,7 +167,7 @@ public class Hebrew : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of days in the specified _year and _month of the specified _era.
    */
-  public override uint getDaysInMonth(uint year, uint month, uint era) {
+  public override const uint getDaysInMonth(uint year, uint month, uint era) {
     checkYear(year, era);
     return MonthDays[getYearType(year)][month];
   }
@@ -179,7 +179,7 @@ public class Hebrew : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of days in the specified _year in the specified _era.
    */
-  public override uint getDaysInYear(uint year, uint era) {
+  public override const uint getDaysInYear(uint year, uint era) {
     return getStartOfYear(year + 1) - getStartOfYear(year);
   }
 
@@ -190,7 +190,7 @@ public class Hebrew : Calendar {
    *   era = An integer representing the _era.
    * Returns: The number of months in the specified _year in the specified _era.
    */
-  public override uint getMonthsInYear(uint year, uint era) {
+  public override const uint getMonthsInYear(uint year, uint era) {
     return isLeapYear(year, era) ? 13 : 12;
   }
 
@@ -200,7 +200,7 @@ public class Hebrew : Calendar {
    * Params: era = An integer representing the _era.
    * Returns: true is the specified _year is a leap _year; otherwise, false.
    */
-  public override bool isLeapYear(uint year, uint era) {
+  public override const bool isLeapYear(uint year, uint era) {
     checkYear(year, era);
     // true if year % 19 == 0, 3, 6, 8, 11, 14, 17
     return ((7 * year + 1) % 19) < 7;
@@ -210,7 +210,7 @@ public class Hebrew : Calendar {
    * $(I Property.) Overridden. Retrieves the list of eras in the current calendar.
    * Returns: An integer array representing the eras in the current calendar.
    */
-  public override uint[] eras() {
+  public override const uint[] eras() {
         auto tmp = [HEBREW_ERA];
         return tmp.dup;
   }
@@ -219,16 +219,16 @@ public class Hebrew : Calendar {
    * $(I Property.) Overridden. Retrieves the identifier associated with the current calendar.
    * Returns: An integer representing the identifier of the current calendar.
    */
-  public override uint id() {
+  public override const uint id() {
     return HEBREW;
   }
 
-  private void checkYear(uint year, uint era) {
+  private const void checkYear(uint year, uint era) {
     if ((era != CURRENT_ERA && era != HEBREW_ERA) || (year > maxYear_ || year < minYear_))
       throw new IllegalArgumentException("Value was out of range.");
   }
 
-  private uint getYearType(uint year) {
+  private const uint getYearType(uint year) {
     int yearLength = getStartOfYear(year + 1) - getStartOfYear(year);
     if (yearLength > 380)
       yearLength -= 30;
@@ -258,7 +258,7 @@ public class Hebrew : Calendar {
     throw new IllegalArgumentException("Value was not valid.");
   }
 
-  private uint getStartOfYear(uint year) {
+  private const uint getStartOfYear(uint year) {
     auto months = (235 * year - 234) / 19;
     auto fraction = months * DaysPerMonthFraction + FirstNewMoon;
     auto day = months * 29 + (fraction / PartsPerDay);
@@ -276,7 +276,7 @@ public class Hebrew : Calendar {
     return day;
   }
 
-  private Time getGregorianTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond) {
+  private const Time getGregorianTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond) {
     auto yearType = getYearType(year);
     auto days = getStartOfYear(year) - DaysToOneAD + day - 1;
     for (int i = 1; i <= month; i++)
