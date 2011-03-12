@@ -25,13 +25,14 @@ class GregorianBased : Gregorian {
 
   private EraRange[] eraRanges_;
   private int maxYear_, minYear_;
-  /*private int currentEra_ = -1;*/
+  private int currentEra_ = -1;
 
   this() 
   {
     eraRanges_ = EraRange.getEraRanges(id);
     maxYear_ = eraRanges_[0].maxEraYear;
     minYear_ = eraRanges_[0].minEraYear;
+    currentEra_ = EraRange.getCurrentEra(id);
   }
 
   public override const Time toTime(uint year, uint month, uint day, uint hour, uint minute, uint second, uint millisecond, uint era) {
@@ -78,10 +79,7 @@ class GregorianBased : Gregorian {
   }
 
   protected const uint currentEra() {
-    /*if (currentEra_ == -1)
-      currentEra_ = EraRange.getCurrentEra(id);
-    return currentEra_;*/
-    return EraRange.getCurrentEra(id);
+    return currentEra_;
   }
 }
 
