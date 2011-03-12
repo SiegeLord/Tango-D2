@@ -53,6 +53,7 @@ tango/time/chrono/Hijri.d
 tango/time/chrono/Japanese.d
 tango/time/chrono/Korean.d
 tango/time/chrono/Taiwan.d
+tango/time/chrono/ThaiBuddhist.d
 tango/time/Clock.d
 tango/time/StopWatch.d
 tango/time/Time.d
