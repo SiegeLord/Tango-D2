@@ -51,7 +51,7 @@ public struct ExtendedDate {
     * Do not use val.year directly unless you are absolutely sure that it is in
     * the range a Time can hold (-10000 to 9999).
     */
-   int year()
+   const int year()
    out(val) {
       assert (  (val >= -1_000_000_000 && val <=          -1)
              || (val >=              1 && val <= 999_999_999));
@@ -82,7 +82,7 @@ public struct ExtendedDate {
    /** Returns the seconds part of the date: may be 60 if a leap second
     * occurred. In such a case, val's seconds part is 59.
     */
-   uint seconds() { return val.time.seconds + ((mask >>> 0) & 1); }
+   const uint seconds() { return val.time.seconds + ((mask >>> 0) & 1); }
    alias seconds secs, second, sec;
 
    /** Whether the ISO 8601 representation of this hour is 24 or 00: whether
@@ -91,7 +91,7 @@ public struct ExtendedDate {
     *
     * If the time of val is not exactly 00:00:00.000, this value is undefined.
     */
-   bool endOfDay() { return 1 ==              ((mask >>> 1) & 1); }
+   const bool endOfDay() { return 1 ==              ((mask >>> 1) & 1); }
 
    private void setLeap    () { mask |= 1 << 0; }
    private void setEndOfDay() { mask |= 1 << 1; }
@@ -173,7 +173,7 @@ private size_t doIso8601Date(T)(
 
    size_t eaten() { return p - src.ptr; }
    size_t remaining() { return src.length - eaten(); }
-   bool done(T[] s) { return .done(eaten(), src.length, p, s); }
+   bool done(const(T[]) s) { return .done(eaten(), src.length, p, s); }
 
    if (!parseYear(p, src.length, expanded, fd))
       return 0;
@@ -370,7 +370,7 @@ private size_t doIso8601Time(T)(
 ) {
    size_t eaten() { return p - src.ptr; }
    size_t remaining() { return src.length - eaten(); }
-   bool done(T[] s) { return .done(eaten(), src.length, p, s); }
+   bool done(const(T[]) s) { return .done(eaten(), src.length, p, s); }
    bool checkColon() { return .checkColon(p, separators); }
 
    byte getTimeZone() { return .getTimeZone(p, remaining(), fd, separators, &done); }
@@ -741,7 +741,7 @@ byte getDecimal(T)(ref T* p, size_t len, ref FullDate fd, ubyte which) {
 // the DT is always UTC, so this just adds the offset to the date fields
 // another option would be to add time zone fields to DT and have this fill them
 
-byte getTimeZone(T)(ref T* p, size_t len, ref FullDate fd, ubyte separators, bool delegate(T[]) done) {
+byte getTimeZone(T)(ref const(T)* p, size_t len, ref FullDate fd, ubyte separators, bool delegate(const(T[])) done) {
    bool checkColon() { return .checkColon(p, separators); }
 
    if (len == 0)
@@ -817,7 +817,7 @@ bool demand(T)(ref T* p, char c) {
    return (*p++ == c);
 }
 
-bool done(T)(size_t eaten, size_t srcLen, T* p, T[] s) {
+bool done(T)(size_t eaten, size_t srcLen, const(T*) p, const(T[]) s) {
    if (eaten == srcLen)
       return true;
 
@@ -890,13 +890,13 @@ void addSecs  (ref FullDate d, int n) { d.val += TimeSpan.fromSeconds(n); }
 void addMs    (ref FullDate d, int n) { d.val += TimeSpan.fromMillis (n); }
 
 // years and secs always just get the DT value
-int years (FullDate d) { return Gregorian.generic.getYear      (d.val); }
-int months(FullDate d) { return Gregorian.generic.getMonth     (d.val); }
-int days  (FullDate d) { return Gregorian.generic.getDayOfMonth(d.val); }
-int hours (FullDate d) { return d.val.time.hours;   }
-int mins  (FullDate d) { return d.val.time.minutes; }
-int secs  (FullDate d) { return d.val.time.seconds; }
-int ms    (FullDate d) { return d.val.time.millis;  }
+int years (const(FullDate) d) { return Gregorian.generic.getYear      (d.val); }
+int months(const(FullDate) d) { return Gregorian.generic.getMonth     (d.val); }
+int days  (const(FullDate) d) { return Gregorian.generic.getDayOfMonth(d.val); }
+int hours (const(FullDate) d) { return d.val.time.hours;   }
+int mins  (const(FullDate) d) { return d.val.time.minutes; }
+int secs  (const(FullDate) d) { return d.val.time.seconds; }
+int ms    (const(FullDate) d) { return d.val.time.millis;  }
 
 ////////////////////
 
@@ -912,7 +912,7 @@ debug (UnitTest) {
 
       // date
 
-      size_t d(char[] s, ubyte e = 0) {
+      size_t d(const(char[]) s, ubyte e = 0) {
          fd = fd.init;
          return parseDate(s, fd, e);
       }
@@ -1230,7 +1230,7 @@ debug (UnitTest) {
 
       // time
 
-      size_t t(char[] s) {
+      size_t t(const(char[]) s) {
          fd = fd.init;
          return parseTime(s, fd);
       }
@@ -1389,7 +1389,7 @@ debug (UnitTest) {
 
       // date and time together
 
-      size_t b(char[] s) {
+      size_t b(const(char[]) s) {
          fd = fd.init;
          return parseDateAndTime(s, fd);
       }
@@ -1501,7 +1501,7 @@ debug (UnitTest) {
       // unimplemented: intervals, durations, recurring intervals
 
       debug (Tango_ISO8601_Valgrind) {
-         size_t valgrind(size_t delegate(char[]) f, char[] s) {
+         size_t valgrind(size_t delegate(const(char[])) f, const(char[]) s) {
             auto p = cast(char*)malloc(s.length);
             auto ps = p[0..s.length];
             ps[] = s[];
@@ -1509,12 +1509,12 @@ debug (UnitTest) {
             free(p);
             return result;
          }
-         size_t vd(char[] s) {
-            size_t date(char[] ss) { return d(ss); }
+         size_t vd(const(char[]) s) {
+            size_t date(const(char[]) ss) { return d(ss); }
             return valgrind(&date, s);
          }
-         size_t vt(char[] s) { return valgrind(&t, s); }
-         size_t vb(char[] s) { return valgrind(&b, s); }
+         size_t vt(const(char[]) s) { return valgrind(&t, s); }
+         size_t vb(const(char[]) s) { return valgrind(&b, s); }
 
          assert (vd("1") == 0);
          assert (vd("19") == 2);
