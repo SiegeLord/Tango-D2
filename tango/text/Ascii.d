@@ -17,61 +17,71 @@ module tango.text.Ascii;
 
 version (Win32)
         {
-        private extern (C) int memicmp (char *, char *, uint);
-        private extern (C) int memcmp (char *, char *, uint);
+        private extern (C) int memicmp (in char *, in char *, uint);
+        private extern (C) int memcmp (in char *, in char *, uint);
         }
 
 version (Posix)
         {
-        private extern (C) int memcmp (char *, char *, uint);
-        private extern (C) int strncasecmp (char *, char*, uint);
+        private extern (C) int memcmp (in char *, in char *, uint);
+        private extern (C) int strncasecmp (in char *, in char*, uint);
         private alias strncasecmp memicmp;
         }
 
 /******************************************************************************
 
-        Convert to lowercase. Returns the converted content in dst,
-        performing an in-place conversion if dst is null
+        Convert to lowercase in-place.
 
 ******************************************************************************/
 
-char[] toLower (char[] src, char[] dst = null)
+char[] toLower (char[] src)
 {
-        if (dst.ptr)
-           {
-           assert (dst.length >= src.length);
-           dst[0 .. src.length] = src [0 .. $];
-           }
-        else
-           dst = src;
-        
-        foreach (ref c; dst)
+        foreach (ref c; src)
                  if (c>= 'A' && c <= 'Z')
                      c = cast(char)(c + 32);
-        return dst [0  .. src.length];
+        return src;
 }
 
 /******************************************************************************
 
-        Convert to uppercase. Returns the converted content in dst,
-        performing an in-place conversion if dst is null
+        Convert to lowercase. Returns the converted content in dst.
 
 ******************************************************************************/
 
-char[] toUpper (char[] src, char[] dst = null)
+char[] toLower (const(char[]) src, char[] dst)
 {
-        if (dst.ptr)
-           {
-           assert (dst.length >= src.length);
-           dst[0 .. src.length] = src [0 .. $];
-           }
-        else
-           dst = src;
-        
-        foreach (ref c; dst)
+        assert (dst.length >= src.length);
+        dst[0 .. src.length] = src [0 .. $];
+
+        return toLower(dst [0  .. src.length]);
+}
+
+/******************************************************************************
+
+        Convert to uppercase in-place.
+
+******************************************************************************/
+
+char[] toUpper (char[] src)
+{
+        foreach (ref c; src)
                  if (c>= 'a' && c <= 'z')
                      c = cast(char)(c - 32);
-        return dst[0 .. src.length];
+        return src;
+}
+
+/******************************************************************************
+
+        Convert to uppercase. Returns the converted content in dst.
+
+******************************************************************************/
+
+char[] toUpper (const(char[]) src, char[] dst)
+{
+        assert (dst.length >= src.length);
+        dst[0 .. src.length] = src [0 .. $];
+
+        return toUpper(dst [0  .. src.length]);
 }
 
 /******************************************************************************
@@ -80,7 +90,7 @@ char[] toUpper (char[] src, char[] dst = null)
         
 ******************************************************************************/
 
-int icompare (char[] s1, char[] s2)
+int icompare (const(char[]) s1, const(char[]) s2)
 {
         auto len = s1.length;
         if (s2.length < len)
@@ -100,7 +110,7 @@ int icompare (char[] s1, char[] s2)
         
 ******************************************************************************/
 
-int compare (char[] s1, char[] s2)
+int compare (const(char[]) s1, const(char[]) s2)
 {
         auto len = s1.length;
         if (s2.length < len)
@@ -124,9 +134,9 @@ int compare (char[] s1, char[] s2)
         
 ******************************************************************************/
 
-static int isearch (in char[] src, in char[] pattern)
+int isearch (in char[] src, in char[] pattern)
 {
-        static  char[] _caseMap = 
+        enum  char[] _caseMap = 
                 [ 
                 '\000','\001','\002','\003','\004','\005','\006','\007',
                 '\010','\011','\012','\013','\014','\015','\016','\017',
