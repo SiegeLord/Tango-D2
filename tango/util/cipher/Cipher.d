@@ -8,15 +8,13 @@ module tango.util.cipher.Cipher;
 
 private import tango.core.Exception : IllegalArgumentException;
 
-alias char[] string;
-
 /** Base symmetric cipher class */
 abstract class Cipher
 {
     interface Parameters {}
 
-    static const bool ENCRYPT = true,
-                      DECRYPT = false;
+    enum bool ENCRYPT = true,
+              DECRYPT = false;
                       
     protected bool _initialized,
                    _encrypt;
@@ -31,10 +29,10 @@ abstract class Cipher
      *
      * Returns: The amount of encrypted data processed.
      */
-    abstract uint update(void[] input_, void[] output_);
+    abstract uint update(const(void[]) input_, void[] output_);
     
     /** Returns: The name of the algorithm of this cipher. */
-    abstract string name();
+    abstract const(char)[] name();
     
     /** Reset cipher to its state immediately subsequent the last init. */
     abstract void reset();
@@ -45,13 +43,13 @@ abstract class Cipher
      * Params:
      *     msg = message to associate with the exception
      */
-    static void invalid (char[] msg)
+    static void invalid (const(char[]) msg)
     {
-        throw new IllegalArgumentException (msg);
+        throw new IllegalArgumentException (msg.idup);
     }
      
     /** Returns: Whether or not the cipher has been initialized. */
-    final bool initialized()
+    final const bool initialized()
     {
         return _initialized;
     }
@@ -63,7 +61,7 @@ abstract class Cipher
 abstract class BlockCipher : Cipher
 {
     /** Returns: The block size in bytes that this cipher will operate on. */
-    abstract uint blockSize();
+    abstract const uint blockSize();
 }
 
 
@@ -86,7 +84,7 @@ abstract class StreamCipher : Cipher
  abstract class BlockCipherPadding
  {
     /** Returns: The name of the padding scheme implemented. */
-    abstract string name();
+    abstract const(char)[] name();
 
     /**
     * Generate padding to a specific length.
@@ -109,7 +107,7 @@ abstract class StreamCipher : Cipher
     * Throws: dcrypt.crypto.errors.InvalidPaddingError if 
     *         pad length cannot be discerned.
     */
-    abstract uint unpad(void[] input_);
+    abstract uint unpad(const(void[]) input_);
  }
 
 
@@ -117,28 +115,19 @@ abstract class StreamCipher : Cipher
 /** Object representing and wrapping a symmetric key in bytes. */
 class SymmetricKey : Cipher.Parameters
 {
-    private ubyte[] _key;
+    private const(ubyte)[] _key;
     
     /**
      * Params:
      *     key = Key to be held.
      */
-    this(void[] key=null)
+    this(const(void[]) key=null)
     {
-        _key = cast(ubyte[]) key;
-    }
-    
-    /** Play nice with D2's idea of const. */
-    version (D_Version2)
-    {
-        this (string key)
-        {
-            this(cast(ubyte[])key);
-        }
+        _key = cast(const(ubyte)[]) key;
     }
     
     /** Returns: Key in ubytes held by this object. */
-    ubyte[] key()
+    const const(ubyte)[] key()
     {
         return _key;
     }
@@ -150,9 +139,9 @@ class SymmetricKey : Cipher.Parameters
      *     newKey = New key to be held.
      * Returns: The new key.
      */
-    ubyte[] key(void[] newKey)
+    const(ubyte)[] key(const(void[]) newKey)
     {
-        return _key = cast(ubyte[]) newKey;
+        return _key = cast(const(ubyte)[]) newKey;
     }
 }
 
@@ -160,7 +149,7 @@ class SymmetricKey : Cipher.Parameters
 /** Wrap cipher parameters and IV. */
 class ParametersWithIV : Cipher.Parameters
 {
-    private ubyte[] _iv;
+    private const(ubyte)[] _iv;
     private Cipher.Parameters _params;
     
     /**
@@ -168,14 +157,14 @@ class ParametersWithIV : Cipher.Parameters
      *     params = Parameters to wrap.
      *     iv     = IV to be held.
      */
-    this (Cipher.Parameters params=null, void[] iv=null)
+    this (Cipher.Parameters params=null, const(void[]) iv=null)
     {
         _params = params;
-        _iv = cast(ubyte[]) iv;
+        _iv = cast(const(ubyte)[]) iv;
     }
     
     /** Returns: The IV. */
-    ubyte[] iv()
+    const const(ubyte)[] iv()
     {
         return _iv;
     }
@@ -187,13 +176,13 @@ class ParametersWithIV : Cipher.Parameters
      *     newIV = The new IV for this parameter object.
      * Returns: The new IV.
      */
-    ubyte[] iv(void[] newIV)
+    const(ubyte)[] iv(const(void[]) newIV)
     {
-        return _iv = cast(ubyte[]) newIV;
+        return _iv = cast(const(ubyte)[]) newIV;
     }
     
     /** Returns: The parameters for this object. */
-    Cipher.Parameters parameters()
+    const const(Cipher.Parameters) parameters()
     {
         return _params;
     }
@@ -239,8 +228,8 @@ struct Bitwise
 /** Converts between integral types and unsigned byte arrays */
 struct ByteConverter
 {
-    private static string hexits = "0123456789abcdef";
-    private static string base32digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    private enum immutable(char)[] hexits = "0123456789abcdef";
+    private enum immutable(char)[] base32digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     
     /** Conversions between little endian integrals and bytes */
     struct LittleEndian
@@ -255,9 +244,9 @@ struct ByteConverter
          *     A integral of type T created with the supplied bytes placed
          *     in the specified byte order.
          */
-        static T to(T)(void[] x_)
+        static T to(T)(const(void[]) x_)
         {
-            ubyte[] x = cast(ubyte[])x_;
+            const(ubyte[]) x = cast(const(ubyte[]))x_;
             
             T result = ((cast(T)x[0])       |
                        ((cast(T)x[1]) << 8));
@@ -318,9 +307,9 @@ struct ByteConverter
     struct BigEndian
     {
         
-        static T to(T)(void[] x_)
+        static T to(T)(const(void[]) x_)
         {
-            ubyte[] x = cast(ubyte[])x_;
+            const(ubyte[]) x = cast(const(ubyte[]))x_;
             
             static if (is(T == ushort) || is(T == short))
             {
@@ -379,9 +368,9 @@ struct ByteConverter
         }
     }
 
-    static string hexEncode(void[] input_)
+    static char[] hexEncode(const(void[]) input_)
     {
-        ubyte[] input = cast(ubyte[])input_;
+        const(ubyte[]) input = cast(const(ubyte[]))input_;
         char[] output = new char[input.length<<1];
         
         int i = 0;
@@ -391,14 +380,14 @@ struct ByteConverter
             output[i++] = hexits[j&0xf];
         }
         
-        return cast(string)output;    
+        return output;    
     }
     
-    static string base32Encode(void[] input_, bool doPad=true)
+    static char[] base32Encode(const(void[]) input_, bool doPad=true)
     {
         if (!input_)
-            return "";
-        ubyte[] input = cast(ubyte[])input_;
+            return "".dup;
+        const(ubyte[]) input = cast(const(ubyte[]))input_;
         char[] output;
         auto inputbits = input.length*8;
         auto inputquantas = inputbits / 40;
@@ -412,7 +401,7 @@ struct ByteConverter
         ubyte remainlen;
         foreach (ubyte j; input)
         {
-            remainder = (remainder<<8) | j;
+            remainder = cast(ushort)(remainder<<8) | j;
             remainlen += 8;
             while (remainlen > 5) {
                 output[i++] = base32digits[(remainder>>(remainlen-5))&0b11111];
@@ -428,9 +417,9 @@ struct ByteConverter
         return output[0..i];
     }
 
-    static ubyte[] hexDecode(string input)
+    static ubyte[] hexDecode(const(char[]) input)
     {
-        string inputAsLower = stringToLower(input);
+        char[] inputAsLower = stringToLower(input);
         ubyte[] output = new ubyte[input.length>>1];
         
         static ubyte[char] hexitIndex;
@@ -446,7 +435,7 @@ struct ByteConverter
         return output;
     }
     
-    static ubyte[] base32Decode(string input)
+    static ubyte[] base32Decode(const(char[]) input)
     {
         static ubyte[char] b32Index;
         for (int i = 0; i < base32digits.length; i++)
@@ -462,7 +451,7 @@ struct ByteConverter
         {
             if (c == '=')
                 continue;
-            remainder = (remainder<<5) | b32Index[c];
+            remainder = cast(ushort)(remainder<<5) | b32Index[c];
             remainlen += 5;
             while (remainlen >= 8) {
                 output[oIndex++] = cast(ubyte) (remainder >> (remainlen-8));
@@ -473,23 +462,23 @@ struct ByteConverter
         return output[0..oIndex];
     }
 
-    private static string stringToLower(string input)
+    private static char[] stringToLower(const(char[]) input)
     {
         char[] output = new char[input.length];
         
         foreach (int i, char c; input) 
             output[i] = cast(char) ((c >= 'A' && c <= 'Z') ? c+32 : c);
             
-        return cast(string)output;
+        return cast(char[])output;
     }
 
-    private static string stringToUpper(string input)
+    private static char[] stringToUpper(const(char[]) input)
     {
         char[] output = new char[input.length];
 
         foreach (int i, char c; input)
             output[i] = cast(char) ((c >= 'a' && c <= 'z') ? c-32 : c);
 
-        return cast(string)output;
+        return cast(char[])output;
     }
 }
