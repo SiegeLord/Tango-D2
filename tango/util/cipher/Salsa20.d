@@ -14,8 +14,8 @@ class Salsa20 : StreamCipher
     protected
     {
         // Constants
-        static ubyte[] sigma = cast(ubyte[])"expand 32-byte k",
-                       tau = cast(ubyte[])"expand 16-byte k";
+        enum immutable(ubyte)[] sigma = cast(immutable(ubyte)[])"expand 32-byte k";
+        enum immutable(ubyte)[] tau = cast(immutable(ubyte)[])"expand 16-byte k";
         
         // Counter indexes (added for ChaCha)            
         uint i0, i1;
@@ -28,8 +28,8 @@ class Salsa20 : StreamCipher
         uint index;
         
         // Internal copies of the key and IV for resetting the cipher
-        ubyte[] workingKey,
-                workingIV;
+        const(ubyte)[] workingKey,
+                       workingIV;
     }
     
     this()
@@ -52,8 +52,8 @@ class Salsa20 : StreamCipher
                     
         SymmetricKey keyParams = cast(SymmetricKey)ivParams.parameters;
                     
-        ubyte[] iv = ivParams.iv,
-                key = keyParams.key;
+        const(ubyte)[] iv = ivParams.iv,
+                       key = keyParams.key;
             
         if (key)
         {
@@ -78,7 +78,7 @@ class Salsa20 : StreamCipher
         _encrypt = _initialized = true;
     }
     
-    string name()
+    const(char[]) name()
     {
         return "Salsa20";
     }
@@ -103,13 +103,13 @@ class Salsa20 : StreamCipher
         return result;
     }
     
-    uint update(void[] input_, void[] output_)
+    uint update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");
             
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        const(ubyte[]) input = cast(const(ubyte[])) input_;
+        ubyte[] output = cast(ubyte[]) output_;
             
         if (input.length > output.length)
             invalid(name()~": Output buffer too short");
@@ -142,7 +142,7 @@ class Salsa20 : StreamCipher
     protected void keySetup()
     {
         uint offset;
-        ubyte[] constants;
+        const(ubyte)[] constants;
         
         state[1] = ByteConverter.LittleEndian.to!(uint)(workingKey[0..4]);
         state[2] = ByteConverter.LittleEndian.to!(uint)(workingKey[4..8]);
@@ -228,7 +228,7 @@ class Salsa20 : StreamCipher
     {
         unittest
         {
-            static string[] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "80000000000000000000000000000000", 
                 "0053a6f94c9ff24598eb3e91e4378add",
                 "00002000000000000000000000000000"~
@@ -238,14 +238,14 @@ class Salsa20 : StreamCipher
                 
             ];
             
-            static string[] test_ivs = [
+            enum immutable(char)[][] test_ivs = [
                 "0000000000000000",            
                 "0d74db42a91077de",
                 "0000000000000000",
                 "288ff65dc42b92f9"
             ];
                  
-            static string[] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
@@ -269,7 +269,7 @@ class Salsa20 : StreamCipher
                 
             ];
                  
-            static string[] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "4dfa5e481da23ea09a31022050859936"~ // Expected output
                 "da52fcee218005164f267cb65f5cfd7f"~
                 "2b4f97e0ff16924a52df269515110a07"~
@@ -293,7 +293,7 @@ class Salsa20 : StreamCipher
 
             Salsa20 s20 = new Salsa20();
             ubyte[] buffer = new ubyte[64];
-            string result;
+            char[] result;
             for (int i = 0; i < test_keys.length; i++)
             {
                 SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_keys[i]));
