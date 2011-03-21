@@ -133,7 +133,7 @@ version( TangoDoc )
      *
      * Note: This module contains imports to other Tango modules that needs
      * semantic analysis to be discovered. If your build tool doesn't do this
-     * properly, causing compile or link time problems, import the relevant 
+     * properly, causing compile or link time problems, import the relevant
      * module explicitly.
      */
     D to(D,S)(S value);
@@ -171,7 +171,7 @@ else
  */
 class ConversionException : Exception
 {
-    this( char[] msg )
+    this( immutable(char)[] msg )
     {
         super( msg );
     }
@@ -209,7 +209,7 @@ char ctfe_upper(char c)
         return c;
 }
 
-char[] ctfe_camelCase(char[] s)
+char[] ctfe_camelCase(const(char[]) s)
 {
     char[] result;
 
@@ -242,12 +242,12 @@ char[] ctfe_camelCase(char[] s)
 bool ctfe_isSpace(T)(T c)
 {
     static if (T.sizeof is 1)
-        return (c <= 32 && (c is ' ' | c is '\t' | c is '\r'
-                    | c is '\n' | c is '\v' | c is '\f'));
+        return (c <= 32 && (c is ' ' || c is '\t' || c is '\r'
+                    || c is '\n' || c is '\v' || c is '\f'));
     else
-        return (c <= 32 && (c is ' ' | c is '\t' | c is '\r'
-                    | c is '\n' | c is '\v' | c is '\f'))
-            || (c is '\u2028' | c is '\u2029');
+        return (c <= 32 && (c is ' ' || c is '\t' || c is '\r'
+                    || c is '\n' || c is '\v' || c is '\f'))
+            || (c is '\u2028' || c is '\u2029');
 }
 
 T[] ctfe_triml(T)(T[] source)
@@ -282,37 +282,47 @@ T[] ctfe_trim(T)(T[] source)
 template isPOD(T)
 {
     static if( is( T == struct ) || is( T == union ) )
-        const isPOD = true;
+        enum isPOD = true;
     else
-        const isPOD = false;
+        enum isPOD = false;
 }
 
 template isObject(T)
 {
     static if( is( T == class ) || is( T == interface ) )
-        const isObject = true;
+        enum isObject = true;
     else
-        const isObject = false;
+        enum isObject = false;
 }
 
 template isUDT(T)
 {
-    const isUDT = isPOD!(T) || isObject!(T);
+    enum isUDT = isPOD!(T) || isObject!(T);
 }
 
 template isString(T)
 {
+    static if( is( typeof(T[]) : const(char[]) )
+            || is( typeof(T[]) : const(wchar[]) )
+            || is( typeof(T[]) : const(dchar[]) ) )
+        enum isString = true;
+    else
+        enum isString = false;
+}
+
+template isMutableString(T)
+{
     static if( is( typeof(T[]) == char[] )
             || is( typeof(T[]) == wchar[] )
             || is( typeof(T[]) == dchar[] ) )
-        const isString = true;
+        enum isMutableString = true;
     else
-        const isString = false;
+        enum isMutableString = false;
 }
 
 template isArrayType(T)
 {
-    const isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
+    enum isArrayType = isDynamicArrayType!(T) || isStaticArrayType!(T);
 }
 
 /*
@@ -430,14 +440,14 @@ int intCmp(T,U)(T lhs, U rhs)
     }
 }
 
-template unsupported(char[] desc="")
+template unsupported(immutable(char)[] desc="")
 {
     static assert(false, "Unsupported conversion: cannot convert to "
             ~ctfe_trim(D.stringof)~" from "
             ~(desc!="" ? desc~" " : "")~ctfe_trim(S.stringof)~".");
 }
 
-template unsupported_backwards(char[] desc="")
+template unsupported_backwards(immutable(char)[] desc="")
 {
     static assert(false, "Unsupported conversion: cannot convert to "
             ~(desc!="" ? desc~" " : "")~ctfe_trim(D.stringof)
@@ -445,41 +455,41 @@ template unsupported_backwards(char[] desc="")
 }
 
 // TN works out the c_case name of the given type.
-template TN(T:T[])
+template TN(T:const(T[]))
 {
     static if( is( T == char ) )
-        const TN = "string";
+        enum TN = "string";
     else static if( is( T == wchar ) )
-        const TN = "wstring";
+        enum TN = "wstring";
     else static if( is( T == dchar ) )
-        const TN = "dstring";
+        enum TN = "dstring";
     else
-        const TN = TN!(T)~"_array";
+        enum TN = TN!(T)~"_array";
 }
 
 // ditto
 template TN(T:T*)
 {
-    const TN = TN!(T)~"_pointer";
+    enum TN = TN!(T)~"_pointer";
 }
 
 // ditto
 template TN(T)
 {
     static if( isAssocArrayType!(T) )
-        const TN = TN!(typeof(T.keys[0]))~"_to_"
+        enum TN = TN!(typeof(T.keys[0]))~"_to_"
             ~TN!(typeof(T.values[0]))~"_map";
     else
-        const TN = ctfe_trim(T.stringof);
+        enum TN = ctfe_trim(T.stringof);
 }
 
 // Picks an appropriate toString* method from t.text.convert.Utf.
 template toString_(T)
 {
-    static if( is( T == char[] ) )
+    static if( is( T : const(char[]) ) )
         alias tango.text.convert.Utf.toString toString_;
 
-    else static if( is( T == wchar[] ) )
+    else static if( is( T : const(wchar[]) ) )
         alias tango.text.convert.Utf.toString16 toString_;
 
     else
@@ -488,14 +498,14 @@ template toString_(T)
 
 template UtfNum(T)
 {
-    const UtfNum = is(typeof(T[0])==char) ? "8" : (
-            is(typeof(T[0])==wchar) ? "16" : "32");
+    enum UtfNum = is(typeof(T[0]) : const(char)) ? "8" : (
+            is(typeof(T[0]) : const(wchar)) ? "16" : "32");
 }
 
 template StringNum(T)
 {
-    const StringNum = is(typeof(T[0])==char) ? "" : (
-            is(typeof(T[0])==wchar) ? "16" : "32");
+    enum StringNum = is(typeof(T[0]) : const(char)) ? "" : (
+            is(typeof(T[0]) : const(wchar)) ? "16" : "32");
 }
 
 // Decodes a single dchar character from a string.  Yes, I know they're
@@ -503,7 +513,7 @@ template StringNum(T)
 // I suppose I just typed MORE than that by writing this comment.  Meh.
 dchar firstCharOf(T)(T s, out size_t used)
 {
-    static if( is( T : char[] ) || is( T : wchar[] ) )
+    static if( is( T : const(char[]) ) || is( T : const(wchar[]) ) )
     {
         return tango.text.convert.Utf.decode(s, used);
     }
@@ -572,28 +582,45 @@ template toUDT()
 }
 
 // This mixin defines a general function for converting from a UDT.
-template fromUDT(char[] fallthrough="")
+template fromUDT(immutable(char)[] fallthrough="")
 {
     D toDfromS()
     {
         static if( isString!(D) )
         {
             static if( is( typeof(mixin("value.toString"
-                                ~StringNum!(D)~"()")) == D ) )
+                                ~StringNum!(D)~"()")) : D ) )
                 return mixin("value.toString"~StringNum!(D)~"()");
 
-            else static if( is( typeof(value.toString()) == char[] ) )
-                return toString_!(D)(value.toString);
+            else static if( is( typeof(mixin("value.toString"
+                                ~StringNum!(D)~"().dup")) : D ) )
+                return mixin("value.toString"~StringNum!(D)~"().dup");
 
-            else static if( is( typeof(value.toString16()) == wchar[] ) )
-                return toString_!(D)(value.toString16);
+            else static if( is( typeof(mixin("value.toString"
+                                ~StringNum!(D)~"().idup")) : D ) )
+                return mixin("value.toString"~StringNum!(D)~"().idup");
 
-            else static if( is( typeof(value.toString32()) == dchar[] ) )
-                return toString_!(D)(value.toString32);
+            else static if( is( typeof(value.toString()) : const(char[]) ) )
+                static if( isMutableString!(D) )
+                    return toString_!(D)(value.toString);
+                else
+                    return toString_!(D)(value.toString).idup;
 
-            else static if( is( typeof(value.toString()) == char[] ) )
+            else static if( is( typeof(value.toString16()) : const(wchar[]) ) )
+                static if( isMutableString!(D) )
+                    return toString_!(D)(value.toString16);
+                else
+                    return toString_!(D)(value.toString16).idup;
+
+            else static if( is( typeof(value.toString32()) : const(dchar[]) ) )
+                static if( isMutableString!(D) )
+                    return toString_!(D)(value.toString32);
+                else
+                    return toString_!(D)(value.toString32).idup;
+
+            else static if( is( typeof(value.toString()) : const(char[]) ) )
             {
-                static if( is( D == char[] ) )
+                static if( is( D : const(char[]) ) )
                     return value.toString;
 
                 else
@@ -642,7 +669,7 @@ template convError()
     {
         // Since we're going to use to!(T) to convert the value to a string,
         // we need to make sure we don't end up in a loop...
-        static if( isString!(D) || !is( typeof(to!(char[])(value)) == char[] ) )
+        static if( isString!(D) || !is( typeof(to!(immutable(char)[])(value)) == immutable(char)[] ) )
         {
             throw new ConversionException("Could not convert a value of type "
                     ~S.stringof~" to type "~D.stringof~".");
@@ -650,7 +677,7 @@ template convError()
         else
         {
             throw new ConversionException("Could not convert `"
-                    ~to!(char[])(value)~"` of type "
+                    ~to!(immutable(char)[])(value)~"` of type "
                     ~S.stringof~" to type "~D.stringof~".");
         }
     }
@@ -678,23 +705,30 @@ D toBool(D,S)(S value)
             default:
                 mixin convError;
                 throwConvError;
+                assert(0);
         }
     }
 
     else static if( isString!(S) )
     {
-        switch( Ascii.toLower(value) )
+        if(value.length == 5 || value.length == 4)
         {
-            case "false":
-                return false;
+            char[5] buf;
+            buf[0..value.length] = value[];
+            switch( Ascii.toLower(buf[0..value.length]) )
+            {
+                case "false":
+                    return false;
 
-            case "true":
-                return true;
+                case "true":
+                    return true;
 
-            default:
-                mixin convError;
-                throwConvError;
+                default:
+            }
         }
+        mixin convError;
+        throwConvError;
+        assert(0);
     }
     /+
     else static if( isDynamicArrayType!(S) || isStaticArrayType!(S) )
@@ -751,6 +785,7 @@ D toIntegerFromReal(D,S)(S value)
     {
         mixin convError; // TODO: Overflow error
         throwConvError;
+        assert(0);
     }
 }
 
@@ -814,6 +849,7 @@ D toInteger(D,S)(S value)
         {
             mixin convError;
             throwConvError;
+            assert(0);
         }
     }
     else static if( isRealType!(S) )
@@ -891,6 +927,7 @@ D toImaginary(D,S)(S value)
         {
             mixin convError;
             throwConvError;
+            assert(0);
         }
     }
     else static if( isPOD!(S) || isObject!(S) )
@@ -928,12 +965,13 @@ D toChar(D,S)(S value)
     else static if( isIntegerType!(S) )
     {
         if( value >= 0 && value <= 9 )
-            return cast(D) value+'0';
+            return cast(D) (value+'0');
 
         else
         {
             mixin convError; // TODO: Overflow error
             throwConvError;
+            assert(0);
         }
     }
     else static if( isString!(S) )
@@ -945,7 +983,10 @@ D toChar(D,S)(S value)
         }
 
         if( value.length == 0 )
+        {
             fail();
+            assert(0);
+        }
 
         else
         {
@@ -955,11 +996,13 @@ D toChar(D,S)(S value)
             if( used < value.length )
             {
                 fail(); // TODO: Overflow error
+                assert(0);
             }
 
             if( (cast(size_t) c) > (cast(size_t) D.max) )
             {
                 fail(); // TODO: Overflow error
+                assert(0);
             }
 
             return cast(D) c;
@@ -976,20 +1019,37 @@ D toChar(D,S)(S value)
 
 D toStringFromString(D,S)(S value)
 {
-    static if( is( typeof(D[0]) == char ) )
-        return tango.text.convert.Utf.toString(value);
+    static if( isMutableString!(D) )
+    {
+        static if( is( typeof(D[0]) == char ) )
+            return tango.text.convert.Utf.toString(value);
 
-    else static if( is( typeof(D[0]) == wchar ) )
-        return tango.text.convert.Utf.toString16(value);
+        else static if( is( typeof(D[0]) == wchar ) )
+            return tango.text.convert.Utf.toString16(value);
 
+        else
+        {
+            static assert( is( typeof(D[0]) == dchar ) );
+            return tango.text.convert.Utf.toString32(value);
+        }
+    }
     else
     {
-        static assert( is( typeof(D[0]) == dchar ) );
-        return tango.text.convert.Utf.toString32(value);
+        static if( is( typeof(D[0]) : char ) )
+            return tango.text.convert.Utf.toString(value).idup;
+
+        else static if( is( typeof(D[0]) : wchar ) )
+            return tango.text.convert.Utf.toString16(value).idup;
+
+        else
+        {
+            static assert( is( typeof(D[0]) : dchar ) );
+            return tango.text.convert.Utf.toString32(value).idup;
+        }
     }
 }
 
-const char[] CHARS = 
+enum immutable(char)[] CHARS =
 "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f"
 "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f"
 "\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f"
@@ -999,12 +1059,15 @@ const char[] CHARS =
 
 D toStringFromChar(D,S)(S value)
 {
-    static if( is( D == S[] ) )
+    static if( is( D : S[] ) )
     {
         static if( is( S == char ) )
         {
             if( 0x20 <= value && value <= 0x7e )
-                return (&CHARS[value-0x20])[0..1];
+                static if( isMutableString!(D) )
+                    return (&CHARS[value-0x20])[0..1].dup;
+                else
+                    return (&CHARS[value-0x20])[0..1];
         }
         auto r = new S[1];
         r[0] = value;
@@ -1021,8 +1084,12 @@ D toStringFromChar(D,S)(S value)
 D toString(D,S)(S value)
 {
     static if( is( S == bool ) )
-        return (value ? "true" : "false");
-
+    {
+        static if(isMutableString!(D))
+            return cast(D) (value ? "true".dup : "false".dup);
+        else
+            return cast(D) (value ? "true" : "false");
+    }
     else static if( isCharType!(S) )
         return toStringFromChar!(D,S)(value);
 
@@ -1176,8 +1243,10 @@ D toImpl(D,S)(S value)
         mixin unsupported;
 }
 
-debug ( ConvertTest ):
+debug ( ConvertTest )
+{
     void main() {}
+}
 
 debug( UnitTest ):
 
@@ -1214,7 +1283,7 @@ struct Foo
 {
     int toInt() { return 42; }
 
-    char[] toString() { return "string foo"; }
+    const(char[]) toString() { return "string foo"; }
 
     int[] toIntArray() { return [1,2,3]; }
 
@@ -1395,7 +1464,7 @@ unittest
      * Map-map
      */
     {
-        char[][int] src = [1:"true"[], 2:"false"];
+        immutable(char)[][int] src = [1:"true"[], 2:"false"];
         bool[ubyte] dst = to!(bool[ubyte])(src);
         assert( dst.keys.length == 2 );
         assert( dst[1] == true );
