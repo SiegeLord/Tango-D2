@@ -15,7 +15,7 @@ class Blowfish : BlockCipher
 {
     private
     {
-        static const uint[1024] S_INIT = [
+        enum uint[1024] S_INIT = [
             0xd1310ba6u, 0x98dfb5acu, 0x2ffd72dbu, 0xd01adfb7u, 0xb8e1afedu, 0x6a267e96u,
             0xba7c9045u, 0xf12c7f99u, 0x24a19947u, 0xb3916cf7u, 0x0801f2e2u, 0x858efc16u,
             0x636920d8u, 0x71574e69u, 0xa458fea3u, 0xf4933d7eu, 0x0d95748fu, 0x728eb658u,
@@ -193,29 +193,29 @@ class Blowfish : BlockCipher
             0xb74e6132u, 0xce77e25bu, 0x578fdfe3u, 0x3ac372e6u
         ];
         
-        static const uint[18] P_INIT = [
+        enum uint[18] P_INIT = [
             0x243f6a88u, 0x85a308d3u, 0x13198a2eu, 0x03707344u, 0xa4093822u, 0x299f31d0u,
             0x082efa98u, 0xec4e6c89u, 0x452821e6u, 0x38d01377u, 0xbe5466cfu, 0x34e90c6cu,
             0xc0ac29b7u, 0xc97c50ddu, 0x3f84d5b5u, 0xb5470917u, 0x9216d5d9u, 0x8979fb1bu
         ];
         
-        static const uint BLOCK_SIZE = 8,
-                          ROUNDS = 16,
-                          SBOX_SIZE = 256,
-                          PBOX_SIZE = 18,
-                          MAX_KEY_SIZE = 56, // 448 bits
-                          MIN_KEY_SIZE = 4; // 32 bits
+        enum uint BLOCK_SIZE = 8,
+                  ROUNDS = 16,
+                  SBOX_SIZE = 256,
+                  PBOX_SIZE = 18,
+                  MAX_KEY_SIZE = 56, // 448 bits
+                  MIN_KEY_SIZE = 4; // 32 bits
         uint[18] P;
         uint[256] S0, S1, S2, S3;
-        ubyte[] workingKey;
+        const(ubyte)[] workingKey;
     } // end private
     
-    final override string name()
+    final override const(char[]) name()
     {
         return "Blowfish";
     }
     
-    final override uint blockSize()
+    final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }
@@ -247,7 +247,7 @@ class Blowfish : BlockCipher
                 + S3[cast(ubyte)x]);
     }
     
-    final override uint update(void[] input_, void[] output_)
+    final override uint update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized.");
@@ -284,7 +284,7 @@ class Blowfish : BlockCipher
         setup(workingKey);
     }
     
-    private void setup(ubyte[] key)
+    private void setup(const(ubyte)[] key)
     {
         S0[] = S_INIT[0..256];
         S1[] = S_INIT[256..512];
@@ -352,7 +352,7 @@ debug (UnitTest)
 {
     unittest
     {
-        static string[] test_keys = [
+        static immutable(char)[][] test_keys = [
             "0000000000000000",
             "ffffffffffffffff",
             "57686f206973204a6f686e2047616c743f", // I don't know, do you?
@@ -362,7 +362,7 @@ debug (UnitTest)
             "fedcba9876543210"
         ];
              
-        static string[] test_plaintexts = [
+        static immutable(char)[][] test_plaintexts = [
             "0000000000000000",
             "ffffffffffffffff",
             "fedcba9876543210",
@@ -372,7 +372,7 @@ debug (UnitTest)
             "0123456789abcdef"
         ];
             
-        static string[] test_ciphertexts = [
+        static immutable(char)[][] test_ciphertexts = [
             "4ef997456198dd78",
             "51866fd5b85ecb8a",
             "cc91732b8022f684",
@@ -383,10 +383,10 @@ debug (UnitTest)
         ];
             
         Blowfish t = new Blowfish();
-        foreach (uint i, string test_key; test_keys)
+        foreach (uint i, immutable(char)[] test_key; test_keys)
         {
             ubyte[] buffer = new ubyte[t.blockSize];
-            string result;
+            char[] result;
             SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
             
             // Encryption
