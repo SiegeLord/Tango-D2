@@ -352,7 +352,7 @@ debug (UnitTest)
 {
     unittest
     {
-        static immutable(char)[][] test_keys = [
+        enum immutable(char)[][] test_keys = [
             "0000000000000000",
             "ffffffffffffffff",
             "57686f206973204a6f686e2047616c743f", // I don't know, do you?
@@ -362,7 +362,7 @@ debug (UnitTest)
             "fedcba9876543210"
         ];
              
-        static immutable(char)[][] test_plaintexts = [
+        enum immutable(char)[][] test_plaintexts = [
             "0000000000000000",
             "ffffffffffffffff",
             "fedcba9876543210",
@@ -372,7 +372,7 @@ debug (UnitTest)
             "0123456789abcdef"
         ];
             
-        static immutable(char)[][] test_ciphertexts = [
+        enum immutable(char)[][] test_ciphertexts = [
             "4ef997456198dd78",
             "51866fd5b85ecb8a",
             "cc91732b8022f684",

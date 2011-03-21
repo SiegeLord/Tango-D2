@@ -13,8 +13,8 @@ class RC4 : StreamCipher
 {
     private
     {
-        ubyte[] state,
-                workingKey;
+        ubyte[] state;
+        const(ubyte)[] workingKey;
         ubyte x, y;
     }
     
@@ -34,7 +34,7 @@ class RC4 : StreamCipher
         _encrypt = _initialized = true;
     }
     
-    final override string name()
+    final override const(char)[] name()
     {
         return "RC4";
     }
@@ -52,13 +52,13 @@ class RC4 : StreamCipher
         return (input^state[cast(ubyte)(state[x]+state[y])]);
     }
     
-    final override uint update(void[] input_, void[] output_)
+    final override uint update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");
             
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        const(ubyte[]) input = cast(const(ubyte[])) input_;
+        ubyte[] output = cast(ubyte[]) output_;
             
         if (input.length > output.length)
             invalid(name()~": Output buffer too short");
@@ -81,7 +81,7 @@ class RC4 : StreamCipher
     }
     
     // Do RC4's key setup in a separate method to ease resetting
-    private void setup(ubyte[] key)
+    private void setup(const(ubyte)[] key)
     {
         for (int i = 0; i < 256; i++)
             state[i] = cast(ubyte)i;
@@ -103,7 +103,7 @@ class RC4 : StreamCipher
     {
         unittest
         {
-            static string[] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "0123456789abcdef",
                 "0123456789abcdef",
                 "0000000000000000",
@@ -111,7 +111,7 @@ class RC4 : StreamCipher
                 "0123456789abcdef"
             ];
                  
-            static string[] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "0123456789abcdef",
                 "0000000000000000",
                 "0000000000000000",
@@ -150,7 +150,7 @@ class RC4 : StreamCipher
                 "01010101010101010101010101010101"
             ];
                  
-            static string[] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "75b7878099e0c596",
                 "7494c2e7104b0879",
                 "de188941a3375d3a",
@@ -190,10 +190,10 @@ class RC4 : StreamCipher
             ];
     
             RC4 r = new RC4();
-            foreach (uint i, string test_key; test_keys)
+            foreach (uint i, immutable(char)[] test_key; test_keys)
             {
                 ubyte[] buffer = new ubyte[test_plaintexts[i].length>>1];
-                string result;
+                char[] result;
                 
                 r.init(true, new SymmetricKey(ByteConverter.hexDecode(test_key)));
                 
