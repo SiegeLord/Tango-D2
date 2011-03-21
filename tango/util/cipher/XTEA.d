@@ -14,10 +14,10 @@ class XTEA : BlockCipher
 {
     private
     {
-        static const uint ROUNDS = 32,
-                          KEY_SIZE = 16,
-                          BLOCK_SIZE = 8,
-                          DELTA = 0x9e3779b9u;
+        enum uint ROUNDS = 32,
+                  KEY_SIZE = 16,
+                  BLOCK_SIZE = 8,
+                  DELTA = 0x9e3779b9u;
         uint[] subkeys,
                sum0,
                sum1;
@@ -25,12 +25,12 @@ class XTEA : BlockCipher
     
     final override void reset(){}
     
-    final override string name()
+    final override const(char)[] name()
     {
         return "XTEA";
     }
     
-    final override uint blockSize()
+    final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }
@@ -61,13 +61,13 @@ class XTEA : BlockCipher
         _initialized = true;
     }
     
-    final override uint update(void[] input_, void[] output_)
+    final override uint update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");
             
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        const(ubyte[]) input = cast(const(ubyte[])) input_;
+        ubyte[] output = cast(ubyte[]) output_;
                     
         if (input.length < BLOCK_SIZE)
             invalid(name()~": Input buffer too short");
@@ -106,7 +106,7 @@ class XTEA : BlockCipher
     {
         unittest
         {
-            static string[] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "00000000000000000000000000000000",
                 "00000000000000000000000000000000",
                 "0123456712345678234567893456789a",
@@ -119,7 +119,7 @@ class XTEA : BlockCipher
                 "00000000000000000000000000000000"
             ];
                  
-            static string[] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "0000000000000000",
                 "0102030405060708",
                 "0000000000000000",
@@ -132,7 +132,7 @@ class XTEA : BlockCipher
                 "4141414141414141"
             ];
                 
-            static string[] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "dee9d4d8f7131ed9",
                 "065c1b8975c6a816",
                 "1ff9a0261ac64264",
@@ -146,10 +146,10 @@ class XTEA : BlockCipher
             ];
                 
             XTEA t = new XTEA();
-            foreach (uint i, string test_key; test_keys)
+            foreach (uint i, immutable(char)[] test_key; test_keys)
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
-                string result;
+                char[] result;
                 SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
                 
                 // Encryption

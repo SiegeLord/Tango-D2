@@ -70,3 +70,4 @@ tango/util/cipher/ChaCha.d
 tango/util/cipher/RC4.d
 tango/util/cipher/RC6.d
 tango/util/cipher/TEA.d
+tango/util/cipher/XTEA.d
