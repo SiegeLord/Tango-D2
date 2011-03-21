@@ -68,3 +68,4 @@ tango/util/cipher/Cipher.d
 tango/util/cipher/Salsa20.d
 tango/util/cipher/ChaCha.d
 tango/util/cipher/RC4.d
+tango/util/cipher/RC6.d
