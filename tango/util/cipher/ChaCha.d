@@ -113,7 +113,7 @@ class ChaCha : Salsa20
         import std.stdio;
         unittest
         {
-            static immutable(char)[][] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "80000000000000000000000000000000", 
                 "0053a6f94c9ff24598eb3e91e4378add",
                 "00002000000000000000000000000000"~
@@ -123,14 +123,14 @@ class ChaCha : Salsa20
                 
             ];
             
-            static immutable(char)[][] test_ivs = [
+            enum immutable(char)[][] test_ivs = [
                 "0000000000000000",            
                 "0d74db42a91077de",
                 "0000000000000000",
                 "288ff65dc42b92f9"
             ];
                  
-            static immutable(char)[][] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
                 "00000000000000000000000000000000"~
@@ -154,7 +154,7 @@ class ChaCha : Salsa20
                 
             ];
                  
-            static immutable(char)[][] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "beb1e81e0f747e43ee51922b3e87fb38"~
                 "d0163907b4ed49336032ab78b67c2457"~
                 "9fe28f751bd3703e51d876c017faa435"~

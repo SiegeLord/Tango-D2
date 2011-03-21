@@ -67,3 +67,4 @@ tango/util/cipher/Blowfish.d
 tango/util/cipher/Cipher.d
 tango/util/cipher/Salsa20.d
 tango/util/cipher/ChaCha.d
+tango/util/cipher/RC4.d
