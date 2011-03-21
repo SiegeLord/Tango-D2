@@ -489,7 +489,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, uint* ate=null)
                    }
 
                 if (b < 0x10000)
-                    *pOut++ = cast(char)b;
+                    *pOut++ = cast(wchar)b;
                 else
                    if (b < 0x110000)
                       {
