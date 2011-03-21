@@ -25,21 +25,21 @@ class RC6 : BlockCipher
 {
     private
     {
-        static const uint ROUNDS = 20,
+        enum uint ROUNDS = 20,
                           BLOCK_SIZE = 16,
                           // Magic constants for a 32 bit word size
                           P = 0xb7e15163,
                           Q = 0x9e3779b9;
         uint[] S;
-        ubyte[] workingKey;
+        const(ubyte)[] workingKey;
     }
     
-    final override string name()
+    final override const(char)[] name()
     {
         return "RC6";
     }
     
-    final override uint blockSize()
+    final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }
@@ -60,12 +60,12 @@ class RC6 : BlockCipher
         _initialized = true;
     }
     
-    final override uint update(void[] input_, void[] output_) {
+    final override uint update(const(void[]) input_, void[] output_) {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");
             
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        const(ubyte[]) input = cast(const(ubyte[])) input_;
+        ubyte[] output = cast(ubyte[]) output_;
                     
         if (input.length < BLOCK_SIZE)
             invalid(name()~": Input buffer too short");
@@ -136,7 +136,7 @@ class RC6 : BlockCipher
         setup(workingKey);
     }
     
-    private void setup(ubyte[] key)
+    private void setup(const(ubyte)[] key)
     {
         size_t c = key.length/4;
         uint[] L = new uint[c];
@@ -162,7 +162,7 @@ class RC6 : BlockCipher
     {
         unittest
         {
-            static string[] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "00000000000000000000000000000000",
                 "0123456789abcdef0112233445566778",
                 "00000000000000000000000000000000"~
@@ -175,7 +175,7 @@ class RC6 : BlockCipher
                 "899aabbccddeeff01032547698badcfe"
             ];
                  
-            static string[] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "00000000000000000000000000000000",
                 "02132435465768798a9bacbdcedfe0f1",
                 "00000000000000000000000000000000",
@@ -184,7 +184,7 @@ class RC6 : BlockCipher
                 "02132435465768798a9bacbdcedfe0f1"
             ];
                 
-            static string[] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "8fc3a53656b1f778c129df4e9848a41e",
                 "524e192f4715c6231f51f6367ea43f18",
                 "6cd61bcb190b30384e8a3f168690ae82",
@@ -194,10 +194,10 @@ class RC6 : BlockCipher
             ];
                 
             RC6 t = new RC6();
-            foreach (uint i, string test_key; test_keys)
+            foreach (uint i, immutable(char)[] test_key; test_keys)
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
-                string result;
+                char[] result;
                 SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
                 
                 // Encryption
