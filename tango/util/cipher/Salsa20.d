@@ -173,10 +173,10 @@ class Salsa20 : StreamCipher
         state[8] = state[9] = 0;
     }
     
-    protected void salsa20WordToByte(uint[] input, ref ubyte[] output)
+    protected void salsa20WordToByte(const(uint[]) input, ref ubyte[] output)
     {
         uint[] x = new uint[16];
-        x[] = input;
+        x[] = input[0..16];
         
         int i;
         for (i = 0; i < 10; i++)
