@@ -422,7 +422,7 @@ struct ByteConverter
         char[] inputAsLower = stringToLower(input);
         ubyte[] output = new ubyte[input.length>>1];
         
-        static ubyte[char] hexitIndex;
+        static __gshared ubyte[char] hexitIndex;
         for (int i = 0; i < hexits.length; i++)
             hexitIndex[hexits[i]] = cast(ubyte) i;
             
@@ -437,7 +437,7 @@ struct ByteConverter
     
     static ubyte[] base32Decode(const(char[]) input)
     {
-        static ubyte[char] b32Index;
+        static __gshared ubyte[char] b32Index;
         for (int i = 0; i < base32digits.length; i++)
             b32Index[base32digits[i]] = cast(ubyte) i;
 
