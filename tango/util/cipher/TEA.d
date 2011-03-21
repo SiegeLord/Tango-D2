@@ -14,22 +14,22 @@ class TEA : BlockCipher
 {
     private
     {
-        static const uint ROUNDS = 32,
-                          KEY_SIZE = 16,
-                          BLOCK_SIZE = 8,
-                          DELTA = 0x9e3779b9u,
-                          DECRYPT_SUM = 0xc6ef3720u;
+        enum uint ROUNDS = 32,
+                  KEY_SIZE = 16,
+                  BLOCK_SIZE = 8,
+                  DELTA = 0x9e3779b9u,
+                  DECRYPT_SUM = 0xc6ef3720u;
         uint sk0, sk1, sk2, sk3, sum;
     }
     
     final override void reset(){}
     
-    final override string name()
+    final override const(char)[] name()
     {
         return "TEA";
     }
     
-    final override uint blockSize()
+    final override const uint blockSize()
     {
         return BLOCK_SIZE;
     }
@@ -49,13 +49,13 @@ class TEA : BlockCipher
         _initialized = true;
     }
     
-    final override uint update(void[] input_, void[] output_)
+    final override uint update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");
             
-        ubyte[] input = cast(ubyte[]) input_,
-                output = cast(ubyte[]) output_;
+        const(ubyte[]) input = cast(const(ubyte[])) input_;
+        ubyte[] output = cast(ubyte[]) output_;
                     
         if (input.length < BLOCK_SIZE)
             invalid(name()~": Input buffer too short");
@@ -94,21 +94,21 @@ class TEA : BlockCipher
     {
         unittest
         {
-            static string[] test_keys = [
+            enum immutable(char)[][] test_keys = [
                 "00000000000000000000000000000000",
                 "00000000000000000000000000000000",
                 "0123456712345678234567893456789a",
                 "0123456712345678234567893456789a"
             ];
                  
-            static string[] test_plaintexts = [
+            enum immutable(char)[][] test_plaintexts = [
                 "0000000000000000",
                 "0102030405060708",
                 "0000000000000000",
                 "0102030405060708"
             ];
                 
-            static string[] test_ciphertexts = [
+            enum immutable(char)[][] test_ciphertexts = [
                 "41ea3a0a94baa940",
                 "6a2f9cf3fccf3c55",
                 "34e943b0900f5dcb",
@@ -120,7 +120,7 @@ class TEA : BlockCipher
             foreach (uint i, string test_key; test_keys)
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
-                string result;
+                char[] result;
                 SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
                 
                 // Encryption
