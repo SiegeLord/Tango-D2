@@ -61,3 +61,4 @@ tango/time/StopWatch.d
 tango/time/Time.d
 tango/time/WallClock.d
 tango/util/Convert.d
+tango/util/MinMax.d
