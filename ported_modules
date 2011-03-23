@@ -89,3 +89,4 @@ tango/util/digest/Sha01.d
 tango/util/digest/Sha0.d
 tango/util/digest/Sha1.d
 tango/util/digest/Sha256.d
+tango/util/digest/Sha512.d
