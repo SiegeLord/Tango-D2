@@ -156,7 +156,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        protected abstract void transform(ubyte[] data);
+        protected abstract void transform(const(ubyte[]) data);
 
         /***********************************************************************
 
@@ -214,11 +214,11 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        MerkleDamgard update (void[] input)
+        MerkleDamgard update (const(void[]) input)
         {
                 auto block = blockSize();
                 uint i = bytes & (block-1);
-                ubyte[] data = cast(ubyte[]) input;
+                const(ubyte[]) data = cast(const(ubyte[])) input;
 
                 bytes += data.length;
 
@@ -290,7 +290,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        static protected final void littleEndian32(ubyte[] input, uint[] output)
+        static protected final void littleEndian32(const(ubyte[]) input, uint[] output)
         {
                 assert(output.length == input.length/4);
                 output[] = cast(uint[]) input;
@@ -312,7 +312,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        static protected final void bigEndian32(ubyte[] input, uint[] output)
+        static protected final void bigEndian32(const(ubyte[]) input, uint[] output)
         {
                 assert(output.length == input.length/4);
                 output[] = cast(uint[]) input;
@@ -334,7 +334,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        static protected final void littleEndian64(ubyte[] input, ulong[] output)
+        static protected final void littleEndian64(const(ubyte[]) input, ulong[] output)
         {
                 assert(output.length == input.length/8);
                 output[] = cast(ulong[]) input;
@@ -355,7 +355,7 @@ package class MerkleDamgard : Digest
 
         ***********************************************************************/
 
-        static protected final void bigEndian64(ubyte[] input, ulong[] output)
+        static protected final void bigEndian64(const(ubyte[]) input, ulong[] output)
         {
                 assert(output.length == input.length/8);
                 output[] = cast(ulong[]) input;
