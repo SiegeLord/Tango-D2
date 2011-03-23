@@ -77,10 +77,10 @@ final class Crc32 : Digest
         }
 
         /** */
-        override Crc32 update (void[] input)
+        override Crc32 update (const(void[]) input)
         {
                 uint r = result; // DMD optimization
-                foreach (ubyte value; cast(ubyte[]) input)
+                foreach (ubyte value; cast(const(ubyte[])) input)
                 {
                         auto i = cast(ubyte) r;// & 0xff;
                         i ^= value;
@@ -134,10 +134,10 @@ debug(UnitTest)
         scope c = new Crc32();
         static ubyte[] data = [1,2,3,4,5,6,7,8,9,10];
         c.update(data);
-        assert(c.binaryDigest() == cast(ubyte[]) x"7b572025");
+        assert(c.binaryDigest() == cast(ubyte[]) x"7b572025".dup);
         c.update(data);
         assert(c.crc32Digest == 0x2520577b);
         c.update(data);
-        assert(c.hexDigest() == "7b572025");
+        assert(c.hexDigest() == "7b572025".dup);
         }
 }
