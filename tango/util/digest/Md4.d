@@ -26,7 +26,7 @@ private import tango.util.digest.MerkleDamgard;
 class Md4 : MerkleDamgard
 {
         protected uint[4]       context;
-        private const ubyte     padChar = 0x80;
+        private enum ubyte     padChar = 0x80;
 
         /***********************************************************************
 
@@ -167,7 +167,7 @@ class Md4 : MerkleDamgard
 
         ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
                 uint a,b,c,d;
                 uint[16] x;
@@ -340,7 +340,7 @@ debug(UnitTest)
 {
         unittest 
         {
-        static char[][] strings = 
+        enum immutable(char)[][] strings = 
         [
                 "",
                 "a",
@@ -351,7 +351,7 @@ debug(UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        static char[][] results = 
+        enum immutable(char)[][] results = 
         [
                 "31d6cfe0d16ae931b73c59d7e0c089c0",
                 "bde52cb31de33e46245e05fbdbd6fb24",
@@ -364,7 +364,7 @@ debug(UnitTest)
 
         Md4 h = new Md4();
 
-        foreach (int i, char[] s; strings) 
+        foreach (int i, immutable(char)[] s; strings) 
                 {
                 h.update(s);
                 char[] d = h.hexDigest;

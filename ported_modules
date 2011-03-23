@@ -79,3 +79,4 @@ tango/util/digest/Digest.d
 tango/util/digest/Crc32.d
 tango/util/digest/MerkleDamgard.d
 tango/util/digest/Md2.d
+tango/util/digest/Md4.d
