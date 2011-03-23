@@ -26,13 +26,13 @@ public  import tango.util.digest.Digest;
 
 *******************************************************************************/
 
-private static const int INTERNAL_ROUNDS = 10;
+private static enum int INTERNAL_ROUNDS = 10;
 
 final class Whirlpool : MerkleDamgard
 {
 		private ulong hash[8];    /* the hashing state */
 
-        private const uint     padChar = 0x80;
+        private enum uint     padChar = 0x80;
 
         /***********************************************************************
 
@@ -175,7 +175,7 @@ final class Whirlpool : MerkleDamgard
 
          ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
             ulong block[8];    /* mu(buffer) */
 
@@ -972,7 +972,7 @@ debug(UnitTest)
     	void testISOVectors()
     	{
     	    // The ISO test vectors and results
-    	    static char[][] strings =
+    	    enum immutable(char)[][] strings =
     	    [
     	            "",
     	            "a",
@@ -985,7 +985,7 @@ debug(UnitTest)
      	            "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq" // Not an ISO vector, but from FIPS
     	    ];
 
-    	    static char[][] results =
+    	    enum immutable(char)[][] results =
     	    [
     	            "19fa61d75522a4669b44e39c1d2e1726c530232130d407f89afee0964997f7a73e83be698b288febcf88e3e03c4f0757ea8964e59b63d93708b138cc42a66eb3",
     	            "8aca2602792aec6f11a67206531fb7d7f0dff59413145e6973c45001d0087b42d11bc645413aeff63a42391a39145a591a92200d560195e53b478584fdae231a",
@@ -1000,7 +1000,7 @@ debug(UnitTest)
 
     	    Whirlpool h = new Whirlpool();
 
-    	    foreach (int i, char[] s; strings)
+    	    foreach (int i, immutable(char)[] s; strings)
     	            {
     	            h.update(cast(ubyte[]) s);
     	            char[] d = h.hexDigest;
@@ -1011,7 +1011,7 @@ debug(UnitTest)
     	    {
     	    	char[] s = new char[1000000];
     	    	for (auto i = 0; i < s.length; i++) s[i] = 'a';
-    	    	char[] result = "0c99005beb57eff50a7cf005560ddf5d29057fd86b20bfd62deca0f1ccea4af51fc15490eddc47af32bb2b66c34ff9ad8c6008ad677f77126953b226e4ed8b01";
+    	    	immutable(char)[] result = "0c99005beb57eff50a7cf005560ddf5d29057fd86b20bfd62deca0f1ccea4af51fc15490eddc47af32bb2b66c34ff9ad8c6008ad677f77126953b226e4ed8b01";
     	    	h.update(cast(ubyte[]) s);
     	    	char[] d = h.hexDigest;
 
@@ -1022,7 +1022,7 @@ debug(UnitTest)
     	void testNESSIE0bitVectors() {
     	    // Part of the NESSIE test vectors and results: strings of 0 bits
     	    ubyte[128] data = 0;
-    	    static char[][] results =
+    	    enum immutable(char)[][] results =
     	    [
     		        "19fa61d75522a4669b44e39c1d2e1726c530232130d407f89afee0964997f7a73e83be698b288febcf88e3e03c4f0757ea8964e59b63d93708b138cc42a66eb3",
     	 	        "4d9444c212955963d425a410176fccfb74161e6839692b4c11fde2ed6eb559efe0560c39a7b61d5a8bcabd6817a3135af80f342a4942ccaae745abddfb6afed0",
@@ -1168,7 +1168,7 @@ debug(UnitTest)
     	void testNESSIE1bitVectors() {
     	    // Part of the NESSIE test vectors and results: 512-bit strings containing a single 1-bit
     	    ubyte[64] data = 0;
-    	    static char[][] results =
+    	    enum immutable(char)[][] results =
     	    [
 	            "103e0055a9b090e11c8fddebba06c05ace8b64b896128f6eed3071fcf3dc16946778e07223233fd180fc40ccdb8430a640e37634271e655ca1674ebff507f8cb",
 	            "a892e8125f792ee5997d175257633bf889f947759ad6f19dd233f467a3261643f815ded3eed7892a315402cb341fe713c109c0c217a9f4c53bb9920af88136e7",
