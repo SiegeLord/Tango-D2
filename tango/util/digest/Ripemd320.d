@@ -33,13 +33,13 @@ public  import tango.util.digest.Digest;
 final class Ripemd320 : MerkleDamgard
 {
         private uint[10]        context;
-        private const uint     padChar = 0x80;
+        private enum uint     padChar = 0x80;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static const uint[10] initial =
+        private enum uint[10] initial =
         [
 				0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
 				0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567, 0x3c2d1e0f
@@ -186,7 +186,7 @@ final class Ripemd320 : MerkleDamgard
 
          ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
         	uint al, bl, cl, dl, el;
         	uint ar, br, cr, dr, er;
@@ -570,7 +570,7 @@ debug(UnitTest)
 {
     unittest
     {
-    static char[][] strings =
+    enum immutable(char)[][] strings =
     [
             "",
             "a",
@@ -582,7 +582,7 @@ debug(UnitTest)
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static char[][] results =
+    enum immutable(char)[][] results =
     [
             "22d65d5661536cdc75c1fdf5c6de7b41b9f27325ebc61e8557177d705a0ec880151c3a32a00899b8",
             "ce78850638f92658a5a585097579926dda667a5716562cfcf6fbe77f63542f99b04705d6970dff5d",
@@ -596,7 +596,7 @@ debug(UnitTest)
 
     Ripemd320 h = new Ripemd320();
 
-    foreach (int i, char[] s; strings)
+    foreach (int i, immutable(char)[] s; strings)
             {
             h.update(cast(ubyte[]) s);
             char[] d = h.hexDigest;
@@ -607,7 +607,7 @@ debug(UnitTest)
     
     char[] s = new char[1000000];
     for (auto i = 0; i < s.length; i++) s[i] = 'a';
-    char[] result = "bdee37f4371e20646b8b0d862dda16292ae36f40965e8c8509e63d1dbddecc503e2b63eb9245bb66";
+    immutable(char)[] result = "bdee37f4371e20646b8b0d862dda16292ae36f40965e8c8509e63d1dbddecc503e2b63eb9245bb66";
     h.update(cast(ubyte[]) s);
     char[] d = h.hexDigest;
 
