@@ -73,7 +73,7 @@ final class Md5 : Md4
 
         ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
                 uint a,b,c,d;
                 uint[16] x;
@@ -237,7 +237,7 @@ debug(UnitTest)
 {
         unittest
         {
-        static char[][] strings =
+        enum immutable(char)[][] strings =
         [
                 "",
                 "a",
@@ -248,7 +248,7 @@ debug(UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        static char[][] results =
+        enum immutable(char)[][] results =
         [
                 "d41d8cd98f00b204e9800998ecf8427e",
                 "0cc175b9c0f1b6a831c399e269772661",
@@ -261,7 +261,7 @@ debug(UnitTest)
 
         Md5 h = new Md5();
 
-        foreach (int i, char[] s; strings)
+        foreach (int i, immutable(char)[] s; strings)
                 {
                 h.update(cast(ubyte[]) s);
                 char[] d = h.hexDigest;

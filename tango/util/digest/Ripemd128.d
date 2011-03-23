@@ -33,13 +33,13 @@ public  import tango.util.digest.Digest;
 final class Ripemd128 : MerkleDamgard
 {
         private uint[4]        context;
-        private const uint     padChar = 0x80;
+        private enum uint     padChar = 0x80;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static const uint[4] initial =
+        private static enum uint[4] initial =
         [
   				0x67452301,
   				0xefcdab89,
@@ -188,7 +188,7 @@ final class Ripemd128 : MerkleDamgard
 
          ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
         	uint al, bl, cl, dl;
         	uint ar, br, cr, dr;
@@ -356,7 +356,7 @@ debug(UnitTest)
 {
     unittest
     {
-    static char[][] strings =
+    enum immutable(char)[][] strings =
     [
             "",
             "a",
@@ -368,7 +368,7 @@ debug(UnitTest)
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static char[][] results =
+    enum immutable(char)[][] results =
     [
             "cdf26213a150dc3ecb610f18f6b38b46",
             "86be7afa339d0fc7cfc785e72f578d33",
@@ -382,7 +382,7 @@ debug(UnitTest)
 
     Ripemd128 h = new Ripemd128();
 
-    foreach (int i, char[] s; strings)
+    foreach (int i, immutable(char)[] s; strings)
             {
             h.update(cast(ubyte[]) s);
             char[] d = h.hexDigest;
@@ -392,7 +392,7 @@ debug(UnitTest)
 
     char[] s = new char[1000000];
     for (auto i = 0; i < s.length; i++) s[i] = 'a';
-    char[] result = "4a7f5723f954eba1216c9d8f6320431f";
+    immutable(char)[] result = "4a7f5723f954eba1216c9d8f6320431f";
     h.update(cast(ubyte[]) s);
     char[] d = h.hexDigest;
 
