@@ -32,8 +32,8 @@ module tango.util.compress.c.zlib;
 
 extern (C):
 
-const char* ZLIB_VERSION = "1.2.3";
-const uint  ZLIB_VERNUM  = 0x1230;
+enum immutable(char)* ZLIB_VERSION = "1.2.3".ptr;
+enum uint  ZLIB_VERNUM  = 0x1230;
 
 /*
      The 'zlib' compression library provides in-memory compression and
@@ -245,14 +245,14 @@ enum
 }
 /* The deflate compression method (the only one supported in this version) */
 
-const Z_NULL = null;    /* for initializing zalloc, zfree, opaque */
+enum Z_NULL = null;    /* for initializing zalloc, zfree, opaque */
 
 alias zlibVersion zlib_version;
 /* for compatibility with versions < 1.0.2 */
 
                         /* basic functions */
 
-char* zlibVersion();
+const(char)* zlibVersion();
 /* The application can compare zlibVersion and ZLIB_VERSION for consistency.
    If the first character differs, the library code actually used is
    not compatible with the zlib.h header file used by the application.
@@ -1170,7 +1170,7 @@ int gzwrite(gzFile file, voidpc buf, uint len);
    (0 in case of error).
 */
 
-int gzprintf (gzFile file, char* format, ...);
+int gzprintf (gzFile file, const(char)* format, ...);
 /*
      Converts, formats, and writes the args to the compressed file under
    control of the format string, as in fprintf. gzprintf returns the number of
@@ -1183,7 +1183,7 @@ int gzprintf (gzFile file, char* format, ...);
    because the secure snprintf() or vsnprintf() functions were not available.
 */
 
-int gzputs(gzFile file, char* s);
+int gzputs(gzFile file, const(char)* s);
 /*
       Writes the given null-terminated string to the compressed file, excluding
    the terminating null character.
@@ -1283,7 +1283,7 @@ int gzclose(gzFile file);
    error number (see function gzerror below).
 */
 
-char* gzerror(gzFile file, int* errnum);
+const(char)* gzerror(gzFile file, int* errnum);
 /*
      Returns the error message for the last error which occurred on the
    given compressed file. errnum is set to zlib error number. If an
@@ -1365,10 +1365,10 @@ uLong crc32_combine(uLong crc1, uLong crc2, z_off_t len2);
  */
 int deflateInit_(z_streamp  strm,
                  int        level,
-                 char*      ver,
+                 const(char)*      ver,
                  int        stream_size);
 int inflateInit_(z_streamp  strm,
-                 char*      ver,
+                 const(char)*      ver,
                  int        stream_size);
 int deflateInit2_(z_streamp strm,
                   int       level,
@@ -1376,16 +1376,16 @@ int deflateInit2_(z_streamp strm,
                   int       windowBits,
                   int       memLevel,
                   int       strategy,
-                  char*     ver,
+                  const(char)*     ver,
                   int       stream_size);
 int inflateInit2_(z_streamp strm,
                   int       windowBits,
-                  char*     ver,
+                  const(char)*     ver,
                   int       stream_size);
 int inflateBackInit_(z_streamp strm,
                      int       windowBits,
                      ubyte*    window,
-                     char*     ver,
+                     const(char)*     ver,
                      int       stream_size);
 
 extern (D) int deflateInit(z_streamp  strm,
@@ -1441,6 +1441,6 @@ extern (D) int inflateBackInit(z_streamp strm,
                             z_stream.sizeof);
 }
 
-char*   zError(int);
+const(char)*   zError(int);
 int     inflateSyncPoint(z_streamp z);
 uLongf* get_crc_table();
