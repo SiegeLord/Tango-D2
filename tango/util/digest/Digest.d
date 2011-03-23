@@ -63,7 +63,7 @@ abstract class Digest
                  
         *********************************************************************/
     
-        abstract Digest update (void[] data);
+        abstract Digest update (const(void[]) data);
     
         /********************************************************************
 
@@ -129,7 +129,7 @@ abstract class Digest
                 ubyte[] ret = binaryDigest(buf);
                 assert(ret.ptr == buf.ptr);
             
-                static char[] hexdigits = "0123456789abcdef";
+                enum immutable(char)[] hexdigits = "0123456789abcdef";
                 int i = 0;
             
                 foreach (b; buf) 
