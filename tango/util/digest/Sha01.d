@@ -25,8 +25,8 @@ private import tango.util.digest.MerkleDamgard;
 package abstract class Sha01 : MerkleDamgard
 {
         protected uint[5]               context;
-        private static const ubyte      padChar = 0x80;
-        package static const uint       mask = 0x0000000F;
+        private static enum ubyte      padChar = 0x80;
+        package static enum uint       mask = 0x0000000F;
     
         /***********************************************************************
 
@@ -162,7 +162,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        protected static const uint[] K =
+        protected enum uint[] K =
         [
                 0x5A827999,
                 0x6ED9EBA1,
@@ -174,7 +174,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        private static const uint[5] initial =
+        private enum uint[5] initial =
         [
                 0x67452301,
                 0xEFCDAB89,
