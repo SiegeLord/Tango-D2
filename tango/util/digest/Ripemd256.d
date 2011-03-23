@@ -33,13 +33,13 @@ public  import tango.util.digest.Digest;
 final class Ripemd256 : MerkleDamgard
 {
         private uint[8]        context;
-        private const uint     padChar = 0x80;
+        private enum uint     padChar = 0x80;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static const uint[8] initial =
+        private enum uint[8] initial =
         [
   				0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476,
   				0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567
@@ -186,7 +186,7 @@ final class Ripemd256 : MerkleDamgard
 
          ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
         	uint al, bl, cl, dl;
         	uint ar, br, cr, dr;
@@ -370,7 +370,7 @@ debug(UnitTest)
 {
     unittest
     {
-    static char[][] strings =
+    enum immutable(char)[][] strings =
     [
             "",
             "a",
@@ -382,7 +382,7 @@ debug(UnitTest)
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     ];
 
-    static char[][] results =
+    enum immutable(char)[][] results =
     [
             "02ba4c4e5f8ecd1877fc52d64d30e37a2d9774fb1e5d026380ae0168e3c5522d",
             "f9333e45d857f5d90a91bab70a1eba0cfb1be4b0783c9acfcd883a9134692925",
@@ -396,7 +396,7 @@ debug(UnitTest)
 
     Ripemd256 h = new Ripemd256();
 
-    foreach (int i, char[] s; strings)
+    foreach (int i, immutable(char)[] s; strings)
             {
             h.update(cast(ubyte[]) s);
             char[] d = h.hexDigest;
@@ -406,7 +406,7 @@ debug(UnitTest)
 
     char[] s = new char[1000000];
     for (auto i = 0; i < s.length; i++) s[i] = 'a';
-    char[] result = "ac953744e10e31514c150d4d8d7b677342e33399788296e43ae4850ce4f97978";
+    immutable(char)[] result = "ac953744e10e31514c150d4d8d7b677342e33399788296e43ae4850ce4f97978";
     h.update(cast(ubyte[]) s);
     char[] d = h.hexDigest;
 
