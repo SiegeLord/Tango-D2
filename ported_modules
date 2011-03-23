@@ -80,3 +80,5 @@ tango/util/digest/Crc32.d
 tango/util/digest/MerkleDamgard.d
 tango/util/digest/Md2.d
 tango/util/digest/Md4.d
+tango/util/digest/Md5.d
+tango/util/digest/Ripemd128.d
