@@ -29,13 +29,13 @@ final class Tiger : MerkleDamgard
 {
         private ulong[3]        context;
         private uint            npass = 3;
-        private const uint      padChar = 0x01;
+        private enum uint      padChar = 0x01;
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private static const ulong[3] initial =
+        private enum ulong[3] initial =
         [
                 0x0123456789ABCDEF,
                 0xFEDCBA9876543210,
@@ -222,7 +222,7 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        protected override void transform(ubyte[] input)
+        protected override void transform(const(ubyte[]) input)
         {
                 ulong tmpa,a,b,c;
                 ulong[8] x;
@@ -272,7 +272,7 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        private static void pass(ref ulong a, ref ulong b, ref ulong c, ulong[8] x, ulong mul)
+        private static void pass(ref ulong a, ref ulong b, ref ulong c, ref ulong[8] x, ulong mul)
         {
                 round(a,b,c,x[0],mul);
                 round(b,c,a,x[1],mul);
@@ -288,7 +288,7 @@ final class Tiger : MerkleDamgard
 
         ***********************************************************************/
 
-        private static void keySchedule(ulong[8] x)
+        private static void keySchedule(ref ulong[8] x)
         {
                 x[0] -= x[7] ^ 0xA5A5A5A5A5A5A5A5;
                 x[1] ^= x[0];
@@ -323,7 +323,7 @@ final class Tiger : MerkleDamgard
 
 *******************************************************************************/
 
-private static ulong[1024] table = 
+private enum ulong[1024] table = 
 [
     0x02aab17cf7e90c5e   /*    0 */,    0xac424b03e243a8ec   /*    1 */,
     0x72cd5be30dd5fcd3   /*    2 */,    0x6d019b93f6f97f3a   /*    3 */,
@@ -848,7 +848,7 @@ debug(UnitTest)
 {
         unittest
         {
-        static char[][] strings = [
+        enum immutable(char)[][] strings = [
                 "",
                 "abc",
                 "Tiger",
@@ -859,7 +859,7 @@ debug(UnitTest)
                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
                 x"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000",
         ];
-        static char[][] results = [
+        enum immutable(char)[][] results = [
                 "3293ac630c13f0245f92bbb1766e16167a4e58492dde73f3",
                 "2aab1484e8c158f2bfb8c5ff41b57a525129131c957b5f93",
                 "dd00230799f5009fec6debc838bb6a27df2b9d6f110c7937",
@@ -873,7 +873,7 @@ debug(UnitTest)
 
         Tiger h = new Tiger();
 
-        foreach(int i, char[] s; strings) {
+        foreach(int i, immutable(char)[] s; strings) {
                 h.update(cast(ubyte[]) s);
 
                 char[] d = h.hexDigest();
