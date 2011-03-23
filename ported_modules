@@ -73,3 +73,4 @@ tango/util/Convert.d
 tango/util/MinMax.d
 tango/util/compress/c/bzlib.d
 tango/util/compress/c/zlib.d
+tango/util/digest/Digest.d
