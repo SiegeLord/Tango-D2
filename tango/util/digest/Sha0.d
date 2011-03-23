@@ -37,7 +37,7 @@ final class Sha0 : Sha01
 
         ***********************************************************************/
 
-        final protected override void transform(ubyte[] input)
+        final protected override void transform(const(ubyte[]) input)
         {
                 uint A,B,C,D,E,TEMP;
                 uint[16] W;
@@ -86,7 +86,7 @@ debug(UnitTest)
 {
         unittest 
         {
-        static char[][] strings = 
+        enum immutable(char)[][] strings = 
         [
                 "",
                 "abc",
@@ -96,7 +96,7 @@ debug(UnitTest)
                 "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
         ];
 
-        static char[][] results = 
+        enum immutable(char)[][] results = 
         [
                 "f96cea198ad1dd5617ac084a3d92c6107708c0ef",
                 "0164b8a914cd2a5e74c4f7ff082c4d97f1edf880",
@@ -108,7 +108,7 @@ debug(UnitTest)
 
         Sha0 h = new Sha0();
 
-        foreach (int i, char[] s; strings) 
+        foreach (int i, immutable(char)[] s; strings) 
                 {
                 h.update(s);
                 char[] d = h.hexDigest();

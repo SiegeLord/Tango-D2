@@ -86,3 +86,4 @@ tango/util/digest/Ripemd160.d
 tango/util/digest/Ripemd256.d
 tango/util/digest/Ripemd320.d
 tango/util/digest/Sha01.d
+tango/util/digest/Sha0.d
