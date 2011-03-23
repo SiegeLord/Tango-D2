@@ -23,24 +23,24 @@ module tango.util.compress.c.bzlib;
 
 extern(C):
 
-const BZ_RUN = 0;
-const BZ_FLUSH = 1;
-const BZ_FINISH = 2;
+enum BZ_RUN = 0;
+enum BZ_FLUSH = 1;
+enum BZ_FINISH = 2;
 
-const BZ_OK = 0;
-const BZ_RUN_OK = 1;
-const BZ_FLUSH_OK = 2;
-const BZ_FINISH_OK = 3;
-const BZ_STREAM_END = 4;
-const BZ_SEQUENCE_ERROR = -1;
-const BZ_PARAM_ERROR = -2;
-const BZ_MEM_ERROR = -3;
-const BZ_DATA_ERROR = -4;
-const BZ_DATA_ERROR_MAGIC = -5;
-const BZ_IO_ERROR = -6;
-const BZ_UNEXPECTED_EOF = -7;
-const BZ_OUTBUFF_FULL = -8;
-const BZ_CONFIG_ERROR = -9;
+enum BZ_OK = 0;
+enum BZ_RUN_OK = 1;
+enum BZ_FLUSH_OK = 2;
+enum BZ_FINISH_OK = 3;
+enum BZ_STREAM_END = 4;
+enum BZ_SEQUENCE_ERROR = -1;
+enum BZ_PARAM_ERROR = -2;
+enum BZ_MEM_ERROR = -3;
+enum BZ_DATA_ERROR = -4;
+enum BZ_DATA_ERROR_MAGIC = -5;
+enum BZ_IO_ERROR = -6;
+enum BZ_UNEXPECTED_EOF = -7;
+enum BZ_OUTBUFF_FULL = -8;
+enum BZ_CONFIG_ERROR = -9;
 
 struct bz_stream
 {
@@ -105,7 +105,7 @@ int  BZ2_bzDecompressEnd(bz_stream *strm);
 
 version(BZ_NO_STDIO){}else{
 
-const BZ_MAX_UNUSED = 5000;
+enum BZ_MAX_UNUSED = 5000;
 alias void BZFILE;
 
 //C     BZ_EXTERN BZFILE* BZ_API(BZ2_bzReadOpen) ( 
@@ -216,7 +216,7 @@ int  BZ2_bzBuffToBuffDecompress(char *dest, uint *destLen, char *source, uint so
 //C     BZ_EXTERN const char * BZ_API(BZ2_bzlibVersion) (
 //C           void
 //C        );
-char * BZ2_bzlibVersion();
+const(char) * BZ2_bzlibVersion();
 
 version(BZ_NO_STDIO){}else{
 
@@ -224,13 +224,13 @@ version(BZ_NO_STDIO){}else{
 //C           const char *path,
 //C           const char *mode
 //C        );
-BZFILE * BZ2_bzopen(char *path, char *mode);
+BZFILE * BZ2_bzopen(in char *path, in char *mode);
 
 //C     BZ_EXTERN BZFILE * BZ_API(BZ2_bzdopen) (
 //C           int        fd,
 //C           const char *mode
 //C        );
-BZFILE * BZ2_bzdopen(int fd, char *mode);
+BZFILE * BZ2_bzdopen(int fd, in char *mode);
          
 //C     BZ_EXTERN int BZ_API(BZ2_bzread) (
 //C           BZFILE* b, 
@@ -260,7 +260,7 @@ void  BZ2_bzclose(BZFILE *b);
 //C           BZFILE *b, 
 //C           int    *errnum
 //C        );
-char * BZ2_bzerror(BZFILE *b, int *errnum);
+const(char) * BZ2_bzerror(BZFILE *b, int *errnum);
 
 }
 

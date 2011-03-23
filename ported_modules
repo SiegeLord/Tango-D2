@@ -71,3 +71,4 @@ tango/util/cipher/TEA.d
 tango/util/cipher/XTEA.d
 tango/util/Convert.d
 tango/util/MinMax.d
+tango/util/compress/c/bzlib.d
