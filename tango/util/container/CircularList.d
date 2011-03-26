@@ -179,7 +179,7 @@ class CircularList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final size_t size ()
+        final const size_t size ()
         {
                 return count;
         }
@@ -191,7 +191,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final CircularList dup ()
+        final const CircularList dup ()
         {
                 return new CircularList!(V, Reap, Heap) (list ? list.copyList(&heap.allocate) : null, count);
         }
@@ -774,7 +774,7 @@ class CircularList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final bool isEmpty ()
+        final const bool isEmpty ()
         {
                 return count is 0;
         }
@@ -1069,7 +1069,7 @@ class CircularList (V, alias Reap = Container.reap,
                     ++count;
                     // ignore this change
                     ++mutation;
-                    return *this;
+                    return this;
                 }
 
                 /***************************************************************
@@ -1085,7 +1085,7 @@ class CircularList (V, alias Reap = Container.reap,
                         rev ^= true;
                         next;
                         index = 0;
-                        return *this;
+                        return this;
                 }
         }
 }

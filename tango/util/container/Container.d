@@ -34,7 +34,7 @@ struct Container
 
         ***********************************************************************/
         
-        static size_t defaultInitialBuckets = 31;
+        enum size_t defaultInitialBuckets = 31;
 
         /***********************************************************************
 
@@ -44,7 +44,7 @@ struct Container
         
         ***********************************************************************/
         
-        static float defaultLoadFactor = 0.75f;
+        enum float defaultLoadFactor = 0.75f;
 
         /***********************************************************************
         

@@ -2,7 +2,9 @@ tango/core/Array.d
 tango/core/BitManip.d
 tango/core/ByteSwap.d
 tango/core/Exception.d
+tango/core/Memory.d
 tango/core/sync/Mutex.d
+tango/core/sync/Atomic.d
 tango/core/Thread.d
 tango/core/Traits.d
 tango/io/Console.d
@@ -92,3 +94,7 @@ tango/util/digest/Sha256.d
 tango/util/digest/Sha512.d
 tango/util/digest/Whirlpool.d
 tango/util/digest/Tiger.d
+tango/util/container/model/IContainer.d
+tango/util/container/Container.d
+tango/util/container/Clink.d
+tango/util/container/CircularList.d
