@@ -22,11 +22,11 @@ module tango.util.container.model.IContainer;
 
 interface IContainer (V)
 {
-        size_t size ();
+        const size_t size ();
 
-        bool isEmpty ();
+        const bool isEmpty ();
 
-        IContainer dup ();
+        const IContainer dup ();
 
         IContainer clear ();                          
 

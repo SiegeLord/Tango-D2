@@ -8,8 +8,9 @@
  */
 module tango.core.Memory;
 
+public import core.memory;
 
-private
+/+private
 {
     extern (C) void gc_init();
     extern (C) void gc_term();
@@ -554,4 +555,4 @@ struct GC
         newcap = newext > newcap ? newext : newcap; // just to handle overflows
         return newcap;
     }
-}
+}+/
