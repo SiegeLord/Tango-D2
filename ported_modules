@@ -102,3 +102,5 @@ tango/util/container/Slink.d
 tango/util/container/LinkedList.d
 tango/util/container/HashMap.d
 tango/util/container/HashSet.d
+tango/util/container/RedBlack.d
+tango/util/container/SortedMap.d
