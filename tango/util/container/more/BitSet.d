@@ -30,10 +30,22 @@ private import std.intrinsic;
 
 struct BitSet (int Count=0) 
 {               
-        public alias and        opAnd;
-        public alias or         opOrAssign;
-        public alias xor        opXorAssign;
-        private const           width = size_t.sizeof * 8;
+        private enum           width = size_t.sizeof * 8;
+        
+        const bool opBinary(immutable(char)[] s : "&")(size_t i)
+        {
+            return and(i);
+        }
+        
+        void opOpAssign(immutable(char)[] s : "|")(size_t i)
+        {
+            or(i);
+        }
+        
+        void opOpAssign(immutable(char)[] s : "^")(size_t i)
+        {
+            xor(i);
+        }
 
         static if (Count == 0)
                    private size_t[] bits;
@@ -60,7 +72,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        bool has (size_t i)
+        const bool has (size_t i)
         {
                 auto idx = i / width;
                 return idx < bits.length && (bits[idx] & (1 << (i % width))) != 0;
@@ -74,7 +86,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        bool and (size_t i)
+        const bool and (size_t i)
         {
                 return (bits[i / width] & (1 << (i % width))) != 0;
                 //return bt(&bits[i / width], i % width) != 0;
@@ -125,7 +137,7 @@ struct BitSet (int Count=0)
         BitSet* clr ()
         {
                 bits[] = 0;
-                return this;
+                return &this;
         }
         
         /**********************************************************************
@@ -134,7 +146,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        BitSet dup ()
+        const BitSet dup ()
         {
                 BitSet x;
                 static if (Count == 0)
@@ -149,7 +161,7 @@ struct BitSet (int Count=0)
 
         **********************************************************************/
 
-        size_t size ()
+        const size_t size ()
         {
                 return width * bits.length;
         }
@@ -165,6 +177,6 @@ struct BitSet (int Count=0)
                 i = i / width;
                 if (i >= bits.length)
                     bits.length = i + 1;
-                return this;
+                return &this;
         }
 }
