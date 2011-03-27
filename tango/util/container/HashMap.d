@@ -161,7 +161,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final size_t size ()
+        final const size_t size ()
         {
                 return count;
         }
@@ -759,7 +759,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final float threshold ()
+        final const float threshold ()
         {
                 return loadFactor;
         }
@@ -814,7 +814,7 @@ class HashMap (K, V, alias Hash = Container.hash,
                 
         ***********************************************************************/
 
-        final bool isEmpty ()
+        final const bool isEmpty ()
         {
                 return count is 0;
         }
