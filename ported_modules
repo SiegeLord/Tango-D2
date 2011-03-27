@@ -104,3 +104,4 @@ tango/util/container/HashMap.d
 tango/util/container/HashSet.d
 tango/util/container/RedBlack.d
 tango/util/container/SortedMap.d
+tango/util/container/more/BitSet.d
