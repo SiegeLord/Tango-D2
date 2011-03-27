@@ -191,7 +191,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final const CircularList dup ()
+        final CircularList dup ()
         {
                 return new CircularList!(V, Reap, Heap) (list ? list.copyList(&heap.allocate) : null, count);
         }

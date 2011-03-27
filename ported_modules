@@ -98,3 +98,5 @@ tango/util/container/model/IContainer.d
 tango/util/container/Container.d
 tango/util/container/Clink.d
 tango/util/container/CircularList.d
+tango/util/container/Slink.d
+tango/util/container/LinkedList.d

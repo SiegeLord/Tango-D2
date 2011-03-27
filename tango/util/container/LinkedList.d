@@ -178,7 +178,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final size_t size ()
+        final const size_t size ()
         {
                 return count;
         }
@@ -730,7 +730,7 @@ class LinkedList (V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final bool isEmpty ()
+        final const bool isEmpty ()
         {
                 return count is 0;
         }
