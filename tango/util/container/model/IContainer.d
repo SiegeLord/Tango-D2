@@ -26,7 +26,7 @@ interface IContainer (V)
 
         const bool isEmpty ();
 
-        const IContainer dup ();
+        IContainer dup ();
 
         IContainer clear ();                          
 
