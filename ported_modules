@@ -101,3 +101,4 @@ tango/util/container/CircularList.d
 tango/util/container/Slink.d
 tango/util/container/LinkedList.d
 tango/util/container/HashMap.d
+tango/util/container/HashSet.d
