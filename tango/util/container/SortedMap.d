@@ -181,7 +181,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final size_t size ()
+        final const size_t size ()
         {
                 return count;
         }
@@ -655,7 +655,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 
         ***********************************************************************/
 
-        final bool isEmpty ()
+        final const bool isEmpty ()
         {
                 return count is 0;
         }
@@ -694,7 +694,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                  
         ***********************************************************************/
 
-        private void noSuchElement (char[] msg)
+        private void noSuchElement (immutable(char)[] msg)
         {
                 throw new NoSuchElementException (msg);
         }
@@ -781,7 +781,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                 mutate;
 
                 // collect each node if we can't collect all at once
-                if (heap.collect(all) is false & count)                 
+                if ((heap.collect(all) is false) & count)                 
                    {
                    auto node = tree.leftmost;
                    while (node)
@@ -1000,7 +1000,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
                             bump = &back;
                         else
                            bump = &fore;
-                        return *this;
+                        return this;
                 }
 
                 /***************************************************************
