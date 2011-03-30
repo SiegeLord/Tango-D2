@@ -8,6 +8,7 @@ tango/core/sync/Atomic.d
 tango/core/Thread.d
 tango/core/Traits.d
 tango/io/Console.d
+tango/io/device/Array.d
 tango/io/device/Conduit.d
 tango/io/device/Device.d
 tango/io/device/File.d

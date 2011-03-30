@@ -23,7 +23,7 @@ private import tango.io.device.Conduit;
 
 extern (C)
 {
-        protected void * memcpy (void *dst, void *src, size_t);
+        protected void * memcpy (void *dst, const(void) *src, size_t);
 }
 
 /*******************************************************************************
@@ -58,10 +58,10 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
         private size_t  dimension;              // maximum extent of content
         private size_t  expansion;              // for growing instances
 
-        private static char[] overflow  = "output buffer is full";
-        private static char[] underflow = "input buffer is empty";
-        private static char[] eofRead   = "end-of-flow while reading";
-        private static char[] eofWrite  = "end-of-flow while writing";
+        private enum immutable(char)[] overflow  = "output buffer is full";
+        private enum immutable(char)[] underflow = "input buffer is empty";
+        private enum immutable(char)[] eofRead   = "end-of-flow while reading";
+        private enum immutable(char)[] eofWrite  = "end-of-flow while writing";
 
         /***********************************************************************
 
@@ -69,7 +69,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        invariant
+        invariant()
         {
                 assert (index <= extent);
                 assert (extent <= dimension);
@@ -146,7 +146,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override char[] toString ()
+        final override immutable(char)[] toString ()
         {
                 return "<array>";
         }
@@ -206,7 +206,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void[]) src)
         {
                 auto len = src.length;
                 if (len)
@@ -228,7 +228,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override size_t bufferSize ()
+        final override const size_t bufferSize ()
         {
                 return data.length;
         }
@@ -438,7 +438,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final Array append (void[] src)
+        final Array append (const(void[]) src)
         {
                 if (write(src) is Eof)
                     error (overflow);
@@ -466,7 +466,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final bool next (size_t delegate (void[]) scan)
+        final bool next (scope size_t delegate (const(void[])) scan)
         {
                 return reader (scan) != IConduit.Eof;
         }
@@ -481,7 +481,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t readable ()
+        final const size_t readable ()
         {
                 return extent - index;
         }
@@ -496,7 +496,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t writable ()
+        final const size_t writable ()
         {
                 return dimension - extent;
         }
@@ -516,7 +516,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t limit ()
+        final const size_t limit ()
         {
                 return extent;
         }
@@ -536,7 +536,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t capacity ()
+        final const size_t capacity ()
         {
                 return dimension;
         }
@@ -556,7 +556,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t position ()
+        final const size_t position ()
         {
                 return index;
         }
@@ -608,7 +608,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t writer (size_t delegate (void[]) dg)
+        final size_t writer (scope size_t delegate (void[]) dg)
         {
                 auto count = dg (data [extent..dimension]);
 
@@ -641,7 +641,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t reader (size_t delegate (void[]) dg)
+        final size_t reader (scope size_t delegate (const(void[])) dg)
         {
                 auto count = dg (data [index..extent]);
 
