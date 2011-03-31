@@ -28,7 +28,7 @@ private import tango.util.container.model.IContainer;
 
         ---
         Iterator iterator ()
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
 
         CircularList add (V element)
         CircularList addAt (size_t index, V element)
@@ -168,7 +168,7 @@ class CircularList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -999,7 +999,7 @@ class CircularList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
                         auto c = cell;

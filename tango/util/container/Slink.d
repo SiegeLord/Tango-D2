@@ -324,7 +324,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         
         ***********************************************************************/
 
-        final Ref copy (Ref delegate() alloc)
+        final Ref copy (scope Ref delegate() alloc)
         {
                 auto newlist = dup (alloc);
                 auto current = newlist;
@@ -344,7 +344,7 @@ struct Slink (V, K=KeyDummy, bool Identity = false, bool HashCache = false)
                         
         ***********************************************************************/
 
-        private Ref dup (Ref delegate() alloc)
+        private Ref dup (scope Ref delegate() alloc)
         {
                 auto ret = alloc();
                 static if (is(typeof(K) == KeyDummy))

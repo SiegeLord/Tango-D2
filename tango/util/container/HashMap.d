@@ -30,8 +30,8 @@ private import tango.core.Exception : NoSuchElementException;
 
         ---
         Iterator iterator ()
-        int opApply (int delegate(ref V value) dg)
-        int opApply (int delegate(ref K key, ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref K key, ref V value) dg)
 
         bool get (K key, ref V element)
         bool keyOf (V value, ref K key)
@@ -140,7 +140,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref K key, ref V value) dg)
+        final int opApply (scope int delegate(ref K key, ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -150,7 +150,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
@@ -1076,7 +1076,7 @@ class HashMap (K, V, alias Hash = Container.hash,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref K key, ref V value) dg)
+                int opApply (scope int delegate(ref K key, ref V value) dg)
                 {
                         int result;
 

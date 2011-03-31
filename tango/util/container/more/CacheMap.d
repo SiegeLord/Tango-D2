@@ -108,7 +108,7 @@ class CacheMap (K, V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref K key, ref V value) dg)
+        final int opApply (scope int delegate(ref K key, ref V value) dg)
         {
                         K   key;
                         V   value;

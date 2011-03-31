@@ -28,7 +28,7 @@ private import tango.util.container.model.IContainer;
 
         ---
 	Iterator iterator ()
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
 
         V head ()
         V tail ()
@@ -167,7 +167,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -1022,7 +1022,7 @@ class LinkedList (V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
 
