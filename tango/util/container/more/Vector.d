@@ -30,7 +30,11 @@ struct Vector (V, int Size = 0)
 {
         alias add       push;
         alias slice     opSlice;
-        alias push      opCatAssign;
+
+        Vector* opOpAssign(immutable(char)[] s : "~")(V value)
+        {
+            return push(value);
+        }
 
         static if (Size == 0)
                   {
@@ -52,7 +56,7 @@ struct Vector (V, int Size = 0)
         Vector* clear ()
         {
                 depth = 0;
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -61,7 +65,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        uint size ()
+        const uint size ()
         {
                 return depth;
         }
@@ -72,7 +76,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        uint unused ()
+        const uint unused ()
         {
                 return vector.length - depth;
         }
@@ -156,7 +160,7 @@ struct Vector (V, int Size = 0)
         {
                 foreach (v; value)
                          add (v);
-                return this;
+                return &this;
         }
 
         /**********************************************************************
@@ -266,7 +270,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
         {
                         int result;
 
@@ -281,7 +285,7 @@ struct Vector (V, int Size = 0)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref V value, ref bool kill) dg)
+        int opApply (scope int delegate(ref V value, ref bool kill) dg)
         {
                         int result;
 

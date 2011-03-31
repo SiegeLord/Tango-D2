@@ -112,3 +112,4 @@ tango/util/container/more/HashFile.d
 tango/util/container/more/Heap.d
 tango/util/container/more/Stack.d
 tango/util/container/more/StackMap.d
+tango/util/container/more/Vector.d
