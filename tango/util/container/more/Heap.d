@@ -37,9 +37,6 @@ void defaultHeapSwap(T)(T t, uint index) {}
 
 struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap!(T))
 {
-        alias pop       remove;
-        alias push      opCatAssign;
-
         // The actual data.
         private T[]     heap;
         
@@ -136,7 +133,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         /** Returns the number of elements in this heap. */
-        uint size ()
+        const uint size ()
         {
                 return next;
         }
@@ -155,7 +152,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         /** Get the reserved capacity of this heap. */
-        uint capacity ()
+        const uint capacity ()
         {
                 return heap.length;
         }
@@ -181,7 +178,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         // Get the index of the parent for the element at the given index.
-        private uint parent (uint index)
+        private const uint parent (uint index)
         {
                 return (index - 1) / 2;
         }
@@ -238,6 +235,18 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
                 Move(t2, a);
                 heap[b] = t1;
                 Move(t1, b);
+        }
+        
+        alias pop       remove;
+        
+        void opOpAssign(immutable(char)[] s : "~")(T t)
+        {
+            push(t);
+        }
+        
+        void opOpAssign(immutable(char)[] s : "~")(T[] array)
+        {
+            push(array);
         }
 }
 

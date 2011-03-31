@@ -109,3 +109,4 @@ tango/util/container/SortedMap.d
 tango/util/container/more/BitSet.d
 tango/util/container/more/CacheMap.d
 tango/util/container/more/HashFile.d
+tango/util/container/more/Heap.d
