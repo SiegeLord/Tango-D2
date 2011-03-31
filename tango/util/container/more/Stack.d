@@ -29,10 +29,21 @@ struct Stack (V, int Size = 0)
 {
         alias nth              opIndex;
         alias slice            opSlice;
-        alias rotateRight      opShrAssign;
-        alias rotateLeft       opShlAssign;
-        alias push             opCatAssign;
-          
+        
+        Stack* opOpAssign(immutable(char)[] s : ">>")(uint d)
+        {
+            return rotateRight(d);
+        }
+        
+        Stack* opOpAssign(immutable(char)[] s : "<<")(uint d)
+        {
+            return rotateLeft(d);
+        }
+        
+        Stack* opOpAssign(immutable(char)[] s : "~")(V value)
+        {
+            return push(value);
+        }
         
         static if (Size == 0)
                   {
@@ -54,7 +65,7 @@ struct Stack (V, int Size = 0)
         Stack* clear ()
         {
                 depth = 0;
-                return this;
+                return &this;
         }
 
         /***********************************************************************
@@ -131,7 +142,7 @@ struct Stack (V, int Size = 0)
                           else
                              error (__LINE__);
                           }
-                return this;
+                return &this;
         }
 
         /**********************************************************************
@@ -146,7 +157,7 @@ struct Stack (V, int Size = 0)
         {
                 foreach (v; value)
                          push (v);
-                return this;
+                return &this;
         }
 
         /**********************************************************************
@@ -239,7 +250,7 @@ struct Stack (V, int Size = 0)
                    }
                 else
                    error (__LINE__);
-                return this;
+                return &this;
         }
 
         /**********************************************************************
@@ -262,7 +273,7 @@ struct Stack (V, int Size = 0)
                    }
                 else
                    error (__LINE__);
-                return this;
+                return &this;
         }
 
         /**********************************************************************
@@ -297,7 +308,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
         {
                         int result;
 
