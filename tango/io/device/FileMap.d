@@ -53,7 +53,7 @@ class FileMap : Array
 
         ***********************************************************************/
 
-        this (char[] path, File.Style style = File.ReadWriteOpen)
+        this (const(char[]) path, File.Style style = File.ReadWriteOpen)
         {
                 file = new MappedFile (path, style);
                 super (file.map);
@@ -106,7 +106,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        this (char[] path, File.Style style = File.ReadWriteOpen)
+        this (const(char[]) path, File.Style style = File.ReadWriteOpen)
         {
                 host = new File (path, style);
         }
@@ -124,7 +124,7 @@ class MappedFile
 
         ***********************************************************************/
 
-        final char[] path ()
+        final const(char)[] path ()
         {
                 return host.toString;
         }

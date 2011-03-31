@@ -12,6 +12,7 @@ tango/io/device/Array.d
 tango/io/device/Conduit.d
 tango/io/device/Device.d
 tango/io/device/File.d
+tango/io/device/FileMap.d
 tango/io/model/IConduit.d
 tango/io/Stdout.d
 tango/io/stream/Buffered.d
