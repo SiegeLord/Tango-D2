@@ -71,16 +71,16 @@ class HashFile(K, V)
         private ulong                   waterLine;
 
         // supported block sizes
-        public static const BlockSize   EighthK  = {128-1},
-                                        QuarterK = {256-1},
-                                        HalfK    = {512-1},
-                                        OneK     = {1024*1-1},
-                                        TwoK     = {1024*2-1},
-                                        FourK    = {1024*4-1},
-                                        EightK   = {1024*8-1},
-                                        SixteenK = {1024*16-1},
-                                        ThirtyTwoK = {1024*32-1},
-                                        SixtyFourK = {1024*64-1};
+        public enum BlockSize   EighthK  = {128-1},
+                                QuarterK = {256-1},
+                                HalfK    = {512-1},
+                                OneK     = {1024*1-1},
+                                TwoK     = {1024*2-1},
+                                FourK    = {1024*4-1},
+                                EightK   = {1024*8-1},
+                                SixteenK = {1024*16-1},
+                                ThirtyTwoK = {1024*32-1},
+                                SixtyFourK = {1024*64-1};
 
 
         /**********************************************************************
@@ -93,7 +93,7 @@ class HashFile(K, V)
 
         **********************************************************************/
 
-        this (char[] path, BlockSize block, uint initialRecords = 100)
+        this (const(char[]) path, BlockSize block, uint initialRecords = 100)
         {
                 this.block = block;
 
@@ -113,7 +113,7 @@ class HashFile(K, V)
 
         **********************************************************************/
 
-        final char[] path ()
+        final const(char[]) path ()
         {
                 return file.path;
         }
@@ -124,7 +124,7 @@ class HashFile(K, V)
 
         **********************************************************************/
 
-        final ulong length ()
+        final const ulong length ()
         {
                 return waterLine;
         }
@@ -236,7 +236,7 @@ class HashFile(K, V)
                 {
                         if (used)
                            {
-                           auto ret = cast(V) bucket.heap [offset .. offset + used];
+                           auto ret = cast(V) bucket.heap [cast(size_t)offset .. cast(size_t)(offset + used)];
                            if (clear)
                                used = 0;
                            return ret;
@@ -259,7 +259,7 @@ class HashFile(K, V)
                         if (this.used > this.capacity)
                             createBucket (bucket, this.used, block);
 
-                        bucket.heap [offset .. offset+used] = cast(ubyte[]) data;
+                        bucket.heap [cast(size_t)offset .. cast(size_t)(offset+used)] = cast(ubyte[]) data;
                 }
 
                 /**************************************************************
@@ -293,7 +293,7 @@ class HashFile(K, V)
 
 debug (HashFile)
 {
-        extern(C) int printf (char*, ...);
+        extern(C) int printf (const(char)*, ...);
 
         import tango.io.Path;
         import tango.io.Stdout;
