@@ -83,7 +83,7 @@ struct Clink (V)
          * Make a cell holding v and link it immediately after current cell
         **/
 
-        void addNext (V v, Ref delegate() alloc)
+        void addNext (V v, scope Ref delegate() alloc)
         {
                 auto p = alloc().set (v, &this, next);
                 next.prev = p;
@@ -94,7 +94,7 @@ struct Clink (V)
          * make a node holding v, link it before the current cell, and return it
         **/
 
-        Ref addPrev (V v, Ref delegate() alloc)
+        Ref addPrev (V v, scope Ref delegate() alloc)
         {
                 auto p = prev;
                 auto c = alloc().set (v, p, &this);
@@ -223,7 +223,7 @@ struct Clink (V)
          * Make a copy of the list and return new head. 
         **/
 
-        const Ref copyList (Ref delegate() alloc)
+        const Ref copyList (scope Ref delegate() alloc)
         {
                 auto hd = &this;
 

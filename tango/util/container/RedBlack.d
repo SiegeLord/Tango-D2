@@ -104,7 +104,7 @@ struct RedBlack (V, A = AttributeDummy)
          * multiple identical links in a RB tree.)
         **/ 
 
-        protected Ref dup (Ref delegate() alloc)
+        protected Ref dup (scope Ref delegate() alloc)
         {
                 static if (is(typeof(A) == AttributeDummy))
                            auto t = alloc().set (value);
@@ -431,7 +431,7 @@ struct RedBlack (V, A = AttributeDummy)
          * Return a new subtree containing each value of current subtree
         **/
 
-        Ref copyTree (Ref delegate() alloc)
+        Ref copyTree (scope Ref delegate() alloc)
         {
                 auto t = dup (alloc);
 

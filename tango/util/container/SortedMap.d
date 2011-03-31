@@ -31,8 +31,8 @@ private import tango.core.Exception : NoSuchElementException;
         ---
         Iterator iterator (bool forward)
         Iterator iterator (K key, bool forward)
-        int opApply (int delegate (ref V value) dg)
-        int opApply (int delegate (ref K key, ref V value) dg)
+        int opApply (scope int delegate (ref V value) dg)
+        int opApply (scope int delegate (ref K key, ref V value) dg)
 
         bool contains (V value)
         bool containsKey (K key)
@@ -218,7 +218,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         
         ***********************************************************************/
         
-        final int opApply (int delegate (ref V value) dg)
+        final int opApply (scope int delegate (ref V value) dg)
         {
                 return iterator.opApply ((ref K k, ref V v) {return dg(v);});
         }
@@ -228,7 +228,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
         
         ***********************************************************************/
         
-        final int opApply (int delegate (ref K key, ref V value) dg)
+        final int opApply (scope int delegate (ref K key, ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -952,7 +952,7 @@ class SortedMap (K, V, alias Reap = Container.reap,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref K key, ref V value) dg)
+                int opApply (scope int delegate(ref K key, ref V value) dg)
                 {
                         int result;
 

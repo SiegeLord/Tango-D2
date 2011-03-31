@@ -28,7 +28,7 @@ private import tango.util.container.model.IContainer;
 
         ---
         Iterator iterator ()
-        int opApply (int delegate(ref V value) dg)
+        int opApply (scope int delegate(ref V value) dg)
 
         bool add (V element)
         bool contains (V element)
@@ -123,7 +123,7 @@ class HashSet (V, alias Hash = Container.hash,
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref V value) dg)
+        final int opApply (scope int delegate(ref V value) dg)
         {
                 return iterator.opApply (dg);
         }
@@ -746,7 +746,7 @@ class HashSet (V, alias Hash = Container.hash,
 
                 ***************************************************************/
 
-                int opApply (int delegate(ref V value) dg)
+                int opApply (scope int delegate(ref V value) dg)
                 {
                         int result;
 

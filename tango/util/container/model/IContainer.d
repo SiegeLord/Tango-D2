@@ -42,7 +42,7 @@ interface IContainer (V)
 
         size_t remove (V element, bool all);
 
-        int opApply (int delegate(ref V value) dg);
+        int opApply (scope int delegate(ref V value) dg);
 
         size_t replace (V oldElement, V newElement, bool all);
 }
