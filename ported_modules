@@ -48,6 +48,7 @@ tango/sys/Common.d
 tango/text/Ascii.d
 tango/text/convert/Float.d
 tango/text/convert/Integer.d
+tango/text/convert/Format.d
 tango/text/convert/Layout.d
 tango/text/convert/Utf.d
 tango/text/xml/Document.d
@@ -116,3 +117,5 @@ tango/util/MinMax.d
 tango/util/encode/Base16.d
 tango/util/encode/Base32.d
 tango/util/encode/Base64.d
+tango/util/log/model/ILogger.d
+tango/util/log/Log.d
