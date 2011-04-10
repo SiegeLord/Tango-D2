@@ -113,3 +113,6 @@ tango/util/digest/Sha512.d
 tango/util/digest/Tiger.d
 tango/util/digest/Whirlpool.d
 tango/util/MinMax.d
+tango/util/encode/Base16.d
+tango/util/encode/Base32.d
+tango/util/encode/Base64.d
