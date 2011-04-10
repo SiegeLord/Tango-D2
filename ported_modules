@@ -119,3 +119,4 @@ tango/util/encode/Base32.d
 tango/util/encode/Base64.d
 tango/util/log/model/ILogger.d
 tango/util/log/Log.d
+tango/util/log/AppendConsole.d

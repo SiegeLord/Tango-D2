@@ -41,7 +41,7 @@ public class AppendConsole : AppendStream
 
         ***********************************************************************/
 
-        override char[] name ()
+        override const const(char[]) name ()
         {
                 return this.classinfo.name;
         }
