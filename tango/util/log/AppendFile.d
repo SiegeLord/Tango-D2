@@ -40,7 +40,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        this (char[] fp, Appender.Layout how = null)
+        this (const(char[]) fp, Appender.Layout how = null)
         {
                 // Get a unique fingerprint for this instance
                 mask_ = register (fp);
@@ -58,7 +58,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final Mask mask ()
+        final const Mask mask ()
         {
                 return mask_;
         }
@@ -69,7 +69,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final char[] name ()
+        final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -80,11 +80,14 @@ class AppendFile : Filer
                  
         ***********************************************************************/
 
-        final synchronized void append (LogEvent event)
+        final void append (LogEvent event)
         {
-                layout.format (event, &buffer.write);
-                buffer.append (FileConst.NewlineString)
-                      .flush;
+                synchronized(this)
+                {
+                    layout.format (event, &buffer.write);
+                    buffer.append (FileConst.NewlineString)
+                          .flush;
+                }
         }
 }
 
@@ -117,13 +120,16 @@ class Filer : Appender
 
         ***********************************************************************/
 
-        final synchronized void close ()
+        final void close ()
         {
-                if (conduit_)
-                   {
-                   conduit_.detach;
-                   conduit_ = null;
-                   }
+                synchronized(this)
+                {
+                    if (conduit_)
+                       {
+                       conduit_.detach;
+                       conduit_ = null;
+                       }
+                }
         }
 
         /***********************************************************************
