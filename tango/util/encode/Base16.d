@@ -43,7 +43,7 @@ module tango.util.encode.Base16;
 *******************************************************************************/
 
 
-uint allocateEncodeSize(ubyte[] data)
+uint allocateEncodeSize(const(ubyte[]) data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -81,7 +81,7 @@ uint allocateEncodeSize(uint length)
 
 *******************************************************************************/
 
-char[] encode(ubyte[] data, char[] buff)
+char[] encode(const(ubyte[]) data, char[] buff)
 in
 {
     assert(data);
@@ -115,7 +115,7 @@ body
 *******************************************************************************/
 
 
-char[] encode(ubyte[] data)
+char[] encode(const(ubyte[]) data)
 in
 {
     assert(data);
@@ -149,7 +149,7 @@ body
 
 *******************************************************************************/
 
-ubyte[] decode(char[] data)
+ubyte[] decode(const(char[]) data)
 in
 {
     assert(data);
@@ -184,7 +184,7 @@ body
 
 *******************************************************************************/
 
-ubyte[] decode(char[] data, ubyte[] buff)
+ubyte[] decode(const(char[]) data, ubyte[] buff)
 in
 {
     assert(data);
@@ -213,7 +213,7 @@ debug (UnitTest)
 {
     unittest
     {
-        static char[][] testRaw = [
+        immutable immutable(char)[][] testRaw = [
             "",
             "A",
             "AB",
@@ -222,7 +222,7 @@ debug (UnitTest)
             "Hello, how are you today?",
             "AbCdEfGhIjKlMnOpQrStUvXyZ",
         ];
-        static char[][] testEnc = [
+        immutable immutable(char)[][] testEnc = [
             "",
             "41",
             "4142",
@@ -252,10 +252,10 @@ private:
     Static immutable tables used for fast lookups to
     encode and decode data.
 */
-static const ubyte hex_PAD = '=';
-static const char[] _encodeTable = "0123456789ABCDEF";
+immutable ubyte hex_PAD = '=';
+immutable char[] _encodeTable = "0123456789ABCDEF";
 
-static const ubyte[] _decodeTable = [
+immutable ubyte[] _decodeTable = [
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,

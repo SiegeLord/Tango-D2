@@ -43,7 +43,7 @@ module tango.util.encode.Base32;
 *******************************************************************************/
 
 
-uint allocateEncodeSize(ubyte[] data)
+uint allocateEncodeSize(const(ubyte[]) data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -84,7 +84,7 @@ uint allocateEncodeSize(uint length)
 
 *******************************************************************************/
 
-char[] encode(ubyte[] data, char[] buff, bool pad=true)
+char[] encode(const(ubyte[]) data, char[] buff, bool pad=true)
 in
 {
     assert(data);
@@ -97,7 +97,7 @@ body
     byte remainlen;  // Tracks bits in remainder
     foreach (ubyte j; data)
     {
-        remainder = (remainder<<8) | j;
+        remainder = cast(ushort)((remainder<<8) | j);
         remainlen += 8;
         do {
             remainlen -= 5;
@@ -132,7 +132,7 @@ body
 *******************************************************************************/
 
 
-char[] encode(ubyte[] data, bool pad=true)
+char[] encode(const(ubyte[]) data, bool pad=true)
 in
 {
     assert(data);
@@ -166,7 +166,7 @@ body
 
 *******************************************************************************/
 
-ubyte[] decode(char[] data)
+ubyte[] decode(const(char[]) data)
 in
 {
     assert(data);
@@ -200,7 +200,7 @@ body
     ---
 
 *******************************************************************************/
-ubyte[] decode(char[] data, ubyte[] buff)
+ubyte[] decode(const(char[]) data, ubyte[] buff)
 in
 {
     assert(data);
@@ -215,7 +215,7 @@ body
         auto dec = _decodeTable[c];
         if (dec & 0b1000_0000)
             continue;
-        remainder = (remainder<<5) | dec;
+        remainder = cast(ushort)((remainder<<5) | dec);
         for (remainlen += 5; remainlen >= 8; remainlen -= 8)
             buff[oIndex++] = cast(ubyte) (remainder >> (remainlen-8));
     }
@@ -227,7 +227,7 @@ debug (UnitTest)
 {
     unittest
     {
-        static char[][] testBytes = [
+        immutable immutable(char)[][] testBytes = [
             "",
             "foo",
             "foob",
@@ -235,7 +235,7 @@ debug (UnitTest)
             "foobar",
             "Hello, how are you today?",
         ];
-        static char[][] testChars = [
+        immutable immutable(char)[][] testChars = [
             "",
             "MZXW6===",
             "MZXW6YQ=",
@@ -264,10 +264,10 @@ private:
     Static immutable tables used for fast lookups to
     encode and decode data.
 */
-static const ubyte base32_PAD = '=';
-static const char[] _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+immutable ubyte base32_PAD = '=';
+immutable char[] _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-static const ubyte[] _decodeTable = [
+immutable ubyte[] _decodeTable = [
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,
     0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF, 0xFF,0xFF,0xFF,0xFF,

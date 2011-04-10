@@ -42,7 +42,7 @@ module tango.util.encode.Base64;
 *******************************************************************************/
 
 
-uint allocateEncodeSize(ubyte[] data)
+uint allocateEncodeSize(const(ubyte[]) data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -79,12 +79,12 @@ uint allocateEncodeSize(uint length)
 
 *******************************************************************************/
 
-int encodeChunk(ubyte[] data, char[] buff, ref int bytesEncoded)
+int encodeChunk(const(ubyte[]) data, char[] buff, ref int bytesEncoded)
 {
     size_t tripletCount = data.length / 3;
     int rtn = 0;
     char *rtnPtr = buff.ptr;
-    ubyte *dataPtr = data.ptr;
+    const(ubyte) *dataPtr = data.ptr;
 
     if (data.length > 0)
     {
@@ -121,7 +121,7 @@ int encodeChunk(ubyte[] data, char[] buff, ref int bytesEncoded)
 
 *******************************************************************************/
 
-char[] encode(ubyte[] data, char[] buff)
+char[] encode(const(ubyte[]) data, char[] buff)
 in
 {
     assert(data);
@@ -136,7 +136,7 @@ body
         int bytesEncoded = 0;
         int numBytes = encodeChunk(data, buff, bytesEncoded);
         char *rtnPtr = buff.ptr + bytesEncoded;
-        ubyte *dataPtr = data.ptr + numBytes;
+        const(ubyte) *dataPtr = data.ptr + numBytes;
         int tripletFraction = data.length - (dataPtr - data.ptr);
 
         switch (tripletFraction)
@@ -179,7 +179,7 @@ body
 *******************************************************************************/
 
 
-char[] encode(ubyte[] data)
+char[] encode(const(ubyte[]) data)
 in
 {
     assert(data);
@@ -213,7 +213,7 @@ body
 
 *******************************************************************************/
 
-ubyte[] decode(char[] data)
+ubyte[] decode(const(char[]) data)
 in
 {
     assert(data);
@@ -248,7 +248,7 @@ body
 
 *******************************************************************************/
        
-ubyte[] decode(char[] data, ubyte[] buff)
+ubyte[] decode(const(char[]) data, ubyte[] buff)
 in
 {
     assert(data);
@@ -287,7 +287,7 @@ body
         if (padCount == 0)
             paddedPos = 0;
 
-        char[] nonPadded = data[0..(length - paddedPos)];
+        const(char)[] nonPadded = data[0..(length - paddedPos)];
         foreach(piece; nonPadded)
         {
             ubyte next = _decodeTable[piece];
@@ -307,7 +307,7 @@ body
         // this will try and decode whatever is left, even if it isn't terminated properly (ie: missing last one or two =)
         if (paddedPos)
         {
-            char[] padded = data[(length - paddedPos) .. length];
+            const(char)[] padded = data[(length - paddedPos) .. length];
             foreach(char piece; padded)
             {
                 ubyte next = _decodeTable[piece];
@@ -348,7 +348,7 @@ version (Test)
     {
         Test.Status encodeChunktest(ref char[][] messages)
         {
-            char[] str = "Hello, how are you today?";
+            immutable(char)[] str = "Hello, how are you today?";
             char[] encoded = new char[allocateEncodeSize(cast(ubyte[])str)];
             int bytesEncoded = 0;
             int numBytesLeft = encodeChunk(cast(ubyte[])str, encoded, bytesEncoded);
@@ -435,10 +435,10 @@ private:
     Static immutable tables used for fast lookups to 
     encode and decode data.
 */
-static const ubyte BASE64_PAD = 64;
-static const char[] _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+immutable ubyte BASE64_PAD = 64;
+immutable char[] _encodeTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-static const ubyte[] _decodeTable = [
+immutable ubyte[] _decodeTable = [
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,62,0,0,0,63,52,53,54,55,56,57,58,
