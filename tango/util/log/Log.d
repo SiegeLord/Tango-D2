@@ -126,7 +126,7 @@ else version (DigitalMars)
 
 extern (C)
 {
-        private int memcmp (void *, void *, size_t);
+        private int memcmp (const(void) *, const(void) *, size_t);
 }
 
 version (Win32)
@@ -164,20 +164,20 @@ public struct Log
         public alias formatln opCall;
 
         // internal use only
-        private static Hierarchy base;
-        private static Time beginTime;
+        private static __gshared Hierarchy base;
+        private static __gshared Time beginTime;
 
         version (Win32)
         {
-                private static double multiplier;
-                private static ulong  timerStart;
+                private static __gshared double multiplier;
+                private static __gshared ulong  timerStart;
         }
 
-        private struct  Pair {char[] name; Level value;}
+        private struct  Pair {const(char)[] name; Level value;}
 
-        private static  Level [char[]] map;
+        private static  __gshared Level [immutable(char)[]] map;
 
-        private static  Pair[] Pairs =
+        private static  __gshared Pair[] Pairs =
                         [
                         {"TRACE",  Level.Trace},
                         {"Trace",  Level.Trace},
@@ -200,7 +200,7 @@ public struct Log
                         ];
 
         // logging-level names
-        private static char[][] LevelNames =
+        private immutable char[][] LevelNames =
         [
                 "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];
@@ -242,7 +242,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static Level convert (char[] name, Level def=Level.Trace)
+        static Level convert (const(char[]) name, Level def=Level.Trace)
         {
                 auto p = name in map;
                 if (p)
@@ -300,7 +300,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static Logger lookup (char[] name)
+        static Logger lookup (const(char[]) name)
         {
                 return base.lookup (name);
         }
@@ -311,7 +311,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static char[] convert (int level)
+        static const(char)[] convert (int level)
         {
                 assert (level >= Level.Trace && level <= Level.None);
                 return LevelNames[level];
@@ -334,7 +334,7 @@ public struct Log
 
         ***********************************************************************/
 
-        static void formatln (char[] fmt, ...)
+        static void formatln (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -451,12 +451,12 @@ public class Logger : ILogger
         interface Context
         {
                 /// return a label for this context
-                char[] label ();
+                const const(char)[] label ();
 
                 /// first arg is the setting of the logger itself, and
                 /// the second arg is what kind of message we're being
                 /// asked to produce
-                bool enabled (Level setting, Level target);
+                const bool enabled (Level setting, Level target);
         }
 
         /***********************************************************************
@@ -467,7 +467,7 @@ public class Logger : ILogger
                                 parent;
 
         private Hierarchy       host_;
-        private char[]          name_;
+        private const(char)[]          name_;
         private Level           level_;
         private bool            additive_;
         private Appender        appender_;
@@ -480,7 +480,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        private this (Hierarchy host, char[] name)
+        private this (Hierarchy host, const(char[]) name)
         {
                 host_ = host;
                 level_ = Level.Trace;
@@ -516,7 +516,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void trace (char[] fmt, ...)
+        final void trace (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -549,7 +549,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void info (char[] fmt, ...)
+        final void info (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -582,7 +582,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void warn (char[] fmt, ...)
+        final void warn (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -615,7 +615,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void error (char[] fmt, ...)
+        final void error (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -648,7 +648,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final void fatal (char[] fmt, ...)
+        final void fatal (const(char[]) fmt, ...)
         {
             version (DigitalMarsX64)
             {
@@ -670,7 +670,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final char[] name ()
+        final const(char)[] name ()
         {
                 int i = name_.length;
                 if (i > 0)
@@ -724,7 +724,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final bool additive ()
+        final const bool additive ()
         {
                 return additive_;
         }
@@ -775,7 +775,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final TimeSpan runtime ()
+        final const TimeSpan runtime ()
         {
                 return Clock.now - Log.beginTime;
         }
@@ -786,7 +786,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger append (Level level, lazy char[] exp)
+        final Logger append (Level level, lazy const(char[]) exp)
         {
                 if (host_.context.enabled (level_, level))
                    {
@@ -840,7 +840,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final char[] format (char[] buffer, char[] formatStr, ...)
+        final char[] format (char[] buffer, const(char[]) formatStr, ...)
         {
             version (DigitalMarsX64)
             {
@@ -863,7 +863,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        final Logger format (Level level, char[] fmt, TypeInfo[] types, ArgList args)
+        final Logger format (Level level, const(char[]) fmt, TypeInfo[] types, ArgList args)
         {
                 char[2048] tmp = void;
 
@@ -882,7 +882,7 @@ public class Logger : ILogger
 
         ***********************************************************************/
 
-        private final bool isChildOf (char[] candidate)
+        private final bool isChildOf (const(char[]) candidate)
         {
                 auto len = candidate.length;
 
@@ -930,7 +930,7 @@ public class Logger : ILogger
 private class Hierarchy : Logger.Context
 {
         private Logger                  root_;
-        private char[]                  name_,
+        private const(char)[]           name_,
                                         address_;
         private Logger.Context          context_;
         private Logger[char[]]          loggers;
@@ -942,7 +942,7 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        this (char[] name)
+        this (const(char[]) name)
         {
                 name_ = name;
                 address_ = "network";
@@ -956,7 +956,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final char[] label ()
+        final const const(char)[] label ()
         {
                 return "";
         }
@@ -966,7 +966,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final bool enabled (Level level, Level test)
+        final const bool enabled (Level level, Level test)
         {
                 return test >= level;
         }
@@ -977,7 +977,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final char[] name ()
+        final const const(char)[] name ()
         {
                 return name_;
         }
@@ -988,7 +988,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final void name (char[] name)
+        final void name (const(char[]) name)
         {
                 name_ = name;
         }
@@ -1000,7 +1000,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final char[] address ()
+        final const const(char)[] address ()
         {
                 return address_;
         }
@@ -1012,7 +1012,7 @@ private class Hierarchy : Logger.Context
 
         **********************************************************************/
 
-        final void address (char[] address)
+        final void address (const(char[]) address)
         {
                 address_ = address;
         }
@@ -1063,10 +1063,10 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        final Logger lookup (char[] label)
+        final Logger lookup (const(char[]) label)
         {
                 if (label.length)
-                    return inject (label, (char[] name)
+                    return inject (label, (const(char[]) name)
                                           {return new Logger (this, name);});
                 return null;
         }
@@ -1077,7 +1077,7 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref Logger) dg)
+        final int opApply (scope int delegate(ref Logger) dg)
         {
                 int ret;
 
@@ -1094,29 +1094,32 @@ private class Hierarchy : Logger.Context
 
         ***********************************************************************/
 
-        private synchronized Logger inject (char[] label, Logger delegate(char[] name) dg)
+        private Logger inject (const(char[]) label, scope Logger delegate(const(char[]) name) dg)
         {
-                auto name = label ~ ".";
-                auto l = name in loggers;
+                synchronized(this)
+                {
+                    auto name = label ~ ".";
+                    auto l = name in loggers;
 
-                if (l is null)
-                   {
-                   // create a new logger
-                   auto li = dg(name);
-                   l = &li;
+                    if (l is null)
+                       {
+                       // create a new logger
+                       auto li = dg(name);
+                       l = &li;
 
-                   // insert into linked list
-                   insert (li);
+                       // insert into linked list
+                       insert (li);
 
-                   // look for and adjust children. Don't force
-                   // property inheritance on existing loggers
-                   update (li);
+                       // look for and adjust children. Don't force 
+                       // property inheritance on existing loggers
+                       update (li);
 
-                   // insert into map
-                   loggers [name] = li;
-                   }
+                       // insert into map
+                       loggers [name.idup] = li;
+                       }
 
-                return *l;
+                    return *l;
+                }
         }
 
         /***********************************************************************
@@ -1216,7 +1219,7 @@ private class Hierarchy : Logger.Context
 
 package struct LogEvent
 {
-        private char[]          msg_,
+        private const(char)[]   msg_,
                                 name_;
         private Time            time_;
         private Level           level_;
@@ -1228,7 +1231,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        void set (Hierarchy host, Level level, char[] msg, char[] name)
+        void set (Hierarchy host, Level level, const(char[]) msg, const(char[]) name)
         {
                 time_ = Log.time;
                 level_ = level;
@@ -1243,7 +1246,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        char[] toString ()
+        const const(char)[] toString ()
         {
                 return msg_;
         }
@@ -1254,7 +1257,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        char[] name ()
+        const const(char)[] name ()
         {
                 return name_;
         }
@@ -1265,7 +1268,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        Level level ()
+        const Level level ()
         {
                 return level_;
         }
@@ -1288,7 +1291,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        TimeSpan span ()
+        const TimeSpan span ()
         {
                 return time_ - Log.beginTime;
         }
@@ -1299,7 +1302,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        Time time ()
+        const const(Time) time ()
         {
                 return time_;
         }
@@ -1310,7 +1313,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        Time started ()
+        const(Time) started ()
         {
                 return Log.beginTime;
         }
@@ -1321,7 +1324,7 @@ package struct LogEvent
 
         ***********************************************************************/
 
-        char[] levelName ()
+        const(char)[] levelName ()
         {
                 return Log.LevelNames[level_];
         }
@@ -1363,7 +1366,7 @@ public class Appender
         private Appender        next_;
         private Level           level_;
         private Layout          layout_;
-        private static Layout   generic;
+        private static __gshared Layout   generic;
 
         /***********************************************************************
 
@@ -1376,7 +1379,7 @@ public class Appender
 
         interface Layout
         {
-                void format (LogEvent event, size_t delegate(void[]) dg);
+                void format (LogEvent event, scope size_t delegate(const(void[])) dg);
         }
 
         /***********************************************************************
@@ -1387,7 +1390,7 @@ public class Appender
 
         ***********************************************************************/
 
-        abstract Mask mask ();
+        abstract const Mask mask ();
 
         /***********************************************************************
 
@@ -1395,7 +1398,7 @@ public class Appender
 
         ***********************************************************************/
 
-        abstract char[] name ();
+        abstract const const(char)[] name ();
 
         /***********************************************************************
 
@@ -1459,10 +1462,10 @@ public class Appender
 
         ***********************************************************************/
 
-        protected Mask register (char[] tag)
+        protected Mask register (const(char)[] tag)
         {
                 static Mask mask = 1;
-                static Mask[char[]] registry;
+                static Mask[immutable(char)[]] registry;
 
                 Mask* p = tag in registry;
                 if (p)
@@ -1567,7 +1570,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final Mask mask ()
+        final const Mask mask ()
         {
                 return mask_;
         }
@@ -1578,7 +1581,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final char[] name ()
+        final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1591,7 +1594,7 @@ public class AppendNull : Appender
 
         final void append (LogEvent event)
         {
-                layout.format (event, (void[]){return cast(size_t) 0;});
+                layout.format (event, (const(void[])){return cast(size_t) 0;});
         }
 }
 
@@ -1630,7 +1633,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final Mask mask ()
+        final const Mask mask ()
         {
                 return mask_;
         }
@@ -1641,7 +1644,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        char[] name ()
+        const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1655,13 +1658,13 @@ public class AppendStream : Appender
         final void append (LogEvent event)
         {
                 version(Win32)
-                        const char[] Eol = "\r\n";
+                        immutable char[] Eol = "\r\n";
                    else
-                       const char[] Eol = "\n";
+                       immutable char[] Eol = "\n";
 
                 synchronized (stream_)
                              {
-                             layout.format (event, (void[] content){return stream_.write(content);});
+                             layout.format (event, (const(void[]) content){return stream_.write(content);});
                              stream_.write (Eol);
                              if (flush_)
                                  stream_.flush;
@@ -1684,7 +1687,7 @@ public class LayoutTimer : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(void[]) dg)
+        void format (LogEvent event, scope size_t delegate(const(void[])) dg)
         {
                 char[20] tmp = void;
 
