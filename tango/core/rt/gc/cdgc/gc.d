@@ -113,7 +113,7 @@ private
     extern (C)
     {
         version (DigitalMars) version(OSX)
-            oid _d_osx_image_init();
+            void _d_osx_image_init();
 
         void* rt_stackBottom();
         void* rt_stackTop();
