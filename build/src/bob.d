@@ -797,7 +797,7 @@ class FileFilter
                    stdout.stream.copy (proc.stderr);
                    stdout.stream.copy (proc.stdout);
                    auto result = proc.wait;
-                   if (result.reason != Process.Result.Exit)
+                   if (result.status != 0 || result.reason != Process.Result.Exit)
                        throw new Exception (result.toString);
                    }
         }
