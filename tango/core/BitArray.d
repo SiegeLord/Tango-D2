@@ -52,12 +52,11 @@ struct BitArray
      * Returns:
      *  The number of bits in this array.
      */
-    size_t length()
+    const size_t length()
     {
         return len;
     }
-
-
+	
     /**
      * Resizes this array to newlen bits.  If newlen is larger than the current
      * length, the new bits will be initialized to zero.
@@ -152,9 +151,16 @@ struct BitArray
         length = bits.length;
         foreach( i, b; bits )
         {
-            (*this)[i] = b;
+            (this)[i] = b;
         }
     }
+	
+	void opAssign(const(BitArray) bits)
+	{
+		for(int i = 0; i < bits.length; i++) {
+			this[i] = BitArray[i];
+		}
+	}
 
     /**
      * Copy the bits from one array into this array.  This is not a shallow
@@ -189,7 +195,7 @@ struct BitArray
              uint mask=(~0u)<<rest;
              ptr[mDim]=(rhs.ptr[mDim] & (~mask))|(ptr[mDim] & mask);
          }
-         return *this;
+         return this;
      }
 
 
@@ -257,7 +263,7 @@ struct BitArray
     BitArray reverse()
     out( result )
     {
-        assert( result == *this );
+        assert( result == this );
     }
     body
     {
@@ -270,12 +276,12 @@ struct BitArray
             hi = len - 1;
             for( ; lo < hi; ++lo, --hi )
             {
-                t = (*this)[lo];
-                (*this)[lo] = (*this)[hi];
-                (*this)[hi] = t;
+                t = (this)[lo];
+                (this)[lo] = (this)[hi];
+                (this)[hi] = t;
             }
         }
-        return *this;
+        return this;
     }
 
 
@@ -305,7 +311,7 @@ struct BitArray
     BitArray sort()
     out( result )
     {
-        assert( result == *this );
+        assert( result == this );
     }
     body
     {
@@ -321,7 +327,7 @@ struct BitArray
                 {
                     if( lo >= hi )
                         goto Ldone;
-                    if( (*this)[lo] == true )
+                    if( (this)[lo] == true )
                         break;
                     ++lo;
                 }
@@ -330,13 +336,13 @@ struct BitArray
                 {
                     if( lo >= hi )
                         goto Ldone;
-                    if( (*this)[hi] == false )
+                    if( (this)[hi] == false )
                         break;
                     --hi;
                 }
 
-                (*this)[lo] = false;
-                (*this)[hi] = true;
+                (this)[lo] = false;
+                (this)[hi] = true;
 
                 ++lo;
                 --hi;
@@ -344,7 +350,7 @@ struct BitArray
             Ldone:
             ;
         }
-        return *this;
+        return this;
     }
 
 
@@ -448,10 +454,10 @@ struct BitArray
      */
 	const bool opEquals(ref const(BitArray) rhs)
     {
-        if( this.length != rhs.length )
+        if( this.length() != rhs.length() )
             return 0; // not equal
-        uint* p1 = this.ptr;
-        uint* p2 = rhs.ptr;
+        const(uint*) p1 = this.ptr;
+        const(uint*) p2 = rhs.ptr;
         size_t n = this.length / 32;
         size_t i;
         for( i = 0; i < n; ++i )
@@ -859,7 +865,7 @@ struct BitArray
         result.length = len + 1;
         result[0] = lhs;
         for( size_t i = 0; i < len; ++i )
-            result[1 + i] = (*this)[i];
+            result[1 + i] = (this)[i];
         return result;
     }
 
@@ -958,7 +964,7 @@ struct BitArray
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= rhs.ptr[i];
-        return *this;
+        return this;
     }
 
 
@@ -1003,7 +1009,7 @@ struct BitArray
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] |= rhs.ptr[i];
-        return *this;
+        return this;
     }
 
 
@@ -1048,7 +1054,7 @@ struct BitArray
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] ^= rhs.ptr[i];
-        return *this;
+        return this;
     }
 
 
@@ -1094,7 +1100,7 @@ struct BitArray
 
         for( size_t i = 0; i < dim; ++i )
             ptr[i] &= ~rhs.ptr[i];
-        return *this;
+        return this;
     }
 
 
@@ -1128,8 +1134,8 @@ struct BitArray
     BitArray opCatAssign( bool b )
     {
         length = len + 1;
-        (*this)[len - 1] = b;
-        return *this;
+        (this)[len - 1] = b;
+        return this;
     }
 
 
@@ -1159,8 +1165,8 @@ struct BitArray
         auto istart = len;
         length = len + rhs.length;
         for( auto i = istart; i < len; ++i )
-            (*this)[i] = rhs[i - istart];
-        return *this;
+            (this)[i] = rhs[i - istart];
+        return this;
     }
 
 

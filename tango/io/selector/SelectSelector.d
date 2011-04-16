@@ -797,7 +797,7 @@ else version (Posix)
          */
         bool initialized()
         {
-            return _buffer.length > 0;
+            return _buffer.length() > 0;
         }
 
         /**
@@ -834,7 +834,7 @@ else version (Posix)
                 _buffer.length = handleSet._buffer.length;
 
             _buffer[] = handleSet._buffer;
-            return *this;
+            return this;
         }
 
         /**

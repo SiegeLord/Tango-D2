@@ -984,7 +984,7 @@ QuoteFruct!(T) quotes(T) (T[] src, T[] set)
 
 *******************************************************************************/
 
-T[] layout(T) (T[] output, T[][] layout ...)
+T[] layout(T) (T[] output, const(T)[][] layout ...)
 {
         enum T[] badarg   = cast(T[])"{index out of range}".dup;
         enum T[] toosmall = cast(T[])"{output buffer too small}".dup;
@@ -1004,7 +1004,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                       size_t index = c - '0';
                       if (index < args)
                          {
-                         T[] x = layout[index+1];
+                         const(T)[] x = layout[index+1];
 
                          size_t limit = pos + x.length;
                          if (limit < output.length)
