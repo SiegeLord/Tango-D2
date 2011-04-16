@@ -32,7 +32,7 @@ struct HttpConst
 
 struct HttpHeaderName
 {
-        final char[] value;  
+        immutable(char)[] value;
 }
 
 /*******************************************************************************
@@ -165,8 +165,8 @@ enum HttpResponseCode
 
 struct HttpStatus
 {
-        final int     code; 
-        final char[]  name;  
+        immutable(int)     code;
+        immutable(char)[]  name;
 }
 
 /*******************************************************************************

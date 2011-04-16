@@ -13,7 +13,6 @@
 module tango.io.device.Device;
 
 private import  tango.sys.Common;
-
 public  import  tango.io.device.Conduit;
 
 /*******************************************************************************
@@ -276,7 +275,7 @@ class Device : Conduit, ISelectable
                            //if (scheduler)
                                // TODO Not supported on Posix
                                // scheduler.close (handle, toString);
-                           posix.close (handle);
+                           core.sys.posix.unistd.close (handle);
                            }
                         handle = -1;
                 }
@@ -291,8 +290,7 @@ class Device : Conduit, ISelectable
 
                 override size_t read (void[] dst)
                 {
-                        auto read = posix.read (handle, dst.ptr, dst.length);
-
+                        size_t read = core.sys.posix.unistd.read (handle, dst.ptr, dst.length);
                         if (read is -1)
                             error;
                         else
@@ -311,7 +309,7 @@ class Device : Conduit, ISelectable
 
                 override size_t write (const(void[]) src)
                 {
-                        size_t written = posix.write (handle, src.ptr, src.length);
+                        size_t written = core.sys.posix.unistd.write (handle, src.ptr, src.length);
                         if (written is -1)
                             error;
                         return written;

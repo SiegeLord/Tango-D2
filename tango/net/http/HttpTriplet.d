@@ -65,9 +65,9 @@ class HttpTriplet
 
         **********************************************************************/
 
-        override char[] toString ()
+        override immutable(char[]) toString()
         {
-                return line;
+                return line.idup;
         }
 
         /**********************************************************************

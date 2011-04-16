@@ -14,7 +14,7 @@
 
 module tango.util.digest.Digest;
 
-private import tango.stdc.stdlib : alloca;
+private import core.stdc.stdlib : alloca;
 
 /*******************************************************************************
 

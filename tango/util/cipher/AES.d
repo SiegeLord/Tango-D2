@@ -845,7 +845,7 @@ class AES : BlockCipher
     private void setup(const(ubyte[]) key)
     {
         size_t nk = key.length / 4;
-        ROUNDS = cast(uint)nk + 6;
+        ROUNDS = cast(uint)(nk + 6);
         w = new uint[4*(ROUNDS+1)];
         
         for (size_t i = 0, j = 0; i < nk; i++, j+=4)

@@ -79,35 +79,15 @@
 
 module tango.util.log.Log;
 
-private import  tango.sys.Common;
+private import tango.sys.Common;
+private import tango.time.Clock;
+private import tango.core.Exception;
+private import tango.io.model.IConduit;
+private import tango.text.convert.Format;
+private import tango.util.log.model.ILogger;
+private import core.vararg;
 
-private import  tango.time.Clock;
-
-private import  tango.core.Exception;
-
-private import  tango.io.model.IConduit;
-
-private import  tango.text.convert.Format;
-
-private import  tango.util.log.model.ILogger;
-
-/*******************************************************************************
-
-        Platform issues ...
-
-*******************************************************************************/
-
-version (GNU)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-     else
-        {
-        alias void* Arg;
-        alias void* ArgList;
-        }
+alias void* ArgList;
 
 /*******************************************************************************
 
@@ -167,8 +147,8 @@ public struct Log
         private struct  Pair {const(char)[] name; Level value;}
 
         private static  __gshared Level [immutable(char)[]] map;
-        
-        private static  __gshared Pair[] Pairs = 
+
+        private static  __gshared Pair[] Pairs =
                         [
                         {"TRACE",  Level.Trace},
                         {"Trace",  Level.Trace},
@@ -191,7 +171,7 @@ public struct Log
                         ];
 
         // logging-level names
-        private immutable char[][] LevelNames = 
+        private immutable char[][] LevelNames =
         [
                 "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];
@@ -327,6 +307,17 @@ public struct Log
 
         static void formatln (const(char[]) fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                version(GNU) {} else va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                root.format (Level.Info, fmt, _arguments, ap);
+            }
+            else            
                 root.format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -432,7 +423,7 @@ public class Logger : ILogger
         {
                 /// return a label for this context
                 const const(char)[] label ();
-                
+
                 /// first arg is the setting of the logger itself, and
                 /// the second arg is what kind of message we're being
                 /// asked to produce
@@ -497,7 +488,18 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final void trace (const(char[]) fmt, ...)
-        {         
+        {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Trace, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Trace, fmt, _arguments, _argptr);
         }
 
@@ -519,7 +521,18 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final void info (const(char[]) fmt, ...)
-        {          
+        {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Info, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -541,7 +554,18 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final void warn (const(char[]) fmt, ...)
-        {        
+        {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Warn, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Warn, fmt, _arguments, _argptr);
         }
 
@@ -563,7 +587,18 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final void error (const(char[]) fmt, ...)
-        {         
+        {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Error, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Error, fmt, _arguments, _argptr);
         }
 
@@ -585,7 +620,18 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final void fatal (const(char[]) fmt, ...)
-        {           
+        {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Fatal, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Fatal, fmt, _arguments, _argptr);
         }
 
@@ -767,6 +813,19 @@ public class Logger : ILogger
 
         final char[] format (char[] buffer, const(char[]) formatStr, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                return Format.vprint (buffer, formatStr, _arguments, ap);
+            }
+            else
+                return Format.vprint (buffer, formatStr, _arguments, _argptr);
+
         }
 
         /***********************************************************************
@@ -776,7 +835,7 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final Logger format (Level level, const(char[]) fmt, TypeInfo[] types, ArgList args)
-        {    
+        {
                 char[2048] tmp = void;
 
                 if (types.length)
@@ -843,7 +902,7 @@ private class Hierarchy : Logger.Context
 {
         private Logger                  root_;
         private const(char)[]           name_,
-                                        address_;      
+                                        address_;
         private Logger.Context          context_;
         private Logger[char[]]          loggers;
 
@@ -1029,7 +1088,7 @@ private class Hierarchy : Logger.Context
                        // insert into map
                        loggers [name.idup] = li;
                        }
-                   
+
                     return *l;
                 }
         }
@@ -1482,7 +1541,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1493,7 +1552,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        final override const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1504,7 +1563,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 layout.format (event, (const(void[])){return cast(size_t) 0;});
         }
@@ -1545,7 +1604,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1556,7 +1615,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        const override const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1567,7 +1626,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 version(Win32)
                         immutable char[] Eol = "\r\n";

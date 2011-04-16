@@ -1,3 +1,5 @@
+===] Tango D2 Port [===================================================================================================
+
 This is a half-hearted effort to port Tango (http://www.dsource.org/projects/tango/) to the D2 programming language. I am doing this quickly, and in a haphazard fashion. I primarily care that it compiles, and passes the unittests (or my own quick tests). I am sure the parts I ported don't work 100%.
 
 This port roughly follows the guidelines outlined in the 'porting_guidelines' file. If you want to help out, please follow that procedure.
@@ -26,10 +28,45 @@ What won't work for awhile:
 
 Anything that's hard to port... like intrinsics/anything that's Tango's runtime specific
 
-How to use it:
+===] Building the Libary [=============================================================================================
+You can just checkout the libary and start building it. There is a Makefile for GNU/Linux to build the libary. I assume that you're using dmd to compile it! Just type the following commands to your console.
 
-Just manually import/compile modules you want. Tools like xfbuild (https://bitbucket.org/h3r3tic/xfbuild/wiki/Home) are of great help here. Building the whole library won't be supported for awhile.
+	* cd /usr/include/d/dmd
+	* git clone git://github.com/mtachrono/tango.git tango
+	* cd tango
+	* make -f posix.mak
+	* make install -f posix.mak
+	
+===] Building additional parts [=======================================================================================
 
-Contact:
+	* make doc -f posix.mak            # You can also generate the docs. They'll be puttet to doc/html.
+	* make clean -f posix.mak          # If you need to rebuild the libary, you can tidy up your folder with this command.
+	* make install -f posix.mak        # And of course you can install the libary to /usr/lib/libtango2.a
 
-You can message me on github, or find me on IRC on #d and #d.tango @ irc.freenode.net
+===] Makefile Switches [===============================================================================================
+
+	* make -f posix.mak MODEL=64       # 64-Bit Version
+	* make -f posix.mak MODEL=32       # 32-Bit Version (default)
+	* make -f posix.mak BUILD=release  # Build Release (default) [adds -O -release -nofloat]
+	* make -f posix.mak BUILD=debug    # Build Debug [adds -g -debug]
+	* make -f posix.mak BUILD=unittest # Build Debug and Unittest [adds -g -debug -debug=UnitTest -unittest ]
+
+===] Setting up your Environment [=====================================================================================
+
+If you want to build your applications with tango, you need to take care to link against the tango libary. You can tell dmd to automatically link to tangolib by modifing /etc/dmd.conf. Basically you need to add the following line.
+
+-I/usr/include/d/dmd/tango
+	
+Here is my complete /etc/dmd.conf
+
+[Environment]
+DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--no-warn-search-mismatch -L--export-dynamic -L-lrt
+
+===] Guided Installation [=============================================================================================
+
+	* Online Installation Reference:  http://dsource.org/projects/tango/wiki/TopicInstallTango
+	* License is available at http://dsource.org/projects/tango/wiki/LibraryLicense
+	
+===] Contact [=========================================================================================================
+
+	* You can message me on github, or find me on IRC on #d and #d.tango @ irc.freenode.net

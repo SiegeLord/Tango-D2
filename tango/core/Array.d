@@ -9,8 +9,8 @@
  */
 module tango.core.Array;
 
+private import core.stdc.stdlib;
 private import tango.core.Traits;
-private import tango.stdc.stdlib : alloca, rand;
 
 version( TangoDoc )
 {

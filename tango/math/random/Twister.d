@@ -20,7 +20,7 @@ version (Win32)
 
 version (Posix)
         {
-        private import tango.stdc.posix.sys.time;
+        private import core.sys.posix.sys.time;
         }
         
 /*******************************************************************************
@@ -254,14 +254,13 @@ struct Twister
 
         void init (const(uint[]) init_key, bool pAddEntropy = false)
         {
-                size_t k;
-                int i, j;
+                size_t i, j, k;
                 i=1;
                 j=0;
                 
                 seed (19650218U, pAddEntropy);
                 for (k = (mt.length > init_key.length ? mt.length : init_key.length); k; k--)   {
-                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525U))+ init_key[j] + j; 
+                        mt[i] = cast(uint)((mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525U))+ init_key[j] + j); 
                         mt[i] &=  0xffffffffU; 
                         i++;
                         j++;
@@ -277,7 +276,7 @@ struct Twister
                 }
 
                 for (k=mt.length-1; k; k--)     {
-                        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941U))- i; 
+                        mt[i] = cast(uint)((mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941U))- i); 
                         mt[i] &=  0xffffffffU; 
                         i++;
 

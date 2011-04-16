@@ -26,9 +26,9 @@
 
 module tango.text.convert.Layout;
 
-private import  tango.core.Exception;
-
-private import  Utf = tango.text.convert.Utf;
+private import core.vararg;
+private import tango.core.Exception;
+private import Utf = tango.text.convert.Utf;
 
 private import  Float = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
@@ -50,31 +50,6 @@ version (WithDateTime)
         private import tango.text.convert.DateTime;
         }
 
-
-/*******************************************************************************
-
-        Platform issues ...
-
-*******************************************************************************/
-
-version (GNU)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-else version(LDC)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-     else
-        {
-        alias void* Arg;
-        alias void* ArgList;
-        }
-
 /*******************************************************************************
 
         Contains methods for replacing format items in a string with string
@@ -86,6 +61,7 @@ class Layout(T)
 {
         public alias convert opCall;
         public alias scope size_t delegate (const(T[])) Sink;
+        public alias void* Arg;
        
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
@@ -121,7 +97,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, ArgList args)
+        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, va_list args)
         {
                 T*  p = result.ptr;
                 size_t available = result.length;
@@ -138,7 +114,8 @@ class Layout(T)
                         return len;
                 }
 
-                convert (&sink, arguments, args, formatStr);
+				core.stdc.stdio.printf("MISSIN!!!");
+                //convert (&sink, arguments, args, formatStr);
                 return result [0 .. cast(size_t) (p-result.ptr)];
         }
 
@@ -176,18 +153,18 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (const(T[]) formatStr, ...)
+		public final T[] convert (Char, S...)(in Char[] format, S args)
         {
-                return convert (_arguments, _argptr, formatStr);
-        }
+				T[] output;
 
-        /**********************************************************************
-
-        **********************************************************************/
-
-        public final uint convert (Sink sink, const(T[]) formatStr, ...)
-        {
-                return convert (sink, _arguments, _argptr, formatStr);
+                size_t sink (const(T[]) s)
+                {
+                        output ~= s;
+                        return s.length;
+                }
+                
+                convert(&sink, format, args);
+                return output;
         }
 
         /**********************************************************************
@@ -199,7 +176,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (OutputStream output, const(T[]) formatStr, ...)
+		public final size_t convert(Output, Char, S...)(in Char[] format, S arguments)
         {
                 size_t sink (const(T[]) s)
                 {
@@ -213,38 +190,124 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
-        {
-                T[] output;
-
-                size_t sink (const(T[]) s)
-                {
-                        output ~= s;
-                        return s.length;
-                }
-
-                convert (&sink, arguments, args, formatStr);
-                return output;
-        }
-
-        /**********************************************************************
-
-        **********************************************************************/
-
         public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
                 return dispatch (result, null, ti, arg);
         }
-}
+
         /**********************************************************************
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
-        {
-                assert (formatStr, "null format specifier");
-                assert (arguments.length < 64, "too many args in Layout.convert");
+		public final size_t convert (Callback, Char, S...)(Callback sink, in Char[] format, S arguments)
+		{
+				// assertions
+				assert(format, "null format specifier");
+				
+				// declaration and initalisation
+				size_t length = 0;
+				int nextIndex = 0;
+				const(T)* cursor = cast(const(T)*)format.ptr;
+				const(T)* fragment = cast(const(T)*)format.ptr;
+				const(T)* end = cursor + format.length;
+				
+				// parse the format string
+				for(;;) {
+					// find the first {
+					while (cursor < end && *cursor != '{')
+						 ++cursor;
+					
+					// emit fragment
+					length += sink(fragment[0 .. (cursor - fragment)]);
+					
+					// all done?
+					if (cursor is end)
+						break;
+					
+					// check for "{{" and skip if so
+					if (*++cursor is '{') {
+						fragment = cursor++;
+						continue;
+					}
+					
+					// extract index (if it's indexed)
+					int index = 0;
+					bool indexed = false;
+					while (*cursor >= '0' && *cursor <= '9') {
+						index = index * 10 + *cursor++ -'0';
+						indexed = true;
+					}
 
+					// skip spaces
+					while (cursor < end && *cursor is ' ')
+						++cursor;
+					
+					// has minimum or maximum width?
+					bool crop;
+					bool left;
+					bool right;
+					int  width;
+					if (*cursor is ',' || *cursor is '.') {
+						assert(false, "',' or '.' not implemented yet!");
+					}
+					
+					// has a format string?
+					if (*cursor is ':' && cursor < end) {
+						assert(false, "':' not implemented yet!");
+					}
+					
+					// insist on a closing brace
+					if (*cursor != '}') {
+						length += sink("{malformed format}");
+						continue;
+					}
+
+					// check for default index & set next default counter
+					if (!indexed) {
+						index = nextIndex;
+					}
+					nextIndex = index + 1;
+					
+					// next char is start of following fragment
+                    fragment = ++cursor;
+					
+					// DEBUG
+					core.stdc.stdio.printf("indexed: %d (0 = false, 1 = true)\n", indexed);
+					core.stdc.stdio.printf("index: %d\n", index);
+					
+					
+					// index not valid
+					if(index >= arguments.length) {
+						sink("{invalid index}");
+						continue;
+					}
+					
+					//auto arg = arguments[index];
+					//alias typeof(arg) T;
+					
+					
+					
+					sink("argument");
+				}
+				
+                // return the length
+                return length;
+                
+                //const(T)* s = layout.ptr;
+                //const(T)* fragment = s;
+                //const(T)* end = s + layout.length;
+
+                //while (true)
+                //      {
+                //      while (s < end && *s != '{')
+                //             ++s;
+                             
+                             
+                             
+                
+                
+                
+				/*
                 version (GNU)
                         {
                         union ArgU {int i; byte b; long l; short s; void[] a;
@@ -264,6 +327,7 @@ class Layout(T)
                                 /* Since floating point types don't live on
                                  * the stack, they must be accessed by the
                                  * correct type. */
+                                /*
                                 bool converted = false;
                                 switch (arg.classinfo.name[9])
                                        {
@@ -347,6 +411,7 @@ class Layout(T)
                                 }
                         }
                 return parse (formatStr, arguments, arglist, sink);
+                */
         }
 
         /**********************************************************************
@@ -356,7 +421,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private uint parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
+        private size_t parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
         {
                 T[512] result = void;
                 int length, nextIndex;
@@ -459,7 +524,7 @@ class Layout(T)
                       // handle alignment
                       void emit (const(T[]) str)
                       {
-                                int padding = width - cast(int)str.length;
+                                size_t padding = width - str.length;
 
                                 if (crop)
                                    {
@@ -835,7 +900,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private size_t spaces (Sink sink, int count)
+        private size_t spaces (Sink sink, size_t count)
         {
                 size_t ret;
 

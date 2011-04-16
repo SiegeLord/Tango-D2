@@ -50,9 +50,9 @@ public class LayoutDate : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(void[]) dg)
+        void format (LogEvent event, scope size_t delegate(const(void[])) dg)
         {
-                char[] level = event.levelName;
+                const(char)[] level = event.levelName;
                 
                 // convert time to field values
                 auto tm = event.time;

@@ -59,6 +59,8 @@
  */
 module tango.math.IEEE;
 
+static import core.stdc.math;
+
 version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(TangoNoAsm) {
@@ -74,17 +76,6 @@ version (X86){
 version (X86_64){
     version = X86_Any;
 }
-
-version (Naked_D_InlineAsm_X86) {
-    // Don't include this extra dependency unless we need to.
-    debug(UnitTest) {
-        static import tango.stdc.math;
-    }
-} else {
-    // Needed for cos(), sin(), tan() on GNU.
-    static import tango.stdc.math;
-}
-
 
 version(Windows) { 
     version(DigitalMars) { 
@@ -680,7 +671,7 @@ real ldexp(real n, int exp) /* intrinsic */
     }
     else
     {
-        return tango.stdc.math.ldexpl(n, exp);
+        return core.stdc.math.ldexpl(n, exp);
     }
 }
 
@@ -738,7 +729,7 @@ int ilogb(real x)
             }
             return e - 0x3FFF;
         } else {
-        return tango.stdc.math.ilogbl(x);
+        return core.stdc.math.ilogbl(x);
     }
 }
 
@@ -748,8 +739,8 @@ version (X86)
     enum int FP_ILOGBNAN      = -int.max-1;
     enum int FP_ILOGBINFINITY = -int.max-1;
 } else {
-    alias tango.stdc.math.FP_ILOGB0   FP_ILOGB0;
-    alias tango.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
+    alias core.stdc.math.FP_ILOGB0   FP_ILOGB0;
+    alias core.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
     enum int FP_ILOGBINFINITY = int.max;
 }
 
@@ -792,7 +783,7 @@ real logb(real x)
             fstp ST(0), ST; // drop significand
         }
     } else {
-        return tango.stdc.math.logbl(x);
+        return core.stdc.math.logbl(x);
     }
 }
 
@@ -831,7 +822,7 @@ real scalbn(real x, int n)
         }
     } else {
         // NOTE: Not implemented in DMD
-        return tango.stdc.math.scalbnl(x, n);
+        return core.stdc.math.scalbnl(x, n);
     }
 }
 
@@ -884,7 +875,7 @@ real fabs(real x) /* intrinsic */
     }
     else
     {
-        return tango.stdc.math.fabsl(x);
+        return core.stdc.math.fabsl(x);
     }
 }
 
@@ -922,14 +913,14 @@ creal expi(real y)
     }
     else
     {
-        return tango.stdc.math.cosl(y) + tango.stdc.math.sinl(y)*1i;
+        return core.stdc.math.cosl(y) + core.stdc.math.sinl(y)*1i;
     }
 }
 
 debug(UnitTest) {
 unittest
 {
-    assert(expi(1.3e5L) == tango.stdc.math.cosl(1.3e5L) + tango.stdc.math.sinl(1.3e5L) * 1i);
+    assert(expi(1.3e5L) == core.stdc.math.cosl(1.3e5L) + core.stdc.math.sinl(1.3e5L) * 1i);
     assert(expi(0.0L) == 1L + 0.0Li);
 }
 }

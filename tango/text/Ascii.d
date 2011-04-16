@@ -90,13 +90,13 @@ char[] toUpper (const(char[]) src, char[] dst)
         
 ******************************************************************************/
 
-int icompare (const(char[]) s1, const(char[]) s2)
+size_t icompare (const(char[]) s1, const(char[]) s2)
 {
-        auto len = s1.length;
+        size_t len = s1.length;
         if (s2.length < len)
             len = s2.length;
 
-        auto result = memicmp (s1.ptr, s2.ptr, cast(int)len);
+        size_t result = cast(size_t)memicmp (s1.ptr, s2.ptr, cast(uint)len);
 
         if (result is 0)
             result = cast(int)s1.length - cast(int)s2.length;
@@ -110,16 +110,16 @@ int icompare (const(char[]) s1, const(char[]) s2)
         
 ******************************************************************************/
 
-int compare (const(char[]) s1, const(char[]) s2)
+size_t compare (const(char[]) s1, const(char[]) s2)
 {
         auto len = s1.length;
         if (s2.length < len)
             len = s2.length;
 
-        auto result = memcmp (s1.ptr, s2.ptr, cast(int)len);
+        size_t result = cast(size_t)memcmp (s1.ptr, s2.ptr, cast(uint)len);
 
         if (result is 0)
-            result = cast(int)s1.length - cast(int)s2.length;
+            result = s1.length - s2.length;
         return result;
 }
 

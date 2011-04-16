@@ -761,10 +761,12 @@ bool matching(T) (T* s1, T* s2, size_t length)
 
 ******************************************************************************/
 
-size_t indexOf(T, U=size_t) (T* str, T match, U length)
-{return indexOf!(T) (str, match, length);}
+size_t indexOf(T, U=size_t) (const(T)* str, const(T) match, U length)
+{
+		return indexOf!(T) (str, match, length);
+}
 
-size_t indexOf(T) (T* str, T match, size_t length)
+size_t indexOf(T) (const(T)* str, const(T) match, size_t length)
 {
         //assert (str);
 
@@ -984,7 +986,7 @@ QuoteFruct!(T) quotes(T) (T[] src, T[] set)
 
 *******************************************************************************/
 
-T[] layout(T) (T[] output, T[][] layout ...)
+T[] layout(T) (T[] output, const(T)[][] layout ...)
 {
         enum T[] badarg   = cast(T[])"{index out of range}".dup;
         enum T[] toosmall = cast(T[])"{output buffer too small}".dup;
@@ -1004,7 +1006,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
                       size_t index = c - '0';
                       if (index < args)
                          {
-                         T[] x = layout[index+1];
+                         const(T)[] x = layout[index+1];
 
                          size_t limit = pos + x.length;
                          if (limit < output.length)
@@ -1048,7 +1050,7 @@ T[] layout(T) (T[] output, T[][] layout ...)
 
 T[] unescape(T) (T[] src, T[] dst = null)
 {
-        int delta;
+        size_t delta;
         auto s = src.ptr;
         auto len = src.length;
 
@@ -1187,17 +1189,17 @@ size_t jhash (ubyte* k, size_t len, size_t c = 0)
         c += len;
         switch (i)
                {
-               case 11: c+=(cast(uint)k[10]<<24);
-               case 10: c+=(cast(uint)k[9]<<16);
-               case 9 : c+=(cast(uint)k[8]<<8);
-               case 8 : b+=(cast(uint)k[7]<<24);
-               case 7 : b+=(cast(uint)k[6]<<16);
-               case 6 : b+=(cast(uint)k[5]<<8);
-               case 5 : b+=(cast(uint)k[4]);
-               case 4 : a+=(cast(uint)k[3]<<24);
-               case 3 : a+=(cast(uint)k[2]<<16);
-               case 2 : a+=(cast(uint)k[1]<<8);
-               case 1 : a+=(cast(uint)k[0]);
+               case 11: c+=(cast(uint)k[10]<<24); break;
+               case 10: c+=(cast(uint)k[9]<<16); break;
+               case 9 : c+=(cast(uint)k[8]<<8); break;
+               case 8 : b+=(cast(uint)k[7]<<24); break;
+               case 7 : b+=(cast(uint)k[6]<<16); break;
+               case 6 : b+=(cast(uint)k[5]<<8); break;
+               case 5 : b+=(cast(uint)k[4]); break;
+               case 4 : a+=(cast(uint)k[3]<<24); break;
+               case 3 : a+=(cast(uint)k[2]<<16); break;
+               case 2 : a+=(cast(uint)k[1]<<8); break;
+               case 1 : a+=(cast(uint)k[0]); break;
                default:
                }
 

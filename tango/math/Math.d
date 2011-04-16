@@ -69,7 +69,7 @@
 
 module tango.math.Math;
 
-static import tango.stdc.math;
+static import core.stdc.math;
 private import tango.math.IEEE;
 
 
@@ -324,15 +324,15 @@ real cos(real x) /* intrinsic */
     }
     else
     {
-        return tango.stdc.math.cosl(x);
+        return core.stdc.math.cosl(x);
     }
 }
 
 debug(UnitTest) {
-unittest {
-    // NaN payloads
-    assert(isIdentical(cos(NaN(314)), NaN(314)));
-}
+	unittest {
+		// NaN payloads
+		assert(isIdentical(cos(NaN(314)), NaN(314)));
+	}
 }
 
 /***********************************
@@ -363,7 +363,7 @@ real sin(real x) /* intrinsic */
     }
     else
     {
-        return tango.stdc.math.sinl(x);
+        return core.stdc.math.sinl(x);
     }
 }
 
@@ -394,7 +394,7 @@ real tan(real x)
         return tanl(x);
     }
     else version(LDC) {
-        return tango.stdc.math.tanl(x);
+        return core.stdc.math.tanl(x);
     }
     else {
     asm
@@ -583,7 +583,7 @@ unittest{
  */
 real acos(real x)
 {
-    return tango.stdc.math.acosl(x);
+    return core.stdc.math.acosl(x);
 }
 
 debug(UnitTest) {
@@ -609,7 +609,7 @@ unittest {
  */
 real asin(real x)
 {
-    return tango.stdc.math.asinl(x);
+    return core.stdc.math.asinl(x);
 }
 
 debug(UnitTest) {
@@ -634,7 +634,7 @@ unittest {
  */
 real atan(real x)
 {
-    return tango.stdc.math.atanl(x);
+    return core.stdc.math.atanl(x);
 }
 
 debug(UnitTest) {
@@ -667,7 +667,7 @@ unittest {
  */
 real atan2(real y, real x)
 {
-    return tango.stdc.math.atan2l(y,x);
+    return core.stdc.math.atan2l(y,x);
 }
 
 debug(UnitTest) {
@@ -981,7 +981,7 @@ float sqrt(float x) /* intrinsic */
     }
     else
     {
-        return tango.stdc.math.sqrtf(x);
+        return core.stdc.math.sqrtf(x);
     }
 }
 
@@ -1001,7 +1001,7 @@ double sqrt(double x) /* intrinsic */ /// ditto
     }
     else
     {
-        return tango.stdc.math.sqrt(x);
+        return core.stdc.math.sqrt(x);
     }
 }
 
@@ -1021,7 +1021,7 @@ real sqrt(real x) /* intrinsic */ /// ditto
     }
     else
     {
-        return tango.stdc.math.sqrtl(x);
+        return core.stdc.math.sqrtl(x);
     }
 }
 
@@ -1074,7 +1074,7 @@ unittest {
  */
 real cbrt(real x)
 {
-    return tango.stdc.math.cbrtl(x);
+    return core.stdc.math.cbrtl(x);
 }
 
 
@@ -1104,7 +1104,7 @@ real exp(real x) {
    // and exp2 are so similar).
     return exp2(LOG2E*x);
     } else {
-        return tango.stdc.math.expl(x);        
+        return core.stdc.math.expl(x);        
     }    
 }
 
@@ -1195,7 +1195,7 @@ L_largenegative:
         ret PARAMSIZE;
       }
     } else {
-        return tango.stdc.math.expm1l(x);                
+        return core.stdc.math.expm1l(x);                
     }
 }
 
@@ -1294,7 +1294,7 @@ L_was_nan:
         ret PARAMSIZE;
       }
     } else {
-        return tango.stdc.math.exp2l(x);
+        return core.stdc.math.exp2l(x);
     }    
 }
 
@@ -1335,7 +1335,7 @@ unittest {
  */
 real log(real x)
 {
-    return tango.stdc.math.logl(x);
+    return core.stdc.math.logl(x);
 }
 
 debug(UnitTest) {
@@ -1361,7 +1361,7 @@ unittest {
  */
 real log1p(real x)
 {
-    return tango.stdc.math.log1pl(x);
+    return core.stdc.math.log1pl(x);
 }
 
 debug(UnitTest) {
@@ -1384,7 +1384,7 @@ unittest {
  */
 real log2(real x)
 {
-    return tango.stdc.math.log2l(x);
+    return core.stdc.math.log2l(x);
 }
 
 debug(UnitTest) {
@@ -1406,7 +1406,7 @@ unittest {
  */
 real log10(real x)
 {
-    return tango.stdc.math.log10l(x);
+    return core.stdc.math.log10l(x);
 }
 
 debug(UnitTest) {
@@ -1677,7 +1677,7 @@ real pow(real x, real y)
     }
     else
     {
-        return tango.stdc.math.powl(x, y);
+        return core.stdc.math.powl(x, y);
     }
 }
 
@@ -1949,7 +1949,7 @@ unittest{
  */
 real floor(real x)
 {
-    return tango.stdc.math.floorl(x);
+    return core.stdc.math.floorl(x);
 }
 
 debug(UnitTest) {
@@ -1964,7 +1964,7 @@ unittest {
  */
 real ceil(real x)
 {
-    return tango.stdc.math.ceill(x);
+    return core.stdc.math.ceill(x);
 }
 
 unittest {
@@ -1978,7 +1978,7 @@ unittest {
  */
 real round(real x)
 {
-    return tango.stdc.math.roundl(x);
+    return core.stdc.math.roundl(x);
 }
 
 debug(UnitTest) {
@@ -1994,13 +1994,13 @@ unittest {
  */
 real trunc(real x)
 {
-    return tango.stdc.math.truncl(x);
+	return core.stdc.math.truncl(x);
 }
 
 debug(UnitTest) {
-unittest {
-    assert(isIdentical(trunc(NaN(0xABC)), NaN(0xABC)));
-}
+	unittest {
+		assert(isIdentical(trunc(NaN(0xABC)), NaN(0xABC)));
+	}
 }
 
 /**
@@ -2012,7 +2012,7 @@ unittest {
 * If using the default rounding mode (ties round to even integers)
 * rndint(4.5) == 4, rndint(5.5)==6.
 */
-int rndint(real x)
+size_t rndint(real x)
 {
     version(Naked_D_InlineAsm_X86)
     {
@@ -2026,7 +2026,7 @@ int rndint(real x)
     }
     else
     {
-        return cast(int)tango.stdc.math.lrintl(x);
+        return core.stdc.math.lrintl(x);
     }
 }
 
@@ -2045,7 +2045,7 @@ long rndlong(real x)
     }
     else
     {
-        return tango.stdc.math.llrintl(x);
+        return core.stdc.math.llrintl(x);
     }
 }
 

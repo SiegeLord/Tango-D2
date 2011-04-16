@@ -7,7 +7,7 @@
 
 *******************************************************************************/
 
-private import  tango.core.Thread;
+private import  core.thread;
 
 private import  tango.io.Console;
 
@@ -37,7 +37,7 @@ void main()
 
         // start server in a separate thread, and wait for it to start
         (new Thread (&run)).start;
-        Thread.sleep (0.250);
+        Thread.sleep (25_000_000);
 
         // make a connection request to the server
         auto request = new Socket;

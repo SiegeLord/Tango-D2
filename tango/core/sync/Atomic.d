@@ -17,6 +17,8 @@
  */
 
 module tango.core.sync.Atomic;
+pragma(msg, "In D2 you should better use core.atomic.");
+deprecated:
 
 version( LDC )
 {
@@ -130,7 +132,9 @@ version( LDC )
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         llvm_memory_barrier(ll,ls,sl,ss,device);
     }
-} else version(D_InlineAsm_X86){
+}
+/*
+ else version(D_InlineAsm_X86){
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         static if (device) {
             if (ls || sl || ll || ss){
@@ -190,12 +194,15 @@ version( LDC )
             }
         }
     }
-} else {
+}
+
+*/
+else {
     pragma(msg,"WARNING: no atomic operations on this architecture");
     pragma(msg,"WARNING: this is *slow* you probably want to change this!");
     int dummy;
     // acquires a lock... probably you will want to skip this
-    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+    deprecated void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         synchronized { dummy=1; }
     }
     enum{LockVersion=true}
@@ -759,7 +766,7 @@ T atomicOp(T)(ref T val, T delegate(T) f){
 /*
  * Reads a flag (ensuring that other accesses can not happen before you read it).
 */
-T flagGet(T)(ref T flag){
+deprecated T flagGet(T)(ref T flag){
     T res;
     synchronized res=flag;
     memoryBarrier!(true,false,strictFences,false)();

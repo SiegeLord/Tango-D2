@@ -34,7 +34,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        final uint digestSize() { return 20; }
+        final override uint digestSize() { return 20; }
 
         /***********************************************************************
 
@@ -141,7 +141,7 @@ package abstract class Sha01 : MerkleDamgard
         final protected override void padLength(ubyte[] data, ulong length)
         {
                 length <<= 3;
-                for(int j = cast(int)data.length-1; j >= 0; j--)
+                for(size_t j = data.length-1; j >= 0; j--)
                         data[$-j-1] = cast(ubyte) (length >> j*data.length);
         }
 

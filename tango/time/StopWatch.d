@@ -29,7 +29,7 @@ version (Win32)
 
 version (Posix)
 {
-        private import tango.stdc.posix.sys.time;
+        private import core.sys.posix.sys.time;
 }
 
 /*******************************************************************************

@@ -43,7 +43,7 @@ class Socket : Conduit, ISelectable
 
         private SocketSet pending;              // synchronous timeouts   
         private Berkeley  berkeley;             // wrap a berkeley socket
-
+		private int scheduler;
 
         /// see super.timeout(int)
         deprecated void setTimeout (double t) 
@@ -98,7 +98,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<socket>";
         }
@@ -134,7 +134,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t bufferSize ()
+        override const size_t bufferSize ()
         {
                 return 1024 * 8;
         }
@@ -145,7 +145,7 @@ class Socket : Conduit, ISelectable
         
         ***********************************************************************/
 
-        Socket connect (char[] address, uint port)
+        Socket connect (const(char)[] address, uint port)
         {
                 assert(port < ushort.max);
                 scope addr = new IPv4Address (address, cast(ushort) port);
@@ -237,7 +237,7 @@ class Socket : Conduit, ISelectable
                 if (scheduler)
                     return asyncRead (dst);
 
-                auto x = Eof;
+                size_t x = Eof;
                 if (wait (true))
                    {
                    x = native.receive (dst);
@@ -251,12 +251,12 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t write (void[] src)
+        override size_t write (const(void[]) src)
         {
                 if (scheduler)
                     return asyncWrite (src);
 
-                auto x = Eof;
+                size_t x = Eof;
                 if (wait (false))
                    {
                    x = native.send (src);
@@ -407,7 +407,7 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
-                private size_t asyncWrite (void[] src)
+                private size_t asyncWrite (const(void[]) src)
                 {
                         DWORD bytes;
                         WSABUF buf = {src.length, src.ptr};
@@ -526,7 +526,7 @@ class Socket : Conduit, ISelectable
 
                 ***************************************************************/
 
-                private size_t asyncWrite (void[] src)
+                private size_t asyncWrite (const(void[]) src)
                 {
                         assert (false);
                 }
@@ -568,7 +568,7 @@ class ServerSocket : Socket
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<accept>";
         }

@@ -24,7 +24,7 @@ public class SelectorException: Exception
      * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
-    public this(char[] msg, char[] file, uint line)
+    public this(immutable(char)[] msg, immutable(char)[] file, size_t line)
     {
         super(msg, file, line);
     }
@@ -46,7 +46,7 @@ public class UnregisteredConduitException: SelectorException
      * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
-    public this(char[] file, uint line)
+    public this(immutable(char)[] file, size_t line)
     {
         super("The conduit is not registered to the selector", file, line);
     }
@@ -67,7 +67,7 @@ public class RegisteredConduitException: SelectorException
      * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
-    public this(char[] file, uint line)
+    public this(immutable(char)[] file, size_t line)
     {
         super("The conduit is already registered to the selector", file, line);
     }
@@ -88,7 +88,7 @@ public class InterruptedSystemCallException: SelectorException
      * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
-    public this(char[] file, uint line)
+    public this(immutable(char)[] file, size_t line)
     {
         super("A system call was interrupted by a signal", file, line);
     }
@@ -108,7 +108,7 @@ public class OutOfMemoryException: SelectorException
      * line     = Line number of the source file where the exception was
      *            thrown; you would normally use __LINE__ for this parameter.
      */
-    public this(char[] file, uint line)
+    public this(immutable(char)[] file, size_t line)
     {
         super("Out of memory", file, line);
     }

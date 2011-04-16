@@ -425,7 +425,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool skip (int size)
+        final bool skip (size_t size)
         {
                 if (size < 0)
                    {

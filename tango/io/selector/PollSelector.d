@@ -14,10 +14,6 @@ version (Posix)
     private import tango.io.selector.AbstractSelector;
     private import tango.io.selector.SelectorException;
     private import tango.sys.Common;
-    private import tango.stdc.errno;
-
-    version (linux)
-        private import tango.sys.linux.linux;
 
     debug (selector)
         private import tango.io.Stdout;
@@ -93,7 +89,7 @@ version (Posix)
          *                returned in the selection set per call to select();
          *                this value is currently not used by this selector.
          */
-        public void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
+        public override void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
         in
         {
             assert(size > 0);
@@ -109,7 +105,7 @@ version (Posix)
          * Remarks:
          * It can be called multiple times without harmful side-effects.
          */
-        public void close()
+        public override void close()
         {
             _keys = null;
             //_selectedKeys = null;
@@ -141,7 +137,7 @@ version (Posix)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(ISelectable conduit, Event events, Object attachment = null)
+        public override void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -194,7 +190,7 @@ version (Posix)
          * UnregisteredConduitException if the conduit had not been previously
          * registered to the selector.
          */
-        public void unregister(ISelectable conduit)
+        public override void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -263,7 +259,7 @@ version (Posix)
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */
-        public int select(TimeSpan timeout)
+        public override int select(TimeSpan timeout)
         {
             int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
@@ -303,7 +299,7 @@ version (Posix)
          * If the call to select() was unsuccessful or it did not return any
          * events, the returned value will be null.
          */
-        public ISelectionSet selectedSet()
+        public override ISelectionSet selectedSet()
         {
             return (_eventCount > 0 ? new PollSelectionSet(_pfds, _eventCount, _keys) : null);
         }
@@ -317,7 +313,7 @@ version (Posix)
          * value will SelectionKey.init. No exception will be thrown by this
          * method.
          */
-        public SelectionKey key(ISelectable conduit)
+        public override SelectionKey key(ISelectable conduit)
         {
             if(conduit !is null)
             {
@@ -333,7 +329,7 @@ version (Posix)
          * Return the number of keys resulting from the registration
          * of a conduit to the selector.
          */
-        public size_t count()
+        public override size_t count()
         {
             return _keys.length;
         }
