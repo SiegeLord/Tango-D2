@@ -184,7 +184,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        void produce (size_t delegate(void[]) consume)
+        void produce (size_t delegate(const(void[])) consume)
         {
                 consume (name);
 
@@ -366,7 +366,7 @@ class HttpCookiesView //: IWritable
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol = HttpConst.Eol)
+        void produce (size_t delegate(const(void[])) consume, const(char[]) eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);
@@ -427,7 +427,7 @@ class HttpCookies
 
         **********************************************************************/
 
-        this (HttpHeaders headers, HttpHeaderName name = HttpHeader.SetCookie)
+        this (HttpHeaders headers, const(HttpHeaderName) name = HttpHeader.SetCookie)
         {
                 this.headers = headers;
                 this.name = name;
@@ -507,7 +507,7 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        override protected size_t scan (const(void[]) data)
         {      
                 char    c;
                 int     mark,

@@ -177,7 +177,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null)
+        immutable(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 Token token = stack.findToken (name);
                 if (token)
@@ -187,7 +187,7 @@ class HttpTokens
                    if (split (token, element))
                        ret = trim (element.value);
                    }
-                return ret;
+                return ret.idup;
         }
 
         /**********************************************************************
@@ -197,9 +197,9 @@ class HttpTokens
 
         **********************************************************************/
 
-        int getInt (char[] name, int ret = -1)
+        int getInt (const(char)[] name, int ret = -1)
         {       
-                char[] value = get (name);
+                auto value = get (name);
 
                 if (value.length)
                     ret = cast(int) Integer.parse (value);
@@ -214,9 +214,9 @@ class HttpTokens
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time date = Time.epoch)
+        Time getDate (const(char)[] name, Time date = Time.epoch)
         {
-                char[] value = get (name);
+                auto value = get (name);
 
                 if (value.length)
                     date = TimeStamp.parse (value);
@@ -251,7 +251,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol = null)
+        void produce (size_t delegate(const(void[])) consume, const(char)[] eol = null)
         {
                 foreach (Token token; stack)
                         {
@@ -273,7 +273,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected bool handleMissingSeparator (char[] s, ref HttpToken element)
+        protected bool handleMissingSeparator (const(char)[] s, ref HttpToken element)
         {
                 return false;
         }
@@ -290,14 +290,14 @@ class HttpTokens
 
                 if (s.length)
                    {
-                   auto i = Text.locate (s, separator);
+                   auto i = Text.locate (s.dup, separator);
 
                    // we should always find the separator
                    if (i < s.length)
                       {
                       auto j = (inclusive) ? i+1 : i;
-                      element.name = s[0 .. j];
-                      element.value = (++i < s.length) ? s[i .. $] : null;
+                      element.name = s[0 .. j].dup;
+                      element.value = (++i < s.length) ? s[i .. $].dup : null;
                       return true;
                       }
                    else
@@ -330,7 +330,7 @@ class HttpTokens
 
         private static class FilteredTokens 
         {       
-                private char[]          match;
+                private const(char)[]   match;
                 private HttpTokens      tokens;
 
                 /**************************************************************
@@ -340,7 +340,7 @@ class HttpTokens
 
                 **************************************************************/
 
-                this (HttpTokens tokens, char[] match)
+                this (HttpTokens tokens, const(char)[] match)
                 {
                         this.match = match;
                         this.tokens = tokens;
@@ -358,7 +358,7 @@ class HttpTokens
                         int             result = 0;
                         
                         foreach (Token token; tokens.stack)
-                                 if (tokens.stack.isMatch (token, match))
+                                 if (tokens.stack.isMatch (token, match.dup))
                                      if (tokens.split (token, element))
                                         {
                                         result = dg (element);
@@ -426,7 +426,7 @@ class HttpTokens
 
                 foreach (Token token; stack)
                         {
-                        char[] content = token.toString;
+                        immutable(char)[] content = token.toString;
                         if (content.length)
                            {
                            if (first)
@@ -448,7 +448,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void add (char[] name, void delegate(OutputBuffer) value)
+        protected void add (const(char)[] name, void delegate(OutputBuffer) value)
         {
                 // save the buffer write-position
                 //int prior = output.limit;
@@ -474,7 +474,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void add (char[] name, char[] value)
+        protected void add (const(char)[] name, const(char)[] value)
         {
                 void addValue (OutputBuffer buffer)
                 {
@@ -490,7 +490,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        protected void addInt (char[] name, int value)
+        protected void addInt (const(char)[] name, int value)
         {
                 char[16] tmp = void;
 
@@ -503,7 +503,7 @@ class HttpTokens
                 
         **********************************************************************/
 
-        protected void addDate (char[] name, Time value)
+        protected void addDate (const(char)[] name, Time value)
         {
                 char[40] tmp = void;
 
@@ -517,7 +517,7 @@ class HttpTokens
                 
         **********************************************************************/
 
-        protected bool remove (char[] name)
+        protected bool remove (const(char)[] name)
         {
                 return stack.removeToken (name);
         }

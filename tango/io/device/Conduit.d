@@ -12,7 +12,7 @@
 
 module tango.io.device.Conduit;
 
-private import tango.core.Thread,
+private import core.thread,
                tango.core.Exception;
 
 public  import tango.io.model.IConduit;
@@ -39,7 +39,7 @@ public  import tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
-        protected Fiber.Scheduler scheduler;            // optional scheduler
+        //protected Fiber.Scheduler scheduler;            // optional scheduler [does not exist in druntime)
         private   uint            duration = -1;        // scheduling timeout
 
         /***********************************************************************
@@ -57,8 +57,8 @@ class Conduit : IConduit
         this ()
         {
                 auto f = Fiber.getThis;
-                if (f)
-                    scheduler = f.event.scheduler;
+                //if (f)								 // optional scheduler [does not exist in druntime)
+                //    scheduler = f.event.scheduler;	 // optional scheduler [does not exist in druntime)
         }
 
         /***********************************************************************

@@ -16,12 +16,11 @@ private import  tango.net.http.HttpGet;
 
 void main (char[][] args)
 {
-	char[] url = (args.length is 2) ? args[1] : "http://www.digitalmars.com/d/intro.html";
-            
-        // open a web-page for reading (see HttpPost for writing)
-        auto page = new HttpGet (url);
+	auto url = (args.length is 2) ? args[1] : "http://www.digitalmars.com/d/intro.html";
+		
+	// open a web-page for reading (see HttpPost for writing)
+	auto page = new HttpGet (url);
 
-        // retrieve and flush display content
-        Cout (cast(char[]) page.read) ();
+	// retrieve and flush display content
+	Cout (cast(char[]) page.read) ();
 }
-

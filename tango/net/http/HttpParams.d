@@ -125,7 +125,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null)
+        immutable(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 return super.get (name, ret);
         }
@@ -161,7 +161,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol=null)
+        void produce (size_t delegate(const(void[])) consume, const(char)[] eol=null)
         {
                 return super.produce (consume, eol);
         }

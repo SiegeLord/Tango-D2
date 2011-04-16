@@ -6,6 +6,8 @@
 
 private
 {
+	import core.thread;
+	
     version (Posix)
     {
         import tango.io.selector.PollSelector;
@@ -25,7 +27,6 @@ private
     import tango.net.device.Socket;
     import tango.time.Clock;
     import tango.core.Exception;
-    import tango.core.Thread;
     import tango.sys.Common;
     import tango.stdc.errno;
     import tango.util.log.Log;
@@ -224,7 +225,7 @@ void testSelector(ISelector selector)
 
                     if (selectionKey.isError || selectionKey.isHangup || selectionKey.isInvalidHandle)
                     {
-                        char[] status;
+                        immutable(char)[] status;
 
                         if (selectionKey.isHangup)
                         {
@@ -319,7 +320,7 @@ void clientThreadFunc()
     Logger log = Log.getLogger("selector.client");
     Socket socket  = new Socket;
 
-    Thread.sleep(0.010);      // 10 milliseconds
+    Thread.sleep(100_000);      // 10 milliseconds
 
     try
     {

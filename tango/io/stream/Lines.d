@@ -90,7 +90,7 @@ class Lines(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        override protected size_t scan (const(void[]) data)
         {
                 auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 

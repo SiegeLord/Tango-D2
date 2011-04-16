@@ -42,17 +42,17 @@ extern (C) void* memmove (void* dst, void* src, int n);
 
 class Token
 {
-        private char[] value;
+        private immutable(char)[] value;
 
-        Token set (char[] value)
+        Token set (const(char)[] value)
         {
-                this.value = value;
+                this.value = value.idup;
                 return this;
         }
 
-        char[] toString ()
+        override immutable(char)[] toString ()
         {
-                return value;
+                return value.idup;
         }
 }
 
@@ -100,7 +100,7 @@ class HttpStack
 
                 // duplicate the content of each original token
                 for (int i=0; i < depth; ++i)
-                     clone.tokens[i].set (tokens[i].toString().dup);
+                     clone.tokens[i].set (tokens[i].toString());
 
                 return clone;
         }
@@ -140,14 +140,14 @@ class HttpStack
 
         **********************************************************************/
 
-        final Token findToken (char[] match)
+        final Token findToken (const(char)[] match)
         {
                 Token tok;
 
                 for (int i=0; i < depth; ++i)
                     {
                     tok = tokens[i];
-                    if (isMatch (tok, match))
+                    if (isMatch (tok, match.dup))
                         return tok;
                     }
                 return null;
@@ -161,10 +161,10 @@ class HttpStack
 
         **********************************************************************/
 
-        final bool removeToken (char[] match)
+        final bool removeToken (const(char)[] match)
         {
                 for (int i=0; i < depth; ++i)
-                     if (isMatch (tokens[i], match))
+                     if (isMatch (tokens[i], match.dup))
                         {
                         tokens[i].value = null;
                         return true;
@@ -190,7 +190,7 @@ class HttpStack
 
         **********************************************************************/
 
-        final Token push (char[] content)
+        final Token push (const(char)[] content)
         {
                 return push().set (content);  
         }
@@ -243,7 +243,7 @@ class HttpStack
 
         final static bool isMatch (ref Token token, char[] match)
         {
-                char[] target = token.toString();
+                auto target = token.toString();
 
                 int length = target.length;
                 if (length > match.length)
@@ -255,7 +255,7 @@ class HttpStack
                 version (Win32)
                          return memicmp (target.ptr, match.ptr, length) is 0;
                 version (Posix)
-                         return strncasecmp (target.ptr, match.ptr, length) is 0;
+                         return strncasecmp (cast(char*)target.ptr, match.ptr, length) is 0;
         }
         
         /**********************************************************************

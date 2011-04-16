@@ -446,7 +446,7 @@ struct BitArray
      * Returns:
      *  Zero if not equal and non-zero otherwise.
      */
-    int opEquals( BitArray rhs )
+	const bool opEquals(ref const(BitArray) rhs)
     {
         if( this.length != rhs.length )
             return 0; // not equal

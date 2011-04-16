@@ -130,7 +130,7 @@ class HttpHeadersView : HttpTokens
 
         **********************************************************************/
 
-        char[] get (HttpHeaderName name, char[] def = null)
+        immutable(char)[] get (const(HttpHeaderName) name, const(char)[] def = null)
         {
                 return super.get (name.value, def);
         }
@@ -174,7 +174,7 @@ class HttpHeadersView : HttpTokens
 
                 foreach (HttpToken token; super)
                         {
-                        element.name.value = token.name;
+                        element.name.value = token.name.idup;
                         element.value = token.value;
                         result = dg (element);
                         if (result)
@@ -231,7 +231,7 @@ class HttpHeadersView : HttpTokens
                         
                         foreach (HttpToken token; super)
                                 {
-                                element.name.value = token.name;
+                                element.name.value = token.name.idup;
                                 element.value = token.value;
                                 result = dg (element);
                                 if (result)
@@ -294,7 +294,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void add (HttpHeaderName name, void delegate(OutputBuffer) dg)
+        void add (const(HttpHeaderName) name, void delegate(OutputBuffer) dg)
         {
                 super.add (name.value, dg);
         }
@@ -305,7 +305,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void add (HttpHeaderName name, char[] value)
+        void add (const(HttpHeaderName) name, const(char)[] value)
         {
                 super.add (name.value, value);
         }
@@ -316,7 +316,7 @@ class HttpHeaders : HttpHeadersView
 
         **********************************************************************/
 
-        void addInt (HttpHeaderName name, int value)
+        void addInt (const(HttpHeaderName) name, const int value)
         {
                 super.addInt (name.value, value);
         }

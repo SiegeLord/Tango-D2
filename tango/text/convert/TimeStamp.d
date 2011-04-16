@@ -120,7 +120,7 @@ dchar[] toString32 (Time time)
 T[] format(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
-T[] format(T) (T[] output, Time t)
+T[] format(T) (immutable(T[]) output, Time t)
 {
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

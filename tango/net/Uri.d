@@ -50,7 +50,7 @@ extern (C) char* memchr (char *, int, size_t);
 class Uri : UriView
 {
         // simplistic string appender
-        private alias size_t delegate(void[]) Consumer;  
+        private alias size_t delegate(const(void[])) Consumer;  
         
         /// old method names
         public alias port        getPort;
@@ -70,7 +70,7 @@ class Uri : UriView
         public alias path        setPath;
         public alias fragment    setFragment;
 
-        public enum {InvalidPort = -1}
+        public enum {InvalidPort = -1};
 
         private int             port_;
         private char[]          host_,
@@ -134,8 +134,8 @@ class Uri : UriView
         // scheme and port pairs
         private struct SchemePort
         {
-                char[]  name;
-                short   port;
+                immutable(char)[]  name;
+                short              port;
         }
 
         /***********************************************************************
@@ -240,7 +240,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        this (char[] uri)
+        this (const(char)[] uri)
         {
                 this ();
                 parse (uri);
@@ -253,14 +253,14 @@ class Uri : UriView
                 
         ***********************************************************************/
 
-        this (char[] scheme, char[] host, char[] path, char[] query = null)
+        this (const(char)[] scheme, const(char)[] host, const(char)[] path, const(char)[] query = null)
         {
                 this ();
 
-                this.scheme_ = scheme;
-                this.query_ = query;
-                this.host_ = host;
-                this.path_ = path;
+                this.scheme_ = scheme.dup;
+                this.query_ = query.dup;
+                this.host_ = host.dup;
+                this.path_ = path.dup;
         }
 
         /***********************************************************************
@@ -275,8 +275,8 @@ class Uri : UriView
                 with (other)
                      {
                      this (getScheme, getHost, getPath, getQuery);
-                     this.userinfo_ = getUserInfo;
-                     this.fragment_ = getFragment;
+                     this.userinfo_ = getUserInfo.dup;
+                     this.fragment_ = getFragment.dup;
                      this.port_ = getPort;
                      }
         }
@@ -289,7 +289,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int defaultPort (char[] scheme)
+        final short defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,9 +304,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] scheme()
+        immutable(char)[] scheme()
         {
-                return scheme_;
+                return scheme_.idup;
         }
 
         /***********************************************************************
@@ -316,9 +316,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] host()
+        immutable(char)[] host()
         {
-                return host_;
+                return host_.idup;
         }
 
         /***********************************************************************
@@ -354,9 +354,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] userinfo()
+        immutable(char)[] userinfo()
         {
-                return userinfo_;
+                return userinfo_.idup;
         }
 
         /***********************************************************************
@@ -366,9 +366,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] path()
+        immutable(char)[] path()
         {
-                return path_;
+                return path_.idup;
         }
 
         /***********************************************************************
@@ -378,9 +378,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] query()
+        immutable(char)[] query()
         {
-                return query_;
+                return query_.idup;
         }
 
         /***********************************************************************
@@ -390,9 +390,9 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] fragment()
+        immutable(char)[] fragment()
         {
-                return fragment_;
+                return fragment_.idup;
         }
 
         /***********************************************************************
@@ -463,13 +463,13 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final immutable(char[]) toString ()
         {
-                void[] s;
+                char[] s;
 
                 s.length = 256, s.length = 0;
-                produce ((void[] v) {return s ~= v, v.length;});
-                return cast(char[]) s;
+                produce ((const(void[]) v) {return s ~= cast(char[])v, v.length;});
+                return s.idup;
         }
 
         /***********************************************************************
@@ -479,7 +479,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static size_t encode (Consumer consume, char[] s, int flags)
+        static size_t encode (Consumer consume, const(char)[] s, int flags)
         {
                 size_t  ret;
                 char[3] hex;
@@ -515,11 +515,11 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        static char[] encode (char[] text, int flags)
+        static immutable(char)[] encode (const(char)[] text, int flags)
         {
-                void[] s;
-                encode ((void[] v) {return s ~= v, v.length;}, text, flags);
-                return cast(char[]) s;
+                char[] s;
+                encode ((const(void[]) v) {return s ~= cast(char[])v, v.length;}, text, flags);
+                return s.idup;
         }
 
         /***********************************************************************
@@ -530,7 +530,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        private char[] decoder (char[] s, char ignore=0)
+        private const(char)[] decoder (const(char)[] s, const char ignore=0)
         {
                 static int toInt (char c)
                 {
@@ -548,7 +548,7 @@ class Uri : UriView
                 auto length = s.length;
 
                 // take a peek first, to see if there's work to do
-                if (length && memchr (s.ptr, '%', length))
+                if (length && memchr (cast(char*)s.ptr, '%', length))
                    {
                    char* p;
                    int   j;
@@ -578,7 +578,7 @@ class Uri : UriView
                        }
 
                    // return a slice from the decoded input
-                   return cast(char[]) decoded.slice (j);
+                   return cast(const(char)[]) decoded.slice (j);
                    }
 
                 // return original content
@@ -591,7 +591,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final char[] decode (char[] s)
+        final char[] decode (const(char)[] s)
         {
                 return decoder(s).dup;
         }
@@ -616,7 +616,7 @@ class Uri : UriView
                 
         ***********************************************************************/
 
-        final Uri parse (char[] uri, bool relative = false)
+        final Uri parse (const(char)[] uri, bool relative = false)
         {
                 char    c;
                 int     i, 
@@ -631,7 +631,7 @@ class Uri : UriView
                 for (i=0; i < len && !(map[c = uri[i]] & ExcScheme); ++i) {}
                 if (c is ':')
                    {
-                   scheme_ = uri [mark .. i];   
+                   scheme_ = uri [mark .. i].dup;   
                    toLower (scheme_);
                    mark = i + 1;
                    }
@@ -655,20 +655,20 @@ class Uri : UriView
 
                 // isolate path
                 for (i=mark; i < len && !(map[uri[i]] & ExcPath); ++i) {}
-                path_ = decoder (uri[mark .. i]);
+                path_ = decoder (uri[mark .. i]).dup;
                 mark = i;
 
                 // isolate query
                 if (mark < len && uri[mark] is '?')
                    {
                    for (++mark, i=mark; i < len && uri[i] != '#'; ++i) {}
-                   query_ = decoder (uri[mark .. i], '&');
+                   query_ = decoder (uri[mark .. i], '&').dup;
                    mark = i;
                    }
 
                 // isolate fragment
                 if (mark < len && uri[mark] is '#')
-                    fragment_ = decoder (uri[mark+1 .. len]);
+                    fragment_ = decoder (uri[mark+1 .. len]).dup;
 
                 return this;
         }
@@ -813,7 +813,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        private void parseAuthority (char[] auth)
+        private void parseAuthority (const(char)[] auth)
         {
                 int     mark,
                         len = auth.length;
@@ -822,7 +822,7 @@ class Uri : UriView
                 foreach (int i, char c; auth)
                          if (c is '@')
                             {
-                            userinfo_ = decoder (auth[0 .. i]);
+                            userinfo_ = decoder (auth[0 .. i]).dup;
                             mark = i + 1;
                             break;
                             }
@@ -837,7 +837,7 @@ class Uri : UriView
                         }
 
                 // get host: ([^:]*)?
-                host_ = auth [mark..len];
+                host_ = auth [mark..len].dup;
         }
 
         /**********************************************************************

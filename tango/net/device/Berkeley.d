@@ -13,6 +13,12 @@ private import  tango.stdc.stringz;
 
 *******************************************************************************/
 
+private extern(C) int strlen(char*);
+
+/*******************************************************************************
+
+*******************************************************************************/
+
 enum {SOCKET_ERROR = consts.SOCKET_ERROR}
 
 /*******************************************************************************
@@ -227,7 +233,7 @@ version (Win32)
 
                 socket_t socket(int af, int type, int protocol);
                 int ioctlsocket(socket_t s, int cmd, uint* argp);
-                uint inet_addr(char* cp);
+                uint inet_addr(const char* cp);
                 int bind(socket_t s, Address.sockaddr* name, int namelen);
                 int connect(socket_t s, Address.sockaddr* name, int namelen);
                 int listen(socket_t s, int backlog);
@@ -245,7 +251,7 @@ version (Win32)
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                NetHost.hostent* gethostbyname(char* name);
+                NetHost.hostent* gethostbyname(const char* name);
                 NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
                 /**
                 The gai_strerror function translates error codes of getaddrinfo,
@@ -350,7 +356,7 @@ else
         {
                 socket_t socket(int af, int type, int protocol);
                 int fcntl(socket_t s, int f, ...);
-                uint inet_addr(char* cp);
+                uint inet_addr(const char* cp);
                 int bind(socket_t s, Address.sockaddr* name, int namelen);
                 int connect(socket_t s, Address.sockaddr* name, int namelen);
                 int listen(socket_t s, int backlog);
@@ -368,7 +374,7 @@ else
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
                 int gethostname(void* namebuffer, int buflen);
                 char* inet_ntoa(uint ina);
-                NetHost.hostent* gethostbyname(char* name);
+                NetHost.hostent* gethostbyname(const char* name);
                 NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
 
                 /**
@@ -380,8 +386,8 @@ else
                 but unlike the latter functions, getaddrinfo() is reentrant and allows
                 programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN
                 */
-                int getaddrinfo(char* node, char* service, Address.addrinfo* hints, Address.addrinfo** res);
-
+                int getaddrinfo(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res); 
+		        						
                 /**
                 The freeaddrinfo() function frees the memory that was allocated for the
                 dynamically allocated linked list res.  (C) MAN
@@ -552,7 +558,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* bind (Address addr)
+        Berkeley bind (Address addr)
         {
                 if(Error == .bind (sock, addr.name, addr.nameLen))
                    exception ("Unable to bind socket: ");
@@ -563,7 +569,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* connect (Address to)
+        Berkeley connect (Address to)
         {
                 if (Error == .connect (sock, to.name, to.nameLen))
                    {
@@ -592,7 +598,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* listen (int backlog)
+        Berkeley listen (int backlog)
         {
                 if (Error == .listen (sock, backlog))
                     exception ("Unable to listen on socket: ");
@@ -632,7 +638,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* shutdown (SocketShutdown how)
+        Berkeley shutdown (SocketShutdown how)
         {
                 .shutdown (sock, how);
                 return this;
@@ -644,7 +650,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* linger (int period)
+        Berkeley linger (int period)
         {
                 version (Win32)
                          alias ushort attr;
@@ -673,7 +679,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* addressReuse (bool enabled)
+        Berkeley addressReuse (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, x);
@@ -685,7 +691,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* noDelay (bool enabled)
+        Berkeley noDelay (bool enabled)
         {
                 int[1] x = enabled;
                 return setOption (SocketOptionLevel.TCP, SocketOption.TCP_NODELAY, x);
@@ -802,14 +808,14 @@ version (Windows)
 
         ***********************************************************************/
 
-        int send (void[] buf, SocketFlags flags=SocketFlags.NONE)
-        {
+        ssize_t send (const(void[]) buf, SocketFlags flags=SocketFlags.NONE)
+        {       
                 if (buf.length is 0)
                     return 0;
 
                 version (Posix)
                         {
-                        auto ret = .send (sock, buf.ptr, buf.length,
+                        auto ret = .send (sock, cast(char*)buf.ptr, buf.length, 
                                           SocketFlags.NOSIGNAL + cast(int) flags);
                         if (errno is EPIPE)
                             ret = -1;
@@ -966,7 +972,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        Berkeley* setOption (SocketOptionLevel level, SocketOption option, void[] value)
+        Berkeley setOption (SocketOptionLevel level, SocketOption option, void[] value)
         {
                 if(Error == .setsockopt (sock, cast(int)level, cast(int)option, value.ptr, cast(int) value.length))
                    exception ("Unable to set socket option: ");
@@ -1019,16 +1025,16 @@ version (Windows)
 
         ***********************************************************************/
 
-        static void exception (char[] msg)
+        static void exception (immutable(char)[] msg)
         {
-                throw new SocketException (msg ~ SysError.lookup(lastError));
+                throw new SocketException ((msg ~ SysError.lookup(lastError)).idup);
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        protected static void badArg (char[] msg)
+        protected static void badArg (immutable(char)[] msg)
         {
                 throw new IllegalArgumentException (msg);
         }
@@ -1111,7 +1117,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        private static char* convert2C (char[] input, char[] output)
+        private static const(char*) convert2C (const(char)[] input, char[] output)
         {
                 output [0 .. input.length] = input;
                 output [input.length] = 0;
@@ -1157,7 +1163,7 @@ public abstract class Address
 
         ***********************************************************************/
 
-        static void exception (char[] msg)
+        static void exception (immutable(char)[] msg)
         {
                 throw new SocketException (msg);
         }
@@ -1226,73 +1232,73 @@ public abstract class Address
 
                            retVal.length = nh.addrList.length;
                            foreach (i, addr; nh.addrList)
-                                    retVal[i] = new IPv4Address(addr, port);
-                           return retVal;
-                           }
-                        }
+                                    retVal[i] = new IPv4Address(addr, port); 
+                           return retVal; 
+                           } 
+                        } 
 
-                addrinfo* info;
-                addrinfo hints;
-                hints.ai_flags = flags;
-                hints.ai_family = (flags & AIFlags.PASSIVE && af == AddressFamily.UNSPEC) ? AddressFamily.INET6 : af;
-                hints.ai_socktype = SocketType.STREAM;
-                int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info);
-                if (error != 0)
-                    throw new AddressException("couldn't resolve " ~ host);
+                addrinfo* info; 
+                addrinfo hints; 
+                hints.ai_flags = flags; 
+                hints.ai_family = (flags & AIFlags.PASSIVE && af == AddressFamily.UNSPEC) ? AddressFamily.INET6 : af; 
+                hints.ai_socktype = SocketType.STREAM; 
+                int error = getaddrinfo(toStringz(host), service.length == 0 ? null : toStringz(service), &hints, &info); 
+                if (error != 0)  
+                    throw new AddressException(("couldn't resolve " ~ host).idup); 
 
-                retVal.length = 16;
-                retVal.length = 0;
-                while (info)
-                      {
-                      if (auto addr = create(info.ai_addr))
-                          retVal ~= addr;
-                      info = info.ai_next;
-                      }
-                freeaddrinfo (info);
-                return retVal;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        static Address[] resolveAll (char host[], ushort port,
-                                     AddressFamily af = AddressFamily.UNSPEC,
-                                     AIFlags flags = cast(AIFlags)0)
-        {
-                char[16] buf;
-                return resolveAll (host, fromInt(buf, port), af, flags);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        static Address passive (char[] service,
-                                AddressFamily af = AddressFamily.UNSPEC,
-                                AIFlags flags = cast(AIFlags)0)
-        {
-                return resolve (null, service, af, flags | AIFlags.PASSIVE);
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        static Address passive (ushort port, AddressFamily af = AddressFamily.UNSPEC,
-                                AIFlags flags = cast(AIFlags)0)
-        {
-                return resolve (null, port, af, flags | AIFlags.PASSIVE);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        char[] toAddrString()
-        {
-                char[1025] host = void;
-                // Getting name info. Don't look up hostname, returns
+                retVal.length = 16; 
+                retVal.length = 0; 
+                while (info) 
+                      { 
+                      if (auto addr = create(info.ai_addr)) 
+                          retVal ~= addr; 
+                      info = info.ai_next; 
+                      } 
+                freeaddrinfo (info); 
+                return retVal; 
+        } 
+         
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+         
+        static Address[] resolveAll (char host[], ushort port, 
+                                     AddressFamily af = AddressFamily.UNSPEC, 
+                                     AIFlags flags = cast(AIFlags)0) 
+        { 
+                char[16] buf; 
+                return resolveAll (host, fromInt(buf, port), af, flags); 
+        } 
+         
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+         
+        static Address passive (char[] service, 
+                                AddressFamily af = AddressFamily.UNSPEC, 
+                                AIFlags flags = cast(AIFlags)0) 
+        { 
+                return resolve (null, service, af, flags | AIFlags.PASSIVE); 
+        } 
+         
+        /*********************************************************************** 
+ 
+         ***********************************************************************/ 
+         
+        static Address passive (ushort port, AddressFamily af = AddressFamily.UNSPEC, 
+                                AIFlags flags = cast(AIFlags)0) 
+        { 
+                return resolve (null, port, af, flags | AIFlags.PASSIVE); 
+        } 
+         
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+ 
+        char[] toAddrString() 
+        { 
+                char[1025] host = void; 
+                // Getting name info. Don't look up hostname, returns 
                 // numeric name. (NIFlags.NUMERICHOST)
                 getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST);
                 return fromStringz (host.ptr);
@@ -1312,6 +1318,7 @@ public abstract class Address
                          if (c == '\0')
                              return service[0..i].dup;
                 return null;
+<<<<<<< HEAD
         }
 
         /***********************************************************************
@@ -1331,6 +1338,27 @@ public abstract class Address
         {
                 return cast(AddressFamily)name.sa_family;
         }
+=======
+        } 
+          
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+ 
+        immutable(char)[] toString() 
+        { 
+                return (toAddrString ~ ":" ~ toPortString).idup; 
+        } 
+                  
+        /*********************************************************************** 
+ 
+         ***********************************************************************/ 
+ 
+        AddressFamily addressFamily() 
+        { 
+                return cast(AddressFamily)name.sa_family; 
+        } 
+>>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
 }
 
 
@@ -1373,7 +1401,7 @@ public class UnknownAddress : Address
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char[]) toString()
         {
                 return "Unknown";
         }
@@ -1457,7 +1485,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        this (char[] addr, ushort port = PORT_ANY)
+        this (const(char)[] addr, ushort port = PORT_ANY)
         {
                 uint uiaddr = parse(addr);
                 if (ADDR_NONE == uiaddr)
@@ -1466,7 +1494,7 @@ public class IPv4Address : Address
                    if (!ih.getHostByName(addr))
                       {
                       char[16] tmp = void;
-                      exception ("Unable to resolve "~addr~":"~fromInt(tmp, port));
+                      exception (("Unable to resolve " ~ addr ~ ":" ~ fromInt(tmp, port)).idup);
                       }
                    uiaddr = ih.addrList[0];
                    }
@@ -1555,9 +1583,9 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        char[] toString()
+        immutable(char)[] toString()
         {
-                return toAddrString() ~ ":" ~ toPortString();
+                return (toAddrString() ~ ":" ~ toPortString()).idup;
         }
 
         /***********************************************************************
@@ -1567,7 +1595,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        static uint parse(char[] addr)
+        static uint parse(const(char)[] addr)
         {
                 char[64] tmp;
 
@@ -1753,6 +1781,7 @@ protected:
         this (int port)
         {
           this ("::", port);
+<<<<<<< HEAD
         }
 
         /***********************************************************************
@@ -1816,6 +1845,71 @@ protected:
 
         ***********************************************************************/
 
+=======
+        } 
+				
+        /*********************************************************************** 
+ 
+                -port- can be PORT_ANY 
+                -addr- is an IP address or host name 
+ 
+        ***********************************************************************/ 
+				
+        this (const(char)[] addr, int port = PORT_ANY) 
+        { 
+                version (Win32) 
+                        { 
+                        if (!getaddrinfo) 
+                             exception ("This platform does not support IPv6."); 
+                        } 
+                addrinfo* info; 
+                addrinfo hints; 
+                hints.ai_family = AddressFamily.INET6; 
+                int error = getaddrinfo((addr ~ '\0').ptr, null, &hints, &info); 
+                if (error != 0)  
+                    exception("failed to create IPv6Address: "); 
+                 
+                sin = *cast(sockaddr_in6*)(info.ai_addr); 
+                sin.sin_port = htons(cast(ushort) port); 
+        } 
+               
+        /*********************************************************************** 
+ 
+                -service- can be a port number or service name 
+                -addr- is an IP address or host name 
+ 
+        ***********************************************************************/ 
+ 
+        this (char[] addr, char[] service) 
+        { 
+                version (Win32) 
+                        { 
+                        if(! getaddrinfo) 
+                             exception ("This platform does not support IPv6."); 
+                        } 
+                addrinfo* info; 
+                addrinfo hints; 
+                hints.ai_family = AddressFamily.INET6; 
+                int error = getaddrinfo((addr ~ '\0').ptr, (service ~ '\0').ptr, &hints, &info); 
+                if (error != 0)  
+                    exception ("failed to create IPv6Address: "); 
+                sin = *cast(sockaddr_in6*)(info.ai_addr); 
+        } 
+ 
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+ 
+        ubyte[] addr() 
+        { 
+                return sin.sin6_addr; 
+        } 
+ 
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+ 
+>>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
         version (Posix)
         char[] toAddrString()
         {
@@ -1838,11 +1932,19 @@ protected:
 
         ***********************************************************************/
 
+<<<<<<< HEAD
         char[] toString()
         {
                 return "[" ~ toAddrString ~ "]:" ~ toPortString;
         }
 }
+=======
+        immutable(char)[] toString() 
+        { 
+                return ("[" ~ toAddrString ~ "]:" ~ toPortString).idup; 
+        } 
+} 
+>>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
 
 /*******************************************************************************
 
@@ -1954,7 +2056,7 @@ public class NetHost
 
         ***********************************************************************/
 
-        bool getHostByName(char[] name)
+        bool getHostByName(const(char)[] name)
         {
                 char[1024] tmp;
 
