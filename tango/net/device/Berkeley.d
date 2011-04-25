@@ -6,13 +6,8 @@ private import tango.core.Exception;
 
 import  consts=tango.sys.consts.socket;
 
+private import tango.stdc.string : strlen;
 private import  tango.stdc.stringz;
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-private extern(C) int strlen(char*);
 
 /*******************************************************************************
 
