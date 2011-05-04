@@ -122,3 +122,6 @@ tango/util/log/Log.d
 tango/util/log/AppendConsole.d
 tango/util/log/AppendFile.d
 tango/util/uuid/Uuid.d
+tango/util/uuid/RandomGen.d
+tango/util/uuid/NamespaceGenV3.d
+tango/util/uuid/NamespaceGenV5.d

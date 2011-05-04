@@ -33,5 +33,5 @@ import tango.util.digest.Sha1;
 /** Generates a UUID as described above. */
 Uuid newUuid(Uuid namespace, char[] name)
 {
-        return Uuid.byName(namespace, name, new Sha1, 5);
+        return Uuid.byName(namespace, name, new Sha1, cast(ubyte)5);
 }
