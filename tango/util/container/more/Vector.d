@@ -14,7 +14,7 @@
 
 module tango.util.container.more.Vector;
 
-private import tango.core.Exception : ArrayBoundsException;
+private import tango.core.Exception : RangeError;
 private import tango.stdc.string : memmove;
 
 /******************************************************************************
@@ -261,7 +261,7 @@ struct Vector (V, int Size = 0)
 
         private V error (size_t line)
         {
-                throw new ArrayBoundsException (__FILE__, line);
+                throw new RangeError (__FILE__, line);
         }
 
         /***********************************************************************
