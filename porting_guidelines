@@ -20,6 +20,9 @@ global and static variables with '__gshared'
 Other issues:
 - Tango code is an old code base... it sometimes uses outdated constructs. If you ever see a constant looking variable that is nonetheless typed 'static', change it to enum (I guess 'static' used to mean 'const' in D1).
 
+Tango runtime and druntime:
+- Currently my idea is to alias as many current core modules to the druntime modules. In places where Tango runtime is more advanced than druntime, the procedure right now is to surround the code with 'version(TangoRuntime)' blocks. In the future this will either be obviated by merging in the enhancements from Tango's runtime to druntime, or making a druntime compatible runtime with Tango specific extensions (hence the version statement). It's not perfect, but it's the best solution I can think of at the moment.
+
 Porting procedure I follow:
 - Replace all consts by enums
 - Compile + modify the module until it compiles and passes the unit tests
