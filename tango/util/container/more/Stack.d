@@ -14,7 +14,7 @@
 
 module tango.util.container.more.Stack;
 
-private import tango.core.Exception : ArrayBoundsException;
+private import tango.core.Exception : RangeError;
 
 /******************************************************************************
 
@@ -299,7 +299,7 @@ struct Stack (V, int Size = 0)
 
         private V error (size_t line)
         {
-                throw new ArrayBoundsException (__FILE__, line);
+                throw new RangeError (__FILE__, line);
         }
 
         /***********************************************************************
