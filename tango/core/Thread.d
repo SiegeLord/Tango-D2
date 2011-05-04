@@ -14,6 +14,10 @@
  */
 module tango.core.Thread;
 
+public import core.thread;
+
+/+
+
 import tango.core.sync.Atomic;
 debug(Thread)
     import tango.stdc.stdio : printf;
@@ -3827,3 +3831,4 @@ extern(C){
         Thread.sleep(period);
     }
 }
++/

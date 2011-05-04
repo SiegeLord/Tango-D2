@@ -39,7 +39,10 @@ public  import tango.io.model.IConduit;
 
 class Conduit : IConduit
 {
-        protected Fiber.Scheduler scheduler;            // optional scheduler
+        version(TangoRuntime)
+        {
+            protected Fiber.Scheduler scheduler;            // optional scheduler
+        }
         private   uint            duration = -1;        // scheduling timeout
 
         /***********************************************************************
@@ -57,8 +60,11 @@ class Conduit : IConduit
         this ()
         {
                 auto f = Fiber.getThis;
-                if (f)
-                    scheduler = f.event.scheduler;
+                version(TangoRuntime)
+                {
+                    if (f)
+                        scheduler = f.event.scheduler;
+                }
         }
 
         /***********************************************************************
