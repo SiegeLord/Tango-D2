@@ -121,3 +121,4 @@ tango/util/log/model/ILogger.d
 tango/util/log/Log.d
 tango/util/log/AppendConsole.d
 tango/util/log/AppendFile.d
+tango/util/uuid/Uuid.d

@@ -45,7 +45,7 @@ struct Uuid
 
         /** Copy the givent bytes into a UUID. If you supply more or fewer than
           * 16 bytes, throws an IllegalArgumentException. */
-        public static Uuid opCall(ubyte[] data)
+        public static Uuid opCall(const(ubyte[]) data)
         {
                 if (data.length != 16)
                 {
@@ -64,11 +64,11 @@ struct Uuid
           * The following is an example of a UUID in the expected format:
           *     67e55044-10b1-426f-9247-bb680e5fe0c8 
           */
-        public static Uuid parse(char[] value)
+        public static Uuid parse(const(char[]) value)
         {
                 Uuid u;
                 if (!tryParse(value, u))
-                        throw new IllegalArgumentException("'" ~ value ~ "' is not in the correct format for a UUID");
+                        throw new IllegalArgumentException("'" ~ value.idup ~ "' is not in the correct format for a UUID");
                 return u;
         }
 
@@ -80,7 +80,7 @@ struct Uuid
           * The following is an example of a UUID in the expected format:
           *     67e55044-10b1-426f-9247-bb680e5fe0c8 
           */
-        public static bool tryParse(char[] value, out Uuid uuid)
+        public static bool tryParse(const(char[]) value, out Uuid uuid)
         {
                 if (value.length != 36 ||
                         value[8] != '-' ||
@@ -174,8 +174,8 @@ struct Uuid
          * This method is exposed mainly for the convenience methods in 
          * tango.util.uuid.*. You can use this method directly if you prefer.
          */
-        public static Uuid byName(Digest)(Uuid namespace, char[] name, Digest digest,
-                                                                          ubyte uuidVersion)
+        public static Uuid byName(Digest)(Uuid namespace, const(char[]) name, Digest digest,
+                                                                              ubyte uuidVersion)
         {
                 /* o  Compute the hash of the name space ID concatenated with the name.
                    o  Set octets zero through 15 to octets zero through 15 of the hash.
@@ -187,7 +187,7 @@ struct Uuid
                 nameBytes ~= cast(ubyte[])name;
                 digest.update(nameBytes);
                 nameBytes = digest.binaryDigest;
-                nameBytes[6] = (uuidVersion << 4) | (nameBytes[6] & 0b1111);
+                nameBytes[6] = cast(ubyte)((uuidVersion << 4) | (nameBytes[6] & 0b1111));
                 nameBytes[8] |= 0b1000_0000;
                 nameBytes[8] &= 0b1011_1111;
                 return Uuid(nameBytes[0..16]);
@@ -204,7 +204,7 @@ struct Uuid
         }
 
         /** Get a copy of this UUID's value as an array of unsigned bytes. */
-        public ubyte[] toBytes()
+        public const ubyte[] toBytes()
         {
                 return _data.ub.dup;
         }
@@ -226,7 +226,7 @@ struct Uuid
           * -   Version 6 is a non-standard Microsoft extension.
           * -   Version 7 is reserved for future use.
           */
-        public ubyte format()
+        public const ubyte format()
         {
                 return cast(ubyte) (_data.ub[6] >> 4);
         }
@@ -237,7 +237,7 @@ struct Uuid
           *     67e55044-10b1-426f-9247-bb680e5fe0c8
           * This is the format used by the parsing functions.
           */
-        public char[] toString()
+        public const(char[]) toString()
         {
                 // Look, only one allocation.
                 char[] buf = new char[36];
@@ -275,7 +275,7 @@ struct Uuid
         }
 
         /** Determines if this UUID has the same value as another. */
-        public bool opEquals(Uuid other)
+        public const bool opEquals(ref const(Uuid) other)
         {
                 return 
                         _data.ui[0] == other._data.ui[0] &&
@@ -285,7 +285,7 @@ struct Uuid
         }
 
         /** Get a hash code representing this UUID. */
-        public hash_t toHash()
+        public const hash_t toHash()
         {
                 with (_data)
                 {
@@ -296,7 +296,7 @@ struct Uuid
 }
 
 
-version (TangoTest)
+debug (UnitTest)
 {
         import tango.math.random.Kiss;
         unittest
@@ -394,7 +394,7 @@ version (TangoTest)
                 // a ppc processor -- the spec says something about network byte order, but it's using an array
                 // of bytes at that point, so converting to NBO is a noop...
                 auto expected = Uuid.parse("2b1c6704-a43f-5d43-9abb-b13310b4458a");
-                auto generated = Uuid.byName(namespace, name, new Sha1, 5);
+                auto generated = Uuid.byName(namespace, name, new Sha1, cast(ubyte)5);
                 assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
         }
         
@@ -404,10 +404,10 @@ version (TangoTest)
                 auto namespace = Uuid.parse("15288517-c402-4057-9fc5-05711726df41");
                 auto name = "hello";
                 auto expected = Uuid.parse("31a2b702-85a8-349a-9b0e-213b1bd753b8");
-                auto generated = Uuid.byName(namespace, name, new Md5, 3);
+                auto generated = Uuid.byName(namespace, name, new Md5, cast(ubyte)3);
                 assert (generated == expected, "\nexpected: " ~ expected.toString ~ "\nbut was:  " ~ generated.toString);
         }
-        void main(){}
+        //void main(){}
 }
 
 /** A base interface for any UUID generator for UUIDs. That is,
