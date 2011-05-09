@@ -38,7 +38,7 @@ void main (char[][] arg)
            new FreeBSD (args);
            new Solaris (args);
            new Windows (args);
-           stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
+           Stdout.formatln ("{} files", FileFilter.builder(args.os, args.compiler)());
            }
 }
 
@@ -157,10 +157,20 @@ class Linux : FileFilter
 
         private auto gcc = "gcc -c -o";
         private auto gcc32 = "gcc -c -m32 -o";
+        private auto gcc64 = "gcc -c -m64 -o";
 
         int dmd ()
         {
-                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                char[] gcc, march;
+
+                if (args.march.length)
+                {
+                    march = " -m" ~ args.march;
+                    gcc = args.march == "64" ? gcc64 : gcc32;
+                }
+
+                auto dmd = "dmd -c -I"~args.root~"/tango/core -I"~args.root ~
+                    march~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 exclude ("tango/core/rt/compiler/dmd/windows");
                 exclude ("tango/core/rt/compiler/dmd/darwin");
                 foreach (file; scan(".d")) {
@@ -170,23 +180,31 @@ class Linux : FileFilter
 
                 if (args.core) {
                     foreach (file; scan(".c")) {
-                             auto obj = compile (file, gcc32);
+                             auto obj = compile (file, gcc);
                              addToLib(obj);
                     }
 
                     foreach (file; scan(".S")) {
-                            auto obj = compile (file, gcc32);
+                            auto obj = compile (file, gcc);
                             addToLib(obj);
                     }
                 }
 
-                makeLib(true);
+                makeLib(args.march == " -m32");
                 return count;
         }
 
         int ldc ()
         {
-                auto ldc = "ldc -c -I"~args.root~"/tango/core -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
+                char[] gcc, march;
+
+                if (args.march.length)
+                {
+                    march = " -m" ~ args.march;
+                    gcc = args.march == "64" ? gcc64 : gcc32;
+                }
+
+                auto ldc = "ldc -c -I"~args.root~"/tango/core " ~ march ~ " -I"~args.root~"/tango/core/rt/compiler/ldc -I"~args.root~" -I"~args.root~"/tango/core/vendor "~args.flags~" -of";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, ldc);
                          addToLib(obj);
@@ -204,13 +222,22 @@ class Linux : FileFilter
                     }
                 }
 
-                makeLib;
+                makeLib(args.march == "32");
                 return count;
         }
 
         int gdc ()
         {
-                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root~" "~args.flags~" -o";
+                char[] gcc, march;
+
+                if (args.march.length)
+                {
+                    march = " -m" ~ args.march;
+                    gcc = args.march == "64" ? gcc64 : gcc32;
+                }
+
+                auto gdc = "gdc -c -I"~args.root~"/tango/core -I"~args.root ~
+                    march ~ " "~args.flags~" -o";
                 foreach (file; scan(".d")) {
                          auto obj = compile (file, gdc);
                          addToLib(obj);
@@ -227,8 +254,7 @@ class Linux : FileFilter
                             addToLib(obj);
                     }
                 }
-
-                makeLib;
+                makeLib(args.march == "32");
                 return count;
         }
 
@@ -780,8 +806,8 @@ class FileFilter
                 if (args.verbose)
                    {
                    foreach (str; cmd)
-                            stdout (str)(' ');
-                   stdout.newline;
+                            Stdout (str)(' ');
+                   Stdout.newline;
                    }  
                          
                 if (! args.inhibit)
@@ -794,8 +820,8 @@ class FileFilter
                        proc.copyEnv (true);
 
                    proc.execute();
-                   stdout.stream.copy (proc.stderr);
-                   stdout.stream.copy (proc.stdout);
+                   Stdout.stream.copy (proc.stderr);
+                   Stdout.stream.copy (proc.stdout);
                    auto result = proc.wait;
                    if (result.status != 0 || result.reason != Process.Result.Exit)
                        throw new Exception (result.toString);
@@ -823,7 +849,9 @@ struct Args
                 root,
                 flags,
                 target,
-                compiler;
+                compiler,
+                march;
+                
 
         char[]  usage = "Bob is a build tool for the sole purpose to compile the Tango library.\n"
                         "Usage: bob <options> tango-path\n"
@@ -833,6 +861,7 @@ struct Args
                         "\t[-i]\t\t\tinhibit execution\n"
                         "\t[-u]\t\t\tinclude user modules\n"
                         "\t[-d]\t\t\tbuild Tango as a dynamic/shared library\n"
+                        "\t[-m=64|32]\tCompile for 32/64 bit\n"
                         "\t[-r=dmd|gdc|ldc]\tinclude a runtime target\n"
                         "\t[-c=dmd|gdc|ldc]\tspecify a compiler to use\n"                        
                         "\t[-g=basic|cdgc|stub]\tspecify the GC implementation to include in the runtime\n"
@@ -857,6 +886,7 @@ struct Args
                 auto n = args(null).params(1).required.title("tango-path");
                 auto h = args("help").aliased('h').aliased('?').halt;
                 auto d = args('d');
+                auto m = args('m').params(1).restrict("64", "32");
 
                 version (Windows)
                          p.defaults("windows");
@@ -901,6 +931,7 @@ struct Args
                    compiler = c.assigned[0];
                    gc = g.assigned[0];
                    lib = l.assigned[0];
+                   march = m.assigned.length > 0 ? m.assigned[0] : "";
                        
                     if(compiler == "gdc" && flags == "-release")
                         flags = "-frelease";

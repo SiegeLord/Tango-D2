@@ -47,6 +47,11 @@ class TypeInfo_Ai : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (int[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (int[]).sizeof;
@@ -60,6 +65,11 @@ class TypeInfo_Ai : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(int);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }
 

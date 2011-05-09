@@ -21,6 +21,11 @@ class TypeInfo_u : TypeInfo
         return *cast(wchar *)p1 - *cast(wchar *)p2;
     }
 
+    override size_t talign()
+    {
+        return wchar.alignof;
+    }
+
     override size_t tsize()
     {
         return wchar.sizeof;

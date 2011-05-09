@@ -76,6 +76,11 @@ class TypeInfo_Ae : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (real[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (real[]).sizeof;

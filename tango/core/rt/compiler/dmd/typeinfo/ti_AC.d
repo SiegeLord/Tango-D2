@@ -82,6 +82,11 @@ class TypeInfo_AC : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (Object[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (Object[]).sizeof;
@@ -95,5 +100,10 @@ class TypeInfo_AC : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(Object);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }

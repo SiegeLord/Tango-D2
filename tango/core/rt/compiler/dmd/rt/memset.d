@@ -41,9 +41,10 @@ short *_memset16(short *p, short value, size_t count)
     return pstart;
 }
 
+
 int *_memset32(int *p, int value, size_t count)
 {
-version (X86)
+version (D_InlineAsm_X86)
 {
     asm
     {
@@ -116,5 +117,25 @@ void *_memsetn(void *p, void *value, int count, size_t sizelem)
         memcpy(p, value, sizelem);
         p = cast(void *)(cast(char *)p + sizelem);
     }
+    return pstart;
+}
+
+float *_memsetFloat(float *p, float value, size_t count)
+{
+    float *pstart = p;
+    float *ptop;
+
+    for (ptop = &p[count]; p < ptop; p++)
+        *p = value;
+    return pstart;
+}
+
+double *_memsetDouble(double *p, double value, size_t count)
+{
+    double *pstart = p;
+    double *ptop;
+
+    for (ptop = &p[count]; p < ptop; p++)
+        *p = value;
     return pstart;
 }

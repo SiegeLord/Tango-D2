@@ -34,7 +34,7 @@ private
     struct BitArray
     {
         size_t  len;
-        uint*   ptr;
+        size_t* ptr;
 
         bool opIndex( size_t i )
         in

@@ -82,7 +82,7 @@ Object _d_interface_cast(void* p, ClassInfo c)
 
 Object _d_dynamic_cast(Object o, ClassInfo c)
 {   ClassInfo oc;
-    size_t offset = 0;
+    uint offset = 0;
 
     //printf("_d_dynamic_cast(o = %p, c = '%.*s')\n", o, c.name);
 
@@ -101,7 +101,7 @@ Object _d_dynamic_cast(Object o, ClassInfo c)
     return o;
 }
 
-int _d_isbaseof2(ClassInfo oc, ClassInfo c, ref size_t offset)
+int _d_isbaseof2(ClassInfo oc, ClassInfo c, ref uint offset)
 {   int i;
 
     if (oc is c)

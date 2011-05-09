@@ -19,8 +19,10 @@ extern (C):
  *      [ECX,EBX] = [EDX,EAX] % [ECX,EBX]
  */
 
+
 void __ULDIV__()
 {
+  version (D_InlineAsm_X86)
     asm
     {
         naked                   ;
@@ -178,6 +180,10 @@ quo1:   // Quotient is 1
         xor     EDX,EDX         ;
         ret                     ;
     }
+  else version (D_InlineAsm_X86_64)
+        assert(0);
+  else
+        static assert(0);
 }
 
 
@@ -193,6 +199,7 @@ quo1:   // Quotient is 1
 
 void __LDIV__()
 {
+  version (D_InlineAsm_X86)
     asm
     {
         naked                   ;
@@ -241,8 +248,11 @@ L10:    test    ECX,ECX         ;       // [ECX,EBX] negative?
 
 L12:    jmp     __ULDIV__       ;
     }
+  else version (D_InlineAsm_X86_64)
+        assert(0);
+  else
+        static assert(0);
 }
-
 
 /***************************************
  * Compare [EDX,EAX] with [ECX,EBX]
@@ -252,6 +262,7 @@ L12:    jmp     __ULDIV__       ;
 
 void __LCMP__()
 {
+  version (D_InlineAsm_X86)
     asm
     {
         naked                   ;
@@ -270,10 +281,11 @@ C3:     inc     EDX             ;
 C2:     pop     EDX             ;
 C1:     ret                     ;
     }
+  else version (D_InlineAsm_X86_64)
+        assert(0);
+  else
+        static assert(0);
 }
-
-
-
 
 // Convert ulong to real
 
@@ -281,46 +293,72 @@ private real adjust = cast(real)0x800_0000_0000_0000 * 0x10;
 
 real __U64_LDBL()
 {
-    version (OSX) {
+    version (OSX)
+    {
+      version (D_InlineAsm_X86)
         asm
-        {   naked               ;
-            push    EDX         ;
-            push    EAX         ;
-            and     dword ptr 4[ESP], 0x7FFFFFFF    ;
-            fild    qword ptr [ESP]     ;
-            test    EDX,EDX         ;
-            jns     L1          ;
-            push    0x0000403e      ;
-            push    0x80000000      ;
-            push    0           ;
-            fld     real ptr [ESP]      ; // adjust
-            add     ESP,12          ;
-            faddp   ST(1), ST       ;
-        L1:                 ;
-            add     ESP, 8          ;
-            ret                 ;
+        {   naked                               ;
+            push        EDX                     ;
+            push        EAX                     ;
+            and         dword ptr 4[ESP], 0x7FFFFFFF    ;
+            fild        qword ptr [ESP]         ;
+            test        EDX,EDX                 ;
+            jns         L1                      ;
+            push        0x0000403e              ;
+            push        0x80000000              ;
+            push        0                       ;
+            fld         real ptr [ESP]          ; // adjust
+            add         ESP,12                  ;
+            faddp       ST(1), ST               ;
+        L1:                                     ;
+            add         ESP, 8                  ;
+            ret                                 ;
         }
-    } else {
+      else version (D_InlineAsm_X86_64)
+            static assert(0);
+      else
+            static assert(0);
+    }
+    else
+    {
+      version (D_InlineAsm_X86)
         asm
-        {   naked                                   ;
-            push    EDX                             ;
-            push    EAX                             ;
-            and     dword ptr 4[ESP], 0x7FFFFFFF    ;
-            fild    qword ptr [ESP]                 ;
-            test    EDX,EDX                         ;
-            jns     L1                              ;
-            fld     real ptr adjust                 ;
-            faddp   ST(1), ST                       ;
-        L1:                                         ;
-            add     ESP, 8                          ;
-            ret                                     ;
+        {   naked                               ;
+            push        EDX                     ;
+            push        EAX                     ;
+            and         dword ptr 4[ESP], 0x7FFFFFFF    ;
+            fild        qword ptr [ESP]         ;
+            test        EDX,EDX                 ;
+            jns         L1                      ;
+            fld         real ptr adjust         ;
+            faddp       ST(1), ST               ;
+        L1:                                     ;
+            add         ESP, 8                  ;
+            ret                                 ;
         }
+      else version (D_InlineAsm_X86_64)
+        asm
+        {   naked                               ;
+            push        RAX                     ;
+            and         dword ptr 4[RSP], 0x7FFFFFFF    ;
+            fild        qword ptr [RSP]         ;
+            test        RAX,RAX                 ;
+            jns         L1                      ;
+            fld         real ptr adjust         ;
+            faddp       ST(1), ST               ;
+        L1:                                     ;
+            add         RSP, 8                  ;
+            ret                                 ;
+        }
+      else
+            static assert(0);
     }
 }
 
 // Same as __U64_LDBL, but return result as double in [EDX,EAX]
 ulong __ULLNGDBL()
 {
+  version (D_InlineAsm_X86)
     asm
     {   naked                                   ;
         call __U64_LDBL                         ;
@@ -330,7 +368,19 @@ ulong __ULLNGDBL()
         pop  EDX                                ;
         ret                                     ;
     }
+  else version (D_InlineAsm_X86_64)
+    asm
+    {   naked                                   ;
+        call __U64_LDBL                         ;
+        sub  RSP,8                              ;
+        fstp double ptr [RSP]                   ;
+        pop  RAX                                ;
+        ret                                     ;
+    }
+  else
+        static assert(0);
 }
+
 
 // Convert double to ulong
 
@@ -339,72 +389,113 @@ private short roundTo0 = 0xFBF;
 ulong __DBLULLNG()
 {
     // BUG: should handle NAN's and overflows
-    version (OSX) {
-        asm {
-            naked               ;
-            push    0xFBF           ; // roundTo0
-            push    0x0000403e      ;
-            push    0x80000000      ;
-            push    0           ; // adjust
-            push    EDX         ;
-            push    EAX         ;
-            fld     double ptr [ESP]    ;
-            sub     ESP,8           ;
-            fld     real ptr 16[ESP]    ; // adjust
-            fcomp               ;
-            fstsw   AX          ;
-            fstcw   8[ESP]          ;
-            fldcw   28[ESP]         ; // roundTo0
-            sahf                ;
-            jae     L1          ;
-            fld     real ptr 16[ESP]    ; // adjust
-            fsubp   ST(1), ST       ;
-            fistp   qword ptr [ESP]     ;
-            pop     EAX         ;
-            pop     EDX         ;
-            fldcw   [ESP]           ;
-            add     ESP,24          ;
-            add     EDX,0x8000_0000     ;
-            ret                 ;
-        L1:                 ;
-            fistp   qword ptr [ESP]     ;
-            pop     EAX         ;
-            pop     EDX         ;
-            fldcw   [ESP]           ;
-            add     ESP,24          ;
-            ret                 ;
-        }
-    } else {
+    version (OSX)
+    {
+      version (D_InlineAsm_X86)
         asm
-        {   naked                                   ;
-            push    EDX                             ;
-            push    EAX                             ;
-            fld     double ptr [ESP]                ;
-            sub     ESP,8                           ;
-            fld     real ptr adjust                 ;
-            fcomp                                   ;
-            fstsw   AX                              ;
-            fstcw   8[ESP]                          ;
-            fldcw   roundTo0                        ;
-            sahf                                    ;
-            jae     L1                              ;
-            fld     real ptr adjust                 ;
-            fsubp   ST(1), ST                       ;
-            fistp   qword ptr [ESP]                 ;
-            pop     EAX                             ;
-            pop     EDX                             ;
-            fldcw   [ESP]                           ;
-            add     ESP,8                           ;
-            add     EDX,0x8000_0000                 ;
-            ret                                     ;
-        L1:                                         ;
-            fistp   qword ptr [ESP]                 ;
-            pop     EAX                             ;
-            pop     EDX                             ;
-            fldcw   [ESP]                           ;
-            add     ESP,8                           ;
-            ret                                     ;
+        {   naked                               ;
+            push        0xFBF                   ; // roundTo0
+            push        0x0000403e              ;
+            push        0x80000000              ;
+            push        0                       ; // adjust
+            push        EDX                     ;
+            push        EAX                     ;
+            fld         double ptr [ESP]        ;
+            sub         ESP,8                   ;
+            fld         real ptr 16[ESP]        ; // adjust
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[ESP]                  ;
+            fldcw       28[ESP]                 ; // roundTo0
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr 16[ESP]        ; // adjust
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,24                  ;
+            add         EDX,0x8000_0000         ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,24                  ;
+            ret                                 ;
         }
+      else version (D_InlineAsm_X86_64)
+            static assert(0);
+      else
+            static assert(0);
+    }
+    else
+    {
+      version (D_InlineAsm_X86)
+        asm
+        {   naked                               ;
+            push        EDX                     ;
+            push        EAX                     ;
+            fld         double ptr [ESP]        ;
+            sub         ESP,8                   ;
+            fld         real ptr adjust         ;
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[ESP]                  ;
+            fldcw       roundTo0                ;
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr adjust         ;
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,8                   ;
+            add         EDX,0x8000_0000         ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,8                   ;
+            ret                                 ;
+        }
+      else version (D_InlineAsm_X86_64)
+        asm
+        {   naked                               ;
+            push        RAX                     ;
+            fld         double ptr [RSP]        ;
+            sub         RSP,8                   ;
+            fld         real ptr adjust         ;
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[RSP]                  ;
+            fldcw       roundTo0                ;
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr adjust         ;
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [RSP]         ;
+            pop         RAX                     ;
+            fldcw       [RSP]                   ;
+            add         RSP,8                   ;
+            mov         EDX,0x8000_0000         ;
+            shl         RDX,32                  ;
+            add         RAX,RDX                 ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [RSP]         ;
+            pop         RAX                     ;
+            fldcw       [RSP]                   ;
+            add         RSP,8                   ;
+            ret                                 ;
+        }
+      else
+            static assert(0);
     }
 }
 
@@ -413,34 +504,56 @@ ulong __DBLULLNG()
 uint __DBLULNG()
 {
     // BUG: should handle NAN's and overflows
-    version (OSX) {
-        asm {
-            naked                   ;
-            push    0xFBF           ; // roundTo0
-            sub     ESP,12          ;
-            fstcw   8[ESP]          ;
-            fldcw   12[ESP]         ; // roundTo0
-            fistp   qword ptr [ESP] ;
-            fldcw   8[ESP]          ;
-            pop     EAX             ;
-            add     ESP,12          ;
-            ret                     ;
+    version (OSX)
+    {
+      version (D_InlineAsm_X86)
+        asm
+        {   naked                               ;
+            push        0xFBF                   ; // roundTo0
+            sub         ESP,12                  ;
+            fstcw       8[ESP]                  ;
+            fldcw       12[ESP]                 ; // roundTo0
+            fistp       qword ptr [ESP]         ;
+            fldcw       8[ESP]                  ;
+            pop         EAX                     ;
+            add         ESP,12                  ;
+            ret                                 ;
         }
-    } else {
-        asm {
-            naked                                   ;
-            sub     ESP,16                          ;
-            fstcw   8[ESP]                          ;
-            fldcw   roundTo0                        ;
-            fistp   qword ptr [ESP]                 ;
-            fldcw   8[ESP]                          ;
-            pop     EAX                             ;
-            add     ESP,12                          ;
-            ret                                     ;
+      else version (D_InlineAsm_X86_64)
+            assert(0);
+      else
+            static assert(0);
+    }
+    else
+    {
+      version (D_InlineAsm_X86)
+        asm
+        {   naked                               ;
+            sub         ESP,16                  ;
+            fstcw       8[ESP]                  ;
+            fldcw       roundTo0                ;
+            fistp       qword ptr [ESP]         ;
+            fldcw       8[ESP]                  ;
+            pop         EAX                     ;
+            add         ESP,12                  ;
+            ret                                 ;
         }
+      else version (D_InlineAsm_X86_64)
+        asm
+        {   naked                               ;
+            sub         RSP,16                  ;
+            fstcw       8[RSP]                  ;
+            fldcw       roundTo0                ;
+            fistp       qword ptr [RSP]         ;
+            fldcw       8[RSP]                  ;
+            pop         RAX                     ;
+            add         RSP,8                   ;
+            ret                                 ;
+        }
+      else
+            static assert(0);
     }
 }
-
 
 // Convert real in ST0 to ulong
 
@@ -448,67 +561,102 @@ ulong __LDBLULLNG()
 {
     version (OSX)
     {
-    asm
-    {   naked               ;
-        push    0xFBF           ; // roundTo0
-        push    0x0000403e      ;
-        push    0x80000000      ;
-        push    0           ; // adjust
-        sub     ESP,16          ;
-        fld     real ptr 16[ESP]    ; // adjust
-        fcomp               ;
-        fstsw   AX          ;
-        fstcw   8[ESP]          ;
-        fldcw   28[ESP]         ; // roundTo0
-        sahf                ;
-        jae     L1          ;
-        fld     real ptr 16[ESP]    ; // adjust
-        fsubp   ST(1), ST       ;
-        fistp   qword ptr [ESP]     ;
-        pop     EAX         ;
-        pop     EDX         ;
-        fldcw   [ESP]           ;
-        add     ESP,24          ;
-        add     EDX,0x8000_0000     ;
-        ret                 ;
-    L1:                 ;
-        fistp   qword ptr [ESP]     ;
-        pop     EAX         ;
-        pop     EDX         ;
-        fldcw   [ESP]           ;
-        add     ESP,24          ;
-        ret                 ;
-    }
+      version (D_InlineAsm_X86)
+        asm
+        {   naked                               ;
+            push        0xFBF                   ; // roundTo0
+            push        0x0000403e              ;
+            push        0x80000000              ;
+            push        0                       ; // adjust
+            sub         ESP,16                  ;
+            fld         real ptr 16[ESP]        ; // adjust
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[ESP]                  ;
+            fldcw       28[ESP]                 ; // roundTo0
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr 16[ESP]        ; // adjust
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,24                  ;
+            add         EDX,0x8000_0000         ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,24                  ;
+            ret                                 ;
+        }
+      else version (D_InlineAsm_X86_64)
+            static assert(0);
+      else
+            static assert(0);
     }
     else
     {
-    asm
-    {   naked               ;
-        sub     ESP,16          ;
-        fld     real ptr adjust     ;
-        fcomp               ;
-        fstsw   AX          ;
-        fstcw   8[ESP]          ;
-        fldcw   roundTo0        ;
-        sahf                ;
-        jae     L1          ;
-        fld     real ptr adjust     ;
-        fsubp   ST(1), ST       ;
-        fistp   qword ptr [ESP]     ;
-        pop     EAX         ;
-        pop     EDX         ;
-        fldcw   [ESP]           ;
-        add     ESP,8           ;
-        add     EDX,0x8000_0000     ;
-        ret                 ;
-    L1:                 ;
-        fistp   qword ptr [ESP]     ;
-        pop     EAX         ;
-        pop     EDX         ;
-        fldcw   [ESP]           ;
-        add     ESP,8           ;
-        ret                 ;
-    }
+      version (D_InlineAsm_X86)
+        asm
+        {   naked                               ;
+            sub         ESP,16                  ;
+            fld         real ptr adjust         ;
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[ESP]                  ;
+            fldcw       roundTo0                ;
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr adjust         ;
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,8                   ;
+            add         EDX,0x8000_0000         ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [ESP]         ;
+            pop         EAX                     ;
+            pop         EDX                     ;
+            fldcw       [ESP]                   ;
+            add         ESP,8                   ;
+            ret                                 ;
+        }
+      else version (D_InlineAsm_X86_64)
+        asm
+        {   naked                               ;
+            sub         RSP,16                  ;
+            fld         real ptr adjust         ;
+            fcomp                               ;
+            fstsw       AX                      ;
+            fstcw       8[RSP]                  ;
+            fldcw       roundTo0                ;
+            sahf                                ;
+            jae         L1                      ;
+            fld         real ptr adjust         ;
+            fsubp       ST(1), ST               ;
+            fistp       qword ptr [RSP]         ;
+            pop         RAX                     ;
+            fldcw       [RSP]                   ;
+            add         RSP,8                   ;
+            mov         RCX,0x8000_0000         ;
+            shl         RCX,32                  ;
+            add         RAX,RCX                 ;
+            ret                                 ;
+        L1:                                     ;
+            fistp       qword ptr [RSP]         ;
+            pop         RAX                     ;
+            fldcw       [RSP]                   ;
+            add         RSP,8                   ;
+            ret                                 ;
+        }
+      else
+            static assert(0);
     }
 }
-

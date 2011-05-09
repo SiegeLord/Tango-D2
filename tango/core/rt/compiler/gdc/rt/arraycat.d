@@ -54,6 +54,6 @@ byte[] _d_arraycopy(size_t size, byte[] from, byte[] to)
     else
     {
         throw new Exception("overlapping array copy");
-}
+    }
     return to;
 }

@@ -76,6 +76,11 @@ class TypeInfo_Af : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (float[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (float[]).sizeof;

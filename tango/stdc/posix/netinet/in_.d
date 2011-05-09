@@ -16,7 +16,7 @@ public import tango.stdc.posix.sys.socket; // for sa_family_t
 extern (C):
 
 //
-// Required	
+// Required
 //
 /*
 NOTE: The following must must be defined in tango.stdc.posix.arpa.inet to break
@@ -222,7 +222,7 @@ version ( linux )
             uint32_t[4] s6_addr32;
         }
     }
-    
+
     struct sockaddr_in6
     {
         sa_family_t sin6_family;
@@ -231,22 +231,22 @@ version ( linux )
         in6_addr    sin6_addr;
         uint32_t    sin6_scope_id;
     }
-    
+
     extern in6_addr in6addr_any;
     extern in6_addr in6addr_loopback;
-    
+
     struct ipv6_mreq
     {
         in6_addr    ipv6mr_multiaddr;
         uint        ipv6mr_interface;
     }
-    
+
     enum : uint
     {
         IPPROTO_IPV6        = 41,
-    
+
         INET6_ADDRSTRLEN    = 46,
-    
+
         IPV6_JOIN_GROUP     = 20,
         IPV6_LEAVE_GROUP    = 21,
         IPV6_MULTICAST_HOPS = 18,
@@ -344,7 +344,7 @@ version ( solaris )
 			uint32_t	__S6_align;
         }
     }
-    
+
     struct sockaddr_in6
     {
         sa_family_t sin6_family;
@@ -354,22 +354,22 @@ version ( solaris )
         uint32_t    sin6_scope_id;
 		uint32_t	__sin6_src_id;	/* Impl. specific - UDP replies */
     }
-    
+
     extern in6_addr in6addr_any;
     extern in6_addr in6addr_loopback;
-    
+
     struct ipv6_mreq
     {
         in6_addr    ipv6mr_multiaddr;
         uint        ipv6mr_interface;
     }
-    
+
     enum : uint
     {
         IPPROTO_IPV6        = 41,
-    
+
         INET6_ADDRSTRLEN    = 46,
-    
+
         IPV6_JOIN_GROUP     = 0x9,
         IPV6_LEAVE_GROUP    = 0xa,
         IPV6_MULTICAST_HOPS = 0x7,
@@ -394,7 +394,7 @@ version ( solaris )
     {
 		version(BigEndian)	enum : uint { N = 0x00000001 }
 		else				enum : uint { N = 0x01000000 }
-		
+
         return addr.s6_addr32[3] == N &&
                addr.s6_addr32[2] == 0 &&
                addr.s6_addr32[1] == 0 &&
@@ -410,32 +410,32 @@ version ( solaris )
     extern (D) int IN6_IS_ADDR_MULTICAST( in6_addr* addr )
     {
 		version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff000000 == 0xff000000;
+        	return (addr.s6_addr32[0] & 0xff000000) == 0xff000000;
 		else
-			return addr.s6_addr32[0] & 0x000000ff == 0x000000ff;
+			return (addr.s6_addr32[0] & 0x000000ff) == 0x000000ff;
     }
 
     extern (D) int IN6_IS_ADDR_LINKLOCAL( in6_addr* addr )
     {
 		version(BigEndian)
-        	return addr.s6_addr32[0] & 0xffc00000 == 0xfe800000;
+        	return (addr.s6_addr32[0] & 0xffc00000) == 0xfe800000;
 		else
-			return addr.s6_addr32[0] & 0x0000c0ff == 0x000080fe;
+			return (addr.s6_addr32[0] & 0x0000c0ff) == 0x000080fe;
     }
 
     extern (D) int IN6_IS_ADDR_SITELOCAL( in6_addr* addr )
     {
 		version(BigEndian)
-        	return addr.s6_addr32[0] & 0xffc00000 == 0xfec00000;
+        	return (addr.s6_addr32[0] & 0xffc00000) == 0xfec00000;
 		else
-			return addr.s6_addr32[0] & 0x0000c0ff == 0x0000c0fe;
+			return (addr.s6_addr32[0] & 0x0000c0ff) == 0x0000c0fe;
     }
 
     extern (D) int IN6_IS_ADDR_V4MAPPED( in6_addr* addr )
     {
 		version(BigEndian)	enum : uint { N = 0x0000ffff }
 		else				enum : uint { N = 0xffff0000 }
-		
+
 		return addr.s6_addr32[2] == N &&
                addr.s6_addr32[1] == 0 &&
                addr.s6_addr32[0] == 0;
@@ -445,7 +445,7 @@ version ( solaris )
     {
 		version(BigEndian)	enum : uint { N = 0x00000001 }
 		else				enum : uint { N = 0x01000000 }
-		
+
 		return addr.s6_addr32[2] == 0 &&
                addr.s6_addr32[1] == 0 &&
                addr.s6_addr32[0] == 0 &&
@@ -456,41 +456,41 @@ version ( solaris )
     extern (D) int IN6_IS_ADDR_MC_NODELOCAL( in6_addr* addr )
     {
 		version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff0f0000 == 0xff010000;
+        	return (addr.s6_addr32[0] & 0xff0f0000) == 0xff010000;
 		else
-			return addr.s6_addr32[0] & 0x00000fff == 0x000001ff;
+			return (addr.s6_addr32[0] & 0x00000fff) == 0x000001ff;
     }
 
     extern (D) int IN6_IS_ADDR_MC_LINKLOCAL( in6_addr* addr )
     {
         version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff0f0000 == 0xff020000;
+        	return (addr.s6_addr32[0] & 0xff0f0000) == 0xff020000;
 		else
-			return addr.s6_addr32[0] & 0x00000fff == 0x000002ff;
+			return (addr.s6_addr32[0] & 0x00000fff) == 0x000002ff;
     }
 
     extern (D) int IN6_IS_ADDR_MC_SITELOCAL( in6_addr* addr )
     {
         version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff0f0000 == 0xff050000;
+        	return (addr.s6_addr32[0] & 0xff0f0000) == 0xff050000;
 		else
-			return addr.s6_addr32[0] & 0x00000fff == 0x000005ff;
+			return (addr.s6_addr32[0] & 0x00000fff) == 0x000005ff;
     }
 
     extern (D) int IN6_IS_ADDR_MC_ORGLOCAL( in6_addr* addr )
     {
         version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff0f0000 == 0xff080000;
+        	return (addr.s6_addr32[0] & 0xff0f0000) == 0xff080000;
 		else
-			return addr.s6_addr32[0] & 0x00000fff == 0x000008ff;
+			return (addr.s6_addr32[0] & 0x00000fff) == 0x000008ff;
     }
 
     extern (D) int IN6_IS_ADDR_MC_GLOBAL( in6_addr* addr )
     {
         version(BigEndian)
-        	return addr.s6_addr32[0] & 0xff0f0000 == 0xff0e0000;
+        	return (addr.s6_addr32[0] & 0xff0f0000) == 0xff0e0000;
 		else
-			return addr.s6_addr32[0] & 0x00000fff == 0x00000eff;
+			return (addr.s6_addr32[0] & 0x00000fff) == 0x00000eff;
     }
 }
 

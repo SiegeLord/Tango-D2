@@ -76,6 +76,11 @@ class TypeInfo_Ae : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (real[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (real[]).sizeof;
@@ -89,6 +94,11 @@ class TypeInfo_Ae : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(real);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }
 

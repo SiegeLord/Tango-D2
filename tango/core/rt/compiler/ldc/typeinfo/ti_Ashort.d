@@ -47,6 +47,11 @@ class TypeInfo_As : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (short[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (short[]).sizeof;

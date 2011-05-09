@@ -26,6 +26,11 @@ class TypeInfo_i : TypeInfo
         return 0;
     }
 
+    override size_t talign()
+    {
+        return int.alignof;
+    }
+
     override size_t tsize()
     {
         return int.sizeof;

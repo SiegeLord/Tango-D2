@@ -22,6 +22,11 @@ class TypeInfo_h : TypeInfo
         return *cast(ubyte *)p1 - *cast(ubyte *)p2;
     }
 
+    override size_t talign()
+    {
+        return ubyte.alignof;
+    }
+
     override size_t tsize()
     {
         return ubyte.sizeof;

@@ -26,6 +26,8 @@
  *     distribution.
  */
 
+module rt.compiler.gdc.rt.aApplyR;
+
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
@@ -34,7 +36,7 @@
  * There are 6 combinations of conversions between char, wchar,
  * and dchar, and 2 of each of those.
  */
-module rt.compiler.gdc.rt.aApplyR;
+
 private import rt.compiler.util.utf;
 
 /**********************************************/
@@ -79,44 +81,40 @@ unittest
 {
     debug(apply) printf("_aApplyRcd1.unittest\n");
 
-    {
-        auto s = "hello"c;
-        int i;
+    auto s = "hello"c[];
+    int i;
 
-        foreach_reverse(dchar d; s)
-        {
-            switch (i)
-            {
-                case 0:     assert(d == 'o'); break;
-                case 1:     assert(d == 'l'); break;
-                case 2:     assert(d == 'l'); break;
-                case 3:     assert(d == 'e'); break;
-                case 4:     assert(d == 'h'); break;
-                default:    assert(0);
-            }
-            i++;
-        }
-        assert(i == 5);
-    }
-    
+    foreach_reverse(dchar d; s)
     {
-        auto s = "a\u1234\U00100456b"c;
-        int i = 0;
-        foreach_reverse(dchar d; s)
+        switch (i)
         {
-            //printf("i = %d, d = %x\n", i, d);
-            switch (i)
-            {
-                case 0:     assert(d == 'b'); break;
-                case 1:     assert(d == '\U00100456'); break;
-                case 2:     assert(d == '\u1234'); break;
-                case 3:     assert(d == 'a'); break;
-                default:    assert(0);
-            }
-            i++;
+            case 0:     assert(d == 'o'); break;
+            case 1:     assert(d == 'l'); break;
+            case 2:     assert(d == 'l'); break;
+            case 3:     assert(d == 'e'); break;
+            case 4:     assert(d == 'h'); break;
+            default:    assert(0);
         }
-        assert(i == 4);
+        i++;
     }
+    assert(i == 5);
+
+    s = "a\u1234\U00100456b";
+    i = 0;
+    foreach_reverse(dchar d; s)
+    {
+        //printf("i = %d, d = %x\n", i, d);
+        switch (i)
+        {
+            case 0:     assert(d == 'b'); break;
+            case 1:     assert(d == '\U00100456'); break;
+            case 2:     assert(d == '\u1234'); break;
+            case 3:     assert(d == 'a'); break;
+            default:    assert(0);
+        }
+        i++;
+    }
+    assert(i == 4);
 }
 
 /*****************************/
@@ -165,7 +163,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"w[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(dchar d; s)
     {
@@ -215,11 +213,11 @@ extern (C) int _aApplyRcw1(in char[] aa, dg_t dg)
                 w = cast(wchar) d;
             else
             {
-		w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
+                w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
                 result = dg(cast(void *)&w);
                 if (result)
                     break;
-		w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
+                w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
             }
         }
         result = dg(cast(void *)&w);
@@ -251,7 +249,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"c[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(wchar d; s)
     {
@@ -332,7 +330,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"w[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(char d; s)
     {
@@ -411,7 +409,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"d[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(char d; s)
     {
@@ -448,11 +446,11 @@ extern (C) int _aApplyRdw1(in dchar[] aa, dg_t dg)
             w = cast(wchar) d;
         else
         {
-	    w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
+            w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
             result = dg(cast(void *)&w);
             if (result)
                 break;
-	    w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
+            w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
         }
         result = dg(cast(void *)&w);
         if (result)
@@ -483,7 +481,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"d[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(wchar d; s)
     {
@@ -566,7 +564,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"c[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, dchar d; s)
     {
@@ -632,7 +630,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"w[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, dchar d; s)
     {
@@ -682,11 +680,11 @@ extern (C) int _aApplyRcw2(in char[] aa, dg2_t dg)
                 w = cast(wchar) d;
             else
             {
-		w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
+                w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
                 result = dg(&i, cast(void *)&w);
                 if (result)
                     break;
-		w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
+                w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
             }
         }
         result = dg(&i, cast(void *)&w);
@@ -720,7 +718,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"c[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, wchar d; s)
     {
@@ -803,7 +801,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"w[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, char d; s)
     {
@@ -883,7 +881,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"d[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, char d; s)
     {
@@ -920,11 +918,11 @@ extern (C) int _aApplyRdw2(in dchar[] aa, dg2_t dg)
             w = cast(wchar) d;
         else
         {
-	    w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
+            w = cast(wchar) ((((d - 0x10000) >> 10) & 0x3FF) + 0xD800);
             result = dg(&i, cast(void *)&w);
             if (result)
                 break;
-	    w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
+            w = cast(wchar) (((d - 0x10000) & 0x3FF) + 0xDC00);
         }
         result = dg(&i, cast(void *)&w);
         if (result)
@@ -957,7 +955,7 @@ unittest
     }
     assert(i == 5);
 
-    s = "a\u1234\U00100456b"d[];
+    s = "a\u1234\U00100456b";
     i = 0;
     foreach_reverse(k, wchar d; s)
     {

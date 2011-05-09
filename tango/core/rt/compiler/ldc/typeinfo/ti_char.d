@@ -20,6 +20,11 @@ class TypeInfo_a : TypeInfo
         return *cast(char *)p1 - *cast(char *)p2;
     }
 
+    override size_t talign()
+    {
+        return char.alignof;
+    }
+
     override size_t tsize()
     {
         return char.sizeof;

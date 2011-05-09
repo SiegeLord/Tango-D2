@@ -16,6 +16,18 @@ private import tango.io.device.Conduit;
 
 private import tango.text.convert.Layout;
 
+version(DigitalMars)
+{
+    version(X86_64) version=DigitalMarsX64;
+
+    private import tango.core.Vararg;
+}
+else version (GNU)
+{
+    private import tango.core.Vararg;
+}
+
+
 /*******************************************************************************
 
         A bridge between a Layout instance and a stream. This is used for
@@ -136,8 +148,20 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput format (T[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                convert (&emit, _arguments, ap, fmt);
+            }
+            else
                 convert (&emit, _arguments, _argptr, fmt);
-                return this;
+
+            return this;
         }
 
         /**********************************************************************
@@ -148,8 +172,20 @@ class FormatOutput(T) : OutputFilter
 
         final FormatOutput formatln (T[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                convert (&emit, _arguments, ap, fmt);
+            }
+            else
                 convert (&emit, _arguments, _argptr, fmt);
-                return newline;
+
+           return newline;
         }
 
         /**********************************************************************
@@ -159,19 +195,32 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput print (...)
+        final FormatOutput print ( ... )
         {
-                static  T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                     "{}, {}, {}, {}, {}, {}, {}, {}, "
-                                     "{}, {}, {}, {}, {}, {}, {}, {}, ";
+                static T[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                          "{}, {}, {}, {}, {}, {}, {}, {}, "
+                                          "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
-                if (_arguments.length is 0)
+                if (_arguments.length == 0)
                     sink.flush;
                 else
-                   convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                {
 
+                    version (DigitalMarsX64)
+                    {
+                        va_list ap;
+
+                        va_start(ap, __va_argsave);
+
+                        scope(exit) va_end(ap);
+
+                        convert (&emit, _arguments, ap, slice[0 .. _arguments.length * 4 - 2]);
+                    }
+                    else
+                        convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                }
                 return this;
         }
 

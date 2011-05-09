@@ -36,7 +36,9 @@
 /*
  *  Modified by Sean Kelly <sean@f4.ca> for use with Tango.
  */
+
 module rt.compiler.gdc.rt.aaA;
+
 private
 {
     import tango.stdc.string;
@@ -72,7 +74,7 @@ static size_t[] prime_list = [
  * Although DMD will return types of Array in registers,
  * gcc will not, so we instead use a 'long'.
  */
-alias long ArrayRet_t;
+alias void[] ArrayRet_t;
 
 struct Array
 {
@@ -113,8 +115,11 @@ struct AA
 
 size_t aligntsize(size_t tsize)
 {
-    // Is pointer alignment on the x64 4 bytes or 8?
-    return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
+    version (X86_64)
+        // Size of key needed to align value on 16 bytes
+        return (tsize + 15) & ~(15);
+    else
+        return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
 }
 
 extern (C):
@@ -260,6 +265,7 @@ body
 
     if (!aa.a)
         aa.a = new BB();
+
     aa.a.keyti = keyti;
 
     if (!aa.a.b.length)
@@ -271,9 +277,12 @@ body
     }
 
     auto key_hash = keyti.getHash(pkey);
+
     //printf("hash = %d\n", key_hash);
+
     i = key_hash % aa.a.b.length;
     auto pe = &aa.a.b[i];
+
     while ((e = *pe) !is null)
     {
         if (key_hash == e.hash)
@@ -363,7 +372,6 @@ body
 {
     if (aa.a)
     {
-
         //printf("_aaIn(), .length = %d, .ptr = %x\n", aa.a.length, cast(uint)aa.a.ptr);
         auto len = aa.a.b.length;
 
@@ -456,7 +464,7 @@ void _aaDelp(AA aa, TypeInfo keyti, void *pkey)
  * Produce array of values from aa.
  */
 
-Array _aaValues(AA aa, size_t keysize, size_t valuesize)
+ArrayRet_t _aaValues(AA aa, size_t keysize, size_t valuesize)
 in
 {
     assert(keysize == aligntsize(keysize));
@@ -498,7 +506,7 @@ body
         }
         assert(resi == a.length);
     }
-    return a;
+    return *cast(ArrayRet_t*)(&a);
 }
 
 
@@ -585,22 +593,71 @@ body
                 if (e)
                     _aaRehash_x(e);
             }
+            delete aa.b;
 
             newb.nodes = aa.nodes;
             newb.keyti = aa.keyti;
         }
 
         *paa.a = newb;
+        _aaBalance(paa);
     }
     return *paa;
 }
 
+/********************************************
+ * Balance an array.
+ */
+
+void _aaBalance(AA* paa)
+{
+    //printf("_aaBalance()\n");
+    if (paa.a)
+    {
+        aaA*[16] tmp;
+        aaA*[] array = tmp;
+        auto aa = paa.a;
+        foreach (j, e; aa.b)
+        {
+            /* Temporarily store contents of bucket in array[]
+             */
+            size_t k = 0;
+            void addToArray(aaA* e)
+            {
+                while (e)
+                {   addToArray(e.left);
+                    if (k == array.length)
+                        array.length = array.length * 2;
+                    array[k++] = e;
+                    e = e.right;
+                }
+            }
+            addToArray(e);
+            /* The contents of the bucket are now sorted into array[].
+             * Rebuild the tree.
+             */
+            void buildTree(aaA** p, size_t x1, size_t x2)
+            {
+                if (x1 >= x2)
+                    *p = null;
+                else
+                {   auto mid = (x1 + x2) >> 1;
+                    *p = array[mid];
+                    buildTree(&(*p).left, x1, mid);
+                    buildTree(&(*p).right, mid + 1, x2);
+                }
+            }
+            auto p = &aa.b[j];
+            buildTree(p, 0, k);
+        }
+    }
+}
 
 /********************************************
  * Produce array of N byte keys from aa.
  */
 
-Array _aaKeys(AA aa, size_t keysize)
+ArrayRet_t _aaKeys(AA aa, size_t keysize)
 {
     byte[] res;
     size_t resi;
@@ -622,10 +679,9 @@ Array _aaKeys(AA aa, size_t keysize)
         } while (e !is null);
     }
 
-    Array a;
     auto len = _aaLen(aa);
     if (!len)
-        return a;
+        return null;
     res = (cast(byte*) gc_malloc(len * keysize,
                                  !(aa.a.keyti.flags() & 1) ? BlkAttr.NO_SCAN : 0))[0 .. len * keysize];
     resi = 0;
@@ -636,9 +692,10 @@ Array _aaKeys(AA aa, size_t keysize)
     }
     assert(resi == len);
 
+    Array a;
     a.length = len;
     a.ptr = res.ptr;
-    return a;
+    return *cast(ArrayRet_t*)(&a);
 }
 
 
@@ -757,32 +814,27 @@ body
  * Construct an associative array of type ti from
  * length pairs of key/value pairs.
  */
-
-extern (C)
-BB* _d_assocarrayliteralTp(TypeInfo_AssociativeArray ti, size_t length, void *keys, void *values)
+extern (C) BB* _d_assocarrayliteralTp(TypeInfo_AssociativeArray ti, void[] keys, void[] values)
 {
-    auto valuesize = ti.next.tsize();           // value size
+    auto valueti = ti.next;
+    auto valuesize = valueti.tsize();           // value size
     auto keyti = ti.key;
     auto keysize = keyti.tsize();               // key size
+    auto length = keys.length;
     BB* result;
 
     //printf("_d_assocarrayliteralT(keysize = %d, valuesize = %d, length = %d)\n", keysize, valuesize, length);
     //printf("tivalue = %.*s\n", ti.next.classinfo.name);
+    assert(length == values.length);
     if (length == 0 || valuesize == 0 || keysize == 0)
     {
         ;
     }
     else
     {
-        //va_list q;
-        //va_start!(size_t)(q, length);
-        void * qkey = keys;
-        void * qval = values;
-
         result = new BB();
-        result.keyti = keyti;
-        size_t i;
 
+        size_t i;
         for (i = 0; i < prime_list.length - 1; i++)
         {
             if (length <= prime_list[i])
@@ -791,18 +843,11 @@ BB* _d_assocarrayliteralTp(TypeInfo_AssociativeArray ti, size_t length, void *ke
         auto len = prime_list[i];
         result.b = new aaA*[len];
 
-        size_t keystacksize   = (keysize   + int.sizeof - 1) & ~(int.sizeof - 1);
-        size_t valuestacksize = (valuesize + int.sizeof - 1) & ~(int.sizeof - 1);
-
         size_t keytsize = aligntsize(keysize);
 
         for (size_t j = 0; j < length; j++)
-        {   void* pkey = qkey;
-            //q += keystacksize;
-            qkey += keysize;
-            void* pvalue = qval;
-            //q += valuestacksize;
-            qval += valuesize;
+        {   auto pkey = keys.ptr + j * keysize;
+            auto pvalue = values.ptr + j * valuesize;
             aaA* e;
 
             auto key_hash = keyti.getHash(pkey);
@@ -835,10 +880,103 @@ BB* _d_assocarrayliteralTp(TypeInfo_AssociativeArray ti, size_t length, void *ke
             }
             memcpy(cast(void *)(e + 1) + keytsize, pvalue, valuesize);
         }
-
-        //va_end(q);
     }
     return result;
 }
 
+/***********************************
+ * Compare AA contents for equality.
+ * Returns:
+ *      1       equal
+ *      0       not equal
+ */
+int _aaEqual(TypeInfo_AssociativeArray ti, AA e1, AA e2)
+{
+    //printf("_aaEqual()\n");
+    //printf("keyti = %.*s\n", ti.key.classinfo.name);
+    //printf("valueti = %.*s\n", ti.next.classinfo.name);
+
+    if (e1.a is e2.a)
+        return 1;
+
+    size_t len = _aaLen(e1);
+    if (len != _aaLen(e2))
+        return 0;
+
+    /* Algorithm: Visit each key/value pair in e1. If that key doesn't exist
+     * in e2, or if the value in e1 doesn't match the one in e2, the arrays
+     * are not equal, and exit early.
+     * After all pairs are checked, the arrays must be equal.
+     */
+
+    auto keyti = ti.key;
+    auto valueti = ti.next;
+    auto keysize = aligntsize(keyti.tsize());
+    auto len2 = e2.a.b.length;
+
+    int _aaKeys_x(aaA* e)
+    {
+        do
+        {
+            auto pkey = cast(void*)(e + 1);
+            auto pvalue = pkey + keysize;
+            //printf("key = %d, value = %g\n", *cast(int*)pkey, *cast(double*)pvalue);
+
+            // We have key/value for e1. See if they exist in e2
+
+            auto key_hash = keyti.getHash(pkey);
+            //printf("hash = %d\n", key_hash);
+            auto i = key_hash % len2;
+            auto f = e2.a.b[i];
+            while (1)
+            {
+                //printf("f is %p\n", f);
+                if (f is null)
+                    return 0;                   // key not found, so AA's are not equal
+                if (key_hash == f.hash)
+                {
+                    //printf("hash equals\n");
+                    auto c = keyti.compare(pkey, f + 1);
+                    if (c == 0)
+                    {   // Found key in e2. Compare values
+                        //printf("key equals\n");
+                        auto pvalue2 = cast(void *)(f + 1) + keysize;
+                        if (valueti.equals(pvalue, pvalue2))
+                        {
+                            //printf("value equals\n");
+                            break;
+                        }
+                        else
+                            return 0;           // values don't match, so AA's are not equal
+                    }
+                    f = (c < 0) ? f.left : f.right;
+                }
+                else
+                    f = (key_hash < f.hash) ? f.left : f.right;
+            }
+
+            // Look at next entry in e1
+            if (e.left)
+            {   if (!e.right)
+                {   e = e.left;
+                    continue;
+                }
+                if (_aaKeys_x(e.left) == 0)
+                    return 0;
+            }
+            e = e.right;
+        } while (e !is null);
+        return 1;                       // this subtree matches
+    }
+
+    foreach (e; e1.a.b)
+    {
+        if (e)
+        {   if (_aaKeys_x(e) == 0)
+                return 0;
+        }
+    }
+
+    return 1;           // equal
+}
 

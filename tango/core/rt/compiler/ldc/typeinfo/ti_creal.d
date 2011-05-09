@@ -44,6 +44,11 @@ class TypeInfo_c : TypeInfo
         return _compare(*cast(creal *)p1, *cast(creal *)p2);
     }
 
+    override size_t talign()
+    {
+        return creal.alignof;
+    }
+
     override size_t tsize()
     {
         return creal.sizeof;

@@ -75,6 +75,11 @@ class TypeInfo_Ar : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (cdouble[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (cdouble[]).sizeof;

@@ -64,7 +64,6 @@ version (GNU)
     private import gcc.builtins; // for __builtin_unwind_init
 }
 
-
 struct BlkInfo
 {
     void*  base;
@@ -237,7 +236,7 @@ class GC
 
     Gcx *gcx;                   // implementation
     static ClassInfo gcLock;    // global lock
-    
+
 
     final void initialize()
     {
@@ -1339,7 +1338,7 @@ class GC
     /******************* weak-reference support *********************/
 
     //call locked if necessary
-    private T locked(T)(in T delegate() code) 
+    private T locked(T)(in T delegate() code)
     {
         if (thread_needLock)
             synchronized(gcLock) return code();
@@ -1347,17 +1346,17 @@ class GC
            return code();
     }
 
-    private struct WeakPointer 
+    private struct WeakPointer
     {
         Object reference;
 
-        void ondestroy(Object r) 
+        void ondestroy(Object r)
         {
             assert(r is reference);
             //lock for memory consistency (parallel readers)
             //
             //also ensures that weakpointerDestroy can be called while another
-            //thread is freeing the reference with "delete"                    
+            //thread is freeing the reference with "delete"
             locked!(void)({ reference = null; });
         }
     }
@@ -1389,7 +1388,7 @@ class GC
      */
     final void weakpointerDestroy( void* p )
     {
-        if (p)        
+        if (p)
            {
            auto wp = cast(WeakPointer*)p;
            //must be extra careful about the GC or parallel threads finalizing the
@@ -1490,10 +1489,10 @@ struct Gcx
     {
         void thread_Invariant() { }
     }
-    
+
     void *cached_size_key;
     size_t cached_size_val;
-    
+
     void *cached_info_key;
     BlkInfo cached_info_val;
 
@@ -1666,7 +1665,7 @@ struct Gcx
      */
     void addRange(void *pbot, void *ptop)
     {
-        debug(PRINTF) printf("Thread %x ", pthread_self());
+        debug(PRINTF) debug(THREADINVARIANT) printf("Thread %x ", pthread_self());
         debug(PRINTF) printf("%x.Gcx::addRange(%x, %x), nranges = %d\n", this, pbot, ptop, nranges);
         if (nranges == rangedim)
         {
@@ -1694,7 +1693,7 @@ struct Gcx
      */
     void removeRange(void *pbot)
     {
-        debug(PRINTF) printf("Thread %x ", pthread_self());
+        debug(PRINTF) debug(THREADINVARIANT) printf("Thread %x ", pthread_self());
         debug(PRINTF) printf("%x.Gcx.removeRange(%x), nranges = %d\n", this, pbot, nranges);
         for (size_t i = nranges; i--;)
         {
@@ -1798,7 +1797,7 @@ struct Gcx
 
         if (USE_CACHE && p == cached_size_key)
             return cached_size_val;
-            
+
         pool = findPool(p);
         if (pool)
         {
@@ -1835,7 +1834,7 @@ struct Gcx
     {
         Pool*   pool;
         BlkInfo info;
-        
+
         if (USE_CACHE && p == cached_info_key)
             return cached_info_val;
 
@@ -1888,7 +1887,7 @@ struct Gcx
             ////////////////////////////////////////////////////////////////////
             // getBits
             ////////////////////////////////////////////////////////////////////
-            
+
             assert(p >= info.base && p< info.base + info.size);
             info.attr = getBits(pool, cast(size_t) (info.base - pool.baseAddr) / 16);
 
@@ -2098,7 +2097,8 @@ struct Gcx
         size_t newnpools;
         size_t i;
 
-        //debug(PRINTF) printf("************Gcx::newPool(npages = %d)****************\n", npages);
+
+        debug(PRINTF) printf("************Gcx::newPool(npages = %x)****************\n", npages);
 
         // Round up to COMMITSIZE pages
         npages = (npages + (COMMITSIZE/PAGESIZE) - 1) & ~(COMMITSIZE/PAGESIZE - 1);
@@ -2326,8 +2326,8 @@ struct Gcx
                     movq rbp[RBP], RBP      ;
                     movq rsi[RBP], RSI      ;
                     movq rdi[RBP], RDI      ;
-                    movq r8 [RBP], R8       ; 
-                    movq r9 [RBP], R9       ; 
+                    movq r8 [RBP], R8       ;
+                    movq r9 [RBP], R9       ;
                     movq r10[RBP], R10      ;
                     movq r11[RBP], R11      ;
                     movq r12[RBP], R12      ;
@@ -2344,10 +2344,39 @@ struct Gcx
         }
         else
         {
-        asm
+        version (D_InlineAsm_X86)
         {
-            pushad              ;
-            mov sp[EBP],ESP     ;
+            asm
+            {
+                pushad              ;
+                mov sp[EBP],ESP     ;
+            }
+        }
+        else version (D_InlineAsm_X86_64)
+        {
+            asm
+            {
+                push RAX ;
+                push RBX ;
+                push RCX ;
+                push RDX ;
+                push RSI ;
+                push RDI ;
+                push RBP ;
+                push R8  ;
+                push R9  ;
+                push R10  ;
+                push R11  ;
+                push R12  ;
+                push R13  ;
+                push R14  ;
+                push R15  ;
+                push EAX ;   // 16 byte align the stack
+            }
+        }
+        else
+        {
+            static assert( false, "Architecture not supported." );
         }
         }
         result = fullcollect(sp);
@@ -2359,12 +2388,38 @@ struct Gcx
         {
             // nothing to do
         }
+        else version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                popad;
+            }
+        }
+        else version (D_InlineAsm_X86_64)
+        {
+            asm
+            {
+                pop EAX ;   // 16 byte align the stack
+                pop R15  ;
+                pop R14  ;
+                pop R13  ;
+                pop R12  ;
+                pop R11  ;
+                pop R10  ;
+                pop R9  ;
+                pop R8  ;
+                pop RBP ;
+                pop RDI ;
+                pop RSI ;
+                pop RDX ;
+                pop RCX ;
+                pop RBX ;
+                pop RAX ;
+            }
+        }
         else
         {
-        asm
-        {
-            popad               ;
-        }
+            static assert( false, "Architecture not supported." );
         }
         return result;
     }
@@ -2471,7 +2526,7 @@ struct Gcx
                     }
                     *b = 0;
 
-                    auto o = pool.baseAddr + (b - bbase) * 32 * 16;
+                    auto o = pool.baseAddr + (b - bbase) * (typeof(bitm).sizeof*8) * 16;
                     if (!(bitm & 0xFFFF))
                     {
                         bitm >>= 16;
@@ -2519,10 +2574,9 @@ struct Gcx
         for (n = 0; n < npools; n++)
         {   size_t pn;
             size_t ncommitted;
-            uint*  bbase;
 
             pool = pooltable[n];
-            bbase = pool.mark.base();
+            auto bbase = pool.mark.base();
             ncommitted = pool.ncommitted;
             for (pn = 0; pn < ncommitted; pn++, bbase += PAGESIZE / (32 * 16))
             {
@@ -2571,6 +2625,7 @@ struct Gcx
                             sentinel_Invariant(sentinel_add(p));
 
                             pool.freebits.set(biti);
+
                             if (pool.finals.nbits && pool.finals.testClear(biti))
                                 rt_finalize(cast(List *)sentinel_add(p), false/*noStack > 0*/);
                             clrBits(pool, biti, BlkAttr.ALL_BITS);
@@ -2909,6 +2964,9 @@ struct Pool
         //debug(PRINTF) printf("Pool::Pool(%u)\n", npages);
         poolsize = npages * PAGESIZE;
         assert(poolsize >= POOLSIZE);
+
+        debug(PRINTF) printf("alloc of pool: %p bytes\n", poolsize);
+
         baseAddr = cast(byte *)os_mem_map(poolsize);
 
         // Some of the code depends on page alignment of memory pools

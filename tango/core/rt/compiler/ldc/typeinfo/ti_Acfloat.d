@@ -76,6 +76,11 @@ class TypeInfo_Aq : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (cfloat[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (cfloat[]).sizeof;

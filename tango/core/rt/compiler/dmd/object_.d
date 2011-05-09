@@ -48,7 +48,7 @@ private
     import rt.compiler.dmd.rt.aaA;
     debug(PRINTF) import tango.stdc.stdio: printf;
     extern (C) Object _d_newclass(ClassInfo ci);
-    
+
     version (darwin)
         import rt.compiler.dmd.darwin.Image;
 }
@@ -73,8 +73,8 @@ else
 alias size_t hash_t;
 alias int equals_t;
 
-version (PhobosCompatibility) 
-{ 
+version (PhobosCompatibility)
+{
         alias char[]  string;
         alias wchar[] wstring;
         alias dchar[] dstring;
@@ -86,7 +86,7 @@ version (PhobosCompatibility)
 class Object
 {
     /**
-     * Override this to capture an explicit delete or an implicit 
+     * Override this to capture an explicit delete or an implicit
      * delete via a scoped-instance. Unlike a dtor(), GC references
      * are still intact when this method is invoked
      */
@@ -331,6 +331,9 @@ class ClassInfo : Object
     {
         foreach (m; ModuleInfo)
         {
+            if (!m)
+                continue;
+
             //writefln("module %s, %d", m.name, m.localClasses.length);
             foreach (c; m.localClasses)
             {
@@ -416,7 +419,8 @@ class TypeInfo
 
     /// Compares two instances for &lt;, ==, or &gt;.
     int compare(in void* p1, in void* p2) { return 0; } // throw new Exception("non comparable",__FILE__,__LINE__);
-
+    /// Return alignment of type
+    size_t talign() { return tsize(); }
     /// Returns size of the type.
     size_t tsize() { return 0; }
 
@@ -473,6 +477,16 @@ class TypeInfo
 
     /// Get type information on the contents of the type; null if not available
     OffsetTypeInfo[] offTi() { return null; }
+
+
+     /** Return internal info on arguments fitting into 8byte.
+       * See X86-64 ABI 3.2.3
+     */
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = this;
+        return 0;
+    }
 }
 
 class TypeInfo_Typedef : TypeInfo
@@ -498,6 +512,13 @@ class TypeInfo_Typedef : TypeInfo
     override uint flags() { return base.flags(); }
     override PointerMap pointermap() { return base.pointermap(); }
     override void[] init() { return m_init.length ? m_init : base.init(); }
+
+    size_t talign() { return base.talign(); }
+
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   
+        return base.argTypes(arg1, arg2);
+    }
 
     TypeInfo base;
     char[] name;
@@ -636,6 +657,17 @@ class TypeInfo_Array : TypeInfo
 
     override uint flags() { return 1; }
 
+    size_t talign()
+    {
+        return (void[]).alignof;
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   //arg1 = typeid(size_t);
+        //arg2 = typeid(void*);
+        return 0;
+    }
+
     override PointerMap pointermap()
     {
         //return static mask for arrays
@@ -750,6 +782,18 @@ class TypeInfo_StaticArray : TypeInfo
 
     TypeInfo value;
     size_t   len;
+
+    size_t talign()
+    {
+        return value.talign();
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(void*);
+        return 0;
+    }
+
 }
 
 class TypeInfo_AssociativeArray : TypeInfo
@@ -818,6 +862,17 @@ class TypeInfo_AssociativeArray : TypeInfo
 
     TypeInfo value;
     TypeInfo key;
+
+    size_t talign()
+    {
+        return (char[int]).alignof;
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(void*);
+        return 0;
+    }
 }
 
 class TypeInfo_Function : TypeInfo
@@ -902,6 +957,19 @@ class TypeInfo_Delegate : TypeInfo
     }
 
     TypeInfo next;
+
+    size_t talign()
+    {
+        alias int delegate() dg;
+        return dg.alignof;
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   //arg1 = typeid(void*);
+        //arg2 = typeid(void*);
+        return 0;
+    }
+
 }
 
 class TypeInfo_Class : TypeInfo
@@ -1114,6 +1182,9 @@ class TypeInfo_Struct : TypeInfo
 
     override uint flags() { return m_flags; }
 
+    size_t talign() { return m_align; }
+
+
     char[] name;
     void[] m_init;      // initializer; init.ptr == null if 0 initialize
 
@@ -1124,11 +1195,24 @@ class TypeInfo_Struct : TypeInfo
     char[] function()   xtoString;
 
     uint m_flags;
+    uint m_align;
 
     version (D_HavePointerMap) {
         PointerMap m_pointermap;
 
         override PointerMap pointermap() { return m_pointermap; }
+    }
+
+    version (X86_64)
+    {
+        int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+        {
+            arg1 = m_arg1;
+            arg2 = m_arg2;
+            return 0;
+        }
+        TypeInfo m_arg1;
+        TypeInfo m_arg2;
     }
 }
 
@@ -1197,6 +1281,11 @@ class TypeInfo_Tuple : TypeInfo
     {
         assert(0);
     }
+
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        assert(0);
+    }
 }
 
 
@@ -1252,7 +1341,7 @@ class Exception : Object
                 sink(ulongToUtf8(buf, cast(size_t) line));
             }
         }
-        
+
         void clear(){
             line=0;
             iframe=-1;
@@ -1440,14 +1529,14 @@ version (linux)
 
 version( freebsd )
 {
-    // This linked list is created by a compiler generated function inserted 
-    // into the .ctor list by the compiler. 
+    // This linked list is created by a compiler generated function inserted
+    // into the .ctor list by the compiler.
     struct ModuleReference
-    { 
-        ModuleReference* next; 
-        ModuleInfo mod; 
+    {
+        ModuleReference* next;
+        ModuleInfo mod;
      }
-    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list 
+    extern (C) ModuleReference *_Dmodule_ref;   // start of linked list
 }
 
 ModuleInfo[] _moduleinfo_dtors;
@@ -1476,6 +1565,13 @@ extern (C) void _moduleCtor()
         {   _moduleinfo_array[len] = mr.mod;
             len++;
         }
+
+        debug(PRINTF) foreach (m; _moduleinfo_array)
+        {
+            //printf("\t%p\n", m);
+            printf("\t%.*s\n", m.name.length,m.name.ptr);
+        }
+
     }
 
     version( freebsd )
@@ -1501,14 +1597,14 @@ extern (C) void _moduleCtor()
      * and __minfo_end. The variables _minfo_beg and _minfo_end
      * are of zero size and are in the two bracketing segments,
      * respectively.
-     * 
+     *
      * The __minfo_beg and __minfo_end sections are not put into
      * dynamic libraries therefore we cannot use them or the
      * _minfo_beg and _minfo_end variables. Instead we loop through
      * all the loaded images (executables and dynamic libraries) and
      * collect all the ModuleInfo references.
      */
-        _moduleinfo_array = getSectionData!(ModuleInfo, "__DATA", "__minfodata");        
+        _moduleinfo_array = getSectionData!(ModuleInfo, "__DATA", "__minfodata");
         debug(PRINTF) printf("moduleinfo: ptr = %p, length = %d\n", _moduleinfo_array.ptr, _moduleinfo_array.length);
 
         debug(PRINTF) foreach (m; _moduleinfo_array)
@@ -1517,7 +1613,7 @@ extern (C) void _moduleCtor()
             printf("\t%.*s\n", m.name.length,m.name.ptr);
         }
     }
-    
+
     version (Win32)
     {
         // Ensure module destructors also get called on program termination
@@ -1542,7 +1638,7 @@ extern (C) void _moduleIndependentCtors()
     }
 }
 
-void _moduleCtor2(ModuleInfo from,ModuleInfo[] mi, int skip)
+void _moduleCtor2(ModuleInfo from, ModuleInfo[] mi, int skip)
 {
     debug(PRINTF) printf("_moduleCtor2(): %d modules\n", mi.length);
     for (uint i = 0; i < mi.length; i++)
@@ -1552,7 +1648,7 @@ void _moduleCtor2(ModuleInfo from,ModuleInfo[] mi, int skip)
         debug(PRINTF) printf("\tmodule[%d] = '%p'\n", i, m);
         if (!m)
             continue;
-        debug(PRINTF) printf("\tmodule[%d] = '%.*s'\n", i, m.name);
+        debug(PRINTF) printf("\tmodule[%d].name = '%s'\n", i, m.name);
         if (m.flags & MIctordone)
             continue;
         debug(PRINTF) printf("\tmodule[%d] = '%.*s', m = x%x\n", i, m.name, m);
@@ -1562,7 +1658,7 @@ void _moduleCtor2(ModuleInfo from,ModuleInfo[] mi, int skip)
             if (m.flags & MIctorstart)
             {   if (skip || m.flags & MIstandalone)
                     continue;
-                throw new Exception( "Cyclic dependency in module " ~ (from is null ? "*null*" : from.name) ~ " for import " ~ m.name); 
+                throw new Exception( "Cyclic dependency in module " ~ (from is null ? "*null*" : from.name) ~ " for import " ~ m.name);
             }
 
             m.flags |= MIctorstart;

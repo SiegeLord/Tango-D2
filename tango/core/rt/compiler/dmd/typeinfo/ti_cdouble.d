@@ -44,6 +44,11 @@ class TypeInfo_r : TypeInfo
         return _compare(*cast(cdouble *)p1, *cast(cdouble *)p2);
     }
 
+    override size_t talign()
+    {
+        return cdouble.alignof;
+    }
+
     override size_t tsize()
     {
         return cdouble.sizeof;
@@ -62,5 +67,10 @@ class TypeInfo_r : TypeInfo
     {   static cdouble r;
 
         return (cast(cdouble *)&r)[0 .. 1];
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }

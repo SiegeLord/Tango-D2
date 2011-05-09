@@ -183,7 +183,7 @@ version(linux){
             SHT_STRTAB  = 3,
             STB_LOCAL   = 0,
         }
-        
+
     }
 
     ubyte ELF32_ST_BIND(ulong info){
@@ -231,13 +231,13 @@ version(linux){
             newV.mmapLen=mmapLen;
             return newV;
         }
-        
+
         // stores the global sections
         const MAX_SECTS=5;
         static StaticSectionInfo[MAX_SECTS] _gSections;
         static size_t _nGSections,_nFileBuf;
         static char[MAX_SECTS*256] _fileNameBuf;
-        
+
         /// loops on the global sections
         static int opApply(int delegate(ref StaticSectionInfo) loop){
             for (size_t i=0;i<_nGSections;++i){
@@ -382,7 +382,7 @@ version(linux){
             sectionStrs="\0";
         }
 
-  
+
         /* find sections */
         char[] string_table;
         Elf_Sym[] symbs;
@@ -589,7 +589,7 @@ Lsplit:
                 e.writeOut((char[]s){ Runtime.console.stderr(s); });
                 return;
             }
-                
+
         }
     }
 
@@ -670,7 +670,7 @@ Lsplit:
             return do_read_leb(false);
         }
         long sleb128() {
-            return cast(size_t) do_read_leb(true);
+            return cast(long) do_read_leb(true);
         }
 
         T read(T)() {
@@ -696,15 +696,20 @@ Lsplit:
         }
     }
 
-    unittest {
+    unittest 
+    {
         //examples from dwarf spec section 7.6
-        ubyte[] bytes = [2,127,0x80,1,0x81,1,0x82,1,57+0x80,100,2,0x7e,127+0x80,0,
-            0x81,0x7f,0x80,1,0x80,0x7f,0x81,1,0x7f+0x80,0x7e];
+        ubyte[] bytes = [2, 127, 0x80,1, 0x81,1, 0x82,1, 57+0x80,100, 
+                         2, 0x7e, 127+0x80,0, 0x81,0x7f, 0x80,1, 0x80,0x7f, 0x81,1, 0x7f+0x80,0x7e];
+
         ulong[] u = [2, 127, 128, 129, 130, 12857];
         long[] s = [2, -2, 127, -127, 128, -128, 129, -129];
+
         auto rd = DwarfReader(bytes);
+
         foreach (x; u)
             assert(rd.uleb128() == x);
+
         foreach (x; s)
             assert(rd.sleb128() == x);
     }

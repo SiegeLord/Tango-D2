@@ -155,7 +155,7 @@ enum HttpResponseCode
         ServiceUnavailable           = 503,
         GatewayTimeout               = 504,
         VersionNotSupported          = 505,
-};
+}
 
 /*******************************************************************************
 
@@ -177,6 +177,7 @@ struct HttpStatus
 
 struct HttpResponses
 {       
+const:
         static HttpStatus Continue                     = {HttpResponseCode.Continue, "Continue"};
         static HttpStatus SwitchingProtocols           = {HttpResponseCode.SwitchingProtocols, "SwitchingProtocols"};
         static HttpStatus OK                           = {HttpResponseCode.OK, "OK"};

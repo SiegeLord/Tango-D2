@@ -245,7 +245,7 @@ version(LDC){
         return oldval;
     }
 } else version(D_InlineAsm_X86) {
-    T atomicSwap( T )( inout T val, T newval )
+    T atomicSwap( T )( ref T val, T newval )
     in {
         // NOTE: 32 bit x86 systems support 8 byte CAS, which only requires
         //       4 byte alignment, so use size_t as the align type here.
@@ -289,7 +289,7 @@ version(LDC){
         }
     }
 } else version (D_InlineAsm_X86_64){
-    T atomicSwap( T )( inout T val, T newval )
+    T atomicSwap( T )( ref T val, T newval )
     in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
     } body {
@@ -332,7 +332,7 @@ version(LDC){
         }
     }
 } else {
-    T atomicSwap( T )( inout T val, T newval )
+    T atomicSwap( T )( ref T val, T newval )
     in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
     } body {

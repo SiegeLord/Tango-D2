@@ -50,11 +50,14 @@ else version (D_InlineAsm_X86)
 
 struct GCBits
 {
-    const int BITS_PER_WORD = 32;
-    const int BITS_SHIFT = 5;
-    const int BITS_MASK = 31;
+    alias size_t wordtype;
 
-    uint*  data = null;
+    const BITS_PER_WORD = (wordtype.sizeof * 8);
+    const BITS_SHIFT = (wordtype.sizeof == 8 ? 6 : 5);
+    const BITS_MASK = (BITS_PER_WORD - 1);
+    const BITS_1 = cast(wordtype)1;
+
+    wordtype*  data = null;
     size_t nwords = 0;    // allocated words in data[] excluding sentinals
     size_t nbits = 0;     // number of bits in data[] excluding sentinals
 
@@ -79,12 +82,12 @@ struct GCBits
     {
         this.nbits = nbits;
         nwords = (nbits + (BITS_PER_WORD - 1)) >> BITS_SHIFT;
-        data = cast(uint*)calloc(nwords + 2, uint.sizeof);
+        data = cast(wordtype*)calloc(nwords + 2, wordtype.sizeof);
         if (!data)
             onOutOfMemoryError();
     }
 
-    uint test(size_t i)
+    wordtype test(size_t i)
     in
     {
         assert(i < nbits);
@@ -92,7 +95,7 @@ struct GCBits
     body
     {
         //return (cast(bit *)(data + 1))[i];
-        return data[1 + (i >> BITS_SHIFT)] & (1 << (i & BITS_MASK));
+        return data[1 + (i >> BITS_SHIFT)] & (BITS_1 << (i & BITS_MASK));
     }
 
     void set(size_t i)
@@ -103,7 +106,7 @@ struct GCBits
     body
     {
         //(cast(bit *)(data + 1))[i] = 1;
-        data[1 + (i >> BITS_SHIFT)] |= (1 << (i & BITS_MASK));
+        data[1 + (i >> BITS_SHIFT)] |= (BITS_1 << (i & BITS_MASK));
     }
 
     void clear(size_t i)
@@ -114,10 +117,10 @@ struct GCBits
     body
     {
         //(cast(bit *)(data + 1))[i] = 0;
-        data[1 + (i >> BITS_SHIFT)] &= ~(1 << (i & BITS_MASK));
+        data[1 + (i >> BITS_SHIFT)] &= ~(BITS_1 << (i & BITS_MASK));
     }
 
-    uint testClear(size_t i)
+    wordtype testClear(size_t i)
     {
         version (bitops)
         {
@@ -136,20 +139,20 @@ struct GCBits
             }
         }
         else
-        {   uint result;
+        {   wordtype result;
 
             //result = (cast(bit *)(data + 1))[i];
             //(cast(bit *)(data + 1))[i] = 0;
 
-            uint* p = &data[1 + (i >> BITS_SHIFT)];
-            uint  mask = (1 << (i & BITS_MASK));
+            wordtype* p = &data[1 + (i >> BITS_SHIFT)];
+            wordtype  mask = (BITS_1 << (i & BITS_MASK));
             result = *p & mask;
             *p &= ~mask;
             return result;
         }
     }
 
-    uint testSet(size_t i)
+    wordtype testSet(size_t i)
     {
         version (bitops)
         {
@@ -168,14 +171,13 @@ struct GCBits
             }
         }
         else
-        {   uint result;
-
+        {
             //result = (cast(bit *)(data + 1))[i];
             //(cast(bit *)(data + 1))[i] = 0;
 
-            uint* p = &data[1 + (i >> BITS_SHIFT)];
-            uint  mask = (1 << (i & BITS_MASK));
-            result = *p & mask;
+            auto p = &data[1 + (i >> BITS_SHIFT)];
+            auto mask = (BITS_1 << (i & BITS_MASK));
+            auto result = *p & mask;
             *p |= mask;
             return result;
         }
@@ -188,7 +190,7 @@ struct GCBits
             for (;d1!=dEnd;++d1)
                 *d1=0u;
         } else {
-            memset(data + 1, 0, nwords * uint.sizeof);
+            memset(data + 1, 0, nwords * wordtype.sizeof);
         }
     }
 
@@ -200,15 +202,15 @@ struct GCBits
     body
     {
         version(MEMCPY_NON_SIG_SAFE) {
-            uint * d1=data+1,d2=f.data+1,dEnd=d1+nwords;
+            wordtype * d1=data+1,d2=f.data+1,dEnd=d1+nwords;
             for (;d1!=dEnd;++d1,++d2)
                 *d1=*d2;
         } else {
-            memcpy(data + 1, f.data + 1, nwords * uint.sizeof);
+            memcpy(data + 1, f.data + 1, nwords * wordtype.sizeof);
         }
     }
 
-    uint* base()
+    wordtype* base()
     in
     {
         assert(data);

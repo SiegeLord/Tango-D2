@@ -932,7 +932,7 @@ unittest
     assert(cc.toString,  "[(0)-(11)(14)-'d']");
     cc.negate;
     assert(cc.toString,  "[(12)-(13)'e'-(ff)]");
-    
+
     static CharClass!(char) cc2 = { parts: [] };
     assert(cc.toString,  "[]");
     cc2.optimize;
@@ -943,19 +943,19 @@ unittest
     assert(cc.toString,  "[(0)-(ff)]");
     cc2.negate;
     assert(cc.toString,  "[]");
-    
+
     static CharClass!(char) cc3 = { parts: [{l_:0,r_:100},{l_:200,r_:0xff},] };
     assert(cc3.toString, "[(0)-'d'(c8)-(ff)]");
     cc3.negate;
     assert(cc.toString,  "['e'-(c7)]");
     cc3.negate;
     assert(cc.toString,  "[(0)-'d'(c8)-(ff)]");
-    
+
     static CharClass!(char) cc4 = { parts: [{l_:0,r_:200},{l_:100,r_:0xff},] };
     assert(cc.toString,  "[(0)-(c8)'d'-(ff)]");
     cc4.optimize;
     assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(ff)(100)-(17f)(180)-(24f)(20a3)-(20b5)]");
-    
+
     static CharClass!(dchar) cc5 = { parts: [{l_:0x9,r_:0x13},{0x20,r_:'~'},{l_:0xa0,r_:0xff},{l_:0x100,r_:0x17f},{l_:0x180,r_:0x24f},{l_:0x20a3,r_:0x20b5}] };
     cc5.optimize;
     assert(cc.toString,  "[(9)-(13)(20)-'~'(a0)-(24f)(20a3)-(20b5)]");
@@ -1245,9 +1245,9 @@ private class TNFATransition(char_t)
 
     /******************************************************************************
         Move through states only going via epsilon transitions, and only choosing
-        the one with highest priority. If the highest priority transition from a 
-        state isn't an epsilon transition, false is returned. 
-        If the accepting NFA state can be reached in this manner, true is returned. 
+        the one with highest priority. If the highest priority transition from a
+        state isn't an epsilon transition, false is returned.
+        If the accepting NFA state can be reached in this manner, true is returned.
 
         NOTE: This method does not look for cycles which should be kept in mind for
         later. larsivi 20090827
@@ -1263,7 +1263,7 @@ private class TNFATransition(char_t)
             }
             if (!(highestPriTrans.predicate.type == Predicate!(char_t).Type.epsilon))
                 return false;
-            
+
             t = highestPriTrans.target;
         }
         return true;
@@ -3498,7 +3498,13 @@ private:
                 // are somewhat weak (empirical testing), but sofar no new
                 // regressions have been discovered. larsivi 20090827
                 TNFATransition!(char_t) highestPriTrans;
-                foreach ( trans; sorted_elms[$-1].nfa_state.transitions ) {
+                if (!(sorted_elms[$-1] && sorted_elms[$-1].nfa_state &&
+                            sorted_elms[$-1].nfa_state))
+                    throw new Exception ("Something is NULL that is expected to
+                            be non-null", __FILE__, __LINE__);
+
+                foreach ( trans; sorted_elms[$-1].nfa_state.transitions )
+                {
                     if (trans.canFinish()) {
                         r.dfa_state.reluctant = true;
                         break;
@@ -3934,7 +3940,7 @@ class RegExpT(char_t)
                     // Don't continue matching, the current find should be correct
                     goto Laccept;
 
-                // if all input was consumed and we do not already accept, try to 
+                // if all input was consumed and we do not already accept, try to
                 // add an explicit string/line end
                 if ( p >= inp.length )
                 {
@@ -4360,15 +4366,15 @@ class RegExpT(char_t)
     }
 
     /*********************************************************************************************
-        Get the pattern with which this regex was constructed. 
+        Get the pattern with which this regex was constructed.
     **********************************************************************************************/
-    public char_t[] pattern() 
-    { 
-        return pattern_; 
+    public char_t[] pattern()
+    {
+        return pattern_;
     }
 
     /*********************************************************************************************
-        Get the tag count of this regex, representing the number of sub-matches. 
+        Get the tag count of this regex, representing the number of sub-matches.
 
         This value is the max valid value for match/opIndex.
     **********************************************************************************************/

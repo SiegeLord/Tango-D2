@@ -455,13 +455,45 @@ else
         return !archive.readonly;
     }
 
+
+    // workaround for a bug in gdb. See ticket #190
+    version (GNU) 
+    {
+        override VfsFolder close(bool commit = true)
+        {
+            assert( valid );
+            return closeImpl(commit);
+        }
+
+        override VfsFolder sync()
+        { 
+            assert( valid ); 
+            return syncImpl();
+        }
+    }
+    else
+    {
+        override VfsFolder close(bool commit = true)
+        in { assert( valid ); }
+        body
+        {
+            return closeImpl(commit);
+        }   
+
+
+        override VfsFolder sync()
+        in { assert( valid ); }
+        body
+        {
+            return syncImpl();
+        }
+    }
+
     /**
      * Closes this folder object.  If commit is true, then the folder is
      * sync'ed before being closed.
      */
-    override VfsFolder close(bool commit = true)
-    in { assert( valid ); }
-    body
+    protected VfsFolder closeImpl(bool commit = true)
     {
         // MUTATE
         if( commit ) sync;
@@ -476,9 +508,7 @@ else
      * This will flush any changes to the archive to disk.  Note that this
      * applies to the entire archive, not just this folder and its contents.
      */
-    override VfsFolder sync()
-    in { assert( valid ); }
-    body
+    protected VfsFolder syncImpl()
     {
         // MUTATE
         archive.sync;
@@ -633,7 +663,9 @@ class ZipFolder : ZipSubFolder
      * Closes the archive, and releases all internal resources.  If the commit
      * argument is true (the default), then changes to the archive will be
      * flushed out to disk.  If false, changes will simply be discarded.
+        
      */
+
     final override VfsFolder close(bool commit = true)
     in { assert( valid ); }
     body

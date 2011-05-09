@@ -7,9 +7,9 @@
 # bounds of applicable law.
 
 EXE=runUnittests_$DC
-DL="-L-ldl"
+DL="-L-ldl " 
 UNAME=`uname`
-OPTIONS="-debug -debug=UnitTest"
+OPTIONS="-debug -gc -debug=utf -debug=UnitTest" #  :w -debug=PRINTF"
 
 error () {
     echo "Example : DC=dmd PLATFORM=linux ARCH=32 build/script/unittest.sh"
@@ -30,10 +30,21 @@ fi
 
 if [ $DC == "ldc" ]
 then
-    OPTIONS="-oq -d-debug -d-debug=UnitTest"
+    OPTIONS="-oq -d-debug -d-debug=UnitTest -gc"
+    DL="-L-ldl "
 fi
 
-build/bin/$PLATFORM$ARCH/bob -v -r=$DC -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o="-g -unittest $OPTIONS" . 
+if [ $DC == "gdc" ]
+then
+    OPTIONS="-fdebug -fdebug=UnitTest -funittest -g -nophoboslib"
+    DL="-ldl -L.  -ltango-$DC-tst -lz -lbz2 -o $EXE"
+fi
+
+echo build/bin/${PLATFORM}32/bob -r=$DC -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o=\"-m$ARCH -unittest $OPTIONS\" . 
+build/bin/${PLATFORM}32/bob -r=$DC -m=$ARCH -c=$DC -p=$PLATFORM -l=libtango-$DC-tst -o="-m$ARCH -unittest $OPTIONS" . 
+
+
+echo "Compiled Library"
 
 if ! which $DC >& /dev/null
 then
@@ -59,10 +70,13 @@ import tango.io.Stdout;
 import tango.core.Runtime;
 import tango.core.tools.TraceExceptions;
 
+import tango.stdc.stdio : printf;
+
 bool tangoUnitTester()
 {
     uint countFailed = 0;
     uint countTotal = 1;
+    
     Stdout ("NOTE: This is still fairly rudimentary, and will only report the").newline;
     Stdout ("    first error per module.").newline;
     foreach ( m; ModuleInfo )  // _moduleinfo_array )
@@ -91,7 +105,7 @@ static this() {
     Runtime.moduleUnitTester( &tangoUnitTester );
 }
 
-void main() {}
+void main() { } // assert ( 0 == 1, "Main .. "); }
 EOF
 
 if [ "$UNAME" == "FreeBSD" ]
@@ -99,8 +113,8 @@ then
     DL=""
 fi
 
-echo "$DC $EXE.d $DFILES -g $OPTIONS -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2"
-$DC $EXE.d $DFILES -g $OPTIONS -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2  && rm $EXE.d && rm libtango-$DC-tst.a
+echo "$DC $EXE.d $DFILES $OPTIONS -m$ARCH -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2"
+$DC $EXE.d $DFILES $OPTIONS -m$ARCH -Itango/core/vendor -unittest -L-L. -L-ltango-$DC-tst  $DL -L-lz -L-lbz2  #&& rm $EXE.d && rm libtango-$DC-tst.a
 
 ./runUnittests_$DC
 

@@ -46,7 +46,7 @@ char[] homeFolder()
         return Path.standard(Environment.get("HOME"));
 }
 
-version (Posix) 
+version (Posix)
 {
 
     /******************************************************************************
@@ -77,7 +77,7 @@ version (Posix)
         Returns: inputPath with the tilde expanded, or just inputPath
         if it could not be expanded.
 
-        Throws: OutOfMemoryException if there is not enough memory to 
+        Throws: OutOfMemoryException if there is not enough memory to
                 perform the database lookup for the <i>~user</i> syntax.
 
         Examples:
@@ -124,16 +124,23 @@ version (Posix)
     ******************************************************************************/
 
     private char[] expandFromEnvironment(char[] path)
+    in
     {
         assert(path.length >= 1);
         assert(path[0] == '~');
-
+    }
+    body
+    {
         // Get HOME and use that to replace the tilde.
         char[] home = homeFolder;
         if (home is null)
             return path;
 
+        if (home[$-1] == '/')
+            home = home[0..$-1];
+
         return Path.join(home, path[1..$]);
+
     }
 
     /*******************************************************************************
@@ -153,60 +160,53 @@ version (Posix)
         auto last_char = TextUtil.locate(path, '/');
 
         if (last_char == path.length)
-            {
+        {
             username = path[1..$] ~ '\0';
-            }
+        }
         else
-            {
+        {
             username = path[1..last_char] ~ '\0';
-            }
+        }
 
         assert(last_char > 1);
- 
+
         // Reserve C memory for the getpwnam_r() function.
         passwd result;
         int extra_memory_size = 5 * 1024;
         void* extra_memory;
 
+        scope (exit) if(extra_memory) tango.stdc.stdlib.free(extra_memory);
+
         while (1)
-            {
+        {
             extra_memory = tango.stdc.stdlib.malloc(extra_memory_size);
             if (extra_memory is null)
-                goto Lerror;
+                throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // Obtain info from database.
             passwd *verify;
             tango.stdc.errno.errno(0);
             if (getpwnam_r(username.ptr, &result, cast(char*)extra_memory, extra_memory_size,
                 &verify) == 0)
-                {
+            {
                 // Failure if verify doesn't point at result.
-                if (verify != &result)
-                // username is not found, so return path[]
-                    goto Lnotfound;
-                break;
+                if (verify == &result)
+                {
+                    auto pwdirlen = strlen(result.pw_dir);
+
+                    path = Path.join(result.pw_dir[0..pwdirlen].dup, path[last_char..$]);
                 }
 
+                return path;
+            }
+
             if (tango.stdc.errno.errno() != ERANGE)
-                goto Lerror;
+                throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
 
             // extra_memory isn't large enough
             tango.stdc.stdlib.free(extra_memory);
             extra_memory_size *= 2;
-            }
-
-        auto pwdirlen = strlen(result.pw_dir);
-        path = Path.join(result.pw_dir[0..pwdirlen].dup, path[last_char..$]);
-
-        Lnotfound:
-            tango.stdc.stdlib.free(extra_memory);
-            return path;
-
-        Lerror:
-            // Errors are going to be caused by running out of memory
-            if (extra_memory)
-                tango.stdc.stdlib.free(extra_memory);
-            throw new OutOfMemoryException("Not enough memory for user lookup in tilde expansion.", __LINE__);
+        }
     }
 
 }
@@ -242,7 +242,7 @@ version (Windows)
         Returns: inputPath with the tilde expanded, or just inputPath
         if it could not be expanded.
 
-        Throws: OutOfMemoryException if there is not enough memory to 
+        Throws: OutOfMemoryException if there is not enough memory to
                 perform the database lookup for the <i>~user</i> syntax.
 
         Examples:
@@ -308,6 +308,7 @@ version (Windows)
 *******************************************************************************/
 
 debug(UnitTest) {
+
 unittest
 {
     version (Posix)
@@ -322,6 +323,8 @@ unittest
 
     // Testing when an environment variable is set.
     Environment.set("HOME", "tango/test");
+    assert (Environment.get("HOME") == "tango/test");
+
     assert(expandTilde("~/") == "tango/test/");
     assert(expandTilde("~") == "tango/test");
 

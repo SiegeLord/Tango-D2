@@ -68,7 +68,7 @@ struct Array
  * reversed.
  */
 
-extern (C) long _adReverseChar(char[] a)
+extern (C) char[] _adReverseChar(char[] a)
 {
     bool hadErrors=false;
     if (a.length > 1)
@@ -100,12 +100,13 @@ extern (C) long _adReverseChar(char[] a)
             }
 
             uint stridehi = 1;
-            while ((chi & 0xC0) == 0x80 && hi >= lo)
+            while ((chi & 0xC0) == 0x80)
             {
                 chi = *--hi;
                 stridehi++;
             }
-            if (lo >= hi){
+            if (lo == hi)
+            {
                 if (lo>hi){
                     hadErrors=true;
                 }
@@ -131,22 +132,22 @@ extern (C) long _adReverseChar(char[] a)
              */
             memcpy(tmp.ptr, hi, stridehi);
             memcpy(tmplo.ptr, lo, stridelo);
-            memmove(lo + stridehi, lo + stridelo , (hi - lo) - stridelo);
+            memmove(lo + stridehi, lo + stridelo , cast(size_t)((hi - lo) - stridelo));
             memcpy(lo, tmp.ptr, stridehi);
             memcpy(hi + stridehi - stridelo, tmplo.ptr, stridelo);
 
             lo += stridehi;
-            hi = hi - 1 + (stridehi - stridelo);
+            hi = hi - 1 + cast(int)(stridehi - stridelo);
         }
     }
     if (hadErrors)
         throw new Exception("invalid UTF-8 sequence",__FILE__,__LINE__);
-    return *cast(long*)(&a);
+    return a;
 }
 
 unittest
 {
-    auto a = "abcd"c[];
+    char[] a = "abcd";
 
     auto r = a.dup.reverse;
     //writefln(r);

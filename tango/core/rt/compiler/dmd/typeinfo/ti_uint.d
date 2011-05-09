@@ -26,6 +26,11 @@ class TypeInfo_k : TypeInfo
         return 0;
     }
 
+    override size_t talign()
+    {
+        return uint.alignof;
+    }
+
     override size_t tsize()
     {
         return uint.sizeof;

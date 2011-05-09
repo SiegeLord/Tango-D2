@@ -8,7 +8,7 @@
 module tango.core.Variant;
 
 private import tango.core.Memory : GC;
-private import tango.core.Vararg : va_list;
+private import tango.core.Vararg;
 private import tango.core.Traits;
 private import tango.core.Tuple;
 
@@ -37,6 +37,22 @@ version( DigitalMars )
             version=EnableVararg;
         }
     }
+    version( X86_64 )
+    {
+        version( Windows )
+        {
+            version=EnableVararg;
+        }
+        else version( Posix )
+        {
+            version=EnableVararg;
+        }
+
+        version = DigitalMarsX64;
+
+        import tango.math.Math : max;
+
+    }
 }
 else version( LDC )
 {
@@ -53,6 +69,8 @@ else version( LDC )
         {
             version=EnableVararg; // thanks mwarning
         }
+
+        import tango.math.Math : max;
     }
 }
 else version( DDoc )
@@ -337,7 +355,7 @@ struct Variant
      *
      * Returns:
      *  The new Variant.
-     * 
+     *
      * Example:
      * -----
      *  auto v = Variant(42);
@@ -366,7 +384,7 @@ struct Variant
      *
      * Returns:
      *  The new Variant.
-     * 
+     *
      * Example:
      * -----
      *  int life = 42;
@@ -389,7 +407,7 @@ struct Variant
      *
      * Returns:
      *  The new value of the assigned-to variant.
-     * 
+     *
      * Example:
      * -----
      *  Variant v;
@@ -446,7 +464,7 @@ struct Variant
      *
      * Returns:
      *  true if the Variant contains a value of type T, false otherwise.
-     * 
+     *
      * Example:
      * -----
      *  auto v = Variant(cast(int) 42);
@@ -468,7 +486,7 @@ struct Variant
      *  true if the Variant contains a value of type T, or if the Variant
      *  contains a value that can be implicitly cast to type T; false
      *  otherwise.
-     * 
+     *
      * Example:
      * -----
      *  auto v = Variant(cast(int) 42);
@@ -739,7 +757,7 @@ struct Variant
         else
             return value.heap.ptr;
     }
-    
+
     version( EnableVararg )
     {
         /**
@@ -750,24 +768,51 @@ struct Variant
             auto vs = new Variant[](types.length);
 
             foreach( i, ref v ; vs )
-                args = Variant.fromPtr(types[i], args, v);
-            
+            {
+                version(DigitalMars) version(X86_64)
+                {
+                    scope void[] buffer;
+                    uint len = 0;
+
+                    foreach(argType; types)
+                        len =  max(len,(argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1));
+
+                    buffer.length = len;
+
+                    va_arg(args, types[i], buffer.ptr);
+
+                    Variant.fromPtr(types[i], buffer.ptr, v);
+                }
+                else
+                    args = Variant.fromPtr(types[i], args, v);
+            }
+
             return vs;
         }
-        
+
         /// ditto
         static Variant[] fromVararg(...)
         {
-            return Variant.fromVararg(_arguments, _argptr);
+            version(DigitalMarsX64)
+            {
+                va_list ap;
+                va_start(ap, __va_argsave);
+
+                scope (exit) va_end(ap);
+
+                return Variant.fromVararg(_arguments, ap);
+            }
+            else
+                return Variant.fromVararg(_arguments, _argptr);
         }
-        
+
         /**
          * Converts an array of Variants into a vararg function argument list.
          *
          * This will allocate memory to store the arguments in; you may destroy
          * this memory when you are done with it if you feel so inclined.
          */
-        static void toVararg(Variant[] vars, out TypeInfo[] types, out va_list args)
+        deprecated static void toVararg(Variant[] vars, out TypeInfo[] types, out va_list args)
         {
             // First up, compute the total amount of space we'll need.  While
             // we're at it, work out if any of the values we're storing have
@@ -780,7 +825,7 @@ struct Variant
                 size += (ti.tsize + size_t.sizeof-1) & ~(size_t.sizeof-1);
                 noptr = noptr && (ti.flags & 2);
             }
-            
+
             // Create the storage, and tell the GC whether it needs to be scanned
             // or not.
             auto storage = new ubyte[size];
@@ -810,7 +855,7 @@ private:
     {
         return (_type = v);
     }
-    
+
     /*
      * Creates a Variant using a given TypeInfo and a void*.  Returns the
      * given pointer adjusted for the next vararg.
@@ -861,7 +906,7 @@ private:
                 if( type.tsize <= this.value.data.length )
                 {
                     // Copy into storage
-                    r.value.data[0 .. type.tsize] = 
+                    r.value.data[0 .. type.tsize] =
                         (cast(ubyte*)ptr)[0 .. type.tsize];
                 }
                 else
@@ -1239,6 +1284,16 @@ debug( UnitTest )
 
             Variant[] scoop(...)
             {
+                version(DigitalMarsX64)
+                {
+                    va_list ap;
+                    va_start(ap, __va_argsave);
+
+                    scope (exit) va_end(ap);
+
+                    return Variant.fromVararg(_arguments, ap);
+                }
+
                 return Variant.fromVararg(_arguments, _argptr);
             }
 
@@ -1255,7 +1310,7 @@ debug( UnitTest )
             B    va_a = new B;
             C    va_b = new D;
             D    va_c = new D;
-            
+
             auto vs = scoop(va_0, va_1, va_2, va_3,
                             va_4, va_5, va_6, va_7,
                             va_8, va_9, va_a, va_b, va_c);
@@ -1277,10 +1332,11 @@ debug( UnitTest )
             assert( vs[0x9].get!(typeof(va_9)).msg == "A" );
             assert( vs[0xa].get!(typeof(va_a)).msg == "B" );
             assert( vs[0xc].get!(typeof(va_c)).msg == "D" );
-            
+
             assert( vs[0xb].get!(typeof(va_b)).name == "phil" );
             assert( vs[0xc].get!(typeof(va_c)).name == "phil" );
 
+            version (none) version(X86) // TODO toVararg won't work in x86_64 as it is now
             {
                 TypeInfo[] types;
                 void* args;

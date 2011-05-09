@@ -322,6 +322,9 @@ class ClassInfo : Object
     {
         foreach (m; ModuleInfo)
         {
+            if (!m)
+                continue;
+
             //writefln("module %s, %d", m.name, m.localClasses.length);
             foreach (c; m.localClasses)
             {
@@ -412,6 +415,9 @@ class TypeInfo
     /// Compares two instances for &lt;, ==, or &gt;.
     int compare(in void* p1, in void* p2) { return 0; } //throw new Exception("non comparable",__FILE__,__LINE__); 
 
+     /// Return alignment of type
+    size_t   talign() { return tsize(); }
+
     /// Returns size of the type.
     size_t tsize() { return 0; }
 
@@ -468,6 +474,16 @@ class TypeInfo
 
     /// Get type information on the contents of the type; null if not available
     OffsetTypeInfo[] offTi() { return null; }
+
+
+     /** Return internal info on arguments fitting into 8byte.
+       * See X86-64 ABI 3.2.3
+     */
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = this;
+        return 0;
+}
 }
 
 class TypeInfo_Typedef : TypeInfo
@@ -493,6 +509,13 @@ class TypeInfo_Typedef : TypeInfo
     override uint flags() { return base.flags(); }
     override PointerMap pointermap() { return base.pointermap(); }
     override void[] init() { return m_init.length ? m_init : base.init(); }
+
+    size_t talign() { return base.talign(); }
+
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   
+        return base.argTypes(arg1, arg2);
+    }
 
     TypeInfo base;
     char[] name;
@@ -632,6 +655,17 @@ class TypeInfo_Array : TypeInfo
 
     override uint flags() { return 1; }
 
+    size_t talign()
+    {
+        return (void[]).alignof;
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   //arg1 = typeid(size_t);
+        //arg2 = typeid(void*);
+        return 0;
+    }
+
     override PointerMap pointermap()
     {
         //return static mask for arrays
@@ -746,6 +780,18 @@ class TypeInfo_StaticArray : TypeInfo
 
     TypeInfo value;
     size_t   len;
+
+    size_t talign()
+    {
+        return value.talign();
+}
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(void*);
+        return 0;
+    }
+
 }
 
 class TypeInfo_AssociativeArray : TypeInfo
@@ -815,6 +861,17 @@ class TypeInfo_AssociativeArray : TypeInfo
 
     TypeInfo value;
     TypeInfo key;
+
+    size_t talign()
+    {
+        return (char[int]).alignof;
+}
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(void*);
+        return 0;
+    }
 }
 
 class TypeInfo_Function : TypeInfo
@@ -899,6 +956,19 @@ class TypeInfo_Delegate : TypeInfo
     }
 
     TypeInfo next;
+
+    size_t talign()
+    {
+        alias int delegate() dg;
+        return dg.alignof;
+}
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {   //arg1 = typeid(void*);
+        //arg2 = typeid(void*);
+        return 0;
+    }
+
 }
 
 class TypeInfo_Class : TypeInfo
@@ -1111,6 +1181,9 @@ class TypeInfo_Struct : TypeInfo
 
     override uint flags() { return m_flags; }
 
+    size_t talign() { return m_align; }
+
+
     char[] name;
     void[] m_init;      // initializer; init.ptr == null if 0 initialize
 
@@ -1121,11 +1194,24 @@ class TypeInfo_Struct : TypeInfo
     char[] function()   xtoString;
 
     uint m_flags;
+    uint m_align;
 
     version (D_HavePointerMap) {
         PointerMap m_pointermap;
 
         override PointerMap pointermap() { return m_pointermap; }
+    }
+
+    version (X86_64)
+    {
+        int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+        {
+            arg1 = m_arg1;
+            arg2 = m_arg2;
+            return 0;
+}
+        TypeInfo m_arg1;
+        TypeInfo m_arg2;
     }
 }
 
@@ -1194,6 +1280,11 @@ class TypeInfo_Tuple : TypeInfo
     {
         assert(0);
     }
+
+    version (X86_64) int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        assert(0);
+}
 }
 
 
@@ -1469,7 +1560,6 @@ extern (C) void _moduleIndependentCtors()
             (*m.ictor)();
         }
     }
-    debug(PRINTF) printf("_moduleIndependentCtors() DONE\n");
 }
 
 void _moduleCtor2(ModuleInfo from, ModuleInfo[] mi, int skip)

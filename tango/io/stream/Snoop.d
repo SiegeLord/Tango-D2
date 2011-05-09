@@ -17,6 +17,12 @@ private import  tango.io.Console,
 
 private import  tango.text.convert.Format;
 
+version(DigitalMars)
+{
+    private import tango.core.Vararg;
+}else version (GNU)
+    private import tango.core.Vararg;
+
 private alias void delegate(char[]) Snoop;
 
 /*******************************************************************************

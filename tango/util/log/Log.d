@@ -3,7 +3,7 @@
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
 
         license:        BSD style: $(LICENSE)
-      
+
         version:        May 2004 : Initial release
         version:        Oct 2004: Hierarchy moved due to circular dependencies
         version:        Apr 2008: Lazy delegates removed due to awkward usage
@@ -20,13 +20,13 @@
 
         Generic usage:
 
-        Loggers are named entities, sometimes shared, sometimes specific to 
-        a particular portion of code. The names are generally hierarchical in 
-        nature, using dot notation (with '.') to separate each named section. 
+        Loggers are named entities, sometimes shared, sometimes specific to
+        a particular portion of code. The names are generally hierarchical in
+        nature, using dot notation (with '.') to separate each named section.
         For example, a typical name might be something like "mail.send.writer"
         ---
         import tango.util.log.Log;
-        
+
         auto log = Log.lookup ("mail.send.writer");
 
         log.info  ("an informational message");
@@ -34,14 +34,14 @@
 
         etc ...
         ---
-        
-        It is considered good form to pass a logger instance as a function or 
-        class-ctor argument, or to assign a new logger instance during static 
-        class construction. For example: if it were considered appropriate to 
+
+        It is considered good form to pass a logger instance as a function or
+        class-ctor argument, or to assign a new logger instance during static
+        class construction. For example: if it were considered appropriate to
         have one logger instance per class, each might be constructed like so:
         ---
         private Logger log;
-        
+
         static this()
         {
             log = Log.lookup (nameOfThisClassOrStructOrModule);
@@ -63,16 +63,16 @@
         log.warn (log.format (buf, "a very long message: {}", someLongMessage));
         ---
 
-        To avoid overhead when constructing arguments passed to formatted 
+        To avoid overhead when constructing arguments passed to formatted
         messages, you should check to see whether a logger is active or not:
         ---
         if (log.warn)
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
-        
-        tango.log closely follows both the API and the behaviour as documented 
-        at the official Log4J site, where you'll find a good tutorial. Those 
-        pages are hosted over 
+
+        tango.log closely follows both the API and the behaviour as documented
+        at the official Log4J site, where you'll find a good tutorial. Those
+        pages are hosted over
         <A HREF="http://logging.apache.org/log4j/docs/documentation.html">here</A>.
 
 *******************************************************************************/
@@ -103,6 +103,15 @@ version (GNU)
         alias void* Arg;
         alias va_list ArgList;
         }
+else version (DigitalMars)
+        {
+        private import tango.core.Vararg;
+        alias void* Arg;
+        alias va_list ArgList;
+
+    version(X86_64)  version = DigitalMarsX64;
+
+        }
      else
         {
         alias void* Arg;
@@ -127,21 +136,21 @@ version (Win32)
 }
 
 /*******************************************************************************
-                        
+
         These represent the standard LOG4J event levels. Note that
         Debug is called Trace here, because debug is a reserved word
-        in D 
+        in D
 
 *******************************************************************************/
 
-alias ILogger.Level Level; 
+alias ILogger.Level Level;
 
 
 /*******************************************************************************
 
-        Manager for routing Logger calls to the default hierarchy. Note 
+        Manager for routing Logger calls to the default hierarchy. Note
         that you may have multiple hierarchies per application, but must
-        access the hierarchy directly for root() and lookup() methods within 
+        access the hierarchy directly for root() and lookup() methods within
         each additional instance.
 
 *******************************************************************************/
@@ -167,8 +176,8 @@ public struct Log
         private struct  Pair {char[] name; Level value;}
 
         private static  Level [char[]] map;
-        
-        private static  Pair[] Pairs = 
+
+        private static  Pair[] Pairs =
                         [
                         {"TRACE",  Level.Trace},
                         {"Trace",  Level.Trace},
@@ -191,15 +200,15 @@ public struct Log
                         ];
 
         // logging-level names
-        private static char[][] LevelNames = 
+        private static char[][] LevelNames =
         [
                 "Trace", "Info", "Warn", "Error", "Fatal", "None"
         ];
 
         /***********************************************************************
-        
-                Initialize the base hierarchy           
-              
+
+                Initialize the base hierarchy
+
         ***********************************************************************/
 
         static this ()
@@ -209,7 +218,7 @@ public struct Log
                 foreach (p; Pairs)
                          map[p.name] = p.value;
 
-                version (Posix)       
+                version (Posix)
                 {
                         beginTime = Clock.now;
                 }
@@ -220,15 +229,15 @@ public struct Log
 
                         if (! QueryPerformanceFrequency (&freq))
                               throw new PlatformException ("high-resolution timer is not available");
-                        
+
                         QueryPerformanceCounter (&timerStart);
-                        multiplier = cast(double) TimeSpan.TicksPerSecond / freq;       
+                        multiplier = cast(double) TimeSpan.TicksPerSecond / freq;
                         beginTime = Clock.now;
                 }
         }
 
         /***********************************************************************
-        
+
                 Return the level of a given name
 
         ***********************************************************************/
@@ -242,14 +251,14 @@ public struct Log
         }
 
         /***********************************************************************
-                
+
                 Return the current time
 
         ***********************************************************************/
 
         static Time time ()
         {
-                version (Posix)       
+                version (Posix)
                 {
                         return Clock.now;
                 }
@@ -266,8 +275,8 @@ public struct Log
         /***********************************************************************
 
                 Return the root Logger instance. This is the ancestor of
-                all loggers and, as such, can be used to manipulate the 
-                entire hierarchy. For instance, setting the root 'level' 
+                all loggers and, as such, can be used to manipulate the
+                entire hierarchy. For instance, setting the root 'level'
                 attribute will affect all other loggers in the tree.
 
         ***********************************************************************/
@@ -278,10 +287,10 @@ public struct Log
         }
 
         /***********************************************************************
-        
+
                 Return an instance of the named logger. Names should be
-                hierarchical in nature, using dot notation (with '.') to 
-                separate each name section. For example, a typical name 
+                hierarchical in nature, using dot notation (with '.') to
+                separate each name section. For example, a typical name
                 might be something like "tango.io.Stdout".
 
                 If the logger does not currently exist, it is created and
@@ -297,7 +306,7 @@ public struct Log
         }
 
         /***********************************************************************
-        
+
                 Return text name for a log level
 
         ***********************************************************************/
@@ -309,7 +318,7 @@ public struct Log
         }
 
         /***********************************************************************
-        
+
                 Return the singleton hierarchy.
 
         ***********************************************************************/
@@ -320,13 +329,24 @@ public struct Log
         }
 
         /***********************************************************************
-                
+
                 Pedestrian usage support, as an alias for Log.root.info()
 
         ***********************************************************************/
 
         static void formatln (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                version(GNU) {} else va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                root.format (Level.Info, fmt, _arguments, ap);
+            }
+            else            
                 root.format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -336,7 +356,7 @@ public struct Log
 
                 Adds a StreamAppender to the root node, and sets
                 the activity level to be everything enabled.
-                
+
         ***********************************************************************/
 
         static void config (OutputStream stream, bool flush = true)
@@ -348,13 +368,13 @@ public struct Log
 
 /*******************************************************************************
 
-        Loggers are named entities, sometimes shared, sometimes specific to 
-        a particular portion of code. The names are generally hierarchical in 
-        nature, using dot notation (with '.') to separate each named section. 
+        Loggers are named entities, sometimes shared, sometimes specific to
+        a particular portion of code. The names are generally hierarchical in
+        nature, using dot notation (with '.') to separate each named section.
         For example, a typical name might be something like "mail.send.writer"
         ---
         import tango.util.log.Log;format
-        
+
         auto log = Log.lookup ("mail.send.writer");
 
         log.info  ("an informational message");
@@ -362,14 +382,14 @@ public struct Log
 
         etc ...
         ---
-        
-        It is considered good form to pass a logger instance as a function or 
-        class-ctor argument, or to assign a new logger instance during static 
-        class construction. For example: if it were considered appropriate to 
+
+        It is considered good form to pass a logger instance as a function or
+        class-ctor argument, or to assign a new logger instance during static
+        class construction. For example: if it were considered appropriate to
         have one logger instance per class, each might be constructed like so:
         ---
         private Logger log;
-        
+
         static this()
         {
             log = Log.lookup (nameOfThisClassOrStructOrModule);
@@ -391,28 +411,28 @@ public struct Log
         log.warn (log.format (buf, "a very long warning: {}", someLongWarning));
         ---
 
-        To avoid overhead when constructing argument passed to formatted 
+        To avoid overhead when constructing argument passed to formatted
         messages, you should check to see whether a logger is active or not:
         ---
         if (log.enabled (log.Warn))
             log.warn ("temperature is {} degrees!", complexFunction());
         ---
-        
-        The above will be handled implicitly by the logging system when 
-        macros are added to the language (used to be handled implicitly 
+
+        The above will be handled implicitly by the logging system when
+        macros are added to the language (used to be handled implicitly
         via lazy delegates, but usage of those turned out to be awkward).
 
-        tango.log closely follows both the API and the behaviour as documented 
-        at the official Log4J site, where you'll find a good tutorial. Those 
-        pages are hosted over 
+        tango.log closely follows both the API and the behaviour as documented
+        at the official Log4J site, where you'll find a good tutorial. Those
+        pages are hosted over
         <A HREF="http://logging.apache.org/log4j/docs/documentation.html">here</A>.
 
 *******************************************************************************/
 
 public class Logger : ILogger
-{     
-        
-        alias Level.Trace Trace;        // shortcut to Level values 
+{
+
+        alias Level.Trace Trace;        // shortcut to Level values
         alias Level.Info  Info;         // ...
         alias Level.Warn  Warn;         // ...
         alias Level.Error Error;        // ...
@@ -421,7 +441,7 @@ public class Logger : ILogger
         alias append      opCall;       // shortcut to append
 
         /***********************************************************************
-                
+
                 Context for a hierarchy, used for customizing behaviour
                 of log hierarchies. You can use this to implement dynamic
                 log-levels, based upon filtering or some other mechanism
@@ -432,7 +452,7 @@ public class Logger : ILogger
         {
                 /// return a label for this context
                 char[] label ();
-                
+
                 /// first arg is the setting of the logger itself, and
                 /// the second arg is what kind of message we're being
                 /// asked to produce
@@ -440,7 +460,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-                
+
         ***********************************************************************/
 
         private Logger          next,
@@ -453,8 +473,8 @@ public class Logger : ILogger
         private Appender        appender_;
 
         /***********************************************************************
-        
-                Construct a LoggerInstance with the specified name for the 
+
+                Construct a LoggerInstance with the specified name for the
                 given hierarchy. By default, logger instances are additive
                 and are set to emit all events.
 
@@ -469,7 +489,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Is this logger enabed for the specified Level?
 
         ***********************************************************************/
@@ -498,6 +518,17 @@ public class Logger : ILogger
 
         final void trace (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Trace, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Trace, fmt, _arguments, _argptr);
         }
 
@@ -520,6 +551,17 @@ public class Logger : ILogger
 
         final void info (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Info, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Info, fmt, _arguments, _argptr);
         }
 
@@ -542,6 +584,17 @@ public class Logger : ILogger
 
         final void warn (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Warn, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Warn, fmt, _arguments, _argptr);
         }
 
@@ -564,6 +617,17 @@ public class Logger : ILogger
 
         final void error (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Error, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Error, fmt, _arguments, _argptr);
         }
 
@@ -586,13 +650,24 @@ public class Logger : ILogger
 
         final void fatal (char[] fmt, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                format (Level.Fatal, fmt, _arguments, ap);
+            }
+            else            
                 format (Level.Fatal, fmt, _arguments, _argptr);
         }
 
         /***********************************************************************
 
                 Return the name of this Logger (sans the appended dot).
-       
+
         ***********************************************************************/
 
         final char[] name ()
@@ -600,22 +675,22 @@ public class Logger : ILogger
                 int i = name_.length;
                 if (i > 0)
                     --i;
-                return name_[0 .. i];     
+                return name_[0 .. i];
         }
 
         /***********************************************************************
-        
+
                 Return the Level this logger is set to
 
         ***********************************************************************/
 
         final Level level ()
         {
-                return level_;     
+                return level_;
         }
 
         /***********************************************************************
-        
+
                 Set the current level for this logger (and only this logger).
 
         ***********************************************************************/
@@ -626,7 +701,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Set the current level for this logger, and (optionally) all
                 of its descendents.
 
@@ -634,8 +709,8 @@ public class Logger : ILogger
 
         final Logger level (Level level, bool propagate)
         {
-                level_ = level; 
-                if (propagate)    
+                level_ = level;
+                if (propagate)
                     foreach (log; host_)
                              if (log.isChildOf (name_))
                                  log.level_ = level;
@@ -643,7 +718,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Is this logger additive? That is, should we walk ancestors
                 looking for more appenders?
 
@@ -655,19 +730,19 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Set the additive status of this logger. See bool additive().
 
         ***********************************************************************/
 
         final Logger additive (bool enabled)
         {
-                additive_ = enabled;     
+                additive_ = enabled;
                 return this;
         }
 
         /***********************************************************************
-        
+
                 Add (another) appender to this logger. Appenders are each
                 invoked for log events as they are produced. At most, one
                 instance of each appender will be invoked.
@@ -683,19 +758,19 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Remove all appenders from this Logger
 
         ***********************************************************************/
 
         final Logger clear ()
         {
-                appender_ = null;     
+                appender_ = null;
                 return this;
         }
 
         /***********************************************************************
-        
+
                 Get time since this application started
 
         ***********************************************************************/
@@ -706,7 +781,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Send a message to this logger via its appender list.
 
         ***********************************************************************/
@@ -725,7 +800,7 @@ public class Logger : ILogger
         }
 
         /***********************************************************************
-        
+
                 Send a message to this logger via its appender list.
 
         ***********************************************************************/
@@ -734,13 +809,13 @@ public class Logger : ILogger
         {
                 // combine appenders from all ancestors
                 auto links = this;
-                Appender.Mask masks = 0;                 
+                Appender.Mask masks = 0;
                 do {
                    auto appender = links.appender_;
 
                    // this level have an appender?
                    while (appender)
-                         { 
+                         {
                          auto mask = appender.mask;
 
                          // have we visited this appender already?
@@ -767,7 +842,19 @@ public class Logger : ILogger
 
         final char[] format (char[] buffer, char[] formatStr, ...)
         {
+            version (DigitalMarsX64)
+            {
+                va_list ap;
+
+                va_start(ap, __va_argsave);
+
+                scope(exit) va_end(ap);
+
+                return Format.vprint (buffer, formatStr, _arguments, ap);
+            }
+            else
                 return Format.vprint (buffer, formatStr, _arguments, _argptr);
+
         }
 
         /***********************************************************************
@@ -777,20 +864,20 @@ public class Logger : ILogger
         ***********************************************************************/
 
         final Logger format (Level level, char[] fmt, TypeInfo[] types, ArgList args)
-        {    
+        {
                 char[2048] tmp = void;
- 
+
                 if (types.length)
                     append (level, Format.vprint (tmp, fmt, types, args));
                 else
-                   append (level, fmt);                
+                   append (level, fmt);
                 return this;
         }
 
         /***********************************************************************
-        
-                See if the provided Logger name is a parent of this one. Note 
-                that each Logger name has a '.' appended to the end, such that 
+
+                See if the provided Logger name is a parent of this one. Note
+                that each Logger name has a '.' appended to the end, such that
                 name segments will not partially match.
 
         ***********************************************************************/
@@ -801,15 +888,15 @@ public class Logger : ILogger
 
                 // possible parent if length is shorter
                 if (len < name_.length)
-                    // does the prefix match? Note we append a "." to each 
+                    // does the prefix match? Note we append a "." to each
                     // (the root is a parent of everything)
-                    return (len is 0 || 
+                    return (len is 0 ||
                             memcmp (&candidate[0], &name_[0], len) is 0);
                 return false;
         }
 
         /***********************************************************************
-        
+
                 See if the provided Logger is a better match as a parent of
                 this one. This is used to restructure the hierarchy when a
                 new logger instance is introduced
@@ -828,11 +915,11 @@ public class Logger : ILogger
 }
 
 /*******************************************************************************
- 
+
         The Logger hierarchy implementation. We keep a reference to each
         logger in a hash-table for convenient lookup purposes, plus keep
         each logger linked to the others in an ordered group. Ordering
-        places shortest names at the head and longest ones at the tail, 
+        places shortest names at the head and longest ones at the tail,
         making the job of identifying ancestors easier in an orderly
         fashion. For example, when propagating levels across descendents
         it would be a mistake to propagate to a child before all of its
@@ -844,13 +931,13 @@ private class Hierarchy : Logger.Context
 {
         private Logger                  root_;
         private char[]                  name_,
-                                        address_;      
+                                        address_;
         private Logger.Context          context_;
         private Logger[char[]]          loggers;
 
 
         /***********************************************************************
-        
+
                 Construct a hierarchy with the given name.
 
         ***********************************************************************/
@@ -873,7 +960,7 @@ private class Hierarchy : Logger.Context
         {
                 return "";
         }
-                
+
         /**********************************************************************
 
 
@@ -932,31 +1019,31 @@ private class Hierarchy : Logger.Context
 
         /**********************************************************************
 
-                Return the diagnostic context.  Useful for setting an 
+                Return the diagnostic context.  Useful for setting an
                 override logging level.
 
         **********************************************************************/
-        
+
         final Logger.Context context ()
         {
         	return context_;
         }
-        
+
         /**********************************************************************
 
-                Set the diagnostic context.  Not usually necessary, as a 
-                default was created.  Useful when you need to provide a 
+                Set the diagnostic context.  Not usually necessary, as a
+                default was created.  Useful when you need to provide a
                 different implementation, such as a ThreadLocal variant.
 
         **********************************************************************/
-        
+
         final void context (Logger.Context context)
         {
         	context_ = context;
         }
-        
+
         /***********************************************************************
-        
+
                 Return the root node.
 
         ***********************************************************************/
@@ -967,7 +1054,7 @@ private class Hierarchy : Logger.Context
         }
 
         /***********************************************************************
-        
+
                 Return the instance of a Logger with the provided label. If
                 the instance does not exist, it is created at this time.
 
@@ -1001,7 +1088,7 @@ private class Hierarchy : Logger.Context
         }
 
         /***********************************************************************
-        
+
                 Return the instance of a Logger with the provided label. If
                 the instance does not exist, it is created at this time.
 
@@ -1021,21 +1108,21 @@ private class Hierarchy : Logger.Context
                    // insert into linked list
                    insert (li);
 
-                   // look for and adjust children. Don't force 
+                   // look for and adjust children. Don't force
                    // property inheritance on existing loggers
                    update (li);
 
                    // insert into map
                    loggers [name] = li;
                    }
-               
+
                 return *l;
         }
 
         /***********************************************************************
-        
-                Loggers are maintained in a sorted linked-list. The order 
-                is maintained such that the shortest name is at the root, 
+
+                Loggers are maintained in a sorted linked-list. The order
+                is maintained such that the shortest name is at the root,
                 and the longest at the tail.
 
                 This is done so that updateLoggers() will always have a
@@ -1054,7 +1141,7 @@ private class Hierarchy : Logger.Context
                       if (l.name.length < curr.name.length)
                           if (prev is null)
                               throw new IllegalElementException ("invalid hierarchy");
-                          else                                 
+                          else
                              {
                              l.next = prev.next;
                              prev.next = l;
@@ -1066,8 +1153,8 @@ private class Hierarchy : Logger.Context
                          propagate (l, curr, true);
 
                       // remember where insertion point should be
-                      prev = curr;  
-                      curr = curr.next;  
+                      prev = curr;
+                      curr = curr.next;
                       }
 
                 // add to tail
@@ -1075,11 +1162,11 @@ private class Hierarchy : Logger.Context
         }
 
         /***********************************************************************
-        
-                Propagate hierarchical changes across known loggers. 
+
+                Propagate hierarchical changes across known loggers.
                 This includes changes in the hierarchy itself, and to
-                the various settings of child loggers with respect to 
-                their parent(s).              
+                the various settings of child loggers with respect to
+                their parent(s).
 
         ***********************************************************************/
 
@@ -1090,9 +1177,9 @@ private class Hierarchy : Logger.Context
         }
 
         /***********************************************************************
-        
+
                 Propagate changes in the hierarchy downward to child Loggers.
-                Note that while 'parent' is always changed, the adjustment of 
+                Note that while 'parent' is always changed, the adjustment of
                 'level' is selectable.
 
         ***********************************************************************/
@@ -1136,7 +1223,7 @@ package struct LogEvent
         private Hierarchy       host_;
 
         /***********************************************************************
-                
+
                 Set the various attributes of this event.
 
         ***********************************************************************/
@@ -1151,7 +1238,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return the message attached to this event.
 
         ***********************************************************************/
@@ -1162,7 +1249,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return the name of the logger which produced this event
 
         ***********************************************************************/
@@ -1173,7 +1260,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return the logger level of this event.
 
         ***********************************************************************/
@@ -1184,7 +1271,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return the hierarchy where the event was produced from
 
         ***********************************************************************/
@@ -1195,8 +1282,8 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
-                Return the time this event was produced, relative to the 
+
+                Return the time this event was produced, relative to the
                 start of this executable
 
         ***********************************************************************/
@@ -1207,7 +1294,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-               
+
                 Return the time this event was produced relative to Epoch
 
         ***********************************************************************/
@@ -1218,7 +1305,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return time when the executable started
 
         ***********************************************************************/
@@ -1229,7 +1316,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Return the logger level name of this event.
 
         ***********************************************************************/
@@ -1240,7 +1327,7 @@ package struct LogEvent
         }
 
         /***********************************************************************
-                
+
                 Convert a time value (in milliseconds) to ascii
 
         ***********************************************************************/
@@ -1255,7 +1342,7 @@ package struct LogEvent
                    s[--len] = cast(char)(ms % 10 + '0');
                    ms /= 10;
                    } while (ms && len);
-                return s[len..s.length];                
+                return s[len..s.length];
         }
 }
 
@@ -1266,7 +1353,7 @@ package struct LogEvent
         emitting messages sent to a particular logger. There may be more
         than one appender attached to any logger. The actual message is
         constructed by another class known as an EventLayout.
-        
+
 *******************************************************************************/
 
 public class Appender
@@ -1282,7 +1369,7 @@ public class Appender
 
                 Interface for all logging layout instances
 
-                Implement this method to perform the formatting of  
+                Implement this method to perform the formatting of
                 message content.
 
         ***********************************************************************/
@@ -1293,9 +1380,9 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Return the mask used to identify this Appender. The mask
-                is used to figure out whether an appender has already been 
+                is used to figure out whether an appender has already been
                 invoked for a particular logger.
 
         ***********************************************************************/
@@ -1303,15 +1390,15 @@ public class Appender
         abstract Mask mask ();
 
         /***********************************************************************
-                
+
                 Return the name of this Appender.
 
         ***********************************************************************/
 
         abstract char[] name ();
-                
+
         /***********************************************************************
-                
+
                 Append a message to the output.
 
         ***********************************************************************/
@@ -1319,8 +1406,8 @@ public class Appender
         abstract void append (LogEvent event);
 
         /***********************************************************************
-              
-              Create an Appender and default its layout to LayoutSimple.  
+
+              Create an Appender and default its layout to LayoutSimple.
 
         ***********************************************************************/
 
@@ -1330,8 +1417,8 @@ public class Appender
         }
 
         /***********************************************************************
-              
-              Create an Appender and default its layout to LayoutSimple.  
+
+              Create an Appender and default its layout to LayoutSimple.
 
         ***********************************************************************/
 
@@ -1341,7 +1428,7 @@ public class Appender
         }
 
         /***********************************************************************
-              
+
                 Return the current Level setting
 
         ***********************************************************************/
@@ -1352,7 +1439,7 @@ public class Appender
         }
 
         /***********************************************************************
-              
+
                 Return the current Level setting
 
         ***********************************************************************/
@@ -1364,7 +1451,7 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Static method to return a mask for identifying the Appender.
                 Each Appender class should have a unique fingerprint so that
                 we can figure out which ones have been invoked for a given
@@ -1394,7 +1481,7 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Set the current layout to be that of the argument, or the
                 generic layout where the argument is null
 
@@ -1406,7 +1493,7 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Return the current Layout
 
         ***********************************************************************/
@@ -1417,7 +1504,7 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Attach another appender to this one
 
         ***********************************************************************/
@@ -1428,7 +1515,7 @@ public class Appender
         }
 
         /***********************************************************************
-                
+
                 Return the next appender in the list
 
         ***********************************************************************/
@@ -1439,8 +1526,8 @@ public class Appender
         }
 
         /***********************************************************************
-                
-                Close this appender. This would be used for file, sockets, 
+
+                Close this appender. This would be used for file, sockets,
                 and such like.
 
         ***********************************************************************/
@@ -1463,7 +1550,7 @@ public class AppendNull : Appender
         private Mask mask_;
 
         /***********************************************************************
-                
+
                 Create with the given Layout
 
         ***********************************************************************/
@@ -1475,7 +1562,7 @@ public class AppendNull : Appender
         }
 
         /***********************************************************************
-                
+
                 Return the fingerprint for this class
 
         ***********************************************************************/
@@ -1486,7 +1573,7 @@ public class AppendNull : Appender
         }
 
         /***********************************************************************
-                
+
                 Return the name of this class
 
         ***********************************************************************/
@@ -1495,11 +1582,11 @@ public class AppendNull : Appender
         {
                 return this.classinfo.name;
         }
-                
+
         /***********************************************************************
-                
+
                 Append an event to the output.
-                 
+
         ***********************************************************************/
 
         final void append (LogEvent event)
@@ -1522,7 +1609,7 @@ public class AppendStream : Appender
         private OutputStream    stream_;
 
         /***********************************************************************
-                
+
                 Create with the given stream and layout
 
         ***********************************************************************/
@@ -1538,7 +1625,7 @@ public class AppendStream : Appender
         }
 
         /***********************************************************************
-                
+
                 Return the fingerprint for this class
 
         ***********************************************************************/
@@ -1549,7 +1636,7 @@ public class AppendStream : Appender
         }
 
         /***********************************************************************
-                
+
                 Return the name of this class
 
         ***********************************************************************/
@@ -1558,11 +1645,11 @@ public class AppendStream : Appender
         {
                 return this.classinfo.name;
         }
-                
+
         /***********************************************************************
-               
+
                 Append an event to the output.
-                 
+
         ***********************************************************************/
 
         final void append (LogEvent event)
@@ -1591,7 +1678,7 @@ public class AppendStream : Appender
 public class LayoutTimer : Appender.Layout
 {
         /***********************************************************************
-                
+
                 Subclasses should implement this method to perform the
                 formatting of the actual message content.
 
@@ -1621,7 +1708,7 @@ public class LayoutTimer : Appender.Layout
 debug (Log)
 {
         import tango.io.Console;
- 
+
         void main()
         {
                 Log.config (Cerr.stream);

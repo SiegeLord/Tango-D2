@@ -68,6 +68,8 @@ bool isValidDchar(dchar c)
 	(c > 0xDFFF && c <= 0x10FFFF /*&& c != 0xFFFE && c != 0xFFFF*/);
 }
 
+debug import tango.stdc.stdio : printf;
+
 unittest
 {
     debug(utf) printf("utf.isValidDchar.unittest\n");
@@ -884,6 +886,7 @@ unittest
     w = toUTF16(d);
     assert(w == "hello");
 
+    debug(utf) printf("utf.toUTF.unittest\n");
 
     c = "hel\u1234o";
     w = toUTF16(c);
@@ -901,6 +904,7 @@ unittest
     w = toUTF16(d);
     assert(w == "hel\u1234o");
 
+    debug(utf) printf("utf.toUTF.unittest\n");
 
     c = "he\U0010AAAAllo";
     w = toUTF16(c);

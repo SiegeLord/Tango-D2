@@ -76,6 +76,11 @@ class TypeInfo_Ac : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (creal[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (creal[]).sizeof;
@@ -89,5 +94,10 @@ class TypeInfo_Ac : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(creal);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }

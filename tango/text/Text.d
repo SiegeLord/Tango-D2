@@ -125,7 +125,7 @@
 
                 // reserve some space for inserts/additions
                 Text reserve (int extra);
-        
+
                 // write content to stream
                 Text write (OutputStream sink);
         }
@@ -213,6 +213,15 @@ private import  Integer = tango.text.convert.Integer;
 
 private import tango.stdc.string : memmove;
 
+version(GNU)
+{
+    private import tango.core.Vararg;
+}
+else version(DigitalMars)
+{
+    private import tango.core.Vararg;
+    version(X86_64) version=DigitalMarsX64;
+}
 
 /*******************************************************************************
 
@@ -285,31 +294,31 @@ class Text(T) : TextView!(T)
 
                 bool next ()
                 {
-                        return locate (&engine.forward, text.slice, 
+                        return locate (&engine.forward, text.slice,
                                         text.selectPoint + text.selectLength);
                 }
 
                 /***************************************************************
 
-                        Returns true if there is a match within the 
+                        Returns true if there is a match within the
                         associated text
 
                 ***************************************************************/
 
                 bool within ()
-                {       
+                {
                         return engine.within (text.slice);
                 }
 
                 /***************************************************************
-                
+
                         Returns number of matches within the associated
                         text
 
                 ***************************************************************/
 
                 size_t count ()
-                {       
+                {
                         return engine.count (text.slice);
                 }
 
@@ -320,8 +329,8 @@ class Text(T) : TextView!(T)
                 ***************************************************************/
 
                 void replace (T chr)
-                {     
-                        replace ((&chr)[0..1]);  
+                {
+                        replace ((&chr)[0..1]);
                 }
 
                 /***************************************************************
@@ -331,7 +340,7 @@ class Text(T) : TextView!(T)
                 ***************************************************************/
 
                 void replace (T[] sub = null)
-                {  
+                {
                         auto dst = new T[text.length];
                         dst.length = 0;
 
@@ -339,7 +348,7 @@ class Text(T) : TextView!(T)
                                  dst ~= token;
                         text.set (dst, false);
                 }
- 
+
                 /***************************************************************
 
                         locate pattern index and select as appropriate
@@ -379,7 +388,7 @@ class Text(T) : TextView!(T)
 
                 Note: A character like 'a' will be implicitly converted to
                 uint and thus will be accepted for this constructor, making
-                it appear like you can initialize a Text instance with a 
+                it appear like you can initialize a Text instance with a
                 single character, something which is not supported.
 
         ***********************************************************************/
@@ -431,7 +440,7 @@ class Text(T) : TextView!(T)
                 this class. This can be useful when wrapping an array
                 "temporarily" with a stack-based Text.
 
-                Also resets the curent selection to null           
+                Also resets the curent selection to null
 
         ***********************************************************************/
 
@@ -456,7 +465,7 @@ class Text(T) : TextView!(T)
                 these methods. This can be useful when wrapping an array
                 "temporarily" with a stack-based Text.
 
-                Also resets the curent selection to null           
+                Also resets the curent selection to null
 
         ***********************************************************************/
 
@@ -530,7 +539,7 @@ class Text(T) : TextView!(T)
         }
 
         /***********************************************************************
-        
+
                 Return a search iterator for a given pattern. The iterator
                 sets the current text selection as appropriate. For example:
                 ---
@@ -685,17 +694,29 @@ class Text(T) : TextView!(T)
         {
                 uint emit (T[] s)
                 {
-                        append (s);
-                        return s.length;
+                    append (s);
+                    return s.length;
                 }
 
-                LayoutT.instance.convert (&emit, _arguments, _argptr, format);
+                version (DigitalMarsX64)
+                {
+                    va_list ap;
+
+                    va_start(ap, __va_argsave);
+
+                    scope(exit) va_end(ap);
+
+                    LayoutT.instance.convert (&emit, _arguments, ap, format);
+                }
+                else
+                    LayoutT.instance.convert (&emit, _arguments, _argptr, format);
+
                 return this;
         }
 
         /***********************************************************************
 
-                Append text to this Text
+          Append text to this Text
 
         ***********************************************************************/
 
@@ -735,7 +756,7 @@ class Text(T) : TextView!(T)
                 deprecated: use format() instead
 
         ***********************************************************************/
-        
+
         deprecated final Text append (int v, T[] fmt = null)
         {
                 return append (cast(long) v, fmt);
@@ -780,11 +801,11 @@ class Text(T) : TextView!(T)
         final Text append (InputStream source)
         {
                 T[8192/T.sizeof] tmp = void;
-                while (true) 
+                while (true)
                       {
-                      auto len = source.read (tmp); 
-                      if (len is source.Eof) 
-                          break; 
+                      auto len = source.read (tmp);
+                      if (len is source.Eof)
+                          break;
 
                       // check to ensure UTF conversion is ok
                       assert ((len & (T.sizeof-1)) is 0);
@@ -1635,7 +1656,7 @@ class UniText
 *******************************************************************************/
 
 debug (UnitTest)
-{       
+{
         import tango.io.device.Array;
 
         //void main() {}

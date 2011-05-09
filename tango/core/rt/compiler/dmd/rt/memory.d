@@ -109,6 +109,15 @@ extern (C) void* rt_stackTop()
             ret;
         }
     }
+    else version( D_InlineAsm_X86_64 )
+    {
+        asm
+        {
+            naked;
+            mov RAX, RSP;
+            ret;
+        }
+    }
     else
     {
             static assert( false, "Architecture not supported." );
@@ -155,7 +164,7 @@ private
         extern int _end;
         }
     }
-    
+
     version (Solaris)
     {
         extern (C)

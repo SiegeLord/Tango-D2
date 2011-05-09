@@ -47,6 +47,11 @@ class TypeInfo_As : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (short[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (short[]).sizeof;
@@ -60,6 +65,13 @@ class TypeInfo_As : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(short);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(size_t);
+        arg2 = typeid(void*);
+        return 0;
     }
 }
 

@@ -76,6 +76,11 @@ class TypeInfo_Af : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (float[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (float[]).sizeof;
@@ -89,6 +94,11 @@ class TypeInfo_Af : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(float);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }
 

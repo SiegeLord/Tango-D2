@@ -48,6 +48,11 @@ class TypeInfo_Ag : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (byte[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (byte[]).sizeof;
@@ -132,5 +137,10 @@ class TypeInfo_Aa : TypeInfo_Ag
     override TypeInfo next()
     {
         return typeid(char);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }

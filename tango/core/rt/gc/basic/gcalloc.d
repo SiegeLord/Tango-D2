@@ -115,9 +115,13 @@ static if (is(typeof(VirtualAlloc))) // version (GC_Use_Alloc_Win32)
 }
 else static if (is(typeof(mmap)))  // else version (GC_Use_Alloc_MMap)
 {
+    debug(PRINTF) import tango.stdc.stdio: printf;
+
+
     void *os_mem_map(size_t nbytes)
     {   void *p;
 
+        debug(PRINTF) printf("mmap alloc of %p bytes\n", nbytes);
         p = mmap(null, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
         return (p == MAP_FAILED) ? null : p;
     }

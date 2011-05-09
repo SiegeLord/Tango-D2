@@ -72,16 +72,16 @@ alias Exception.TraceInfo function( void* ptr = null ) TraceHandler;
 /// Builds a backtrace of addresses, the addresses are addresses of the *next* instruction,
 /// *return* addresses, the most likely the calling instruction is the one before them
 /// (stack top excluded.)
-extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOut,size_t*traceBuf,size_t bufLength,int *flags){
-    if (addrBacktraceFnc !is null){
+extern(C) size_t rt_addrBacktrace(TraceContext* context, TraceContext *contextOut,size_t*traceBuf,size_t bufLength,int *flags)
+{
+    if (addrBacktraceFnc !is null)
         return addrBacktraceFnc(context,contextOut,traceBuf,bufLength,flags);
-    } else {
+    else
         return 0;
-    }
 }
 
 /// Tries to sybolize a frame information, this should try to build the best
-/// backtrace information, if possible finding the calling context, thus 
+/// backtrace information, if possible finding the calling context, thus
 /// if fInfo.exactAddress is false the address might be changed to the one preceding it
 /// returns true if it managed to at least find the function name.
 extern(C) bool rt_symbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext* context,char[]buf){
@@ -141,7 +141,8 @@ enum AddrPrecision{
 }
 
 /// Basic class that represents a stacktrace.
-class BasicTraceInfo: Exception.TraceInfo{
+class BasicTraceInfo: Exception.TraceInfo
+{
     size_t[] traceAddresses;
     size_t[128] traceBuf;
     AddrPrecision addrPrecision;
@@ -159,7 +160,8 @@ class BasicTraceInfo: Exception.TraceInfo{
         this.addrPrecision=addrPrecision;
     }
     /// Takes a stacktrace.
-    void trace(TraceContext *contextIn=null,int skipFrames=0){
+    void trace(TraceContext *contextIn=null,int skipFrames=0)
+    {
         int flags;
         size_t nFrames=rt_addrBacktrace(contextIn,&context,traceBuf.ptr,traceBuf.length,&flags);
         traceAddresses=traceBuf[skipFrames..nFrames];
@@ -178,7 +180,7 @@ class BasicTraceInfo: Exception.TraceInfo{
             fInfo.iframe=cast(ptrdiff_t)iframe;
             fInfo.exactAddress=(addrPrecision & 2) || (iframe==0 && (addrPrecision & 1));
             rt_symbolizeFrameInfo(fInfo,&context,buf);
-            
+
             auto r= fInfo.func in internalFuncs;
             fInfo.internalFunction |= (r !is null);
             fInfo.func = demangler.demangle(fInfo.func,buf2);
@@ -211,16 +213,24 @@ version(LibCBacktrace){
     extern(C)int backtrace(void**,int);
 }
 
+
+
 /// Default (tango given) backtrace function.
-size_t defaultAddrBacktrace(TraceContext* context,TraceContext*contextOut,
-    size_t*traceBuf,size_t length,int*flags){
-    version(LibCBacktrace){
+size_t defaultAddrBacktrace(TraceContext* context, TraceContext*contextOut,
+    size_t*traceBuf,size_t length,int*flags)
+{
+    version(LibCBacktrace)
+    {
         //if (context!is null) return 0; // now it just gives a local trace, uncomment & skip?
         *flags=AddrPrecision.TopExact;
         return cast(size_t)backtrace(cast(void**)traceBuf,length);
-    } else version (Windows){
+    }
+    else version (Windows)
+    {
         return winAddrBacktrace(context,contextOut,traceBuf,length,flags);
-    } else {
+    }
+    else
+    {
         return 0;
     }
 }
@@ -308,14 +318,18 @@ bool defaultSymbolizeFrameInfo(ref Exception.FrameInfo fInfo,TraceContext *conte
 }
 
 /// Function that generates a trace (handler compatible with old TraceInfo.)
-Exception.TraceInfo basicTracer( void* ptr = null ){
+Exception.TraceInfo basicTracer( void* ptr = null )
+{
     BasicTraceInfo res;
-    try{
-        version(CatchRecursiveTracing){
+    try
+    {
+        version(CatchRecursiveTracing)
+        {
             recursiveStackTraces.val=recursiveStackTraces.val+1;
             scope(exit) recursiveStackTraces.val=recursiveStackTraces.val-1;
             // printf("tracer %d\n",recursiveStackTraces.val);
-            if (recursiveStackTraces.val>10) {
+            if (recursiveStackTraces.val>10)
+            {
                 Runtime.console.stderr("hit maximum recursive tracing (tracer asserting...?)\n");
                 abort();
                 return null;
@@ -323,12 +337,16 @@ Exception.TraceInfo basicTracer( void* ptr = null ){
         }
         res=new BasicTraceInfo();
         res.trace(cast(TraceContext*)ptr);
-    } catch (Exception e){
+    }
+    catch (Exception e)
+    {
         Runtime.console.stderr("tracer got exception:\n");
         Runtime.console.stderr(e.msg);
         e.writeOut((char[]s){ Runtime.console.stderr(s); });
         Runtime.console.stderr("\n");
-    } catch (Object o){
+    }
+    catch (Object o)
+    {
         Runtime.console.stderr("tracer got object exception:\n");
         Runtime.console.stderr(o.toString());
         Runtime.console.stderr("\n");
@@ -381,7 +399,7 @@ version(Posix){
     }
 
     sigaction_t fault_action;
-        
+
     void setupSegfaultTracer(){
         //use an alternative stack; this is useful when infinite recursion
         //  triggers a SIGSEGV
@@ -399,7 +417,7 @@ version(Posix){
             sigaction(sig, &fault_action, null);
         }
     }
-    
+
     version(noSegfaultTrace){
     } else {
         static this(){

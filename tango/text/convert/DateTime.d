@@ -5,13 +5,13 @@
         license:        BSD style: $(LICENSE)
 
         version:        Jan 2005: initial release
-                        Mar 2009: extracted from locale, and 
+                        Mar 2009: extracted from locale, and
                                   converted to a struct
 
         author:         John Chapman, Kris, mwarning
 
         Support for formatting date/time values, in a locale-specific
-        manner. See DateTimeLocale.format() for a description on how 
+        manner. See DateTimeLocale.format() for a description on how
         formatting is performed (below).
 
         Reference links:
@@ -41,7 +41,7 @@ version (WithExtensions)
 /******************************************************************************
 
         O/S specifics
-                
+
 ******************************************************************************/
 
 version (Windows)
@@ -55,13 +55,13 @@ else
 /******************************************************************************
 
         The default DateTimeLocale instance
-                
+
 ******************************************************************************/
 
 public DateTimeLocale DateTimeDefault;
 
 static this()
-{       
+{
         DateTimeDefault = DateTimeLocale.create;
 version (WithExtensions)
         {
@@ -78,7 +78,7 @@ version (WithExtensions)
 ******************************************************************************/
 
 struct DateTimeLocale
-{       
+{
         static char[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
         static char[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
         static char[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
@@ -108,14 +108,14 @@ struct DateTimeLocale
 
         /**********************************************************************
 
-                Format the given Time value into the provided output, 
+                Format the given Time value into the provided output,
                 using the specified layout. The layout can be a generic
                 variant or a custom one, where generics are indicated
                 via a single character:
-                
+
                 <pre>
                 "t" = 7:04
-                "T" = 7:04:02 PM 
+                "T" = 7:04:02 PM
                 "d" = 3/30/2009
                 "D" = Monday, March 30, 2009
                 "f" = Monday, March 30, 2009 7:04 PM
@@ -129,30 +129,30 @@ struct DateTimeLocale
                 "s" = 2009-03-30T19:04:02
                 "u" = 2009-03-30 19:04:02Z
                 </pre>
-        
-                For the US locale, these generic layouts are expanded in the 
+
+                For the US locale, these generic layouts are expanded in the
                 following manner:
-                
+
                 <pre>
-                "t" = "h:mm" 
+                "t" = "h:mm"
                 "T" = "h:mm:ss tt"
-                "d" = "M/d/yyyy"  
-                "D" = "dddd, MMMM d, yyyy" 
+                "d" = "M/d/yyyy"
+                "D" = "dddd, MMMM d, yyyy"
                 "f" = "dddd, MMMM d, yyyy h:mm tt"
                 "F" = "dddd, MMMM d, yyyy h:mm:ss tt"
                 "g" = "M/d/yyyy h:mm tt"
                 "G" = "M/d/yyyy h:mm:ss tt"
                 "y"
-                "Y" = "MMMM, yyyy"        
+                "Y" = "MMMM, yyyy"
                 "r"
                 "R" = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'"
-                "s" = "yyyy'-'MM'-'dd'T'HH':'mm':'ss"      
-                "u" = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'"   
+                "s" = "yyyy'-'MM'-'dd'T'HH':'mm':'ss"
+                "u" = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'"
                 </pre>
 
-                Custom layouts are constructed using a combination of the 
-                character codes indicated on the right, above. For example, 
-                a layout of "dddd, dd MMM yyyy HH':'mm':'ss zzzz" will emit 
+                Custom layouts are constructed using a combination of the
+                character codes indicated on the right, above. For example,
+                a layout of "dddd, dd MMM yyyy HH':'mm':'ss zzzz" will emit
                 something like this:
                 ---
                 Monday, 30 Mar 2009 19:04:02 -08:00
@@ -181,12 +181,12 @@ struct DateTimeLocale
         {
                 // default to general format
                 if (layout.length is 0)
-                    layout = "G"; 
+                    layout = "G";
 
                 // might be one of our shortcuts
-                if (layout.length is 1) 
+                if (layout.length is 1)
                     layout = expandKnownFormat (layout);
-                
+
                 auto res=Result(output);
                 return formatCustom (res, dateTime, layout);
         }
@@ -234,7 +234,7 @@ struct DateTimeLocale
 
         /**********************************************************************
 
-                Return a short day name 
+                Return a short day name
 
         **********************************************************************/
 
@@ -253,7 +253,7 @@ struct DateTimeLocale
         {
                 return dayNames [cast(int) dayOfWeek];
         }
-                       
+
         /**********************************************************************
 
                 Return a short month name
@@ -288,7 +288,7 @@ version (Windows)
         **********************************************************************/
 
         static DateTimeLocale create ()
-        {       
+        {
                 static char[] toString (char[] dst, LCID id, LCTYPE type)
                 {
                         wchar[256] wide = void;
@@ -298,7 +298,7 @@ version (Windows)
                            {
                            GetLocaleInfoW (id, type, wide.ptr, wide.length);
                            len = WideCharToMultiByte (CP_UTF8, 0, wide.ptr, len-1,
-                                                      cast(PCHAR)dst.ptr, dst.length, 
+                                                      cast(PCHAR)dst.ptr, dst.length,
                                                       null, null);
                            return dst [0..len].dup;
                            }
@@ -329,7 +329,7 @@ version (Windows)
                 dt.shortDatePattern = toString (tmp, lcid, LOCALE_SSHORTDATE);
                 dt.yearMonthPattern = toString (tmp, lcid, LOCALE_SYEARMONTH);
                 dt.longTimePattern  = toString (tmp, lcid, LOCALE_STIMEFORMAT);
-                         
+
                 // synthesize a short time
                 auto s = dt.shortTimePattern = dt.longTimePattern;
                 for (auto i=s.length; i--;)
@@ -339,11 +339,11 @@ version (Windows)
                         break;
                         }
 
-                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~ 
+                dt.fullDateTimePattern = dt.longDatePattern ~ " " ~
                                          dt.longTimePattern;
-                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~ 
+                dt.generalLongTimePattern = dt.shortDatePattern ~ " " ~
                                             dt.longTimePattern;
-                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~ 
+                dt.generalShortTimePattern = dt.shortDatePattern ~ " " ~
                                              dt.shortTimePattern;
                 return dt;
         }
@@ -414,7 +414,7 @@ else
                 dt.timeSeparator = extractSeparator(dt.longTimePattern, ":");
 
                 //extract shortTimePattern from longTimePattern
-                for (auto i = dt.longTimePattern.length; i--;) 
+                for (auto i = dt.longTimePattern.length; i--;)
                     {
                     if (dt.longTimePattern[i] == dt.timeSeparator[$-1])
                        {
@@ -472,7 +472,7 @@ else
                     c = fmt[i];
                     switch (c)
                            {
-                           case 'a': //locale's abbreviated weekday name. 
+                           case 'a': //locale's abbreviated weekday name.
                                 put("ddd"); //The abbreviated name of the day of the week,
                                 break;
 
@@ -493,7 +493,7 @@ else
                                 //days will have a leading zero.
                                 break;
 
-                           case 'D': //same as %m/%d/%y. 
+                           case 'D': //same as %m/%d/%y.
                                 put("MM/dd/yy");
                                 break;
 
@@ -503,7 +503,7 @@ else
                                 //will not have a leading zero.
                                 break;
 
-                           case 'h': //same as %b. 
+                           case 'h': //same as %b.
                                 put("MMM");
                                 break;
 
@@ -566,12 +566,12 @@ else
                                 //(Monday as the first day of the week) as a decimal number [01,53].
                                 //If the week containing 1 January has four or more days
                                 //in the new year, then it is considered week 1.
-                                //Otherwise, it is the last week of the previous year, and the next week is week 1. 
+                                //Otherwise, it is the last week of the previous year, and the next week is week 1.
                            case 'w': //weekday as a decimal number [0,6], with 0 representing Sunday
                            case 'W': //week number of the year (Monday as the first day of the week)
                                 //as a decimal number [00,53].
                                 //All days in a new year preceding the first Monday
-                                //are considered to be in week 0. 
+                                //are considered to be in week 0.
                            case 'x': //locale's appropriate date representation
                            case 'X': //locale's appropriate time representation
                            case 'c': //locale's appropriate date and time representation
@@ -670,7 +670,7 @@ else
                 uint            len,
                                 doy,
                                 dow,
-                                era;        
+                                era;
                 uint            day,
                                 year,
                                 month;
@@ -685,11 +685,11 @@ else
                 while (index < format.length)
                       {
                       char c = format[index];
-                      
+
                       switch (c)
                              {
                              // day
-                             case 'd':  
+                             case 'd':
                                   len = parseRepeat (format, index, c);
                                   if (len <= 2)
                                       result ~= formatInt (tmp, day, len);
@@ -704,7 +704,7 @@ else
                                 if(len > num.length)
                                 {
                                     result ~= num;
-                                    
+
                                     // append '0's
                                     static char[8] zeros = '0';
                                     auto zc = len - num.length;
@@ -729,7 +729,7 @@ else
                                 break;
 
                              // month
-                             case 'M':  
+                             case 'M':
                                   len = parseRepeat (format, index, c);
                                   if (len <= 2)
                                       result ~= formatInt (tmp, month, len);
@@ -738,7 +738,7 @@ else
                                   break;
 
                              // year
-                             case 'y':  
+                             case 'y':
                                   len = parseRepeat (format, index, c);
 
                                   // Two-digit years for Japanese
@@ -754,7 +754,7 @@ else
                                   break;
 
                              // hour (12-hour clock)
-                             case 'h':  
+                             case 'h':
                                   len = parseRepeat (format, index, c);
                                   int hour = time.hours % 12;
                                   if (hour is 0)
@@ -763,25 +763,25 @@ else
                                   break;
 
                              // hour (24-hour clock)
-                             case 'H':  
+                             case 'H':
                                   len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.hours, len);
                                   break;
 
                              // minute
-                             case 'm':  
+                             case 'm':
                                   len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.minutes, len);
                                   break;
 
                              // second
-                             case 's':  
+                             case 's':
                                   len = parseRepeat (format, index, c);
                                   result ~= formatInt (tmp, time.seconds, len);
                                   break;
 
                              // AM/PM
-                             case 't':  
+                             case 't':
                                   len = parseRepeat (format, index, c);
                                   if (len is 1)
                                      {
@@ -801,7 +801,7 @@ else
                                   break;
 
                              // timezone offset
-                             case 'z':  
+                             case 'z':
                                   len = parseRepeat (format, index, c);
                                   auto minutes = cast(int) (WallClock.zone.minutes);
                                   if (minutes < 0)
@@ -827,20 +827,20 @@ else
                                   break;
 
                              // time separator
-                             case ':':  
+                             case ':':
                                   len = 1;
                                   result ~= timeSeparator;
                                   break;
 
                              // date separator
-                             case '/':  
+                             case '/':
                                   len = 1;
                                   result ~= dateSeparator;
                                   break;
 
                              // string literal
-                             case '\"':  
-                             case '\'':  
+                             case '\"':
+                             case '\'':
                                   len = parseQuote (result, format, index);
                                   break;
 
@@ -946,18 +946,18 @@ else
 }
 
 /******************************************************************************
-        
+
         An english/usa locale
         Used as generic DateTimeLocale.
 
 ******************************************************************************/
 
-private DateTimeLocale EngUS = 
+private DateTimeLocale EngUS =
 {
         shortDatePattern                : "M/d/yyyy",
-        shortTimePattern                : "h:mm",       
+        shortTimePattern                : "h:mm",
         longDatePattern                 : "dddd, MMMM d, yyyy",
-        longTimePattern                 : "h:mm:ss tt",        
+        longTimePattern                 : "h:mm:ss tt",
         fullDateTimePattern             : "dddd, MMMM d, yyyy h:mm:ss tt",
         generalShortTimePattern         : "M/d/yyyy h:mm",
         generalLongTimePattern          : "M/d/yyyy h:mm:ss tt",
@@ -967,13 +967,13 @@ private DateTimeLocale EngUS =
         pmDesignator                    : "PM",
         timeSeparator                   : ":",
         dateSeparator                   : "/",
-        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday", 
+        dayNames                        : ["Sunday", "Monday", "Tuesday", "Wednesday",
                                            "Thursday", "Friday", "Saturday"],
-        monthNames                      : ["January", "February", "March", "April", 
-                                           "May", "June", "July", "August", "September", 
+        monthNames                      : ["January", "February", "March", "April",
+                                           "May", "June", "July", "August", "September",
                                            "October" "November", "December"],
-        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],    
-        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+        abbreviatedDayNames             : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        abbreviatedMonthNames           : ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                            "Jul", "Aug", "Sep", "Oct" "Nov", "Dec"],
 };
 

@@ -29,13 +29,13 @@ version (Posix)
     {
         extern (C) char*** _NSGetEnviron();
         private char** environ;
-        
+
         static this ()
         {
             environ = *_NSGetEnviron();
         }
     }
-    
+
     else
         private extern (C) extern char** environ;
 }
@@ -125,7 +125,7 @@ enum Redirect
  * To stop a running process you must use kill() method. If you do this you
  * cannot call the wait() method. Once the kill() method returns the process
  * will be already dead.
- * 
+ *
  * After calling either wait() or kill(), and no more data is expected on the
  * pipes, you should call close() as this will clean the pipes. Not doing this
  * may lead to a depletion of the available file descriptors for the main
@@ -643,7 +643,7 @@ class Process
      * the other handle takes precedent.  It is illegal to specify both
      * redirection from stdout to stderr and from stderr to stdout.  If both
      * of these are specified, an exception is thrown.
-     * 
+     *
      * If redirected to a pipe, once the process is executed successfully, its
      * input and output can be manipulated through the stdin, stdout and
      * stderr member PipeConduit's.  Note that if you redirect for example
@@ -1015,7 +1015,7 @@ class Process
                     startup.hStdOutput = startup.hStdError;
                 }
             }
-            
+
             // close the unused end of the pipes on scope exit
             scope(exit)
             {
@@ -1031,7 +1031,7 @@ class Process
             // Set up members of the PROCESS_INFORMATION structure.
             memset(_info, '\0', PROCESS_INFORMATION.sizeof);
 
-           /* 
+           /*
             * quotes and backslashes in the command line are handled very
             * strangely by Windows.  Through trial and error, I believe that
             * these are the rules:
@@ -1100,7 +1100,7 @@ class Process
                 // we must double all the backslashes, or they will fall under
                 // rule 1 and be halved.
                 //
-                
+
                 if(nextarg[$-1] == '\\')
                 {
                   //
@@ -1267,7 +1267,8 @@ class Process
                     // Replace stdin with the "read" pipe
                     if(pin !is null)
                     {
-                        dup2(pin.source.fileHandle(), STDIN_FILENO);
+                        if (dup2(pin.source.fileHandle(), STDIN_FILENO) < 0)
+                            throw new Exception("dup2 < 0");
                         pin.sink().close();
                         pin.source.close();
                     }
@@ -1275,7 +1276,8 @@ class Process
                     // Replace stdout with the "write" pipe
                     if(pout !is null)
                     {
-                        dup2(pout.sink.fileHandle(), STDOUT_FILENO);
+                        if (dup2(pout.sink.fileHandle(), STDOUT_FILENO) < 0)
+                            throw new Exception("dup2 < 0");
                         pout.source.close();
                         pout.sink.close();
                     }
@@ -1283,7 +1285,8 @@ class Process
                     // Replace stderr with the "write" pipe
                     if(perr !is null)
                     {
-                        dup2(perr.sink.fileHandle(), STDERR_FILENO);
+                        if (dup2(perr.sink.fileHandle(), STDERR_FILENO) < 0)
+                            throw new Exception("dup2 < 0");
                         perr.source.close();
                         perr.sink.close();
                     }
@@ -1292,12 +1295,14 @@ class Process
                     // versa
                     if(_redirect & Redirect.OutputToError)
                     {
-                        dup2(STDERR_FILENO, STDOUT_FILENO);
+                        if(dup2(STDERR_FILENO, STDOUT_FILENO) < 0)
+                            throw new Exception("dup2 < 0");
                     }
 
                     if(_redirect & Redirect.ErrorToOutput)
                     {
-                        dup2(STDOUT_FILENO, STDERR_FILENO);
+                        if(dup2(STDOUT_FILENO, STDERR_FILENO) < 0)
+                            throw new Exception("dup2 < 0");
                     }
 
                     // We close the unneeded part of the execv*() notification pipe
@@ -1339,6 +1344,7 @@ class Process
                             }
                             exit(errno);
                         }
+                        exit(errno);
                     }
                     else
                     {
@@ -1578,7 +1584,7 @@ class Process
      * Killing the process does not clean the attached pipes as the parent
      * process may still want/need the remaining content. However, it is
      * recommended to call close() on the process when it is no longer needed
-     * as this will clean the pipes. 
+     * as this will clean the pipes.
      */
     public void kill()
     {
@@ -1926,25 +1932,27 @@ class Process
             {
                 char[][] pathList = delimit(str[0 .. strlen(str)], ":");
 
+                char[] path_buf;
+
                 foreach (path; pathList)
                 {
-                    if (path[path.length - 1] != FileConst.PathSeparatorChar)
+                    if (path[$-1] != FileConst.PathSeparatorChar)
                     {
-                        path ~= FileConst.PathSeparatorChar;
+                        path_buf.length = path.length + 1 + filename.length + 1;
+                        path_buf[] = path ~ FileConst.PathSeparatorChar ~ filename ~ '\0';
+                    }
+                    else
+                    {
+                        path_buf.length = path.length +filename.length + 1;
+                        path_buf[] = path ~ filename ~ '\0';
                     }
 
-                    debug (Process)
-                        Stdout.formatln("Trying execution of '{0}' in directory '{1}'",
-                                        filename, path);
+                    rc = execve(path_buf.ptr, argv.ptr, (envp.length == 0 ? environ : envp.ptr));
 
-                    path ~= filename;
-                    path ~= '\0';
-
-                    rc = execve(path.ptr, argv.ptr, (envp.length == 0 ? environ : envp.ptr));
                     // If the process execution failed because of an error
                     // other than ENOENT (No such file or directory) we
                     // abort the loop.
-                    if (rc == -1 && errno != ENOENT)
+                    if (rc == -1 && SysError.lastCode !is ENOENT)
                     {
                         break;
                     }
@@ -2030,9 +2038,12 @@ private char[] format (char[] msg, int value)
     return msg ~ Integer.format (tmp, value);
 }
 
-
+extern (C) uint sleep (uint s);
 debug (UnitTest)
 {
+    import tango.io.Stdout;
+    import tango.stdc.stdio : printf, fflush, stdout;
+
     unittest
     {
         char[] message = "hello world";
@@ -2047,15 +2058,19 @@ debug (UnitTest)
         try
         {
             auto p = new Process(command, null);
-
+            Stdout.flush;
             p.execute();
-            char[1024] buffer;
+            char[255] buffer;
+
             auto nread = p.stdout.read(buffer);
+
             assert(nread != p.stdout.Eof);
+
             version(Windows)
                 assert(buffer[0..nread] == message ~ "\r\n");
             else
                 assert(buffer[0..nread] == message ~ "\n");
+
             nread = p.stdout.read(buffer);
             assert(nread == p.stdout.Eof);
 

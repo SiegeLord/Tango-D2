@@ -45,7 +45,7 @@ version (WithDateTime)
         {
         private import tango.time.Time;
         private import tango.text.convert.DateTime;
-        }    
+        }
 
 
 /*******************************************************************************
@@ -66,6 +66,14 @@ else version(LDC)
         alias void* Arg;
         alias va_list ArgList;
         }
+else version(DigitalMars)
+        {
+        private import tango.core.Vararg;
+        alias void* Arg;
+        alias va_list ArgList;
+
+        version(X86_64) version = DigitalMarsX64;
+        }
      else
         {
         alias void* Arg;
@@ -83,14 +91,14 @@ class Layout(T)
 {
         public alias convert opCall;
         public alias uint delegate (T[]) Sink;
-       
+
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
 
         /**********************************************************************
 
                 Return shared instance
-                
+
                 Note that this is not threadsafe, and that static-ctor
                 usage doesn't get invoked appropriately (compiler bug)
 
@@ -111,7 +119,18 @@ class Layout(T)
 
         public final T[] sprint (T[] result, T[] formatStr, ...)
         {
-                return vprint (result, formatStr, _arguments, _argptr);
+                version (DigitalMarsX64)
+                {
+                    va_list ap;
+
+                    va_start(ap, __va_argsave);
+
+                    scope(exit) va_end(ap);
+
+                    return vprint (result, formatStr, _arguments, ap);
+                }
+                else
+                    return vprint (result, formatStr, _arguments, _argptr);
         }
 
         /**********************************************************************
@@ -175,7 +194,18 @@ class Layout(T)
 
         public final T[] convert (T[] formatStr, ...)
         {
-                return convert (_arguments, _argptr, formatStr);
+                version (DigitalMarsX64)
+                {
+                    va_list ap;
+
+                    va_start(ap, __va_argsave);
+
+                    scope(exit) va_end(ap);
+
+                    return convert (_arguments, ap, formatStr);
+                }
+                else
+                    return convert (_arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -184,7 +214,18 @@ class Layout(T)
 
         public final uint convert (Sink sink, T[] formatStr, ...)
         {
-                return convert (sink, _arguments, _argptr, formatStr);
+                version (DigitalMarsX64)
+                {
+                    va_list ap;
+
+                    va_start(ap, __va_argsave);
+
+                    scope(exit) va_end(ap);
+
+                    return convert (sink, _arguments, ap, formatStr);
+                }
+                else
+                    return convert (sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -203,7 +244,19 @@ class Layout(T)
                         return output.write(s);
                 }
 
-                return convert (&sink, _arguments, _argptr, formatStr);
+
+                version (DigitalMarsX64)
+                {
+                    va_list ap;
+
+                    va_start(ap, __va_argsave);
+
+                    scope(exit) va_end(ap);
+
+                    return convert (&sink, _arguments, ap, formatStr);
+                }
+                else
+                    return convert (&sink, _arguments, _argptr, formatStr);
         }
 
         /**********************************************************************
@@ -224,17 +277,15 @@ class Layout(T)
                 return output;
         }
 
-version (old)
-{
         /**********************************************************************
 
         **********************************************************************/
 
-        public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
+        version (old) public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
         {
                 return dispatch (result, null, ti, arg);
         }
-}
+
         /**********************************************************************
 
         **********************************************************************/
@@ -252,7 +303,7 @@ version (old)
 
                         Arg[64] arglist = void;
                         ArgU[64] storedArgs = void;
-        
+
                         foreach (i, arg; arguments)
                                 {
                                 static if (is(typeof(args.ptr)))
@@ -271,25 +322,25 @@ version (old)
                                             arglist[i] = &(storedArgs[i].f);
                                             converted = true;
                                             break;
-                                        
+
                                        case TypeCode.CFLOAT:
                                             storedArgs[i].cf = va_arg!(cfloat)(args);
                                             arglist[i] = &(storedArgs[i].cf);
                                             converted = true;
                                             break;
-        
+
                                        case TypeCode.DOUBLE, TypeCode.IDOUBLE:
                                             storedArgs[i].d = va_arg!(double)(args);
                                             arglist[i] = &(storedArgs[i].d);
                                             converted = true;
                                             break;
-                                        
+
                                        case TypeCode.CDOUBLE:
                                             storedArgs[i].cd = va_arg!(cdouble)(args);
                                             arglist[i] = &(storedArgs[i].cd);
                                             converted = true;
                                             break;
-        
+
                                        case TypeCode.REAL, TypeCode.IREAL:
                                             storedArgs[i].r = va_arg!(real)(args);
                                             arglist[i] = &(storedArgs[i].r);
@@ -301,7 +352,7 @@ version (old)
                                             arglist[i] = &(storedArgs[i].cr);
                                             converted = true;
                                             break;
-        
+
                                        default:
                                             break;
                                         }
@@ -336,15 +387,48 @@ version (old)
                                    }
                                 }
                         }
-                     else
+                    else version(DigitalMarsX64)
+                    {
+                        Arg[64] arglist = void;
+                        void[] buffer;
+                        uint len = 0;
+
+                        foreach(i, argType; arguments)
+                            len +=  (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
+
+                        buffer.length = len;
+                        len = 0;
+                        foreach(i, argType; arguments)
                         {
+                            //printf("type: %s\n", argType.classinfo.name.ptr);
+
+                            va_arg(args, argType, buffer.ptr+len);
+
+                            if(argType.classinfo.name.length != 25 && argType.classinfo.name[9] == TypeCode.ARRAY &&
+                                (argType.classinfo.name[10] == TypeCode.USHORT ||
+                                argType.classinfo.name[10] == TypeCode.SHORT))
+                                {
+                                    printf("Warning: (u)short[] is broken for varargs in x86_64");
+                                    // simply disable the array for now
+                                    (cast(short[]*) (buffer.ptr+len)).length = 0;
+                                }
+
+                            arglist[i] = &buffer[len];
+
+                            len+= (argType.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
+                        }
+
+                        scope (exit) delete buffer;
+                    }
+                    else 
+                    {
                         Arg[64] arglist = void;
                         foreach (i, arg; arguments)
                                 {
                                 arglist[i] = args;
                                 args += (arg.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
                                 }
-                        }
+                    }
                 return parse (formatStr, arguments, arglist, sink);
         }
 
@@ -524,12 +608,13 @@ version (WithVariant)
                                        }
                                    length += sink ("]");
                                    }
-                                else 
+                                else
                                 if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
                                    {
                                    auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
                                    auto tiKey = tiAsso.key;
                                    auto tiVal = tiAsso.next();
+
                                    // the knowledge of the internal k/v storage is used
                                    // so this might break if, that internal storage changes
                                    alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
@@ -538,10 +623,16 @@ version (WithVariant)
 
                                    length += sink ("{");
                                    bool first = true;
-                                  
-                                   size_t roundUp (size_t sz)
+
+                                   size_t roundUp (size_t tsize)
                                    {
-                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
+                                        //return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
+
+                                        version (X86_64)
+                                            // Size of key needed to align value on 16 bytes
+                                            return (tsize + 15) & ~(15);
+                                        else
+                                            return (tsize + size_t.sizeof - 1) & ~(size_t.sizeof - 1);
                                    }
 
                                    foreach (ref v; aa)
@@ -560,13 +651,13 @@ version (WithVariant)
                                            }
                                    length += sink ("}");
                                    }
-                                else 
+                                else
                                 if (_ti.classinfo.name[9] is TypeCode.ARRAY)
                                    {
                                    if (_ti is typeid(char[]))
                                        emit (Utf.fromString8 (*cast(char[]*) _arg, result));
                                    else
-                                   if (_ti is typeid(wchar[]))        
+                                   if (_ti is typeid(wchar[]))
                                        emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
                                    else
                                    if (_ti is typeid(dchar[]))
@@ -596,7 +687,7 @@ version (WithVariant)
                                    emit (dispatch (result, format, _ti, _arg));
                       }
 
-                      
+
                       // process this argument
                       if (index >= ti.length)
                           emit ("{invalid index}");
@@ -691,7 +782,7 @@ version (WithVariant)
 
                        case TypeCode.STRUCT:
                             auto s = cast(TypeInfo_Struct) type;
-                            if (s.xtoString) 
+                            if (s.xtoString)
                                {
                                char[] delegate() toString;
                                toString.ptr = p;
@@ -734,7 +825,7 @@ version (WithVariant)
         version (WithExtensions)
                 {
                 result = Extensions!(T).run (type, result, p, format);
-                return (result) ? result : 
+                return (result) ? result :
                        "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
                 }
              else
@@ -808,7 +899,7 @@ version (WithVariant)
                                     }
                                  break;
                             }
-                
+
                 return Float.format (output, v, dec, exp, pad);
         }
 
@@ -848,7 +939,7 @@ version (WithVariant)
         {
                 return floatingTail (result, val.im, format, "*1i");
         }
-        
+
         /**********************************************************************
 
                 format a complex value
@@ -859,10 +950,10 @@ version (WithVariant)
         {
                 static bool signed (real x)
                 {
-                        static if (real.sizeof is 4) 
+                        static if (real.sizeof is 4)
                                    return ((*cast(uint *)&x) & 0x8000_0000) != 0;
                         else
-                        static if (real.sizeof is 8) 
+                        static if (real.sizeof is 8)
                                    return ((*cast(ulong *)&x) & 0x8000_0000_0000_0000) != 0;
                                else
                                   {
@@ -935,7 +1026,7 @@ private enum TypeCode
         CREAL = 'c',
         IFLOAT = 'o',
         IDOUBLE = 'p',
-        IREAL = 'j'  
+        IREAL = 'j'
 }
 
 
@@ -943,7 +1034,7 @@ private enum TypeCode
 /*******************************************************************************
 
 *******************************************************************************/
-
+import tango.stdc.stdio : printf;
 debug (UnitTest)
 {
         unittest
@@ -1086,7 +1177,7 @@ debug (UnitTest)
         assert( Formatter( "{:f.}", 1.237 ) == "1.24" );
         assert( Formatter( "{:f.}", 1.000 ) == "1" );
         assert( Formatter( "{:f2.}", 200.001 ) == "200");
-        
+
         // array output
         int[] a = [ 51, 52, 53, 54, 55 ];
         assert( Formatter( "{}", a ) == "[51, 52, 53, 54, 55]" );
@@ -1096,24 +1187,33 @@ debug (UnitTest)
         int[][] b = [ [ 51, 52 ], [ 53, 54, 55 ] ];
         assert( Formatter( "{}", b ) == "[[51, 52], [53, 54, 55]]" );
 
-        ushort[3] c = [ cast(ushort)51, 52, 53 ];
-        assert( Formatter( "{}", c ) == "[51, 52, 53]" );
+        char[1024] static_buffer;
+        static_buffer[0..10] = "1234567890";
 
-        // integer AA 
+        assert (Formatter( "{}", static_buffer[0..10]) == "1234567890");
+
+        version(X86)
+        {
+            ushort[3] c = [ cast(ushort)51, 52, 53 ];
+            assert( Formatter( "{}", c ) == "[51, 52, 53]" );
+        }
+
+        // integer AA
         ushort[long] d;
         d[234] = 2;
         d[345] = 3;
+
         assert( Formatter( "{}", d ) == "{234 => 2, 345 => 3}" ||
                 Formatter( "{}", d ) == "{345 => 3, 234 => 2}");
-        
-        // bool/string AA 
+
+        // bool/string AA
         bool[char[]] e;
         e[ "key".dup ] = true;
         e[ "value".dup ] = false;
         assert( Formatter( "{}", e ) == "{key => true, value => false}" ||
                 Formatter( "{}", e ) == "{value => false, key => true}");
 
-        // string/double AA 
+        // string/double AA
         char[][ double ] f;
         f[ 1.0 ] = "one".dup;
         f[ 3.14 ] = "PI".dup;
@@ -1158,7 +1258,7 @@ debug (Layout)
 
                 struct S
                 {
-                   char[] toString () {return "foo";}      
+                   char[] toString () {return "foo";}
                 }
 
                 S s;

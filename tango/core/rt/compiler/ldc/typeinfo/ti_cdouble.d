@@ -44,6 +44,11 @@ class TypeInfo_r : TypeInfo
         return _compare(*cast(cdouble *)p1, *cast(cdouble *)p2);
     }
 
+    override size_t talign()
+    {
+        return cdouble.alignof;
+    }
+
     override size_t tsize()
     {
         return cdouble.sizeof;

@@ -44,6 +44,11 @@ class TypeInfo_q : TypeInfo
         return _compare(*cast(cfloat *)p1, *cast(cfloat *)p2);
     }
 
+    override size_t talign()
+    {
+        return cfloat.alignof;
+    }
+
     override size_t tsize()
     {
         return cfloat.sizeof;

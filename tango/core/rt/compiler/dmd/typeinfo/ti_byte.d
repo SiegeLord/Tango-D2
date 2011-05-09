@@ -22,6 +22,11 @@ class TypeInfo_g : TypeInfo
         return *cast(byte *)p1 - *cast(byte *)p2;
     }
 
+    override size_t talign()
+    {
+        return byte.alignof;
+    }
+
     override size_t tsize()
     {
         return byte.sizeof;

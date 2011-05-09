@@ -43,6 +43,11 @@ class TypeInfo_e : TypeInfo
         return _compare(*cast(real *)p1, *cast(real *)p2);
     }
 
+    override size_t talign()
+    {
+        return real.alignof;
+    }
+
     override size_t tsize()
     {
         return real.sizeof;

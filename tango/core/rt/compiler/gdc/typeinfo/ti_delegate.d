@@ -18,6 +18,11 @@ class TypeInfo_D : TypeInfo
         return *cast(dg *)p1 == *cast(dg *)p2;
     }
 
+    override size_t talign()
+    {
+        return dg.alignof;
+    }
+
     override size_t tsize()
     {
         return dg.sizeof;
@@ -35,5 +40,12 @@ class TypeInfo_D : TypeInfo
     override uint flags()
     {
         return 1;
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        arg1 = typeid(void*);
+        arg2 = typeid(void*);
+        return 0;
     }
 }

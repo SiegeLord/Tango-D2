@@ -48,6 +48,11 @@ class TypeInfo_Al : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (long[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (long[]).sizeof;

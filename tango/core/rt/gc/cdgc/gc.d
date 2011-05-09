@@ -767,11 +767,40 @@ size_t fullcollectshell(bool early = false, bool force_block = false)
     }
     else
     {
-    asm
-    {
-        pushad              ;
-        mov sp[EBP],ESP     ;
-    }
+        version (D_InlineAsm_X86)
+        {
+            asm
+            {
+                pushad              ;
+                mov sp[EBP],ESP     ;
+            }
+        }
+        else version (D_InlineAsm_X86_64)
+        {
+            asm
+            {
+                push RAX ;
+                push RBX ;
+                push RCX ;
+                push RDX ;
+                push RSI ;
+                push RDI ;
+                push RBP ;
+                push R8  ;
+                push R9  ;
+                push R10  ;
+                push R11  ;
+                push R12  ;
+                push R13  ;
+                push R14  ;
+                push R15  ;
+                push EAX ;   // 16 byte align the stack
+            }
+        }
+        else
+        {
+            static assert( false, "Architecture not supported." );
+        }
     }
     result = fullcollect(sp, early, force_block);
     version (GNU)

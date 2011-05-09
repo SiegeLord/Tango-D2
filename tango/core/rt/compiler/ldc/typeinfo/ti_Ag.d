@@ -48,6 +48,11 @@ class TypeInfo_Ag : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (byte[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (byte[]).sizeof;

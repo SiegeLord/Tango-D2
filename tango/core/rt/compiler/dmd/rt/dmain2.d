@@ -16,7 +16,6 @@ private
 
     import tango.stdc.stdlib : malloc, free, exit, EXIT_FAILURE;
     import tango.stdc.string : strlen;
-    import tango.stdc.stdio : printf;
 }
 
 version( Win32 )
@@ -90,12 +89,12 @@ extern (C) bool rt_trapExceptions = true;
 void _d_criticalInit()
 {
     static bool hasBeenCalled;
-    
+
     if (hasBeenCalled)
         return;
-        
+
     hasBeenCalled = true;
-    
+
     version (Posix)
     {
         _STI_monitor_staticctor();
@@ -108,10 +107,10 @@ alias void delegate( Exception ) ExceptionHandler;
 extern (C) bool rt_init( ExceptionHandler dg = null )
 {
     static bool result;
-    
+
     if (result)
         return result;
-    
+
     _d_criticalInit();
 
     try
@@ -145,12 +144,12 @@ extern (C) bool rt_init( ExceptionHandler dg = null )
 void _d_criticalTerm()
 {
     static bool hasBeenCalled;
-    
+
     if (hasBeenCalled)
         return;
-        
+
     hasBeenCalled = true;
-    
+
     version (Posix)
     {
         _STD_critical_term();
@@ -161,14 +160,14 @@ void _d_criticalTerm()
 extern (C) bool rt_term( ExceptionHandler dg = null )
 {
     static bool result;
-    
+
     if (result)
         return result;
-    
+
     try
     {
         _d_isHalting = true;
-        thread_joinAll();        
+        thread_joinAll();
         _moduleDtor();
         gc_term();
         return result = true;
@@ -214,7 +213,7 @@ int main(char[][] args);
 
 version(NoCMain)
 {
-	
+
 }
 else
 {
@@ -253,7 +252,7 @@ extern (C) int main(int argc, char **argv)
 	 */
 	__libc_stack_end = cast(void*)&argv;
     }
-    
+
     version (Posix)
         _d_criticalInit();
 
@@ -314,7 +313,6 @@ extern (C) int main(int argc, char **argv)
             }
             catch (Object o)
             {
-                //fprintf(stderr, "%.*s\n", o.toString());
                 console (o.toString)("\n");
                 result = EXIT_FAILURE;
             }
@@ -343,7 +341,10 @@ extern (C) int main(int argc, char **argv)
     {
         rt_init();
         if (runModuleUnitTests())
+        {
             tryExec(&runMain);
+        }
+
         rt_term();
     }
 
@@ -351,7 +352,7 @@ extern (C) int main(int argc, char **argv)
 
     version (Posix)
         _d_criticalTerm();
-        
+
     return result;
 }
 

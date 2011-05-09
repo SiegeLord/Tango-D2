@@ -75,6 +75,11 @@ class TypeInfo_Ar : TypeInfo_Array
         return 0;
     }
 
+    override size_t talign()
+    {
+        return (cdouble[]).alignof;
+    }
+
     override size_t tsize()
     {
         return (cdouble[]).sizeof;
@@ -88,5 +93,10 @@ class TypeInfo_Ar : TypeInfo_Array
     override TypeInfo next()
     {
         return typeid(cdouble);
+    }
+
+    version (X86_64) override int argTypes(out TypeInfo arg1, out TypeInfo arg2)
+    {
+        return 0;
     }
 }

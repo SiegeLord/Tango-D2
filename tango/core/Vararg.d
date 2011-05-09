@@ -10,10 +10,31 @@
  */
 module tango.core.Vararg;
 
+/**
+
+  Gdc 
+
+
+**/
+
 
 version( GNU )
 {
+    // GDC doesn't need va_start/va_end
+    // If the va_arg template version is used,  
+
     public import std.stdarg;
+
+    version( X86_64 )
+    {
+        alias va_list __va_argsave_t;
+         //__va_argsave_t __va_argsave;
+    }
+
+    // va_start and va_end is not needed for gdc, stubs only exist for eased
+    // cross-compiler programming
+    void va_start(T)( va_list ap, T parmn)   {   }
+    void va_end(va_list ap)    {    }
 }
 else version( LDC )
 {
@@ -21,68 +42,23 @@ else version( LDC )
 }
 else
 {
-    /**
-     * The base vararg list type.
-     */
-    alias void* va_list;
-
-
-    /**
-     * This function initializes the supplied argument pointer for subsequent
-     * use by va_arg and va_end.
-     *
-     * Params:
-     *  ap      = The argument pointer to initialize.
-     *  paramn  = The identifier of the rightmost parameter in the function
-     *            parameter list.
-     */
-    void va_start(T) ( out va_list ap, ref T parmn )
+    version (DigitalMars) version (X86_64) version = DigitalMarsX64;
+    version (X86)
     {
-        ap = cast(va_list) ( cast(void*) &parmn + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
+        alias void* va_list;
+
+        template va_arg(T)
+        {
+            T va_arg(ref va_list _argptr)
+            {
+                T arg = *cast(T*)_argptr;
+                _argptr = _argptr + ((T.sizeof + int.sizeof - 1) & ~(int.sizeof - 1));
+                return arg;
+            }
+        }
     }
-
-    /**
-     * This function returns the next argument in the sequence referenced by
-     * the supplied argument pointer.  The argument pointer will be adjusted
-     * to point to the next arggument in the sequence.
-     *
-     * Params:
-     *  ap  = The argument pointer.
-     *
-     * Returns:
-     *  The next argument in the sequence.  The result is undefined if ap
-     *  does not point to a valid argument.
-     */
-    T va_arg(T) ( ref va_list ap )
+    else
     {
-        T arg = *cast(T*) ap;
-        ap = cast(va_list) ( cast(void*) ap + ( ( T.sizeof + int.sizeof - 1 ) & ~( int.sizeof - 1 ) ) );
-        return arg;
-    }
-
-    /**
-     * This function cleans up any resources allocated by va_start.  It is
-     * currently a no-op and exists mostly for syntax compatibility with
-     * the variadric argument functions for C.
-     *
-     * Params:
-     *  ap  = The argument pointer.
-     */
-    void va_end( va_list ap )
-    {
-
-    }
-
-
-    /**
-     * This function copied the argument pointer src to dst.
-     *
-     * Params:
-     *  src = The source pointer.
-     *  dst = The destination pointer.
-     */
-    void va_copy( out va_list dst, va_list src )
-    {
-        dst = src;
+        public import tango.stdc.stdarg;
     }
 }

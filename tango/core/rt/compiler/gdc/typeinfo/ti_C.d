@@ -62,6 +62,11 @@ class TypeInfo_C : TypeInfo
         return c;
     }
 
+    override size_t talign()
+    {
+        return Object.alignof;
+    }
+
     override size_t tsize()
     {
         return Object.sizeof;

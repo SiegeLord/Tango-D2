@@ -22,6 +22,11 @@ class TypeInfo_t : TypeInfo
         return *cast(ushort *)p1 - *cast(ushort *)p2;
     }
 
+    override size_t talign()
+    {
+        return ushort.alignof;
+    }
+
     override size_t tsize()
     {
         return ushort.sizeof;

@@ -348,6 +348,29 @@ else version( Posix )
             {
                 __builtin_unwind_init();
             }
+            else version ( D_InlineAsm_X86_64 )
+            {
+                asm
+                {
+                    // Not sure what goes here, pushad is invalid in 64 bit code
+                    push RAX ;
+                    push RBX ;
+                    push RCX ;
+                    push RDX ;
+                    push RSI ;
+                    push RDI ;
+                    push RBP ;
+                    push R8  ;
+                    push R9  ;
+                    push R10 ;
+                    push R11 ;
+                    push R12 ;
+                    push R13 ;
+                    push R14 ;
+                    push R15 ;
+                    push EAX ;   // 16 byte align the stack
+                }
+            }
             else
             {
                 static assert( false, "Architecture not supported." );
@@ -410,6 +433,29 @@ else version( Posix )
             else version( GNU )
             {
                 // registers will be popped automatically
+            }
+            else version ( D_InlineAsm_X86_64 )
+            {
+                asm
+                {
+                    // Not sure what goes here, popad is invalid in 64 bit code
+                    pop EAX ;   // 16 byte align the stack
+                    pop R15 ;
+                    pop R14 ;
+                    pop R13 ;
+                    pop R12 ;
+                    pop R11 ;
+                    pop R10 ;
+                    pop R9  ;
+                    pop R8  ;
+                    pop RBP ;
+                    pop RDI ;
+                    pop RSI ;
+                    pop RDX ;
+                    pop RCX ;
+                    pop RBX ;
+                    pop RAX ;
+                }
             }
             else
             {
@@ -2670,7 +2716,56 @@ private
         }
         else version( AsmX86_64_Posix )
         {
-            asm
+            version( DigitalMars ) const dmdgdc = true;
+            else version (GNU) const dmdgdc = true;
+            else const dmdgdc = false;
+            
+            static if (dmdgdc == true) asm
+            {
+                naked;
+
+                // save current stack state
+                push RBP;
+                mov RBP, RSP;
+                push RBX;
+                push R12;
+                push R13;
+                push R14;
+                push R15;
+                sub RSP, 4;
+                stmxcsr [RSP];
+                sub RSP, 4;
+                //version(SynchroFloatExcept){
+                    fstcw [RSP];
+                    fwait;
+                //} else {
+                //    fnstcw [RSP];
+                //    fnclex;
+                //}
+
+                // store oldp again with more accurate address
+                mov [RDI], RSP;
+                // load newp to begin context switch
+                mov RSP, RSI;
+
+                // load saved state from new stack
+                fldcw [RSP];
+                add RSP, 4;
+                ldmxcsr [RSP];
+                add RSP, 4;
+                pop R15;
+                pop R14;
+                pop R13;
+                pop R12;
+
+                pop RBX;
+                pop RBP;
+
+                // 'return' to complete switch
+                ret;
+
+            }
+            else asm
             {
                 naked;
 

@@ -638,7 +638,6 @@ static this ()
         Cerr = new Console.Output (conduit, conduit.redirected);
 }
 
-
 /******************************************************************************
 
         Flush outputs before we exit.

@@ -184,6 +184,22 @@ package struct FS
 
         /***********************************************************************
 
+                Return an adjusted path such that non-empty instances always
+                have a leading separator.
+
+                Note: Allocates memory where path is not already terminated.
+
+        ***********************************************************************/
+
+        static char[] paddedLeading (char[] path, char c = '/')
+        {
+                if (path.length && path[0] != c)
+                    path = c ~ path;
+                return path;
+        }
+
+        /***********************************************************************
+
                 Return an adjusted path such that non-empty instances do not
                 have a trailing separator.
 
@@ -210,12 +226,16 @@ package struct FS
                 char[] result;
 
                 if (paths.length)
-                   {
-                   foreach (path; paths[0 .. $-1])
-                            result ~= padded (path);
-                   result ~= paths [$-1];
+                {
+                    result ~= paths[0];
+
+                    foreach (path; paths[1 .. $-1])
+                        result ~= paddedLeading (stripped(path));
+
+                    result ~= paddedLeading(paths[$-1]);
+
                    return result;
-                   }
+                }
                 return "";
         }
 

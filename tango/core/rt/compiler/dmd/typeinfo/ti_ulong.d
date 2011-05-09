@@ -31,6 +31,11 @@ class TypeInfo_m : TypeInfo
         return 0;
     }
 
+    override size_t talign()
+    {
+        return ulong.alignof;
+    }
+
     override size_t tsize()
     {
         return ulong.sizeof;

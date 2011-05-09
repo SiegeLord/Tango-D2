@@ -42,6 +42,11 @@ class TypeInfo_f : TypeInfo
         return _compare(*cast(float *)p1, *cast(float *)p2);
     }
 
+    override size_t talign()
+    {
+        return float.alignof;
+    }
+
     override size_t tsize()
     {
         return float.sizeof;

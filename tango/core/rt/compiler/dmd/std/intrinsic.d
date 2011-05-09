@@ -6,9 +6,9 @@
  * external functions.  The compiler's optimizer and code generator are fully
  * integrated in with intrinsic functions, bringing to bear their full power on
  * them. This can result in some surprising speedups.
- * 
+ *
  * Note that this module is only present in Tango because the module name is
- * hardcoded into DMD, see http://d.puremagic.com/issues/show_bug.cgi?id=178 
+ * hardcoded into DMD, see http://d.puremagic.com/issues/show_bug.cgi?id=178
  * To correctly use this functionality in Tango, import tango.core.BitManip.
  *
  * Copyright: Public Domain
@@ -25,7 +25,7 @@ module std.intrinsic;
  *	The bit number of the first bit set.
  *	The return value is undefined if v is zero.
  */
-int bsf( uint v );
+int bsf( size_t v );
 
 
 /**
@@ -133,8 +133,8 @@ bt(array, 1) = -1
 array = [0]:x2, [1]:x100
 </pre>
  */
-int bts( size_t* p, size_t bitnum );
 
+int bts( size_t* p, size_t bitnum );
 
 /**
  * Swaps bytes in a 4 byte uint end-to-end, i.e. byte 0 becomes
