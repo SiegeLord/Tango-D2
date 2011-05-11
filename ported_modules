@@ -14,6 +14,8 @@ tango/io/device/Device.d
 tango/io/device/File.d
 tango/io/device/FileMap.d
 tango/io/model/IConduit.d
+tango/io/model/IFile.d
+tango/io/Path.d
 tango/io/Stdout.d
 tango/io/stream/Buffered.d
 tango/io/stream/Format.d
@@ -44,6 +46,7 @@ tango/math/random/Twister.d
 tango/math/random/Ziggurat.d
 tango/stdc/errno.d
 tango/stdc/stringz.d
+tango/stdc/posix/dirent.d
 tango/sys/Common.d
 tango/text/Ascii.d
 tango/text/convert/Float.d

@@ -47,23 +47,23 @@ interface FileConst
                         SystemPathChar = ';',
                 }
 
-                /// The parent directory string.
-                static const char[] ParentDirString = "..";
+                /// The parent directory string
+                enum immutable(char)[] ParentDirString = "..";
 
-                /// The current directory string.
-                static const char[] CurrentDirString = ".";
+                /// The current directory string
+                enum immutable(char)[] CurrentDirString = ".";
 
-                /// The file separator string.
-                static const char[] FileSeparatorString = ".";
+                /// The file separator string
+                enum immutable(char)[] FileSeparatorString = ".";
 
-                /// The path separator string.
-                static const char[] PathSeparatorString = "/";
+                /// The path separator string
+                enum immutable(char)[] PathSeparatorString = "/";
 
-                /// The system path string.
-                static const char[] SystemPathString = ";";
+                /// The system path string
+                enum immutable(char)[] SystemPathString = ";";
 
-                /// The newline string.
-                static const char[] NewlineString = "\r\n";
+                /// The newline string
+                enum immutable(char)[] NewlineString = "\r\n";
         }
 
         version (Posix)
@@ -84,23 +84,23 @@ interface FileConst
                         SystemPathChar = ':',
                 }
 
-                /// The parent directory string.
-                static const char[] ParentDirString = "..";
+                /// The parent directory string
+                enum immutable(char)[] ParentDirString = "..";
 
-                /// The current directory string.
-                static const char[] CurrentDirString = ".";
+                /// The current directory string
+                enum immutable(char)[] CurrentDirString = ".";
 
-                /// The file separator string.
-                static const char[] FileSeparatorString = ".";
+                /// The file separator string
+                enum immutable(char)[] FileSeparatorString = ".";
 
-                /// The path separator string.
-                static const char[] PathSeparatorString = "/";
+                /// The path separator string
+                enum immutable(char)[] PathSeparatorString = "/";
 
-                /// The system path string.
-                static const char[] SystemPathString = ":";
+                /// The system path string
+                enum immutable(char)[] SystemPathString = ":";
 
-                /// The newline string.
-                static const char[] NewlineString = "\n";
+                /// The newline string
+                enum immutable(char)[] NewlineString = "\n";
         }
 }
 
@@ -112,7 +112,7 @@ interface FileConst
 
 struct FileInfo
 {
-        char[]          path,
+        const(char)[]   path,
                         name;
         ulong           bytes;
         bool            folder,

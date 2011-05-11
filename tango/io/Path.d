@@ -75,12 +75,12 @@ version (Win32)
         {
         version (Win32SansUnicode)
                 {
-                private extern (C) int strlen (char *s);
+                private extern (C) int strlen (const char *s);
                 private alias WIN32_FIND_DATA FIND_DATA;
                 }
              else
                 {
-                private extern (C) int wcslen (wchar *s);
+                private extern (C) int wcslen (const wchar *s);
                 private alias WIN32_FIND_DATAW FIND_DATA;
                 }
         }
@@ -125,10 +125,10 @@ package struct FS
 
         struct Listing
         {
-                char[] folder;
+                const(char)[] folder;
                 bool   allFiles;
 
-                int opApply (int delegate(ref FileInfo) dg)
+                int opApply (scope int delegate(ref FileInfo) dg)
                 {
                         char[256] tmp = void;
                         auto path = strz (folder, tmp);
@@ -150,7 +150,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static void exception (char[] filename)
+        static void exception (const(char[]) filename)
         {
                 exception (filename[0..$-1] ~ ": ", SysError.lastMsg);
         }
@@ -161,9 +161,9 @@ package struct FS
 
         ***********************************************************************/
 
-        static void exception (char[] prefix, char[] error)
+        static void exception (const(char[]) prefix, const(char[]) error)
         {
-                throw new IOException (prefix ~ error);
+                throw new IOException ((prefix ~ error).idup);
         }
 
         /***********************************************************************
@@ -175,7 +175,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] padded (char[] path, char c = '/')
+        static inout(char[]) padded (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[$-1] != c)
                     path = path ~ c;
@@ -205,7 +205,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] stripped (char[] path, char c = '/')
+        static inout(char[]) stripped (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[$-1] is c)
                     path = path [0 .. $-1];
@@ -221,7 +221,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] join (char[][] paths...)
+        static char[] join (const(char[])[] paths...)
         {
                 char[] result;
 
@@ -236,7 +236,7 @@ package struct FS
 
                    return result;
                 }
-                return "";
+                return "".dup;
         }
 
         /***********************************************************************
@@ -248,7 +248,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] strz (char[] src, char[] dst)
+        static char[] strz (const(char[]) src, char[] dst)
         {
                 auto i = src.length + 1;
                 if (dst.length < i)
@@ -272,7 +272,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static wchar[] toString16 (wchar[] tmp, char[] path)
+                private static wchar[] toString16 (wchar[] tmp, const(char[]) path)
                 {
                         auto i = MultiByteToWideChar (CP_UTF8, 0,
                                                       cast(PCHAR)path.ptr, path.length,
@@ -286,7 +286,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static char[] toString (char[] tmp, wchar[] path)
+                private static char[] toString (char[] tmp, const(wchar[]) path)
                 {
                         auto i = WideCharToMultiByte (CP_UTF8, 0, path.ptr, path.length,
                                                       cast(PCHAR)tmp.ptr, tmp.length, null, null);
@@ -299,7 +299,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static bool fileInfo (char[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
+                private static bool fileInfo (const(char[]) name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -322,7 +322,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static DWORD getInfo (char[] name, ref WIN32_FILE_ATTRIBUTE_DATA info)
+                private static DWORD getInfo (const(char[]) name, ref WIN32_FILE_ATTRIBUTE_DATA info)
                 {
                         if (! fileInfo (name, info))
                               exception (name);
@@ -335,7 +335,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static DWORD getFlags (char[] name)
+                private static DWORD getFlags (const(char[]) name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -348,7 +348,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool exists (char[] name)
+                static bool exists (const(char[]) name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -361,7 +361,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static ulong fileSize (char[] name)
+                static ulong fileSize (const(char[]) name)
                 {
                         WIN32_FILE_ATTRIBUTE_DATA info = void;
 
@@ -376,7 +376,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isWritable (char[] name)
+                static bool isWritable (const(char[]) name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_READONLY) is 0;
                 }
@@ -387,7 +387,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFolder (char[] name)
+                static bool isFolder (const(char[]) name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) != 0;
                 }
@@ -398,7 +398,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFile (char[] name)
+                static bool isFile (const(char[]) name)
                 {
                         return (getFlags(name) & FILE_ATTRIBUTE_DIRECTORY) == 0;
                 }
@@ -413,7 +413,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static Stamps timeStamps (char[] name)
+                static Stamps timeStamps (const(char[]) name)
                 {
                         static Time convert (FILETIME time)
                         {
@@ -437,7 +437,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void timeStamps (char[] name, Time accessed, Time modified)
+                static void timeStamps (const(char[]) name, Time accessed, Time modified)
                 {
                         void set (HANDLE h)
                         {
@@ -460,7 +460,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void copy (char[] src, char[] dst)
+                static void copy (const(char[]) src, const(char[]) dst)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -484,7 +484,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool remove (char[] name)
+                static bool remove (const(char[]) name)
                 {
                         if (isFolder(name))
                            {
@@ -512,7 +512,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void rename (char[] src, char[] dst)
+                static void rename (const(char[]) src, const(char[]) dst)
                 {
                         const int Typical = MOVEFILE_REPLACE_EXISTING +
                                             MOVEFILE_COPY_ALLOWED     +
@@ -538,7 +538,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFile (char[] name)
+                static void createFile (const(char[]) name)
                 {
                         createFile (name, null);
                 }
@@ -549,7 +549,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFolder (char[] name)
+                static void createFolder (const(char[]) name)
                 {
                         version (Win32SansUnicode)
                                 {
@@ -576,7 +576,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (char[] folder, int delegate(ref FileInfo) dg, bool all=false)
+                static int list (const(char[]) folder, scope int delegate(ref FileInfo) dg, bool all=false)
                 {
                         HANDLE                  h;
                         int                     ret;
@@ -658,7 +658,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static void createFile (char[] name, void delegate(HANDLE) dg)
+                private static void createFile (const(char[]) name, scope void delegate(HANDLE) dg)
                 {
                         HANDLE h;
 
@@ -700,7 +700,7 @@ package struct FS
 
                 ***************************************************************/
 
-                private static uint getInfo (char[] name, ref stat_t stats)
+                private static uint getInfo (const(char[]) name, ref stat_t stats)
                 {
                         if (posix.stat (name.ptr, &stats))
                             exception (name);
@@ -714,7 +714,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool exists (char[] name)
+                static bool exists (const(char[]) name)
                 {
                         stat_t stats = void;
                         return posix.stat (name.ptr, &stats) is 0;
@@ -726,7 +726,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static ulong fileSize (char[] name)
+                static ulong fileSize (const(char[]) name)
                 {
                         stat_t stats = void;
 
@@ -740,7 +740,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isWritable (char[] name)
+                static bool isWritable (const(char[]) name)
                 {
                         stat_t stats = void;
 
@@ -753,7 +753,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFolder (char[] name)
+                static bool isFolder (const(char[]) name)
                 {
                         stat_t stats = void;
 
@@ -766,7 +766,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool isFile (char[] name)
+                static bool isFile (const(char[]) name)
                 {
                         stat_t stats = void;
 
@@ -783,7 +783,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static Stamps timeStamps (char[] name)
+                static Stamps timeStamps (const(char[]) name)
                 {
                         static Time convert (typeof(stat_t.st_mtime) secs)
                         {
@@ -809,11 +809,11 @@ package struct FS
 
                 ***************************************************************/
 
-                static void timeStamps (char[] name, Time accessed, Time modified)
+                static void timeStamps (const(char[]) name, Time accessed, Time modified)
                 {
                         utimbuf time = void;
-                        time.actime = (accessed - Time.epoch1970).seconds;
-                        time.modtime = (modified - Time.epoch1970).seconds;
+                        time.actime = cast(time_t)(accessed - Time.epoch1970).seconds;
+                        time.modtime = cast(time_t)(modified - Time.epoch1970).seconds;
                         if (utime (name.ptr, &time) is -1)
                             exception (name);
                 }
@@ -880,7 +880,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static bool remove (char[] name)
+                static bool remove (const(char[]) name)
                 {
                         return tango.stdc.stdio.remove(name.ptr) != -1;
                 }
@@ -903,7 +903,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFile (char[] name)
+                static void createFile (const(char[]) name)
                 {
                         int fd;
 
@@ -921,7 +921,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void createFolder (char[] name)
+                static void createFolder (const(char[]) name)
                 {
                         if (posix.mkdir (name.ptr, 0777))
                             exception (name);
@@ -939,14 +939,14 @@ package struct FS
 
                 ***************************************************************/
 
-                static int list (char[] folder, int delegate(ref FileInfo) dg, bool all=false)
+                static int list (const(char[]) folder, scope int delegate(ref FileInfo) dg, bool all=false)
                 {
                         int             ret;
                         DIR*            dir;
                         dirent          entry;
                         dirent*         pentry;
                         stat_t          sbuf;
-                        char[]          prefix;
+                        const(char)[]   prefix;
                         char[]          sfnbuf;
 
                         dir = tango.stdc.posix.dirent.opendir (folder.ptr);
@@ -1039,7 +1039,7 @@ package struct FS
 
 struct PathParser
 {
-        package char[]  fp;                     // filepath with trailing
+        package const(char)[]  fp;              // filepath with trailing
         package int     end_,                   // before any trailing 0
                         ext_,                   // after rightmost '.'
                         name_,                  // file/dir name
@@ -1052,7 +1052,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        PathParser parse (char[] path)
+        PathParser parse (const(char[]) path)
         {
                 return parse (path, path.length);
         }
@@ -1067,7 +1067,7 @@ struct PathParser
 
         PathParser dup ()
         {
-                auto ret = *this;
+                auto ret = this;
                 ret.fp = fp.dup;
                 return ret;
         }
@@ -1078,7 +1078,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] toString ()
+        const(char)[] toString ()
         {
                 return fp [0 .. end_];
         }
@@ -1090,7 +1090,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] root ()
+        const(char)[] root ()
         {
                 return fp [0 .. folder_];
         }
@@ -1105,7 +1105,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] folder ()
+        const(char)[] folder ()
         {
                 return fp [folder_ .. name_];
         }
@@ -1127,7 +1127,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] parent ()
+        const(char)[] parent ()
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1156,7 +1156,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] pop ()
+        const(char)[] pop ()
         {
                 return FS.stripped (path);
         }
@@ -1167,7 +1167,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] name ()
+        const(char)[] name ()
         {
                 return fp [name_ .. suffix_];
         }
@@ -1181,7 +1181,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] ext ()
+        const(char)[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
@@ -1204,7 +1204,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] suffix ()
+        const(char)[] suffix ()
         {
                 return fp [suffix_ .. end_];
         }
@@ -1215,7 +1215,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] path ()
+        const(char)[] path ()
         {
                 return fp [0 .. name_];
         }
@@ -1226,7 +1226,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        char[] file ()
+        const(char)[] file ()
         {
                 return fp [name_ .. end_];
         }
@@ -1276,7 +1276,11 @@ struct PathParser
 
         ***********************************************************************/
 
-        int opEquals (char[] s)
+        /*int opEquals (char[] s)
+        {       
+                return FS.stripped(s) == FS.stripped(toString);
+        }*/
+        bool equals (const(char[]) s)
         {
                 return FS.stripped(s) == FS.stripped(toString);
         }
@@ -1291,7 +1295,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (char[] path, size_t end)
+        package PathParser parse (const(char)[] path, size_t end)
         {
                 end_ = end;
                 fp = path;
@@ -1334,7 +1338,7 @@ struct PathParser
                 if (suffix_ < 0 || suffix_ is name_)
                     suffix_ = end_;
 
-                return *this;
+                return this;
         }
 }
 
@@ -1345,7 +1349,7 @@ struct PathParser
 
 *******************************************************************************/
 
-bool exists (char[] name)
+bool exists (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.exists (FS.strz(name, tmp));
@@ -1360,7 +1364,7 @@ bool exists (char[] name)
 
 *******************************************************************************/
 
-Time modified (char[] name)
+Time modified (const(char[]) name)
 {
         return timeStamps(name).modified;
 }
@@ -1374,7 +1378,7 @@ Time modified (char[] name)
 
 *******************************************************************************/
 
-Time accessed (char[] name)
+Time accessed (const(char[]) name)
 {
         return timeStamps(name).accessed;
 }
@@ -1388,7 +1392,7 @@ Time accessed (char[] name)
 
 *******************************************************************************/
 
-Time created (char[] name)
+Time created (const(char[]) name)
 {
         return timeStamps(name).created;
 }
@@ -1399,7 +1403,7 @@ Time created (char[] name)
 
 *******************************************************************************/
 
-ulong fileSize (char[] name)
+ulong fileSize (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.fileSize (FS.strz(name, tmp));
@@ -1411,7 +1415,7 @@ ulong fileSize (char[] name)
 
 *******************************************************************************/
 
-bool isWritable (char[] name)
+bool isWritable (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.isWritable (FS.strz(name, tmp));
@@ -1423,7 +1427,7 @@ bool isWritable (char[] name)
 
 *******************************************************************************/
 
-bool isFolder (char[] name)
+bool isFolder (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.isFolder (FS.strz(name, tmp));
@@ -1436,7 +1440,7 @@ bool isFolder (char[] name)
 
 *******************************************************************************/
 
-bool isFile (char[] name)
+bool isFile (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.isFile (FS.strz(name, tmp));
@@ -1452,7 +1456,7 @@ bool isFile (char[] name)
 
 *******************************************************************************/
 
-FS.Stamps timeStamps (char[] name)
+FS.Stamps timeStamps (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.timeStamps (FS.strz(name, tmp));
@@ -1466,7 +1470,7 @@ FS.Stamps timeStamps (char[] name)
 
 *******************************************************************************/
 
-void timeStamps (char[] name, Time accessed, Time modified)
+void timeStamps (const(char[]) name, Time accessed, Time modified)
 {
         char[512] tmp = void;
         FS.timeStamps (FS.strz(name, tmp), accessed, modified);
@@ -1479,7 +1483,7 @@ void timeStamps (char[] name, Time accessed, Time modified)
 
 *******************************************************************************/
 
-bool remove (char[] name)
+bool remove (const(char[]) name)
 {
         char[512] tmp = void;
         return FS.remove (FS.strz(name, tmp));
@@ -1520,7 +1524,7 @@ char[][] remove (char[][] paths)
 
 *******************************************************************************/
 
-void createFile (char[] name)
+void createFile (const(char[]) name)
 {
         char[512] tmp = void;
         FS.createFile (FS.strz(name, tmp));
@@ -1532,7 +1536,7 @@ void createFile (char[] name)
 
 *******************************************************************************/
 
-void createFolder (char[] name)
+void createFolder (const(char[]) name)
 {
         char[512] tmp = void;
         FS.createFolder (FS.strz(name, tmp));
@@ -1554,16 +1558,16 @@ void createFolder (char[] name)
 
 *******************************************************************************/
 
-void createPath (char[] path)
+void createPath (const(char[]) path)
 {
-        void test (char[] segment)
+        void test (const(char)[] segment)
         {
                 if (segment.length)
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
-                             throw new IllegalArgumentException ("Path.createPath :: file/folder conflict: " ~ segment);
+                             throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
         }
 
         foreach (i, char c; path)
@@ -1578,7 +1582,7 @@ void createPath (char[] path)
 
 *******************************************************************************/
 
-void rename (char[] src, char[] dst)
+void rename (const(char[]) src, const(char[]) dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
@@ -1592,7 +1596,7 @@ void rename (char[] src, char[] dst)
 
 *******************************************************************************/
 
-void copy (char[] src, char[] dst)
+void copy (const(char[]) src, const(char[]) dst)
 {
         char[512] tmp1 = void;
         char[512] tmp2 = void;
@@ -1623,7 +1627,7 @@ void copy (char[] src, char[] dst)
 
 *******************************************************************************/
 
-FS.Listing children (char[] path, bool all=false)
+FS.Listing children (const(char[]) path, bool all=false)
 {
         return FS.Listing (path, all);
 }
@@ -1641,7 +1645,7 @@ FS.Listing children (char[] path, bool all=false)
 
 *******************************************************************************/
 
-char[][] collate (char[] path, char[] pattern, bool recurse=false)
+char[][] collate (const(char[]) path, const(char[]) pattern, bool recurse=false)
 {
         char[][] list;
 
@@ -1665,7 +1669,7 @@ char[][] collate (char[] path, char[] pattern, bool recurse=false)
 
 *******************************************************************************/
 
-char[] join (char[][] paths...)
+char[] join (const(char[])[] paths...)
 {
         return FS.join (paths);
 }
@@ -1720,7 +1724,7 @@ char[] native (char[] path)
 
 *******************************************************************************/
 
-char[] parent (char[] path)
+inout(char)[] parent (inout(char)[] path)
 {
         return pop (FS.stripped (path));
 }
@@ -1738,7 +1742,7 @@ char[] parent (char[] path)
 
 *******************************************************************************/
 
-char[] pop (char[] path)
+inout(char)[] pop (inout(char)[] path)
 {
         int i = path.length;
         while (i && path[--i] != '/') {}
@@ -1754,7 +1758,7 @@ char[] pop (char[] path)
 
 *******************************************************************************/
 
-char[] split (char[] path, out char[] head, out char[] tail)
+inout(char)[] split (inout(char)[] path, out inout(char)[] head, out inout(char)[] tail)
 {
         head = path;
         if (path.length > 1)
@@ -1791,7 +1795,7 @@ char[] replace (char[] path, char from, char to)
 
 *******************************************************************************/
 
-PathParser parse (char[] path)
+PathParser parse (const(char[]) path)
 {
         PathParser p;
 
@@ -1808,7 +1812,7 @@ debug(UnitTest)
         unittest
         {
                 auto p = parse ("/foo/bar/file.ext");
-                assert (p == "/foo/bar/file.ext");
+                assert (p.equals("/foo/bar/file.ext"));
                 assert (p.folder == "/foo/bar/");
                 assert (p.path == "/foo/bar/");
                 assert (p.file == "file.ext");
@@ -1873,7 +1877,7 @@ debug(UnitTest)
 
 ******************************************************************************/
 
-bool patternMatch (char[] filename, char[] pattern)
+bool patternMatch (const(char[]) filename, const(char[]) pattern)
 in
 {
         // Verify that pattern[] is valid
@@ -2046,8 +2050,9 @@ debug (UnitTest)
 
 *******************************************************************************/
 
-char[] normalize (char[] path, char[] buf = null)
+char[] normalize (const(char[]) in_path, char[] buf = null)
 {
+	    char[] path;            // Mutable path
         size_t  idx;            // Current position
         size_t  moveTo;         // Position to move
         bool    isAbsolute;     // Whether the path is absolute
@@ -2093,9 +2098,9 @@ char[] normalize (char[] path, char[] buf = null)
         }
 
         if (buf is null)
-            path = path.dup;
+            path = in_path.dup;
         else
-           path = buf[0..path.length] = path;
+           path = buf[0..path.length] = in_path;
 
         version (Windows)
         {
