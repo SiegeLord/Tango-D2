@@ -477,7 +477,7 @@ version(LDC){
                     mov EDX, 4[EDI];
                     mov EDI, val;
                     lock; // lock always needed to make this op atomic
-                    cmpxch8b [EDI];
+                    cmpxchg8b [EDI];
                     lea EDI, res;
                     mov [EDI], EAX;
                     mov 4[EDI], EDX;
