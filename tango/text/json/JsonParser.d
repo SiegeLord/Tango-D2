@@ -65,8 +65,12 @@ class JsonParser(T)
         
         final bool next ()
         {
+                if (str.ptr is null || str.end == 0)
+                    return false;
+
                 auto p = str.ptr;
                 auto e = str.end;
+
 
                 while (*p <= 32 && p < e) 
                        ++p; 
