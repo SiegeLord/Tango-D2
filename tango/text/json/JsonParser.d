@@ -65,7 +65,7 @@ class JsonParser(T)
         
         final bool next ()
         {
-                if (str.ptr is null || str.end == 0)
+                if (str.ptr is null || str.end is null)
                     return false;
 
                 auto p = str.ptr;
