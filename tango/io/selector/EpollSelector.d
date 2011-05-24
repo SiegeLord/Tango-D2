@@ -309,6 +309,19 @@ version (linux)
                 }
                 else
                 {
+                    int errorCode = errno;
+                    switch ( errorCode )
+                    {
+                        case EBADF:
+                        case EPERM:
+                        case ENOENT:
+                            _keys.remove(conduit.fileHandle());
+                            break;
+
+                        default:
+                            break;
+                    }
+                    
                     checkErrno(__FILE__, __LINE__);
                 }
             }
