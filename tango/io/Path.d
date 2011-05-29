@@ -191,7 +191,7 @@ package struct FS
 
         ***********************************************************************/
 
-        static char[] paddedLeading (char[] path, char c = '/')
+        static inout(char[]) paddedLeading (inout(char[]) path, char c = '/')
         {
                 if (path.length && path[0] != c)
                     path = c ~ path;
@@ -2100,7 +2100,7 @@ char[] normalize (const(char[]) in_path, char[] buf = null)
         if (buf is null)
             path = in_path.dup;
         else
-           path = buf[0..path.length] = in_path;
+           path = buf[0..in_path.length] = in_path;
 
         version (Windows)
         {
