@@ -828,7 +828,7 @@ package struct FS
 
                 ***********************************************************************/
 
-                static void copy (char[] source, char[] dest)
+                static void copy (const(char)[] source, const(char)[] dest)
                 {
                         auto src = posix.open (source.ptr, O_RDONLY, 0640);
                         scope (exit)
@@ -891,7 +891,7 @@ package struct FS
 
                 ***************************************************************/
 
-                static void rename (char[] src, char[] dst)
+                static void rename (const(char)[] src, const(char)[] dst)
                 {
                         if (tango.stdc.stdio.rename (src.ptr, dst.ptr) is -1)
                             exception (src);
@@ -1039,7 +1039,7 @@ package struct FS
 
 struct PathParser
 {
-        package const(char)[]  fp;              // filepath with trailing
+        package char[]  fp;              // filepath with trailing
         package int     end_,                   // before any trailing 0
                         ext_,                   // after rightmost '.'
                         name_,                  // file/dir name
@@ -1052,7 +1052,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        PathParser parse (const(char[]) path)
+        PathParser parse (char[] path)
         {
                 return parse (path, path.length);
         }
@@ -1078,7 +1078,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] toString ()
+        const const(char)[] toString ()
         {
                 return fp [0 .. end_];
         }
@@ -1090,7 +1090,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] root ()
+        char[] root ()
         {
                 return fp [0 .. folder_];
         }
@@ -1105,7 +1105,12 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] folder ()
+        char[] folder ()
+        {
+                return fp [folder_ .. name_];
+        }
+        
+        const const(char)[] folder ()
         {
                 return fp [folder_ .. name_];
         }
@@ -1127,7 +1132,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] parent ()
+        char[] parent ()
         {
                 auto p = path;
                 if (name.length is 0)
@@ -1156,7 +1161,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] pop ()
+        char[] pop ()
         {
                 return FS.stripped (path);
         }
@@ -1167,7 +1172,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] name ()
+        char[] name ()
         {
                 return fp [name_ .. suffix_];
         }
@@ -1181,7 +1186,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] ext ()
+        char[] ext ()
         {
                 auto x = suffix;
                 if (x.length)
@@ -1204,7 +1209,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] suffix ()
+        char[] suffix ()
         {
                 return fp [suffix_ .. end_];
         }
@@ -1215,7 +1220,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] path ()
+        char[] path ()
         {
                 return fp [0 .. name_];
         }
@@ -1226,7 +1231,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        const(char)[] file ()
+        char[] file ()
         {
                 return fp [name_ .. end_];
         }
@@ -1238,7 +1243,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        bool isAbsolute ()
+        const bool isAbsolute ()
         {
                 return (folder_ > 0) ||
                        (folder_ < end_ && fp[folder_] is FileConst.PathSeparatorChar);
@@ -1250,7 +1255,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        bool isEmpty ()
+        const bool isEmpty ()
         {
                 return end_ is 0;
         }
@@ -1264,7 +1269,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        bool isChild ()
+        const bool isChild ()
         {
                 return folder.length > 0;
         }
@@ -1280,7 +1285,7 @@ struct PathParser
         {       
                 return FS.stripped(s) == FS.stripped(toString);
         }*/
-        bool equals (const(char[]) s)
+        const bool equals (const(char[]) s)
         {
                 return FS.stripped(s) == FS.stripped(toString);
         }
@@ -1295,7 +1300,7 @@ struct PathParser
 
         ***********************************************************************/
 
-        package PathParser parse (const(char)[] path, size_t end)
+        package PathParser parse (char[] path, size_t end)
         {
                 end_ = end;
                 fp = path;
@@ -1795,7 +1800,7 @@ char[] replace (char[] path, char from, char to)
 
 *******************************************************************************/
 
-PathParser parse (const(char[]) path)
+PathParser parse (char[] path)
 {
         PathParser p;
 
@@ -1811,7 +1816,7 @@ debug(UnitTest)
 {
         unittest
         {
-                auto p = parse ("/foo/bar/file.ext");
+                auto p = parse ("/foo/bar/file.ext".dup);
                 assert (p.equals("/foo/bar/file.ext"));
                 assert (p.folder == "/foo/bar/");
                 assert (p.path == "/foo/bar/");
