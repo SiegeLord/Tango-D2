@@ -62,8 +62,10 @@ class FilePath : PathView
         private PathParser      p;              // the parsed path
         private bool            dir_;           // this represents a dir?
 
-        public alias    append  opCatAssign;    // path ~= x;
-
+		final FilePath opOpAssign(immutable(char)[] s : "~")(const(char)[] path)
+		{
+			return append(path);
+		}
 
         /***********************************************************************
 
@@ -81,7 +83,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static FilePath opCall (char[] filepath = null)
+        static FilePath opCall (const(char)[] filepath = null)
         {
                 return new FilePath (filepath);
         }
@@ -109,7 +111,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        this (char[] filepath = null)
+        this (const(char)[] filepath = null)
         {
                 set (filepath, true);
         }
@@ -120,9 +122,9 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final char[] toString ()
+        final const immutable(char)[] toString ()
         {
-                return  p.toString;
+                return  p.toString.idup;
         }
 
         /***********************************************************************
@@ -131,7 +133,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath dup ()
+        final const FilePath dup ()
         {
                 return FilePath (toString);
         }
@@ -149,6 +151,11 @@ class FilePath : PathView
         ***********************************************************************/
 
         final char[] cString ()
+        {
+                return p.fp [0 .. p.end_+1];
+        }
+        
+        final const const(char)[] cString ()
         {
                 return p.fp [0 .. p.end_+1];
         }
@@ -284,7 +291,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final override int opEquals (Object o)
+        final const override bool opEquals (Object o)
         {
                 return (this is o) || (o && opEquals(o.toString));
         }
@@ -309,9 +316,9 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final int opEquals (char[] s)
+        final const bool opEquals (const(char)[] s)
         {
-                return p.opEquals(s);
+                return p.equals(s);
         }
 
         /***********************************************************************
@@ -321,7 +328,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isAbsolute ()
+        final const bool isAbsolute ()
         {
                 return p.isAbsolute;
         }
@@ -332,7 +339,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isEmpty ()
+        final const bool isEmpty ()
         {
                 return p.isEmpty;
         }
@@ -346,7 +353,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isChild ()
+        final const bool isChild ()
         {
                 return p.isChild;
         }
@@ -405,7 +412,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath cat (char[][] others...)
+        final FilePath cat (const(char)[][] others...)
         {
                 foreach (other; others)
                         {
@@ -425,7 +432,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath append (char[] path)
+        final FilePath append (const(char)[] path)
         {
                 if (file.length)
                     path = prefixed (path);
@@ -439,7 +446,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath prepend (char[] path)
+        final FilePath prepend (const(char)[] path)
         {
                 adjust (0, p.folder_, p.folder_, padded (path));
                 return parse;
@@ -465,7 +472,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath set (char[] path, bool convert = false)
+        final FilePath set (const(char)[] path, bool convert = false)
         {
                 p.end_ = path.length;
 
@@ -501,7 +508,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath root (char[] other)
+        final FilePath root (const(char)[] other)
         {
                 auto x = adjust (0, p.folder_, p.folder_, padded (other, ':'));
                 p.folder_ += x;
@@ -517,7 +524,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath folder (char[] other)
+        final FilePath folder (const(char)[] other)
         {
                 auto x = adjust (p.folder_, p.name_, p.name_ - p.folder_, padded (other));
                 p.suffix_ += x;
@@ -531,7 +538,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath name (char[] other)
+        final FilePath name (const(char)[] other)
         {
                 auto x = adjust (p.name_, p.suffix_, p.suffix_ - p.name_, other);
                 p.suffix_ += x;
@@ -545,7 +552,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath suffix (char[] other)
+        final FilePath suffix (const(char)[] other)
         {
                 adjust (p.suffix_, p.end_, p.end_ - p.suffix_, prefixed (other, '.'));
                 return this;
@@ -559,7 +566,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath path (char[] other)
+        final FilePath path (const(char)[] other)
         {
                 adjust (0, p.name_, p.name_, padded (other));
                 return parse;
@@ -573,7 +580,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath file (char[] other)
+        final FilePath file (const(char)[] other)
         {
                 adjust (p.name_, p.end_, p.end_ - p.name_, other);
                 return parse;
@@ -604,7 +611,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] join (char[][] paths...)
+        static char[] join (const(char)[][] paths...)
         {
                 return FS.join (paths);
         }
@@ -619,7 +626,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath absolute (char[] prefix)
+        final FilePath absolute (const(char)[] prefix)
         {
                 if (! isAbsolute)
                       prepend (padded(prefix));
@@ -633,7 +640,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] stripped (char[] path, char c = FileConst.PathSeparatorChar)
+        static inout(char)[] stripped (inout(char)[] path, char c = FileConst.PathSeparatorChar)
         {
                 return FS.stripped (path, c);
         }
@@ -645,7 +652,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] padded (char[] path, char c = FileConst.PathSeparatorChar)
+        static inout(char[]) padded (inout(char[]) path, char c = FileConst.PathSeparatorChar)
         {
                 return FS.padded (path, c);
         }
@@ -657,11 +664,12 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        static char[] prefixed (char[] s, char c = FileConst.PathSeparatorChar)
+        static char[] prefixed (const(char)[] s, char c = FileConst.PathSeparatorChar)
         {
                 if (s.length && s[0] != c)
                     s = c ~ s;
-                return s;
+                /* Possibly bad dup */
+                return s.dup;
         }
 
         /***********************************************************************
@@ -695,7 +703,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        private final int adjust (int head, int tail, int len, char[] sub)
+        private final int adjust (int head, int tail, int len, const(char)[] sub)
         {
                 len = sub.length - len;
 
@@ -810,7 +818,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool exists ()
+        final const bool exists ()
         {
                 return FS.exists (cString);
         }
@@ -824,7 +832,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final Time modified ()
+        final const Time modified ()
         {
                 return timeStamps.modified;
         }
@@ -838,7 +846,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final Time accessed ()
+        final const Time accessed ()
         {
                 return timeStamps.accessed;
         }
@@ -852,7 +860,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final Time created ()
+        final const Time created ()
         {
                 return timeStamps.created;
         }
@@ -878,7 +886,13 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath copy (char[] source)
+        final const const(FilePath) copy (const(char)[] source)
+        {
+                FS.copy (source~'\0', cString);
+                return this;
+        }
+        
+        final FilePath copy (const(char)[] source)
         {
                 FS.copy (source~'\0', cString);
                 return this;
@@ -890,7 +904,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final ulong fileSize ()
+        final const ulong fileSize ()
         {
                 return FS.fileSize (cString);
         }
@@ -901,7 +915,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isWritable ()
+        final const bool isWritable ()
         {
                 return FS.isWritable (cString);
         }
@@ -912,7 +926,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isFolder ()
+        final const bool isFolder ()
         {
                 if (dir_)
                     return true;
@@ -926,7 +940,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final bool isFile ()
+        final const bool isFile ()
         {
                 if (dir_)
                     return false;
@@ -944,7 +958,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final Stamps timeStamps ()
+        final const Stamps timeStamps ()
         {
                 return FS.timeStamps (cString);
         }
@@ -957,6 +971,12 @@ class FilePath : PathView
 
         ***********************************************************************/
 
+        final const const(FilePath) copy (FilePath src)
+        {
+                FS.copy (src.cString, cString);
+                return this;
+        }
+        
         final FilePath copy (FilePath src)
         {
                 FS.copy (src.cString, cString);
@@ -969,6 +989,12 @@ class FilePath : PathView
 
         ***********************************************************************/
 
+        final const const(FilePath) remove ()
+        {
+                FS.remove (cString);
+                return this;
+        }
+        
         final FilePath remove ()
         {
                 FS.remove (cString);
@@ -982,7 +1008,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final FilePath rename (char[] dst)
+        final FilePath rename (const(char)[] dst)
         {
                 FS.rename (cString, dst~'\0');
                 return this.set (dst, true);
@@ -994,6 +1020,12 @@ class FilePath : PathView
 
         ***********************************************************************/
 
+        final const const(FilePath) createFile ()
+        {
+                FS.createFile (cString);
+                return this;
+        }
+        
         final FilePath createFile ()
         {
                 FS.createFile (cString);
@@ -1006,6 +1038,12 @@ class FilePath : PathView
 
         ***********************************************************************/
 
+        final const const(FilePath) createFolder ()
+        {
+                FS.createFolder (cString);
+                return this;
+        }
+        
         final FilePath createFolder ()
         {
                 FS.createFolder (cString);
@@ -1024,7 +1062,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref FileInfo) dg)
+        final const int opApply (scope int delegate(ref FileInfo) dg)
         {
                 return FS.list (cString, dg);
         }
@@ -1047,7 +1085,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] toString ();
+        const immutable(char)[] toString ();
 
         /***********************************************************************
 
@@ -1055,7 +1093,8 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] cString ();
+        char[] cString ();
+        const const(char)[] cString ();
 
         /***********************************************************************
 
@@ -1064,7 +1103,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] root ();
+        char[] root ();
 
         /***********************************************************************
 
@@ -1076,7 +1115,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] folder ();
+        char[] folder ();
 
         /***********************************************************************
 
@@ -1085,7 +1124,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] name ();
+        char[] name ();
 
         /***********************************************************************
 
@@ -1096,7 +1135,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] ext ();
+        char[] ext ();
 
         /***********************************************************************
 
@@ -1105,7 +1144,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] suffix ();
+        char[] suffix ();
 
         /***********************************************************************
 
@@ -1113,7 +1152,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] path ();
+        char[] path ();
 
         /***********************************************************************
 
@@ -1121,7 +1160,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract char[] file ();
+        char[] file ();
 
         /***********************************************************************
 
@@ -1130,7 +1169,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool isAbsolute ();
+        const bool isAbsolute ();
 
         /***********************************************************************
 
@@ -1138,7 +1177,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool isEmpty ();
+        const bool isEmpty ();
 
         /***********************************************************************
 
@@ -1146,7 +1185,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool isChild ();
+        const bool isChild ();
 
         /***********************************************************************
 
@@ -1154,7 +1193,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool exists ();
+        const bool exists ();
 
         /***********************************************************************
 
@@ -1163,7 +1202,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract Time modified ();
+        const Time modified ();
 
         /***********************************************************************
 
@@ -1172,7 +1211,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract Time accessed ();
+        const Time accessed ();
 
         /***********************************************************************
 
@@ -1181,7 +1220,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract Time created ();
+        const Time created ();
 
         /***********************************************************************
 
@@ -1189,7 +1228,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract ulong fileSize ();
+        const ulong fileSize ();
 
         /***********************************************************************
 
@@ -1197,7 +1236,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool isWritable ();
+        const bool isWritable ();
 
         /***********************************************************************
 
@@ -1205,7 +1244,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract bool isFolder ();
+        const bool isFolder ();
 
         /***********************************************************************
 
@@ -1213,7 +1252,7 @@ interface PathView
 
         ***********************************************************************/
 
-        abstract Stamps timeStamps ();
+        const Stamps timeStamps ();
 }
 
 

@@ -15,6 +15,7 @@ tango/io/device/File.d
 tango/io/device/FileMap.d
 tango/io/model/IConduit.d
 tango/io/model/IFile.d
+tango/io/FilePath.d
 tango/io/Path.d
 tango/io/Stdout.d
 tango/io/stream/Buffered.d
