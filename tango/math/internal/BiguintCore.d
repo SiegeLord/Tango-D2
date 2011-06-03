@@ -84,9 +84,9 @@ private:
         assert( data.length == 1 || data[$-1] != 0 );
     }
     BigDigit [] data = ZERO; 
-    static BigUint opCall(BigDigit [] x) {
+    static BigUint opCall(const(BigDigit)[] x) {
        BigUint a;
-       a.data = x;
+       a.data = x.dup;
        return a;
     }
 public: // for development only, will be removed eventually
@@ -137,10 +137,10 @@ public: // for development only, will be removed eventually
 public:
     ///
     void opAssign(ulong u) {
-        if (u == 0) data = ZERO;
-        else if (u == 1) data = ONE;
-        else if (u == 2) data = TWO;
-        else if (u == 10) data = TEN;
+        if (u == 0) data = ZERO.dup;
+        else if (u == 1) data = ONE.dup;
+        else if (u == 2) data = TWO.dup;
+        else if (u == 10) data = TEN.dup;
         else {
             uint ulo = cast(uint)(u & 0xFFFF_FFFF);
             uint uhi = cast(uint)(u >> 32);
@@ -309,7 +309,7 @@ bool fromHexString(const(char []) s)
         data[sofar] = part;
         ++sofar;
     }
-    if (sofar == 0) data = ZERO;
+    if (sofar == 0) data = ZERO.dup;
     else data = data[0..sofar];
     return true;
 }
@@ -324,7 +324,7 @@ bool fromDecimalString(const(char []) s)
             ++firstNonZero;
     }
     if (firstNonZero == s.length - 1 && s.length > 1) {
-        data = ZERO;
+        data = ZERO.dup;
         return true;
     }
     uint predictlength = (18*2 + 2*(s.length-firstNonZero)) / 19;

@@ -3,7 +3,7 @@ DMD = dmd
 RM=rm -rf
 CP=cp -v
 CFLAGS = 
-DFLAGS=-gc -unittest -debug
+DFLAGS=-gc -unittest -debug -d
 DOCDIR=doc/html
 
 # CORE
