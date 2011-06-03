@@ -4,6 +4,7 @@ RM=rm -rf
 CP=cp -v
 CFLAGS = 
 DFLAGS=-gc -unittest -debug -d
+LFLAGS=
 DOCDIR=doc/html
 
 # CORE
@@ -145,14 +146,16 @@ SRC_NET=tango/net/device/Berkeley.d \
 	tango/net/InternetAddress.d \
 	tango/net/Uri.d \
 	tango/net/model/UriView.d
+	
+SRC_SQL=tango/sql/Mysql.d
 
 #DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/console ./doc/example/networking
+DIR_EXAMPLES=./doc/example/console ./doc/example/networking ./doc/example/sql
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
 # generare src and obj
-SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET)
+SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(SRC:%.d=%.o)
 HTML=$(SRC:%.d=%.html)
 
@@ -170,7 +173,7 @@ tests:
 		
 		
 libtango2.a: $(OBJ)
-		$(DMD) $(DFLAGS) -lib -oflibtango2.a $(OBJ)
+		$(DMD) $(DFLAGS) $(LFLAGS) -lib -oflibtango2.a $(OBJ)
 
 doc: $(HTML)
 		@echo "All docs are stored in $(DOCDIR)"

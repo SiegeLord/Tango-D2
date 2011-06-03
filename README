@@ -1,4 +1,4 @@
-===] Tango D2 Port [=====================================================================================================
+===] Tango D2 Port [================================================================================================
 
 This is a half-hearted effort to port Tango (http://www.dsource.org/projects/tango/) to the D2 programming language. I am doing this quickly, and in a haphazard fashion. I primarily care that it compiles, and passes the unittests (or my own quick tests). I am sure the parts I ported don't work 100%.
 
@@ -35,14 +35,16 @@ Contact:
 
 You can message me on github, or find me on IRC on #d and #d.tango @ irc.freenode.net
 
+===] Building the Libary [=============================================================================================
+You can just checkout the libary and start building it. There is a Makefile for GNU/Linux to build the libary. I assume that you're using dmd to compile it! Just type the following commands to your console.
 
-
-
-===] Building the Libary [==================================================================================================
-
-There is a Makefile for GNU/Linux to build the libary
-
-	make -f linux.mak
+	* cd /usr/include/d/dmd
+	* git clone git://github.com/mtachrono/Tango-D2.git tango
+	* cd tango
+	* make -f linux.mak
+	* make install -f linux.mak
+	
+===] Building additional parts [=======================================================================================
 
 You can also generate the docs. They'll be puttet to doc/html
 
@@ -57,14 +59,18 @@ And of course you can install the libary to /usr/lib/libtango2.a
 	make install -f linux.mak
 
 
-===] Setting up your Environment [===========================================================================================
+===] Setting up your Environment [======================================================================================
 
-If you want to build your applications with tango, you need to take care to link against the tango libary. You can tell dmd to automatically link to tangolib by modifing
-/etc/dmd.conf. Basically you need to add 
+If you want to build your applications with tango, you need to take care to link against the tango libary. You can tell dmd to automatically link to tangolib by modifing /etc/dmd.conf. Basically you need to add the following line.
 
-	* -I/usr/include/d/dmd/phobos
+-I/usr/include/d/dmd/tango
+	
+Here is my complete /etc/dmd.conf
 
-===] Guided Installation [===================================================================================================
+[Environment]
+DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--no-warn-search-mismatch -L--export-dynamic -L-lrt
+
+===] Guided Installation [==============================================================================================
 
 	* Online Installation Reference:  http://dsource.org/projects/tango/wiki/TopicInstallTango
 	* License is available at http://dsource.org/projects/tango/wiki/LibraryLicense
