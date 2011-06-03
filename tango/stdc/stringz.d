@@ -76,6 +76,16 @@ inout(char[]) fromStringz (inout(char*) s)
 }
 
 /*********************************
+ * Convert a C-style 0 terminated string to an array of char
+ */
+
+inout(char[]) fromStringz (inout(char*) s, uint length)
+{
+        return s ? s[0 .. length] : null;
+}
+
+
+/*********************************
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
 

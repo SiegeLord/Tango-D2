@@ -4,10 +4,230 @@
  * Copyright: Copyright (C) 2005-2006 Sean Kelly.  All rights reserved.
  * License:   BSD style: $(LICENSE)
  * Authors:   mtachrono, tbolsh
+ *
  */
 module tango.sql.Mysql;
 
+import tango.stdc.stdio;
+import tango.stdc.stringz;
+
+/*******************************************************************************
+	int main(char[][] args)
+	{
+		// declaration
+		MYSQL* conn;
+		MYSQL_RES* result;
+		string[string] row;
+		uint fields;
+		
+		// connect
+		conn = mysql_connect("localhost", "username", "password", "database");
+		if(!conn) {
+			printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		}
+		
+		// debug versions
+		printf("MySQL client version: %s\n", mysql_get_client_info());
+		printf("MySQL server version: %s\n", mysql_get_server_info(conn));
+		
+		// query
+		if(mysql_query(conn, "SELECT id FROM users")) {
+			printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		}
+		
+		// fetch result
+		result = mysql_store_result(conn);
+		while((row = mysql_fetch_assoc(result)) != null) {
+			foreach(field, value; row) {
+				writef("%s %s", field, value);
+			}
+			writeln();
+		}
+	}
+*******************************************************************************/
+
+/*
+ * Datatypes
+ */
+alias void MYSQL;
+alias void MYSQL_RES;
+alias char** MYSQL_ROW;
+struct MYSQL_FIELD
+{
+  char *name;
+  char *org_name;
+  char *table;
+  char *org_table;
+  char *db;
+  char *catalog;
+  char *def;
+  uint length;
+  uint max_length;
+  uint name_length;
+  uint org_name_length;
+  uint table_length;
+  uint org_table_length;
+  uint db_length;
+  uint catalog_length;
+  uint def_length;
+  uint flags;
+  uint decimals;
+  uint charsetnr;
+  enum_field_types type;
+};
+enum enum_field_types
+{
+	MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
+	MYSQL_TYPE_SHORT, MYSQL_TYPE_LONG,
+	MYSQL_TYPE_FLOAT, MYSQL_TYPE_DOUBLE,
+	MYSQL_TYPE_NULL, MYSQL_TYPE_TIMESTAMP,
+	MYSQL_TYPE_LONGLONG,MYSQL_TYPE_INT24,
+	MYSQL_TYPE_DATE, MYSQL_TYPE_TIME,
+	MYSQL_TYPE_DATETIME, MYSQL_TYPE_YEAR,
+	MYSQL_TYPE_NEWDATE, MYSQL_TYPE_VARCHAR,
+	MYSQL_TYPE_BIT,
+	MYSQL_TYPE_NEWDECIMAL=246,
+	MYSQL_TYPE_ENUM=247,
+	MYSQL_TYPE_SET=248,
+	MYSQL_TYPE_TINY_BLOB=249,
+	MYSQL_TYPE_MEDIUM_BLOB=250,
+	MYSQL_TYPE_LONG_BLOB=251,
+	MYSQL_TYPE_BLOB=252,
+	MYSQL_TYPE_VAR_STRING=253,
+	MYSQL_TYPE_STRING=254,
+	MYSQL_TYPE_GEOMETRY=255
+};
+ 
+/*
+ * Bindings
+ */
+extern(C) MYSQL* mysql_init(MYSQL *mysql);
+extern(C) void mysql_close(MYSQL *mysql);
+extern(C) MYSQL* mysql_real_connect(MYSQL *mysql, const(char) *host, const(char) *user, const(char) *passwd,
+												  const(char) *db, uint port, const(char) *unix_socket, uint clientflag);
+extern(C) int mysql_select_db(MYSQL *mysql, const(char) *db);
+extern(C) int mysql_query(MYSQL *mysql,  const(char) *sql_query);
+extern(C) const(char)* mysql_error(MYSQL *mysql);
+extern(C) uint mysql_errno(MYSQL *mysql);
+extern(C) const(char)* mysql_get_server_info(MYSQL *mysql);
+extern(C) const(char)* mysql_get_client_info();
+extern(C) MYSQL_RES* mysql_store_result(MYSQL *mysql);
+extern(C) MYSQL_RES* mysql_use_result(MYSQL *mysql);
+extern(C) uint mysql_num_fields(MYSQL_RES *res);
+extern(C) MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);
+extern(C) uint* mysql_fetch_lengths(MYSQL_RES *result);
+
+/**
+ * Wrapper function to connect to the mysql server.
+ */
+MYSQL* mysql_connect(string host, string user, string passwd, string db, uint port = 0, string unix_socket = null, uint clientflag = 0)
+{
+	auto mysql = mysql_init(null);
+	auto connection = mysql_real_connect(mysql, host.ptr, user.ptr, passwd.ptr, db.ptr, port, unix_socket.ptr, clientflag);
+	
+	return connection;
+}
+
+/**
+ * Wrapper to fetch an array
+ */
+string[] mysql_fetch_array(MYSQL_RES *result) {
+    string[] values = null;
+    MYSQL_ROW row;
+    uint fields;
+	uint *lengths;
+
+    row = mysql_fetch_row(result);
+    if (row != null) {
+        fields = mysql_num_fields(result);
+		lengths = mysql_fetch_lengths(result);
+		for(int i = 0; i < fields; i++) {
+			values ~= fromStringz(row[i], lengths[i]).idup;
+		}
+    } else {
+        values = null;
+		mysql_free_result(result);
+    }
+	
+    return values;
+}
+
+/**
+ * Wrapper function to fetch an associative array
+ */
+string[string] mysql_fetch_assoc(MYSQL_RES *result) {
+    string[string] hash;
+    static MYSQL_ROW row;
+	uint *lengths;
+	uint i = 0;
+    MYSQL_FIELD *fields;
+
+    row = mysql_fetch_row(result);
+    if (row != null) {
+        mysql_field_seek(result, 0);
+		lengths = mysql_fetch_lengths(result);
+        while ( (fields = mysql_fetch_field(result)) != null) {
+			string field = fromStringz(fields.name).idup;
+			string value = fromStringz(row[i], lengths[i]).idup;
+            hash[field] = value;
+            i++;
+        }
+    } else {
+        hash = null;
+		mysql_free_result(result);
+    }
+    return hash;
+}
+
+/**
+ * Wrapper function to escape a string
+ */
+string mysql_escape(const(char)[] str) {
+    string str_escape;
+    foreach (char c; str) {
+        if (c =='\'') {
+            str_escape ~= "\\'";
+        } else {
+            if (c == '\\') {
+                str_escape~= "\\\\";
+            } else {
+                str_escape ~= c;
+            }
+        }
+    }
+    return str_escape;
+}
+									
+				
+
+
+
+				
+				
+				
+				
+				
+
+
+/*
+ *
+ * !!!!!! This is the original code, I'm not sure if all that stuff is needed.... :S It's a little bit messy! !!!!!!
+ * 
+ */ 
+
 extern (C) {
+
+
+
+
+
+
+
+
+
+
+
+
 alias uint size_t;
 
 alias ubyte __u_char;
@@ -346,27 +566,7 @@ alias st_net NET;
 
 
 
-enum enum_field_types { MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
-                        MYSQL_TYPE_SHORT, MYSQL_TYPE_LONG,
-                        MYSQL_TYPE_FLOAT, MYSQL_TYPE_DOUBLE,
-                        MYSQL_TYPE_NULL, MYSQL_TYPE_TIMESTAMP,
-                        MYSQL_TYPE_LONGLONG,MYSQL_TYPE_INT24,
-                        MYSQL_TYPE_DATE, MYSQL_TYPE_TIME,
-                        MYSQL_TYPE_DATETIME, MYSQL_TYPE_YEAR,
-                        MYSQL_TYPE_NEWDATE, MYSQL_TYPE_VARCHAR,
-                        MYSQL_TYPE_BIT,
-                        MYSQL_TYPE_NEWDECIMAL=246,
-                        MYSQL_TYPE_ENUM=247,
-                        MYSQL_TYPE_SET=248,
-                        MYSQL_TYPE_TINY_BLOB=249,
-                        MYSQL_TYPE_MEDIUM_BLOB=250,
-                        MYSQL_TYPE_LONG_BLOB=251,
-                        MYSQL_TYPE_BLOB=252,
-                        MYSQL_TYPE_VAR_STRING=253,
-                        MYSQL_TYPE_STRING=254,
-                        MYSQL_TYPE_GEOMETRY=255
 
-};
 enum mysql_enum_shutdown_level {
 
 
@@ -553,32 +753,10 @@ extern int list_walk(LIST *,list_walk_action action,gptr argument);
 
 extern uint mysql_port;
 extern char *mysql_unix_port;
-struct st_mysql_field {
-  char *name;
-  char *org_name;
-  char *table;
-  char *org_table;
-  char *db;
-  char *catalog;
-  char *def;
-  uint length;
-  uint max_length;
-  uint name_length;
-  uint org_name_length;
-  uint table_length;
-  uint org_table_length;
-  uint db_length;
-  uint catalog_length;
-  uint def_length;
-  uint flags;
-  uint decimals;
-  uint charsetnr;
-  enum_field_types type;
-};
-alias st_mysql_field MYSQL_FIELD;
 
 
-alias char **MYSQL_ROW;
+
+//alias char **MYSQL_ROW;
 alias uint MYSQL_FIELD_OFFSET;
 
 
@@ -809,7 +987,7 @@ struct st_mysql {
 
   my_bool *unbuffered_fetch_owner;
 };
-alias st_mysql MYSQL;
+//alias st_mysql MYSQL;
 
 
 struct st_mysql_res {
@@ -828,7 +1006,7 @@ struct st_mysql_res {
   my_bool unbuffered_fetch_cancelled;
   const st_mysql_methods *methods;
 };
-alias st_mysql_res MYSQL_RES;
+//alias st_mysql_res MYSQL_RES;
 
 struct st_mysql_manager {
   NET net;
@@ -871,7 +1049,6 @@ void mysql_thread_end();
 
 
 my_ulonglong mysql_num_rows(MYSQL_RES *res);
-uint mysql_num_fields(MYSQL_RES *res);
 my_bool mysql_eof(MYSQL_RES *res);
 MYSQL_FIELD * mysql_fetch_field_direct(MYSQL_RES *res,
                                               uint fieldnr);
@@ -882,33 +1059,19 @@ MYSQL_FIELD_OFFSET mysql_field_tell(MYSQL_RES *res);
 uint mysql_field_count(MYSQL *mysql);
 my_ulonglong mysql_affected_rows(MYSQL *mysql);
 my_ulonglong mysql_insert_id(MYSQL *mysql);
-uint mysql_errno(MYSQL *mysql);
- char * mysql_error(MYSQL *mysql);
  char * mysql_sqlstate(MYSQL *mysql);
 uint mysql_warning_count(MYSQL *mysql);
  char * mysql_info(MYSQL *mysql);
 uint mysql_thread_id(MYSQL *mysql);
  char * mysql_character_set_name(MYSQL *mysql);
 
-MYSQL * mysql_init(MYSQL *mysql);
 my_bool mysql_ssl_set(MYSQL *mysql,  char *key,
                                        char *cert,  char *ca,
                                        char *capath,  char *cipher);
 my_bool mysql_change_user(MYSQL *mysql,  char *user,
                                            char *passwd,  char *db);
-MYSQL* mysql_real_connect(MYSQL *mysql, const(char) *host,
-										const(char) *user,
-										const(char) *passwd,
-										const(char) *db,
-										uint port,
-										const(char) *unix_socket,
-										uint clientflag);
-int mysql_select_db(MYSQL *mysql,  char *db);
-int mysql_query(MYSQL *mysql,  char *q);
 int mysql_send_query(MYSQL *mysql,  char *q, uint length);
 int mysql_real_query(MYSQL *mysql,  char *q, uint length);
-MYSQL_RES * mysql_store_result(MYSQL *mysql);
-MYSQL_RES * mysql_use_result(MYSQL *mysql);
 my_bool mysql_master_query(MYSQL *mysql,  char *q,
                                            uint length);
 my_bool mysql_master_send_query(MYSQL *mysql,  char *q,
@@ -977,8 +1140,6 @@ int mysql_set_server_option(MYSQL *mysql,
                                                 option);
 int mysql_ping(MYSQL *mysql);
  char * mysql_stat(MYSQL *mysql);
- char * mysql_get_server_info(MYSQL *mysql);
- char * mysql_get_client_info();
 uint mysql_get_client_version();
  char * mysql_get_host_info(MYSQL *mysql);
 uint mysql_get_server_version(MYSQL *mysql);
@@ -995,8 +1156,6 @@ MYSQL_ROW_OFFSET mysql_row_seek(MYSQL_RES *result,
                                                 MYSQL_ROW_OFFSET offset);
 MYSQL_FIELD_OFFSET mysql_field_seek(MYSQL_RES *result,
                                            MYSQL_FIELD_OFFSET offset);
-MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);
-uint * mysql_fetch_lengths(MYSQL_RES *result);
 MYSQL_FIELD * mysql_fetch_field(MYSQL_RES *result);
 MYSQL_RES * mysql_list_fields(MYSQL *mysql,  char *table,
                                            char *wild);
@@ -1042,10 +1201,8 @@ struct st_mysql_bind {
   uint *length;
   my_bool *is_null;
   void *buffer;
-
   my_bool *error;
   enum_field_types buffer_type;
-
   uint buffer_length;
   ubyte *row_ptr;
   uint offset;
@@ -1062,9 +1219,6 @@ struct st_mysql_bind {
 };
 alias st_mysql_bind MYSQL_BIND;
 
-
-
-
 struct st_mysql_stmt {
   MEM_ROOT mem_root;
   LIST list;
@@ -1074,20 +1228,11 @@ struct st_mysql_stmt {
   MYSQL_FIELD *fields;
   MYSQL_DATA result;
   MYSQL_ROWS *data_cursor;
-
   my_ulonglong affected_rows;
   my_ulonglong insert_id;
-
-
-
-
   int function(st_mysql_stmt *stmt, ubyte **row) read_row_func;
   uint stmt_id;
   uint flags;
-
-
-
-
   uint server_status;
   uint last_errno;
   uint param_count;
@@ -1095,16 +1240,10 @@ struct st_mysql_stmt {
   enum_mysql_stmt_state state;
   char last_error[512];
   char sqlstate[5 +1];
-
   my_bool send_types_to_server;
   my_bool bind_param_done;
   ubyte bind_result_done;
-
   my_bool unbuffered_fetch_cancelled;
-
-
-
-
   my_bool update_max_length;
 };
 alias st_mysql_stmt MYSQL_STMT;
@@ -1112,18 +1251,7 @@ alias st_mysql_stmt MYSQL_STMT;
 
 enum enum_stmt_attr_type
 {
-
-
-
-
-
-
-
   STMT_ATTR_UPDATE_MAX_LENGTH,
-
-
-
-
   STMT_ATTR_CURSOR_TYPE
 };
 
@@ -1200,7 +1328,6 @@ my_bool mysql_rollback(MYSQL * mysql);
 my_bool mysql_autocommit(MYSQL * mysql, my_bool auto_mode);
 my_bool mysql_more_results(MYSQL *mysql);
 int mysql_next_result(MYSQL *mysql);
-void mysql_close(MYSQL *sock);
 uint net_safe_read(MYSQL* mysql);
 
 /*
@@ -1260,14 +1387,14 @@ ubyte[][char[]] db_fetch_assoc(ref MYSQL_RES* result)
 	mysql_field_seek(result, 0);
 	while ((field = mysql_fetch_field(result)) != null)
 	{
-		string name = to!string( field.name[0 .. field.name_length].dup );
+		string name = field.name[0 .. field.name_length].idup;
 		
 		if (row[y] == null)
 			hash[name] = null;
 		else if (lengths[y] == 0)
 			hash[name] = new ubyte[0];
 		else {
-			printf("lengths = %d\n",lengths[y]);
+			//printf("lengths = %d\n",lengths[y]);
 			hash[name] = row[y][0 .. lengths[y]].dup;
 			//writefln("hash[name] = %s",hash[name]);
 			//printf("hash[name] = %.*s\n",toString(hash[name]));
@@ -1277,117 +1404,6 @@ ubyte[][char[]] db_fetch_assoc(ref MYSQL_RES* result)
 	return hash;
 }
 
-/*
-//char[][char[]] mysql_fetch_assoc(MYSQL_RES *result) {
-string[string] mysql_fetch_assoc(MYSQL_RES *result) {
-	//char[][char[]] hash;
-	string[string] hash;
-	MYSQL_ROW row;
-	uint y=0;
-	MYSQL_FIELD *fields;
-	//MYSQL_FIELD_OFFSET offset;
-
-	row = mysql_fetch_row(result);
-	if (row != null) {
-		//offset = mysql_field_seek(result,0);
-		mysql_field_seek(result,0);
-		while ( (fields = mysql_fetch_field(result)) != null) {
-			hash[toString(fields.name)] = cast(string) toString(row[y]).dup;
-			y++;
-		}
-	} else {
-		hash = null;
-	}
-	return hash;
-}	
-
-
-string mysql_escape(string str) {
-	string str_escape;
-	foreach (char c; str) {
-		if (c =='\'') {
-			str_escape ~= "\\'";
-		} else {
-			if (c == '\\') {
-				str_escape~= "\\\\";
-			} else {
-				str_escape ~= c;
-			}
-		}
-	}		
-	return str_escape;
-}		
-*/
 }  // end extern(C)
-
-
-/*
- * mysql_connect - wrapper function
- */
-MYSQL* mysql_connect(MYSQL *mysql, string host, string user, string passwd, string db, uint port, string unix_socket, uint clientflag)
-{
-	return mysql_real_connect(mysql, host.ptr, user.ptr, passwd.ptr, db.ptr, port,
-							   cast(char*) unix_socket, clientflag);
-}	
-
-int  mysql_query_d(MYSQL *mysql, string q) {
-	return mysql_query(mysql, cast(char*) q);
-}
-
-string[] mysql_fetch_array(MYSQL_RES *result) {
-    string[] werte;
-    static MYSQL_ROW row;
-    uint y,count;
-
-    row = mysql_fetch_row(result);
-    if (row != null) {
-        count = mysql_num_fields(result);
-        for ( y = 0; count > y; y++)  {
-            werte ~= toString(row[y]);
-        }
-    } else {
-        werte = null;
-		mysql_free_result(result);
-    }
-    return werte;
-}
-
-string mysql_escape(string str) {
-    string str_escape;
-    foreach (char c; str) {
-        if (c =='\'') {
-            str_escape ~= "\\'";
-        } else {
-            if (c == '\\') {
-                str_escape~= "\\\\";
-            } else {
-                str_escape ~= c;
-            }
-        }
-    }
-    return str_escape;
-}
-
-string[string] mysql_fetch_assoc(MYSQL_RES *result) {
-    string[string] hash;
-    static MYSQL_ROW row;
-    uint y=0;
-    MYSQL_FIELD *fields;
-    //MYSQL_FIELD_OFFSET offset;
-
-    row = mysql_fetch_row(result);
-    if (row != null) {
-        //offset = mysql_field_seek(result,0);
-        mysql_field_seek(result,0);
-        while ( (fields = mysql_fetch_field(result)) != null) {
-            hash[toString(fields.name)] = cast(string) toString(row[y]);
-            y++;
-        }
-    } else {
-        hash = null;
-		mysql_free_result(result);
-    }
-    return hash;
-}
 
 
