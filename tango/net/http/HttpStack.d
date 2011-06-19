@@ -245,7 +245,7 @@ class HttpStack
         {
                 auto target = token.toString();
 
-                int length = target.length;
+                size_t length = target.length;
                 if (length > match.length)
                     length = match.length;
 
@@ -255,7 +255,7 @@ class HttpStack
                 version (Win32)
                          return memicmp (target.ptr, match.ptr, length) is 0;
                 version (Posix)
-                         return strncasecmp (cast(char*)target.ptr, match.ptr, length) is 0;
+                         return strncasecmp (cast(char*)target.ptr, match.ptr, cast(uint)length) is 0;
         }
         
         /**********************************************************************
@@ -266,7 +266,7 @@ class HttpStack
 
         final static void resize (ref Token[] tokens, int size)
         {
-                int i = tokens.length;
+                size_t i = tokens.length;
 
                 // this should *never* realistically happen 
                 if (size > MaxHttpStackSize)

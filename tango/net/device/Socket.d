@@ -237,7 +237,7 @@ class Socket : Conduit, ISelectable
                 if (scheduler)
                     return asyncRead (dst);
 
-                auto x = Eof;
+                size_t x = Eof;
                 if (wait (true))
                    {
                    x = native.receive (dst);
@@ -256,7 +256,7 @@ class Socket : Conduit, ISelectable
                 if (scheduler)
                     return asyncWrite (src);
 
-                auto x = Eof;
+                size_t x = Eof;
                 if (wait (false))
                    {
                    x = native.send (src);

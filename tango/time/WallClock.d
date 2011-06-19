@@ -195,7 +195,7 @@ struct WallClock
                 {
                         DateTime dt = void;
                         auto timeval = Clock.convert (utc);
-                        dt.time.millis = timeval.tv_usec / 1000;
+                        dt.time.millis = cast(uint)(timeval.tv_usec / 1000);
 
                         tm t = void;
                         localtime_r (&timeval.tv_sec, &t);

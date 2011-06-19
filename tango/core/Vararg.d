@@ -9,6 +9,8 @@
  * Authors:   Hauke Duden, Walter Bright
  */
 module tango.core.Vararg;
+pragma(msg, "tango.core.Vararg is deprecated. Please use core.vararg instead.");
+deprecated:
 
 /**
 

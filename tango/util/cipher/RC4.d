@@ -52,7 +52,7 @@ class RC4 : StreamCipher
         return (input^state[cast(ubyte)(state[x]+state[y])]);
     }
     
-    final override uint update(const(void[]) input_, void[] output_)
+    final override size_t update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");

@@ -202,7 +202,7 @@ T[] format8601(T) (T[] output, Time t)
 
 ******************************************************************************/
 
-Time parse(T) (T[] src, uint* ate = null)
+Time parse(T) (T[] src, size_t* ate = null)
 {
         size_t len;
         Time   value;
@@ -704,12 +704,12 @@ private int parseFullDay(T) (ref T* p)
                 "Saturday", 
                 ];
 
-        foreach (i, day; days)
-                 if (day == p[0..day.length])
-                    {
-                    p += day.length;
-                    return i;
-                    }
+		foreach (int i, day; days) {
+			if (day == p[0..day.length]) {
+				p += day.length;
+				return i;
+			}
+		}
         return -1;
 }
 

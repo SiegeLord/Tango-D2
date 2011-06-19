@@ -291,7 +291,7 @@ class CookieStack
 
         private final static void resize (ref Cookie[] cookies, int size)
         {
-                int i = cookies.length;
+                size_t i = cookies.length;
                 
                 for (cookies.length=size; i < cookies.length; ++i)
                      cookies[i] = new Cookie();
@@ -640,7 +640,7 @@ class CookieParser : Iterator!(char)
 
                 // we ran out of content; patch partial cookie values 
                 if (state is State.Token)
-                    setValue (content.length);
+                    setValue (cast(int)content.length);
 
                 // go home
                 return IConduit.Eof;

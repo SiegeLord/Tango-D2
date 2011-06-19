@@ -16,7 +16,7 @@
 module tango.math.internal.BignumNoAsm;
 
 public:
-alias uint BigDigit; // A Bignum is an array of BigDigits. 
+alias size_t BigDigit; // A Bignum is an array of BigDigits. 
     
     // Limits for when to switch between multiplication algorithms.
 enum : int { KARATSUBALIMIT = 10 }; // Minimum value for which Karatsuba is worthwhile.
@@ -139,7 +139,7 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 void multibyteShr(uint [] dest, uint [] src, uint numbits)
 {
     ulong c = 0;
-    for(int i=dest.length-1; i>=0; --i){
+    for(size_t i=dest.length-1; i>=0; --i){
         c += (src[i] >>numbits) + (cast(ulong)(src[i]) << (64 - numbits));
         dest[i]= cast(uint)c;
         c >>>= 32;
@@ -171,7 +171,7 @@ unittest
 /** dest[] = src[] * multiplier + carry.
  * Returns carry.
  */
-uint multibyteMul(uint[] dest, in uint[] src, uint multiplier, uint carry)
+size_t multibyteMul(size_t[] dest, in size_t[] src, size_t multiplier, size_t carry)
 {
     assert(dest.length==src.length);
     ulong c = carry;
@@ -197,31 +197,31 @@ unittest
  * dest[] += src[] * multiplier + carry(0..FFFF_FFFF).
  * Returns carry out of MSB (0..FFFF_FFFF).
  */
-uint multibyteMulAdd(char op)(uint [] dest, in uint[] src, uint multiplier, uint carry)
+size_t multibyteMulAdd(char op)(size_t [] dest, in size_t[] src, size_t multiplier, size_t carry)
 {
     assert(dest.length == src.length);
-    ulong c = carry;
-    for(int i = 0; i < src.length; ++i){
+    size_t c = carry;
+    for(size_t i = 0; i < src.length; ++i){
         static if(op=='+') {
-            c += cast(ulong)(multiplier) * src[i]  + dest[i];
-            dest[i] = cast(uint)c;
+            c += (multiplier) * src[i]  + dest[i];
+            dest[i] = c;
             c >>= 32;
         } else {
-            c += cast(ulong)multiplier * src[i];
-            ulong t = cast(ulong)dest[i] - cast(uint)c;
-            dest[i] = cast(uint)t;
-            c = cast(uint)((c>>32) - (t>>32));                
+            c += multiplier * src[i];
+            ulong t = dest[i] - cast(uint)c;
+            dest[i] = t;
+            c = ((c>>32) - (t>>32));                
         }
     }
-    return cast(uint)c;    
+    return c;    
 }
 
 debug (UnitTest)
 {
 unittest {
     
-    uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
+    size_t [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+    size_t [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
     multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
     assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
@@ -256,7 +256,7 @@ void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
 uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
 {
     ulong c = cast(ulong)overflow;
-    for(int i = dest.length-1; i>=0; --i){
+    for(size_t i = dest.length-1; i>=0; --i){
         c = (c<<32) + cast(ulong)(dest[i]);
         uint q = cast(uint)(c/divisor);
         c -= divisor * q;
@@ -293,16 +293,16 @@ void multibyteAddDiagonalSquares(uint[] dest, in uint[] src)
 }
 
 // Does half a square multiply. (square = diagonal + 2*triangle)
-void multibyteTriangleAccumulate(uint[] dest, in uint[] x)
+void multibyteTriangleAccumulate(size_t[] dest, in size_t[] x)
 {
     // x[0]*x[1...$] + x[1]*x[2..$] + ... + x[$-2]x[$-1..$]
     dest[x.length] = multibyteMul(dest[1 .. x.length], x[1..$], x[0], 0);
 	if (x.length <4) {
 	    if (x.length ==3) {
-            ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
-	        dest[2*x.length-3] = cast(uint)c;
+            size_t c = (x[$-1]) * x[$-2]  + dest[2*x.length-3];
+	        dest[2*x.length-3] = c;
 	        c >>= 32;
-	        dest[2*x.length-2] = cast(uint)c;
+	        dest[2*x.length-2] = c;
         }
 	    return;
 	}
@@ -312,15 +312,15 @@ void multibyteTriangleAccumulate(uint[] dest, in uint[] x)
     }
 	// Unroll the last two entries, to reduce loop overhead:
     ulong  c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
-    dest[2*x.length-5] = cast(uint)c;
+    dest[2*x.length-5] = c;
     c >>= 32;
     c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];
-    dest[2*x.length-4] = cast(uint)c;
+    dest[2*x.length-4] = c;
     c >>= 32;
     c += cast(ulong)(x[$-1]) * x[$-2];
-	dest[2*x.length-3] = cast(uint)c;
+	dest[2*x.length-3] = c;
 	c >>= 32;
-	dest[2*x.length-2] = cast(uint)c;
+	dest[2*x.length-2] = c;
 }
 
 void multibyteSquare(BigDigit[] result, BigDigit [] x)

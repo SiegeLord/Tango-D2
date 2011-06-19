@@ -845,13 +845,13 @@ class AES : BlockCipher
     private void setup(const(ubyte[]) key)
     {
         size_t nk = key.length / 4;
-        ROUNDS = nk + 6;
+        ROUNDS = cast(uint)(nk + 6);
         w = new uint[4*(ROUNDS+1)];
         
         for (uint i = 0, j = 0; i < nk; i++, j+=4)
             w[i] = ByteConverter.BigEndian.to!(uint)(key[j..j+int.sizeof]);
         
-        for (uint i = nk; i < w.length; i++)
+        for (size_t i = nk; i < w.length; i++)
         {
             uint t = w[i-1];
 

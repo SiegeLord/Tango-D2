@@ -356,7 +356,7 @@ version (linux)
             while (true)
             {
                 // FIXME: add support for the wakeup() call.
-                _eventCount = epoll_wait(_epfd, _events.ptr, _events.length, to);
+                _eventCount = epoll_wait(_epfd, _events.ptr, cast(int)(_events.length), to);
                 if (_eventCount >= 0)
                 {
                     break;
@@ -382,7 +382,7 @@ version (linux)
         {
             public uint length()
             {
-                return _events.length;
+                return cast(uint)_events.length;
             }
 
             /**

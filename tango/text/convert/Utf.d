@@ -96,7 +96,7 @@ inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, uint* ate=null) {retur
 
 *******************************************************************************/
 
-char[] toString (const(wchar[]) input, char[] output=null, uint* ate=null)
+char[] toString (const(wchar[]) input, char[] output=null, size_t* ate=null)
 {
         if (ate)
             *ate = input.length;
@@ -177,7 +177,7 @@ char[] toString (const(wchar[]) input, char[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-wchar[] toString16 (const(char[]) input, wchar[] output=null, uint* ate=null)
+wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
 {
         int     produced;
         const(char)*   pIn = input.ptr;
@@ -268,7 +268,7 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-char[] toString (const(dchar[]) input, char[] output=null, uint* ate=null)
+char[] toString (const(dchar[]) input, char[] output=null, size_t* ate=null)
 {
         if (ate)
             *ate = input.length;
@@ -358,7 +358,7 @@ char[] toString (const(dchar[]) input, char[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar[] toString32 (const(char[]) input, dchar[] output=null, uint* ate=null)
+dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
 {
         int     produced;
         const(char)*   pIn = input.ptr;
@@ -455,13 +455,13 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-wchar[] toString16 (const(dchar[]) input, wchar[] output=null, uint* ate=null)
+wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
 {
         if (ate)
             *ate = input.length;
         else
            {
-           int estimate = input.length * 2 + 2;
+           size_t estimate = input.length * 2 + 2;
            if (output.length < estimate)
                output.length = estimate;
            }
@@ -526,7 +526,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar[] toString32 (const(wchar[]) input, dchar[] output=null, uint* ate=null)
+dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
 {
         int     produced;
         const(wchar)*  pIn = input.ptr;
@@ -589,7 +589,7 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, uint* ate=null)
 
 *******************************************************************************/
 
-dchar decode (const(char[]) src, ref uint ate)
+dchar decode (const(char[]) src, ref size_t ate)
 {
         dchar[1] ret;
         return toString32 (src, ret, &ate)[0];
@@ -602,7 +602,7 @@ dchar decode (const(char[]) src, ref uint ate)
 
 *******************************************************************************/
 
-dchar decode (const(wchar[]) src, ref uint ate)
+dchar decode (const(wchar[]) src, ref size_t ate)
 {
         dchar[1] ret;
         return toString32 (src, ret, &ate)[0];

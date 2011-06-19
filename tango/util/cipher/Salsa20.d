@@ -103,7 +103,7 @@ class Salsa20 : StreamCipher
         return result;
     }
     
-    uint update(const(void[]) input_, void[] output_)
+    override size_t update(const(void[]) input_, void[] output_)
     {
         if (!_initialized)
             invalid(name()~": Cipher not initialized");

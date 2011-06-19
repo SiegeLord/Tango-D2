@@ -12,10 +12,10 @@
 
 module tango.io.device.Conduit;
 
-private import core.thread,
-               tango.core.Exception;
-
 public  import tango.io.model.IConduit;
+private import tango.core.Exception;
+private import core.thread;
+
 
 /*******************************************************************************
 
@@ -420,7 +420,7 @@ class Conduit : IConduit
                          max -= len;
                          done += len;
                          auto p = tmp.ptr;
-                         for (auto j=0; len > 0; len -= j, p += j)
+                         for (size_t j=0; len > 0; len -= j, p += j)
                               if ((j = dst.write (p[0 .. len])) is Eof)
                                    return Eof;
                          }

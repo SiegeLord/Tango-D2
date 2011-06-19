@@ -2159,7 +2159,7 @@ public class SocketSet
                 c_long  seconds, microseconds;
         }
 
-        private uint  nbytes; //Win32: excludes uint.size "count"
+        private size_t nbytes; //Win32: excludes uint.size "count"
         private byte* buf;
 
         struct fd {}
@@ -2186,24 +2186,24 @@ public class SocketSet
         {
                 import tango.core.BitManip;
 
-                uint nfdbits;
+                size_t nfdbits;
                 socket_t _maxfd = 0;
 
-                uint fdelt(socket_t s)
+                size_t fdelt(socket_t s)
                 {
-                        return cast(uint)s / nfdbits;
+                        return cast(size_t)s / nfdbits;
                 }
 
 
-                uint fdmask(socket_t s)
+                size_t fdmask(socket_t s)
                 {
-                        return 1 << cast(uint)s % nfdbits;
+                        return 1 << cast(size_t)s % nfdbits;
                 }
 
 
-                uint* first()
+                size_t* first()
                 {
-                        return cast(uint*)buf;
+                        return cast(size_t*)buf;
                 }
 
                 public socket_t maxfd()
@@ -2228,7 +2228,7 @@ public class SocketSet
                         if (max <= 32)
                             nbytes = 32 * uint.sizeof;
                         else
-                           nbytes = max * uint.sizeof;
+                            nbytes = max * uint.sizeof;
 
                         buf = (new byte[nbytes]).ptr;
                         nfdbits = nbytes * 8;
@@ -2383,7 +2383,7 @@ public class SocketSet
                 remove(s.handle);
         }
 
-        int isSet(socket_t s)
+        size_t isSet(socket_t s)
         {
                 version(Win32)
                 {
@@ -2400,8 +2400,8 @@ public class SocketSet
                 else version (Posix)
                 {
                         //return bt(cast(uint*)&first[fdelt(s)], cast(uint)s % nfdbits);
-                        int index = cast(uint)s % nfdbits;
-                        return (cast(uint*)&first[fdelt(s)])[index / (uint.sizeof*8)] & (1 << (index & ((uint.sizeof*8) - 1)));
+                        size_t index = cast(size_t)s % nfdbits;
+                        return (cast(size_t*)&first[fdelt(s)])[index / (uint.sizeof*8)] & (1 << (index & ((uint.sizeof*8) - 1)));
                 }
                 else
                 {
@@ -2409,12 +2409,12 @@ public class SocketSet
                 }
         }
 
-        int isSet(Berkeley* s)
+        size_t isSet(Berkeley* s)
         {
                 return isSet(s.handle);
         }
 
-        uint max()
+        size_t max()
         {
                 return nbytes / socket_t.sizeof;
         }

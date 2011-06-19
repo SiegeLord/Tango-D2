@@ -152,8 +152,8 @@ class RC6 : BlockCipher
         {
             A = S[i] = Bitwise.rotateLeft(S[i]+A+B, 3u);
             B = L[j] = Bitwise.rotateLeft(L[j]+A+B, A+B);
-            i = (i + 1) % (2*ROUNDS+4);
-            j = (j + 1) % c;
+            i = cast(uint)((i + 1) % (2*ROUNDS+4));
+            j = cast(uint)((j + 1) % c);
         }
     }
     

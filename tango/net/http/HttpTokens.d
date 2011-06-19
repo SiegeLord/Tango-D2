@@ -390,8 +390,8 @@ class HttpTokens
 
         private char[] trim (char[] source)
         {
-                int  front,
-                     back = source.length;
+                size_t  front;
+                size_t back = source.length;
 
                 if (back)
                    {

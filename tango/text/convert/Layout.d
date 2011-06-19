@@ -26,9 +26,9 @@
 
 module tango.text.convert.Layout;
 
-private import  tango.core.Exception;
-
-private import  Utf = tango.text.convert.Utf;
+private import core.vararg;
+private import tango.core.Exception;
+private import Utf = tango.text.convert.Utf;
 
 private import  Float = tango.text.convert.Float,
                 Integer = tango.text.convert.Integer;
@@ -50,31 +50,6 @@ version (WithDateTime)
         private import tango.text.convert.DateTime;
         }
 
-
-/*******************************************************************************
-
-        Platform issues ...
-
-*******************************************************************************/
-
-version (GNU)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-else version(LDC)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-     else
-        {
-        alias void* Arg;
-        alias void* ArgList;
-        }
-
 /*******************************************************************************
 
         Contains methods for replacing format items in a string with string
@@ -85,7 +60,8 @@ else version(LDC)
 class Layout(T)
 {
         public alias convert opCall;
-        public alias scope uint delegate (const(T[])) Sink;
+        public alias scope size_t delegate (const(T[])) Sink;
+        public alias void* Arg;
        
         static if (is (typeof(DateTimeLocale)))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
@@ -121,12 +97,12 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, ArgList args)
+        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, va_list args)
         {
                 T*  p = result.ptr;
                 size_t available = result.length;
 
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         size_t len = s.length;
                         if (len > available)
@@ -185,7 +161,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, const(T[]) formatStr, ...)
+        public final size_t convert (Sink sink, const(T[]) formatStr, ...)
         {
                 return convert (sink, _arguments, _argptr, formatStr);
         }
@@ -199,9 +175,9 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (OutputStream output, const(T[]) formatStr, ...)
+        public final size_t convert (OutputStream output, const(T[]) formatStr, ...)
         {
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         return output.write(s);
                 }
@@ -213,11 +189,11 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
+        public final T[] convert (TypeInfo[] arguments, va_list args, const(T[]) formatStr)
         {
                 T[] output;
 
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         output ~= s;
                         return s.length;
@@ -240,7 +216,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
+        public final size_t convert (Sink sink, TypeInfo[] arguments, va_list args, const(T[]) formatStr)
         {
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
@@ -356,7 +332,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private uint parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
+        private size_t parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
         {
                 T[512] result = void;
                 int length, nextIndex;
@@ -459,7 +435,7 @@ class Layout(T)
                       // handle alignment
                       void emit (const(T[]) str)
                       {
-                                int padding = width - str.length;
+                                size_t padding = width - str.length;
 
                                 if (crop)
                                    {
@@ -835,7 +811,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private uint spaces (Sink sink, int count)
+        private size_t spaces (Sink sink, size_t count)
         {
                 size_t ret;
 

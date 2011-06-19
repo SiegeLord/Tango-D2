@@ -155,7 +155,7 @@ SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
 # generare src and obj
-SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
+SRC=$(SRC_CORE) $(SRC_IO) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(SRC:%.d=%.o)
 HTML=$(SRC:%.d=%.html)
 

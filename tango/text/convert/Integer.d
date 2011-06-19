@@ -228,7 +228,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                 ];
 
         ubyte index;
-        int len = dst.length;
+        size_t len = dst.length;
 
         if (len)
            {
@@ -305,7 +305,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
               // prefix number with zeros? 
               if (width)
                  {
-                 width = dst.length - width - prefix.length;
+                 width = cast(int)(dst.length - width - prefix.length);
                  while (len > width && len > 0)
                        {
                        *--p = '0';
@@ -420,10 +420,12 @@ ulong convert(T) (const(T[]) digits, uint radix=10, uint* ate=null)
 
 ******************************************************************************/
 
-uint trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
-{return trim!(T)(digits, sign, radix);}
+size_t trim(T, U=size_t) (const(T[]) digits, ref bool sign, ref U radix)
+{
+		return trim!(T)(digits, sign, radix);
+}
 
-uint trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
+size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
 {
         T       c;
         const (T)*      p = digits.ptr;

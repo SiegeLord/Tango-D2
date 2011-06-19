@@ -291,8 +291,7 @@ class Device : Conduit, ISelectable
 
                 override size_t read (void[] dst)
                 {
-                        auto read = posix.read (handle, dst.ptr, dst.length);
-
+                        size_t read = posix.read (handle, dst.ptr, dst.length);
                         if (read is -1)
                             error;
                         else
@@ -311,7 +310,7 @@ class Device : Conduit, ISelectable
 
                 override size_t write (const(void[]) src)
                 {
-                        int written = posix.write (handle, src.ptr, src.length);
+                        size_t written = posix.write (handle, src.ptr, src.length);
                         if (written is -1)
                             error;
                         return written;

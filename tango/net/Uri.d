@@ -545,7 +545,7 @@ class Uri : UriView
                         return c;
                 }
                 
-                auto length = s.length;
+                size_t length = s.length;
 
                 // take a peek first, to see if there's work to do
                 if (length && memchr (cast(char*)s.ptr, '%', length))
@@ -619,8 +619,8 @@ class Uri : UriView
         final Uri parse (const(char)[] uri, bool relative = false)
         {
                 char    c;
-                int     i, 
-                        mark;
+                size_t  i; 
+                size_t  mark;
                 auto    prefix = path_;
                 auto    len = uri.length;
 
@@ -815,7 +815,7 @@ class Uri : UriView
 
         private void parseAuthority (const(char)[] auth)
         {
-                int     mark,
+                size_t  mark,
                         len = auth.length;
 
                 // get userinfo: (([^@]*)@?)
@@ -828,7 +828,7 @@ class Uri : UriView
                             }
 
                 // get port: (:(.*))?
-                for (int i=mark; i < len; ++i)
+                for (size_t i=mark; i < len; ++i)
                      if (auth [i] is ':')
                         {
                         port_ = Integer.atoi (auth [i+1 .. len]);
@@ -896,7 +896,7 @@ private struct HeapSlice
 
         ***********************************************************************/
 
-        final void* expand (uint size)
+        final void* expand (size_t size)
         {
                 auto len = used + size;
                 if (len > buffer.length)

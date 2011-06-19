@@ -79,16 +79,13 @@
 
 module tango.util.log.Log;
 
+private import core.vararg;
+
 private import  tango.sys.Common;
-
 private import  tango.time.Clock;
-
 private import  tango.core.Exception;
-
 private import  tango.io.model.IConduit;
-
 private import  tango.text.convert.Format;
-
 private import  tango.util.log.model.ILogger;
 
 /*******************************************************************************
@@ -597,7 +594,7 @@ public class Logger : ILogger
 
         final const(char)[] name ()
         {
-                int i = name_.length;
+                size_t i = name_.length;
                 if (i > 0)
                     --i;
                 return name_[0 .. i];
@@ -1276,7 +1273,7 @@ package struct LogEvent
                 assert (s.length > 0);
                 long ms = time.millis;
 
-                int len = s.length;
+                size_t len = s.length;
                 do {
                    s[--len] = cast(char)(ms % 10 + '0');
                    ms /= 10;

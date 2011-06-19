@@ -224,7 +224,7 @@ class Blowfish : BlockCipher
     {
         _encrypt = encrypt;
         
-        uint len = keyParams.key.length;
+        size_t len = keyParams.key.length;
         if (len < MIN_KEY_SIZE || len > MAX_KEY_SIZE)
             invalid(name()~": Invalid key length (requires 4-56 bytes)");
         

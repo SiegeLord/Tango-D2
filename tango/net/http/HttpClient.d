@@ -507,7 +507,7 @@ class HttpClient
 
                       if (headersOut.get (HttpHeader.ContentLength, null) is null)
                          {
-                         headersOut.addInt (HttpHeader.ContentLength, query.length);
+                         headersOut.addInt (HttpHeader.ContentLength, cast(int)query.length);
                          pump = (OutputBuffer o){o.append(query);};
                          }
                       }
