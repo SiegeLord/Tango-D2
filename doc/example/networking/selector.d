@@ -114,7 +114,7 @@ void testSelector(ISelector selector)
         Socket       clientSocket;
         char[MAX_LENGTH]    buffer;
         int                 eventCount;
-        uint                count;
+        size_t              count;
         int                 i = 0;
 
         debug (selector)
@@ -326,7 +326,7 @@ void clientThreadFunc()
     {
         InternetAddress     addr = new InternetAddress(SERVER_ADDR, SERVER_PORT);
         char[MAX_LENGTH]    buffer;
-        uint count;
+        size_t count;
         int i;
 
         debug (selector)

@@ -16,28 +16,27 @@ module tango.core.ByteSwap;
 
 import tango.core.BitManip;
 
-/*******************************************************************************
-
-        Reverse byte order for specific datum sizes. Note that the
-        byte-swap approach avoids alignment issues, so is probably
-        faster overall than a traditional 'shift' implementation.
-        ---
-        ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
-
-        auto a = x.dup;
-        ByteSwap.swap16(a);
-        assert(a == [cast(ubyte) 0x02, 0x01, 0x04, 0x03, 0x06, 0x05, 0x08, 0x07]);
-
-        auto b = x.dup;
-        ByteSwap.swap32(b);
-        assert(b == [cast(ubyte) 0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05]);
-
-        auto c = x.dup;
-        ByteSwap.swap64(c);
-        assert(c == [cast(ubyte) 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01]);
-        ---
-
-*******************************************************************************/
+/**
+ * Reverse byte order for specific datum sizes. Note that the
+ * byte-swap approach avoids alignment issues, so is probably
+ * faster overall than a traditional 'shift' implementation.
+ * 
+ * --------------------
+ * ubyte[] x = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
+ *
+ * auto a = x.dup;
+ * ByteSwap.swap16(a);
+ * assert(a == [cast(ubyte) 0x02, 0x01, 0x04, 0x03, 0x06, 0x05, 0x08, 0x07]);
+ *
+ * auto b = x.dup;
+ * ByteSwap.swap32(b);
+ * assert(b == [cast(ubyte) 0x04, 0x03, 0x02, 0x01, 0x08, 0x07, 0x06, 0x05]);
+ *
+ * auto c = x.dup;
+ * ByteSwap.swap64(c);
+ * assert(c == [cast(ubyte) 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01]);
+ * --------------------
+ */
 
 struct ByteSwap
 {
