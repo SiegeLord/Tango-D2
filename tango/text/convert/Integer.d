@@ -645,8 +645,8 @@ debug (UnitTest)
         assert(parse( "ffffFFFF", 16) == uint.max );
         assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
         // oct
-        assert(parse( "55", 8) == 055 );
-        assert(parse( "100", 8) == 0100 );
+        assert(parse( "55", 8) == 45 );
+        assert(parse( "100", 8) == 64 );
         // bin
         assert(parse( "10000", 2) == 0x10 );
         // trim
@@ -656,8 +656,8 @@ debug (UnitTest)
         // recognise radix prefix
         assert(parse( "0xFFFF" ) == ushort.max );
         assert(parse( "0XffffFFFF" ) == uint.max );
-        assert(parse( "0o55") == 055 );
-        assert(parse( "0O55" ) == 055 );
+        assert(parse( "0o55") == 45 );
+        assert(parse( "0O55" ) == 45 );
         assert(parse( "0b10000") == 0x10 );
         assert(parse( "0B10000") == 0x10 );
 
@@ -668,9 +668,9 @@ debug (UnitTest)
         assert(parse("0b10", 10) == 0);
         assert(parse("0o10", 10) == 0);
         assert(parse("0b10") == 0b10);
-        assert(parse("0o10") == 010);
+        assert(parse("0o10") == 8);
         assert(parse("0b10", 2) == 0b10);
-        assert(parse("0o10", 8) == 010);
+        assert(parse("0o10", 8) == 8);
 
         // revised tests
         assert (format(tmp, 10, "d") == "10");

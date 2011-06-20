@@ -13,501 +13,8 @@
  * Authors:   Sean Kelly, Fawzi Mohamed
  */
 module tango.core.Thread;
-pragma(msg, "In D2 there is core.thread. Use this class instead.");
-deprecated:
 
-import tango.core.sync.Atomic;
-debug(Thread)
-    import tango.stdc.stdio : printf;
-
-
-// this should be true for most architectures
-version = StackGrowsDown;
-version(darwin){
-    version=AtomicSuspendCount;
-}
-version(linux){
-    version=AtomicSuspendCount;
-}
-
-public
-{
-//    import tango.core.TimeSpan;
-}
-private
-{
-    import tango.core.Exception;
-
-    extern (C) void  _d_monitorenter(Object);
-    extern (C) void  _d_monitorexit(Object);
-
-    //
-    // exposed by compiler runtime
-    //
-    extern (C) void* rt_stackBottom();
-    extern (C) void* rt_stackTop();
-
-
-    void* getStackBottom()
-    {
-        return rt_stackBottom();
-    }
-
-
-    void* getStackTop()
-    {
-        version( D_InlineAsm_X86 )
-        {
-            asm
-            {
-                naked;
-                mov EAX, ESP;
-                ret;
-            }
-        }
-        else
-        {
-            return rt_stackTop();
-        }
-    }
-
-    version(D_InlineAsm_X86){
-        uint getEBX(){
-            uint retVal;
-            asm{
-                mov retVal,EBX;
-            }
-            return retVal;
-        }
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Thread Entry Point and Signal Handlers
-////////////////////////////////////////////////////////////////////////////////
-
-
-version( Win32 )
-{
-    private
-    {
-        import tango.stdc.stdint : uintptr_t; // for _beginthreadex decl below
-        import tango.sys.win32.UserGdi;
-
-        enum DWORD TLS_OUT_OF_INDEXES  = 0xFFFFFFFF;
-
-        //
-        // avoid multiple imports via tango.sys.windows.process
-        //
-        extern (Windows) alias uint function(void*) btex_fptr;
-        extern (C) uintptr_t _beginthreadex(void*, uint, btex_fptr, void*, uint, uint*);
-
-
-        //
-        // entry point for Windows threads
-        //
-        extern (Windows) uint thread_entryPoint( void* arg )
-        {
-            Thread  obj = cast(Thread) arg;
-            assert( obj );
-            scope( exit ) Thread.remove( obj );
-
-            assert( obj.m_curr is &obj.m_main );
-            obj.m_main.bstack = getStackBottom();
-            obj.m_main.tstack = obj.m_main.bstack;
-            Thread.add( &obj.m_main );
-            Thread.setThis( obj );
-
-            // NOTE: No GC allocations may occur until the stack pointers have
-            //       been set and Thread.getThis returns a valid reference to
-            //       this thread object (this latter condition is not strictly
-            //       necessary on Win32 but it should be followed for the sake
-            //       of consistency).
-
-            // TODO: Consider putting an auto exception object here (using
-            //       alloca) forOutOfMemoryError plus something to track
-            //       whether an exception is in-flight?
-
-            try
-            {
-                obj.run();
-            }
-            catch( Object o )
-            {
-                obj.m_unhandled = o;
-            }
-            return 0;
-        }
-
-
-        //
-        // copy of the same-named function in phobos.std.thread--it uses the
-        // Windows naming convention to be consistent with GetCurrentThreadId
-        //
-        HANDLE GetCurrentThreadHandle()
-        {
-            enum uint DUPLICATE_SAME_ACCESS = 0x00000002;
-
-            HANDLE curr = GetCurrentThread(),
-                   proc = GetCurrentProcess(),
-                   hndl;
-
-            DuplicateHandle( proc, curr, proc, &hndl, 0, TRUE, DUPLICATE_SAME_ACCESS );
-            return hndl;
-        }
-    }
-}
-else version( Posix )
-{
-    private
-    {
-        import tango.stdc.posix.semaphore;
-        import tango.stdc.posix.pthread;
-        import tango.stdc.posix.signal;
-        import tango.stdc.posix.time;
-        import tango.stdc.errno;
-
-        extern (C) int getErrno();
-
-        version( GNU )
-        {
-            import gcc.builtins;
-        }
-
-
-        //
-        // entry point for POSIX threads
-        //
-        extern (C) void* thread_entryPoint( void* arg )
-        {
-            Thread  obj = cast(Thread) arg;
-            assert( obj );
-            scope( exit )
-            {
-                // NOTE: isRunning should be set to false after the thread is
-                //       removed or a double-removal could occur between this
-                //       function and thread_suspendAll.
-                Thread.remove( obj );
-                obj.m_isRunning = false;
-            }
-
-            static extern (C) void thread_cleanupHandler( void* arg )
-            {
-                Thread  obj = cast(Thread) arg;
-                assert( obj );
-
-                // NOTE: If the thread terminated abnormally, just set it as
-                //       not running and let thread_suspendAll remove it from
-                //       the thread list.  This is safer and is consistent
-                //       with the Windows thread code.
-                obj.m_isRunning = false;
-            }
-
-            // NOTE: Using void to skip the initialization here relies on
-            //       knowledge of how pthread_cleanup is implemented.  It may
-            //       not be appropriate for all platforms.  However, it does
-            //       avoid the need to link the pthread module.  If any
-            //       implementation actually requires default initialization
-            //       then pthread_cleanup should be restructured to maintain
-            //       the current lack of a link dependency.
-            version( linux )
-            {
-                pthread_cleanup cleanup = void;
-                cleanup.push( &thread_cleanupHandler, cast(void*) obj );
-            }
-            else version( darwin )
-            {
-                pthread_cleanup cleanup = void;
-                cleanup.push( &thread_cleanupHandler, cast(void*) obj );
-            }
-            else version( solaris )
-            {
-                pthread_cleanup cleanup = void;
-                cleanup.push( &thread_cleanupHandler, cast(void*) obj );
-            }
-            else
-            {
-                pthread_cleanup_push( &thread_cleanupHandler, cast(void*) obj );
-            }
-
-            // NOTE: For some reason this does not always work for threads.
-            //obj.m_main.bstack = getStackBottom();
-            version( D_InlineAsm_X86 )
-            {
-                static void* getBasePtr()
-                {
-                    asm
-                    {
-                        naked;
-                        mov EAX, EBP;
-                        ret;
-                    }
-                }
-
-                obj.m_main.bstack = getBasePtr();
-            }
-            else version( StackGrowsDown )
-                obj.m_main.bstack = &obj + 1;
-            else
-                obj.m_main.bstack = &obj;
-            obj.m_main.tstack = obj.m_main.bstack;
-            assert( obj.m_curr == &obj.m_main );
-            Thread.add( &obj.m_main );
-            Thread.setThis( obj );
-
-            // NOTE: No GC allocations may occur until the stack pointers have
-            //       been set and Thread.getThis returns a valid reference to
-            //       this thread object (this latter condition is not strictly
-            //       necessary on Win32 but it should be followed for the sake
-            //       of consistency).
-
-            // TODO: Consider putting an auto exception object here (using
-            //       alloca) forOutOfMemoryError plus something to track
-            //       whether an exception is in-flight?
-
-            try
-            {
-                obj.run();
-            }
-            catch( Throwable o )
-            {
-                obj.m_unhandled = o;
-            }
-            return null;
-        }
-
-
-        //
-        // used to track the number of suspended threads
-        //
-        version(AtomicSuspendCount){
-            int suspendCount;
-        } else {
-            sem_t   suspendCount;
-        }
-
-
-        extern (C) void thread_suspendHandler( int sig )
-        in
-        {
-            assert( sig == SIGUSR1 );
-        }
-        body
-        {
-            version( LDC)
-            {
-                version(X86)
-                {
-                    uint eax,ecx,edx,ebx,ebp,esi,edi;
-                    asm
-                    {
-                        mov eax[EBP], EAX      ;
-                        mov ecx[EBP], ECX      ;
-                        mov edx[EBP], EDX      ;
-                        mov ebx[EBP], EBX      ;
-                        mov ebp[EBP], EBP      ;
-                        mov esi[EBP], ESI      ;
-                        mov edi[EBP], EDI      ;
-                    }
-                }
-                else version (X86_64)
-                {
-                    ulong rax,rbx,rcx,rdx,rbp,rsi,rdi,rsp,r8,r9,r10,r11,r12,r13,r14,r15;
-                    asm
-                    {
-                        movq rax[RBP], RAX        ;
-                        movq rbx[RBP], RBX        ;
-                        movq rcx[RBP], RCX        ;
-                        movq rdx[RBP], RDX        ;
-                        movq rbp[RBP], RBP        ;
-                        movq rsi[RBP], RSI        ;
-                        movq rdi[RBP], RDI        ;
-                        movq rsp[RBP], RSP        ;
-                        movq r8 [RBP], R8         ; 
-                        movq r9 [RBP], R9         ; 
-                        movq r10[RBP], R10        ;
-                        movq r11[RBP], R11        ;
-                        movq r12[RBP], R12        ;
-                        movq r13[RBP], R13        ;
-                        movq r14[RBP], R14        ;
-                        movq r15[RBP], R15        ;
-                    }
-                }
-                else
-                {
-                    static assert( false, "Architecture not supported." );
-                }
-            }
-            else version( D_InlineAsm_X86 )
-            {
-                asm
-                {
-                    pushad;
-                }
-            }
-            else version( GNU )
-            {
-                __builtin_unwind_init();
-            }
-            else version ( D_InlineAsm_X86_64 )
-            {
-                asm
-                {
-                    // Not sure what goes here, pushad is invalid in 64 bit code
-                    push RAX ;
-                    push RBX ;
-                    push RCX ;
-                    push RDX ;
-                    push RSI ;
-                    push RDI ;
-                    push RBP ;
-                    push R8  ;
-                    push R9  ;
-                    push R10 ;
-                    push R11 ;
-                    push R12 ;
-                    push R13 ;
-                    push R14 ;
-                    push R15 ;
-                    push EAX ;   // 16 byte align the stack
-                }
-            }
-            else
-            {
-                static assert( false, "Architecture not supported." );
-            }
-
-            // NOTE: Since registers are being pushed and popped from the stack,
-            //       any other stack data used by this function should be gone
-            //       before the stack cleanup code is called below.
-            {
-                Thread  obj = Thread.getThis();
-
-                // NOTE: The thread reference returned by getThis is set within
-                //       the thread startup code, so it is possible that this
-                //       handler may be called before the reference is set.  In
-                //       this case it is safe to simply suspend and not worry
-                //       about the stack pointers as the thread will not have
-                //       any references to GC-managed data.
-                if( obj && !obj.m_lock )
-                {
-                    obj.m_curr.tstack = getStackTop();
-                }
-
-                sigset_t    sigres = void;
-                int         status;
-
-                status = sigfillset( &sigres );
-                assert( status == 0 );
-
-                status = sigdelset( &sigres, SIGUSR2 );
-                assert( status == 0 );
-
-                version (AtomicSuspendCount){
-                    auto oldV=flagAdd(suspendCount,1);
-                } else {
-                    status = sem_post( &suspendCount );
-                    assert( status == 0 );
-                }
-
-                // here one could do some work (like scan the current stack in this thread...)
-
-                sigsuspend( &sigres );
-
-                if( obj && !obj.m_lock )
-                {
-                    obj.m_curr.tstack = obj.m_curr.bstack;
-                }
-            }
-
-            version( LDC)
-            {
-                // nothing to pop
-            }
-            else version( D_InlineAsm_X86 )
-            {
-                asm
-                {
-                    popad;
-                }
-            }
-            else version( GNU )
-            {
-                // registers will be popped automatically
-            }
-            else version ( D_InlineAsm_X86_64 )
-            {
-                asm
-                {
-                    // Not sure what goes here, popad is invalid in 64 bit code
-                    pop EAX ;   // 16 byte align the stack
-                    pop R15 ;
-                    pop R14 ;
-                    pop R13 ;
-                    pop R12 ;
-                    pop R11 ;
-                    pop R10 ;
-                    pop R9  ;
-                    pop R8  ;
-                    pop RBP ;
-                    pop RDI ;
-                    pop RSI ;
-                    pop RDX ;
-                    pop RCX ;
-                    pop RBX ;
-                    pop RAX ;
-                }
-            }
-            else
-            {
-                static assert( false, "Architecture not supported." );
-            }
-        }
-
-
-        extern (C) void thread_resumeHandler( int sig )
-        in
-        {
-            assert( sig == SIGUSR2 );
-        }
-        body
-        {
-            int status;
-            version (AtomicSuspendCount){
-                auto oldV=flagAdd(suspendCount,-1);
-            } else {
-                status = sem_post( &suspendCount );
-            }
-            assert( status == 0 );
-        }
-    }
-    
-    alias void function(int) sHandler;
-    sHandler _thread_abortHandler=null;
-    
-    extern (C) void thread_abortHandler( int sig ){
-        if (_thread_abortHandler!is null){
-            _thread_abortHandler(sig);
-        } else {
-            exit(-1);
-        }
-    }
-    
-    extern (C) void setthread_abortHandler(sHandler f){
-        _thread_abortHandler=f;
-    }
-
-}
-else
-{
-    // NOTE: This is the only place threading versions are checked.  If a new
-    //       version is added, the module code will need to be searched for
-    //       places where version-specific code may be required.  This can be
-    //       easily accomlished by searching for 'Windows' or 'Posix'.
-    static assert( false, "Unknown threading implementation." );
-}
-
+private import core.thread;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Thread
@@ -552,169 +59,116 @@ else
  * composed.start();
  * -----------------------------------------------------------------------------
  */
-class Thread
+class Thread : core.thread.Thread
 {
-    ////////////////////////////////////////////////////////////////////////////
-    // Initialization
-    ////////////////////////////////////////////////////////////////////////////
-
-
     /**
-     * Initializes a thread object which is associated with a static
-     * D function.
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.
      *
      * Params:
-     *  fn = The thread function.
-     *  sz = The stack size for this thread.
+     *  period = The minimum duration the calling thread should be suspended,
+     *           in seconds.  Sub-second durations are specified as fractional
+     *           values.
      *
      * In:
-     *  fn must not be null.
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
+     * Thread.sleep( 5 );    // sleep for 5 seconds
+     * -------------------------------------------------------------------------
      */
-    this( void function() fn, size_t sz = 0 )
+    static void sleep( double period ) {
+			long lperiod = cast(long)(period * 10_000_000);
+			Thread.sleep(lperiod);
+	}
+	
+    /+
+    /**
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.
+     *
+     * Params:
+     *  period = The minimum duration the calling thread should be suspended.
+     *
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
+     *
+     * Example:
+     * -------------------------------------------------------------------------
+     * Thread.sleep( TimeSpan.milliseconds( 50 ) ); // sleep for 50 milliseconds
+     * Thread.sleep( TimeSpan.seconds( 5 ) );       // sleep for 5 seconds
+     * -------------------------------------------------------------------------
+     */
+    static void sleep( TimeSpan period )
     in
     {
-        assert( fn );
+        assert( period.milliseconds < uint.max - 1 );
     }
     body
     {
-        m_fn   = fn;
-        m_sz   = sz;
-        m_call = Call.FN;
-        m_curr = &m_main;
-    }
-
-
-    /**
-     * Initializes a thread object which is associated with a dynamic
-     * D function.
-     *
-     * Params:
-     *  dg = The thread function.
-     *  sz = The stack size for this thread.
-     *
-     * In:
-     *  dg must not be null.
-     */
-    this( void delegate() dg, size_t sz = 0 )
-    in
-    {
-        assert( dg );
-    }
-    body
-    {
-        m_dg   = dg;
-        m_sz   = sz;
-        m_call = Call.DG;
-        m_curr = &m_main;
-    }
-
-
-    /**
-     * Cleans up any remaining resources used by this object.
-     */
-    ~this()
-    {
-        if( m_addr == m_addr.init )
-        {
-            return;
-        }
-
         version( Win32 )
         {
-            m_addr = m_addr.init;
-            CloseHandle( m_hndl );
-            m_hndl = m_hndl.init;
+            Sleep( cast(uint)( period.milliseconds ) );
         }
         else version( Posix )
         {
-            pthread_detach( m_addr );
-            m_addr = m_addr.init;
-        }
-    }
+            timespec tin  = void;
+            timespec tout = void;
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // General Actions
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     * Starts the thread and invokes the function or delegate passed upon
-     * construction.
-     *
-     * In:
-     *  This routine may only be called once per thread instance.
-     *
-     * Throws:
-     *  ThreadException if the thread fails to start.
-     */
-    final void start()
-    in
-    {
-        assert( !next && !prev );
-    }
-    body
-    {
-        version( Win32 ) {} else
-        version( Posix )
-        {
-            pthread_attr_t  attr;
-
-            if( pthread_attr_init( &attr ) )
-                throw new ThreadException( "Error initializing thread attributes" );
-            if( m_sz && pthread_attr_setstacksize( &attr, m_sz ) )
-                throw new ThreadException( "Error initializing thread stack size" );
-            if( pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE ) )
-                throw new ThreadException( "Error setting thread joinable" );
-        }
-
-        // NOTE: This operation needs to be synchronized to avoid a race
-        //       condition with the GC.  Without this lock, the thread
-        //       could start and allocate memory before being added to
-        //       the global thread list, preventing it from being scanned
-        //       and causing memory to be collected that is still in use.
-        synchronized( slock )
-        {
-            synchronized multiThreadedFlag = true;
-            version( Win32 )
+            if( tin.tv_sec.max < period.seconds )
             {
-                m_hndl = cast(HANDLE) _beginthreadex( null, m_sz, &thread_entryPoint, cast(void*) this, 0, &m_addr );
-                if( cast(size_t) m_hndl == 0 )
-                    throw new ThreadException( "Error creating thread" );
+                tin.tv_sec  = tin.tv_sec.max;
+                tin.tv_nsec = 0;
             }
-            else version( Posix )
+            else
             {
-                m_isRunning = true;
-                scope( failure ) m_isRunning = false;
-                if( pthread_create( &m_addr, &attr, &thread_entryPoint, cast(void*) this ) != 0 )
-                    throw new ThreadException( "Error creating thread" );
+                tin.tv_sec  = cast(typeof(tin.tv_sec))  period.seconds;
+                tin.tv_nsec = cast(typeof(tin.tv_nsec)) period.nanoseconds % 1_000_000_000;
             }
-            add( this );
+
+            while( true )
+            {
+                if( !nanosleep( &tin, &tout ) )
+                    return;
+                if( getErrno() != EINTR )
+                    throw new ThreadException( "Unable to sleep for specified duration" );
+                tin = tout;
+            }
         }
     }
 
 
     /**
-     * Waits for this thread to complete.  If the thread terminated as the
-     * result of an unhandled exception, this exception will be rethrown.
+     * Suspends the calling thread for at least the supplied time, up to a
+     * maximum of (uint.max - 1) milliseconds.
      *
      * Params:
-     *  rethrow = Rethrow any unhandled exception which may have caused this
-     *            thread to terminate.
+     *  period = The minimum duration the calling thread should be suspended,
+     *           in seconds.  Sub-second durations are specified as fractional
+     *           values.  Please note that because period is a floating-point
+     *           number, some accuracy may be lost for certain intervals.  For
+     *           this reason, the TimeSpan overload is preferred in instances
+     *           where an exact interval is required.
      *
-     * Throws:
-     *  ThreadException if the operation fails.
-     *  Any exception not handled by the joined thread.
+     * In:
+     *  period must be less than (uint.max - 1) milliseconds.
      *
-     * Returns:
-     *  Any exception not handled by this thread if rethrow = false, null
-     *  otherwise.
+     * Example:
+     * -------------------------------------------------------------------------
+     * Thread.sleep( 0.05 ); // sleep for 50 milliseconds
+     * Thread.sleep( 5 );    // sleep for 5 seconds
+     * -------------------------------------------------------------------------
      */
-    final Object join( bool rethrow = true )
+    static void sleep( double period )
     {
-        if(!isRunning())
-            return null;
+      sleep( TimeSpan.interval( period ) );
+    }
+    +/
+}
 
+<<<<<<< HEAD
         version( Win32 )
         {
             if( WaitForSingleObject( m_hndl, INFINITE ) != WAIT_OBJECT_0 )
@@ -2842,6 +2296,8 @@ private char[] ptrToStr(size_t addr,char[]buf){
     return res;
 }
 
+=======
+>>>>>>> Fixed some octal bugs in tango/text/convert/Integer.d
 /**
  * This class provides a cooperative concurrency mechanism integrated with the
  * threading and garbage collection functionality.  Calling a fiber may be
@@ -2894,6 +2350,7 @@ private char[] ptrToStr(size_t addr,char[]buf){
  *
  * Authors: Based on a design by Mikola Lysenko.
  */
+<<<<<<< HEAD
 
 class Fiber
 {
@@ -3819,13 +3276,10 @@ private:
         tobj.m_curr.tstack = tobj.m_curr.bstack;
     }
 }
+=======
+>>>>>>> Fixed some octal bugs in tango/text/convert/Integer.d
 
-extern(C){
-    void thread_yield(){
-        Thread.yield();
-    }
-    
-    void thread_sleep(double period){
-        Thread.sleep(period);
-    }
+class Fiber : core.thread.Fiber
+{
+   
 }

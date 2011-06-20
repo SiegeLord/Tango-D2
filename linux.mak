@@ -15,6 +15,7 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/Exception.d \
 	tango/core/sync/Mutex.d \
 	tango/core/Traits.d \
+	tango/core/Thread.d \
 	tango/stdc/errno.d \
 	tango/stdc/stringz.d \
 	tango/sys/Common.d
