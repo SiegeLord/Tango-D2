@@ -824,10 +824,10 @@ class AES : BlockCipher
              
         (_encrypt) ? encryptBlock() : decryptBlock();
 
-        output[0..4] = ByteConverter.BigEndian.from!(uint)(s0);
-        output[4..8] = ByteConverter.BigEndian.from!(uint)(s1);
-        output[8..12] = ByteConverter.BigEndian.from!(uint)(s2);
-        output[12..16] = ByteConverter.BigEndian.from!(uint)(s3);
+        ByteConverter.BigEndian.from!(uint)(s0, output[0..4]);
+        ByteConverter.BigEndian.from!(uint)(s1, output[4..8]);
+        ByteConverter.BigEndian.from!(uint)(s2, output[8..12]);
+        ByteConverter.BigEndian.from!(uint)(s3, output[12..16]);
         
         return BLOCK_SIZE;
     }

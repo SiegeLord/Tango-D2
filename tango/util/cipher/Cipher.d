@@ -289,10 +289,8 @@ struct ByteConverter
          *     Integral input of type T split into its respective bytes
          *     with the bytes placed in the specified byte order.
          */
-        static ubyte[] from(T)(T input)
+        static void from(T)(T input, ubyte[] output)
         {
-            ubyte[] output = new ubyte[T.sizeof];
-            
             output[0] = cast(ubyte)(input);
             output[1] = cast(ubyte)(input >> 8);
             
@@ -309,8 +307,6 @@ struct ByteConverter
                 output[6] = cast(ubyte)(input >> 48);
                 output[7] = cast(ubyte)(input >> 56);
             }
-            
-            return output;
         }
     }
     
@@ -347,10 +343,8 @@ struct ByteConverter
             }
         }
         
-        static ubyte[] from(T)(T input)
+        static void from(T)(T input, ubyte[] output)
         {
-            ubyte[] output = new ubyte[T.sizeof];
-            
             static if (T.sizeof == long.sizeof)
             {
                 output[0] = cast(ubyte)(input >> 56);
@@ -374,8 +368,6 @@ struct ByteConverter
                 output[0] = cast(ubyte)(input >> 8);
                 output[1] = cast(ubyte)(input);
             }
-            
-            return output;
         }
     }
 

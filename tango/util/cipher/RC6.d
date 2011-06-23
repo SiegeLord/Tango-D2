@@ -123,10 +123,10 @@ class RC6 : BlockCipher
             B -= S[0];
         }
 
-        output[0..4] = ByteConverter.LittleEndian.from!(uint)(A);
-        output[4..8] = ByteConverter.LittleEndian.from!(uint)(B);
-        output[8..12] = ByteConverter.LittleEndian.from!(uint)(C);
-        output[12..16] = ByteConverter.LittleEndian.from!(uint)(D);
+        ByteConverter.LittleEndian.from!(uint)(A, output[0..4]);
+        ByteConverter.LittleEndian.from!(uint)(B, output[4..8]);
+        ByteConverter.LittleEndian.from!(uint)(C, output[8..12]);
+        ByteConverter.LittleEndian.from!(uint)(D, output[12..16]);
         
         return BLOCK_SIZE;
     }

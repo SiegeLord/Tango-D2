@@ -273,8 +273,8 @@ class Blowfish : BlockCipher
         }
         xr ^= P[i];
   
-        output[0..4] = ByteConverter.BigEndian.from!(uint)(xr);
-        output[4..8] = ByteConverter.BigEndian.from!(uint)(xl);
+        ByteConverter.BigEndian.from!(uint)(xr, output[0..4]);
+        ByteConverter.BigEndian.from!(uint)(xl, output[4..8]);
         
         return BLOCK_SIZE;
     }

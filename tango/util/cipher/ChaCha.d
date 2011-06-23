@@ -104,7 +104,7 @@ class ChaCha : Salsa20
             
         int j;    
         for (i = j = 0; i < x.length; i++,j+=int.sizeof)
-            output[j..j+int.sizeof] = ByteConverter.LittleEndian.from!(uint)(x[i]);
+            ByteConverter.LittleEndian.from!(uint)(x[i], output[j..j+int.sizeof]);
     }
     
     /** ChaCha test vectors */

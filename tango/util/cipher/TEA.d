@@ -83,8 +83,8 @@ class TEA : BlockCipher
             }
         }
         
-        output[0..4] = ByteConverter.BigEndian.from!(uint)(v0);
-        output[4..8] = ByteConverter.BigEndian.from!(uint)(v1);
+        ByteConverter.BigEndian.from!(uint)(v0, output[0..4]);
+        ByteConverter.BigEndian.from!(uint)(v1, output[4..8]);
         
         return BLOCK_SIZE;
     }
