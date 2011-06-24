@@ -21,7 +21,13 @@ class TEA : BlockCipher
                           DECRYPT_SUM = 0xc6ef3720u;
         uint sk0, sk1, sk2, sk3, sum;
     }
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        this();
+        init(encrypt, key);
+    }
+
     final override void reset(){}
     
     final override string name()
@@ -34,17 +40,17 @@ class TEA : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
                     
-        if (keyParams.key.length != KEY_SIZE)
+        if (key.length != KEY_SIZE)
             invalid(name()~": Invalid key length (requires 16 bytes)");
         
-        sk0 = ByteConverter.BigEndian.to!(uint)(keyParams.key[0..4]);
-        sk1 = ByteConverter.BigEndian.to!(uint)(keyParams.key[4..8]);
-        sk2 = ByteConverter.BigEndian.to!(uint)(keyParams.key[8..12]);
-        sk3 = ByteConverter.BigEndian.to!(uint)(keyParams.key[12..16]);
+        sk0 = ByteConverter.BigEndian.to!(uint)(key[0..4]);
+        sk1 = ByteConverter.BigEndian.to!(uint)(key[4..8]);
+        sk2 = ByteConverter.BigEndian.to!(uint)(key[8..12]);
+        sk3 = ByteConverter.BigEndian.to!(uint)(key[12..16]);
 
         _initialized = true;
     }
@@ -121,7 +127,7 @@ class TEA : BlockCipher
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
                 string result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+                auto key = ByteConverter.hexDecode(test_key);
                 
                 // Encryption
                 t.init(true, key);

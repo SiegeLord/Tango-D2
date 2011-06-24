@@ -23,6 +23,11 @@ class ChaCha : Salsa20
         i1 = 13;
     }
 
+    this(bool encrypt, ubyte[] key, ubyte[] iv) {
+        this();
+        init(encrypt, key, iv);
+    }
+
     protected void keySetup()
     {
         uint offset;
@@ -180,18 +185,18 @@ class ChaCha : Salsa20
             string result;
             for (int i = 0; i < test_keys.length; i++)
             {
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_keys[i]));
-                ParametersWithIV params = new ParametersWithIV(key, ByteConverter.hexDecode(test_ivs[i]));
+                auto key = ByteConverter.hexDecode(test_keys[i]);
+                auto iv = ByteConverter.hexDecode(test_ivs[i]);
                 
                 // Encryption
-                cc.init(true, params);
+                cc.init(true, key, iv);
                 cc.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_ciphertexts[i],
                         cc.name()~": ("~result~") != ("~test_ciphertexts[i]~")");           
                 
                 // Decryption
-                cc.init(false, params);
+                cc.init(false, key, iv);
                 cc.update(ByteConverter.hexDecode(test_ciphertexts[i]), buffer);
                 result = ByteConverter.hexEncode(buffer);
                 assert(result == test_plaintexts[i],

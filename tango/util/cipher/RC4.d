@@ -22,13 +22,18 @@ class RC4 : StreamCipher
     {
         state = new ubyte[256];
     }
+
+    this(bool encrypt, ubyte[] key) {
+        this();
+        init(encrypt, key);
+    }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
-        if (keyParams.key.length < 0 || keyParams.key.length > 256)
+        if (key.length < 0 || key.length > 256)
             invalid(name()~": Invalid key length (requires 1-256 bytes)");
                 
-        workingKey = keyParams.key;
+        workingKey = key;
         setup(workingKey);
         
         _encrypt = _initialized = true;
@@ -195,7 +200,7 @@ class RC4 : StreamCipher
                 ubyte[] buffer = new ubyte[test_plaintexts[i].length>>1];
                 string result;
                 
-                r.init(true, new SymmetricKey(ByteConverter.hexDecode(test_key)));
+                r.init(true, ByteConverter.hexDecode(test_key));
                 
                 // Encryption
                 r.update(ByteConverter.hexDecode(test_plaintexts[i]), buffer);

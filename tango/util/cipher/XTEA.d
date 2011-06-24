@@ -22,7 +22,13 @@ class XTEA : BlockCipher
                sum0,
                sum1;
     }
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        this();
+        init(encrypt, key);
+    }
+
     final override void reset(){}
     
     final override string name()
@@ -35,11 +41,11 @@ class XTEA : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
                     
-        if (keyParams.key.length != KEY_SIZE)
+        if (key.length != KEY_SIZE)
             invalid(name()~": Invalid key length (requires 16 bytes)");
         
         subkeys = new uint[4];
@@ -48,7 +54,7 @@ class XTEA : BlockCipher
         
         int i, j;
         for (i = j = 0; i < 4; i++, j+=int.sizeof)
-            subkeys[i] = ByteConverter.BigEndian.to!(uint)(keyParams.key[j..j+int.sizeof]);
+            subkeys[i] = ByteConverter.BigEndian.to!(uint)(key[j..j+int.sizeof]);
             
         // Precompute the values of sum + k[] to speed up encryption
         for (i = j = 0; i < ROUNDS; i++)
@@ -150,7 +156,7 @@ class XTEA : BlockCipher
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
                 string result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+                auto key = ByteConverter.hexDecode(test_key);
                 
                 // Encryption
                 t.init(true, key);

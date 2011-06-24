@@ -33,7 +33,13 @@ class RC6 : BlockCipher
         uint[] S;
         ubyte[] workingKey;
     }
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        this();
+        init(encrypt, key);
+    }
+
     final override string name()
     {
         return "RC6";
@@ -44,17 +50,17 @@ class RC6 : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
         
-        auto len = keyParams.key.length;
+        auto len = key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16/24/32 bytes)");
         
         S = new uint[2*ROUNDS+4];        
                    
-        workingKey = keyParams.key;
+        workingKey = key;
         setup(workingKey);
         
         _initialized = true;
@@ -198,7 +204,7 @@ class RC6 : BlockCipher
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
                 string result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+                auto key = ByteConverter.hexDecode(test_key);
                 
                 // Encryption
                 t.init(true, key);

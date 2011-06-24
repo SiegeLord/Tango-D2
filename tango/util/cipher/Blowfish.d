@@ -209,7 +209,12 @@ class Blowfish : BlockCipher
         uint[256] S0, S1, S2, S3;
         ubyte[] workingKey;
     } // end private
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        init(encrypt, key);
+    }
+
     final override string name()
     {
         return "Blowfish";
@@ -220,15 +225,15 @@ class Blowfish : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
         
-        uint len = keyParams.key.length;
+        uint len = key.length;
         if (len < MIN_KEY_SIZE || len > MAX_KEY_SIZE)
             invalid(name()~": Invalid key length (requires 4-56 bytes)");
         
-        workingKey = keyParams.key;
+        workingKey = key;
         
         // Yes, this is ghetto. I know.
         _initialized = true;
@@ -387,7 +392,7 @@ debug (UnitTest)
         {
             ubyte[] buffer = new ubyte[t.blockSize];
             string result;
-            SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+            auto key = ByteConverter.hexDecode(test_key);
             
             // Encryption
             t.init(true, key);

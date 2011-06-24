@@ -641,7 +641,12 @@ class AES : BlockCipher
         ubyte[] workingKey;
        
     } // end private
-    
+
+    this() {}
+    this(bool encrypt, ubyte[] key) {
+        init(encrypt, key);
+    }
+
     final override string name()
     {
         return "AES";
@@ -659,15 +664,15 @@ class AES : BlockCipher
         return BLOCK_SIZE;
     }
     
-    final void init(bool encrypt, SymmetricKey keyParams)
+    final void init(bool encrypt, ubyte[] key)
     {
         _encrypt = encrypt;
         
-        auto len = keyParams.key.length;
+        auto len = key.length;
         if (len != 16 && len != 24 && len != 32)
             invalid(name()~": Invalid key length (requires 16, 24 or 32 bytes)");
                         
-        workingKey = keyParams.key;
+        workingKey = key;
         
         setup(workingKey);
         
@@ -917,7 +922,7 @@ class AES : BlockCipher
             {
                 ubyte[] buffer = new ubyte[t.blockSize];
                 string result;
-                SymmetricKey key = new SymmetricKey(ByteConverter.hexDecode(test_key));
+                auto key = ByteConverter.hexDecode(test_key);
                 
                 // Encryption
                 t.init(true, key);

@@ -13,8 +13,6 @@ alias char[] string;
 /** Base symmetric cipher class */
 abstract class Cipher
 {
-    interface Parameters {}
-
     static const bool ENCRYPT = true,
                       DECRYPT = false;
                       
@@ -111,106 +109,6 @@ abstract class StreamCipher : Cipher
     */
     abstract uint unpad(void[] input_);
  }
-
-
-
-/** Object representing and wrapping a symmetric key in bytes. */
-class SymmetricKey : Cipher.Parameters
-{
-    private ubyte[] _key;
-    
-    /**
-     * Params:
-     *     key = Key to be held.
-     */
-    this(void[] key=null)
-    {
-        _key = cast(ubyte[]) key;
-    }
-    
-    /** Play nice with D2's idea of const. */
-    version (D_Version2)
-    {
-        this (string key)
-        {
-            this(cast(ubyte[])key);
-        }
-    }
-    
-    /** Returns: Key in ubytes held by this object. */
-    ubyte[] key()
-    {
-        return _key;
-    }
-    
-    /**
-     * Set the key held by this object.
-     *
-     * Params:
-     *     newKey = New key to be held.
-     * Returns: The new key.
-     */
-    ubyte[] key(void[] newKey)
-    {
-        return _key = cast(ubyte[]) newKey;
-    }
-}
-
-
-/** Wrap cipher parameters and IV. */
-class ParametersWithIV : Cipher.Parameters
-{
-    private ubyte[] _iv;
-    private Cipher.Parameters _params;
-    
-    /**
-     * Params:
-     *     params = Parameters to wrap.
-     *     iv     = IV to be held.
-     */
-    this (Cipher.Parameters params=null, void[] iv=null)
-    {
-        _params = params;
-        _iv = cast(ubyte[]) iv;
-    }
-    
-    /** Returns: The IV. */
-    ubyte[] iv()
-    {
-        return _iv;
-    }
-    
-    /**
-     * Set the IV held by this object.
-     *
-     * Params:
-     *     newIV = The new IV for this parameter object.
-     * Returns: The new IV.
-     */
-    ubyte[] iv(void[] newIV)
-    {
-        return _iv = cast(ubyte[]) newIV;
-    }
-    
-    /** Returns: The parameters for this object. */
-    Cipher.Parameters parameters()
-    {
-        return _params;
-    }
-    
-    /**
-     * Set the parameters held by this object.
-     *
-     * Params:
-     *     newParams = The new parameters to be held.
-     * Returns: The new parameters.
-     */
-    Cipher.Parameters parameters(Cipher.Parameters newParams)
-    {
-        return _params = newParams;
-    }
-}
-
 
 struct Bitwise
 {
