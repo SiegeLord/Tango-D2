@@ -2,8 +2,10 @@ CC = gcc
 DMD = dmd
 RM=rm -rf
 CP=cp -v
+MODEL=64
 CFLAGS = 
 DFLAGS=-gc -unittest -debug -d
+DFLAGS=-I../druntime/import -w -d -m$(MODEL) -O -release -nofloat
 LFLAGS=
 DOCDIR=doc/html
 
@@ -165,7 +167,7 @@ all: libtango2.a
 		@echo "libtango2.a was build"
 
 install: libtango2.a
-		$(CP) libtango2.a /usr/lib
+		$(CP) libtango2.a /usr/lib$(MODEL)
 		
 examples: $(PROG_EXAMPLES)
 		@echo "all examples are made"

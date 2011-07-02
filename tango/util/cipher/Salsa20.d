@@ -78,12 +78,12 @@ class Salsa20 : StreamCipher
         _encrypt = _initialized = true;
     }
     
-    const(char[]) name()
+    override const(char[]) name()
     {
         return "Salsa20";
     }
     
-    ubyte returnByte(ubyte input)
+    override ubyte returnByte(ubyte input)
     {
         if (!_initialized)
             invalid (name()~": Cipher not initialized");
@@ -132,7 +132,7 @@ class Salsa20 : StreamCipher
         return input.length;
     }
     
-    void reset()
+    override void reset()
     {
         keySetup();
         ivSetup();

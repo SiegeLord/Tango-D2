@@ -34,7 +34,7 @@ package abstract class Sha01 : MerkleDamgard
 
         ***********************************************************************/
 
-        final uint digestSize() { return 20; }
+        final override uint digestSize() { return 20; }
 
         /***********************************************************************
 

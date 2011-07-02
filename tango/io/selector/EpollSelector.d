@@ -1,7 +1,7 @@
 /*******************************************************************************
   copyright:   Copyright (c) 2006 Juan Jose Comellas. All rights reserved
   license:     BSD style: $(LICENSE)
-  author:      Juan Jose Comellas $(EMAIL juanjo@comellas.com.ar)
+  author:      Juan Jose Comellas <juanjo@comellas.com.ar>
 *******************************************************************************/
 
 module tango.io.selector.EpollSelector;
@@ -104,7 +104,7 @@ version (linux)
     public class EpollSelector: AbstractSelector
     {
         /**
-         * Alias for the select() method as we're not reimplementing it in
+         * Alias for the select() method as we're not reimplementing it in 
          * this class.
          */
         alias AbstractSelector.select select;
@@ -162,7 +162,7 @@ version (linux)
          * SelectorException if there are not enough resources to open the
          * selector (e.g. not enough file handles or memory available).
          */
-        public void open(uint size = DefaultSize, uint maxEvents = DefaultMaxEvents)
+        public override void open(uint size = DefaultSize, uint maxEvents = DefaultMaxEvents)
         in
         {
             assert(size > 0);
@@ -187,7 +187,7 @@ version (linux)
          * Remarks:
          * It can be called multiple times without harmful side-effects.
          */
-        public void close()
+        public override void close()
         {
             if (_epfd >= 0)
             {
@@ -197,14 +197,14 @@ version (linux)
             _events = null;
             _eventCount = 0;
         }
-    /**
-     * Return the number of keys resulting from the registration of a conduit
-     * to the selector.
-     */
-    public size_t count()
-    {
-      return _keys.length;
-    }
+		/**
+		 * Return the number of keys resulting from the registration of a conduit 
+		 * to the selector. 
+		 */ 
+		public override size_t count()
+		{
+			return _keys.length;
+		}
 
 
         /**
@@ -213,13 +213,13 @@ version (linux)
          * attachment.
          *
          * Params:
-         * conduit      = Conduit that will be associated to the selector;
+         * conduit      = conduit that will be associated to the selector;
          *                must be a valid conduit (i.e. not null and open).
-         * events       = Bit mask of Event values that represent the events
+         * events       = bit mask of Event values that represent the events
          *                that will be tracked for the conduit.
-         * attachment   = Optional object with application-specific data that
+         * attachment   = optional object with application-specific data that
          *                will be available when an event is triggered for the
-         *                conduit.
+         *                conduit
          *
          * Throws:
          * RegisteredConduitException if the conduit had already been
@@ -231,7 +231,7 @@ version (linux)
          * selector.register(conduit, Event.Read | Event.Write, object);
          * ---
          */
-        public void register(ISelectable conduit, Event events, Object attachment = null)
+        public override void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
             assert(conduit !is null && conduit.fileHandle() >= 0);
@@ -299,7 +299,7 @@ version (linux)
          * registered to the selector; SelectorException if there are not
          * enough resources to remove the conduit registration.
          */
-        public void unregister(ISelectable conduit)
+        public override void unregister(ISelectable conduit)
         {
             if (conduit !is null)
             {
@@ -349,7 +349,7 @@ version (linux)
          * property was set to false; SelectorException if there were no
          * resources available to wait for events from the conduits.
          */
-        public int select(TimeSpan timeout)
+        public override int select(TimeSpan timeout)
         {
             int to = (timeout != TimeSpan.max ? cast(int) timeout.millis : -1);
 
@@ -427,7 +427,7 @@ version (linux)
          * If the call to select() was unsuccessful or it did not return any
          * events, the returned value will be null.
          */
-        public ISelectionSet selectedSet()
+        public override ISelectionSet selectedSet()
         {
             return (_eventCount > 0 ? _selectionSetIface : null);
         }
@@ -441,7 +441,7 @@ version (linux)
          * value will SelectionKey.init. No exception will be thrown by this
          * method.
          */
-        public SelectionKey key(ISelectable conduit)
+        public override SelectionKey key(ISelectable conduit)
         {
             if(conduit !is null)
             {
