@@ -201,7 +201,7 @@ version(BigEndian)
 }
 else
 {
-        private import tango.core.BitManip;
+        private import core.bitop;
 
         private ushort htons (ushort x)
         {
@@ -2184,7 +2184,7 @@ public class SocketSet
         }
         else version (Posix)
         {
-                import tango.core.BitManip;
+                private import core.bitop;
 
                 size_t nfdbits;
                 socket_t _maxfd = 0;

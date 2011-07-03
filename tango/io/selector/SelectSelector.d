@@ -765,7 +765,7 @@ version (Windows)
 }
 else version (Posix)
 {
-    private import tango.core.BitManip;
+    private import core.bitop;
 
     /**
      * Helper class used by the select()-based Selector to store handles.

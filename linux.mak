@@ -4,15 +4,14 @@ RM=rm -rf
 CP=cp -v
 MODEL=64
 CFLAGS = 
-DFLAGS=-gc -unittest -debug -d
 DFLAGS=-I../druntime/import -w -d -m$(MODEL) -O -release -nofloat
+DFLAGS=-I../druntime/import -d -m$(MODEL) -O -release -nofloat
 LFLAGS=
 DOCDIR=doc/html
 
 # CORE
 SRC_CORE=tango/core/Array.d \
 	tango/core/BitArray.d \
-	tango/core/BitManip.d \
 	tango/core/ByteSwap.d \
 	tango/core/Exception.d \
 	tango/core/sync/Mutex.d \

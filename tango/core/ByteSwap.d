@@ -14,7 +14,7 @@
 
 module tango.core.ByteSwap;
 
-import tango.core.BitManip;
+private import core.bitop;
 
 /**
  * Reverse byte order for specific datum sizes. Note that the
