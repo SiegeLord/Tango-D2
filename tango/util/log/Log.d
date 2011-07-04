@@ -1508,7 +1508,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1519,7 +1519,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        final override const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1530,7 +1530,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 layout.format (event, (const(void[])){return cast(size_t) 0;});
         }
@@ -1571,7 +1571,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1582,7 +1582,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        override const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1593,7 +1593,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 version(Win32)
                         immutable char[] Eol = "\r\n";
