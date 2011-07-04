@@ -61,6 +61,40 @@ private import core.thread;
  */
 class Thread : core.thread.Thread
 {
+	///////////////////////////////////////////////////////////////////////////
+    // Initialization
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Initializes a thread object which is associated with a static
+     * D function.
+     *
+     * Params:
+     * fn = The thread function.
+     * sz = The stack size for this thread.
+     *
+     * In:
+     * fn must not be null.
+     */
+    this( void function() fn, size_t sz = 0 ) {
+			super(fn, sz);
+	}
+	
+    /**
+     * Initializes a thread object which is associated with a dynamic
+     * D function.
+     *
+     * Params:
+     * dg = The thread function.
+     * sz = The stack size for this thread.
+     *
+     * In:
+     * dg must not be null.
+     */
+    this( void delegate() dg, size_t sz = 0 ) {
+			super(dg, sz);
+	}
+	
     /**
      * Suspends the calling thread for at least the supplied time, up to a
      * maximum of (uint.max - 1) milliseconds.
