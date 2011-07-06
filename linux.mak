@@ -5,7 +5,6 @@ CP=cp -v
 MODEL=64
 CFLAGS = 
 DFLAGS=-I../druntime/import -w -d -m$(MODEL) -O -release -nofloat
-DFLAGS=-I../druntime/import -d -m$(MODEL) -O -release -nofloat
 LFLAGS=
 DOCDIR=doc/html
 

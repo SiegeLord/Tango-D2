@@ -149,6 +149,6 @@ abstract class UriView
 
         ***********************************************************************/
 
-        abstract immutable(char[]) toString ();
+        abstract override immutable(char[]) toString ();
 }
 

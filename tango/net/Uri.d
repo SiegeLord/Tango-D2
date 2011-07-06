@@ -289,7 +289,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final short defaultPort (const(char)[] scheme)
+        final override short defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,7 +304,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] scheme()
+        override immutable(char)[] scheme()
         {
                 return scheme_.idup;
         }
@@ -316,7 +316,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] host()
+        override immutable(char)[] host()
         {
                 return host_.idup;
         }
@@ -328,7 +328,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int port()
+        final override int port()
         {
                 return port_;
         }
@@ -340,7 +340,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final int validPort()
+        final override int validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -354,7 +354,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] userinfo()
+        override immutable(char)[] userinfo()
         {
                 return userinfo_.idup;
         }
@@ -366,7 +366,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] path()
+        override immutable(char)[] path()
         {
                 return path_.idup;
         }
@@ -378,7 +378,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] query()
+        override immutable(char)[] query()
         {
                 return query_.idup;
         }
@@ -390,7 +390,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        immutable(char)[] fragment()
+        override immutable(char)[] fragment()
         {
                 return fragment_.idup;
         }
@@ -401,7 +401,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final bool isGeneric ()
+        final override bool isGeneric ()
         {
                 return (scheme_ in genericSchemes) !is null;
         }
@@ -463,7 +463,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final immutable(char[]) toString ()
+        final override immutable(char[]) toString ()
         {
                 char[] s;
 
