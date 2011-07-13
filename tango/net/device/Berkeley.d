@@ -6,7 +6,6 @@ private import tango.core.Exception;
 
 import  consts=tango.sys.consts.socket;
 
-private import tango.stdc.string : strlen;
 private import  tango.stdc.stringz;
 
 /*******************************************************************************
@@ -32,13 +31,13 @@ enum SocketOption
         REUSEADDR    =   consts.SO_REUSEADDR ,       /* allow local address reuse */
         LINGER       =   consts.SO_LINGER    ,       /* linger on close if data present */
         DONTLINGER   = ~(consts.SO_LINGER),
-
+        
         OOBINLINE    =   consts.SO_OOBINLINE ,       /* leave received OOB data in line */
         ACCEPTCONN   =   consts.SO_ACCEPTCONN,       /* socket has had listen() */
         KEEPALIVE    =   consts.SO_KEEPALIVE ,       /* keep connections alive */
         DONTROUTE    =   consts.SO_DONTROUTE ,       /* just use interface addresses */
         TYPE         =   consts.SO_TYPE      ,       /* get socket type */
-
+    
         /*
          * Additional options, not kept in so_options.
          */
@@ -51,16 +50,16 @@ enum SocketOption
         MULTICAST_LOOP  = consts.IP_MULTICAST_LOOP ,
         ADD_MEMBERSHIP  = consts.IP_ADD_MEMBERSHIP ,
         DROP_MEMBERSHIP = consts.IP_DROP_MEMBERSHIP,
-
+    
         // OptionLevel.TCP settings
         TCP_NODELAY     = consts.TCP_NODELAY ,
 
-        // Windows specifics
-        WIN_UPDATE_ACCEPT_CONTEXT  = 0x700B,
-        WIN_CONNECT_TIME           = 0x700C,
-        WIN_UPDATE_CONNECT_CONTEXT = 0x7010,
+        // Windows specifics    
+        WIN_UPDATE_ACCEPT_CONTEXT  = 0x700B, 
+        WIN_CONNECT_TIME           = 0x700C, 
+        WIN_UPDATE_CONNECT_CONTEXT = 0x7010, 
 }
-
+    
 /*******************************************************************************
 
 *******************************************************************************/
@@ -68,11 +67,11 @@ enum SocketOption
 enum SocketOptionLevel
 {
         SOCKET = consts.SOL_SOCKET    ,
-        IP     = consts.IPPROTO_IP    ,
-        TCP    = consts.IPPROTO_TCP   ,
-        UDP    = consts.IPPROTO_UDP   ,
+        IP     = consts.IPPROTO_IP    ,   
+        TCP    = consts.IPPROTO_TCP   ,   
+        UDP    = consts.IPPROTO_UDP   ,   
 }
-
+    
 /*******************************************************************************
 
 *******************************************************************************/
@@ -139,17 +138,17 @@ enum SocketFlags
         NOSIGNAL =       0x4000,                /// inhibit signals
 }
 
-enum AIFlags: int
+enum AIFlags: int 
 {
         PASSIVE = consts.AI_PASSIVE,            /// get address to use bind()
         CANONNAME = consts.AI_CANONNAME,        /// fill ai_canonname
         NUMERICHOST = consts.AI_NUMERICHOST,    /// prevent host name resolution
-        NUMERICSERV = consts.AI_NUMERICSERV,    /// prevent service name resolution valid
-                                                /// flags for addrinfo (not a standard def,
+        NUMERICSERV = consts.AI_NUMERICSERV,    /// prevent service name resolution valid 
+                                                /// flags for addrinfo (not a standard def, 
                                                 /// apps should not use it)
-        ALL = consts.AI_ALL,                    /// IPv6 and IPv4-mapped (with AI_V4MAPPED)
+        ALL = consts.AI_ALL,                    /// IPv6 and IPv4-mapped (with AI_V4MAPPED) 
         ADDRCONFIG = consts.AI_ADDRCONFIG,      /// only if any address is assigned
-        V4MAPPED = consts.AI_V4MAPPED,          /// accept IPv4-mapped IPv6 address special
+        V4MAPPED = consts.AI_V4MAPPED,          /// accept IPv4-mapped IPv6 address special 
                                                 /// recommended flags for getipnodebyname
         MASK = consts.AI_MASK,
         DEFAULT = consts.AI_DEFAULT,
@@ -169,7 +168,7 @@ enum AIError
 }
 
 
-enum NIFlags: int
+enum NIFlags: int 
 {
         MAXHOST = consts.NI_MAXHOST,
         MAXSERV = consts.NI_MAXSERV,
@@ -180,7 +179,7 @@ enum NIFlags: int
         DGRAM = consts.NI_DGRAM,                /// Look up UDP service rather than TCP.
 }
 
-
+			 
 /*******************************************************************************
 
         conversions for network byte-order
@@ -199,7 +198,7 @@ version(BigEndian)
                 return x;
         }
 }
-else
+else 
 {
         private import core.bitop;
 
@@ -222,7 +221,7 @@ else
 version (Win32)
 {
         pragma (lib, "ws2_32.lib");
-    
+        
         private import tango.sys.win32.WsaSock;
 
         private typedef int socket_t = ~0;
@@ -230,7 +229,7 @@ version (Win32)
         package extern (Windows)
         {
                 alias closesocket close;
-
+        
                 socket_t socket(int af, int type, int protocol);
                 int ioctlsocket(socket_t s, int cmd, uint* argp);
                 uint inet_addr(const char* cp);
@@ -254,64 +253,64 @@ version (Win32)
                 NetHost.hostent* gethostbyname(const char* name);
                 NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
                 /**
-                The gai_strerror function translates error codes of getaddrinfo,
-                freeaddrinfo and getnameinfo to a human readable string, suitable
+                The gai_strerror function translates error codes of getaddrinfo, 
+                freeaddrinfo and getnameinfo to a human readable string, suitable 
                 for error reporting. (C) MAN
                 */
                 //char* gai_strerror(int errcode);
 
                 /**
-                Given node and service, which identify an Internet host and a service,
-                getaddrinfo() returns one or more addrinfo structures, each of which
-                contains an Internet address that can be specified in a call to bind
-                or connect. The getaddrinfo() function combines the functionality
-                provided by the getservbyname and getservbyport functions into a single
-                interface, but unlike the latter functions, getaddrinfo() is reentrant
+                Given node and service, which identify an Internet host and a service, 
+                getaddrinfo() returns one or more addrinfo structures, each of which 
+                contains an Internet address that can be specified in a call to bind 
+                or connect. The getaddrinfo() function combines the functionality 
+                provided by the getservbyname and getservbyport functions into a single 
+                interface, but unlike the latter functions, getaddrinfo() is reentrant 
                 and allows programs to eliminate IPv4-versus-IPv6 dependencies.(C) MAN
                 */
                 int function(char* node, char* service, Address.addrinfo* hints, Address.addrinfo** res) getaddrinfo;
-
+        
                 /**
-                The freeaddrinfo() function frees the memory that was allocated for the
+                The freeaddrinfo() function frees the memory that was allocated for the 
                 dynamically allocated linked list res.  (C) MAN
-                */
-                void function(Address.addrinfo *res) freeaddrinfo;
-
+                */								
+                void function(Address.addrinfo *res) freeaddrinfo; 
+								
                 /**
-                The getnameinfo() function is the inverse of getaddrinfo: it converts
+                The getnameinfo() function is the inverse of getaddrinfo: it converts 
                 a socket address to a corresponding host and service, in a protocol-
-                independent manner. It combines the functionality of gethostbyaddr and
-                getservbyport, but unlike those functions, getaddrinfo is reentrant and
+                independent manner. It combines the functionality of gethostbyaddr and 
+                getservbyport, but unlike those functions, getaddrinfo is reentrant and 
                 allows programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN
                 */
-                int function(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags) getnameinfo;
-
+                int function(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags) getnameinfo; 
+				
                 bool function (socket_t, uint, void*, DWORD, DWORD, DWORD, DWORD*, OVERLAPPED*) AcceptEx;
                 bool function (socket_t, HANDLE, DWORD, DWORD, OVERLAPPED*, void*, DWORD) TransmitFile;
                 bool function (socket_t, void*, int, void*, DWORD, DWORD*, OVERLAPPED*) ConnectEx;
-
+								
                 //char* inet_ntop(int af, void *src, char *dst, int len);
         }
 
-        private HMODULE lib;
+        private HMODULE lib;				
 
         static this()
         {
                 lib = LoadLibraryA ("Ws2_32.dll");
                 getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-                if (!getnameinfo)
-                   {
+                if (!getnameinfo) 
+                   { 
                    FreeLibrary (lib);
                    lib = LoadLibraryA ("Wship6.dll");
-                   }
-                getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo");
-	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo");
-                freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo");
-                if (!getnameinfo)
-                   {
+                   } 
+                getnameinfo = cast(typeof(getnameinfo)) GetProcAddress(lib, "getnameinfo"); 
+	        getaddrinfo = cast(typeof(getaddrinfo)) GetProcAddress(lib, "getaddrinfo"); 
+                freeaddrinfo = cast(typeof(freeaddrinfo)) GetProcAddress(lib, "freeaddrinfo"); 
+                if (!getnameinfo) 
+                   { 
                    FreeLibrary (lib);
                    lib = null;
-                   }
+                   } 
 
                 WSADATA wd = void;
                 if (WSAStartup (0x0202, &wd))
@@ -324,17 +323,17 @@ version (Win32)
 
                 auto s = cast(HANDLE) socket (AddressFamily.INET, SocketType.STREAM, ProtocolType.TCP);
                 assert (s != cast(HANDLE) -1);
-
-                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER,
-                          &connectG, connectG.sizeof, &ConnectEx,
+								
+                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER, 
+                          &connectG, connectG.sizeof, &ConnectEx, 
                           ConnectEx.sizeof, &result, null, null);
 
-                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER,
-                          &acceptG, acceptG.sizeof, &AcceptEx,
+                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER, 
+                          &acceptG, acceptG.sizeof, &AcceptEx, 
                           AcceptEx.sizeof, &result, null, null);
 
-                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER,
-                          &transmitG, transmitG.sizeof, &TransmitFile,
+                WSAIoctl (s, SIO_GET_EXTENSION_FUNCTION_POINTER, 
+                          &transmitG, transmitG.sizeof, &TransmitFile, 
                           TransmitFile.sizeof, &result, null, null);
                 closesocket (cast(socket_t) s);
         }
@@ -365,10 +364,10 @@ else
                 int shutdown(socket_t s, int how);
                 int getpeername(socket_t s, Address.sockaddr* name, int* namelen);
                 int getsockname(socket_t s, Address.sockaddr* name, int* namelen);
-                int send(socket_t s, void* buf, size_t len, int flags);
-                int sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
-                int recv(socket_t s, void* buf, size_t len, int flags);
-                int recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
+                ssize_t send(socket_t s, void* buf, size_t len, int flags);
+                ssize_t sendto(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* to, int tolen);
+                ssize_t recv(socket_t s, void* buf, size_t len, int flags);
+                ssize_t recvfrom(socket_t s, void* buf, size_t len, int flags, Address.sockaddr* from, int* fromlen);
                 int select(int nfds, SocketSet.fd* readfds, SocketSet.fd* writefds, SocketSet.fd* errorfds, SocketSet.timeval* timeout);
                 int getsockopt(socket_t s, int level, int optname, void* optval, int* optlen);
                 int setsockopt(socket_t s, int level, int optname, void* optval, int optlen);
@@ -376,39 +375,39 @@ else
                 char* inet_ntoa(uint ina);
                 NetHost.hostent* gethostbyname(const char* name);
                 NetHost.hostent* gethostbyaddr(void* addr, int len, int type);
-
+								
                 /**
-                Given node and service, which identify an Internet host and a service,
-                getaddrinfo() returns one or more addrinfo structures, each of which
-                contains an Internet address that can be specified in a call to bind or
-                connect. The getaddrinfo() function combines the functionality provided
+                Given node and service, which identify an Internet host and a service, 
+                getaddrinfo() returns one or more addrinfo structures, each of which 
+                contains an Internet address that can be specified in a call to bind or 
+                connect. The getaddrinfo() function combines the functionality provided 
                 by the getservbyname and getservbyport functions into a single interface,
-                but unlike the latter functions, getaddrinfo() is reentrant and allows
+                but unlike the latter functions, getaddrinfo() is reentrant and allows 
                 programs to eliminate IPv4-versus-IPv6 dependencies. (C) MAN
                 */
                 int getaddrinfo(const(char)* node, const(char)* service, Address.addrinfo* hints, Address.addrinfo** res); 
 		        						
                 /**
-                The freeaddrinfo() function frees the memory that was allocated for the
+                The freeaddrinfo() function frees the memory that was allocated for the 
                 dynamically allocated linked list res.  (C) MAN
                 */
-                void freeaddrinfo(Address.addrinfo *res);
-
+                void freeaddrinfo(Address.addrinfo *res); 
+								
                 /**
                 The getnameinfo() function is the inverse of getaddrinfo: it converts a socket
-                address to a corresponding host and service, in a protocol-independent manner.
-                It combines the functionality of gethostbyaddr and getservbyport, but unlike
-                those functions, getaddrinfo is reentrant and allows programs to eliminate
+                address to a corresponding host and service, in a protocol-independent manner. 
+                It combines the functionality of gethostbyaddr and getservbyport, but unlike 
+                those functions, getaddrinfo is reentrant and allows programs to eliminate 
                 IPv4-versus-IPv6 dependencies. (C) MAN
                 */
-                int getnameinfo(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags);
-
+                int getnameinfo(Address.sockaddr* sa, int salen, char* host, int hostlen, char* serv, int servlen, int flags); 
+								
                 /**
-                The gai_strerror function translates error codes of getaddrinfo, freeaddrinfo
+                The gai_strerror function translates error codes of getaddrinfo, freeaddrinfo 
                 and getnameinfo to a human readable string, suitable for error reporting. (C) MAN
                 */
-                char* gai_strerror(int errcode);
-
+                char* gai_strerror(int errcode); 
+								
                 char* inet_ntop(int af, void *src, char *dst, int len);
        }
 }
@@ -427,12 +426,12 @@ public struct Berkeley
 version (Windows)
          bool           synchronous;
 
-        enum : socket_t
+        enum : socket_t 
         {
                 INVALID_SOCKET = socket_t.init
         }
-
-        enum
+        
+        enum 
         {
                 Error = -1
         }
@@ -440,7 +439,7 @@ version (Windows)
         alias Error        ERROR;               // backward compatibility
         alias noDelay      setNoDelay;          // backward compatibility
         alias addressReuse setAddressReuse;     // backward compatibility
-
+        
 
         /***********************************************************************
 
@@ -613,7 +612,7 @@ version (Windows)
 
         void accept (ref Berkeley target)
         {
-                auto newsock = .accept (sock, null, null);
+                auto newsock = .accept (sock, null, null); 
                 if (socket_t.init is newsock)
                     exception ("Unable to accept socket connection: ");
 
@@ -800,8 +799,8 @@ version (Windows)
 
         /***********************************************************************
 
-                Send data on the connection. Returns the number of bytes
-                actually sent, or ERROR on failure. If the socket is blocking
+                Send data on the connection. Returns the number of bytes 
+                actually sent, or ERROR on failure. If the socket is blocking 
                 and there is no buffer space left, send waits.
 
                 Returns number of bytes actually sent, or -1 on error
@@ -827,15 +826,15 @@ version (Windows)
 
         /***********************************************************************
 
-                Send data to a specific destination Address. If the
-                destination address is not specified, a connection
-                must have been made and that address is used. If the
-                socket is blocking and there is no buffer space left,
+                Send data to a specific destination Address. If the 
+                destination address is not specified, a connection 
+                must have been made and that address is used. If the 
+                socket is blocking and there is no buffer space left, 
                 sendTo waits.
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags, Address to)
+        ssize_t sendTo (void[] buf, SocketFlags flags, Address to)
         {
                 return sendTo (buf, cast(int) flags, to.name, to.nameLen);
         }
@@ -846,7 +845,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, Address to)
+        ssize_t sendTo (void[] buf, Address to)
         {
                 return sendTo (buf, SocketFlags.NONE, to);
         }
@@ -857,29 +856,29 @@ version (Windows)
 
         ***********************************************************************/
 
-        int sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        ssize_t sendTo (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 return sendTo (buf, cast(int) flags, null, 0);
         }
 
         /***********************************************************************
 
-                Send data to a specific destination Address. If the
-                destination address is not specified, a connection
-                must have been made and that address is used. If the
-                socket is blocking and there is no buffer space left,
+                Send data to a specific destination Address. If the 
+                destination address is not specified, a connection 
+                must have been made and that address is used. If the 
+                socket is blocking and there is no buffer space left, 
                 sendTo waits.
 
         ***********************************************************************/
 
-        private int sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
+        private ssize_t sendTo (void[] buf, int flags, Address.sockaddr* to, int len)
         {
                 if (buf.length is 0)
                     return 0;
 
                 version (Posix)
                         {
-                        auto ret = .sendto (sock, buf.ptr, buf.length,
+                        auto ret = .sendto (sock, buf.ptr, buf.length, 
                                             flags | SocketFlags.NOSIGNAL, to, len);
                         if (errno is EPIPE)
                             ret = -1;
@@ -890,17 +889,17 @@ version (Windows)
         }
 
         /***********************************************************************
-                Receive data on the connection. Returns the number of
-                bytes actually received, 0 if the remote side has closed
-                the connection, or ERROR on failure. If the socket is blocking,
+                Receive data on the connection. Returns the number of 
+                bytes actually received, 0 if the remote side has closed 
+                the connection, or ERROR on failure. If the socket is blocking, 
                 receive waits until there is data to be received.
-
-                Returns number of bytes actually received, 0 on connection
+                
+                Returns number of bytes actually received, 0 on connection 
                 closure, or -1 on error
 
         ***********************************************************************/
 
-        int receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
+        ssize_t receive (void[] buf, SocketFlags flags=SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receive :: target buffer has 0 length");
@@ -910,15 +909,15 @@ version (Windows)
 
         /***********************************************************************
 
-                Receive data and get the remote endpoint Address. Returns
-                the number of bytes actually received, 0 if the remote side
-                has closed the connection, or ERROR on failure. If the socket
-                is blocking, receiveFrom waits until there is data to be
+                Receive data and get the remote endpoint Address. Returns 
+                the number of bytes actually received, 0 if the remote side 
+                has closed the connection, or ERROR on failure. If the socket 
+                is blocking, receiveFrom waits until there is data to be 
                 received.
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags, Address from)
+        ssize_t receiveFrom (void[] buf, SocketFlags flags, Address from)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -934,7 +933,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, Address from)
+        ssize_t receiveFrom (void[] buf, Address from)
         {
                 return receiveFrom(buf, SocketFlags.NONE, from);
         }
@@ -945,7 +944,7 @@ version (Windows)
 
         ***********************************************************************/
 
-        int receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
+        ssize_t receiveFrom (void[] buf, SocketFlags flags = SocketFlags.NONE)
         {
                 if (!buf.length)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
@@ -1008,7 +1007,7 @@ version (Windows)
                            exception("Unable to set socket blocking: ");
                         synchronous = yes;
                         }
-                     else
+                     else 
                         {
                         int x = fcntl(sock, F_GETFL, 0);
                         if(yes)
@@ -1018,7 +1017,7 @@ version (Windows)
                         if(fcntl(sock, F_SETFL, x) is ERROR)
                            exception("Unable to set socket blocking: ");
                         }
-                return;
+                return; 
         }
 
         /***********************************************************************
@@ -1055,25 +1054,25 @@ public abstract class Address
                 char[14] sa_data = 0;
         }
 
-        struct addrinfo
-        {
-                int       ai_flags;
-                int       ai_family;
-                int       ai_socktype;
-                int       ai_protocol;
-                uint      ai_addrlen;
+        struct addrinfo 
+        { 
+                int       ai_flags; 
+                int       ai_family; 
+                int       ai_socktype; 
+                int       ai_protocol; 
+                uint      ai_addrlen; 
                 version (freebsd)
                         {
-                        char*     ai_canonname;
-                        sockaddr* ai_addr;
+                        char*     ai_canonname; 
+                        sockaddr* ai_addr; 
                         }
                      else
                         {
-                        sockaddr* ai_addr;
-                        char*     ai_canonname;
+                        sockaddr* ai_addr; 
+                        char*     ai_canonname; 
                         }
-                addrinfo* ai_next;
-        }
+                addrinfo* ai_next; 
+        } 
 
         abstract sockaddr*      name();
         abstract int            nameLen();
@@ -1167,70 +1166,70 @@ public abstract class Address
         {
                 throw new SocketException (msg);
         }
-
+				
         /***********************************************************************
 
                 Address factory
 
         ***********************************************************************/
 
-        static Address create (sockaddr* sa)
-        {
-                switch  (sa.sa_family)
-                        {
-                        case AddressFamily.INET:
-                             return new IPv4Address(sa);
-                        case AddressFamily.INET6:
-                             return new IPv6Address(sa);
-                        default:
-                             return null;
-                        }
-        }
+        static Address create (sockaddr* sa) 
+        { 
+                switch  (sa.sa_family) 
+                        { 
+                        case AddressFamily.INET: 
+                             return new IPv4Address(sa); 
+                        case AddressFamily.INET6: 
+                             return new IPv6Address(sa); 
+                        default: 
+                             return null; 
+                        } 
+        } 
+				
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+         
+        static Address resolve (char[] host, char[] service = null, 
+                                AddressFamily af = AddressFamily.UNSPEC, 
+                                AIFlags flags = cast(AIFlags)0) 
+        { 
+                return resolveAll (host, service, af, flags)[0]; 
+        } 
+         
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+         
+        static Address resolve (char[] host, ushort port, 
+                                AddressFamily af = AddressFamily.UNSPEC, 
+                                AIFlags flags = cast(AIFlags)0) 
+        { 
+                return resolveAll (host, port, af, flags)[0]; 
+        } 
+         
+        /*********************************************************************** 
+  
+        ***********************************************************************/ 
+         
+        static Address[] resolveAll (char[] host, char[] service = null, 
+                                     AddressFamily af = AddressFamily.UNSPEC, 
+                                     AIFlags flags = cast(AIFlags)0) 
+        { 
+                Address[] retVal; 
+                version (Win32) 
+                        { 
+                        if (!getaddrinfo) 
+                           { // *old* windows, let's fall back to NetHost 
+                           uint port = toInt(service); 
+                           if (flags & AIFlags.PASSIVE && host is null) 
+                               return [new IPv4Address(0, port)]; 
 
-        /***********************************************************************
+                           auto nh = new NetHost; 
+                           if (!nh.getHostByName(host)) 
+                                throw new AddressException("couldn't resolve " ~ host); 
 
-        ***********************************************************************/
-
-        static Address resolve (char[] host, char[] service = null,
-                                AddressFamily af = AddressFamily.UNSPEC,
-                                AIFlags flags = cast(AIFlags)0)
-        {
-                return resolveAll (host, service, af, flags)[0];
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        static Address resolve (char[] host, ushort port,
-                                AddressFamily af = AddressFamily.UNSPEC,
-                                AIFlags flags = cast(AIFlags)0)
-        {
-                return resolveAll (host, port, af, flags)[0];
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        static Address[] resolveAll (char[] host, char[] service = null,
-                                     AddressFamily af = AddressFamily.UNSPEC,
-                                     AIFlags flags = cast(AIFlags)0)
-        {
-                Address[] retVal;
-                version (Win32)
-                        {
-                        if (!getaddrinfo)
-                           { // *old* windows, let's fall back to NetHost
-                           uint port = toInt(service);
-                           if (flags & AIFlags.PASSIVE && host is null)
-                               return [new IPv4Address(0, port)];
-
-                           auto nh = new NetHost;
-                           if (!nh.getHostByName(host))
-                                throw new AddressException("couldn't resolve " ~ host);
-
-                           retVal.length = nh.addrList.length;
+                           retVal.length = nh.addrList.length; 
                            foreach (i, addr; nh.addrList)
                                     retVal[i] = new IPv4Address(addr, port); 
                            return retVal; 
@@ -1300,45 +1299,24 @@ public abstract class Address
                 char[1025] host = void; 
                 // Getting name info. Don't look up hostname, returns 
                 // numeric name. (NIFlags.NUMERICHOST)
-                getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST);
-                return fromStringz (host.ptr);
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        char[] toPortString()
-        {
-                char[32] service = void;
-                // Getting name info. Returns port number, not
+                getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST); 
+                return fromStringz (host.ptr); 
+        } 
+ 
+        /*********************************************************************** 
+ 
+         ***********************************************************************/ 
+ 
+        char[] toPortString() 
+        { 
+                char[32] service = void; 
+                // Getting name info. Returns port number, not 
                 // service name. (NIFlags.NUMERICSERV)
-                getnameinfo (name, nameLen, null, 0, service.ptr, service.length, NIFlags.NUMERICSERV);
-                foreach (i, c; service)
-                         if (c == '\0')
-                             return service[0..i].dup;
+                getnameinfo (name, nameLen, null, 0, service.ptr, service.length, NIFlags.NUMERICSERV); 
+                foreach (i, c; service)  
+                         if (c == '\0')  
+                             return service[0..i].dup; 
                 return null;
-<<<<<<< HEAD
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        char[] toString()
-        {
-                return toAddrString ~ ":" ~ toPortString;
-        }
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        AddressFamily addressFamily()
-        {
-                return cast(AddressFamily)name.sa_family;
-        }
-=======
         } 
           
         /*********************************************************************** 
@@ -1358,7 +1336,6 @@ public abstract class Address
         { 
                 return cast(AddressFamily)name.sa_family; 
         } 
->>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
 }
 
 
@@ -1419,10 +1396,10 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        enum
+        enum 
         {
-                ADDR_ANY = 0,
-                ADDR_NONE = cast(uint)-1,
+                ADDR_ANY = 0, 
+                ADDR_NONE = cast(uint)-1, 
                 PORT_ANY = 0
         }
 
@@ -1436,8 +1413,8 @@ public class IPv4Address : Address
                         {
                         ubyte sin_len;
                         ubyte sinfamily  = AddressFamily.INET;
-                        }
-                     else
+                        } 
+                     else 
                         {
                         ushort sinfamily = AddressFamily.INET;
                         }
@@ -1506,21 +1483,16 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        this (sockaddr* addr)
-        {
-                sin = *(cast(sockaddr_in*)addr);
-        }
-
+        this (sockaddr* addr) 
+        { 
+                sin = *(cast(sockaddr_in*)addr); 
+        } 
+				
         /***********************************************************************
 
         ***********************************************************************/
-<<<<<<< HEAD
-
-        sockaddr* name()
-=======
 				
         override sockaddr* name()
->>>>>>> hellophobos.d example added
         {
                 return cast(sockaddr*)&sin;
         }
@@ -1622,22 +1594,22 @@ debug(UnitTest)
         }
 }
 
-/*******************************************************************************
-
+/******************************************************************************* 
+        
         IPv6 is the next-generation Internet Protocol version
         designated as the successor to IPv4, the first
         implementation used in the Internet that is still in
         dominant use currently.
-
+	        			
         More information: http://ipv6.com/
-
+				
         IPv6 supports 128-bit address space as opposed to 32-bit
         address space of IPv4.
-
+				
         IPv6 is written as 8 blocks of 4 octal digits (16 bit)
         separated by a colon (":"). Zero block can be replaced by "::".
-
-        For example:
+	        			
+        For example: 
         ---
         0000:0000:0000:0000:0000:0000:0000:0001
         is equal
@@ -1645,118 +1617,92 @@ debug(UnitTest)
         is equal
         ::1
         is analogue IPv4 127.0.0.1
-
+				
         0000:0000:0000:0000:0000:0000:0000:0000
         is equal
         ::
         is analogue IPv4 0.0.0.0
-
-        2001:cdba:0000:0000:0000:0000:3257:9652
+				
+        2001:cdba:0000:0000:0000:0000:3257:9652 
         is equal
         2001:cdba::3257:9652
-
+				
         IPv4 address can be submitted through IPv6 as ::ffff:xx.xx.xx.xx,
         where xx.xx.xx.xx 32-bit IPv4 addresses.
-
+				
         ::ffff:51b0:ec6d
         is equal
         ::ffff:81.176.236.109
         is analogue IPv4 81.176.236.109
-
+				
         The URL for the IPv6 address will be of the form:
         http://[2001:cdba:0000:0000:0000:0000:3257:9652]/
-
+				
         If needed to specify a port, it will be listed after the
         closing square bracket followed by a colon.
-
+				
         http://[2001:cdba:0000:0000:0000:0000:3257:9652]:8080/
         address: "2001:cdba:0000:0000:0000:0000:3257:9652"
         port: 8080
-
+				
         IPv6Address can be used as well as IPv4Address.
-
-        scope addr = new IPv6Address(8080);
+				
+        scope addr = new IPv6Address(8080); 
         address: "::"
         port: 8080
-
-        scope addr_2 = new IPv6Address("::1", 8081);
+				
+        scope addr_2 = new IPv6Address("::1", 8081); 
         address: "::1"
         port: 8081
-
-        scope addr_3 = new IPv6Address("::1");
+				
+        scope addr_3 = new IPv6Address("::1"); 
         address: "::1"
         port: PORT_ANY
-
+				
         Also in the IPv6Address constructor can specify the service name
         or port as string
-
-        scope addr_3 = new IPv6Address("::", "ssh");
+				
+        scope addr_3 = new IPv6Address("::", "ssh"); 
         address: "::"
         port: 22 (ssh service port)
-
-        scope addr_4 = new IPv6Address("::", "8080");
+				
+        scope addr_4 = new IPv6Address("::", "8080"); 
         address: "::"
         port: 8080
-
-*******************************************************************************/
-
-class IPv6Address : Address
-{
+				
+*******************************************************************************/ 
+				
+class IPv6Address : Address 
+{ 
 protected:
+        /*********************************************************************** 
+         
+        ***********************************************************************/ 
+ 
+        struct sockaddr_in6 
+        { 
+                ushort sin_family; 
+                ushort sin_port; 
+                 
+                uint sin6_flowinfo; 
+                ubyte[16] sin6_addr; 
+                uint sin6_scope_id; 
+        } 
+         
+        sockaddr_in6 sin; 
+ 
+        /*********************************************************************** 
+ 
+         ***********************************************************************/ 
+ 
+        this () 
+        { 
+        } 
+ 
         /***********************************************************************
 
         ***********************************************************************/
 
-<<<<<<< HEAD
-        struct sockaddr_in6
-        {
-                ushort sin_family;
-                ushort sin_port;
-
-                uint sin6_flowinfo;
-                ubyte[16] sin6_addr;
-                uint sin6_scope_id;
-        }
-
-        sockaddr_in6 sin;
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        this ()
-        {
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        this (sockaddr* sa)
-        {
-                sin = *cast(sockaddr_in6*)sa;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        sockaddr* name()
-        {
-                return cast(sockaddr*)&sin;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        int nameLen()
-        {
-                return sin.sizeof;
-        }
-
- public:
-=======
         this (sockaddr* sa) 
         { 
                 sin = *cast(sockaddr_in6*)sa; 
@@ -1781,7 +1727,6 @@ protected:
         } 
  
  public: 
->>>>>>> hellophobos.d example added
 
         /***********************************************************************
 
@@ -1792,92 +1737,27 @@ protected:
                 return AddressFamily.INET6;
         }
 
-
-        const ushort PORT_ANY = 0;
-
-        /***********************************************************************
-
-         ***********************************************************************/
-
-        ushort port()
-        {
-                return ntohs(sin.sin_port);
-        }
-
-        /***********************************************************************
-
+ 
+        const ushort PORT_ANY = 0; 
+  
+        /*********************************************************************** 
+ 
+         ***********************************************************************/ 
+ 
+        ushort port() 
+        { 
+                return ntohs(sin.sin_port); 
+        } 
+ 				
+        /*********************************************************************** 
+ 
                 Create IPv6Address with zero address
 
-        ***********************************************************************/
-
-        this (int port)
-        {
+        ***********************************************************************/ 
+ 				
+        this (int port) 
+        { 
           this ("::", port);
-<<<<<<< HEAD
-        }
-
-        /***********************************************************************
-
-                -port- can be PORT_ANY
-                -addr- is an IP address or host name
-
-        ***********************************************************************/
-
-        this (char[] addr, int port = PORT_ANY)
-        {
-                version (Win32)
-                        {
-                        if (!getaddrinfo)
-                             exception ("This platform does not support IPv6.");
-                        }
-                addrinfo* info;
-                addrinfo hints;
-                hints.ai_family = AddressFamily.INET6;
-                int error = getaddrinfo((addr ~ '\0').ptr, null, &hints, &info);
-                if (error != 0)
-                    exception("failed to create IPv6Address: ");
-
-                sin = *cast(sockaddr_in6*)(info.ai_addr);
-                sin.sin_port = htons(cast(ushort) port);
-        }
-
-        /***********************************************************************
-
-                -service- can be a port number or service name
-                -addr- is an IP address or host name
-
-        ***********************************************************************/
-
-        this (char[] addr, char[] service)
-        {
-                version (Win32)
-                        {
-                        if(! getaddrinfo)
-                             exception ("This platform does not support IPv6.");
-                        }
-                addrinfo* info;
-                addrinfo hints;
-                hints.ai_family = AddressFamily.INET6;
-                int error = getaddrinfo((addr ~ '\0').ptr, (service ~ '\0').ptr, &hints, &info);
-                if (error != 0)
-                    exception ("failed to create IPv6Address: ");
-                sin = *cast(sockaddr_in6*)(info.ai_addr);
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-        ubyte[] addr()
-        {
-                return sin.sin6_addr;
-        }
-
-        /***********************************************************************
-
-        ***********************************************************************/
-
-=======
         } 
 				
         /*********************************************************************** 
@@ -1941,11 +1821,10 @@ protected:
   
         ***********************************************************************/ 
  
->>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
         version (Posix)
         override char[] toAddrString()
         {
-
+				
                 char[100] buff = 0;
                 return fromStringz(inet_ntop(AddressFamily.INET6, &sin.sin6_addr, buff.ptr, 100)).dup;
         }
@@ -1959,28 +1838,16 @@ protected:
                 char[8] _port;
                 return fromInt (_port, port()).dup;
         }
-
+ 
         /***********************************************************************
 
         ***********************************************************************/
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        char[] toString()
-        {
-                return "[" ~ toAddrString ~ "]:" ~ toPortString;
-        }
-}
-=======
-        immutable(char)[] toString() 
-=======
         override immutable(char)[] toString() 
->>>>>>> hellophobos.d example added
         { 
                 return ("[" ~ toAddrString ~ "]:" ~ toPortString).idup; 
         } 
 } 
->>>>>>> doc/html removed, this will be autogenerated by calling `make doc`.
 
 /*******************************************************************************
 
@@ -2021,7 +1888,7 @@ public class NetHost
                         short h_addrtype;
                         short h_length;
                         }
-                     else
+                     else 
                         {
                         int h_addrtype;
                         int h_length;
@@ -2161,7 +2028,6 @@ debug (UnitTest)
         ih.getHostByName(Berkeley.hostName());
         assert(ih.addrList.length > 0);
         IPv4Address ia = new IPv4Address(ih.addrList[0], IPv4Address.PORT_ANY);
-        printf("addrses: %x %x\n", ia.toAddrString.ptr, ih.name.ptr);
         printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
         foreach(int i, char[] s; ih.aliases)
         {
@@ -2192,7 +2058,7 @@ public class SocketSet
 
         struct timeval
         {
-                c_long  seconds, microseconds;
+                c_long  seconds, microseconds; 
         }
 
         private size_t nbytes; //Win32: excludes uint.size "count"
@@ -2276,19 +2142,19 @@ public class SocketSet
                 }
         }
 
-        this (SocketSet o)
+        this (SocketSet o) 
         {
                 nbytes = o.nbytes;
                 auto size = nbytes;
-                version (Win32)
+                version (Win32) 
                          size += uint.sizeof;
 
-                version (Posix)
+                version (Posix) 
                         {
                         nfdbits = o.nfdbits;
                         _maxfd = o._maxfd;
                         }
-
+                
                 auto b = new byte[size];
                 b[] = o.buf[0..size];
                 buf = b.ptr;
@@ -2310,11 +2176,11 @@ public class SocketSet
                 }
         }
 
-        SocketSet dup()
+        SocketSet dup() 
         {
                 return new SocketSet (this);
         }
-
+        
         SocketSet reset()
         {
                 version(Win32)
@@ -2546,9 +2412,9 @@ public class SocketSet
         ***********************************************************************/
 
         static int select (SocketSet checkRead, SocketSet checkWrite, SocketSet checkError, long microseconds)
-        {
+        {       
                 timeval tv = {
-                             cast(typeof(timeval.seconds)) (microseconds / 1000000),
+                             cast(typeof(timeval.seconds)) (microseconds / 1000000), 
                              cast(typeof(timeval.microseconds)) (microseconds % 1000000)
                              };
                 return select (checkRead, checkWrite, checkError, &tv);

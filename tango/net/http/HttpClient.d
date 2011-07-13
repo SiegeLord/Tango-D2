@@ -181,8 +181,6 @@ class HttpClient
                 else
                    error ("invalid url provided to HttpClient ctor");
 
-                paramsOut.parse(new Array(uri.query)); 
-                
                 // default the http version to 1.0
                 setVersion (Version.OnePointZero);
         }
