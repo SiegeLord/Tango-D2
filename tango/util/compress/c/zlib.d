@@ -71,11 +71,11 @@ enum uint  ZLIB_VERNUM  = 0x1230;
 
 private
 {
-    import tango.stdc.config : c_long, c_ulong;
+    import core.stdc.config : c_long, c_ulong;
 
     version( Posix )
     {
-        import tango.stdc.posix.sys.types : z_off_t = off_t;
+        import core.sys.posix.sys.types : z_off_t = off_t;
     }
     else
     {

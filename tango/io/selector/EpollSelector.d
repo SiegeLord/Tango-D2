@@ -14,8 +14,6 @@ version (linux)
 
     private import tango.io.selector.AbstractSelector;
     private import tango.sys.Common;
-    private import tango.sys.linux.linux;
-    private import tango.stdc.errno;
 
     debug (selector)
         private import tango.io.Stdout;

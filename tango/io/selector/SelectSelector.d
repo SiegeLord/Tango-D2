@@ -13,8 +13,6 @@ private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
 private import tango.sys.Common;
 
-private import tango.stdc.errno;
-
 debug (selector)
 {
     private import tango.io.Stdout;

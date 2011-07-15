@@ -1,5 +1,5 @@
 module tango.sys.linux.consts.fcntl;
-import tango.stdc.posix.config;
+import core.sys.posix.config;
 import tango.util.Convert;
 
 static if( __USE_LARGEFILE64 )

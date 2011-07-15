@@ -17,11 +17,10 @@
 
 module tango.io.device.File;
 
+private import tango.core.String;
 private import tango.sys.Common;
-
 private import tango.io.device.Device;
 
-private import stdc = tango.stdc.stringz;
 
 /*******************************************************************************
 
@@ -29,11 +28,12 @@ private import stdc = tango.stdc.stringz;
 
 *******************************************************************************/
 
-version (Win32)
-         private import Utf = tango.text.convert.Utf;
-   else
-      private import tango.stdc.posix.unistd;
-
+version (Win32) {
+	private import Utf = tango.text.convert.Utf;
+} else {
+	private import core.sys.posix.unistd;
+	private import core.sys.posix.fcntl;
+}
 
 /*******************************************************************************
 
@@ -654,12 +654,11 @@ class File : Device, Device.Seek, Device.Truncate
 
                         // zero terminate and convert to utf16
                         char[512] zero = void;
-                        auto name = stdc.toStringz (path, zero);
+                        auto name = toStringz (path, zero);
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = posix.open (name, mode | O_LARGEFILE | addflags,
-                                             access);
+                        handle = core.sys.posix.fcntl.open(name, mode | O_LARGEFILE | addflags, access);
                         if (handle is -1)
                             return false;
 
@@ -708,7 +707,7 @@ class File : Device, Device.Seek, Device.Truncate
                 override void truncate (long size)
                 {
                         // set filesize to be current seek-position
-                        if (posix.ftruncate (handle, cast(off_t) size) is -1)
+                        if (core.sys.posix.unistd.ftruncate (handle, cast(off_t) size) is -1)
                             error;
                 }
 
@@ -721,7 +720,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
-                        long result = posix.lseek (handle, cast(off_t) offset, anchor);
+                        long result = core.sys.posix.unistd.lseek (handle, cast(off_t) offset, anchor);
                         if (result is -1)
                             error;
                         return result;
@@ -747,7 +746,7 @@ class File : Device, Device.Seek, Device.Truncate
                 long length ()
                 {
                         stat_t stats = void;
-                        if (posix.fstat (handle, &stats))
+                        if (core.sys.posix.sys.stat.fstat (handle, &stats))
                             error;
                         return cast(long) stats.st_size;
                 }

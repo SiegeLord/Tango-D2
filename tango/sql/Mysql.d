@@ -8,8 +8,8 @@
  */
 module tango.sql.Mysql;
 
-import tango.stdc.stdio;
-import tango.stdc.stringz;
+import tango.core.String;
+import core.stdc.stdio;
 
 /*******************************************************************************
 	int main(char[][] args)

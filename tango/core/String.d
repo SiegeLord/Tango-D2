@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.stdc.stringz;
+module tango.core.String;
 
 /*********************************
  * Convert array of chars to a C-style 0 terminated string.

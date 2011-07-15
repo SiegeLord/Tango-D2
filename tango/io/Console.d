@@ -14,13 +14,11 @@
 
 module tango.io.Console;
 
-private import  tango.sys.Common;
-
 private import  tango.io.device.Device,
                 tango.io.stream.Buffered;
 
 version (Posix)
-         private import tango.stdc.posix.unistd;  // needed for isatty()
+         private import core.sys.posix.unistd;  // needed for isatty()
 
 /*******************************************************************************
 

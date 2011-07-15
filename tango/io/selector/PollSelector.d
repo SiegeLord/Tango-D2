@@ -14,10 +14,6 @@ version (Posix)
     private import tango.io.selector.AbstractSelector;
     private import tango.io.selector.SelectorException;
     private import tango.sys.Common;
-    private import tango.stdc.errno;
-
-    version (linux)
-        private import tango.sys.linux.linux;
 
     debug (selector)
         private import tango.io.Stdout;

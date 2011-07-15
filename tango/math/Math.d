@@ -69,7 +69,7 @@
 
 module tango.math.Math;
 
-static import tango.stdc.math;
+static import core.stdc.math;
 private import tango.math.IEEE;
 
 

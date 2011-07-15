@@ -11,7 +11,6 @@ public import tango.io.selector.SelectorException;
 
 private import tango.io.selector.model.ISelector;
 private import tango.sys.Common;
-private import tango.stdc.errno;
 
 version (Windows)
 {

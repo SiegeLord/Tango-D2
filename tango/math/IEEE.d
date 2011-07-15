@@ -59,6 +59,8 @@
  */
 module tango.math.IEEE;
 
+static import core.stdc.math;
+
 version(GNU){
     // GDC is a filthy liar. It can't actually do inline asm.
 } else version(TangoNoAsm) {
@@ -74,17 +76,6 @@ version (X86){
 version (X86_64){
     version = X86_Any;
 }
-
-version (Naked_D_InlineAsm_X86) {
-    // Don't include this extra dependency unless we need to.
-    debug(UnitTest) {
-        static import tango.stdc.math;
-    }
-} else {
-    // Needed for cos(), sin(), tan() on GNU.
-    static import tango.stdc.math;
-}
-
 
 version(Windows) { 
     version(DigitalMars) { 
@@ -748,8 +739,8 @@ version (X86)
     enum int FP_ILOGBNAN      = -int.max-1;
     enum int FP_ILOGBINFINITY = -int.max-1;
 } else {
-    alias tango.stdc.math.FP_ILOGB0   FP_ILOGB0;
-    alias tango.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
+    alias core.stdc.math.FP_ILOGB0   FP_ILOGB0;
+    alias core.stdc.math.FP_ILOGBNAN FP_ILOGBNAN;
     enum int FP_ILOGBINFINITY = int.max;
 }
 

@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpCookies;
 
-private import  tango.stdc.ctype;
+private import  core.stdc.ctype;
 
 private import  tango.io.device.Array;
 

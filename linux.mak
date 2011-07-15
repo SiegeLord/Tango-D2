@@ -13,12 +13,9 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/BitArray.d \
 	tango/core/ByteSwap.d \
 	tango/core/Exception.d \
-	tango/core/sync/Mutex.d \
 	tango/core/Traits.d \
 	tango/core/Thread.d \
-	tango/stdc/errno.d \
-	tango/stdc/stringz.d \
-	tango/sys/Common.d
+	tango/core/String.d
 
 SRC_IO=tango/io/Console.d \
 	tango/io/device/Array.d \
@@ -36,8 +33,7 @@ SRC_IO=tango/io/Console.d \
 	tango/io/selector/AbstractSelector.d \
 	tango/io/selector/SelectorException.d \
 	tango/io/selector/SelectSelector.d \
-	tango/io/selector/PollSelector.d \
-	tango/io/selector/EpollSelector.d
+	tango/io/selector/PollSelector.d
 	
 SRC_MATH=tango/math/Bessel.d \
 	tango/math/BigInt.d \

@@ -1,12 +1,12 @@
 module tango.net.device.Berkeley;
 
 private import tango.sys.Common;
-
+private import tango.core.String;
 private import tango.core.Exception;
 
 import  consts=tango.sys.consts.socket;
 
-private import  tango.stdc.stringz;
+
 
 /*******************************************************************************
 
@@ -347,7 +347,7 @@ version (Win32)
 }
 else
 {
-        private import tango.stdc.errno;
+        private import core.stdc.errno;
 
         private typedef int socket_t = -1;
 
@@ -2054,7 +2054,7 @@ debug (UnitTest)
 
 public class SocketSet
 {
-        import tango.stdc.config;
+        import core.stdc.config;
 
         struct timeval
         {
