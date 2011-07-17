@@ -21,6 +21,7 @@ tango/io/Stdout.d
 tango/io/stream/Buffered.d
 tango/io/stream/Format.d
 tango/io/stream/Zlib.d
+tango/io/stream/Digester.d
 tango/math/Bessel.d
 tango/math/BigInt.d
 tango/math/Bracket.d

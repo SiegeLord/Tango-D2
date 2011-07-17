@@ -126,7 +126,7 @@ class DigestOutput : OutputFilter, InputFilter.Mutator
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void[]) src)
         {
                 auto len = sink.write (src);
                 if (len != Eof)
