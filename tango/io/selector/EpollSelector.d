@@ -14,6 +14,7 @@ version (linux)
 
     private import tango.io.selector.AbstractSelector;
     private import tango.sys.Common;
+    private import tango.sys.linux.epoll;
 
     debug (selector)
         private import tango.io.Stdout;

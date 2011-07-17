@@ -249,6 +249,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                           else
                              if (pre is '+')
                                  index = 3;
+                      goto case;
                   case 'u':
                   case 'U':
                        pre = '#';

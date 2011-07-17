@@ -579,6 +579,7 @@ class HttpClient
                                        return redirectPost (pump, responseLine.getStatus);
                                    else
                                       error ("unexpected redirect for method "~method.name);
+                                break;
                            default:
                                 break;
                            }
@@ -650,7 +651,7 @@ class HttpClient
                             if (canRepost (status))
                                 return open (this.method, pump);
                             // fall through!
-
+							goto default;
                        default:
                             error ("Illegal redirection of Post");
                        }

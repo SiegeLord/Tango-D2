@@ -39,24 +39,24 @@ You can message me on github, or find me on IRC on #d and #d.tango @ irc.freenod
 You can just checkout the libary and start building it. There is a Makefile for GNU/Linux to build the libary. I assume that you're using dmd to compile it! Just type the following commands to your console.
 
 	* cd /usr/include/d/dmd
-	* git clone git://github.com/mtachrono/Tango-D2.git tango
+	* git clone git://github.com/mtachrono/tango.git tango
 	* cd tango
-	* make -f linux.mak
-	* make install -f linux.mak
+	* make -f posix.mak
+	* make install -f posix.mak
 	
 ===] Building additional parts [=======================================================================================
 
 You can also generate the docs. They'll be puttet to doc/html
 
-	make doc -f linux.mak
+	make doc -f posix.mak
 
 If you need to rebuild the libary, you can tidy up your folder by
 
-	make clean -f linux.mak
+	make clean -f posix.mak
 
 And of course you can install the libary to /usr/lib/libtango2.a
 
-	make install -f linux.mak
+	make install -f posix.mak
 
 
 ===] Setting up your Environment [======================================================================================

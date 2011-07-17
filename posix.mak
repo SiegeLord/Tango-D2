@@ -33,7 +33,8 @@ SRC_IO=tango/io/Console.d \
 	tango/io/selector/AbstractSelector.d \
 	tango/io/selector/SelectorException.d \
 	tango/io/selector/SelectSelector.d \
-	tango/io/selector/PollSelector.d
+	tango/io/selector/PollSelector.d \
+	tango/io/selector/EpollSelector.d
 	
 SRC_MATH=tango/math/Bessel.d \
 	tango/math/BigInt.d \
