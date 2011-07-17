@@ -13,6 +13,7 @@
 module tango.sys.Common;
 
 public import core.stdc.errno;
+public import core.stdc.string;
 
 version (Win32) {
 	public import core.sys.windows.windows;

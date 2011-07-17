@@ -31,11 +31,11 @@ class JsonParser(T)
 
         private struct Iterator
         {
-                T*      ptr;
-                T*      end;
-                T[]     text;
+                const(T)*      ptr;
+                const(T)*      end;
+                const(T)[]     text;
 
-                void reset (T[] text)
+                void reset (const(T)[] text)
                 {
                         this.text = text;
                         this.ptr = text.ptr;
@@ -45,8 +45,8 @@ class JsonParser(T)
 
         protected Iterator              str;
         private Stack!(State, 16)       state;
-        private T*                      curLoc;
-        private int                     curLen;
+        private const(T)*               curLoc;
+        private size_t                  curLen;
         private State                   curState; 
         protected Token                 curType;
         
@@ -106,16 +106,16 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        final T[] value ()
+        final const(T)[] value ()
         {
-                return curLoc [0 .. curLen];
+                return this.curLoc [0 .. curLen];
         }
         
         /***********************************************************************
         
         ***********************************************************************/
         
-        bool reset (T[] json = null)
+        bool reset (const(T)[] json = null)
         {
                 state.clear;
                 str.reset (json);
@@ -139,18 +139,18 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        protected final void expected (char[] token)
+        protected final void expected (const(char)[] token)
         {
-                throw new Exception ("expected " ~ token);
+                throw new Exception(("expected " ~ token).idup);
         }
         
         /***********************************************************************
         
         ***********************************************************************/
         
-        protected final void expected (char[] token, T* point)
+        protected final void expected (const(char)[] token, const(T)* point)
         {
-                static char[] itoa (char[] buf, int i)
+                static char[] itoa (char[] buf, size_t i)
                 {
                         auto p = buf.ptr+buf.length;
                         do {
@@ -166,9 +166,9 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        private void unexpectedEOF (char[] msg)
+        private void unexpectedEOF (const(char)[] msg)
         {
-                throw new Exception ("unexpected end-of-input: " ~ msg);
+                throw new Exception (("unexpected end-of-input: " ~ msg).idup);
         }
                 
         /***********************************************************************
@@ -184,6 +184,7 @@ class JsonParser(T)
                     return push (Token.BeginArray, State.Array);
 
                 expected ("'{' or '[' at start of document");
+                assert(0);
         }
 
         /***********************************************************************
@@ -210,15 +211,15 @@ class JsonParser(T)
                     else
                        expected ("'\"' before attribute-name", p);
 
-                curLoc = p+1;
-                curType = Token.Name;
+                this.curLoc = p+1;
+                this.curType = Token.Name;
 
                 while (++p < e) 
                        if (*p is '"' && !escaped(p))
                            break;
 
                 if (p < e) 
-                    curLen = p - curLoc;
+                    this.curLen = p - curLoc;
                 else
                    unexpectedEOF ("in attribute-name");
 
@@ -315,7 +316,7 @@ class JsonParser(T)
         {
                 auto p = str.ptr;
                 auto e = str.end;
-                auto c = *(curLoc = p);
+                T c = *(curLoc = p);
 
                 curType = Token.Number;
 
@@ -343,7 +344,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        private bool match (T[] name, Token token)
+        private bool match (const(T)[] name, Token token)
         {
                 auto i = name.length;
                 if (str.ptr[0 .. i] == name)
@@ -408,7 +409,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        private int escaped (T* p)
+        private int escaped (const(T)* p)
         {
                 int i;
 

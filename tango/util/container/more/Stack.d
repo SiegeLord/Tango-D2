@@ -85,7 +85,7 @@ struct Stack (V, int Size = 0)
 
         ***********************************************************************/
 
-        uint unused ()
+        size_t unused ()
         {
                 return stack.length - depth;
         }

@@ -30,7 +30,7 @@ private import Utf = tango.text.convert.Utf;
         
 ******************************************************************************/
 
-T[] unescape(T) (T[] src, T[] dst = null)
+T[] unescape(T) (const(T)[] src, ref T[] dst = null)
 {
         size_t content;
 
@@ -43,7 +43,7 @@ T[] unescape(T) (T[] src, T[] dst = null)
         }
 
         unescape (src, &append);
-        return dst [0 .. content];
+        return dst[0 .. content];
 }
 
 
@@ -57,7 +57,7 @@ T[] unescape(T) (T[] src, T[] dst = null)
         
 ******************************************************************************/
 
-T[] escape(T) (T[] src, T[] dst = null)
+T[] escape(T) (const(T)[] src, T[] dst = null)
 {
         size_t content;
 
@@ -83,9 +83,9 @@ T[] escape(T) (T[] src, T[] dst = null)
               
 ******************************************************************************/
 
-void unescape(T) (T[] src, void delegate(T[]) emit)
+void unescape(T) (const(T)[] src, void delegate(T[]) emit)
 {
-        int delta;
+        size_t delta;
         auto s = src.ptr;
         auto len = src.length;
         enum:T {slash = '\\'};
@@ -95,14 +95,14 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
            {
            // copy segments over, a chunk at a time
            do {
-              emit (s[0 .. delta]);
+              emit (s[0 .. delta].dup);
               len -= delta;
               s += delta;
 
               // bogus trailing '\'
               if (len < 2)
                  {
-                 emit ("\\");
+                 emit ("\\".dup);
                  len = 0;
                  break;
                  }
@@ -111,35 +111,35 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
               switch (s[1])
                      {
                       case '\\':
-                           emit ("\\");
+                           emit ("\\".dup);
                            break;
 
                       case '/':
-                           emit ("/");
+                           emit ("/".dup);
                            break;
 
                       case '"':
-                           emit (`"`);
+                           emit (`"`.dup);
                            break;
 
                       case 'b':
-                           emit ("\b");
+                           emit ("\b".dup);
                            break;
 
                       case 'f':
-                           emit ("\f");
+                           emit ("\f".dup);
                            break;
 
                       case 'n':
-                           emit ("\n");
+                           emit ("\n".dup);
                            break;
 
                       case 'r':
-                           emit ("\r");
+                           emit ("\r".dup);
                            break;
 
                       case 't':
-                           emit ("\t");
+                           emit ("\t".dup);
                            break;
 
                       case 'u':
@@ -152,7 +152,7 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
 
                               for (auto i=2; i < 6; ++i)
                                   {
-                                  auto c = s[i];
+                                  T c = s[i];
                                   if (c >= '0' && c <= '9')
                                      {}
                                   else
@@ -181,10 +181,10 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
               } while ((delta = Util.indexOf (s, slash, len)) < len);
 
            // copy tail too
-           emit (s [0 .. len]);
+           emit (s [0 .. len].dup);
            }
         else
-           emit (src);
+           emit (src.dup);
 }
 
 
@@ -197,7 +197,7 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
         
 ******************************************************************************/
 
-void escape(T) (T[] src, void delegate(T[]) emit)
+void escape(T) (const(T)[] src, void delegate(T[]) emit)
 {
         T[2] patch = '\\';
         auto s = src.ptr;
@@ -232,16 +232,16 @@ void escape(T) (T[] src, void delegate(T[]) emit)
                           ++s;
                           continue;
                      }
-              emit (t [0 .. s - t]);
+              emit (t [0 .. s - t].dup);
               emit (patch);
               t = ++s;
               }
 
         // did we change anything? Copy tail also
         if (t is src.ptr)
-            emit (src);
+            emit (src.dup);
         else
-           emit (t [0 .. e - t]);
+           emit (t [0 .. e - t].dup);
 }
 
 

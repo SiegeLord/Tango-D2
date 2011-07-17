@@ -435,7 +435,7 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (const(char[]) src, uint* ate=null)
+        NumType parse (const(char[]) src, size_t* ate=null)
         {
                 const(char)* end;
 
@@ -453,7 +453,7 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (const(wchar[]) src, uint* ate=null)
+        NumType parse (const(wchar[]) src, size_t* ate=null)
         {
                 // cheesy hack to avoid pre-parsing :: max digits == 100
                 char[100] tmp = void;
@@ -475,7 +475,7 @@ version (float_dtoa)
 
         **********************************************************************/
 
-        NumType parse (const(dchar[]) src, uint* ate=null)
+        NumType parse (const(dchar[]) src, size_t* ate=null)
         {
                 // cheesy hack to avoid pre-parsing :: max digits == 100
                 char[100] tmp = void;
@@ -501,7 +501,7 @@ private import Integer = tango.text.convert.Integer;
 
 ******************************************************************************/
 
-NumType parse(T) (const(T[]) src, uint* ate=null)
+NumType parse(T) (const(T[]) src, size_t* ate=null)
 {
         T               c;
         const(T)*       p;
@@ -574,7 +574,7 @@ NumType parse(T) (const(T[]) src, uint* ate=null)
            // parse base10 exponent?
            if ((c is 'e' || c is 'E') && p < end )
               {
-              uint eaten;
+              size_t eaten;
               exp += Integer.parse (src[(++p-src.ptr) .. $], 0, &eaten);
               p += eaten;
               }

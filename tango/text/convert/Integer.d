@@ -341,10 +341,10 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 
 ******************************************************************************/
 
-long parse(T, U=uint) (T[] digits, U radix=0, uint* ate=null)
+long parse(T, U=uint) (T[] digits, U radix=0, size_t* ate=null)
 {return parse!(T)(digits, radix, ate);}
 
-long parse(T) (T[] digits, uint radix=0, uint* ate=null)
+long parse(T) (T[] digits, uint radix=0, size_t* ate=null)
 {
         bool sign;
 
@@ -371,10 +371,10 @@ long parse(T) (T[] digits, uint radix=0, uint* ate=null)
 
 ******************************************************************************/
 
-ulong convert(T, U=uint) (const(T[]) digits, U radix=10, uint* ate=null)
+ulong convert(T, U=uint) (const(T[]) digits, U radix=10, size_t* ate=null)
 {return convert!(T)(digits, radix, ate);}
 
-ulong convert(T) (const(T[]) digits, uint radix=10, uint* ate=null)
+ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
 {
         uint  eaten;
         ulong value;

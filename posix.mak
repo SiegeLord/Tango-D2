@@ -4,7 +4,7 @@ RM=rm -rf
 CP=cp -v
 MODEL=64
 CFLAGS = 
-DFLAGS=-I../druntime/import -w -d -m$(MODEL) -O -release -nofloat
+DFLAGS=-I../druntime/import -w -d
 LFLAGS=
 DOCDIR=doc/html
 
@@ -15,7 +15,8 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/Exception.d \
 	tango/core/Traits.d \
 	tango/core/Thread.d \
-	tango/core/String.d
+	tango/core/String.d \
+	tango/sys/Common.d
 
 SRC_IO=tango/io/Console.d \
 	tango/io/device/Array.d \
@@ -64,6 +65,9 @@ SRC_MATH=tango/math/Bessel.d \
 	
 SRC_TEXT=tango/text/Ascii.d \
 	tango/text/Util.d \
+	tango/text/json/JsonEscape.d \
+	tango/text/json/JsonParser.d \
+	tango/text/json/Json.d \
 	tango/text/convert/Float.d \
 	tango/text/convert/Integer.d \
 	tango/text/convert/Layout.d \
@@ -88,7 +92,8 @@ SRC_TIME=tango/time/chrono/Calendar.d \
 	tango/time/Time.d \
 	tango/time/WallClock.d
 
-SRC_UTIL=tango/util/cipher/AES.d \
+SRC_UTIL=tango/util/container/more/Stack.d \
+	tango/util/cipher/AES.d \
 	tango/util/cipher/Blowfish.d \
 	tango/util/cipher/ChaCha.d \
 	tango/util/cipher/Cipher.d \
@@ -156,6 +161,22 @@ PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 SRC=$(SRC_CORE) $(SRC_IO) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(SRC:%.d=%.o)
 HTML=$(SRC:%.d=%.html)
+
+# For now, 32 bit is the default model
+ifeq (,$(MODEL))
+        MODEL:=32
+endif
+
+# Set correct d Build flags
+ifeq ($(BUILD),debug)
+        DFLAGS += -m$(MODEL) -g -debug
+else
+	ifeq ($(BUILD),unittest)
+			DFLAGS += -m$(MODEL) -g -debug -unittest
+	else
+        DFLAGS += -m$(MODEL) -O -release -nofloat
+    endif
+endif
 
 # targets
 all: libtango2.a

@@ -761,10 +761,12 @@ bool matching(T) (T* s1, T* s2, size_t length)
 
 ******************************************************************************/
 
-size_t indexOf(T, U=size_t) (T* str, T match, U length)
-{return indexOf!(T) (str, match, length);}
+size_t indexOf(T, U=size_t) (const(T)* str, const(T) match, U length)
+{
+		return indexOf!(T) (str, match, length);
+}
 
-size_t indexOf(T) (T* str, T match, size_t length)
+size_t indexOf(T) (const(T)* str, const(T) match, size_t length)
 {
         //assert (str);
 
