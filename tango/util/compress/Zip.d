@@ -339,7 +339,7 @@ struct FileHeader
 
         //debug(Zip) data.dump;
 
-        char[] function(ubyte[]) conv_fn;
+        inout(char[]) function(inout(ubyte[])) conv_fn;
         if( usingUtf8 )
             conv_fn = &cp437_to_utf8;
         else
@@ -1531,25 +1531,25 @@ struct ZipEntryInfo
  */
 class ZipException : Exception
 {
-    this(char[] msg) { super(msg); }
+    this(immutable(char)[] msg) { super(msg); }
 
 private:
     alias typeof(this) thisT;
-    static void opCall(char[] msg) { throw new ZipException(msg); }
+    static void opCall(immutable(char)[] msg) { throw new ZipException(msg); }
 
     static void badsig()
     {
         thisT("corrupt signature or unexpected section found");
     }
 
-    static void badsig(char[] type)
+    static void badsig(const(char)[] type)
     {
-        thisT("corrupt "~type~" signature or unexpected section found");
+        thisT("corrupt "~type.idup~" signature or unexpected section found");
     }
 
-    static void incons(char[] name)
+    static void incons(const(char)[] name)
     {
-        thisT("inconsistent headers for file \""~name~"\"; "
+        thisT("inconsistent headers for file \""~name.idup~"\"; "
                 "archive is likely corrupted");
     }
 
@@ -1611,13 +1611,13 @@ private:
  */
 class ZipChecksumException : ZipException
 {
-    this(char[] name)
+    this(const(char)[] name)
     {
-        super("checksum failed on zip entry \""~name~"\"");
+        super("checksum failed on zip entry \""~name.idup~"\"");
     }
 
 private:
-    static void opCall(char[] name) { throw new ZipChecksumException(name); }
+    static void opCall(const(char)[] name) { throw new ZipChecksumException(name); }
 }
 
 /**
@@ -1638,14 +1638,14 @@ private:
  */
 class ZipNotSupportedException : ZipException
 {
-    this(char[] msg) { super(msg); }
+    this(immutable(char)[] msg) { super(msg); }
 
 private:
     alias ZipNotSupportedException thisT;
 
-    static void opCall(char[] msg)
+    static void opCall(const(char)[] msg)
     {
-        throw new thisT(msg ~ " not supported");
+        throw new thisT(msg.idup ~ " not supported");
     }
 
     static void spanned()
@@ -1656,13 +1656,13 @@ private:
     static void zipver(ushort ver)
     {
         throw new thisT("zip format version "
-                ~Integer.toString(ver / 10)
+                ~Integer.toString(ver / 10).idup
                 ~"."
-                ~Integer.toString(ver % 10)
+                ~Integer.toString(ver % 10).idup
                 ~" not supported; maximum of version "
-                ~Integer.toString(MAX_EXTRACT_VERSION / 10)
+                ~Integer.toString(MAX_EXTRACT_VERSION / 10).idup
                 ~"."
-                ~Integer.toString(MAX_EXTRACT_VERSION % 10)
+                ~Integer.toString(MAX_EXTRACT_VERSION % 10).idup
                 ~" supported.");
     }
 
@@ -1674,7 +1674,7 @@ private:
     static void method(ushort m)
     {
         // Cheat here and work out what the method *actually* is
-        char[] ms;
+        immutable(char)[] ms;
         switch( m )
         {
             case 0:
@@ -1888,7 +1888,7 @@ void readExact(InputStream s, void[] dst)
 /*
  * Really, seriously, write some bytes.
  */
-void writeExact(OutputStream s, void[] src)
+void writeExact(OutputStream s, const(void)[] src)
 {
     while( src.length > 0 )
     {
@@ -1999,7 +1999,7 @@ const char[][] cp437_to_utf8_map_high = [
     "\u207f",   "\u00b2",   "\u25a0",   "\u00a0"
 ];
 
-char[] cp437_to_utf8(ubyte[] s)
+inout(char[]) cp437_to_utf8(inout(ubyte[]) s)
 {
     foreach( i,c ; s )
     {
@@ -2025,19 +2025,19 @@ char[] cp437_to_utf8(ubyte[] s)
                 }
                 else if( 1 <= d && d <= 31 )
                 {
-                    char[] repl = cp437_to_utf8_map_low[d];
+                    const(char)[] repl = cp437_to_utf8_map_low[d];
                     r[k..k+repl.length] = repl[];
                     k += repl.length;
                 }
                 else if( d == 127 )
                 {
-                    char[] repl = "\u2302";
+                    const(char)[] repl = "\u2302";
                     r[k..k+repl.length] = repl[];
                     k += repl.length;
                 }
                 else if( d > 127 )
                 {
-                    char[] repl = cp437_to_utf8_map_high[d-128];
+                    const(char)[] repl = cp437_to_utf8_map_high[d-128];
                     r[k..k+repl.length] = repl[];
                     k += repl.length;
                 }
@@ -2045,21 +2045,21 @@ char[] cp437_to_utf8(ubyte[] s)
                     assert(false);
             }
 
-            return r[0..k];
+            return cast(typeof(return))r[0..k];
         }
     }
 
     /* If we got here, then all the characters in s are also in ASCII, which
      * means it's also valid UTF-8; return the string unmodified.
      */
-    return cast(char[]) s;
+    return cast(typeof(return)) s;
 }
 
 debug( UnitTest )
 {
     unittest
     {
-        char[] c(char[] s) { return cp437_to_utf8(cast(ubyte[]) s); }
+        const(char)[] c(const(char)[] s) { return cp437_to_utf8(cast(const(ubyte)[]) s); }
 
         auto s = c("Hi there \x01 old \x0c!");
         assert( s == "Hi there \u263a old \u2640!", "\""~s~"\"" );
@@ -2129,8 +2129,9 @@ static this()
     ];
 }
 
-ubyte[] utf8_to_cp437(char[] s)
+inout(ubyte[]) utf8_to_cp437(inout(char[]) s)
 {
+	alias typeof(return) ret_type; /* Some sort of strange bug here */
     foreach( i,dchar c ; s )
     {
         if( !((32 <= c && c <= 126) || c == 0) )
@@ -2146,7 +2147,7 @@ ubyte[] utf8_to_cp437(char[] s)
             foreach( dchar d ; s[i..$] )
             {
                 if( 32 <= d && d <= 126 || d == 0 )
-                    r[k++] = d;
+                    r[k++] = cast(ubyte)d;
 
                 else if( d == '\u2302' )
                     r[k++] = '\x7f';
@@ -2157,18 +2158,18 @@ ubyte[] utf8_to_cp437(char[] s)
                 else
                 {
                     throw new Exception("cannot encode character \""
-                            ~ Integer.toString(cast(uint)d)
+                            ~ Integer.toString(cast(uint)d).idup
                             ~ "\" in codepage 437.");
                 }
             }
 
-            return r[0..k];
+            return cast(ret_type)r[0..k];
         }
     }
 
     // If we got here, then the entire string is printable ASCII, which just
     // happens to *also* be valid CP 437!  Huzzah!
-    return cast(ubyte[]) s;
+    return cast(typeof(return)) s;
 }
 
 debug( UnitTest )
@@ -2180,7 +2181,7 @@ debug( UnitTest )
 
         ubyte[256] s;
         foreach( i,ref c ; s )
-            c = i;
+            c = cast(ubyte)i;
 
         auto a = x(s);
         auto b = y(a);
@@ -2212,7 +2213,7 @@ debug( UnitTest )
 /*
  * This is here to simplify the code elsewhere.
  */
-char[] utf8_to_utf8(ubyte[] s) { return cast(char[]) s; }
+inout(char[]) utf8_to_utf8(inout(ubyte[]) s) { return cast(typeof(return)) s; }
 ubyte[] utf8_to_utf8(char[] s) { return cast(ubyte[]) s; }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2387,7 +2388,7 @@ class CounterOutput : OutputStream
         sink = null;
     }
 
-    override size_t write(void[] dst)
+    override size_t write(const(void)[] dst)
     {
         auto wrote = sink.write(dst);
         if( wrote != IConduit.Eof )
@@ -2546,7 +2547,7 @@ private:
 
     long _position, begin, length;
 
-    invariant
+    invariant()
     {
         assert( cast(Object) source is cast(Object) seeker );
         assert( begin >= 0 );
@@ -2633,7 +2634,7 @@ private:
     InputStream source;
     long _length;
 
-    invariant
+    invariant()
     {
         if( _length > 0 ) assert( source !is null );
     }
@@ -2680,7 +2681,7 @@ class SliceSeekOutputStream : OutputStream
         seeker = null;
     }
 
-    size_t write(void[] src)
+    size_t write(const(void)[] src)
     {
         // If we're at the end of the slice, return eof
         if( _position >= length )
@@ -2754,7 +2755,7 @@ private:
 
     long _position, begin, length;
 
-    invariant
+    invariant()
     {
         assert( cast(Object) source is cast(Object) seeker );
         assert( begin >= 0 );
@@ -2870,7 +2871,7 @@ private:
     InputStream seeker;
     long _position;
 
-    invariant
+    invariant()
     {
         assert( cast(Object) source is cast(Object) seeker );
         assert( _position >= 0 );
@@ -2927,7 +2928,7 @@ class WrapSeekOutputStream : OutputStream
         seeker = null;
     }
 
-    size_t write(void[] src)
+    size_t write(const(void)[] src)
     {
         if( seeker.seek(0, Anchor.Current) != _position )
             seeker.seek(_position, Anchor.Begin);
@@ -2966,7 +2967,7 @@ private:
     OutputStream seeker;
     long _position;
 
-    invariant
+    invariant()
     {
         assert( cast(Object) source is cast(Object) seeker );
         assert( _position >= 0 );

@@ -84,6 +84,7 @@ tango/util/cipher/TEA.d
 tango/util/cipher/XTEA.d
 tango/util/compress/c/bzlib.d
 tango/util/compress/c/zlib.d
+tango/util/compress/Zip.d
 tango/util/container/CircularList.d
 tango/util/container/Clink.d
 tango/util/container/Container.d
