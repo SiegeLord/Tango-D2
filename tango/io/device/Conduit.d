@@ -118,7 +118,7 @@ class Conduit : IConduit
 
         ***********************************************************************/
 
-        abstract size_t write (const(void[]) src);
+        abstract size_t write (const(void)[] src);
 
         /***********************************************************************
 
@@ -598,7 +598,7 @@ class OutputFilter : OutputStream
 
         ***********************************************************************/
 
-        size_t write (const(void[]) src)
+        size_t write (const(void)[] src)
         {
                 return sink.write (src);
         }

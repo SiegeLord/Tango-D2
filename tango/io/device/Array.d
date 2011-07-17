@@ -206,7 +206,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final override size_t write (const(void[]) src)
+        final override size_t write (const(void)[] src)
         {
                 auto len = src.length;
                 if (len)
@@ -438,7 +438,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final Array append (const(void[]) src)
+        final Array append (const(void)[] src)
         {
                 if (write(src) is Eof)
                     error (overflow);
@@ -466,7 +466,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final bool next (scope size_t delegate (const(void[])) scan)
+        final bool next (scope size_t delegate (const(void)[]) scan)
         {
                 return reader (scan) != IConduit.Eof;
         }
@@ -641,7 +641,7 @@ class Array : Conduit, InputBuffer, OutputBuffer, Conduit.Seek
 
         ***********************************************************************/
 
-        final size_t reader (scope size_t delegate (const(void[])) dg)
+        final size_t reader (scope size_t delegate (const(void)[]) dg)
         {
                 auto count = dg (data [index..extent]);
 

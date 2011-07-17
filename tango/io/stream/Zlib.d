@@ -593,7 +593,7 @@ class ZlibOutput : OutputFilter
 
     ***************************************************************************/
 
-    override size_t write(const(void[]) src)
+    override size_t write(const(void)[] src)
     {
         check_valid();
         scope(failure) kill_zs();
