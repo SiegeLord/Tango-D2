@@ -73,7 +73,7 @@ long toLong(T, U=uint) (const(T[]) digits, U radix=0)
 
 long toLong(T) (const(T[]) digits, uint radix=0)
 {
-        uint len;
+        size_t len;
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)

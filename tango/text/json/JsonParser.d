@@ -54,7 +54,7 @@ class JsonParser(T)
         
         ***********************************************************************/
         
-        this (T[] text = null)
+        this (const(T)[] text = null)
         {
                 reset (text);
         }
@@ -265,16 +265,19 @@ class JsonParser(T)
                             if (match ("null", Token.Null))
                                 return true;
                             expected ("'null'", str.ptr);
-
+							goto case;
+							
                        case 't':
                             if (match ("true", Token.True))
                                 return true;
                             expected ("'true'", str.ptr);
-
+							goto case;
+							
                        case 'f':
                             if (match ("false", Token.False))
                                 return true;
                             expected ("'false'", str.ptr);
+                            goto default;
 
                        default:
                             break;

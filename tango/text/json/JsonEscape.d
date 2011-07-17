@@ -34,7 +34,7 @@ T[] unescape(T) (const(T)[] src, ref T[] dst = null)
 {
         size_t content;
 
-        void append (T[] s)
+        void append (const(T)[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
@@ -83,7 +83,7 @@ T[] escape(T) (const(T)[] src, T[] dst = null)
               
 ******************************************************************************/
 
-void unescape(T) (const(T)[] src, void delegate(T[]) emit)
+void unescape(T) (const(T)[] src, void delegate(const(T)[]) emit)
 {
         size_t delta;
         auto s = src.ptr;
@@ -102,7 +102,7 @@ void unescape(T) (const(T)[] src, void delegate(T[]) emit)
               // bogus trailing '\'
               if (len < 2)
                  {
-                 emit ("\\".dup);
+                 emit ("\\");
                  len = 0;
                  break;
                  }
@@ -111,35 +111,35 @@ void unescape(T) (const(T)[] src, void delegate(T[]) emit)
               switch (s[1])
                      {
                       case '\\':
-                           emit ("\\".dup);
+                           emit ("\\");
                            break;
 
                       case '/':
-                           emit ("/".dup);
+                           emit ("/");
                            break;
 
                       case '"':
-                           emit (`"`.dup);
+                           emit (`"`);
                            break;
 
                       case 'b':
-                           emit ("\b".dup);
+                           emit ("\b");
                            break;
 
                       case 'f':
-                           emit ("\f".dup);
+                           emit ("\f");
                            break;
 
                       case 'n':
-                           emit ("\n".dup);
+                           emit ("\n");
                            break;
 
                       case 'r':
-                           emit ("\r".dup);
+                           emit ("\r");
                            break;
 
                       case 't':
-                           emit ("\t".dup);
+                           emit ("\t");
                            break;
 
                       case 'u':
@@ -181,10 +181,10 @@ void unescape(T) (const(T)[] src, void delegate(T[]) emit)
               } while ((delta = Util.indexOf (s, slash, len)) < len);
 
            // copy tail too
-           emit (s [0 .. len].dup);
+           emit (s [0 .. len]);
            }
         else
-           emit (src.dup);
+           emit (src);
 }
 
 
@@ -197,7 +197,7 @@ void unescape(T) (const(T)[] src, void delegate(T[]) emit)
         
 ******************************************************************************/
 
-void escape(T) (const(T)[] src, void delegate(T[]) emit)
+void escape(T) (const(T)[] src, void delegate(const(T)[]) emit)
 {
         T[2] patch = '\\';
         auto s = src.ptr;
@@ -232,16 +232,16 @@ void escape(T) (const(T)[] src, void delegate(T[]) emit)
                           ++s;
                           continue;
                      }
-              emit (t [0 .. s - t].dup);
+              emit (t [0 .. s - t]);
               emit (patch);
               t = ++s;
               }
 
         // did we change anything? Copy tail also
         if (t is src.ptr)
-            emit (src.dup);
+            emit (src);
         else
-           emit (t [0 .. e - t].dup);
+           emit (t [0 .. e - t]);
 }
 
 

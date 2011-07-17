@@ -44,10 +44,11 @@ You can just checkout the libary and start building it. There is a Makefile for 
 
 ===] Makefile Switches [===============================================================================================
 
-	* make -f posix.mal MODEL=64       # 64-Bit Version
-	* make -f posix.mal MODEL=32       # 32-Bit Version (default)
-	* make -f posix.mal BUILD=release  # Build Release (default) [adds -O -release -nofloat]
-	* make -f posix.mal BUILD=debug    # Build Debug [adds -g -debug]
+	* make -f posix.mak MODEL=64       # 64-Bit Version
+	* make -f posix.mak MODEL=32       # 32-Bit Version (default)
+	* make -f posix.mak BUILD=release  # Build Release (default) [adds -O -release -nofloat]
+	* make -f posix.mak BUILD=debug    # Build Debug [adds -g -debug]
+	* make -f posix.mak BUILD=unittest # Build Debug and Unittest [adds -g -debug -debug=UnitTest -unittest ]
 
 ===] Setting up your Environment [=====================================================================================
 

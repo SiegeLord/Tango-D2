@@ -819,7 +819,7 @@ D toIntegerFromString(D,S)(S value)
         }
         else
         {
-            uint len;
+            size_t len;
             auto result = tango.text.convert.Integer.parse(value, 10, &len);
 
             if( len < value.length || len == 0 )
@@ -896,7 +896,7 @@ D toReal(D,S)(S value)
 
         mixin convError;
 
-        uint len;
+        size_t len;
         auto r = tango.text.convert.Float.parse(value, &len);
         if( len < value.length || len == 0 )
             throwConvError;

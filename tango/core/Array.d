@@ -9,6 +9,7 @@
  */
 module tango.core.Array;
 
+private import core.stdc.stdlib;
 private import tango.core.Traits;
 
 version( TangoDoc )

@@ -84,9 +84,9 @@ private:
         assert( data.length == 1 || data[$-1] != 0 );
     }
     BigDigit [] data = ZERO; 
-    static BigUint opCall(const(BigDigit)[] x) {
+    static BigUint opCall(BigDigit [] x) {
        BigUint a;
-       a.data = x.dup;
+       a.data = x;
        return a;
     }
 public: // for development only, will be removed eventually
@@ -166,7 +166,7 @@ int opCmp(BigUint y)
     if (data.length != y.data.length) {
         return (data.length > y.data.length) ?  1 : -1;
     }
-    uint k = highestDifferentDigit(data, y.data);
+    size_t k = highestDifferentDigit(data, y.data);
     if (data[k] == y.data[k]) return 0;
     return data[k] > y.data[k] ? 1 : -1;
 }
@@ -343,12 +343,12 @@ BigUint opShr(ulong y)
 {
     assert(y>0);
     uint bits = cast(uint)y & BIGDIGITSHIFTMASK;
-    if ((y>>LG2BIGDIGITBITS) >= data.length) return BigUint(ZERO);
+    if ((y>>LG2BIGDIGITBITS) >= data.length) return BigUint(ZERO.dup);
     uint words = cast(uint)(y >> LG2BIGDIGITBITS);
     if (bits==0) {
         return BigUint(data[words..$]);
     } else {
-        uint [] result = new BigDigit[data.length - words];
+        BigDigit[] result = new BigDigit[data.length - words];
         multibyteShr(result, data[words..$], bits);
         if (result.length>1 && result[$-1]==0) return BigUint(result[0..$-1]);
         else return BigUint(result);
@@ -427,10 +427,10 @@ static BigUint addOrSub(BigUint x, BigUint y, bool wantSub, bool *sign) {
 //  y must not be zero.
 static BigUint mulInt(BigUint x, ulong y)
 {
-    if (y==0 || x == 0) return BigUint(ZERO);
+    if (y==0 || x == 0) return BigUint(ZERO.dup);
     uint hi = cast(uint)(y >>> 32);
     uint lo = cast(uint)(y & 0xFFFF_FFFF);
-    uint [] result = new BigDigit[x.data.length+1+(hi!=0)];
+    BigDigit[] result = new BigDigit[x.data.length+1+(hi!=0)];
     result[x.data.length] = multibyteMul(result[0..x.data.length], x.data, lo, 0);
     if (hi!=0) {
         result[x.data.length+1] = multibyteMulAdd!('+')(result[1..x.data.length+1],
@@ -443,7 +443,7 @@ static BigUint mulInt(BigUint x, ulong y)
  */
 static BigUint mul(BigUint x, BigUint y)
 {
-    if (y==0 || x == 0) return BigUint(ZERO);
+    if (y==0 || x == 0) return BigUint(ZERO.dup);
 
     size_t len = x.data.length + y.data.length;
     BigDigit [] result = new BigDigit[len];
@@ -460,7 +460,7 @@ static BigUint mul(BigUint x, BigUint y)
 
 // return x/y
 static BigUint divInt(BigUint x, uint y) {
-    uint [] result = new BigDigit[x.data.length];
+    BigDigit[] result = new BigDigit[x.data.length];
     if ((y&(-y))==y) {
         assert(y!=0, "BigUint division by zero");
         // perfect power of 2
@@ -483,7 +483,7 @@ static uint modInt(BigUint x, uint y) {
         return x.data[0]&(y-1);   
     } else {
         // horribly inefficient - malloc, copy, & store are unnecessary.
-        uint [] wasteful = new BigDigit[x.data.length];
+        BigDigit[] wasteful = new BigDigit[x.data.length];
         wasteful[] = x.data[];
         uint rem = multibyteDivAssign(wasteful, y, 0);
         delete wasteful;
@@ -494,7 +494,7 @@ static uint modInt(BigUint x, uint y) {
 // return x/y
 static BigUint div(BigUint x, BigUint y)
 {
-    if (y.data.length > x.data.length) return BigUint(ZERO);
+    if (y.data.length > x.data.length) return BigUint(ZERO.dup);
     if (y.data.length == 1) return divInt(x, y.data[0]);
     BigDigit [] result = new BigDigit[x.data.length - y.data.length + 1];
     divModInternal(result, null, x.data, y.data);
@@ -525,7 +525,7 @@ static BigUint mod(BigUint x, BigUint y)
 static BigUint pow(BigUint x, ulong y)
 {
     // Deal with the degenerate cases first.
-    if (y==0) return BigUint(ONE);
+    if (y==0) return BigUint(ONE.dup);
     if (y==1) return x;
     if (x==0 || x==1) return x;
    
@@ -830,7 +830,7 @@ BigDigit [] sub(in BigDigit[] x, in BigDigit[] y, bool *negative)
 {
     if (x.length == y.length) {
         // There's a possibility of cancellation, if x and y are almost equal.
-        int last = highestDifferentDigit(x, y);
+        size_t last = highestDifferentDigit(x, y);
         BigDigit [] result = new BigDigit[last+1];
         if (x[last] < y[last]) { // we know result is negative
             multibyteSub(result[0..last+1], y[0..last+1], x[0..last+1], 0);
@@ -892,7 +892,7 @@ BigDigit [] addInt(BigDigit[] x, ulong y)
 {
     uint hi = cast(uint)(y >>> 32);
     uint lo = cast(uint)(y& 0xFFFF_FFFF);
-	size_t len = x.length;
+    size_t len = x.length;
     if (x.length < 2 && hi!=0) ++len;
     BigDigit [] result = new BigDigit[len+1];
     result[0..x.length] = x[]; 
@@ -1059,7 +1059,7 @@ void squareInternal(BigDigit[] result, BigDigit[] x)
 }
 
 
-import tango.core.BitManip : bsr;
+import core.bitop : bsr;
 
 /// if remainder is null, only calculate quotient.
 void divModInternal(BigDigit [] quotient, BigDigit[] remainder, BigDigit [] u, BigDigit [] v)
@@ -1658,7 +1658,7 @@ private:
     
 // Returns the highest value of i for which left[i]!=right[i],
 // or 0 if left[]==right[]
-int highestDifferentDigit(in BigDigit [] left, in BigDigit [] right)
+size_t highestDifferentDigit(in BigDigit [] left, in BigDigit [] right)
 {
     assert(left.length == right.length);
     for (size_t i=left.length-1; i>0; --i) {
@@ -1705,8 +1705,8 @@ body {
     if(quotient.length < FASTDIVLIMIT) {
         return schoolbookDivMod(quotient, u, v);
     }
-    uint k = quotient.length >> 1;
-    uint h = k + v.length;
+    size_t k = quotient.length >> 1;
+    size_t h = k + v.length;
 
     recursiveDivMod(quotient[k .. $], u[2 * k .. $], v[k .. $], scratch);
     adjustRemainder(quotient[k .. $], u[k .. h], v, k,
@@ -1719,7 +1719,7 @@ body {
 // rem -= quot * v[0..k].
 // If would make rem negative, decrease quot until rem is >=0.
 // Needs (quot.length * k) scratch space to store the result of the multiply. 
-void adjustRemainder(BigDigit[] quot, BigDigit[] rem, in BigDigit[] v, int k,
+void adjustRemainder(BigDigit[] quot, BigDigit[] rem, in BigDigit[] v, size_t k,
                      BigDigit[] scratch)
 {
     assert(rem.length == v.length);
@@ -1741,7 +1741,7 @@ void fastDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
     BigDigit [] scratch = new BigDigit[v.length];
 
     // Perform block schoolbook division, with 'v.length' blocks.
-    uint m = u.length - v.length;
+    size_t m = u.length - v.length;
     while (m > v.length) {
         recursiveDivMod(quotient[m-v.length..m], 
             u[m - v.length..m + v.length], v, scratch);
@@ -1753,7 +1753,7 @@ void fastDivMod(BigDigit [] quotient, BigDigit [] u, in BigDigit [] v)
 
 debug(UnitTest)
 {
-import tango.stdc.stdio;
+import core.stdc.stdio;
 
 void printBiguint(uint [] data)
 {

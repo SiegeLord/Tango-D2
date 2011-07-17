@@ -1050,7 +1050,7 @@ T[] layout(T) (T[] output, const(T)[][] layout ...)
 
 T[] unescape(T) (T[] src, T[] dst = null)
 {
-        int delta;
+        size_t delta;
         auto s = src.ptr;
         auto len = src.length;
 

@@ -16,7 +16,10 @@ SRC_CORE=tango/core/Array.d \
 	tango/core/Traits.d \
 	tango/core/Thread.d \
 	tango/core/String.d \
-	tango/sys/Common.d
+	tango/sys/Common.d \
+	tango/sys/consts/socket.d \
+	tango/sys/linux/consts/socket.d \
+	tango/sys/linux/consts/fcntl.d
 
 SRC_IO=tango/io/Console.d \
 	tango/io/device/Array.d \
@@ -36,7 +39,7 @@ SRC_IO=tango/io/Console.d \
 	tango/io/selector/SelectSelector.d \
 	tango/io/selector/PollSelector.d \
 	tango/io/selector/EpollSelector.d
-	
+
 SRC_MATH=tango/math/Bessel.d \
 	tango/math/BigInt.d \
 	tango/math/Bracket.d \
@@ -158,7 +161,7 @@ SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
 # generare src and obj
-SRC=$(SRC_CORE) $(SRC_IO) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
+SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(SRC:%.d=%.o)
 HTML=$(SRC:%.d=%.html)
 
@@ -172,7 +175,7 @@ ifeq ($(BUILD),debug)
         DFLAGS += -m$(MODEL) -g -debug
 else
 	ifeq ($(BUILD),unittest)
-			DFLAGS += -m$(MODEL) -g -debug -unittest
+			DFLAGS += -m$(MODEL) -g -debug -debug=UnitTest -unittest
 	else
         DFLAGS += -m$(MODEL) -O -release -nofloat
     endif

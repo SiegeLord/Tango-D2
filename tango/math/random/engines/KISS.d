@@ -93,7 +93,7 @@ struct Kiss99{
         foreach (val;[&kiss_x,&kiss_y,&kiss_z,&kiss_c,&nBytes,&restB]){
             assert(s[i]=='_',"no separator _ found");
             ++i;
-            uint ate;
+            size_t ate;
             *val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
             assert(ate==8,"unexpected read size");
             i+=8;

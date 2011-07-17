@@ -134,7 +134,7 @@ class Json(T) : private JsonParser!(T)
 
 		***********************************************************************/
 
-		final void print (void delegate(T[]) append, T[] separator = null)
+		final void print (void delegate(const(T)[]) append, T[] separator = null)
 		{
 				root.print (append, separator);
 		}
@@ -145,7 +145,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
 
-        final T[] toString (T[] space=null, int decimals=2)
+        final T[] toString (const(T)[] space=null, int decimals=2)
         {
                 return root.print (space, decimals);
         }
@@ -178,7 +178,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        final Value value (T[] v)
+        final Value value (const(T)[] v)
         {
                 return createValue.set (v);
         }
@@ -234,7 +234,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        Attribute pair (T[] name, Value value = null)
+        Attribute pair (const(T)[] name, Value value = null)
         {
                 if (value is null)
                     value = createValue;
@@ -619,7 +619,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                T[] toString (T[] dst = null)
+                const(T)[] toString (T[] dst = null)
                 {
                         if (type is Type.RawString)
                             return string;
@@ -639,7 +639,7 @@ class Json(T) : private JsonParser!(T)
                       
                 ***************************************************************/
         
-                bool toString (void delegate(T[]) dg)
+                bool toString (void delegate(const(T)[]) dg)
                 {
                         if (type is Type.RawString)
                             dg(string);
@@ -771,10 +771,10 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                T[] print (T[] space=null, int decimals=2)
+                T[] print (const(T)[] space=null, int decimals=2)
                 {
                         T[] tmp;
-                        void append (T[] s) {tmp ~= s;}
+                        void append (const(T)[] s) {tmp ~= s.dup;}
                         print (&append, space, decimals);
                         return tmp;
                 }
@@ -786,9 +786,9 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                Value print (OutputStream s, T[] space=null, int decimals=2)
+                Value print (OutputStream s, const(T)[] space=null, int decimals=2)
                 {
-                        return print ((T[] t){s.write(t);}, space, decimals);
+                        return print ((const(T)[] t){s.write(t);}, space, decimals);
                 }
 
                 /***************************************************************
@@ -798,7 +798,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
                 
-                Value print (void delegate(T[]) append, T[] space=null, int decimals=2)
+                Value print (void delegate(const(T)[]) append, const(T)[] space=null, int decimals=2)
                 {
                         auto indent = 0;
         
@@ -806,7 +806,7 @@ class Json(T) : private JsonParser!(T)
                         {
                                 if (space.length)
                                    {
-                                   append ("\n".dup);
+                                   append ("\n");
                                    for (auto i=0; i < indent; i++)
                                         append (space);
                                    }
@@ -820,84 +820,82 @@ class Json(T) : private JsonParser!(T)
                                             return;
                                         
                                         bool first = true;
-                                        append ("{".dup);
+                                        append ("{");
                                         indent++;
         
                                         foreach (k, v; obj.attributes)
                                                 {
                                                 if (!first)  
-                                                     append (",".dup);
+                                                     append (",");
                                                 newline;
-                                                append (`"`.dup), append(k), append(`":`.dup);
+                                                append (`"`), append(k), append(`":`);
                                                 printValue (v);
                                                 first = false;
                                                 }
                                         indent--;
                                         newline;
-                                        append ("}".dup);
+                                        append ("}");
                                 }
                                 
                                 void printArray (Value[] arr)
                                 {
                                         bool first = true;
-                                        append ("[".dup);
+                                        append ("[");
                                         indent++;
                                         foreach (v; arr)
                                                 {
                                                 if (!first) 
-                                                     append (", ".dup);
+                                                     append (", ");
                                                 newline;
                                                 printValue (v);
                                                 first = false;
                                                 }
                                         indent--;
                                         newline;
-                                        append ("]".dup);
+                                        append ("]");
                                 }
         
         
                                 if (val is null) 
                                     return;
                                 
-                                switch (val.type)
-                                       {
-                                       T[64] tmp = void;
-        
-                                       case Type.String:
-                                            append (`"`.dup), append(val.string), append(`"`.dup);
-                                            break;
-        
-                                       case Type.RawString:
-                                            append (`"`.dup), escape(val.string, append), append(`"`.dup);
-                                            break;
-        
-                                       case Type.Number:
-                                            append (Float.format (tmp, val.toNumber, decimals));
-                                            break;
-        
-                                       case Type.Object:
-                                            auto obj = val.toObject;
-                                            debug assert(obj !is null);
-                                            printObject (val.toObject);
-                                            break;
-        
-                                       case Type.Array:
-                                            printArray (val.toArray);
-                                            break;
-        
-                                       case Type.True:
-                                            append ("true".dup);
-                                            break;
-        
-                                       case Type.False:
-                                            append ("false".dup);
-                                            break;
-        
-                                       default:
-                                       case Type.Null:
-                                            append ("null".dup);
-                                            break;
-                                       }
+                                T[64] tmp = void;
+                                switch (val.type) {
+										case Type.String:
+											append (`"`), append(val.string), append(`"`);
+											break;
+
+										case Type.RawString:
+											append (`"`), escape(val.string, append), append(`"`);
+											break;
+
+										case Type.Number:
+											append (Float.format (tmp, val.toNumber, decimals));
+											break;
+
+										case Type.Object:
+											auto obj = val.toObject;
+											debug assert(obj !is null);
+											printObject (val.toObject);
+											break;
+
+										case Type.Array:
+											printArray (val.toArray);
+											break;
+
+										case Type.True:
+											append ("true");
+											break;
+
+										case Type.False:
+											append ("false");
+											break;
+
+										default:
+											case Type.Null:
+											append ("null");
+											break;
+										}
                         }
                         
                         printValue (&this);
@@ -1074,7 +1072,7 @@ debug (UnitTest)
                   pair ("array", value(array(1, 2)))
                   );
 
-             char[] value = toString ("\t");
+             const(char)[] value = toString ("\t");
              assert (value == "{\n\t\"edgar\":\"friendly\",\n\t\"count\":11.5,\n\t\"array\":[\n\t\t1, \n\t\t2\n\t]\n}", value);
              }
         }

@@ -359,8 +359,8 @@ struct BitArray
     {
       unittest
       {
-        static uint x = 0b1100011000;
-        static BitArray ba = { 10, &x };
+        uint x = 0b1100011000;
+        BitArray ba = { 10, &x };
 
         ba.sort;
         for( size_t i = 0; i < 6; ++i )

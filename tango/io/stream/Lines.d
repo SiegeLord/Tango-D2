@@ -120,7 +120,7 @@ debug(UnitTest)
 
         unittest
         {
-                auto p = new Lines!(char) (new Array("blah"));
+                auto p = new Lines!(char) (new Array("blah".dup));
         }
 }
 

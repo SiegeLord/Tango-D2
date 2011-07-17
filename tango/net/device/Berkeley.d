@@ -2021,28 +2021,29 @@ public class NetHost
 
 debug (UnitTest)
 {
-        extern (C) int printf(char*, ...);
-        unittest
-        {
-        NetHost ih = new NetHost;
-        ih.getHostByName(Berkeley.hostName());
-        assert(ih.addrList.length > 0);
-        IPv4Address ia = new IPv4Address(ih.addrList[0], IPv4Address.PORT_ANY);
-        printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
-        foreach(int i, char[] s; ih.aliases)
-        {
-                printf("aliases[%d] = %.*s\n", i, s);
-        }
+	unittest
+	{
+		import core.stdc.stdio;
+		
+		NetHost ih = new NetHost;
+		ih.getHostByName(Berkeley.hostName());
+		assert(ih.addrList.length > 0);
+		IPv4Address ia = new IPv4Address(ih.addrList[0], IPv4Address.PORT_ANY);
+		printf("IP address = %.*s\nname = %.*s\n", ia.toAddrString(), ih.name);
+		foreach(int i, char[] s; ih.aliases)
+		{
+			printf("aliases[%d] = %.*s\n", i, s);
+		}
 
-        printf("---\n");
+		printf("---\n");
 
-        assert(ih.getHostByAddr(ih.addrList[0]));
-        printf("name = %.*s\n", ih.name);
-        foreach(int i, char[] s; ih.aliases)
-        {
-                printf("aliases[%d] = %.*s\n", i, s);
-        }
-        }
+		assert(ih.getHostByAddr(ih.addrList[0]));
+		printf("name = %.*s\n", ih.name);
+		foreach(int i, char[] s; ih.aliases)
+		{
+			printf("aliases[%d] = %.*s\n", i, s);
+		}
+	}
 }
 
 

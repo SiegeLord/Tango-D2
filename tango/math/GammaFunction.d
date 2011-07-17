@@ -1375,7 +1375,7 @@ real digamma(real x)
         5.0L/(66*10), -691.0L/(2730*12), 7.0L/(6*14) ];
 
     real p, q, nz, s, w, y, z;
-    int i, n, negative;
+    size_t i, n, negative;
 
     negative = 0;
     nz = 0.0;
@@ -1438,26 +1438,26 @@ done:
     return y;
 }
 
-import tango.stdc.stdio;
 debug(UnitTest) {
-unittest {
-    // Exact values
-    assert(digamma(1)== -EULERGAMMA);
-    assert(feqrel(digamma(0.25), -PI/2 - 3* LN2 - EULERGAMMA)>=real.mant_dig-7);
-    assert(feqrel(digamma(1.0L/6), -PI/2 *sqrt(3.0L) - 2* LN2 -1.5*log(3.0L) - EULERGAMMA)>=real.mant_dig-7);
-    assert(digamma(-5)!<>0);    
-    assert(feqrel(digamma(2.5), -EULERGAMMA - 2*LN2 + 2.0 + 2.0L/3)>=real.mant_dig-9);
-    assert(isIdentical(digamma(NaN(0xABC)), NaN(0xABC)));
-    
-    for (int k=1; k<40; ++k) {
-        real y=0;
-        for (int u=k; u>=1; --u) {
-            y+= 1.0L/u;
-        }
-        assert(feqrel(digamma(k+1),-EULERGAMMA + y) >=real.mant_dig-2);
-    }
-   
-//    printf("%d %La %La %d %d\n", k+1, digamma(k+1), -EULERGAMMA + x, feqrel(digamma(k+1),-EULERGAMMA + y), feqrel(digamma(k+1), -EULERGAMMA + x));
-}
+	import core.stdc.stdio;
+	unittest {
+		// Exact values
+		assert(digamma(1)== -EULERGAMMA);
+		assert(feqrel(digamma(0.25), -PI/2 - 3* LN2 - EULERGAMMA)>=real.mant_dig-7);
+		assert(feqrel(digamma(1.0L/6), -PI/2 *sqrt(3.0L) - 2* LN2 -1.5*log(3.0L) - EULERGAMMA)>=real.mant_dig-7);
+		assert(digamma(-5)!<>0);    
+		assert(feqrel(digamma(2.5), -EULERGAMMA - 2*LN2 + 2.0 + 2.0L/3)>=real.mant_dig-9);
+		assert(isIdentical(digamma(NaN(0xABC)), NaN(0xABC)));
+		
+		for (int k=1; k<40; ++k) {
+			real y=0;
+			for (int u=k; u>=1; --u) {
+				y+= 1.0L/u;
+			}
+			assert(feqrel(digamma(k+1),-EULERGAMMA + y) >=real.mant_dig-2);
+		}
+	   
+	//    printf("%d %La %La %d %d\n", k+1, digamma(k+1), -EULERGAMMA + x, feqrel(digamma(k+1),-EULERGAMMA + y), feqrel(digamma(k+1), -EULERGAMMA + x));
+	}
 }
 

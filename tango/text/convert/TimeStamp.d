@@ -736,23 +736,23 @@ private static int parseInt(T) (ref T* p, T* e)
 
 debug (UnitTest)
 {
-        unittest
-        {
-        wchar[30] tmp;
-        wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
-                
-        auto time = parse (test);
-        auto text = format (tmp, time);
-        assert (text == test);
+	unittest
+	{
+		wchar[30] tmp;
+		immutable(wchar)[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+				
+		auto time = parse (test);
+		auto text = format (tmp, time);
+		assert (text == test);
 
-        char[] garbageTest = "Wed Jun 11 17:22:07 20088";
-        garbageTest = garbageTest[0..$-1];
-        char[128] tmp2;
+		immutable(char)[] garbageTest = "Wed Jun 11 17:22:07 20088";
+		garbageTest = garbageTest[0..$-1];
+		char[128] tmp2;
 
-        time = parse(garbageTest);
-        auto text2 = format(tmp2, time);
-        assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
-        }
+		time = parse(garbageTest);
+		auto text2 = format(tmp2, time);
+		assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
+	}
 }
 
 /******************************************************************************

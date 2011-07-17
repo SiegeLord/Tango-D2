@@ -145,22 +145,20 @@ size_t strlenz(T) (T* s)
 
 debug (UnitTest)
 {
-        import tango.stdc.stdio;
-
         unittest
         {
-        debug(string) printf("stdc.stringz.unittest\n");
+			debug(string) printf("stdc.stringz.unittest\n");
 
-        const(char)* p = toStringz("foo");
-        assert(strlenz(p) == 3);
-        const(char)[] foo = "abbzxyzzy";
-        p = toStringz(foo[3..5]);
-        assert(strlenz(p) == 2);
+			const(char)* p = toStringz("foo");
+			assert(strlenz(p) == 3);
+			const(char)[] foo = "abbzxyzzy";
+			p = toStringz(foo[3..5]);
+			assert(strlenz(p) == 2);
 
-        const(char)[] test = "\0";
-        p = toStringz(test);
-        assert(*p == 0);
-        assert(p == test.ptr);
+			const(char)[] test = "\0";
+			p = toStringz(test);
+			assert(*p == 0);
+			assert(p == test.ptr);
         }
 }
 
