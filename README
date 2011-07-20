@@ -16,6 +16,7 @@ tango.io.device.File
 tango.core.Array
 tango.core.Traits
 tango.math
+tango.util.container
 
 What will work next:
 
