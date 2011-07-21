@@ -192,7 +192,7 @@ struct Vector (V, int Size = 0)
                        return remove;
                    --depth;
                    auto v = vector [i];
-                   memmove (vector.ptr+i, vector.ptr+i+1, V.sizeof * depth-i);
+                   memmove (vector.ptr+i, vector.ptr+i+1, V.sizeof * (depth-i));
                    return v;
                    }
 
