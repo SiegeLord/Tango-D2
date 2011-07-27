@@ -28,6 +28,8 @@ version(linux){
     import tango.core.tools.LinuxStackTrace;
 }
 
+extern (C) void  rt_setTraceHandler( TraceHandler h );
+
 version(CatchRecursiveTracing){
     ThreadLocal!(int) recursiveStackTraces;
 
@@ -418,12 +420,6 @@ version(Posix){
         }
     }
 
-    version(noSegfaultTrace){
-    } else {
-        static this(){
-            setupSegfaultTracer();
-        }
-    }
 }else version(Windows){
 }else {
     pragma(msg, "[INFO] SEGFAULT trace not yet implemented for this OS");
