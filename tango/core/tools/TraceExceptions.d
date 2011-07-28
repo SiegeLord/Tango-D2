@@ -14,6 +14,6 @@ static this(){
     rt_setTraceHandler(&basicTracer);
     version(noSegfaultTrace){
     } else {
-		setupSegfaultTracer();
+		version(Posix) setupSegfaultTracer();
     }
 }
