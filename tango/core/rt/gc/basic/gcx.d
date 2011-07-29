@@ -90,7 +90,7 @@ private
 
     alias void delegate(Object) DEvent;
     extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
-    extern (C) bool rt_detachDisposeEvent(Object h, DEvent e);
+    extern (C) bool rt_detachDisposeEventNoLock(Object h, DEvent e);
 
     alias void delegate( void*, void* ) scanFn;
 
@@ -1395,7 +1395,9 @@ class GC
            //reference at the same time
            locked!(void)({
                    if (wp.reference)
-                       rt_detachDisposeEvent(wp.reference, &wp.ondestroy);
+                       // don't worry about locking; we've stopped everything already
+                       // and locked the whole gc
+                       rt_detachDisposeEventNoLock(wp.reference, &wp.ondestroy);
                   });
            cstdlib.free(wp);
            }

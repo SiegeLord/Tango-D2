@@ -119,7 +119,7 @@ private
         void* rt_stackTop();
         void rt_finalize( void* p, bool det = true );
         void rt_attachDisposeEvent(Object h, DEvent e);
-        bool rt_detachDisposeEvent(Object h, DEvent e);
+        bool rt_detachDisposeEventNoLock(Object h, DEvent e);
         void rt_scanStaticData( scanFn scan );
 
         void thread_init();
@@ -2027,7 +2027,7 @@ void weakpointerDestroy( void* p )
         // finalizing the reference at the same time
         return locked!(void, () {
             if (wp.reference)
-                rt_detachDisposeEvent(wp.reference, &wp.ondestroy);
+                rt_detachDisposeEventNoLock(wp.reference, &wp.ondestroy);
         })();
         cstdlib.free(wp);
     }
