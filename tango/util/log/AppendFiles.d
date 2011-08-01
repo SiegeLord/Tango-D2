@@ -31,7 +31,7 @@ private import  tango.util.log.Log,
 public class AppendFiles : Filer
 {
         private Mask            mask_;
-        private char[][]        paths;
+        private const(char)[][]        paths;
         private int             index;
         private long            maxSize,
                                 fileSize;
@@ -48,7 +48,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        this (char[] path, int count, long maxSize, Appender.Layout how = null)
+        this (const(char)[] path, int count, long maxSize, Appender.Layout how = null)
         {
                 --count;
                 assert (path);
@@ -58,7 +58,8 @@ public class AppendFiles : Filer
                 mask_ = register (path);
 
                 // split the path into components
-                auto c = Path.parse (path);
+                // Bad dup?
+                auto c = Path.parse (path.dup);
 
                 char[3] x;
                 Time mostRecent;
@@ -99,7 +100,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        final Mask mask ()
+        final const Mask mask ()
         {
                 return mask_;
         }
@@ -110,7 +111,7 @@ public class AppendFiles : Filer
 
         ***********************************************************************/
 
-        final char[] name ()
+        final const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -121,24 +122,27 @@ public class AppendFiles : Filer
                  
         ***********************************************************************/
 
-        final synchronized void append (LogEvent event)
+        final void append (LogEvent event)
         {
-                char[] msg;
-
-                // file already full?
-                if (fileSize >= maxSize)
-                    nextFile (true);
-
-                size_t write (void[] content)
+                synchronized(this)
                 {
-                        fileSize += content.length;
-                        return buffer.write (content);
-                }
+                    char[] msg;
 
-                // write log message and flush it
-                layout.format (event, &write);
-                write (FileConst.NewlineString);
-                buffer.flush; 
+                    // file already full?
+                    if (fileSize >= maxSize)
+                        nextFile (true);
+
+                    size_t write (const(void)[] content)
+                    {
+                            fileSize += content.length;
+                            return buffer.write (content);
+                    }
+
+                    // write log message and flush it
+                    layout.format (event, &write);
+                    write (FileConst.NewlineString);
+                    buffer.flush; 
+                }
         }
 
         /***********************************************************************
