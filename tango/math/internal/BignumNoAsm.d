@@ -14,7 +14,7 @@
  */
 
 module tango.math.internal.BignumNoAsm;
-
+/+
 public:
 alias uint BigDigit; // A Bignum is an array of BigDigits. 
     
@@ -330,3 +330,4 @@ void multibyteSquare(BigDigit[] result, BigDigit [] x)
     result[0] = 0;
     multibyteAddDiagonalSquares(result, x);
 }
++/
