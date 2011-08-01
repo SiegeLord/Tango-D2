@@ -3,8 +3,8 @@ tango/core/BitManip.d
 tango/core/ByteSwap.d
 tango/core/Exception.d
 tango/core/Memory.d
+
 tango/core/sync/Atomic.d
-tango/core/sync/Mutex.d
 tango/core/Thread.d
 tango/core/Traits.d
 tango/io/Console.d
@@ -48,6 +48,7 @@ tango/math/random/Random.d
 tango/math/random/Twister.d
 tango/math/random/Ziggurat.d
 tango/stdc/errno.d
+tango/stdc/stdarg.d
 tango/stdc/stringz.d
 tango/stdc/posix/dirent.d
 tango/sys/Common.d
@@ -132,3 +133,6 @@ tango/util/uuid/NamespaceGenV3.d
 tango/util/uuid/NamespaceGenV5.d
 tango/util/uuid/RandomGen.d
 tango/util/uuid/Uuid.d
+
+tango/core/sync/Mutex.d
+
