@@ -96,10 +96,10 @@ int icompare (const(char[]) s1, const(char[]) s2)
         if (s2.length < len)
             len = s2.length;
 
-        auto result = memicmp (s1.ptr, s2.ptr, len);
+        auto result = memicmp (s1.ptr, s2.ptr, cast(int)len);
 
         if (result is 0)
-            result = s1.length - s2.length;
+            result = cast(int)s1.length - cast(int)s2.length;
         return result;
 }
 
@@ -116,10 +116,10 @@ int compare (const(char[]) s1, const(char[]) s2)
         if (s2.length < len)
             len = s2.length;
 
-        auto result = memcmp (s1.ptr, s2.ptr, len);
+        auto result = memcmp (s1.ptr, s2.ptr, cast(int)len);
 
         if (result is 0)
-            result = s1.length - s2.length;
+            result = cast(int)s1.length - cast(int)s2.length;
         return result;
 }
 
@@ -134,7 +134,7 @@ int compare (const(char[]) s1, const(char[]) s2)
         
 ******************************************************************************/
 
-int isearch (in char[] src, in char[] pattern)
+size_t isearch (in char[] src, in char[] pattern)
 {
         enum  char[] _caseMap = 
                 [ 

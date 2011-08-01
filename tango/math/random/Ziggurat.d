@@ -164,8 +164,8 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     /// for arrays this might potentially be faster than a naive loop
     U randomize(U)(ref U a){
         static if(is(U S:S[])){
-            uint aL=a.length;
-            for (uint i=0;i!=aL;++i){
+            size_t aL=a.length;
+            for (size_t i=0;i!=aL;++i){
                 a[i]=cast(BaseTypeOfArrays!(U))getRandom();
             }
         } else {
@@ -179,8 +179,8 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
         U randomizeOp2(U)(ref U a){
             static if(is(U S:S[])){
                 alias BaseTypeOfArrays!(U) TT;
-                uint aL=a.length;
-                for (uint i=0;i!=aL;++i){
+                size_t aL=a.length;
+                for (size_t i=0;i!=aL;++i){
                     static if(isComplexType!(TT)) {
                         a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
                     } else static if (isImaginaryType!(TT)){
@@ -205,8 +205,8 @@ struct Ziggurat(RandG,T,alias probDensityF,alias tailGenerator,bool hasNegative=
     U randomizeOp(U,S)(scope S delegate(T) op,ref U a){
         static if(is(U S:S[])){
             alias BaseTypeOfArrays!(U) TT;
-            uint aL=a.length;
-            for (uint i=0;i!=aL;++i){
+            size_t aL=a.length;
+            for (size_t i=0;i!=aL;++i){
                 static if(isComplexType!(TT)) {
                     a[i]=cast(TT)(op(getRandom())+1i*op(getRandom()));
                 } else static if (isImaginaryType!(TT)){

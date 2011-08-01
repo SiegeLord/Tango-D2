@@ -2026,7 +2026,7 @@ int rndint(real x)
     }
     else
     {
-        return tango.stdc.math.lrintl(x);
+        return cast(int)tango.stdc.math.lrintl(x);
     }
 }
 

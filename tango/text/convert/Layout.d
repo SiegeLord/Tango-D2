@@ -93,7 +93,7 @@ else version(DigitalMars)
 class Layout(T)
 {
         public alias convert opCall;
-        public alias scope uint delegate (const(T[])) Sink;
+        public alias scope size_t delegate (const(T[])) Sink;
        
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
@@ -145,7 +145,7 @@ class Layout(T)
                 T*  p = result.ptr;
                 auto available = result.length;
 
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         auto len = s.length;
                         if (len > available)
@@ -242,7 +242,7 @@ class Layout(T)
 
         public final uint convert (OutputStream output, const(T[]) formatStr, ...)
         {
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         return output.write(s);
                 }
@@ -270,7 +270,7 @@ class Layout(T)
         {
                 T[] output;
 
-                uint sink (const(T[]) s)
+                size_t sink (const(T[]) s)
                 {
                         output ~= s;
                         return s.length;
@@ -545,7 +545,7 @@ class Layout(T)
                       // handle alignment
                       void emit (const(T[]) str)
                       {
-                                int padding = width - str.length;
+                                int padding = width - cast(int)str.length;
 
                                 if (crop)
                                    {
@@ -927,7 +927,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private uint spaces (Sink sink, int count)
+        private size_t spaces (Sink sink, int count)
         {
                 size_t ret;
 

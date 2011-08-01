@@ -303,7 +303,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final uint emit (const(T[]) s)
+        private final size_t emit (const(T[]) s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)

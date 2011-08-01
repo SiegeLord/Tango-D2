@@ -290,12 +290,12 @@ class ZlibInput : InputFilter
             if( len == IConduit.Eof )
                 return IConduit.Eof;
 
-            zs.avail_in = len;
+            zs.avail_in = cast(uint)len;
             zs.next_in = in_chunk.ptr;
         }
 
         // We'll tell zlib to inflate straight into the target array.
-        zs.avail_out = dst.length;
+        zs.avail_out = cast(uint)dst.length;
         zs.next_out = cast(ubyte*)dst.ptr;
         auto ret = inflate(&zs, Z_NO_FLUSH);
 
@@ -598,12 +598,12 @@ class ZlibOutput : OutputFilter
         check_valid();
         scope(failure) kill_zs();
 
-        zs.avail_in = src.length;
+        zs.avail_in = cast(uint)src.length;
         zs.next_in = cast(ubyte*)src.ptr;
 
         do
         {
-            zs.avail_out = out_chunk.length;
+            zs.avail_out = cast(uint)out_chunk.length;
             zs.next_out = out_chunk.ptr;
 
             auto ret = deflate(&zs, Z_NO_FLUSH);
@@ -686,7 +686,7 @@ class ZlibOutput : OutputFilter
 
         do
         {
-            zs.avail_out = out_chunk.length;
+            zs.avail_out = cast(uint)out_chunk.length;
             zs.next_out = out_chunk.ptr;
 
             auto ret = deflate(&zs, Z_FINISH);

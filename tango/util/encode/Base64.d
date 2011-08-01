@@ -42,7 +42,7 @@ module tango.util.encode.Base64;
 *******************************************************************************/
 
 
-uint allocateEncodeSize(const(ubyte[]) data)
+size_t allocateEncodeSize(const(ubyte[]) data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -56,10 +56,10 @@ uint allocateEncodeSize(const(ubyte[]) data)
 
 *******************************************************************************/
 
-uint allocateEncodeSize(uint length)
+size_t allocateEncodeSize(size_t length)
 {
     size_t tripletCount = length / 3;
-    uint tripletFraction = length % 3;
+    size_t tripletFraction = length % 3;
     return (tripletCount + (tripletFraction ? 1 : 0)) * 4; // for every 3 bytes we need 4 bytes to encode, with any fraction needing an additional 4 bytes with padding
 }
 
@@ -79,10 +79,10 @@ uint allocateEncodeSize(uint length)
 
 *******************************************************************************/
 
-int encodeChunk(const(ubyte[]) data, char[] buff, ref int bytesEncoded)
+size_t encodeChunk(const(ubyte[]) data, char[] buff, ref size_t bytesEncoded)
 {
     size_t tripletCount = data.length / 3;
-    int rtn = 0;
+    size_t rtn = 0;
     char *rtnPtr = buff.ptr;
     const(ubyte) *dataPtr = data.ptr;
 
@@ -133,11 +133,11 @@ body
 
     if (data.length > 0)
     {
-        int bytesEncoded = 0;
-        int numBytes = encodeChunk(data, buff, bytesEncoded);
+        size_t bytesEncoded = 0;
+        size_t numBytes = encodeChunk(data, buff, bytesEncoded);
         char *rtnPtr = buff.ptr + bytesEncoded;
         const(ubyte) *dataPtr = data.ptr + numBytes;
-        int tripletFraction = data.length - (dataPtr - data.ptr);
+        size_t tripletFraction = data.length - (dataPtr - data.ptr);
 
         switch (tripletFraction)
         {

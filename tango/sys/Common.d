@@ -150,7 +150,7 @@ struct SysError
                         }
                      else
                         {
-                        uint  r;
+                        size_t  r;
                         char* pemsg;
 
                         pemsg = strerror(errcode);

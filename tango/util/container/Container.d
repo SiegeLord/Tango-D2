@@ -197,11 +197,11 @@ struct Container
                         
                 ***************************************************************/
         
-                void config (size_t chunks, int allocate=0)
+                void config (size_t chunks, size_t allocate=0)
                 {
                         this.chunks = chunks;
                         if (allocate)
-                            for (int i=allocate/chunks+1; i--;)
+                            for (size_t i=allocate/chunks+1; i--;)
                                  newlist;
                 }
         

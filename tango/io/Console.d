@@ -602,7 +602,7 @@ struct Console
                         private this (size_t handle)
                         {
                                 this.handle = cast(Handle) handle;
-                                redirected = (isatty(handle) is 0);
+                                redirected = (isatty(cast(int)handle) is 0);
                         }
                         }
         }

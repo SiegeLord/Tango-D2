@@ -481,7 +481,7 @@ double evalCheby(double x, const(double []) poly)
     
     b0 = poly[$-1];
     b1 = 0.0;
-    for (int i=poly.length-1; i>=0; --i) {
+    for (int i=cast(int)poly.length-1; i>=0; --i) {
         b2 = b1;
         b1 = b0;
         b0 = x * b1 - b2 + poly[i];

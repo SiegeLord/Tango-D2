@@ -1136,7 +1136,7 @@ struct PathParser
         {
                 auto p = path;
                 if (name.length is 0)
-                    for (int i=p.length-1; --i > 0;)
+                    for (int i=cast(int)p.length-1; --i > 0;)
                          if (p[i] is FileConst.PathSeparatorChar)
                             {
                             p = p[0 .. i];
@@ -1302,7 +1302,7 @@ struct PathParser
 
         package PathParser parse (char[] path, size_t end)
         {
-                end_ = end;
+                end_ = cast(int)end;
                 fp = path;
                 folder_ = 0;
                 name_ = suffix_ = -1;
@@ -1749,7 +1749,7 @@ inout(char)[] parent (inout(char)[] path)
 
 inout(char)[] pop (inout(char)[] path)
 {
-        int i = path.length;
+        int i = cast(int)path.length;
         while (i && path[--i] != '/') {}
         return path [0..i];
 }

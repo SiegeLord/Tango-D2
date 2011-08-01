@@ -170,7 +170,7 @@ struct Clink (V)
          * return the nth cell traversed from here. It may wrap around.
         **/
 
-        Ref nth (int n)
+        Ref nth (size_t n)
         {
                 auto p = &this;
                 for (int i = 0; i < n; ++i)

@@ -43,7 +43,7 @@ module tango.util.encode.Base32;
 *******************************************************************************/
 
 
-uint allocateEncodeSize(const(ubyte[]) data)
+size_t allocateEncodeSize(const(ubyte[]) data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -57,7 +57,7 @@ uint allocateEncodeSize(const(ubyte[]) data)
 
 *******************************************************************************/
 
-uint allocateEncodeSize(uint length)
+size_t allocateEncodeSize(size_t length)
 {
     auto inputbits = length * 8;
     auto inputquantas = (inputbits + 39) / 40; // Round upwards

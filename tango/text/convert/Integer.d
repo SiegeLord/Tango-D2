@@ -73,7 +73,7 @@ long toLong(T, U=uint) (const(T[]) digits, U radix=0)
 
 long toLong(T) (const(T[]) digits, uint radix=0)
 {
-        uint len;
+        size_t len;
 
         auto x = parse (digits, radix, &len);
         if (len < digits.length)
@@ -228,7 +228,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                 ];
 
         ubyte index;
-        int len = dst.length;
+        int len = cast(int)dst.length;
 
         if (len)
            {
@@ -305,7 +305,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
               // prefix number with zeros? 
               if (width)
                  {
-                 width = dst.length - width - prefix.length;
+                 width = cast(int)dst.length - width - cast(int)prefix.length;
                  while (len > width && len > 0)
                        {
                        *--p = '0';
@@ -340,10 +340,10 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
 
 ******************************************************************************/
 
-long parse(T, U=uint) (T[] digits, U radix=0, uint* ate=null)
+long parse(T, U=uint) (T[] digits, U radix=0, size_t* ate=null)
 {return parse!(T)(digits, radix, ate);}
 
-long parse(T) (T[] digits, uint radix=0, uint* ate=null)
+long parse(T) (T[] digits, uint radix=0, size_t* ate=null)
 {
         bool sign;
 
@@ -370,10 +370,10 @@ long parse(T) (T[] digits, uint radix=0, uint* ate=null)
 
 ******************************************************************************/
 
-ulong convert(T, U=uint) (const(T[]) digits, U radix=10, uint* ate=null)
+ulong convert(T, U=uint) (const(T[]) digits, U radix=10, size_t* ate=null)
 {return convert!(T)(digits, radix, ate);}
 
-ulong convert(T) (const(T[]) digits, uint radix=10, uint* ate=null)
+ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
 {
         uint  eaten;
         ulong value;
@@ -420,10 +420,10 @@ ulong convert(T) (const(T[]) digits, uint radix=10, uint* ate=null)
 
 ******************************************************************************/
 
-uint trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
+size_t trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
 {return trim!(T)(digits, sign, radix);}
 
-uint trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
+size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
 {
         T       c;
         const (T)*      p = digits.ptr;
@@ -599,7 +599,7 @@ T[] consume(T) (T[] src, bool fp=false)
 
 debug (UnitTest)
 {
-        
+
         unittest
         {
         char[64] tmp;

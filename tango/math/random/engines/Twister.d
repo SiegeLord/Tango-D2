@@ -174,7 +174,7 @@ struct Twister
         i+=7;
         assert(s[i]=='_',"no separator _ found");
         ++i;
-        uint ate;
+        size_t ate;
         mti=cast(uint)Integer.convert(s[i..i+8],16,&ate);
         assert(ate==8,"unexpected read size");
         i+=8;

@@ -13,7 +13,7 @@ private import tango.core.Exception;
 
 bool minHeapCompare(T)(T a, T b) {return a <= b;}
 bool maxHeapCompare(T)(T a, T b) {return a >= b;}
-void defaultHeapSwap(T)(T t, uint index) {}
+void defaultHeapSwap(T)(T t, size_t index) {}
 
 /** A heap is a data structure where you can insert items in random order and extract them in sorted order. 
   * Pushing an element into the heap takes O(lg n) and popping the top of the heap takes O(lg n). Heaps are 
@@ -29,7 +29,7 @@ void defaultHeapSwap(T)(T t, uint index) {}
   *     T       = the element type
   *     Compare = a function called when ordering elements. Its signature should be bool(T, T).
   *               see minHeapCompare() and maxHeapCompare() for examples.
-  *     Move    = a function called when swapping elements. Its signature should be void(T, uint).
+  *     Move    = a function called when swapping elements. Its signature should be void(T, size_t).
   *               The default does nothing, and should suffice for most users. You 
   *               probably want to keep this function small; it's called O(log N) 
   *               times per insertion or removal.
@@ -41,7 +41,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         private T[]     heap;
         
         // The index of the cell into which the next element will go.
-        private uint    next;
+        private size_t    next;
 
         /** Inserts the given element into the heap. */
         void push (T t)
@@ -98,7 +98,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
           * The index is according to the heap's internal layout; you are 
           * responsible for making sure the index is correct.
           * The heap invariant is maintained. */
-        T removeAt (uint index)
+        T removeAt (size_t index)
         {
                 if (next <= index)
                 {
@@ -133,7 +133,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         /** Returns the number of elements in this heap. */
-        const uint size ()
+        const size_t size ()
         {
                 return next;
         }
@@ -152,13 +152,13 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         /** Get the reserved capacity of this heap. */
-        const uint capacity ()
+        const size_t capacity ()
         {
                 return heap.length;
         }
 
         /** Reserve enough space in this heap for value elements. The reserved space is truncated or extended as necessary. If the value is less than the number of elements already in the heap, throw an exception. */
-        uint capacity (uint value)
+        size_t capacity (size_t value)
         {
                 if (value < next)
                 {
@@ -178,16 +178,16 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         // Get the index of the parent for the element at the given index.
-        private const uint parent (uint index)
+        private const size_t parent (size_t index)
         {
                 return (index - 1) / 2;
         }
 
         // Having just inserted, restore the heap invariant (that a node's value is greater than its children)
-        private void fixup (uint index)
+        private void fixup (size_t index)
         {
                 if (index == 0) return;
-                uint par = parent (index);
+                size_t par = parent (index);
                 if (!Compare(heap[par], heap[index]))
                 {
                         swap (par, index);
@@ -197,10 +197,10 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
 
         // Having just removed and replaced the top of the heap with the last inserted element,
         // restore the heap invariant.
-        private void fixdown (uint index)
+        private void fixdown (size_t index)
         {
-                uint left = 2 * index + 1;
-                uint down;
+                size_t left = 2 * index + 1;
+                size_t down;
                 if (left >= next)
                 {
                         return;
@@ -227,7 +227,7 @@ struct Heap (T, alias Compare = minHeapCompare!(T), alias Move = defaultHeapSwap
         }
 
         // Swap two elements in the array.
-        private void swap (uint a, uint b)
+        private void swap (size_t a, size_t b)
         {
                 auto t1 = heap[a];
                 auto t2 = heap[b];
@@ -344,8 +344,8 @@ unittest
 }
 
 long[] swapped;
-uint[] indices;
-void onMove(long a, uint b)
+size_t[] indices;
+void onMove(long a, size_t b)
 {
         swapped ~= a;
         indices ~= b;

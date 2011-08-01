@@ -72,7 +72,7 @@ class RC4 : StreamCipher
             output[i] = input[i] ^ state[cast(ubyte)(state[x]+state[y])];
         }
         
-        return input.length;
+        return cast(uint)input.length;
     }
     
     final override void reset()

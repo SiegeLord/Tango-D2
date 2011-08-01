@@ -129,7 +129,7 @@ class Salsa20 : StreamCipher
             index = (index + 1) & 0x3f; 
         }
         
-        return input.length;
+        return cast(uint)input.length;
     }
     
     void reset()

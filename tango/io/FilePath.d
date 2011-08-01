@@ -420,7 +420,7 @@ class FilePath : PathView
                         expand (len);
                         p.fp [p.end_ .. len] = other;
                         p.fp [len] = 0;
-                        p.end_ = len;
+                        p.end_ = cast(int)len;
                         }
                 return parse;
         }
@@ -474,7 +474,7 @@ class FilePath : PathView
 
         final FilePath set (const(char)[] path, bool convert = false)
         {
-                p.end_ = path.length;
+                p.end_ = cast(int)path.length;
 
                 expand (p.end_);
                 if (p.end_)
@@ -599,7 +599,7 @@ class FilePath : PathView
                 version (SpecialPop)
                          p.end_ = p.parent.length;
                    else
-                      p.end_ = p.pop.length;
+                      p.end_ = cast(int)p.pop.length;
                 p.fp[p.end_] = '\0';
                 return parse;
         }
@@ -690,7 +690,7 @@ class FilePath : PathView
 
         ***********************************************************************/
 
-        private final void expand (uint size)
+        private final void expand (size_t size)
         {
                 ++size;
                 if (p.fp.length < size)
@@ -705,7 +705,7 @@ class FilePath : PathView
 
         private final int adjust (int head, int tail, int len, const(char)[] sub)
         {
-                len = sub.length - len;
+                len = cast(int)(sub.length - len);
 
                 // don't destroy self-references!
                 if (len && sub.ptr >= p.fp.ptr+head+len && sub.ptr < p.fp.ptr+p.fp.length)

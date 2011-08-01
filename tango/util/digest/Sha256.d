@@ -148,7 +148,7 @@ final class Sha256 : MerkleDamgard
         protected override void padLength(ubyte[] data, ulong length)
         {
                 length <<= 3;
-                for(int j = data.length-1; j >= 0; j--)
+                for(int j = cast(int)data.length-1; j >= 0; j--)
                         data[$-j-1] = cast(ubyte) (length >> j*8);
         }
 

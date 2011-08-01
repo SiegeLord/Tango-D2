@@ -128,7 +128,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         foreach (ref val;cmwc_q){
             assert(s[i]=='_',"no separator _ found");
             ++i;
-            uint ate;
+            size_t ate;
             val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
             assert(ate==8,"unexpected read size");
             i+=8;
@@ -136,7 +136,7 @@ struct CMWC(uint cmwc_r=1024U,ulong cmwc_a=987769338UL){
         foreach (val;[&cmwc_i,&cmwc_c,&nBytes,&restB]){
             assert(s[i]=='_',"no separator _ found");
             ++i;
-            uint ate;
+            size_t ate;
             *val=cast(uint)Integer.convert(s[i..i+8],16,&ate);
             assert(ate==8,"unexpected read size");
             i+=8;

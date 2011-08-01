@@ -188,7 +188,7 @@ struct Vector (V, int Size = 0)
 
         **********************************************************************/
 
-        V remove (uint i)
+        V remove (size_t i)
         {
                 if (i < depth)
                    {
@@ -211,7 +211,7 @@ struct Vector (V, int Size = 0)
 
         **********************************************************************/
 
-        V opIndex (uint i)
+        V opIndex (size_t i)
         {
                 if (i < depth)
                     return vector [i];
@@ -227,7 +227,7 @@ struct Vector (V, int Size = 0)
 
         **********************************************************************/
 
-        V opIndexAssign (V value, uint i)
+        V opIndexAssign (V value, size_t i)
         {
                 if (i < depth)
                    {
