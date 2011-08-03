@@ -32,8 +32,6 @@ private
 
   - PlatformException
     - ProcessException
-    - ThreadException
-      - FiberException
     - ThreadPoolException  
     - SyncException
     - IOException
@@ -175,28 +173,11 @@ class UnicodeException : TextException
 
 
 /**
- * Base class for thread exceptions.
+ * Base class for thread exceptions. See core.thread; of druntime!
  */
-class ThreadException : PlatformException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
-
 /**
- * Base class for fiber exceptions.
+ * Base class for fiber exceptions. See core.thread; of druntime!
  */
-class FiberException : ThreadException
-{
-    this( immutable(char)[] msg )
-    {
-        super( msg );
-    }
-}
-
 
 /**
  * Base class for ThreadPoolException
