@@ -1350,7 +1350,7 @@ public class Appender
 
         interface Layout
         {
-                void format (LogEvent event, scope size_t delegate(const(void[])) dg);
+                void format (LogEvent event, scope size_t delegate(const(void)[]) dg);
         }
 
         /***********************************************************************
@@ -1565,7 +1565,7 @@ public class AppendNull : Appender
 
         final override void append (LogEvent event)
         {
-                layout.format (event, (const(void[])){return cast(size_t) 0;});
+                layout.format (event, (const(void)[]){return cast(size_t) 0;});
         }
 }
 
@@ -1635,7 +1635,7 @@ public class AppendStream : Appender
 
                 synchronized (stream_)
                              {
-                             layout.format (event, (const(void[]) content){return stream_.write(content);});
+                             layout.format (event, (const(void)[] content){return stream_.write(content);});
                              stream_.write (Eol);
                              if (flush_)
                                  stream_.flush;
@@ -1658,7 +1658,7 @@ public class LayoutTimer : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, scope size_t delegate(const(void[])) dg)
+        void format (LogEvent event, scope size_t delegate(const(void)[]) dg)
         {
                 char[20] tmp = void;
 

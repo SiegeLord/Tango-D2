@@ -161,7 +161,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        override void produce (size_t delegate(const(void[])) consume, const(char)[] eol=null)
+        override void produce (size_t delegate(const(void)[]) consume, const(char)[] eol=null)
         {
                 return super.produce (consume, eol);
         }

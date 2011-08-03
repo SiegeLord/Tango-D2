@@ -50,7 +50,7 @@ extern (C) char* memchr (char *, int, size_t);
 class Uri : UriView
 {
         // simplistic string appender
-        private alias size_t delegate(const(void[])) Consumer;  
+        private alias size_t delegate(const(void)[]) Consumer;  
         
         /// old method names
         public alias port        getPort;
@@ -468,7 +468,7 @@ class Uri : UriView
                 char[] s;
 
                 s.length = 256, s.length = 0;
-                produce ((const(void[]) v) {return s ~= cast(char[])v, v.length;});
+                produce ((const(void)[] v) {return s ~= cast(char[])v, v.length;});
                 return s.idup;
         }
 
@@ -518,7 +518,7 @@ class Uri : UriView
         static immutable(char)[] encode (const(char)[] text, int flags)
         {
                 char[] s;
-                encode ((const(void[]) v) {return s ~= cast(char[])v, v.length;}, text, flags);
+                encode ((const(void)[] v) {return s ~= cast(char[])v, v.length;}, text, flags);
                 return s.idup;
         }
 

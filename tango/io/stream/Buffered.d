@@ -281,7 +281,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final size_t reader (scope size_t delegate (const(void[])) dg)
+        final size_t reader (scope size_t delegate (const(void)[]) dg)
         {
                 auto count = dg (data [index..extent]);
 
@@ -502,7 +502,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool next (scope size_t delegate (const(void[])) scan)
+        final bool next (scope size_t delegate (const(void)[]) scan)
         {
                 while (reader(scan) is Eof)
                       {
@@ -963,7 +963,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final override size_t write (const(void[]) src)
+        final override size_t write (const(void)[] src)
         {
                 append (src.ptr, src.length);
                 return src.length;
@@ -986,7 +986,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        final BufferedOutput append (const(void[]) src)
+        final BufferedOutput append (const(void)[] src)
         {
                 return append (src.ptr, src.length);
         }
@@ -1301,9 +1301,9 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         ***********************************************************************/
 
-        private final size_t reader (scope size_t delegate (const(void[])) dg)
+        private final size_t reader (scope size_t delegate (const(void)[]) dg)
         {
-                auto count = dg (data [index..extent]);
+                size_t count = dg (data [index..extent]);
 
                 if (count != Eof)
                    {

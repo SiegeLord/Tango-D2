@@ -61,7 +61,7 @@ class Iterator(T) : InputFilter
 
         ***********************************************************************/
 
-        abstract protected size_t scan (const(void[]) data);
+        abstract protected size_t scan (const(void)[] data);
 
         /***********************************************************************
 
@@ -279,7 +279,7 @@ class Iterator(T) : InputFilter
                     return true;
 
                 // consume trailing token
-                source.reader ((const(void[]) arr) 
+                source.reader ((const(void)[] arr) 
                               { 
                               slice = (cast(T*) arr.ptr) [0 .. arr.length/T.sizeof];
                               return cast(size_t)arr.length;

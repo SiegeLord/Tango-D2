@@ -251,7 +251,7 @@ class Socket : Conduit, ISelectable
 
         ***********************************************************************/
 
-        override size_t write (const(void[]) src)
+        override size_t write (const(void)[] src)
         {
                 if (scheduler)
                     return asyncWrite (src);

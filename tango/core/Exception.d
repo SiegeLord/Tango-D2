@@ -68,7 +68,7 @@ class OutOfMemoryException : Exception
         super( "Memory allocation failed", file, line );
     }
 
-    immutable(char)[] toString()
+    override immutable(char)[] toString()
     {
         return msg ? super.toString() : "Memory allocation failed";
     }

@@ -251,7 +251,7 @@ class HttpTokens
 
         **********************************************************************/
 
-        void produce (size_t delegate(const(void[])) consume, const(char)[] eol = null)
+        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol = null)
         {
                 foreach (Token token; stack)
                         {

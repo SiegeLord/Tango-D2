@@ -77,7 +77,7 @@ class Delimiters(T) : Iterator!(T)
 
         ***********************************************************************/
 
-        override protected size_t scan (const(void[]) data)
+        override protected size_t scan (const(void)[] data)
         {
                 auto content = (cast(T*) data.ptr) [0 .. data.length / T.sizeof];
 

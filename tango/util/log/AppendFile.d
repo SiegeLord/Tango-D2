@@ -47,7 +47,7 @@ class AppendFile : Filer
         
                 // make it shareable for read
                 auto style = File.WriteAppending;
-                style.share = File.Share.Read;
+                //style.share = File.Share.Read;
                 configure (new File (fp, style));
                 layout (how);
         }

@@ -264,7 +264,7 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        size_t write (const(void[]) src);     
+        size_t write (const(void)[] src);     
         
         /***********************************************************************
 
@@ -295,9 +295,9 @@ interface InputBuffer : InputStream
 {
         void[] slice ();
 
-        bool next (scope size_t delegate(const(void[])) scan);
+        bool next (scope size_t delegate(const(void)[]) scan);
 
-        size_t reader (scope size_t delegate(const(void[])) consumer);
+        size_t reader (scope size_t delegate(const(void)[]) consumer);
 }
 
 /*******************************************************************************
@@ -312,7 +312,7 @@ interface OutputBuffer : OutputStream
 
         void[] slice ();
         
-        OutputBuffer append (const(void[]));
+        OutputBuffer append (const(void)[]);
 
         size_t writer (size_t delegate(void[]) producer);
 }

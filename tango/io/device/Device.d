@@ -172,7 +172,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override size_t write (void[] src)
+                override size_t write (const(void)[] src)
                 {
                         DWORD bytes;
 
@@ -307,7 +307,7 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                override size_t write (const(void[]) src)
+                override size_t write (const(void)[] src)
                 {
                         size_t written = core.sys.posix.unistd.write (handle, src.ptr, src.length);
                         if (written is -1)

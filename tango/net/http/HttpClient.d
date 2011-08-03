@@ -488,7 +488,7 @@ class HttpClient
 
                 // attach/extend query parameters if user has added some
                 tokens.clear;
-                paramsOut.produce ((const(void[]) p){if (tokens.readable) tokens.write("&"); 
+                paramsOut.produce ((const(void)[] p){if (tokens.readable) tokens.write("&"); 
                                     return uri.encode(&tokens.write, cast(char[]) p, uri.IncQuery);});
                 auto query = cast(char[]) tokens.slice;
 

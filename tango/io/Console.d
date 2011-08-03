@@ -102,7 +102,7 @@ struct Console
 
                 final bool readln (ref char[] content, bool raw=false)
                 {
-                        size_t line (const(void[]) input)
+                        size_t line (const(void)[] input)
                         {
                                 auto text = cast(const(char[])) input;
                                 foreach (i, c; text)
