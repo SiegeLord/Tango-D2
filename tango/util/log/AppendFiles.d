@@ -43,6 +43,11 @@ public class AppendFiles : Filer
                 and the maximum is 1000 (explicitly 999). Note that files
                 are numbered starting with zero rather than one.
 
+                A path of "my.log" will be expanded to "my.0.log".
+
+                maxSize is the advisory maximum size of a single log-file,
+                in bytes.
+
                 Where a file set already exists, we resume appending to 
                 the one with the most recent activity timestamp
 
