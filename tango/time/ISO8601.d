@@ -297,6 +297,7 @@ private size_t doIso8601Date(T)(
             return onlyYear;
 
          addDays(fd, i);
+         break;
 
       default: break;
    }

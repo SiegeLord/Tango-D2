@@ -54,7 +54,7 @@ class ChunkOutput : OutputFilter
 
         ***********************************************************************/
 
-        final override size_t write (void[] src)
+        final override size_t write (const(void)[] src)
         {
                 char[8] tmp = void;
                 

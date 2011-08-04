@@ -12,82 +12,21 @@
 
 module tango.sys.Common;
 
-version (Win32)
-        {
-        public import tango.sys.win32.UserGdi;
-        }
+public import core.stdc.errno;
+public import core.stdc.string;
 
-version (linux)
-        {
-        public import tango.sys.linux.linux;
-        alias tango.sys.linux.linux posix;
-        }
+version (Win32) {
+	public import core.sys.windows.windows;
+}
 
-version (darwin)
-        {
-        public import tango.sys.darwin.darwin;
-        alias tango.sys.darwin.darwin posix;
-        }
-version (freebsd)
-        {
-        public import tango.sys.freebsd.freebsd;
-        alias tango.sys.freebsd.freebsd posix;
-        }
-version (solaris)
-        {
-        public import tango.sys.solaris.solaris;
-        alias tango.sys.solaris.solaris posix;
-        }
-
-/*******************************************************************************
-
-        Stuff for sysErrorMsg(), kindly provided by Regan Heath.
-
-*******************************************************************************/
-
-version (Win32)
-        {
-        private enum FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100;
-        private enum FORMAT_MESSAGE_IGNORE_INSERTS  = 0x00000200;
-        private enum FORMAT_MESSAGE_FROM_STRING     = 0x00000400;
-        private enum FORMAT_MESSAGE_FROM_HMODULE    = 0x00000800;
-        private enum FORMAT_MESSAGE_FROM_SYSTEM     = 0x00001000;
-        private enum FORMAT_MESSAGE_ARGUMENT_ARRAY  = 0x00002000;
-        private enum FORMAT_MESSAGE_MAX_WIDTH_MASK  = 0x000000FF;
-
-        private DWORD MAKELANGID(WORD p, WORD s)  { return (((cast(WORD)s) << 10) | cast(WORD)p); }
-
-        private alias HGLOBAL HLOCAL;
-
-        private enum LANG_NEUTRAL = 0x00;
-        private enum SUBLANG_DEFAULT = 0x01;
-
-        private extern (Windows)
-                       {
-                       DWORD FormatMessageW (DWORD dwFlags,
-                                             LPCVOID lpSource,
-                                             DWORD dwMessageId,
-                                             DWORD dwLanguageId,
-                                             LPWSTR lpBuffer,
-                                             DWORD nSize,
-                                             LPCVOID args
-                                             );
-
-                       HLOCAL LocalFree(HLOCAL hMem);
-                       }
-        }
-else
-version (Posix)
-        {
-        private import tango.stdc.errno;
-        private import tango.stdc.string;
-        }
-else
-   {
-   pragma (msg, "Unsupported environment; neither Win32 or Posix is declared");
-   static assert(0);
-   }
-
+version(Posix) {
+	public import core.sys.posix.unistd;
+	public import core.sys.posix.fcntl;
+	public import core.sys.posix.sys.stat;
+	public import core.sys.posix.sys.time;
+	public import core.sys.posix.poll;
+	public import core.sys.posix.time;
+}
    
 /*******************************************************************************
 

@@ -196,7 +196,7 @@ version (Win32) {
          private extern(Windows) int QueryPerformanceCounter (ulong *);
 }
 version (Posix) {
-    private import tango.stdc.posix.sys.time;
+    private import core.sys.posix.sys.time;
 }
 
 version(darwin) { version=has_urandom; }
@@ -1198,7 +1198,7 @@ final class RandomG(SourceT=DefaultEngine)
     // ---------------
     
     /// writes the current status in a string
-    immutable(char)[] toString(){
+    override immutable(char)[] toString(){
         return source.toString().idup;
     }
     /// reads the current status from a string (that should have been trimmed)
@@ -1257,10 +1257,10 @@ static this ()
 }
 
 debug(UnitTest){
-    import tango.math.random.engines.KISS;
-    import tango.math.random.engines.CMWC;
-    import tango.stdc.stdio:printf;
-    import tango.io.Stdout;
+	import core.stdc.stdio:printf;
+	import tango.math.random.engines.KISS;
+	import tango.math.random.engines.CMWC;
+	import tango.io.Stdout;
 
     /// very simple statistal test, mean within maxOffset, and maximum/minimum at least minmax/maxmin
     bool checkMean(T)(T[] a, real maxmin, real minmax, real expectedMean, real maxOffset,bool alwaysPrint=false,bool checkB=false){

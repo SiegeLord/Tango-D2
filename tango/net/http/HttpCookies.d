@@ -12,7 +12,7 @@
 
 module tango.net.http.HttpCookies;
 
-private import  tango.stdc.ctype;
+private import  core.stdc.ctype;
 
 private import  tango.io.device.Array;
 
@@ -184,7 +184,7 @@ class Cookie //: IWritable
 
         ***********************************************************************/
 
-        void produce (size_t delegate(void[]) consume)
+        void produce (size_t delegate(const(void)[]) consume)
         {
                 consume (name);
 
@@ -291,7 +291,7 @@ class CookieStack
 
         private final static void resize (ref Cookie[] cookies, int size)
         {
-                int i = cookies.length;
+                size_t i = cookies.length;
                 
                 for (cookies.length=size; i < cookies.length; ++i)
                      cookies[i] = new Cookie();
@@ -366,7 +366,7 @@ class HttpCookiesView //: IWritable
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol = HttpConst.Eol)
+        void produce (size_t delegate(const(void)[]) consume, const(char[]) eol = HttpConst.Eol)
         {
                 foreach (cookie; parse)
                          cookie.produce (consume), consume (eol);
@@ -427,7 +427,7 @@ class HttpCookies
 
         **********************************************************************/
 
-        this (HttpHeaders headers, HttpHeaderName name = HttpHeader.SetCookie)
+        this (HttpHeaders headers, const(HttpHeaderName) name = HttpHeader.SetCookie)
         {
                 this.headers = headers;
                 this.name = name;
@@ -507,7 +507,7 @@ class CookieParser : Iterator!(char)
 
         ***********************************************************************/
 
-        protected size_t scan (void[] data)
+        override protected size_t scan (const(void)[] data)
         {      
                 char    c;
                 int     mark,
@@ -640,7 +640,7 @@ class CookieParser : Iterator!(char)
 
                 // we ran out of content; patch partial cookie values 
                 if (state is State.Token)
-                    setValue (content.length);
+                    setValue (cast(int)content.length);
 
                 // go home
                 return IConduit.Eof;

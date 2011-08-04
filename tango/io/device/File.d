@@ -4,8 +4,8 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Mar 2004: Initial release$(BR)
-                        Dec 2006: Outback release$(BR)
+        version:        Mar 2004: Initial release
+                        Dec 2006: Outback release
                         Nov 2008: relocated and simplified
 
         authors:        Kris,
@@ -17,11 +17,10 @@
 
 module tango.io.device.File;
 
+private import tango.core.String;
 private import tango.sys.Common;
-
 private import tango.io.device.Device;
 
-private import stdc = tango.stdc.stringz;
 
 /*******************************************************************************
 
@@ -29,11 +28,12 @@ private import stdc = tango.stdc.stringz;
 
 *******************************************************************************/
 
-version (Win32)
-         private import Utf = tango.text.convert.Utf;
-   else
-      private import tango.stdc.posix.unistd;
-
+version (Win32) {
+	private import Utf = tango.text.convert.Utf;
+} else {
+	private import core.sys.posix.unistd;
+	private import core.sys.posix.fcntl;
+}
 
 /*******************************************************************************
 
@@ -124,7 +124,7 @@ version (Win32)
         Note that File is unbuffered by default - wrap an instance within
         tango.io.stream.Buffered for buffered I/O.
 
-        Compile with -version=Win32SansUnicode to enable Win95 &amp; Win32s file
+        Compile with -version=Win32SansUnicode to enable Win95 & Win32s file 
         support.
 
 *******************************************************************************/
@@ -140,12 +140,12 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-         align(1) struct Style
+        align(1) struct Style
         {
-                Access          access;                 /// Access rights.
-                Open            open;                   /// How to open.
-                Share           share;                  /// How to share.
-                Cache           cache;                  /// How to cache.
+                Access          access;                 /// access rights
+                Open            open;                   /// how to open
+                Share           share;                  /// how to share
+                Cache           cache;                  /// how to cache
         }
 
         /***********************************************************************
@@ -197,7 +197,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Style ReadExisting = {Access.Read, Open.Exists};
+        const Style ReadExisting = {Access.Read, Open.Exists};
 
         /***********************************************************************
 
@@ -205,7 +205,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Style ReadShared = {Access.Read, Open.Exists, Share.Read};
+        const Style ReadShared = {Access.Read, Open.Exists, Share.Read};
 
         /***********************************************************************
 
@@ -213,7 +213,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Style WriteExisting = {Access.Write, Open.Exists};
+        const Style WriteExisting = {Access.Write, Open.Exists};
 
         /***********************************************************************
 
@@ -221,7 +221,7 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Style WriteCreate = {Access.Write, Open.Create};
+        const Style WriteCreate = {Access.Write, Open.Create};
 
         /***********************************************************************
 
@@ -229,31 +229,31 @@ class File : Device, Device.Seek, Device.Truncate
 
         ***********************************************************************/
 
-        enum Style WriteAppending = {Access.Write, Open.Append};
+        const Style WriteAppending = {Access.Write, Open.Append};
 
         /***********************************************************************
-
-                Read and write an existing file.
+        
+                Read and write an existing file
 
         ***********************************************************************/
 
-        enum Style ReadWriteExisting = {Access.ReadWrite, Open.Exists};
+        const Style ReadWriteExisting = {Access.ReadWrite, Open.Exists}; 
 
         /***********************************************************************
-
-                Read &amp; write on a clean file. Create if necessary.
+        
+                Read & write on a clean file. Create if necessary
 
         ***********************************************************************/
 
-        enum Style ReadWriteCreate = {Access.ReadWrite, Open.Create};
+        const Style ReadWriteCreate = {Access.ReadWrite, Open.Create}; 
 
         /***********************************************************************
-
-                Read and Write. Use existing file if present.
+        
+                Read and Write. Use existing file if present
 
         ***********************************************************************/
 
-        enum Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate};
+        const Style ReadWriteOpen = {Access.ReadWrite, Open.Sedate}; 
 
 
         // the file we're working with 
@@ -263,11 +263,11 @@ class File : Device, Device.Seek, Device.Truncate
         private Style   style_;
 
         /***********************************************************************
+        
+                Create a File for use with open()
 
-                Create a File for use with open().
-
-                Note that File is unbuffered by default - wrap an instance
-                within tango.io.stream.Buffered for buffered I/O.
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
 
         ***********************************************************************/
 
@@ -279,8 +279,8 @@ class File : Device, Device.Seek, Device.Truncate
 
                 Create a File with the provided path and style.
 
-                Note that File is unbuffered by default - wrap an instance
-                within tango.io.stream.Buffered for buffered I/O.
+                Note that File is unbuffered by default - wrap an instance 
+                within tango.io.stream.Buffered for buffered I/O
 
         ***********************************************************************/
 
@@ -309,7 +309,7 @@ class File : Device, Device.Seek, Device.Truncate
         override immutable(char)[] toString ()
         {
                 return path_.idup;
-        }
+        }               
 
         /***********************************************************************
 
@@ -622,17 +622,17 @@ class File : Device, Device.Seek, Device.Truncate
                 {
                         alias int[] Flags;
 
-                        enum O_LARGEFILE = 0x8000;
+                        const O_LARGEFILE = 0x8000;
 
-                        enum Flags Access =
+                        static const Flags Access =
                                         [
                                         0,                      // invalid
                                         O_RDONLY,
                                         O_WRONLY,
                                         O_RDWR,
                                         ];
-                                                
-                        enum Flags Create =
+
+                        static const Flags Create =
                                         [
                                         0,                      // open existing
                                         O_CREAT | O_TRUNC,      // truncate always
@@ -641,7 +641,7 @@ class File : Device, Device.Seek, Device.Truncate
                                         O_CREAT | O_EXCL,       // can't exist
                                         ];
 
-                        enum short[] Locks =
+                        static const short[] Locks =
                                         [
                                         F_WRLCK,                // no sharing
                                         F_RDLCK,                // shared read
@@ -654,12 +654,11 @@ class File : Device, Device.Seek, Device.Truncate
 
                         // zero terminate and convert to utf16
                         char[512] zero = void;
-                        auto name = stdc.toStringz (path, zero);
+                        auto name = toStringz (path, zero);
                         auto mode = Access[style.access] | Create[style.open];
 
                         // always open as a large file
-                        handle = posix.open (name, mode | O_LARGEFILE | addflags,
-                                             access);
+                        handle = core.sys.posix.fcntl.open(name, mode | O_LARGEFILE | addflags, access);
                         if (handle is -1)
                             return false;
 
@@ -670,12 +669,12 @@ class File : Device, Device.Seek, Device.Truncate
 
                         Open a file with the provided style.
 
-                        Note that files default to no-sharing. That is,
-                        they are locked exclusively to the host process
+                        Note that files default to no-sharing. That is, 
+                        they are locked exclusively to the host process 
                         unless otherwise stipulated. We do this in order
-                        to expose the same default behaviour as Win32.
+                        to expose the same default behaviour as Win32
 
-                        $(B No file locking for borked POSIX.)
+                        NO FILE LOCKING FOR BORKED POSIX
 
                 ***************************************************************/
 
@@ -708,7 +707,7 @@ class File : Device, Device.Seek, Device.Truncate
                 override void truncate (long size)
                 {
                         // set filesize to be current seek-position
-                        if (posix.ftruncate (handle, cast(off_t) size) is -1)
+                        if (core.sys.posix.unistd.ftruncate (handle, cast(off_t) size) is -1)
                             error;
                 }
 
@@ -721,7 +720,7 @@ class File : Device, Device.Seek, Device.Truncate
 
                 override long seek (long offset, Anchor anchor = Anchor.Begin)
                 {
-                        long result = posix.lseek (handle, cast(off_t) offset, anchor);
+                        long result = core.sys.posix.unistd.lseek (handle, cast(off_t) offset, anchor);
                         if (result is -1)
                             error;
                         return result;
@@ -747,7 +746,7 @@ class File : Device, Device.Seek, Device.Truncate
                 long length ()
                 {
                         stat_t stats = void;
-                        if (posix.fstat (handle, &stats))
+                        if (core.sys.posix.sys.stat.fstat (handle, &stats))
                             error;
                         return cast(long) stats.st_size;
                 }

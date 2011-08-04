@@ -228,7 +228,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                 ];
 
         ubyte index;
-        int len = cast(int)dst.length;
+        size_t len = dst.length;
 
         if (len)
            {
@@ -249,6 +249,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
                           else
                              if (pre is '+')
                                  index = 3;
+                      goto case;
                   case 'u':
                   case 'U':
                        pre = '#';
@@ -305,7 +306,7 @@ T[] formatter(T) (T[] dst, long i, char type, char pre, int width)
               // prefix number with zeros? 
               if (width)
                  {
-                 width = cast(int)dst.length - width - cast(int)prefix.length;
+                 width = cast(int)(dst.length - width - prefix.length);
                  while (len > width && len > 0)
                        {
                        *--p = '0';
@@ -420,14 +421,16 @@ ulong convert(T) (const(T[]) digits, uint radix=10, size_t* ate=null)
 
 ******************************************************************************/
 
-size_t trim(T, U=uint) (const(T[]) digits, ref bool sign, ref U radix)
-{return trim!(T)(digits, sign, radix);}
+size_t trim(T, U=size_t) (const(T[]) digits, ref bool sign, ref U radix)
+{
+		return trim!(T)(digits, sign, radix);
+}
 
 size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
 {
         T       c;
         const (T)*      p = digits.ptr;
-        auto     len = digits.length;
+        size_t     len = digits.length;
 
         if (len)
            {
@@ -599,7 +602,6 @@ T[] consume(T) (T[] src, bool fp=false)
 
 debug (UnitTest)
 {
-
         unittest
         {
         char[64] tmp;
@@ -643,8 +645,8 @@ debug (UnitTest)
         assert(parse( "ffffFFFF", 16) == uint.max );
         assert(parse( "ffffFFFFffffFFFF", 16u ) == ulong.max );
         // oct
-        assert(parse( "55", 8) == 055 );
-        assert(parse( "100", 8) == 0100 );
+        assert(parse( "55", 8) == 45 );
+        assert(parse( "100", 8) == 64 );
         // bin
         assert(parse( "10000", 2) == 0x10 );
         // trim
@@ -654,8 +656,8 @@ debug (UnitTest)
         // recognise radix prefix
         assert(parse( "0xFFFF" ) == ushort.max );
         assert(parse( "0XffffFFFF" ) == uint.max );
-        assert(parse( "0o55") == 055 );
-        assert(parse( "0O55" ) == 055 );
+        assert(parse( "0o55") == 45 );
+        assert(parse( "0O55" ) == 45 );
         assert(parse( "0b10000") == 0x10 );
         assert(parse( "0B10000") == 0x10 );
 
@@ -666,9 +668,9 @@ debug (UnitTest)
         assert(parse("0b10", 10) == 0);
         assert(parse("0o10", 10) == 0);
         assert(parse("0b10") == 0b10);
-        assert(parse("0o10") == 010);
+        assert(parse("0o10") == 8);
         assert(parse("0b10", 2) == 0b10);
-        assert(parse("0o10", 8) == 010);
+        assert(parse("0o10", 8) == 8);
 
         // revised tests
         assert (format(tmp, 10, "d") == "10");
@@ -706,8 +708,8 @@ debug (UnitTest)
         assert (format(tmp, 10L, "X6#") == "0X00000A");
 
         char[8] tmp1;
-        assert (format(tmp1, 10L, "b12#") == "0b001010");
-        assert (format(tmp1, 10L, "o12#") == "0o000012");
+        assert (format(tmp1, 10L, "b12#") == "0b1010");
+        assert (format(tmp1, 10L, "o12#") == "0o12");
         }
 }
 

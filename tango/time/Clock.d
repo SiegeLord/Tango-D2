@@ -215,7 +215,7 @@ struct Clock
                 {
                         DateTime dt = void;
                         auto timeval = convert (time);
-                        dt.time.millis = cast(uint)timeval.tv_usec / 1000;
+                        dt.time.millis = cast(uint)(timeval.tv_usec / 1000);
 
                         tm t = void;
                         gmtime_r (&timeval.tv_sec, &t);

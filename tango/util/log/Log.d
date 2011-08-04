@@ -79,44 +79,15 @@
 
 module tango.util.log.Log;
 
-private import  tango.sys.Common;
+private import tango.sys.Common;
+private import tango.time.Clock;
+private import tango.core.Exception;
+private import tango.io.model.IConduit;
+private import tango.text.convert.Format;
+private import tango.util.log.model.ILogger;
+private import core.vararg;
 
-private import  tango.time.Clock;
-
-private import  tango.core.Exception;
-
-private import  tango.io.model.IConduit;
-
-private import  tango.text.convert.Format;
-
-private import  tango.util.log.model.ILogger;
-
-/*******************************************************************************
-
-        Platform issues ...
-
-*******************************************************************************/
-
-version (GNU)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-        }
-else version (DigitalMars)
-        {
-        private import tango.core.Vararg;
-        alias void* Arg;
-        alias va_list ArgList;
-
-    version(X86_64)  version = DigitalMarsX64;
-
-        }
-     else
-        {
-        alias void* Arg;
-        alias void* ArgList;
-        }
+alias void* ArgList;
 
 /*******************************************************************************
 
@@ -1570,7 +1541,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1581,7 +1552,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        final override const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1592,7 +1563,7 @@ public class AppendNull : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 layout.format (event, (const(void)[]){return cast(size_t) 0;});
         }
@@ -1633,7 +1604,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -1644,7 +1615,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        const const(char)[] name ()
+        const override const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -1655,7 +1626,7 @@ public class AppendStream : Appender
 
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 version(Win32)
                         immutable char[] Eol = "\r\n";

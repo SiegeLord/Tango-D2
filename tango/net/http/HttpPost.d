@@ -112,7 +112,7 @@ class HttpPost : HttpClient
                 auto headers = super.getRequestHeaders;
 
                 headers.add    (HttpHeader.ContentType, type);
-                headers.addInt (HttpHeader.ContentLength, content.length);
+                headers.addInt (HttpHeader.ContentLength, cast(int)(content.length));
                 
                 return write ((OutputBuffer b){b.append(content);});
         }

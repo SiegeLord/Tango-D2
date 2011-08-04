@@ -24,6 +24,7 @@
  * Authors:   Walter Bright, Sean Kelly, Kris
  */
 module rt.gc.basic.gc;
+deprecated:
 
 private import rt.gc.basic.gcx;
 private import rt.gc.basic.gcstats;

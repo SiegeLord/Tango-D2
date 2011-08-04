@@ -121,7 +121,7 @@ uint multibyteIncrementAssign(char op)(uint[] dest, uint carry)
 /** dest[] = src[] << numbits
  *  numbits must be in the range 1..31
  */
-uint multibyteShl(uint [] dest, uint [] src, uint numbits)
+uint multibyteShl(uint[] dest, uint[] src, uint numbits)
 {
     ulong c = 0;
     for(int i=0; i<dest.length; ++i){
@@ -136,10 +136,10 @@ uint multibyteShl(uint [] dest, uint [] src, uint numbits)
 /** dest[] = src[] >> numbits
  *  numbits must be in the range 1..31
  */
-void multibyteShr(uint [] dest, uint [] src, uint numbits)
+void multibyteShr(uint[] dest, uint[] src, uint numbits)
 {
     ulong c = 0;
-    for(int i=dest.length-1; i>=0; --i){
+    for(size_t i=dest.length-1; i>=0; --i){
         c += (src[i] >>numbits) + (cast(ulong)(src[i]) << (64 - numbits));
         dest[i]= cast(uint)c;
         c >>>= 32;
@@ -148,24 +148,23 @@ void multibyteShr(uint [] dest, uint [] src, uint numbits)
 
 debug (UnitTest)
 {
-unittest
-{
-    
-    uint [] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteShr(aa[0..$-2], aa, 4);
-	assert(aa[0]==0x6122_2222 && aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
-	assert(aa[3]==0xBCCC_CCCD);
+	unittest
+	{
+		uint[] aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+		multibyteShr(aa[0..$-2], aa, 4);
+		assert(aa[0]==0x6122_2222 && aa[1]==0xA455_5555 && aa[2]==0x0899_9999);
+		assert(aa[3]==0xBCCC_CCCD);
 
-    aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteShr(aa[0..$-1], aa, 4);
-	assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
-	    && aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
+		aa = [0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+		multibyteShr(aa[0..$-1], aa, 4);
+		assert(aa[0] == 0x6122_2222 && aa[1]==0xA455_5555 
+			&& aa[2]==0xD899_9999 && aa[3]==0x0BCC_CCCC);
 
-    aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteShl(aa[1..4], aa[1..$], 4);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 
-	    && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
-}
+		aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+		multibyteShl(aa[1..4], aa[1..$], 4);
+		assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 
+			&& aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+	}
 }
 
 /** dest[] = src[] * multiplier + carry.
@@ -185,12 +184,12 @@ uint multibyteMul(uint[] dest, in uint[] src, uint multiplier, uint carry)
 
 debug (UnitTest)
 {
-unittest
-{
-    uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    multibyteMul(aa[1..4], aa[1..4], 16, 0);
-	assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
-}
+	unittest
+	{
+		uint[] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+		multibyteMul(aa[1..4], aa[1..4], 16, 0);
+		assert(aa[0] == 0xF0FF_FFFF && aa[1] == 0x2222_2230 && aa[2]==0x5555_5561 && aa[3]==0x9999_99A4 && aa[4]==0x0BCCC_CCCD);
+	}
 }
 
 /**
@@ -200,33 +199,33 @@ unittest
 uint multibyteMulAdd(char op)(uint [] dest, in uint[] src, uint multiplier, uint carry)
 {
     assert(dest.length == src.length);
-    ulong c = carry;
-    for(int i = 0; i < src.length; ++i){
+    uint c = carry;
+    for(size_t i = 0; i < src.length; ++i){
         static if(op=='+') {
-            c += cast(ulong)(multiplier) * src[i]  + dest[i];
-            dest[i] = cast(uint)c;
+            c += (multiplier) * src[i]  + dest[i];
+            dest[i] = c;
             c >>= 32;
         } else {
-            c += cast(ulong)multiplier * src[i];
-            ulong t = cast(ulong)dest[i] - cast(uint)c;
-            dest[i] = cast(uint)t;
-            c = cast(uint)((c>>32) - (t>>32));                
+            c += multiplier * src[i];
+            uint t = dest[i] - cast(uint)c;
+            dest[i] = t;
+            c = ((c>>32) - (t>>32));                
         }
     }
-    return cast(uint)c;    
+    return c;    
 }
 
 debug (UnitTest)
 {
-unittest {
-    
-    uint [] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
-    uint [] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
-    multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
+	unittest {
+
+	uint[] aa = [0xF0FF_FFFF, 0x1222_2223, 0x4555_5556, 0x8999_999A, 0xBCCC_CCCD, 0xEEEE_EEEE];
+	uint[] bb = [0x1234_1234, 0xF0F0_F0F0, 0x00C0_C0C0, 0xF0F0_F0F0, 0xC0C0_C0C0];
+	multibyteMulAdd!('+')(bb[1..$-1], aa[1..$-2], 16, 5);
 	assert(bb[0] == 0x1234_1234 && bb[4] == 0xC0C0_C0C0);
-    assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
-	    && bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
-}
+	assert(bb[1] == 0x2222_2230 + 0xF0F0_F0F0+5 && bb[2] == 0x5555_5561+0x00C0_C0C0+1
+		&& bb[3] == 0x9999_99A4+0xF0F0_F0F0 );
+	}
 }
 
 
@@ -242,9 +241,9 @@ unittest {
     }
     ----
  */
-void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
+void multibyteMultiplyAccumulate(uint[] dest, in uint[] left, in uint[] right)
 {
-    for (int i = 0; i< right.length; ++i) {
+    for (size_t i = 0; i< right.length; ++i) {
         dest[left.length + i] = multibyteMulAdd!('+')(dest[i..left.length+i],
                 left, right[i], 0);
     }
@@ -253,10 +252,10 @@ void multibyteMultiplyAccumulate(uint [] dest, in uint[] left, in uint [] right)
 /**  dest[] /= divisor.
  * overflow is the initial remainder, and must be in the range 0..divisor-1.
  */
-uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
+uint multibyteDivAssign(uint[] dest, uint divisor, uint overflow)
 {
     ulong c = cast(ulong)overflow;
-    for(int i = dest.length-1; i>=0; --i){
+    for(size_t i = dest.length-1; i>=0; --i){
         c = (c<<32) + cast(ulong)(dest[i]);
         uint q = cast(uint)(c/divisor);
         c -= divisor * q;
@@ -267,22 +266,22 @@ uint multibyteDivAssign(uint [] dest, uint divisor, uint overflow)
 
 debug (UnitTest)
 {
-unittest {
-    uint [] aa = new uint[101];
-    for (int i=0; i<aa.length; ++i) aa[i] = 0x8765_4321 * (i+3);
-    uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
-    uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
-    for (int i=aa.length-1; i>=0; --i) { assert(aa[i] == 0x8765_4321 * (i+3)); }
-    assert(r==0x33FF_7461);
+	unittest {
+		uint[] aa = new uint[101];
+		for (size_t i=0; i<aa.length; ++i) aa[i] = cast(uint)(0x8765_4321 * (i+3));
+		uint overflow = multibyteMul(aa, aa, 0x8EFD_FCFB, 0x33FF_7461);
+		uint r = multibyteDivAssign(aa, 0x8EFD_FCFB, overflow);
+		for (size_t i=aa.length-1; i>=0; --i) { assert(aa[i] == 0x8765_4321 * (i+3)); }
+		assert(r==0x33FF_7461);
 
-}
+	}
 }
 
 // Set dest[2*i..2*i+1]+=src[i]*src[i]
 void multibyteAddDiagonalSquares(uint[] dest, in uint[] src)
 {
     ulong c = 0;
-    for(int i = 0; i < src.length; ++i){
+    for(size_t i = 0; i < src.length; ++i){
 		 // At this point, c is 0 or 1, since FFFF*FFFF+FFFF_FFFF = 1_0000_0000.
          c += cast(ulong)(src[i]) * src[i] + dest[2*i];
          dest[2*i] = cast(uint)c;
@@ -299,10 +298,10 @@ void multibyteTriangleAccumulate(uint[] dest, in uint[] x)
     dest[x.length] = multibyteMul(dest[1 .. x.length], x[1..$], x[0], 0);
 	if (x.length <4) {
 	    if (x.length ==3) {
-            ulong c = cast(ulong)(x[$-1]) * x[$-2]  + dest[2*x.length-3];
-	        dest[2*x.length-3] = cast(uint)c;
+            uint c = (x[$-1]) * x[$-2]  + dest[2*x.length-3];
+	        dest[2*x.length-3] = c;
 	        c >>= 32;
-	        dest[2*x.length-2] = cast(uint)c;
+	        dest[2*x.length-2] = c;
         }
 	    return;
 	}
@@ -311,7 +310,7 @@ void multibyteTriangleAccumulate(uint[] dest, in uint[] x)
              dest[i+i-1 .. i+x.length-1], x[i..$], x[i-1], 0);
     }
 	// Unroll the last two entries, to reduce loop overhead:
-    ulong  c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
+    ulong c = cast(ulong)(x[$-3]) * x[$-2] + dest[2*x.length-5];
     dest[2*x.length-5] = cast(uint)c;
     c >>= 32;
     c += cast(ulong)(x[$-3]) * x[$-1] + dest[2*x.length-4];

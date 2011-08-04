@@ -44,7 +44,7 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null);
+        immutable(char)[] get (const(char)[] name, const(char)[] ret = null);
 
         /**********************************************************************
                 
@@ -70,5 +70,5 @@ interface HttpParamsView
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol=null);
+        void produce (size_t delegate(const(void)[]) consume, const(char)[] eol=null);
 }

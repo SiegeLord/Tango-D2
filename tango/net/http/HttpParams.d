@@ -75,7 +75,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void parse (InputBuffer input)
+        override void parse (InputBuffer input)
         {
                 setParsed (true);
                 amp.set (input);
@@ -90,7 +90,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void add (char[] name, char[] value)
+        final void add (char[] name, char[] value)
         {
                 super.add (name, value);
         }
@@ -101,7 +101,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addInt (char[] name, int value)
+        final void addInt (char[] name, int value)
         {
                 super.addInt (name, value);
         }
@@ -113,7 +113,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void addDate (char[] name, Time value)
+        final void addDate (char[] name, Time value)
         {
                 super.addDate (name, value);
         }
@@ -125,7 +125,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        char[] get (char[] name, char[] ret = null)
+        override immutable(char)[] get (const(char)[] name, const(char)[] ret = null)
         {
                 return super.get (name, ret);
         }
@@ -137,7 +137,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        int getInt (char[] name, int ret = -1)
+        final int getInt (char[] name, int ret = -1)
         {
                 return super.getInt (name, ret);
         }
@@ -149,7 +149,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        Time getDate (char[] name, Time ret = Time.epoch)
+        final Time getDate (char[] name, Time ret = Time.epoch)
         {
                 return super.getDate (name, ret);
         }
@@ -161,7 +161,7 @@ class HttpParams : HttpTokens, HttpParamsView
 
         **********************************************************************/
 
-        void produce (size_t delegate(void[]) consume, char[] eol=null)
+        override void produce (size_t delegate(const(void)[]) consume, const(char)[] eol=null)
         {
                 return super.produce (consume, eol);
         }

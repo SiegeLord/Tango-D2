@@ -425,7 +425,7 @@ class BufferedInput : InputFilter, InputBuffer
 
         ***********************************************************************/
 
-        final bool skip (int size)
+        final bool skip (size_t size)
         {
                 if (size < 0)
                    {
@@ -1303,7 +1303,7 @@ class BufferedOutput : OutputFilter, OutputBuffer
 
         private final size_t reader (scope size_t delegate (const(void)[]) dg)
         {
-                auto count = dg (data [index..extent]);
+                size_t count = dg (data [index..extent]);
 
                 if (count != Eof)
                    {

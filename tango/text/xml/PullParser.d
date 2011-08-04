@@ -197,7 +197,7 @@ version (partialwhite)
                                      text.point = p + 9;
                                      return doDoctype;
                                      }
-                            return doUnexpected("!", p);
+                            return doUnexpected("!".dup, p);
 
                        case '\?':
                             // must be PI data
@@ -236,7 +236,7 @@ version (partialwhite)
                                text.point = q + 1;
                                return type = XmlTokenType.EndElement;
                                }
-                            return doExpected(">", q);
+                            return doExpected(">".dup, q);
 
                        default:
                             // scan new element name
@@ -327,11 +327,11 @@ version (partialwhite)
                                return endOfInput; 
 
                           default: 
-                               return doExpected("\' or \"", q);
+                               return doExpected("\' or \"".dup, q);
                           }
                    }
                 
-                return doExpected ("=", q);
+                return doExpected ("=".dup, q);
         }
 
         /***********************************************************************
@@ -346,7 +346,7 @@ version (partialwhite)
                    text.point += 2;
                    return type = XmlTokenType.EndEmptyElement;
                    }
-                return doExpected("/>", text.point);
+                return doExpected("/>".dup, text.point);
        }
         
         /***********************************************************************
@@ -479,7 +479,7 @@ version (partialwhite)
         private XmlTokenType endOfInput ()
         {
                 if (depth && (stream is false))
-                    error ("Unexpected EOF");
+                    error ("Unexpected EOF".dup);
 
                 return XmlTokenType.Done;
         }
@@ -490,7 +490,7 @@ version (partialwhite)
 
         private XmlTokenType doUnexpected (const(char[]) msg, const(Ch)* p)
         {
-                return position ("parse error :: unexpected  " ~ msg, p);
+                return position ("parse error :: unexpected  ".dup ~ msg, p);
         }
         
         /***********************************************************************
@@ -500,7 +500,7 @@ version (partialwhite)
         private XmlTokenType doExpected (const(char[]) msg, const(Ch)* p)
         {
                 char[6] tmp = void;
-                return position ("parse error :: expected  " ~ msg ~ " instead of " ~ Utf.toString(p[0..1], tmp), p);
+                return position ("parse error :: expected  ".dup ~ msg ~ " instead of ".dup ~ Utf.toString(p[0..1], tmp), p);
         }
         
         /***********************************************************************
@@ -509,7 +509,7 @@ version (partialwhite)
 
         private XmlTokenType position (const(char[]) msg, const(Ch)* p)
         {
-                return error (msg ~ " at position " ~ Integer.toString(p-text.text.ptr));
+                return error (msg ~ " at position ".dup ~ Integer.toString(p-text.text.ptr));
         }
 
         /***********************************************************************
@@ -542,7 +542,7 @@ version (partialwhite)
         final const const(Ch[]) name()
         {
                 if (prefix.length)
-                    return prefix ~ ":" ~ localName;
+                    return prefix ~ ":".dup ~ localName;
                 return localName;
         }
                 
@@ -745,9 +745,9 @@ debug (UnitTest)
 	
 	***********************************************************************/
 	
-	enum immutable(char)[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
+	static enum char[] testXML = "<?xml version=\"1.0\" ?><!DOCTYPE element [ <!ELEMENT element (#PCDATA)>]><element "
 	    "attr=\"1\" attr2=\"two\"><!--comment-->test&amp;&#x5a;<qual:elem /><el2 attr3 = "
-	    "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>";
+	    "'3three'><![CDATA[sdlgjsh]]><el3 />data<?pi test?></el2></element>".dup;
 	
 	unittest
 	{       

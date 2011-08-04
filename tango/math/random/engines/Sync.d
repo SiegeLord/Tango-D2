@@ -6,7 +6,7 @@
 *******************************************************************************/
 module tango.math.random.engines.Sync;
 private import Integer = tango.text.convert.Integer;
-import tango.core.sync.Mutex: Mutex;
+import core.sync.mutex: Mutex;
 
 /+ Makes a synchronized engine out of the engine E, so multiple thread access is ok
 + (but if you need multiple thread access think about having a random number generator per thread)

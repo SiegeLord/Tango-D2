@@ -47,7 +47,7 @@ class AppendFile : Filer
         
                 // make it shareable for read
                 auto style = File.WriteAppending;
-                style.share = File.Share.Read;
+                //style.share = File.Share.Read;
                 configure (new File (fp, style));
                 layout (how);
         }
@@ -58,7 +58,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final const Mask mask ()
+        final override const Mask mask ()
         {
                 return mask_;
         }
@@ -69,7 +69,7 @@ class AppendFile : Filer
 
         ***********************************************************************/
 
-        final const const(char)[] name ()
+        final override const const(char)[] name ()
         {
                 return this.classinfo.name;
         }
@@ -80,7 +80,7 @@ class AppendFile : Filer
                  
         ***********************************************************************/
 
-        final void append (LogEvent event)
+        final override void append (LogEvent event)
         {
                 synchronized(this)
                 {
@@ -120,7 +120,7 @@ class Filer : Appender
 
         ***********************************************************************/
 
-        final void close ()
+        final override void close ()
         {
                 synchronized(this)
                 {

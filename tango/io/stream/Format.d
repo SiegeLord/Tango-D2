@@ -13,20 +13,8 @@
 module tango.io.stream.Format;
 
 private import tango.io.device.Conduit;
-
 private import tango.text.convert.Layout;
-
-version(DigitalMars)
-{
-    version(X86_64) version=DigitalMarsX64;
-
-    private import tango.core.Vararg;
-}
-else version (GNU)
-{
-    private import tango.core.Vararg;
-}
-
+private import core.vararg;
 
 /*******************************************************************************
 
@@ -34,8 +22,8 @@ else version (GNU)
         the Stdout & Stderr globals, but can be used for general purpose
         buffer-formatting as desired. The Template type 'T' dictates the
         text arrangement within the target buffer ~ one of char, wchar or
-        dchar (UTF8, UTF16, or UTF32).
-
+        dchar (utf8, utf16, or utf32). 
+        
         FormatOutput exposes this style of usage:
         ---
         auto print = new FormatOutput!(char) (...);
@@ -60,7 +48,7 @@ else version (GNU)
         so we're currently not enforcing any particular trap mechanism.
 
         Flushing the output is achieved through the flush() method, or
-        via an empty pair of parens:
+        via an empty pair of parens: 
         ---
         print ("hello world") ();
         print ("hello world").flush;
@@ -68,11 +56,11 @@ else version (GNU)
         print.format ("hello {}", "world") ();
         print.format ("hello {}", "world").flush;
         ---
-
+        
         Special character sequences, such as "\n", are written directly to
         the output without any translation (though an output-filter could
-        be inserted to perform translation as required). Platform-specific
-        newlines are generated instead via the newline() method, which also
+        be inserted to perform translation as required). Platform-specific 
+        newlines are generated instead via the newline() method, which also 
         flushes the output when configured to do so:
         ---
         print ("hello ") ("world").newline;
@@ -80,9 +68,9 @@ else version (GNU)
         print.formatln ("hello {}", "world");
         ---
 
-        The format() method supports the range of formatting options
-        exposed by tango.text.convert.Layout and extensions thereof;
-        including the full I18N extensions where configured in that
+        The format() method supports the range of formatting options 
+        exposed by tango.text.convert.Layout and extensions thereof; 
+        including the full I18N extensions where configured in that 
         manner. To create a French instance of FormatOutput:
         ---
         import tango.text.locale.Locale;
@@ -91,15 +79,15 @@ else version (GNU)
         auto print = new FormatOutput!(char) (locale, ...);
         ---
 
-        Note that FormatOutput is *not* intended to be thread-safe.
-
+        Note that FormatOutput is *not* intended to be thread-safe
+        
 *******************************************************************************/
 
 class FormatOutput(T) : OutputFilter
-{
+{       
         public  alias OutputFilter.flush flush;
 
-        private const(T[])             eol;
+        private const(T[])      eol;
         private Layout!(T)      convert;
         private bool            flushLines;
 
@@ -114,7 +102,7 @@ class FormatOutput(T) : OutputFilter
         /**********************************************************************
 
                 Construct a FormatOutput instance, tying the provided stream
-                to a layout formatter.
+                to a layout formatter
 
         **********************************************************************/
 
@@ -126,11 +114,11 @@ class FormatOutput(T) : OutputFilter
         /**********************************************************************
 
                 Construct a FormatOutput instance, tying the provided stream
-                to a layout formatter.
+                to a layout formatter
 
         **********************************************************************/
 
-        this (Layout!(T) convert, OutputStream output, const(T[]) eol = Eol)
+        this (Layout!(T) convert, OutputStream output, const(T[]) = Eol)
         {
                 assert (convert);
                 assert (output);
@@ -142,60 +130,36 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Layout using the provided formatting specification.
+                Layout using the provided formatting specification
 
         **********************************************************************/
 
         final FormatOutput format (const(T[]) fmt, ...)
         {
-            version (DigitalMarsX64)
-            {
-                va_list ap;
-
-                va_start(ap, __va_argsave);
-
-                scope(exit) va_end(ap);
-
-                convert (&emit, _arguments, ap, fmt);
-            }
-            else
                 convert (&emit, _arguments, _argptr, fmt);
-
-            return this;
+                return this;
         }
 
         /**********************************************************************
 
-                Layout using the provided formatting specification.
+                Layout using the provided formatting specification
 
         **********************************************************************/
 
         final FormatOutput formatln (const(T[]) fmt, ...)
         {
-            version (DigitalMarsX64)
-            {
-                va_list ap;
-
-                va_start(ap, __va_argsave);
-
-                scope(exit) va_end(ap);
-
-                convert (&emit, _arguments, ap, fmt);
-            }
-            else
                 convert (&emit, _arguments, _argptr, fmt);
-
-           return newline;
+                return newline;
         }
 
         /**********************************************************************
 
-                Unformatted layout, with commas inserted between args.
-                Currently supports a maximum of 24 arguments.
+                Unformatted layout, with commas inserted between args. 
+                Currently supports a maximum of 24 arguments
 
         **********************************************************************/
 
-        final FormatOutput print ( ... )
+        final FormatOutput print (...)
         {
                 enum immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
                                              "{}, {}, {}, {}, {}, {}, {}, {}, "
@@ -203,30 +167,17 @@ class FormatOutput(T) : OutputFilter
 
                 assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
 
-                if (_arguments.length == 0)
+                if (_arguments.length is 0)
                     sink.flush;
                 else
-                {
-
-                    version (DigitalMarsX64)
-                    {
-                        va_list ap;
-
-                        va_start(ap, __va_argsave);
-
-                        scope(exit) va_end(ap);
-
-                        convert (&emit, _arguments, ap, slice[0 .. _arguments.length * 4 - 2]);
-                    }
-                    else
-                        convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
-                }
+                   convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+                         
                 return this;
         }
 
         /***********************************************************************
 
-                Output a newline and optionally flush.
+                Output a newline and optionally flush
 
         ***********************************************************************/
 
@@ -253,7 +204,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Return the associated output stream.
+                Return the associated output stream
 
         **********************************************************************/
 
@@ -264,7 +215,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Set the associated output stream.
+                Set the associated output stream
 
         **********************************************************************/
 
@@ -276,7 +227,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Return the associated Layout.
+                Return the associated Layout
 
         **********************************************************************/
 
@@ -287,7 +238,7 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Set the associated Layout.
+                Set the associated Layout
 
         **********************************************************************/
 
@@ -299,13 +250,13 @@ class FormatOutput(T) : OutputFilter
 
         /**********************************************************************
 
-                Sink for passing to the formatter.
+                Sink for passing to the formatter
 
         **********************************************************************/
 
         private final size_t emit (const(T[]) s)
         {
-                auto count = sink.write (s);
+                size_t count = sink.write (s);
                 if (count is Eof)
                     conduit.error ("FormatOutput :: unexpected Eof");
                 return count;
@@ -314,9 +265,9 @@ class FormatOutput(T) : OutputFilter
 
 
 /*******************************************************************************
-
+        
 *******************************************************************************/
-
+        
 debug (Format)
 {
         import tango.io.device.Array;

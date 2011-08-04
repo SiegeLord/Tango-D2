@@ -4,7 +4,7 @@
 
         license:        BSD style: $(LICENSE)
 
-        version:        Initial release: March 2004$(BR)
+        version:        Initial release: March 2004      
                         Outback release: December 2006
 
         author:         Kris
@@ -15,15 +15,15 @@ module tango.io.model.IConduit;
 
 /*******************************************************************************
 
-        Conduits provide virtualized access to external content, and
-        represent things like files or Internet connections. Conduits
-        expose a pair of streams, are modelled by tango.io.model.IConduit,
-        and are implemented via classes such as File &amp; SocketConduit.
-
-        Additional kinds of conduit are easy to construct: one either
-        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit.
-        A conduit typically reads and writes from/to an IBuffer in large
-        chunks, typically the entire buffer. Alternatively, one can invoke
+        Conduits provide virtualized access to external content, and 
+        represent things like files or Internet connections. Conduits 
+        expose a pair of streams, are modelled by tango.io.model.IConduit, 
+        and are implemented via classes such as File & SocketConduit. 
+        
+        Additional kinds of conduit are easy to construct: one either 
+        subclasses tango.io.device.Conduit, or implements tango.io.model.IConduit. 
+        A conduit typically reads and writes from/to an IBuffer in large 
+        chunks, typically the entire buffer. Alternatively, one can invoke 
         input.read(dst[]) and/or output.write(src[]) directly.
 
 *******************************************************************************/
@@ -31,21 +31,13 @@ module tango.io.model.IConduit;
 interface IConduit : InputStream, OutputStream
 {
         /***********************************************************************
-
-                Return a preferred size for buffering conduit I/O.
-
-        ***********************************************************************/
-
-        abstract size_t bufferSize ();
-
-        /***********************************************************************
-
-                Return the name of this conduit.
+        
+                Return a preferred size for buffering conduit I/O
 
         ***********************************************************************/
 
-        abstract immutable(char)[] toString (); 
-
+        abstract size_t bufferSize (); 
+        
         /***********************************************************************
 
                 Is the conduit alive?
@@ -99,18 +91,18 @@ interface IConduit : InputStream, OutputStream
 *******************************************************************************/
 
 interface ISelectable
-{
-        version (Windows)
-                 alias void* Handle;   /// Opaque OS file-handle.
+{     
+        version (Windows) 
+                 alias void* Handle;   /// opaque OS file-handle         
              else
-                typedef int Handle = -1;        /// Opaque OS file-handle.
+                typedef int Handle = -1;        /// opaque OS file-handle        
 
         /***********************************************************************
 
-                Models a handle-oriented device.
+                Models a handle-oriented device. 
 
-                TODO: Figure out how to avoid exposing this in the general
-                case.
+                TODO: figure out how to avoid exposing this in the general
+                case
 
         ***********************************************************************/
 
@@ -119,18 +111,18 @@ interface ISelectable
 
 
 /*******************************************************************************
-
-        The common attributes of streams.
+        
+        The common attributes of streams
 
 *******************************************************************************/
 
-interface IOStream
+interface IOStream 
 {
         enum Eof = -1;         /// the End-of-Flow identifer
 
         /***********************************************************************
-
-                The anchor positions supported by seek().
+        
+                The anchor positions supported by seek()
 
         ***********************************************************************/
 
@@ -272,9 +264,8 @@ interface OutputStream : IOStream
 
         ***********************************************************************/
 
-        size_t write (const(void)[] src);
+        size_t write (const(void)[] src);     
         
-
         /***********************************************************************
 
                 Transfer the content of another stream to this one. Returns

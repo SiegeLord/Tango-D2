@@ -303,10 +303,10 @@ public:
     }
     /// Number of significant uints which are used in storing this number.
     /// The absolute value of this BigInt is always < 2^(32*uintLength)
-    int uintLength() { return data.uintLength(); }
+    size_t uintLength() { return data.uintLength(); }
     /// Number of significant ulongs which are used in storing this number.
     /// The absolute value of this BigInt is always < 2^(64*ulongLength)
-    int ulongLength() { return data.ulongLength(); } 
+    size_t ulongLength() { return data.ulongLength(); } 
     
     /// Return x raised to the power of y
     /// This interface is tentative and may change.
@@ -318,7 +318,7 @@ public:
     }
 public:
     /// Deprecated. Use uintLength() or ulongLength() instead.
-    int numBytes() {
+    size_t numBytes() {
         return data.numBytes();
     }
     /// BUG: For testing only, this will be removed eventually 

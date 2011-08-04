@@ -10,7 +10,7 @@
 
 *******************************************************************************/
 
-module tango.stdc.stringz;
+module tango.core.String;
 
 /*********************************
  * Convert array of chars to a C-style 0 terminated string.
@@ -76,6 +76,16 @@ inout(char[]) fromStringz (inout(char*) s)
 }
 
 /*********************************
+ * Convert a C-style 0 terminated string to an array of char
+ */
+
+inout(char[]) fromStringz (inout(char*) s, uint length)
+{
+        return s ? s[0 .. length] : null;
+}
+
+
+/*********************************
  * Convert array of wchars s[] to a C-style 0 terminated string.
  */
 
@@ -135,22 +145,20 @@ size_t strlenz(T) (T* s)
 
 debug (UnitTest)
 {
-        import tango.stdc.stdio;
-
         unittest
         {
-        debug(string) printf("stdc.stringz.unittest\n");
+			debug(string) printf("stdc.stringz.unittest\n");
 
-        const(char)* p = toStringz("foo");
-        assert(strlenz(p) == 3);
-        const(char)[] foo = "abbzxyzzy";
-        p = toStringz(foo[3..5]);
-        assert(strlenz(p) == 2);
+			const(char)* p = toStringz("foo");
+			assert(strlenz(p) == 3);
+			const(char)[] foo = "abbzxyzzy";
+			p = toStringz(foo[3..5]);
+			assert(strlenz(p) == 2);
 
-        const(char)[] test = "\0";
-        p = toStringz(test);
-        assert(*p == 0);
-        assert(p == test.ptr);
+			const(char)[] test = "\0";
+			p = toStringz(test);
+			assert(*p == 0);
+			assert(p == test.ptr);
         }
 }
 

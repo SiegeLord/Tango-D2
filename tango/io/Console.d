@@ -14,13 +14,11 @@
 
 module tango.io.Console;
 
-private import  tango.sys.Common;
-
 private import  tango.io.device.Device,
                 tango.io.stream.Buffered;
 
 version (Posix)
-         private import tango.stdc.posix.unistd;  // needed for isatty()
+         private import core.sys.posix.unistd;  // needed for isatty()
 
 /*******************************************************************************
 
@@ -267,7 +265,7 @@ struct Console
 
                 final Output append (Object other)        
                 {           
-                        return append (other.toString);
+                        return append (cast(char[])other.toString);
                 }
 
                 /**************************************************************

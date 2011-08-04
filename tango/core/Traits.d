@@ -155,6 +155,32 @@ template isAtomicType(T)
 }
 
 /**
+ * Detect whether T is a built-in integral type. Types $(D bool), $(D
+ * char), $(D wchar), and $(D dchar) are not considered integral.
+ */
+template isIntegral(T)
+{
+	static if( is( T == bool )
+            || is( T == byte )
+            || is( T == short )
+            || is( T == int )
+            || is( T == long )
+            || is( T == ubyte )
+            || is( T == ushort )
+            || is( T == uint )
+            || is( T == ulong )
+            || is( T == float )
+            || is( T == double )
+            || is( T == real )
+            || is( T == ifloat )
+            || is( T == idouble )
+            || is( T == ireal ) )
+        const isIntegral = true;
+    else
+        const isIntegral = false;
+}
+
+/**
  * complex type for the given type
  */
 template ComplexTypeOf(T){

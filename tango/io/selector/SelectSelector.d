@@ -13,8 +13,6 @@ private import tango.io.selector.AbstractSelector;
 private import tango.io.selector.SelectorException;
 private import tango.sys.Common;
 
-private import tango.stdc.errno;
-
 debug (selector)
 {
     private import tango.io.Stdout;
@@ -129,7 +127,7 @@ public class SelectSelector: AbstractSelector
      *                returned in the selection set per call to select();
      *                this value is currently not used by this selector.
      */
-    public void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
+    public override void open(uint size = DefaultSize, uint maxEvents = DefaultSize)
     in
     {
         assert(size > 0);
@@ -145,7 +143,7 @@ public class SelectSelector: AbstractSelector
      * Remarks:
      * It can be called multiple times without harmful side-effects.
      */
-    public void close()
+    public override void close()
     {
         _size = 0;
         _keys = null;
@@ -190,7 +188,7 @@ public class SelectSelector: AbstractSelector
      * selector.register(conduit, Event.Read | Event.Write, object);
      * ---
      */
-    public void register(ISelectable conduit, Event events, Object attachment = null)
+    public override void register(ISelectable conduit, Event events, Object attachment = null)
     in
     {
         assert(conduit !is null && conduit.fileHandle());
@@ -285,7 +283,7 @@ public class SelectSelector: AbstractSelector
      * UnregisteredConduitException if the conduit had not been previously
      * registered to the selector.
      */
-    public void unregister(ISelectable conduit)
+    public override void unregister(ISelectable conduit)
     {
         if (conduit !is null)
         {
@@ -363,7 +361,7 @@ public class SelectSelector: AbstractSelector
      * property was set to false; SelectorException if there were no
      * resources available to wait for events from the conduits.
      */
-    public int select(TimeSpan timeout)
+    public override int select(TimeSpan timeout)
     {
         fd_set *readfds;
         fd_set *writefds;
@@ -466,7 +464,7 @@ public class SelectSelector: AbstractSelector
      * If the call to select() was unsuccessful or it did not return any
      * events, the returned value will be null.
      */
-    public ISelectionSet selectedSet()
+    public override ISelectionSet selectedSet()
     {
         return (_eventCount > 0 ? new SelectSelectionSet(_keys, cast(uint) _eventCount, _selectedReadSet,
                                                          _selectedWriteSet, _selectedExceptionSet) : null);
@@ -480,7 +478,7 @@ public class SelectSelector: AbstractSelector
      * If the conduit is not registered to the selector the returned
      * value will be null. No exception will be thrown by this method.
      */
-    public SelectionKey key(ISelectable conduit)
+    public override SelectionKey key(ISelectable conduit)
     {
         if(conduit !is null)
         {
@@ -496,7 +494,7 @@ public class SelectSelector: AbstractSelector
      * Return the number of keys resulting from the registration of a conduit
      * to the selector.
      */
-    public size_t count()
+    public override size_t count()
     {
         return _keys.length;
     }
@@ -765,7 +763,7 @@ version (Windows)
 }
 else version (Posix)
 {
-    private import tango.core.BitManip;
+    private import core.bitop;
 
     /**
      * Helper class used by the select()-based Selector to store handles.
@@ -797,7 +795,7 @@ else version (Posix)
          */
         bool initialized()
         {
-            return _buffer.length > 0;
+            return _buffer.length() > 0;
         }
 
         /**
@@ -834,7 +832,7 @@ else version (Posix)
                 _buffer.length = handleSet._buffer.length;
 
             _buffer[] = handleSet._buffer;
-            return *this;
+            return this;
         }
 
         /**

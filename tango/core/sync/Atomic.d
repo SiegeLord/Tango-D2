@@ -17,6 +17,8 @@
  */
 
 module tango.core.sync.Atomic;
+pragma(msg, "In D2 you should better use core.atomic.");
+deprecated:
 
 version( LDC )
 {
@@ -130,12 +132,14 @@ version( LDC )
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         llvm_memory_barrier(ll,ls,sl,ss,device);
     }
-} else version(D_InlineAsm_X86){
+}
+/*
+ else version(D_InlineAsm_X86){
     void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         static if (device) {
             if (ls || sl || ll || ss){
                 // cpid should sequence even more than mfence
-                volatile asm {
+                synchronized asm {
                     push EBX;
                     mov EAX, 0; // model, stepping
                     cpuid;
@@ -143,7 +147,7 @@ version( LDC )
                 }
             }
         } else static if (ls || sl || (ll && ss)){ // use a sequencing operation like cpuid or simply cmpxch instead?
-            volatile asm {
+            synchronized asm {
                 mfence;
             }
             // this is supposedly faster and correct, but let's play it safe and use the specific instruction
@@ -151,11 +155,11 @@ version( LDC )
             // xchg rax
             // pop rax
         } else static if (ll){
-            volatile asm {
+            synchronized asm {
                 lfence;
             }
         } else static if( ss ){
-            volatile asm {
+            synchronized asm {
                 sfence;
             }
         }
@@ -165,7 +169,7 @@ version( LDC )
         static if (device) {
             if (ls || sl || ll || ss){
                 // cpid should sequence even more than mfence
-                volatile asm {
+                synchronized asm {
                     push RBX;
                     mov RAX, 0; // model, stepping
                     cpuid;
@@ -173,7 +177,7 @@ version( LDC )
                 }
             }
         } else static if (ls || sl || (ll && ss)){ // use a sequencing operation like cpuid or simply cmpxch instead?
-            volatile asm {
+            synchronized asm {
                 mfence;
             }
             // this is supposedly faster and correct, but let's play it safe and use the specific instruction
@@ -181,21 +185,24 @@ version( LDC )
             // xchg rax
             // pop rax
         } else static if (ll){
-            volatile asm {
+            synchronized asm {
                 lfence;
             }
         } else static if( ss ){
-            volatile asm {
+            synchronized asm {
                 sfence;
             }
         }
     }
-} else {
+}
+
+*/
+else {
     pragma(msg,"WARNING: no atomic operations on this architecture");
     pragma(msg,"WARNING: this is *slow* you probably want to change this!");
     int dummy;
     // acquires a lock... probably you will want to skip this
-    void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
+    deprecated void memoryBarrier(bool ll, bool ls, bool sl,bool ss,bool device=false)(){
         synchronized { dummy=1; }
     }
     enum{LockVersion=true}
@@ -256,7 +263,7 @@ version(LDC){
     } body {
         T*posVal=&val;
         static if( T.sizeof == byte.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov AL, newval;
                 mov ECX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -264,7 +271,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == short.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov AX, newval;
                 mov ECX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -272,7 +279,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == int.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov EAX, newval;
                 mov ECX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -295,7 +302,7 @@ version(LDC){
     } body {
         T*posVal=&val;
         static if( T.sizeof == byte.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov AL, newval;
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -303,7 +310,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == short.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov AX, newval;
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -311,7 +318,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == int.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov EAX, newval;
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -319,7 +326,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == long.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov RAX, newval;
                 mov RCX, posVal;
                 lock; // lock always needed to make this op atomic
@@ -416,7 +423,7 @@ version(LDC){
     } body {
         T*posVal=&val;
         static if( T.sizeof == byte.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov DL, newval;
                 mov AL, equalTo;
                 mov ECX, posVal;
@@ -425,7 +432,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == short.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov DX, newval;
                 mov AX, equalTo;
                 mov ECX, posVal;
@@ -434,7 +441,7 @@ version(LDC){
             }
         }
         else static if( ClassPtr!(T).sizeof == int.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov EDX, newval;
                 mov EAX, equalTo;
                 mov ECX, posVal;
@@ -457,7 +464,7 @@ version(LDC){
                     {
                         return equalTo;
                     } else {
-                        volatile {
+                        synchronized {
                             T res=val;
                             if (res!is equalTo) return res;
                         }
@@ -465,7 +472,7 @@ version(LDC){
                 }
             } else {
                 T res;
-                volatile asm
+                synchronized asm
                 {
                     push EDI;
                     push EBX;
@@ -499,7 +506,7 @@ version(LDC){
     } body {
         T*posVal=&val;
         static if( T.sizeof == byte.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov DL, newval;
                 mov AL, equalTo;
                 mov RCX, posVal;
@@ -508,7 +515,7 @@ version(LDC){
             }
         }
         else static if( T.sizeof == short.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov DX, newval;
                 mov AX, equalTo;
                 mov RCX, posVal;
@@ -517,7 +524,7 @@ version(LDC){
             }
         }
         else static if( ClassPtr!(T).sizeof == int.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov EDX, newval;
                 mov EAX, equalTo;
                 mov RCX, posVal;
@@ -526,7 +533,7 @@ version(LDC){
             }
         }
         else static if( ClassPtr!(T).sizeof == long.sizeof ) {
-            volatile asm {
+            synchronized asm {
                 mov RDX, newval;
                 mov RAX, equalTo;
                 mov RCX, posVal;
@@ -572,7 +579,7 @@ in {
     assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ) );
     static assert(ClassPtr!(T).sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
-    volatile T res=val;
+    synchronized T res=val;
     return res;
 }
 
@@ -589,7 +596,7 @@ in {
         assert( atomicValueIsProperlyAligned!(T)( cast(size_t) &val ), "invalid alignment" );
         static assert(ClassPtr!(T).sizeof<=size_t.sizeof,"invalid size for "~T.stringof);
 } body {
-    volatile val=newVal;
+    synchronized val=newVal;
 }
 
 /*
@@ -619,7 +626,7 @@ version(LDC){
             T* posVal=&val;
             T res;
             static if (T.sizeof==1){
-                volatile asm {
+                synchronized asm {
                     mov DL, incV;
                     mov ECX, posVal;
                     lock;
@@ -627,7 +634,7 @@ version(LDC){
                     mov byte ptr res[EBP],DL;
                 }
             } else static if (T.sizeof==2){
-                volatile asm {
+                synchronized asm {
                     mov DX, incV;
                     mov ECX, posVal;
                     lock;
@@ -635,7 +642,7 @@ version(LDC){
                     mov short ptr res[EBP],DX;
                 }
             } else static if (T.sizeof==4){
-                volatile asm
+                synchronized asm
                 {
                     mov EDX, incV;
                     mov ECX, posVal;
@@ -660,7 +667,7 @@ version(LDC){
             T* posVal=&val;
             T res;
             static if (T.sizeof==1){
-                volatile asm {
+                synchronized asm {
                     mov DL, incV;
                     mov RCX, posVal;
                     lock;
@@ -668,7 +675,7 @@ version(LDC){
                     mov byte ptr res[EBP],DL;
                 }
             } else static if (T.sizeof==2){
-                volatile asm {
+                synchronized asm {
                     mov DX, incV;
                     mov RCX, posVal;
                     lock;
@@ -676,7 +683,7 @@ version(LDC){
                     mov short ptr res[EBP],DX;
                 }
             } else static if (T.sizeof==4){
-                volatile asm
+                synchronized asm
                 {
                     mov EDX, incV;
                     mov RCX, posVal;
@@ -685,7 +692,7 @@ version(LDC){
                     mov int ptr res[EBP],EDX;
                 }
             } else static if (T.sizeof==8){
-                volatile asm
+                synchronized asm
                 {
                     mov RAX, val;
                     mov RDX, incV;
@@ -718,7 +725,7 @@ version(LDC){
             static assert( isIntegerType!(T)||isPointerOrClass!(T),"invalid type: "~T.stringof );
             synchronized(typeid(T)){
                 T oldV,newVal,nextVal;
-                volatile nextVal=val;
+                synchronized nextVal=val;
                 do{
                     oldV=nextVal;
                     newV=oldV+incV;
@@ -749,7 +756,7 @@ T atomicOp(T)(ref T val, T delegate(T) f){
     } while(++i<200)
     while (true){
         thread_yield();
-        volatile oldV=val;
+        synchronized oldV=val;
         newV=f(oldV);
         nextV=aCas!(T)(val,newV,oldV);
         if (nextV is oldV || newV is oldV) return oldV;
@@ -759,9 +766,9 @@ T atomicOp(T)(ref T val, T delegate(T) f){
 /*
  * Reads a flag (ensuring that other accesses can not happen before you read it).
 */
-T flagGet(T)(ref T flag){
+deprecated T flagGet(T)(ref T flag){
     T res;
-    volatile res=flag;
+    synchronized res=flag;
     memoryBarrier!(true,false,strictFences,false)();
     return res;
 }

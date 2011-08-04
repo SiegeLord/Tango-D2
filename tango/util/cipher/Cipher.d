@@ -29,7 +29,7 @@ abstract class Cipher
      *
      * Returns: The amount of encrypted data processed.
      */
-    abstract uint update(const(void[]) input_, void[] output_);
+    abstract size_t update(const(void[]) input_, void[] output_);
     
     /** Returns: The name of the algorithm of this cipher. */
     abstract const(char)[] name();

@@ -87,7 +87,7 @@ class HttpClient
         // this is struct rather than typedef to avoid compiler bugs
         private struct RequestMethod
         {
-                final char[]            name;
+                immutable(char)[] name;
         }    
                         
         // class members; there's a surprising amount of stuff here!
@@ -122,7 +122,7 @@ class HttpClient
                                         redirectionLimit = 5;
 
         // the http version being sent with requests
-        private char[]                  httpVersion;
+        private const(char)[]           httpVersion;
 
         // http version id
         public enum Version {OnePointZero, OnePointOne};
@@ -145,7 +145,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        this (RequestMethod method, char[] url)
+        this (const(RequestMethod) method, const(char)[] url)
         {
                 this (method, new Uri(url));
         }
@@ -158,7 +158,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        this (RequestMethod method, Uri uri)
+        this (const(RequestMethod) method, Uri uri)
         {
                 this.uri = uri;
                 this.method = method;
@@ -181,8 +181,6 @@ class HttpClient
                 else
                    error ("invalid url provided to HttpClient ctor");
 
-                paramsOut.parse(new Array(uri.query)); 
-                
                 // default the http version to 1.0
                 setVersion (Version.OnePointZero);
         }
@@ -490,7 +488,7 @@ class HttpClient
 
                 // attach/extend query parameters if user has added some
                 tokens.clear;
-                paramsOut.produce ((void[] p){if (tokens.readable) tokens.write("&"); 
+                paramsOut.produce ((const(void)[] p){if (tokens.readable) tokens.write("&"); 
                                     return uri.encode(&tokens.write, cast(char[]) p, uri.IncQuery);});
                 auto query = cast(char[]) tokens.slice;
 
@@ -507,7 +505,7 @@ class HttpClient
 
                       if (headersOut.get (HttpHeader.ContentLength, null) is null)
                          {
-                         headersOut.addInt (HttpHeader.ContentLength, query.length);
+                         headersOut.addInt (HttpHeader.ContentLength, cast(int)query.length);
                          pump = (OutputBuffer o){o.append(query);};
                          }
                       }
@@ -581,6 +579,7 @@ class HttpClient
                                        return redirectPost (pump, responseLine.getStatus);
                                    else
                                       error ("unexpected redirect for method "~method.name);
+                                break;
                            default:
                                 break;
                            }
@@ -652,7 +651,7 @@ class HttpClient
                             if (canRepost (status))
                                 return open (this.method, pump);
                             // fall through!
-
+							goto default;
                        default:
                             error ("Illegal redirection of Post");
                        }
@@ -691,10 +690,10 @@ class HttpClient
 
         **********************************************************************/
 
-        private void error (char[] msg)
+        private void error (const(char)[] msg)
         {
                 close;
-                throw new IOException (msg);
+                throw new IOException (msg.idup);
         }
 }
 

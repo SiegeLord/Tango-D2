@@ -73,7 +73,7 @@ class LocalSocket : Socket
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<localsocket>";
         }
@@ -90,10 +90,19 @@ class LocalServerSocket : LocalSocket
 
         ***********************************************************************/
 
-        this (char[] path, int backlog=32, bool reuse=false)
+        this (const(char)[] path, int backlog=32, bool reuse=false)
         {
-                auto addr = new LocalAddress (path);
-                native.addressReuse(reuse).bind(addr).listen(backlog);
+			auto addr = new LocalAddress (path);
+			this(addr);
+        }
+
+        /***********************************************************************
+
+        ***********************************************************************/
+
+        this (LocalAddress addr, int backlog=32, bool reuse=false)
+        {
+			native.addressReuse(reuse).bind(addr).listen(backlog);
         }
 
         /***********************************************************************
@@ -102,7 +111,7 @@ class LocalServerSocket : LocalSocket
 
         ***********************************************************************/
 
-        override char[] toString()
+        override immutable(char)[] toString()
         {
                 return "<localaccept>";
         }
@@ -147,7 +156,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        this (char[] path)
+        this (const(char)[] path)
         {
                 assert (path.length < 108);
                 
@@ -162,7 +171,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final sockaddr* name () 
+        final override sockaddr* name () 
         { 
                 return cast(sockaddr*) &sun; 
         }
@@ -171,7 +180,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final int nameLen () 
+        final override int nameLen () 
         { 
                 return _pathLength + ushort.sizeof; 
         }
@@ -180,7 +189,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final AddressFamily addressFamily () 
+        final override AddressFamily addressFamily () 
         { 
                 return AddressFamily.UNIX; 
         }
@@ -189,12 +198,12 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final char[] toString ()
+        override immutable(char)[] toString ()
         {
                 if (isAbstract)
-                    return "unix:abstract=" ~ _path[1..$];
+                    return ("unix:abstract=" ~ _path[1..$]).idup;
                 else
-                   return "unix:path=" ~ _path;
+                    return ("unix:path=" ~ _path).idup;
         }
         
         /***********************************************************************

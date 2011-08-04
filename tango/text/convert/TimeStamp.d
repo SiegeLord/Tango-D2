@@ -120,7 +120,7 @@ dchar[] toString32 (Time time)
 T[] format(T, U=Time) (T[] output, U t)
 {return format!(T)(output, cast(Time) t);}
 
-T[] format(T) (T[] output, Time t)
+T[] format(T) (immutable(T[]) output, Time t)
 {
         static T[][] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -202,7 +202,7 @@ T[] format8601(T) (T[] output, Time t)
 
 ******************************************************************************/
 
-Time parse(T) (T[] src, uint* ate = null)
+Time parse(T) (T[] src, size_t* ate = null)
 {
         size_t len;
         Time   value;
@@ -704,12 +704,12 @@ private int parseFullDay(T) (ref T* p)
                 "Saturday", 
                 ];
 
-        foreach (i, day; days)
-                 if (day == p[0..day.length])
-                    {
-                    p += day.length;
-                    return i;
-                    }
+		foreach (int i, day; days) {
+			if (day == p[0..day.length]) {
+				p += day.length;
+				return i;
+			}
+		}
         return -1;
 }
 
@@ -736,23 +736,23 @@ private static int parseInt(T) (ref T* p, T* e)
 
 debug (UnitTest)
 {
-        unittest
-        {
-        wchar[30] tmp;
-        wchar[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
-                
-        auto time = parse (test);
-        auto text = format (tmp, time);
-        assert (text == test);
+	unittest
+	{
+		wchar[30] tmp;
+		immutable(wchar)[] test = "Sun, 06 Nov 1994 08:49:37 GMT";
+				
+		auto time = parse (test);
+		auto text = format (tmp, time);
+		assert (text == test);
 
-        char[] garbageTest = "Wed Jun 11 17:22:07 20088";
-        garbageTest = garbageTest[0..$-1];
-        char[128] tmp2;
+		immutable(char)[] garbageTest = "Wed Jun 11 17:22:07 20088";
+		garbageTest = garbageTest[0..$-1];
+		char[128] tmp2;
 
-        time = parse(garbageTest);
-        auto text2 = format(tmp2, time);
-        assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
-        }
+		time = parse(garbageTest);
+		auto text2 = format(tmp2, time);
+		assert (text2 == "Wed, 11 Jun 2008 17:22:07 GMT");
+	}
 }
 
 /******************************************************************************

@@ -1,5 +1,4 @@
-private import tango.stdc.stdio;
-
+private import core.stdc.stdio;
 private import tango.io.Console;
 
 /*******************************************************************************

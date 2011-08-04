@@ -14,7 +14,7 @@
 
 module tango.util.container.more.BitSet;
 
-private import std.intrinsic;
+private import core.bitop;
 
 /******************************************************************************
 
