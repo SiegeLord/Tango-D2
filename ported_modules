@@ -52,6 +52,7 @@ tango/stdc/stdarg.d
 tango/stdc/stringz.d
 tango/stdc/posix/dirent.d
 tango/sys/Common.d
+tango/text/Arguments.d
 tango/text/Ascii.d
 tango/text/Util.d
 tango/text/convert/Float.d

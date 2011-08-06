@@ -204,13 +204,13 @@ class Arguments
         public alias get                opIndex;        // args["name"]
 
         private Stack!(Argument)        stack;          // args with params
-        private Argument[char[]]        args;           // the set of args
-        private Argument[char[]]        aliases;        // set of aliases
+        private Argument[const(char)[]] args;           // the set of args
+        private Argument[const(char)[]] aliases;        // set of aliases
         private char                    eq;             // '=' or ':'
-        private char[]                  sp,             // short prefix
+        private const(char)[]           sp,             // short prefix
                                         lp;             // long prefix
-        private char[][]                msgs = errmsg;  // error messages
-        private const char[][]          errmsg =        // default errors
+        private const(char)[][]         msgs = errmsg;  // error messages
+        private const const(char)[][]   errmsg =        // default errors
                 [
                 "argument '{0}' expects {2} parameter(s) but has {1}\n", 
                 "argument '{0}' expects {3} parameter(s) but has {1}\n", 
@@ -230,7 +230,7 @@ class Arguments
 
         ***********************************************************************/
         
-        this (char[] sp="-", char[] lp="--", char eq='=')
+        this (const(char)[] sp="-", const(char)[] lp="--", char eq='=')
         {
                 this.sp = sp;
                 this.lp = lp;
@@ -253,9 +253,9 @@ class Arguments
 
         ***********************************************************************/
         
-        final bool parse (char[] input, bool sloppy=false)
+        final bool parse (const(char)[] input, bool sloppy=false)
         {
-                char[][] tmp;
+                const(char)[][] tmp;
                 foreach (s; quotes(input, " "))
                          tmp ~= s;
                 return parse (tmp, sloppy);
@@ -276,7 +276,7 @@ class Arguments
 
         ***********************************************************************/
         
-        final bool parse (char[][] input, bool sloppy=false)
+        final bool parse (const(char)[][] input, bool sloppy=false)
         {
                 bool    done;
                 int     error;
@@ -341,7 +341,7 @@ class Arguments
                 
         ***********************************************************************/
         
-        final Argument get (char[] name)
+        final Argument get (const(char)[] name)
         {
                 auto a = name in args;
                 if (a is null)
@@ -355,7 +355,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final int opApply (int delegate(ref Argument) dg)
+        final int opApply (scope int delegate(ref Argument) dg)
         {
                 int result;
                 foreach (arg; args)  
@@ -378,7 +378,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final char[] errors (char[] delegate(char[] buf, char[] fmt, ...) dg)
+        final char[] errors (char[] delegate(char[] buf, const(char)[] fmt, ...) dg)
         {
                 char[256] tmp;
                 char[] result;
@@ -407,7 +407,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final Arguments errors (char[][] errors)
+        final Arguments errors (const(char)[][] errors)
         {
                 if (errors.length is errmsg.length)
                     msgs = errors;
@@ -423,7 +423,7 @@ class Arguments
 
         ***********************************************************************/
 
-        final Arguments help (void delegate(char[] arg, char[] help) dg)
+        final Arguments help (scope void delegate(const(char)[] arg, const(char)[] help) dg)
         {
                 foreach (arg; args)
                          if (arg.text.ptr)
@@ -439,7 +439,7 @@ class Arguments
                 
         ***********************************************************************/
         
-        private bool argument (char[] s, char[] p, bool sloppy, bool flag)
+        private bool argument (const(char)[] s, const(char)[] p, bool sloppy, bool flag)
         {
                 if (s.length >= p.length && s[0..p.length] == p)
                    {
@@ -467,7 +467,7 @@ class Arguments
 
         ***********************************************************************/
         
-        private Argument enable (char[] elem, bool sloppy, bool flag=false)
+        private Argument enable (const(char)[] elem, bool sloppy, bool flag=false)
         {
                 if (flag && elem.length > 1)
                    {
@@ -521,7 +521,7 @@ class Arguments
                 enum {None, ParamLo, ParamHi, Required, Requires, Conflict, Extra, Option, Invalid};
 
                 alias void   delegate() Invoker;
-                alias char[] delegate(char[] value) Inspector;
+                alias const(char)[] delegate(const(char)[] value) Inspector;
 
                 public int              min,            /// minimum params
                                         max,            /// maximum params
@@ -532,10 +532,10 @@ class Arguments
                                         cat,            // arg is smushable
                                         exp,            // implicit params
                                         fail;           // fail the parse
-                public  char[]          name,           // arg name
+                public  const(char)[]   name,           // arg name
                                         text;           // help text
-                private char[]          bogus;          // name of conflict
-                private char[][]        values,         // assigned values
+                private const(char)[]   bogus;          // name of conflict
+                private const(char)[][] values,         // assigned values
                                         options,        // validation options
                                         deefalts;       // configured defaults
                 private Invoker         invoker;        // invocation callback
@@ -549,7 +549,7 @@ class Arguments
 
                 ***************************************************************/
         
-                this (char[] name)
+                this (const(char)[] name)
                 {
                         this.name = name;
                 }
@@ -560,9 +560,9 @@ class Arguments
 
                 ***************************************************************/
         
-                override char[] toString()
+                override immutable(char)[] toString()
                 {
-                        return name;
+                        return name.idup;
                 }
 
                 /***************************************************************
@@ -572,7 +572,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final char[][] assigned ()
+                final const(char)[][] assigned ()
                 {
                         return values.length ? values : deefalts;
                 }
@@ -587,7 +587,7 @@ class Arguments
         
                 final Argument aliased (char name)
                 {
-                        this.outer.aliases[(&name)[0..1].dup] = this;
+                        this.outer.aliases[(&name)[0..1].idup] = this;
                         this.aliases ~= name;
                         return this;
                 }
@@ -622,7 +622,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument requires (char[] other)
+                final Argument requires (const(char)[] other)
                 {
                         return requires (this.outer.get(other));
                 }
@@ -656,7 +656,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument conflicts (char[] other)
+                final Argument conflicts (const(char)[] other)
                 {
                         return conflicts (this.outer.get(other));
                 }
@@ -713,7 +713,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument defaults (char[] values)
+                final Argument defaults (const(char)[] values)
                 {
                         this.deefalts ~= values;
                         return this;
@@ -780,7 +780,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument title (char[] name)
+                final Argument title (const(char)[] name)
                 {
                         this.name = name;
                         return this;
@@ -792,7 +792,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument help (char[] text)
+                final Argument help (const(char)[] text)
                 {
                         this.text = text;
                         return this;
@@ -817,7 +817,7 @@ class Arguments
 
                 ***************************************************************/
         
-                final Argument restrict (char[][] options ...)
+                final Argument restrict (const(char)[][] options ...)
                 {
                         this.options = options;
                         return this;
@@ -851,7 +851,7 @@ class Arguments
 
                 ***************************************************************/
         
-                private void append (char[] value, bool explicit=false)
+                private void append (const(char)[] value, bool explicit=false)
                 {       
                         // pop to an argument that can accept implicit parameters?
                         if (explicit is false)
