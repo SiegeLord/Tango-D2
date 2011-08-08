@@ -1,8 +1,8 @@
 module tango.net.device.Berkeley;
 
 private import tango.sys.Common;
-private import tango.core.String;
 private import tango.core.Exception;
+private import tango.text.convert.Utf;
 
 import  consts=tango.sys.consts.socket;
 

@@ -17,10 +17,9 @@
 
 module tango.io.device.File;
 
-private import tango.core.String;
 private import tango.sys.Common;
 private import tango.io.device.Device;
-
+private import tango.text.convert.Utf;
 
 /*******************************************************************************
 
