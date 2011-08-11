@@ -134,7 +134,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput format (const(T[]) fmt, ...)
+        final FormatOutput format (const(T)[] fmt, S...)(S s)
         {
                 convert (&emit, _arguments, _argptr, fmt);
                 return this;
@@ -146,7 +146,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput formatln (const(T[]) fmt, ...)
+        final FormatOutput formatln (const(T[]) fmt, S...)(S args)
         {
                 convert (&emit, _arguments, _argptr, fmt);
                 return newline;
@@ -159,18 +159,18 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput print (...)
+        final FormatOutput print(S...)(S args)
         {
                 enum immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
                                              "{}, {}, {}, {}, {}, {}, {}, {}, "
                                              "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
-                assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
+                assert (args.length <= slice.length/4, "FormatOutput :: too many arguments");
 
-                if (_arguments.length is 0)
-                    sink.flush;
-                else
-                   convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+				if (args.length is 0)
+					sink.flush;
+				else
+					convert (&emit, slice[0 .. args.length * 4 - 2], args);
                          
                 return this;
         }
@@ -254,7 +254,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final size_t emit (const(T[]) s)
+        private final size_t emit (const(T)[] s)
         {
                 size_t count = sink.write (s);
                 if (count is Eof)
