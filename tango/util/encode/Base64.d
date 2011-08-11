@@ -42,7 +42,12 @@ module tango.util.encode.Base64;
 *******************************************************************************/
 
 
-size_t allocateEncodeSize(const(ubyte[]) data)
+size_t allocateEncodeSize(const(ubyte)[] data)
+{
+    return allocateEncodeSize(data.length);
+}
+
+size_t allocateEncodeSize(const(void)[] data)
 {
     return allocateEncodeSize(data.length);
 }
@@ -79,12 +84,12 @@ size_t allocateEncodeSize(size_t length)
 
 *******************************************************************************/
 
-size_t encodeChunk(const(ubyte[]) data, char[] buff, ref size_t bytesEncoded)
+size_t encodeChunk(const(void)[] data, char[] buff, ref size_t bytesEncoded)
 {
     size_t tripletCount = data.length / 3;
     size_t rtn = 0;
     char *rtnPtr = buff.ptr;
-    const(ubyte) *dataPtr = data.ptr;
+    const(ubyte) *dataPtr = cast(const(ubyte)*)data.ptr;
 
     if (data.length > 0)
     {
@@ -114,14 +119,14 @@ size_t encodeChunk(const(ubyte[]) data, char[] buff, ref size_t bytesEncoded)
     Example:
     ---
     char[512] encodebuf;
-    char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?", encodebuf);
+    char[] myEncodedString = encode("Hello, how are you today?", encodebuf);
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
     ---
 
 
 *******************************************************************************/
 
-char[] encode(const(ubyte[]) data, char[] buff)
+char[] encode(const(void)[] data, char[] buff)
 in
 {
     assert(data);
@@ -136,7 +141,7 @@ body
         size_t bytesEncoded = 0;
         size_t numBytes = encodeChunk(data, buff, bytesEncoded);
         char *rtnPtr = buff.ptr + bytesEncoded;
-        const(ubyte) *dataPtr = data.ptr + numBytes;
+        const(ubyte) *dataPtr = cast(const(ubyte)*)(data.ptr + numBytes);
         size_t tripletFraction = data.length - (dataPtr - data.ptr);
 
         switch (tripletFraction)
@@ -171,7 +176,7 @@ body
 
     Example:
     ---
-    char[] myEncodedString = encode(cast(ubyte[])"Hello, how are you today?");
+    char[] myEncodedString = encode("Hello, how are you today?");
     Stdout(myEncodedString).newline; // SGVsbG8sIGhvdyBhcmUgeW91IHRvZGF5Pw==
     ---
 
@@ -179,7 +184,7 @@ body
 *******************************************************************************/
 
 
-char[] encode(const(ubyte[]) data)
+char[] encode(const(void)[] data)
 in
 {
     assert(data);
