@@ -5,7 +5,7 @@ CP=cp -v
 MODEL=
 CFLAGS= 
 DFLAGS=-I../druntime/import -w -d
-LFLAGS=
+LFLAGS=../druntime/lib/libdruntime.a
 DOCDIR=doc/html
 
 # CORE
@@ -206,7 +206,7 @@ clean:
 		$(RM) $(OBJ)
 
 %: %.d
-		$(DMD) -of$@ $< $(DFLAGS) -L-ltango2
+		$(DMD) -of$@ $< -L-ltango2
 
 %.o:%.d
 		$(DMD) -c -of$@ $< $(DFLAGS)
