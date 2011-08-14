@@ -24,7 +24,7 @@ private import Util = tango.text.Util;
 
 ******************************************************************************/
 
-FindFruct!(T) find(T) (T[] what)
+FindFruct!(T) find(T) (const(T)[] what)
 {
         return FindFruct!(T) (what);
 }
@@ -39,7 +39,7 @@ FindFruct!(T) find(T) (T[] what)
 
 ******************************************************************************/
 
-SearchFruct!(T) search(T) (T[] what)
+SearchFruct!(T) search(T) (const(T)[] what)
 {
         return SearchFruct!(T) (what);
 }
@@ -73,7 +73,7 @@ SearchFruct!(T) search(T) (T[] what)
 
 private struct FindFruct(T)
 {       
-        private T[] what;
+        private const(T)[] what;
 
         /***********************************************************************
 
@@ -85,7 +85,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        size_t forward (T[] content, size_t ofs = 0)
+        size_t forward (const(T)[] content, size_t ofs = 0)
         {
                 return Util.index (content, what, ofs);
         }
@@ -100,7 +100,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        size_t reverse (T[] content, size_t ofs = size_t.max)
+        size_t reverse (const(T)[] content, size_t ofs = size_t.max)
         {       
                 return Util.rindex (content, what, ofs);
         }
@@ -111,7 +111,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        T[] match ()
+        const(T)[] match ()
         {
                 return what;
         }
@@ -122,7 +122,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        void match (T[] what)
+        void match (const(T)[] what)
         {
                 this.what = what;
         }
@@ -133,7 +133,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        bool within (T[] content)
+        bool within (const(T)[] content)
         {       
                 return forward(content) != content.length;
         }
@@ -144,7 +144,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        size_t count (T[] content)
+        size_t count (const(T)[] content)
         {       
                 size_t mark, count;
 
@@ -162,7 +162,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        T[] replace (T[] content, T chr)
+        T[] replace (const(T)[] content, T chr)
         {     
                 return replace (content, (&chr)[0..1]);  
         }
@@ -176,7 +176,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        T[] replace (T[] content, T[] sub = null)
+        T[] replace (const(T)[] content, const(T)[] sub = null)
         {  
                 T[] output;
 
@@ -204,7 +204,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        Util.PatternFruct!(T) tokens (T[] content, T[] sub = null)
+        Util.PatternFruct!(T) tokens (const(T)[] content, const(T)[] sub = null)
         {
                 return Util.patterns (content, what, sub);
         }
@@ -224,7 +224,7 @@ private struct FindFruct(T)
 
         ***********************************************************************/
 
-        Indices indices (T[] content)
+        Indices indices (const(T)[] content)
         {
                 return Indices (what, content);
         }
@@ -237,10 +237,10 @@ private struct FindFruct(T)
 
         private struct Indices
         {
-                T[]     what,
-                        content;
+                const(T)[]     what,
+                               content;
 
-                int opApply (int delegate (ref size_t index) dg)
+                int opApply (scope int delegate (ref size_t index) dg)
                 {
                         int    ret;
                         size_t mark;
@@ -285,9 +285,9 @@ private struct FindFruct(T)
 
 private struct SearchFruct(T)
 {
-        private T[]             what;
-        private bool            fore;
-        private int[256]        offsets = void;
+        private const(T)[]             what;
+        private bool                   fore;
+        private int[256]               offsets = void;
 
         /***********************************************************************
 
@@ -295,7 +295,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        static SearchFruct opCall (T[] what) 
+        static SearchFruct opCall (const(T)[] what) 
         {
                 SearchFruct find = void;
                 find.match = what;
@@ -308,7 +308,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        T[] match ()
+        const(T)[] match ()
         {
                 return what;
         }
@@ -319,9 +319,9 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        void match (T[] what)
+        void match (const(T)[] what)
         {
-                offsets[] = what.length + 1;
+                offsets[] = cast(int)(what.length + 1);
                 this.fore = true;
                 this.what = what;
                 reset;
@@ -337,7 +337,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        size_t forward (T[] content, size_t ofs = 0) 
+        size_t forward (const(T)[] content, size_t ofs = 0) 
         {
                 if (! fore)
                       flip;
@@ -360,7 +360,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        size_t reverse (T[] content, size_t ofs = size_t.max) 
+        size_t reverse (const(T)[] content, size_t ofs = size_t.max) 
         {
                 if (fore)
                     flip;
@@ -379,7 +379,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        bool within (T[] content)
+        bool within (const(T)[] content)
         {       
                 return forward(content) != content.length;
         }
@@ -390,7 +390,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        size_t count (T[] content)
+        size_t count (const(T)[] content)
         {       
                 size_t mark, count;
 
@@ -408,7 +408,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        T[] replace (T[] content, T chr)
+        T[] replace (const(T)[] content, T chr)
         {     
                 return replace (content, (&chr)[0..1]);  
         }
@@ -422,7 +422,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        T[] replace (T[] content, T[] sub = null)
+        T[] replace (const(T)[] content, const(T)[] sub = null)
         {  
                 T[] output;
 
@@ -450,7 +450,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        Substitute tokens (T[] content, T[] sub = null)
+        Substitute tokens (const(T)[] content, const(T)[] sub = null)
         {
                 return Substitute (sub, what, content, &forward);
         }
@@ -470,7 +470,7 @@ private struct SearchFruct(T)
 
         ***********************************************************************/
 
-        Indices indices (T[] content)
+        Indices indices (const(T)[] content)
         {
                 return Indices (content, &forward);
         }
@@ -538,11 +538,11 @@ private struct SearchFruct(T)
         {
                 auto what = cast(char[]) this.what;
                 if (fore)   
-                    for (int i=0; i < what.length; ++i)
-                         offsets[what[i]] = what.length - i;
+                    for (int i=0; i < cast(int)what.length; ++i)
+                         offsets[what[i]] = cast(int)what.length - i;
                 else
-                   for (int i=what.length; i--;)
-                        offsets[what[i]] = i+1;
+                   for (int i=cast(int)what.length; i--;)
+                        offsets[what[i]] = cast(int)(i+1);
         }
 
         /***********************************************************************
@@ -565,10 +565,10 @@ private struct SearchFruct(T)
 
         private struct Indices
         {
-                T[]    content;
-                size_t delegate(T[], size_t) call;
+                const(T)[]    content;
+                size_t delegate(const(T)[], size_t) call;
 
-                int opApply (int delegate (ref size_t index) dg)
+                int opApply (scope int delegate (ref size_t index) dg)
                 {
                         int     ret;
                         size_t  mark;
@@ -590,17 +590,17 @@ private struct SearchFruct(T)
 
         private struct Substitute
         {
-                private T[] sub, 
-                            what,
-                            content;
-                size_t      delegate(T[], size_t) call;
+                private const(T)[] sub, 
+                                   what,
+                                   content;
+                size_t             delegate(const(T)[], size_t) call;
 
-                int opApply (int delegate (ref T[] token) dg)
+                int opApply (scope int delegate (ref const(T)[] token) dg)
                 {
-                        uint    ret,
-                                pos,
-                                mark;
-                        T[]     token;
+                        int        ret;
+                        size_t     pos,
+                                   mark;
+                        const(T)[] token;
 
                         while ((pos = call (content, mark)) < content.length)
                               {
