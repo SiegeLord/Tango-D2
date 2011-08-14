@@ -56,6 +56,7 @@ tango/text/Arguments.d
 tango/text/Ascii.d
 tango/text/Util.d
 tango/text/Search.d
+tango/text/Text.d
 tango/text/convert/Float.d
 tango/text/convert/Format.d
 tango/text/convert/Integer.d
