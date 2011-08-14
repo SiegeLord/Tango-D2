@@ -99,7 +99,7 @@ class FormatOutput(T) : OutputFilter
 {
         public  alias OutputFilter.flush flush;
 
-        private const(T[])             eol;
+        private const(T[])      eol;
         private Layout!(T)      convert;
         private bool            flushLines;
 
@@ -303,7 +303,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final size_t emit (const(T[]) s)
+        private final size_t emit (const(T)[] s)
         {
                 auto count = sink.write (s);
                 if (count is Eof)

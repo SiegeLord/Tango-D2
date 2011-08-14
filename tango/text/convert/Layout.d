@@ -93,7 +93,7 @@ else version(DigitalMars)
 class Layout(T)
 {
         public alias convert opCall;
-        public alias scope size_t delegate (const(T[])) Sink;
+        public alias scope size_t delegate (const(T)[]) Sink;
        
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
@@ -120,7 +120,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] sprint (T[] result, const(T[]) formatStr, ...)
+        public final T[] sprint (T[] result, const(T)[] formatStr, ...)
         {
                 version (DigitalMarsX64)
                 {
@@ -140,12 +140,12 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] vprint (T[] result, const(T[]) formatStr, TypeInfo[] arguments, ArgList args)
+        public final T[] vprint (T[] result, const(T)[] formatStr, TypeInfo[] arguments, ArgList args)
         {
                 T*  p = result.ptr;
                 auto available = result.length;
 
-                size_t sink (const(T[]) s)
+                size_t sink (const(T)[] s)
                 {
                         auto len = s.length;
                         if (len > available)
@@ -195,7 +195,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (const(T[]) formatStr, ...)
+        public final T[] convert (const(T)[] formatStr, ...)
         {
                 version (DigitalMarsX64)
                 {
@@ -215,7 +215,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, const(T[]) formatStr, ...)
+        public final uint convert (Sink sink, const(T)[] formatStr, ...)
         {
                 version (DigitalMarsX64)
                 {
@@ -240,9 +240,9 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (OutputStream output, const(T[]) formatStr, ...)
+        public final uint convert (OutputStream output, const(T)[] formatStr, ...)
         {
-                size_t sink (const(T[]) s)
+                size_t sink (const(T)[] s)
                 {
                         return output.write(s);
                 }
@@ -266,11 +266,11 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final T[] convert (TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
+        public final T[] convert (TypeInfo[] arguments, ArgList args, const(T)[] formatStr)
         {
                 T[] output;
 
-                size_t sink (const(T[]) s)
+                size_t sink (const(T)[] s)
                 {
                         output ~= s;
                         return s.length;
@@ -293,7 +293,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, const(T[]) formatStr)
+        public final uint convert (Sink sink, TypeInfo[] arguments, ArgList args, const(T)[] formatStr)
         {
                 assert (formatStr, "null format specifier");
                 assert (arguments.length < 64, "too many args in Layout.convert");
@@ -442,7 +442,7 @@ class Layout(T)
 
         **********************************************************************/
 
-        private uint parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
+        private uint parse (const(T)[] layout, TypeInfo[] ti, Arg[] args, Sink sink)
         {
                 T[512] result = void;
                 int length, nextIndex;
@@ -543,7 +543,7 @@ class Layout(T)
                       fragment = ++s;
 
                       // handle alignment
-                      void emit (const(T[]) str)
+                      void emit (const(T)[] str)
                       {
                                 int padding = width - cast(int)str.length;
 
@@ -712,7 +712,7 @@ version (WithVariant)
 
         ***********************************************************************/
 
-        private T[] dispatch (T[] result, const(T[]) format, TypeInfo type, Arg p)
+        private T[] dispatch (T[] result, const(T)[] format, TypeInfo type, Arg p)
         {
                 switch (type.classinfo.name[9])
                        {
@@ -831,7 +831,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] unknown (T[] result, const(T[]) format, TypeInfo type, Arg p)
+        protected T[] unknown (T[] result, const(T)[] format, TypeInfo type, Arg p)
         {
         version (WithExtensions)
                 {
@@ -864,7 +864,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] integer (T[] output, long v, const(T)[] format, ulong mask = ulong.max, const(T[]) def="d")
+        protected T[] integer (T[] output, long v, const(T)[] format, ulong mask = ulong.max, const(T)[] def="d")
         {
                 if (format.length is 0)
                     format = def;
@@ -880,7 +880,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        protected T[] floater (T[] output, real v, const(T[]) format)
+        protected T[] floater (T[] output, real v, const(T)[] format)
         {
                 uint dec = 2,
                      exp = 10;
@@ -946,7 +946,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] imaginary (T[] result, ireal val, const(T[]) format)
+        private T[] imaginary (T[] result, ireal val, const(T)[] format)
         {
                 return floatingTail (result, val.im, format, "*1i");
         }
@@ -957,7 +957,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] complex (T[] result, creal val, const(T[]) format)
+        private T[] complex (T[] result, creal val, const(T)[] format)
         {
                 static bool signed (real x)
                 {
@@ -984,7 +984,7 @@ version (WithVariant)
 
         **********************************************************************/
 
-        private T[] floatingTail (T[] result, real val, const(T[]) format, const(T[]) tail)
+        private T[] floatingTail (T[] result, real val, const(T)[] format, const(T)[] tail)
         {
                 assert (result.length > tail.length);
 
