@@ -147,7 +147,7 @@ class LocalAddress : Address
         {
                 sockaddr_un sun;
                 char[] _path;
-                int _pathLength;
+                size_t _pathLength;
         }
 
         /***********************************************************************
@@ -180,7 +180,7 @@ class LocalAddress : Address
 
         ***********************************************************************/
 
-        final override int nameLen () 
+        final override size_t nameLen () 
         { 
                 return _pathLength + ushort.sizeof; 
         }
