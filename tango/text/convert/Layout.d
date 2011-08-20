@@ -239,72 +239,93 @@ class Layout(T)
 				alias typeof(argument) T;
 				alias BaseTypeOf!(T) S;
 				
-				// set the argument and it's type to default values
-				Arg storedArgument = &argument;
-				Type storedType = Type.UNKNOWN;
-				
-				static if(is(isArrayType!(T))) {
-					core.stdc.stdio.printf("isArrayType!\n");
+				static if( !isStringType!(T) && isArrayType!(T) ) {
+					// it's an array like int[] or long[], we need to loop through every element
+					size_t length = 0;
+					length += sink("[");
+					foreach(i, element; argument) {
+						if(i) length += sink(", ");
+						length += convert(sink, format, element);
+					}
+					length += sink("]");
+					return length;
+				} else static if( !isStringType!(T) && isAssocArrayType!(T) ) {
+					// it's an assoc array like ushort[long].
+					size_t length = 0;
+					size_t i = 0;
+					length += sink("{");
+					foreach(key, value; argument) {
+						if(i++) length += sink(", ");
+						length += convert(sink, format, key);
+						length += sink(" => ");
+						length += convert(sink, format, value);
+					}
+					length += sink("}");
+					return length;
+				} else {
+					// set the argument and it's type to default values
+					Arg storedArgument = &argument;
+					Type storedType = Type.UNKNOWN;
+					
+					static if(is(S == byte)) {
+						storedType = Type.BYTE;
+					} else static if(is(S == short)) {
+						storedType = Type.SHORT;
+					} else static if(is(S == int)) {
+						storedType = Type.INT;
+					} else static if(is(S == long)) {
+						storedType = Type.LONG;
+					} else static if(is(S == ubyte)) {
+						storedType = Type.UBYTE;
+					} else static if(is(S == ushort)) {
+						storedType = Type.USHORT;
+					} else static if(is(S == uint)) {
+						storedType = Type.UINT;
+					} else static if(is(S == ulong)) {
+						storedType = Type.ULONG;
+					} else static if(is(T : const(bool))) {
+						storedType = Type.BOOL;
+					} else static if(is(S == float)) {
+						storedType = Type.FLOAT;
+					} else static if(is(S == ifloat)) {
+						storedType = Type.IFLOAT;
+					} else static if(is(S == cfloat)) {
+						storedType = Type.CFLOAT;
+					} else static if(is(S == real)) {
+						storedType = Type.REAL;
+					} else static if(is(S == ireal)) {
+						storedType = Type.IREAL;
+					} else static if(is(S == creal)) {
+						storedType = Type.CREAL;
+					} else static if(is(S == double)) {
+						storedType = Type.DOUBLE;
+					} else static if(is(S == idouble)) {
+						storedType = Type.IDOUBLE;
+					} else static if(is(S == cdouble)) {
+						storedType = Type.CDOUBLE;
+					} else static if(is(T : const(char)[])) {
+						storedType = Type.STRING;
+					} else static if(is(T : const(wchar)[])) {
+						storedType = Type.WSTRING;
+					} else static if(is(T : const(dchar)[])) {
+						storedType = Type.DSTRING;
+					} else static if(is(T : const(char)*)) {
+						storedType = Type.CSTRING;
+					} else static if(is(T : const(void*))) {
+						storedType = Type.VOID;
+					} else static if(is(T : Object)) {
+						storedType = Type.OBJECT;
+					}
+					
+					// append the stored type and argument to the list
+					storedTypes ~= storedType;
+					storedArguments ~= storedArgument;
 				}
-				
-				static if(is(S == byte)) {
-					storedType = Type.BYTE;
-				} else static if(is(S == short)) {
-					storedType = Type.SHORT;
-				} else static if(is(S == int)) {
-					storedType = Type.INT;
-				} else static if(is(S == long)) {
-					storedType = Type.LONG;
-				} else static if(is(S == ubyte)) {
-					storedType = Type.UBYTE;
-				} else static if(is(S == ushort)) {
-					storedType = Type.USHORT;
-				} else static if(is(S == uint)) {
-					storedType = Type.UINT;
-				} else static if(is(S == ulong)) {
-					storedType = Type.ULONG;
-				} else static if(is(T : const(bool))) {
-					storedType = Type.BOOL;
-				} else static if(is(S == float)) {
-					storedType = Type.FLOAT;
-				} else static if(is(S == ifloat)) {
-					storedType = Type.IFLOAT;
-				} else static if(is(S == cfloat)) {
-					storedType = Type.CFLOAT;
-				} else static if(is(S == real)) {
-					storedType = Type.REAL;
-				} else static if(is(S == ireal)) {
-					storedType = Type.IREAL;
-				} else static if(is(S == creal)) {
-					storedType = Type.CREAL;
-				} else static if(is(S == double)) {
-					storedType = Type.DOUBLE;
-				} else static if(is(S == idouble)) {
-					storedType = Type.IDOUBLE;
-				} else static if(is(S == cdouble)) {
-					storedType = Type.CDOUBLE;
-				} else static if(is(T : const(char)[])) {
-					storedType = Type.STRING;
-				} else static if(is(T : const(wchar)[])) {
-					storedType = Type.WSTRING;
-				} else static if(is(T : const(dchar)[])) {
-					storedType = Type.DSTRING;
-				} else static if(is(T : const(char)*)) {
-					storedType = Type.CSTRING;
-				} else static if(is(T : const(void*))) {
-					storedType = Type.VOID;
-				} else static if(is(T : Object)) {
-					storedType = Type.OBJECT;
-				}
-				
-				// append the stored type and argument to the list
-				storedTypes ~= storedType;
-				storedArguments ~= storedArgument;
 			}
 			
 			// parse the arguments and return the string size
 			return parse(format, storedTypes, storedArguments, sink);
-        }
+		}
 
         /**********************************************************************
 
@@ -425,15 +446,6 @@ class Layout(T)
 				Type type = types[index];
 				const(T[]) str = dispatch(result, format, type, argument);
 				
-				// DEBUG
-				core.stdc.stdio.printf("indexed: %d (0 = false, 1 = true)\n", indexed);
-				core.stdc.stdio.printf("index: %d\n", index);
-				core.stdc.stdio.printf("type: %d\n", type);
-				core.stdc.stdio.printf("width: %d\n", width);
-				core.stdc.stdio.printf("crop: %d\n", crop);
-				core.stdc.stdio.printf("str: %s\n", str.ptr);
-				core.stdc.stdio.printf("str.length: %d\n", str.length);
-				
 				// handle alignment
 				int padding = cast(int)(width - str.length);
 				if(crop) {
@@ -464,266 +476,6 @@ class Layout(T)
 			
 			// return the length
 			return length;
-			
-			/*
-			
-                T[512] result = void;
-                int length, nextIndex;
-
-
-                const(T)* s = fomat.ptr;
-                const(T)* fragment = s;
-                const(T)* end = s + fomat.length;
-
-                while (true)
-                      {
-                      while (s < end && *s != '{')
-                             ++s;
-
-                      // emit fragment
-                      length += sink (fragment [0 .. cast(size_t) (s - fragment)]);
-
-                      // all done?
-                      if (s is end)
-                          break;
-
-                      // check for "{{" and skip if so
-                      if (*++s is '{')
-                         {
-                         fragment = s++;
-                         continue;
-                         }
-
-                      int index = 0;
-                      bool indexed = false;
-
-                      // extract index
-                      while (*s >= '0' && *s <= '9')
-                            {
-                            index = index * 10 + *s++ -'0';
-                            indexed = true;
-                            }
-
-                      // skip spaces
-                      while (s < end && *s is ' ')
-                             ++s;
-
-                      bool crop;
-                      bool left;
-                      bool right;
-                      int  width;
-
-                      // has minimum or maximum width?
-                      if (*s is ',' || *s is '.')
-                         {
-                         if (*s is '.')
-                             crop = true;
-
-                         while (++s < end && *s is ' ') {}
-                         if (*s is '-')
-                            {
-                            left = true;
-                            ++s;
-                            }
-                         else
-                            right = true;
-
-                         // get width
-                         while (*s >= '0' && *s <= '9')
-                                width = width * 10 + *s++ -'0';
-
-                         // skip spaces
-                         while (s < end && *s is ' ')
-                                ++s;
-                         }
-
-                      const(T)[] format;
-
-                      // has a format string?
-                      if (*s is ':' && s < end)
-                         {
-                         const(T)* fs = ++s;
-
-                         // eat everything up to closing brace
-                         while (s < end && *s != '}')
-                                ++s;
-                         format = fs [0 .. cast(size_t) (s - fs)];
-                         }
-
-                      // insist on a closing brace
-                      if (*s != '}')
-                         {
-                         length += sink ("{malformed format}");
-                         continue;
-                         }
-
-                      // check for default index & set next default counter
-                      if (! indexed)
-                            index = nextIndex;
-                      nextIndex = index + 1;
-
-                      // next char is start of following fragment
-                      fragment = ++s;
-
-                      // handle alignment
-                      void emit (const(T[]) str)
-                      {
-                                size_t padding = width - str.length;
-
-                                if (crop)
-                                   {
-                                   if (padding < 0)
-                                      {
-                                      if (left)
-                                         {
-                                         length += sink ("...");
-                                         length += sink (Utf.cropLeft (str[-padding..$]));
-                                         }
-                                      else
-                                         {
-                                         length += sink (Utf.cropRight (str[0..width]));
-                                         length += sink ("...");
-                                         }
-                                      }
-                                   else
-                                       length += sink (str);
-                                   }
-                                else
-                                   {
-                                   // if right aligned, pad out with spaces
-                                   if (right && padding > 0)
-                                       length += spaces (sink, padding);
-
-                                   // emit formatted argument
-                                   length += sink (str);
-
-                                   // finally, pad out on right
-                                   if (left && padding > 0)
-                                       length += spaces (sink, padding);
-                                   }
-                      }
-
-                      // an astonishing number of typehacks needed to handle arrays :(
-                      void process (TypeInfo _ti, Arg _arg)
-                      {
-                                if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
-                                    (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
-                                    (_ti.classinfo.name.length is 15  && _ti.classinfo.name[9..$] == "Shared") ||
-                                    (_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Inout"))
-                                {
-                                    process((cast(TypeInfo_Const)_ti).next, _arg);
-                                    return;
-                                }
-                                // Because Variants can contain AAs (and maybe
-                                // even static arrays someday), we need to
-                                // process them here.
-version (WithVariant)
-{
-                                if (_ti is typeid(Variant))
-                                   {
-                                   // Unpack the variant and forward
-                                   auto vptr = cast(Variant*)_arg;
-                                   auto innerTi = vptr.type;
-                                   auto innerArg = vptr.ptr;
-                                   process (innerTi, innerArg);
-                                   }
-}
-                                if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
-                                   {
-                                   auto tiStat = cast(TypeInfo_StaticArray)_ti;
-                                   auto p = _arg;
-                                   length += sink ("[");
-                                   for (int i = 0; i < tiStat.len; i++)
-                                       {
-                                       if (p !is _arg )
-                                           length += sink (", ");
-                                       process (tiStat.value, p);
-                                       p += tiStat.tsize/tiStat.len;
-                                       }
-                                   length += sink ("]");
-                                   }
-                                else 
-                                if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
-                                   {
-                                   auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
-                                   auto tiKey = tiAsso.key;
-                                   auto tiVal = tiAsso.next();
-
-                                   // the knowledge of the internal k/v storage is used
-                                   // so this might break if, that internal storage changes
-                                   alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
-                                   alias ubyte AK;
-                                   auto aa = *cast(AV[AK]*) _arg;
-
-                                   length += sink ("{");
-                                   bool first = true;
-                                  
-                                   size_t roundUp (size_t sz)
-                                   {
-                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-                                   }
-
-                                   foreach (ref v; aa)
-                                           {
-                                           // the key is befor the value, so substrace with fixed key size from above
-                                           auto pk = cast(Arg)( &v - roundUp(AK.sizeof));
-                                           // now the real value pos is plus the real key size
-                                           auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
-
-                                           if (!first)
-                                                length += sink (", ");
-                                           process (tiKey, pk);
-                                           length += sink (" => ");
-                                           process (tiVal, pv);
-                                           first = false;
-                                           }
-                                   length += sink ("}");
-                                   }
-                                else 
-                                if (_ti.classinfo.name[9] is TypeCode.ARRAY)
-                                   {
-                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]))
-                                       emit (Utf.fromString8 (*cast(char[]*) _arg, result));
-                                   else
-                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]))        
-                                       emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
-                                   else
-                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]))
-                                       emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
-                                   else
-                                      {
-                                      // for all non string array types (including char[][])
-                                      auto arr = *cast(void[]*)_arg;
-                                      auto len = arr.length;
-                                      auto ptr = cast(Arg) arr.ptr;
-                                      auto elTi = _ti.next();
-                                      auto size = elTi.tsize();
-                                      length += sink ("[");
-                                      while (len > 0)
-                                            {
-                                            if (ptr !is arr.ptr)
-                                                length += sink (", ");
-                                            process (elTi, ptr);
-                                            len -= 1;
-                                            ptr += size;
-                                            }
-                                      length += sink ("]");
-                                      }
-                                   }
-                                else
-                                   // the standard processing
-                                   emit (dispatch (result, format, _ti, _arg));
-                      }
-
-                      
-                      // process this argument
-                      if (index >= ti.length)
-                          emit ("{invalid index}");
-                      else
-                         process (ti[index], args[index]);
-                      }
-                return length;
-                */
         }
 
         /***********************************************************************
@@ -812,63 +564,6 @@ version (WithVariant)
 				default:
 					return cast(T[])"{null}";
 			}
-			
-			/*
-                       
-
-
-
-                       
-
-                       case TypeCode.CHAR:
-                            return Utf.fromString8 ((cast(char*) p)[0..1], result);
-
-                       case TypeCode.WCHAR:
-                            return Utf.fromString16 ((cast(wchar*) p)[0..1], result);
-
-                       case TypeCode.DCHAR:
-                            return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
-
-                       case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, size_t.max, "x");
-
-                       case TypeCode.CLASS:
-                            auto c = *cast(Object*) p;
-                            if (c)
-                                return cast(T[])Utf.fromString8 (c.toString, result);
-                            break;
-
-                       case TypeCode.STRUCT:
-                            auto s = cast(TypeInfo_Struct) type;
-                            if (s.xtoString)
-                               {
-                               char[] delegate() toString;
-                               toString.ptr = p;
-                               toString.funcptr = cast(char[] function())s.xtoString;
-                               return Utf.fromString8 (toString(), result);
-                               }
-                            goto default;
-
-                       case TypeCode.INTERFACE:
-                            auto x = *cast(void**) p;
-                            if (x)
-                               {
-                               auto pi = **cast(Interface ***) x;
-                               auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return cast(T[])Utf.fromString8 (o.toString, result);
-                               }
-                            break;
-
-                       case TypeCode.ENUM:
-                            return dispatch (result, format, (cast(TypeInfo_Enum) type).base, p);
-
-                       case TypeCode.TYPEDEF:
-                            return dispatch (result, format, (cast(TypeInfo_Typedef) type).base, p);
-
-                       default:
-                            return unknown (result, format, type, p);
-                       }
-				*/
         }
 
         /**********************************************************************

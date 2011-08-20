@@ -209,7 +209,7 @@ clean:
 		$(DMD) -of$@ $< -L-ltango2
 
 %.o:%.d
-		$(DMD) -c -of$@ $< $(DFLAGS)
+		$(DMD) -c $(DFLAGS) -of$@ $<
 
 %.html:%.d
 		$(DMD) -o- -Df$(DOCDIR)/$@ $<
