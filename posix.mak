@@ -7,6 +7,7 @@ CFLAGS=
 DFLAGS=-I../druntime/import -w -d
 LFLAGS=../druntime/lib/libdruntime.a
 DOCDIR=doc/html
+MAKEFILE:=$(lastword $(MAKEFILE_LIST))
 
 # CORE
 SRC_CORE=tango/core/Array.d \
@@ -134,7 +135,6 @@ SRC_UTIL=tango/util/container/more/Stack.d \
 	tango/util/log/LayoutDate.d \
 	tango/util/log/model/ILogger.d
 
-	
 SRC_NET=tango/net/device/Berkeley.d \
 	tango/net/device/Socket.d \
 	tango/net/device/LocalSocket.d \
@@ -156,19 +156,14 @@ SRC_NET=tango/net/device/Berkeley.d \
 	
 SRC_SQL=tango/sql/Mysql.d
 
-#DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/console ./doc/example/networking ./doc/example/sql
-SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
-PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
-
-# generare src and obj
-SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
-OBJ=$(SRC:%.d=%.o)
-HTML=$(SRC:%.d=%.html)
-
 # For now, 32 bit is the default model
 ifeq (,$(MODEL))
         MODEL:=32
+endif
+
+# For now, release is the default build
+ifeq (,$(BUILD))
+        BUILD:=release
 endif
 
 # Set correct d Build flags
@@ -182,28 +177,54 @@ else
     endif
 endif
 
-# targets
-all: libtango2.a
-		@echo "libtango2.a was build"
+# generate all target for the examles
+#DIR_EXAMPLES=$(wildcard ./doc/example/*)
+DIR_EXAMPLES=./doc/example/console ./doc/example/networking ./doc/example/sql
+SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
+PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
-install: libtango2.a
-		$(CP) libtango2.a /usr/lib$(MODEL)
+# generare src obj and html for all tango files
+ROOT=generated/$(BUILD)/$(MODEL)
+SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
+OBJ=$(addprefix $(ROOT)/, $(SRC:%.d=%.o))
+HTML=$(SRC:%.d=%.html)
+
+# targets
+.PHONY: all install unittest examples doc clean
+all: $(ROOT)/libtango2.a
+		@echo "========================================================================="
+		@echo "= $(ROOT)/libtango2.a was successfully generated."
+		@echo "========================================================================="
+
+install: all
+		$(CP) $(ROOT)/libtango2.a /usr/lib$(MODEL)
+		@echo "install was done."
 		
+unittest: 
+		$(MAKE) --no-print-directory -f $(MAKEFILE) MODEL=$(MODEL) BUILD=unittest
+		$(DMD) -c -ofunittest.o -unittest -debug=UnitTest -debug -m$(MODEL) unittest.d
+		$(CC) unittest.o -o $@ -m$(MODEL) generated/unittest/$(MODEL)/libtango2.a --export-dynamic -lrt -lpthread -lm
+		./unittest
+
 examples: $(PROG_EXAMPLES)
 		@echo "all examples are made"
-		
-tests:
-		
-		
-libtango2.a: $(OBJ)
-		$(DMD) $(DFLAGS) $(LFLAGS) -lib -oflibtango2.a $(OBJ)
 
 doc: $(HTML)
 		@echo "All docs are stored in $(DOCDIR)"
 
 clean:
-		$(RM) libtango2.a
-		$(RM) $(OBJ)
+		$(RM) generated
+		$(RM) unittest
+
+# target pattern
+$(ROOT)/libtango2.a: $(OBJ)
+		$(DMD) $(DFLAGS) $(LFLAGS) -lib -of$@ $(OBJ)
+
+$(ROOT)/%.o:%.d
+		$(DMD) -c $(DFLAGS) -of$@ $<
+
+%.html:%.d
+		$(DMD) -o- -Df$(DOCDIR)/$@ $<
 
 %: %.d
 		$(DMD) -of$@ $< -L-ltango2
@@ -211,5 +232,3 @@ clean:
 %.o:%.d
 		$(DMD) -c $(DFLAGS) -of$@ $<
 
-%.html:%.d
-		$(DMD) -o- -Df$(DOCDIR)/$@ $<
