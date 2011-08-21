@@ -343,6 +343,7 @@ public struct Log
         a particular portion of code. The names are generally hierarchical in
         nature, using dot notation (with '.') to separate each named section.
         For example, a typical name might be something like "mail.send.writer"
+        
         ---
         import tango.util.log.Log;format
 

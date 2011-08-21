@@ -146,10 +146,10 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput formatln (const(T[]) fmt, S...)(S args)
+        final FormatOutput formatln(Char, S...)(in Char[] format, S arguments)
         {
-                convert (&emit, _arguments, _argptr, fmt);
-                return newline;
+                convert (&emit, format, arguments);
+                return this.newline();
         }
 
         /**********************************************************************

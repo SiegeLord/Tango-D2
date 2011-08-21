@@ -179,7 +179,7 @@ endif
 
 # generate all target for the examles
 #DIR_EXAMPLES=$(wildcard ./doc/example/*)
-DIR_EXAMPLES=./doc/example/console ./doc/example/networking ./doc/example/sql
+DIR_EXAMPLES=./doc/example/concurrency ./doc/example/console ./doc/example/networking ./doc/example/sql
 SRC_EXAMPLES:=$(foreach DIR_EXAMPLE,$(DIR_EXAMPLES),$(wildcard $(DIR_EXAMPLE)/*.d))
 PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
@@ -187,7 +187,7 @@ PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 ROOT=generated/$(BUILD)/$(MODEL)
 SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(addprefix $(ROOT)/, $(SRC:%.d=%.o))
-HTML=$(SRC:%.d=%.html)
+HTML=$(addprefix $(DOCDIR)/, $(SRC:%.d=%.html))
 
 # targets
 .PHONY: all install unittest examples doc clean
@@ -215,6 +215,7 @@ doc: $(HTML)
 clean:
 		$(RM) generated
 		$(RM) unittest
+		$(RM) $(DOCDIR)
 
 # target pattern
 $(ROOT)/libtango2.a: $(OBJ)
@@ -223,11 +224,11 @@ $(ROOT)/libtango2.a: $(OBJ)
 $(ROOT)/%.o:%.d
 		$(DMD) -c $(DFLAGS) -of$@ $<
 
-%.html:%.d
-		$(DMD) -o- -Df$(DOCDIR)/$@ $<
+$(DOCDIR)/%.html:%.d
+		$(DMD) -o- -Df$@ $<
 
 %: %.d
-		$(DMD) -of$@ $< -L-ltango2
+		$(DMD) -m$(MODEL) -of$@ $< -L-ltango2
 
 %.o:%.d
 		$(DMD) -c $(DFLAGS) -of$@ $<

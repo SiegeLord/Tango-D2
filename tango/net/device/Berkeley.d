@@ -1609,7 +1609,8 @@ debug(UnitTest)
         IPv6 is written as 8 blocks of 4 octal digits (16 bit)
         separated by a colon (":"). Zero block can be replaced by "::".
 	        			
-        For example: 
+        For example:
+        
         ---
         0000:0000:0000:0000:0000:0000:0000:0001
         is equal
@@ -1669,6 +1670,7 @@ debug(UnitTest)
         scope addr_4 = new IPv6Address("::", "8080"); 
         address: "::"
         port: 8080
+        ---
 				
 *******************************************************************************/ 
 				

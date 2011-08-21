@@ -21,6 +21,7 @@ private import core.stdc.string;
 
         Array manipulation typically involves appending, as in the
         following example:
+
         ---
         // create a small buffer
         auto buf = new Array (256);
