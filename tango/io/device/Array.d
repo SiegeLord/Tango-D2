@@ -14,17 +14,8 @@
 module tango.io.device.Array;
 
 private import tango.core.Exception;
-
 private import tango.io.device.Conduit;
-
-/******************************************************************************
-
-******************************************************************************/
-
-extern (C)
-{
-        protected void * memcpy (void *dst, const(void) *src, size_t);
-}
+private import core.stdc.string;
 
 /*******************************************************************************
 
