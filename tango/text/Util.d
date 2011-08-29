@@ -544,9 +544,9 @@ T[][] delimit(T) (T[] src, T[] set)
 
 ******************************************************************************/
 
-T[][] split(T) (T[] src, T[] pattern)
+const(T)[][] split(T) (const(T)[] src, const(T)[] pattern)
 {
-        T[][] result;
+        const(T)[][] result;
 
         foreach (segment; patterns (src, pattern))
                  result ~= segment;
@@ -760,6 +760,11 @@ bool matching(T) (T* s1, T* s2, size_t length)
         and a 0-based index on success
 
 ******************************************************************************/
+
+size_t indexOf(T) (const(T)[] str, const(T) match)
+{
+		return indexOf!(T) (str.ptr, match, str.length);
+}
 
 size_t indexOf(T, U=size_t) (const(T)* str, const(T) match, U length)
 {
