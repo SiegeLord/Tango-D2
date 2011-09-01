@@ -205,11 +205,12 @@ class JsonParser(T)
                 while (*p <= 32) 
                        ++p;
 
-                if (*p != '"')
+                if (*p != '"') {
                     if (*p == '}')
                         expected ("an attribute-name after (a potentially trailing) ','", p);
                     else
                        expected ("'\"' before attribute-name", p);
+                }
 
                 this.curLoc = p+1;
                 this.curType = Token.Name;

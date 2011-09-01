@@ -415,20 +415,21 @@ size_t locatePattern(T) (T[] source, T[] match, size_t start=0)
         T*      p = source.ptr + start;
         size_t    extent = source.length - start - match.length + 1;
 
-        if (match.length && extent <= source.length)
-            while (extent)
-                   if ((idx = indexOf (p, match[0], extent)) is extent)
-                        break;
-                   else
-                      if (matching (p+=idx, match.ptr, match.length))
-                          return p - source.ptr;
-                      else
-                         {
-                         extent -= (idx+1);
-                         ++p;
-                         }
-
-        return source.length;
+	if (match.length && extent <= source.length) {
+		while (extent) {
+			if ((idx = indexOf (p, match[0], extent)) is extent) {
+				break;
+			} else {
+				if (matching (p+=idx, match.ptr, match.length)) {
+					return p - source.ptr;
+				} else {
+					extent -= (idx+1);
+					++p;
+				}
+			}
+		}
+	}
+	return source.length;
 }
    
 /******************************************************************************

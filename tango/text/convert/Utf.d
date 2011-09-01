@@ -50,7 +50,7 @@
 
 module tango.text.convert.Utf;
 
-public extern (C) void onUnicodeError (const(char[]) msg, size_t idx = 0);
+private import core.exception;	// for onUnicodeError
 
 /*******************************************************************************
 
@@ -98,62 +98,58 @@ inout(dchar[]) toString (inout(dchar[]) src, dchar[] dst, size_t* ate=null) {ret
 
 char[] toString (const(wchar[]) input, char[] output=null, size_t* ate=null)
 {
-        if (ate)
-            *ate = input.length;
-        else
-           {
-           // potentially reallocate output
-           auto estimate = input.length * 2 + 3;
-           if (output.length < estimate)
-               output.length = estimate;
-           }
+	if (ate) {
+		*ate = input.length;
+	} else {
+		// potentially reallocate output
+		auto estimate = input.length * 2 + 3;
+		if (output.length < estimate)
+			output.length = estimate;
+	}
 
-        char* pOut = output.ptr;
-        char* pMax = pOut + output.length - 3;
+	char* pOut = output.ptr;
+	char* pMax = pOut + output.length - 3;
 
-        foreach (int eaten, wchar b; input)
-                {
-                // about to overflow the output?
-                if (pOut > pMax)
-                   {
-                   // if streaming, just return the unused input
-                   if (ate)
-                      {
-                      *ate = eaten;
-                      break;
-                      }
+        foreach (int eaten, wchar b; input) {
+		// about to overflow the output?
+		if (pOut > pMax) {
+			// if streaming, just return the unused input
+			if (ate) {
+				*ate = eaten;
+				break;
+			}
+	
+			// reallocate the output buffer
+			auto len = pOut - output.ptr;
+			output.length = len + len / 2;
+			pOut = output.ptr + len;
+			pMax = output.ptr + output.length - 3;
+		}
+	
+		if (b < 0x80) {
+			*pOut++ = cast(char)b;
+		} else {
+			if (b < 0x0800)
+			{
+				pOut[0] = cast(wchar)(0xc0 | ((b >> 6) & 0x3f));
+				pOut[1] = cast(wchar)(0x80 | (b & 0x3f));
+				pOut += 2;
+			} else {
+				if (b < 0xd800 || b > 0xdfff) {
+					pOut[0] = cast(wchar)(0xe0 | ((b >> 12) & 0x3f));
+					pOut[1] = cast(wchar)(0x80 | ((b >> 6)  & 0x3f));
+					pOut[2] = cast(wchar)(0x80 | (b & 0x3f));
+					pOut += 3;
+				} else {
+					// deal with surrogate-pairs
+					return toString (toString32(input, null, ate), output);
+				}
+			}
+		}
+	}
 
-                   // reallocate the output buffer
-                   auto len = pOut - output.ptr;
-                   output.length = len + len / 2;
-                   pOut = output.ptr + len;
-                   pMax = output.ptr + output.length - 3;
-                   }
-
-                if (b < 0x80)
-                    *pOut++ = cast(char)b;
-                else
-                   if (b < 0x0800)
-                      {
-                      pOut[0] = cast(wchar)(0xc0 | ((b >> 6) & 0x3f));
-                      pOut[1] = cast(wchar)(0x80 | (b & 0x3f));
-                      pOut += 2;
-                      }
-                   else
-                      if (b < 0xd800 || b > 0xdfff)
-                         {
-                         pOut[0] = cast(wchar)(0xe0 | ((b >> 12) & 0x3f));
-                         pOut[1] = cast(wchar)(0x80 | ((b >> 6)  & 0x3f));
-                         pOut[2] = cast(wchar)(0x80 | (b & 0x3f));
-                         pOut += 3;
-                         }
-                      else
-                         // deal with surrogate-pairs
-                         return toString (toString32(input, null, ate), output);
-                }
-
-        // return the produced output
-        return output [0..(pOut - output.ptr)];
+	// return the produced output
+	return output [0..(pOut - output.ptr)];
 }
 
 /*******************************************************************************
@@ -184,64 +180,62 @@ wchar[] toString16 (const(char[]) input, wchar[] output=null, size_t* ate=null)
         const(char)*   pMax = pIn + input.length;
         const(char)*   pValid;
 
-        if (ate is null)
-            if (input.length > output.length)
-                output.length = input.length;
+	if (ate is null && input.length > output.length)
+		output.length = input.length;
 
-        if (input.length)
-        foreach (ref wchar d; output)
-                {
-                pValid = pIn;
-                wchar b = cast(wchar) *pIn;
+        if (input.length) {
+		foreach (ref wchar d; output) {
+			pValid = pIn;
+			wchar b = cast(wchar) *pIn;
+	
+			if (b & 0x80) {
+				if (b < 0xe0) {
+					b &= 0x1f;
+					b = cast(wchar)((b << 6) | (*++pIn & 0x3f));
+				} else {
+					if (b < 0xf0) {
+						b &= 0x0f;
+						b = cast(wchar)((b << 6) | (pIn[1] & 0x3f));
+						b = cast(wchar)((b << 6) | (pIn[2] & 0x3f));
+						pIn += 2;
+					} else {
+						// deal with surrogate-pairs
+						return toString16 (toString32(input, null, ate), output);
+					}
+				}
+			}
+	
+			d = b;
+			++produced;
+	
+			// did we read past the end of the input?
+			if (++pIn >= pMax) {
+				if (pIn > pMax) {
+					// yep ~ return tail or throw error?
+					if (ate) {
+						pIn = pValid;
+						--produced;
+						break;
+					}
+					
+					onUnicodeError ("Unicode.toString16 : incomplete utf8 input", pIn - input.ptr);
+				} else {
+					break;
+				}
+			}
+		}
+	}
 
-                if (b & 0x80)
-                    if (b < 0xe0)
-                       {
-                       b &= 0x1f;
-                       b = cast(wchar)((b << 6) | (*++pIn & 0x3f));
-                       }
-                    else
-                       if (b < 0xf0)
-                          {
-                          b &= 0x0f;
-                          b = cast(wchar)((b << 6) | (pIn[1] & 0x3f));
-                          b = cast(wchar)((b << 6) | (pIn[2] & 0x3f));
-                          pIn += 2;
-                          }
-                       else
-                          // deal with surrogate-pairs
-                          return toString16 (toString32(input, null, ate), output);
-
-                d = b;
-                ++produced;
-
-                // did we read past the end of the input?
-                if (++pIn >= pMax)
-                    if (pIn > pMax)
-                       {
-                       // yep ~ return tail or throw error?
-                       if (ate)
-                          {
-                          pIn = pValid;
-                          --produced;
-                          break;
-                          }
-                       onUnicodeError ("Unicode.toString16 : incomplete utf8 input".dup, pIn - input.ptr);
-                       }
-                    else
-                       break;
-                }
-
-        // do we still have some input left?
-        if (ate)
-            *ate = pIn - input.ptr;
-        else
-           if (pIn < pMax)
-               // this should never happen!
-               onUnicodeError ("Unicode.toString16 : utf8 overflow".dup, pIn - input.ptr);
-
-        // return the produced output
-        return output [0..produced];
+	// do we still have some input left?
+	if (ate) {
+		*ate = pIn - input.ptr;
+	} else if (pIn < pMax) {
+		// this should never happen!
+		onUnicodeError ("Unicode.toString16 : utf8 overflow", pIn - input.ptr);
+	}
+	
+	// return the produced output
+	return output [0..produced];
 }
 
 
@@ -329,7 +323,7 @@ char[] toString (const(dchar[]) input, char[] output=null, size_t* ate=null)
                             pOut += 4;
                             }
                          else
-                            onUnicodeError ("Unicode.toString : invalid dchar".dup, eaten);
+                            onUnicodeError ("Unicode.toString : invalid dchar", eaten);
                 }
 
         // return the produced output
@@ -365,72 +359,72 @@ dchar[] toString32 (const(char[]) input, dchar[] output=null, size_t* ate=null)
         const(char)*   pMax = pIn + input.length;
         const(char)*   pValid;
 
-        if (ate is null)
-            if (input.length > output.length)
-                output.length = input.length;
+        if (ate is null && input.length > output.length) {
+		output.length = input.length;
+	}
 
-        if (input.length)
-        foreach (ref dchar d; output)
-                {
-                pValid = pIn;
-                dchar b = cast(dchar) *pIn;
+	if (input.length) {
+		foreach (ref dchar d; output) {
+			pValid = pIn;
+			dchar b = cast(dchar) *pIn;
 
-                if (b & 0x80)
-                    if (b < 0xe0)
-                       {
-                       b &= 0x1f;
-                       b = (b << 6) | (*++pIn & 0x3f);
-                       }
-                    else
-                       if (b < 0xf0)
-                          {
-                          b &= 0x0f;
-                          b = (b << 6) | (pIn[1] & 0x3f);
-                          b = (b << 6) | (pIn[2] & 0x3f);
-                          pIn += 2;
-                          }
-                       else
-                          {
-                          b &= 0x07;
-                          b = (b << 6) | (pIn[1] & 0x3f);
-                          b = (b << 6) | (pIn[2] & 0x3f);
-                          b = (b << 6) | (pIn[3] & 0x3f);
+			if (b & 0x80) {
+				if (b < 0xe0) {
+					b &= 0x1f;
+					b = (b << 6) | (*++pIn & 0x3f);
+				} else {
+					if (b < 0xf0) {
+						b &= 0x0f;
+						b = (b << 6) | (pIn[1] & 0x3f);
+						b = (b << 6) | (pIn[2] & 0x3f);
+						pIn += 2;
+					} else {
+						b &= 0x07;
+						b = (b << 6) | (pIn[1] & 0x3f);
+						b = (b << 6) | (pIn[2] & 0x3f);
+						b = (b << 6) | (pIn[3] & 0x3f);
+						
+						if (b >= 0x110000) {
+							onUnicodeError ("Unicode.toString32 : invalid utf8 input", pIn - input.ptr);
+						}
+						pIn += 3;
+					}
+				}
+			}
 
-                          if (b >= 0x110000)
-                              onUnicodeError ("Unicode.toString32 : invalid utf8 input".dup, pIn - input.ptr);
-                          pIn += 3;
-                          }
-
-                d = b;
-                ++produced;
-
-                // did we read past the end of the input?
-                if (++pIn >= pMax)
-                    if (pIn > pMax)
-                       {
-                       // yep ~ return tail or throw error?
-                       if (ate)
-                          {
-                          pIn = pValid;
-                          --produced;
-                          break;
-                          }
-                       onUnicodeError ("Unicode.toString32 : incomplete utf8 input".dup, pIn - input.ptr);
-                       }
-                    else
-                       break;
-                }
+			d = b;
+			++produced;
+		
+			// did we read past the end of the input?
+			if (++pIn >= pMax) {
+				if (pIn > pMax) {
+					// yep ~ return tail or throw error?
+					if (ate) {
+						pIn = pValid;
+						--produced;
+						break;
+					}
+					
+					onUnicodeError ("Unicode.toString32 : incomplete utf8 input", pIn - input.ptr);
+				} else {
+					break;
+				}
+			}
+		}
+	}
 
         // do we still have some input left?
-        if (ate)
-            *ate = pIn - input.ptr;
-        else
-           if (pIn < pMax)
-               // this should never happen!
-               onUnicodeError ("Unicode.toString32 : utf8 overflow".dup, pIn - input.ptr);
+	if (ate) {
+		*ate = pIn - input.ptr;
+	} else {
+		if (pIn < pMax) {
+			// this should never happen!
+			onUnicodeError ("Unicode.toString32 : utf8 overflow", pIn - input.ptr);
+		}
+	}
 
-        // return the produced output
-        return output [0..produced];
+	// return the produced output
+	return output [0..produced];
 }
 
 /*******************************************************************************
@@ -498,7 +492,7 @@ wchar[] toString16 (const(dchar[]) input, wchar[] output=null, size_t* ate=null)
                       pOut += 2;
                       }
                    else
-                      onUnicodeError ("Unicode.toString16 : invalid dchar".dup, eaten);
+                      onUnicodeError ("Unicode.toString16 : invalid dchar", eaten);
                 }
 
         // return the produced output
@@ -533,49 +527,49 @@ dchar[] toString32 (const(wchar[]) input, dchar[] output=null, size_t* ate=null)
         const(wchar)*  pMax = pIn + input.length;
         const(wchar)*  pValid;
 
-        if (ate is null)
-            if (input.length > output.length)
+        if (ate is null && input.length > output.length) {
                 output.length = input.length;
+	}
 
-        if (input.length)
-        foreach (ref dchar d; output)
-                {
-                pValid = pIn;
-                dchar b = cast(dchar) *pIn;
-
-                // simple conversion ~ see http://www.unicode.org/faq/utf_bom.html#35
-                if (b >= 0xd800 && b <= 0xdfff)
-                    b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
-
-                if (b >= 0x110000)
-                    onUnicodeError ("Unicode.toString32 : invalid utf16 input".dup, pIn - input.ptr);
-
-                d = b;
-                ++produced;
-
-                if (++pIn >= pMax)
-                    if (pIn > pMax)
-                       {
-                       // yep ~ return tail or throw error?
-                       if (ate)
-                          {
-                          pIn = pValid;
-                          --produced;
-                          break;
-                          }
-                       onUnicodeError ("Unicode.toString32 : incomplete utf16 input".dup, pIn - input.ptr);
-                       }
-                    else
-                       break;
-                }
+	if (input.length) {
+		foreach (ref dchar d; output) {
+			pValid = pIn;
+			dchar b = cast(dchar) *pIn;
+		
+			// simple conversion ~ see http://www.unicode.org/faq/utf_bom.html#35
+			if (b >= 0xd800 && b <= 0xdfff)
+				b = ((b - 0xd7c0) << 10) + (*++pIn - 0xdc00);
+		
+			if (b >= 0x110000)
+				onUnicodeError ("Unicode.toString32 : invalid utf16 input", pIn - input.ptr);
+		
+			d = b;
+			++produced;
+		
+			if (++pIn >= pMax) {
+				if (pIn > pMax) {
+					// yep ~ return tail or throw error?
+					if (ate) {
+						pIn = pValid;
+						--produced;
+						break;
+					}
+					onUnicodeError ("Unicode.toString32 : incomplete utf16 input", pIn - input.ptr);
+				} else {
+					break;
+				}
+			}
+		}
+	}
 
         // do we still have some input left?
-        if (ate)
+        if (ate) {
             *ate = pIn - input.ptr;
-        else
+        } else {
            if (pIn < pMax)
                // this should never happen!
-               onUnicodeError ("Unicode.toString32 : utf16 overflow".dup, pIn - input.ptr);
+               onUnicodeError ("Unicode.toString32 : utf16 overflow", pIn - input.ptr);
+	}
 
         // return the produced output
         return output [0..produced];
@@ -750,38 +744,41 @@ T[] cropLeft(T) (T[] s)
 
 T[] cropRight(T) (T[] s)
 {
-        if (s.length)
-           {
-           size_t i = s.length - 1;
-           static if (is (T == char))
-                      while (i && (s[i] & 0x80))
-                             if ((s[i] & 0xc0) is 0xc0)
-                                {
-                                // located the first byte of a sequence
-                                ubyte b = s[i];
-                                size_t d = s.length - i;
+	if (s.length) {
+		size_t i = s.length - 1;
+		static if (is (T == char)) {
+			while (i && (s[i] & 0x80)) {
+				if ((s[i] & 0xc0) is 0xc0)
+					{
+					// located the first byte of a sequence
+					ubyte b = s[i];
+					size_t d = s.length - i;
+		
+					// is it a 3 byte sequence?
+					if (b & 0x20)
+						--d;
+		
+					// or a four byte sequence?
+					if (b & 0x10)
+						--d;
+		
+					// is the sequence complete?
+					if (d is 2)
+						i = s.length;
 
-                                // is it a 3 byte sequence?
-                                if (b & 0x20)
-                                    --d;
-   
-                                // or a four byte sequence?
-                                if (b & 0x10)
-                                    --d;
+					return s [0..i];
+				} else {
+					--i;
+				}
+			}
+		}
 
-                                // is the sequence complete?
-                                if (d is 2)
-                                    i = s.length;
-                                return s [0..i];
-                                }
-                             else 
-                                --i;
-
-           static if (is (T == wchar))
-                      // skip if last char is a leading surrogate
-                      if ((s[i] & 0xfffffc00) is 0xd800)
-                           return s [0..$-1];
-           }
+		static if (is (T == wchar)) {
+			// skip if last char is a leading surrogate
+			if ((s[i] & 0xfffffc00) is 0xd800)
+				return s [0..$-1];
+		}
+	}
         return s;
 }
 
@@ -794,22 +791,22 @@ T[] cropRight(T) (T[] s)
 
 const(char)* toStringz (const(char)[] s, char[] tmp=null)
 {
-        enum char[] empty = "\0".dup;
-
-        auto len = s.length;
-        if (s.ptr)
-            if (len is 0)
-                s = empty;
-            else
-               if (s[len-1] != 0)
-                  {
-                  if (tmp.length <= len)
-                      tmp = new char[len+1];
-                  tmp [0..len] = s;
-                  tmp [len] = 0;
-                  s = tmp;
-                  }
-        return s.ptr;
+	enum char[] empty = "\0".dup;
+	
+	auto len = s.length;
+	if (s.ptr) {
+		if (len is 0) {
+			s = empty;
+		} else if (s[len-1] != 0) {
+			if (tmp.length <= len) {
+				tmp = new char[len+1];
+			}
+			tmp [0..len] = s;
+			tmp [len] = 0;
+			s = tmp;
+		}
+	}
+	return s.ptr;
 }
 
 /*********************************

@@ -765,11 +765,12 @@ class Uri : UriView
 
         final char[] extendQuery (char[] tail)
         {
-                if (tail.length)
+                if (tail.length) {
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
+		}
                 return query_;
         }
 
