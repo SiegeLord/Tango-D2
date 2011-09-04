@@ -57,6 +57,7 @@ tango/text/Ascii.d
 tango/text/Util.d
 tango/text/Search.d
 tango/text/Text.d
+tango/text/Unicode.d
 tango/text/UnicodeData.d
 tango/text/convert/Float.d
 tango/text/convert/Format.d
