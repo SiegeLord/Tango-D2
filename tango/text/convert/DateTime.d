@@ -58,7 +58,7 @@ else
 
 ******************************************************************************/
 
-public DateTimeLocale DateTimeDefault;
+public __gshared DateTimeLocale DateTimeDefault;
 
 static this()
 {
@@ -79,32 +79,32 @@ version (WithExtensions)
 
 struct DateTimeLocale
 {
-        static char[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-        static char[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-        static char[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
+        enum immutable(char)[]   rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+        enum immutable(char)[]   sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+        enum immutable(char)[]   universalSortableDateTimePattern = "yyyy'-'MM'-'dd' 'HH':'mm':'ss'Z'";
 
-        Calendar        assignedCalendar;
+        Calendar               assignedCalendar;
 
-        char[]          shortDatePattern,
-                        shortTimePattern,
-                        longDatePattern,
-                        longTimePattern,
-                        fullDateTimePattern,
-                        generalShortTimePattern,
-                        generalLongTimePattern,
-                        monthDayPattern,
-                        yearMonthPattern;
+        const(char)[]          shortDatePattern,
+                               shortTimePattern,
+                               longDatePattern,
+                               longTimePattern,
+                               fullDateTimePattern,
+                               generalShortTimePattern,
+                               generalLongTimePattern,
+                               monthDayPattern,
+                               yearMonthPattern;
 
-        char[]          amDesignator,
-                        pmDesignator;
+        const(char)[]          amDesignator,
+                               pmDesignator;
 
-        char[]          timeSeparator,
-                        dateSeparator;
+        const(char)[]          timeSeparator,
+                               dateSeparator;
 
-        char[][]        dayNames,
-                        monthNames,
-                        abbreviatedDayNames,
-                        abbreviatedMonthNames;
+        const(char)[][]        dayNames,
+                               monthNames,
+                               abbreviatedDayNames,
+                               abbreviatedMonthNames;
 
         /**********************************************************************
 
@@ -177,7 +177,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        char[] format (char[] output, Time dateTime, char[] layout)
+        char[] format (char[] output, Time dateTime, const(char)[] layout)
         {
                 // default to general format
                 if (layout.length is 0)
@@ -195,7 +195,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        T[] formatWide(T) (T[] output, Time dateTime, T[] fmt)
+        T[] formatWide(T) (T[] output, Time dateTime, const(T)[] fmt)
         {
                 static if (is (T == char))
                            return format (output, dateTime, fmt);
@@ -238,7 +238,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        char[] abbreviatedDayName (Calendar.DayOfWeek dayOfWeek)
+        const(char)[] abbreviatedDayName (Calendar.DayOfWeek dayOfWeek)
         {
                 return abbreviatedDayNames [cast(int) dayOfWeek];
         }
@@ -249,7 +249,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        char[] dayName (Calendar.DayOfWeek dayOfWeek)
+        const(char)[] dayName (Calendar.DayOfWeek dayOfWeek)
         {
                 return dayNames [cast(int) dayOfWeek];
         }
@@ -260,7 +260,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        char[] abbreviatedMonthName (int month)
+        const(char)[] abbreviatedMonthName (int month)
         {
                 assert (month > 0 && month < 13);
                 return abbreviatedMonthNames [month - 1];
@@ -272,7 +272,7 @@ struct DateTimeLocale
 
         **********************************************************************/
 
-        char[] monthName (int month)
+        const(char)[] monthName (int month)
         {
                 assert (month > 0 && month < 13);
                 return monthNames [month - 1];
@@ -360,27 +360,27 @@ else
         static DateTimeLocale create ()
         {
                 //extract separator
-                static char[] extractSeparator(char[] str, char[] def)
+                const(char)[] extractSeparator(const(char)[] str, const(char)[] def)
                 {
                         for (auto i = 0; i < str.length; ++i)
                             {
                             char c = str[i];
                             if ((c == '%') || (c == ' ') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
                                 continue;
-                            return str[i..i+1].dup;
+                            return str[i..i+1];
                             }
                         return def;
                 }
 
-                static char[] getString(nl_item id, char[] def = null)
+                const(char)[] getString(nl_item id, const(char)[] def = null)
                 {
                         char* p = nl_langinfo(id);
                         return p ? fromStringz(p).dup : def;
                 }
 
-                static char[] getFormatString(nl_item id, char[] def = null)
+                const(char)[] getFormatString(nl_item id, const(char)[] def = null)
                 {
-                        char[] posix_str = getString(id, def);
+                        const(char)[] posix_str = getString(id, def);
                         return convert(posix_str);
                 }
 
@@ -441,12 +441,12 @@ else
 
         **********************************************************************/
 
-        private static char[] convert(char[] fmt)
+        private static char[] convert(const(char)[] fmt)
         {
                 char[32] ret;
                 size_t len;
 
-                void put(char[] str)
+                void put(const(char)[] str)
                 {
                         assert((len+str.length) <= ret.length);
                         ret[len..len+str.length] = str;
@@ -611,9 +611,9 @@ else
 
         **********************************************************************/
 
-        private char[] expandKnownFormat (char[] format)
+        private const(char)[] expandKnownFormat (const(char)[] format)
         {
-                char[] f;
+                const(char)[] f;
 
                 switch (format[0])
                        {
@@ -665,7 +665,7 @@ else
 
         **********************************************************************/
 
-        private char[] formatCustom (ref Result result, Time dateTime, char[] format)
+        private char[] formatCustom (ref Result result, Time dateTime, const(char)[] format)
         {
                 uint            len,
                                 doy,
@@ -692,7 +692,7 @@ else
                              case 'd':
                                   len = parseRepeat (format, index, c);
                                   if (len <= 2)
-                                      result ~= formatInt (tmp, day, len);
+                                     result ~= formatInt (tmp, day, len);
                                   else
                                      result ~= formatDayOfWeek (cast(Calendar.DayOfWeek) dow, len);
                                   break;
@@ -859,7 +859,7 @@ else
 
         **********************************************************************/
 
-        private char[] formatMonth (int month, int rpt)
+        private const(char)[] formatMonth (int month, int rpt)
         {
                 if (rpt is 3)
                     return abbreviatedMonthName (month);
@@ -870,7 +870,7 @@ else
 
         **********************************************************************/
 
-        private char[] formatDayOfWeek (Calendar.DayOfWeek dayOfWeek, int rpt)
+        private const(char)[] formatDayOfWeek (Calendar.DayOfWeek dayOfWeek, int rpt)
         {
                 if (rpt is 3)
                     return abbreviatedDayName (dayOfWeek);
@@ -881,7 +881,7 @@ else
 
         **********************************************************************/
 
-        private T[] bridge(T) (T[] result, void* arg, T[] format)
+        private T[] bridge(T) (T[] result, void* arg, const(T)[] format)
         {
                 return formatWide (result, *cast(Time*) arg, format);
         }
@@ -890,7 +890,7 @@ else
 
         **********************************************************************/
 
-        private static int parseRepeat(char[] format, int pos, char c)
+        private static int parseRepeat(const(char)[] format, int pos, char c)
         {
                 int n = pos + 1;
                 while (n < format.length && format[n] is c)
@@ -919,7 +919,7 @@ else
 
         **********************************************************************/
 
-        private static int parseQuote (ref Result result, char[] format, int pos)
+        private static int parseQuote (ref Result result, const(char)[] format, int pos)
         {
                 int start = pos;
                 char chQuote = format[pos++];
@@ -984,7 +984,7 @@ private DateTimeLocale EngUS =
 
 private struct Result
 {
-        private uint    index;
+        private size_t    index;
         private char[]  target_;
 
         /**********************************************************************
@@ -1003,7 +1003,7 @@ private struct Result
 
         **********************************************************************/
 
-        private void opCatAssign (char[] rhs)
+        private void opCatAssign (const(char)[] rhs)
         {
                 auto end = index + rhs.length;
                 assert (end < target_.length);

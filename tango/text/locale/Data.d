@@ -2,21 +2,21 @@ module tango.text.locale.Data;
 
 private import tango.core.Exception;
 
-package void error(char[] msg) {
+package void error(immutable(char)[] msg) {
      throw new LocaleException (msg);
 }
 
-package int compareString(char[] strA, char[] strB) {
+package ptrdiff_t compareString(const(char)[] strA, const(char)[] strB) {
   // Comparison ignores case
   size_t strALength = strA.length;
   size_t strBLength = strB.length;
-  int l = strALength;
+  size_t l = strALength;
   if (strBLength < l)
     l = strBLength;
 
-  int result;
+  ptrdiff_t result;
 
-  for (int i = 0; i < l; i++) {
+  for (size_t i = 0; i < l; i++) {
     if (strA[i] != strB[i]) {
       char chA = strA[i];
       char chB = strB[i];
@@ -30,7 +30,7 @@ package int compareString(char[] strA, char[] strB) {
     }
   }
   if (result == 0)
-    result = strALength - strBLength;
+    result = cast(ptrdiff_t)strALength - cast(ptrdiff_t)strBLength;
   return result;
 }
 
@@ -38,22 +38,22 @@ package struct CultureData {
 
   package int lcid;
   package int parent;
-  package char[] name;
-  package char[] isoLangName;
-  package char[] isoLangName2;
-  package char[] ietfTag;
-  package char[] englishName;
-  package char[] nativeName;
+  package const(char)[] name;
+  package const(char)[] isoLangName;
+  package const(char)[] isoLangName2;
+  package const(char)[] ietfTag;
+  package const(char)[] englishName;
+  package const(char)[] nativeName;
   package bool isNeutral;
 
   package int geoId;
-  package char[] regionName;
-  package char[] isoRegionName;
-  package char[] englishCountry;
-  package char[] nativeCountry;
-  package char[] intlSymbol;
-  package char[] englishCurrency;
-  package char[] nativeCurrency;
+  package const(char)[] regionName;
+  package const(char)[] isoRegionName;
+  package const(char)[] englishCountry;
+  package const(char)[] nativeCountry;
+  package const(char)[] intlSymbol;
+  package const(char)[] englishCurrency;
+  package const(char)[] nativeCurrency;
   package bool isMetric;
 
   package int digits;
@@ -63,42 +63,42 @@ package struct CultureData {
   package int positiveCurrency;
   package int[] grouping;
   package int[] monetaryGrouping;
-  package char[] decimal;
-  package char[] thousand;
-  package char[] monetaryDecimal;
-  package char[] monetaryThousand;
-  package char[] currency;
-  package char[] negativeSign;
-  package char[] positiveSign;
-  package char[] nan;
-  package char[] negInfinity;
-  package char[] posInfinity;
-  package char[][] nativeDigits;
+  package const(char)[] decimal;
+  package const(char)[] thousand;
+  package const(char)[] monetaryDecimal;
+  package const(char)[] monetaryThousand;
+  package const(char)[] currency;
+  package const(char)[] negativeSign;
+  package const(char)[] positiveSign;
+  package const(char)[] nan;
+  package const(char)[] negInfinity;
+  package const(char)[] posInfinity;
+  package const(char)[][] nativeDigits;
 
   package int calendarType;
   package int[] optionalCalendars;
-  package char[] nativeCalName;
+  package const(char)[] nativeCalName;
   package int firstDayOfWeek;
   package int firstDayOfYear;
-  package char[] date;
-  package char[] time;
-  package char[] am;
-  package char[] pm;
-  package char[] shortDate;
-  package char[] shortTime;
-  package char[] longDate;
-  package char[] longTime;
-  package char[] monthDay;
-  package char[] yearMonth;
-  package char[][] shortTimes;
-  package char[][] shortDates;
-  package char[][] longTimes;
-  package char[][] longDates;
-  package char[][] yearMonths;
-  package char[][] abbrevDayNames;
-  package char[][] dayNames;
-  package char[][] abbrevMonthNames;
-  package char[][] monthNames;
+  package const(char)[] date;
+  package const(char)[] time;
+  package const(char)[] am;
+  package const(char)[] pm;
+  package const(char)[] shortDate;
+  package const(char)[] shortTime;
+  package const(char)[] longDate;
+  package const(char)[] longTime;
+  package const(char)[] monthDay;
+  package const(char)[] yearMonth;
+  package const(char)[][] shortTimes;
+  package const(char)[][] shortDates;
+  package const(char)[][] longTimes;
+  package const(char)[][] longDates;
+  package const(char)[][] yearMonths;
+  package const(char)[][] abbrevDayNames;
+  package const(char)[][] dayNames;
+  package const(char)[][] abbrevMonthNames;
+  package const(char)[][] monthNames;
 
   package static const CultureData[] cultureDataTable = [
 { 0x0001, 0x007F, "ar", "ar", "ara", "ar", "\u0041\u0072\u0061\u0062\u0069\u0063", "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", true },
@@ -329,9 +329,9 @@ package struct CultureData {
 { 0x043A, 0x007F, "mt-MT", "mt", "mt", "mt-MT", "\u004D\u0061\u006C\u0074\u0065\u0073\u0065\u0020\u0028\u004D\u0061\u006C\u0074\u0061\u0029", "\u004D\u0061\u006C\u0074\u0069\u0020\u0028\u004D\u0061\u006C\u0074\u0061\u0029", false, 0x00A3, "MT", "MT", "\u004D\u0061\u006C\u0074\u0061", "\u004D\u0061\u006C\u0074\u0061", "\u004D\u0054\u004C", "\u004D\u0061\u006C\u0074\u0065\u0073\u0065\u0020\u004C\u0069\u0072\u0061", "\u004C\u0069\u0072\u0061\u0020\u004D\u0061\u006C\u0074\u0069\u006A\u0061", true, 2, 1, 2, 1, 0, [ 3 ], [ 3 ], "\u002E", "\u002C", "\u002E", "\u002C", "\u004C\u006D", "\u002D", "\u002B", "\u004E\u0061\u004E", "\u002D\u0049\u006E\u0066\u0069\u006E\u0069\u0074\u0079", "\u0049\u006E\u0066\u0069\u006E\u0069\u0074\u0079", [ "\u0030", "\u0031", "\u0032", "\u0033", "\u0034", "\u0035", "\u0036", "\u0037", "\u0038", "\u0039" ], 1, [ 1 ], "\u004B\u0061\u006C\u0065\u006E\u0064\u0061\u0072\u006A\u0075", 0, 0, "\u002F", "\u003A", "\u0041\u004D", "\u0050\u004D", "\u0064\u0064\u002F\u004D\u004D\u002F\u0079\u0079\u0079\u0079", "\u0048\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u0064\u0064\u0064\u0064\u002C\u0020\u0064\'\u0020\u0074\u0061\u005C\'\u0020\'\u004D\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079", "\u0048\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u004D\u004D\u004D\u004D\u0020\u0064\u0064", "\u004D\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079", [ "\u0048\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u0068\u003A\u006D\u006D\u003A\u0073\u0073\u0020\u0074\u0074", "\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u0068\u0068\u003A\u006D\u006D\u003A\u0073\u0073\u0020\u0074\u0074" ], [ "\u0064\u0064\u002F\u004D\u004D\u002F\u0079\u0079\u0079\u0079", "\u0079\u0079\u0079\u0079\u002D\u004D\u004D\u002D\u0064\u0064", "\u0064\u0064\u004D\u004D\u0079\u0079\u0079\u0079", "\u0064\u002D\u004D\u002D\u0079\u0079\u0079\u0079", "\u0064\u002F\u004D\u002F\u0079\u0079\u0079\u0079" ], [ "\u0048\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u0068\u003A\u006D\u006D\u003A\u0073\u0073\u0020\u0074\u0074", "\u0048\u003A\u006D\u006D\u003A\u0073\u0073", "\u0068\u0068\u003A\u006D\u006D\u003A\u0073\u0073\u0020\u0074\u0074" ], [ "\u0064\u0064\u0064\u0064\u002C\u0020\u0064\'\u0020\u0074\u0061\u005C\'\u0020\'\u004D\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079", "\u0064\'\u0020\u0074\u0061\u005C\'\u0020\'\u004D\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079", "\u0064\u0064\u0020\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079" ], [ "\u004D\u004D\u004D\u004D\u0020\u0079\u0079\u0079\u0079" ], [ "\u0126\u0061\u0064", "\u0054\u006E\u0065", "\u0054\u006C\u0069", "\u0045\u0072\u0062", "\u0126\u0061\u006D", "\u0120\u0069\u006D", "\u0053\u0069\u0062" ], [ "\u0049\u006C\u002D\u0126\u0061\u0064\u0064", "\u0049\u0074\u002D\u0054\u006E\u0065\u006A\u006E", "\u0049\u0074\u002D\u0054\u006C\u0069\u0065\u0074\u0061", "\u004C\u002D\u0045\u0072\u0062\u0067\u0127\u0061", "\u0049\u006C\u002D\u0126\u0061\u006D\u0069\u0073", "\u0049\u006C\u002D\u0120\u0069\u006D\u0067\u0127\u0061", "\u0049\u0073\u002D\u0053\u0069\u0062\u0074" ], [ "\u004A\u0061\u006E", "\u0046\u0072\u0061", "\u004D\u0061\u0072", "\u0041\u0070\u0072", "\u004D\u0065\u006A", "\u0120\u0075\u006E", "\u004C\u0075\u006C", "\u0041\u0077\u0069", "\u0053\u0065\u0074", "\u004F\u0074\u0074", "\u004E\u006F\u0076", "\u0044\u0069\u010B", "" ], [ "\u004A\u0061\u006E\u006E\u0061\u0072", "\u0046\u0072\u0061\u0072", "\u004D\u0061\u0072\u007A\u0075", "\u0041\u0070\u0072\u0069\u006C", "\u004D\u0065\u006A\u006A\u0075", "\u0120\u0075\u006E\u006A\u0075", "\u004C\u0075\u006C\u006A\u0075", "\u0041\u0077\u0069\u0073\u0073\u0075", "\u0053\u0065\u0074\u0074\u0065\u006D\u0062\u0072\u0075", "\u004F\u0074\u0074\u0075\u0062\u0072\u0075", "\u004E\u006F\u0076\u0065\u006D\u0062\u0072\u0075", "\u0044\u0069\u010B\u0065\u006D\u0062\u0072\u0075", "" ] },
   ];
 
-  private static CultureData*[char[]] nameTable;
-  private static CultureData*[int] idTable;
-  private static CultureData*[char[]] regionNameTable;
+  private static const(CultureData)*[immutable(char)[]] nameTable;
+  private static const(CultureData)*[int] idTable;
+  private static const(CultureData)*[immutable(char)[]] regionNameTable;
 
   static ~this() {
     nameTable = null;
@@ -339,11 +339,11 @@ package struct CultureData {
     regionNameTable = null;
   }
 
-  package static CultureData* getDataFromCultureName(char[] name) {
-    if (CultureData** data = name in nameTable)
+  package static const(CultureData)* getDataFromCultureName(const(char)[] name) {
+    if (const(CultureData)** data = name in nameTable)
       return *data;
 
-    char[] actualName;
+    const(char)[] actualName;
     for (int i = 0; i < cultureDataTable.length; i++) {
       if (compareString(name, cultureDataTable[i].name) == 0) {
         nameTable[actualName = cultureDataTable[i].name] = &cultureDataTable[i];
@@ -351,12 +351,12 @@ package struct CultureData {
       }
     }
 
-    error ("Culture name '" ~ name ~ "' is not supported.");
+    error ("Culture name '" ~ name.idup ~ "' is not supported.");
     return null;
   }
 
-  package static CultureData* getDataFromCultureID(int lcid) {
-    if (CultureData** data = lcid in idTable)
+  package static const(CultureData)* getDataFromCultureID(int lcid) {
+    if (const(CultureData)** data = lcid in idTable)
       return *data;
 
     for (int i = 0; i < cultureDataTable.length; i++) {
@@ -377,8 +377,8 @@ else {
     return null;
   }
 
-  package static CultureData* getDataFromRegionName(ref char[] name) {
-    CultureData** data;
+  package static const(CultureData)* getDataFromRegionName(ref const(char)[] name) {
+    const(CultureData)** data;
     if ((data = name in regionNameTable) !is null)
       return *data;
 
@@ -400,11 +400,11 @@ else {
       }
     }
 
-    error ("Region name '" ~ name ~ "' is not supported.");
+    error ("Region name '" ~ name.idup ~ "' is not supported.");
     return null;
   }
 
-  package static char[] getCultureNameFromIetfName(char[] name) {
+  package static const(char)[] getCultureNameFromIetfName(const(char)[] name) {
     for (int i = 0; i < cultureDataTable.length; i++) {
       if (compareString(name, cultureDataTable[i].ietfTag) == 0)
         return cultureDataTable[i].name;

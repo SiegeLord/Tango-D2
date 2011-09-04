@@ -47,7 +47,8 @@ int getUserCulture() {
                   if (c == '_')
                       c = '-';
   } else {
-      s="en-US";
+      /* Bad dup */
+      s="en-US".dup;
   }
   foreach (entry; CultureData.cultureDataTable) {
     // todo: there is also a local compareString defined. Is it correct that here 
@@ -64,6 +65,9 @@ int getUserCulture() {
   }
   return 0;
 }
+
+import tango.io.Stdout;
+import tango.stdc.stdio;
 
 void setUserCulture(int lcid) {
   char[] name;
@@ -98,7 +102,7 @@ void setUserCulture(int lcid) {
   setlocale(LC_IDENTIFICATION, name.ptr);
 }
 
-int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
+int compareString(int lcid, const(char)[] stringA, size_t offsetA, size_t lengthA, const(char)[] stringB, size_t offsetB, size_t lengthB, bool ignoreCase) {
 
   void strToLower(char[] string) {
     for(int i = 0; i < string.length; i++) {
@@ -107,26 +111,26 @@ int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] s
   }
 
   char* tempCol = setlocale(LC_COLLATE, null), tempCType = setlocale(LC_CTYPE, null);
-  char[] locale;
+  const(char)[] locale;
   try {
     locale = CultureData.getDataFromCultureID(lcid).name ~ ".utf-8";
   }
   catch(Exception e) {
     return 0;
   }
-  
+
   setlocale(LC_COLLATE, locale.ptr);
   setlocale(LC_CTYPE, locale.ptr);
   
-  char[] s1 = stringA[offsetA..offsetA+lengthA].dup,
-         s2 = stringB[offsetB..offsetB+lengthB].dup;
+  char[] s1 = toStringz(stringA[offsetA..offsetA+lengthA])[0..lengthA + 1].dup[0..lengthA],
+         s2 = toStringz(stringB[offsetB..offsetB+lengthB])[0..lengthB + 1].dup[0..lengthB];
   if(ignoreCase) {
     strToLower(s1);
     strToLower(s2);
   }
-  
-  int ret = strcoll(s1[offsetA..offsetA+lengthA].ptr, s2[offsetB..offsetB+lengthB].ptr);
-  
+
+  int ret = strcoll(s1.ptr, s2.ptr);
+
   setlocale(LC_COLLATE, tempCol);
   setlocale(LC_CTYPE, tempCType);
   

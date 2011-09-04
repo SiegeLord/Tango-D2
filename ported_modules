@@ -51,6 +51,7 @@ tango/stdc/errno.d
 tango/stdc/stdarg.d
 tango/stdc/stringz.d
 tango/stdc/posix/dirent.d
+tango/stdc/posix/langinfo.d
 tango/sys/Common.d
 tango/text/Arguments.d
 tango/text/Ascii.d
@@ -59,11 +60,14 @@ tango/text/Search.d
 tango/text/Text.d
 tango/text/Unicode.d
 tango/text/UnicodeData.d
+tango/text/convert/DateTime.d
 tango/text/convert/Float.d
 tango/text/convert/Format.d
 tango/text/convert/Integer.d
 tango/text/convert/Layout.d
 tango/text/convert/Utf.d
+tango/text/locale/Data.d
+tango/text/locale/Posix.d
 tango/text/xml/Document.d
 tango/text/xml/PullParser.d
 tango/time/chrono/Calendar.d
