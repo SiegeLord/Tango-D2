@@ -109,7 +109,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        final Value parse (T[] json)
+        final Value parse (const(T)[] json)
         {
                 nesting = 0;
                 attrib.reset;
@@ -137,7 +137,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
 
-        final T[] toString (T[] space=null, int decimals=2)
+        final T[] toString (const(T)[] space=null, int decimals=2)
         {
                 return root.print (space, decimals);
         }
@@ -170,7 +170,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        final Value value (T[] v)
+        final Value value (const(T)[] v)
         {
                 return createValue.set (v);
         }
@@ -226,7 +226,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        Attribute pair (T[] name, Value value = null)
+        Attribute pair (const(T)[] name, Value value = null)
         {
                 if (value is null)
                     value = createValue;
@@ -284,7 +284,7 @@ class Json(T) : private JsonParser!(T)
 
         ***********************************************************************/
         
-        private void exception (char[] msg)
+        private void exception (immutable(char)[] msg)
         {
                 throw new Exception (msg);
         }
@@ -404,7 +404,7 @@ class Json(T) : private JsonParser!(T)
         struct NameValue
         {
                 private Attribute       next;
-                public  T[]             name;
+                public  const(T)[]      name;
                 public  Value           value;
 
                 /***************************************************************
@@ -415,11 +415,11 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Attribute set (T[] key, Value val)
+                Attribute set (const(T)[] key, Value val)
                 {
                         name = key;
                         value = val;
-                        return this;
+                        return &this;
                 }
         }
 
@@ -444,7 +444,7 @@ class Json(T) : private JsonParser!(T)
                 Composite reset ()
                 {
                         head = tail = null;
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -459,7 +459,7 @@ class Json(T) : private JsonParser!(T)
                             tail.next = a, tail = a;
                         else
                            head = tail = a;
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -472,7 +472,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         foreach (attr; set)
                                  append (attr);
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -504,7 +504,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Value value (T[] name)
+                Value value (const(T)[] name)
                 {
                         auto a = head;
                         while (a)
@@ -544,7 +544,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         private Attribute head;
         
-                        int opApply (int delegate(ref T[] key, ref Value val) dg)
+                        int opApply (int delegate(ref const(T)[] key, ref Value val) dg)
                         {
                                 int res;
         
@@ -573,7 +573,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         Value[]         array;
                         real            number;
-                        T[]             string;
+                        const(T)[]      string;
                         Composite       object;
                 }
         
@@ -586,7 +586,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                bool opEquals (Type t) 
+                bool equals (Type t)
                 {
                         return type is t;
                 }
@@ -610,11 +610,12 @@ class Json(T) : private JsonParser!(T)
                         Uses dst for escape conversion where possible.
 
                 ***************************************************************/
-        
-                T[] toString (T[] dst = null)
+
+                T[] toString (T[] dst)
                 {
                         if (type is Type.RawString)
-                            return string;
+                            /* Bad dup */
+                            return string.dup;
 
                         if (type is Type.String)
                             return unescape (string, dst);
@@ -631,7 +632,7 @@ class Json(T) : private JsonParser!(T)
                       
                 ***************************************************************/
         
-                bool toString (void delegate(T[]) dg)
+                bool toString (void delegate(const(T)[]) dg)
                 {
                         if (type is Type.RawString)
                             dg(string);
@@ -687,11 +688,11 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
         
-                Value set (T[] str, bool escaped = false)
+                Value set (const(T)[] str, bool escaped = false)
                 {
                         type = escaped ? Type.String : Type.RawString;
                         string = str;
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -704,7 +705,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         type = Type.Object;
                         object = obj;
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -717,7 +718,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         type = Type.Number;
                         number = num;
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -729,7 +730,7 @@ class Json(T) : private JsonParser!(T)
                 Value set (bool b)
                 {
                         type = b ? Type.True : Type.False;             
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -742,7 +743,7 @@ class Json(T) : private JsonParser!(T)
                 {
                         type = Type.Array;
                         array = a;
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -754,7 +755,7 @@ class Json(T) : private JsonParser!(T)
                 Value reset ()
                 {
                         type = Type.Null;
-                        return this;
+                        return &this;
                 }
                 
                 /***************************************************************
@@ -763,10 +764,10 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                T[] print (T[] space=null, int decimals=2)
+                T[] print (const(T)[] space=null, int decimals=2)
                 {
                         T[] tmp;
-                        void append (T[] s) {tmp ~= s;}
+                        void append (const(T)[] s) {tmp ~= s;}
                         print (&append, space, decimals);
                         return tmp;
                 }
@@ -778,9 +779,9 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
 
-                Value print (OutputStream s, T[] space=null, int decimals=2)
+                Value print (OutputStream s, const(T)[] space=null, int decimals=2)
                 {
-                        return print ((T[] t){s.write(t);}, space, decimals);
+                        return print ((const(T)[] t){s.write(t);}, space, decimals);
                 }
 
                 /***************************************************************
@@ -790,7 +791,7 @@ class Json(T) : private JsonParser!(T)
 
                 ***************************************************************/
                 
-                Value print (void delegate(T[]) append, T[] space=null, int decimals=2)
+                Value print (void delegate(const(T)[]) append, const(T)[] space=null, int decimals=2)
                 {
                         auto indent = 0;
         
@@ -892,8 +893,8 @@ class Json(T) : private JsonParser!(T)
                                        }
                         }
                         
-                        printValue (this);
-                        return this;
+                        printValue (&this);
+                        return &this;
                 }
 
                 /***************************************************************
@@ -905,7 +906,7 @@ class Json(T) : private JsonParser!(T)
                 private Value set (Type type)
                 {
                         this.type = type;
-                        return this;
+                        return &this;
                 }
 
                 /***************************************************************
@@ -951,7 +952,13 @@ class Json(T) : private JsonParser!(T)
                                    }
                                 list ~= v;
                                 }
-                        return set (list);
+                        /* For some reason DMD 2.054 doesn't like calling set here directly */
+                        return forwardref_buf (&this, list);
+                }
+
+                private static Value forwardref_buf(Value v, Value[] list)
+                {
+                    return v.set(list);
                 }
         }
 
