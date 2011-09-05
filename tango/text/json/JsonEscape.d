@@ -30,11 +30,11 @@ private import Utf = tango.text.convert.Utf;
         
 ******************************************************************************/
 
-T[] unescape(T) (T[] src, T[] dst = null)
+T[] unescape(T) (const(T)[] src, T[] dst = null)
 {
         size_t content;
 
-        void append (T[] s)
+        void append (const(T)[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
@@ -57,11 +57,11 @@ T[] unescape(T) (T[] src, T[] dst = null)
         
 ******************************************************************************/
 
-T[] escape(T) (T[] src, T[] dst = null)
+T[] escape(T) (const(T)[] src, T[] dst = null)
 {
         size_t content;
 
-        void append (T[] s)
+        void append (const(T)[] s)
         {
                 if (content + s.length > dst.length)
                     dst.length = dst.length + s.length + 1024;
@@ -83,9 +83,9 @@ T[] escape(T) (T[] src, T[] dst = null)
               
 ******************************************************************************/
 
-void unescape(T) (T[] src, void delegate(T[]) emit)
+void unescape(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
-        int delta;
+        size_t delta;
         auto s = src.ptr;
         auto len = src.length;
         enum:T {slash = '\\'};
@@ -152,7 +152,7 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
 
                               for (auto i=2; i < 6; ++i)
                                   {
-                                  auto c = s[i];
+                                  T c = s[i];
                                   if (c >= '0' && c <= '9')
                                      {}
                                   else
@@ -197,7 +197,7 @@ void unescape(T) (T[] src, void delegate(T[]) emit)
         
 ******************************************************************************/
 
-void escape(T) (T[] src, void delegate(T[]) emit)
+void escape(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
         T[2] patch = '\\';
         auto s = src.ptr;
