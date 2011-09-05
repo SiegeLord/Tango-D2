@@ -36,6 +36,7 @@ version (Posix)
 
         Timer for measuring small intervals, such as the duration of a 
         subroutine or other reasonably small period.
+        
         ---
         StopWatch elapsed;
 

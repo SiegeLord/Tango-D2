@@ -1,6 +1,5 @@
+import core.stdc.stdio;
 import tango.core.Thread;
-
-extern (C) int printf(char * str, ...);
 
 void main()
 {

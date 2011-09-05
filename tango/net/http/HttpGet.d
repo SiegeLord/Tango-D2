@@ -21,6 +21,7 @@ private import  tango.net.http.HttpClient,
 
         Supports the basic needs of a client making requests of an HTTP
         server. The following is a usage example:
+        
         ---
         // open a web-page for reading (see HttpPost for writing)
         auto page = new HttpGet ("http://www.digitalmars.com/d/intro.html");

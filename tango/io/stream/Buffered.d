@@ -14,8 +14,10 @@
 module tango.io.stream.Buffered;
 
 public import tango.io.model.IConduit;
-
 private import tango.io.device.Conduit;
+private import core.stdc.string : memmove;
+private import core.stdc.stdio : printf;
+
 
 /******************************************************************************
 
@@ -23,16 +25,6 @@ private import tango.io.device.Conduit;
 
 public alias BufferedInput  Bin;        /// Shorthand aliases.
 public alias BufferedOutput Bout;       /// ditto
-
-/******************************************************************************
-
-******************************************************************************/
-
-extern (C)
-{
-        int printf (char*, ...);
-        private void * memmove (void *dst, const(void) *src, size_t);
-}
 
 /******************************************************************************
 
@@ -241,11 +233,12 @@ class BufferedInput : InputFilter, InputBuffer
                    // make some space? This will try to leave as much content
                    // in the buffer as possible, such that entire records may
                    // be aliased directly from within.
-                   if (size > (dimension - index))
+                   if (size > (dimension - index)) {
                        if (size <= dimension)
                            compress;
                        else
                           conduit.error (underflow);
+		   }
 
                    // populate tail of buffer with new content
                    do {

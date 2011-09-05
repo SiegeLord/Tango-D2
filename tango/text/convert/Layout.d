@@ -28,10 +28,12 @@ module tango.text.convert.Layout;
 
 private import core.vararg;
 private import tango.core.Exception;
+private import tango.core.Traits;
 private import Utf = tango.text.convert.Utf;
+private import Float = tango.text.convert.Float;
+private import Integer = tango.text.convert.Integer;
 
-private import  Float = tango.text.convert.Float,
-                Integer = tango.text.convert.Integer;
+
 
 version(DigitalMars)
     private import  tango.io.model.IConduit;
@@ -59,10 +61,37 @@ version (WithDateTime)
 
 class Layout(T)
 {
-        public alias convert opCall;
-        public alias scope size_t delegate (const(T[])) Sink;
-        public alias void* Arg;
-       
+		public alias convert opCall;
+		public alias scope size_t delegate (const(T)[]) Sink;
+		public alias const(void)* Arg;
+		public enum Type {
+			UNKNOWN,
+			BYTE,
+			UBYTE,
+			BOOL,
+			VOID,
+			SHORT,
+			USHORT,
+			INT,
+			UINT,
+			LONG,
+			ULONG,
+			FLOAT,
+			IFLOAT,
+			CFLOAT,
+			REAL,
+			IREAL,
+			CREAL,
+			DOUBLE,
+			IDOUBLE,
+			CDOUBLE,
+			STRING,
+			WSTRING,
+			DSTRING,
+			CSTRING,
+			OBJECT
+		};
+		
         static if (is (DateTimeLocale))
                    private DateTimeLocale* dateTime = &DateTimeDefault;
 
@@ -114,7 +143,7 @@ class Layout(T)
                         return len;
                 }
 
-				core.stdc.stdio.printf("MISSIN!!!");
+				core.stdc.stdio.printf("Laypit vsprintf needs to get fixed!!!");
                 //convert (&sink, arguments, args, formatStr);
                 return result [0 .. cast(size_t) (p-result.ptr)];
         }
@@ -153,266 +182,150 @@ class Layout(T)
 
         **********************************************************************/
 
-		public final T[] convert (Char, S...)(in Char[] format, S args)
+		public final T[] convert (Char, S...)(in Char[] fmt, S args)
         {
-				T[] output;
+			T[] output;
 
-                size_t sink (const(T[]) s)
-                {
-                        output ~= s;
-                        return s.length;
-                }
-                
-                convert(&sink, format, args);
-                return output;
+			size_t sink (const(T)[] s)
+			{
+					output ~= s;
+					return s.length;
+			}
+
+			convert(&sink, fmt, args);
+			return output;
         }
 
         /**********************************************************************
 
-            Tentative convert using an OutputStream as sink - may still be
-            removed.
+            Tentative convert using an OutputStream as sink
 
             Since: 0.99.7
 
         **********************************************************************/
 
-		public final size_t convert(Output, Char, S...)(in Char[] format, S arguments)
+		public final size_t convert(Output, Char, S...)(in Char[] fmt, S args)
         {
-                size_t sink (const(T[]) s)
+                size_t sink (const(T)[] s)
                 {
                         return output.write(s);
                 }
 
-                return convert (&sink, _arguments, _argptr, formatStr);
+                return convert (&sink, fmt, args);
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-        public final T[] convertOne (T[] result, TypeInfo ti, Arg arg)
+        public final const(T)[] convertOne (T[] result, Type type, Arg args)
         {
-                return dispatch (result, null, ti, arg);
+                return dispatch(result, null, type, args);
         }
 
         /**********************************************************************
 
         **********************************************************************/
 
-		public final size_t convert (Callback, Char, S...)(Callback sink, in Char[] format, S arguments)
+		public final size_t convert (Callback:Sink, Char, S...)(Callback sink, in Char[] format, S arguments)
 		{
-				// assertions
-				assert(format, "null format specifier");
+			// declaration
+			Arg[] storedArguments;
+			Type[] storedTypes;
+			
+			// detect type of all arguments
+			foreach(argument; arguments) {
+				// T = Type, S = BaseType Example: [T=const(float) | S = float]
+				alias typeof(argument) T;
+				alias BaseTypeOf!(T) S;
 				
-				// declaration and initalisation
-				size_t length = 0;
-				int nextIndex = 0;
-				const(T)* cursor = cast(const(T)*)format.ptr;
-				const(T)* fragment = cast(const(T)*)format.ptr;
-				const(T)* end = cursor + format.length;
-				
-				// parse the format string
-				for(;;) {
-					// find the first {
-					while (cursor < end && *cursor != '{')
-						 ++cursor;
+				static if( !isStringType!(T) && isArrayType!(T) ) {
+					// it's an array like int[] or long[], we need to loop through every element
+					size_t length = 0;
+					length += sink("[");
+					foreach(i, element; argument) {
+						if(i) length += sink(", ");
+						length += convert(sink, format, element);
+					}
+					length += sink("]");
+					return length;
+				} else static if( !isStringType!(T) && isAssocArrayType!(T) ) {
+					// it's an assoc array like ushort[long].
+					size_t length = 0;
+					size_t i = 0;
+					length += sink("{");
+					foreach(key, value; argument) {
+						if(i++) length += sink(", ");
+						length += convert(sink, format, key);
+						length += sink(" => ");
+						length += convert(sink, format, value);
+					}
+					length += sink("}");
+					return length;
+				} else {
+					// set the argument and it's type to default values
+					Arg storedArgument = &argument;
+					Type storedType = Type.UNKNOWN;
 					
-					// emit fragment
-					length += sink(fragment[0 .. (cursor - fragment)]);
-					
-					// all done?
-					if (cursor is end)
-						break;
-					
-					// check for "{{" and skip if so
-					if (*++cursor is '{') {
-						fragment = cursor++;
-						continue;
+					static if(is(S == byte)) {
+						storedType = Type.BYTE;
+					} else static if(is(S == short)) {
+						storedType = Type.SHORT;
+					} else static if(is(S == int)) {
+						storedType = Type.INT;
+					} else static if(is(S == long)) {
+						storedType = Type.LONG;
+					} else static if(is(S == ubyte)) {
+						storedType = Type.UBYTE;
+					} else static if(is(S == ushort)) {
+						storedType = Type.USHORT;
+					} else static if(is(S == uint)) {
+						storedType = Type.UINT;
+					} else static if(is(S == ulong)) {
+						storedType = Type.ULONG;
+					} else static if(is(T : const(bool))) {
+						storedType = Type.BOOL;
+					} else static if(is(S == float)) {
+						storedType = Type.FLOAT;
+					} else static if(is(S == ifloat)) {
+						storedType = Type.IFLOAT;
+					} else static if(is(S == cfloat)) {
+						storedType = Type.CFLOAT;
+					} else static if(is(S == real)) {
+						storedType = Type.REAL;
+					} else static if(is(S == ireal)) {
+						storedType = Type.IREAL;
+					} else static if(is(S == creal)) {
+						storedType = Type.CREAL;
+					} else static if(is(S == double)) {
+						storedType = Type.DOUBLE;
+					} else static if(is(S == idouble)) {
+						storedType = Type.IDOUBLE;
+					} else static if(is(S == cdouble)) {
+						storedType = Type.CDOUBLE;
+					} else static if(is(T : const(char)[])) {
+						storedType = Type.STRING;
+					} else static if(is(T : const(wchar)[])) {
+						storedType = Type.WSTRING;
+					} else static if(is(T : const(dchar)[])) {
+						storedType = Type.DSTRING;
+					} else static if(is(T : const(char)*)) {
+						storedType = Type.CSTRING;
+					} else static if(is(T : const(void*))) {
+						storedType = Type.VOID;
+					} else static if(is(T : Object)) {
+						storedType = Type.OBJECT;
 					}
 					
-					// extract index (if it's indexed)
-					int index = 0;
-					bool indexed = false;
-					while (*cursor >= '0' && *cursor <= '9') {
-						index = index * 10 + *cursor++ -'0';
-						indexed = true;
-					}
-
-					// skip spaces
-					while (cursor < end && *cursor is ' ')
-						++cursor;
-					
-					// has minimum or maximum width?
-					bool crop;
-					bool left;
-					bool right;
-					int  width;
-					if (*cursor is ',' || *cursor is '.') {
-						assert(false, "',' or '.' not implemented yet!");
-					}
-					
-					// has a format string?
-					if (*cursor is ':' && cursor < end) {
-						assert(false, "':' not implemented yet!");
-					}
-					
-					// insist on a closing brace
-					if (*cursor != '}') {
-						length += sink("{malformed format}");
-						continue;
-					}
-
-					// check for default index & set next default counter
-					if (!indexed) {
-						index = nextIndex;
-					}
-					nextIndex = index + 1;
-					
-					// next char is start of following fragment
-                    fragment = ++cursor;
-					
-					// DEBUG
-					core.stdc.stdio.printf("indexed: %d (0 = false, 1 = true)\n", indexed);
-					core.stdc.stdio.printf("index: %d\n", index);
-					
-					
-					// index not valid
-					if(index >= arguments.length) {
-						sink("{invalid index}");
-						continue;
-					}
-					
-					//auto arg = arguments[index];
-					//alias typeof(arg) T;
-					
-					
-					
-					sink("argument");
+					// append the stored type and argument to the list
+					storedTypes ~= storedType;
+					storedArguments ~= storedArgument;
 				}
-				
-                // return the length
-                return length;
-                
-                //const(T)* s = layout.ptr;
-                //const(T)* fragment = s;
-                //const(T)* end = s + layout.length;
-
-                //while (true)
-                //      {
-                //      while (s < end && *s != '{')
-                //             ++s;
-                             
-                             
-                             
-                
-                
-                
-				/*
-                version (GNU)
-                        {
-                        union ArgU {int i; byte b; long l; short s; void[] a;
-                                    real r; float f; double d;
-                                    cfloat cf; cdouble cd; creal cr;}
-
-                        Arg[64] arglist = void;
-                        ArgU[64] storedArgs = void;
-        
-                        foreach (i, arg; arguments)
-                                {
-                                static if (is(typeof(args.ptr)))
-                                    arglist[i] = args.ptr;
-                                else
-                                   arglist[i] = args;
-
-                                /* Since floating point types don't live on
-                                 * the stack, they must be accessed by the
-                                 * correct type. */
-                                /*
-                                bool converted = false;
-                                switch (arg.classinfo.name[9])
-                                       {
-                                       case TypeCode.FLOAT, TypeCode.IFLOAT:
-                                            storedArgs[i].f = va_arg!(float)(args);
-                                            arglist[i] = &(storedArgs[i].f);
-                                            converted = true;
-                                            break;
-
-                                       case TypeCode.CFLOAT:
-                                            storedArgs[i].cf = va_arg!(cfloat)(args);
-                                            arglist[i] = &(storedArgs[i].cf);
-                                            converted = true;
-                                            break;
-
-                                       case TypeCode.DOUBLE, TypeCode.IDOUBLE:
-                                            storedArgs[i].d = va_arg!(double)(args);
-                                            arglist[i] = &(storedArgs[i].d);
-                                            converted = true;
-                                            break;
-
-                                       case TypeCode.CDOUBLE:
-                                            storedArgs[i].cd = va_arg!(cdouble)(args);
-                                            arglist[i] = &(storedArgs[i].cd);
-                                            converted = true;
-                                            break;
-
-                                       case TypeCode.REAL, TypeCode.IREAL:
-                                            storedArgs[i].r = va_arg!(real)(args);
-                                            arglist[i] = &(storedArgs[i].r);
-                                            converted = true;
-                                            break;
-
-                                       case TypeCode.CREAL:
-                                            storedArgs[i].cr = va_arg!(creal)(args);
-                                            arglist[i] = &(storedArgs[i].cr);
-                                            converted = true;
-                                            break;
-
-                                       default:
-                                            break;
-                                        }
-                                if (! converted)
-                                   {
-                                   switch (arg.tsize)
-                                          {
-                                          case 1:
-                                               storedArgs[i].b = va_arg!(byte)(args);
-                                               arglist[i] = &(storedArgs[i].b);
-                                               break;
-                                          case 2:
-                                               storedArgs[i].s = va_arg!(short)(args);
-                                               arglist[i] = &(storedArgs[i].s);
-                                               break;
-                                          case 4:
-                                               storedArgs[i].i = va_arg!(int)(args);
-                                               arglist[i] = &(storedArgs[i].i);
-                                               break;
-                                          case 8:
-                                               storedArgs[i].l = va_arg!(long)(args);
-                                               arglist[i] = &(storedArgs[i].l);
-                                               break;
-                                          case 16:
-                                               assert((void[]).sizeof==16,"Structure size not supported");
-                                               storedArgs[i].a = va_arg!(void[])(args);
-                                               arglist[i] = &(storedArgs[i].a);
-                                               break;
-                                          default:
-                                               assert (false, "Unknown size: " ~ Integer.toString (arg.tsize));
-                                          }
-                                   }
-                                }
-                        }
-                     else
-                        {
-                        Arg[64] arglist = void;
-                        foreach (i, arg; arguments)
-                                {
-                                arglist[i] = args;
-                                args += (arg.tsize + size_t.sizeof - 1) & ~ (size_t.sizeof - 1);
-                                }
-                        }
-                return parse (formatStr, arguments, arglist, sink);
-                */
-        }
+			}
+			
+			// parse the arguments and return the string size
+			return parse(format, storedTypes, storedArguments, sink);
+		}
 
         /**********************************************************************
 
@@ -421,414 +334,236 @@ class Layout(T)
 
         **********************************************************************/
 
-        private size_t parse (const(T[]) layout, TypeInfo[] ti, Arg[] args, Sink sink)
+        private size_t parse(const(T)[] fmt, Type[] types, Arg[] arguments, Sink sink)
         {
-                T[512] result = void;
-                int length, nextIndex;
+			// assertions
+			assert(fmt, "null fmt specifier");
+			assert(types.length == arguments.length, "arguments and types must equal in length");
+			
+			// declaration and initalisation
+			size_t length = 0;
+			int nextIndex = 0;
+			T[512] result = void;
+			const(T)* cursor = cast(const(T)*)fmt.ptr;
+			const(T)* fragment = cast(const(T)*)fmt.ptr;
+			const(T)* end = cursor + fmt.length;
+			
+			// parse the format string
+			for(;;) {
+				// find the first {
+				while (cursor < end && *cursor != '{')
+					 ++cursor;
+				
+				// emit fragment
+				length += sink(fragment[0 .. (cursor - fragment)]);
+				
+				// all done?
+				if (cursor is end)
+					break;
+				
+				// check for "{{" and skip if so
+				if (*++cursor is '{') {
+					fragment = cursor++;
+					continue;
+				}
+				
+				// extract index (if it's indexed)
+				int index = 0;
+				bool indexed = false;
+				while (*cursor >= '0' && *cursor <= '9') {
+					index = index * 10 + *cursor++ -'0';
+					indexed = true;
+				}
 
+				// skip spaces
+				while (cursor < end && *cursor is ' ')
+					++cursor;
+				
+				// has minimum or maximum width?
+				bool crop;
+				bool left;
+				bool right;
+				int width;
+				if (*cursor is ',' || *cursor is '.') {
+					// check if crop
+					if (*cursor is '.')
+						crop = true;
 
-                const(T)* s = layout.ptr;
-                const(T)* fragment = s;
-                const(T)* end = s + layout.length;
+					// eat all spaces
+					while(++cursor < end && *cursor is ' ') { }
+					
+					if (*cursor is '-') {
+						left = true;
+						++cursor;
+					} else {
+						right = true;
+					}
 
-                while (true)
-                      {
-                      while (s < end && *s != '{')
-                             ++s;
+					// get width
+					while (*cursor >= '0' && *cursor <= '9')
+						width = width * 10 + *cursor++ -'0';
 
-                      // emit fragment
-                      length += sink (fragment [0 .. cast(size_t) (s - fragment)]);
+					// skip spaces
+					while (cursor < end && *cursor is ' ')
+						++cursor;
+				}
+				
+				// has a format string?
+				const(T)[] format;
+				if (*cursor is ':' && cursor < end) {
+					const(T)* fs = ++cursor;
+					
+					// eat everything up to closing brace
+					while (cursor < end && *cursor != '}')
+						++cursor;
+						
+					format = fs[0 .. cast(size_t) (cursor - fs)];
+				}
+				
+				// insist on a closing brace
+				if (*cursor != '}') {
+					length += sink("{malformed format}");
+					continue;
+				}
 
-                      // all done?
-                      if (s is end)
-                          break;
+				// check for default index & set next default counter
+				if (!indexed) {
+					index = nextIndex;
+				}
+				nextIndex = index + 1;
+				
+				// next char is start of following fragment
+				fragment = ++cursor;
+				
+				// index not valid
+				if(index >= arguments.length) {
+					sink("{invalid index}");
+					continue;
+				}
+				
+				// fetch type, argument and build a string from it
+				Arg argument = arguments[index];
+				Type type = types[index];
+				const(T[]) str = dispatch(result, format, type, argument);
+				
+				// handle alignment
+				int padding = cast(int)(width - str.length);
+				if(crop) {
+					if(padding < 0) {
+						if (left) {
+							length += sink ("...");
+							length += sink (Utf.cropLeft (str[-padding..$]));
+						} else {
+							length += sink (Utf.cropRight (str[0..width]));
+							length += sink ("...");
+						}
+					} else {
+						length += sink (str);
+					}
+				} else {
+					// if right aligned, pad out with spaces
+					if (right && padding > 0)
+						length += spaces (sink, padding);
 
-                      // check for "{{" and skip if so
-                      if (*++s is '{')
-                         {
-                         fragment = s++;
-                         continue;
-                         }
+					// emit formatted argument
+					length += sink(str);
 
-                      int index = 0;
-                      bool indexed = false;
-
-                      // extract index
-                      while (*s >= '0' && *s <= '9')
-                            {
-                            index = index * 10 + *s++ -'0';
-                            indexed = true;
-                            }
-
-                      // skip spaces
-                      while (s < end && *s is ' ')
-                             ++s;
-
-                      bool crop;
-                      bool left;
-                      bool right;
-                      int  width;
-
-                      // has minimum or maximum width?
-                      if (*s is ',' || *s is '.')
-                         {
-                         if (*s is '.')
-                             crop = true;
-
-                         while (++s < end && *s is ' ') {}
-                         if (*s is '-')
-                            {
-                            left = true;
-                            ++s;
-                            }
-                         else
-                            right = true;
-
-                         // get width
-                         while (*s >= '0' && *s <= '9')
-                                width = width * 10 + *s++ -'0';
-
-                         // skip spaces
-                         while (s < end && *s is ' ')
-                                ++s;
-                         }
-
-                      const(T)[] format;
-
-                      // has a format string?
-                      if (*s is ':' && s < end)
-                         {
-                         const(T)* fs = ++s;
-
-                         // eat everything up to closing brace
-                         while (s < end && *s != '}')
-                                ++s;
-                         format = fs [0 .. cast(size_t) (s - fs)];
-                         }
-
-                      // insist on a closing brace
-                      if (*s != '}')
-                         {
-                         length += sink ("{malformed format}");
-                         continue;
-                         }
-
-                      // check for default index & set next default counter
-                      if (! indexed)
-                            index = nextIndex;
-                      nextIndex = index + 1;
-
-                      // next char is start of following fragment
-                      fragment = ++s;
-
-                      // handle alignment
-                      void emit (const(T[]) str)
-                      {
-                                size_t padding = width - str.length;
-
-                                if (crop)
-                                   {
-                                   if (padding < 0)
-                                      {
-                                      if (left)
-                                         {
-                                         length += sink ("...");
-                                         length += sink (Utf.cropLeft (str[-padding..$]));
-                                         }
-                                      else
-                                         {
-                                         length += sink (Utf.cropRight (str[0..width]));
-                                         length += sink ("...");
-                                         }
-                                      }
-                                   else
-                                       length += sink (str);
-                                   }
-                                else
-                                   {
-                                   // if right aligned, pad out with spaces
-                                   if (right && padding > 0)
-                                       length += spaces (sink, padding);
-
-                                   // emit formatted argument
-                                   length += sink (str);
-
-                                   // finally, pad out on right
-                                   if (left && padding > 0)
-                                       length += spaces (sink, padding);
-                                   }
-                      }
-
-                      // an astonishing number of typehacks needed to handle arrays :(
-                      void process (TypeInfo _ti, Arg _arg)
-                      {
-                                if ((_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Const") ||
-                                    (_ti.classinfo.name.length is 18  && _ti.classinfo.name[9..$] == "Invariant") ||
-                                    (_ti.classinfo.name.length is 15  && _ti.classinfo.name[9..$] == "Shared") ||
-                                    (_ti.classinfo.name.length is 14  && _ti.classinfo.name[9..$] == "Inout"))
-                                {
-                                    process((cast(TypeInfo_Const)_ti).next, _arg);
-                                    return;
-                                }
-                                // Because Variants can contain AAs (and maybe
-                                // even static arrays someday), we need to
-                                // process them here.
-version (WithVariant)
-{
-                                if (_ti is typeid(Variant))
-                                   {
-                                   // Unpack the variant and forward
-                                   auto vptr = cast(Variant*)_arg;
-                                   auto innerTi = vptr.type;
-                                   auto innerArg = vptr.ptr;
-                                   process (innerTi, innerArg);
-                                   }
-}
-                                if (_ti.classinfo.name.length is 20 && _ti.classinfo.name[9..$] == "StaticArray" )
-                                   {
-                                   auto tiStat = cast(TypeInfo_StaticArray)_ti;
-                                   auto p = _arg;
-                                   length += sink ("[");
-                                   for (int i = 0; i < tiStat.len; i++)
-                                       {
-                                       if (p !is _arg )
-                                           length += sink (", ");
-                                       process (tiStat.value, p);
-                                       p += tiStat.tsize/tiStat.len;
-                                       }
-                                   length += sink ("]");
-                                   }
-                                else 
-                                if (_ti.classinfo.name.length is 25 && _ti.classinfo.name[9..$] == "AssociativeArray")
-                                   {
-                                   auto tiAsso = cast(TypeInfo_AssociativeArray)_ti;
-                                   auto tiKey = tiAsso.key;
-                                   auto tiVal = tiAsso.next();
-
-                                   // the knowledge of the internal k/v storage is used
-                                   // so this might break if, that internal storage changes
-                                   alias ubyte AV; // any type for key, value might be ok, the sizes are corrected later
-                                   alias ubyte AK;
-                                   auto aa = *cast(AV[AK]*) _arg;
-
-                                   length += sink ("{");
-                                   bool first = true;
-                                  
-                                   size_t roundUp (size_t sz)
-                                   {
-                                        return (sz + (void*).sizeof -1) & ~((void*).sizeof - 1);
-                                   }
-
-                                   foreach (ref v; aa)
-                                           {
-                                           // the key is befor the value, so substrace with fixed key size from above
-                                           auto pk = cast(Arg)( &v - roundUp(AK.sizeof));
-                                           // now the real value pos is plus the real key size
-                                           auto pv = cast(Arg)(pk + roundUp(tiKey.tsize()));
-
-                                           if (!first)
-                                                length += sink (", ");
-                                           process (tiKey, pk);
-                                           length += sink (" => ");
-                                           process (tiVal, pv);
-                                           first = false;
-                                           }
-                                   length += sink ("}");
-                                   }
-                                else 
-                                if (_ti.classinfo.name[9] is TypeCode.ARRAY)
-                                   {
-                                   if (_ti is typeid(char[]) || _ti is typeid(immutable(char)[]))
-                                       emit (Utf.fromString8 (*cast(char[]*) _arg, result));
-                                   else
-                                   if (_ti is typeid(wchar[]) || _ti is typeid(immutable(wchar)[]))        
-                                       emit (Utf.fromString16 (*cast(wchar[]*) _arg, result));
-                                   else
-                                   if (_ti is typeid(dchar[]) || _ti is typeid(immutable(dchar)[]))
-                                       emit (Utf.fromString32 (*cast(dchar[]*) _arg, result));
-                                   else
-                                      {
-                                      // for all non string array types (including char[][])
-                                      auto arr = *cast(void[]*)_arg;
-                                      auto len = arr.length;
-                                      auto ptr = cast(Arg) arr.ptr;
-                                      auto elTi = _ti.next();
-                                      auto size = elTi.tsize();
-                                      length += sink ("[");
-                                      while (len > 0)
-                                            {
-                                            if (ptr !is arr.ptr)
-                                                length += sink (", ");
-                                            process (elTi, ptr);
-                                            len -= 1;
-                                            ptr += size;
-                                            }
-                                      length += sink ("]");
-                                      }
-                                   }
-                                else
-                                   // the standard processing
-                                   emit (dispatch (result, format, _ti, _arg));
-                      }
-
-                      
-                      // process this argument
-                      if (index >= ti.length)
-                          emit ("{invalid index}");
-                      else
-                         process (ti[index], args[index]);
-                      }
-                return length;
+					// finally, pad out on right
+					if (left && padding > 0)
+						length += spaces (sink, padding);
+				}
+			}
+			
+			// return the length
+			return length;
         }
 
         /***********************************************************************
 
         ***********************************************************************/
 
-        private T[] dispatch (T[] result, const(T[]) format, TypeInfo type, Arg p)
+        private const(T)[] dispatch (T[] result, const(T)[] format, Type type, Arg p)
         {
-                switch (type.classinfo.name[9])
-                       {
-                       case TypeCode.BOOL:
-                            enum T[] t = cast(T[])"true";
-                            enum T[] f = cast(T[])"false";
-                            return (*cast(bool*) p) ? t : f;
+			switch(type)
+			{
+				case Type.BOOL:
+					immutable(T)[] t = cast(immutable(T)[])"true";
+					immutable(T)[] f = cast(immutable(T)[])"false";
+					return (*cast(bool*)p) ? t : f;
+				
+				case Type.BYTE:
+					return integer(result, *cast(byte*) p, format, ubyte.max);
+				
+				case Type.VOID:
+				case Type.UBYTE:
+					return integer(result, *cast(ubyte*) p, format, ubyte.max, "u");
+				
+				case Type.SHORT:
+					return integer(result, *cast(short*) p, format, ushort.max);
 
-                       case TypeCode.BYTE:
-                            return integer (result, *cast(byte*) p, format, ubyte.max);
+				case Type.USHORT:
+					return integer(result, *cast(ushort*) p, format, ushort.max, "u");
 
-                       case TypeCode.VOID:
-                       case TypeCode.UBYTE:
-                            return integer (result, *cast(ubyte*) p, format, ubyte.max, "u");
+				case Type.INT:
+					return integer(result, *cast(int*) p, format, uint.max);
+				
+				case Type.UINT:
+					return integer (result, *cast(uint*) p, format, uint.max, "u");
 
-                       case TypeCode.SHORT:
-                            return integer (result, *cast(short*) p, format, ushort.max);
+				case Type.ULONG:
+					return integer (result, *cast(long*) p, format, ulong.max, "u");
+				
+				case Type.LONG:
+					return integer (result, *cast(long*) p, format, ulong.max);
+				
+				case Type.OBJECT:
+					return (*cast(Object*)p).toString();
+					
+				case Type.FLOAT:
+					return floater(result, *cast(float*) p, format);
+					
+				case Type.DOUBLE:
+					return floater(result, *cast(double*) p, format);
+				
+				case Type.REAL:
+					return floater(result, *cast(real*) p, format);
+				
+				case Type.IFLOAT:
+					return imaginary(result, *cast(ifloat*) p, format);
 
-                       case TypeCode.USHORT:
-                            return integer (result, *cast(ushort*) p, format, ushort.max, "u");
+				case Type.IDOUBLE:
+					return imaginary(result, *cast(idouble*) p, format);
 
-                       case TypeCode.INT:
-                            return integer (result, *cast(int*) p, format, uint.max);
+				case Type.IREAL:
+					return imaginary(result, *cast(ireal*) p, format);
+				
+				case Type.CFLOAT:
+					return complex(result, *cast(cfloat*) p, format);
 
-                       case TypeCode.UINT:
-                            return integer (result, *cast(uint*) p, format, uint.max, "u");
+				case Type.CDOUBLE:
+					return complex(result, *cast(cdouble*) p, format);
 
-                       case TypeCode.ULONG:
-                            return integer (result, *cast(long*) p, format, ulong.max, "u");
-
-                       case TypeCode.LONG:
-                            return integer (result, *cast(long*) p, format, ulong.max);
-
-                       case TypeCode.FLOAT:
-                            return floater (result, *cast(float*) p, format);
-
-                       case TypeCode.IFLOAT:
-                            return imaginary (result, *cast(ifloat*) p, format);
-
-                       case TypeCode.IDOUBLE:
-                            return imaginary (result, *cast(idouble*) p, format);
-
-                       case TypeCode.IREAL:
-                           return imaginary (result, *cast(ireal*) p, format);
-
-                       case TypeCode.CFLOAT:
-                            return complex (result, *cast(cfloat*) p, format);
-
-                       case TypeCode.CDOUBLE:
-                            return complex (result, *cast(cdouble*) p, format);
-
-                       case TypeCode.CREAL:
-                            return complex (result, *cast(creal*) p, format);
-
-                       case TypeCode.DOUBLE:
-                            return floater (result, *cast(double*) p, format);
-
-                       case TypeCode.REAL:
-                            return floater (result, *cast(real*) p, format);
-
-                       case TypeCode.CHAR:
-                            return Utf.fromString8 ((cast(char*) p)[0..1], result);
-
-                       case TypeCode.WCHAR:
-                            return Utf.fromString16 ((cast(wchar*) p)[0..1], result);
-
-                       case TypeCode.DCHAR:
-                            return Utf.fromString32 ((cast(dchar*) p)[0..1], result);
-
-                       case TypeCode.POINTER:
-                            return integer (result, *cast(size_t*) p, format, size_t.max, "x");
-
-                       case TypeCode.CLASS:
-                            auto c = *cast(Object*) p;
-                            if (c)
-                                return cast(T[])Utf.fromString8 (c.toString, result);
-                            break;
-
-                       case TypeCode.STRUCT:
-                            auto s = cast(TypeInfo_Struct) type;
-                            if (s.xtoString)
-                               {
-                               char[] delegate() toString;
-                               toString.ptr = p;
-                               toString.funcptr = cast(char[] function())s.xtoString;
-                               return Utf.fromString8 (toString(), result);
-                               }
-                            goto default;
-
-                       case TypeCode.INTERFACE:
-                            auto x = *cast(void**) p;
-                            if (x)
-                               {
-                               auto pi = **cast(Interface ***) x;
-                               auto o = cast(Object)(*cast(void**)p - pi.offset);
-                               return cast(T[])Utf.fromString8 (o.toString, result);
-                               }
-                            break;
-
-                       case TypeCode.ENUM:
-                            return dispatch (result, format, (cast(TypeInfo_Enum) type).base, p);
-
-                       case TypeCode.TYPEDEF:
-                            return dispatch (result, format, (cast(TypeInfo_Typedef) type).base, p);
-
-                       default:
-                            return unknown (result, format, type, p);
-                       }
-
-                return cast(T[]) "{null}";
-        }
-
-        /**********************************************************************
-
-                handle "unknown-type" errors
-
-        **********************************************************************/
-
-        protected T[] unknown (T[] result, const(T[]) format, TypeInfo type, Arg p)
-        {
-        version (WithExtensions)
-                {
-                result = Extensions!(T).run (type, result, p, format);
-                return (result) ? result :
-                       "{unhandled argument type: " ~ Utf.fromString8 (type.toString, result) ~ "}";
-                }
-             else
-                version (WithDateTime)
-                {
-                if (type is typeid(Time))
-                   {
-                   static if (is (T == char))
-                              return dateTime.format(result, *cast(Time*) p, format);
-                          else
-                             {
-                             // TODO: this needs to be cleaned up
-                             char[128] tmp0 = void;
-                             char[128] tmp1 = void;
-                             return Utf.fromString8(dateTime.format(tmp0, *cast(Time*) p, Utf.toString(format, tmp1)), result);
-                             }
-                   }
-                }
-                return cast(T[])"{unhandled argument type: " ~ cast(T[])Utf.fromString8 (type.toString, result) ~ cast(T[])"}";
+				case Type.CREAL:
+					return complex(result, *cast(creal*) p, format);
+				
+				case Type.STRING:
+					return Utf.fromString8(*cast(char[]*)p, result);
+					
+				case Type.WSTRING:
+					return Utf.fromString16(*cast(wchar[]*)p, result);
+					
+				case Type.DSTRING:
+					return Utf.fromString32(*cast(dchar[]*)p, result);
+					
+				case Type.CSTRING:
+					return Utf.fromStringz(*cast(char**)p);
+				
+				case Type.UNKNOWN:
+					return cast(T[])"{unknown type}";
+				
+				default:
+					return cast(T[])"{null}";
+			}
         }
 
         /**********************************************************************
@@ -902,15 +637,15 @@ version (WithVariant)
 
         private size_t spaces (Sink sink, size_t count)
         {
-                size_t ret;
+			assert(count > 0);
+			size_t ret;
 
-                enum immutable(T)[] Spaces = "                                ";
-                while (count > Spaces.length)
-                      {
-                      ret += sink (Spaces);
-                      count -= Spaces.length;
-                      }
-                return ret + sink (Spaces[0..count]);
+			enum immutable(T)[] Spaces = "                                ";
+			while (count > Spaces.length) {
+				ret += sink (Spaces);
+				count -= Spaces.length;
+			}
+			return ret + sink (Spaces[0..count]);
         }
 
         /**********************************************************************
@@ -969,51 +704,6 @@ version (WithVariant)
                 return result [0 .. len + tail.length];
         }
 }
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-
-private enum TypeCode
-{
-        EMPTY = 0,
-        VOID = 'v',
-        BOOL = 'b',
-        UBYTE = 'h',
-        BYTE = 'g',
-        USHORT = 't',
-        SHORT = 's',
-        UINT = 'k',
-        INT = 'i',
-        ULONG = 'm',
-        LONG = 'l',
-        REAL = 'e',
-        FLOAT = 'f',
-        DOUBLE = 'd',
-        CHAR = 'a',
-        WCHAR = 'u',
-        DCHAR = 'w',
-        ARRAY = 'A',
-        CLASS = 'C',
-        STRUCT = 'S',
-        ENUM = 'E',
-        CONST = 'x',
-        INVARIANT = 'y',
-        DELEGATE = 'D',
-        FUNCTION = 'F',
-        POINTER = 'P',
-        TYPEDEF = 'T',
-        INTERFACE = 'I',
-        CFLOAT = 'q',
-        CDOUBLE = 'r',
-        CREAL = 'c',
-        IFLOAT = 'o',
-        IDOUBLE = 'p',
-        IREAL = 'j'
-}
-
-
 
 /*******************************************************************************
 

@@ -17,10 +17,10 @@
 
 module tango.io.device.File;
 
-private import tango.core.String;
 private import tango.sys.Common;
 private import tango.io.device.Device;
-
+private import tango.text.convert.Utf;
+private import tango.util.Convert;
 
 /*******************************************************************************
 
@@ -618,7 +618,7 @@ class File : Device, Device.Seek, Device.Truncate
                 ***************************************************************/
 
                 protected bool open (const(char[]) path, Style style,
-                                     int addflags, int access = 0666)
+                                     int addflags, int access = tango.util.Convert.octal!666)
                 {
                         alias int[] Flags;
 

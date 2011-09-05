@@ -415,20 +415,21 @@ size_t locatePattern(T) (T[] source, T[] match, size_t start=0)
         T*      p = source.ptr + start;
         size_t    extent = source.length - start - match.length + 1;
 
-        if (match.length && extent <= source.length)
-            while (extent)
-                   if ((idx = indexOf (p, match[0], extent)) is extent)
-                        break;
-                   else
-                      if (matching (p+=idx, match.ptr, match.length))
-                          return p - source.ptr;
-                      else
-                         {
-                         extent -= (idx+1);
-                         ++p;
-                         }
-
-        return source.length;
+	if (match.length && extent <= source.length) {
+		while (extent) {
+			if ((idx = indexOf (p, match[0], extent)) is extent) {
+				break;
+			} else {
+				if (matching (p+=idx, match.ptr, match.length)) {
+					return p - source.ptr;
+				} else {
+					extent -= (idx+1);
+					++p;
+				}
+			}
+		}
+	}
+	return source.length;
 }
    
 /******************************************************************************
@@ -544,9 +545,9 @@ T[][] delimit(T) (T[] src, T[] set)
 
 ******************************************************************************/
 
-T[][] split(T) (T[] src, T[] pattern)
+const(T)[][] split(T) (const(T)[] src, const(T)[] pattern)
 {
-        T[][] result;
+        const(T)[][] result;
 
         foreach (segment; patterns (src, pattern))
                  result ~= segment;
@@ -760,6 +761,11 @@ bool matching(T) (T* s1, T* s2, size_t length)
         and a 0-based index on success
 
 ******************************************************************************/
+
+size_t indexOf(T) (const(T)[] str, const(T) match)
+{
+		return indexOf!(T) (str.ptr, match, str.length);
+}
 
 size_t indexOf(T, U=size_t) (const(T)* str, const(T) match, U length)
 {

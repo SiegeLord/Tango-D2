@@ -44,17 +44,19 @@ class HttpTriplet
                 int mark;
 
                 this.line = line;
-                foreach (int index, char c; line)
-                         if (c is ' ')
+                foreach (int index, char c; line) {
+                         if (c is ' ') {
                              if (i < 2)
                                 {
                                 tokens[i] = line[mark .. index];
                                 mark = index+1;
                                 ++i;
                                 }
-                             else
+                             else {
                                 break;
-
+			     }
+			}
+		}
                 tokens[2] = line [mark .. line.length];
                 return test;
         }

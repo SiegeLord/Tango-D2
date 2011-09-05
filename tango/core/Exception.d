@@ -10,9 +10,6 @@ module tango.core.Exception;
 
 public import core.exception;
 
-version = SocketSpecifics;              // TODO: remove this before v1.0
-
-
 private
 {
     alias void  function( char[] file, size_t line, char[] msg = null ) assertHandlerType;
@@ -248,8 +245,6 @@ class SocketException : IOException
 }
 
 
-version (SocketSpecifics)
-{
 /**
  * Base class for exception thrown by an InternetHost.
  */
@@ -283,7 +278,6 @@ class SocketAcceptException : SocketException
     {
         super( msg );
     }
-}
 }
 
 /**
@@ -346,7 +340,6 @@ class RegistryException : Exception
         super( msg );
     }
 }
-
 
 /**
  * Thrown when an illegal argument is encountered.
@@ -416,47 +409,6 @@ void setAssertHandler( assertHandlerType h )
     assertHandler = h;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Overridable Callbacks
-////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * A callback for assert errors in D.  The user-supplied assert handler will
- * be called if one has been supplied, otherwise an AssertException will be
- * thrown.
- *
- * Params:
- *  file = The name of the file that signaled this error.
- *  line = The line number on which this error occurred.
- */
-extern (C) void onAssertError( immutable(char)[] file, size_t line )
-{
-    if( assertHandler is null )
-        throw new AssertException( file, line );
-    assertHandler( file.dup, line );
-}
-
-
-/**
- * A callback for assert errors in D.  The user-supplied assert handler will
- * be called if one has been supplied, otherwise an AssertException will be
- * thrown.
- *
- * Params:
- *  file = The name of the file that signaled this error.
- *  line = The line number on which this error occurred.
- *  msg  = An error message supplied by the user.
- */
-extern (C) void onAssertErrorMsg( immutable(char)[] file, size_t line, immutable(char)[] msg )
-{
-    if( assertHandler is null )
-        throw new AssertException( msg, file, line );
-    assertHandler( file.dup, line, msg.dup );
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // Internal Error Callbacks
 ////////////////////////////////////////////////////////////////////////////////
@@ -478,37 +430,6 @@ extern (C) void onArrayBoundsError( immutable(char)[] file, size_t line )
     throw new ArrayBoundsException( file, line );
 }
 
-
-/**
- * A callback for finalize errors in D.  A FinalizeException will be thrown.
- *
- * Params:
- *  e = The exception thrown during finalization.
- *
- * Throws:
- *  FinalizeException.
- */
-extern (C) void onFinalizeError( ClassInfo info, Exception ex )
-{
-    throw new FinalizeException( info, ex );
-}
-
-
-/**
- * A callback for out of memory errors in D.  An OutOfMemoryException will be
- * thrown.
- *
- * Throws:
- *  OutOfMemoryException.
- */
-extern (C) void onOutOfMemoryError()
-{
-    // NOTE: Since an out of memory condition exists, no allocation must occur
-    //       while generating this object.
-    throw cast(OutOfMemoryException) cast(void*) OutOfMemoryException.classinfo.init;
-}
-
-
 /**
  * A callback for switch errors in D.  A SwitchException will be thrown.
  *
@@ -522,20 +443,4 @@ extern (C) void onOutOfMemoryError()
 extern (C) void onSwitchError( immutable(char)[] file, size_t line )
 {
     throw new SwitchException( file, line );
-}
-
-
-/**
- * A callback for unicode errors in D.  A UnicodeException will be thrown.
- *
- * Params:
- *  msg = Information about the error.
- *  idx = String index where this error was detected.
- *
- * Throws:
- *  UnicodeException.
- */
-extern (C) void onUnicodeError( immutable(char)[] msg, size_t idx )
-{
-    throw new UnicodeException( msg, idx );
 }

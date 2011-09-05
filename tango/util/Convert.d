@@ -1063,11 +1063,13 @@ D toStringFromChar(D,S)(S value)
     {
         static if( is( S == char ) )
         {
-            if( 0x20 <= value && value <= 0x7e )
-                static if( isMutableString!(D) )
+            if( 0x20 <= value && value <= 0x7e ) {
+                static if( isMutableString!(D) ) {
                     return (&CHARS[value-0x20])[0..1].dup;
-                else
+                } else {
                     return (&CHARS[value-0x20])[0..1];
+		}
+	    }
         }
         auto r = new S[1];
         r[0] = value;
@@ -1351,10 +1353,10 @@ bool isOctalLiteralString(string num) {
                 return false;
 
         foreach (i, c; num) {
-                if ((c < '0' || c > '7') && c != '_') // not a legal character
-                        if (i < num.length - 2)
+                if ((c < '0' || c > '7') && c != '_') { // not a legal character
+                        if (i < num.length - 2) {
                                 return false;
-                        else { // gotta check for those suffixes
+                        } else { // gotta check for those suffixes
                                 if (c != 'U' && c != 'u' && c != 'L')
                                         return false;
                                 if (i != num.length - 1) {
@@ -1367,6 +1369,7 @@ bool isOctalLiteralString(string num) {
                                                 return false; // repeats are disallowed
                                 }
                         }
+		}
         }
 
         return true;

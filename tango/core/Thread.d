@@ -257,5 +257,41 @@ class Thread : core.thread.Thread
 
 class Fiber : core.thread.Fiber
 {
-   
+    /**
+     * Initializes a fiber object which is associated with a static
+     * D function.
+     *
+     * Params:
+     *  fn = The thread function.
+     *  sz = The stack size for this fiber.
+     *
+     * In:
+     *  fn must not be null.
+     */
+    this( void function() fn, size_t sz = 0) {
+		if(sz) {
+			super(fn, sz);
+		} else {
+			super(fn);
+		}
+	}
+	
+    /**
+     * Initializes a fiber object which is associated with a dynamic
+     * D function.
+     *
+     * Params:
+     *  dg = The thread function.
+     *  sz = The stack size for this fiber.
+     *
+     * In:
+     *  dg must not be null.
+     */
+    this( void delegate() dg, size_t sz = 0 ) {
+		if(sz) {
+			super(dg, sz);
+		} else {
+			super(dg);
+		}
+	} 
 }

@@ -40,6 +40,7 @@ class Delimiters(T) : Iterator!(T)
         /***********************************************************************
 
                 Construct an uninitialized iterator. For example:
+                
                 ---
                 auto lines = new Lines!(char);
 

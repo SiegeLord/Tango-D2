@@ -107,24 +107,25 @@ class Json(T) : private JsonParser!(T)
         
         final Value parse (const(T)[] json)
         {
-                nesting = 0;
-                attrib.reset;
-                values.reset;
-                objects.reset;
-                foreach (ref p; arrays)
-                         p.index = 0;
-
-                root = createValue;
-                if (super.reset (json))
-                    if (curType is Token.BeginObject)
-                        root.set (parseObject);
-                    else
-                       if (curType is Token.BeginArray)
-                           root.set (parseArray);
-                       else
-                          exception ("invalid json document");
-
-                return root;
+		nesting = 0;
+		attrib.reset;
+		values.reset;
+		objects.reset;
+		foreach (ref p; arrays)
+			p.index = 0;
+	
+		root = createValue;
+		if (super.reset (json)) {
+			if (curType is Token.BeginObject) {
+				root.set (parseObject);
+			} else {
+				if (curType is Token.BeginArray)
+					root.set (parseArray);
+				else
+					exception ("invalid json document");
+			}
+		}
+		return root;
         }
         
 		/***********************************************************************
