@@ -37,13 +37,9 @@ You can just checkout the libary and start building it. There is a Makefile for 
 	* make -f posix.mak
 	* make install -f posix.mak
 	
-===] Building additional parts [=======================================================================================
-
-	* make doc -f posix.mak            # You can also generate the docs. They'll be puttet to doc/html.
-	* make clean -f posix.mak          # If you need to rebuild the libary, you can tidy up your folder with this command.
-	* make install -f posix.mak        # And of course you can install the libary to /usr/lib/libtango2.a
-
 ===] Makefile Switches [===============================================================================================
+
+	These commands have in common that everytime libtango2.lib is generated. (generated/$(BUILD)/$(MODEL)/libtango2.lib)
 
 	* make -f posix.mak MODEL=64       # 64-Bit Version
 	* make -f posix.mak MODEL=32       # 32-Bit Version (default)
@@ -51,16 +47,25 @@ You can just checkout the libary and start building it. There is a Makefile for 
 	* make -f posix.mak BUILD=debug    # Build Debug [adds -g -debug]
 	* make -f posix.mak BUILD=unittest # Build Debug and Unittest [adds -g -debug -debug=UnitTest -unittest ]
 
+===] Building additional parts [=======================================================================================
+
+	These commands build additional parts arround the libary.
+
+	* make doc -f posix.mak            # You can also generate the docs. They'll be puttet to doc/html.
+	* make clean -f posix.mak          # If you need to rebuild the libary, you can tidy up your folder with this command.
+	* make install -f posix.mak        # And of course you can install the libary to /usr/lib/libtango2.a
+	* make unittest -f posix.mak       # Builds the libary in unittest mode, compiles unittest.d and calls ./unittest 
+
 ===] Setting up your Environment [=====================================================================================
 
 If you want to build your applications with tango, you need to take care to link against the tango libary. You can tell dmd to automatically link to tangolib by modifing /etc/dmd.conf. Basically you need to add the following line.
 
--I/usr/include/d/dmd/tango
+-I/usr/include/d/dmd/tango -L-ltango2
 	
 Here is my complete /etc/dmd.conf
 
 [Environment]
-DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--no-warn-search-mismatch -L--export-dynamic -L-lrt
+DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--no-warn-search-mismatch -L--export-dynamic -L-lrt -L-ltango2
 
 ===] Guided Installation [=============================================================================================
 

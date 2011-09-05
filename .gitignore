@@ -1,3 +1,9 @@
+# Directorys #
+##############
+generated
+doc
+unittest
+
 # Compiled source #
 ###################
 *.com

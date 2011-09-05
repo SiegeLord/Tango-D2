@@ -1,8 +1,8 @@
 module tango.net.device.Berkeley;
 
 private import tango.sys.Common;
-private import tango.core.String;
 private import tango.core.Exception;
+private import tango.text.convert.Utf;
 
 import  consts=tango.sys.consts.socket;
 
@@ -559,7 +559,7 @@ version (Windows)
 
         Berkeley bind (Address addr)
         {
-                if(Error == .bind (sock, addr.name, addr.nameLen))
+                if(Error == .bind (sock, addr.name, cast(int)addr.nameLen))
                    exception ("Unable to bind socket: ");
                 return this;
         }
@@ -570,7 +570,7 @@ version (Windows)
 
         Berkeley connect (Address to)
         {
-                if (Error == .connect (sock, to.name, to.nameLen))
+                if (Error == .connect (sock, to.name, cast(int)to.nameLen))
                    {
                    if (! blocking)
                       {
@@ -774,7 +774,7 @@ version (Windows)
         Address remoteAddress ()
         {
                 auto addr = newFamilyObject;
-                auto nameLen = addr.nameLen;
+                int nameLen = cast(int)addr.nameLen;
                 if(Error == .getpeername (sock, addr.name, &nameLen))
                    exception ("Unable to obtain remote socket address: ");
                 assert (addr.addressFamily is family);
@@ -790,7 +790,7 @@ version (Windows)
         Address localAddress ()
         {
                 auto addr = newFamilyObject;
-                auto nameLen = addr.nameLen;
+                int nameLen = cast(int)addr.nameLen;
                 if(Error == .getsockname (sock, addr.name, &nameLen))
                    exception ("Unable to obtain local socket address: ");
                 assert (addr.addressFamily is family);
@@ -836,7 +836,7 @@ version (Windows)
 
         ssize_t sendTo (void[] buf, SocketFlags flags, Address to)
         {
-                return sendTo (buf, cast(int) flags, to.name, to.nameLen);
+                return sendTo (buf, cast(int)flags, to.name, cast(int)to.nameLen);
         }
 
         /***********************************************************************
@@ -923,7 +923,7 @@ version (Windows)
                      badArg ("Socket.receiveFrom :: target buffer has 0 length");
 
                 assert(from.addressFamily() == family);
-                int nameLen = from.nameLen();
+                int nameLen = cast(int)from.nameLen();
                 return .recvfrom(sock, buf.ptr, buf.length, cast(int)flags, from.name(), &nameLen);
         }
 
@@ -1075,7 +1075,7 @@ public abstract class Address
         } 
 
         abstract sockaddr*      name();
-        abstract int            nameLen();
+        abstract size_t         nameLen();
 
         /***********************************************************************
 
@@ -1299,7 +1299,7 @@ public abstract class Address
                 char[1025] host = void; 
                 // Getting name info. Don't look up hostname, returns 
                 // numeric name. (NIFlags.NUMERICHOST)
-                getnameinfo (name, nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST); 
+                getnameinfo (name, cast(int)nameLen, host.ptr, host.length, null, 0, NIFlags.NUMERICHOST); 
                 return fromStringz (host.ptr); 
         } 
  
@@ -1312,7 +1312,7 @@ public abstract class Address
                 char[32] service = void; 
                 // Getting name info. Returns port number, not 
                 // service name. (NIFlags.NUMERICSERV)
-                getnameinfo (name, nameLen, null, 0, service.ptr, service.length, NIFlags.NUMERICSERV); 
+                getnameinfo (name, cast(int)nameLen, null, 0, service.ptr, service.length, NIFlags.NUMERICSERV); 
                 foreach (i, c; service)  
                          if (c == '\0')  
                              return service[0..i].dup; 
@@ -1609,7 +1609,8 @@ debug(UnitTest)
         IPv6 is written as 8 blocks of 4 octal digits (16 bit)
         separated by a colon (":"). Zero block can be replaced by "::".
 	        			
-        For example: 
+        For example:
+        
         ---
         0000:0000:0000:0000:0000:0000:0000:0001
         is equal
@@ -1669,6 +1670,7 @@ debug(UnitTest)
         scope addr_4 = new IPv6Address("::", "8080"); 
         address: "::"
         port: 8080
+        ---
 				
 *******************************************************************************/ 
 				

@@ -12,22 +12,9 @@
 
 module tango.net.Uri;
 
-public  import  tango.net.model.UriView;
-
-//public alias Uri UriView;
-
 private import  tango.core.Exception;
-
 private import  Integer = tango.text.convert.Integer;
-
-/*******************************************************************************
-
-        external links
-        
-*******************************************************************************/
-
-extern (C) char* memchr (char *, int, size_t);
-
+private import  core.stdc.string : memchr;
 
 /*******************************************************************************
 
@@ -47,7 +34,7 @@ extern (C) char* memchr (char *, int, size_t);
 
 *******************************************************************************/
 
-class Uri : UriView
+class Uri
 {
         // simplistic string appender
         private alias size_t delegate(const(void)[]) Consumer;  
@@ -270,15 +257,14 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        this (UriView other)
+        this (Uri other)
         {
-                with (other)
-                     {
-                     this (getScheme, getHost, getPath, getQuery);
-                     this.userinfo_ = getUserInfo.dup;
-                     this.fragment_ = getFragment.dup;
-                     this.port_ = getPort;
-                     }
+			with (other) {
+				this (getScheme, getHost, getPath, getQuery);
+				this.userinfo_ = getUserInfo.dup;
+				this.fragment_ = getFragment.dup;
+				this.port_ = getPort;
+			}
         }
 
         /***********************************************************************
@@ -289,7 +275,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final override short defaultPort (const(char)[] scheme)
+        final short defaultPort (const(char)[] scheme)
         {
                 short* port = scheme in genericSchemes; 
                 if (port is null)
@@ -304,7 +290,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] scheme()
+        immutable(char)[] scheme()
         {
                 return scheme_.idup;
         }
@@ -316,7 +302,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] host()
+        immutable(char)[] host()
         {
                 return host_.idup;
         }
@@ -328,7 +314,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final override int port()
+        int port()
         {
                 return port_;
         }
@@ -340,7 +326,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final override int validPort()
+        int validPort()
         {
                 if (port_ is InvalidPort)
                     return defaultPort (scheme_);
@@ -354,7 +340,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] userinfo()
+        immutable(char)[] userinfo()
         {
                 return userinfo_.idup;
         }
@@ -366,7 +352,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] path()
+        immutable(char)[] path()
         {
                 return path_.idup;
         }
@@ -378,7 +364,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] query()
+        immutable(char)[] query()
         {
                 return query_.idup;
         }
@@ -390,7 +376,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        override immutable(char)[] fragment()
+        immutable(char)[] fragment()
         {
                 return fragment_.idup;
         }
@@ -401,7 +387,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final override bool isGeneric ()
+        bool isGeneric ()
         {
                 return (scheme_ in genericSchemes) !is null;
         }
@@ -463,7 +449,7 @@ class Uri : UriView
 
         ***********************************************************************/
 
-        final override immutable(char[]) toString ()
+        override immutable(char[]) toString ()
         {
                 char[] s;
 
@@ -765,11 +751,12 @@ class Uri : UriView
 
         final char[] extendQuery (char[] tail)
         {
-                if (tail.length)
+                if (tail.length) {
                     if (query_.length)
                         query_ = query_ ~ "&" ~ tail;
                     else
                        query_ = tail;
+		}
                 return query_;
         }
 

@@ -432,8 +432,7 @@ size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
         const (T)*      p = digits.ptr;
         size_t     len = digits.length;
 
-        if (len)
-           {
+        if (len) {
            // strip off whitespace and sign characters
            for (c = *p; len; c = *++p, --len)
                 if (c is ' ' || c is '\t')
@@ -473,19 +472,22 @@ size_t trim(T) (const(T[]) digits, ref bool sign, ref uint radix)
                       default: 
                             --p;
                            break;
-                      } 
+                      }
 
-           // default the radix to 10
-           if (r is 0)
-               radix = 10;
-           else
-              // explicit radix must match (optional) prefix
-              if (radix != r)
-                  if (radix)
-                      p -= 2;
-                  else
-                     radix = r;
-           }
+		// default the radix to 10
+		if (r is 0) {
+			radix = 10;
+		} else {
+			// explicit radix must match (optional) prefix
+			if (radix != r) {
+				if (radix) {
+					p -= 2;
+				} else {
+					radix = r;
+				}
+			}
+		}
+        }
 
         // return number of characters eaten
         return (p - digits.ptr);

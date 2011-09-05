@@ -87,7 +87,7 @@ class FormatOutput(T) : OutputFilter
 {       
         public  alias OutputFilter.flush flush;
 
-        private const(T[])      eol;
+        private const(T)[]      eol;
         private Layout!(T)      convert;
         private bool            flushLines;
 
@@ -95,7 +95,7 @@ class FormatOutput(T) : OutputFilter
         public alias newline    nl;             /// nl -> newline
 
         version (Win32)
-                 private enum immutable(T)[] Eol = "\r\n";
+                private enum immutable(T)[] Eol = "\r\n";
              else
                 private enum immutable(T)[] Eol = "\n";
 
@@ -106,7 +106,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (OutputStream output, const(T[]) eol = Eol)
+        this (OutputStream output, const(T)[] eol = Eol)
         {
                 this (Layout!(T).instance, output, eol);
         }
@@ -118,7 +118,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        this (Layout!(T) convert, OutputStream output, const(T[]) = Eol)
+        this (Layout!(T) convert, OutputStream output, const(T)[] eol = Eol)
         {
                 assert (convert);
                 assert (output);
@@ -134,9 +134,9 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput format (const(T[]) fmt, ...)
+        final FormatOutput format(Char, S...)(in Char[] format, S arguments)
         {
-                convert (&emit, _arguments, _argptr, fmt);
+                convert(&emit, format, arguments);
                 return this;
         }
 
@@ -146,10 +146,10 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput formatln (const(T[]) fmt, ...)
+        final FormatOutput formatln(Char, S...)(in Char[] format, S arguments)
         {
-                convert (&emit, _arguments, _argptr, fmt);
-                return newline;
+                convert (&emit, format, arguments);
+                return this.newline();
         }
 
         /**********************************************************************
@@ -159,18 +159,18 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        final FormatOutput print (...)
+        final FormatOutput print(S...)(S args)
         {
                 enum immutable(T)[] slice =  "{}, {}, {}, {}, {}, {}, {}, {}, "
                                              "{}, {}, {}, {}, {}, {}, {}, {}, "
                                              "{}, {}, {}, {}, {}, {}, {}, {}, ";
 
-                assert (_arguments.length <= slice.length/4, "FormatOutput :: too many arguments");
+                assert (args.length <= slice.length/4, "FormatOutput :: too many arguments");
 
-                if (_arguments.length is 0)
-                    sink.flush;
-                else
-                   convert (&emit, _arguments, _argptr, slice[0 .. _arguments.length * 4 - 2]);
+				if (args.length is 0)
+					sink.flush;
+				else
+					convert (&emit, slice[0 .. args.length * 4 - 2], args);
                          
                 return this;
         }
@@ -180,15 +180,12 @@ class FormatOutput(T) : OutputFilter
                 Output a newline and optionally flush
 
         ***********************************************************************/
-
-        final FormatOutput newline ()
-        {
-                sink.write (eol);
-                if (flushLines)
-                    sink.flush;
-                return this;
-        }
-
+        final FormatOutput newline() {
+			sink.write(eol);
+			if (flushLines)
+				sink.flush;
+			return this;
+		}
         /**********************************************************************
 
                 Control implicit flushing of newline(), where true enables
@@ -254,7 +251,7 @@ class FormatOutput(T) : OutputFilter
 
         **********************************************************************/
 
-        private final size_t emit (const(T[]) s)
+        private final size_t emit (const(T)[] s)
         {
                 size_t count = sink.write (s);
                 if (count is Eof)

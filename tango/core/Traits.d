@@ -32,9 +32,9 @@ template BaseTypeOf( T )
  */
 template isStringType( T )
 {
-    const bool isStringType = is( T : char[] )  ||
-                              is( T : wchar[] ) ||
-                              is( T : dchar[] );
+	const bool isStringType = is( T : const(char)[] )  ||
+							  is( T : const(wchar)[] ) ||
+							  is( T : const(dchar)[] );
 }
 
 /**
@@ -261,6 +261,7 @@ debug( UnitTest )
         static assert( is(MaxPrecTypeOf!(float)==real));
         static assert( is(MaxPrecTypeOf!(cfloat)==creal));
         static assert( is(MaxPrecTypeOf!(ifloat)==ireal));
+        static assert( isStringType!(string));
 
         class Ham
         {
