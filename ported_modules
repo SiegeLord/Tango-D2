@@ -66,6 +66,7 @@ tango/text/convert/Format.d
 tango/text/convert/Integer.d
 tango/text/convert/Layout.d
 tango/text/convert/Utf.d
+tango/text/convert/TimeStamp.d
 tango/text/locale/Data.d
 tango/text/locale/Posix.d
 tango/text/xml/Document.d
