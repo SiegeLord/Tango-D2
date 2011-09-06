@@ -9,7 +9,7 @@ LFLAGS=../druntime/lib/libdruntime.a
 DOCDIR=doc/html
 MAKEFILE:=$(lastword $(MAKEFILE_LIST))
 
-# CORE
+# source files
 SRC_CORE=tango/core/Array.d \
 	tango/core/BitArray.d \
 	tango/core/ByteSwap.d \
@@ -22,23 +22,32 @@ SRC_CORE=tango/core/Array.d \
 	tango/sys/linux/consts/fcntl.d
 
 SRC_IO=tango/io/Console.d \
+	tango/io/Stdout.d \
+	tango/io/File.d \
+	\
 	tango/io/device/Array.d \
 	tango/io/device/Conduit.d \
 	tango/io/device/Device.d \
-	tango/io/device/File.d \
+	\
 	tango/io/model/IConduit.d \
-	tango/io/Stdout.d \
+	tango/io/model/ISelectable.d \
+	\
 	tango/io/stream/Buffered.d \
 	tango/io/stream/Delimiters.d \
 	tango/io/stream/Format.d \
 	tango/io/stream/Iterator.d \
 	tango/io/stream/Lines.d \
+	\
 	tango/io/selector/model/ISelector.d \
 	tango/io/selector/AbstractSelector.d \
 	tango/io/selector/SelectorException.d \
 	tango/io/selector/SelectSelector.d \
 	tango/io/selector/PollSelector.d \
-	tango/io/selector/EpollSelector.d
+	tango/io/selector/EpollSelector.d \
+	tango/io/selector/Selector.d
+	
+SRC_BINDING=tango/binding/bzlib.d \
+	tango/binding/zlib.d
 
 SRC_MATH=tango/math/Bessel.d \
 	tango/math/BigInt.d \
@@ -96,6 +105,9 @@ SRC_TIME=tango/time/chrono/Calendar.d \
 	tango/time/WallClock.d
 
 SRC_UTIL=tango/util/container/more/Stack.d \
+	tango/util/container/Container.d \
+	tango/util/container/LinkedList.d \
+	\
 	tango/util/cipher/AES.d \
 	tango/util/cipher/Blowfish.d \
 	tango/util/cipher/ChaCha.d \
@@ -105,10 +117,12 @@ SRC_UTIL=tango/util/container/more/Stack.d \
 	tango/util/cipher/Salsa20.d \
 	tango/util/cipher/TEA.d \
 	tango/util/cipher/XTEA.d \
+	\
 	tango/util/Convert.d \
 	tango/util/MinMax.d \
-	tango/util/compress/c/bzlib.d \
-	tango/util/compress/c/zlib.d \
+	\
+	tango/util/compress/Zip.d \
+	\
 	tango/util/digest/Digest.d \
 	tango/util/digest/Crc32.d \
 	tango/util/digest/MerkleDamgard.d \
@@ -126,18 +140,36 @@ SRC_UTIL=tango/util/container/more/Stack.d \
 	tango/util/digest/Sha512.d \
 	tango/util/digest/Whirlpool.d \
 	tango/util/digest/Tiger.d \
+	\
 	tango/util/encode/Base64.d \
+	tango/util/encode/Base32.d \
+	tango/util/encode/Base16.d \
+	\
 	tango/util/log/AppendConsole.d \
-	tango/util/log/Log.d \
 	tango/util/log/AppendFile.d \
+	tango/util/log/AppendSocket.d \
+	tango/util/log/LayoutChainsaw.d \
+	tango/util/log/Log.d \
 	tango/util/log/Config.d \
 	tango/util/log/Trace.d \
 	tango/util/log/LayoutDate.d \
 	tango/util/log/model/ILogger.d
 
-SRC_NET=tango/net/device/Berkeley.d \
-	tango/net/device/Socket.d \
-	tango/net/device/LocalSocket.d \
+SRC_NET=tango/net/Uri.d \
+	tango/net/Socket.d \
+	tango/net/SocketSet.d \
+	tango/net/NetHost.d \
+	tango/net/Address.d \
+	tango/net/InternetAddress.d \
+	tango/net/LocalAddress.d \
+	tango/net/LocalSocket.d \
+	tango/net/LocalServer.d \
+	tango/net/TcpSocket.d \
+	tango/net/TcpServer.d \
+	tango/net/UdpSocket.d \
+	tango/net/UdpServer.d \
+	tango/net/Multicast.d \
+	\
 	tango/net/http/ChunkStream.d \
 	tango/net/http/HttpCookies.d \
 	tango/net/http/HttpHeaders.d \
@@ -149,10 +181,7 @@ SRC_NET=tango/net/device/Berkeley.d \
 	tango/net/http/HttpParams.d \
 	tango/net/http/HttpStack.d \
 	tango/net/http/HttpTriplet.d \
-	tango/net/http/model/HttpParamsView.d \
-	tango/net/InternetAddress.d \
-	tango/net/Uri.d \
-	tango/net/model/UriView.d
+	tango/net/http/model/HttpParamsView.d
 	
 SRC_SQL=tango/sql/Mysql.d
 
@@ -185,7 +214,7 @@ PROG_EXAMPLES=$(SRC_EXAMPLES:%.d=%)
 
 # generare src obj and html for all tango files
 ROOT=generated/$(BUILD)/$(MODEL)
-SRC=$(SRC_CORE) $(SRC_IO) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
+SRC=$(SRC_CORE) $(SRC_IO) $(SRC_BINDING) $(SRC_MATH) $(SRC_TEXT) $(SRC_TIME) $(SRC_UTIL) $(SRC_NET) $(SRC_SQL)
 OBJ=$(addprefix $(ROOT)/, $(SRC:%.d=%.o))
 HTML=$(addprefix $(DOCDIR)/, $(SRC:%.d=%.html))
 

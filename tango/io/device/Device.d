@@ -1,11 +1,8 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2004 Kris Bell. All rights reserved
-
         license:        BSD style: $(LICENSE)
-
         version:        May 2005: Initial release
-
         author:         Kris
 
 *******************************************************************************/
@@ -14,6 +11,7 @@ module tango.io.device.Device;
 
 private import  tango.sys.Common;
 public  import  tango.io.device.Conduit;
+public  import  tango.io.model.ISelectable;
 
 /*******************************************************************************
 
@@ -96,9 +94,9 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                final Handle fileHandle ()
+                final Handle handle()
                 {
-                        return io.handle;
+                        return this.io.handle;
                 }
 
                 /***************************************************************
@@ -238,7 +236,13 @@ class Device : Conduit, ISelectable
 
         version (Posix)
         {
-                protected int handle = -1;
+                struct IO
+                {
+                     Handle handle = -1;
+                }
+                
+                protected IO io;
+                
 
                 /***************************************************************
 
@@ -248,7 +252,7 @@ class Device : Conduit, ISelectable
 
                 protected void reopen (Handle handle)
                 {
-                        this.handle = handle;
+                        this.io.handle = handle;
                 }
 
                 /***************************************************************
@@ -257,9 +261,9 @@ class Device : Conduit, ISelectable
 
                 ***************************************************************/
 
-                final Handle fileHandle ()
+                final Handle handle ()
                 {
-                        return cast(Handle) handle;
+                        return this.io.handle;
                 }
 
                 /***************************************************************
@@ -270,14 +274,13 @@ class Device : Conduit, ISelectable
 
                 override void detach ()
                 {
-                        if (handle >= 0)
-                           {
+                        if (this.io.handle >= 0) {
                            //if (scheduler)
                                // TODO Not supported on Posix
                                // scheduler.close (handle, toString);
-                           core.sys.posix.unistd.close (handle);
-                           }
-                        handle = -1;
+                           core.sys.posix.unistd.close (this.io.handle);
+                        }
+                        this.io.handle = -1;
                 }
 
                 /***************************************************************

@@ -31,10 +31,10 @@ public class LayoutChainsaw : Appender.Layout
 
         ***********************************************************************/
 
-        void format (LogEvent event, size_t delegate(void[]) dg)
+        override void format (LogEvent event, scope size_t delegate(const(void)[]) dg)
         {
                 char[20] tmp;
-                char[]   threadName;
+                string   threadName;
                 
                 threadName = Thread.getThis.name;
                 if (threadName.length is 0)

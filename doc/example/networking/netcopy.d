@@ -12,7 +12,8 @@ private import  core.thread;
 private import  tango.io.Console,
                 tango.io.device.File;
 
-private import  tango.net.device.Socket;
+private import  tango.net.TcpSocket,
+                tango.net.TcpServer;
             
 
 /*******************************************************************************
@@ -27,7 +28,7 @@ void main(char[][] args)
         void run()
         {       
                 // instantiate a server socket
-                auto server = new ServerSocket (8080);
+                auto server = new TcpServer(8080);
 
                 // wait for requests
                 auto stream = server.accept;

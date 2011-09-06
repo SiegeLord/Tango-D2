@@ -11,7 +11,8 @@ private import  core.thread;
 
 private import  tango.io.Console;
 
-private import  tango.net.device.Socket;
+private import  tango.net.TcpSocket,
+                tango.net.TcpServer;
 
 /*******************************************************************************
 
@@ -26,7 +27,7 @@ void main()
         // thread body for socket-listener
         void run()
         {       
-                auto server = new ServerSocket (port);
+                auto server = new TcpServer (port);
                 
                 // wait for requests
                 auto request = server.accept;

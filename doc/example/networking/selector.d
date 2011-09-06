@@ -24,7 +24,8 @@ private
     import tango.io.selector.SelectorException;
     import tango.net.InternetAddress;
     import tango.io.device.Conduit;
-    import tango.net.device.Socket;
+    import tango.net.TcpSocket;
+    import tango.net.TcpServer;
     import tango.time.Clock;
     import tango.core.Exception;
     import tango.sys.Common;
@@ -109,7 +110,7 @@ void testSelector(ISelector selector)
     {
         TimeSpan            timeout         = TimeSpan.fromSeconds(1);
         InternetAddress     addr            = new InternetAddress(SERVER_ADDR, SERVER_PORT);
-        ServerSocket        serverSocket    = new ServerSocket(addr, 5);
+        TcpServer           serverSocket    = new TcpServer(addr, 5);
         Socket       clientSocket;
         char[MAX_LENGTH]    buffer;
         int                 eventCount;

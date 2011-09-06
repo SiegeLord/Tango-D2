@@ -1,14 +1,12 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2008 Jeff Davey. All rights reserved
-
         license:        BSD style: $(LICENSE)
-
         author:         Jeff Davey <j@submersion.com>
 
 *******************************************************************************/
 
-module tango.net.util.c.OpenSSL;
+module tango.binding.OpenSsl;
 
 private import tango.sys.SharedLib;
 private import tango.sys.Environment;

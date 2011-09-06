@@ -55,44 +55,12 @@
 module tango.io.Path;
 
 private import  tango.sys.Common;
-
 public  import  tango.time.Time : Time, TimeSpan;
-
 private import  tango.io.model.IFile : FileConst, FileInfo;
-
 public  import  tango.core.Exception : IOException, IllegalArgumentException;
 
-private import tango.stdc.string : memmove;
-
-
-/*******************************************************************************
-
-        Various imports
-
-*******************************************************************************/
-
-version (Win32)
-        {
-        version (Win32SansUnicode)
-                {
-                private extern (C) int strlen (const char *s);
-                private alias WIN32_FIND_DATA FIND_DATA;
-                }
-             else
-                {
-                private extern (C) int wcslen (const wchar *s);
-                private alias WIN32_FIND_DATAW FIND_DATA;
-                }
-        }
-
-version (Posix)
-        {
-        private import tango.stdc.stdio;
-        private import tango.stdc.string;
-        private import tango.stdc.posix.utime;
-        private import tango.stdc.posix.dirent;
-        }
-
+private import core.stdc.stdio;
+private import core.stdc.string;
 
 /*******************************************************************************
 
@@ -830,12 +798,12 @@ package struct FS
 
                 static void copy (const(char)[] source, const(char)[] dest)
                 {
-                        auto src = posix.open (source.ptr, O_RDONLY, 0640);
+                        auto src = posix.open (source.ptr, O_RDONLY, tango.util.Convert.octal!640);
                         scope (exit)
                                if (src != -1)
                                    posix.close (src);
 
-                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, 0660);
+                        auto dst = posix.open (dest.ptr, O_CREAT | O_RDWR, tango.util.Convert.octal!660);
                         scope (exit)
                                if (dst != -1)
                                    posix.close (dst);
@@ -907,7 +875,7 @@ package struct FS
                 {
                         int fd;
 
-                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, 0660);
+                        fd = posix.open (name.ptr, O_CREAT | O_WRONLY | O_TRUNC, tango.util.Convert.octal!660);
                         if (fd is -1)
                             exception (name);
 
@@ -923,7 +891,7 @@ package struct FS
 
                 static void createFolder (const(char[]) name)
                 {
-                        if (posix.mkdir (name.ptr, 0777))
+                        if (posix.mkdir (name.ptr, tango.util.Convert.octal!777))
                             exception (name);
                 }
 
@@ -991,14 +959,16 @@ package struct FS
                                  info.folder = info.system = false;
 
                                  if (! stat (sfnbuf.ptr, &sbuf))
-                                    {
+                                 {
                                     info.folder = (sbuf.st_mode & S_IFDIR) != 0;
                                     if (info.folder is false)
+                                    {
                                         if ((sbuf.st_mode & S_IFREG) is 0)
                                              info.system = true;
                                         else
                                            info.bytes = cast(ulong) sbuf.st_size;
                                     }
+                                 }
                                  if (all || (info.hidden | info.system) is false)
                                      if ((ret = dg(info)) != 0)
                                           break;
@@ -1193,10 +1163,12 @@ struct PathParser
                    {
                    if (ext_ is 0)
                        foreach (c; x)
+                       {
                                 if (c is '.')
                                     ++ext_;
                                 else
                                    break;
+                       }
                    x = x [ext_ .. $];
                    }
                 return x;
@@ -1568,11 +1540,13 @@ void createPath (const(char[]) path)
         void test (const(char)[] segment)
         {
                 if (segment.length)
+                {
                     if (! exists (segment))
                           createFolder (segment);
                     else
                        if (! isFolder (segment))
                              throw new IllegalArgumentException (("Path.createPath :: file/folder conflict: " ~ segment).idup);
+                }
         }
 
         foreach (i, char c; path)

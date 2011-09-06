@@ -21,7 +21,7 @@ module tango.net.http.HttpClient;
 private import  tango.time.Time;
                 
 private import  tango.net.Uri,
-                tango.net.device.Socket,
+                tango.net.Socket,
                 tango.net.InternetAddress;
 
 private import  tango.io.device.Array;
@@ -228,7 +228,7 @@ class HttpClient
 
         ***********************************************************************/
 
-        UriView getUri()
+        Uri getUri()
         {
                 return uri;
         }

@@ -65,7 +65,7 @@ If you want to build your applications with tango, you need to take care to link
 Here is my complete /etc/dmd.conf
 
 [Environment]
-DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--no-warn-search-mismatch -L--export-dynamic -L-lrt -L-ltango2
+DFLAGS= -I/usr/include/d/dmd/phobos -I/usr/include/d/dmd/tango -I/usr/include/d/dmd/druntime/import -L-L/usr/lib32 -L-L/usr/lib64 -L--export-dynamic -L-lrt -L-ltango2
 
 ===] Guided Installation [=============================================================================================
 

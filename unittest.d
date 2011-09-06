@@ -1,13 +1,29 @@
-/*
+/*******************************************************************************
+
+        copyright:      Copyright (c) 2011 Kris Bell. All rights reserved
+        license:        BSD style: $(LICENSE)
+        version:        Sep 2011: Initial release
+        author:         Chrono
+
+*******************************************************************************/
+
+/**
  * This file covers all unittest
  */
-import core.stdc.stdio;
-import tango.io.Stdout;
-import tango.io.Console;
-import tango.text.convert.Integer;
-import tango.text.convert.Layout;
+private import  tango.io.Stdout,
+                tango.io.Console,
+                tango.io.device.Device,
+                tango.io.device.Conduit,
+                tango.io.device.File;
+                
+private import  tango.net.InternetAddress;
 
-/*
+private import  tango.text.convert.Integer,
+                tango.text.convert.Layout;
+                
+private import  tango.util.Convert;
+
+/**
  * inside this unittest we call all other unittests
  */
 unittest
@@ -38,7 +54,7 @@ unittest
 	Stdout.format ("{} out of {} tests failed.", countFailed, countTotal - 1).newline;
 }
 
-/*
+/**
  *  main is empty, because all unittest will be executed before main
  */
 int main(char[][] args)

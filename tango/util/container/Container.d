@@ -1,24 +1,19 @@
 /*******************************************************************************
 
         copyright:      Copyright (c) 2008 Kris Bell. All rights reserved
-
         license:        BSD style: $(LICENSE)
-
         version:        Apr 2008: Initial release
                         Jan 2009: Added GCChunk allocator
-
         authors:        Kris, schveiguy
-
         Since:          0.99.7
 
 *******************************************************************************/
 
 module tango.util.container.Container;
 
-private import tango.core.Memory;
-
-private import tango.stdc.stdlib;
-private import tango.stdc.string;
+private import  core.memory,
+                core.stdc.stdlib,
+                core.stdc.string;
 
 /*******************************************************************************
 

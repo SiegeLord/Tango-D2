@@ -28,7 +28,7 @@ TODO
 
 import tango.core.ByteSwap : ByteSwap;
 import tango.io.device.Array : Array;
-import tango.io.device.File : File;
+import tango.io.File : File;
 import tango.io.FilePath : FilePath, PathView;
 import tango.io.device.FileMap : FileMap;
 import tango.io.stream.Zlib : ZlibInput, ZlibOutput;

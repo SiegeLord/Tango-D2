@@ -140,15 +140,15 @@ version (Posix)
         public override void register(ISelectable conduit, Event events, Object attachment = null)
         in
         {
-            assert(conduit !is null && conduit.fileHandle() >= 0);
+            assert(conduit !is null && conduit.handle() >= 0);
         }
         body
         {
             debug (selector)
                 Stdout.formatln("--- PollSelector.register(handle={0}, events=0x{1:x})",
-                              cast(int) conduit.fileHandle(), cast(uint) events);
+                              cast(int) conduit.handle(), cast(uint) events);
 
-            PollSelectionKey* current = (conduit.fileHandle() in _keys);
+            PollSelectionKey* current = (conduit.handle() in _keys);
 
             if (current !is null)
             {
@@ -166,11 +166,11 @@ version (Posix)
                 if (_count == _pfds.length)
                     _pfds.length = _pfds.length + 1;
 
-                _pfds[_count].fd = conduit.fileHandle();
+                _pfds[_count].fd = conduit.handle();
                 _pfds[_count].events = cast(short) events;
                 _pfds[_count].revents = 0;
 
-                _keys[conduit.fileHandle()] = new PollSelectionKey(conduit, events, _count, attachment);
+                _keys[conduit.handle()] = new PollSelectionKey(conduit, events, _count, attachment);
                 _count++;
             }
         }
@@ -198,9 +198,9 @@ version (Posix)
                 {
                     debug (selector)
                         Stdout.formatln("--- PollSelector.unregister(handle={0})",
-                                      cast(int) conduit.fileHandle());
+                                      cast(int) conduit.handle());
 
-                    PollSelectionKey* removed = (conduit.fileHandle() in _keys);
+                    PollSelectionKey* removed = (conduit.handle() in _keys);
 
                     if (removed !is null)
                     {
@@ -216,13 +216,13 @@ version (Posix)
                         _keys[cast(ISelectable.Handle)_pfds[removed.index].fd].index = removed.index;
                         _count--;
 
-                        _keys.remove(conduit.fileHandle());
+                        _keys.remove(conduit.handle());
                     }
                     else
                     {
                         debug (selector)
                             Stdout.formatln("--- PollSelector.unregister(handle={0}): conduit was not found",
-                                          cast(int) conduit.fileHandle());
+                                          cast(int) conduit.handle());
                         throw new UnregisteredConduitException(__FILE__, __LINE__);
                     }
                 }
@@ -230,7 +230,7 @@ version (Posix)
                 {
                     debug (selector)
                         Stdout.formatln("--- Exception inside PollSelector.unregister(handle={0}): {1}",
-                                      cast(int) conduit.fileHandle(), e.toString());
+                                      cast(int) conduit.handle(), e.toString());
 
                     throw new UnregisteredConduitException(__FILE__, __LINE__);
                 }
@@ -317,7 +317,7 @@ version (Posix)
         {
             if(conduit !is null)
             {
-                if(auto k = (conduit.fileHandle in _keys))
+                if(auto k = (conduit.handle in _keys))
                 {
                     return k.key;
                 }

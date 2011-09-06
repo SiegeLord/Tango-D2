@@ -6,14 +6,16 @@
 
         version:        Mar 2004 : Initial release
         version:        Dec 2006 : South Pacific release
+        version         Sep 2011 : D2 ready
         
         author:         Kris
 
 *******************************************************************************/
 
-module tango.net.device.Datagram;
+module tango.net.UdpSocket;
 
-package import tango.net.device.Socket;
+public import tango.net.Socket,
+              tango.net.InternetAddress;
 
 /*******************************************************************************
         
@@ -37,7 +39,7 @@ package import tango.net.device.Socket;
 
 *******************************************************************************/
 
-class Datagram : Socket
+class UdpSocket : Socket
 {
         /***********************************************************************
         
@@ -78,13 +80,13 @@ class Datagram : Socket
 
         ***********************************************************************/
 
-        size_t read (void[] dst, Address from)
+        size_t read (void[] dst, InternetAddress from)
         {
                 size_t count;
 
                 if (dst.length)
                    {
-                   count = (from ? native.receiveFrom(dst, from) : native.receiveFrom(dst));
+                   count = (from ? this.receiveFrom(dst, from) : this.receiveFrom(dst));
                    if (count <= 0)
                        count = Eof;
                    }
@@ -103,7 +105,7 @@ class Datagram : Socket
 
         ***********************************************************************/
 
-        override size_t write (void[] src)
+        override size_t write (const(void)[] src)
         {
                 return write (src, null);
         }
@@ -118,13 +120,13 @@ class Datagram : Socket
 
         ***********************************************************************/
 
-        size_t write (void[] src, Address to)
+        size_t write (const(void)[] src, InternetAddress to)
         {
-                int count = Eof;
+                size_t count = Eof;
                 
                 if (src.length)
                    {
-                   count = (to) ? native.sendTo(src, to) : native.sendTo(src);
+                   count = (to) ? this.sendTo(src, to) : this.sendTo(src);
                    if (count <= 0)
                        count = Eof;
                    }
