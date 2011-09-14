@@ -1402,7 +1402,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        package this ()
+        protected this ()
         {
         }
 
