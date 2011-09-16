@@ -71,6 +71,7 @@ tango/text/convert/UnicodeBom.d
 tango/text/json/Json.d
 tango/text/json/JsonEscape.d
 tango/text/json/JsonParser.d
+tango/text/locale/Collation.d
 tango/text/locale/Core.d
 tango/text/locale/Data.d
 tango/text/locale/Posix.d
