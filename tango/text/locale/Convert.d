@@ -28,7 +28,7 @@ private import  Integer = tango.text.convert.Integer;
 
 private struct Result
 {
-        private uint    index;
+        private size_t    index;
         private char[]  target_;
 
         /**********************************************************************
@@ -47,7 +47,7 @@ private struct Result
 
         **********************************************************************/
 
-        private void opCatAssign (char[] rhs)
+        private void opOpAssign(immutable(char)[] s : "~") (const(char)[] rhs)
         {
                 auto end = index + rhs.length;
 
@@ -59,7 +59,7 @@ private struct Result
 
         **********************************************************************/
 
-        private void opCatAssign (char rhs)
+        private void opOpAssign(immutable(char)[] s : "~") (char rhs)
         {
                 target_[index++] = rhs;
         }
@@ -169,20 +169,20 @@ private struct Result
 
 ******************************************************************************/
 
-public char[] formatDateTime (char[] output, Time dateTime, char[] format, IFormatService formatService = null) 
+public char[] formatDateTime (char[] output, Time dateTime, const(char)[] format, IFormatService formatService = null) 
 {
     return formatDateTime (output, dateTime, format, DateTimeFormat.getInstance(formatService));
 }
 
-char[] formatDateTime (char[] output, Time dateTime, char[] format, DateTimeFormat dtf)
+char[] formatDateTime (char[] output, Time dateTime, const(char)[] format, DateTimeFormat dtf)
 {
         /**********************************************************************
 
         **********************************************************************/
 
-        char[] expandKnownFormat(char[] format, ref Time dateTime)
+        const(char)[] expandKnownFormat(const(char)[] format, ref Time dateTime)
         {
-                char[] f;
+                const(char)[] f;
 
                 switch (format[0])
                        {
@@ -251,10 +251,10 @@ version (Full)
 
         **********************************************************************/
 
-        char[] formatCustom (ref Result result, Time dateTime, char[] format)
+        char[] formatCustom (ref Result result, Time dateTime, const(char)[] format)
         {
 
-                int parseRepeat(char[] format, int pos, char c)
+                int parseRepeat(const(char)[] format, int pos, char c)
                 {
                         int n = pos + 1;
                         while (n < format.length && format[n] is c)
@@ -262,14 +262,14 @@ version (Full)
                         return n - pos;
                 }
 
-                char[] formatDayOfWeek(Calendar.DayOfWeek dayOfWeek, int rpt)
+                const(char)[] formatDayOfWeek(Calendar.DayOfWeek dayOfWeek, int rpt)
                 {
                         if (rpt is 3)
                                 return dtf.getAbbreviatedDayName(dayOfWeek);
                         return dtf.getDayName(dayOfWeek);
                 }
 
-                char[] formatMonth(int month, int rpt)
+                const(char)[] formatMonth(int month, int rpt)
                 {
                         if (rpt is 3)
                                 return dtf.getAbbreviatedMonthName(month);
@@ -289,7 +289,7 @@ version (Full)
                         return num;
                 }
 
-                int parseQuote(char[] format, int pos, out char[] result)
+                int parseQuote(const(char)[] format, int pos, out char[] result)
                 {
                         int start = pos;
                         char chQuote = format[pos++];
@@ -323,7 +323,7 @@ version (Full)
                 if (format[0] is '%')
                     {
                     // specifiers for both standard format strings and custom ones
-                    const char[] commonSpecs = "dmMsty";
+                    enum immutable(char)[] commonSpecs = "dmMsty";
                     foreach (c; commonSpecs)
                         if (format[1] is c)
                             {
@@ -494,22 +494,22 @@ private extern (C) char* ecvt(double d, int digits, out int decpt, out bool sign
 *******************************************************************************/
 
 // Must match NumberFormat.decimalPositivePattern
-package const   char[] positiveNumberFormat = "#";
+package enum immutable(char)[] positiveNumberFormat = "#";
 
 // Must match NumberFormat.decimalNegativePattern
-package const   char[][] negativeNumberFormats =
+package enum immutable(char)[][] negativeNumberFormats =
                 [
                 "(#)", "-#", "- #", "#-", "# -"
                 ];
 
 // Must match NumberFormat.currencyPositivePattern
-package const   char[][] positiveCurrencyFormats =
+package enum immutable(char)[][] positiveCurrencyFormats =
                 [
                 "$#", "#$", "$ #", "# $"
                 ];
 
 // Must match NumberFormat.currencyNegativePattern
-package const   char[][] negativeCurrencyFormats =
+package enum immutable(char)[][] negativeCurrencyFormats =
                 [
                 "($#)", "-$#", "$-#", "$#-", "(#$)",
                 "-#$", "#-$", "#$-", "-# $", "-$ #",
@@ -535,7 +535,7 @@ package template charTerm (T)
 
 *******************************************************************************/
 
-char[] longToString (char[] buffer, long value, int digits, char[] negativeSign)
+char[] longToString (char[] buffer, long value, int digits, const(char)[] negativeSign)
 {
         if (digits < 1)
             digits = 1;
@@ -614,7 +614,7 @@ char[] longToBinString (char[] buffer, ulong value, int digits)
 
 *******************************************************************************/
 
-char parseFormatSpecifier (char[] format, out int length)
+char parseFormatSpecifier (const(char)[] format, out int length)
 {
         int     i = -1;
         char    specifier;
@@ -627,7 +627,7 @@ char parseFormatSpecifier (char[] format, out int length)
               {
               specifier = s;
 
-              foreach (c; format [1..$])
+              foreach (char c; format [1..$])
                        if (c >= '0' && c <= '9')
                           {
                           c -= '0';
@@ -651,7 +651,7 @@ char parseFormatSpecifier (char[] format, out int length)
 
 *******************************************************************************/
 
-char[] formatInteger (char[] output, long value, char[] format, NumberFormat nf)
+char[] formatInteger (char[] output, long value, const(char)[] format, NumberFormat nf)
 {
         int     length;
         auto    specifier = parseFormatSpecifier (format, length);
@@ -698,7 +698,7 @@ private enum {
              INFINITY_FLAG = 0x7fffffff,
              }
 
-char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf)
+char[] formatDouble (char[] output, double value, const(char)[] format, NumberFormat nf)
 {
         int length;
         int precision = 6;
@@ -712,11 +712,13 @@ char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf
                     Number number = Number (value, 15);
 
                     if (number.scale == NAN_FLAG)
-                        return nf.nanSymbol;
+                        // Bad dup?
+                        return nf.nanSymbol.dup;
 
                     if (number.scale == INFINITY_FLAG)
-                        return number.sign ? nf.negativeInfinitySymbol
-                                           : nf.positiveInfinitySymbol;
+                         // Bad dup?
+                        return number.sign ? nf.negativeInfinitySymbol.dup
+                                           : nf.positiveInfinitySymbol.dup;
 
                     double d;
                     number.toDouble(d);
@@ -739,11 +741,13 @@ char[] formatDouble (char[] output, double value, char[] format, NumberFormat nf
         Number number = Number(value, precision);
 
         if (number.scale == NAN_FLAG)
-            return nf.nanSymbol;
+            // Bad dup?
+            return nf.nanSymbol.dup;
 
         if (number.scale == INFINITY_FLAG)
-            return number.sign ? nf.negativeInfinitySymbol
-                               : nf.positiveInfinitySymbol;
+            // Bad dup?
+            return number.sign ? nf.negativeInfinitySymbol.dup
+                               : nf.positiveInfinitySymbol.dup;
 
         if (specifier != char.init)
             return toString (number, result, specifier, length, nf);
@@ -791,11 +795,11 @@ void formatGeneral (ref Number number, ref Result target, int length, char forma
 
 void formatNumber (ref Number number, ref Result target, int length, NumberFormat nf)
 {
-        char[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern]
-                                    : positiveNumberFormat;
+        const(char)[] format = number.sign ? negativeNumberFormats[nf.numberNegativePattern]
+                                           : positiveNumberFormat;
 
         // Parse the format.
-        foreach (c; format)
+        foreach (char c; format)
                 {
                 switch (c)
                        {
@@ -821,11 +825,11 @@ void formatNumber (ref Number number, ref Result target, int length, NumberForma
 
 void formatCurrency (ref Number number, ref Result target, int length, NumberFormat nf)
 {
-        char[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern]
-                                    : positiveCurrencyFormats[nf.currencyPositivePattern];
+        const(char)[] format = number.sign ? negativeCurrencyFormats[nf.currencyNegativePattern]
+                                           : positiveCurrencyFormats[nf.currencyPositivePattern];
 
         // Parse the format.
-        foreach (c; format)
+        foreach (char c; format)
                 {
                 switch (c)
                        {
@@ -854,7 +858,7 @@ void formatCurrency (ref Number number, ref Result target, int length, NumberFor
 *******************************************************************************/
 
 void formatFixed (ref Number number, ref Result target, int length,
-                  int[] groupSizes, char[] decimalSeparator, char[] groupSeparator)
+                  const(int)[] groupSizes, const(char)[] decimalSeparator, const(char)[] groupSeparator)
 {
         int pos = number.scale;
         auto p = number.digits.ptr;
@@ -886,7 +890,7 @@ void formatFixed (ref Number number, ref Result target, int length,
               int start = (pos < end) ? pos : end;
 
 
-              char[] separator = groupSeparator;
+              const(char)[] separator = groupSeparator;
               index = 0;
 
               // questionable: use the back end of the output buffer to
@@ -1002,7 +1006,7 @@ char[] toString (ref Number number, ref Result result, char format, int length, 
                      break;
 
                default:
-                     return "{invalid FP format specifier '" ~ format ~ "'}";
+                     return "{invalid FP format specifier '".dup ~ format ~ "'}".dup;
                }
         return result.get;
 }
@@ -1043,7 +1047,7 @@ private struct Number
                       value /= 10;
                       }
 
-                size_t end = number.scale = -(n - buffer.length);
+                int end = number.scale = -(n - cast(int)buffer.length);
                 number.digits[0 .. end] = buffer[n .. n + end];
                 number.digits[end] = '\0';
 
@@ -1091,7 +1095,7 @@ private struct Number
 
         private bool toDouble(out double value)
         {
-                const   ulong[] pow10 =
+                enum   ulong[] pow10 =
                         [
                         0xa000000000000000UL,
                         0xc800000000000000UL,
@@ -1146,7 +1150,7 @@ private struct Number
                         0x8fcac257558ee4e2UL,
                         ];
 
-                const   uint[] pow10Exp =
+                enum   uint[] pow10Exp =
                         [
                         4, 7, 10, 14, 17, 20, 24, 27, 30, 34,
                         37, 40, 44, 47, 50, 54, 107, 160, 213, 266,
@@ -1271,7 +1275,7 @@ private struct Number
                    }
 
                 // Round and scale.
-                if (cast(uint)bits & (1 << 10) != 0)
+                if ((cast(uint)bits & (1 << 10)) != 0)
                    {
                    bits += (1 << 10) - 1 + (bits >>> 11) & 1;
                    bits >>= 11;
@@ -1304,7 +1308,7 @@ private struct Number
 
         **********************************************************************/
 
-        private char[] toStringFormat (ref Result result, char[] format, NumberFormat nf)
+        private char[] toStringFormat (ref Result result, const(char)[] format, NumberFormat nf)
         {
                 bool hasGroups;
                 int groupCount;
@@ -1397,8 +1401,8 @@ private struct Number
                    extra = scale - pointPos;
                    }
 
-                char[] groupSeparator = nf.numberGroupSeparator;
-                char[] decimalSeparator = nf.numberDecimalSeparator;
+                const(char)[] groupSeparator = nf.numberGroupSeparator;
+                const(char)[] decimalSeparator = nf.numberDecimalSeparator;
 
                 // Work out the positions of the group separator.
                 int[] groupPositions;
