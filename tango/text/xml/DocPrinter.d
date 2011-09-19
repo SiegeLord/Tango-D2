@@ -34,9 +34,9 @@ class DocPrinter(T)
         private uint indentation = 2;
 
         version (Win32)
-                 private const T[] Eol = "\r\n";
+                 private enum const(T)[] Eol = "\r\n";
            else
-              private const T[] Eol = "\n";
+              private enum const(T)[] Eol = "\n";
 
         /***********************************************************************
         
@@ -74,7 +74,7 @@ class DocPrinter(T)
         final T[] print (Doc doc, T[] content=null)
         {                      
                 if(content !is null)  
-                    print (doc.tree, (T[][] s...)
+                    print (doc.tree, (const(T)[][] s...)
                         {
                             size_t i=0; 
                             foreach(t; s) 
@@ -88,7 +88,7 @@ class DocPrinter(T)
                             content.length = i; 
                         });
                 else
-                    print (doc.tree, (T[][] s...){foreach(t; s) content ~= t;});
+                    print (doc.tree, (const(T)[][] s...){foreach(t; s) content ~= t;});
                 return content;
         }
         
@@ -100,7 +100,7 @@ class DocPrinter(T)
         
         final void print (Doc doc, OutputStream stream)
         {       
-                print (doc.tree, (T[][] s...){foreach(t; s) stream.write(t);});
+                print (doc.tree, (const(T)[][] s...){foreach(t; s) stream.write(t);});
         }
         
         /***********************************************************************
@@ -109,13 +109,13 @@ class DocPrinter(T)
 
         ***********************************************************************/
         
-        final void print (Node root, void delegate(T[][]...) emit)
+        final void print (Node root, scope void delegate(const(T)[][]...) emit)
         {
                 T[256] tmp;
                 T[256] spaces = ' ';
 
                 // ignore whitespace from mixed-model values
-                T[] rawValue (Node node)
+                const(T)[] rawValue (Node node)
                 {
                         foreach (c; node.rawValue)
                                  if (c > 32)
@@ -217,7 +217,7 @@ debug import tango.util.log.Trace;
 unittest
 {
 
-    char[] document = "<blah><xml>foo</xml></blah>";
+    const(char)[] document = "<blah><xml>foo</xml></blah>";
 
     auto doc = new Document!(char);
     doc.parse (document);

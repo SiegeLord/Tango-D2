@@ -149,7 +149,7 @@ class Document(T) : package PullParser!(T)
         private Node            root; 
         private NodeImpl[]      list;
         private NodeImpl[][]    lists;
-        private int             index,
+        private ptrdiff_t       index,
                                 chunks,
                                 freelists;
         private XmlPath!(T)     xpath;
@@ -161,7 +161,7 @@ class Document(T) : package PullParser!(T)
 
         ***********************************************************************/
 
-        this (uint nodes = 1000)
+        this (size_t nodes = 1000)
         {
                 assert (nodes > 50);
                 super (null);
@@ -286,7 +286,7 @@ version(d)
                 reset;
                 super.reset (xml);
                 auto cur = root;
-                uint defNamespace;
+                size_t defNamespace;
 
                 while (true) 
                       {
@@ -798,7 +798,7 @@ version(discrete)
 
                 ***************************************************************/
        
-                uint position ()
+                size_t position ()
                 {
                         auto count = 0;
                         auto prior = prevSibling;
@@ -1485,9 +1485,9 @@ private class XmlPath(T)
         public alias Doc.Node     Node;         /// generic document node
          
         private Node[]          freelist;
-        private uint            freeIndex,
+        private size_t          freeIndex,
                                 markIndex;
-        private uint            recursion;
+        private size_t            recursion;
 
         /***********************************************************************
         
@@ -1551,7 +1551,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                uint count ()
+                size_t count ()
                 {
                         return nodes.length;
                 }
@@ -1590,7 +1590,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                NodeSet opIndex (uint i)
+                NodeSet opIndex (size_t i)
                 {
                         return nth (i);
                 }
@@ -1602,7 +1602,7 @@ private class XmlPath(T)
         
                 ***************************************************************/
         
-                NodeSet nth (uint index)
+                NodeSet nth (size_t index)
                 {
                         NodeSet set = {host};
                         auto mark = host.mark;
@@ -2007,7 +2007,7 @@ private class XmlPath(T)
 
                 ***************************************************************/
         
-                private NodeSet assign (uint mark)
+                private NodeSet assign (size_t mark)
                 {
                         nodes = host.slice (mark);
                         return this;
@@ -2053,7 +2053,7 @@ private class XmlPath(T)
                         
         ***********************************************************************/
         
-        private uint mark ()
+        private size_t mark ()
         {       
                 return freeIndex;
         }
@@ -2064,7 +2064,7 @@ private class XmlPath(T)
                         
         ***********************************************************************/
         
-        private uint push ()
+        private size_t push ()
         {       
                 ++recursion;
                 return freeIndex;
@@ -2076,7 +2076,7 @@ private class XmlPath(T)
                         
         ***********************************************************************/
         
-        private void pop (uint prior)
+        private void pop (size_t prior)
         {       
                 freeIndex = prior;
                 --recursion;
@@ -2088,7 +2088,7 @@ private class XmlPath(T)
 
         ***********************************************************************/
         
-        private Node[] slice (uint mark)
+        private Node[] slice (size_t mark)
         {
                 assert (mark <= freeIndex);
                 return freelist [mark .. freeIndex];
@@ -2100,7 +2100,7 @@ private class XmlPath(T)
 
         ***********************************************************************/
         
-        private uint allocate (Node node)
+        private size_t allocate (Node node)
         {
                 if (freeIndex >= freelist.length)
                     freelist.length = freelist.length + freelist.length / 2;
@@ -2152,7 +2152,7 @@ interface IXmlPrinter(T)
 debug (Document)
 {
         import tango.io.Stdout;
-        //import tango.text.xml.DocPrinter;
+        import tango.text.xml.DocPrinter;
 
         void main()
         {
@@ -2191,8 +2191,8 @@ debug (Document)
                          Stdout.formatln ("{}: {}", node.parent.name, node.value);
 
                 // emit the result
-                //auto printer = new DocPrinter!(char);
-                //printer.print (doc, stdout);
-               // doc.reset;
+                auto printer = new DocPrinter!(char);
+                printer.print (doc, stdout);
+                doc.reset;
         }
 }
