@@ -84,6 +84,7 @@ tango/text/xml/DocPrinter.d
 tango/text/xml/DocTester.d
 tango/text/xml/Document.d
 tango/text/xml/PullParser.d
+tango/text/xml/SaxParser.d
 tango/time/chrono/Calendar.d
 tango/time/chrono/GregorianBased.d
 tango/time/chrono/Gregorian.d

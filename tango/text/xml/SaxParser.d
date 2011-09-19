@@ -31,8 +31,8 @@ private import tango.text.xml.PullParser;
  *******************************************************************************/
 struct Attribute(Ch = char) {
 
-        Ch[] localName;
-        Ch[] value;
+        const(Ch)[] localName;
+        const(Ch)[] value;
 
 }
 
@@ -192,7 +192,7 @@ public class SaxHandler(Ch = char) {
          * @see #endPrefixMapping
          * @see #startElement
          *******************************************************************************/
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri)
+        public void startPrefixMapping(const(Ch)[] prefix, const(Ch)[] uri)
         {
                 
         }
@@ -213,7 +213,7 @@ public class SaxHandler(Ch = char) {
          * @see #startPrefixMapping
          * @see #endElement
          *******************************************************************************/
-        public void endPrefixMapping(Ch[] prefix)
+        public void endPrefixMapping(const(Ch)[] prefix)
         {
                 
         }
@@ -282,7 +282,7 @@ public class SaxHandler(Ch = char) {
          * @see org.xml.sax.Attributes
          * @see org.xml.sax.helpers.AttributesImpl
          *******************************************************************************/
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute!(Ch)[] atts)
+        public void startElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName, Attribute!(Ch)[] atts)
         {
                 
         }
@@ -308,7 +308,7 @@ public class SaxHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName)
+        public void endElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName)
         {
                 
         }
@@ -356,7 +356,7 @@ public class SaxHandler(Ch = char) {
          * @see #ignorableWhitespace 
          * @see org.xml.sax.Locator
          *******************************************************************************/
-        public void characters(Ch ch[])
+        public void characters(const(Ch)[] ch)
         {
                 
         }
@@ -413,7 +413,7 @@ public class SaxHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void processingInstruction(Ch[] target, Ch[] data)
+        public void processingInstruction(const(Ch)[] target, const(Ch)[] data)
         {
                 
         }
@@ -443,7 +443,7 @@ public class SaxHandler(Ch = char) {
          * @throws org.xml.sax.SAXException any SAX exception, possibly
          *            wrapping another exception
          *******************************************************************************/
-        public void skippedEntity(Ch[] name)
+        public void skippedEntity(const(Ch)[] name)
         {
                 
         }
@@ -545,7 +545,7 @@ public interface EntityResolver(Ch = char) {
          * @see org.xml.sax.InputSource
          *******************************************************************************/
 
-        public InputStream resolveEntity(Ch[] publicId, Ch[] systemId);
+        public InputStream resolveEntity(const(Ch)[] publicId, const(Ch)[] systemId);
 
 }
 
@@ -708,7 +708,7 @@ public interface Locator(Ch = char) {
          *         null if none is available.
          * @see #getSystemId
          *******************************************************************************/
-        public Ch[] getPublicId();
+        public const(Ch)[] getPublicId();
 
         /*******************************************************************************
          * Return the system identifier for the current document event.
@@ -726,7 +726,7 @@ public interface Locator(Ch = char) {
          *         if none is available.
          * @see #getPublicId
          *******************************************************************************/
-        public Ch[] getSystemId();
+        public const(Ch)[] getSystemId();
 
         /*******************************************************************************
          * Return the line number where the current document event ends.
@@ -811,7 +811,7 @@ public class SAXException : Exception {
          * Create a new SAXException.
          *******************************************************************************/
         public this () {
-                super ("", null);
+                super ("", cast(Throwable)null);
         }
 
         /*******************************************************************************
@@ -819,8 +819,8 @@ public class SAXException : Exception {
          *
          * @param message The error or warning message.
          *******************************************************************************/
-        public this (char[] message) {
-                super (message, null);
+        public this (immutable(char)[] message) {
+                super (message, cast(Throwable)null);
         }
 
         /*******************************************************************************
@@ -845,7 +845,7 @@ public class SAXException : Exception {
          * @param message The detail message.
          * @param e The exception to be wrapped in a SAXException.
          *******************************************************************************/
-        public this (char[] message, Exception e) {
+        public this (immutable(char)[] message, Exception e) {
                 super (message, e);
         }
 
@@ -858,7 +858,7 @@ public class SAXException : Exception {
          *
          * @return The error or warning message.
          *******************************************************************************/
-        public char[] message() {
+        public immutable(char)[] message() {
                 if (msg is null && next !is null) {
                         return next.msg;
                 }
@@ -876,11 +876,11 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
         private SaxHandler!(Ch) saxHandler;
         private ErrorHandler!(Ch) errorHandler;
         private EntityResolver!(Ch) entityResolver;
-        private Ch[] content;
+        private const(Ch)[] content;
         private Attribute!(Ch)[] attributes;
         private int attrTop = 0;
         private bool hasStartElement = false;
-        private Ch[] startElemName;
+        private const(Ch)[] startElemName;
         private PullParser!(Ch) parser;
 
         /*******************************************************************************
@@ -948,7 +948,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            cannot determine its value at this time.
          * @see #setFeature
          *******************************************************************************/
-        public bool getFeature(Ch[] name) {
+        public bool getFeature(const(Ch)[] name) {
                 return false;
         }
 
@@ -975,7 +975,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            cannot set the requested value.
          * @see #getFeature
          *******************************************************************************/
-        public void setFeature(Ch[] name, bool value) {
+        public void setFeature(const(Ch)[] name, bool value) {
 
         }
 
@@ -1004,7 +1004,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            cannot determine its value at this time.
          * @see #setProperty
          *******************************************************************************/
-        public Object getProperty(Ch[] name) {
+        public Object getProperty(const(Ch)[] name) {
                 return null;
         }
 
@@ -1033,7 +1033,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            XMLReader recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/
-        public void setProperty(Ch[] name, Object value) {
+        public void setProperty(const(Ch)[] name, Object value) {
 
         }
 
@@ -1173,7 +1173,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          * @see #setErrorHandler 
          *******************************************************************************/
         private void parse(InputStream input) {
-                //TODO turn into a Ch[] buffer
+                //TODO turn into a const(Ch)[] buffer
                 doParse();
         }
 
@@ -1199,8 +1199,8 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        private void parseUrl(Ch[] systemId) {
-                //TODO turn url into a Ch[] buffer            
+        private void parseUrl(const(Ch)[] systemId) {
+                //TODO turn url into a const(Ch)[] buffer
                 doParse();
         }
 
@@ -1215,7 +1215,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        public void parse(Ch[] content) {
+        public void parse(const(Ch)[] content) {
 	        this.setContent(content);
                 doParse();
         }
@@ -1228,7 +1228,7 @@ class SaxParser(Ch = char) : XMLReader!(Ch), Locator!(Ch) {
 
         /*******************************************************************************
          *******************************************************************************/
-        public void setContent(Ch[] content) {
+        public void setContent(const(Ch)[] content) {
 	        if (!parser) {
                         parser = new PullParser!(Ch)(content);
 		} else {
@@ -1316,7 +1316,7 @@ foo:
          *         null if none is available.
          * @see #getSystemId
          *******************************************************************************/
-        public Ch[] getPublicId() {
+        public const(Ch)[] getPublicId() {
                 return null;
         }
 
@@ -1336,7 +1336,7 @@ foo:
          *         if none is available.
          * @see #getPublicId
          *******************************************************************************/
-        public Ch[] getSystemId() {
+        public const(Ch)[] getSystemId() {
                 return null;  
         }
 
@@ -1546,7 +1546,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            parent recognizes the feature name but 
          *            cannot set the requested value.
          *******************************************************************************/
-        public void setFeature(Ch[] name, bool value) {
+        public void setFeature(const(Ch)[] name, bool value) {
                 if (parent !is null) {
                         parent.setFeature(name, value);
                 }
@@ -1569,7 +1569,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            parent recognizes the feature name but 
          *            cannot determine its value at this time.
          *******************************************************************************/
-        public bool getFeature(Ch[] name) {
+        public bool getFeature(const(Ch)[] name) {
                 if (parent !is null) {
                         return parent.getFeature(name);
                 }
@@ -1592,7 +1592,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            parent recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/
-        public void setProperty(Ch[] name, Object value) {
+        public void setProperty(const(Ch)[] name, Object value) {
                 if (parent !is null) {
                         parent.setProperty(name, value);
                 }
@@ -1613,7 +1613,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            parent recognizes the property name but 
          *            cannot determine its value at this time.
          *******************************************************************************/
-        public Object getProperty(Ch[] name) {
+        public Object getProperty(const(Ch)[] name) {
                 if (parent !is null) {
                         return parent.getProperty(name);
                 }
@@ -1702,14 +1702,14 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/
-        public void parse(Ch[] content) {
+        public void parse(const(Ch)[] content) {
                 //TODO FIXME - create a buffer of this content as the input stream, and then parse.
                 //setupParse();
                 //parent.parse(input);
         }
 
         public void parse() {}
-        public void setContent(Ch[] content) {}
+        public void setContent(const(Ch)[] content) {}
 
 
         /*******************************************************************************
@@ -1722,7 +1722,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            possibly from a byte stream or character stream
          *            supplied by the application.
          *******************************************************************************/
-        private void parseUrl(Ch[] systemId) {
+        private void parseUrl(const(Ch)[] systemId) {
                 //TODO FIXME
                 //parse(new InputSource(systemId));
         }
@@ -1742,7 +1742,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          *            I/O-related exception while obtaining the
          *            new InputSource.
          *******************************************************************************/
-        public InputStream resolveEntity(Ch[] publicId, Ch[] systemId) {
+        public InputStream resolveEntity(const(Ch)[] publicId, const(Ch)[] systemId) {
                 if (entityResolver !is null) {
                         return entityResolver.resolveEntity(publicId, systemId);
                 }
@@ -1802,7 +1802,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void startPrefixMapping(Ch[] prefix, Ch[] uri) {
+        public void startPrefixMapping(const(Ch)[] prefix, const(Ch)[] uri) {
                 if (saxHandler !is null) {
                         saxHandler.startPrefixMapping(prefix, uri);
                 }
@@ -1816,7 +1816,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void endPrefixMapping(Ch[] prefix) {
+        public void endPrefixMapping(const(Ch)[] prefix) {
                 if (saxHandler !is null) {
                         saxHandler.endPrefixMapping(prefix);
                 }
@@ -1834,7 +1834,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void startElement(Ch[] uri, Ch[] localName, Ch[] qName, Attribute[] atts) {
+        public void startElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName, Attribute[] atts) {
                 if (saxHandler !is null) {
                         saxHandler.startElement(uri, localName, qName, atts);
                 }    
@@ -1851,7 +1851,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void endElement(Ch[] uri, Ch[] localName, Ch[] qName) {
+        public void endElement(const(Ch)[] uri, const(Ch)[] localName, const(Ch)[] qName) {
                 if (saxHandler !is null) {
                         saxHandler.endElement(uri, localName, qName);
                 }
@@ -1896,7 +1896,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void processingInstruction(Ch[] target, Ch[] data) {
+        public void processingInstruction(const(Ch)[] target, const(Ch)[] data) {
                 if (saxHandler !is null) {
                         saxHandler.processingInstruction(target, data);
                 }
@@ -1910,7 +1910,7 @@ public class XMLFilterImpl(Ch = char) : SaxHandler, XMLFilter, EntityResolver, E
          * @exception org.xml.sax.SAXException The client may throw
          *            an exception during processing.
          *******************************************************************************/
-        public void skippedEntity(Ch[] name) {
+        public void skippedEntity(const(Ch)[] name) {
                 if (saxHandler !is null) {
                         saxHandler.skippedEntity(name);
                 }
@@ -2095,7 +2095,7 @@ public interface XMLReader(Ch = char) {
          *            cannot determine its value at this time.
          * @see #setFeature
          *******************************************************************************/
-        public bool getFeature(Ch[] name);
+        public bool getFeature(const(Ch)[] name);
 
         /*******************************************************************************
          * Set the value of a feature flag.
@@ -2120,7 +2120,7 @@ public interface XMLReader(Ch = char) {
          *            cannot set the requested value.
          * @see #getFeature
          *******************************************************************************/
-        public void setFeature(Ch[] name, bool value);
+        public void setFeature(const(Ch)[] name, bool value);
 
         /*******************************************************************************
          * Look up the value of a property.
@@ -2147,7 +2147,7 @@ public interface XMLReader(Ch = char) {
          *            cannot determine its value at this time.
          * @see #setProperty
          *******************************************************************************/
-        public Object getProperty(Ch[] name);
+        public Object getProperty(const(Ch)[] name);
 
         /*******************************************************************************
          * Set the value of a property.
@@ -2174,7 +2174,7 @@ public interface XMLReader(Ch = char) {
          *            XMLReader recognizes the property name but 
          *            cannot set the requested value.
          *******************************************************************************/
-        public void setProperty(Ch[] name, Object value);
+        public void setProperty(const(Ch)[] name, Object value);
 
         ////////////////////////////////////////////////////////////////////
         // Event handlers.
@@ -2323,7 +2323,7 @@ public interface XMLReader(Ch = char) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        private void parseUrl(Ch[] systemId);
+        private void parseUrl(const(Ch)[] systemId);
 
         /*******************************************************************************
          * Parse an XML document from a character array.
@@ -2336,7 +2336,7 @@ public interface XMLReader(Ch = char) {
          *            supplied by the application.
          * @see #parse(org.xml.sax.InputSource)
          *******************************************************************************/
-        public void parse(Ch[] content);
+        public void parse(const(Ch)[] content);
 
         /*******************************************************************************
          *******************************************************************************/
@@ -2344,6 +2344,6 @@ public interface XMLReader(Ch = char) {
 
         /*******************************************************************************
          *******************************************************************************/
-        public void setContent(Ch[] content);
+        public void setContent(const(Ch)[] content);
 
 }
