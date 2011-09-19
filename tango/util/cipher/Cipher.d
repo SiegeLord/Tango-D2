@@ -11,8 +11,6 @@ private import tango.core.Exception : IllegalArgumentException;
 /** Base symmetric cipher class */
 abstract class Cipher
 {
-    interface Parameters {}
-
     enum bool ENCRYPT = true,
               DECRYPT = false;
                       
@@ -110,97 +108,6 @@ abstract class StreamCipher : Cipher
     abstract uint unpad(const(void[]) input_);
  }
 
-
-
-/** Object representing and wrapping a symmetric key in bytes. */
-class SymmetricKey : Cipher.Parameters
-{
-    private const(ubyte)[] _key;
-    
-    /**
-     * Params:
-     *     key = Key to be held.
-     */
-    this(const(void[]) key=null)
-    {
-        _key = cast(const(ubyte)[]) key;
-    }
-    
-    /** Returns: Key in ubytes held by this object. */
-    const const(ubyte)[] key()
-    {
-        return _key;
-    }
-    
-    /**
-     * Set the key held by this object.
-     *
-     * Params:
-     *     newKey = New key to be held.
-     * Returns: The new key.
-     */
-    const(ubyte)[] key(const(void[]) newKey)
-    {
-        return _key = cast(const(ubyte)[]) newKey;
-    }
-}
-
-
-/** Wrap cipher parameters and IV. */
-class ParametersWithIV : Cipher.Parameters
-{
-    private const(ubyte)[] _iv;
-    private Cipher.Parameters _params;
-    
-    /**
-     * Params:
-     *     params = Parameters to wrap.
-     *     iv     = IV to be held.
-     */
-    this (Cipher.Parameters params=null, const(void[]) iv=null)
-    {
-        _params = params;
-        _iv = cast(const(ubyte)[]) iv;
-    }
-    
-    /** Returns: The IV. */
-    const const(ubyte)[] iv()
-    {
-        return _iv;
-    }
-    
-    /**
-     * Set the IV held by this object.
-     *
-     * Params:
-     *     newIV = The new IV for this parameter object.
-     * Returns: The new IV.
-     */
-    const(ubyte)[] iv(const(void[]) newIV)
-    {
-        return _iv = cast(const(ubyte)[]) newIV;
-    }
-    
-    /** Returns: The parameters for this object. */
-    const const(Cipher.Parameters) parameters()
-    {
-        return _params;
-    }
-    
-    /**
-     * Set the parameters held by this object.
-     *
-     * Params:
-     *     newParams = The new parameters to be held.
-     * Returns: The new parameters.
-     */
-    Cipher.Parameters parameters(Cipher.Parameters newParams)
-    {
-        return _params = newParams;
-    }
-}
-
-
 struct Bitwise
 {
     static uint rotateLeft(uint x, uint y)
@@ -278,10 +185,8 @@ struct ByteConverter
          *     Integral input of type T split into its respective bytes
          *     with the bytes placed in the specified byte order.
          */
-        static ubyte[] from(T)(T input)
+        static void from(T)(T input, ubyte[] output)
         {
-            ubyte[] output = new ubyte[T.sizeof];
-            
             output[0] = cast(ubyte)(input);
             output[1] = cast(ubyte)(input >> 8);
             
@@ -298,8 +203,6 @@ struct ByteConverter
                 output[6] = cast(ubyte)(input >> 48);
                 output[7] = cast(ubyte)(input >> 56);
             }
-            
-            return output;
         }
     }
     
@@ -336,10 +239,8 @@ struct ByteConverter
             }
         }
         
-        static ubyte[] from(T)(T input)
+        static void from(T)(T input, ubyte[] output)
         {
-            ubyte[] output = new ubyte[T.sizeof];
-            
             static if (T.sizeof == long.sizeof)
             {
                 output[0] = cast(ubyte)(input >> 56);
@@ -363,8 +264,6 @@ struct ByteConverter
                 output[0] = cast(ubyte)(input >> 8);
                 output[1] = cast(ubyte)(input);
             }
-            
-            return output;
         }
     }
 

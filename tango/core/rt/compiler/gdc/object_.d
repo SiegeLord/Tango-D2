@@ -1766,19 +1766,24 @@ extern (C) bool rt_detachDisposeEvent(Object h, DEvent e)
 {
     synchronized (h)
     {
-        Monitor* m = getMonitor(h);
-        assert(m.impl is null);
+        return rt_detachDisposeEventNoLock(h, e);
+    }
+}
 
-        foreach (p, v; m.devt)
+extern (C) bool rt_detachDisposeEventNoLock(Object h, DEvent e)
+{
+    Monitor* m = getMonitor(h);
+    assert(m.impl is null);
+
+    foreach (p, v; m.devt)
+    {
+        if (v == e)
         {
-            if (v == e)
-            {
-                memmove(&m.devt[p],
-                        &m.devt[p+1],
-                        (m.devt.length - p - 1) * DEvent.sizeof);
-                m.devt[$ - 1] = null;
-                return true;
-            }
+            memmove(&m.devt[p],
+                    &m.devt[p+1],
+                    (m.devt.length - p - 1) * DEvent.sizeof);
+            m.devt[$ - 1] = null;
+            return true;
         }
     }
     return false;

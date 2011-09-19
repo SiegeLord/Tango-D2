@@ -1100,30 +1100,6 @@ public abstract class Address
 
         ***********************************************************************/
 
-        private static char[] convert2D (char* s)
-        {
-                return s ? s[0 .. strlen(s)] : cast(char[])null;
-        }
-
-        /***********************************************************************
-
-                Internal usage
-
-        ***********************************************************************/
-
-        private static char* convert2C (char[] input, char[] output)
-        {
-                output [0 .. input.length] = input;
-                output [input.length] = 0;
-                return output.ptr;
-        }
-
-        /***********************************************************************
-
-                Internal usage
-
-        ***********************************************************************/
-
         private static char[] fromInt (char[] tmp, int i)
         {
                 size_t j = tmp.length;
@@ -1426,7 +1402,7 @@ public class IPv4Address : Address
 
         ***********************************************************************/
 
-        package this ()
+        protected this ()
         {
         }
 
@@ -1536,9 +1512,9 @@ public class IPv4Address : Address
         {
                 char[16] buff = 0;
                 version (Windows)
-                         return convert2D(inet_ntoa(sin.sin_addr)).dup;
+                         return fromStringz(inet_ntoa(sin.sin_addr)).dup;
                 else
-                   return convert2D(inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, 16)).dup;
+                   return fromStringz(inet_ntop(AddressFamily.INET, &sin.sin_addr, buff.ptr, 16)).dup;
         }
 
         /***********************************************************************
@@ -1572,7 +1548,7 @@ public class IPv4Address : Address
                 char[64] tmp;
 
                 synchronized (IPv4Address.classinfo)
-                              return ntohl(inet_addr(convert2C (addr, tmp)));
+                              return ntohl(inet_addr(toStringz(addr, tmp)));
         }
 }
 
@@ -1915,7 +1891,7 @@ public class NetHost
                 int i;
                 char* p;
 
-                name = Address.convert2D (he.h_name);
+                name = fromStringz(he.h_name);
 
                 for (i = 0;; i++)
                     {
@@ -1928,7 +1904,7 @@ public class NetHost
                    {
                    aliases = new char[][i];
                    for (i = 0; i != aliases.length; i++)
-                        aliases[i] = Address.convert2D(he.h_aliases[i]);
+                        aliases[i] = fromStringz(he.h_aliases[i]);
                    }
                 else
                    aliases = null;
@@ -1960,7 +1936,7 @@ public class NetHost
 
                 synchronized (NetHost.classinfo)
                              {
-                             auto he = gethostbyname(Address.convert2C (name, tmp));
+                             auto he = gethostbyname(toStringz(name, tmp));
                              if(!he)
                                 return false;
                              validHostent(he);
@@ -1998,7 +1974,7 @@ public class NetHost
 
                 synchronized (NetHost.classinfo)
                              {
-                             uint x = inet_addr(Address.convert2C (addr, tmp));
+                             uint x = inet_addr(toStringz(addr, tmp));
                              auto he = gethostbyaddr(&x, 4, cast(int)AddressFamily.INET);
                              if(!he)
                                  return false;

@@ -122,15 +122,15 @@ int compareString(int lcid, const(char)[] stringA, size_t offsetA, size_t length
   setlocale(LC_COLLATE, locale.ptr);
   setlocale(LC_CTYPE, locale.ptr);
   
-  char[] s1 = toStringz(stringA[offsetA..offsetA+lengthA])[0..lengthA + 1].dup[0..lengthA],
-         s2 = toStringz(stringB[offsetB..offsetB+lengthB])[0..lengthB + 1].dup[0..lengthB];
+  char[] s1 = stringA[offsetA..offsetA+lengthA] ~ "\0",
+         s2 = stringB[offsetB..offsetB+lengthB] ~ "\0";
   if(ignoreCase) {
     strToLower(s1);
     strToLower(s2);
   }
-
+  
   int ret = strcoll(s1.ptr, s2.ptr);
-
+  
   setlocale(LC_COLLATE, tempCol);
   setlocale(LC_CTYPE, tempCType);
   
@@ -147,6 +147,7 @@ debug(UnitTest)
         assert(compareString(c, "Alphabet", 0, 8, "alphabet", 0, 8, false) != 0);
         assert(compareString(c, "lphabet", 0, 7, "alphabet", 0, 8, true) != 0);
         assert(compareString(c, "Alphabet", 0, 8, "lphabet", 0, 7, true) != 0);
+        assert(compareString(c, "Alphabet", 0, 7, "ZAlphabet", 1, 7, false) == 0);
     }
 }
 }

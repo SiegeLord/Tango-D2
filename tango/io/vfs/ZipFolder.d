@@ -667,7 +667,7 @@ class ZipFolder : ZipSubFolder
      */
 
     final override VfsFolder close(bool commit = true)
-    in { assert( valid ); }
+    //in { assert( valid ); } See Ticket #2067 
     body
     {
         debug( ZipFolder )
@@ -697,7 +697,7 @@ class ZipFolder : ZipSubFolder
      * Flushes all changes to the archive out to disk.
      */
     final override VfsFolder sync()
-    in { assert( valid ); }
+    //in { assert( valid ); } See Ticket #2067 
     out
     {
         assert( valid );
