@@ -310,7 +310,7 @@ version (Posix) {
    * Returns: A read-only culture instance.
    * Remarks: Instances returned by this method are cached.
    */
-  public static Culture getCulture(char[] cultureName) {
+  public static Culture getCulture(const(char)[] cultureName) {
     if (cultureName is null)
        error("Value cannot be null.");
     Culture culture = getCultureInternal(0, cultureName);
@@ -324,7 +324,7 @@ version (Posix) {
     * Params: name = The name of the language.
     * Returns: A read-only culture instance.
     */
-  public static Culture getCultureFromIetfLanguageTag(char[] name) {
+  public static Culture getCultureFromIetfLanguageTag(const(char)[] name) {
     if (name is null)
       error("Value cannot be null.");
     Culture culture = getCultureInternal(-1, name);
