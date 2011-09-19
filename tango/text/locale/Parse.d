@@ -36,21 +36,21 @@ private struct DateTimeParseResult {
 
 }
 
-package Time parseTime(char[] s, DateTimeFormat dtf) {
+package Time parseTime(const(char)[] s, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExactMultiple(s, dtf.getAllDateTimePatterns(), dtf, result))
     throw new IllegalArgumentException("String was not a valid Time.");
   return result.parsedDate;
 }
 
-package Time parseTimeExact(char[] s, char[] format, DateTimeFormat dtf) {
+package Time parseTimeExact(const(char)[] s, const(char)[] format, DateTimeFormat dtf) {
   DateTimeParseResult result;
   if (!tryParseExact(s, format, dtf, result))
     throw new IllegalArgumentException("String was not a valid Time.");
   return result.parsedDate;
 }
 
-package bool tryParseTime(char[] s, DateTimeFormat dtf, out Time result) {
+package bool tryParseTime(const(char)[] s, DateTimeFormat dtf, out Time result) {
   result = Time.min;
   DateTimeParseResult resultRecord;
   if (!tryParseExactMultiple(s, dtf.getAllDateTimePatterns(), dtf, resultRecord))
@@ -59,7 +59,7 @@ package bool tryParseTime(char[] s, DateTimeFormat dtf, out Time result) {
   return true;
 }
 
-package bool tryParseTimeExact(char[] s, char[] format, DateTimeFormat dtf, out Time result) {
+package bool tryParseTimeExact(const(char)[] s, const(char)[] format, DateTimeFormat dtf, out Time result) {
   result = Time.min;
   DateTimeParseResult resultRecord;
   if (!tryParseExact(s, format, dtf, resultRecord))
@@ -68,19 +68,19 @@ package bool tryParseTimeExact(char[] s, char[] format, DateTimeFormat dtf, out 
   return true;
 }
 
-private bool tryParseExactMultiple(char[] s, char[][] formats, DateTimeFormat dtf, ref DateTimeParseResult result) {
-  foreach (char[] format; formats) {
+private bool tryParseExactMultiple(const(char)[] s, const(char)[][] formats, DateTimeFormat dtf, ref DateTimeParseResult result) {
+  foreach (const(char)[] format; formats) {
     if (tryParseExact(s, format, dtf, result))
       return true;
   }
   return false;
 }
 
-private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, ref DateTimeParseResult result) {
+private bool tryParseExact(const(char)[] s, const(char)[] pattern, DateTimeFormat dtf, ref DateTimeParseResult result) {
 
   bool doParse() {
 
-    int parseDigits(char[] s, ref int pos, int max) {
+    int parseDigits(const(char)[] s, ref int pos, int max) {
       int result = s[pos++] - '0';
       while (max > 1 && pos < s.length && s[pos] >= '0' && s[pos] <= '9') {
         result = result * 10 + s[pos++] - '0';
@@ -89,16 +89,17 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, ref Dat
       return result;
     }
 
-    bool parseOne(char[] s, ref int pos, char[] value) {
+    bool parseOne(const(char)[] s, ref int pos, const(char)[] value) {
       if (s[pos .. pos + value.length] != value)
         return false;
       pos += value.length;
       return true;
     }
 
-    int parseMultiple(char[] s, ref int pos, char[][] values ...) {
-      int result = -1, max;
-      foreach (int i, char[] value; values) {
+    int parseMultiple(const(char)[] s, ref int pos, const(char)[][] values ...) {
+      int result = -1;
+      size_t max;
+      foreach (int i, const(char)[] value; values) {
         if (value.length == 0 || s.length - pos < value.length)
           continue;
 
@@ -113,7 +114,7 @@ private bool tryParseExact(char[] s, char[] pattern, DateTimeFormat dtf, ref Dat
       return result;
     }
 
-    TimeSpan parseTimeZoneOffset(char[] s, ref int pos) {
+    TimeSpan parseTimeZoneOffset(const(char)[] s, ref int pos) {
       bool sign;
       if (pos < s.length) {
         if (s[pos] == '-') {
