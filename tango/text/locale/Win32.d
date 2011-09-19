@@ -21,8 +21,8 @@ private {
   uint GetUserDefaultLCID();
   uint GetThreadLocale();
   bool SetThreadLocale(uint Locale);
-  int MultiByteToWideChar(uint CodePage, uint dwFlags, char* lpMultiByteStr, int cbMultiByte, wchar* lpWideCharStr, int cchWideChar);
-  int CompareStringW(uint Locale, uint dwCmpFlags, wchar* lpString1, int cchCount1, wchar* lpString2, int cchCount2);
+  int MultiByteToWideChar(uint CodePage, uint dwFlags, const(char)* lpMultiByteStr, int cbMultiByte, wchar* lpWideCharStr, int cchWideChar);
+  int CompareStringW(uint Locale, uint dwCmpFlags, const(wchar)* lpString1, int cchCount1, const(wchar)* lpString2, int cchCount2);
 
 }
 
@@ -34,10 +34,10 @@ void setUserCulture(int lcid) {
   SetThreadLocale(lcid);
 }
 
-int compareString(int lcid, char[] stringA, uint offsetA, uint lengthA, char[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
+int compareString(int lcid, const(char)[] stringA, uint offsetA, uint lengthA, const(char)[] stringB, uint offsetB, uint lengthB, bool ignoreCase) {
 
-  wchar[] toUnicode(char[] string, uint offset, uint length, out int translated) {
-    char* chars = string.ptr + offset;
+  wchar[] toUnicode(const(char)[] string, uint offset, uint length, out int translated) {
+    const(char)* chars = string.ptr + offset;
     int required = MultiByteToWideChar(0, 0, chars, length, null, 0);
     wchar[] result = new wchar[required];
     translated = MultiByteToWideChar(0, 0, chars, length, result.ptr, required);

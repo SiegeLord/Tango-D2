@@ -78,6 +78,7 @@ tango/text/locale/Data.d
 tango/text/locale/Locale.d
 tango/text/locale/Parse.d
 tango/text/locale/Posix.d
+tango/text/locale/Win32.d
 tango/text/xml/Document.d
 tango/text/xml/PullParser.d
 tango/time/chrono/Calendar.d
