@@ -26,9 +26,9 @@ private import Util = tango.text.Util;
         
 ******************************************************************************/
 
-T[] fromEntity (T) (T[] src, T[] dst = null)
+T[] fromEntity (T) (const(T)[] src, T[] dst = null)
 {
-        int delta;
+        ptrdiff_t delta;
         auto s = src.ptr;
         auto len = src.length;
 
@@ -89,7 +89,11 @@ T[] fromEntity (T) (T[] src, T[] dst = null)
            d [0 .. len] = s [0 .. len];
            return dst [0 .. (d + len) - dst.ptr];
            }
-        return src;
+
+        if(dst.length < src.length)
+            dst.length = src.length;
+        dst[0..src.length] = src;
+        return dst[0..src.length];
 }
 
 
@@ -107,9 +111,9 @@ T[] fromEntity (T) (T[] src, T[] dst = null)
               
 ******************************************************************************/
 
-void fromEntity (T) (T[] src, void delegate(T[]) emit)
+void fromEntity (T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
-        int delta;
+        ptrdiff_t delta;
         auto s = src.ptr;
         auto len = src.length;
 
@@ -172,17 +176,15 @@ void fromEntity (T) (T[] src, void delegate(T[]) emit)
 
         Convert reserved chars to entities. For example: " => &quot; 
 
-        Either a slice of the provided output buffer is returned, or the 
-        original content, depending on whether there were reserved chars
-        present or not. The output buffer should be sufficiently large to  
+        A slice of the provided output buffer is returned. The output buffer should be sufficiently large to  
         accomodate the converted output, or it will be allocated from the 
         heap instead 
         
 ******************************************************************************/
 
-T[] toEntity(T) (T[] src, T[] dst = null)
+T[] toEntity(T) (const(T)[] src, T[] dst = null)
 {
-        T[]  entity;
+        const(T)[]  entity;
         auto s = src.ptr;
         auto t = s;
         auto e = s + src.length;
@@ -242,7 +244,10 @@ T[] toEntity(T) (T[] src, T[] dst = null)
            return dst [0 .. index + len];
            }
 
-        return src;
+        if(dst.length < src.length)
+            dst.length = src.length;
+        dst[0..src.length] = src;
+        return dst[0..src.length];
 }
 
 
@@ -255,9 +260,9 @@ T[] toEntity(T) (T[] src, T[] dst = null)
         
 ******************************************************************************/
 
-void toEntity(T) (T[] src, void delegate(T[]) emit)
+void toEntity(T) (const(T)[] src, scope void delegate(const(T)[]) emit)
 {
-        T[]  entity;
+        const(T)[]  entity;
         auto s = src.ptr;
         auto t = s;
         auto e = s + src.length;
